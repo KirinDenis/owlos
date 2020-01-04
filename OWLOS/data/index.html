@@ -1,0 +1,146 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <title>OWL OS</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src='boot.js'></script>
+</head>
+<body>
+    <pre id="boot" style="font-size: 11px;"><code id="bootLog" style="white-space: pre-wrap; overflow-y:scroll;"></code></pre>
+    <div class="container-fluid" id="mainContainer" style="display: none">
+        <div class="row">
+
+            <div class="col-sm-12">
+                <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+                    <a class="navbar-brand" href="#">OWL OS</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarColor01">
+                        <ul class="nav navbar-nav mr-auto" id="mainTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" aria-controls="home" aria-selected="true">Home</a>
+                            </li>
+                            <!--
+    <li class="nav-item">
+        <a class="nav-link" id="unit-tab" data-toggle="tab" href="#unit" role="tab" aria-controls="unit" aria-selected="false">Unit</a>
+    </li>
+        -->
+                            <li class="nav-item">
+                                <a class="nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false">Devices</a>
+                            </li>
+                            <!--
+    <li class="nav-item">
+        <a class="nav-link" id="files-tab" data-toggle="tab" href="#files" role="tab" aria-controls="files" aria-selected="false">Files</a>
+    </li>
+                    -->
+                            <li class="nav-item">
+                                <a class="nav-link" id="console-tab" data-toggle="tab" href="#console" role="tab" aria-controls="console" aria-selected="false">Console</a>
+                            </li>
+                        </ul>
+        </div>
+        <form class="form-inline my-2 my-lg-0">
+            <div id="statusesPanel">
+            </div>
+            <div id="refreshButtonsPanel">
+                <span id="autorefreshbutton" class="badge badge-default" data="off"></span>
+                <span id="refreshbutton" class="badge badge-default"></span>
+            </div>
+
+        </form>
+    </nav>
+
+    <div class="tab-content" id="mainTabContent">
+        <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
+            <div class="row devicesIndicatorsPanel" id="devicesIndicatorsPanel">
+            </div>
+            <div class="col-sm-12" id="basicPanel">
+            </div>
+        </div>
+        <div class="tab-pane fade" id="unit" role="tabpanel" aria-labelledby="unit-tab">
+            <div class="btn-group" role="group" aria-label="unit anchorses">
+                <div id="unitAnchors"> </div>
+            </div>
+            <div id="unitMainPropertiesPanel" class="row">
+            </div>
+
+            <div id="unitPanel" class="row">
+            </div>
+        </div>
+        <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+
+                <div id="devicesAnchors"> </div>
+
+            <div id="devicesPanelHolder" class="container-fluid">
+                <div class="wrapper row">
+                    <!-- Sidebar Holder -->
+                            <nav id="sidebar" class="bs-docs-sidebar">
+
+                                <ul id="nodesSideBar" class="list-unstyled components"></ul>
+
+                            </nav>
+
+
+
+                            <div id="content">
+                                <nav class="navbar bg-primary">
+
+                                    <form class="form-inline my-2 my-lg-0">
+                                        <button type="button" id="sidebarCollapse" class="btn btn-secondary btn-sm">
+                                            <span>|<</span>
+                                        </button>
+                                        <div id="nodeStatusPanel"></div>
+                                    </form>
+
+                                </nav>
+
+                                <div id="devicesPanel">
+
+                                </div>
+
+                            </div>
+
+
+</div>
+                        </div>
+                        <div class="tab-pane fade" id="files" role="tabpanel" aria-labelledby="files-tab">
+                            <div class="btn-group" role="group" aria-label="files anchorses">
+                                <div id="filesAnchors">
+                                </div>
+                            </div>
+                            <div id="filesPanel" class="row">
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="console" role="tabpanel" aria-labelledby="console-tab">
+                            <div class="row">
+                                <div class="col-md-12 devicediv">
+                                    <div id="consolePanel" class="col-md-12 border-0 devicecard">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div id="uploadPanel" class="row"></div>
+                <div id="addDevicePanel" class="row"></div>
+                <div id="resetPanel" class="row"></div>
+            </div>
+        </div>
+    </div>
+    <footer class="footer">
+        <div class="container col-md-12" id="footerContainer">
+            OWL OS
+        </div>
+    </footer>
+    <script>
+        boot();
+
+        
+        
+
+    </script>
+</body>
+</html>

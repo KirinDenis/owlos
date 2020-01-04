@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.539
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OWLOS", "OWLOS", "{CEAB6A89-5A7E-4F78-8DC9-903F3DCA2ACE}"
+	ProjectSection(SolutionItems) = preProject
+		OWLOS\compileUIonly.bat = OWLOS\compileUIonly.bat
+		OWLOS\compileupdate.bat = OWLOS\compileupdate.bat
+		OWLOS\OWLOS.ino = OWLOS\OWLOS.ino
+		OWLOS\UnitProperties.cpp = OWLOS\UnitProperties.cpp
+		OWLOS\UnitProperties.h = OWLOS\UnitProperties.h
+		OWLOS\WebProperties.cpp = OWLOS\WebProperties.cpp
+		OWLOS\WebProperties.h = OWLOS\WebProperties.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OWLStarter", "OWLStarter", "{2B56B938-D996-4E6C-B185-5A36A9EA515B}"
+	ProjectSection(SolutionItems) = preProject
+		OWLStarter\OWLStarter.ino = OWLStarter\OWLStarter.ino
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9A146DA9-5CF0-425C-A7F4-C00482E8A430}
+	EndGlobalSection
+EndGlobal

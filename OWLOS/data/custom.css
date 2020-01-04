@@ -1,0 +1,296 @@
+
+.devicesIndicatorsPanel {
+    text-align: center;
+}
+
+.devicePanelDiv {
+    position: Relative;
+    text-align: Bottom;
+    padding-top: 7px;
+    height: 120px;
+    margin-bottom: 40px;
+    margin-left: 15px;
+    overflow: Hidden;
+    cursor: Default;
+    display: inline-block;
+}
+
+
+.middleContainer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -moz-transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+}
+
+.buttomContainer {
+    position: absolute;
+    top: 90%;
+    left: 50%;
+    -moz-transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+}
+
+.Indicator {
+    position: Relative;
+    text-align: Center;
+    overflow: Hidden;
+    cursor: Default;
+    display: inline-block;
+}
+
+.TableIndicator {
+    position: Relative;
+    overflow: Hidden;
+    cursor: Default;
+    display: inline-block;
+}
+
+.IndicatorText {
+    position: Absolute;
+    text-align: Center;
+    overflow: Hidden;
+    white-space: NoWrap;
+    text-overflow: Ellipsis;
+}
+
+.LCDTextArea {
+    width: 28ch;
+    left: 5%;
+    position: Absolute;
+    text-align: Center;
+    overflow: Hidden;
+    white-space: NoWrap;
+    text-overflow: Ellipsis;
+    transform: translateY(-44%);
+}
+
+.LCDButtons {
+    position: absolute;
+    top: 3%;
+    right: 1%;
+    width: 25%;
+    transform: translateY(3%);
+}
+
+.LCDButton {
+    width: 100%;
+}
+
+.GaugeMeter SPAN, .GaugeMeter B {
+    width: 54%;
+    position: Absolute;
+    text-align: Center;
+    display: Inline-Block;
+    color: RGBa(0,0,0,.8);
+    font-weight: 100;
+    font-family: "Open Sans", Arial;
+    overflow: Hidden;
+    white-space: NoWrap;
+    text-overflow: Ellipsis;
+    margin: 0 23%;
+}
+
+.GaugeMeter[data-style="Semi"] B {
+    width: 80%;
+    margin: 0 10%;
+}
+
+.GaugeMeter S, .GaugeMeter U {
+    text-decoration: None;
+    font-size: .60em;
+    font-weight: 200;
+    opacity: .6;
+}
+
+.GaugeMeter B {
+    color: #000;
+    font-weight: 200;
+    opacity: .8;
+}
+
+
+.table-striped > tbody > tr:nth-child(even) > td,
+.table-striped > tbody > tr:nth-child(even) > th {
+    background-color: #515960;
+}
+
+.devicediv {
+    margin: 20px -5px 2px -5px;
+}
+
+.w-10 {
+    width: 10% !important;
+}
+
+.w-5 {
+    width: 5% !important;
+}
+
+.w-2 {
+    width: 2% !important;
+}
+
+textarea {
+    resize: none;
+    padding: 0;
+}
+
+
+.tooltip-inner {
+    background-color: #404040;
+}
+
+.tooltip.bs-tooltip-right .arrow:before {
+    border-right-color: #404040 !important;
+}
+
+.tooltip.bs-tooltip-left .arrow:before {
+    border-left-color: #404040 !important;
+}
+
+.tooltip.bs-tooltip-bottom .arrow:before {
+    border-bottom-color: #404040 !important;
+}
+
+.tooltip.bs-tooltip-top .arrow:before {
+    border-top-color: #404040 !important;
+}
+
+.dataTables_length {
+    color: white !important;
+}
+
+.dataTables_filter, .dataTables_info, .dataTables_length {
+    color: white !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    color: white !important;
+}
+
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: rgba(131, 131, 131, 0.1);
+    text-align: right;
+}
+
+
+
+
+/* ---------------------------------------------------
+    SIDEBAR STYLE
+----------------------------------------------------- */
+
+.wrapper {
+    align-items: stretch;
+}
+
+#sidebar {
+    min-width: 250px;
+    max-width: 250px;
+    transition: all 0.3s;
+}
+
+    #sidebar.active {
+        margin-left: -250px;
+  
+    }
+
+    #sidebar .sidebar-header {
+        padding: 20px;
+    }
+
+    #sidebar ul.components {
+        padding: 20px 0;
+    }
+
+    #sidebar ul p {
+        color: #fff;
+        padding: 10px;
+    }
+
+    #sidebar ul li a {
+        padding: 10px;
+        display: block;
+    }
+
+        #sidebar ul li a:hover {
+            background-color: rgba(131, 131, 131, 0.1);
+        }
+
+    #sidebar ul li.active > a, a[aria-expanded="true"] {
+        background-color: rgba(131, 131, 131, 0.3);
+    }
+
+    #sidebar ul li.active > a, a[aria-expanded="false"] {
+        background-color: rgba(131, 131, 131, 0.2);
+    }
+
+
+
+a[data-toggle="collapse"] {
+    position: relative;
+}
+
+a[aria-expanded="false"]::before, a[aria-expanded="true"]::before {
+    content: '|';
+    display: block;
+    position: absolute;
+    right: 20px;
+    font-size: 1.1em;
+}
+
+a[aria-expanded="true"]::before {
+    content: '|';
+}
+
+
+ul ul a {
+    padding-left: 30px !important;
+}
+
+ul.CTAs {
+    padding: 20px;
+}
+
+    ul.CTAs a {
+        text-align: center;
+        display: block;
+        border-radius: 5px;
+        margin-bottom: 5px;
+    }
+
+
+
+/* ---------------------------------------------------
+    CONTENT STYLE
+----------------------------------------------------- */
+#content {
+    min-height: 100vh;
+    width: 85%;
+    transition: all 0.3s;
+}
+
+/* ---------------------------------------------------
+    MEDIAQUERIES
+----------------------------------------------------- */
+@media (max-width: 768px) {
+    #sidebar {        
+        margin-left: -250px;
+    }
+        #sidebar.active {
+            margin-left: 0;
+        }
+
+
+    #sidebarCollapse span {
+        display: none;
+    }
+}
