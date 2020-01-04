@@ -19,9 +19,172 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OWLStarter", "OWLStarter", 
 		OWLStarter\OWLStarter.ino = OWLStarter\OWLStarter.ino
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "data", "data", "{0586AFF7-C5E7-4ED0-9719-B2D3750DF097}"
+	ProjectSection(SolutionItems) = preProject
+		OWLOS\data\7ZiptoGZIP.bat = OWLOS\data\7ZiptoGZIP.bat
+		OWLOS\data\actuatorindicator.js = OWLOS\data\actuatorindicator.js
+		OWLOS\data\actuatorindicator.js.gz = OWLOS\data\actuatorindicator.js.gz
+		OWLOS\data\baseindicator.js = OWLOS\data\baseindicator.js
+		OWLOS\data\baseindicator.js.gz = OWLOS\data\baseindicator.js.gz
+		OWLOS\data\boot.js = OWLOS\data\boot.js
+		OWLOS\data\boot.js.gz = OWLOS\data\boot.js.gz
+		OWLOS\data\bootstrap.min.css = OWLOS\data\bootstrap.min.css
+		OWLOS\data\bootstrap.min.css.gz = OWLOS\data\bootstrap.min.css.gz
+		OWLOS\data\bootstrap.min.js = OWLOS\data\bootstrap.min.js
+		OWLOS\data\bootstrap.min.js.gz = OWLOS\data\bootstrap.min.js.gz
+		OWLOS\data\client.js = OWLOS\data\client.js
+		OWLOS\data\client.js.gz = OWLOS\data\client.js.gz
+		OWLOS\data\custom.css = OWLOS\data\custom.css
+		OWLOS\data\custom.css.gz = OWLOS\data\custom.css.gz
+		OWLOS\data\dataTables.min.css = OWLOS\data\dataTables.min.css
+		OWLOS\data\dataTables.min.css.gz = OWLOS\data\dataTables.min.css.gz
+		OWLOS\data\dataTables.min.js = OWLOS\data\dataTables.min.js
+		OWLOS\data\dataTables.min.js.gz = OWLOS\data\dataTables.min.js.gz
+		OWLOS\data\devices.js = OWLOS\data\devices.js
+		OWLOS\data\devices.js.gz = OWLOS\data\devices.js.gz
+		OWLOS\data\devicesproperties.js = OWLOS\data\devicesproperties.js
+		OWLOS\data\devicesproperties.js.gz = OWLOS\data\devicesproperties.js.gz
+		OWLOS\data\draw.js = OWLOS\data\draw.js
+		OWLOS\data\draw.js.gz = OWLOS\data\draw.js.gz
+		OWLOS\data\files.js = OWLOS\data\files.js
+		OWLOS\data\files.js.gz = OWLOS\data\files.js.gz
+		OWLOS\data\graphindicator.js = OWLOS\data\graphindicator.js
+		OWLOS\data\graphindicator.js.gz = OWLOS\data\graphindicator.js.gz
+		OWLOS\data\index.html = OWLOS\data\index.html
+		OWLOS\data\index.html.gz = OWLOS\data\index.html.gz
+		OWLOS\data\index.js = OWLOS\data\index.js
+		OWLOS\data\index.js.gz = OWLOS\data\index.js.gz
+		OWLOS\data\jquery.dataTables.min.js = OWLOS\data\jquery.dataTables.min.js
+		OWLOS\data\jquery.dataTables.min.js.gz = OWLOS\data\jquery.dataTables.min.js.gz
+		OWLOS\data\jquery.min.js = OWLOS\data\jquery.min.js
+		OWLOS\data\jquery.min.js.gz = OWLOS\data\jquery.min.js.gz
+		OWLOS\data\language.js = OWLOS\data\language.js
+		OWLOS\data\language.js.gz = OWLOS\data\language.js.gz
+		OWLOS\data\lcdindicator.js = OWLOS\data\lcdindicator.js
+		OWLOS\data\lcdindicator.js.gz = OWLOS\data\lcdindicator.js.gz
+		OWLOS\data\lightindicator.js = OWLOS\data\lightindicator.js
+		OWLOS\data\lightindicator.js.gz = OWLOS\data\lightindicator.js.gz
+		OWLOS\data\motionindicator.js = OWLOS\data\motionindicator.js
+		OWLOS\data\motionindicator.js.gz = OWLOS\data\motionindicator.js.gz
+		OWLOS\data\popper.min.js = OWLOS\data\popper.min.js
+		OWLOS\data\popper.min.js.gz = OWLOS\data\popper.min.js.gz
+		OWLOS\data\radialindicator.js = OWLOS\data\radialindicator.js
+		OWLOS\data\radialindicator.js.gz = OWLOS\data\radialindicator.js.gz
+		OWLOS\data\smokeindicator.js = OWLOS\data\smokeindicator.js
+		OWLOS\data\smokeindicator.js.gz = OWLOS\data\smokeindicator.js.gz
+		OWLOS\data\speech.js = OWLOS\data\speech.js
+		OWLOS\data\speech.js.gz = OWLOS\data\speech.js.gz
+		OWLOS\data\stepperindicator.js = OWLOS\data\stepperindicator.js
+		OWLOS\data\stepperindicator.js.gz = OWLOS\data\stepperindicator.js.gz
+		OWLOS\data\tableindicator.js = OWLOS\data\tableindicator.js
+		OWLOS\data\tableindicator.js.gz = OWLOS\data\tableindicator.js.gz
+		OWLOS\data\temperatureindicator.js = OWLOS\data\temperatureindicator.js
+		OWLOS\data\temperatureindicator.js.gz = OWLOS\data\temperatureindicator.js.gz
+		OWLOS\data\updateinfo.html = OWLOS\data\updateinfo.html
+		OWLOS\data\webproperties.js = OWLOS\data\webproperties.js
+		OWLOS\data\webproperties.js.gz = OWLOS\data\webproperties.js.gz
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libraries", "libraries", "{00D2E15C-87C3-4EC5-A8DC-2213DEE378DD}"
+	ProjectSection(SolutionItems) = preProject
+		OWLOS\libraries\Adafruit_Sensor-master.zip = OWLOS\libraries\Adafruit_Sensor-master.zip
+		OWLOS\libraries\DHT-sensor-library-master.zip = OWLOS\libraries\DHT-sensor-library-master.zip
+		OWLOS\libraries\LiquidCrystal_I2C-master.zip = OWLOS\libraries\LiquidCrystal_I2C-master.zip
+		OWLOS\libraries\OneWire.zip = OWLOS\libraries\OneWire.zip
+		OWLOS\libraries\README.md = OWLOS\libraries\README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "openssl", "openssl", "{5025BA70-8AFB-434A-88E8-1CD27C36F30B}"
+	ProjectSection(SolutionItems) = preProject
+		OWLOS\openssl\opensslcommand.txt = OWLOS\openssl\opensslcommand.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6C1C1756-D7E4-4399-AF22-7D43AAE2F9E7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "poligon", "poligon", "{E41163AD-4A6A-4628-9CA9-558A5CA10032}"
+	ProjectSection(SolutionItems) = preProject
+		OWLOS\data\poligone\bootstrap.min.css = OWLOS\data\poligone\bootstrap.min.css
+		OWLOS\data\poligone\bootstrap.min.js = OWLOS\data\poligone\bootstrap.min.js
+		OWLOS\data\poligone\bootstrap.min.light.css = OWLOS\data\poligone\bootstrap.min.light.css
+		OWLOS\data\poligone\devicesproperties.js = OWLOS\data\poligone\devicesproperties.js
+		OWLOS\data\poligone\gaugemeter.js = OWLOS\data\poligone\gaugemeter.js
+		OWLOS\data\poligone\index.html = OWLOS\data\poligone\index.html
+		OWLOS\data\poligone\index.js = OWLOS\data\poligone\index.js
+		OWLOS\data\poligone\jquery.min.js = OWLOS\data\poligone\jquery.min.js
+		OWLOS\data\poligone\unitproperties.js = OWLOS\data\poligone\unitproperties.js
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "devices", "devices", "{E4AC87BE-1B74-436F-AC4C-D9D9342EA354}"
+	ProjectSection(SolutionItems) = preProject
+		OWLOS\src\devices\ActuatorDevice.cpp = OWLOS\src\devices\ActuatorDevice.cpp
+		OWLOS\src\devices\ActuatorDevice.h = OWLOS\src\devices\ActuatorDevice.h
+		OWLOS\src\devices\BaseDevice.cpp = OWLOS\src\devices\BaseDevice.cpp
+		OWLOS\src\devices\BaseDevice.h = OWLOS\src\devices\BaseDevice.h
+		OWLOS\src\devices\DHTDevice.cpp = OWLOS\src\devices\DHTDevice.cpp
+		OWLOS\src\devices\DHTDevice.h = OWLOS\src\devices\DHTDevice.h
+		OWLOS\src\devices\LCDDevice.cpp = OWLOS\src\devices\LCDDevice.cpp
+		OWLOS\src\devices\LCDDevice.h = OWLOS\src\devices\LCDDevice.h
+		OWLOS\src\devices\LightDevice.cpp = OWLOS\src\devices\LightDevice.cpp
+		OWLOS\src\devices\LightDevice.h = OWLOS\src\devices\LightDevice.h
+		OWLOS\src\devices\MotionDevice.cpp = OWLOS\src\devices\MotionDevice.cpp
+		OWLOS\src\devices\MotionDevice.h = OWLOS\src\devices\MotionDevice.h
+		OWLOS\src\devices\OptoDevice.cpp = OWLOS\src\devices\OptoDevice.cpp
+		OWLOS\src\devices\OptoDevice.h = OWLOS\src\devices\OptoDevice.h
+		OWLOS\src\devices\SensorDevice.cpp = OWLOS\src\devices\SensorDevice.cpp
+		OWLOS\src\devices\SensorDevice.h = OWLOS\src\devices\SensorDevice.h
+		OWLOS\src\devices\SmokeDevice.cpp = OWLOS\src\devices\SmokeDevice.cpp
+		OWLOS\src\devices\SmokeDevice.h = OWLOS\src\devices\SmokeDevice.h
+		OWLOS\src\devices\StepperDevice.cpp = OWLOS\src\devices\StepperDevice.cpp
+		OWLOS\src\devices\StepperDevice.h = OWLOS\src\devices\StepperDevice.h
+		OWLOS\src\devices\ValveDevice.cpp = OWLOS\src\devices\ValveDevice.cpp
+		OWLOS\src\devices\ValveDevice.h = OWLOS\src\devices\ValveDevice.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "managers", "managers", "{B8F9C798-24FF-4E00-B903-228234AAE229}"
+	ProjectSection(SolutionItems) = preProject
+		OWLOS\src\managers\DeviceManager.cpp = OWLOS\src\managers\DeviceManager.cpp
+		OWLOS\src\managers\DeviceManager.h = OWLOS\src\managers\DeviceManager.h
+		OWLOS\src\managers\FileManager.cpp = OWLOS\src\managers\FileManager.cpp
+		OWLOS\src\managers\FileManager.h = OWLOS\src\managers\FileManager.h
+		OWLOS\src\managers\OTAManager.cpp = OWLOS\src\managers\OTAManager.cpp
+		OWLOS\src\managers\OTAManager.h = OWLOS\src\managers\OTAManager.h
+		OWLOS\src\managers\TransportManager.cpp = OWLOS\src\managers\TransportManager.cpp
+		OWLOS\src\managers\TransportManager.h = OWLOS\src\managers\TransportManager.h
+		OWLOS\src\managers\UpdateManager.cpp = OWLOS\src\managers\UpdateManager.cpp
+		OWLOS\src\managers\UpdateManager.h = OWLOS\src\managers\UpdateManager.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "transports", "transports", "{6A416E69-AA4F-41A2-9C9E-6FD7D55E306A}"
+	ProjectSection(SolutionItems) = preProject
+		OWLOS\src\transports\MQTTClient.cpp = OWLOS\src\transports\MQTTClient.cpp
+		OWLOS\src\transports\MQTTClient.h = OWLOS\src\transports\MQTTClient.h
+		OWLOS\src\transports\WebClient.cpp = OWLOS\src\transports\WebClient.cpp
+		OWLOS\src\transports\WebClient.h = OWLOS\src\transports\WebClient.h
+		OWLOS\src\transports\WebServer.cpp = OWLOS\src\transports\WebServer.cpp
+		OWLOS\src\transports\WebServer.h = OWLOS\src\transports\WebServer.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "utils", "utils", "{9C6397B1-FCB3-4718-A913-F52E5BE372EE}"
+	ProjectSection(SolutionItems) = preProject
+		OWLOS\src\utils\GPIOMap.h = OWLOS\src\utils\GPIOMap.h
+		OWLOS\src\utils\Utils.cpp = OWLOS\src\utils\Utils.cpp
+		OWLOS\src\utils\Utils.h = OWLOS\src\utils\Utils.h
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0586AFF7-C5E7-4ED0-9719-B2D3750DF097} = {CEAB6A89-5A7E-4F78-8DC9-903F3DCA2ACE}
+		{00D2E15C-87C3-4EC5-A8DC-2213DEE378DD} = {CEAB6A89-5A7E-4F78-8DC9-903F3DCA2ACE}
+		{5025BA70-8AFB-434A-88E8-1CD27C36F30B} = {CEAB6A89-5A7E-4F78-8DC9-903F3DCA2ACE}
+		{6C1C1756-D7E4-4399-AF22-7D43AAE2F9E7} = {CEAB6A89-5A7E-4F78-8DC9-903F3DCA2ACE}
+		{E41163AD-4A6A-4628-9CA9-558A5CA10032} = {0586AFF7-C5E7-4ED0-9719-B2D3750DF097}
+		{E4AC87BE-1B74-436F-AC4C-D9D9342EA354} = {6C1C1756-D7E4-4399-AF22-7D43AAE2F9E7}
+		{B8F9C798-24FF-4E00-B903-228234AAE229} = {6C1C1756-D7E4-4399-AF22-7D43AAE2F9E7}
+		{6A416E69-AA4F-41A2-9C9E-6FD7D55E306A} = {6C1C1756-D7E4-4399-AF22-7D43AAE2F9E7}
+		{9C6397B1-FCB3-4718-A913-F52E5BE372EE} = {6C1C1756-D7E4-4399-AF22-7D43AAE2F9E7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9A146DA9-5CF0-425C-A7F4-C00482E8A430}
