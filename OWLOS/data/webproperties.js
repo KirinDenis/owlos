@@ -128,6 +128,41 @@ var WebProperties = {
                 webProp = JSON.parse(unescape(webPropJson));
                 //check 
                 if (this.getDashboardById("main") != undefined) {
+
+                    var tempNodes = [];
+                    for (var nodeKey in webProp.nodes) {
+                        
+                        var tempNode = {
+                            id: webProp.nodes[nodeKey].id,
+                            host: webProp.nodes[nodeKey].host,
+                            alies: webProp.nodes[nodeKey].alies,
+                            recievedDevicesProperties: "",
+                            _networkStatus: NET_OFFLINE,
+                            devices: [],
+                            networkStatusListners: [], //подписчики на изменение сетевого состояния                         
+                            set networkStatus(networkStatus) { //для контроля изменения _networkStatus, для оповещения подписчиков
+                                this._networkStatus = networkStatus; //сохранить новое сетевое состояние
+                                for (var k = 0; k < this.networkStatusListners.length; k++) { //оповестить всех подписчиков
+                                    this.networkStatusListners[k].event(this.networkStatusListners[k].sender, this);
+                                }
+                            },
+
+                            get networkStatus() {//получить текущее сетевое состояние
+                                return this._networkStatus;
+                            },
+
+                            addNetworkStatusListner(_event, _sender) { //для добавления нового подписчика(так же как и addValueListner)                                
+                                //check event listner and setup current network status 
+                                try { _event(_sender, this); } catch {
+                                    return; // don't add bad listner
+                                }
+                                this.networkStatusListners.push(event = { event: _event, sender: _sender });
+                            }
+                        }
+                        tempNodes.push(tempNode);
+                    }
+                    webProp.nodes = tempNodes;
+
                     this.onChange();
                     result = true;
                 }
@@ -152,44 +187,6 @@ var WebProperties = {
             this.addNode("http://81.95.178.177:8084/", "home_1");
             this.addNode("http://192.168.1.11:8084/", "home_2");
 
-            /* TEST
-            this.addNode("http://176.100.2.105:8085/", "solomon_11");
-            this.addNode("http://176.100.2.105:8086/", "solomon_21");
-            this.addNode("http://81.95.178.177:8084/", "home_11");
-            this.addNode("http://192.168.1.11:8084/", "home_21");
-            this.addNode("http://176.100.2.105:8085/", "solomon_12");
-            this.addNode("http://176.100.2.105:8086/", "solomon_22");
-            this.addNode("http://81.95.178.177:8084/", "home_12");
-            this.addNode("http://192.168.1.11:8084/", "home_22");
-            this.addNode("http://176.100.2.105:8085/", "solomon_13");
-            this.addNode("http://176.100.2.105:8086/", "solomon_23");
-            this.addNode("http://81.95.178.177:8084/", "home_13");
-            this.addNode("http://192.168.1.11:8084/", "home_23");
-            this.addNode("http://176.100.2.105:8085/", "solomon_14");
-            this.addNode("http://176.100.2.105:8086/", "solomon_24");
-            this.addNode("http://81.95.178.177:8084/", "home_15");
-            this.addNode("http://192.168.1.11:8084/", "home_25");
-            this.addNode("http://176.100.2.105:8085/", "solomon_16");
-            this.addNode("http://176.100.2.105:8086/", "solomon_26");
-            this.addNode("http://81.95.178.177:8084/", "home_17");
-            this.addNode("http://192.168.1.11:8084/", "home_27");
-            this.addNode("http://176.100.2.105:8085/", "solomon_18");
-            this.addNode("http://176.100.2.105:8086/", "solomon_28");
-            this.addNode("http://81.95.178.177:8084/", "home_19");
-            this.addNode("http://192.168.1.11:8084/", "home_29");
-            this.addNode("http://176.100.2.105:8085/", "solomon_1A");
-            this.addNode("http://176.100.2.105:8086/", "solomon_2A");
-            this.addNode("http://81.95.178.177:8084/", "home_1A");
-            this.addNode("http://192.168.1.11:8084/", "home_2A");
-            this.addNode("http://176.100.2.105:8085/", "solomon_1B");
-            this.addNode("http://176.100.2.105:8086/", "solomon_2B");
-            this.addNode("http://81.95.178.177:8084/", "home_1B");
-            this.addNode("http://192.168.1.11:8084/", "home_2B");
-            this.addNode("http://176.100.2.105:8085/", "solomon_1C");
-            this.addNode("http://176.100.2.105:8086/", "solomon_2C");
-            this.addNode("http://81.95.178.177:8084/", "home_1C");
-            this.addNode("http://192.168.1.11:8084/", "home_2C");
-            */
             result = this.save();
 
         }
@@ -212,7 +209,7 @@ var WebProperties = {
                 host: webProp.nodes[node].host,
                 alies: webProp.nodes[node].alies,
                 recievedDevicesProperties: "",
-                networkStatus: NET_OFFLINE,
+                _networkStatus: NET_OFFLINE,
                 devices: []
 
             }

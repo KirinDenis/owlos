@@ -23,93 +23,75 @@
                                 <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" aria-controls="home" aria-selected="true">Home</a>
                             </li>
                             <!--
-    <li class="nav-item">
-        <a class="nav-link" id="unit-tab" data-toggle="tab" href="#unit" role="tab" aria-controls="unit" aria-selected="false">Unit</a>
-    </li>
-        -->
+                            <li class="nav-item">
+                                <a class="nav-link" id="unit-tab" data-toggle="tab" href="#unit" role="tab" aria-controls="unit" aria-selected="false">Unit</a>
+                            </li>
+                                -->
                             <li class="nav-item">
                                 <a class="nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false">Devices</a>
                             </li>
                             <!--
-    <li class="nav-item">
-        <a class="nav-link" id="files-tab" data-toggle="tab" href="#files" role="tab" aria-controls="files" aria-selected="false">Files</a>
-    </li>
-                    -->
+                            <li class="nav-item">
+                                <a class="nav-link" id="files-tab" data-toggle="tab" href="#files" role="tab" aria-controls="files" aria-selected="false">Files</a>
+                            </li>
+                                            -->
                             <li class="nav-item">
                                 <a class="nav-link" id="console-tab" data-toggle="tab" href="#console" role="tab" aria-controls="console" aria-selected="false">Console</a>
                             </li>
                         </ul>
-        </div>
-        <form class="form-inline my-2 my-lg-0">
-            <div id="statusesPanel">
-            </div>
-            <div id="refreshButtonsPanel">
-                <span id="autorefreshbutton" class="badge badge-default" data="off"></span>
-                <span id="refreshbutton" class="badge badge-default"></span>
-            </div>
+                    </div>
+                    <form class="form-inline my-2 my-lg-0">
+                        <div id="statusesPanel">
+                        </div>
+                        <div id="refreshButtonsPanel">
+                            <span id="autorefreshbutton" class="badge badge-default" data="off"></span>
+                            <span id="refreshbutton" class="badge badge-default"></span>
+                        </div>
 
-        </form>
-    </nav>
+                    </form>
+                </nav>
 
-    <div class="tab-content" id="mainTabContent">
-        <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
-            <div class="row devicesIndicatorsPanel" id="devicesIndicatorsPanel">
-            </div>
-            <div class="col-sm-12" id="basicPanel">
-            </div>
-        </div>
-        <div class="tab-pane fade" id="unit" role="tabpanel" aria-labelledby="unit-tab">
-            <div class="btn-group" role="group" aria-label="unit anchorses">
-                <div id="unitAnchors"> </div>
-            </div>
-            <div id="unitMainPropertiesPanel" class="row">
-            </div>
+                <div class="tab-content" id="mainTabContent">
+                    <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                        <div class="row devicesIndicatorsPanel" id="devicesIndicatorsPanel">
+                        </div>
+                        <div class="col-sm-12" id="basicPanel">
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
 
-            <div id="unitPanel" class="row">
-            </div>
-        </div>
-        <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+                        <div id="devicesAnchors"> </div>
 
-                <div id="devicesAnchors"> </div>
+                        <div id="devicesPanelHolder" class="container-fluid">
+                            <div class="wrapper row">
+                                <!-- Sidebar Holder -->
+                                <nav id="sidebar" class="bs-docs-sidebar">
 
-            <div id="devicesPanelHolder" class="container-fluid">
-                <div class="wrapper row">
-                    <!-- Sidebar Holder -->
-                            <nav id="sidebar" class="bs-docs-sidebar">
-
-                                <ul id="nodesSideBar" class="list-unstyled components"></ul>
-
-                            </nav>
-
-
-
-                            <div id="content">
-                                <nav class="navbar bg-primary">
-
-                                    <form class="form-inline my-2 my-lg-0">
-                                        <button type="button" id="sidebarCollapse" class="btn btn-secondary btn-sm">
-                                            <span>|<</span>
-                                        </button>
-                                        <div id="nodeStatusPanel"></div>
-                                    </form>
+                                    <ul id="nodesSideBar" class="list-unstyled components"></ul>
 
                                 </nav>
 
-                                <div id="devicesPanel">
+
+
+                                <div id="content">
+                                    <nav class="navbar bg-primary">
+
+                                        <form class="form-inline my-2 my-lg-0">
+                                            <button type="button" id="sidebarCollapse" class="btn btn-secondary btn-sm">
+                                                <span>|<</span>
+                                            </button>
+                                            <div id="nodeStatusPanel"></div>
+                                        </form>
+
+                                    </nav>
+
+                                    <div id="devicesPanel">
+
+                                    </div>
 
                                 </div>
 
-                            </div>
 
-
-</div>
-                        </div>
-                        <div class="tab-pane fade" id="files" role="tabpanel" aria-labelledby="files-tab">
-                            <div class="btn-group" role="group" aria-label="files anchorses">
-                                <div id="filesAnchors">
-                                </div>
-                            </div>
-                            <div id="filesPanel" class="row">
                             </div>
                         </div>
                         <div class="tab-pane fade" id="console" role="tabpanel" aria-labelledby="console-tab">
@@ -138,8 +120,8 @@
     <script>
         boot();
 
-        
-        
+
+
 
     </script>
 </body>

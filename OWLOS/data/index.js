@@ -114,11 +114,11 @@ function refresh() {
     //renderDevicesProperties();
 
     addToLogNL("get files...");
-    renderFilesList();
+  //  renderFilesList();
 
     //  renderMainPageDevices();
 
-    renderMainPageUnit();
+  //  renderMainPageUnit();
 }
 
 function renderMainPageDevices() {
@@ -807,11 +807,12 @@ function getStatusIndicator(id, text) {
 }
 
 function visualStatuses() {
+    /*
     var statusesPanel = document.getElementById("statusesPanel");
     if (statusesPanel != null) {
 
         var onlinePanel = getStatusIndicator("onlineStatus", "Online");
-        devices.addNetworkStatusListner(onOnlineStatusChange, onlinePanel);
+        //devices.addNetworkStatusListner(onOnlineStatusChange, onlinePanel);
 
         var wifiDevice = devices.getDeviceById("wifi");
         var networkDevice = devices.getDeviceById("network");
@@ -834,6 +835,7 @@ function visualStatuses() {
         networkDevice.otaavailable.addValueListner(onOTAStatusChange, OTAPanel);
 
     }
+    */
 }
 
 function onOnlineStatusChange(sender, devices) {

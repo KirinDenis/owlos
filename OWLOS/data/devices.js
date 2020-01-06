@@ -20,7 +20,8 @@ var devicesObjectsList;
 function _deviceLoaded(sender, device) {
     if (device._new) {
 
-        var nodeSubmenuUl = document.getElementById(device._alies +  "submenu");
+        var nodeSubmenuUl = document.getElementById(device._alies + "submenu");
+        if (nodeSubmenuUl == undefined) return;
         var deviceLi = nodeSubmenuUl.appendChild(document.createElement("li"));
         deviceLi.className = "nav-item";
         var deviceAhref = deviceLi.appendChild(document.createElement("a"));
@@ -73,108 +74,129 @@ function _deviceLoaded(sender, device) {
 }
 
 var firstDevice = true;
-var runOnce = false;
+
 function deviceOnWebConfigChange(sender, webProperties) {
 
     
     if (webProp.nodes.length == 0) return;
-    if (runOnce) return;
-    
+        
     var nodesSideBar = document.getElementById("nodesSideBar");
     nodesSideBar.style.background = theme.primary;
 
-    var nodeNavItem = nodesSideBar.appendChild(document.createElement("li"));
-    nodeNavItem.className = "nav-item";
+    //add addNodeNavItem first --------------------------------------------------
+    if (document.getElementById("addNodeNavItem") == undefined) {
+
+        var nodeNavItem = nodesSideBar.appendChild(document.createElement("li"));
+        nodeNavItem.className = "nav-item";
+        nodeNavItem.id = "addNodeNavItem";
+        var nodeHRef = nodeNavItem.appendChild(document.createElement("a"));
+        nodeHRef.className = "nav-link";
+        nodeHRef.parentLi = nodeLi;
+        nodeHRef.style.color = theme.success;
+        nodeHRef.setAttribute("data-toggle", "tab");
+        nodeHRef.onclick = addNodeClick;
+        nodeHRef.innerHTML = "<b>" + getLang("addnode") + "</b>";
+        nodeHRef.href = "#home";
+    }
 
 
-    var nodeHRef = nodeNavItem.appendChild(document.createElement("a"));
-    nodeHRef.className = "nav-link";
-    nodeHRef.parentLi = nodeLi;
-    nodeHRef.style.color = theme.success;
-    nodeHRef.setAttribute("data-toggle", "tab");
-    nodeHRef.onclick = addNodeClick;
-    nodeHRef.innerHTML = "<b>" + getLang("addnode") + "</b>";
-    nodeHRef.href = "#home";
+    for (var nodeKey in webProp.nodes) {
+        var node = webProp.nodes[nodeKey];
+        if (document.getElementById("nodeNavItem" + node.alies) == undefined) {
+
+            var nodeLi = nodesSideBar.appendChild(document.createElement("li"));
+            nodeLi.id = "nodeNavItem" + node.alies;
+            nodeLi.node = node;
+
+            if (firstDevice) {
+                //   nodeLi.className = "active";
+                nodesSideBar.activeLi = nodeLi;
+
+            }
+            var nodeAhref = nodeLi.appendChild(document.createElement("a"));
+
+            nodeAhref.href = "#" + node.alies + "submenu";
+
+            nodeAhref.setAttribute("data-toggle", "collapse");
+            nodeAhref.setAttribute("aria-expanded", "false");
+            nodeAhref.innerHTML = "<b>" + node.alies + "</b>";
+            nodeAhref.onclick = deviceAnchorClick;
+            nodeAhref.parentLi = nodeLi;
+            nodeAhref.node = node;
+            node.addNetworkStatusListner(nodeOnNetworkChange, nodeAhref);
+            var nodeSubmenuUl = nodeLi.appendChild(document.createElement("ul"));
+
+            nodeLi.nodeSubmenuUl = nodeSubmenuUl;
+            nodeSubmenuUl.className = "collapse list-unstyled";
+            nodeSubmenuUl.id = node.alies + "submenu";
 
 
-    for (var node in webProp.nodes) {
-        var nodeLi = nodesSideBar.appendChild(document.createElement("li"));  
-        nodeLi.node = webProp.nodes[node];
-       
-        if (firstDevice) {
-         //   nodeLi.className = "active";
-            nodesSideBar.activeLi = nodeLi;
+            //Add device submenuitem ----------------
 
-        }
-        var nodeAhref = nodeLi.appendChild(document.createElement("a"));
-       
-        nodeAhref.href = "#" + webProp.nodes[node].alies + "submenu";
-        
-        nodeAhref.setAttribute("data-toggle", "collapse");        
-        nodeAhref.setAttribute("aria-expanded", "false");
-        nodeAhref.innerHTML = "<b>" + webProp.nodes[node].alies + "</b>";
-        nodeAhref.onclick = deviceAnchorClick;
-        nodeAhref.parentLi = nodeLi;
-        nodeAhref.node = webProp.nodes[node];
-        webProp.nodes[node].addNetworkStatusListner(nodeOnNetworkChange, nodeAhref);
-        var nodeSubmenuUl = nodeLi.appendChild(document.createElement("ul"));
-        
-        nodeLi.nodeSubmenuUl = nodeSubmenuUl;
-        nodeSubmenuUl.className = "collapse list-unstyled";
-        nodeSubmenuUl.id = webProp.nodes[node].alies + "submenu";
-       
+            var deviceNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
+            deviceNavItem.className = "nav-item";
+            var deviceHRef = deviceNavItem.appendChild(document.createElement("a"));
+            deviceHRef.className = "nav-link";
+            deviceHRef.parentLi = nodeLi;
+            deviceHRef.style.color = theme.success;
+            deviceHRef.setAttribute("data-toggle", "tab");
+            deviceHRef.onclick = addDeviceClick;
+            deviceHRef.innerText = getLang("adddevice");
+            deviceHRef.href = "#home";
 
-        //Add device submenuitem ----------------
+            if (firstDevice) {
+                var devicesPanel = document.getElementById("devicesPanel");
+                devicesPanel = devicesPanel.appendChild(document.createElement("div"));
+                devicesPanel.id = "devicesPanelFade";
+                devicesPanel.className = "tab-content col-md-12";
+            }
+            
 
-        var deviceNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
-        deviceNavItem.className = "nav-item";
-        var deviceHRef = deviceNavItem.appendChild(document.createElement("a"));
-        deviceHRef.className = "nav-link";
-        deviceHRef.parentLi = nodeLi;
-        deviceHRef.style.color = theme.success;
-        deviceHRef.setAttribute("data-toggle", "tab");
-        deviceHRef.onclick = addDeviceClick;
-        deviceHRef.innerText = getLang("adddevice");
-        deviceHRef.href = "#home";
+            //Node Tab panel ----------------------
+            var devicesPanel = document.getElementById("devicesPanelFade");
+            var div = devicesPanel.appendChild(document.createElement('div'));
 
-        //Add files submenuitem ------------------
-
-        var filesNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
-        filesNavItem.className = "nav-item";
-        var filesHRef = filesNavItem.appendChild(document.createElement("a"));
-        filesHRef.className = "nav-link";
-        filesHRef.parentLi = nodeLi;
-        filesHRef.style.color = theme.warning;
-        filesHRef.setAttribute("data-toggle", "tab");
-        filesHRef.onclick = addDeviceClick;
-        filesHRef.innerText = getLang("files");
-        filesHRef.href = "#home";
-
-
-        if (firstDevice) {
-            var devicesPanel = document.getElementById("devicesPanel");
-            devicesPanel = devicesPanel.appendChild(document.createElement("div"));
-            devicesPanel.id = "devicesPanelFade";
-            devicesPanel.className = "tab-content col-md-12";
-        }
-
-        //Node Tab panel ----------------------
-        var devicesPanel = document.getElementById("devicesPanelFade");
-        var div = devicesPanel.appendChild(document.createElement('div'));
-        
             // div.className = "col-md-" + this.size + " devicediv tab-pane fade";
             div.className = "devicediv tab-pane fade";
             if (firstDevice) {
                 div.className += " active show";
                 firstDevice = false;
             }
-        
-     
-        div.id = webProp.nodes[node].alies + "fadepanel";
-        nodeAhref.nodefadepanel = div;
-        makeNodeFadePanel(div, node);         
+            div.id = node.alies + "fadepanel";
+            nodeAhref.nodefadepanel = div;
+            makeNodeFadePanel(div, node);
+
+            //Add files submenuitem ------------------
+
+            var filesNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
+            filesNavItem.className = "nav-item";
+            var filesHRef = filesNavItem.appendChild(document.createElement("a"));
+            filesHRef.className = "nav-link";
+            filesHRef.parentLi = nodeLi;
+            filesHRef.style.color = theme.warning;
+            filesHRef.setAttribute("data-toggle", "tab");
+            filesHRef.onclick = deviceAnchorClick;
+            filesHRef.innerText = getLang("files");
+            filesHRef.href = "#" +  node.alies + "filesfadepanel";
+
+
+            //var filesAnchors = document.getElementById("filesAnchors");
+            //new files tab ----------------
+            var devicesPanel = document.getElementById("devicesPanelFade");
+            var filesDiv = devicesPanel.appendChild(document.createElement('div'));
+
+            // div.className = "col-md-" + this.size + " devicediv tab-pane fade";
+            filesDiv.className = "devicediv tab-pane fade";
+            filesDiv.id = node.alies + "filesfadepanel";
+
+            
+            
+            filesHRef.filesList = new FilesList(filesDiv, node);
+            
+
+        }
     }
-    runOnce = true;
+
 }
 
 
@@ -247,26 +269,26 @@ function makeNodeFadePanel(basicPanel, node) {
     //var div = footerContainer.appendChild(document.createElement('div'));
 
 
-    var wifiDevice = devices.getDeviceById("wifi", webProp.nodes[node].host);
-    var espDevice = devices.getDeviceById("esp", webProp.nodes[node].host);
-    var networkDevice = devices.getDeviceById("network", webProp.nodes[node].host);
+    var wifiDevice = devices.getDeviceById("wifi", node.host);
+    var espDevice = devices.getDeviceById("esp", node.host);
+    var networkDevice = devices.getDeviceById("network", node.host);
 
     //    if ((wifiDevice == undefined) || (espDevice == undefined) || (networkDevice == undefined)) continue;;
 
 
 
     //ESP<>Unit panel --------------------------------------------------------------------------------------------------
-    if (document.getElementById("unitPropPanel" + webProp.nodes[node].host) == null) {
+    if (document.getElementById("unitPropPanel" + node.host) == null) {
         var unitPropPanel = basicPanel.appendChild(document.createElement('div'));
-        unitPropPanel.id = "unitPropPanel" + webProp.nodes[node].host;
+        unitPropPanel.id = "unitPropPanel" + node.host;
         unitPropPanel.className = "col-md-12";
         var infoDiv = unitPropPanel.appendChild(document.createElement('div'));
         infoDiv.className = "card bg-light mb-3";
         var headerDiv = infoDiv.appendChild(document.createElement('div'));
         headerDiv.className = "card-header";
-        headerDiv.innerText = getLang("unit") + ": " + webProp.nodes[node].host;
+        headerDiv.innerText = getLang("unit") + ": " + node.host;
         var dataDiv = infoDiv.appendChild(document.createElement('div'));
-        dataDiv.id = "unitPropPanelDataDiv" + webProp.nodes[node].host;
+        dataDiv.id = "unitPropPanelDataDiv" + node.host;
         dataDiv.className = "card-body";
         return;
 
@@ -286,7 +308,7 @@ function makeNodeFadePanel(basicPanel, node) {
         resetButton.setAttribute("data-toggle", "modal");
         resetButton.setAttribute("data-target", "#resetModal");
         resetButton.value = getLang("reset");
-        resetButton.deviceHost = webProp.nodes[node].host;
+        resetButton.deviceHost = node.host;
         resetButton.onclick = modalResetClick;
 
 
@@ -297,7 +319,7 @@ function makeNodeFadePanel(basicPanel, node) {
 
 
         //Update watcher panel 
-        var updateWatcherId = "updateWatcher" + webProp.nodes[node].host;
+        var updateWatcherId = "updateWatcher" + node.host;
         var updateWatcherDiv = document.getElementById(updateWatcherId);
         if (updateWatcherDiv == null) {
             updateWatcherDiv = dataDiv.appendChild(document.createElement('div'));
@@ -307,7 +329,7 @@ function makeNodeFadePanel(basicPanel, node) {
             addSpaceView(dataDiv, "9");
 
             var updateuiButton = dataDiv.appendChild(document.createElement('input'));
-            updateuiButton.id = "updateuibutton" + webProp.nodes[node].host;
+            updateuiButton.id = "updateuibutton" + node.host;
             updateuiButton.className = "btn btn-success btn-sm";
             updateuiButton.type = "button";
             updateuiButton.setAttribute("data-toggle", "modal");
@@ -318,7 +340,7 @@ function makeNodeFadePanel(basicPanel, node) {
             addSpaceView(dataDiv, "8");
 
             var updatefirmwareButton = dataDiv.appendChild(document.createElement('input'));
-            updatefirmwareButton.id = "updatefirmwarebutton" + webProp.nodes[node].host;
+            updatefirmwareButton.id = "updatefirmwarebutton" + node.host;
             updatefirmwareButton.className = "btn btn-success btn-sm";
             updatefirmwareButton.type = "button";
             updatefirmwareButton.setAttribute("data-toggle", "modal");
@@ -337,7 +359,7 @@ function makeNodeFadePanel(basicPanel, node) {
         }
     }
     else {
-        var dataDiv = document.getElementById("unitPropPanelDataDiv" + webProp.nodes[node].host);
+        var dataDiv = document.getElementById("unitPropPanelDataDiv" + node.host);
     }
 
 }
@@ -537,11 +559,21 @@ class DevicesObjectsList {
 //-----------------------------------------------------------------------------------
 class RadialIndicatorsDeviceBase {
 
+    constructor(parentPanel, device, deviceProperty, noIndicator, webPropIndicator) {
+        this.webPropIndicator = webPropIndicator;
+        if (device == undefined) {
+            devices.addDeviceLoadedListner(this.onDeviceLoaded, this);
+        }
+        else {
+            this.offlineStarter(parentPanel, device._id, deviceProperty.name, noIndicator);
+            this.joinDevice(device, deviceProperty);
+
+        }
+    }
+
     offlineStarter(parentPanel, deviceId, devicePropertyName, noIndicator) {
         this.deviceId = deviceId;
         this.devicePropertyName = devicePropertyName;
-        devices.addNetworkStatusListner(this.onNetworkStatusChange, this);
-       // WebProperties.getNodeByHost(devices.getDeviceById(deviceId)._host).addNetworkStatusListner(this.onNetworkStatusChange, this);
 
         addDashboardModeListner(this.onDashboardModeChange, this);
         if ((noIndicator == undefined) || (!noIndicator)) {
@@ -552,30 +584,30 @@ class RadialIndicatorsDeviceBase {
         }
     }
 
-    constructor(parentPanel, device, deviceProperty, noIndicator, webPropIndicator) {
-        this.webPropIndicator = webPropIndicator;
-        if (device == undefined) {
-            devices.addDeviceLoadedListner(this.onDeviceLoaded, this);
-        }
-        else {
-            this.offlineStarter(parentPanel, device._id, deviceProperty.name, noIndicator);
-            this.device = device;
-            this.deviceProperty = deviceProperty;
-            this.deviceProperty.addNetworkStatusListner(this.onNetworkStatusChange, this);
-            this.deviceProperty.addValueListner(this.onValueChange, this);
-
-        }
+    joinDevice(device, deviceProperty) {
+        this.device = device;
+        this.deviceProperty = deviceProperty;
+        this.indicator.deviceClass.deviceProperty = deviceProperty;
+        this.node = WebProperties.getNodeByHost(device._host);
+        //devices.addNetworkStatusListner(this.onNetworkStatusChange, this);
+        this.node.addNetworkStatusListner(this.onNetworkStatusChange, this);
+        this.deviceProperty.addNetworkStatusListner(this.onNetworkStatusChange, this);
+        this.deviceProperty.addValueListner(this.onValueChange, this);
     }
+
 
     onDeviceLoaded(sender, device) {
         if (sender.device != undefined) return;
         if (sender.deviceId == device._id) {
+            /*
             sender.device = device;
             sender.deviceProperty = device[sender.devicePropertyName];
             sender.indicator.deviceClass.deviceProperty = sender.deviceProperty;
             devices.addNetworkStatusListner(sender.onNetworkStatusChange, sender);
             sender.deviceProperty.addNetworkStatusListner(sender.onNetworkStatusChange, sender);
             sender.deviceProperty.addValueListner(sender.onValueChange, sender);
+            */
+            sender.joinDevice(device, device[sender.devicePropertyName]);
         }
     }
 

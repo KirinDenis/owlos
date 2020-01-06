@@ -108,6 +108,7 @@ function loadingScripts(withInternet) {
                         var baseIndicatorScript = document.createElement('script');
                         baseIndicatorScript.onload = function () {
                             //  loadingScript("baseindicator.js");
+                            loadingScript("files.js");
                             loadingScript("radialindicator.js");
                             loadingScript("actuatorindicator.js");
                             loadingScript("lcdindicator.js");
@@ -121,7 +122,7 @@ function loadingScripts(withInternet) {
                             loadingScript("client.js");
                             loadingScript("devicesproperties.js");
                             loadingScript("devices.js");
-                            loadingScript("files.js");
+                            
                             
                             //var unitPropertiesScript = document.createElement('script'); //с ожиданием
                             //unitPropertiesScript.onload = function () { //when unit properties is loading we can start index script
