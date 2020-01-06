@@ -41,8 +41,6 @@
                         </ul>
                     </div>
                     <form class="form-inline my-2 my-lg-0">
-                        <div id="statusesPanel">
-                        </div>
                         <div id="refreshButtonsPanel">
                             <span id="autorefreshbutton" class="badge badge-default" data="off"></span>
                             <span id="refreshbutton" class="badge badge-default"></span>
@@ -77,12 +75,17 @@
                                     <nav class="navbar bg-primary">
 
                                         <form class="form-inline my-2 my-lg-0">
-                                            <button type="button" id="sidebarCollapse" class="btn btn-secondary btn-sm">
+                                            <span type="button" id="sidebarCollapse" class="badge badge-default">
                                                 <span>|<</span>
-                                            </button>
-                                            <div id="nodeStatusPanel"></div>
-                                        </form>
+                                            </span>
 
+                                            <div class="nodestatuspanel" id="nodeStatusPanel">
+                                            </div>
+
+                                            <div class="nodestatuspanel" id="nodeStatusPanelText">
+
+                                            </div>
+                                        </form>
                                     </nav>
 
                                     <div id="devicesPanel">

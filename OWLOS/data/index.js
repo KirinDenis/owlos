@@ -790,21 +790,6 @@ function actuatorReturnOnline(_data, actuator) {
     return true;
 }
 
-function getStatusIndicator(id, text) {
-    var selectedStatus = document.getElementById(id);
-    if (selectedStatus == null) {
-        selectedStatus = statusesPanel.appendChild(document.createElement('span'));
-        selectedStatus.style.cursor = "pointer";
-        selectedStatus.className = "badge badge-secondary";
-        selectedStatus.setAttribute("data-toggle", "popover");
-        selectedStatus.setAttribute("data-container", "body");
-        selectedStatus.setAttribute("data-placement", "bottom");
-        selectedStatus.id = id;
-        selectedStatus.innerText = text;
-
-    }
-    return selectedStatus;
-}
 
 function visualStatuses() {
     /*

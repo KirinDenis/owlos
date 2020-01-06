@@ -37,9 +37,29 @@ function _deviceLoaded(sender, device) {
         var devicesAnchors = document.getElementById("devicesNavBar");
         var devicesPanel = document.getElementById("devicesPanelFade");
         new TableIndicator(devicesAnchors, devicesPanel, device, 12);
+        //network indicators ----------------------------------------------
+        if (device._id == "wifi") {
+            var WiFiAPPanel = getStatusIndicator(device._alies + "wifiapStatus", "WiFi AP", undefined);
+            device.wifiaccesspointavailable.addValueListner(onWiFiAPStatusChange, WiFiAPPanel);
 
+            var WiFiSTPanel = getStatusIndicator(device._alies + "wifistStatus", "WiFi ST", undefined);
+            device.wifistatus.addValueListner(onWiFiSTStatusChange, WiFiSTPanel);
+        }
 
+        if (device._id == "network") {
+            var RESTfulPanel = getStatusIndicator(device._alies +"restfulStatus", "RESTful");
+            device.restfulavailable.addValueListner(onRESTfulStatusChange, RESTfulPanel);
+            var node = WebProperties.getNodeByHost(device._host);
+            node.addNetworkStatusListner(onRESTfulOnlineStatusChange, RESTfulPanel);
 
+            var MQTTPanel = getStatusIndicator(device._alies +"mqttStatus", "MQTT");
+            device.mqttclientstate.addValueListner(onMQTTStatusChange, MQTTPanel);
+
+            var OTAPanel = getStatusIndicator(device._alies +"otaStatus", "OTA");
+            device.otaavailable.addValueListner(onOTAStatusChange, OTAPanel);
+        }
+
+        
 
         /*
         switch (device.type.value) {
@@ -188,15 +208,45 @@ function deviceOnWebConfigChange(sender, webProperties) {
             // div.className = "col-md-" + this.size + " devicediv tab-pane fade";
             filesDiv.className = "devicediv tab-pane fade";
             filesDiv.id = node.alies + "filesfadepanel";
-
-            
             
             filesHRef.filesList = new FilesList(filesDiv, node);
-            
+
+            // add Node Status Panel ---------------------------------------------
+            var nodeStatusPanel = document.createElement("div");
+            nodeStatusPanel.id = node.alies + "nodestatuspanel";
+            nodeStatusPanel.style.display = "none";
+            nodeAhref.nodeStatusPanel = nodeStatusPanel;
+            nodeAhref.onlinePanel = getStatusIndicator(node.alies + "onlineStatus", "Online", nodeStatusPanel);
+
+            node.addNetworkStatusListner(onOnlineStatusChange, nodeAhref.onlinePanel);
+            nodeAhref.WiFiAPPanel = getStatusIndicator(node.alies + "wifiapStatus", "WiFi AP", nodeStatusPanel);
+                                                    
+            nodeAhref.WiFiSTPanel = getStatusIndicator(node.alies + "wifistStatus", "WiFi ST", nodeStatusPanel);
+            nodeAhref.RESTfulPanel = getStatusIndicator(node.alies + "restfulStatus", "RESTful", nodeStatusPanel);
+            nodeAhref.MQTTPanel = getStatusIndicator(node.alies + "mqttStatus", "MQTT", nodeStatusPanel);
+            nodeAhref.OTAPanel = getStatusIndicator(node.alies + "otaStatus", "OTA", nodeStatusPanel);
+
+            document.getElementById("nodeStatusPanel").appendChild(nodeStatusPanel);
 
         }
     }
 
+}
+
+function getStatusIndicator(id, text, nodeStatusPanel) {
+    var selectedStatus = document.getElementById(id);
+    if (selectedStatus == null) {
+        selectedStatus = nodeStatusPanel.appendChild(document.createElement('span'));
+        selectedStatus.style.cursor = "pointer";
+        selectedStatus.className = "badge badge-secondary";
+        selectedStatus.setAttribute("data-toggle", "popover");
+        selectedStatus.setAttribute("data-container", "body");
+        selectedStatus.setAttribute("data-placement", "bottom");
+        selectedStatus.id = id;
+        selectedStatus.innerText = text;
+
+    }
+    return selectedStatus;
 }
 
 
@@ -232,13 +282,24 @@ function deviceAnchorClick(event) {
 
     var node = aHref.node;
     if (node != undefined) {
-        nodeStatusPanel = document.getElementById("nodeStatusPanel");
-        nodeStatusPanel.innerHTML = node.host + " " + node.alies;
+        nodeStatusPanel = document.getElementById("nodeStatusPanelText");
+        nodeStatusPanel.innerHTML = " <strong>" + node.alies + "</strong> at <a href='" + node.host + "' target='_blank'>" + node.host + "</a>";
+
+        if (aHref.nodeStatusPanel != undefined) {
+            var nodeStatusPanel = document.getElementById("nodeStatusPanel");
+            if (nodeStatusPanel.currentStatusPanel != undefined) {
+                nodeStatusPanel.currentStatusPanel.style.display = "none";
+            }
+            nodeStatusPanel.currentStatusPanel = aHref.nodeStatusPanel;
+            nodeStatusPanel.currentStatusPanel.style.display = "block";
+        }
+
     }
 
     if (aHref.getAttribute("aria-expanded") == "true") {
         document.documentElement.scrollTop = document.documentElement.scrollTop - event.clientY - event.target.offsetHeight;
     }
+
     return false;
 }
 
