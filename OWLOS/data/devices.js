@@ -29,6 +29,7 @@ function _deviceLoaded(sender, device) {
         deviceAhref.setAttribute("data-toggle", "tab");
         
         deviceAhref.href = "#" + device._alies + "_" + device._id;
+        deviceAhref.node = WebProperties.getNodeByHost(device._host);
         deviceAhref.innerText = device._id;
         deviceAhref.onclick = deviceAnchorClick;
         deviceAhref.parentLi = deviceLi;
@@ -44,9 +45,48 @@ function _deviceLoaded(sender, device) {
 
             var WiFiSTPanel = getStatusIndicator(device._alies + "wifistStatus", "WiFi ST", undefined);
             device.wifistatus.addValueListner(onWiFiSTStatusChange, WiFiSTPanel);
+
+            var dataDiv = document.getElementById(device._alies + "updatePropPanelDataDiv");
+            if (dataDiv != undefined) {
+                addPropertyView(dataDiv, device.wifirssi, getLang("wifirssi"), "dBm");
+                addSpaceView(dataDiv, "1");
+
+            }
         }
 
+        if (device._id == "esp") {
+
+            var dataDiv = document.getElementById(device._alies + "updatePropPanelDataDiv");
+            if (dataDiv != undefined) {
+
+                addPropertyView(dataDiv, device.espfreesketchspace, getLang("espfreesketchspace"), "byte");
+                addPropertyView(dataDiv, device.espfreeheap, getLang("espfreeheap"), "byte");
+                addPropertyView(dataDiv, device.espcpufreqmhz, getLang("espcpufreqmhz"), "mHz");
+                addSpaceView(dataDiv, "3");
+                addPropertyView(dataDiv, device.espresetreason, getLang("espresetreason"));
+                addSpaceView(dataDiv, "2");
+
+
+                var resetButton = dataDiv.appendChild(document.createElement('input'));
+                resetButton.className = "btn btn-danger btn-sm";
+                resetButton.type = "button";
+                resetButton.setAttribute("data-toggle", "modal");
+                resetButton.setAttribute("data-target", "#resetModal");
+                resetButton.value = getLang("reset");
+                resetButton.deviceHost = device._host;
+                resetButton.onclick = modalResetClick;
+
+
+                addPropertyView(dataDiv, device.firmwareversion, getLang("firmwareversion"));
+                addPropertyView(dataDiv, device.firmwarebuildnumber, getLang("firmwarebuildnumber"));
+                addSpaceView(dataDiv, "5");
+            }
+        }
+
+
         if (device._id == "network") {
+            document.title = device.unitid.value + " :: OWL OS";
+
             var RESTfulPanel = getStatusIndicator(device._alies +"restfulStatus", "RESTful");
             device.restfulavailable.addValueListner(onRESTfulStatusChange, RESTfulPanel);
             var node = WebProperties.getNodeByHost(device._host);
@@ -57,38 +97,68 @@ function _deviceLoaded(sender, device) {
 
             var OTAPanel = getStatusIndicator(device._alies +"otaStatus", "OTA");
             device.otaavailable.addValueListner(onOTAStatusChange, OTAPanel);
+
+            //Node Fade Panel --------------------------------------------------------
+            var dataDiv = document.getElementById(device._alies + "updatePropPanelDataDiv");
+            if (dataDiv != undefined) {
+               
+
+                 //   addPropertyView(dataDiv, espDevice.firmwareversion, getLang("firmwareversion"));
+                  //  addPropertyView(dataDiv, espDevice.firmwarebuildnumber, getLang("firmwarebuildnumber"));
+                  //  addSpaceView(dataDiv, "5");
+
+
+                addPropertyView(dataDiv, device.firmwareversion, getLang("firmwareversion"));
+                addPropertyView(dataDiv, device.firmwarebuildnumber, getLang("firmwarebuildnumber"));
+
+                   //Update watcher panel 
+                   var updateWatcherId = device._alies + "updateWatcher";
+                    var updateWatcherDiv = document.getElementById(updateWatcherId);
+                    if (updateWatcherDiv == null) {
+                        updateWatcherDiv = dataDiv.appendChild(document.createElement('div'));
+                        updateWatcherDiv.id = updateWatcherId;
+                        updateWatcherDiv.className = "text-primary";
+                        //one listner to two properties
+                        addSpaceView(dataDiv, "9");
+
+                        var updateuiButton = dataDiv.appendChild(document.createElement('input'));
+                        updateuiButton.id = "updateuibutton";
+                        updateuiButton.className = "btn btn-success btn-sm";
+                        updateuiButton.type = "button";
+                        updateuiButton.setAttribute("data-toggle", "modal");
+                        updateuiButton.setAttribute("data-target", "#resetModal");
+                        updateuiButton.value = getLang("updateuibutton");
+                        updateuiButton.onclick = modalUpdateUIClick;
+
+                        addSpaceView(dataDiv, "8");
+
+                        var updatefirmwareButton = dataDiv.appendChild(document.createElement('input'));
+                        updatefirmwareButton.id = "updatefirmwarebutton";
+                        updatefirmwareButton.className = "btn btn-success btn-sm";
+                        updatefirmwareButton.type = "button";
+                        updatefirmwareButton.setAttribute("data-toggle", "modal");
+                        updatefirmwareButton.setAttribute("data-target", "#resetModal");
+                        updatefirmwareButton.value = getLang("updatefirmwarebutton");
+                        updatefirmwareButton.onclick = modalUpdateFirmwareClick;
+
+                        updateuiButton.style.display = "none";
+                        updatefirmwareButton.style.display = "none";
+
+                        updateWatcherDiv.updateuiButton = updateuibutton; // document.getElementById("updateuibutton");
+                        updateWatcherDiv.updatefirmwareButton = updatefirmwarebutton; 
+
+                        device.updateinfo.addValueListner(onUpdateInfoValueChange, updateWatcherDiv);
+                        device.updatepossible.addValueListner(onUpdateInfoValueChange, updateWatcherDiv);
+                }
+
+
+
+
+            }
         }
 
         
 
-        /*
-        switch (device.type.value) {
-            case "0":
-                new TemperatureDevice(devicesIndicatorsPanel, device, device.temperature);
-                new TemperatureDevice(devicesIndicatorsPanel, device, device.temperature, 1);
-                //new TableIndicator(undefined, devicesIndicatorsPanel, device, 6);
-                break;
-            case "1":
-                new HumidityDevice(devicesIndicatorsPanel, device, device.humidity);
-                new HumidityDevice(devicesIndicatorsPanel, device, device.humidity, 1);
-                break;
-            case "2": new LightDevice(devicesIndicatorsPanel, device, device.light); break;
-
-            case "3": new SmokeDevice(devicesIndicatorsPanel, device, device.smoke); break;
-
-            case "4":
-                new MotionDevice(devicesIndicatorsPanel, device, device.motion);
-                new MotionDevice(devicesIndicatorsPanel, device, device.motion, 1);
-                break;
-            case "5": new SensorDevice(devicesIndicatorsPanel, device, device.data); break;
-            case "7": new LCDDevice(devicesIndicatorsPanel, device); break;
-
-            case "8": new ActuatorDevice(devicesIndicatorsPanel, device, device.data); break;
-
-            default: break; //FFR add unknown device 
-
-        }
-        */
 
     }
 }
@@ -117,6 +187,8 @@ function deviceOnWebConfigChange(sender, webProperties) {
         nodeHRef.onclick = addNodeClick;
         nodeHRef.innerHTML = "<b>" + getLang("addnode") + "</b>";
         nodeHRef.href = "#home";
+
+
     }
 
 
@@ -134,13 +206,20 @@ function deviceOnWebConfigChange(sender, webProperties) {
 
             }
             var nodeAhref = nodeLi.appendChild(document.createElement("a"));
-
+            nodeAhref.id = node.alies + "ahref";
             nodeAhref.href = "#" + node.alies + "submenu";
 
-            nodeAhref.setAttribute("data-toggle", "collapse");
-            nodeAhref.setAttribute("aria-expanded", "false");
+            if (firstDevice) {
+                nodeAhref.setAttribute("data-toggle", "collapse");
+                nodeAhref.setAttribute("aria-expanded", "true");
+
+            }
+            else {
+                nodeAhref.setAttribute("data-toggle", "collapse");
+                nodeAhref.setAttribute("aria-expanded", "false");
+            }
             nodeAhref.innerHTML = "<b>" + node.alies + "</b>";
-            nodeAhref.onclick = deviceAnchorClick;
+            //nodeAhref.onclick = deviceAnchorClick;
             nodeAhref.parentLi = nodeLi;
             nodeAhref.node = node;
             node.addNetworkStatusListner(nodeOnNetworkChange, nodeAhref);
@@ -163,6 +242,7 @@ function deviceOnWebConfigChange(sender, webProperties) {
             deviceHRef.onclick = addDeviceClick;
             deviceHRef.innerText = getLang("adddevice");
             deviceHRef.href = "#home";
+            deviceHRef.node = node;
 
             if (firstDevice) {
                 var devicesPanel = document.getElementById("devicesPanel");
@@ -173,6 +253,18 @@ function deviceOnWebConfigChange(sender, webProperties) {
             
 
             //Node Tab panel ----------------------
+
+            var nodePanelNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
+            nodePanelNavItem.className = "nav-item";
+            var nodePanelHRef = nodePanelNavItem.appendChild(document.createElement("a"));
+            nodePanelHRef.className = "nav-link";
+            nodePanelHRef.parentLi = nodeLi;
+            nodePanelHRef.style.color = theme.warning;
+            nodePanelHRef.setAttribute("data-toggle", "tab");
+            nodePanelHRef.onclick = deviceAnchorClick;
+            nodePanelHRef.innerText = getLang("properties");
+            nodePanelHRef.href = "#" + node.alies + "fadepanel";
+            nodePanelHRef.node = node;
             var devicesPanel = document.getElementById("devicesPanelFade");
             var div = devicesPanel.appendChild(document.createElement('div'));
 
@@ -180,12 +272,30 @@ function deviceOnWebConfigChange(sender, webProperties) {
             div.className = "devicediv tab-pane fade";
             if (firstDevice) {
                 div.className += " active show";
-                firstDevice = false;
+                
             }
             div.id = node.alies + "fadepanel";
+            
             nodeAhref.nodefadepanel = div;
-            makeNodeFadePanel(div, node);
+            //makeNodeFadePanel(div, node);
 
+            /*
+            var updatePropPanel = div.appendChild(document.createElement('div'));
+            updatePropPanel.id = node.alies + "updatePropPanel";
+            updatePropPanel.className = "col-md-12";
+            var infoDiv = updatePropPanel.appendChild(document.createElement('div'));
+            infoDiv.className = "card bg-primary mb-3";
+            var headerDiv = infoDiv.appendChild(document.createElement('div'));
+            headerDiv.className = "card-header";
+            headerDiv.innerText = getLang("unit");
+            */
+            var dataDiv = div.appendChild(document.createElement('div'));
+            dataDiv.id = node.alies + "updatePropPanelDataDiv"
+            //dataDiv.className = "card-body";
+
+
+
+            //------------------------------------------------------------------------------------
             //Add files submenuitem ------------------
 
             var filesNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
@@ -197,7 +307,8 @@ function deviceOnWebConfigChange(sender, webProperties) {
             filesHRef.setAttribute("data-toggle", "tab");
             filesHRef.onclick = deviceAnchorClick;
             filesHRef.innerText = getLang("files");
-            filesHRef.href = "#" +  node.alies + "filesfadepanel";
+            filesHRef.href = "#" + node.alies + "filesfadepanel";
+            filesHRef.node = node;
 
 
             //var filesAnchors = document.getElementById("filesAnchors");
@@ -214,7 +325,6 @@ function deviceOnWebConfigChange(sender, webProperties) {
             // add Node Status Panel ---------------------------------------------
             var nodeStatusPanel = document.createElement("div");
             nodeStatusPanel.id = node.alies + "nodestatuspanel";
-            nodeStatusPanel.style.display = "none";
             nodeAhref.nodeStatusPanel = nodeStatusPanel;
             nodeAhref.onlinePanel = getStatusIndicator(node.alies + "onlineStatus", "Online", nodeStatusPanel);
 
@@ -228,6 +338,25 @@ function deviceOnWebConfigChange(sender, webProperties) {
 
             document.getElementById("nodeStatusPanel").appendChild(nodeStatusPanel);
 
+
+            var nodeStatusPanelText = document.createElement("div");
+            nodeStatusPanelText.innerHTML = " <strong>" + node.alies + "</strong> at <a href='" + node.host + "' target='_blank'>" + node.host + "</a>";
+            document.getElementById("nodeStatusPanelText").appendChild(nodeStatusPanelText);
+
+            nodeStatusPanel.nodeStatusPanelText = nodeStatusPanelText;
+            if (firstDevice) {
+                document.getElementById("nodeStatusPanel").currentStatusPanel = nodeStatusPanel;
+                nodeStatusPanel.style.display = "block";
+                nodeStatusPanelText.style.display = "block";
+            }
+            else {
+                nodeStatusPanel.style.display = "none";
+                nodeStatusPanelText.style.display = "none";
+            }
+
+
+
+            firstDevice = false;
         }
     }
 
@@ -252,6 +381,53 @@ function getStatusIndicator(id, text, nodeStatusPanel) {
 
 function addNodeClick(event) {
 
+    event.stopPropagation();
+    
+
+    makeModalDialog("resetPanel", "addnode", getLang("addnode"), "");
+    var modalFooter = document.getElementById("addnodeModalFooter");
+    var modalBody = document.getElementById("addnodeModalBody");
+
+
+    formGroup = modalBody.appendChild(document.createElement("div"));
+    formGroup.className = "form-group";
+    label = formGroup.appendChild(document.createElement("label"));
+    label.setAttribute("for", "hostEdit");
+    label.innerText = getLang("host");
+    var hostEdit = formGroup.appendChild(document.createElement('input'));
+    hostEdit.className = "form-control form-control-sm";
+    hostEdit.id = "hostInput";
+
+    label = formGroup.appendChild(document.createElement("label"));
+    label.setAttribute("for", "aliesEdit");
+    label.innerText = getLang("alies");
+    var aliesEdit = formGroup.appendChild(document.createElement('input'));
+    aliesEdit.className = "form-control form-control-sm";
+    aliesEdit.id = "aliesInput";
+
+    var updateButton = modalFooter.appendChild(document.createElement("button"));
+    updateButton.type = "button";
+    updateButton.className = "btn btn-sm btn-success";
+    updateButton.id = "addnodeModalButton";
+    updateButton.onclick = addNodeUIClick;
+    updateButton.innerText = getLang("addnodebutton");
+
+    $("#addnodeModal").modal('show');
+
+    return false;
+
+}
+
+function addNodeUIClick(event) {
+    event.stopPropagation();
+
+    if (WebProperties.addNode(document.getElementById("hostInput").value, document.getElementById("aliesInput").value)) {
+        if (WebProperties.save()) {
+            $("#addnodeModal").modal('hide');
+        }
+    }
+    //else todo ERROR
+    return false;
 }
 
 function deviceAnchorClick(event) {
@@ -282,16 +458,19 @@ function deviceAnchorClick(event) {
 
     var node = aHref.node;
     if (node != undefined) {
-        nodeStatusPanel = document.getElementById("nodeStatusPanelText");
-        nodeStatusPanel.innerHTML = " <strong>" + node.alies + "</strong> at <a href='" + node.host + "' target='_blank'>" + node.host + "</a>";
 
+        if (aHref.nodeStatusPanel == undefined) {
+            aHref = document.getElementById(node.alies + "ahref");
+        }
         if (aHref.nodeStatusPanel != undefined) {
             var nodeStatusPanel = document.getElementById("nodeStatusPanel");
             if (nodeStatusPanel.currentStatusPanel != undefined) {
                 nodeStatusPanel.currentStatusPanel.style.display = "none";
+                nodeStatusPanel.currentStatusPanel.nodeStatusPanelText.style.display = "none";
             }
             nodeStatusPanel.currentStatusPanel = aHref.nodeStatusPanel;
             nodeStatusPanel.currentStatusPanel.style.display = "block";
+            nodeStatusPanel.currentStatusPanel.nodeStatusPanelText.style.display = "block";
         }
 
     }
@@ -321,109 +500,7 @@ function nodeOnNetworkChange(sender, node) {
                 }
 }
 
-function makeNodeFadePanel(basicPanel, node) {
 
-
-    //TEMP        
-    var footerContainer = document.getElementById("footerContainer");
-    //footerContainer.innerText = espDevice.firmwareversion.value + " build: " + espDevice.firmwarebuildnumber.value;
-    //var div = footerContainer.appendChild(document.createElement('div'));
-
-
-    var wifiDevice = devices.getDeviceById("wifi", node.host);
-    var espDevice = devices.getDeviceById("esp", node.host);
-    var networkDevice = devices.getDeviceById("network", node.host);
-
-    //    if ((wifiDevice == undefined) || (espDevice == undefined) || (networkDevice == undefined)) continue;;
-
-
-
-    //ESP<>Unit panel --------------------------------------------------------------------------------------------------
-    if (document.getElementById("unitPropPanel" + node.host) == null) {
-        var unitPropPanel = basicPanel.appendChild(document.createElement('div'));
-        unitPropPanel.id = "unitPropPanel" + node.host;
-        unitPropPanel.className = "col-md-12";
-        var infoDiv = unitPropPanel.appendChild(document.createElement('div'));
-        infoDiv.className = "card bg-light mb-3";
-        var headerDiv = infoDiv.appendChild(document.createElement('div'));
-        headerDiv.className = "card-header";
-        headerDiv.innerText = getLang("unit") + ": " + node.host;
-        var dataDiv = infoDiv.appendChild(document.createElement('div'));
-        dataDiv.id = "unitPropPanelDataDiv" + node.host;
-        dataDiv.className = "card-body";
-        return;
-
-        addPropertyView(dataDiv, espDevice.espfreesketchspace, getLang("espfreesketchspace"), "byte");
-        addPropertyView(dataDiv, espDevice.espfreeheap, getLang("espfreeheap"), "byte");
-        addPropertyView(dataDiv, espDevice.espcpufreqmhz, getLang("espcpufreqmhz"), "mHz");
-        addSpaceView(dataDiv, "3");
-        addPropertyView(dataDiv, wifiDevice.wifirssi, getLang("wifirssi"), "dBm");
-        addSpaceView(dataDiv, "1");
-        addPropertyView(dataDiv, espDevice.espresetreason, getLang("espresetreason"));
-        addSpaceView(dataDiv, "2");
-
-
-        var resetButton = dataDiv.appendChild(document.createElement('input'));
-        resetButton.className = "btn btn-danger btn-sm";
-        resetButton.type = "button";
-        resetButton.setAttribute("data-toggle", "modal");
-        resetButton.setAttribute("data-target", "#resetModal");
-        resetButton.value = getLang("reset");
-        resetButton.deviceHost = node.host;
-        resetButton.onclick = modalResetClick;
-
-
-        addPropertyView(dataDiv, espDevice.firmwareversion, getLang("firmwareversion"));
-        addPropertyView(dataDiv, espDevice.firmwarebuildnumber, getLang("firmwarebuildnumber"));
-        addSpaceView(dataDiv, "5");
-
-
-
-        //Update watcher panel 
-        var updateWatcherId = "updateWatcher" + node.host;
-        var updateWatcherDiv = document.getElementById(updateWatcherId);
-        if (updateWatcherDiv == null) {
-            updateWatcherDiv = dataDiv.appendChild(document.createElement('div'));
-            updateWatcherDiv.id = updateWatcherId;
-            updateWatcherDiv.className = "text-primary";
-            //one listner to two properties
-            addSpaceView(dataDiv, "9");
-
-            var updateuiButton = dataDiv.appendChild(document.createElement('input'));
-            updateuiButton.id = "updateuibutton" + node.host;
-            updateuiButton.className = "btn btn-success btn-sm";
-            updateuiButton.type = "button";
-            updateuiButton.setAttribute("data-toggle", "modal");
-            updateuiButton.setAttribute("data-target", "#resetModal");
-            updateuiButton.value = getLang("updateuibutton");
-            updateuiButton.onclick = modalUpdateUIClick;
-
-            addSpaceView(dataDiv, "8");
-
-            var updatefirmwareButton = dataDiv.appendChild(document.createElement('input'));
-            updatefirmwareButton.id = "updatefirmwarebutton" + node.host;
-            updatefirmwareButton.className = "btn btn-success btn-sm";
-            updatefirmwareButton.type = "button";
-            updatefirmwareButton.setAttribute("data-toggle", "modal");
-            updatefirmwareButton.setAttribute("data-target", "#resetModal");
-            updatefirmwareButton.value = getLang("updatefirmwarebutton");
-            updatefirmwareButton.onclick = modalUpdateFirmwareClick;
-
-            updateuiButton.style.display = "none";
-            updatefirmwareButton.style.display = "none";
-
-            updateWatcherDiv.updateuiButton = updateuiButton;
-            updateWatcherDiv.updatefirmwareButton = updatefirmwareButton;
-
-            networkDevice.updateinfo.addValueListner(onUpdateInfoValueChange, updateWatcherDiv);
-            networkDevice.updatepossible.addValueListner(onUpdateInfoValueChange, updateWatcherDiv);
-        }
-    }
-    else {
-        var dataDiv = document.getElementById("unitPropPanelDataDiv" + node.host);
-    }
-
-}
 
 //TEMPORARY ---------------------------------
 
@@ -1606,6 +1683,188 @@ function addIndicatorClick(event) {
     */
 
 }
+
+function onOnlineStatusChange(sender, devices) {
+    var onlineStatus = getLang("netonline");
+    if (devices.networkStatus == NET_ONLINE) {
+        sender.className = "badge badge-success";
+
+    }
+    else
+        if (devices.networkStatus == NET_REFRESH) {
+            sender.className = "badge badge-info";
+            onlineStatus = getLang("netrefresh");
+        }
+        else { //Error or Offline is danger
+            sender.className = "badge badge-danger";
+            onlineStatus = getLang("netoffline");
+        }
+
+    sender.setAttribute("data-original-title", getLang("network"));
+    sender.setAttribute("data-content", getLang("connectionstatus") + onlineStatus);
+    $('[data-toggle="popover"]').popover();
+}
+
+
+function onWiFiAPStatusChange(sender, deviceProperty) {
+    if (deviceProperty.value == 1) {
+        sender.className = "badge badge-success";
+
+    }
+    else {
+        sender.className = "badge badge-secondary";
+    }
+}
+
+function onWiFiSTStatusChange(sender, deviceProperty) {
+    var wifiSTconection = getLang("nostate");
+    sender.className = "badge badge-secondary";
+
+    switch (parseInt(deviceProperty.value)) {
+        case 0:
+            wifiSTconection = getLang("idlestatus");
+            sender.className = "badge badge-warning";
+            break;
+        case 1:
+            wifiSTconection = getLang("nossidavailable");
+            sender.className = "badge badge-danger";
+            break;
+        case 2:
+            wifiSTconection = getLang("scancompleted");
+            sender.className = "badge badge-warning";
+            break;
+        case 3:
+            wifiSTconection = getLang("connected");
+            sender.className = "badge badge-success";
+            break;
+        case 4:
+            wifiSTconection = getLang("connectfailed");
+            sender.className = "badge badge-danger";
+            break;
+        case 5:
+            wifiSTconection = getLang("connectionlost");
+            sender.className = "badge badge-danger";
+            break;
+        case 6:
+            wifiSTconection = getLang("disconnected");
+            sender.className = "badge badge-secondary";
+            break;
+        default:
+            break;
+    }
+
+    sender.setAttribute("data-original-title", "WiFi Station");
+    sender.setAttribute("data-content", getLang("connectionstatus") + wifiSTconection);
+    $('[data-toggle="popover"]').popover();
+}
+
+function onRESTfulStatusChange(sender, deviceProperty) {
+    if (deviceProperty.value == 1) {
+        sender.className = "badge badge-success";
+
+    }
+    else {
+        sender.className = "badge badge-secondary";
+    }
+}
+
+function onRESTfulOnlineStatusChange(sender, devices) {
+    var onlineStatus = getLang("netonline");
+    if (devices.networkStatus == NET_ONLINE) {
+        sender.className = "badge badge-success";
+    }
+    else
+        if (devices.networkStatus == NET_ERROR) {
+            sender.className = "badge badge-danger";
+        }
+        else
+            if (devices.networkStatus == NET_OFFLINE) {
+
+                sender.className = "badge badge-secondary";
+            }
+}
+
+function onMQTTStatusChange(sender, deviceProperty) {
+
+    sender.className = "badge badge-secondary";
+    mqttState = getLang("nostate");
+
+    switch (parseInt(deviceProperty.value)) {
+        case -5:
+            sender.className = "badge badge-warning";
+            mqttState = getLang("debugmode");
+            break;
+
+        case -4:
+            sender.className = "badge badge-danger";
+            mqttState = getLang("connectiontimeout");
+            break;
+
+        case -3:
+            sender.className = "badge badge-danger";
+            mqttState = getLang("connectionlost");
+            break;
+
+        case -2:
+            sender.className = "badge badge-danger";
+            mqttState = getLang("connectfailed");
+            break;
+
+        case -1:
+            sender.className = "badge badge-secondary";
+            mqttState = getLang("disconnected");
+            break;
+
+        case 0:
+            sender.className = "badge badge-success";
+            mqttState = getLang("connected");
+            break;
+
+        case 1:
+            sender.className = "badge badge-danger";
+            mqttState = getLang("badprotocol");
+            break;
+
+        case 2:
+            sender.className = "badge badge-danger";
+            mqttState = getLang("badclientid");
+            break;
+
+        case 3:
+            sender.className = "badge badge-secondary";
+            mqttState = getLang("unavailable");
+            break;
+
+        case 4:
+            sender.className = "badge badge-danger";
+            mqttState = getLang("badcredentials");
+            break;
+
+        case 5:
+            sender.className = "badge badge-danger";
+            mqttState = getLang("unauthorized");
+            break;
+
+        default:
+            break;
+
+    }
+    sender.setAttribute("data-original-title", "MQTT");
+    sender.setAttribute("data-content", getLang("connectionstatus") + mqttState);
+    $('[data-toggle="popover"]').popover();
+}
+
+function onOTAStatusChange(sender, deviceProperty) {
+    if (deviceProperty.value == 1) {
+        sender.className = "badge badge-success";
+
+    }
+    else {
+        sender.className = "badge badge-secondary";
+    }
+}
+
+
 
 
 //ENDOF Dashboard --------------------------------------------------------------------------------------------------------

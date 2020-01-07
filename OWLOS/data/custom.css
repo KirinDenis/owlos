@@ -123,7 +123,7 @@
 }
 
 .devicediv {
-    margin: 20px -5px 2px -5px;
+    margin: 5px -5px 2px -5px;
 }
 
 .w-10 {
@@ -164,17 +164,15 @@ textarea {
     border-top-color: #404040 !important;
 }
 
-.dataTables_length {
-    color: white !important;
-}
 
-.dataTables_filter, .dataTables_info, .dataTables_length {
+.dataTables_filter, .dataTables_filter input, .dataTables_info, .dataTables_length, .dataTables_wrapper, .dataTables_paginate, .paginate_button {
     color: white !important;
+    font-size: 14px;
 }
-
-.dataTables_wrapper .dataTables_paginate .paginate_button {
-    color: white !important;
-}
+    .dataTables_filter input {
+        color: black !important;
+        font-size: 14px;
+    }
 
 .footer {
     position: fixed;
@@ -203,12 +201,12 @@ textarea {
 #sidebar {
     min-width: 250px;
     max-width: 250px;
-    transition: all 0.3s;
+    transition: all 0.7s;
+    display: grid;
 }
 
     #sidebar.active {
         margin-left: -250px;
-  
     }
 
     #sidebar .sidebar-header {
@@ -283,20 +281,19 @@ ul.CTAs {
 #content {
     min-height: 100vh;
     width: 85%;
-    transition: all 0.3s;
 }
 
 /* ---------------------------------------------------
     MEDIAQUERIES
 ----------------------------------------------------- */
 @media (max-width: 768px) {
-    #sidebar {        
+    #sidebar {
         margin-left: -250px;
     }
+
         #sidebar.active {
             margin-left: 0;
         }
-
 
     #sidebarCollapse span {
         display: none;

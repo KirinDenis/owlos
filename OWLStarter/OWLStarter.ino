@@ -10,7 +10,7 @@
   Arduino Studio Setup
   --------------------
   - Download and isnstall COM port driver for ESP8266 https://wiki.wemos.cc/downloads
-  - Download and install File\Preferenses -> Addition board managers -> http://arduino.esp8266.com/stable/package_esp8266com_index.json
+  - Download and install File\Preferenses -> Addition board managers -> http://arduino.esp8266.com/stable/package_esp8266com_index.json (NOTE: version 2.5.0)
   * see: https://github.com/wemos/Arduino_D1 and use Tools\Board..Board manager - install D1 board support tools
 
   This Sketh Setup
@@ -38,6 +38,7 @@ ESP8266WiFiMulti WiFiMulti;
 bool readyToUpdate = false;
 
 void setup() {
+	ESP.wdtDisable(); //disable ESP8266 software watch dog
 	Serial.begin(115200);
 	delay(1000);
 

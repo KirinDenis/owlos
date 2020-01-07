@@ -3,6 +3,64 @@
 // Реализован упрощенно, для работы в паре с devices парсером - не запоминает ссылкии на созданные таблицы - подразумевается что таблицы и строки 
 // будут создаваться в той же последовательности в которой парястся устройства - device1, prop1, prop2...propN, device2, prop1, prop2...propN...DeviceN...
 
+function createValueEdit(parentElement, propertyName, propertyValue, propertyType) {
+
+    var edit = "";
+    if (!propertyType.includes("r")) {
+
+
+        if (propertyType.includes("b")) //boolean
+        {
+            edit = parentElement.appendChild(document.createElement('select'));
+            edit.className = "form-control form-control-sm";
+            edit.style.width = "100%";
+            var valueSelectOption = edit.appendChild(document.createElement('option'));
+            valueSelectOption.innerText = "true";
+            valueSelectOption = edit.appendChild(document.createElement('option'));
+            valueSelectOption.innerText = "false";
+            if (propertyValue === "1") edit.selectedIndex = 0;
+            else
+                edit.selectedIndex = 1;
+        }
+        else {
+            edit = parentElement.appendChild(document.createElement('input'));
+            edit.className = "form-control form-control-sm";
+            if (propertyType.includes("p")) //password
+            {
+                edit.type = "password";
+                edit.placeholder = "Password";
+            }
+            if (propertyType.includes("i")) //integer
+            {
+                edit.type = "number";
+            }
+            if (propertyType.includes("f")) //float
+            {
+                edit.type = "number";
+                edit.step = "0.01";
+            }
+
+            edit.style.width = "100%";
+            edit.value = propertyValue;
+        }
+
+        if (propertyType.includes("s")) //selected
+        {
+            edit.style.backgroundColor = "#FAFAF0";
+        }
+
+        edit.id = "propValueInput_" + propertyName;
+
+        edit.propname = propertyName;
+        edit.propvalue = propertyValue;  //default
+        edit.proptype = propertyType;
+
+    }
+    return edit;
+}
+
+
+
 class TableIndicator {
 
     constructor(devicesAnchors, devicesPanel, device, size) {
@@ -132,6 +190,8 @@ class TableIndicator {
 
         if (this.device._new) {
             // $("#devicetable" + this.device._id).DataTable({ searching: false, paging: false, info: false });
+
+            
 
             $("#devicetable" + this.device._alies + "_" + this.device._id).DataTable({
                 "language": {

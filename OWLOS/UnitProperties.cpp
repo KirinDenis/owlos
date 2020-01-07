@@ -6,7 +6,7 @@
 #include "src\Managers\UpdateManager.h"
 
 #define DefaultFirmwareVersion "OWL OS IoT Unit version 1.7 (beta)"
-#define DefaultFirmwareBuildNumber 53
+#define DefaultFirmwareBuildNumber 54
 
 #define DefaultId "owlunit"
 #define DefaultTopic "world0/area1/front1/room1/"
@@ -223,7 +223,11 @@ String unitGetAllProperties()
 
     result += "properties for:network\n"; 
 	result += "id=network//r\n";    
-	result += "type=" + String(NetworkType) + "//r\n";    
+	result += "type=" + String(NetworkType) + "//r\n";
+	result += "firmwareversion=" + unitGetFirmwareVersion() + "//r\n";
+	result += "firmwarebuildnumber=" + String(unitGetFirmwareBuildNumber()) + "//ri\n";
+	result += "unitid=" + unitGetUnitId() + "//\n";
+	result += "topic=" + unitGetTopic() + "//\n";
 	result += "restfulavailable=" + String(unitGetRESTfulAvailable()) + "//bs\n";
 	result += "restfulserverusername=" + unitGetRESTfulServerUsername() + "//\n";
 	result += "restfulserverpassword=" + unitGetRESTfulServerPassword() + "//sp\n";
@@ -253,10 +257,6 @@ String unitGetAllProperties()
         result += "properties for:esp\n"; 
 	result += "id=esp//r\n";    
 	result += "type=" + String(ESPType) + "//r\n";    
-	result += "firmwareversion=" + unitGetFirmwareVersion() + "//r\n";
-	result += "firmwarebuildnumber=" + String(unitGetFirmwareBuildNumber()) + "//ri\n";
-	result += "unitid=" + unitGetUnitId() + "//\n";
-	result += "topic=" + unitGetTopic() + "//\n";
 	result += "espresetinfo=" + unitGetESPResetInfo() + "//r\n";
 	result += "espreset=" + String(unitGetESPReset()) + "//sb\n";
 	result += "esprestart=" + String(unitGetESPRestart()) + "//b\n";

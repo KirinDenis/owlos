@@ -65,7 +65,7 @@ var WebProperties = {
     },
 
     addNode: function (_host, _alies) {
-        if (this.getNodeByHost(_host) != undefined) return;
+        if (this.getNodeByHost(_host) != undefined) return false;
 
         var node = {
             host: _host,
@@ -96,6 +96,7 @@ var WebProperties = {
             devices: []
         }
         webProp.nodes.push(node);
+        return true;
     },
 
     getNodeByHost: function (_host) {

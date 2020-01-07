@@ -33,11 +33,6 @@ $(document).ready(function () {
     //------------------
     //    visualStatuses();
 
-    document.getElementById("autorefreshbutton").data = "off";
-    autorefreshbutton = document.getElementById("autorefreshbutton");
-    autorefreshbutton.onclick = autoRefreshClick;
-    refreshbutton = document.getElementById("refreshbutton");
-    refreshbutton.onclick = refreshClick;
     addToLogEnd("OK", 1);
 
     var style = getComputedStyle(document.body);
@@ -75,10 +70,10 @@ $(document).ready(function () {
         }
 
 
-
+        
         addToLogNL(getLang("prepareUnit"));
 
-        document.title = unitId + " :: OWL Smart House unit";
+        
         document.getElementById("home-tab").innerText = getLang("homeTab");
     //    document.getElementById("unit-tab").innerText = getLang("unitTab");
         document.getElementById("settings-tab").innerText = getLang("settingsTab");
@@ -93,7 +88,7 @@ $(document).ready(function () {
         document.getElementById("consolePanel").appendChild(boot);
 
         speak("Owl operation system is started");
-        refresh();
+
         speak("Owl operation system is ready");
     }
     else {
@@ -101,25 +96,12 @@ $(document).ready(function () {
         speak("ERROR with host: " + host);
         addToLogNL("ERROR with host: " + host, 2);
     }
-    visualStatuses();
+    
 });
 
 
 
-function refresh() {
-   // addToLogNL("connected with " + unitId + " at " + host + ", get unit properties...");
-    //   renderUnitProperties();
-
-    addToLogNL("get device's properties...");
-    //renderDevicesProperties();
-
-    addToLogNL("get files...");
-  //  renderFilesList();
-
-    //  renderMainPageDevices();
-
-  //  renderMainPageUnit();
-}
+/*
 
 function renderMainPageDevices() {
     var devicesIndicatorsPanel = document.getElementById("devicesIndicatorsPanel");
@@ -129,14 +111,16 @@ function renderMainPageDevices() {
     }
 
 }
+*/
 
 function addPropertyView(panelDiv, deviceProperty, text, sufix) {
+    if (deviceProperty == undefined) return;
     var propElementId = panelDiv.id + deviceProperty.parentid + deviceProperty.name;
     var propTextDiv = document.getElementById(propElementId);
     if (propTextDiv == null) {
         propTextDiv = panelDiv.appendChild(document.createElement('div'));
         propTextDiv.id = propElementId;
-        propTextDiv.className = "text-primary";
+        propTextDiv.className = "text-light";
         propTextDiv.propertyText = text;
         if (sufix == undefined) sufix = "";
         propTextDiv.propertySufix = sufix;
@@ -163,23 +147,23 @@ function onPropertyViewedValueChange(sender, deviceProperty) {
 function onUpdateInfoValueChange(sender, deviceProperty) { //means esp.updateinfo property
     
 
-
+    
     var networkDevice = devices.getDeviceById("network", deviceProperty.parenthost);
-    var espDevice = devices.getDeviceById("esp", deviceProperty.parenthost);
+    //var espDevice = devices.getDeviceById("esp", deviceProperty.parenthost);
 
         var updateInfo = networkDevice.updateinfo.value.split(";");
         if (updateInfo.length < 3) {
-            sender.innerHTML = "<strong>" + getLang("updateinfo") + ":</strong> " + getLang("noupdateinfo") + "<br>";
+            sender.innerHTML = "<strong class='text-light'>" + getLang("updateinfo") + ":</strong> " + getLang("noupdateinfo") + "<br>";
         }
         else {
             var firmware = updateInfo[0].split(":")[1];
             var build = updateInfo[1].split(":")[1];
-            var innerHTML = "<strong>" + getLang("updateinfo") + ":</strong> " + firmware + " [<b>" + getLang("firmwarebuildnumber") + ": </b>" + build + "]<br>";
-            if (parseInt(build) > parseInt(espDevice.firmwarebuildnumber.value)) {
+            var innerHTML = "<div class='text-light'><strong class='text-light'>" + getLang("updateinfo") + ":</strong> " + firmware + " [<b class='text-warning'>" + getLang("firmwarebuildnumber") + ": </b>" + build + "]</div><br>";
+            if (parseInt(build) > parseInt(networkDevice.firmwarebuildnumber.value)) {
                 innerHTML += "<strong class='text-success'>" + getLang("updateexists") + "</strong> - ";
             }
             else {
-                innerHTML += "<strong class='text-secondary'>" + getLang("updatenosense") + "</strong> - ";
+                innerHTML += "<strong class='text-light'>" + getLang("updatenosense") + "</strong> - ";
             }
 
             updateuibutton = sender.updateuiButton; // document.getElementById("updateuibutton");
@@ -489,10 +473,10 @@ function refreshDevices() {
     for (var node in webProp.nodes) {
         devices.refresh(webProp.nodes[node]);
     }
-
-    //  requestDevicesPropertiesAsync(refreshDevicesAsync);
-    //   requestUnitPropertiesAsync(refreshUnitAsync);
 }
+
+/*
+
 
 function refreshDevicesAsync() {
     if (document.getElementById("autorefreshbutton").data === "on") {
@@ -552,6 +536,7 @@ function clearButtonClick(event) {
     return true;
 }
 
+
 function autoRefreshClick(event) {
     var button = event.target;
     if (button.data === "on") {
@@ -575,432 +560,9 @@ function refreshClick(event) {
 }
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-function createValueEdit(parentElement, propertyName, propertyValue, propertyType) {
-
-    var edit = "";
-    if ((!propertyType.includes("r")) && (autorefreshbutton.data === "off")) {
-
-
-        if (propertyType.includes("b")) //boolean
-        {
-            edit = parentElement.appendChild(document.createElement('select'));
-            edit.className = "form-control form-control-sm";
-            edit.style.width = "100%";
-            var valueSelectOption = edit.appendChild(document.createElement('option'));
-            valueSelectOption.innerText = "true";
-            valueSelectOption = edit.appendChild(document.createElement('option'));
-            valueSelectOption.innerText = "false";
-            if (propertyValue === "1") edit.selectedIndex = 0;
-            else
-                edit.selectedIndex = 1;
-        }
-        else {
-            edit = parentElement.appendChild(document.createElement('input'));
-            edit.className = "form-control form-control-sm";
-            if (propertyType.includes("p")) //password
-            {
-                edit.type = "password";
-                edit.placeholder = "Password";
-            }
-            if (propertyType.includes("i")) //integer
-            {
-                edit.type = "number";
-            }
-            if (propertyType.includes("f")) //float
-            {
-                edit.type = "number";
-                edit.step = "0.01";
-            }
-
-            edit.style.width = "100%";
-            edit.value = propertyValue;
-        }
-
-        if (propertyType.includes("s")) //selected
-        {
-            edit.style.backgroundColor = "#FAFAF0";
-        }
-
-        edit.id = "propValueInput_" + propertyName;
-
-        edit.propname = propertyName;
-        edit.propvalue = propertyValue;  //default
-        edit.proptype = propertyType;
-
-    }
-    return edit;
-}
-
 function topositionClick() {
     var button = event.target;
     setDevicePropertyAsync(button.stepperid, "toposition", button.toposition);
     return false;
 }
-//----------------------------------------------------------------------------------------------------------------------------------
-// Devices Panels
-//----------------------------------------------------------------------------------------------------------------------------------
-
-
-// Actuator
-function drawActuator(id, parentPanel) {
-    var checkBox = document.getElementById(id + "checkBox");
-    var checkBoxLabel = document.getElementById(id + "checkBoxLabel");
-    if (checkBox == null) {
-        var actuator = parentPanel.appendChild(document.createElement('div'));
-
-        actuator.className = "card col-md-1 devicePanelDiv";
-        actuator.style.cursor = "pointer";
-
-        var controlDiv = actuator.appendChild(document.createElement('div'));
-        controlDiv.className = "custom-control custom-switch  float-right";
-        controlDiv.parentActuator = actuator;
-        checkBox = controlDiv.appendChild(document.createElement('input'));
-        checkBox.type = "checkbox";
-        checkBox.className = "custom-control-input";
-        checkBox.id = id + "checkBox";
-        checkBox.device = id;
-        checkBox.parentActuator = actuator;
-
-        _checkBoxLabel = controlDiv.appendChild(document.createElement('label'));
-        _checkBoxLabel.className = "custom-control-label";
-        _checkBoxLabel.setAttribute("for", id + "checkBox");
-        _checkBoxLabel.parentActuator = actuator;
-
-        var h2 = actuator.appendChild(document.createElement('h2'));
-        h2.className = "text-info middleContainer";
-
-        checkBoxLabel = h2.appendChild(document.createElement('label'));
-        checkBoxLabel.id = id + "checkBoxLabel";
-
-        checkBoxLabel.parentActuator = actuator;
-        checkBox.label = checkBoxLabel;
-
-        var idDiv = actuator.appendChild(document.createElement('div'));
-        idDiv.className = "buttomContainer";
-        idDiv.innerHTML = id;
-        idDiv.parentActuator = actuator;
-
-        var offlineDiv = actuator.appendChild(document.createElement('div'));
-        offlineDiv.className = "text-danger middleContainer";
-        offlineDiv.innerHTML = "offline";
-        offlineDiv.style.display = 'none';
-        offlineDiv.parentActuator = actuator;
-
-        var spinner = actuator.appendChild(document.createElement('div'));
-        spinner.className = "spinner-border text-info";
-        spinner.style = "width: 6rem; height: 6rem;";
-        spinner.role = "status";
-        spinner.style.display = 'none';
-        // spinner.setAttribute("aria-hidden", "true");
-
-        actuator.checkBox = checkBox;
-        actuator.checkBoxLabel = checkBoxLabel;
-        actuator.spinner = spinner;
-        actuator.offline = offlineDiv;
-        actuator.onclick = actuatorCheckBoxClick;
-    }
-
-    drawActuatorData(actuator, getParsedDeviceProperty(id, "data"));
-}
-
-function drawActuatorData(actuator, data) {
-    if (actuator == null) return;
-    actuator.spinner.style.display = 'none';
-    actuator.offline.style.display = 'none';
-
-    if (data == "1") {
-        actuator.className = "card col-md-1 border-primary devicePanelDiv";
-        actuator.checkBox.checked = true;
-        actuator.checkBoxLabel.innerHTML = "On";
-        actuator.checkBox.disabled = false;
-    }
-    else
-        if (data == "0") {
-            actuator.className = "card col-md-1 devicePanelDiv bg-dark";
-            actuator.checkBox.checked = "";
-            actuator.checkBoxLabel.innerHTML = "Off";
-            actuator.checkBox.disabled = false;
-        }
-
-        else {
-            actuator.className = "card col-md-1 text-white devicePanelDiv border-danger bg-dark";
-            actuator.checkBoxLabel.innerHTML = "";
-            actuator.offline.className = "text-danger middleContainer";
-            actuator.offline.style.display = 'block';
-            actuator.offline.innerHTML = "offline";
-        }
-
-}
-
-function actuatorCheckBoxClick(event) {
-
-    event.stopPropagation();
-    var actuator = event.target;
-    if (actuator == null) return true;
-    if (actuator.parentActuator != null) actuator = actuator.parentActuator;
-    if (actuator == null) return true;
-    if (actuator.checkBox == null) return true;
-
-    if (actuator.checkBox.disabled == true) { //back to online 
-        actuator.className = "card col-md-1 text-white devicePanelDiv border-warning bg-dark";
-        actuator.spinner.style.display = 'block';
-        actuator.offline.className = "text-warning middleContainer";
-        actuator.offline.innerHTML = "back to online";
-        getDevicePropertyAsyncWithReciever(actuator.checkBox.device, "data", actuatorReturnOnline, actuator);
-    }
-    else { //send data to unit 
-        actuator.checkBox.disabled = true;
-        actuator.spinner.style.display = 'block';
-        actuator.offline.style.display = 'none';
-
-
-        if (actuator.checkBox.checked) {
-            setDevicePropertyAsyncWithReciever(actuator.checkBox.device, "data", "0", actuatorComplete, actuator);
-            actuator.checkBox.label.innerHTML = "Do";
-        }
-        else {
-            setDevicePropertyAsyncWithReciever(actuator.checkBox.device, "data", "1", actuatorComplete, actuator);
-            actuator.checkBox.label.innerHTML = "Do";
-        }
-    }
-
-
-    return true;
-}
-
-function actuatorComplete(_data, actuator) {
-    if (_data == "1") //call API OK = 1
-    {
-        //reverse current stait
-        if (actuator.checkBox.checked) _data = "0";
-        else
-            _data = "1";
-
-    }
-    else {
-        _data += "bad"; //error code +bad keyword
-    }
-    drawActuatorData(actuator, _data);
-    return true;
-}
-
-function actuatorReturnOnline(_data, actuator) {
-    //the result is getProperty actualy data - 1, 0 or error
-    drawActuatorData(actuator, _data);
-    return true;
-}
-
-
-function visualStatuses() {
-    /*
-    var statusesPanel = document.getElementById("statusesPanel");
-    if (statusesPanel != null) {
-
-        var onlinePanel = getStatusIndicator("onlineStatus", "Online");
-        //devices.addNetworkStatusListner(onOnlineStatusChange, onlinePanel);
-
-        var wifiDevice = devices.getDeviceById("wifi");
-        var networkDevice = devices.getDeviceById("network");
-        if ((wifiDevice == undefined) || (networkDevice == undefined)) return;
-
-        var WiFiAPPanel = getStatusIndicator("wifiapStatus", "WiFi AP");
-        wifiDevice.wifiaccesspointavailable.addValueListner(onWiFiAPStatusChange, WiFiAPPanel);
-
-        var WiFiSTPanel = getStatusIndicator("wifistStatus", "WiFi ST");
-        wifiDevice.wifistatus.addValueListner(onWiFiSTStatusChange, WiFiSTPanel);
-
-        var RESTfulPanel = getStatusIndicator("restfulStatus", "RESTful");
-        networkDevice.restfulavailable.addValueListner(onRESTfulStatusChange, RESTfulPanel);
-        devices.addNetworkStatusListner(onRESTfulOnlineStatusChange, RESTfulPanel);
-
-        var MQTTPanel = getStatusIndicator("mqttStatus", "MQTT");
-        networkDevice.mqttclientstate.addValueListner(onMQTTStatusChange, MQTTPanel);
-
-        var OTAPanel = getStatusIndicator("otaStatus", "OTA");
-        networkDevice.otaavailable.addValueListner(onOTAStatusChange, OTAPanel);
-
-    }
-    */
-}
-
-function onOnlineStatusChange(sender, devices) {
-    var onlineStatus = getLang("netonline");
-    if (devices.networkStatus == NET_ONLINE) {
-        sender.className = "badge badge-success";
-
-    }
-    else
-        if (devices.networkStatus == NET_REFRESH) {
-            sender.className = "badge badge-info";
-            onlineStatus = getLang("netrefresh");
-        }
-        else { //Error or Offline is danger
-            sender.className = "badge badge-danger";
-            onlineStatus = getLang("netoffline");
-        }
-
-    sender.setAttribute("data-original-title", getLang("network"));
-    sender.setAttribute("data-content", getLang("connectionstatus") + onlineStatus);
-    $('[data-toggle="popover"]').popover();
-}
-
-
-function onWiFiAPStatusChange(sender, deviceProperty) {
-    if (deviceProperty.value == 1) {
-        sender.className = "badge badge-success";
-
-    }
-    else {
-        sender.className = "badge badge-secondary";
-    }
-}
-
-function onWiFiSTStatusChange(sender, deviceProperty) {
-    var wifiSTconection = getLang("nostate");
-    sender.className = "badge badge-secondary";
-
-    switch (parseInt(deviceProperty.value)) {
-        case 0:
-            wifiSTconection = getLang("idlestatus");
-            sender.className = "badge badge-warning";
-            break;
-        case 1:
-            wifiSTconection = getLang("nossidavailable");
-            sender.className = "badge badge-danger";
-            break;
-        case 2:
-            wifiSTconection = getLang("scancompleted");
-            sender.className = "badge badge-warning";
-            break;
-        case 3:
-            wifiSTconection = getLang("connected");
-            sender.className = "badge badge-success";
-            break;
-        case 4:
-            wifiSTconection = getLang("connectfailed");
-            sender.className = "badge badge-danger";
-            break;
-        case 5:
-            wifiSTconection = getLang("connectionlost");
-            sender.className = "badge badge-danger";
-            break;
-        case 6:
-            wifiSTconection = getLang("disconnected");
-            sender.className = "badge badge-secondary";
-            break;
-        default:
-            break;
-    }
-
-    sender.setAttribute("data-original-title", "WiFi Station");
-    sender.setAttribute("data-content", getLang("connectionstatus") + wifiSTconection);
-    $('[data-toggle="popover"]').popover();
-}
-
-function onRESTfulStatusChange(sender, deviceProperty) {
-    if (deviceProperty.value == 1) {
-        sender.className = "badge badge-success";
-
-    }
-    else {
-        sender.className = "badge badge-secondary";
-    }
-}
-
-function onRESTfulOnlineStatusChange(sender, devices) {
-    var onlineStatus = getLang("netonline");
-    if (devices.networkStatus == NET_ONLINE) {
-        sender.className = "badge badge-success";
-    }
-    else
-        if (devices.networkStatus == NET_ERROR) {
-            sender.className = "badge badge-danger";
-        }
-        else
-            if (devices.networkStatus == NET_OFFLINE) {
-
-                sender.className = "badge badge-secondary";
-            }
-}
-
-function onMQTTStatusChange(sender, deviceProperty) {
-
-    sender.className = "badge badge-secondary";
-    mqttState = getLang("nostate");
-
-    switch (parseInt(deviceProperty.value)) {
-        case -5:
-            sender.className = "badge badge-warning";
-            mqttState = getLang("debugmode");
-            break;
-
-        case -4:
-            sender.className = "badge badge-danger";
-            mqttState = getLang("connectiontimeout");
-            break;
-
-        case -3:
-            sender.className = "badge badge-danger";
-            mqttState = getLang("connectionlost");
-            break;
-
-        case -2:
-            sender.className = "badge badge-danger";
-            mqttState = getLang("connectfailed");
-            break;
-
-        case -1:
-            sender.className = "badge badge-secondary";
-            mqttState = getLang("disconnected");
-            break;
-
-        case 0:
-            sender.className = "badge badge-success";
-            mqttState = getLang("connected");
-            break;
-
-        case 1:
-            sender.className = "badge badge-danger";
-            mqttState = getLang("badprotocol");
-            break;
-
-        case 2:
-            sender.className = "badge badge-danger";
-            mqttState = getLang("badclientid");
-            break;
-
-        case 3:
-            sender.className = "badge badge-secondary";
-            mqttState = getLang("unavailable");
-            break;
-
-        case 4:
-            sender.className = "badge badge-danger";
-            mqttState = getLang("badcredentials");
-            break;
-
-        case 5:
-            sender.className = "badge badge-danger";
-            mqttState = getLang("unauthorized");
-            break;
-
-        default:
-            break;
-
-    }
-    sender.setAttribute("data-original-title", "MQTT");
-    sender.setAttribute("data-content", getLang("connectionstatus") + mqttState);
-    $('[data-toggle="popover"]').popover();
-}
-
-function onOTAStatusChange(sender, deviceProperty) {
-    if (deviceProperty.value == 1) {
-        sender.className = "badge badge-success";
-
-    }
-    else {
-        sender.className = "badge badge-secondary";
-    }
-}
-
-
+*/
