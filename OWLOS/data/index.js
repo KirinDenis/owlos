@@ -330,7 +330,11 @@ function makeModalDialog(parentId, id, titleText, bodyText) {
 
 
 //--------------------------------------------------------------------------------------------------------------------
-function modalUpdateUIClick() {
+function modalUpdateUIClick(event) {
+
+    var updateuiButton = event.currentTarget;
+    var node = updateuiButton.node;
+
 
     makeModalDialog("resetPanel", "update", getLang("updateunit"), getLang("areYouSure"));
     var modalFooter = document.getElementById("updateModalFooter");
@@ -340,6 +344,7 @@ function modalUpdateUIClick() {
     updateButton.className = "btn btn-sm btn-success";
     updateButton.id = "updateModalButton";
     updateButton.onclick = updateUIClick;
+    updateButton.node = node;
     updateButton.innerText = getLang("updateuibutton");
 
     $("#updateModal").modal('show');
@@ -349,6 +354,8 @@ function modalUpdateUIClick() {
 
 function updateUIClick(event) {
 
+    var updateButton = event.currentTarget;
+    var node = updateButton.node;
     var modalFooter = document.getElementById("updateModalFooter");
     modalFooter.removeChild(event.currentTarget);
 
@@ -356,10 +363,10 @@ function updateUIClick(event) {
     modalBody.innerHTML = "";
     var updateLog = modalBody.appendChild(document.createElement("pre"));
     updateLog.innerHTML = "Update UI started, please wait...<br>";
-    updateUIAsync();
+    updateUIAsync(node.host);
 
     sleep(10000).then(() => {
-        getUpdateLogAsyncWithReciever(updateLogReciever, undefined, updateLog, undefined);
+        getUpdateLogAsyncWithReciever(node.host, updateLogReciever, undefined, updateLog, undefined);
         return false;
     });
     return false;

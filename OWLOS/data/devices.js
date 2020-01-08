@@ -128,7 +128,9 @@ function _deviceLoaded(sender, device) {
                         updateuiButton.setAttribute("data-toggle", "modal");
                         updateuiButton.setAttribute("data-target", "#resetModal");
                         updateuiButton.value = getLang("updateuibutton");
+                        updateuiButton.node = deviceAhref.node;
                         updateuiButton.onclick = modalUpdateUIClick;
+                        
 
                         addSpaceView(dataDiv, "8");
 

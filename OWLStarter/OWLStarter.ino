@@ -17,8 +17,8 @@
   ----------------
   - Put your WiFi SSID and Password to:                                                                 */
 #ifndef APSSID
-#define APSSID "YOURSSID_HERE" //<-- YOUR WIFI ACCESS POINT SSID	      
-#define APPSK  "YOURPASSWORD_HERE" //<-- YOUR WIFI ACCESS POINT PASSWORS	      
+#define APSSID "Palata#13" //<-- YOUR WIFI ACCESS POINT SSID	      
+#define APPSK  "qweasdzxc1234" //<-- YOUR WIFI ACCESS POINT PASSWORS	      
 
 #endif
   //-------------------------------------------------------------------------------------------------------------------------
