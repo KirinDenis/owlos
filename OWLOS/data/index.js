@@ -50,8 +50,8 @@ $(document).ready(function () {
     //addToLogNL("check unit's RESTful API...");    
    // unitId = getUnitProperty("unitid");
     addToLogNL("get UI configuration...");
-    WebProperties.addChangeListner(deviceOnWebConfigChange, undefined);
-    if (WebProperties.load()) {
+    config.addChangeListner(deviceOnWebConfigChange, undefined);
+    if (config.load()) {
         status_online = NET_ONLINE;
 
 //TEMP-----------------
@@ -65,8 +65,8 @@ $(document).ready(function () {
 
         devices.addDeviceLoadedListner(_deviceLoaded, null);        
 
-        for (var node in webProp.nodes) {
-            devices.refresh(webProp.nodes[node]);
+        for (var node in configProperties.nodes) {
+            devices.refresh(configProperties.nodes[node]);
         }
 
 
@@ -477,8 +477,8 @@ function resetClick(event) {
 }
 
 function refreshDevices() {
-    for (var node in webProp.nodes) {
-        devices.refresh(webProp.nodes[node]);
+    for (var node in configProperties.nodes) {
+        devices.refresh(configProperties.nodes[node]);
     }
 }
 
@@ -498,8 +498,8 @@ function refreshDevicesAsync() {
     }
 
     //TEMPORARY 
-    for (var node in webProp.nodes) {
-        devices.refresh(webProp.nodes[node]);
+    for (var node in configProperties.nodes) {
+        devices.refresh(configProperties.nodes[node]);
     }
 
 

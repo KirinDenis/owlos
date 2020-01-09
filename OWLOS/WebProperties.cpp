@@ -1,4 +1,4 @@
-#include "WebProperties.h"
+#include "config.h"
 #include "UnitProperties.h"
 #include "src\Managers\FileManager.h"
 

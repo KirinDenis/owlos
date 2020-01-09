@@ -304,11 +304,11 @@ function getLang(key) {
 
 
     if (currentLang == "") {
-        if (webProp.language.startsWith("ua")) {
+        if (configProperties.language.startsWith("ua")) {
             currentLang = langua.split("\n");
         }
         else
-            if (webProp.language.startsWith("ru")) {
+            if (configProperties.language.startsWith("ru")) {
             currentLang = langru.split("\n");
         }
         else {

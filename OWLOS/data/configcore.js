@@ -10,13 +10,11 @@ function defaultWebProp() {
 
 }
 
-var webProp = defaultWebProp();
+var configProperties = defaultWebProp();
 
+//var configPropertiesDevice;
 
-
-var webPropDevice;
-
-var WebProperties = {
+var config = {
 
     changeListners: [], 
     onChange: function () {
@@ -36,13 +34,13 @@ var WebProperties = {
             id: _id,
             indicators: []
         }
-        webProp.dashboards.push(dashboard);
+        configProperties.dashboards.push(dashboard);
     },
 
     getDashboardById: function (_id) {
-        for (var i = 0; i < webProp.dashboards.length; i++) {
-            if (webProp.dashboards[i].id == _id) {
-                return webProp.dashboards[i];
+        for (var i = 0; i < configProperties.dashboards.length; i++) {
+            if (configProperties.dashboards[i].id == _id) {
+                return configProperties.dashboards[i];
             }
         }
         return undefined;
@@ -95,26 +93,26 @@ var WebProperties = {
 
             devices: []
         }
-        webProp.nodes.push(node);
+        configProperties.nodes.push(node);
         return true;
     },
 
     getNodeByHost: function (_host) {
-        for (var node in webProp.nodes) {
-            if (webProp.nodes[node].host == _host) {
-                return webProp.nodes[node];
+        for (var node in configProperties.nodes) {
+            if (configProperties.nodes[node].host == _host) {
+                return configProperties.nodes[node];
             }
         }
         return undefined;
     },
     
-    indicatorEvent: function (webPropIndicator, indicator) {
+    indicatorEvent: function (configPropertiesIndicator, indicator) {
         //indicator.event the event what happend
         if (indicator.event == EVENT_DELETE) {
-            for (var i = 0; i < webProp.dashboards[0].indicators.length; i++) {
-                if (webPropIndicator == webProp.dashboards[0].indicators[i]) {
-                    webProp.dashboards[0].indicators.splice(i,1);
-                    WebProperties.save();
+            for (var i = 0; i < configProperties.dashboards[0].indicators.length; i++) {
+                if (configPropertiesIndicator == configProperties.dashboards[0].indicators[i]) {
+                    configProperties.dashboards[0].indicators.splice(i,1);
+                    config.save();
                     return;
                 }
             }
@@ -123,20 +121,20 @@ var WebProperties = {
 
     load: function () {
         var result = false;
-        var webPropJson = httpGetWithErrorReson(boardhost + "getwebproperty?property=webconfig"); //boardhost host контроллера с которого идет первичная загрузка
-        if (!webPropJson.startsWith("%error")) {
+        var configPropertiesJson = httpGetWithErrorReson(boardhost + "getwebproperty?property=webconfig"); //boardhost host контроллера с которого идет первичная загрузка
+        if (!configPropertiesJson.startsWith("%error")) {
             try {
-                webProp = JSON.parse(unescape(webPropJson));
+                configProperties = JSON.parse(unescape(configPropertiesJson));
                 //check 
                 if (this.getDashboardById("main") != undefined) {
 
                     var tempNodes = [];
-                    for (var nodeKey in webProp.nodes) {
+                    for (var nodeKey in configProperties.nodes) {
                         
                         var tempNode = {
-                            id: webProp.nodes[nodeKey].id,
-                            host: webProp.nodes[nodeKey].host,
-                            alies: webProp.nodes[nodeKey].alies,
+                            id: configProperties.nodes[nodeKey].id,
+                            host: configProperties.nodes[nodeKey].host,
+                            alies: configProperties.nodes[nodeKey].alies,
                             recievedDevicesProperties: "",
                             _networkStatus: NET_OFFLINE,
                             devices: [],
@@ -162,13 +160,13 @@ var WebProperties = {
                         }
                         tempNodes.push(tempNode);
                     }
-                    webProp.nodes = tempNodes;
+                    configProperties.nodes = tempNodes;
 
                     this.onChange();
                     result = true;
                 }
                 else {
-                    webProp = "";
+                    configProperties = "";
                 }
             }
             catch {
@@ -177,7 +175,7 @@ var WebProperties = {
 
         if (!result) { //пробуем создать свойства по умолчанию, если их еще нет
             //parse problem, reset properties
-            webProp = defaultWebProp();
+            configProperties = defaultWebProp();
 
             addToLogNL(getLang("getwebconfigfailsparse"), 2);
             addToLogNL(getLang("restoredefault"), 1);
@@ -198,17 +196,17 @@ var WebProperties = {
     save: function () {
         var tempProp = defaultWebProp();
 
-        for(var key in webProp) {
+        for(var key in configProperties) {
             if (key != "nodes") {
-                tempProp[key] = webProp[key];
+                tempProp[key] = configProperties[key];
             }
         }
 
-        for (var node in webProp.nodes) {
+        for (var node in configProperties.nodes) {
             var jsonNode = {
-                id: webProp.nodes[node].id,
-                host: webProp.nodes[node].host,
-                alies: webProp.nodes[node].alies,
+                id: configProperties.nodes[node].id,
+                host: configProperties.nodes[node].host,
+                alies: configProperties.nodes[node].alies,
                 recievedDevicesProperties: "",
                 _networkStatus: NET_OFFLINE,
                 devices: []
@@ -219,8 +217,8 @@ var WebProperties = {
         }
 
 
-        var webPropJson =  JSON.stringify(tempProp);
-        var HTTPResult = httpGetWithErrorReson(boardhost + "setwebproperty?property=webconfig&value=" + escape(webPropJson));
+        var configPropertiesJson =  JSON.stringify(tempProp);
+        var HTTPResult = httpGetWithErrorReson(boardhost + "setwebproperty?property=webconfig&value=" + escape(configPropertiesJson));
         if (!HTTPResult.startsWith("%error")) {
             this.onChange();
             return true;
@@ -230,12 +228,14 @@ var WebProperties = {
         }
     },
 
-    webPropToDevice: function () {
-        var webPropDevice = devices.addDevice("config");
-        devices.newDeviceProperty(webPropDevice, "type", 14, "ri"); //14 is config device type
-        devices.newDeviceProperty(webPropDevice, "language", webProp.language, "");
-        devices.newDeviceProperty(webPropDevice, "speak", webProp.speack, "b");
-        devices.newDeviceProperty(webPropDevice, "voice", webProp.voice, "i");
-        devices.onDeviceLoaded(webPropDevice);
+    /*
+    configPropertiesToDevice: function () {
+        var configPropertiesDevice = devices.addDevice("config");
+        devices.newDeviceProperty(configPropertiesDevice, "type", 14, "ri"); //14 is config device type
+        devices.newDeviceProperty(configPropertiesDevice, "language", configProperties.language, "");
+        devices.newDeviceProperty(configPropertiesDevice, "speak", configProperties.speack, "b");
+        devices.newDeviceProperty(configPropertiesDevice, "voice", configProperties.voice, "i");
+        devices.onDeviceLoaded(configPropertiesDevice);
     }
+    */
 }

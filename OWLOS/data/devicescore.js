@@ -52,6 +52,23 @@
  * - value когда значение свойства устройство изменилось (либо при парсинге, либо программно - например актуатор поменял состояние с OFF на ON)
  */
 
+//Devices type codes:
+const TestDeviceType = 0;
+const DHTDeviceType = 1;
+const LightDeviceType = 2;
+const SmokeDeviceType = 3;
+const MotionDeviceType = 4;
+const SensorDeviceType = 5;
+const StepperDeviceType = 6;
+const LCDDeviceType = 7;
+const ActuatorDeviceType = 8;
+const OptoDeviceType = 9;
+const ValveDeviceType = 10;
+const WiFiTypeDeviceType = 11;
+const NetworkTypeDeviceType = 12;
+const ESPTypeDeviceType = 13;
+const ConfigDeviceType = 14;
+
 var devices = {
     // результат getalldevicesproperties либо пустая строка
     
@@ -123,7 +140,7 @@ var devices = {
     },
     //получить объект устройства по его ID
     getDeviceById(deviceId, host) {
-        var node = WebProperties.getNodeByHost(host);
+        var node = config.getNodeByHost(host);
         if (node == undefined) return undefined;
         for (var i = 0; i < node.devices.length; i++) {
             if (node.devices[i]._id === deviceId) {

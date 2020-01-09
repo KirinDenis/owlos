@@ -2,18 +2,18 @@
 //Загрузчик OWL OS front части.
 //Загружает JavaScript и CSS модули необходимые для работы OWL OS.
 //Проверяет возможность подключения к Internet - если нет - меняет путь загрузки некоторых модулей, подгружая их из Модуля (что медлено, но дает возможность автономной работы)
-//при начальной загрузкой браузером, подгружается только index.html и boot.js -> которая в свою очередь в фоновом режиме грузит весь остальной контент. 
-//index.html в начале загрузки отображает консоль вывода, что позволяет boot.js информировать пользователя о процессе загрузки и возможных проблемах. (смотрите index.html)
+//при начальной загрузкой браузером, подгружается только index.html и bootcore.js -> которая в свою очередь в фоновом режиме грузит весь остальной контент. 
+//index.html в начале загрузки отображает консоль вывода, что позволяет bootcore.js информировать пользователя о процессе загрузки и возможных проблемах. (смотрите index.html)
 
 //Существует 3 способа загрузки UI OWL OS:
 // 1) Браузер грузит UI подключивший к модулю как к WiFi станции в локальной сети или через Интернет forwarding (проброшен порт и модуль выставлен в мир)
-// - index.html и boot.js загружаются из flash памяти модуля, через встроенный web сервер, после чего boot.js - определяет доступен ли интернет,
+// - index.html и bootcore.js загружаются из flash памяти модуля, через встроенный web сервер, после чего bootcore.js - определяет доступен ли интернет,
 // -- если ДА - "стандартный" контент (jQury, bootstrap, dataTable...) грузятся из интернет, в свою очередь OWL OS модули из flash модуля.
 // -- если НЕТ - все грузится из flash  
 // 2) Браузер грузит UI подключившись к модулю в режиме WiFi точки доступа (режим "чистое поле" интернета нет)
 //    компьютер или телефон должен быть подключен к модулю как станция, IP модуля по умолчанию 192.168.4.1
 // - также как и в первом случае БЕЗ интернета
-// 3) [отладка] Файлы входящие в OWL OS UI должны быть на вашем локальном диске. Откройте client.js и укажите host=[текущий адрес модуля в сети http://адрес:port], 
+// 3) [отладка] Файлы входящие в OWL OS UI должны быть на вашем локальном диске. Откройте restclientcore.js и укажите host=[текущий адрес модуля в сети http://адрес:port], 
 //    откройте index.html браузером как файл. Это самый быстрый способ загрузки UI и хороший способ для отладки. 
 
 //NOTE: функции работы с консолью реализованы в этом же модули ниже, по завершению загрузки консоль переместится в соответствующий раздел главного меню 
@@ -87,7 +87,7 @@ function loadingScripts(withInternet) {
             resolve();//говорим наверх что все хорошо -> https://learn.javascript.ru/promise
             if (withInternet) loadCSS("https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.css"); //следующий CSS с интернет
             else loadCSS("dataTables.min.css");//без 
-            loadCSS("custom.css"); //это OWL OS UI CSS - его грузим из модуля
+            loadCSS("ui.css"); //это OWL OS UI CSS - его грузим из модуля
             //first jQuery Tables
             var jQueryTablesScript = document.createElement('script'); //многие зависят от jQueryTables, например datatables.js - по этому будем ожидать его загрузки что бы продолжить
             jQueryTablesScript.onload = function () {//jQueryTables.js загрузились
@@ -100,15 +100,15 @@ function loadingScripts(withInternet) {
 
                     var bootstrapScript = document.createElement('script'); //и ОН САМЫЙ, без него никак, грузим - ждем
                     bootstrapScript.onload = function () {//готово
-                        loadingScript("webproperties.js");
-                        loadingScript("language.js"); //все модулю без URL принадлежать OWS OS и всегда грузятся с flash
-                        loadingScript("speech.js");
-                        loadingScript("draw.js");
+                        loadingScript("configcore.js");
+                        loadingScript("languagescore.js"); //все модулю без URL принадлежать OWS OS и всегда грузятся с flash
+                        loadingScript("speechcore.js");
+                        loadingScript("drawcore.js");
 
                         var baseIndicatorScript = document.createElement('script');
                         baseIndicatorScript.onload = function () {
                             //  loadingScript("baseindicator.js");
-                            loadingScript("files.js");
+                            loadingScript("filespanelui.js");
                             loadingScript("radialindicator.js");
                             loadingScript("actuatorindicator.js");
                             loadingScript("lcdindicator.js");
@@ -119,10 +119,10 @@ function loadingScripts(withInternet) {
                             loadingScript("temperatureindicator.js");
                             loadingScript("graphindicator.js");
                             loadingScript("tableindicator.js");
-                            loadingScript("client.js");
-                            loadingScript("devicesproperties.js");
-                            loadingScript("devices.js");
-                            
+                            loadingScript("restclientcore.js");
+                            loadingScript("devicescore.js");
+                            loadingScript("indicatorswrappers.js");
+                            loadingScript("settingsui.js");
                             
                             //var unitPropertiesScript = document.createElement('script'); //с ожиданием
                             //unitPropertiesScript.onload = function () { //when unit properties is loading we can start index script
@@ -184,7 +184,7 @@ function loadCSS(cssURL) {
     });
 }
 //--------------------------------------------------------------------------------------------------------------------------------------------------
-//работа с консолью реализована в boot.js - здесь этот код используется и не надо грузить лишние модули из index.html
+//работа с консолью реализована в bootcore.js - здесь этот код используется и не надо грузить лишние модули из index.html
 //даже если что то совсем пойдет не так - у нас есть возможность информировать пользователя, так как мы загрузили Log скрипты при помощи браузера
 
 //добавить строку обычным цветом

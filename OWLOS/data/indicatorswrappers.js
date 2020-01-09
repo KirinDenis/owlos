@@ -1,514 +1,5 @@
-﻿const TestDeviceType = 0;
-const DHTDeviceType = 1;
-const LightDeviceType = 2;
-const SmokeDeviceType = 3;
-const MotionDeviceType = 4;
-const SensorDeviceType = 5;
-const StepperDeviceType = 6;
-const LCDDeviceType = 7;
-const ActuatorDeviceType = 8;
-const OptoDeviceType = 9;
-const ValveDeviceType = 10;
-const WiFiTypeDeviceType = 11;
-const NetworkTypeDeviceType = 12;
-const ESPTypeDeviceType = 13;
-const ConfigDeviceType = 14;
-//-------------------------------------------------------------------------------------------------------------------------
-var devicesObjectsList;
-
-//TEMPORARY ---------------------------------
-function _deviceLoaded(sender, device) {
-    if (device._new) {
-
-        var nodeSubmenuUl = document.getElementById(device._alies + "submenu");
-        if (nodeSubmenuUl == undefined) return;
-        var deviceLi = nodeSubmenuUl.appendChild(document.createElement("li"));
-        deviceLi.className = "nav-item";
-        var deviceAhref = deviceLi.appendChild(document.createElement("a"));
-        deviceAhref.className = "nav-link";
-        deviceAhref.setAttribute("data-toggle", "tab");
-        
-        deviceAhref.href = "#" + device._alies + "_" + device._id;
-        deviceAhref.node = WebProperties.getNodeByHost(device._host);
-        deviceAhref.innerText = device._id;
-        deviceAhref.onclick = deviceAnchorClick;
-        deviceAhref.parentLi = deviceLi;
-
-        var devicesIndicatorsPanel = document.getElementById("indicatorsPanelDataDiv");
-        var devicesAnchors = document.getElementById("devicesNavBar");
-        var devicesPanel = document.getElementById("devicesPanelFade");
-        new TableIndicator(devicesAnchors, devicesPanel, device, 12);
-        //network indicators ----------------------------------------------
-        if (device._id == "wifi") {
-            var WiFiAPPanel = getStatusIndicator(device._alies + "wifiapStatus", "WiFi AP", undefined);
-            device.wifiaccesspointavailable.addValueListner(onWiFiAPStatusChange, WiFiAPPanel);
-
-            var WiFiSTPanel = getStatusIndicator(device._alies + "wifistStatus", "WiFi ST", undefined);
-            device.wifistatus.addValueListner(onWiFiSTStatusChange, WiFiSTPanel);
-
-            var dataDiv = document.getElementById(device._alies + "updatePropPanelDataDiv");
-            if (dataDiv != undefined) {
-                addPropertyView(dataDiv, device.wifirssi, getLang("wifirssi"), "dBm");
-                addSpaceView(dataDiv, "1");
-
-            }
-        }
-
-        if (device._id == "esp") {
-
-            var dataDiv = document.getElementById(device._alies + "updatePropPanelDataDiv");
-            if (dataDiv != undefined) {
-
-                addPropertyView(dataDiv, device.espfreesketchspace, getLang("espfreesketchspace"), "byte");
-                addPropertyView(dataDiv, device.espfreeheap, getLang("espfreeheap"), "byte");
-                addPropertyView(dataDiv, device.espcpufreqmhz, getLang("espcpufreqmhz"), "mHz");
-                addSpaceView(dataDiv, "3");
-                addPropertyView(dataDiv, device.espresetreason, getLang("espresetreason"));
-                addSpaceView(dataDiv, "2");
-
-
-                var resetButton = dataDiv.appendChild(document.createElement('input'));
-                resetButton.className = "btn btn-danger btn-sm";
-                resetButton.type = "button";
-                resetButton.setAttribute("data-toggle", "modal");
-                resetButton.setAttribute("data-target", "#resetModal");
-                resetButton.value = getLang("reset");
-                resetButton.deviceHost = device._host;
-                resetButton.onclick = modalResetClick;
-
-
-                addPropertyView(dataDiv, device.firmwareversion, getLang("firmwareversion"));
-                addPropertyView(dataDiv, device.firmwarebuildnumber, getLang("firmwarebuildnumber"));
-                addSpaceView(dataDiv, "5");
-            }
-        }
-
-
-        if (device._id == "network") {
-            document.title = device.unitid.value + " :: OWL OS";
-
-            var RESTfulPanel = getStatusIndicator(device._alies +"restfulStatus", "RESTful");
-            device.restfulavailable.addValueListner(onRESTfulStatusChange, RESTfulPanel);
-            var node = WebProperties.getNodeByHost(device._host);
-            node.addNetworkStatusListner(onRESTfulOnlineStatusChange, RESTfulPanel);
-
-            var MQTTPanel = getStatusIndicator(device._alies +"mqttStatus", "MQTT");
-            device.mqttclientstate.addValueListner(onMQTTStatusChange, MQTTPanel);
-
-            var OTAPanel = getStatusIndicator(device._alies +"otaStatus", "OTA");
-            device.otaavailable.addValueListner(onOTAStatusChange, OTAPanel);
-
-            //Node Fade Panel --------------------------------------------------------
-            var dataDiv = document.getElementById(device._alies + "updatePropPanelDataDiv");
-            if (dataDiv != undefined) {
-               
-
-                 //   addPropertyView(dataDiv, espDevice.firmwareversion, getLang("firmwareversion"));
-                  //  addPropertyView(dataDiv, espDevice.firmwarebuildnumber, getLang("firmwarebuildnumber"));
-                  //  addSpaceView(dataDiv, "5");
-
-
-                addPropertyView(dataDiv, device.firmwareversion, getLang("firmwareversion"));
-                addPropertyView(dataDiv, device.firmwarebuildnumber, getLang("firmwarebuildnumber"));
-
-                   //Update watcher panel 
-                   var updateWatcherId = device._alies + "updateWatcher";
-                    var updateWatcherDiv = document.getElementById(updateWatcherId);
-                    if (updateWatcherDiv == null) {
-                        updateWatcherDiv = dataDiv.appendChild(document.createElement('div'));
-                        updateWatcherDiv.id = updateWatcherId;
-                        updateWatcherDiv.className = "text-primary";
-                        //one listner to two properties
-                        addSpaceView(dataDiv, "9");
-
-                        var updateuiButton = dataDiv.appendChild(document.createElement('input'));
-                        updateuiButton.id = "updateuibutton";
-                        updateuiButton.className = "btn btn-success btn-sm";
-                        updateuiButton.type = "button";
-                        updateuiButton.setAttribute("data-toggle", "modal");
-                        updateuiButton.setAttribute("data-target", "#resetModal");
-                        updateuiButton.value = getLang("updateuibutton");
-                        updateuiButton.node = deviceAhref.node;
-                        updateuiButton.onclick = modalUpdateUIClick;
-                        
-
-                        addSpaceView(dataDiv, "8");
-
-                        var updatefirmwareButton = dataDiv.appendChild(document.createElement('input'));
-                        updatefirmwareButton.id = "updatefirmwarebutton";
-                        updatefirmwareButton.className = "btn btn-success btn-sm";
-                        updatefirmwareButton.type = "button";
-                        updatefirmwareButton.setAttribute("data-toggle", "modal");
-                        updatefirmwareButton.setAttribute("data-target", "#resetModal");
-                        updatefirmwareButton.value = getLang("updatefirmwarebutton");
-                        updatefirmwareButton.onclick = modalUpdateFirmwareClick;
-
-                        updateuiButton.style.display = "none";
-                        updatefirmwareButton.style.display = "none";
-
-                        updateWatcherDiv.updateuiButton = updateuibutton; // document.getElementById("updateuibutton");
-                        updateWatcherDiv.updatefirmwareButton = updatefirmwarebutton; 
-
-                        device.updateinfo.addValueListner(onUpdateInfoValueChange, updateWatcherDiv);
-                        device.updatepossible.addValueListner(onUpdateInfoValueChange, updateWatcherDiv);
-                }
-
-
-
-
-            }
-        }
-
-        
-
-
-    }
-}
-
-var firstDevice = true;
-
-function deviceOnWebConfigChange(sender, webProperties) {
-
+﻿function _initDevicesTable() {
     
-    if (webProp.nodes.length == 0) return;
-        
-    var nodesSideBar = document.getElementById("nodesSideBar");
-    nodesSideBar.style.background = theme.primary;
-
-    //add addNodeNavItem first --------------------------------------------------
-    if (document.getElementById("addNodeNavItem") == undefined) {
-
-        var nodeNavItem = nodesSideBar.appendChild(document.createElement("li"));
-        nodeNavItem.className = "nav-item";
-        nodeNavItem.id = "addNodeNavItem";
-        var nodeHRef = nodeNavItem.appendChild(document.createElement("a"));
-        nodeHRef.className = "nav-link";
-        nodeHRef.parentLi = nodeLi;
-        nodeHRef.style.color = theme.success;
-        nodeHRef.setAttribute("data-toggle", "tab");
-        nodeHRef.onclick = addNodeClick;
-        nodeHRef.innerHTML = "<b>" + getLang("addnode") + "</b>";
-        nodeHRef.href = "#home";
-
-
-    }
-
-
-    for (var nodeKey in webProp.nodes) {
-        var node = webProp.nodes[nodeKey];
-        if (document.getElementById("nodeNavItem" + node.alies) == undefined) {
-
-            var nodeLi = nodesSideBar.appendChild(document.createElement("li"));
-            nodeLi.id = "nodeNavItem" + node.alies;
-            nodeLi.node = node;
-
-            if (firstDevice) {
-                //   nodeLi.className = "active";
-                nodesSideBar.activeLi = nodeLi;
-
-            }
-            var nodeAhref = nodeLi.appendChild(document.createElement("a"));
-            nodeAhref.id = node.alies + "ahref";
-            nodeAhref.href = "#" + node.alies + "submenu";
-
-            if (firstDevice) {
-                nodeAhref.setAttribute("data-toggle", "collapse");
-                nodeAhref.setAttribute("aria-expanded", "true");
-
-            }
-            else {
-                nodeAhref.setAttribute("data-toggle", "collapse");
-                nodeAhref.setAttribute("aria-expanded", "false");
-            }
-            nodeAhref.innerHTML = "<b>" + node.alies + "</b>";
-            //nodeAhref.onclick = deviceAnchorClick;
-            nodeAhref.parentLi = nodeLi;
-            nodeAhref.node = node;
-            node.addNetworkStatusListner(nodeOnNetworkChange, nodeAhref);
-            var nodeSubmenuUl = nodeLi.appendChild(document.createElement("ul"));
-
-            nodeLi.nodeSubmenuUl = nodeSubmenuUl;
-            nodeSubmenuUl.className = "collapse list-unstyled";
-            nodeSubmenuUl.id = node.alies + "submenu";
-
-
-            //Add device submenuitem ----------------
-
-            var deviceNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
-            deviceNavItem.className = "nav-item";
-            var deviceHRef = deviceNavItem.appendChild(document.createElement("a"));
-            deviceHRef.className = "nav-link";
-            deviceHRef.parentLi = nodeLi;
-            deviceHRef.style.color = theme.success;
-            deviceHRef.setAttribute("data-toggle", "tab");
-            deviceHRef.onclick = addDeviceClick;
-            deviceHRef.innerText = getLang("adddevice");
-            deviceHRef.href = "#home";
-            deviceHRef.node = node;
-
-            if (firstDevice) {
-                var devicesPanel = document.getElementById("devicesPanel");
-                devicesPanel = devicesPanel.appendChild(document.createElement("div"));
-                devicesPanel.id = "devicesPanelFade";
-                devicesPanel.className = "tab-content col-md-12";
-            }
-            
-
-            //Node Tab panel ----------------------
-
-            var nodePanelNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
-            nodePanelNavItem.className = "nav-item";
-            var nodePanelHRef = nodePanelNavItem.appendChild(document.createElement("a"));
-            nodePanelHRef.className = "nav-link";
-            nodePanelHRef.parentLi = nodeLi;
-            nodePanelHRef.style.color = theme.warning;
-            nodePanelHRef.setAttribute("data-toggle", "tab");
-            nodePanelHRef.onclick = deviceAnchorClick;
-            nodePanelHRef.innerText = getLang("properties");
-            nodePanelHRef.href = "#" + node.alies + "fadepanel";
-            nodePanelHRef.node = node;
-            var devicesPanel = document.getElementById("devicesPanelFade");
-            var div = devicesPanel.appendChild(document.createElement('div'));
-
-            // div.className = "col-md-" + this.size + " devicediv tab-pane fade";
-            div.className = "devicediv tab-pane fade";
-            if (firstDevice) {
-                div.className += " active show";
-                
-            }
-            div.id = node.alies + "fadepanel";
-            
-            nodeAhref.nodefadepanel = div;
-            //makeNodeFadePanel(div, node);
-
-            /*
-            var updatePropPanel = div.appendChild(document.createElement('div'));
-            updatePropPanel.id = node.alies + "updatePropPanel";
-            updatePropPanel.className = "col-md-12";
-            var infoDiv = updatePropPanel.appendChild(document.createElement('div'));
-            infoDiv.className = "card bg-primary mb-3";
-            var headerDiv = infoDiv.appendChild(document.createElement('div'));
-            headerDiv.className = "card-header";
-            headerDiv.innerText = getLang("unit");
-            */
-            var dataDiv = div.appendChild(document.createElement('div'));
-            dataDiv.id = node.alies + "updatePropPanelDataDiv"
-            //dataDiv.className = "card-body";
-
-
-
-            //------------------------------------------------------------------------------------
-            //Add files submenuitem ------------------
-
-            var filesNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
-            filesNavItem.className = "nav-item";
-            var filesHRef = filesNavItem.appendChild(document.createElement("a"));
-            filesHRef.className = "nav-link";
-            filesHRef.parentLi = nodeLi;
-            filesHRef.style.color = theme.warning;
-            filesHRef.setAttribute("data-toggle", "tab");
-            filesHRef.onclick = deviceAnchorClick;
-            filesHRef.innerText = getLang("files");
-            filesHRef.href = "#" + node.alies + "filesfadepanel";
-            filesHRef.node = node;
-
-
-            //var filesAnchors = document.getElementById("filesAnchors");
-            //new files tab ----------------
-            var devicesPanel = document.getElementById("devicesPanelFade");
-            var filesDiv = devicesPanel.appendChild(document.createElement('div'));
-
-            // div.className = "col-md-" + this.size + " devicediv tab-pane fade";
-            filesDiv.className = "devicediv tab-pane fade";
-            filesDiv.id = node.alies + "filesfadepanel";
-            
-            filesHRef.filesList = new FilesList(filesDiv, node);
-
-            // add Node Status Panel ---------------------------------------------
-            var nodeStatusPanel = document.createElement("div");
-            nodeStatusPanel.id = node.alies + "nodestatuspanel";
-            nodeAhref.nodeStatusPanel = nodeStatusPanel;
-            nodeAhref.onlinePanel = getStatusIndicator(node.alies + "onlineStatus", "Online", nodeStatusPanel);
-
-            node.addNetworkStatusListner(onOnlineStatusChange, nodeAhref.onlinePanel);
-            nodeAhref.WiFiAPPanel = getStatusIndicator(node.alies + "wifiapStatus", "WiFi AP", nodeStatusPanel);
-                                                    
-            nodeAhref.WiFiSTPanel = getStatusIndicator(node.alies + "wifistStatus", "WiFi ST", nodeStatusPanel);
-            nodeAhref.RESTfulPanel = getStatusIndicator(node.alies + "restfulStatus", "RESTful", nodeStatusPanel);
-            nodeAhref.MQTTPanel = getStatusIndicator(node.alies + "mqttStatus", "MQTT", nodeStatusPanel);
-            nodeAhref.OTAPanel = getStatusIndicator(node.alies + "otaStatus", "OTA", nodeStatusPanel);
-
-            document.getElementById("nodeStatusPanel").appendChild(nodeStatusPanel);
-
-
-            var nodeStatusPanelText = document.createElement("div");
-            nodeStatusPanelText.innerHTML = " <strong>" + node.alies + "</strong> at <a href='" + node.host + "' target='_blank'>" + node.host + "</a>";
-            document.getElementById("nodeStatusPanelText").appendChild(nodeStatusPanelText);
-
-            nodeStatusPanel.nodeStatusPanelText = nodeStatusPanelText;
-            if (firstDevice) {
-                document.getElementById("nodeStatusPanel").currentStatusPanel = nodeStatusPanel;
-                nodeStatusPanel.style.display = "block";
-                nodeStatusPanelText.style.display = "block";
-            }
-            else {
-                nodeStatusPanel.style.display = "none";
-                nodeStatusPanelText.style.display = "none";
-            }
-
-
-
-            firstDevice = false;
-        }
-    }
-
-}
-
-function getStatusIndicator(id, text, nodeStatusPanel) {
-    var selectedStatus = document.getElementById(id);
-    if (selectedStatus == null) {
-        selectedStatus = nodeStatusPanel.appendChild(document.createElement('span'));
-        selectedStatus.style.cursor = "pointer";
-        selectedStatus.className = "badge badge-secondary";
-        selectedStatus.setAttribute("data-toggle", "popover");
-        selectedStatus.setAttribute("data-container", "body");
-        selectedStatus.setAttribute("data-placement", "bottom");
-        selectedStatus.id = id;
-        selectedStatus.innerText = text;
-
-    }
-    return selectedStatus;
-}
-
-
-function addNodeClick(event) {
-
-    event.stopPropagation();
-    
-
-    makeModalDialog("resetPanel", "addnode", getLang("addnode"), "");
-    var modalFooter = document.getElementById("addnodeModalFooter");
-    var modalBody = document.getElementById("addnodeModalBody");
-
-
-    formGroup = modalBody.appendChild(document.createElement("div"));
-    formGroup.className = "form-group";
-    label = formGroup.appendChild(document.createElement("label"));
-    label.setAttribute("for", "hostEdit");
-    label.innerText = getLang("host");
-    var hostEdit = formGroup.appendChild(document.createElement('input'));
-    hostEdit.className = "form-control form-control-sm";
-    hostEdit.id = "hostInput";
-
-    label = formGroup.appendChild(document.createElement("label"));
-    label.setAttribute("for", "aliesEdit");
-    label.innerText = getLang("alies");
-    var aliesEdit = formGroup.appendChild(document.createElement('input'));
-    aliesEdit.className = "form-control form-control-sm";
-    aliesEdit.id = "aliesInput";
-
-    var updateButton = modalFooter.appendChild(document.createElement("button"));
-    updateButton.type = "button";
-    updateButton.className = "btn btn-sm btn-success";
-    updateButton.id = "addnodeModalButton";
-    updateButton.onclick = addNodeUIClick;
-    updateButton.innerText = getLang("addnodebutton");
-
-    $("#addnodeModal").modal('show');
-
-    return false;
-
-}
-
-function addNodeUIClick(event) {
-    event.stopPropagation();
-
-    if (WebProperties.addNode(document.getElementById("hostInput").value, document.getElementById("aliesInput").value)) {
-        if (WebProperties.save()) {
-            $("#addnodeModal").modal('hide');
-        }
-    }
-    //else todo ERROR
-    return false;
-}
-
-function deviceAnchorClick(event) {
-
-    
-    var aHref = event.currentTarget;
-    
-    var nodesSideBar = document.getElementById("nodesSideBar");
-    $(this).removeClass('active'); 
-    nodesSideBar.activeLi.className = "";
-    if (nodesSideBar.acriveHref != undefined) {
-        if (nodesSideBar.acriveHref.nodefadepanel != undefined) {
-            nodesSideBar.acriveHref.nodefadepanel.className = "devicediv tab-pane fade";
-        }
-    }
-    nodesSideBar.acriveHref = aHref;
-    if (aHref.nodefadepanel!= undefined) {
-        aHref.nodefadepanel.className = "devicediv tab-pane fade active show";
-    }
-    
-    aHref.parentLi.className = "active";
-  //  aHref.setAttribute("aria-expanded", "true");
-    
-
-    nodesSideBar.activeLi = aHref.parentLi;
-    //nodesSideBar.activeLi.className = "active";
-    document.location = aHref.href;
-
-    var node = aHref.node;
-    if (node != undefined) {
-
-        if (aHref.nodeStatusPanel == undefined) {
-            aHref = document.getElementById(node.alies + "ahref");
-        }
-        if (aHref.nodeStatusPanel != undefined) {
-            var nodeStatusPanel = document.getElementById("nodeStatusPanel");
-            if (nodeStatusPanel.currentStatusPanel != undefined) {
-                nodeStatusPanel.currentStatusPanel.style.display = "none";
-                nodeStatusPanel.currentStatusPanel.nodeStatusPanelText.style.display = "none";
-            }
-            nodeStatusPanel.currentStatusPanel = aHref.nodeStatusPanel;
-            nodeStatusPanel.currentStatusPanel.style.display = "block";
-            nodeStatusPanel.currentStatusPanel.nodeStatusPanelText.style.display = "block";
-        }
-
-    }
-
-    if (aHref.getAttribute("aria-expanded") == "true") {
-        document.documentElement.scrollTop = document.documentElement.scrollTop - event.clientY - event.target.offsetHeight;
-    }
-
-    return false;
-}
-
-function nodeOnNetworkChange(sender, node) {
-    if (node.networkStatus == NET_ONLINE) {
-        sender.className = "text-success";
-    }
-    else
-        if ((node.networkStatus == NET_RECONNECT) || (node.networkStatus == NET_REFRESH)) {
-            sender.className = "text-info";
-        }
-        else
-            if (node.networkStatus == NET_OFFLINE) {
-                sender.className = "text-secondary";
-            }
-            else  //error
-                if (node.networkStatus == NET_ERROR) {
-                    sender.className = "text-danger";
-                }
-}
-
-
-
-//TEMPORARY ---------------------------------
-
-//TEMPORARY ---------------------------------
-function _initDevicesTable() {
-    //temp ------------------------------------------------------------------------
     
     var devicesAnchors = document.getElementById("devicesAnchors");
 
@@ -517,190 +8,18 @@ function _initDevicesTable() {
     devicesNavBar.id = "devicesNavBar";
     devicesNavBar.className = "nav nav-tabs";
 
-/*
-    var deviceNavItem = devicesNavBar.appendChild(document.createElement("li"));
-    deviceNavItem.className = "nav-item";
-
-
-    var deviceHRef = deviceNavItem.appendChild(document.createElement("a"));
-    deviceHRef.className = "nav-link";
-    deviceHRef.style.background = theme.success;
-    deviceHRef.setAttribute("data-toggle", "tab");
-    deviceHRef.onclick = addDeviceClick;
-    deviceHRef.innerText = getLang("adddevice");
-    deviceHRef.href = href = "#home";
-    */
     
 }
 
-//-------------------------------------------
-/*
-class DevicesObjectsList {
-    constructor() {
-        this.devicesObjectsList = [];
-    }
 
-    getDevice(id) {
-        for (var i = 0; i < this.devicesObjectsList.length; i++) {
-            if (this.devicesObjectsList[i].id == id) {
-                return this.devicesObjectsList[i];
-            }
-        }
-        return null;
-    }
-
-    refresh(devicesList, devicesIndicatorsPanel) {
-
-        if ((status_online == NET_ONLINE) && (devicesList.length > 0)) {
-            for (var i = 0; i < devicesList.length; i++) {
-
-                var deviceType = getParsedDeviceProperty(devicesList[i], "type");
-                var deviceId = getParsedDeviceProperty(devicesList[i], "id");
-                var device = this.getDevice(deviceId);
-
-                if (device == null) {
-                    switch (deviceType) {
-                        case "0":
-                            device = new TemperatureDevice(devicesIndicatorsPanel, deviceId, "temperature");
-                            //TEMPORARY
-                            var device2 = new TemperatureDevice(devicesIndicatorsPanel, deviceId, "temperature", 1);
-                            this.devicesObjectsList.push(device2);
-                            //device2.refresh();
-                            device.twin = device2;
-                            device2.twin = device;
-                            break;
-                        case "1":
-                            device = new HumidityDevice(devicesIndicatorsPanel, deviceId, "humidity");
-                            //TEMPORARY
-                            var device2 = new HumidityDevice(devicesIndicatorsPanel, deviceId, "humidity", 1);
-                            this.devicesObjectsList.push(device2);
-                            //device2.refresh();
-                            device.twin = device2;
-                            device2.twin = device;
-                            break;
-                        case "2": device = new LightDevice(devicesIndicatorsPanel, deviceId, "light"); break;
-                        case "3": device = new SmokeDevice(devicesIndicatorsPanel, deviceId, "smoke"); break;
-                        case "4":
-                            device = new MotionDevice(devicesIndicatorsPanel, deviceId, "motion");
-                            //TEMPORARY
-                            var device2 = new MotionDevice(devicesIndicatorsPanel, deviceId, "motion", 1);
-                            this.devicesObjectsList.push(device2);
-                            //device2.refresh();
-                            device.twin = device2;
-                            device2.twin = device;
-                            break;                            
-                        case "5": device = new SensorDevice(devicesIndicatorsPanel, deviceId, "data"); break;
-                        case "6": device = new StepperDevice(devicesIndicatorsPanel, deviceId, "position"); break;
-                        case "7": device = new LCDDevice(devicesIndicatorsPanel, deviceId, "text"); break;
-                        case "8": device = new ActuatorDevice(devicesIndicatorsPanel, deviceId, "data"); break;
-                        default: break; //FFR add unknown device 
-
-                    }
-                    if (device != null) { //TEMP
-                        this.devicesObjectsList.push(device);
-                    }
-                }
-
-                if (device != null) { //TEMP
-                    device.refresh();
-                    if (device.twin != undefined) {
-                        device.twin.refresh();
-                    }
-                }
-
-                /*
-                if (deviceType === "6") { //stepper
-
-                    var range = getParsedDeviceProperty(devicesList[i], "range")
-                    var position = getParsedDeviceProperty(devicesList[i], "position")
-                    var percent = Math.round(position / (range / 100.0));
-                    //var stepperPanel = document.getElementById("devicesIndicatorsPanel").appendChild(document.createElement('div'));
-                    //addDeviceIndicator(devicesIndicatorPanel, percent, percent, "%", devicesList[i]);
-                    addDeviceIndicator(devicesIndicatorPanel, deviceId, percent, pervent + "%");
-
-                    var buttonsPanel = document.getElementById("buttonsPanel" + devicesList[i]);
-                    if (buttonsPanel == null) {
-                        buttonsPanel = stepperPanel.appendChild(document.createElement('div'));
-                        buttonsPanel.id = "buttonsPanel" + devicesList[i];
-                        buttonsPanel.class = "btn-group";
-                        buttonsPanel.role = "group";
-                    }
-                    else {
-                        buttonsPanel.innerHTML = "";
-                    }
-
-                    var toOpenButton = devicesIndicatorPanel.appendChild(document.createElement('a'));
-                    toOpenButton.className = "badge badge-primary";
-                    toOpenButton.href = "#";
-                    toOpenButton.id = "toopen" + devicesList[i];
-                    toOpenButton.stepperid = devicesList[i];
-                    toOpenButton.toposition = 0;
-                    toOpenButton.onclick = topositionClick;
-                    toOpenButton.innerText = "0%";
-
-                    var toMiddleButton = devicesIndicatorPanel.appendChild(document.createElement('a'));
-                    toMiddleButton.className = "badge badge-primary";
-                    toMiddleButton.href = "#";
-                    toMiddleButton.id = "tomiddle" + devicesList[i];
-                    toMiddleButton.stepperid = devicesList[i];
-                    toMiddleButton.toposition = range / 2;
-                    toMiddleButton.onclick = topositionClick;
-                    toMiddleButton.innerText = "50%";
-
-                    var toCloseButton = devicesIndicatorPanel.appendChild(document.createElement('a'));
-                    toCloseButton.className = "badge badge-primary";
-                    toCloseButton.href = "#";
-                    toCloseButton.id = "toclose" + devicesList[i];
-                    toCloseButton.stepperid = devicesList[i];
-                    toCloseButton.toposition = range;
-                    toCloseButton.onclick = topositionClick;
-                    toCloseButton.innerText = "100%";
-
-                }
-                else
-  
-                if (deviceType === "9") { //opto                            
-                    var Sensor = document.getElementById(devicesList[i] + "sensor");
-                    if (Sensor == null) {
-                        var Sensor = devicesIndicatorsPanel.appendChild(document.createElement('div'));
-                        Sensor.className = "card col-md-1 devicePanelDiv";
-                        Sensor.id = devicesList[i] + "sensor";
-                    }
-
-                    if (getParsedDeviceProperty(devicesList[i], "data") === "0") {
-                        Sensor.innerHTML = "<h4 class='text-info'>NO</h4><br>";
-                        Sensor.innerHTML += deviceId;
-                    }
-                    else
-                        if (getParsedDeviceProperty(devicesList[i], "data") === "1") {
-                            Sensor.innerHTML = "<h4 class='text-info'>F. to S.</h4><br>";
-                            Sensor.innerHTML += deviceId;
-                        }
-                        else {
-                            Sensor.innerHTML = "<h4 class='text-info'>S. to F.</h4><br>";
-                            Sensor.innerHTML += deviceId;
-                        }
-                }
-            }
-        }
-        //Offline
-        else {
-            for (var i = 0; i < this.devicesObjectsList.length; i++) {
-                this.devicesObjectsList[i].networkStatus = NET_OFFLINE;
-            }
-        }
-
-    }
-}
-              */
 //-----------------------------------------------------------------------------------
 //Devices classes -------------------------------------------------------------------
 //Base radial class 
 //-----------------------------------------------------------------------------------
-class RadialIndicatorsDeviceBase {
+class RadialIndicatorWrapper {
 
-    constructor(parentPanel, device, deviceProperty, noIndicator, webPropIndicator) {
-        this.webPropIndicator = webPropIndicator;
+    constructor(parentPanel, device, deviceProperty, noIndicator, configPropertiesIndicator) {
+        this.configPropertiesIndicator = configPropertiesIndicator;
         if (device == undefined) {
             devices.addDeviceLoadedListner(this.onDeviceLoaded, this);
         }
@@ -728,7 +47,7 @@ class RadialIndicatorsDeviceBase {
         this.device = device;
         this.deviceProperty = deviceProperty;
         this.indicator.deviceClass.deviceProperty = deviceProperty;
-        this.node = WebProperties.getNodeByHost(device._host);
+        this.node = config.getNodeByHost(device._host);
         //devices.addNetworkStatusListner(this.onNetworkStatusChange, this);
         this.node.addNetworkStatusListner(this.onNetworkStatusChange, this);
         this.deviceProperty.addNetworkStatusListner(this.onNetworkStatusChange, this);
@@ -789,7 +108,7 @@ class RadialIndicatorsDeviceBase {
     draw() { }
 }
 
-class TemperatureDevice extends RadialIndicatorsDeviceBase {
+class TemperatureIndicatorWrapper extends RadialIndicatorWrapper {
 
     offlineStarter(parentPanel, deviceId, devicePropertyName) {
         super.offlineStarter(parentPanel, deviceId, devicePropertyName, true);
@@ -800,8 +119,8 @@ class TemperatureDevice extends RadialIndicatorsDeviceBase {
 
     }
 
-    constructor(parentPanel, device, deviceProperty, webPropIndicator) {
-        super(parentPanel, device, deviceProperty, true, webPropIndicator);
+    constructor(parentPanel, device, deviceProperty, configPropertiesIndicator) {
+        super(parentPanel, device, deviceProperty, true, configPropertiesIndicator);
         if (device == undefined) return;
 
     }
@@ -820,7 +139,7 @@ class TemperatureDevice extends RadialIndicatorsDeviceBase {
     }
 }
 //-----------------------------------------------------------------------------------------------------------------------
-class HumidityDevice extends RadialIndicatorsDeviceBase {
+class HumidityIndicatorWrapper extends RadialIndicatorWrapper {
 
 
     offlineStarter(parentPanel, deviceId, devicePropertyName) {
@@ -833,8 +152,8 @@ class HumidityDevice extends RadialIndicatorsDeviceBase {
 
     }
 
-    constructor(parentPanel, device, deviceProperty, webPropIndicator) {
-        super(parentPanel, device, deviceProperty, true, webPropIndicator);
+    constructor(parentPanel, device, deviceProperty, configPropertiesIndicator) {
+        super(parentPanel, device, deviceProperty, true, configPropertiesIndicator);
         if (device == undefined) return;
 
     }
@@ -853,7 +172,7 @@ class HumidityDevice extends RadialIndicatorsDeviceBase {
     }
 }
 //HistoryData Graph ------------------------------------------------------------------------------------------------------
-class HistoryDataGraphDevice extends RadialIndicatorsDeviceBase {
+class HistoryDataGraphIndicatorWrapper extends RadialIndicatorWrapper {
 
     offlineStarter(parentPanel, deviceId, devicePropertyName) {
         super.offlineStarter(parentPanel, deviceId, devicePropertyName, true);
@@ -863,8 +182,8 @@ class HistoryDataGraphDevice extends RadialIndicatorsDeviceBase {
         this.draw();
     }
 
-    constructor(parentPanel, device, deviceProperty, webPropIndicator) {
-        super(parentPanel, device, deviceProperty, true, webPropIndicator);
+    constructor(parentPanel, device, deviceProperty, configPropertiesIndicator) {
+        super(parentPanel, device, deviceProperty, true, configPropertiesIndicator);
         if (device == undefined) return;
     }
 
@@ -883,7 +202,7 @@ class HistoryDataGraphDevice extends RadialIndicatorsDeviceBase {
 }
 
 
-class LightDevice extends RadialIndicatorsDeviceBase {
+class LightIndicatorWrapper extends RadialIndicatorWrapper {
 
     offlineStarter(parentPanel, deviceId, devicePropertyName) {
         super.offlineStarter(parentPanel, deviceId, devicePropertyName, true);
@@ -894,8 +213,8 @@ class LightDevice extends RadialIndicatorsDeviceBase {
         this.draw();
     }
 
-    constructor(parentPanel, device, deviceProperty, webPropIndicator) {
-        super(parentPanel, device, deviceProperty, true, webPropIndicator);
+    constructor(parentPanel, device, deviceProperty, configPropertiesIndicator) {
+        super(parentPanel, device, deviceProperty, true, configPropertiesIndicator);
         if (device == undefined) return;
 
     }
@@ -926,7 +245,7 @@ class LightDevice extends RadialIndicatorsDeviceBase {
 }
 
 
-class SmokeDevice extends RadialIndicatorsDeviceBase {
+class SmokeIndicatorWrapper extends RadialIndicatorWrapper {
 
     offlineStarter(parentPanel, deviceId, devicePropertyName) {
         super.offlineStarter(parentPanel, deviceId, devicePropertyName, true);
@@ -937,8 +256,8 @@ class SmokeDevice extends RadialIndicatorsDeviceBase {
         this.draw();
     }
 
-    constructor(parentPanel, device, deviceProperty, webPropIndicator) {
-        super(parentPanel, device, deviceProperty, true, webPropIndicator);
+    constructor(parentPanel, device, deviceProperty, configPropertiesIndicator) {
+        super(parentPanel, device, deviceProperty, true, configPropertiesIndicator);
         if (device == undefined) return;
 
     }
@@ -970,7 +289,7 @@ class SmokeDevice extends RadialIndicatorsDeviceBase {
 
 }
 
-class MotionDevice extends RadialIndicatorsDeviceBase {
+class MotionIndicatorWrapper extends RadialIndicatorWrapper {
 
     offlineStarter(parentPanel, deviceId, devicePropertyName) {
         super.offlineStarter(parentPanel, deviceId, devicePropertyName, true);
@@ -981,8 +300,8 @@ class MotionDevice extends RadialIndicatorsDeviceBase {
         this.draw();
     }
 
-    constructor(parentPanel, device, deviceProperty, webPropIndicator) {
-        super(parentPanel, device, deviceProperty, true, webPropIndicator);
+    constructor(parentPanel, device, deviceProperty, configPropertiesIndicator) {
+        super(parentPanel, device, deviceProperty, true, configPropertiesIndicator);
         if (device == undefined) return;
 
     }
@@ -1025,7 +344,7 @@ class MotionDevice extends RadialIndicatorsDeviceBase {
     }
 }
 
-class SensorDevice extends RadialIndicatorsDeviceBase {
+class SensorIndicatorWrapper extends RadialIndicatorWrapper {
     draw() {
         if (this.indicator == undefined) return;
         if (this.deviceProperty == undefined) return;
@@ -1048,8 +367,54 @@ class SensorDevice extends RadialIndicatorsDeviceBase {
 }
 
 //Acturator ----------------------------------------------------------------------------------
-class ActuatorDevice {
+class ActuatorIndicatorWrapper {
 
+
+    constructor(parentPanel, device, deviceProperty, noIndicator, configPropertiesIndicator) {
+        this.configPropertiesIndicator = configPropertiesIndicator;
+        if (device == undefined) {
+            devices.addDeviceLoadedListner(this.onDeviceLoaded, this);
+        }
+        else {
+            this.offlineStarter(parentPanel, device._id, deviceProperty.name, noIndicator);
+            this.joinDevice(device, deviceProperty);
+
+        }
+    }
+
+    offlineStarter(parentPanel, deviceId, devicePropertyName, noIndicator) {
+        this.deviceId = deviceId;
+        this.devicePropertyName = devicePropertyName;
+
+        addDashboardModeListner(this.onDashboardModeChange, this);
+        if ((noIndicator == undefined) || (!noIndicator)) {
+            this.indicator = new ActuatorIndicator(parentPanel, deviceId, 150);
+            this.indicator.deviceClass = this;
+            this.indicator.rPanel.onclick = this.indicatorClick;
+            this.draw();
+        }
+    }
+
+    joinDevice(device, deviceProperty) {
+        this.device = device;
+        this.deviceProperty = deviceProperty;
+        this.indicator.deviceClass.deviceProperty = deviceProperty;
+        this.node = config.getNodeByHost(device._host);
+        //devices.addNetworkStatusListner(this.onNetworkStatusChange, this);
+        this.node.addNetworkStatusListner(this.onNetworkStatusChange, this);
+        this.deviceProperty.addNetworkStatusListner(this.onNetworkStatusChange, this);
+        this.deviceProperty.addValueListner(this.onValueChange, this);
+    }
+
+
+    onDeviceLoaded(sender, device) {
+        if (sender.device != undefined) return;
+        if (sender.deviceId == device._id) {
+            sender.joinDevice(device, device[sender.devicePropertyName]);
+        }
+    }
+
+/*
 
     offlineStarter(parentPanel, deviceId, devicePropertyName) {
         this.deviceId = deviceId;
@@ -1066,8 +431,8 @@ class ActuatorDevice {
     }
 
 
-    constructor(parentPanel, device, deviceProperty, webPropIndicator) {
-        this.webPropIndicator = webPropIndicator;
+    constructor(parentPanel, device, deviceProperty, configPropertiesIndicator) {
+        this.configPropertiesIndicator = configPropertiesIndicator;
         if (device == undefined) {
             devices.addDeviceLoadedListner(this.onDeviceLoaded, this);
         }
@@ -1093,7 +458,7 @@ class ActuatorDevice {
             sender.deviceProperty.addValueListner(sender.onValueChange, sender);
         }
     }
-
+    */
 
 
     onValueChange(sender, deviceProperty) {
@@ -1119,7 +484,7 @@ class ActuatorDevice {
     }
 
 
-    actuatorIndicatorClick(event) {
+    indicatorClick(event) {
         event.stopPropagation();
         var actuatorIndicatorPanel = event.currentTarget;
         var indicator = actuatorIndicatorPanel.indicator;
@@ -1156,7 +521,7 @@ class ActuatorDevice {
 }
 
 //LCD ----------------------------------------------------------------------------------
-class LCDDevice {
+class LCDIndicatorWrapper {
 
     offlineStarter(parentPanel, deviceId, devicePropertyName, noIndicator) {
         this.deviceId = deviceId;
@@ -1173,8 +538,8 @@ class LCDDevice {
 
     }
 
-    constructor(parentPanel, device, deviceProperty, webPropIndicator) {
-        this.webPropIndicator = webPropIndicator;
+    constructor(parentPanel, device, deviceProperty, configPropertiesIndicator) {
+        this.configPropertiesIndicator = configPropertiesIndicator;
         if (device == undefined) {
             devices.addDeviceLoadedListner(this.onDeviceLoaded, this);
         }
@@ -1302,7 +667,7 @@ class LCDDevice {
 }
 
 //Stepper ----------------------------------------------------------------------------------
-class StepperDevice {
+class StepperIndicatorWrapper {
     constructor(parentPanel, id, propertyName) {
         this.id = id;
         this.propertyName = propertyName;
@@ -1378,34 +743,34 @@ var IndicatorsLayer = {
     RadialIndicator: {
         id: "radialindicator",
         name: getLang("radial"),
-        indicator: RadialIndicatorsDeviceBase
+        indicator: RadialIndicatorWrapper
     },
     */
     TemperatureIndicator: {
         id: "temperature",
         name: getLang("temperature"),
-        indicator: TemperatureDevice,
+        indicator: TemperatureIndicatorWrapper,
         devicesTypes: ";" + DHTDeviceType + ";",
         devicesProperties: ";temperature;"
     },
     HumidityIndicator: {
         id: "humidity",
         name: getLang("humidity"),
-        indicator: HumidityDevice,
+        indicator: HumidityIndicatorWrapper,
         devicesTypes: ";" + DHTDeviceType + ";",
         devicesProperties: ";humidity;"
     },
     HistoryDataGraphIndicator: {
         id: "historydatagraph",
         name: getLang("historydatagraph"),
-        indicator: HistoryDataGraphDevice,
+        indicator: HistoryDataGraphIndicatorWrapper,
         devicesTypes: "any",
         devicesProperties: ";historydata;",
     },
     LightIndicator: {
         id: "light",
         name: getLang("light"),
-        indicator: LightDevice,
+        indicator: LightIndicatorWrapper,
         devicesTypes: ";" + LightDeviceType + ";",
         devicesProperties: ";light;",
 
@@ -1413,14 +778,14 @@ var IndicatorsLayer = {
     SmokeIndicator: {
         id: "smoke",
         name: getLang("smoke"),
-        indicator: SmokeDevice,
+        indicator: SmokeIndicatorWrapper,
         devicesTypes: ";" + SmokeDeviceType + ";",
         devicesProperties: ";smoke;",
     },
     MotionIndicator: {
         id: "motion",
         name: getLang("motion"),
-        indicator: MotionDevice,
+        indicator: MotionIndicatorWrapper,
         devicesTypes: ";" + MotionDeviceType + ";",
         devicesProperties: ";motion;",
 
@@ -1428,7 +793,7 @@ var IndicatorsLayer = {
     SensorIndicator: {
         id: "sensor",
         name: getLang("sensor"),
-        indicator: SensorDevice,
+        indicator: SensorIndicatorWrapper,
         devicesTypes: ";" + SensorDeviceType + ";",
         devicesProperties: ";data;",
 
@@ -1436,7 +801,7 @@ var IndicatorsLayer = {
     LCDIndicator: {
         id: "lcd",
         name: getLang("lcd"),
-        indicator: LCDDevice,
+        indicator: LCDIndicatorWrapper,
         devicesTypes: ";" + LCDDeviceType + ";",
         devicesProperties: "any",
 
@@ -1444,7 +809,7 @@ var IndicatorsLayer = {
     ActuatorIndicator: {
         id: "actuator",
         name: getLang("actuator"),
-        indicator: ActuatorDevice,
+        indicator: ActuatorIndicatorWrapper,
         devicesTypes: ";" + ActuatorDeviceType + ";",
         devicesProperties: ";data;",
 
@@ -1506,13 +871,13 @@ function _initDashboard() {
     dataDiv.className = "card-body";
 
     var devicesIndicatorsPanel = document.getElementById("indicatorsPanelDataDiv");
-    for (var i = 0; i < webProp.dashboards[0].indicators.length; i++) {
-        var indicatorProp = webProp.dashboards[0].indicators[i];
+    for (var i = 0; i < configProperties.dashboards[0].indicators.length; i++) {
+        var indicatorProp = configProperties.dashboards[0].indicators[i];
         var indicator = IndicatorsLayer.getIndicatorById(indicatorProp.indicatorId);
         if (indicator != undefined) {
-            var indicatorDevice = new indicator.indicator(devicesIndicatorsPanel, undefined, undefined, webProp.dashboards[0].indicators[i]);
-            indicatorDevice.offlineStarter(devicesIndicatorsPanel, indicatorProp.deviceId, indicatorProp.deviceProperty);
-            indicatorDevice.indicator.addEventListner(WebProperties.indicatorEvent, webProp.dashboards[0].indicators[i]);
+            var indicatorWrapper = new indicator.indicator(devicesIndicatorsPanel, undefined, undefined, configProperties.dashboards[0].indicators[i]);
+            indicatorWrapper.offlineStarter(devicesIndicatorsPanel, indicatorProp.deviceId, indicatorProp.deviceProperty);
+            indicatorWrapper.indicator.addEventListner(config.indicatorEvent, configProperties.dashboards[0].indicators[i]);
 
         }
     }
@@ -1545,12 +910,12 @@ function addIndicatorMode() {
     deviceSelect.className = "form-control form-control-sm";
     deviceSelect.id = "typeSelect";
 
-    for (var node in webProp.nodes) {
+    for (var node in configProperties.nodes) {
         
-        for (var i = 0; i < webProp.nodes[node].devices.length; i++) {
+        for (var i = 0; i < configProperties.nodes[node].devices.length; i++) {
             var valueSelectOption = deviceSelect.appendChild(document.createElement('option'));
-            valueSelectOption.innerText = getLang(webProp.nodes[node].devices[i]._alies + "/" + webProp.nodes[node].devices[i]._id);
-            valueSelectOption.device = webProp.nodes[node].devices[i];
+            valueSelectOption.innerText = getLang(configProperties.nodes[node].devices[i]._alies + "/" + configProperties.nodes[node].devices[i]._id);
+            valueSelectOption.device = configProperties.nodes[node].devices[i];
         }
     }
 
@@ -1661,11 +1026,11 @@ function addIndicatorClick(event) {
     var deviceProp = devicePropSelect.options[devicePropSelect.selectedIndex].deviceProp;
     var indicator = indicatorSelect.options[indicatorSelect.selectedIndex].indicator;
 
-    var indicatorDevice = new indicator.indicator(devicesIndicatorsPanel, device, deviceProp);
+    var indicatorIndicatorWrapper = new indicator.indicator(devicesIndicatorsPanel, device, deviceProp);
 
-    var webPropIndicator = WebProperties.addIndicator("main", device._id, deviceProp.name, indicator.id)
+    var configPropertiesIndicator = config.addIndicator("main", device._id, deviceProp.name, indicator.id)
 
-    indicatorDevice.indicator.addEventListner(WebProperties.indicatorEvent, webPropIndicator);
+    indicatorWrapper.indicator.addEventListner(config.indicatorEvent, configPropertiesIndicator);
 
 
 
@@ -1675,8 +1040,8 @@ function addIndicatorClick(event) {
     /*
         var devicesIndicatorsPanel = document.getElementById("indicatorsPanelDataDiv");
         var device = devices.getDeviceById("temperature");    
-        new TemperatureDevice(devicesIndicatorsPanel, device, device.temperature);
-        new TemperatureDevice(devicesIndicatorsPanel, device, device.temperature, 1);
+        new TemperatureIndicatorWrapper(devicesIndicatorsPanel, device, device.temperature);
+        new TemperatureIndicatorWrapper(devicesIndicatorsPanel, device, device.temperature, 1);
     
         var device = devices.getDeviceById("humidiry");
         new HumidityDevice(devicesIndicatorsPanel, device, device.humidity);

@@ -216,7 +216,7 @@ class TableIndicator {
     //tbody последней таблицы 
     //deviceProperty объек с новым свойством устройства, смотрите devices.newDeviceProperty() в конце метода
     addProperty(deviceProperty) {
-        var node = WebProperties.getNodeByHost(deviceProperty.parenthost);
+        var node = config.getNodeByHost(deviceProperty.parenthost);
         if (node == undefined) return;
         this.tbody.propertyCount++; //инкрементируем счетчик свойств
         var tr = this.tbody.appendChild(document.createElement('tr'));

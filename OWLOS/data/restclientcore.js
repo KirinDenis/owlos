@@ -1,6 +1,6 @@
-//var boardhost = "http://192.168.1.10:8084/"; //DEBUG
+var boardhost = "http://192.168.1.10:8084/"; //DEBUG
 //var boardhost = "http://192.168.4.1:8084/"; //DEBUG as WiFi Access Point
-var boardhost = "";
+//var boardhost = "";
 
 function getUnitProperty(host, property) {  
   return httpGetWithErrorReson(host + "getunitproperty?property=" + escape(property)); 

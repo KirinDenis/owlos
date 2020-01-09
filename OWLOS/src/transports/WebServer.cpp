@@ -21,7 +21,7 @@
 #include "..\Managers\DeviceManager.h"
 #include "..\Managers\UpdateManager.h"
 #include "..\..\UnitProperties.h"
-#include "..\..\WebProperties.h"
+#include "..\..\config.h"
 
 
 #ifdef USESSL
@@ -635,16 +635,16 @@ void handleGetWebProperty()
 	{
 		if (webServer.argName(0).equals("property"))
 		{
-			String webProp = webOnMessage(unitGetTopic() + "/get" + decode(webServer.arg(0)), "");
-			if ((webProp.length() == 0) || (webProp.equals(WrongPropertyName)))
+			String configProperties = webOnMessage(unitGetTopic() + "/get" + decode(webServer.arg(0)), "");
+			if ((configProperties.length() == 0) || (configProperties.equals(WrongPropertyName)))
 			{
-				webProp = "wrong web property: " + webServer.arg(0);
-				webServer.send(404, "text/html", webProp);
+				configProperties = "wrong web property: " + webServer.arg(0);
+				webServer.send(404, "text/html", configProperties);
 				return;
 			}
 			else
 			{
-				webServer.send(200, "text/plain", webProp);
+				webServer.send(200, "text/plain", configProperties);
 				return;
 			}
 		}
