@@ -79,8 +79,8 @@
     "connectionstatus=Статус підключення: \n" +
     "detect=виявлено\n" +
     "notdetect=немає\n" +
-    "getwebconfig=загрузка настроек UI\n" +
-    "getwebconfigfailsparse=ошибка загрузки настроек UI\n" +
+    "getconfig=загрузка настроек UI\n" +
+    "getconfigfailsparse=ошибка загрузки настроек UI\n" +
     "espfreesketchspace=Вільне місце прошивки\n" +
     "espfreeheap=Вільна динамічна пам'ять\n" +
     "wifirssi=Рівень WiFi сигналу\n" +
@@ -163,8 +163,8 @@ var langen = "prepareUnit=prepare UI, please wait...\n" +
     "unauthorized=unauthorized\n"+
     "connectionstatus=Connection status: \n" +
     "shortlight=light\n" +
-    "getwebconfig=loading UI configuration\n" +
-    "getwebconfigfailsparse=fail loading of UI configuration\n" +
+    "getconfig=loading UI configuration\n" +
+    "getconfigfailsparse=fail loading of UI configuration\n" +
     "espfreesketchspace=free firmware space\n" +
     "espfreeheap=free dynamic memory\n" +
     "wifirssi=WiFi signal strength\n" +
@@ -271,8 +271,8 @@ var langru = "prepareUnit=подготовка интерфейса пользо
     "connectionstatus=Статус подключения: \n" +
     "detect=обнаружено\n" +
     "notdetect=нет\n" +
-    "getwebconfig=загрузка настроек UI\n" +
-    "getwebconfigfailsparse=ошибка загрузки настроек UI\n" +
+    "getconfig=загрузка настроек UI\n" +
+    "getconfigfailsparse=ошибка загрузки настроек UI\n" +
     "espfreesketchspace=свободное место прошивки\n" +
     "espfreeheap=свободная динамическая память\n" +
     "wifirssi=уровень WiFi сигнала\n" +

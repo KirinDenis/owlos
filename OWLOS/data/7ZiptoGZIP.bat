@@ -24,8 +24,8 @@ REM
 REM NOTE: We provide the .BAT file for faster repack UI content. Use 7Zip util and settup 
 REM Path from "D:\7Zip\7z.exe" to your native 
 
-D:\7Zip\7z.exe a -mx9 actuatorindicator.js.gz actuatorindicator.js
-D:\7Zip\7z.exe a -mx9 baseindicator.js.gz baseindicator.js 
+D:\7Zip\7z.exe a -mx9 actuatorwidget.js.gz actuatorwidget.js
+D:\7Zip\7z.exe a -mx9 basewidget.js.gz basewidget.js 
 D:\7Zip\7z.exe a -mx9 bootcore.js.gz bootcore.js 
 D:\7Zip\7z.exe a -mx9 bootstrap.min.css.gz bootstrap.min.css
 D:\7Zip\7z.exe a -mx9 bootstrap.min.js.gz bootstrap.min.js 
@@ -33,7 +33,8 @@ D:\7Zip\7z.exe a -mx9 restclientcore.js.gz restclientcore.js
 D:\7Zip\7z.exe a -mx9 ui.css.gz ui.css 
 D:\7Zip\7z.exe a -mx9 dataTables.min.css.gz dataTables.min.css 
 D:\7Zip\7z.exe a -mx9 dataTables.min.js.gz dataTables.min.js 
-D:\7Zip\7z.exe a -mx9 indicatorswrappers.js.gz indicatorswrappers.js 
+D:\7Zip\7z.exe a -mx9 dashboardui.js.gz dashboardui.js 
+D:\7Zip\7z.exe a -mx9 widgetswrappers.js.gz widgetswrappers.js 
 D:\7Zip\7z.exe a -mx9 devicescore.js.gz devicescore.js 
 D:\7Zip\7z.exe a -mx9 drawcore.js.gz drawcore.js 
 D:\7Zip\7z.exe a -mx9 filespanelui.js.gz filespanelui.js 
@@ -42,18 +43,18 @@ D:\7Zip\7z.exe a -mx9 index.js.gz index.js
 D:\7Zip\7z.exe a -mx9 jquery.dataTables.min.js.gz jquery.dataTables.min.js
 D:\7Zip\7z.exe a -mx9 jquery.min.js.gz jquery.min.js
 D:\7Zip\7z.exe a -mx9 languagescore.js.gz languagescore.js
-D:\7Zip\7z.exe a -mx9 lcdindicator.js.gz lcdindicator.js
-D:\7Zip\7z.exe a -mx9 lightindicator.js.gz lightindicator.js
-D:\7Zip\7z.exe a -mx9 lcdindicator.js.gz lcdindicator.js
-D:\7Zip\7z.exe a -mx9 lightindicator.js.gz lightindicator.js
-D:\7Zip\7z.exe a -mx9 motionindicator.js.gz motionindicator.js
+D:\7Zip\7z.exe a -mx9 lcdwidget.js.gz lcdwidget.js
+D:\7Zip\7z.exe a -mx9 lightwidget.js.gz lightwidget.js
+D:\7Zip\7z.exe a -mx9 lcdwidget.js.gz lcdwidget.js
+D:\7Zip\7z.exe a -mx9 lightwidget.js.gz lightwidget.js
+D:\7Zip\7z.exe a -mx9 motionwidget.js.gz motionwidget.js
 D:\7Zip\7z.exe a -mx9 settingsui.js.gz settingsui.js
 D:\7Zip\7z.exe a -mx9 popper.min.js.gz popper.min.js
-D:\7Zip\7z.exe a -mx9 radialindicator.js.gz radialindicator.js
-D:\7Zip\7z.exe a -mx9 smokeindicator.js.gz smokeindicator.js
+D:\7Zip\7z.exe a -mx9 radialwidget.js.gz radialwidget.js
+D:\7Zip\7z.exe a -mx9 smokewidget.js.gz smokewidget.js
 D:\7Zip\7z.exe a -mx9 speechcore.js.gz speechcore.js
-D:\7Zip\7z.exe a -mx9 stepperindicator.js.gz stepperindicator.js
-D:\7Zip\7z.exe a -mx9 temperatureindicator.js.gz temperatureindicator.js
-D:\7Zip\7z.exe a -mx9 graphindicator.js.gz graphindicator.js
+D:\7Zip\7z.exe a -mx9 stepperwidget.js.gz stepperwidget.js
+D:\7Zip\7z.exe a -mx9 temperaturewidget.js.gz temperaturewidget.js
+D:\7Zip\7z.exe a -mx9 graphwidget.js.gz graphwidget.js
 D:\7Zip\7z.exe a -mx9 configcore.js.gz configcore.js
-D:\7Zip\7z.exe a -mx9 tableindicator.js.gz tableindicator.js
+D:\7Zip\7z.exe a -mx9 tablewidget.js.gz tablewidget.js

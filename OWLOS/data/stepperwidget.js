@@ -1,6 +1,6 @@
 
 
-class StepperIndicator {
+class StepperWidget {
     constructor(parentPanel, id, size) {
         this.parentPanel = parentPanel;
         this.id = id;
@@ -8,15 +8,15 @@ class StepperIndicator {
 
         this.networkStatus = NET_ONLINE;
 
-        this.indicatorWidht = this.size / 10;
-        this.radius = this.size / 2 - this.indicatorWidht;
+        this.widgetWidht = this.size / 10;
+        this.radius = this.size / 2 - this.widgetWidht;
 
         this.alphaValue = "80";
 
         this.rPanel = this.parentPanel.appendChild(document.createElement("div"));
-        this.rPanel.id = id + "StepperIndicator";
-        this.rPanel.stepperIndicator = this;
-        this.rPanel.className = "ActuatorIndicator";
+        this.rPanel.id = id + "StepperWidget";
+        this.rPanel.stepperWidget = this;
+        this.rPanel.className = "ActuatorWidget";
         this.rPanel.style.cursor = "pointer";
 
         this.sPandingTop = this.size / 4;
@@ -39,50 +39,50 @@ class StepperIndicator {
         }
 
         this.rCanvas.onmousemove = this.mousemove;
-        this.rCanvas.stepperIndicator = this;
+        this.rCanvas.stepperWidget = this;
         
     }
 
     mousemove(event) {
         event.stopPropagation();
-        var stepperIndicator = event.currentTarget.stepperIndicator;
-        if (stepperIndicator.atProcess) {
-            stepperIndicator.atProcess = false;
+        var stepperWidget = event.currentTarget.stepperWidget;
+        if (stepperWidget.atProcess) {
+            stepperWidget.atProcess = false;
             return true; //OR cancel operation todo 
         }
         if (event.buttons == 1)
         {            
-            if ((event.offsetY > stepperIndicator.sPandingTop) && (event.offsetY < stepperIndicator.sPandingTop + stepperIndicator.sHeight)) {
+            if ((event.offsetY > stepperWidget.sPandingTop) && (event.offsetY < stepperWidget.sPandingTop + stepperWidget.sHeight)) {
 
-                var lenght = event.offsetY - stepperIndicator.sPandingTop;
-                var toPercent = lenght / (stepperIndicator.sHeight / 100);
-                stepperIndicator.userMovePosition = true;
-                stepperIndicator.refresh(stepperIndicator.percent, toPercent, stepperIndicator.indicatorText, stepperIndicator.text);        
+                var lenght = event.offsetY - stepperWidget.sPandingTop;
+                var toPercent = lenght / (stepperWidget.sHeight / 100);
+                stepperWidget.userMovePosition = true;
+                stepperWidget.refresh(stepperWidget.percent, toPercent, stepperWidget.widgetText, stepperWidget.text);        
                 return true;
             }
         }
-        if (stepperIndicator.userMovePosition) {
-            if (stepperIndicator.positionChangeReciever != null) {
-                stepperIndicator.userMovePosition = false;
-                stepperIndicator.positionChangeReciever(stepperIndicator.toPercent);
+        if (stepperWidget.userMovePosition) {
+            if (stepperWidget.positionChangeReciever != null) {
+                stepperWidget.userMovePosition = false;
+                stepperWidget.positionChangeReciever(stepperWidget.toPercent);
             }
         }
 
-        stepperIndicator.userMovePosition = false;
-        stepperIndicator.refresh(stepperIndicator.percent, stepperIndicator.toPercent, stepperIndicator.indicatorText, stepperIndicator.text);        
+        stepperWidget.userMovePosition = false;
+        stepperWidget.refresh(stepperWidget.percent, stepperWidget.toPercent, stepperWidget.widgetText, stepperWidget.text);        
 
         
         return false;
 
     } 
 
-    refresh(percent, toPercent, indicatorText, text) {
+    refresh(percent, toPercent, widgetText, text) {
         text = getLang(text);
-        //if ((this.percent == percent) && (this.toPercent == toPercent) && (this.indicatorText == indicatorText) && (this.text == text)) return;
+        //if ((this.percent == percent) && (this.toPercent == toPercent) && (this.widgetText == widgetText) && (this.text == text)) return;
        
         this.percent = Math.round(percent);
         this.toPercent = Math.round(toPercent);
-        this.indicatorText = indicatorText;
+        this.widgetText = widgetText;
         this.text = text;
 
         
@@ -118,7 +118,7 @@ class StepperIndicator {
     //---------------------------------------------------------------------------------------
     redrawAll() {
         this.starttime = 0;
-        requestAnimationFrame(() => this.drawIndicator());
+        requestAnimationFrame(() => this.drawWidget());
         this.drawText();
 
     }
@@ -129,36 +129,36 @@ class StepperIndicator {
         var elementWidth = 0;
         var elementHeight = 0;
         /*
-        if (this.indicatorElement == null) {
-            this.indicatorElement = this.rPanel.appendChild(document.createElement("h4"));            
-            this.indicatorElement.firstTime = true;
+        if (this.widgetElement == null) {
+            this.widgetElement = this.rPanel.appendChild(document.createElement("h4"));            
+            this.widgetElement.firstTime = true;
         }
         
         switch (this.networkStatus) {
-            case NET_ONLINE: this.indicatorElement.className = "ActuatorIndicatorPercent text-success"; break;
-            case NET_ERROR: this.indicatorElement.className = "ActuatorIndicatorPercent text-danger"; break;
-            case NET_RECONNECT: this.indicatorElement.className = "ActuatorIndicatorPercent text-info"; break;
+            case NET_ONLINE: this.widgetElement.className = "ActuatorWidgetPercent text-success"; break;
+            case NET_ERROR: this.widgetElement.className = "ActuatorWidgetPercent text-danger"; break;
+            case NET_RECONNECT: this.widgetElement.className = "ActuatorWidgetPercent text-info"; break;
             default: //offline
-                this.indicatorElement.className = "ActuatorIndicatorPercent text-secondary"; break;
+                this.widgetElement.className = "ActuatorWidgetPercent text-secondary"; break;
         }
 
-        this.indicatorElement.innerHTML = this.indicatorText;
-       // this.indicatorElement.innerHTML = "";
+        this.widgetElement.innerHTML = this.widgetText;
+       // this.widgetElement.innerHTML = "";
 
-        if (this.indicatorElement.firstTime) {
-            var elementWidth = this.indicatorElement.getBoundingClientRect().width;
+        if (this.widgetElement.firstTime) {
+            var elementWidth = this.widgetElement.getBoundingClientRect().width;
 
             if (elementWidth < this.size) {
-                this.indicatorElement.style.fontSize = (this.size / 2) / elementWidth + "rem";
+                this.widgetElement.style.fontSize = (this.size / 2) / elementWidth + "rem";
             }
 
-            elementWidth = this.indicatorElement.getBoundingClientRect().width;
-            this.indicatorElement.style.marginLeft = this.size / 2 - elementWidth / 2 + "px";
+            elementWidth = this.widgetElement.getBoundingClientRect().width;
+            this.widgetElement.style.marginLeft = this.size / 2 - elementWidth / 2 + "px";
 
-            var elementHeight = this.indicatorElement.getBoundingClientRect().height;
-            this.indicatorElement.style.marginTop = - (elementHeight / 2.0 + this.size / 2.0) + "px";
+            var elementHeight = this.widgetElement.getBoundingClientRect().height;
+            this.widgetElement.style.marginTop = - (elementHeight / 2.0 + this.size / 2.0) + "px";
 
-            this.indicatorElement.firstTime = false;
+            this.widgetElement.firstTime = false;
         }
         */
         //draw text label --------------
@@ -168,11 +168,11 @@ class StepperIndicator {
         }
 
         switch (this.networkStatus) {
-            case NET_ONLINE: this.textElement.className = "ActuatorIndicatorText text-white text-center"; break;
-            case NET_ERROR: this.textElement.className = "ActuatorIndicatorText text-danger text-center"; break;
-            case NET_RECONNECT: this.textElement.className = "ActuatorIndicatorText text-info text-center"; break;
+            case NET_ONLINE: this.textElement.className = "ActuatorWidgetText text-white text-center"; break;
+            case NET_ERROR: this.textElement.className = "ActuatorWidgetText text-danger text-center"; break;
+            case NET_RECONNECT: this.textElement.className = "ActuatorWidgetText text-info text-center"; break;
             default: //offline
-                this.textElement.className = "ActuatorIndicatorText text-secondary text-center"; break;
+                this.textElement.className = "ActuatorWidgetText text-secondary text-center"; break;
         }
 
         if (this.textElement.firstTime) {
@@ -199,11 +199,11 @@ class StepperIndicator {
         }
 
         switch (this.networkStatus) {
-            case NET_ONLINE: this.hintElement.className = "ActuatorIndicatorHint text-secondary text-center"; break;
-            case NET_ERROR: this.hintElement.className = "ActuatorIndicatorHint text-danger text-center"; break;
-            case NET_RECONNECT: this.hintElement.className = "ActuatorIndicatorHint text-info text-center"; break;
+            case NET_ONLINE: this.hintElement.className = "ActuatorWidgetHint text-secondary text-center"; break;
+            case NET_ERROR: this.hintElement.className = "ActuatorWidgetHint text-danger text-center"; break;
+            case NET_RECONNECT: this.hintElement.className = "ActuatorWidgetHint text-info text-center"; break;
             default: //offline
-                this.hintElement.className = "ActuatorIndicatorHint text-secondary text-center"; break;
+                this.hintElement.className = "ActuatorWidgetHint text-secondary text-center"; break;
         }
         
         if (this.hintElement.firstTime) {
@@ -234,7 +234,7 @@ class StepperIndicator {
 
 
 
-    drawIndicator() {
+    drawWidget() {
         this.rContext.save();
         this.rContext.clearRect(0, 0, this.rCanvas.width, this.rCanvas.height);
        this.rContext.imageSmoothingEnabled = false;
@@ -385,12 +385,12 @@ class StepperIndicator {
             this.spinnerAngle += 0.05;
             var counterClockwise = false;
             this.rContext.beginPath();
-            this.rContext.lineWidth = this.indicatorWidht / 3;
-            this.rContext.arc(x, y, this.radius - this.indicatorWidht - this.size / 15, this.spinnerAngle, this.spinnerAngle + Math.PI, counterClockwise);
+            this.rContext.lineWidth = this.widgetWidht / 3;
+            this.rContext.arc(x, y, this.radius - this.widgetWidht - this.size / 15, this.spinnerAngle, this.spinnerAngle + Math.PI, counterClockwise);
             this.rContext.strokeStyle = theme.info + 40;
             this.rContext.stroke();
             this.rContext.closePath();
-            requestAnimationFrame(() => this.drawIndicator());
+            requestAnimationFrame(() => this.drawWidget());
 
         }
 

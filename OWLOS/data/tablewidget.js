@@ -61,7 +61,7 @@ function createValueEdit(parentElement, propertyName, propertyValue, propertyTyp
 
 
 
-class TableIndicator {
+class TableWidget {
 
     constructor(devicesAnchors, devicesPanel, device, size) {
 
@@ -115,13 +115,13 @@ class TableIndicator {
         if (this.devicesAnchors != undefined) {
            // div.className = "col-md-" + this.size + " devicediv tab-pane fade";
             div.className =  "devicediv tab-pane fade";
-            if (firstDevice) {
-                div.className += " active show";
-                firstDevice = false;
-            }
+            //if (firstDevice) {
+                //div.className += " active show";
+                //firstDevice = false;
+            //}
         }
         else {
-            div.className = "col-md-" + this.size + " devicediv TableIndicator";
+            div.className = "col-md-" + this.size + " devicediv TableWidget";
         }
         div.id = this.device._alies + "_" + this.device._id;
         /*

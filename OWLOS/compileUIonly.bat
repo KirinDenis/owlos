@@ -2,10 +2,10 @@ REM unREM copy and put destination path, to copy content to different path
 @ECHO GZ and REM copy  JavaScript sources
 CD data
 
-D:\7Zip\7z.exe a -mx9 actuatorindicator.js.gz actuatorindicator.js
-REM copy  "actuatorindicator.js.gz" "actuatorindicator.js.gz"
-D:\7Zip\7z.exe a -mx9 baseindicator.js.gz baseindicator.js 
-REM copy  "baseindicator.js.gz" "baseindicator.js.gz"
+D:\7Zip\7z.exe a -mx9 actuatorwidget.js.gz actuatorwidget.js
+REM copy  "actuatorwidget.js.gz" "actuatorwidget.js.gz"
+D:\7Zip\7z.exe a -mx9 basewidget.js.gz basewidget.js 
+REM copy  "basewidget.js.gz" "basewidget.js.gz"
 D:\7Zip\7z.exe a -mx9 bootcore.js.gz bootcore.js 
 REM copy  "bootcore.js.gz" "bootcore.js.gz"
 D:\7Zip\7z.exe a -mx9 bootstrap.min.css.gz bootstrap.min.css
@@ -20,12 +20,14 @@ D:\7Zip\7z.exe a -mx9 dataTables.min.css.gz dataTables.min.css
 REM copy  "dataTables.min.css.gz" "dataTables.min.css.gz"
 D:\7Zip\7z.exe a -mx9 dataTables.min.js.gz dataTables.min.js 
 REM copy  "dataTables.min.js.gz" "dataTables.min.js.gz"
-D:\7Zip\7z.exe a -mx9 indicatorswrappers.js.gz indicatorswrappers.js 
-REM copy  "indicatorswrappers.js.gz" "indicatorswrappers.js.gz"
+D:\7Zip\7z.exe a -mx9 widgetswrappers.js.gz widgetswrappers.js 
+REM copy  "widgetswrappers.js.gz" "widgetswrappers.js.gz"
 D:\7Zip\7z.exe a -mx9 devicescore.js.gz devicescore.js 
 REM copy  "devicescore.js.gz" "devicescore.js.gz"
 D:\7Zip\7z.exe a -mx9 drawcore.js.gz drawcore.js 
 REM copy  "drawcore.js.gz" "drawcore.js.gz"
+D:\7Zip\7z.exe a -mx9 dashboardui.js.gz dashboardui.js 
+REM copy  "dashboardui.js.gz" "dashboardui.js.gz"
 D:\7Zip\7z.exe a -mx9 filespanelui.js.gz filespanelui.js 
 REM copy  "filespanelui.js.gz" "filespanelui.js.gz"
 D:\7Zip\7z.exe a -mx9 index.html.gz index.html 
@@ -38,36 +40,36 @@ D:\7Zip\7z.exe a -mx9 jquery.min.js.gz jquery.min.js
 REM copy  "jquery.min.js.gz" "jquery.min.js.gz"
 D:\7Zip\7z.exe a -mx9 languagescore.js.gz languagescore.js
 REM copy  "languagescore.js.gz" "languagescore.js.gz"
-D:\7Zip\7z.exe a -mx9 lcdindicator.js.gz lcdindicator.js
-REM copy  "lcdindicator.js.gz" "lcdindicator.js.gz"
-D:\7Zip\7z.exe a -mx9 lightindicator.js.gz lightindicator.js
-REM copy  "lightindicator.js.gz" "lightindicator.js.gz"
-D:\7Zip\7z.exe a -mx9 lcdindicator.js.gz lcdindicator.js
-REM copy  "lcdindicator.js.gz" "lcdindicator.js.gz"
-D:\7Zip\7z.exe a -mx9 lightindicator.js.gz lightindicator.js
-REM copy  "lightindicator.js.gz" "lightindicator.js.gz"
-D:\7Zip\7z.exe a -mx9 motionindicator.js.gz motionindicator.js
-REM copy  "motionindicator.js.gz" "motionindicator.js.gz"
+D:\7Zip\7z.exe a -mx9 lcdwidget.js.gz lcdwidget.js
+REM copy  "lcdwidget.js.gz" "lcdwidget.js.gz"
+D:\7Zip\7z.exe a -mx9 lightwidget.js.gz lightwidget.js
+REM copy  "lightwidget.js.gz" "lightwidget.js.gz"
+D:\7Zip\7z.exe a -mx9 lcdwidget.js.gz lcdwidget.js
+REM copy  "lcdwidget.js.gz" "lcdwidget.js.gz"
+D:\7Zip\7z.exe a -mx9 lightwidget.js.gz lightwidget.js
+REM copy  "lightwidget.js.gz" "lightwidget.js.gz"
+D:\7Zip\7z.exe a -mx9 motionwidget.js.gz motionwidget.js
+REM copy  "motionwidget.js.gz" "motionwidget.js.gz"
 D:\7Zip\7z.exe a -mx9 settingsui.js.gz settingsui.js
 REM copy  "settingsui.gz" "settingsui.gz"
 D:\7Zip\7z.exe a -mx9 popper.min.js.gz popper.min.js
 REM copy  "popper.min.js.gz" "popper.min.js.gz"
-D:\7Zip\7z.exe a -mx9 radialindicator.js.gz radialindicator.js
-REM copy  "radialindicator.js.gz" "radialindicator.js.gz"
-D:\7Zip\7z.exe a -mx9 smokeindicator.js.gz smokeindicator.js
-REM copy  "smokeindicator.js.gz" "smokeindicator.js.gz"
+D:\7Zip\7z.exe a -mx9 radialwidget.js.gz radialwidget.js
+REM copy  "radialwidget.js.gz" "radialwidget.js.gz"
+D:\7Zip\7z.exe a -mx9 smokewidget.js.gz smokewidget.js
+REM copy  "smokewidget.js.gz" "smokewidget.js.gz"
 D:\7Zip\7z.exe a -mx9 speechcore.js.gz speechcore.js
 REM copy  "speechcore.js.gz" "speechcore.js.gz"
-D:\7Zip\7z.exe a -mx9 stepperindicator.js.gz stepperindicator.js
-REM copy  "stepperindicator.js.gz" "stepperindicator.js.gz"
-D:\7Zip\7z.exe a -mx9 temperatureindicator.js.gz temperatureindicator.js
-REM copy  "temperatureindicator.js.gz" "temperatureindicator.js.gz"
-D:\7Zip\7z.exe a -mx9 graphindicator.js.gz graphindicator.js
-REM copy  "graphindicator.js.gz" "graphindicator.js.gz"
+D:\7Zip\7z.exe a -mx9 stepperwidget.js.gz stepperwidget.js
+REM copy  "stepperwidget.js.gz" "stepperwidget.js.gz"
+D:\7Zip\7z.exe a -mx9 temperaturewidget.js.gz temperaturewidget.js
+REM copy  "temperaturewidget.js.gz" "temperaturewidget.js.gz"
+D:\7Zip\7z.exe a -mx9 graphwidget.js.gz graphwidget.js
+REM copy  "graphwidget.js.gz" "graphwidget.js.gz"
 D:\7Zip\7z.exe a -mx9 configcore.js.gz configcore.js
 REM copy  "configcore.js.gz" "configcore.js.gz"
-D:\7Zip\7z.exe a -mx9 tableindicator.js.gz tableindicator.js
-REM copy  "tableindicator.js.gz" "tableindicator.js.gz"
+D:\7Zip\7z.exe a -mx9 tablewidget.js.gz tablewidget.js
+REM copy  "tablewidget.js.gz" "tablewidget.js.gz"
 
 REM copy  "updateinfo.html" "updateinfo.html"
 

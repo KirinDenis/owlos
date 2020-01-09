@@ -4,7 +4,7 @@ var MOVE_MODE = 1;
 var EVENT_NO = 0;
 var EVENT_DELETE = 1;
 
-class BaseIndicator {
+class BaseWidget {
     constructor(parentPanel, id, size) {
         this.parentPanel = parentPanel;
 
@@ -33,8 +33,8 @@ class BaseIndicator {
         this.svgElement.setAttributeNS(null, "height", size);
         this.svgElement.style.display = "block";
 
-        this.SVGIndicatorText = new SVGText(this.svgElement, this.id + "indicatortext", this.size / 100);
-        this.SVGIndicatorText.color = theme.secondary;
+        this.SVGWidgetText = new SVGText(this.svgElement, this.id + "widgettext", this.size / 100);
+        this.SVGWidgetText.color = theme.secondary;
         this.SVGLabel = new SVGText(this.svgElement, this.id + "label", this.size / 150);
         this.SVGLabel.color = theme.secondary;
         this.SVGHint = new SVGText(this.svgElement, this.id + "hint", this.size / 150);
@@ -73,7 +73,7 @@ class BaseIndicator {
         gradient.appendChild(stop3);
         this.svgElement.appendChild(gradient);
 
-        this.SVGArcSpinner = new SVGArc(this.svgElement, this.id + "arcindicator", this.centreX, this.centreY + this.topMargin, this.size / 4, this.size / 24);
+        this.SVGArcSpinner = new SVGArc(this.svgElement, this.id + "arcwidget", this.centreX, this.centreY + this.topMargin, this.size / 4, this.size / 24);
         this.SVGArcSpinner.color = 'url(#Gradient)';
         this.SVGArcSpinner.opacity = 0.4;
 
@@ -108,41 +108,41 @@ class BaseIndicator {
         this.rowSize = this.size / 4;
         this.SVGLeftIcon = new SVGIcon(this.svgElement, leftIcon, this.panding, this.height / 2 - this.rowSize / 2, this.rowSize, this.rowSize);
         this.SVGLeftIcon.fill = theme.light;
-        this.SVGLeftIcon.SVGIcon.indicator = this;
+        this.SVGLeftIcon.SVGIcon.widget = this;
         this.SVGLeftIcon.SVGIcon.onclick = this.moveLeft;
         this.SVGLeftIcon.hide();
 
         this.SVGRightIcon = new SVGIcon(this.svgElement, rightIcon, this.width - this.rowSize, this.height / 2 - this.rowSize / 2, this.rowSize, this.rowSize);
         this.SVGRightIcon.fill = theme.light;
-        this.SVGRightIcon.SVGIcon.indicator = this;
+        this.SVGRightIcon.SVGIcon.widget = this;
         this.SVGRightIcon.SVGIcon.onclick = this.moveRight;
         this.SVGRightIcon.hide();
 
         /*
         this.SVGPlusIcon = new SVGIcon(this.svgElement, plusIcon, this.width / 2 - this.rowSize / 2, 0, this.rowSize, this.rowSize);
         this.SVGPlusIcon.fill = theme.light;
-        this.SVGPlusIcon.SVGIcon.indicator = this;
+        this.SVGPlusIcon.SVGIcon.widget = this;
         this.SVGPlusIcon.SVGIcon.onclick = this.plusSize;
         this.SVGPlusIcon.hide();
         */
 
         this.SVGMinusIcon = new SVGIcon(this.svgElement, minusIcon, this.width / 2 - this.rowSize / 2, this.height - this.rowSize, this.rowSize, this.rowSize);
         this.SVGMinusIcon.fill = theme.light;
-        this.SVGMinusIcon.SVGIcon.indicator = this;
+        this.SVGMinusIcon.SVGIcon.widget = this;
         this.SVGMinusIcon.SVGIcon.onclick = this.minusSize;
         this.SVGMinusIcon.hide();
 
         /*
         this.SVGModeIcon = new SVGIcon(this.svgElement, menuIcon, this.width / 24, this.size / 30, this.size / 8, this.size / 8);
         this.SVGModeIcon.fill = theme.secondary;
-        this.SVGModeIcon.SVGIcon.indicator = this;
+        this.SVGModeIcon.SVGIcon.widget = this;
         this.SVGModeIcon.SVGIcon.onclick = this.modeChangeClick;
         */
 
         this.rPanel = this.parentPanel.appendChild(document.createElement("div"));
-        this.rPanel.id = id + "BaseIndicator";
-        this.rPanel.indicator = this;
-        this.rPanel.className = "Indicator";
+        this.rPanel.id = id + "BaseWidget";
+        this.rPanel.widget = this;
+        this.rPanel.className = "Widget";
         this.rPanel.style.cursor = "pointer";
 
         this.mouseEnter = false;
@@ -182,72 +182,72 @@ class BaseIndicator {
 
 
     moveLeft(event) {
-        var indicator = event.currentTarget.indicator;
-        if (indicator.mode == MOVE_MODE) {
-            var index = Array.prototype.slice.call(indicator.parentPanel.childNodes).indexOf(indicator.rPanel);
-            indicator.parentPanel.removeChild(indicator.rPanel);
-            indicator.parentPanel.insertBefore(indicator.rPanel, indicator.parentPanel.childNodes[index - 1]);
+        var widget = event.currentTarget.widget;
+        if (widget.mode == MOVE_MODE) {
+            var index = Array.prototype.slice.call(widget.parentPanel.childNodes).indexOf(widget.rPanel);
+            widget.parentPanel.removeChild(widget.rPanel);
+            widget.parentPanel.insertBefore(widget.rPanel, widget.parentPanel.childNodes[index - 1]);
         }
         return true;
     }
 
     moveRight(event) {
-        var indicator = event.currentTarget.indicator;
-        if (indicator.mode == MOVE_MODE) {
-            var index = Array.prototype.slice.call(indicator.parentPanel.childNodes).indexOf(indicator.rPanel);
-            indicator.parentPanel.removeChild(indicator.rPanel);
-            indicator.parentPanel.insertBefore(indicator.rPanel, indicator.parentPanel.childNodes[index + 1]);
+        var widget = event.currentTarget.widget;
+        if (widget.mode == MOVE_MODE) {
+            var index = Array.prototype.slice.call(widget.parentPanel.childNodes).indexOf(widget.rPanel);
+            widget.parentPanel.removeChild(widget.rPanel);
+            widget.parentPanel.insertBefore(widget.rPanel, widget.parentPanel.childNodes[index + 1]);
         }
         return true;
     }
 
     plusSize(event) {
-        var indicator = event.currentTarget.indicator;
-        if (indicator.mode == MOVE_MODE) {
-            indicator.svgElement.setAttributeNS(null, "width", indicator.width += 25);
-            indicator.svgElement.setAttributeNS(null, "height", indicator.height += 25);
+        var widget = event.currentTarget.widget;
+        if (widget.mode == MOVE_MODE) {
+            widget.svgElement.setAttributeNS(null, "width", widget.width += 25);
+            widget.svgElement.setAttributeNS(null, "height", widget.height += 25);
         }
         return true;
     }
     //TEMP: NOW IS USED AS DELETE BUTTON !
     minusSize(event) {
         
-        var indicator = event.currentTarget.indicator;
-        indicator.event = EVENT_DELETE;
-        Array.prototype.slice.call(indicator.parentPanel.childNodes).indexOf(indicator.rPanel);
-        indicator.parentPanel.removeChild(indicator.rPanel);
-        indicator.rPanel.innerHTML = "";
+        var widget = event.currentTarget.widget;
+        widget.event = EVENT_DELETE;
+        Array.prototype.slice.call(widget.parentPanel.childNodes).indexOf(widget.rPanel);
+        widget.parentPanel.removeChild(widget.rPanel);
+        widget.rPanel.innerHTML = "";
         /*
-        if (indicator.mode == MOVE_MODE) {
-            indicator.svgElement.setAttributeNS(null, "width", indicator.width -= 25);
-            indicator.svgElement.setAttributeNS(null, "height", indicator.height -= 25);
+        if (widget.mode == MOVE_MODE) {
+            widget.svgElement.setAttributeNS(null, "width", widget.width -= 25);
+            widget.svgElement.setAttributeNS(null, "height", widget.height -= 25);
         }
         */
         return true;
     }
 
     modeChangeClick(event) {
-        var indicator = event.currentTarget.indicator;
-        if (indicator.mode == WORK_MODE) {
-            indicator.mode = MOVE_MODE;
+        var widget = event.currentTarget.widget;
+        if (widget.mode == WORK_MODE) {
+            widget.mode = MOVE_MODE;
         }
         else {
-            indicator.mode = WORK_MODE;
+            widget.mode = WORK_MODE;
         }
         return true;
     }
 
     mouseOver(event) {
-        var indicator = event.currentTarget.indicator;
-        indicator.mouseEnter = true;
-        indicator.drawMouseEnter();
+        var widget = event.currentTarget.widget;
+        widget.mouseEnter = true;
+        widget.drawMouseEnter();
         return true;
     }
 
     mouseOut(event) {
-        var indicator = event.currentTarget.indicator;
-        indicator.mouseEnter = false;
-        indicator.drawMouseEnter();
+        var widget = event.currentTarget.widget;
+        widget.mouseEnter = false;
+        widget.drawMouseEnter();
         return true;
     }
 
@@ -275,17 +275,17 @@ class BaseIndicator {
     }
 
 
-    refresh(data, indicatorText, label, historyData) {
-        if ((this._data == data) && (this.indicatorText == indicatorText) && (this.label == label)) return;
+    refresh(data, widgetText, label, historyData) {
+        if ((this._data == data) && (this.widgetText == widgetText) && (this.label == label)) return;
 
-        if (this.indicatorText != indicatorText) {
-            speak(label + " " + indicatorText);
+        if (this.widgetText != widgetText) {
+            speak(label + " " + widgetText);
         }
 
         label = getLang(label);
         this.historyData = historyData;
         this._data = data;
-        this.indicatorText = indicatorText;
+        this.widgetText = widgetText;
         this.label = label;
         this.spinnerAngle = 0;
         this.redrawAll();
@@ -315,26 +315,26 @@ set networkStatus(networkStatus) {
     //---------------------------------------------------------------------------------------
     redrawAll() {
         this.starttime = 0;
-        requestAnimationFrame(() => this.drawIndicator());
+        requestAnimationFrame(() => this.drawWidget());
         this.drawText();
     }
 
     //---------------------------------------------------------------------------------------
     //draw element text labels - percent value and text 
     drawText() {
-        //Indicator text         
-        this.SVGIndicatorText.text = this.indicatorText;
-        if (this.SVGIndicatorText.width != 0) {
-            this.SVGIndicatorText.x = this.centreX - this.SVGIndicatorText.width / 2;
-            this.SVGIndicatorText.y = this.centreY + this.SVGIndicatorText.height / 2;
+        //Widget text         
+        this.SVGWidgetText.text = this.widgetText;
+        if (this.SVGWidgetText.width != 0) {
+            this.SVGWidgetText.x = this.centreX - this.SVGWidgetText.width / 2;
+            this.SVGWidgetText.y = this.centreY + this.SVGWidgetText.height / 2;
         }
 
         switch (this._networkStatus) {
-            case NET_ONLINE: this.toColor(this.SVGIndicatorText, theme.success); break;
-            case NET_ERROR: this.toColor(this.SVGIndicatorText, theme.danger); break;
-            case NET_RECONNECT: this.toColor(this.SVGIndicatorText, theme.info); break;
+            case NET_ONLINE: this.toColor(this.SVGWidgetText, theme.success); break;
+            case NET_ERROR: this.toColor(this.SVGWidgetText, theme.danger); break;
+            case NET_RECONNECT: this.toColor(this.SVGWidgetText, theme.info); break;
             default: //offline
-                this.toColor(this.SVGIndicatorText, theme.secondary); break;
+                this.toColor(this.SVGWidgetText, theme.secondary); break;
         }
 
         //Label 
@@ -425,7 +425,7 @@ set networkStatus(networkStatus) {
 
     }
 
-    drawIndicator() {
+    drawWidget() {
         var oneHangPercent = 360 + 90 + 30 - 240;
         var drawPercent = this._data * (oneHangPercent / 100);
 
@@ -506,7 +506,7 @@ set networkStatus(networkStatus) {
                 this.SVGArcSpinner.opacity += 0.01;
             }
             this.SVGArcSpinner.draw(this.spinnerAngle, 240 + this.spinnerAngle);
-            requestAnimationFrame(() => this.drawIndicator());
+            requestAnimationFrame(() => this.drawWidget());
         }
         else {
             this.SVGArcSpinner.opacity = 0.0;

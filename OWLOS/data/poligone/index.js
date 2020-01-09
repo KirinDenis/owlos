@@ -19,208 +19,208 @@ $(document).ready(function () {
     theme.dark = style.getPropertyValue('--dark');
     theme.fontFamily = style.fontFamily;
 
-    var devicesIndicatorsPanel = document.getElementById("devicesIndicatorsPanel");
+    var devicesWidgetsPanel = document.getElementById("devicesWidgetsPanel");
 
-    var graphIndicator = new GraphIndicator(devicesIndicatorsPanel, "temperature", 150, temperatureIcon);
-    graphIndicator.refresh("temperature", "temperature", "4;1000.10;0.30;2500.40;1000.010;");
-    graphIndicator.networkStatus = NET_ONLINE;
+    var graphWidget = new GraphWidget(devicesWidgetsPanel, "temperature", 150, temperatureIcon);
+    graphWidget.refresh("temperature", "temperature", "4;1000.10;0.30;2500.40;1000.010;");
+    graphWidget.networkStatus = NET_ONLINE;
 
 
-    var graphIndicator = new GraphIndicator(devicesIndicatorsPanel, "temperature", 150);
-    graphIndicator.refresh("temperature", "temperature", "4;1000.10;0.30;2500.40;1000.010;");
-    graphIndicator.networkStatus = NET_RECONNECT;
+    var graphWidget = new GraphWidget(devicesWidgetsPanel, "temperature", 150);
+    graphWidget.refresh("temperature", "temperature", "4;1000.10;0.30;2500.40;1000.010;");
+    graphWidget.networkStatus = NET_RECONNECT;
 
-    var graphIndicator = new GraphIndicator(devicesIndicatorsPanel, "temperature", 150);
-    graphIndicator.refresh("temperature", "temperature", "30;25.10;25.30;25.40;26.00;26.00;25.00;27.00;25.00;25.00;27.00;25.10;25.20;25.40;25.50;25.30;25.10;26.00;25.00;25.00;25.00;25.00;25.00;25.00;25.00;25.00;25.00;25.00;25.00;25.00;35.00;");   
-    graphIndicator.networkStatus = NET_OFFLINE;
+    var graphWidget = new GraphWidget(devicesWidgetsPanel, "temperature", 150);
+    graphWidget.refresh("temperature", "temperature", "30;25.10;25.30;25.40;26.00;26.00;25.00;27.00;25.00;25.00;27.00;25.10;25.20;25.40;25.50;25.30;25.10;26.00;25.00;25.00;25.00;25.00;25.00;25.00;25.00;25.00;25.00;25.00;25.00;25.00;35.00;");   
+    graphWidget.networkStatus = NET_OFFLINE;
 
-    var graphIndicator = new GraphIndicator(devicesIndicatorsPanel, "temperature", 150);
-    graphIndicator.refresh("temperature", "temperature", "30;2.00;2.00;4.00;2.00;4.00;4.00;2.00;4.00;1.00;4.00;4.00;4.00;2.00;4.00;2.00;4.00;4.00;3.00;4.00;2.00;4.00;2.00;4.00;2.00;4.00;4.00;4.00;3.00;4.00;4.00;");   
-    graphIndicator.networkStatus = NET_ERROR;
+    var graphWidget = new GraphWidget(devicesWidgetsPanel, "temperature", 150);
+    graphWidget.refresh("temperature", "temperature", "30;2.00;2.00;4.00;2.00;4.00;4.00;2.00;4.00;1.00;4.00;4.00;4.00;2.00;4.00;2.00;4.00;4.00;3.00;4.00;2.00;4.00;2.00;4.00;2.00;4.00;4.00;4.00;3.00;4.00;4.00;");   
+    graphWidget.networkStatus = NET_ERROR;
 
-    var graphIndicator = new GraphIndicator(devicesIndicatorsPanel, "temperature", 150);
-    graphIndicator.refresh("temperature", "temperature", "60;2.00;2.00;4.00;2.00;4.00;4.00;2.00;4.00;1.00;4.00;4.00;4.00;2.00;4.00;2.00;4.00;4.00;3.00;4.00;2.00;4.00;2.00;4.00;2.00;4.00;4.00;4.00;3.00;4.00;4.00;2.00;2.00;4.00;2.00;4.00;4.00;2.00;4.00;1.00;4.00;4.00;4.00;2.00;4.00;2.00;4.00;4.00;3.00;4.00;2.00;4.00;2.00;4.00;2.00;4.00;4.00;4.00;3.00;4.00;4.00;");   
-    graphIndicator.networkStatus = NET_ONLINE;
+    var graphWidget = new GraphWidget(devicesWidgetsPanel, "temperature", 150);
+    graphWidget.refresh("temperature", "temperature", "60;2.00;2.00;4.00;2.00;4.00;4.00;2.00;4.00;1.00;4.00;4.00;4.00;2.00;4.00;2.00;4.00;4.00;3.00;4.00;2.00;4.00;2.00;4.00;2.00;4.00;4.00;4.00;3.00;4.00;4.00;2.00;2.00;4.00;2.00;4.00;4.00;2.00;4.00;1.00;4.00;4.00;4.00;2.00;4.00;2.00;4.00;4.00;3.00;4.00;2.00;4.00;2.00;4.00;2.00;4.00;4.00;4.00;3.00;4.00;4.00;");   
+    graphWidget.networkStatus = NET_ONLINE;
 
-    motionIndicator = new MotionIndicator(devicesIndicatorsPanel, "temperature", 150);
-//    motionIndicator.refresh(1, "detect", "motion", "30;2.00;2.00;4.00;2.00;4.00;4.00;2.00;4.00;1.00;4.00;4.00;4.00;2.00;4.00;2.00;4.00;4.00;3.00;4.00;2.00;4.00;2.00;4.00;2.00;4.00;4.00;4.00;3.00;4.00;4.00;");
+    motionWidget = new MotionWidget(devicesWidgetsPanel, "temperature", 150);
+//    motionWidget.refresh(1, "detect", "motion", "30;2.00;2.00;4.00;2.00;4.00;4.00;2.00;4.00;1.00;4.00;4.00;4.00;2.00;4.00;2.00;4.00;4.00;3.00;4.00;2.00;4.00;2.00;4.00;2.00;4.00;4.00;4.00;3.00;4.00;4.00;");
 //short
-    motionIndicator.refresh(1, "detect", "motion", "5;2.00;2.00;4.00;2.00;4.00;");
-    motionIndicator.networkStatus = NET_ONLINE;
+    motionWidget.refresh(1, "detect", "motion", "5;2.00;2.00;4.00;2.00;4.00;");
+    motionWidget.networkStatus = NET_ONLINE;
 
 
-    var temperatureIndicator = new TemperatureIndicator(devicesIndicatorsPanel, "temperature", 150);
-    temperatureIndicator.refresh(25, "25C", "temperature", "30;2.00;2.00;4.00;2.00;4.00;4.00;2.00;4.00;1.00;4.00;4.00;4.00;2.00;4.00;2.00;4.00;4.00;3.00;4.00;2.00;4.00;2.00;4.00;2.00;4.00;4.00;4.00;3.00;4.00;4.00;");
+    var temperatureWidget = new TemperatureWidget(devicesWidgetsPanel, "temperature", 150);
+    temperatureWidget.refresh(25, "25C", "temperature", "30;2.00;2.00;4.00;2.00;4.00;4.00;2.00;4.00;1.00;4.00;4.00;4.00;2.00;4.00;2.00;4.00;4.00;3.00;4.00;2.00;4.00;2.00;4.00;2.00;4.00;4.00;4.00;3.00;4.00;4.00;");
 
-    temperatureIndicator = new TemperatureIndicator(devicesIndicatorsPanel, "temperature", 150);
-    temperatureIndicator.refresh(-5, "-5C", "temperature");
-    temperatureIndicator.networkStatus = NET_RECONNECT;
+    temperatureWidget = new TemperatureWidget(devicesWidgetsPanel, "temperature", 150);
+    temperatureWidget.refresh(-5, "-5C", "temperature");
+    temperatureWidget.networkStatus = NET_RECONNECT;
 
-    temperatureIndicator = new TemperatureIndicator(devicesIndicatorsPanel, "temperature", 150);
-    temperatureIndicator.refresh(50, "50C", "temperature", "30;2.00;2.00;4.00;2.00;4.00;4.00;2.00;4.00;1.00;4.00;4.00;4.00;2.00;4.00;2.00;4.00;4.00;3.00;4.00;2.00;4.00;2.00;4.00;2.00;4.00;4.00;4.00;3.00;4.00;4.00;");
+    temperatureWidget = new TemperatureWidget(devicesWidgetsPanel, "temperature", 150);
+    temperatureWidget.refresh(50, "50C", "temperature", "30;2.00;2.00;4.00;2.00;4.00;4.00;2.00;4.00;1.00;4.00;4.00;4.00;2.00;4.00;2.00;4.00;4.00;3.00;4.00;2.00;4.00;2.00;4.00;2.00;4.00;4.00;4.00;3.00;4.00;4.00;");
 
-    temperatureIndicator = new TemperatureIndicator(devicesIndicatorsPanel, "temperature", 150);
-    temperatureIndicator.refresh(27, "27C", "temperature");
-    temperatureIndicator.networkStatus = NET_ERROR;
-
-
-
-
-    lightIndicator = new LightIndicator(devicesIndicatorsPanel, "temperature", 150);
-    lightIndicator.refresh(10, "low", "light");
-    lightIndicator.networkStatus = NET_ONLINE;
-
-    lightIndicator = new LightIndicator(devicesIndicatorsPanel, "temperature", 150);
-    lightIndicator.refresh(50, "norm", "light");
-    lightIndicator.networkStatus = NET_ONLINE;
-
-    lightIndicator = new LightIndicator(devicesIndicatorsPanel, "temperature", 150);
-    lightIndicator.refresh(61, "high", "light");
-    lightIndicator.networkStatus = NET_ONLINE;
-
-    lightIndicator = new LightIndicator(devicesIndicatorsPanel, "temperature", 150);
-    lightIndicator.refresh(100, "high", "light");
-    lightIndicator.networkStatus = NET_ONLINE;
-
-    lightIndicator = new LightIndicator(devicesIndicatorsPanel, "temperature", 150);
-    lightIndicator.refresh(40, "low", "light");
-    lightIndicator.networkStatus = NET_RECONNECT;
-
-    lightIndicator = new LightIndicator(devicesIndicatorsPanel, "temperature", 150);
-    lightIndicator.refresh(50, "norm", "light");
-
-    lightIndicator = new LightIndicator(devicesIndicatorsPanel, "temperature", 150);
-    lightIndicator.refresh(75, "high", "light");
-    lightIndicator.networkStatus = NET_ERROR;
-
-
-    smokeIndicator = new SmokeIndicator(devicesIndicatorsPanel, "temperature", 150);
-    smokeIndicator.refresh(10, "smokelow", "smoke");
-    smokeIndicator.networkStatus = NET_ONLINE;
-
-    smokeIndicator = new SmokeIndicator(devicesIndicatorsPanel, "temperature", 150);
-    smokeIndicator.refresh(50, "smokenorm", "smoke");
-    smokeIndicator.networkStatus = NET_ONLINE;
-
-    smokeIndicator = new SmokeIndicator(devicesIndicatorsPanel, "temperature", 150);
-    smokeIndicator.refresh(61, "smokehigh", "smoke");
-    smokeIndicator.networkStatus = NET_ONLINE;
-
-    smokeIndicator = new SmokeIndicator(devicesIndicatorsPanel, "temperature", 150);
-    smokeIndicator.refresh(100, "smokehigh", "smoke");
-    smokeIndicator.networkStatus = NET_ONLINE;
-
-    smokeIndicator = new SmokeIndicator(devicesIndicatorsPanel, "temperature", 150);
-    smokeIndicator.refresh(50, "smokelow", "smoke");
-    smokeIndicator.networkStatus = NET_RECONNECT;
-
-    smokeIndicator = new SmokeIndicator(devicesIndicatorsPanel, "temperature", 150);
-    smokeIndicator.refresh(72, "smokenorm", "smoke");
-
-    smokeIndicator = new SmokeIndicator(devicesIndicatorsPanel, "temperature", 150);
-    smokeIndicator.refresh(83, "smokehigh", "smoke");
-    smokeIndicator.networkStatus = NET_ERROR;
-
-    motionIndicator = new MotionIndicator(devicesIndicatorsPanel, "temperature", 150);
-    motionIndicator.refresh(1, "detect", "motion");
-    motionIndicator.networkStatus = NET_ONLINE;
-
-
-    motionIndicator = new MotionIndicator(devicesIndicatorsPanel, "temperature", 150);
-    motionIndicator.refresh(0, "notdetect", "motion");
-    motionIndicator.networkStatus = NET_RECONNECT;
-
-    motionIndicator = new MotionIndicator(devicesIndicatorsPanel, "temperature", 150);
-    motionIndicator.refresh(1, "detect", "motion");
-
-    motionIndicator = new MotionIndicator(devicesIndicatorsPanel, "temperature", 150);
-    motionIndicator.refresh(1, "notdetect", "motion");
-    motionIndicator.networkStatus = NET_ERROR;
+    temperatureWidget = new TemperatureWidget(devicesWidgetsPanel, "temperature", 150);
+    temperatureWidget.refresh(27, "27C", "temperature");
+    temperatureWidget.networkStatus = NET_ERROR;
 
 
 
-    var radialIndicator = new RadialIndicator(devicesIndicatorsPanel, "temperature", 150);
-    radialIndicator.refresh(1, "1%", "humidity");
 
-    radialIndicator = new RadialIndicator(devicesIndicatorsPanel, "temperature", 150);
-    radialIndicator.refresh(50, "50%", "humidity");
-    radialIndicator.networkStatus = NET_RECONNECT;
+    lightWidget = new LightWidget(devicesWidgetsPanel, "temperature", 150);
+    lightWidget.refresh(10, "low", "light");
+    lightWidget.networkStatus = NET_ONLINE;
 
-    radialIndicator = new RadialIndicator(devicesIndicatorsPanel, "temperature", 150);
-    radialIndicator.refresh(100, "100%", "humidity");
+    lightWidget = new LightWidget(devicesWidgetsPanel, "temperature", 150);
+    lightWidget.refresh(50, "norm", "light");
+    lightWidget.networkStatus = NET_ONLINE;
 
-    radialIndicator = new RadialIndicator(devicesIndicatorsPanel, "temperature", 150);
-    radialIndicator.refresh(50, "27C", "temperature");
-    radialIndicator.networkStatus = NET_ERROR;
+    lightWidget = new LightWidget(devicesWidgetsPanel, "temperature", 150);
+    lightWidget.refresh(61, "high", "light");
+    lightWidget.networkStatus = NET_ONLINE;
 
-    var radialIndicator = new RadialIndicator(devicesIndicatorsPanel, "temperature", 150);
-    radialIndicator.refresh(1, "1%", "humidity");
+    lightWidget = new LightWidget(devicesWidgetsPanel, "temperature", 150);
+    lightWidget.refresh(100, "high", "light");
+    lightWidget.networkStatus = NET_ONLINE;
 
-    radialIndicator = new RadialIndicator(devicesIndicatorsPanel, "temperature", 150);
-    radialIndicator.refresh(50, "50%", "humidity");
-    radialIndicator.networkStatus = NET_RECONNECT;
+    lightWidget = new LightWidget(devicesWidgetsPanel, "temperature", 150);
+    lightWidget.refresh(40, "low", "light");
+    lightWidget.networkStatus = NET_RECONNECT;
 
-    radialIndicator = new RadialIndicator(devicesIndicatorsPanel, "temperature", 150);
-    radialIndicator.refresh(100, "100%", "humidity");
+    lightWidget = new LightWidget(devicesWidgetsPanel, "temperature", 150);
+    lightWidget.refresh(50, "norm", "light");
 
-    radialIndicator = new RadialIndicator(devicesIndicatorsPanel, "temperature", 150);
-    radialIndicator.refresh(50, "27C", "temperature");
-    radialIndicator.networkStatus = NET_ERROR;
-
-
-    var actuatorIndicator = new ActuatorIndicator(devicesIndicatorsPanel, "temperature", 150);
-    actuatorIndicator.refresh(1, "on", "humidity");
-    actuatorIndicator._networkStatus = NET_ONLINE;
-
-    actuatorIndicator = new ActuatorIndicator(devicesIndicatorsPanel, "temperature", 150);
-    actuatorIndicator.refresh(0, "off", "humidity");
-    actuatorIndicator._networkStatus = NET_OFFLINE;
-
-    actuatorIndicator = new ActuatorIndicator(devicesIndicatorsPanel, "temperature", 150);
-    actuatorIndicator.refresh(0, "off", "humidity");
-    actuatorIndicator._networkStatus = NET_ERROR;
-
-    actuatorIndicator = new ActuatorIndicator(devicesIndicatorsPanel, "temperature", 150);
-    actuatorIndicator.refresh(100, "on", "humidity");
-    actuatorIndicator._networkStatus = NET_RECONNECT;
+    lightWidget = new LightWidget(devicesWidgetsPanel, "temperature", 150);
+    lightWidget.refresh(75, "high", "light");
+    lightWidget.networkStatus = NET_ERROR;
 
 
+    smokeWidget = new SmokeWidget(devicesWidgetsPanel, "temperature", 150);
+    smokeWidget.refresh(10, "smokelow", "smoke");
+    smokeWidget.networkStatus = NET_ONLINE;
 
-    var radialIndicator = new RadialIndicator(devicesIndicatorsPanel, "temperature", 150);
-    radialIndicator.refresh(1, "1%", "humidity");
+    smokeWidget = new SmokeWidget(devicesWidgetsPanel, "temperature", 150);
+    smokeWidget.refresh(50, "smokenorm", "smoke");
+    smokeWidget.networkStatus = NET_ONLINE;
 
-    radialIndicator = new RadialIndicator(devicesIndicatorsPanel, "temperature", 150);
-    radialIndicator.refresh(50, "50%", "humidity");
-    radialIndicator._networkStatus = NET_RECONNECT;
+    smokeWidget = new SmokeWidget(devicesWidgetsPanel, "temperature", 150);
+    smokeWidget.refresh(61, "smokehigh", "smoke");
+    smokeWidget.networkStatus = NET_ONLINE;
 
-    radialIndicator = new RadialIndicator(devicesIndicatorsPanel, "temperature", 150);
-    radialIndicator.refresh(100, "100%", "humidity");
+    smokeWidget = new SmokeWidget(devicesWidgetsPanel, "temperature", 150);
+    smokeWidget.refresh(100, "smokehigh", "smoke");
+    smokeWidget.networkStatus = NET_ONLINE;
 
-    var lcdIndicator = new LCDIndicator(devicesIndicatorsPanel, "temperature", 150);
-    lcdIndicator.refresh("1234567890ABCSDEFGHL1234567890ABCSDEFGHL1234567890ABCSDEFGHL1234567890ABCSDEFGHL", "LCD", 0);
+    smokeWidget = new SmokeWidget(devicesWidgetsPanel, "temperature", 150);
+    smokeWidget.refresh(50, "smokelow", "smoke");
+    smokeWidget.networkStatus = NET_RECONNECT;
 
-    var lcdIndicator = new LCDIndicator(devicesIndicatorsPanel, "temperature", 150);
-    lcdIndicator.refresh("sad 123e123 123456 EFGH     L1234   56789 0ABCSDEFGHL", "LCD", 1);
-    lcdIndicator.networkStatus = NET_ONLINE;
+    smokeWidget = new SmokeWidget(devicesWidgetsPanel, "temperature", 150);
+    smokeWidget.refresh(72, "smokenorm", "smoke");
 
-    var lcdIndicator = new LCDIndicator(devicesIndicatorsPanel, "temperature", 150);
-    lcdIndicator.refresh("1234567890ABCSDEFGHL1234567890ABCSDEFGHL1234567890ABCSDEFGHL1234567890ABCSDEFGHL", "LCD", 0);
+    smokeWidget = new SmokeWidget(devicesWidgetsPanel, "temperature", 150);
+    smokeWidget.refresh(83, "smokehigh", "smoke");
+    smokeWidget.networkStatus = NET_ERROR;
 
-    var lcdIndicator = new LCDIndicator(devicesIndicatorsPanel, "temperature", 150);
-    lcdIndicator.refresh("123456 EFGH     L1234   56789 0ABCSDEFGHL", "LCD", 1);
-    lcdIndicator.networkStatus = NET_RECONNECT;
+    motionWidget = new MotionWidget(devicesWidgetsPanel, "temperature", 150);
+    motionWidget.refresh(1, "detect", "motion");
+    motionWidget.networkStatus = NET_ONLINE;
 
-    var lcdIndicator = new LCDIndicator(devicesIndicatorsPanel, "temperature", 150);
-    lcdIndicator.refresh("sad 123e123 123456 EFGH     L1234   56789 0ABCSDEFGHL", "LCD", 1);
-    lcdIndicator.networkStatus = NET_ONLINE;
+
+    motionWidget = new MotionWidget(devicesWidgetsPanel, "temperature", 150);
+    motionWidget.refresh(0, "notdetect", "motion");
+    motionWidget.networkStatus = NET_RECONNECT;
+
+    motionWidget = new MotionWidget(devicesWidgetsPanel, "temperature", 150);
+    motionWidget.refresh(1, "detect", "motion");
+
+    motionWidget = new MotionWidget(devicesWidgetsPanel, "temperature", 150);
+    motionWidget.refresh(1, "notdetect", "motion");
+    motionWidget.networkStatus = NET_ERROR;
+
+
+
+    var radialWidget = new RadialWidget(devicesWidgetsPanel, "temperature", 150);
+    radialWidget.refresh(1, "1%", "humidity");
+
+    radialWidget = new RadialWidget(devicesWidgetsPanel, "temperature", 150);
+    radialWidget.refresh(50, "50%", "humidity");
+    radialWidget.networkStatus = NET_RECONNECT;
+
+    radialWidget = new RadialWidget(devicesWidgetsPanel, "temperature", 150);
+    radialWidget.refresh(100, "100%", "humidity");
+
+    radialWidget = new RadialWidget(devicesWidgetsPanel, "temperature", 150);
+    radialWidget.refresh(50, "27C", "temperature");
+    radialWidget.networkStatus = NET_ERROR;
+
+    var radialWidget = new RadialWidget(devicesWidgetsPanel, "temperature", 150);
+    radialWidget.refresh(1, "1%", "humidity");
+
+    radialWidget = new RadialWidget(devicesWidgetsPanel, "temperature", 150);
+    radialWidget.refresh(50, "50%", "humidity");
+    radialWidget.networkStatus = NET_RECONNECT;
+
+    radialWidget = new RadialWidget(devicesWidgetsPanel, "temperature", 150);
+    radialWidget.refresh(100, "100%", "humidity");
+
+    radialWidget = new RadialWidget(devicesWidgetsPanel, "temperature", 150);
+    radialWidget.refresh(50, "27C", "temperature");
+    radialWidget.networkStatus = NET_ERROR;
+
+
+    var actuatorWidget = new ActuatorWidget(devicesWidgetsPanel, "temperature", 150);
+    actuatorWidget.refresh(1, "on", "humidity");
+    actuatorWidget._networkStatus = NET_ONLINE;
+
+    actuatorWidget = new ActuatorWidget(devicesWidgetsPanel, "temperature", 150);
+    actuatorWidget.refresh(0, "off", "humidity");
+    actuatorWidget._networkStatus = NET_OFFLINE;
+
+    actuatorWidget = new ActuatorWidget(devicesWidgetsPanel, "temperature", 150);
+    actuatorWidget.refresh(0, "off", "humidity");
+    actuatorWidget._networkStatus = NET_ERROR;
+
+    actuatorWidget = new ActuatorWidget(devicesWidgetsPanel, "temperature", 150);
+    actuatorWidget.refresh(100, "on", "humidity");
+    actuatorWidget._networkStatus = NET_RECONNECT;
+
+
+
+    var radialWidget = new RadialWidget(devicesWidgetsPanel, "temperature", 150);
+    radialWidget.refresh(1, "1%", "humidity");
+
+    radialWidget = new RadialWidget(devicesWidgetsPanel, "temperature", 150);
+    radialWidget.refresh(50, "50%", "humidity");
+    radialWidget._networkStatus = NET_RECONNECT;
+
+    radialWidget = new RadialWidget(devicesWidgetsPanel, "temperature", 150);
+    radialWidget.refresh(100, "100%", "humidity");
+
+    var lcdWidget = new LCDWidget(devicesWidgetsPanel, "temperature", 150);
+    lcdWidget.refresh("1234567890ABCSDEFGHL1234567890ABCSDEFGHL1234567890ABCSDEFGHL1234567890ABCSDEFGHL", "LCD", 0);
+
+    var lcdWidget = new LCDWidget(devicesWidgetsPanel, "temperature", 150);
+    lcdWidget.refresh("sad 123e123 123456 EFGH     L1234   56789 0ABCSDEFGHL", "LCD", 1);
+    lcdWidget.networkStatus = NET_ONLINE;
+
+    var lcdWidget = new LCDWidget(devicesWidgetsPanel, "temperature", 150);
+    lcdWidget.refresh("1234567890ABCSDEFGHL1234567890ABCSDEFGHL1234567890ABCSDEFGHL1234567890ABCSDEFGHL", "LCD", 0);
+
+    var lcdWidget = new LCDWidget(devicesWidgetsPanel, "temperature", 150);
+    lcdWidget.refresh("123456 EFGH     L1234   56789 0ABCSDEFGHL", "LCD", 1);
+    lcdWidget.networkStatus = NET_RECONNECT;
+
+    var lcdWidget = new LCDWidget(devicesWidgetsPanel, "temperature", 150);
+    lcdWidget.refresh("sad 123e123 123456 EFGH     L1234   56789 0ABCSDEFGHL", "LCD", 1);
+    lcdWidget.networkStatus = NET_ONLINE;
 
 
     /*
-    stepperIndicator = new StepperIndicator(devicesIndicatorsPanel, "stepper", 150);
-    stepperIndicator.refresh(80, 20, "80%", "stepper");
+    stepperWidget = new StepperWidget(devicesWidgetsPanel, "stepper", 150);
+    stepperWidget.refresh(80, 20, "80%", "stepper");
 
-    stepperIndicator = new StepperIndicator(devicesIndicatorsPanel, "stepper", 150);
-    stepperIndicator.refresh(50, 50, "25%", "stepper");
+    stepperWidget = new StepperWidget(devicesWidgetsPanel, "stepper", 150);
+    stepperWidget.refresh(50, 50, "25%", "stepper");
     */
 
 

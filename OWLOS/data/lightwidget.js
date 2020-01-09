@@ -1,4 +1,4 @@
-class LightIndicator extends BaseIndicator {
+class LightWidget extends BaseWidget {
     constructor(parentPanel, id, size) {
         super(parentPanel, id, size);
 
@@ -23,20 +23,20 @@ class LightIndicator extends BaseIndicator {
         this.clickableToTop();
     }
 
-    refresh(data, indicatorText, label) {
-        indicatorText = getLang(indicatorText);
-        super.refresh(data, indicatorText, label);
+    refresh(data, widgetText, label) {
+        widgetText = getLang(widgetText);
+        super.refresh(data, widgetText, label);
     }
 
 
     drawText() {
         super.drawText();
-        this.SVGIndicatorText.y = this.size / 5 + this.SVGIndicatorText.height / 2;;
+        this.SVGWidgetText.y = this.size / 5 + this.SVGWidgetText.height / 2;;
     }
 
 
-    drawIndicator() {
-        super.drawIndicator();
+    drawWidget() {
+        super.drawWidget();
         
         for (var i = 0; i < 4; i++) {                       
             this.levelArc[i].hide();

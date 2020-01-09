@@ -489,7 +489,7 @@ function appendDevicePins(valueSelect) {
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 function addDeviceClick(event) {
     event.stopPropagation();
-    deviceAnchorClick(event);
+    settingsUI.deviceAnchorClick(event);
     var addDevicePanel = document.getElementById("addDevicePanel");
     addDevicePanel.innerHTML = "";
     var modalFade = addDevicePanel.appendChild(document.createElement("div"));

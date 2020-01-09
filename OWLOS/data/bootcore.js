@@ -104,24 +104,25 @@ function loadingScripts(withInternet) {
                         loadingScript("languagescore.js"); //все модулю без URL принадлежать OWS OS и всегда грузятся с flash
                         loadingScript("speechcore.js");
                         loadingScript("drawcore.js");
+                        loadingScript("restclientcore.js");
+                        loadingScript("devicescore.js");
 
-                        var baseIndicatorScript = document.createElement('script');
-                        baseIndicatorScript.onload = function () {
-                            //  loadingScript("baseindicator.js");
+                        var baseWidgetScript = document.createElement('script');
+                        baseWidgetScript.onload = function () {
+                            //  loadingScript("basewidget.js");
+                            loadingScript("radialwidget.js");
+                            loadingScript("actuatorwidget.js");
+                            loadingScript("lcdwidget.js");
+                            loadingScript("stepperwidget.js");
+                            loadingScript("motionwidget.js");
+                            loadingScript("smokewidget.js");
+                            loadingScript("lightwidget.js");
+                            loadingScript("temperaturewidget.js");
+                            loadingScript("graphwidget.js");
+                            loadingScript("tablewidget.js");
+                            loadingScript("widgetswrappers.js");
                             loadingScript("filespanelui.js");
-                            loadingScript("radialindicator.js");
-                            loadingScript("actuatorindicator.js");
-                            loadingScript("lcdindicator.js");
-                            loadingScript("stepperindicator.js");
-                            loadingScript("motionindicator.js");
-                            loadingScript("smokeindicator.js");
-                            loadingScript("lightindicator.js");
-                            loadingScript("temperatureindicator.js");
-                            loadingScript("graphindicator.js");
-                            loadingScript("tableindicator.js");
-                            loadingScript("restclientcore.js");
-                            loadingScript("devicescore.js");
-                            loadingScript("indicatorswrappers.js");
+                            loadingScript("dashboardui.js");
                             loadingScript("settingsui.js");
                             
                             //var unitPropertiesScript = document.createElement('script'); //с ожиданием
@@ -135,9 +136,9 @@ function loadingScripts(withInternet) {
                             //document.getElementsByTagName('head')[0].appendChild(unitPropertiesScript);
                         }
                          //--> NOTE: код ниже - обратное сворачивание загрузчкив контента (стек загрузки)
-                        baseIndicatorScript.src = "baseindicator.js";
-                        addToLogNL("loading baseindicator from " + baseIndicatorScript.src);
-                        document.getElementsByTagName('head')[0].appendChild(baseIndicatorScript);
+                        baseWidgetScript.src = "basewidget.js";
+                        addToLogNL("loading basewidget from " + baseWidgetScript.src);
+                        document.getElementsByTagName('head')[0].appendChild(baseWidgetScript);
                     }
                      //--> NOTE: код ниже - обратное сворачивание загрузчкив контента (стек загрузки)
                     if (withInternet) bootstrapScript.src = "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js";

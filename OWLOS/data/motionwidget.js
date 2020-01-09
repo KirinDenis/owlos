@@ -1,4 +1,4 @@
-﻿class MotionIndicator extends BaseIndicator {
+﻿class MotionWidget extends BaseWidget {
     constructor(parentPanel, id, size) {
         super(parentPanel, id, size);
 
@@ -28,9 +28,9 @@
         this.clickableToTop();
     }
 
-    refresh(data, indicatorText, label, historyData) {
-        indicatorText = getLang(indicatorText);
-        super.refresh(data, indicatorText, label, historyData);
+    refresh(data, widgetText, label, historyData) {
+        widgetText = getLang(widgetText);
+        super.refresh(data, widgetText, label, historyData);
     }
 
 
@@ -61,8 +61,8 @@
         }
     }
 
-    drawIndicator() {
-        super.drawIndicator();
+    drawWidget() {
+        super.drawWidget();
 
 
 

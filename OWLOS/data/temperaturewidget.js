@@ -2,7 +2,7 @@
 //-50..50
 
 
-class TemperatureIndicator extends BaseIndicator{
+class TemperatureWidget extends BaseWidget{
     constructor(parentPanel, id, size) {
         super(parentPanel, id, size);
 
@@ -34,12 +34,12 @@ class TemperatureIndicator extends BaseIndicator{
 
     drawText() {
         super.drawText(0);
-        this.SVGIndicatorText.y = this.height / 2.5 + this.tempHeight / 2; // this.tempTop + this.panding * 3 +  this.SVGIndicatorText.height;
+        this.SVGWidgetText.y = this.height / 2.5 + this.tempHeight / 2; // this.tempTop + this.panding * 3 +  this.SVGWidgetText.height;
     }
 
 
-    drawIndicator() {
-        super.drawIndicator();
+    drawWidget() {
+        super.drawWidget();
 
         var percent = parseFloat(this._data) + 50;
         var tempSize = (20 / 100) * percent;

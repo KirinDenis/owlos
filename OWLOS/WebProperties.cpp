@@ -6,31 +6,31 @@
 
 bool webSetWebConfig(String _webConfig)
 {
-	debugOut(id, "|<- inside change webconfig=" + _webConfig);
-	filesWriteString("web.webconfig", _webConfig);
+	debugOut(id, "|<- inside change config=" + _webConfig);
+	filesWriteString("web.config", _webConfig);
 	return true;
 }
 
 String webGetWebConfig()
 {
 	String result = "";
-	if (filesExists("web.webconfig"))
+	if (filesExists("web.config"))
 	{
-		result = filesReadString("web.webconfig");
+		result = filesReadString("web.config");
 	}
 	else
 	{
 		webSetWebConfig(result);
 	}
 
-	debugOut(id, "webconfig=" + result);
+	debugOut(id, "config=" + result);
 	return result;
 }
 
 
 String webGetAllProperties()
 {
-	String result = "webconfig=" + webGetWebConfig() + "//\n";
+	String result = "config=" + webGetWebConfig() + "//\n";
 	return result;
 }
 
@@ -39,9 +39,9 @@ String webOnMessage(String _topic, String _payload)
 	debugOut(id, "WEBPROP" + _topic);
 	debugOut(id, "WEBPROP" + _payload);
 	String result = WrongPropertyName;
-	if (String(unitGetTopic() + "/getwebconfig").equals(_topic)) return webGetWebConfig();
+	if (String(unitGetTopic() + "/getconfig").equals(_topic)) return webGetWebConfig();
 	else
-		if (String(unitGetTopic() + "/setwebconfig").equals(_topic)) return String(webSetWebConfig(_payload));
+		if (String(unitGetTopic() + "/setconfig").equals(_topic)) return String(webSetWebConfig(_payload));
 	return result;
 }
 

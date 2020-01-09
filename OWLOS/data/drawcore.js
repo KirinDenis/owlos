@@ -99,7 +99,7 @@ class SVGText {
 
     getTextWidth(text) {
         var element = document.body.appendChild(document.createElement("div"));
-        element.className = "IndicatorText";
+        element.className = "WidgetText";
         element.innerHTML = text;
         var width = element.getBoundingClientRect().width;
         element.remove();

@@ -30,3 +30,6 @@
 *.exe
 *.out
 *.app
+/.vs/ReadyIoTSolution/v15/ipch/AutoPCH/19a41108fcb652bd/UPDATEMANAGER.ipch
+/.vs/ReadyIoTSolution/v15/ipch/AutoPCH/24598ae2708a385c/WEBPROPERTIES.ipch
+/.vs/ReadyIoTSolution/v15/Browse.VC.opendb

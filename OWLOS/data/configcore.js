@@ -32,7 +32,7 @@ var config = {
     addDashboard: function (_id) {
         var dashboard = {
             id: _id,
-            indicators: []
+            widgets: []
         }
         configProperties.dashboards.push(dashboard);
     },
@@ -46,18 +46,18 @@ var config = {
         return undefined;
     },
 
-    addIndicator: function (_dashboardId, _daviceId, _deviceProperty, _indicatorId) {
+    addWidget: function (_dashboardId, _daviceId, _deviceProperty, _widgetId) {
         var dashboard = this.getDashboardById(_dashboardId);
         if (dashboard != undefined) {
-                var indicator = {
+                var widget = {
                     dashboardId: _dashboardId,
                     deviceId: _daviceId,
                     deviceProperty: _deviceProperty,
-                    indicatorId: _indicatorId,                    
+                    widgetId: _widgetId,                    
                 }
-                dashboard.indicators.push(indicator);
+                dashboard.widgets.push(widget);
                 this.save();
-                return indicator;
+                return widget;
         }
         return undefined;
     },
@@ -106,12 +106,12 @@ var config = {
         return undefined;
     },
     
-    indicatorEvent: function (configPropertiesIndicator, indicator) {
-        //indicator.event the event what happend
-        if (indicator.event == EVENT_DELETE) {
-            for (var i = 0; i < configProperties.dashboards[0].indicators.length; i++) {
-                if (configPropertiesIndicator == configProperties.dashboards[0].indicators[i]) {
-                    configProperties.dashboards[0].indicators.splice(i,1);
+    widgetEvent: function (configPropertiesWidget, widget) {
+        //widget.event the event what happend
+        if (widget.event == EVENT_DELETE) {
+            for (var i = 0; i < configProperties.dashboards[0].widgets.length; i++) {
+                if (configPropertiesWidget == configProperties.dashboards[0].widgets[i]) {
+                    configProperties.dashboards[0].widgets.splice(i,1);
                     config.save();
                     return;
                 }
@@ -121,7 +121,7 @@ var config = {
 
     load: function () {
         var result = false;
-        var configPropertiesJson = httpGetWithErrorReson(boardhost + "getwebproperty?property=webconfig"); //boardhost host контроллера с которого идет первичная загрузка
+        var configPropertiesJson = httpGetWithErrorReson(boardhost + "getwebproperty?property=config"); //boardhost host контроллера с которого идет первичная загрузка
         if (!configPropertiesJson.startsWith("%error")) {
             try {
                 configProperties = JSON.parse(unescape(configPropertiesJson));
@@ -177,7 +177,7 @@ var config = {
             //parse problem, reset properties
             configProperties = defaultWebProp();
 
-            addToLogNL(getLang("getwebconfigfailsparse"), 2);
+            addToLogNL(getLang("getconfigfailsparse"), 2);
             addToLogNL(getLang("restoredefault"), 1);
             this.addDashboard("main");
             this.addNode(boardhost, "local");
@@ -218,7 +218,7 @@ var config = {
 
 
         var configPropertiesJson =  JSON.stringify(tempProp);
-        var HTTPResult = httpGetWithErrorReson(boardhost + "setwebproperty?property=webconfig&value=" + escape(configPropertiesJson));
+        var HTTPResult = httpGetWithErrorReson(boardhost + "setwebproperty?property=config&value=" + escape(configPropertiesJson));
         if (!HTTPResult.startsWith("%error")) {
             this.onChange();
             return true;

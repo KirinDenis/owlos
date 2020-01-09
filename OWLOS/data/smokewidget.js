@@ -1,4 +1,4 @@
-class SmokeIndicator extends BaseIndicator {
+class SmokeWidget extends BaseWidget {
     constructor(parentPanel, id, size) {
         super(parentPanel, id, size);
 
@@ -56,9 +56,9 @@ class SmokeIndicator extends BaseIndicator {
         this.clickableToTop();
     }
 
-    refresh(data, indicatorText, label) {
-        indicatorText = getLang(indicatorText);
-        super.refresh(data, indicatorText, label);
+    refresh(data, widgetText, label) {
+        widgetText = getLang(widgetText);
+        super.refresh(data, widgetText, label);
     }
 
 
@@ -84,8 +84,8 @@ class SmokeIndicator extends BaseIndicator {
     }
 
 
-    drawIndicator() {
-        super.drawIndicator();
+    drawWidget() {
+        super.drawWidget();
 
         for (var i = 0; i < 30; i++) {
             this.level1[i].opacity = this.level2[i].opacity = 0.0;

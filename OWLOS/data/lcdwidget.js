@@ -1,4 +1,4 @@
-class LCDIndicator extends BaseIndicator {
+class LCDWidget extends BaseWidget {
     constructor(parentPanel, id, size) {
         super(parentPanel, id, size);
 
@@ -10,7 +10,7 @@ class LCDIndicator extends BaseIndicator {
         this.centreX = this.width / 2;
       //  this.centreY = this.height / 2;
 
-        this.indicatorTextSize = this.size / 110;
+        this.widgetTextSize = this.size / 110;
 
         this.svgElement.setAttributeNS(null, "viewBox", this.halfPanding + " " + this.halfPanding + " " + this.width + " " + this.height);        
         this.svgElement.setAttributeNS(null, "width", this.width);
@@ -19,37 +19,37 @@ class LCDIndicator extends BaseIndicator {
         this.SVGBackdownpanel.width = this.width;
         
 
-        this.SVGIndicatorText1 = new SVGText(this.svgElement, this.id + "indicatortext1", this.indicatorTextSize);
-        this.SVGIndicatorText1.fontFamily = "monospace";
-        this.SVGIndicatorText2 = new SVGText(this.svgElement, this.id + "indicatortext2", this.indicatorTextSize);
-        this.SVGIndicatorText2.fontFamily = "monospace";
-        this.SVGIndicatorText3 = new SVGText(this.svgElement, this.id + "indicatortext3", this.indicatorTextSize);
-        this.SVGIndicatorText3.fontFamily = "monospace";
-        this.SVGIndicatorText4 = new SVGText(this.svgElement, this.id + "indicatortext4", this.indicatorTextSize);
-        this.SVGIndicatorText4.fontFamily = "monospace";
+        this.SVGWidgetText1 = new SVGText(this.svgElement, this.id + "widgettext1", this.widgetTextSize);
+        this.SVGWidgetText1.fontFamily = "monospace";
+        this.SVGWidgetText2 = new SVGText(this.svgElement, this.id + "widgettext2", this.widgetTextSize);
+        this.SVGWidgetText2.fontFamily = "monospace";
+        this.SVGWidgetText3 = new SVGText(this.svgElement, this.id + "widgettext3", this.widgetTextSize);
+        this.SVGWidgetText3.fontFamily = "monospace";
+        this.SVGWidgetText4 = new SVGText(this.svgElement, this.id + "widgettext4", this.widgetTextSize);
+        this.SVGWidgetText4.fontFamily = "monospace";
 
-        this.SVGIndicatorText1.text = "1234567890ABCSDEFGHL"; //20 chars 
+        this.SVGWidgetText1.text = "1234567890ABCSDEFGHL"; //20 chars 
         this.SVGLabel.text = "LCD";
 
-        this.textWidth = this.SVGIndicatorText1.width;
-        this.textHeight = this.SVGIndicatorText1.height;
+        this.textWidth = this.SVGWidgetText1.width;
+        this.textHeight = this.SVGWidgetText1.height;
 
-        this.indicatorLeft = this.centreX - this.textWidth / 2;
-        this.indicatorTop = (this.centreY + this.SVGLabel.height) - (this.textHeight * 4) / 2;
+        this.widgetLeft = this.centreX - this.textWidth / 2;
+        this.widgetTop = (this.centreY + this.SVGLabel.height) - (this.textHeight * 4) / 2;
 
-        this.SVGIndicatorBack = new SVGRect(this.svgElement, this.id + "indicatorback",
-            this.indicatorLeft - this.panding,
-            this.indicatorTop - parseFloat(this.textHeight - this.panding),
+        this.SVGWidgetBack = new SVGRect(this.svgElement, this.id + "widgetback",
+            this.widgetLeft - this.panding,
+            this.widgetTop - parseFloat(this.textHeight - this.panding),
             this.textWidth + this.panding * 2,
             this.textHeight * 4 + this.panding);
 
-        this.SVGIndicatorBack.opacity = 0.2;
-        this.SVGIndicatorBack.color = theme.secondary;
+        this.SVGWidgetBack.opacity = 0.2;
+        this.SVGWidgetBack.color = theme.secondary;
 
-        this.SVGIndicatorText1.text = "";
+        this.SVGWidgetText1.text = "";
         this.SVGLabel.text = "";
         
-        this.SVGIndicatorText.hide();
+        this.SVGWidgetText.hide();
         this.SVGArcSpinner.x = this.centreX;
 
         this.rPanel.onclick = this.showEditor;
@@ -83,7 +83,7 @@ class LCDIndicator extends BaseIndicator {
         this.lcdButton.type = "button";
         this.lcdButton.edit = this.textarea;
         this.lcdButton.lcdid = this.id;
-        this.lcdButton.indicator = this;
+        this.lcdButton.widget = this;
         // this.lcdButton.onclick = lcdButtonClick;
         this.lcdButton.value = getLang("send");
 
@@ -93,7 +93,7 @@ class LCDIndicator extends BaseIndicator {
         this.lightButton.type = "button";
         this.lightButton.edit = this.textarea;
         this.lightButton.lcdid = this.id;
-        this.lightButton.indicator = this;
+        this.lightButton.widget = this;
         //  this.lightButton.onclick = lightButtonClick;
         this.lightButton.value = getLang("shortlight");
 
@@ -101,9 +101,9 @@ class LCDIndicator extends BaseIndicator {
 
     }
 
-    refresh(indicatorText, label, light) {        
+    refresh(widgetText, label, light) {        
         label = getLang(label);
-        this.indicatorText = indicatorText;
+        this.widgetText = widgetText;
         this.label = label;
         this.spinnerAngle = 0;
 
@@ -120,16 +120,16 @@ class LCDIndicator extends BaseIndicator {
     showEditor(event) {
         event.stopPropagation();
         var rPanel = event.currentTarget;
-        var lcdIndicator = rPanel.indicator;
+        var lcdWidget = rPanel.widget;
 
-        if (!lcdIndicator.pre.style.display.includes("block")) {
-            lcdIndicator.textarea.value = lcdIndicator.indicatorText;
-            lcdIndicator.pre.style.display = 'block';
-            lcdIndicator.btnGroup.style.display = 'block';
+        if (!lcdWidget.pre.style.display.includes("block")) {
+            lcdWidget.textarea.value = lcdWidget.widgetText;
+            lcdWidget.pre.style.display = 'block';
+            lcdWidget.btnGroup.style.display = 'block';
         }
         else {
           //TODO: direct click     
-          //  lcdIndicator.hideEditor(); 
+          //  lcdWidget.hideEditor(); 
         }
         return true;
     }
@@ -166,7 +166,7 @@ class LCDIndicator extends BaseIndicator {
     redrawAll() {
         this.drawText();
         this.starttime = 0;
-        requestAnimationFrame(() => this.drawIndicator());
+        requestAnimationFrame(() => this.drawWidget());
 
 
     }
@@ -178,45 +178,45 @@ class LCDIndicator extends BaseIndicator {
 
         switch (this._networkStatus) {
             case NET_ONLINE:
-                this.SVGIndicatorText1.color = theme.light;
-                this.SVGIndicatorText2.color = theme.light;
-                this.SVGIndicatorText3.color = theme.light;
-                this.SVGIndicatorText4.color = theme.light;
+                this.SVGWidgetText1.color = theme.light;
+                this.SVGWidgetText2.color = theme.light;
+                this.SVGWidgetText3.color = theme.light;
+                this.SVGWidgetText4.color = theme.light;
                 break;
             case NET_RECONNECT:
-                this.SVGIndicatorText1.color = theme.info;
-                this.SVGIndicatorText2.color = theme.info;
-                this.SVGIndicatorText3.color = theme.info;
-                this.SVGIndicatorText4.color = theme.info;
+                this.SVGWidgetText1.color = theme.info;
+                this.SVGWidgetText2.color = theme.info;
+                this.SVGWidgetText3.color = theme.info;
+                this.SVGWidgetText4.color = theme.info;
                 break;
             default: //offline
-                this.SVGIndicatorText1.color = theme.secondary;
-                this.SVGIndicatorText2.color = theme.secondary;
-                this.SVGIndicatorText3.color = theme.secondary;
-                this.SVGIndicatorText4.color = theme.secondary;
+                this.SVGWidgetText1.color = theme.secondary;
+                this.SVGWidgetText2.color = theme.secondary;
+                this.SVGWidgetText3.color = theme.secondary;
+                this.SVGWidgetText4.color = theme.secondary;
                 break;
         }
 
-        if (this.indicatorText == undefined) {
-            this.indicatorText = "";            
+        if (this.widgetText == undefined) {
+            this.widgetText = "";            
         }
 
-            this.SVGIndicatorText1.text = this.indicatorText.substring(0, 20);
-            this.SVGIndicatorText2.text = this.indicatorText.substring(20, 40);
-            this.SVGIndicatorText3.text = this.indicatorText.substring(40, 60);
-            this.SVGIndicatorText4.text = this.indicatorText.substring(60);
+            this.SVGWidgetText1.text = this.widgetText.substring(0, 20);
+            this.SVGWidgetText2.text = this.widgetText.substring(20, 40);
+            this.SVGWidgetText3.text = this.widgetText.substring(40, 60);
+            this.SVGWidgetText4.text = this.widgetText.substring(60);
 
-            this.SVGIndicatorText1.x = this.indicatorLeft;
-            this.SVGIndicatorText1.y = this.indicatorTop;
+            this.SVGWidgetText1.x = this.widgetLeft;
+            this.SVGWidgetText1.y = this.widgetTop;
 
-            this.SVGIndicatorText2.x = this.indicatorLeft;
-            this.SVGIndicatorText2.y = this.SVGIndicatorText1.y + this.SVGIndicatorText1.height;
+            this.SVGWidgetText2.x = this.widgetLeft;
+            this.SVGWidgetText2.y = this.SVGWidgetText1.y + this.SVGWidgetText1.height;
 
-            this.SVGIndicatorText3.x = this.indicatorLeft;
-            this.SVGIndicatorText3.y = this.SVGIndicatorText2.y + this.SVGIndicatorText2.height;
+            this.SVGWidgetText3.x = this.widgetLeft;
+            this.SVGWidgetText3.y = this.SVGWidgetText2.y + this.SVGWidgetText2.height;
 
-            this.SVGIndicatorText4.x = this.indicatorLeft;
-            this.SVGIndicatorText4.y = this.SVGIndicatorText3.y + this.SVGIndicatorText4.height;
+            this.SVGWidgetText4.x = this.widgetLeft;
+            this.SVGWidgetText4.y = this.SVGWidgetText3.y + this.SVGWidgetText4.height;
         
 
         /*
@@ -234,27 +234,27 @@ class LCDIndicator extends BaseIndicator {
 
 
 
-        this.SVGIndicatorText1.color = theme.light;
-        this.SVGIndicatorText2.color = theme.light;
-        this.SVGIndicatorText3.color = theme.light;
-        this.SVGIndicatorText4.color = theme.light;
+        this.SVGWidgetText1.color = theme.light;
+        this.SVGWidgetText2.color = theme.light;
+        this.SVGWidgetText3.color = theme.light;
+        this.SVGWidgetText4.color = theme.light;
 
-        this.SVGIndicatorText1.text = this.indicatorText.substring(0, 20);
-        this.SVGIndicatorText2.text = this.indicatorText.substring(20, 40);
-        this.SVGIndicatorText3.text = this.indicatorText.substring(40, 60);
-        this.SVGIndicatorText4.text = this.indicatorText.substring(60);
+        this.SVGWidgetText1.text = this.widgetText.substring(0, 20);
+        this.SVGWidgetText2.text = this.widgetText.substring(20, 40);
+        this.SVGWidgetText3.text = this.widgetText.substring(40, 60);
+        this.SVGWidgetText4.text = this.widgetText.substring(60);
 
-        this.SVGIndicatorText1.x = this.indicatorLeft;
-        this.SVGIndicatorText1.y = this.indicatorTop;
+        this.SVGWidgetText1.x = this.widgetLeft;
+        this.SVGWidgetText1.y = this.widgetTop;
 
-        this.SVGIndicatorText2.x = this.indicatorLeft;
-        this.SVGIndicatorText2.y = this.SVGIndicatorText1.y + this.SVGIndicatorText1.height;
+        this.SVGWidgetText2.x = this.widgetLeft;
+        this.SVGWidgetText2.y = this.SVGWidgetText1.y + this.SVGWidgetText1.height;
 
-        this.SVGIndicatorText3.x = this.indicatorLeft;
-        this.SVGIndicatorText3.y = this.SVGIndicatorText2.y + this.SVGIndicatorText2.height;
+        this.SVGWidgetText3.x = this.widgetLeft;
+        this.SVGWidgetText3.y = this.SVGWidgetText2.y + this.SVGWidgetText2.height;
 
-        this.SVGIndicatorText4.x = this.indicatorLeft;
-        this.SVGIndicatorText4.y = this.SVGIndicatorText3.y + this.SVGIndicatorText4.height;
+        this.SVGWidgetText4.x = this.widgetLeft;
+        this.SVGWidgetText4.y = this.SVGWidgetText3.y + this.SVGWidgetText4.height;
 
          */ 
         /*        
@@ -271,53 +271,53 @@ class LCDIndicator extends BaseIndicator {
 
                 this.textElement.className = "text-white text-center";
                 this.hintElement.innerHTML = getLang("rid_online");
-                this.hintElement.className = "LCDIndicatorHint text-secondary text-center";
+                this.hintElement.className = "LCDWidgetHint text-secondary text-center";
                 break;
             case NET_ERROR:
                 this.textElement.className = "text-danger text-center";
                 this.hintElement.innerHTML = getLang("rid_error");
-                this.hintElement.className = "LCDIndicatorHint text-danger text-center";
+                this.hintElement.className = "LCDWidgetHint text-danger text-center";
                 break;
             case NET_RECONNECT:
                 this.textElement.className = "text-info text-center";
                 this.hintElement.innerHTML = getLang("rid_connect");
-                this.hintElement.className = "LCDIndicatorHint text-info text-center";
+                this.hintElement.className = "LCDWidgetHint text-info text-center";
                 break;
             default: //offline
                 this.textElement.className = "text-secondary text-center";
                 this.hintElement.innerHTML = getLang("rid_offline");
-                this.hintElement.className = "LCDIndicatorHint text-secondary text-center";
+                this.hintElement.className = "LCDWidgetHint text-secondary text-center";
                 break;
         }
         */
     }
 
   
-    drawIndicator() {
+    drawWidget() {
 
         
         if (this.light == 1) {
-            this.SVGIndicatorBack.color = theme.info;
+            this.SVGWidgetBack.color = theme.info;
         }
         else {
-            this.SVGIndicatorBack.color = theme.secondary;
+            this.SVGWidgetBack.color = theme.secondary;
         }
 
-        super.drawIndicator();
+        super.drawWidget();
 
 /*
         if (this.light == 1) {
-            this.SVGIndicatorBack.color = theme.info;
+            this.SVGWidgetBack.color = theme.info;
         }
         else {
-            this.SVGIndicatorBack.color = theme.secondary;
+            this.SVGWidgetBack.color = theme.secondary;
         }
 
         //spinner 
         if (this.networkStatus == NET_RECONNECT) {
             this.spinnerAngle += 1.5;
             this.SVGArcSpinner.draw(this.spinnerAngle, 240 + this.spinnerAngle);
-            requestAnimationFrame(() => this.drawIndicator());
+            requestAnimationFrame(() => this.drawWidget());
         }
         else {
             this.SVGArcSpinner.hide();

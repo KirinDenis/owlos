@@ -170,8 +170,8 @@ void loop() {
 	{
 		if ((WiFiMulti.run() == WL_CONNECTED)) {
 			Serial.println("Downloading files...");
-			download("actuatorindicator.js.gz", host + "actuatorindicator.js.gz");
-			download("baseindicator.js.gz", host + "baseindicator.js.gz");
+			download("actuatorwidget.js.gz", host + "actuatorwidget.js.gz");
+			download("basewidget.js.gz", host + "basewidget.js.gz");
 			download("bootcore.js.gz", host + "bootcore.js.gz");
 			download("bootstrap.min.css.gz", host + "bootstrap.min.css.gz");
 			download("bootstrap.min.js.gz", host + "bootstrap.min.js.gz");
@@ -179,7 +179,7 @@ void loop() {
 			download("ui.css.gz", host + "ui.css.gz");
 			download("dataTables.min.css.gz", host + "dataTables.min.css.gz");
 			download("dataTables.min.js.gz", host + "dataTables.min.js.gz");
-			download("indicatorswrappers.js.gz", host + "indicatorswrappers.js.gz");
+			download("widgetswrappers.js.gz", host + "widgetswrappers.js.gz");
 			download("devicescore.js.gz", host + "devicescore.js.gz");
 			download("drawcore.js.gz", host + "drawcore.js.gz");
 			download("filespanelui.js.gz", host + "filespanelui.js.gz");
@@ -188,20 +188,20 @@ void loop() {
 			download("jquery.dataTables.min.js.gz", host + "jquery.dataTables.min.js.gz");
 			download("jquery.min.js.gz", host + "jquery.min.js.gz");
 			download("languagescore.js.gz", host + "languagescore.js.gz");
-			download("lcdindicator.js.gz", host + "lcdindicator.js.gz");
-			download("lightindicator.js.gz", host + "lightindicator.js.gz");
-			download("lcdindicator.js.gz", host + "lcdindicator.js.gz");
-			download("lightindicator.js.gz", host + "lightindicator.js.gz");
-			download("motionindicator.js.gz", host + "motionindicator.js.gz");
+			download("lcdwidget.js.gz", host + "lcdwidget.js.gz");
+			download("lightwidget.js.gz", host + "lightwidget.js.gz");
+			download("lcdwidget.js.gz", host + "lcdwidget.js.gz");
+			download("lightwidget.js.gz", host + "lightwidget.js.gz");
+			download("motionwidget.js.gz", host + "motionwidget.js.gz");
 			download("popper.min.js.gz", host + "popper.min.js.gz");
-			download("radialindicator.js.gz", host + "radialindicator.js.gz");
-			download("smokeindicator.js.gz", host + "smokeindicator.js.gz");
+			download("radialwidget.js.gz", host + "radialwidget.js.gz");
+			download("smokewidget.js.gz", host + "smokewidget.js.gz");
 			download("speechcore.js.gz", host + "speechcore.js.gz");
-			download("stepperindicator.js.gz", host + "stepperindicator.js.gz");
-			download("temperatureindicator.js.gz", host + "temperatureindicator.js.gz");
-			download("graphindicator.js.gz", host + "graphindicator.js.gz");
+			download("stepperwidget.js.gz", host + "stepperwidget.js.gz");
+			download("temperaturewidget.js.gz", host + "temperaturewidget.js.gz");
+			download("graphwidget.js.gz", host + "graphwidget.js.gz");
 			download("configcore.js.gz", host + "configcore.js.gz");
-			download("tableindicator.js.gz", host + "tableindicator.js.gz");
+			download("tablewidget.js.gz", host + "tablewidget.js.gz");
 
 			Serial.println("----------------------------------------------------------");
 			Serial.println("Start updating firmware (onboard led must faster blinking)");

@@ -3,7 +3,7 @@
     border-left: 1px solid #000;
 }
 
-.devicesIndicatorsPanel {
+.devicesWidgetsPanel {
     text-align: center;
 }
 
@@ -38,7 +38,7 @@
     transform: translateX(-50%) translateY(-50%);
 }
 
-.Indicator {
+.Widget {
     position: Relative;
     text-align: Center;
     overflow: Hidden;
@@ -46,14 +46,14 @@
     display: inline-block;
 }
 
-.TableIndicator {
+.TableWidget {
     position: Relative;
     overflow: Hidden;
     cursor: Default;
     display: inline-block;
 }
 
-.IndicatorText {
+.WidgetText {
     position: Absolute;
     text-align: Center;
     overflow: Hidden;

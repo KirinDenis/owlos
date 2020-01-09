@@ -1,4 +1,4 @@
-class GraphIndicator extends BaseIndicator {
+class GraphWidget extends BaseWidget {
     constructor(parentPanel, id, size, icon) {
         super(parentPanel, id, size);
 
@@ -10,7 +10,7 @@ class GraphIndicator extends BaseIndicator {
         this.centreX = this.width / 2;
         //  this.centreY = this.height / 2;
 
-        this.indicatorTextSize = this.size / 110;
+        this.widgetTextSize = this.size / 110;
 
         this.graphWidth = this.width;
         this.graphHeight = this.height - this.size / 4.5;
@@ -63,8 +63,8 @@ class GraphIndicator extends BaseIndicator {
         
         this.SVGLabel.text = "Graph";
 
-        this.indicatorLeft = this.centreX - this.textWidth / 2;
-        this.indicatorTop = (this.centreY + this.SVGLabel.height) - (this.textHeight * 4) / 2;
+        this.widgetLeft = this.centreX - this.textWidth / 2;
+        this.widgetTop = (this.centreY + this.SVGLabel.height) - (this.textHeight * 4) / 2;
 
         var labelTextSize = this.size / 210;
 
@@ -100,7 +100,7 @@ class GraphIndicator extends BaseIndicator {
 
         this.SVGIcon.fill = theme.secondary;
 
-        this.SVGIndicatorText.hide();
+        this.SVGWidgetText.hide();
         this.SVGArcSpinner.x = this.centreX;
 
         this.ShowEqualizer = false;
@@ -113,9 +113,9 @@ class GraphIndicator extends BaseIndicator {
 
     }
 
-    refresh(indicatorText, label, historyData) {
+    refresh(widgetText, label, historyData) {
         label = getLang(label);
-        this.indicatorText = indicatorText;
+        this.widgetText = widgetText;
         this.label = label;
         
         this.historyData = historyData;
@@ -129,7 +129,7 @@ class GraphIndicator extends BaseIndicator {
         super.drawText();
     }
 
-    drawIndicator() {
+    drawWidget() {
 
 
         if (this.historyData != undefined) {
@@ -240,7 +240,7 @@ class GraphIndicator extends BaseIndicator {
             this.SVGPath2.drawPath(d);
 
 
-            super.drawIndicator();
+            super.drawWidget();
         }
     }
 

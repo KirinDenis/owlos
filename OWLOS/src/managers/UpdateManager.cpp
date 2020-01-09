@@ -105,9 +105,9 @@ String updateUI()
 	{
 		updateLog = "update UI started\n";
 		updateUIStatus = UpdateStatusStarted;
-		updateLog += downloadFileWithLog("actuatorindicator.js.gz");
+		updateLog += downloadFileWithLog("actuatorwidget.js.gz");
 		updateUIStatus = UpdateStatusAtProcess;
-		updateLog += downloadFileWithLog("baseindicator.js.gz");
+		updateLog += downloadFileWithLog("basewidget.js.gz");
 		updateLog += downloadFileWithLog("bootcore.js.gz");
 		updateLog += downloadFileWithLog("bootstrap.min.css.gz");
 		updateLog += downloadFileWithLog("bootstrap.min.js.gz");
@@ -115,7 +115,7 @@ String updateUI()
 		updateLog += downloadFileWithLog("ui.css.gz");
 		updateLog += downloadFileWithLog("dataTables.min.css.gz");
 		updateLog += downloadFileWithLog("dataTables.min.js.gz");
-		updateLog += downloadFileWithLog("indicatorswrappers.js.gz");
+		updateLog += downloadFileWithLog("widgetswrappers.js.gz");
 		updateLog += downloadFileWithLog("devicescore.js.gz");
 		updateLog += downloadFileWithLog("drawcore.js.gz");
 		updateLog += downloadFileWithLog("filespanelui.js.gz");
@@ -124,20 +124,20 @@ String updateUI()
 		updateLog += downloadFileWithLog("jquery.dataTables.min.js.gz");
 		updateLog += downloadFileWithLog("jquery.min.js.gz");
 		updateLog += downloadFileWithLog("languagescore.js.gz");
-		updateLog += downloadFileWithLog("lcdindicator.js.gz");
-		updateLog += downloadFileWithLog("lightindicator.js.gz");
-		updateLog += downloadFileWithLog("lcdindicator.js.gz");
-		updateLog += downloadFileWithLog("lightindicator.js.gz");
-		updateLog += downloadFileWithLog("motionindicator.js.gz");
+		updateLog += downloadFileWithLog("lcdwidget.js.gz");
+		updateLog += downloadFileWithLog("lightwidget.js.gz");
+		updateLog += downloadFileWithLog("lcdwidget.js.gz");
+		updateLog += downloadFileWithLog("lightwidget.js.gz");
+		updateLog += downloadFileWithLog("motionwidget.js.gz");
 		updateLog += downloadFileWithLog("popper.min.js.gz");
-		updateLog += downloadFileWithLog("radialindicator.js.gz");
-		updateLog += downloadFileWithLog("smokeindicator.js.gz");
+		updateLog += downloadFileWithLog("radialwidget.js.gz");
+		updateLog += downloadFileWithLog("smokewidget.js.gz");
 		updateLog += downloadFileWithLog("speechcore.js.gz");
-		updateLog += downloadFileWithLog("stepperindicator.js.gz");
-		updateLog += downloadFileWithLog("temperatureindicator.js.gz");
-		updateLog += downloadFileWithLog("graphindicator.js.gz");
+		updateLog += downloadFileWithLog("stepperwidget.js.gz");
+		updateLog += downloadFileWithLog("temperaturewidget.js.gz");
+		updateLog += downloadFileWithLog("graphwidget.js.gz");
 		updateLog += downloadFileWithLog("configcore.js.gz");
-		updateLog += downloadFileWithLog("tableindicator.js.gz");
+		updateLog += downloadFileWithLog("tablewidget.js.gz");
 		updateUIStatus = UpdateStatusComplete;
 		updateLog += "update UI complete\n";
 	}

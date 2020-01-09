@@ -21,7 +21,7 @@
 #include "..\Managers\DeviceManager.h"
 #include "..\Managers\UpdateManager.h"
 #include "..\..\UnitProperties.h"
-#include "..\..\config.h"
+#include "..\..\WebProperties.h"
 
 
 #ifdef USESSL

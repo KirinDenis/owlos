@@ -1,76 +1,76 @@
 var DEFAULT_TYPE = 0;
 var ICONS_TYPE = 1;
 
-class ActuatorIndicator extends BaseIndicator {
+class ActuatorWidget extends BaseWidget {
     constructor(parentPanel, id, size, iconOn, iconOff) {
         super(parentPanel, id, size);
 
         if ((iconOn == undefined) && (iconOff == undefined)) {
-            this.indicatorType = DEFAULT_TYPE;
+            this.widgetType = DEFAULT_TYPE;
             this.SVGArcBack = new SVGArc(this.svgElement, this.id + "arcback", this.centreX, this.centreY + this.topMargin, this.radius + this.size / 20, this.size / 100);
             this.SVGArcBack.color = theme.secondary;
 
-            this.SVGArcIndicator = new SVGArc(this.svgElement, this.id + "arcindicator", this.centreX, this.centreY + this.topMargin, this.radius, this.size / 14);
-            this.SVGArcIndicator.color = theme.secondary;
-            this.SVGArcIndicator.fill = theme.secondary;
+            this.SVGArcWidget = new SVGArc(this.svgElement, this.id + "arcwidget", this.centreX, this.centreY + this.topMargin, this.radius, this.size / 14);
+            this.SVGArcWidget.color = theme.secondary;
+            this.SVGArcWidget.fill = theme.secondary;
         }
         else {
-            this.indicatorType = ICONS_TYPE;
+            this.widgetType = ICONS_TYPE;
             this.rowSize = this.size / 2.5;
             this.iconOn = iconOn;
             this.SVGIconOn = new SVGIcon(this.svgElement, this.iconOn, this.width / 2 - this.rowSize / 2, this.height / 2 - this.rowSize / 2, this.rowSize, this.rowSize);
             this.SVGIconOn.fill = theme.success;
-            this.SVGIconOn.SVGIcon.indicator = this;
+            this.SVGIconOn.SVGIcon.widget = this;
             this.SVGIconOn.hide();
 
             this.iconOff = iconOff;
             this.SVGIconOff = new SVGIcon(this.svgElement, this.iconOff, this.width / 2 - this.rowSize / 2, this.height / 2 - this.rowSize / 2, this.rowSize, this.rowSize);
             this.SVGIconOff.fill = theme.success;
-            this.SVGIconOff.SVGIcon.indicator = this;
+            this.SVGIconOff.SVGIcon.widget = this;
             this.SVGIconOff.hide();
 
             this.SVGArcSpinner.y = this.centreY;
         }
 
 
-        this.SVGIndicatorText.hide();
+        this.SVGWidgetText.hide();
         this.ShowEqualizer = false;
         this.clickableToTop();
     }
 
 
-    drawIndicator() {
+    drawWidget() {
 
-        super.drawIndicator();
+        super.drawWidget();
 
-        if (this.indicatorType == DEFAULT_TYPE) {
-            //back radial indicator
+        if (this.widgetType == DEFAULT_TYPE) {
+            //back radial widget
             this.SVGArcBack.draw(0, 359.99);
 
-            //radial indicator
+            //radial widget
             if (this.data != 0) {
-                this.SVGArcIndicator.draw(0, 359.99);
+                this.SVGArcWidget.draw(0, 359.99);
             }
             else {
-                this.SVGArcIndicator.hide();
+                this.SVGArcWidget.hide();
             }
 
             switch (this._networkStatus) {
                 case NET_ONLINE:
                     this.toColor(this.SVGArcBack, theme.success);
-                    this.toColor(this.SVGArcIndicator, theme.success, false);
+                    this.toColor(this.SVGArcWidget, theme.success, false);
                     break;
                 case NET_ERROR:
                     this.toColor(this.SVGArcBack, theme.danger);
-                    this.toColor(this.SVGArcIndicator, theme.danger, false);
+                    this.toColor(this.SVGArcWidget, theme.danger, false);
                     break;
                 case NET_RECONNECT:
                     this.toColor(this.SVGArcBack, theme.info);
-                    this.toColor(this.SVGArcIndicator, theme.info, false);
+                    this.toColor(this.SVGArcWidget, theme.info, false);
                     break;
                 default: //offline
                     this.toColor(this.SVGArcBack, theme.secondary);
-                    this.toColor(this.SVGArcIndicator, theme.secondary, false);
+                    this.toColor(this.SVGArcWidget, theme.secondary, false);
                     break;
             }
         }
