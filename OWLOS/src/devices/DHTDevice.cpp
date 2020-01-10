@@ -103,12 +103,6 @@ bool DHTDevice::query()
 			onInsideChange("temperature", temperature);
 		}
 
-		//Fill array of history data
-		if (millis() >= lastHistoryMillis + historyInterval)
-		{
-			lastHistoryMillis = millis();
-			setHistoryData(std::atof(temperature.c_str()));
-		}
 
 		//Write history data to file
 		if (millis() >= lastHistoryFileWriteMillis + historyFileWriteInterval)
@@ -117,6 +111,25 @@ bool DHTDevice::query()
 			lastHistoryFileWriteMillis = millis();
 			writeHistoryFile(std::atof(temperature.c_str()));
 		}
+		//Humidity --------------------------------------------------------------
+		float _humidity = std::atof(humidity.c_str());
+
+		getHumidity();
+
+		different = std::atof(humidity.c_str()) - _humidity;
+		if ((different > trap) || (different < -trap))
+		{
+			onInsideChange("humidity", humidity);
+		}
+
+		//Fill array of history data
+		if (millis() >= lastHistoryMillis + historyInterval)
+		{
+			lastHistoryMillis = millis();
+			setTemperatureHistoryData(std::atof(temperature.c_str()));
+			setHumidityHistoryData(std::atof(humidity.c_str()));
+		}
+
 	
 		return true;
 	}
@@ -128,7 +141,10 @@ String DHTDevice::getAllProperties()
 	
 	String result = BaseDevice::getAllProperties();
 	result += "temperature=" + getTemperature() + "//rf\n";
+	result += "temperaturehistorydata=" + getTemperatureHistoryData() + "//r\n";
+	result += "temperaturehistoryfile=//r\n";
 	result += "humidity=" + getHumidity() + "//rf\n";
+	result += "humidityhistorydata=" + getHumidityHistoryData() + "//r\n";
 	result += "pin=" + String(pin) + "//i\n";
 	result += "dhttype=" + String(dhttype) + "//i\n";
 	return result;
@@ -163,6 +179,22 @@ String DHTDevice::onMessage(String _topic, String _payload, int transportMask)
 	{
 		result = onGetProperty("humidity", getHumidity(), transportMask);
 	}
+	//Temperature history data -------------------------------------------------------------
+	else if (String(topic + "/gettemperaturehistorydata").equals(_topic))
+	{
+		return onGetProperty("temperaturehistorydata", String(getTemperatureHistoryData()), transportMask);
+	}
+	//Read history file contents-------------------------------------------------------------
+	else if (String(topic + "/gettemperaturehistoryfile").equals(_topic))
+	{
+		return onGetProperty("temperaturehistoryfile", String(readTemperatureHistoryFile()), transportMask);
+	}
+
+	else if (String(topic + "/gethumidityhistorydata").equals(_topic))
+	{
+		return onGetProperty("humidityhistorydata", String(getHumidityHistoryData()), transportMask);
+	}
+
 
 	return result;
 }
@@ -264,3 +296,140 @@ String DHTDevice::getHumidity()
 	return humidity;
 }
 
+String DHTDevice::getTemperatureHistoryData()                  
+{
+	String	dataHistory = String(temperatureHistoryCount) + ";";
+
+	for (int k = 0; k < temperatureHistoryCount; k++)
+	{
+		dataHistory += String(temperatureHistoryData[k]) + ";";
+	}
+
+	return dataHistory;
+}
+
+bool DHTDevice::setTemperatureHistoryData(float _historydata)
+{
+	if (isnan(_historydata)) return false;
+
+	if (temperatureHistoryCount < historySize) {
+		temperatureHistoryData[temperatureHistoryCount] = _historydata;
+		temperatureHistoryCount++;
+	}
+	else
+	{
+		for (int k = 1; k < historySize; k++) {
+			temperatureHistoryData[k - 1] = temperatureHistoryData[k];
+		}
+
+		temperatureHistoryData[historySize - 1] = _historydata;
+	}
+
+	return true;
+}
+
+String DHTDevice::getHumidityHistoryData()
+{
+	String	dataHistory = String(humidityHistoryCount) + ";";
+
+	for (int k = 0; k < humidityHistoryCount; k++)
+	{
+		dataHistory += String(humidityHistoryData[k]) + ";";
+	}
+
+	return dataHistory;
+}
+
+bool DHTDevice::setHumidityHistoryData(float _historydata)
+{
+	if (isnan(_historydata)) return false;
+	if (humidityHistoryCount < historySize) {
+		humidityHistoryData[humidityHistoryCount] = _historydata;
+		humidityHistoryCount++;
+	}
+	else
+	{
+		for (int k = 1; k < historySize; k++) {
+			humidityHistoryData[k - 1] = humidityHistoryData[k];
+		}
+
+		humidityHistoryData[historySize - 1] = _historydata;
+	}
+
+	return true;
+}
+
+//TemperatureHistoryFile property Read<->Write wrappers
+String DHTDevice::readTemperatureHistoryFile()
+{
+	String result = "";
+	for (int i = 0; i < filesIndexesSize; i++)
+	{
+		String file = id + "." + String(temperatureHistoryFilesIndexes[i] + 1) + ".history";
+		if (filesExists(file))
+		{
+			result += filesReadString(file);
+		}
+	}
+	return result;
+}
+
+
+bool DHTDevice::writeTemperatureHistoryFile(float _historydata)
+{
+
+	bool result = false;
+
+	String _historyfilename;
+
+
+	if (historyTemperatureFileCount < historyFileWriteTime)
+	{
+		historyTemperatureFileCount++;
+	}
+	else
+	{
+		historyTemperatureFileCount = 1;
+
+		if (currentTemperatureFileIndex < filesIndexesSize)
+		{
+			//Write to history file at the begining
+			currentTemperatureFile = temperatureHistoryFilesIndexes[currentFileIndex];
+			currentTemperatureFileIndex++;
+		}
+		else
+		{
+
+			currentTemperatureFileIndex = filesIndexesSize;
+
+			//Take value from historyFilesIndexes[0]
+			currentFile = historyFilesIndexes[0];
+
+			//Shift array element one step to left
+			for (int i = 1; i < filesIndexesSize; i++)
+			{
+				temperatureHistoryFilesIndexes[i - 1] = temperatureHistoryFilesIndexes[i];
+			}
+
+			//Put the current file to the end of array
+			temperatureHistoryFilesIndexes[filesIndexesSize - 1] = currentTemperatureFile;
+
+		}
+
+		//delete file with oldest history
+		filesDelete(id + "." + String(currentTemperatureFile + 1) + ".history");
+	}
+
+	_historyfilename = id + "." + String(currentTemperatureFile + 1) + ".history";
+
+	if (!filesExists(_historyfilename))
+	{
+		result = filesWriteString(_historyfilename, String(_historydata) + ";");
+	}
+	else
+	{
+		result = filesAddString(_historyfilename, String(_historydata) + ";");
+	}
+
+	return result;
+}

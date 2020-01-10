@@ -85,6 +85,7 @@ String BaseDevice::getAllProperties()
  result += "queryinterval=" + String(queryInterval)+ "//i\n";
  result += "publishinterval=" + String(publishInterval)+ "//i\n";
  result += "historydata=" + getHistoryData() + "//r\n";
+ result += "historyfile=//r\n";
  return result;
 }
 

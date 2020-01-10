@@ -1,43 +1,5 @@
 var devicesUI = {
 
-    /*
- parsedDevices : "",
-
-
-function getParsedDevices() {
-
-    var result = [];
-    if (parsedDevices !== "") {
-        for (var i = 0; i < parsedDevices.length; i++) {
-            if (parsedDevices[i] === "") continue;
-            if (parsedDevices[i].startsWith("properties for:")) {
-                result.push(parsedDevices[i].split(":")[1]);
-            }
-        }
-    }
-    return result;
-}
-
-function getParsedDeviceProperty(id, property) {
-    if (parsedDevices !== "") {
-        for (var i = 0; i < parsedDevices.length; i++) {
-            if (parsedDevices[i] === "") continue;
-            if (parsedDevices[i].startsWith("properties for:" + id)) {
-                for (var j = i + 1; j < parsedDevices.length; j++) {
-                    if (parsedDevices[j].startsWith("properties for:")) { break; }
-                    if (parsedDevices[j].startsWith(property + "=")) {
-                        return parsedDevices[j].split("=")[1].split("//")[0];
-                    }
-                }
-                break;
-            }
-        }
-    }
-    return "";
-}
-
-*/
-
 
     appendDevicePins: function (valueSelect) {
         var valueSelectOption = valueSelect.appendChild(document.createElement('option'));
@@ -183,14 +145,6 @@ function getParsedDeviceProperty(id, property) {
         addButton.onclick =  devicesUI.doAddDeviceClick;
         addButton.innerText = getLang("add");
 
-        /*
-        var closeButton = modalFooter.appendChild(document.createElement("button"));
-        closeButton.type = "button";
-        closeButton.className = "btn btn-info";
-        closeButton.setAttribute("data-dismiss", "modal");
-        closeButton.setAttribute("aria-label", "Close");
-        closeButton.innerText = "cancel";
-        */
 
         $("#addDeviceModal").modal('show');
 
@@ -219,7 +173,7 @@ function getParsedDeviceProperty(id, property) {
             addDeviceAlert.role = "alert";
             addDeviceAlert.innerText = httpResult;
 
-            addButton.className = "btn btn-success";
+            addButton.className = "btn btn-success btn-sm";
             addButton.value = 'add';
         }
         addButton.disable = false;
