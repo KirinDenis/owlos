@@ -177,7 +177,7 @@ class HistoryDataGraphWidgetWrapper extends RadialWidgetWrapper {
         if (this.widget == undefined) return;
         if (this.deviceProperty == undefined) return;
         if (this.deviceProperty.networkStatus == NET_ONLINE) {
-            this.widget.refresh(this.deviceProperty.value, this.device._id, this.device.historydata.value);
+            this.widget.refresh(this.deviceProperty.value, this.device._id, this.deviceProperty.value);
         }
         else {
             this.widget.refresh(0, "--", this.device._id);
@@ -799,7 +799,7 @@ var WidgetsLayer = {
         name: getLang("historydatagraph"),
         widget: HistoryDataGraphWidgetWrapper,
         devicesTypes: "any",
-        devicesProperties: ";historydata;",
+        devicesProperties: ";historydata;historyfile;temperaturehistorydata;humidityhistorydata;",
     },
     LightWidget: {
         id: "light",

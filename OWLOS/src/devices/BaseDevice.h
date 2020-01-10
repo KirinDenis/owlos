@@ -110,6 +110,7 @@ class BaseDevice
 		//Set time for writing history file
 	int historyFileWriteTime = 60;
 	int filesIndexesSize = 25; //24 with history + 1 for current writting;
+
 	int currentFile = 0;
 	int currentFileIndex = 0;
 	int historyFileCount = 0;
