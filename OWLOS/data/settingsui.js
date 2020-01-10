@@ -81,7 +81,7 @@ var settingsUI = {
                 deviceHRef.parentLi = nodeLi;
                 deviceHRef.style.color = theme.success;
                 deviceHRef.setAttribute("data-toggle", "tab");
-                deviceHRef.onclick = addDeviceClick;
+                deviceHRef.onclick = devicesUI.addDeviceClick;
                 deviceHRef.innerText = getLang("adddevice");
                 deviceHRef.href = "#home";
                 deviceHRef.node = node;
@@ -235,7 +235,7 @@ var settingsUI = {
 
 
             if (device._id == "network") {
-                document.title = device.unitid.value + " :: OWL OS";
+               // document.title = device.unitid.value + " :: OWL OS"; //ToDo detect "local" node
 
                 var RESTfulPanel = settingsUI.getStatusWidget(device._alies + "restfulStatus", "RESTful");
                 device.restfulavailable.addValueListner(settingsUI.onRESTfulStatusChange, RESTfulPanel);

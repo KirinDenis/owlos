@@ -38,42 +38,49 @@ $(document).ready(function () {
 
 
     addToLogNL("get UI configuration...");
-    config.addChangeListner(settingsUI.onConfigChange, settingsUI);
-    if (config.load()) {
-        status_online = NET_ONLINE;
-        speak("OWL OS is started");
+    try {
+        config.addChangeListner(settingsUI.onConfigChange, settingsUI);
+        if (config.load()) {
+            status_online = NET_ONLINE;
+            speak("OWL OS is started");
 
 
-        document.getElementById("home-tab").innerText = getLang("homeTab");
-        document.getElementById("settings-tab").innerText = getLang("settingsTab");
-        document.getElementById("console-tab").innerText = getLang("consoleTab");
+            document.getElementById("home-tab").innerText = getLang("homeTab");
+            document.getElementById("settings-tab").innerText = getLang("settingsTab");
+            document.getElementById("console-tab").innerText = getLang("consoleTab");
 
-        addToLogNL(getLang("prepareUnit"));
+            addToLogNL(getLang("prepareUnit"));
 
 
 
-        devices.addDeviceLoadedListner(settingsUI.onDeviceLoaded, settingsUI);        
-        nodesRefresh();
+            devices.addDeviceLoadedListner(settingsUI.onDeviceLoaded, settingsUI);
+            nodesRefresh();
 
-        dashboardUI.initDashboard();
-               
-        document.getElementById("mainContainer").style.display = "block";
-        var boot = document.getElementById("boot");
-        boot.parentElement.removeChild(boot);
-        document.getElementById("consolePanel").appendChild(boot);
+            dashboardUI.initDashboard();
 
-        nodesRefreshHandle = setInterval(nodesRefresh, 10000);
+            document.getElementById("mainContainer").style.display = "block";
+            var boot = document.getElementById("boot");
+            boot.parentElement.removeChild(boot);
+            document.getElementById("consolePanel").appendChild(boot);
 
-        //$('#sidebarCollapse').on('click', function () {
-        //    $('#sidebar').toggleClass('active');
-        //});
+            nodesRefreshHandle = setInterval(nodesRefresh, 10000);
 
-        speak("OWL OS is ready");
+            //$('#sidebarCollapse').on('click', function () {
+            //    $('#sidebar').toggleClass('active');
+            //});
+
+            speak("OWL OS is ready");
+        }
+        else {
+            status_online = NET_OFFLINE;
+            speak("ERROR with host: " + host);
+            addToLogNL("ERROR with host: " + host, 2);
+        }
     }
-    else {
+    catch (exception) {
         status_online = NET_OFFLINE;
-        speak("ERROR with host: " + host);
-        addToLogNL("ERROR with host: " + host, 2);
+        addToLogNL("ERROR starting exception: " + exception, 2);
+        addToLogNL("ERROR delete configurations files can help fix it: [your host]/deletefile?name=web.config", 2);
     }
     
 });

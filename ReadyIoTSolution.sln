@@ -32,6 +32,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "data", "data", "{0586AFF7-C
 		OWLOS\data\dataTables.min.css = OWLOS\data\dataTables.min.css
 		OWLOS\data\dataTables.min.js = OWLOS\data\dataTables.min.js
 		OWLOS\data\devicescore.js = OWLOS\data\devicescore.js
+		OWLOS\data\devicesui.js = OWLOS\data\devicesui.js
 		OWLOS\data\drawcore.js = OWLOS\data\drawcore.js
 		OWLOS\data\filespanelui.js = OWLOS\data\filespanelui.js
 		OWLOS\data\graphwidget.js = OWLOS\data\graphwidget.js

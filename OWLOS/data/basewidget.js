@@ -10,7 +10,7 @@ class BaseWidget {
 
         //properties --------------------------------
         this.id = id;        
-        this._networkStatus = NET_OFFLINE
+        this._networkStatus = NET_OFFLINE;
         this._event = EVENT_NO;
         this.eventListners = [];
               

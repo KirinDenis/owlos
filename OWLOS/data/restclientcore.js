@@ -80,7 +80,7 @@ function httpGet(_url)
         error: function (data, status, err) {
             addToLogNL("call RESTful: " + _url + " result ERORR [" + data.status + "]", 2); 
             if (data && data.status === 200 && data.responseText) {                
-                asyncData = data.responseText;
+                asyncData = "%error: " +data.responseText;
             }
             else {            
                 _data = "%error";
@@ -114,16 +114,55 @@ function httpGetWithErrorReson(_url)
         error: function (data, status, err) {
             addToLogNL("call RESTful: " + _url + " result ERORR [" + data.status + "]", 2); 
             if (data && data.status === 200 && data.responseText) {                
-                asyncData = data.responseText;
+                asyncData = "%error: " + data.responseText;
             }
             else {
-                _data = "error: " + data.responseText + "[HTTP result: " + data.status + "]";
+                _data = "%error: " + data.responseText + "[HTTP result: " + data.status + "]";
             }
         }
     });
 
     return _data;
 }
+
+function httpPostWithErrorReson(_url, _postdata) {
+
+    var formData = new FormData();
+    var postdata = [];
+    postdata.push(_postdata);    
+    formData.append('postdata', postdata);
+
+    var _data = null;
+    $.ajax({
+        url: encodeURI(_url),
+        type: "POST",
+        
+        
+        data: formData,
+        contentType: false,
+        processData: false,
+        cache: false,
+        async: false,
+
+        success: function (data) {
+            addToLogNL("call RESTful: " + _url + " result OK", 1);
+            _data = data;
+        },
+
+        error: function (data, status, err) {
+            addToLogNL("call RESTful: " + _url + " result ERORR [" + data.status + "]", 2);
+            if (data && data.status === 200 && data.responseText) {
+                asyncData = "%error: " + data.responseText;
+            }
+            else {
+                _data = "%error: " + data.responseText + "[HTTP result: " + data.status + "]";
+            }
+        }
+    });
+
+    return _data;
+}
+
 
 
 function httpGetAsync(_url) 
@@ -149,7 +188,7 @@ function httpGetAsync(_url)
         error: function (data, status, err) {
             addToLogNL("call RESTful async: " + _url + " result ERORR [" + data.status + "]", 2); 
             if (data && data.status === 200 && data.responseText) {
-                asyncData = data.responseText;
+                asyncData = "%error: " + data.responseText;
             }
             else {
                 _data = "%error";
@@ -183,7 +222,7 @@ function httpGetAsyncWithReciever(_url, asyncReciever, upperAsyncReciever, sende
         error: function (data, status, err) {
             addToLogNL("call RESTful async: " + _url + " result ERORR [" + data.status + "]", 2);
             if (data && data.status === 200 && data.responseText) {
-                asyncData = data.responseText;
+                asyncData = "%error: " +data.responseText;
             }
             else {
                 _data = "%error";

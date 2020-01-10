@@ -122,6 +122,7 @@ function loadingScripts(withInternet) {
                             loadingScript("tablewidget.js");
                             loadingScript("widgetswrappers.js");
                             loadingScript("filespanelui.js");
+                            loadingScript("devicesui.js");
                             loadingScript("dashboardui.js");
                             loadingScript("settingsui.js");
                             

@@ -30,6 +30,8 @@ D:\7Zip\7z.exe a -mx9 widgetswrappers.js.gz widgetswrappers.js
 REM copy  "widgetswrappers.js.gz" "widgetswrappers.js.gz"
 D:\7Zip\7z.exe a -mx9 devicescore.js.gz devicescore.js 
 REM copy  "devicescore.js.gz" "devicescore.js.gz"
+D:\7Zip\7z.exe a -mx9 devicesui.js.gz devicesui.js 
+REM copy  "devicesui.js.gz" "devicesui.js.gz"
 D:\7Zip\7z.exe a -mx9 drawcore.js.gz drawcore.js 
 REM copy  "drawcore.js.gz" "drawcore.js.gz"
 D:\7Zip\7z.exe a -mx9 dashboardui.js.gz dashboardui.js 

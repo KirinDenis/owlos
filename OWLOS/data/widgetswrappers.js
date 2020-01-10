@@ -509,6 +509,56 @@ class ActuatorWidgetWrapper {
 //LCD ----------------------------------------------------------------------------------
 class LCDWidgetWrapper {
 
+
+    constructor(parentPanel, device, deviceProperty, noWidget, configPropertiesWidget) {
+        this.configPropertiesWidget = configPropertiesWidget;
+        if (device == undefined) {
+            devices.addDeviceLoadedListner(this.onDeviceLoaded, this);
+        }
+        else {
+            this.offlineStarter(parentPanel, device._id, deviceProperty.name, noWidget);
+            this.joinDevice(device, deviceProperty);
+
+        }
+    }
+
+    offlineStarter(parentPanel, deviceId, devicePropertyName, noWidget) {
+        this.deviceId = deviceId;
+        this.devicePropertyName = devicePropertyName;
+
+        dashboardUI.addDashboardModeListner(this.onDashboardModeChange, this);
+        if ((noWidget == undefined) || (!noWidget)) {
+            this.widget = new  LCDWidget(parentPanel, deviceId, 150);
+            this.widget.deviceClass = this;
+           // this.widget.rPanel.onclick = this.widgetClick;
+            this.widget.lcdButton.onclick = this.lcdTextClick;
+            this.widget.lightButton.onclick = this.lcdLightClick;
+            this.draw();
+        }
+    }
+
+    joinDevice(device, deviceProperty) {
+        this.device = device;
+        this.device["text"].addNetworkStatusListner(this.onTextChange, this);
+        this.device["text"].addValueListner(this.onTextChange, this);
+        this.device["backlight"].addValueListner(this.onLightChange, this);
+        this.deviceProperty = deviceProperty;
+        this.widget.deviceClass.deviceProperty = deviceProperty;
+        this.node = config.getNodeByHost(device._host);        
+        this.node.addNetworkStatusListner(this.onNetworkStatusChange, this);
+        this.deviceProperty.addNetworkStatusListner(this.onNetworkStatusChange, this);
+        this.deviceProperty.addValueListner(this.onValueChange, this);
+    }
+
+
+    onDeviceLoaded(sender, device) {
+        if (sender.device != undefined) return;
+        if (sender.deviceId == device._id) {
+            sender.joinDevice(device, device[sender.devicePropertyName]);
+        }
+    }
+    //---------------------------------------
+    /*
     offlineStarter(parentPanel, deviceId, devicePropertyName, noWidget) {
         this.deviceId = deviceId;
         this.devicePropertyName = devicePropertyName;
@@ -557,6 +607,7 @@ class LCDWidgetWrapper {
 
         }
     }
+    */
 
     onDashboardModeChange(sender, mode) {
         if (sender.widget != undefined) {
@@ -797,6 +848,17 @@ var WidgetsLayer = {
         devicesProperties: ";data;",
 
     },
+    /*
+    StepperWidget: {
+        id: "stepper",
+        name: getLang("stepper"),
+        widget: StepperWidgetWrapper,
+        devicesTypes: ";" + StepperDeviceType + ";",
+        devicesProperties: "any",
+
+    },
+    */
+
 
     getWidgetById: function (id) {
         if (id == undefined) return undefined;
