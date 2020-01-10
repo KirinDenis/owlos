@@ -134,59 +134,13 @@ class GraphWidget extends BaseWidget {
 
         if (this.historyData != undefined) {
             //reset 
+       
+            var updatedFilteredData = historyDataFilter(this.graphWidth, this.historyData, 1, 1);
 
-            var splitHistory = this.historyData.split(";");
-            var count = parseInt(splitHistory[0]);
-            var step = parseFloat(this.graphWidth / (count-1));
-            var halfStep = step / 3;
+            //It is important to draw Y lalues at first and curve after!!!
+            grawYValuesPoints(this.SVGTopLabel, this.SVGMiddleLabel, this.SVGDownLabel, updatedFilteredData);
 
-            var bigValue;
-            var smallValue;
-
-            for (var x = 1; x < count+1; x++) {                
-                var value = parseFloat(splitHistory[x]);
-                if ((bigValue == undefined) || (value > bigValue)) {
-                    bigValue = value;
-                }
-
-                if ((smallValue == undefined) || (value < smallValue)) {
-                    smallValue = value;
-                }
-
-            }
-
-            var proportion = this.graphHeight / (bigValue - smallValue);
-            //normalize Y
-            for (var x = 1; x < count + 1; x++) {
-                splitHistory[x] = parseFloat(this.graphTop + (this.graphHeight - (splitHistory[x] - smallValue) * proportion));
-            }
-
-            var topOffset = parseFloat(this.graphHeight + this.graphTop);
-
-            var d = "M 0, " + topOffset;
-
-            var s1 = parseFloat(step - halfStep * 2);
-            var s2 = parseFloat(step - halfStep);
-            var s3 = parseFloat(step);
-
-            d += " C 0, " + splitHistory[1] + " "
-                + "0, " + splitHistory[1] + " "
-                + "0, " + splitHistory[1] + " ";
-
-
-            for (var x = 2; x < count+1; x++) {
-                var s1 = parseFloat((x - 1) * step - halfStep * 2);
-                var s2 = parseFloat((x - 1) * step - halfStep);
-                var s3 = parseFloat((x - 1) * step);
-                d += " C " + s1 + ", " + splitHistory[x-1] + " "
-                    + s2 + ", " + splitHistory[x] + " "
-                    + s3 + ", " + splitHistory[x] + " ";
-            }
-
-            d += " C " + this.width + "," + topOffset +" "
-                + this.width + "," + topOffset + " "
-                + this.width + "," + topOffset + " ";
-
+            var d = curveForDrawing(updatedFilteredData, this.graphHeight, this.graphTop, 5);
            
             switch (this._networkStatus) {
                 case NET_ONLINE:
@@ -223,12 +177,7 @@ class GraphWidget extends BaseWidget {
                     break;
             }
 
-
-            this.SVGTopLabel.text = parseFloat(bigValue).toFixed(2);;
-            this.SVGMiddleLabel.text = parseFloat(bigValue - (bigValue - smallValue) / 2).toFixed(2);;
-            this.SVGDownLabel.text = parseFloat(smallValue).toFixed(2);;
-
-            
+       
             this.SVGTopLabel.y = this.SVGTopLine.y = this.graphTop;
             this.SVGTopLine.x = this.SVGTopLabel.x + this.SVGTopLabel.width;
             this.SVGMiddleLabel.y = this.SVGMiddleLine.y = this.graphTop + this.graphHeight / 2;
@@ -245,4 +194,338 @@ class GraphWidget extends BaseWidget {
     }
 
 }
+
+function isIntegerNumber(num) {
+    return (num ^ 0) === num;
+}
+
+
+function grawYValuesPoints(topLable, middleLable, downLable, filteredArrayForDrawY) {
+    var maxValueY;
+    var minValueY;
+
+    for (var gLocal = 0; gLocal < filteredArrayForDrawY.length; gLocal++) {
+        var valueYLocal = parseFloat(filteredArrayForDrawY[gLocal]);
+
+        if ((maxValueY == undefined) || (valueYLocal > maxValueY)) {
+            maxValueY = valueYLocal;
+        }
+
+        if ((minValueY == undefined) || (valueYLocal < minValueY)) {
+            minValueY = valueYLocal;
+        }
+    }
+
+    var middleValueY;
+
+    if (minValueY == maxValueY) {
+        minValueY -= minValueY * 0.1;
+        maxValueY += maxValueY * 0.1;
+        middleValueY = minValueY + (maxValueY - minValueY) / 2;
+    }
+    else {
+
+        middleValueY = (maxValueY - minValueY) / 2;
+        maxValueY += middleValueY;
+        minValueY -= middleValueY;
+
+        middleValueY = minValueY + (maxValueY - minValueY) / 2;
+    }
+
+    if (!isIntegerNumber(maxValueY) || !isIntegerNumber(middleValueY) || !isIntegerNumber(minValueY)) {
+        maxValueY = maxValueY.toFixed(2);
+        minValueY = minValueY.toFixed(2);
+        middleValueY = middleValueY.toFixed(2);
+    }
+
+    topLable.text = maxValueY;
+    middleLable.text = middleValueY;
+    downLable.text = minValueY;
+
+}
+
+function grawXValues(parentPanel, id, graphPlotWidth, graphPlotHight, graphTopY, startXpoint, historyDataArr, lastPointTimeMiliseconds, timeUnitInMinutes, zoomInOut, shiftLeftRight) {
+    var maxPointsX = 3 * (Math.trunc((graphPlotWidth - 20) / 30) + 1);
+
+    var splitHistoryDataXArray = historyDataArr.split(";");
+    var historyDataXCount = splitHistoryDataXArray.length - 1;
+    let xPointsArray;
+
+
+
+    if (maxPointsX >= historyDataXCount) {
+
+
+        xPointsArray = new Array(historyDataXCount);
+        for (var ix = 0; ix < xPointsArray.length; ix++) {
+            xPointsArray[ix] = lastPointTimeMiliseconds - timeUnitInMinutes * 1000 * 60 * (xPointsArray.length - 1 - ix);
+        }
+
+    }
+    else {
+
+        xPointsArray = new Array(maxPointsX);
+        var historyDataXZeroPosition = 0;
+
+        //checking if history data has more then 1440 elements
+        if (historyDataXCount > 1440) {
+            historyDataXZeroPosition = historyDataXCount - 1440;
+        }
+
+        var dayHistoryXLength = historyDataXCount - historyDataXZeroPosition;
+        var historyDataXFilterStep = Math.trunc(dayHistoryXLength / xPointsArray.length);
+        var deltaTime = dayHistoryXLength - historyDataXFilterStep * xPointsArray.length;
+
+        if (deltaTime <= 0) {
+
+            for (var ixp = 0; ixp < xPointsArray.length; ixp++) {
+                xPointsArray[ixp] = lastPointTimeMiliseconds - 1000 * 60 * timeUnitInMinutes * historyDataXFilterStep * (xPointsArray.length - (ixp + 1));
+            }
+        }
+        else {
+            for (var ixpd = 0; ixpd < xPointsArray.length; ixpd++) {
+                xPointsArray[ixpd] = lastPointTimeMiliseconds - 1000 * 60 * timeUnitInMinutes * (deltaTime + historyDataXFilterStep * (xPointsArray.length - (ixpd + 1)));
+            }
+        }
+
+    }
+
+
+    let startXValue = new Date(xPointsArray[0]);
+
+    var SVGTTextXValue = new SVGText(parentPanel, id + "startXValue", graphPlotHight / 255);
+    SVGTTextXValue.x = startXpoint;
+    SVGTTextXValue.y = graphTopY + graphPlotHight + 10;
+    SVGTTextXValue.text = startXValue.getHours() + ":" + startXValue.getMinutes();
+    var nextXTestPosition = startXpoint + SVGTTextXValue.getTextWidth();
+
+
+    let finishXValue = new Date(xPointsArray[xPointsArray.length - 1]);
+
+    var SVGTTextXFinishValue = new SVGText(parentPanel, id + "finishXValue", graphPlotHight / 255);
+    SVGTTextXFinishValue.x = startXpoint + Math.trunc(graphPlotWidth / (xPointsArray.length)) * (xPointsArray.length - 1) - 20;
+    SVGTTextXFinishValue.y = graphTopY + graphPlotHight + 10;
+    SVGTTextXFinishValue.text = finishXValue.getHours() + ":" + finishXValue.getMinutes();
+
+}
+
+
+function curveForDrawing(filteredDataArray, graphPlotHight, graphTopY, graphStartX) {
+
+    var maxLocalValue;
+    var minLocalValue;
+
+    //Find max and min value
+    for (var mLocal = 0; mLocal < filteredDataArray.length; mLocal++) {
+
+        var valueLocal = parseFloat(filteredDataArray[mLocal]);
+
+        if ((maxLocalValue == undefined) || (valueLocal > maxLocalValue)) {
+            maxLocalValue = valueLocal;
+        }
+
+        if ((minLocalValue == undefined) || (valueLocal < minLocalValue)) {
+            minLocalValue = valueLocal;
+        }
+    }
+
+    var stepLocal = 10;
+
+    var halfStepLocal = stepLocal / 3;
+
+
+    //If min == max then we decrease small value and increase big value by 10%
+    if (maxLocalValue == minLocalValue) {
+        maxLocalValue += maxLocalValue * 0.1;
+        minLocalValue -= minLocalValue * 0.1;
+    }
+    else {
+        var middleLocalValue = (maxLocalValue - minLocalValue) / 2;
+        maxLocalValue += middleLocalValue;
+        minLocalValue -= middleLocalValue;
+    }
+
+    var proportionLocal = graphPlotHight / (maxLocalValue - minLocalValue);
+
+    //normalize Y
+    for (var lLocal = 0; lLocal < filteredDataArray.length; lLocal++) {
+        filteredDataArray[lLocal] = parseFloat(graphTopY + (graphPlotHight - (filteredDataArray[lLocal] - minLocalValue) * proportionLocal));
+    }
+
+    var topOffsetLocal = parseFloat(graphPlotHight + graphTopY);
+
+    var dLocal = "M " + graphStartX + ", " + topOffsetLocal;
+
+    for (var nLocal = 0; nLocal < filteredDataArray.length; nLocal++) {
+
+        if (nLocal == 0) {
+            dLocal += " C " + graphStartX + ", " + filteredDataArray[nLocal] + " "
+                + graphStartX + ", " + topOffsetLocal + " "
+                + graphStartX + ", " + filteredDataArray[nLocal] + " ";
+        }
+        else {
+
+            var s1 = parseFloat(graphStartX + nLocal * stepLocal - halfStepLocal * 2);
+            var s2 = parseFloat(graphStartX + nLocal * stepLocal - halfStepLocal);
+            var s3 = parseFloat(graphStartX + nLocal * stepLocal);
+
+            dLocal += " C " + s1 + ", " + filteredDataArray[nLocal - 1] + " "
+                + s2 + ", " + filteredDataArray[nLocal] + " "
+                + s3 + ", " + filteredDataArray[nLocal] + " ";
+        }
+
+    }
+
+    dLocal += " C " + parseFloat(graphStartX + stepLocal * (filteredDataArray.length - 1)) + "," + topOffsetLocal + " "
+        + parseFloat(graphStartX + stepLocal * (filteredDataArray.length - 1)) + "," + topOffsetLocal + " "
+        + parseFloat(graphStartX + stepLocal * (filteredDataArray.length - 1)) + "," + topOffsetLocal + " ";
+
+    return dLocal;
+}
+
+
+function historyDataFilter(historyDataGraphPlotWidth, historyDataAsString, zoomInOut, shiftLeftRight) {
+
+    var maxPossiblePlotPoints = 3 * (Math.trunc((historyDataGraphPlotWidth - 20) / 30) + 1);
+
+    var splitHistoryDataFromString = historyDataAsString.split(";");
+
+    var historyDataLength = splitHistoryDataFromString.length - 1;
+
+    let filteredHistoryDataArray;
+
+    if (maxPossiblePlotPoints >= historyDataLength) {
+
+        filteredHistoryDataArray = new Array(historyDataLength);
+        for (var hdi = 0; hdi < filteredHistoryDataArray.length; hdi++) {
+            filteredHistoryDataArray[hdi] = splitHistoryDataFromString[hdi];
+        }
+
+    }
+    else {
+
+        filteredHistoryDataArrayLength = 3 * Math.trunc(maxPossiblePlotPoints / 3);
+
+        filteredHistoryDataArray = new Array(filteredHistoryDataArrayLength);
+
+        var filterStep = Math.trunc(3 * historyDataLength / filteredHistoryDataArray.length);
+
+
+        var historyDataStartPosition = historyDataLength - ((filteredHistoryDataArray.length * filterStep) / 3);
+
+        //fill the filltered array from last element to first.It is nessary to save last (more fresh) history datas
+
+        for (var hdj = 0; hdj < filteredHistoryDataArray.length / 3; hdj++) {
+
+            var localBigValue;
+            var localSmallValue;
+            var localMiddleValue;
+            var localBigValueIndex;
+            var localSmallValueIndex;
+            var localMiddleValueIndex;
+            var localDeltaValue;
+
+            for (var hdjj = 0; hdjj < filterStep; hdjj++) {
+                var currentValue = parseFloat(splitHistoryDataFromString[historyDataStartPosition + filterStep * hdj + hdjj]);
+
+                if ((localBigValue == null) || (localBigValue == undefined) || (currentValue > localBigValue)) {
+                    localBigValue = currentValue;
+                    localBigValueIndex = historyDataStartPosition + filterStep * hdj + hdjj;
+                }
+
+                if ((localSmallValue == null) || (localSmallValue == undefined) || (currentValue < localSmallValue)) {
+                    localSmallValue = currentValue;
+                    localSmallValueIndex = historyDataStartPosition + filterStep * hdj + hdjj;
+                }
+
+                if (hdjj == 0) {
+                    localMiddleValue = currentValue;
+                }
+                else {
+                    localMiddleValue += currentValue;
+                }
+            }
+
+
+
+            // if small value = max value => middle = (small+max)/2;
+            if (localSmallValue == localBigValue) {
+                localMiddleValue = (localSmallValue + localBigValue) / 2;
+
+                filteredHistoryDataArray[3 * hdj] = localSmallValue;
+                filteredHistoryDataArray[3 * hdj + 1] = localMiddleValue;
+                filteredHistoryDataArray[3 * hdj + 2] = localBigValue;
+            }
+            else {
+                //Calculate the local middle value as arithmetical mean
+                localMiddleValue = localMiddleValue / filterStep;
+
+                //find the local MiddleValue index
+                for (var jt = 0; jt < filterStep; jt++) {
+                    var currentValueForFindIndex = parseFloat(splitHistoryDataFromString[historyDataStartPosition + filterStep * hdj + jt]);
+                    if ((localDeltaValue == null) || (localDeltaValue == undefined) || (Math.abs(localMiddleValue - currentValueForFindIndex) < localDeltaValue)) {
+                        localDeltaValue = Math.abs(localMiddleValue - currentValueForFindIndex);
+                        localMiddleValueIndex = historyDataStartPosition + filterStep * hdj + jt;
+                    }
+                }
+
+
+                //Odering local max, min and middle value by their indexes
+                if (localSmallValueIndex < localBigValueIndex) {
+                    if (localSmallValueIndex < localMiddleValueIndex) {
+                        filteredHistoryDataArray[3 * hdj] = localSmallValue;
+                        if (localMiddleValueIndex < localBigValueIndex) {
+                            filteredHistoryDataArray[3 * hdj + 1] = localMiddleValue;
+                            filteredHistoryDataArray[3 * hdj + 2] = localBigValue;
+                        }
+                        else {
+                            filteredHistoryDataArray[3 * hdj + 1] = localBigValue;
+                            filteredHistoryDataArray[3 * hdj + 2] = localMiddleValue;
+                        }
+                    }
+                    else {
+                        filteredHistoryDataArray[3 * hdj] = localMiddleValue;
+                        filteredHistoryDataArray[3 * hdj + 1] = localSmallValue;
+                        filteredHistoryDataArray[3 * hdj + 2] = localBigValue;
+                    }
+                }
+                else {
+                    if (localBigValueIndex > localMiddleValueIndex) {
+                        filteredHistoryDataArray[3 * hdj] = localMiddleValue;
+                        filteredHistoryDataArray[3 * hdj + 1] = localBigValue;
+                        filteredHistoryDataArray[3 * hdj + 2] = localSmallValue;
+                    }
+                    else {
+                        filteredHistoryDataArray[3 * hdj] = localBigValue;
+                        if (localMiddleValueIndex < localSmallValueIndex) {
+                            filteredHistoryDataArray[3 * hdj + 1] = localMiddleValue;
+                            filteredHistoryDataArray[3 * hdj + 2] = localSmallValue;
+                        }
+                        else {
+                            filteredHistoryDataArray[3 * hdj + 1] = localSmallValue;
+                            filteredHistoryDataArray[3 * hdj + 2] = localMiddleValue;
+                        }
+
+                    }
+
+                }
+
+            }
+
+
+            //Clear the local values for next filtered set
+            localBigValue = null;
+            localSmallValue = null;
+            localMiddleValue = null;
+            localBigValueIndex = null;
+            localSmallValueIndex = null;
+            localMiddleValueIndex = null;
+            localDeltaValue = null;
+
+        }
+
+    }
+
+    return filteredHistoryDataArray;
+} 
 
