@@ -36,8 +36,6 @@ String webGetAllProperties()
 
 String webOnMessage(String _topic, String _payload)
 {
-	debugOut(id, "WEBPROP" + _topic);
-	debugOut(id, "WEBPROP" + _payload);
 	String result = WrongPropertyName;
 	if (String(unitGetTopic() + "/getconfig").equals(_topic)) return webGetWebConfig();
 	else

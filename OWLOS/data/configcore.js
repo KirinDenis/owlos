@@ -15,14 +15,15 @@ var configProperties = defaultWebProp();
 //var configPropertiesDevice;
 
 var config = {
-
-    changeListners: [], 
+    //temp!!!!!!!
+    locksave: true,
+    changeListners: [],
     onChange: function () {
-        for (var k = 0; k < this.changeListners.length; k++) { 
+        for (var k = 0; k < this.changeListners.length; k++) {
             this.changeListners[k].event(this.changeListners[k].sender, this);
         }
-    },    
-    addChangeListner(_event, _sender) {         
+    },
+    addChangeListner(_event, _sender) {
         try { _event(_sender, this); } catch {
             return; // don't add bad listner
         }
@@ -35,6 +36,7 @@ var config = {
             widgets: []
         }
         configProperties.dashboards.push(dashboard);
+        return dashboard;
     },
 
     getDashboardById: function (_id) {
@@ -49,15 +51,19 @@ var config = {
     addWidget: function (_dashboardId, _daviceId, _deviceProperty, _widgetId) {
         var dashboard = this.getDashboardById(_dashboardId);
         if (dashboard != undefined) {
+
+            
                 var widget = {
                     dashboardId: _dashboardId,
                     deviceId: _daviceId,
                     deviceProperty: _deviceProperty,
-                    widgetId: _widgetId,                    
+                    widgetId: _widgetId,
                 }
                 dashboard.widgets.push(widget);
-                this.save();
-                return widget;
+            
+
+            if (!this.locksave) this.save();
+            return widget;
         }
         return undefined;
     },
@@ -105,13 +111,13 @@ var config = {
         }
         return undefined;
     },
-    
+
     widgetEvent: function (configPropertiesWidget, widget) {
         //widget.event the event what happend
         if (widget.event == EVENT_DELETE) {
             for (var i = 0; i < configProperties.dashboards[0].widgets.length; i++) {
                 if (configPropertiesWidget == configProperties.dashboards[0].widgets[i]) {
-                    configProperties.dashboards[0].widgets.splice(i,1);
+                    configProperties.dashboards[0].widgets.splice(i, 1);
                     config.save();
                     return;
                 }
@@ -121,55 +127,54 @@ var config = {
 
     load: function () {
         var result = false;
-        var configPropertiesJson = httpGetWithErrorReson(boardhost + "getwebproperty?property=config"); //boardhost host контроллера с которого идет первичная загрузка
-        if (!configPropertiesJson.startsWith("%error")) {
+        var stringifyConfig = httpGetWithErrorReson(boardhost + "getwebproperty?property=config"); //boardhost host контроллера с которого идет первичная загрузка
+        if (stringifyConfig.startsWith("OWLOSConfig")) {
             try {
-                configProperties = JSON.parse(unescape(configPropertiesJson));
-                //check 
-                if (this.getDashboardById("main") != undefined) {
+                configProperties = defaultWebProp();
+                stringifyConfigLines = stringifyConfig.split(";");
 
-                    var tempNodes = [];
-                    for (var nodeKey in configProperties.nodes) {
-                        
-                        var tempNode = {
-                            id: configProperties.nodes[nodeKey].id,
-                            host: configProperties.nodes[nodeKey].host,
-                            alies: configProperties.nodes[nodeKey].alies,
-                            recievedDevicesProperties: "",
-                            _networkStatus: NET_OFFLINE,
-                            devices: [],
-                            networkStatusListners: [], //подписчики на изменение сетевого состояния                         
-                            set networkStatus(networkStatus) { //для контроля изменения _networkStatus, для оповещения подписчиков
-                                this._networkStatus = networkStatus; //сохранить новое сетевое состояние
-                                for (var k = 0; k < this.networkStatusListners.length; k++) { //оповестить всех подписчиков
-                                    this.networkStatusListners[k].event(this.networkStatusListners[k].sender, this);
-                                }
-                            },
-
-                            get networkStatus() {//получить текущее сетевое состояние
-                                return this._networkStatus;
-                            },
-
-                            addNetworkStatusListner(_event, _sender) { //для добавления нового подписчика(так же как и addValueListner)                                
-                                //check event listner and setup current network status 
-                                try { _event(_sender, this); } catch {
-                                    return; // don't add bad listner
-                                }
-                                this.networkStatusListners.push(event = { event: _event, sender: _sender });
-                            }
-                        }
-                        tempNodes.push(tempNode);
+                for (var i = 1; i < stringifyConfigLines.length; i++) {
+                    if ((!stringifyConfigLines[i].startsWith("dd:")) && (!stringifyConfigLines[i].startsWith("ne:"))) {
+                        var key = stringifyConfigLines[i].split("=")[0];
+                        var value = stringifyConfigLines[i].split("=")[1];
+                        configProperties[key] = value;
                     }
-                    configProperties.nodes = tempNodes;
+                    else { 
+                        if (stringifyConfigLines[i].startsWith("dd:")) {  //parse dashboards
+                            var id = stringifyConfigLines[i].split(":")[1];
+                            var dashboard = this.addDashboard(id);
+                            for (var j = i + 1; j < stringifyConfigLines.length; j++) {
+                                if (stringifyConfigLines[j].startsWith("dd:")) { i = j - 1; break; }
+                                if (stringifyConfigLines[j].startsWith("ne:")) { i = j - 1; break; }
 
-                    this.onChange();
-                    result = true;
+                                if (stringifyConfigLines[j].startsWith("wt:")) {
+                                    var widget = this.addWidget(dashboard.id);
+                                    //widget.dashboardId = stringifyConfigLines[j + 1].split("=")[1];
+                                    widget.deviceId = stringifyConfigLines[j + 2].split("=")[1]
+                                    widget.deviceProperty = stringifyConfigLines[j + 3].split("=")[1]
+                                    widget.widgetId = stringifyConfigLines[j + 4].split("=")[1]
+                                    i = j + 4;
+                                    continue;
+                                }
+                            }
+                        }  //end of parse dashboards
+                        else {
+                            if (stringifyConfigLines[i].startsWith("ne:")) {  //parse nodes                                
+                                this.addNode(stringifyConfigLines[i + 1].split("=")[1], stringifyConfigLines[i + 2].split("=")[1]);
+                                i += 2;
+                            }  //end of parse nodes
+
+                        }
+                    }
                 }
-                else {
-                    configProperties = "";
-                }
-            }
-            catch {
+                
+                result = true;
+                this.locksave = false;
+                this.onChange();
+
+            } 
+            catch (exception) {
+                addToLogNL(getLang("getconfigfailsparse") + exception, 2);
             }
         }
 
@@ -177,7 +182,7 @@ var config = {
             //parse problem, reset properties
             configProperties = defaultWebProp();
 
-            addToLogNL(getLang("getconfigfailsparse"), 2);
+            
             addToLogNL(getLang("restoredefault"), 1);
             this.addDashboard("main");
             this.addNode(boardhost, "local");
@@ -189,36 +194,46 @@ var config = {
             result = this.save();
 
         }
-        
+
         return result;
     },
 
     save: function () {
-        var tempProp = defaultWebProp();
 
-        for(var key in configProperties) {
-            if (key != "nodes") {
-                tempProp[key] = configProperties[key];
+        var endOfLine = ";";
+        var stringifyConfig = "OWLOSConfig:" + endOfLine;
+        for (var key in configProperties) {
+            if (typeof (configProperties[key]) === 'object') continue;
+            stringifyConfig += key + "=" + configProperties[key] + endOfLine;
+        }
+
+        for (var dashboardKey in configProperties.dashboards) {
+            var dashboard = configProperties.dashboards[dashboardKey];
+            stringifyConfig += "dd:" + escape(dashboard.id) + endOfLine;
+            //stringifyConfig += "id=" + escape(dashboard.id) + endOfLine;
+
+            for (var widgetKey in dashboard.widgets) {
+                var widget = dashboard.widgets[widgetKey];
+                stringifyConfig += "wt:" + endOfLine;;
+                stringifyConfig += "d2=" + escape(widget.dashboardId) + endOfLine;
+                stringifyConfig += "d3=" + escape(widget.deviceId) + endOfLine;
+                stringifyConfig += "d4=" + escape(widget.deviceProperty) + endOfLine;
+                stringifyConfig += "wd=" + escape(widget.widgetId) + endOfLine;
             }
         }
 
-        for (var node in configProperties.nodes) {
-            var jsonNode = {
-                id: configProperties.nodes[node].id,
-                host: configProperties.nodes[node].host,
-                alies: configProperties.nodes[node].alies,
-                recievedDevicesProperties: "",
-                _networkStatus: NET_OFFLINE,
-                devices: []
-
-            }
-
-            tempProp.nodes.push(jsonNode);
+        for (var nodeKey in configProperties.nodes) {
+            var node = configProperties.nodes[nodeKey];
+            stringifyConfig += "ne:" + endOfLine;            
+            stringifyConfig += "ht=" + escape(node.host) + endOfLine;
+            stringifyConfig += "as=" + escape(node.alies) + endOfLine;
         }
 
 
-        var configPropertiesJson =  JSON.stringify(tempProp);
-        var HTTPResult = httpGetWithErrorReson(boardhost + "setwebproperty?property=config&value=" + escape(configPropertiesJson));
+        var configPropertiesJson = stringifyConfig; //JSON.stringify(tempProp);
+        addToLogNL(configPropertiesJson);
+        //var HTTPResult = httpPostWithErrorReson(boardhost + "setwebproperty?property=config&value=" + configPropertiesJson);
+        var HTTPResult = httpPostWithErrorReson(boardhost + "setwebproperty?property=config", configPropertiesJson);
         if (!HTTPResult.startsWith("%error")) {
             this.onChange();
             return true;

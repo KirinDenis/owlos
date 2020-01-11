@@ -594,10 +594,10 @@ void handleSetDeviceProperty()
 			String result = devicesSetDeviceProperty(webServer.arg(0), decode(webServer.arg(1)), decode(webServer.arg(2)));
 			if (result.length() == 0) //try set unit property
 			{
-                             result = unitOnMessage(unitGetTopic() + "/set" + decode(webServer.arg(1)), decode(webServer.arg(2)), NoTransportMask);
+				result = unitOnMessage(unitGetTopic() + "/set" + decode(webServer.arg(1)), decode(webServer.arg(2)), NoTransportMask);
 			}
 
-			if (result.length() == 0) 
+			if (result.length() == 0)
 			{
 				result = "wrong device id: " + webServer.arg(0) + " use GetDevicesId API to get all devices list";
 				webServer.send(404, "text/html", result);
@@ -652,14 +652,18 @@ void handleGetWebProperty()
 	handleNotFound();
 }
 //----------------------------------------------------------------------------------------------
+//POST
 void handleSetWebProperty()
 {
 	webServerAddCORSHeaders();
 	if (webServer.args() > 1)
 	{
-		if ((webServer.argName(0).equals("property")) && (webServer.argName(1).equals("value")))
+		if (webServer.argName(1).equals("property"))
 		{
-			String result = webOnMessage(unitGetTopic() + "/set" + decode(webServer.arg(0)), decode(webServer.arg(1)));
+
+			String result = webOnMessage(unitGetTopic() + "/set" + decode(webServer.arg(1)), decode(webServer.arg(0)));
+
+			debugOut("web", result);
 			if ((result.length() == 0) || (result.equals("0")))
 			{
 				result = "wrong unit property set: " + webServer.arg(0) + "=" + webServer.arg(1);
@@ -806,7 +810,7 @@ void handlewritepin()
 void handleUpdateLog()
 {
 	webServerAddCORSHeaders();
-    webServer.send(200, "text/plain", updateGetUpdateLog());
+	webServer.send(200, "text/plain", updateGetUpdateLog());
 }
 
 void handleUpdateUI()
@@ -817,15 +821,15 @@ void handleUpdateUI()
 		webServer.send(503, "text/plain", "0");
 	}
 	else
-   if (updateGetUpdateUIStatus() < 2)
-	{
-	   webServer.send(504, "text/plain", "0");
-	}
-   else
-   {
-	   webServer.send(200, "text/plain", "1");
-	   updateUI();
-   }
+		if (updateGetUpdateUIStatus() < 2)
+		{
+			webServer.send(504, "text/plain", "0");
+		}
+		else
+		{
+			webServer.send(200, "text/plain", "1");
+			updateUI();
+		}
 }
 
 void handleUpdateFirmware()
@@ -895,7 +899,7 @@ bool webServerBegin()
 	webServer.on("/getdeviceproperties", handleGetDeviceProperties);
 	webServer.on("/getalldevicesproperties", handleGetAllDevicesProperties);
 	webServer.on("/getwebproperty", handleGetWebProperty);
-	webServer.on("/setwebproperty", handleSetWebProperty);
+	webServer.on("/setwebproperty", HTTP_POST, handleSetWebProperty);
 	webServer.on("/reset", handleReset);
 	//work with pins
 	webServer.on("/setpinmode", handlesetpinmode);
