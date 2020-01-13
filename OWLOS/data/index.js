@@ -25,6 +25,13 @@ $(document).ready(function () {
     addToLogNL("OK loading scripts");
     addToLogNL("[START]", 1);
 
+    jQuery.readyException = function (error) {
+        addToLogNL("jQuery error: " + error, 2);
+    };
+
+    $(document).ajaxError(function (event, request, settings) {
+        addToLogNL("Ajax error: " + settings.url, 2);
+    });
 
     var style = window.getComputedStyle(document.body, null);    
     theme.primary = style.getPropertyValue('--primary');
@@ -78,9 +85,9 @@ $(document).ready(function () {
 
             nodesRefreshHandle = setInterval(nodesRefresh, 10000);
 
-            //$('#sidebarCollapse').on('click', function () {
-            //    $('#sidebar').toggleClass('active');
-            //});
+            $('#sidebarCollapse').on('click', function () {
+               $('#sidebar').toggleClass('active');
+            });
 
             speak("OWL OS is ready");
         }

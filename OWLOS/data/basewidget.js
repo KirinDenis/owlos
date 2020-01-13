@@ -7,7 +7,7 @@ var EVENT_DELETE = 1;
 var BaseWidget =
     /*#__PURE__*/
     function () {
-        "use strict";
+       // "use strict";
 
         function BaseWidget(parentPanel, id, size) {
             this.parentPanel = parentPanel; //properties --------------------------------
@@ -112,7 +112,7 @@ var BaseWidget =
             this.SVGMinusIcon = new SVGIcon(this.svgElement, minusIcon, this.width / 2 - this.rowSize / 2, this.height - this.rowSize, this.rowSize, this.rowSize);
             this.SVGMinusIcon.fill = theme.light;
             this.SVGMinusIcon.SVGIcon.widget = this;
-            this.SVGMinusIcon.SVGIcon.onclick = this.minusSize;
+            this.SVGMinusIcon.SVGIcon.onclick = this.deleteWidgetClick;
             this.SVGMinusIcon.hide();
             /*
             this.SVGModeIcon = new SVGIcon(this.svgElement, menuIcon, this.width / 24, this.size / 30, this.size / 8, this.size / 8);
@@ -191,19 +191,12 @@ var BaseWidget =
         } //TEMP: NOW IS USED AS DELETE BUTTON !
             ;
 
-        _proto.minusSize = function minusSize(event) {
+        _proto.deleteWidgetClick = function deleteWidgetClick(event) {
             var widget = event.currentTarget.widget;
-            widget.event = EVENT_DELETE;
+            widget._event = EVENT_DELETE;
             Array.prototype.slice.call(widget.parentPanel.childNodes).indexOf(widget.rPanel);
             widget.parentPanel.removeChild(widget.rPanel);
             widget.rPanel.innerHTML = "";
-            /*
-            if (widget.mode == MOVE_MODE) {
-                widget.svgElement.setAttributeNS(null, "width", widget.width -= 25);
-                widget.svgElement.setAttributeNS(null, "height", widget.height -= 25);
-            }
-            */
-
             return true;
         };
 
@@ -234,6 +227,10 @@ var BaseWidget =
         };
 
         _proto.refresh = function refresh(data, widgetText, label, historyData) {
+            if (this._event == EVENT_DELETE) {
+                return;
+            }
+
             if (this._data == data && this.widgetText == widgetText && this.label == label) return;
 
             if (this.widgetText != widgetText) {
@@ -251,8 +248,11 @@ var BaseWidget =
 
         //---------------------------------------------------------------------------------------
         _proto.redrawAll = function redrawAll() {
+            
+            if (this._event == EVENT_DELETE) {
+                return;
+            }
             var _this = this;
-
             this.starttime = 0;
             requestAnimationFrame(function () {
                 return _this.drawWidget();
@@ -263,6 +263,10 @@ var BaseWidget =
             ;
 
         _proto.drawText = function drawText() {
+            if (this._event == EVENT_DELETE) {
+                return;
+            }
+
             //Widget text         
             this.SVGWidgetText.text = this.widgetText;
 
@@ -349,6 +353,10 @@ var BaseWidget =
             ;
 
         _proto.toColor = function toColor(element, color, method) {
+            if (this._event == EVENT_DELETE) {
+                return;
+            }
+
             if (method == undefined) method = true;
             if (element == null) return;
 
@@ -396,6 +404,10 @@ var BaseWidget =
         };
 
         _proto.drawWidget = function drawWidget() {
+            if (this._event == EVENT_DELETE) {
+                return;
+            }
+
             var _this3 = this;
 
             var oneHangPercent = 360 + 90 + 30 - 240;

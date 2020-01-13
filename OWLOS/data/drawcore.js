@@ -153,8 +153,8 @@ var SVGText =
             }
         }, {
             key: "width",
-            get: function get() {
-                return parseFloat(this.SVGText.getBoundingClientRect().width);
+                get: function get() {                        
+                   return parseFloat(this.SVGText.getBoundingClientRect().width);                        
             }
         }, {
             key: "height",
