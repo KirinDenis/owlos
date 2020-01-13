@@ -23,8 +23,10 @@ var config = {
             this.changeListners[k].event(this.changeListners[k].sender, this);
         }
     },
-    addChangeListner(_event, _sender) {
-        try { _event(_sender, this); } catch {
+    addChangeListner: function(_event, _sender) {
+        try {
+            _event(_sender, this);
+        } catch(exception) {
             return; // don't add bad listner
         }
         this.changeListners.push(event = { event: _event, sender: _sender });
@@ -89,9 +91,11 @@ var config = {
                 return this._networkStatus;
             },
             networkStatusListners: [], //подписчики на изменение сетевого состояния 
-            addNetworkStatusListner(_event, _sender) { //для добавления нового подписчика(так же как и addValueListner)                                
+            addNetworkStatusListner: function(_event, _sender) { //для добавления нового подписчика(так же как и addValueListner)                                
                 //check event listner and setup current network status 
-                try { _event(_sender, this); } catch {
+                try {
+                    _event(_sender, this);
+                } catch(exception) {
                     return; // don't add bad listner
                 }
                 this.networkStatusListners.push(event = { event: _event, sender: _sender });

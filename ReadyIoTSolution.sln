@@ -38,6 +38,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "data", "data", "{0586AFF7-C
 		OWLOS\data\graphwidget.js = OWLOS\data\graphwidget.js
 		OWLOS\data\index.html = OWLOS\data\index.html
 		OWLOS\data\index.js = OWLOS\data\index.js
+		OWLOS\data\indexie.html = OWLOS\data\indexie.html
 		OWLOS\data\jquery.dataTables.min.js = OWLOS\data\jquery.dataTables.min.js
 		OWLOS\data\jquery.min.js = OWLOS\data\jquery.min.js
 		OWLOS\data\languagescore.js = OWLOS\data\languagescore.js

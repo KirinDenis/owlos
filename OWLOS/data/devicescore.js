@@ -119,7 +119,7 @@ var devices = {
     newDeviceListners: [],
     //подписка для внешних объектов - _event - метод в классе подписчике для вызова, _sender класс подписчик
     //--> данная подписка для события которое вызовется в случае добавления нового устройства в список
-    addNewDeviceListner(_event, _sender) {
+    addNewDeviceListner: function (_event, _sender) {
         this.newDeviceListners.push(event = {
             event: _event,
             sender: _sender
@@ -127,19 +127,19 @@ var devices = {
     },
 
     deviceLoadedListners: [],
-    addDeviceLoadedListner(_event, _sender) {
+    addDeviceLoadedListner: function (_event, _sender) {
         this.deviceLoadedListners.push(event = {
             event: _event,
             sender: _sender
         });
     },
-    onDeviceLoaded(device) {
+    onDeviceLoaded: function (device) {
         for (var k = 0; k < this.deviceLoadedListners.length; k++) {
             this.deviceLoadedListners[k].event(this.deviceLoadedListners[k].sender, device);
         }
     },
     //получить объект устройства по его ID
-    getDeviceById(deviceId, host) {
+    getDeviceById: function (deviceId, host) {
         var node = config.getNodeByHost(host);
         if (node == undefined) return undefined;
         for (var i = 0; i < node.devices.length; i++) {
@@ -237,7 +237,7 @@ var devices = {
         }
     }, //ENDOF parse devices
 
-    addDevice(currentId, node) {
+    addDevice: function (currentId, node) {
         device = { //создаем новый объект представляющий устройство
             _id: currentId, //настриваем уникальный ID устройства, для идентификации объекта с устройством в будущем
             _new: true,
@@ -248,7 +248,7 @@ var devices = {
             //массив подписчиков на newProperty event
             newPropertyListners: [],
             //метод для организации подписки
-            addNewPropertyListner(_event, _sender) {
+            addNewPropertyListner: function (_event, _sender) {
                 this.newPropertyListners.push(event = {
                     event: _event,
                     sender: _sender
@@ -274,7 +274,7 @@ var devices = {
     //2) все "заинтересованные" объекты подписываются на событие которое будет вызвано объектом устройства, только в том случае если значение свойства изменится.
     //мы идем по второму пути - следящих объектов может быть сколько угодно, они ничего не делают пока свойство устройства не изменится.
     //по этой причине, хоть это может и показатся стренным - в классе devices больше кода обслуживает не само устройства, а его свойства. 
-    newDeviceProperty(device, propertyName, propertyValue, propertyType) {
+    newDeviceProperty: function (device, propertyName, propertyValue, propertyType) {
         //создаем новое свойство
         device[propertyName] = {
             parenthost: device._host,
@@ -292,10 +292,10 @@ var devices = {
                 return this._value;
             },
             valueListners: [], //массив подписчиков на событие изменения свойства(смотрите this.newDeviceListners для большей информации о механизме событий)
-            addValueListner(_event, _sender) { //регистрация подписки на изменения свойства                
+            addValueListner: function (_event, _sender) { //регистрация подписки на изменения свойства                
                 try { //проверяем готов ли метод слушателя для обработчки этого события
                     _event(_sender, this);
-                } catch
+                } catch(exception)
                 {
                     return; //неправильный метод либо не существует, либо вызовет исключение, не включаем его в число подписчиков
                 }
@@ -322,9 +322,11 @@ var devices = {
                 return this._networkStatus;
             },
             networkStatusListners: [], //подписчики на изменение сетевого состояния свойства
-            addNetworkStatusListner(_event, _sender) { //для добавления нового подписчика(так же как и addValueListner)                                
+            addNetworkStatusListner: function (_event, _sender) { //для добавления нового подписчика(так же как и addValueListner)                                
                 //check event listner and setup current network status 
-                try { _event(_sender, this); } catch {
+                try {
+                    _event(_sender, this);
+                } catch (exception) {
                     return; // don't add bad listner
                 }
                 this.networkStatusListners.push(event = { event: _event, sender: _sender });

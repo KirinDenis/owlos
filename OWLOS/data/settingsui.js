@@ -474,10 +474,18 @@ var settingsUI = {
         updateLog.innerHTML = "Update UI started, please wait...<br>";
         updateUIAsync(node.host);
 
+        "use strict";
+
+        sleep(10000).then(function () {
+            getUpdateLogAsyncWithReciever(node.host, updateLogReciever, undefined, updateLog, undefined);
+            return false;
+        });
+        /*
         sleep(10000).then(() => {
             getUpdateLogAsyncWithReciever(node.host, updateLogReciever, undefined, updateLog, undefined);
             return false;
         });
+        */
         return false;
     },
 
@@ -528,11 +536,19 @@ var settingsUI = {
         updateFirmwareAsync();
         getUpdateLogAsyncWithReciever(updateLogReciever, undefined, updateLog, undefined);
 
-        sleep(30000).then(() => {
+        "use strict";
+
+        sleep(30000).then(function () {
             location.reload();
             return false;
         });
 
+        /*
+        sleep(30000).then(() => {
+            location.reload();
+            return false;
+        });
+        */
         return false;
     },
 

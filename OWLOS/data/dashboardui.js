@@ -6,7 +6,10 @@ var dashboardUI = {
 
     addDashboardModeListner: function (_event, _sender) { //для добавления нового подписчика(так же как и addValueListner)                                
         //check event listner and setup current network status 
-        try { _event(_sender, this); } catch {
+        try {
+            _event(_sender, this);
+        } catch(event)
+        {
             return; // don't add bad listner
         }
         dashboardUI.dashboardModeListners.push(event = { event: _event, sender: _sender });
