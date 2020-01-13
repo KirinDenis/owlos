@@ -25,7 +25,8 @@ $(document).ready(function () {
     addToLogNL("OK loading scripts");
     addToLogNL("[START]", 1);
 
-    var style = getComputedStyle(document.body);
+
+    var style = window.getComputedStyle(document.body, null);    
     theme.primary = style.getPropertyValue('--primary');
     theme.secondary = style.getPropertyValue('--secondary');
     theme.success = style.getPropertyValue('--success');
@@ -36,6 +37,18 @@ $(document).ready(function () {
     theme.dark = style.getPropertyValue('--dark');
     theme.fontFamily = style.fontFamily;
 
+    if (theme.primary === '') { //default dark
+        theme.primary = '#3A3F44';
+        theme.secondary = '#7A8288';
+        theme.success = '#62c462';
+        theme.info = '#5bc0de';
+        theme.warning = '#f89406';
+        theme.danger = '#ee5f5b';
+        theme.light = '#e9ecef';
+        theme.dark = '#272B30';
+    }
+
+    
 
     addToLogNL("get UI configuration...");
     try {
@@ -75,15 +88,19 @@ $(document).ready(function () {
             status_online = NET_OFFLINE;
             speak("ERROR with host: " + host);
             addToLogNL("ERROR with host: " + host, 2);
-        }
     }
+
+
+}
+
+
     catch (exception) {
         status_online = NET_OFFLINE;
         addToLogNL("ERROR starting exception: " + exception, 2);
         addToLogNL("ERROR delete configurations files can help fix it: [your host]/deletefile?name=web.config", 2);
     }
-    
-});
+   }
+);
 
 function nodesRefresh() {
     for (var node in configProperties.nodes) {
@@ -92,16 +109,29 @@ function nodesRefresh() {
 }
 
 function sleep(time) {
+
+    return new Promise(function (resolve) {
+        return setTimeout(resolve, time);
+    });
+    /*
     return new Promise((resolve) => setTimeout(resolve, time));
+    */
 }
 
 function resetClick(event) {
     reset(event.currentTarget.deviceHost);
 
+    sleep(5000).then(function () {
+        location.reload();
+        return false;
+    });
+
+    /*
     sleep(5000).then(() => {
         location.reload();
         return false;
     });
+    */
 }
 
 

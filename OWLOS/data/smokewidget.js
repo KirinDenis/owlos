@@ -1,120 +1,144 @@
-class SmokeWidget extends BaseWidget {
-    constructor(parentPanel, id, size) {
-        super(parentPanel, id, size);
+function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
 
-        this.radius = this.size / 30;
-        this.topMargin = this.centreY + this.size / 15;
+var SmokeWidget =
+    /*#__PURE__*/
+    function (_BaseWidget) {
+        "use strict";
 
-        this.animated = false;
+        _inheritsLoose(SmokeWidget, _BaseWidget);
 
-        this.levelRectWidth = this.size / 10;
-        this.levelRectHeight = this.size / 100;
-        this.levelLeft = this.width - this.levelRectWidth - this.halfPanding;        
-        this.levelTop = (this.height - this.levelRectHeight * 60 / 2) / 3;
+        function SmokeWidget(parentPanel, id, size) {
+            var _this;
 
-        this.level1 = [];
-        this.level2 = [];
-        for (var i = 0; i < 10; i++) {
-            this.SVGLevelRect1 = new SVGRect(this.svgElement, this.id + "levelrect1" + i, this.levelLeft, this.levelTop + i * (this.levelRectHeight * 2), this.levelRectWidth, this.levelRectHeight);
-            this.SVGLevelRect2 = new SVGRect(this.svgElement, this.id + "levelrect2" + i, this.panding, this.levelTop + i * (this.levelRectHeight * 2), this.levelRectWidth, this.levelRectHeight);
-            this.SVGLevelRect1.opacity = this.SVGLevelRect2.opacity = i / 30;
-            this.SVGLevelRect1.color = this.SVGLevelRect2.color = theme.danger;
-            this.level1.push(this.SVGLevelRect1);
-            this.level2.push(this.SVGLevelRect2);
+            _this = _BaseWidget.call(this, parentPanel, id, size) || this;
+            _this.radius = _this.size / 30;
+            _this.topMargin = _this.centreY + _this.size / 15;
+            _this.animated = false;
+            _this.levelRectWidth = _this.size / 10;
+            _this.levelRectHeight = _this.size / 100;
+            _this.levelLeft = _this.width - _this.levelRectWidth - _this.halfPanding;
+            _this.levelTop = (_this.height - _this.levelRectHeight * 60 / 2) / 3;
+            _this.level1 = [];
+            _this.level2 = [];
+
+            for (var i = 0; i < 10; i++) {
+                _this.SVGLevelRect1 = new SVGRect(_this.svgElement, _this.id + "levelrect1" + i, _this.levelLeft, _this.levelTop + i * (_this.levelRectHeight * 2), _this.levelRectWidth, _this.levelRectHeight);
+                _this.SVGLevelRect2 = new SVGRect(_this.svgElement, _this.id + "levelrect2" + i, _this.panding, _this.levelTop + i * (_this.levelRectHeight * 2), _this.levelRectWidth, _this.levelRectHeight);
+                _this.SVGLevelRect1.opacity = _this.SVGLevelRect2.opacity = i / 30;
+                _this.SVGLevelRect1.color = _this.SVGLevelRect2.color = theme.danger;
+
+                _this.level1.push(_this.SVGLevelRect1);
+
+                _this.level2.push(_this.SVGLevelRect2);
+            }
+
+            for (var i = 10; i < 20; i++) {
+                _this.SVGLevelRect1 = new SVGRect(_this.svgElement, _this.id + "levelrect" + i, _this.levelLeft, _this.levelTop + i * (_this.levelRectHeight * 2), _this.levelRectWidth, _this.levelRectHeight);
+                _this.SVGLevelRect2 = new SVGRect(_this.svgElement, _this.id + "levelrect2" + i, _this.panding, _this.levelTop + i * (_this.levelRectHeight * 2), _this.levelRectWidth, _this.levelRectHeight);
+                _this.SVGLevelRect1.opacity = _this.SVGLevelRect2.opacity = i / 30;
+                _this.SVGLevelRect1.color = _this.SVGLevelRect2.color = theme.warning;
+
+                _this.level1.push(_this.SVGLevelRect1);
+
+                _this.level2.push(_this.SVGLevelRect2);
+            }
+
+            for (var i = 20; i < 30; i++) {
+                _this.SVGLevelRect1 = new SVGRect(_this.svgElement, _this.id + "levelrect" + i, _this.levelLeft, _this.levelTop + i * (_this.levelRectHeight * 2), _this.levelRectWidth, _this.levelRectHeight);
+                _this.SVGLevelRect2 = new SVGRect(_this.svgElement, _this.id + "levelrect2" + i, _this.panding, _this.levelTop + i * (_this.levelRectHeight * 2), _this.levelRectWidth, _this.levelRectHeight);
+                _this.SVGLevelRect1.opacity = _this.SVGLevelRect2.opacity = i / 30;
+                _this.SVGLevelRect1.color = _this.SVGLevelRect2.color = theme.success;
+
+                _this.level1.push(_this.SVGLevelRect1);
+
+                _this.level2.push(_this.SVGLevelRect2);
+            }
+
+            _this.levelArc = [];
+
+            for (var i = 1; i < 5; i++) {
+                var SVGlevelArc = new SVGArc(_this.svgElement, _this.id + "arcback1" + i, _this.centreX, _this.levelTop, i * _this.radius, _this.size / 34);
+                SVGlevelArc.index = i;
+                SVGlevelArc.color = theme.danger;
+
+                _this.levelArc.push(SVGlevelArc);
+            }
+
+            _this.SVGArcSpinner.y = _this.topMargin;
+
+            _this.clickableToTop();
+
+            return _this;
         }
 
-        for (var i = 10; i < 20; i++) {
-            this.SVGLevelRect1 = new SVGRect(this.svgElement, this.id + "levelrect" + i, this.levelLeft, this.levelTop + i * (this.levelRectHeight * 2), this.levelRectWidth, this.levelRectHeight);
-            this.SVGLevelRect2 = new SVGRect(this.svgElement, this.id + "levelrect2" + i, this.panding, this.levelTop + i * (this.levelRectHeight * 2), this.levelRectWidth, this.levelRectHeight);
-            this.SVGLevelRect1.opacity = this.SVGLevelRect2.opacity = i / 30;
-            this.SVGLevelRect1.color = this.SVGLevelRect2.color = theme.warning;
-            this.level1.push(this.SVGLevelRect1);
-            this.level2.push(this.SVGLevelRect2);
-        }
+        var _proto = SmokeWidget.prototype;
 
-        for (var i = 20; i < 30; i++) {
-            this.SVGLevelRect1 = new SVGRect(this.svgElement, this.id + "levelrect" + i, this.levelLeft, this.levelTop + i * (this.levelRectHeight * 2), this.levelRectWidth, this.levelRectHeight);
-            this.SVGLevelRect2 = new SVGRect(this.svgElement, this.id + "levelrect2" + i, this.panding, this.levelTop + i * (this.levelRectHeight * 2), this.levelRectWidth, this.levelRectHeight);
-            this.SVGLevelRect1.opacity = this.SVGLevelRect2.opacity = i / 30;
-            this.SVGLevelRect1.color = this.SVGLevelRect2.color = theme.success;
-            this.level1.push(this.SVGLevelRect1);
-            this.level2.push(this.SVGLevelRect2);
-        }
+        _proto.refresh = function refresh(data, widgetText, label) {
+            widgetText = getLang(widgetText);
 
+            _BaseWidget.prototype.refresh.call(this, data, widgetText, label);
+        };
 
-        this.levelArc = [];
+        _proto.drawText = function drawText() {
+            _BaseWidget.prototype.drawText.call(this);
+        };
 
-        for (var i = 1; i < 5; i++) {
-            var SVGlevelArc = new SVGArc(this.svgElement, this.id + "arcback1" + i, this.centreX, this.levelTop , i * this.radius, this.size / 34);
-            SVGlevelArc.index = i;
-            SVGlevelArc.color = theme.danger;
-            this.levelArc.push(SVGlevelArc);
-        }
+        _proto.animate = function animate() {
+            var _this2 = this;
 
-        this.SVGArcSpinner.y = this.topMargin;
+            if (this.animated) {
+                for (var i = 0; i < 4; i++) {
+                    this.levelArc[i].radius += 1.5;
+                    this.levelArc[i].opacity -= 0.01;
 
-        this.clickableToTop();
-    }
+                    if (this.levelArc[i].radius > this.radius * 15) {
+                        this.levelArc[i].radius = this.radius;
+                        this.levelArc[i].opacity = 0.9;
+                    }
 
-    refresh(data, widgetText, label) {
-        widgetText = getLang(widgetText);
-        super.refresh(data, widgetText, label);
-    }
-
-
-    drawText() {
-        super.drawText();
-    }
-
-    animate() {
-        if (this.animated) {
-            for (var i = 0; i < 4; i++) {
-
-                this.levelArc[i].radius += 1.5;
-                this.levelArc[i].opacity -= 0.01;
-                if (this.levelArc[i].radius > this.radius * 15) {
-                    this.levelArc[i].radius = this.radius;
-                    this.levelArc[i].opacity = 0.9;
+                    this.levelArc[i].draw(90 + 60, 270 - 60);
                 }
-                this.levelArc[i].draw(90 + 60, 270 - 60);
 
+                requestAnimationFrame(function () {
+                    return _this2.animate();
+                });
             }
-            requestAnimationFrame(() => this.animate());
-        }
-    }
+        };
 
+        _proto.drawWidget = function drawWidget() {
+            var _this3 = this;
 
-    drawWidget() {
-        super.drawWidget();
+            _BaseWidget.prototype.drawWidget.call(this);
 
-        for (var i = 0; i < 30; i++) {
-            this.level1[i].opacity = this.level2[i].opacity = 0.0;
-        }
-
-        var position = (30 / 100) * this._data;
-
-        if (position > 30) {            
-            position = 30;
-        }
-        for (var i = 29; i > 30 - position; i--) {
-            this.level1[i].opacity = this.level2[i].opacity = 1.2 - i / 30;
-            
-        }
-
-        if ((this._networkStatus == NET_ONLINE) && (this._data > 60)) {
-            if (!this.animated) {
-                this.animated = true;
-                requestAnimationFrame(() => this.animate());
-
+            for (var i = 0; i < 30; i++) {
+                this.level1[i].opacity = this.level2[i].opacity = 0.0;
             }
-        }
-        else {
-            this.animated = false;
-            for (var i = 0; i < 4; i++) {
-                this.levelArc[i].hide();
+
+            var position = 30 / 100 * this._data;
+
+            if (position > 30) {
+                position = 30;
             }
-        }
 
-    }
-}
+            for (var i = 29; i > 30 - position; i--) {
+                this.level1[i].opacity = this.level2[i].opacity = 1.2 - i / 30;
+            }
 
+            if (this._networkStatus == NET_ONLINE && this._data > 60) {
+                if (!this.animated) {
+                    this.animated = true;
+                    requestAnimationFrame(function () {
+                        return _this3.animate();
+                    });
+                }
+            } else {
+                this.animated = false;
+
+                for (var i = 0; i < 4; i++) {
+                    this.levelArc[i].hide();
+                }
+            }
+        };
+
+        return SmokeWidget;
+    }(BaseWidget);

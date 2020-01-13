@@ -304,11 +304,11 @@ function getLang(key) {
 
 
     if (currentLang == "") {
-        if (configProperties.language.startsWith("ua")) {
+        if (configProperties.language.indexOf("ua")==0) {
             currentLang = langua.split("\n");
         }
         else
-            if (configProperties.language.startsWith("ru")) {
+            if (configProperties.language.indexOf("ru")==0) {
             currentLang = langru.split("\n");
         }
         else {
@@ -318,7 +318,7 @@ function getLang(key) {
 
     for (var i = 0; i < currentLang.length; i++) {
         if (currentLang[i] === "") continue;
-        if (currentLang[i].includes(key + "=",0)) {
+        if (currentLang[i].indexOf(key + "=") == 0) {
             return currentLang[i].split("=")[1];
         }
     }

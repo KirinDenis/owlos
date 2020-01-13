@@ -8,8 +8,7 @@ var dashboardUI = {
         //check event listner and setup current network status 
         try {
             _event(_sender, this);
-        } catch(event)
-        {
+        } catch (event) {
             return; // don't add bad listner
         }
         dashboardUI.dashboardModeListners.push(event = { event: _event, sender: _sender });
@@ -46,13 +45,19 @@ var dashboardUI = {
 
         var devicesWidgetsPanel = document.getElementById("widgetsPanelDataDiv");
         for (var i = 0; i < configProperties.dashboards[0].widgets.length; i++) {
-            var widgetProp = configProperties.dashboards[0].widgets[i];
-            var widget = WidgetsLayer.getWidgetById(widgetProp.widgetId);
-            if (widget != undefined) {
-                var widgetWrapper = new widget.widget(devicesWidgetsPanel, undefined, undefined, configProperties.dashboards[0].widgets[i]);
-                widgetWrapper.offlineStarter(devicesWidgetsPanel, widgetProp.deviceId, widgetProp.deviceProperty);
-                widgetWrapper.widget.addEventListner(config.widgetEvent, configProperties.dashboards[0].widgets[i]);
+            try {
+                var widgetProp = configProperties.dashboards[0].widgets[i];
+                var widget = WidgetsLayer.getWidgetById(widgetProp.widgetId);
+                if (widget != undefined) {
+                    var widgetWrapper = new widget.widget(devicesWidgetsPanel, undefined, undefined, configProperties.dashboards[0].widgets[i]);
+                    widgetWrapper.offlineStarter(devicesWidgetsPanel, widgetProp.deviceId, widgetProp.deviceProperty);
+                    widgetWrapper.widget.addEventListner(config.widgetEvent, configProperties.dashboards[0].widgets[i]);
 
+                }
+            }
+            catch (exception) {
+                addToLogNL("ERROR starting exception: " + exception, 2);
+                addToLogNL("ERROR at widget: " + widgetProp, 2);
             }
         }
 
@@ -176,8 +181,8 @@ var dashboardUI = {
         widgetSelect.options.length = 0;
         for (var widget in WidgetsLayer) {
             if (WidgetsLayer[widget].widget == undefined) continue;
-            if ((WidgetsLayer[widget].devicesTypes.includes(";" + device.type.value + ";")) || (WidgetsLayer[widget].devicesTypes == "any")) {
-                if ((WidgetsLayer[widget].devicesProperties.includes(";" + deviceProp.name + ";")) || (WidgetsLayer[widget].devicesProperties == "any")) {
+            if ((WidgetsLayer[widget].devicesTypes.indexOf(";" + device.type.value + ";") != -1) || (WidgetsLayer[widget].devicesTypes == "any")) {
+                if ((WidgetsLayer[widget].devicesProperties.indexOf(";" + deviceProp.name + ";") != -1) || (WidgetsLayer[widget].devicesProperties == "any")) {
                     var widgetSelectOption = widgetSelect.appendChild(document.createElement('option'));
                     widgetSelectOption.innerText = WidgetsLayer[widget].name;
                     widgetSelectOption.widget = WidgetsLayer[widget];

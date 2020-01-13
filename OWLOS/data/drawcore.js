@@ -13,7 +13,7 @@ var lampIcon = "M7.1 37.07l2.83 2.83 3.59-3.59-2.83-2.83-3.59 3.59zM22 44.9h4V39
 var wifiIcon = "M7.07 21.91l16.92 21.07.01.02.02-.02 16.92-21.07C40.08 21.25 33.62 16 24 16c-9.63 0-16.08 5.25-16.93 5.91z";
 
 
-    
+
 
 function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
     var angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
@@ -85,335 +85,368 @@ colorToRGB = function (color) {
     return binToRGB(color);
 }
 //-------------------------------------------------------------------------------------------------------------------
-class SVGText {
-    constructor(svgElement, id, size) {
-        this.id = id;
-        this.size = size;
-        this.SVGText = document.createElementNS(xmlns, "text");
-        this.SVGText.id = this.id;
-        this.SVGText.setAttributeNS(null, "height", "auto");
-        this.SVGText.setAttributeNS(null, "font-family", theme.fontFamily);
-        this.SVGText.setAttributeNS(null, "font-size", this.size + "em");
-        svgElement.appendChild(this.SVGText);
-    }
 
-    getTextWidth(text) {
-        var element = document.body.appendChild(document.createElement("div"));
-        element.className = "WidgetText";
-        element.innerHTML = text;
-        var width = element.getBoundingClientRect().width;
-        element.remove();
-        return width;
-    }
+var SVGText =
+    function () {
+        "use strict";
 
-    set fontFamily(fontFamily) {
-        this.SVGText.setAttributeNS(null, "font-family", fontFamily);
-    }
-
-    set text(text) {
-        if (this.SVGText.textContent != text) {
-            this.SVGText.textContent = text;
-            var textSize = this.size * this.getTextWidth(text);
-            this.SVGText.setAttributeNS(null, "textLength", textSize);
+        function SVGText(svgElement, id, size) {
+            this.id = id;
+            this.size = size;
+            this.SVGText = document.createElementNS(xmlns, "text");
+            this.SVGText.id = this.id;
+            this.SVGText.setAttributeNS(null, "height", "auto");
+            this.SVGText.setAttributeNS(null, "font-family", theme.fontFamily);
+            this.SVGText.setAttributeNS(null, "font-size", this.size + "em");
+            svgElement.appendChild(this.SVGText);
         }
-    }
 
-    set x(x) {
-        this.SVGText.setAttributeNS(null, "x", x);
-    }
+        var _proto = SVGText.prototype;
 
-    get x() {
-        return parseFloat(this.SVGText.getAttributeNS(null, "x"));
-    }
+        _proto.getTextWidth = function getTextWidth(text) {
+            var element = document.body.appendChild(document.createElement("div"));
+            element.className = "WidgetText";
+            element.innerHTML = text;
+            var width = element.getBoundingClientRect().width;
+            //element.remove();
+            document.body.removeChild(element);
+            return width;
+        };
 
-    set y(y) {
-         this.SVGText.setAttributeNS(null, "y", y);
-    }
+        _proto.visible = function visible() {
+            this.SVGText.style.display = "block";
+        };
 
-    get y() {
-        return parseFloat(this.SVGText.getAttributeNS(null, "y"));
-    }
+        _proto.hide = function hide() {
+            this.SVGText.style.display = "none";
+        };
 
-    get width() {
-        return parseFloat(this.SVGText.getBoundingClientRect().width);
-    }
+        _createClass(SVGText, [{
+            key: "fontFamily",
+            set: function set(fontFamily) {
+                this.SVGText.setAttributeNS(null, "font-family", fontFamily);
+            }
+        }, {
+            key: "text",
+            set: function set(text) {
+                if (this.SVGText.textContent != text) {
+                    this.SVGText.textContent = text;
+                    var textSize = this.size * this.getTextWidth(text);
+                    this.SVGText.setAttributeNS(null, "textLength", textSize);
+                }
+            }
+        }, {
+            key: "x",
+            set: function set(x) {
+                this.SVGText.setAttributeNS(null, "x", x);
+            },
+            get: function get() {
+                return parseFloat(this.SVGText.getAttributeNS(null, "x"));
+            }
+        }, {
+            key: "y",
+            set: function set(y) {
+                this.SVGText.setAttributeNS(null, "y", y);
+            },
+            get: function get() {
+                return parseFloat(this.SVGText.getAttributeNS(null, "y"));
+            }
+        }, {
+            key: "width",
+            get: function get() {
+                return parseFloat(this.SVGText.getBoundingClientRect().width);
+            }
+        }, {
+            key: "height",
+            get: function get() {
+                return parseFloat(this.SVGText.getBoundingClientRect().height);
+            }
+        }, {
+            key: "color",
+            set: function set(color) {
+                this.SVGText.setAttributeNS(null, "fill", color);
+            },
+            get: function get() {
+                return this.SVGText.getAttributeNS(null, "fill");
+            }
+        }, {
+            key: "colorRGB",
+            set: function set(rgb) {
+                this.SVGText.setAttributeNS(null, 'fill', ' #' + RGBToHex(rgb[0], rgb[1], rgb[2]));
+            },
+            get: function get() {
+                return colorToRGB(this.SVGText.getAttributeNS(null, "fill"));
+            }
+        }]);
 
-    get height() {
-        return parseFloat(this.SVGText.getBoundingClientRect().height);
-    }
+        return SVGText;
+    }();
 
-    set color(color) {
-        this.SVGText.setAttributeNS(null, "fill", color);
-    }
-
-    get color() {
-        return this.SVGText.getAttributeNS(null, "fill");        
-    }
-
-    set colorRGB(rgb) {
-        this.SVGText.setAttributeNS(null, 'fill', ' #' + RGBToHex(rgb[0], rgb[1], rgb[2]));
-    }
-
-    get colorRGB() {
-        return colorToRGB(this.SVGText.getAttributeNS(null, "fill"));
-    }
-
-
-    visible() {
-        this.SVGText.style.display = "block";
-    }
-
-    hide() {
-        this.SVGText.style.display = "none";
-    }
-}
 //-----------------------------------------------------------------------------------------------------
-class SVGRect {
-    constructor(svgElement, id, x, y, width, height) {
-        this.id = id;
-        /*
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        */
+var SVGRect =
+    /*#__PURE__*/
+    function () {
+        "use strict";
 
-        this.SVGRect = document.createElementNS(xmlns, "rect");
-        this.SVGRect.setAttributeNS(null, 'x', x);
-        this.SVGRect.setAttributeNS(null, 'y', y);
-        this.SVGRect.setAttributeNS(null, 'width', width);
-        this.SVGRect.setAttributeNS(null, 'height', height);
-        svgElement.appendChild(this.SVGRect);
-    }
+        function SVGRect(svgElement, id, x, y, width, height) {
+            this.id = id;
+            /*
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+            */
 
-    set x(x) {
-        this.SVGRect.setAttributeNS(null, "x", x);
-    }
+            this.SVGRect = document.createElementNS(xmlns, "rect");
+            this.SVGRect.setAttributeNS(null, 'x', x);
+            this.SVGRect.setAttributeNS(null, 'y', y);
+            this.SVGRect.setAttributeNS(null, 'width', width);
+            this.SVGRect.setAttributeNS(null, 'height', height);
+            svgElement.appendChild(this.SVGRect);
+        }
 
-    get x() {
-        return parseFloat(this.SVGRect.getAttributeNS(null, "x"));
-    }
+        _createClass(SVGRect, [{
+            key: "x",
+            set: function set(x) {
+                this.SVGRect.setAttributeNS(null, "x", x);
+            },
+            get: function get() {
+                return parseFloat(this.SVGRect.getAttributeNS(null, "x"));
+            }
+        }, {
+            key: "y",
+            set: function set(y) {
+                this.SVGRect.setAttributeNS(null, "y", y);
+            },
+            get: function get() {
+                return parseFloat(this.SVGRect.getAttributeNS(null, "y"));
+            }
+        }, {
+            key: "width",
+            set: function set(width) {
+                this.SVGRect.setAttributeNS(null, "width", width);
+            },
+            get: function get() {
+                return parseFloat(this.SVGRect.getBoundingClientRect().width);
+            }
+        }, {
+            key: "height",
+            set: function set(height) {
+                this.SVGRect.setAttributeNS(null, "height", height);
+            },
+            get: function get() {
+                return parseFloat(this.SVGRect.getBoundingClientRect().height);
+            }
+        }, {
+            key: "color",
+            set: function set(color) {
+                this.SVGRect.setAttributeNS(null, 'fill', color);
+            },
+            get: function get() {
+                return this.SVGRect.getAttributeNS(null, "fill");
+            }
+        }, {
+            key: "colorRGB",
+            set: function set(rgb) {
+                this.SVGRect.setAttributeNS(null, 'fill', ' #' + RGBToHex(rgb[0], rgb[1], rgb[2]));
+            },
+            get: function get() {
+                return colorToRGB(this.SVGRect.getAttributeNS(null, "fill"));
+            }
+        }, {
+            key: "opacity",
+            set: function set(opacity) {
+                this.SVGRect.setAttributeNS(null, 'opacity', parseFloat(opacity));
+            },
+            get: function get() {
+                return parseFloat(this.SVGRect.getAttributeNS(null, 'opacity'));
+            }
+        }]);
 
-    set y(y) {
-        this.SVGRect.setAttributeNS(null, "y", y);
-    }
-
-    get y() {
-        return parseFloat(this.SVGRect.getAttributeNS(null, "y"));
-    }
-
-    set width(width) {
-        this.SVGRect.setAttributeNS(null, "width", width);
-    }
-
-    get width() {
-        return parseFloat(this.SVGRect.getBoundingClientRect().width);
-    }
-
-    set height(height) {
-        this.SVGRect.setAttributeNS(null, "height", height);
-    }
-
-    get height() {
-        return parseFloat(this.SVGRect.getBoundingClientRect().height);
-    }
-
-    set color(color) {
-        this.SVGRect.setAttributeNS(null, 'fill', color);
-    }
-
-    get color() {
-        return this.SVGRect.getAttributeNS(null, "fill");
-    }
-
-    set colorRGB(rgb) {
-        this.SVGRect.setAttributeNS(null, 'fill', ' #' + RGBToHex(rgb[0], rgb[1], rgb[2]));
-    }
-
-    get colorRGB() {
-        return colorToRGB(this.SVGRect.getAttributeNS(null, "fill"));
-    }
-
-
-    set opacity(opacity) {
-        this.SVGRect.setAttributeNS(null, 'opacity', parseFloat(opacity));
-    }
-
-    get opacity() {
-        return parseFloat(this.SVGRect.getAttributeNS(null, 'opacity'));
-    }
-
-}
+        return SVGRect;
+    }();
 //SVGArc ------------------------------------------------------------------------------------
-class SVGArc {
-    constructor(svgElement, id, x, y, radius, lineWidth) {
-        this.id = id;
-        this.x = x;
-        this.y = y;
-        this._radius = radius;
-        this.lineWidth = lineWidth;
-        
-        this.SVGArc = document.createElementNS(xmlns, "path");        
-        this.SVGArc.setAttributeNS(null, 'stroke-width', this.lineWidth);
-        this.SVGArc.setAttributeNS(null, 'stroke-linejoin', "round");
-        this.SVGArc.setAttributeNS(null, 'fill', 'none');        
-        
-        svgElement.appendChild(this.SVGArc);
-    }
 
-    set color(color) {
-        this.SVGArc.setAttributeNS(null, 'stroke', color);
-    }
+var SVGArc =
+    /*#__PURE__*/
+    function () {
+        "use strict";
 
-    get color() {
-        return this.SVGArc.getAttributeNS(null, "stroke");
-    }
+        function SVGArc(svgElement, id, x, y, radius, lineWidth) {
+            this.id = id;
+            this.x = x;
+            this.y = y;
+            this._radius = radius;
+            this.lineWidth = lineWidth;
+            this.SVGArc = document.createElementNS(xmlns, "path");
+            this.SVGArc.setAttributeNS(null, 'stroke-width', this.lineWidth);
+            this.SVGArc.setAttributeNS(null, 'stroke-linejoin', "round");
+            this.SVGArc.setAttributeNS(null, 'fill', 'none');
+            svgElement.appendChild(this.SVGArc);
+        }
 
-    set colorRGB(rgb) {
-        this.SVGArc.setAttributeNS(null, 'stroke', ' #' + RGBToHex(rgb[0], rgb[1], rgb[2]));        
-    }
+        var _proto = SVGArc.prototype;
 
-    get colorRGB() {
-        return colorToRGB(this.SVGArc.getAttributeNS(null, "stroke"));
-    }
+        _proto.draw = function draw(from, to) {
+            this.SVGArc.setAttributeNS(null, "d", describeArc(this.x, this.y, this._radius, from, to));
+        };
 
-    set fill(color) {
-        this.SVGArc.setAttributeNS(null, 'fill', color);
-    }
+        _proto.drawPath = function drawPath(path) {
+            this.SVGArc.setAttributeNS(null, "d", path);
+        };
 
-    get fill() {
-        return this.SVGArc.getAttributeNS(null, "fill");
-    }
+        _proto.hide = function hide() {
+            this.SVGArc.setAttributeNS(null, "d", "");
+        };
 
-    set fillRGB(rgb) {
-        this.SVGArc.setAttributeNS(null, 'fill', ' #' + RGBToHex(rgb[0], rgb[1], rgb[2]));        
-    }
+        _createClass(SVGArc, [{
+            key: "color",
+            set: function set(color) {
+                this.SVGArc.setAttributeNS(null, 'stroke', color);
+            },
+            get: function get() {
+                return this.SVGArc.getAttributeNS(null, "stroke");
+            }
+        }, {
+            key: "colorRGB",
+            set: function set(rgb) {
+                this.SVGArc.setAttributeNS(null, 'stroke', ' #' + RGBToHex(rgb[0], rgb[1], rgb[2]));
+            },
+            get: function get() {
+                return colorToRGB(this.SVGArc.getAttributeNS(null, "stroke"));
+            }
+        }, {
+            key: "fill",
+            set: function set(color) {
+                this.SVGArc.setAttributeNS(null, 'fill', color);
+            },
+            get: function get() {
+                return this.SVGArc.getAttributeNS(null, "fill");
+            }
+        }, {
+            key: "fillRGB",
+            set: function set(rgb) {
+                this.SVGArc.setAttributeNS(null, 'fill', ' #' + RGBToHex(rgb[0], rgb[1], rgb[2]));
+            },
+            get: function get() {
+                return colorToRGB(this.SVGArc.getAttributeNS(null, "fill"));
+            }
+        }, {
+            key: "opacity",
+            set: function set(opacity) {
+                this.SVGArc.setAttributeNS(null, 'opacity', parseFloat(opacity));
+            },
+            get: function get() {
+                return parseFloat(this.SVGArc.getAttributeNS(null, 'opacity'));
+            }
+        }, {
+            key: "radius",
+            set: function set(radius) {
+                this._radius = parseFloat(radius);
+            },
+            get: function get() {
+                return parseFloat(this._radius);
+            }
+        }]);
 
-    get fillRGB() {
-        return colorToRGB(this.SVGArc.getAttributeNS(null, "fill"));        
-    }
-
-
-    set opacity(opacity) {
-        this.SVGArc.setAttributeNS(null, 'opacity', parseFloat(opacity));
-    }
-
-    get opacity() {        
-        return parseFloat(this.SVGArc.getAttributeNS(null, 'opacity'));        
-    }
-
-
-    draw(from, to) {
-        this.SVGArc.setAttributeNS(null, "d", describeArc(this.x, this.y, this._radius, from, to));
-    }
-
-    drawPath(path) {
-        this.SVGArc.setAttributeNS(null, "d", path);
-    }
-
-    set radius(radius) {
-        this._radius = parseFloat(radius);
-    }
-
-    get radius() {
-        return parseFloat(this._radius);
-    }
-
-
-    hide() {
-        this.SVGArc.setAttributeNS(null, "d", "");
-    }
-}
+        return SVGArc;
+    }();
 //----------------------------------------------------------------------------------------------------------------------------------------------------------
-class SVGIcon {
-    constructor(svgElement, icon, x, y, width, height) {
-        this.icon = icon;
-        this.SVGIcon = document.createElementNS(xmlns, "svg");
-        this.SVGIcon.setAttributeNS(null, "viewBox", "0 0 " + width + " " + height);
-        this.SVGIcon.setAttributeNS(null, "x", x);
-        this.SVGIcon.setAttributeNS(null, "y", y);
-        this.SVGIcon.setAttributeNS(null, "width", width);
-        this.SVGIcon.setAttributeNS(null, "height", height);
-        
-        this.SVGIcon.style.display = "block";
 
-        this.SVGPath = document.createElementNS(xmlns, "path");
-        this.SVGPath.setAttributeNS(null, "transform", "scale(" + parseFloat(width / 48) + ")");
-        this.SVGIcon.appendChild(this.SVGPath);
+var SVGIcon =
+    /*#__PURE__*/
+    function () {
+        "use strict";
 
-        this.SVGFillPath = document.createElementNS(xmlns, "path");
-        this.SVGFillPath.setAttributeNS(null, "d", "M0 0h48v48H0z");
-        this.SVGFillPath.setAttributeNS(null, "fill", "#0F0F0F");
-        this.SVGFillPath.setAttributeNS(null, "opacity", "0.01");
-        this.SVGFillPath.setAttributeNS(null, "transform", "scale(" + parseFloat(width / 48) + ")");
-        this.SVGIcon.appendChild(this.SVGFillPath);
-        svgElement.appendChild(this.SVGIcon);
-        this.draw();
-    }
+        function SVGIcon(svgElement, icon, x, y, width, height) {
+            this.icon = icon;
+            this.SVGIcon = document.createElementNS(xmlns, "svg");
+            this.SVGIcon.setAttributeNS(null, "viewBox", "0 0 " + width + " " + height);
+            this.SVGIcon.setAttributeNS(null, "x", x);
+            this.SVGIcon.setAttributeNS(null, "y", y);
+            this.SVGIcon.setAttributeNS(null, "width", width);
+            this.SVGIcon.setAttributeNS(null, "height", height);
+            this.SVGIcon.style.display = "block";
+            this.SVGPath = document.createElementNS(xmlns, "path");
+            this.SVGPath.setAttributeNS(null, "transform", "scale(" + parseFloat(width / 48) + ")");
+            this.SVGIcon.appendChild(this.SVGPath);
+            this.SVGFillPath = document.createElementNS(xmlns, "path");
+            this.SVGFillPath.setAttributeNS(null, "d", "M0 0h48v48H0z");
+            this.SVGFillPath.setAttributeNS(null, "fill", "#0F0F0F");
+            this.SVGFillPath.setAttributeNS(null, "opacity", "0.01");
+            this.SVGFillPath.setAttributeNS(null, "transform", "scale(" + parseFloat(width / 48) + ")");
+            this.SVGIcon.appendChild(this.SVGFillPath);
+            svgElement.appendChild(this.SVGIcon);
+            this.draw();
+        }
 
-    set x(x) {
-        this.SVGIcon.setAttributeNS(null, "x", x);
-    }
+        var _proto = SVGIcon.prototype;
 
-    get x() {
-        return parseFloat(this.SVGIcon.getAttributeNS(null, "x"));
-    }
+        _proto.draw = function draw() {
+            this.SVGPath.setAttributeNS(null, "d", this.icon);
+        };
 
-    set y(y) {
-        this.SVGIcon.setAttributeNS(null, "y", y);
-    }
+        _proto.hide = function hide() {
+            this.SVGPath.setAttributeNS(null, "d", "");
+        };
 
-    get y() {
-        return parseFloat(this.SVGIcon.getAttributeNS(null, "y"));
-    }
+        _createClass(SVGIcon, [{
+            key: "x",
+            set: function set(x) {
+                this.SVGIcon.setAttributeNS(null, "x", x);
+            },
+            get: function get() {
+                return parseFloat(this.SVGIcon.getAttributeNS(null, "x"));
+            }
+        }, {
+            key: "y",
+            set: function set(y) {
+                this.SVGIcon.setAttributeNS(null, "y", y);
+            },
+            get: function get() {
+                return parseFloat(this.SVGIcon.getAttributeNS(null, "y"));
+            }
+        }, {
+            key: "color",
+            set: function set(color) {
+                this.SVGPath.setAttributeNS(null, 'stroke', color);
+            },
+            get: function get() {
+                return this.SVGPath.getAttributeNS(null, "stroke");
+            }
+        }, {
+            key: "colorRGB",
+            set: function set(rgb) {
+                this.SVGPath.setAttributeNS(null, 'stroke', ' #' + RGBToHex(rgb[0], rgb[1], rgb[2]));
+            },
+            get: function get() {
+                return colorToRGB(this.SVGPath.getAttributeNS(null, "stroke"));
+            }
+        }, {
+            key: "fill",
+            set: function set(color) {
+                this.SVGPath.setAttributeNS(null, 'fill', color);
+            },
+            get: function get() {
+                return this.SVGPath.getAttributeNS(null, "fill");
+            }
+        }, {
+            key: "fillRGB",
+            set: function set(rgb) {
+                this.SVGPath.setAttributeNS(null, 'fill', ' #' + RGBToHex(rgb[0], rgb[1], rgb[2]));
+            },
+            get: function get() {
+                return colorToRGB(this.SVGPath.getAttributeNS(null, "fill"));
+            }
+        }, {
+            key: "opacity",
+            set: function set(opacity) {
+                this.SVGPath.setAttributeNS(null, 'opacity', parseFloat(opacity));
+            },
+            get: function get() {
+                return parseFloat(this.SVGPath.getAttributeNS(null, 'opacity'));
+            }
+        }]);
 
-    set color(color) {        
-        this.SVGPath.setAttributeNS(null, 'stroke', color);
-    }
-
-    get color() {
-        return this.SVGPath.getAttributeNS(null, "stroke");
-    }
-
-    set colorRGB(rgb) {        
-        this.SVGPath.setAttributeNS(null, 'stroke', ' #' + RGBToHex(rgb[0], rgb[1], rgb[2]));
-    }
-
-    get colorRGB() {
-        return colorToRGB(this.SVGPath.getAttributeNS(null, "stroke"));
-    }
-
-    set fill(color) {        
-        this.SVGPath.setAttributeNS(null, 'fill', color);
-    }
-
-    get fill() {
-        return this.SVGPath.getAttributeNS(null, "fill");
-    }
-
-    set fillRGB(rgb) {
-        this.SVGPath.setAttributeNS(null, 'fill', ' #' + RGBToHex(rgb[0], rgb[1], rgb[2]));        
-    }
-
-    get fillRGB() {
-        return colorToRGB(this.SVGPath.getAttributeNS(null, "fill"));
-    }
-
-    set opacity(opacity) {        
-        this.SVGPath.setAttributeNS(null, 'opacity', parseFloat(opacity));
-    }
-
-    get opacity() {
-        return parseFloat(this.SVGPath.getAttributeNS(null, 'opacity'));
-    }
-
-    draw() {
-        this.SVGPath.setAttributeNS(null, "d", this.icon);
-    }
-
-    hide() {
-        this.SVGPath.setAttributeNS(null, "d", "");
-    }
-
-}
-
+        return SVGIcon;
+    }();

@@ -71,7 +71,7 @@ function boot() {
 //Загрузка контента с интернет или без него, с учетом зависимости модулей (загрузка некоторых модулей, требует предварительной загрузки других,
 //так как мы используем асинхронный метод загрузки - некоторые модули должне "дождатъся" загрузки тех от кого они зависят)
 //...и да - нет никакого списка загрузки, как не странно здесь удобен хардкод
-function loadingScripts(withInternet) {    
+function loadingScripts(withInternet) {
     //bottstrap css
     new Promise(function (resolve, reject) {//первым грузим bootstrap.css и ожидаем окончание
         var link = document.createElement('link');
@@ -125,23 +125,23 @@ function loadingScripts(withInternet) {
                             loadingScript("devicesui.js");
                             loadingScript("dashboardui.js");
                             loadingScript("settingsui.js");
-                            
+
                             //var unitPropertiesScript = document.createElement('script'); //с ожиданием
                             //unitPropertiesScript.onload = function () { //when unit properties is loading we can start index script
 
-                                loadingScript("index.js"); //ядро OWL OS UI, грузится последним, стартует систему
+                            loadingScript("index.js"); //ядро OWL OS UI, грузится последним, стартует систему
                             //}
                             //--> NOTE: код ниже - обратное сворачивание загрузчкив контента (стек загрузки)
                             //unitPropertiesScript.src = "unitproperties.js";
                             //addToLogNL("loading unitproperties from " + unitPropertiesScript.src);
                             //document.getElementsByTagName('head')[0].appendChild(unitPropertiesScript);
                         }
-                         //--> NOTE: код ниже - обратное сворачивание загрузчкив контента (стек загрузки)
+                        //--> NOTE: код ниже - обратное сворачивание загрузчкив контента (стек загрузки)
                         baseWidgetScript.src = "basewidget.js";
                         addToLogNL("loading basewidget from " + baseWidgetScript.src);
                         document.getElementsByTagName('head')[0].appendChild(baseWidgetScript);
                     }
-                     //--> NOTE: код ниже - обратное сворачивание загрузчкив контента (стек загрузки)
+                    //--> NOTE: код ниже - обратное сворачивание загрузчкив контента (стек загрузки)
                     if (withInternet) bootstrapScript.src = "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js";
                     else bootstrapScript.src = "bootstrap.min.js";
                     addToLogNL("loading bootstrap from " + bootstrapScript.src);
@@ -185,6 +185,34 @@ function loadCSS(cssURL) {
         };
     });
 }
+//CLASS to Object supporting 
+function _defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+        var descriptor = props[i];
+        descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true;
+        if ("value" in descriptor) {
+            descriptor.writable = true;
+        }
+        Object.defineProperty(target, descriptor.key, descriptor);
+    }
+}
+
+function _createClass(Constructor, protoProps, staticProps) {
+    if (protoProps) {
+        _defineProperties(Constructor.prototype, protoProps);
+    }
+    if (staticProps) {
+        _defineProperties(Constructor, staticProps); return Constructor;
+    }
+}
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
+
+
+
+
 //--------------------------------------------------------------------------------------------------------------------------------------------------
 //работа с консолью реализована в bootcore.js - здесь этот код используется и не надо грузить лишние модули из index.html
 //даже если что то совсем пойдет не так - у нас есть возможность информировать пользователя, так как мы загрузили Log скрипты при помощи браузера

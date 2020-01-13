@@ -92,7 +92,7 @@ var devices = {
     //мы не можем использовать this, для обращения к методам этого объекта, поэтому заведомо передали себе ссылку на себя "asyncReciever"
     refreshResult: function (httpResult, node) {
         //HTTPClient добавляет строку "%error" в начало Response если запрос не был завешен HTTPCode=200 или произашел TimeOut
-        if (!httpResult.startsWith("%error")) {
+        if (!httpResult.indexOf("%error")==0) {
             node.networkStatus = NET_ONLINE;
             //если запрос был выполнен удачно, парсим новые данные об устройствах, изменяем свойства devices[] и добавляем новые device если они появились
             //перед изучением парсинга, посмотрите результат API getalldevicesproperties как текст
@@ -101,7 +101,7 @@ var devices = {
 
         }
         else { //если HTTPClient вернул ошибку, сбрасывам предидущий результат, а текущий объявлям пустой строкой
-            if (httpResult.includes("reponse")) {
+            if (httpResult.indexOf("reponse")!=-1) {
                 node.networkStatus = NET_ERROR;
             }
             else {
@@ -164,7 +164,7 @@ var devices = {
             for (var i = 0; i < node.recievedDevicesProperties.length; i++) {//перечесляем все строки в HTTPResult 
                 if (node.recievedDevicesProperties[i] === "") continue; //если строка пуста, берем следующею
                 //--> разбор устройств
-                if (node.recievedDevicesProperties[i].startsWith("properties for:")) { //если заголовок устройства найден                    
+                if (node.recievedDevicesProperties[i].indexOf("properties for:")==0) { //если заголовок устройства найден                    
 
                     if (device != undefined) {
                         this.onDeviceLoaded(device);
@@ -363,7 +363,7 @@ var devices = {
             //асинхронный получатель будет вызван из HTTPClient после попытки изменить свойство устройства
             //как было сказано выше - это будет другой поток и мы не имеем право использовать this
             setValueReciever: function (HTTPResult, upperReciever, sender, upperSender) {
-                if (!HTTPResult.startsWith("%error")) {//если небыло сетевой ошибки
+                if (!HTTPResult.indexOf("%error")==0) {//если небыло сетевой ошибки
                     if (HTTPResult === "1") { //unit вернет "1" в качестве результата, если удалось изменить значения свойства устройства
                         sender.networkStatus = NET_ONLINE; //разрешаем сетевой статус как "в сети" - до этого мы переходили в статус "в работе"
                         sender.value = sender.sendedValue; //ранее мы сохранили желаемое значение свойства, назначаем его в качестве нового значения свойства устройства
@@ -374,7 +374,7 @@ var devices = {
                     }
                 }
                 else {
-                    if (!HTTPResult.includes("response")) {//если HTTPClient вернул "%error" и в этой строке небыло слова "response" - соединение не было установлено, статус "не в сети"
+                    if (!HTTPResult.indexOf("response")!=-1) {//если HTTPClient вернул "%error" и в этой строке небыло слова "response" - соединение не было установлено, статус "не в сети"
                         sender.networkStatus = NET_OFFLINE;
                     }
                     else { //если ответ был, но он не HTTPResult 200 OK - ошибка либо устройства либо Unit 
@@ -396,12 +396,12 @@ var devices = {
             },
             //асинхронный получатель значения свойства, отличается от "Set", там что приймет от HTTPClient новое значение свойства, если небыло ошибки сети
             getValueReciever: function (HTTPResult, upperReciever, sender, upperSender) {
-                if (!HTTPResult.startsWith("%error")) {
+                if (!HTTPResult.indexOf("%error")==0) {
                     sender.networkStatus = NET_ONLINE; //возвращаемся в онлайн, были "в работе"
                     sender.value = HTTPResult; //новое значение свойства, все подписчики узнают об его изменении                    
                 }
                 else {
-                    if (!HTTPResult.includes("response")) { //уходим в офлайн если ошибки
+                    if (!HTTPResult.indexOf("response")!=-1) { //уходим в офлайн если ошибки
                         sender.networkStatus = NET_OFFLINE;
                     }
                     else { //device error

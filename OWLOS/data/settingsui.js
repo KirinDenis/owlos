@@ -490,7 +490,7 @@ var settingsUI = {
     },
 
     updateLogReciever: function (HTTPResult, upperReciever, sender, upperSender) {
-        if (!HTTPResult.startsWith("%error")) {
+        if (!HTTPResult.indexOf("%error")==0) {
             sender.innerHTML = "Update log:<br>" + HTTPResult;
 
             var modalFooter = document.getElementById("updateModalFooter");
@@ -553,7 +553,7 @@ var settingsUI = {
     },
 
     updateLogReciever: function (HTTPResult, upperReciever, sender, upperSender) {
-        if (!HTTPResult.startsWith("%error")) {
+        if (!HTTPResult.indexOf("%error")==0) {
             sender.innerHTML = "Update log:<br>" + HTTPResult;
         }
         else {

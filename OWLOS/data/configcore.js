@@ -132,26 +132,26 @@ var config = {
     load: function () {
         var result = false;
         var stringifyConfig = httpGetWithErrorReson(boardhost + "getwebproperty?property=config"); //boardhost host контроллера с которого идет первичная загрузка
-        if (stringifyConfig.startsWith("OWLOSConfig")) {
+        if (stringifyConfig.indexOf("OWLOSConfig")==0) {
             try {
                 configProperties = defaultWebProp();
                 stringifyConfigLines = stringifyConfig.split(";");
 
                 for (var i = 1; i < stringifyConfigLines.length; i++) {
-                    if ((!stringifyConfigLines[i].startsWith("dd:")) && (!stringifyConfigLines[i].startsWith("ne:"))) {
+                    if ((!stringifyConfigLines[i].indexOf("dd:")==0) && (!stringifyConfigLines[i].indexOf("ne:")==0)) {
                         var key = stringifyConfigLines[i].split("=")[0];
                         var value = stringifyConfigLines[i].split("=")[1];
                         configProperties[key] = value;
                     }
                     else { 
-                        if (stringifyConfigLines[i].startsWith("dd:")) {  //parse dashboards
+                        if (stringifyConfigLines[i].indexOf("dd:")==0) {  //parse dashboards
                             var id = stringifyConfigLines[i].split(":")[1];
                             var dashboard = this.addDashboard(id);
                             for (var j = i + 1; j < stringifyConfigLines.length; j++) {
-                                if (stringifyConfigLines[j].startsWith("dd:")) { i = j - 1; break; }
-                                if (stringifyConfigLines[j].startsWith("ne:")) { i = j - 1; break; }
+                                if (stringifyConfigLines[j].indexOf("dd:")==0) { i = j - 1; break; }
+                                if (stringifyConfigLines[j].indexOf("ne:")==0) { i = j - 1; break; }
 
-                                if (stringifyConfigLines[j].startsWith("wt:")) {
+                                if (stringifyConfigLines[j].indexOf("wt:")==0) {
                                     var widget = this.addWidget(dashboard.id);
                                     //widget.dashboardId = stringifyConfigLines[j + 1].split("=")[1];
                                     widget.deviceId = stringifyConfigLines[j + 2].split("=")[1]
@@ -163,7 +163,7 @@ var config = {
                             }
                         }  //end of parse dashboards
                         else {
-                            if (stringifyConfigLines[i].startsWith("ne:")) {  //parse nodes                                
+                            if (stringifyConfigLines[i].indexOf("ne:")==0) {  //parse nodes                                
                                 this.addNode(stringifyConfigLines[i + 1].split("=")[1], stringifyConfigLines[i + 2].split("=")[1]);
                                 i += 2;
                             }  //end of parse nodes
@@ -182,6 +182,7 @@ var config = {
             }
         }
 
+        
         if (!result) { //пробуем создать свойства по умолчанию, если их еще нет
             //parse problem, reset properties
             configProperties = defaultWebProp();
@@ -198,6 +199,7 @@ var config = {
             result = this.save();
 
         }
+        
 
         return result;
     },
@@ -238,7 +240,7 @@ var config = {
         addToLogNL(configPropertiesJson);
         //var HTTPResult = httpPostWithErrorReson(boardhost + "setwebproperty?property=config&value=" + configPropertiesJson);
         var HTTPResult = httpPostWithErrorReson(boardhost + "setwebproperty?property=config", configPropertiesJson);
-        if (!HTTPResult.startsWith("%error")) {
+        if (!HTTPResult.indexOf("%error")==0) {
             this.onChange();
             return true;
         }
