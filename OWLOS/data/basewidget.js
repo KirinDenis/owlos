@@ -7,7 +7,7 @@ var EVENT_DELETE = 1;
 var BaseWidget =
     /*#__PURE__*/
     function () {
-       // "use strict";
+       "use strict";
 
         function BaseWidget(parentPanel, id, size) {
             this.parentPanel = parentPanel; //properties --------------------------------
@@ -30,27 +30,37 @@ var BaseWidget =
             this.svgElement.setAttributeNS(null, "width", size);
             this.svgElement.setAttributeNS(null, "height", size);
             this.svgElement.style.display = "block";
-            this.SVGWidgetText = new SVGText(this.svgElement, this.id + "widgettext", this.size / 100);
-            this.SVGWidgetText.color = theme.primary;
+            this.SVGWidgetText = new SVGText(this.svgElement, this.id + "widgettext", this.size / 80);
+            this.SVGWidgetText.color = theme.secondary;
             this.SVGLabel = new SVGText(this.svgElement, this.id + "label", this.size / 150);
             this.SVGLabel.color = theme.secondary;
             this.SVGHint = new SVGText(this.svgElement, this.id + "hint", this.size / 150);
             this.SVGHint.color = theme.secondary;
 
-            this.SVGBackpanel = new SVGRect(this.svgElement, this.id + "backpanel", 1, 1, this.width-1, this.height-1);
-            this.SVGBackpanel.opacity = 0.05;
-            this.SVGBackpanel.fill = theme.secondary;
-            this.SVGBackpanel.color = 'none';
-
-            this.SVGBoxBackpanel = new SVGRect(this.svgElement, this.id + "boxbackpanel", 3, 3, this.width-2, this.height);
-            this.SVGBoxBackpanel.opacity = 0.4;
-            this.SVGBoxBackpanel.color = theme.secondary;
-            this.SVGBoxBackpanel.fill = 'none';
+            
+            this.SVGBackpanel = new SVGArc(this.svgElement, this.id + "backpanel", 0, 0, this.width, 1);
+            this.SVGBackpanel.drawRoundedRect(this.width, this.height, 5, 10, true, true, true, true);
+            this.SVGBackpanel.opacity = 0.3;
+            this.SVGBackpanel.color = theme.light;
+            this.SVGBackpanel.fill = theme.light;
 
 
-            this.SVGBackdownpanel = new SVGRect(this.svgElement, this.id + "backdownpanel", 0, this.height, this.width, this.halfPanding);
+            
+
+            this.SVGBoxBackpanel = new SVGArc(this.svgElement, this.id + "boxbackpanel", 0, 0, this.width, 1);
+             this.SVGBoxBackpanel.drawRoundedRect(this.width, 25, 5, 0, true, true, false, false);
+           // this.SVGBoxBackpanel.drawPath("M0,130 h200 a20,20 0 0 1 20,20 v240 a20,20 0 0 1 -20,20 h-200 a20,20 0 0 1 -20,-20 v-240 a20,20 0 0 1 20,-20 z", this.width, this.height)
+            this.SVGBoxBackpanel.opacity = 0.1;
+            //this.SVGBoxBackpanel.color = theme.light;
+            this.SVGBoxBackpanel.fill = theme.info;
+
+
+            //this.SVGBackdownpanel = new SVGRect(this.svgElement, this.id + "backdownpanel", 0, this.height, this.width, this.halfPanding);
+            this.SVGBackdownpanel = new SVGArc(this.svgElement, this.id + "backdownpanel", 0, this.height -10, this.width, 1);
+            this.SVGBackdownpanel.drawRoundedRect(this.width, 10, 5, 0, false, false, true, true);
             this.SVGBackdownpanel.opacity = 0.5;
             this.SVGBackdownpanel.fill = theme.secondary;
+
             var stop1 = document.createElementNS(xmlns, 'stop');
             stop1.setAttribute('stop-color', theme.info);
             stop1.setAttribute('stop-opacity', "0.7");
@@ -81,8 +91,8 @@ var BaseWidget =
             this.eWidth = this.size / (this.eCount + 35);
             this.eRWidth = this.width / 40;
             this.eHeight = this.eWidth;
-            this.eX = this.width / 2 - this.eWidth * 2 * this.eCount / 2 + this.halfPanding;
-            this.eY = this.height - this.eHeight * 2 * 5;
+            this.eX = this.width / 2 - this.eWidth * 2 * this.eCount / 2 + this.halfPanding / 2 + 2;
+            this.eY = this.height - this.eHeight * 2 * 5 - 2;
             this.equalizerX = []; //row
 
             for (var x = 0; x < this.eCount; x++) {
@@ -287,7 +297,7 @@ var BaseWidget =
 
             switch (this._networkStatus) {
                 case NET_ONLINE:
-                    this.toColor(this.SVGWidgetText, theme.success);
+                    this.toColor(this.SVGWidgetText, theme.light);
                     break;
 
                 case NET_ERROR:
@@ -314,7 +324,7 @@ var BaseWidget =
 
             switch (this._networkStatus) {
                 case NET_ONLINE:
-                    this.toColor(this.SVGLabel, theme.primary);
+                    this.toColor(this.SVGLabel, theme.light);
                     break;
 
                 case NET_ERROR:
@@ -435,20 +445,24 @@ var BaseWidget =
 
             switch (this._networkStatus) {
                 case NET_ONLINE:
-                    this.toColor(this.SVGBackdownpanel, theme.success);
+                    //this.toColor(this.SVGBackdownpanel, theme.success);
+                    this.SVGBackdownpanel.fill = theme.success;
                     break;
 
                 case NET_ERROR:
-                    this.toColor(this.SVGBackdownpanel, theme.danger);
+                    //this.toColor(this.SVGBackdownpanel, theme.danger);
+                    this.SVGBackdownpanel.fill = theme.danger;
                     break;
 
                 case NET_RECONNECT:
-                    this.toColor(this.SVGBackdownpanel, theme.info);
+                    //this.toColor(this.SVGBackdownpanel, theme.info);
+                    this.SVGBackdownpanel.fill = theme.info;
                     break;
 
                 default:
                     //offline
-                    this.toColor(this.SVGBackdownpanel, theme.light);
+                    //this.toColor(this.SVGBackdownpanel, theme.light);
+                    this.SVGBackdownpanel.fill = theme.light;
                     break;
             } //equalizer --------------------------
 
@@ -458,7 +472,7 @@ var BaseWidget =
 
                 for (var y = 0; y < 5; y++) {
                     if (this._networkStatus == NET_ONLINE && this.ShowEqualizer) {
-                        equalizerY[y].opacity = (y + 1) * 0.09;
+                        equalizerY[y].opacity = (y + 1) * 0.08;
                     } else {
                         equalizerY[y].opacity = 0.0;
                     }
@@ -496,7 +510,7 @@ var BaseWidget =
                         var value = parseInt(splitHistory[x + 1] / propValue);
 
                         for (var y = 0; y < value; y++) {
-                            equalizerY[4 - y].opacity = 1.0 - parseFloat(y / 8.0);
+                            equalizerY[4 - y].opacity = (1.0 - parseFloat(y / 8.0)) / 2.0;
                             equalizerY[4 - y].fill = theme.success;
                         }
                     }
@@ -527,7 +541,7 @@ var BaseWidget =
             if (this._mode != WORK_MODE) return;
 
             if (this.mouseEnter) {
-                if (this.SVGBackpanel.opacity < 0.2) {
+                if (this.SVGBackpanel.opacity < 0.02) {
                     this.SVGBackpanel.opacity += 0.005;
                     requestAnimationFrame(function () {
                         return _this4.drawMouseEnter();
@@ -567,7 +581,7 @@ var BaseWidget =
 
                     this.SVGMinusIcon.hide();
                 } else if (mode == MOVE_MODE) {
-                    this.SVGBackpanel.opacity = 0.3;
+                    this.SVGBackpanel.opacity = 0.03;
                     this.SVGLeftIcon.draw();
                     this.SVGRightIcon.draw(); //   this.SVGPlusIcon.draw();
 

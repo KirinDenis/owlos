@@ -13,13 +13,13 @@ var TemperatureWidget =
             var _this;
 
             _this = _BaseWidget.call(this, parentPanel, id, size) || this;
-            _this.tempWidth = (_this.width - _this.panding * 2) / 35;
+            _this.tempWidth = (_this.width - _this.panding * 2) / 25;
             _this.tempHeight = _this.height / 15;
             _this.tempTop = _this.height / 3.5 - _this.tempHeight / 2;
             _this.tempItem = [];
 
             for (var i = 0; i < 20; i++) {
-                var svgRect = new SVGRect(_this.svgElement, _this.id + "tempItem" + i, _this.panding + _this.tempWidth * 2 * i, _this.tempTop, _this.tempWidth, _this.tempHeight);
+                var svgRect = new SVGRect(_this.svgElement, _this.id + "tempItem" + i, _this.panding + _this.tempWidth * i, _this.tempTop, _this.tempWidth, _this.tempHeight);
                 if (i < 7) svgRect.fill = theme.info; else if (i < 14) svgRect.fill = theme.warning; else svgRect.fill = theme.danger;
                 svgRect.opacity = 0.0;
 

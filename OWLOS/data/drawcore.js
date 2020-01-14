@@ -249,7 +249,7 @@ var SVGRect =
         {
             key: "color",
             set: function set(color) {
-                this.SVGRect.setAttributeNS(null, 'stroke-width', 1);
+                this.SVGRect.setAttributeNS(null, 'stroke-width', 0.5);
                 this.SVGRect.setAttributeNS(null, 'stroke', color);
             },
             get: function get() {
@@ -290,6 +290,8 @@ var SVGArc =
             this._radius = radius;
             this.lineWidth = lineWidth;
             this.SVGArc = document.createElementNS(xmlns, "path");
+            this.SVGArc.setAttributeNS(null, 'x', x);
+            this.SVGArc.setAttributeNS(null, 'y', y);
             this.SVGArc.setAttributeNS(null, 'stroke-width', this.lineWidth);
             this.SVGArc.setAttributeNS(null, 'stroke-linejoin', "round");
             this.SVGArc.setAttributeNS(null, 'fill', 'none');
@@ -302,10 +304,61 @@ var SVGArc =
             this.SVGArc.setAttributeNS(null, "d", describeArc(this.x, this.y, this._radius, from, to));
         };
 
-        _proto.drawPath = function drawPath(path) {
+        _proto.drawPath = function drawPath(path, width, height) {
+            this.SVGArc.setAttributeNS(null, 'width', width);
+            this.SVGArc.setAttributeNS(null, 'height', height);
             this.SVGArc.setAttributeNS(null, "d", path);
         };
 
+        _proto.drawRoundedRect = function (width, height, curve, leftOffset, leftTop, rightTop, leftBottom, rightBottom) {
+
+            this.SVGArc.setAttributeNS(null, 'width', width);
+            this.SVGArc.setAttributeNS(null, 'height', height);
+
+            var backH = width;
+            if (leftOffset == 0) {
+                backH = width - curve * 0.5;
+            }
+            else {
+                backH = width - curve * (leftOffset / 4);
+            }
+
+
+            var backV = height - curve * 2.5;
+
+            var ltCurve = 0;
+            if (leftTop) ltCurve = curve;
+
+            var rtCurve = 0;
+            if (rightTop) rtCurve = curve;
+
+            var lbCurve = 0;
+            if (leftBottom) lbCurve = curve;
+
+            var rbCurve = 0;
+            if (rightBottom) rbCurve = curve;
+
+            if (this.y == 0) {
+                this.SVGArc.setAttributeNS(null, "d", "M" + leftOffset +
+                    ", " + curve + " h " + backH + " a" + rtCurve + "," + rtCurve + " 0 0 1  " + rtCurve +
+                    ", " + curve + " v " + backV + " a" + rbCurve + "," + rbCurve + " 0 0 1 -" + rbCurve +
+                    ", " + curve + " h-" + backH + " a" + lbCurve + "," + lbCurve + " 0 0 1 -" + lbCurve +
+                    ",-" + curve + " v-" + backV + " a" + ltCurve + "," + ltCurve + " 0 0 1  " + ltCurve +
+                    ",-" + curve + " z");
+            }
+            else {
+                var backH = width - curve * 2.5;
+                this.SVGArc.setAttributeNS(null, "d", "M" + curve * 3.0 +
+                    ", " + parseFloat(this.y - backV*3) + " h " + backH + " a" + rtCurve + "," + rtCurve + " 0 0 1  " + rtCurve +
+                    ", " + curve + " v " + backV * 2 + " a" + rbCurve + "," + rbCurve + " 0 0 1 -" + rbCurve +
+                    ", " + curve + " h-" + backH + " a" + lbCurve + "," + lbCurve + " 0 0 1 -" + lbCurve +
+                    ",-" + curve + " v-" + backV + " a" + ltCurve + "," + ltCurve + " 0 0 1  " + ltCurve +                    
+                    ",-" + curve + " z");
+
+            }
+
+
+        };
         _proto.hide = function hide() {
             this.SVGArc.setAttributeNS(null, "d", "");
         };

@@ -34,7 +34,7 @@ var RadialWidgetWrapper =
             dashboardUI.addDashboardModeListner(this.onDashboardModeChange, this);
 
             if (noWidget == undefined || !noWidget) {
-                this.widget = new RadialWidget(parentPanel, deviceId, 150);
+                this.widget = new RadialWidget(parentPanel, deviceId, configProperties.widgetssize);
                 this.widget.deviceClass = this;
                 this.widget.rPanel.onclick = this.widgetClick;
                 this.draw();
@@ -123,7 +123,7 @@ var TemperatureWidgetWrapper =
         _proto2.offlineStarter = function offlineStarter(parentPanel, deviceId, devicePropertyName) {
             _RadialWidgetWrapper.prototype.offlineStarter.call(this, parentPanel, deviceId, devicePropertyName, true);
 
-            this.widget = new TemperatureWidget(parentPanel, deviceId, 150);
+            this.widget = new TemperatureWidget(parentPanel, deviceId, configProperties.widgetssize);
             this.widget.deviceClass = this;
             this.widget.rPanel.onclick = this.widgetClick;
             this.draw();
@@ -167,7 +167,7 @@ var HumidityWidgetWrapper =
         _proto3.offlineStarter = function offlineStarter(parentPanel, deviceId, devicePropertyName) {
             _RadialWidgetWrapper2.prototype.offlineStarter.call(this, parentPanel, deviceId, devicePropertyName, true);
 
-            this.widget = new RadialWidget(parentPanel, deviceId, 150);
+            this.widget = new RadialWidget(parentPanel, deviceId, configProperties.widgetssize);
             this.widget.deviceClass = this;
             this.widget.rPanel.onclick = this.widgetClick;
             this.draw();
@@ -211,7 +211,7 @@ var HistoryDataGraphWidgetWrapper =
         _proto4.offlineStarter = function offlineStarter(parentPanel, deviceId, devicePropertyName) {
             _RadialWidgetWrapper3.prototype.offlineStarter.call(this, parentPanel, deviceId, devicePropertyName, true);
 
-            this.widget = new GraphWidget(parentPanel, deviceId, 150, temperatureIcon);
+            this.widget = new GraphWidget(parentPanel, deviceId, configProperties.widgetssize, temperatureIcon);
             this.widget.deviceClass = this;
             this.widget.rPanel.onclick = this.widgetClick;
             this.draw();
@@ -254,7 +254,7 @@ var LightWidgetWrapper =
         _proto5.offlineStarter = function offlineStarter(parentPanel, deviceId, devicePropertyName) {
             _RadialWidgetWrapper4.prototype.offlineStarter.call(this, parentPanel, deviceId, devicePropertyName, true);
 
-            this.widget = new LightWidget(parentPanel, deviceId, 150);
+            this.widget = new LightWidget(parentPanel, deviceId, configProperties.widgetssize);
             this.widget.deviceClass = this;
             this.widget.rPanel.onclick = this.widgetClick;
             this.draw();
@@ -277,7 +277,7 @@ var LightWidgetWrapper =
 
                 if (this.deviceProperty.value < 50) {
                     this.widget.refresh(percent, getLang("low"), this.device._id, this.device.historydata.value);
-                } else if (this.deviceProperty.value < 150) {
+                } else if (this.deviceProperty.value < configProperties.widgetssize) {
                     this.widget.refresh(percent, getLang("norm"), this.device._id, this.device.historydata.value);
                 } else {
                     this.widget.refresh(percent, getLang("high"), this.device._id, this.device.historydata.value);
@@ -305,7 +305,7 @@ var SmokeWidgetWrapper =
         _proto6.offlineStarter = function offlineStarter(parentPanel, deviceId, devicePropertyName) {
             _RadialWidgetWrapper5.prototype.offlineStarter.call(this, parentPanel, deviceId, devicePropertyName, true);
 
-            this.widget = new SmokeWidget(parentPanel, deviceId, 150);
+            this.widget = new SmokeWidget(parentPanel, deviceId, configProperties.widgetssize);
             this.widget.deviceClass = this;
             this.widget.rPanel.onclick = this.widgetClick;
             this.draw();
@@ -328,7 +328,7 @@ var SmokeWidgetWrapper =
 
                 if (this.deviceProperty.value < 50) {
                     this.widget.refresh(percent, getLang("smokelow"), this.device._id, this.device.historydata.value);
-                } else if (this.deviceProperty.value < 150) {
+                } else if (this.deviceProperty.value < configProperties.widgetssize) {
                     this.widget.refresh(percent, getLang("smokenorm"), this.device._id, this.device.historydata.value);
                 } else {
                     this.widget.refresh(percent, getLang("smokehigh"), this.device._id, this.device.historydata.value);
@@ -356,7 +356,7 @@ var MotionWidgetWrapper =
         _proto7.offlineStarter = function offlineStarter(parentPanel, deviceId, devicePropertyName) {
             _RadialWidgetWrapper6.prototype.offlineStarter.call(this, parentPanel, deviceId, devicePropertyName, true);
 
-            this.widget = new MotionWidget(parentPanel, deviceId, 150);
+            this.widget = new MotionWidget(parentPanel, deviceId, configProperties.widgetssize);
             this.widget.deviceClass = this;
             this.widget.rPanel.onclick = this.widgetClick;
             this.draw();
@@ -479,7 +479,7 @@ var ActuatorWidgetWrapper =
             dashboardUI.addDashboardModeListner(this.onDashboardModeChange, this);
 
             if (noWidget == undefined || !noWidget) {
-                this.widget = new ActuatorWidget(parentPanel, deviceId, 150);
+                this.widget = new ActuatorWidget(parentPanel, deviceId, configProperties.widgetssize);
                 this.widget.deviceClass = this;
                 this.widget.rPanel.onclick = this.widgetClick;
                 this.draw();
@@ -515,7 +515,7 @@ var ActuatorWidgetWrapper =
             
                     dashboardUI.addDashboardModeListner(this.onDashboardModeChange, this);
             
-                    this.widget = new ActuatorWidget(parentPanel, deviceId, 150);
+                    this.widget = new ActuatorWidget(parentPanel, deviceId, configProperties.widgetssize);
                     this.widget.deviceClass = this;
                     this.widget.rPanel.onclick = this.actuatorWidgetClick;
                     this.draw();
@@ -640,7 +640,7 @@ var LCDWidgetWrapper =
             dashboardUI.addDashboardModeListner(this.onDashboardModeChange, this);
 
             if (noWidget == undefined || !noWidget) {
-                this.widget = new LCDWidget(parentPanel, deviceId, 150);
+                this.widget = new LCDWidget(parentPanel, deviceId, configProperties.widgetssize);
                 this.widget.deviceClass = this; // this.widget.rPanel.onclick = this.widgetClick;
 
                 this.widget.lcdButton.onclick = this.lcdTextClick;
@@ -676,7 +676,7 @@ var LCDWidgetWrapper =
                 this.devicePropertyName = devicePropertyName;
                 devices.addNetworkStatusListner(this.onNetworkStatusChange, this);
                  dashboardUI.addDashboardModeListner(this.onDashboardModeChange, this);
-                 this.widget = new LCDWidget(parentPanel, deviceId, 150);
+                 this.widget = new LCDWidget(parentPanel, deviceId, configProperties.widgetssize);
                 this.widget.deviceClass = this;
                 this.widget.lcdButton.onclick = this.lcdTextClick;
                 this.widget.lightButton.onclick = this.lcdLightClick;
@@ -797,7 +797,7 @@ var StepperWidgetWrapper =
         function StepperWidgetWrapper(parentPanel, id, propertyName) {
             this.id = id;
             this.propertyName = propertyName;
-            this.stepperWidget = new StepperWidget(parentPanel, id, 150);
+            this.stepperWidget = new StepperWidget(parentPanel, id, configProperties.widgetssize);
             this.stepperWidget.deviceClass = this;
             this.stepperWidget.positionChangeReciever = this.positionChange;
         }

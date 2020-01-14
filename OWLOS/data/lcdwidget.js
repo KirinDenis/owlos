@@ -25,9 +25,10 @@ var LCDWidget =
 
             _this.svgElement.setAttributeNS(null, "width", _this.width);
 
-            _this.SVGBackpanel.width = _this.width;
-            _this.SVGBackpanel.height = _this.height;
-            _this.SVGBackdownpanel.width = _this.width;
+            _this.SVGBackpanel.drawRoundedRect(_this.width, _this.height, 5, 10, true, true, true, true);
+            _this.SVGBoxBackpanel.drawRoundedRect(_this.width, 26, 5, 0, true, true, false, false);
+            _this.SVGBackdownpanel.y += 3;
+            _this.SVGBackdownpanel.drawRoundedRect(_this.width, 10, 5, 0, false, false, true, true);
             _this.SVGWidgetText1 = new SVGText(_this.svgElement, _this.id + "widgettext1", _this.widgetTextSize);
             _this.SVGWidgetText1.fontFamily = "monospace";
             _this.SVGWidgetText2 = new SVGText(_this.svgElement, _this.id + "widgettext2", _this.widgetTextSize);

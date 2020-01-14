@@ -20,7 +20,7 @@ var dashboardUI = {
         widgetsPanel.id = "widgetsPanel";
         widgetsPanel.className = "col-md-12";
         var infoDiv = widgetsPanel.appendChild(document.createElement('div'));
-        infoDiv.className = "card border-light  mb-1";
+        infoDiv.className = "card bg-dark  mb-1";
         var headerDiv = infoDiv.appendChild(document.createElement('div'));
         headerDiv.className = "card-header";
 

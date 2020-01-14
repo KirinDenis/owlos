@@ -14,23 +14,31 @@ var GraphWidget =
             _this.topMargin = _this.size / 20; //this.panding = 5;
 
             _this.width = _this.size * 2;
-             _this.height = _this.size ;
+             _this.height = _this.size;
             _this.centreX = _this.width / 2; //  this.centreY = this.height / 2;
 
             _this.widgetTextSize = _this.size / 110;
             _this.graphWidth = _this.width;
-            _this.graphHeight = _this.height - _this.size / 4.5;
+            _this.graphHeight = _this.height - _this.size / 4.0;
             _this.graphTop = _this.size / 4.3;
 
             _this.svgElement.setAttributeNS(null, "viewBox", _this.halfPanding + " " + _this.halfPanding + " " + _this.width + " " + _this.height);
             _this.svgElement.setAttributeNS(null, "width", _this.width);
             _this.svgElement.setAttributeNS(null, "height", _this.height);
+
+
+           
+            _this.SVGBackpanel.drawRoundedRect(_this.width, _this.height, 5, 10, true, true, true, true);
+            _this.SVGBoxBackpanel.drawRoundedRect(_this.width, 26, 5, 0, true, true, false, false);
+            _this.SVGBackdownpanel.y += 3; 
+            _this.SVGBackdownpanel.drawRoundedRect(_this.width, 10, 5, 0, false, false, true, true);
+
             
 
-            _this.SVGBackpanel.width = _this.width-1;
-            _this.SVGBackpanel.height = _this.height;
-            _this.SVGBoxBackpanel.width = _this.width-2;
-            _this.SVGBoxBackpanel.height = _this.height;
+          //  _this.SVGBackpanel.width = _this.width-1;
+          //  _this.SVGBackpanel.height = _this.height;
+           // _this.SVGBoxBackpanel.width = _this.width-2;
+          //  _this.SVGBoxBackpanel.height = _this.height;
                        
             _this.SVGBackdownpanel.width = _this.width;
             _this.SVGBackdownpanel.y = _this.height;

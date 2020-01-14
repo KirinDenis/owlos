@@ -4,6 +4,7 @@ function defaultWebProp() {
         language: "ua",
         speak: false,
         voice: 0,
+        widgetssize: 150,
         dashboards: [],
         nodes: []
     };

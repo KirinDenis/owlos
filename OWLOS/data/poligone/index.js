@@ -1,10 +1,5 @@
 var theme = {};
 
-//Global flags 
-const NET_OFFLINE = 0;
-const NET_ONLINE = 1;
-const NET_ERROR = 2;
-const NET_RECONNECT = 3;
 
 $(document).ready(function () {
     var style = getComputedStyle(document.body);

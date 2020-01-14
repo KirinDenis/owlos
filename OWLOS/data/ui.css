@@ -43,6 +43,7 @@
     text-align: Center;
     overflow: Hidden;
     cursor: Default;
+    margin-left: 2px;    
     display: inline-block;
 }
 

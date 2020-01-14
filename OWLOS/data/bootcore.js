@@ -27,7 +27,8 @@ const NET_ERROR = 2;
 const NET_RECONNECT = 3;
 const NET_REFRESH = 4; //используется объектом devices только (устанавливается в момент начала цикла перезагрузки данных устройств)
 
-var UIWatch = 'light';
+//var UIWatch = 'light';
+var UIWatch = '';
 
 
 function boot() {
