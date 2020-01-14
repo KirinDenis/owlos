@@ -20,25 +20,28 @@ var dashboardUI = {
         widgetsPanel.id = "widgetsPanel";
         widgetsPanel.className = "col-md-12";
         var infoDiv = widgetsPanel.appendChild(document.createElement('div'));
-        infoDiv.className = "card text-white bg-dark mb-3";
+        infoDiv.className = "card border-light  mb-1";
         var headerDiv = infoDiv.appendChild(document.createElement('div'));
         headerDiv.className = "card-header";
 
         var headerText = headerDiv.appendChild(document.createElement('div'));
         headerText.innerHTML = getLang("Dashboard");
 
-        var headerModeButton = headerText.appendChild(document.createElement('input'));
-        headerModeButton.className = "btn btn-secondary btn-sm close";
+        var cardHeaderButtonsPanel = headerText.appendChild(document.createElement('div'));
+        cardHeaderButtonsPanel.className = 'cardHeaderButton';
+
+        var headerModeButton = cardHeaderButtonsPanel.appendChild(document.createElement('input'));
+        headerModeButton.className = "btn btn-secondary btn-sm";
         headerModeButton.type = "button";
-        headerModeButton.value = "V";
+        headerModeButton.value = "view";
         headerModeButton.onclick = dashboardUI.changeDashboadMode;
 
-        var addWidgetButton = headerText.appendChild(document.createElement('input'));
-        addWidgetButton.className = "btn btn-success btn-sm close";
+        var addWidgetButton = cardHeaderButtonsPanel.appendChild(document.createElement('input'));
+        addWidgetButton.className = "btn btn-success btn-sm";
         addWidgetButton.type = "button";
-        addWidgetButton.value = "+";
+        addWidgetButton.value = getLang("addwidget");
         addWidgetButton.onclick = dashboardUI.addWidgetMode;
-
+        
         var dataDiv = infoDiv.appendChild(document.createElement('div'));
         dataDiv.id = "widgetsPanelDataDiv"
         dataDiv.className = "card-body";

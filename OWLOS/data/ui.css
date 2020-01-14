@@ -188,6 +188,20 @@ textarea {
     text-align: right;
 }
 
+.cardHeaderButton {
+    display: inline-flex;
+    position: absolute;
+    right: 20px;
+    
+}
+
+.card-header {
+    padding-top: 0.1rem;
+    padding-right: 1.25rem;
+    padding-bottom: 0.5rem;
+    padding-left: 1.25rem;
+}
+
 
 
 /* ---------------------------------------------------

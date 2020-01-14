@@ -14,7 +14,7 @@ var GraphWidget =
             _this.topMargin = _this.size / 20; //this.panding = 5;
 
             _this.width = _this.size * 2;
-            _this.height = _this.size - _this.panding;
+             _this.height = _this.size ;
             _this.centreX = _this.width / 2; //  this.centreY = this.height / 2;
 
             _this.widgetTextSize = _this.size / 110;
@@ -23,12 +23,17 @@ var GraphWidget =
             _this.graphTop = _this.size / 4.3;
 
             _this.svgElement.setAttributeNS(null, "viewBox", _this.halfPanding + " " + _this.halfPanding + " " + _this.width + " " + _this.height);
-
             _this.svgElement.setAttributeNS(null, "width", _this.width);
+            _this.svgElement.setAttributeNS(null, "height", _this.height);
+            
 
-            _this.SVGBackpanel.width = _this.width;
+            _this.SVGBackpanel.width = _this.width-1;
             _this.SVGBackpanel.height = _this.height;
+            _this.SVGBoxBackpanel.width = _this.width-2;
+            _this.SVGBoxBackpanel.height = _this.height;
+                       
             _this.SVGBackdownpanel.width = _this.width;
+            _this.SVGBackdownpanel.y = _this.height;
             var stop1 = document.createElementNS(xmlns, 'stop');
             stop1.setAttribute('stop-color', theme.success);
             stop1.setAttribute('stop-opacity', "0.7");

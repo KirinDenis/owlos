@@ -142,7 +142,7 @@ var TemperatureWidgetWrapper =
             if (this.deviceProperty == undefined) return;
 
             if (this.deviceProperty.networkStatus == NET_ONLINE) {
-                this.widget.refresh(this.deviceProperty.value, Math.round(this.deviceProperty.value) + " C", this.device._id, this.device.historydata.value);
+                this.widget.refresh(this.deviceProperty.value, Math.round(this.deviceProperty.value) + " C", this.device._id + "-" + getLang("temperature"), this.device.temperaturehistorydata.value);
             } else {
                 this.widget.refresh(0, "--", this.device._id);
             }
@@ -186,7 +186,7 @@ var HumidityWidgetWrapper =
             if (this.deviceProperty == undefined) return;
 
             if (this.deviceProperty.networkStatus == NET_ONLINE) {
-                this.widget.refresh(this.deviceProperty.value, Math.round(this.deviceProperty.value) + "%", this.device._id, this.device.historydata.value);
+                this.widget.refresh(this.deviceProperty.value, Math.round(this.deviceProperty.value) + "%", this.device._id + "-"+ getLang("humidity"), this.device.humidityhistorydata.value);
             } else {
                 this.widget.refresh(0, "--", this.device._id);
             }
@@ -489,7 +489,9 @@ var ActuatorWidgetWrapper =
         _proto9.joinDevice = function joinDevice(device, deviceProperty) {
             this.device = device;
             this.deviceProperty = deviceProperty;
-            this.widget.deviceClass.deviceProperty = deviceProperty;
+            if (this.widget != undefined) {
+                this.widget.deviceClass.deviceProperty = deviceProperty;
+            }
             this.node = config.getNodeByHost(device._host); //devices.addNetworkStatusListner(this.onNetworkStatusChange, this);
 
             this.node.addNetworkStatusListner(this.onNetworkStatusChange, this);

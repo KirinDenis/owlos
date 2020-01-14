@@ -31,17 +31,26 @@ var BaseWidget =
             this.svgElement.setAttributeNS(null, "height", size);
             this.svgElement.style.display = "block";
             this.SVGWidgetText = new SVGText(this.svgElement, this.id + "widgettext", this.size / 100);
-            this.SVGWidgetText.color = theme.secondary;
+            this.SVGWidgetText.color = theme.primary;
             this.SVGLabel = new SVGText(this.svgElement, this.id + "label", this.size / 150);
             this.SVGLabel.color = theme.secondary;
             this.SVGHint = new SVGText(this.svgElement, this.id + "hint", this.size / 150);
             this.SVGHint.color = theme.secondary;
-            this.SVGBackpanel = new SVGRect(this.svgElement, this.id + "backpanel", 0, 0, this.width, this.height);
-            this.SVGBackpanel.opacity = 0.1;
-            this.SVGBackpanel.color = theme.secondary;
+
+            this.SVGBackpanel = new SVGRect(this.svgElement, this.id + "backpanel", 1, 1, this.width-1, this.height-1);
+            this.SVGBackpanel.opacity = 0.05;
+            this.SVGBackpanel.fill = theme.secondary;
+            this.SVGBackpanel.color = 'none';
+
+            this.SVGBoxBackpanel = new SVGRect(this.svgElement, this.id + "boxbackpanel", 3, 3, this.width-2, this.height);
+            this.SVGBoxBackpanel.opacity = 0.4;
+            this.SVGBoxBackpanel.color = theme.secondary;
+            this.SVGBoxBackpanel.fill = 'none';
+
+
             this.SVGBackdownpanel = new SVGRect(this.svgElement, this.id + "backdownpanel", 0, this.height, this.width, this.halfPanding);
-            this.SVGBackdownpanel.opacity = 0.9;
-            this.SVGBackdownpanel.color = theme.secondary;
+            this.SVGBackdownpanel.opacity = 0.5;
+            this.SVGBackdownpanel.fill = theme.secondary;
             var stop1 = document.createElementNS(xmlns, 'stop');
             stop1.setAttribute('stop-color', theme.info);
             stop1.setAttribute('stop-opacity', "0.7");
@@ -69,7 +78,7 @@ var BaseWidget =
             //height = 5
 
             this.eCount = 30;
-            this.eWidth = this.size / (this.eCount + 40);
+            this.eWidth = this.size / (this.eCount + 35);
             this.eRWidth = this.width / 40;
             this.eHeight = this.eWidth;
             this.eX = this.width / 2 - this.eWidth * 2 * this.eCount / 2 + this.halfPanding;
@@ -80,10 +89,11 @@ var BaseWidget =
                 var equalizerY = [];
 
                 for (var y = 0; y < 5; y++) {
-                    var SVGBackpanel = new SVGRect(this.svgElement, this.id + "backpanel", this.eX + x * this.eWidth * 2, this.eY + y * this.eHeight * 2, this.eRWidth, this.eRWidth);
-                    SVGBackpanel.opacity = 0.0;
-                    SVGBackpanel.color = theme.secondary;
-                    equalizerY.push(SVGBackpanel);
+                    var SVGEqualizerpanel = new SVGRect(this.svgElement, this.id + "backpanel", this.eX + x * this.eWidth * 2, this.eY + y * this.eHeight * 2, this.eRWidth, this.eRWidth);
+                    SVGEqualizerpanel.opacity = 0.0;
+                    SVGEqualizerpanel.fill = theme.secondary;
+                    
+                    equalizerY.push(SVGEqualizerpanel);
                 }
 
                 this.equalizerX.push(equalizerY);
@@ -304,7 +314,7 @@ var BaseWidget =
 
             switch (this._networkStatus) {
                 case NET_ONLINE:
-                    this.toColor(this.SVGLabel, theme.light);
+                    this.toColor(this.SVGLabel, theme.primary);
                     break;
 
                 case NET_ERROR:
@@ -453,7 +463,7 @@ var BaseWidget =
                         equalizerY[y].opacity = 0.0;
                     }
 
-                    equalizerY[y].color = theme.secondary;
+                    equalizerY[y].fill = theme.secondary;
                 }
             }
 
@@ -487,7 +497,7 @@ var BaseWidget =
 
                         for (var y = 0; y < value; y++) {
                             equalizerY[4 - y].opacity = 1.0 - parseFloat(y / 8.0);
-                            equalizerY[4 - y].color = theme.success;
+                            equalizerY[4 - y].fill = theme.success;
                         }
                     }
                 }
@@ -517,14 +527,14 @@ var BaseWidget =
             if (this._mode != WORK_MODE) return;
 
             if (this.mouseEnter) {
-                if (this.SVGBackpanel.opacity < 0.3) {
+                if (this.SVGBackpanel.opacity < 0.2) {
                     this.SVGBackpanel.opacity += 0.005;
                     requestAnimationFrame(function () {
                         return _this4.drawMouseEnter();
                     });
                 }
             } else {
-                if (this.SVGBackpanel.opacity > 0.1) {
+                if (this.SVGBackpanel.opacity > 0.05) {
                     this.SVGBackpanel.opacity -= 0.005;
                     requestAnimationFrame(function () {
                         return _this4.drawMouseEnter();
@@ -551,13 +561,13 @@ var BaseWidget =
                 this._mode = mode;
 
                 if (mode == WORK_MODE) {
-                    this.SVGBackpanel.opacity = 0.1;
+                    this.SVGBackpanel.opacity = 0.05;
                     this.SVGLeftIcon.hide();
                     this.SVGRightIcon.hide(); //  this.SVGPlusIcon.hide();
 
                     this.SVGMinusIcon.hide();
                 } else if (mode == MOVE_MODE) {
-                    this.SVGBackpanel.opacity = 0.5;
+                    this.SVGBackpanel.opacity = 0.3;
                     this.SVGLeftIcon.draw();
                     this.SVGRightIcon.draw(); //   this.SVGPlusIcon.draw();
 

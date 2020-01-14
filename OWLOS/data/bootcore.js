@@ -27,6 +27,9 @@ const NET_ERROR = 2;
 const NET_RECONNECT = 3;
 const NET_REFRESH = 4; //используется объектом devices только (устанавливается в момент начала цикла перезагрузки данных устройств)
 
+var UIWatch = 'light';
+
+
 function boot() {
     try { //first jQuery and chech internet access (if not internet - loading library from local)                
         addToLogNL("[BOOT]", 1);
@@ -76,8 +79,17 @@ function loadingScripts(withInternet) {
     new Promise(function (resolve, reject) {//первым грузим bootstrap.css и ожидаем окончание
         var link = document.createElement('link');
         link.rel = 'stylesheet';
-        if (withInternet) link.href = "https://bootswatch.com/4/slate/bootstrap.min.css"; //если мы с интернет //link.href = "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css";
-        else link.href = "bootstrap.min.css"; //если мы без интернет
+
+        if (UIWatch === 'light') {
+            if (withInternet) link.href = "https://bootswatch.com/4/flatly/bootstrap.min.css"; 
+            else link.href = "bootstrap.spacelab.min.css"; //если мы без интернет
+        }
+        else {//default 
+            if (withInternet) link.href = "https://bootswatch.com/4/slate/bootstrap.min.css"; //если мы с интернет //link.href = "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css";
+            else link.href = "bootstrap.min.css"; //если мы без интернет
+
+        }
+        
 
         addToLog("loading bootstrap.css from " + link.href); //намерения загрузить в консоль
 

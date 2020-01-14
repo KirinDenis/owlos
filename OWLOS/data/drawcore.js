@@ -153,8 +153,8 @@ var SVGText =
             }
         }, {
             key: "width",
-                get: function get() {                        
-                   return parseFloat(this.SVGText.getBoundingClientRect().width);                        
+            get: function get() {
+                return parseFloat(this.SVGText.getBoundingClientRect().width);
             }
         }, {
             key: "height",
@@ -238,14 +238,25 @@ var SVGRect =
                 return parseFloat(this.SVGRect.getBoundingClientRect().height);
             }
         }, {
-            key: "color",
-            set: function set(color) {
-                this.SVGRect.setAttributeNS(null, 'fill', color);
+            key: "fill",
+            set: function set(fill) {
+                this.SVGRect.setAttributeNS(null, 'fill', fill);
             },
             get: function get() {
                 return this.SVGRect.getAttributeNS(null, "fill");
             }
-        }, {
+        },
+        {
+            key: "color",
+            set: function set(color) {
+                this.SVGRect.setAttributeNS(null, 'stroke-width', 1);
+                this.SVGRect.setAttributeNS(null, 'stroke', color);
+            },
+            get: function get() {
+                return this.SVGRect.getAttributeNS(null, "stroke");
+            }
+        },
+        {
             key: "colorRGB",
             set: function set(rgb) {
                 this.SVGRect.setAttributeNS(null, 'fill', ' #' + RGBToHex(rgb[0], rgb[1], rgb[2]));
