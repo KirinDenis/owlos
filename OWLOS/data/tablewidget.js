@@ -57,7 +57,7 @@ function createValueEdit(parentElement, propertyName, propertyValue, propertyTyp
 }
 
 var TableWidget =
-    /*#__PURE__*/
+    
     function () {
         "use strict";
 

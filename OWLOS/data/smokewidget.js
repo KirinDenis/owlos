@@ -1,74 +1,73 @@
 function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
 
 var SmokeWidget =
-    /*#__PURE__*/
+
     function (_BaseWidget) {
         "use strict";
 
         _inheritsLoose(SmokeWidget, _BaseWidget);
 
         function SmokeWidget(parentPanel, id, size) {
-            var _this;
 
-            _this = _BaseWidget.call(this, parentPanel, id, size) || this;
-            _this.radius = _this.size / 30;
-            _this.topMargin = _this.centreY + _this.size / 15;
-            _this.animated = false;
-            _this.levelRectWidth = _this.size / 10;
-            _this.levelRectHeight = _this.size / 100;
-            _this.levelLeft = _this.width - _this.levelRectWidth - _this.halfPanding;
-            _this.levelTop = (_this.height - _this.levelRectHeight * 60 / 2) / 3;
-            _this.level1 = [];
-            _this.level2 = [];
+            var baseWidget = _BaseWidget.call(this, parentPanel, id, size) || this;
+            baseWidget.radius = baseWidget.size / 30;
+            baseWidget.topMargin = baseWidget.centreY + baseWidget.size / 15;
+            baseWidget.animated = false;
+            baseWidget.levelRectWidth = baseWidget.size / 15;
+            baseWidget.levelRectHeight = baseWidget.size / 100;
+            baseWidget.levelLeft = baseWidget.width - baseWidget.levelRectWidth + baseWidget.halfPanding;
+            baseWidget.levelTop = (baseWidget.height - baseWidget.levelRectHeight * 60 / 2) / 3;
+            baseWidget.level1 = [];
+            baseWidget.level2 = [];
 
             for (var i = 0; i < 10; i++) {
-                _this.SVGLevelRect1 = new SVGRect(_this.svgElement, _this.id + "levelrect1" + i, _this.levelLeft, _this.levelTop + i * (_this.levelRectHeight * 2), _this.levelRectWidth, _this.levelRectHeight);
-                _this.SVGLevelRect2 = new SVGRect(_this.svgElement, _this.id + "levelrect2" + i, _this.panding, _this.levelTop + i * (_this.levelRectHeight * 2), _this.levelRectWidth, _this.levelRectHeight);
-                _this.SVGLevelRect1.opacity = _this.SVGLevelRect2.opacity = i / 30;
-                _this.SVGLevelRect1.color = _this.SVGLevelRect2.color = theme.danger;
+                baseWidget.SVGLevelRect1 = new SVGRect(baseWidget.svgElement, baseWidget.id + "levelrect1" + i, baseWidget.levelLeft, baseWidget.levelTop + i * (baseWidget.levelRectHeight * 2), baseWidget.levelRectWidth, baseWidget.levelRectHeight);
+                baseWidget.SVGLevelRect2 = new SVGRect(baseWidget.svgElement, baseWidget.id + "levelrect2" + i, baseWidget.panding, baseWidget.levelTop + i * (baseWidget.levelRectHeight * 2), baseWidget.levelRectWidth, baseWidget.levelRectHeight);
+                baseWidget.SVGLevelRect1.opacity = baseWidget.SVGLevelRect2.opacity = i / 30;
+                baseWidget.SVGLevelRect1.fill = baseWidget.SVGLevelRect2.fill = theme.danger;
 
-                _this.level1.push(_this.SVGLevelRect1);
+                baseWidget.level1.push(baseWidget.SVGLevelRect1);
 
-                _this.level2.push(_this.SVGLevelRect2);
+                baseWidget.level2.push(baseWidget.SVGLevelRect2);
             }
 
             for (var i = 10; i < 20; i++) {
-                _this.SVGLevelRect1 = new SVGRect(_this.svgElement, _this.id + "levelrect" + i, _this.levelLeft, _this.levelTop + i * (_this.levelRectHeight * 2), _this.levelRectWidth, _this.levelRectHeight);
-                _this.SVGLevelRect2 = new SVGRect(_this.svgElement, _this.id + "levelrect2" + i, _this.panding, _this.levelTop + i * (_this.levelRectHeight * 2), _this.levelRectWidth, _this.levelRectHeight);
-                _this.SVGLevelRect1.opacity = _this.SVGLevelRect2.opacity = i / 30;
-                _this.SVGLevelRect1.color = _this.SVGLevelRect2.color = theme.warning;
+                baseWidget.SVGLevelRect1 = new SVGRect(baseWidget.svgElement, baseWidget.id + "levelrect" + i, baseWidget.levelLeft, baseWidget.levelTop + i * (baseWidget.levelRectHeight * 2), baseWidget.levelRectWidth, baseWidget.levelRectHeight);
+                baseWidget.SVGLevelRect2 = new SVGRect(baseWidget.svgElement, baseWidget.id + "levelrect2" + i, baseWidget.panding, baseWidget.levelTop + i * (baseWidget.levelRectHeight * 2), baseWidget.levelRectWidth, baseWidget.levelRectHeight);
+                baseWidget.SVGLevelRect1.opacity = baseWidget.SVGLevelRect2.opacity = i / 30;
+                baseWidget.SVGLevelRect1.fill = baseWidget.SVGLevelRect2.fill = theme.warning;
 
-                _this.level1.push(_this.SVGLevelRect1);
+                baseWidget.level1.push(baseWidget.SVGLevelRect1);
 
-                _this.level2.push(_this.SVGLevelRect2);
+                baseWidget.level2.push(baseWidget.SVGLevelRect2);
             }
 
             for (var i = 20; i < 30; i++) {
-                _this.SVGLevelRect1 = new SVGRect(_this.svgElement, _this.id + "levelrect" + i, _this.levelLeft, _this.levelTop + i * (_this.levelRectHeight * 2), _this.levelRectWidth, _this.levelRectHeight);
-                _this.SVGLevelRect2 = new SVGRect(_this.svgElement, _this.id + "levelrect2" + i, _this.panding, _this.levelTop + i * (_this.levelRectHeight * 2), _this.levelRectWidth, _this.levelRectHeight);
-                _this.SVGLevelRect1.opacity = _this.SVGLevelRect2.opacity = i / 30;
-                _this.SVGLevelRect1.color = _this.SVGLevelRect2.color = theme.success;
+                baseWidget.SVGLevelRect1 = new SVGRect(baseWidget.svgElement, baseWidget.id + "levelrect" + i, baseWidget.levelLeft, baseWidget.levelTop + i * (baseWidget.levelRectHeight * 2), baseWidget.levelRectWidth, baseWidget.levelRectHeight);
+                baseWidget.SVGLevelRect2 = new SVGRect(baseWidget.svgElement, baseWidget.id + "levelrect2" + i, baseWidget.panding, baseWidget.levelTop + i * (baseWidget.levelRectHeight * 2), baseWidget.levelRectWidth, baseWidget.levelRectHeight);
+                baseWidget.SVGLevelRect1.opacity = baseWidget.SVGLevelRect2.opacity = i / 30;
+                baseWidget.SVGLevelRect1.fill = baseWidget.SVGLevelRect2.fill = theme.success;
 
-                _this.level1.push(_this.SVGLevelRect1);
+                baseWidget.level1.push(baseWidget.SVGLevelRect1);
 
-                _this.level2.push(_this.SVGLevelRect2);
+                baseWidget.level2.push(baseWidget.SVGLevelRect2);
             }
 
-            _this.levelArc = [];
+            baseWidget.levelArc = [];
 
             for (var i = 1; i < 5; i++) {
-                var SVGlevelArc = new SVGArc(_this.svgElement, _this.id + "arcback1" + i, _this.centreX, _this.levelTop, i * _this.radius, _this.size / 34);
+                var SVGlevelArc = new SVGArc(baseWidget.svgElement, baseWidget.id + "arcback1" + i, baseWidget.centreX, baseWidget.levelTop, i * baseWidget.radius, baseWidget.size / 34);
                 SVGlevelArc.index = i;
-                SVGlevelArc.color = theme.danger;
+                SVGlevelArc.fill = theme.danger;
 
-                _this.levelArc.push(SVGlevelArc);
+                baseWidget.levelArc.push(SVGlevelArc);
             }
 
-            _this.SVGArcSpinner.y = _this.topMargin;
+            baseWidget.SVGArcSpinner.y = baseWidget.topMargin;
 
-            _this.clickableToTop();
+            baseWidget.clickableToTop();
 
-            return _this;
+            return baseWidget;
         }
 
         var _proto = SmokeWidget.prototype;
@@ -84,7 +83,7 @@ var SmokeWidget =
         };
 
         _proto.animate = function animate() {
-            var _this2 = this;
+            var baseWidget2 = this;
 
             if (this.animated) {
                 for (var i = 0; i < 4; i++) {
@@ -100,13 +99,13 @@ var SmokeWidget =
                 }
 
                 requestAnimationFrame(function () {
-                    return _this2.animate();
+                    return baseWidget2.animate();
                 });
             }
         };
 
         _proto.drawWidget = function drawWidget() {
-            var _this3 = this;
+            var baseWidget3 = this;
 
             _BaseWidget.prototype.drawWidget.call(this);
 
@@ -128,7 +127,7 @@ var SmokeWidget =
                 if (!this.animated) {
                     this.animated = true;
                     requestAnimationFrame(function () {
-                        return _this3.animate();
+                        return baseWidget3.animate();
                     });
                 }
             } else {

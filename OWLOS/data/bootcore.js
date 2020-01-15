@@ -219,9 +219,18 @@ function _createClass(Constructor, protoProps, staticProps) {
     }
 }
 
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+function _assertThisInitialized(self) {
+    if (self === void 0) {
+        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    } return self;
+}
 
-function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
+//see: https://learn.javascript.ru/prototype
+function _inheritsLoose(subClass, superClass) {
+    subClass.prototype = Object.create(superClass.prototype); 
+    subClass.prototype.constructor = subClass;
+    subClass.__proto__ = superClass;
+}
 
 
 

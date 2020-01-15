@@ -1,7 +1,7 @@
 const units = ['bytes', 'kb', 'mb', 'gb', 'tb', 'pb', 'eb', 'zb', 'yb']; 
 
 var FilesList =
-    /*#__PURE__*/
+    
     function () {
         "use strict";
 

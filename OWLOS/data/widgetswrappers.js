@@ -11,7 +11,7 @@
 //Base radial class 
 //-----------------------------------------------------------------------------------
 var RadialWidgetWrapper =
-    /*#__PURE__*/
+    
     function () {
         "use strict";
 
@@ -112,7 +112,7 @@ var RadialWidgetWrapper =
     }();
 
 var TemperatureWidgetWrapper =
-    /*#__PURE__*/
+    
     function (_RadialWidgetWrapper) {
         "use strict";
 
@@ -142,7 +142,7 @@ var TemperatureWidgetWrapper =
             if (this.deviceProperty == undefined) return;
 
             if (this.deviceProperty.networkStatus == NET_ONLINE) {
-                this.widget.refresh(this.deviceProperty.value, Math.round(this.deviceProperty.value) + " C", this.device._id + "-" + getLang("temperature"), this.device.temperaturehistorydata.value);
+                this.widget.refresh(this.deviceProperty.value, Math.round(this.deviceProperty.value), this.device._id + "-" + getLang("temperature"), this.device.temperaturehistorydata.value);
             } else {
                 this.widget.refresh(0, "--", this.device._id);
             }
@@ -156,7 +156,7 @@ var TemperatureWidgetWrapper =
 
 
 var HumidityWidgetWrapper =
-    /*#__PURE__*/
+    
     function (_RadialWidgetWrapper2) {
         "use strict";
 
@@ -200,7 +200,7 @@ var HumidityWidgetWrapper =
 
 
 var HistoryDataGraphWidgetWrapper =
-    /*#__PURE__*/
+    
     function (_RadialWidgetWrapper3) {
         "use strict";
 
@@ -243,7 +243,7 @@ var HistoryDataGraphWidgetWrapper =
     }(RadialWidgetWrapper);
 
 var LightWidgetWrapper =
-    /*#__PURE__*/
+    
     function (_RadialWidgetWrapper4) {
         "use strict";
 
@@ -294,7 +294,7 @@ var LightWidgetWrapper =
     }(RadialWidgetWrapper);
 
 var SmokeWidgetWrapper =
-    /*#__PURE__*/
+    
     function (_RadialWidgetWrapper5) {
         "use strict";
 
@@ -345,7 +345,7 @@ var SmokeWidgetWrapper =
     }(RadialWidgetWrapper);
 
 var MotionWidgetWrapper =
-    /*#__PURE__*/
+    
     function (_RadialWidgetWrapper6) {
         "use strict";
 
@@ -417,7 +417,7 @@ var MotionWidgetWrapper =
     }(RadialWidgetWrapper);
 
 var SensorWidgetWrapper =
-    /*#__PURE__*/
+    
     function (_RadialWidgetWrapper7) {
         "use strict";
 
@@ -456,7 +456,7 @@ var SensorWidgetWrapper =
 
 
 var ActuatorWidgetWrapper =
-    /*#__PURE__*/
+    
     function () {
         "use strict";
 
@@ -617,7 +617,7 @@ var ActuatorWidgetWrapper =
 
 
 var LCDWidgetWrapper =
-    /*#__PURE__*/
+    
     function () {
         "use strict";
 
@@ -790,7 +790,7 @@ var LCDWidgetWrapper =
 
 
 var StepperWidgetWrapper =
-    /*#__PURE__*/
+    
     function () {
         "use strict";
 

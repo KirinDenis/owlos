@@ -30,7 +30,7 @@
     "dt_next=Наступна\n"+
     "dt_previous=Попередня\n"+
     "adddevice=+ додати пристрій\n" +
-    "addnode=+ додати ноду\n" +
+    "addnode=+ додати вузол\n" +
     "upload=завантажити\n"+
     "files=файли\n"+
     "uploadfiles=завантажити файли в модуль\n"+
@@ -103,6 +103,12 @@
     "updateuibutton=почати оновлення UI\n" +
     "firmwarebutton=почати оновлення Firmware\n" +
     "updatefirmware=Після закінчення оновлення Firmware, модуль перезавантажиться автоматично. UI перезавантажиться через 30 секунд. Використовуйте монітор порту для більшої інформації\n" +
+    "dashboard=Панель приладів\n" +
+    "dashboardview=режим перегляду\n" +
+    "dashboardaddwidget=додати віджет\n" +
+    "nodeslist=список вузлів та приладів\n" +
+    "devicesporplist=властивості пристроїв\n" +
+    "widgetslist=список виджетів для вибраної властивості\n" +
     "language=ukraine\n";
 
 var langen = "prepareUnit=prepare UI, please wait...\n" +

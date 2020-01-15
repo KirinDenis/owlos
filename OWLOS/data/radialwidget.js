@@ -1,28 +1,26 @@
 function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
 
 var RadialWidget =
-    /*#__PURE__*/
+    
     function (_BaseWidget) {
         "use strict";
 
         _inheritsLoose(RadialWidget, _BaseWidget);
 
         function RadialWidget(parentPanel, id, size) {
-            var _this;
+            var baseWidget = _BaseWidget.call(this, parentPanel, id, size) || this;
+            baseWidget.radius = baseWidget.size / 3;
+            baseWidget.topMargin = baseWidget.centreY + baseWidget.size / 10;
+            baseWidget.SVGArcBack = new SVGArc(baseWidget.svgElement, baseWidget.id + "arcback", baseWidget.centreX, baseWidget.topMargin, baseWidget.radius, baseWidget.size / 14);
+            baseWidget.SVGArcBack.color = theme.secondary;
+            baseWidget.SVGArcBack.opacity = 0.5;
+            baseWidget.SVGArcWidget = new SVGArc(baseWidget.svgElement, baseWidget.id + "arcwidget", baseWidget.centreX, baseWidget.topMargin, baseWidget.radius, baseWidget.size / 14);
+            baseWidget.SVGArcWidget.color = theme.secondary;
+            baseWidget.SVGArcSpinner.y = baseWidget.topMargin;
 
-            _this = _BaseWidget.call(this, parentPanel, id, size) || this;
-            _this.radius = _this.size / 3;
-            _this.topMargin = _this.centreY + _this.size / 15;
-            _this.SVGArcBack = new SVGArc(_this.svgElement, _this.id + "arcback", _this.centreX, _this.topMargin, _this.radius, _this.size / 14);
-            _this.SVGArcBack.color = theme.secondary;
-            _this.SVGArcBack.opacity = 0.5;
-            _this.SVGArcWidget = new SVGArc(_this.svgElement, _this.id + "arcwidget", _this.centreX, _this.topMargin, _this.radius, _this.size / 14);
-            _this.SVGArcWidget.color = theme.secondary;
-            _this.SVGArcSpinner.y = _this.topMargin;
+            baseWidget.clickableToTop();
 
-            _this.clickableToTop();
-
-            return _this;
+            return baseWidget;
         }
 
         var _proto = RadialWidget.prototype;

@@ -1,36 +1,36 @@
 function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
 
 var LightWidget =
-    /*#__PURE__*/
+    
     function (_BaseWidget) {
         "use strict";
 
         _inheritsLoose(LightWidget, _BaseWidget);
 
         function LightWidget(parentPanel, id, size) {
-            var _this;
+            var baseWidget;
 
-            _this = _BaseWidget.call(this, parentPanel, id, size) || this;
-            _this.radius = _this.size / 10;
-            _this.topMargin = _this.height - _this.size / 6;
-            _this.animated = false;
-            _this.levelArc = [];
+            baseWidget = _BaseWidget.call(this, parentPanel, id, size) || this;
+            baseWidget.radius = baseWidget.size / 10;
+            baseWidget.topMargin = baseWidget.height - baseWidget.size / 6;
+            baseWidget.animated = false;
+            baseWidget.levelArc = [];
 
             for (var i = 1; i < 5; i++) {
-                var SVGlevelArc = new SVGArc(_this.svgElement, _this.id + "arcback1" + i, _this.centreX, _this.topMargin, i * _this.radius, _this.size / 14);
+                var SVGlevelArc = new SVGArc(baseWidget.svgElement, baseWidget.id + "arcback1" + i, baseWidget.centreX, baseWidget.topMargin, i * baseWidget.radius, baseWidget.size / 14);
                 SVGlevelArc.index = i;
                 SVGlevelArc.color = theme.warning;
-                SVGlevelArc.opacity = 0.7;
+                SVGlevelArc.opacity = i * 0.2;
 
-                _this.levelArc.push(SVGlevelArc);
+                baseWidget.levelArc.push(SVGlevelArc);
             }
 
-            _this.SVGArcSpinner.y = _this.topMargin;
-            _this.SVGArcSpinner.radius = _this.radius * 4.5;
+            baseWidget.SVGArcSpinner.y = baseWidget.topMargin;
+            baseWidget.SVGArcSpinner.radius = baseWidget.radius * 4.5;
 
-            _this.clickableToTop();
+            baseWidget.clickableToTop();
 
-            return _this;
+            return baseWidget;
         }
 
         var _proto = LightWidget.prototype;
@@ -57,23 +57,23 @@ var LightWidget =
                 switch (this._networkStatus) {
                     case NET_ONLINE:
                         this.toColor(this.levelArc[i], theme.warning);
-                        this.levelArc[i].opacity = 0.7;
+                      //  this.levelArc[i].opacity = 0.7;
                         break;
 
                     case NET_ERROR:
                         this.toColor(this.levelArc[i], theme.danger);
-                        this.levelArc[i].opacity = 0.4;
+                       // this.levelArc[i].opacity = 0.4;
                         break;
 
                     case NET_RECONNECT:
                         this.toColor(this.levelArc[i], theme.info);
-                        this.levelArc[i].opacity = 0.4;
+                       // this.levelArc[i].opacity = 0.4;
                         break;
 
                     default:
                         //offline
                         this.toColor(this.levelArc[i], theme.secondary);
-                        this.levelArc[i].opacity = 0.4;
+                       // this.levelArc[i].opacity = 0.4;
                         break;
                 }
             }

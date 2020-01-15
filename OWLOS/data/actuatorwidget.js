@@ -2,7 +2,7 @@ var DEFAULT_TYPE = 0;
 var ICONS_TYPE = 1;
 
 var ActuatorWidget =
-    /*#__PURE__*/
+    
     function (_BaseWidget) {
         "use strict";
 

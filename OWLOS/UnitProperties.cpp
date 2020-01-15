@@ -5,14 +5,14 @@
 #include "src\Managers\TransportManager.h"
 #include "src\Managers\UpdateManager.h"
 
-#define DefaultFirmwareVersion "OWL OS IoT Unit version 1.7 (beta)"
-#define DefaultFirmwareBuildNumber 55
+#define DefaultFirmwareVersion "OWL OS IoT Node version 1.7 (beta)"
+#define DefaultFirmwareBuildNumber 56
 
-#define DefaultId "owlunit"
+#define DefaultId "owlnode"
 #define DefaultTopic "world0/area1/front1/room1/"
 
 #define DefaultWiFiAccessPointAvailable 1
-#define DefaultWiFiAccessPointSSID "owlunit"
+#define DefaultWiFiAccessPointSSID "owlnode"
 #define DefaultWiFiAccessPointPassword  "1122334455"
 #define DefaultWiFiAccessPointIP  "192.168.0.1"
 

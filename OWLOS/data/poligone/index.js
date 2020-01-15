@@ -45,17 +45,17 @@ $(document).ready(function () {
 
 
     var temperatureWidget = new TemperatureWidget(devicesWidgetsPanel, "temperature", 150);
-    temperatureWidget.refresh(25, "25C", "temperature", "30;2.00;2.00;4.00;2.00;4.00;4.00;2.00;4.00;1.00;4.00;4.00;4.00;2.00;4.00;2.00;4.00;4.00;3.00;4.00;2.00;4.00;2.00;4.00;2.00;4.00;4.00;4.00;3.00;4.00;4.00;");
+    temperatureWidget.refresh(25, "25", "temperature", "30;2.00;2.00;4.00;2.00;4.00;4.00;2.00;4.00;1.00;4.00;4.00;4.00;2.00;4.00;2.00;4.00;4.00;3.00;4.00;2.00;4.00;2.00;4.00;2.00;4.00;4.00;4.00;3.00;4.00;4.00;");
 
     temperatureWidget = new TemperatureWidget(devicesWidgetsPanel, "temperature", 150);
-    temperatureWidget.refresh(-5, "-5C", "temperature");
+    temperatureWidget.refresh(-5, "-5", "temperature");
     temperatureWidget.networkStatus = NET_RECONNECT;
 
     temperatureWidget = new TemperatureWidget(devicesWidgetsPanel, "temperature", 150);
-    temperatureWidget.refresh(50, "50C", "temperature", "30;2.00;2.00;4.00;2.00;4.00;4.00;2.00;4.00;1.00;4.00;4.00;4.00;2.00;4.00;2.00;4.00;4.00;3.00;4.00;2.00;4.00;2.00;4.00;2.00;4.00;4.00;4.00;3.00;4.00;4.00;");
+    temperatureWidget.refresh(50, "50", "temperature", "30;2.00;2.00;4.00;2.00;4.00;4.00;2.00;4.00;1.00;4.00;4.00;4.00;2.00;4.00;2.00;4.00;4.00;3.00;4.00;2.00;4.00;2.00;4.00;2.00;4.00;4.00;4.00;3.00;4.00;4.00;");
 
     temperatureWidget = new TemperatureWidget(devicesWidgetsPanel, "temperature", 150);
-    temperatureWidget.refresh(27, "27C", "temperature");
+    temperatureWidget.refresh(27, "27", "temperature");
     temperatureWidget.networkStatus = NET_ERROR;
 
 
@@ -145,7 +145,7 @@ $(document).ready(function () {
     radialWidget.refresh(100, "100%", "humidity");
 
     radialWidget = new RadialWidget(devicesWidgetsPanel, "temperature", 150);
-    radialWidget.refresh(50, "27C", "temperature");
+    radialWidget.refresh(20, "20%", "temperature");
     radialWidget.networkStatus = NET_ERROR;
 
     var radialWidget = new RadialWidget(devicesWidgetsPanel, "temperature", 150);

@@ -5,9 +5,9 @@ var EVENT_NO = 0;
 var EVENT_DELETE = 1;
 
 var BaseWidget =
-    /*#__PURE__*/
+
     function () {
-       "use strict";
+        "use strict";
 
         function BaseWidget(parentPanel, id, size) {
             this.parentPanel = parentPanel; //properties --------------------------------
@@ -31,32 +31,26 @@ var BaseWidget =
             this.svgElement.setAttributeNS(null, "height", size);
             this.svgElement.style.display = "block";
             this.SVGWidgetText = new SVGText(this.svgElement, this.id + "widgettext", this.size / 80);
+            this.SVGWidgetText.opacity = 0.7;
             this.SVGWidgetText.color = theme.secondary;
             this.SVGLabel = new SVGText(this.svgElement, this.id + "label", this.size / 150);
             this.SVGLabel.color = theme.secondary;
             this.SVGHint = new SVGText(this.svgElement, this.id + "hint", this.size / 150);
             this.SVGHint.color = theme.secondary;
 
-            
             this.SVGBackpanel = new SVGArc(this.svgElement, this.id + "backpanel", 0, 0, this.width, 1);
             this.SVGBackpanel.drawRoundedRect(this.width, this.height, 5, 10, true, true, true, true);
             this.SVGBackpanel.opacity = 0.3;
             this.SVGBackpanel.color = theme.light;
             this.SVGBackpanel.fill = theme.light;
 
-
-            
-
             this.SVGBoxBackpanel = new SVGArc(this.svgElement, this.id + "boxbackpanel", 0, 0, this.width, 1);
-             this.SVGBoxBackpanel.drawRoundedRect(this.width, 25, 5, 0, true, true, false, false);
-           // this.SVGBoxBackpanel.drawPath("M0,130 h200 a20,20 0 0 1 20,20 v240 a20,20 0 0 1 -20,20 h-200 a20,20 0 0 1 -20,-20 v-240 a20,20 0 0 1 20,-20 z", this.width, this.height)
+            this.SVGBoxBackpanel.drawRoundedRect(this.width, 25, 5, 0, true, true, false, false);
             this.SVGBoxBackpanel.opacity = 0.1;
-            //this.SVGBoxBackpanel.color = theme.light;
+
             this.SVGBoxBackpanel.fill = theme.info;
 
-
-            //this.SVGBackdownpanel = new SVGRect(this.svgElement, this.id + "backdownpanel", 0, this.height, this.width, this.halfPanding);
-            this.SVGBackdownpanel = new SVGArc(this.svgElement, this.id + "backdownpanel", 0, this.height -10, this.width, 1);
+            this.SVGBackdownpanel = new SVGArc(this.svgElement, this.id + "backdownpanel", 0, this.height - 10, this.width, 1);
             this.SVGBackdownpanel.drawRoundedRect(this.width, 10, 5, 0, false, false, true, true);
             this.SVGBackdownpanel.opacity = 0.5;
             this.SVGBackdownpanel.fill = theme.secondary;
@@ -88,7 +82,7 @@ var BaseWidget =
             //height = 5
 
             this.eCount = 30;
-            this.eWidth = this.size / (this.eCount + 35);
+            this.eWidth = this.size / (this.eCount + 50);
             this.eRWidth = this.width / 40;
             this.eHeight = this.eWidth;
             this.eX = this.width / 2 - this.eWidth * 2 * this.eCount / 2 + this.halfPanding / 2 + 2;
@@ -102,7 +96,7 @@ var BaseWidget =
                     var SVGEqualizerpanel = new SVGRect(this.svgElement, this.id + "backpanel", this.eX + x * this.eWidth * 2, this.eY + y * this.eHeight * 2, this.eRWidth, this.eRWidth);
                     SVGEqualizerpanel.opacity = 0.0;
                     SVGEqualizerpanel.fill = theme.secondary;
-                    
+
                     equalizerY.push(SVGEqualizerpanel);
                 }
 
@@ -153,9 +147,9 @@ var BaseWidget =
             this.mode = WORK_MODE;
         }
 
-        var _proto = BaseWidget.prototype;
 
-        _proto.addEventListner = function addEventListner(_event, _sender) {
+
+        BaseWidget.prototype.addEventListner = function addEventListner(_event, _sender) {
             try {
                 _event(_sender, this);
             } catch (exception) {
@@ -168,14 +162,14 @@ var BaseWidget =
             });
         };
 
-        _proto.clickableToTop = function clickableToTop() {
+        BaseWidget.prototype.clickableToTop = function clickableToTop() {
+            this.svgElement.insertBefore(this.SVGWidgetText.SVGText, this.svgElement.childNodes.lastChild);
             this.svgElement.insertBefore(this.SVGLeftIcon.SVGIcon, this.svgElement.childNodes.lastChild);
             this.svgElement.insertBefore(this.SVGRightIcon.SVGIcon, this.svgElement.childNodes.lastChild); // this.svgElement.insertBefore(this.SVGPlusIcon.SVGIcon, this.svgElement.childNodes.lastChild);
-
             this.svgElement.insertBefore(this.SVGMinusIcon.SVGIcon, this.svgElement.childNodes.lastChild);
         };
 
-        _proto.moveLeft = function moveLeft(event) {
+        BaseWidget.prototype.moveLeft = function moveLeft(event) {
             var widget = event.currentTarget.widget;
 
             if (widget.mode == MOVE_MODE) {
@@ -187,7 +181,7 @@ var BaseWidget =
             return true;
         };
 
-        _proto.moveRight = function moveRight(event) {
+        BaseWidget.prototype.moveRight = function moveRight(event) {
             var widget = event.currentTarget.widget;
 
             if (widget.mode == MOVE_MODE) {
@@ -199,7 +193,7 @@ var BaseWidget =
             return true;
         };
 
-        _proto.plusSize = function plusSize(event) {
+        BaseWidget.prototype.plusSize = function plusSize(event) {
             var widget = event.currentTarget.widget;
 
             if (widget.mode == MOVE_MODE) {
@@ -211,16 +205,18 @@ var BaseWidget =
         } //TEMP: NOW IS USED AS DELETE BUTTON !
             ;
 
-        _proto.deleteWidgetClick = function deleteWidgetClick(event) {
+        BaseWidget.prototype.deleteWidgetClick = function deleteWidgetClick(event) {
             var widget = event.currentTarget.widget;
-            widget._event = EVENT_DELETE;
-            Array.prototype.slice.call(widget.parentPanel.childNodes).indexOf(widget.rPanel);
-            widget.parentPanel.removeChild(widget.rPanel);
-            widget.rPanel.innerHTML = "";
+            if (widget.mode == MOVE_MODE) {
+                widget._event = EVENT_DELETE;
+                Array.prototype.slice.call(widget.parentPanel.childNodes).indexOf(widget.rPanel);
+                widget.parentPanel.removeChild(widget.rPanel);
+                widget.rPanel.innerHTML = "";
+            }
             return true;
         };
 
-        _proto.modeChangeClick = function modeChangeClick(event) {
+        BaseWidget.prototype.modeChangeClick = function modeChangeClick(event) {
             var widget = event.currentTarget.widget;
 
             if (widget.mode == WORK_MODE) {
@@ -232,21 +228,21 @@ var BaseWidget =
             return true;
         };
 
-        _proto.mouseOver = function mouseOver(event) {
+        BaseWidget.prototype.mouseOver = function mouseOver(event) {
             var widget = event.currentTarget.widget;
             widget.mouseEnter = true;
             widget.drawMouseEnter();
             return true;
         };
 
-        _proto.mouseOut = function mouseOut(event) {
+        BaseWidget.prototype.mouseOut = function mouseOut(event) {
             var widget = event.currentTarget.widget;
             widget.mouseEnter = false;
             widget.drawMouseEnter();
             return true;
         };
 
-        _proto.refresh = function refresh(data, widgetText, label, historyData) {
+        BaseWidget.prototype.refresh = function refresh(data, widgetText, label, historyData) {
             if (this._event == EVENT_DELETE) {
                 return;
             }
@@ -267,8 +263,8 @@ var BaseWidget =
         };
 
         //---------------------------------------------------------------------------------------
-        _proto.redrawAll = function redrawAll() {
-            
+        BaseWidget.prototype.redrawAll = function redrawAll() {
+
             if (this._event == EVENT_DELETE) {
                 return;
             }
@@ -278,11 +274,9 @@ var BaseWidget =
                 return _this.drawWidget();
             });
             this.drawText();
-        } //---------------------------------------------------------------------------------------
-            //draw element text labels - percent value and text 
-            ;
+        };
 
-        _proto.drawText = function drawText() {
+        BaseWidget.prototype.drawText = function drawText() {
             if (this._event == EVENT_DELETE) {
                 return;
             }
@@ -372,7 +366,7 @@ var BaseWidget =
         } //method true is color, false is fill
             ;
 
-        _proto.toColor = function toColor(element, color, method) {
+        BaseWidget.prototype.toColor = function toColor(element, color, method) {
             if (this._event == EVENT_DELETE) {
                 return;
             }
@@ -394,7 +388,7 @@ var BaseWidget =
             this.animateColor(element, color, method);
         };
 
-        _proto.animateColor = function animateColor(element, color, method) {
+        BaseWidget.prototype.animateColor = function animateColor(element, color, method) {
             var _this2 = this;
 
             if (!element.animantion) return;
@@ -423,12 +417,10 @@ var BaseWidget =
             }
         };
 
-        _proto.drawWidget = function drawWidget() {
+        BaseWidget.prototype.drawWidget = function drawWidget() {
             if (this._event == EVENT_DELETE) {
                 return;
             }
-
-            var _this3 = this;
 
             var oneHangPercent = 360 + 90 + 30 - 240;
             var drawPercent = this._data * (oneHangPercent / 100); //backdown panel
@@ -510,7 +502,7 @@ var BaseWidget =
                         var value = parseInt(splitHistory[x + 1] / propValue);
 
                         for (var y = 0; y < value; y++) {
-                            equalizerY[4 - y].opacity = (1.0 - parseFloat(y / 8.0)) / 2.0;
+                            equalizerY[4 - y].opacity = (1.0 - parseFloat(y / 4.0)) / 2.0;
                             equalizerY[4 - y].fill = theme.success;
                         }
                     }
@@ -526,8 +518,9 @@ var BaseWidget =
                 }
 
                 this.SVGArcSpinner.draw(this.spinnerAngle, 240 + this.spinnerAngle);
+                var _this = this;
                 requestAnimationFrame(function () {
-                    return _this3.drawWidget();
+                    return _this.drawWidget();
                 });
             } else {
                 this.SVGArcSpinner.opacity = 0.0;
@@ -535,23 +528,22 @@ var BaseWidget =
             }
         };
 
-        _proto.drawMouseEnter = function drawMouseEnter() {
-            var _this4 = this;
-
+        BaseWidget.prototype.drawMouseEnter = function drawMouseEnter() {
             if (this._mode != WORK_MODE) return;
+            var _this = this;
 
             if (this.mouseEnter) {
-                if (this.SVGBackpanel.opacity < 0.02) {
+                if (this.SVGBackpanel.opacity < 0.1) {
                     this.SVGBackpanel.opacity += 0.005;
                     requestAnimationFrame(function () {
-                        return _this4.drawMouseEnter();
+                        return _this.drawMouseEnter();
                     });
                 }
             } else {
-                if (this.SVGBackpanel.opacity > 0.05) {
+                if (this.SVGBackpanel.opacity > 0.02) {
                     this.SVGBackpanel.opacity -= 0.005;
                     requestAnimationFrame(function () {
-                        return _this4.drawMouseEnter();
+                        return _this.drawMouseEnter();
                     });
                 }
             }
@@ -581,7 +573,7 @@ var BaseWidget =
 
                     this.SVGMinusIcon.hide();
                 } else if (mode == MOVE_MODE) {
-                    this.SVGBackpanel.opacity = 0.03;
+                    this.SVGBackpanel.opacity = 0.3;
                     this.SVGLeftIcon.draw();
                     this.SVGRightIcon.draw(); //   this.SVGPlusIcon.draw();
 

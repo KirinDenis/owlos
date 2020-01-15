@@ -1,46 +1,45 @@
 ﻿function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
 
 var MotionWidget =
-    /*#__PURE__*/
+
     function (_BaseWidget) {
         "use strict";
 
         _inheritsLoose(MotionWidget, _BaseWidget);
 
         function MotionWidget(parentPanel, id, size) {
-            var _this;
 
-            _this = _BaseWidget.call(this, parentPanel, id, size) || this;
-            _this.radius = _this.size / 30;
-            _this.topMargin = _this.centreY + _this.size / 20;
-            _this.animated = false;
-            _this.radar1 = [];
-            _this.radar2 = [];
-            _this.radar3 = [];
-            _this.radar4 = [];
+            var baseWidget = _BaseWidget.call(this, parentPanel, id, size) || this;
+            baseWidget.radius = baseWidget.size / 30;
+            baseWidget.topMargin = baseWidget.centreY + baseWidget.size / 20;
+            baseWidget.animated = false;
+            baseWidget.radar1 = [];
+            baseWidget.radar2 = [];
+            baseWidget.radar3 = [];
+            baseWidget.radar4 = [];
 
             for (var i = 1; i < 5; i++) {
-                var SVGRadarArc1 = new SVGArc(_this.svgElement, _this.id + "arcback1" + i, _this.centreX, _this.topMargin, i * _this.radius, _this.size / 34);
-                var SVGRadarArc2 = new SVGArc(_this.svgElement, _this.id + "arcback2" + i, _this.centreX, _this.topMargin, i * _this.radius, _this.size / 34);
-                var SVGRadarArc3 = new SVGArc(_this.svgElement, _this.id + "arcback3" + i, _this.centreX, _this.topMargin, i * _this.radius, _this.size / 34);
-                var SVGRadarArc4 = new SVGArc(_this.svgElement, _this.id + "arcback4" + i, _this.centreX, _this.topMargin, i * _this.radius, _this.size / 34);
+                var SVGRadarArc1 = new SVGArc(baseWidget.svgElement, baseWidget.id + "arcback1" + i, baseWidget.centreX, baseWidget.topMargin, i * baseWidget.radius, baseWidget.size / 34);
+                var SVGRadarArc2 = new SVGArc(baseWidget.svgElement, baseWidget.id + "arcback2" + i, baseWidget.centreX, baseWidget.topMargin, i * baseWidget.radius, baseWidget.size / 34);
+                var SVGRadarArc3 = new SVGArc(baseWidget.svgElement, baseWidget.id + "arcback3" + i, baseWidget.centreX, baseWidget.topMargin, i * baseWidget.radius, baseWidget.size / 34);
+                var SVGRadarArc4 = new SVGArc(baseWidget.svgElement, baseWidget.id + "arcback4" + i, baseWidget.centreX, baseWidget.topMargin, i * baseWidget.radius, baseWidget.size / 34);
                 SVGRadarArc1.index = SVGRadarArc2.index = SVGRadarArc3.index = SVGRadarArc4.index = i;
                 SVGRadarArc1.color = SVGRadarArc2.color = SVGRadarArc3.color = SVGRadarArc4.color = theme.success;
 
-                _this.radar1.push(SVGRadarArc1);
+                baseWidget.radar1.push(SVGRadarArc1);
 
-                _this.radar2.push(SVGRadarArc2);
+                baseWidget.radar2.push(SVGRadarArc2);
 
-                _this.radar3.push(SVGRadarArc3);
+                baseWidget.radar3.push(SVGRadarArc3);
 
-                _this.radar4.push(SVGRadarArc4);
+                baseWidget.radar4.push(SVGRadarArc4);
             }
 
-            _this.SVGArcSpinner.y = _this.topMargin;
+            baseWidget.SVGArcSpinner.y = baseWidget.topMargin;
 
-            _this.clickableToTop();
+            baseWidget.clickableToTop();
 
-            return _this;
+            return baseWidget;
         }
 
         var _proto = MotionWidget.prototype;
@@ -56,7 +55,7 @@ var MotionWidget =
         };
 
         _proto.animate = function animate() {
-            var _this2 = this;
+            var baseWidget2 = this;
 
             if (this.animated) {
                 for (var i = 0; i < 4; i++) {
@@ -77,13 +76,13 @@ var MotionWidget =
                 }
 
                 requestAnimationFrame(function () {
-                    return _this2.animate();
+                    return baseWidget2.animate();
                 });
             }
         };
 
         _proto.drawWidget = function drawWidget() {
-            var _this3 = this;
+            var baseWidget3 = this;
 
             _BaseWidget.prototype.drawWidget.call(this);
 
@@ -91,7 +90,7 @@ var MotionWidget =
                 if (!this.animated) {
                     this.animated = true;
                     requestAnimationFrame(function () {
-                        return _this3.animate();
+                        return baseWidget3.animate();
                     });
                 }
             } else {

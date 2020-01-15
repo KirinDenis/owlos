@@ -25,7 +25,7 @@ var dashboardUI = {
         headerDiv.className = "card-header";
 
         var headerText = headerDiv.appendChild(document.createElement('div'));
-        headerText.innerHTML = getLang("Dashboard");
+        headerText.innerHTML = getLang("dashboard");
 
         var cardHeaderButtonsPanel = headerText.appendChild(document.createElement('div'));
         cardHeaderButtonsPanel.className = 'cardHeaderButton';
@@ -33,13 +33,13 @@ var dashboardUI = {
         var headerModeButton = cardHeaderButtonsPanel.appendChild(document.createElement('input'));
         headerModeButton.className = "btn btn-secondary btn-sm";
         headerModeButton.type = "button";
-        headerModeButton.value = "view";
+        headerModeButton.value = getLang("dashboardview");
         headerModeButton.onclick = dashboardUI.changeDashboadMode;
 
         var addWidgetButton = cardHeaderButtonsPanel.appendChild(document.createElement('input'));
         addWidgetButton.className = "btn btn-success btn-sm";
         addWidgetButton.type = "button";
-        addWidgetButton.value = getLang("addwidget");
+        addWidgetButton.value = getLang("dashboardaddwidget");
         addWidgetButton.onclick = dashboardUI.addWidgetMode;
         
         var dataDiv = infoDiv.appendChild(document.createElement('div'));
@@ -76,7 +76,7 @@ var dashboardUI = {
 
     addWidgetMode: function () {
 
-        makeModalDialog("resetPanel", "widget", getLang("widgetunit"), getLang("areYouSure"));
+        makeModalDialog("resetPanel", "widget", getLang("dashboardaddwidget"), getLang("areYouSure"));
         var modalBody = document.getElementById("widgetModalBody");
         modalBody.innerHTML = "";
         var modalFooter = document.getElementById("widgetModalFooter");
@@ -87,7 +87,7 @@ var dashboardUI = {
         //device select 
         var deviceLabel = formGroup.appendChild(document.createElement("label"));
         deviceLabel.setAttribute("for", "deviceSelect");
-        deviceLabel.innerText = getLang("deviceslist");
+        deviceLabel.innerText = getLang("nodeslist");
         var deviceSelect = formGroup.appendChild(document.createElement('select'));
         deviceSelect.className = "form-control form-control-sm";
         deviceSelect.id = "typeSelect";
@@ -139,7 +139,7 @@ var dashboardUI = {
         widgetButton.id = "widgetModalButton";
         widgetButton.deviceSelect = deviceSelect;
         widgetButton.onclick = dashboardUI.addWidgetClick;
-        widgetButton.innerText = getLang("addwidgetbutton");
+        widgetButton.innerText = getLang("widgetslist");
 
         $("#widgetModal").modal('show');
 
