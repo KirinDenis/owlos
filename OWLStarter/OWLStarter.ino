@@ -198,6 +198,8 @@ void loop() {
 			download("smokewidget.js.gz", host + "smokewidget.js.gz");
 			download("speechcore.js.gz", host + "speechcore.js.gz");
 			download("stepperwidget.js.gz", host + "stepperwidget.js.gz");
+			download("devicesui.js.gz", host + "devicesui.js.gz");
+			download("settingsui.js.gz", host + "settingsui.js.gz");
 			download("temperaturewidget.js.gz", host + "temperaturewidget.js.gz");
 			download("graphwidget.js.gz", host + "graphwidget.js.gz");
 			download("configcore.js.gz", host + "configcore.js.gz");
