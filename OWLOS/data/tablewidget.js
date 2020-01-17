@@ -61,19 +61,19 @@ var TableWidget =
     function () {
         "use strict";
 
-        function TableWidget(devicesAnchors, devicesPanel, device, size) {
+        function TableWidget(nodePropAnchors, nodesPropsPanel, device, size) {
             //панели в UI для рендеринга таблиц
-            this.devicesAnchors = devicesAnchors; //document.getElementById("devicesAnchors");
+            this.nodePropAnchors = nodePropAnchors; //document.getElementById("nodePropAnchors");
 
-            this.devicesPanel = devicesPanel; // document.getElementById("devicesPanel");
+            this.nodesPropsPanel = nodesPropsPanel; // document.getElementById("nodesPropsPanel");
 
             this.device = device;
             this.size = size; //devices.addNewDeviceListner(this.newTable, this); //подписываемся на событие devices о создании нового устройства
             //devices.addDeviceLoadedListner(this.deviceLoaded, this); //подписываемся на событие devices о создании нового устройства
             //if (document.getElementById(this.device._alies + "_" + this.device._id) != undefined) return; 
 
-            this.newTable(); //this.devicesAnchors.innerHTML = "";
-            //this.devicesPanel.innerHTML = "";
+            this.newTable(); //this.nodePropAnchors.innerHTML = "";
+            //this.nodesPropsPanel.innerHTML = "";
         } //слушатель (получатель) событие создания нового устройство (устройство не содержит свойств на данном этапе)
 
 
@@ -81,9 +81,9 @@ var TableWidget =
 
         _proto.newTable = function newTable() {
             //добавляет кнопку в панель быстрого выбора устройств
-            if (this.devicesAnchors != undefined) { }
+            if (this.nodePropAnchors != undefined) { }
             /*
-            var deviceNavItem = this.devicesAnchors.appendChild(document.createElement("li"));
+            var deviceNavItem = this.nodePropAnchors.appendChild(document.createElement("li"));
             deviceNavItem.className = "nav-item";
             var deviceHRef = deviceNavItem.appendChild(document.createElement("a"));
             deviceHRef.className = "nav-link";
@@ -96,7 +96,7 @@ var TableWidget =
             */
 
             /*
-            var anchorHref = this.devicesAnchors.appendChild(document.createElement('button'));
+            var anchorHref = this.nodePropAnchors.appendChild(document.createElement('button'));
             anchorHref.type = "button";
             anchorHref.href = "#" + this.device._id;
             anchorHref.onclick = this.deviceAnchorClick;
@@ -106,9 +106,9 @@ var TableWidget =
             //добавлет таблицу для свойств нового устройства
 
 
-            var div = this.devicesPanel.appendChild(document.createElement('div'));
+            var div = this.nodesPropsPanel.appendChild(document.createElement('div'));
 
-            if (this.devicesAnchors != undefined) {
+            if (this.nodePropAnchors != undefined) {
                 // div.className = "col-md-" + this.size + " devicediv tab-pane fade";
                 div.className = "devicediv tab-pane fade"; //if (firstDevice) {
                 //div.className += " active show";

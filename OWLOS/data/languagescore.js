@@ -94,6 +94,7 @@
     "updateunpossible=Оновлення неможливо\n" +
     "updateuipossible=Можливо оновити тільки UI (потрібен апаратнэ скидання)\n" +
     "updatepossible=Оновлення можливі\n" +
+    "downdateuipossible=Остарення можливі\n" +
     "firmware=Firmware\n" +
     "firmwareversion=Версія прошивки\n" +
     "firmwarebuildnumber=Збірка\n" +

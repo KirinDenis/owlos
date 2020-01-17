@@ -64,9 +64,9 @@ const LCDDeviceType = 7;
 const ActuatorDeviceType = 8;
 const OptoDeviceType = 9;
 const ValveDeviceType = 10;
-const WiFiTypeDeviceType = 11;
-const NetworkTypeDeviceType = 12;
-const ESPTypeDeviceType = 13;
+const WiFiDeviceType = 11;
+const NetworkDeviceType = 12;
+const ESPDeviceType = 13;
 const ConfigDeviceType = 14;
 
 var devices = {

@@ -310,6 +310,12 @@ var BaseWidget =
 
 
             this.SVGLabel.text = this.label;
+            if (this.SVGLabel.width > this.size) {
+                var coef = this.SVGLabel.width / (this.label.length + 3);
+                var charCount = (this.size - this.size / 3) / coef;
+                this.SVGLabel.text = this.label.slice(0, parseInt(charCount)) + "...";
+
+            }
 
             if (this.SVGLabel.width != 0) {
                 this.SVGLabel.x = this.centreX - this.SVGLabel.width / 2;

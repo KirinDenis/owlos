@@ -2,6 +2,7 @@
 #include <ESP8266HTTPClient.h>
 #include <ESP8266httpUpdate.h>
 
+#include "../transports/WebServer.h"
 #include "../transports/WebClient.h"
 #include "../managers/FileManager.h"
 #include "../../UnitProperties.h"
@@ -105,41 +106,59 @@ String updateUI()
 	{
 		updateLog = "update UI started\n";
 		updateUIStatus = UpdateStatusStarted;
-		updateLog += downloadFileWithLog("actuatorwidget.js.gz");
+		updateLog += downloadFileWithLog("jquery.min.js.gz");
 		updateUIStatus = UpdateStatusAtProcess;
-		updateLog += downloadFileWithLog("basewidget.js.gz");
-		updateLog += downloadFileWithLog("bootcore.js.gz");
+		webServerLoop();
+
+		updateLog += downloadFileWithLog("jquery.min.js.gz");
+		updateLog += downloadFileWithLog("popper.min.js.gz");
 		updateLog += downloadFileWithLog("bootstrap.min.css.gz");
 		updateLog += downloadFileWithLog("bootstrap.min.js.gz");
-		updateLog += downloadFileWithLog("restclientcore.js.gz");
-		updateLog += downloadFileWithLog("ui.css.gz");
+		updateLog += downloadFileWithLog("jquery.dataTables.min.js.gz");
 		updateLog += downloadFileWithLog("dataTables.min.css.gz");
 		updateLog += downloadFileWithLog("dataTables.min.js.gz");
-		updateLog += downloadFileWithLog("widgetswrappers.js.gz");
+		webServerLoop();
+
+		updateLog += downloadFileWithLog("ui.css.gz");
+		webServerLoop();
+
+		updateLog += downloadFileWithLog("bootcore.js.gz");
+		updateLog += downloadFileWithLog("restclientcore.js.gz");
+		updateLog += downloadFileWithLog("configcore.js.gz");
 		updateLog += downloadFileWithLog("devicescore.js.gz");
 		updateLog += downloadFileWithLog("drawcore.js.gz");
-		updateLog += downloadFileWithLog("filespanelui.js.gz");
-		updateLog += downloadFileWithLog("index.html.gz");
-		updateLog += downloadFileWithLog("index.js.gz");
-		updateLog += downloadFileWithLog("jquery.dataTables.min.js.gz");
-		updateLog += downloadFileWithLog("jquery.min.js.gz");
 		updateLog += downloadFileWithLog("languagescore.js.gz");
+		updateLog += downloadFileWithLog("speechcore.js.gz");
+		webServerLoop();
+
+		updateLog += downloadFileWithLog("basewidget.js.gz");
+		updateLog += downloadFileWithLog("actuatorwidget.js.gz");
+		updateLog += downloadFileWithLog("temperaturewidget.js.gz");
+		updateLog += downloadFileWithLog("graphwidget.js.gz");
+		updateLog += downloadFileWithLog("tablewidget.js.gz");
 		updateLog += downloadFileWithLog("lcdwidget.js.gz");
 		updateLog += downloadFileWithLog("lightwidget.js.gz");
 		updateLog += downloadFileWithLog("lcdwidget.js.gz");
 		updateLog += downloadFileWithLog("lightwidget.js.gz");
 		updateLog += downloadFileWithLog("motionwidget.js.gz");
-		updateLog += downloadFileWithLog("popper.min.js.gz");
 		updateLog += downloadFileWithLog("radialwidget.js.gz");
 		updateLog += downloadFileWithLog("smokewidget.js.gz");
-		updateLog += downloadFileWithLog("speechcore.js.gz");
 		updateLog += downloadFileWithLog("stepperwidget.js.gz");
-		updateLog += downloadFileWithLog("temperaturewidget.js.gz");
-		updateLog += downloadFileWithLog("graphwidget.js.gz");
-		updateLog += downloadFileWithLog("configcore.js.gz");
-		updateLog += downloadFileWithLog("tablewidget.js.gz");
+		webServerLoop();
+
+		updateLog += downloadFileWithLog("widgetswrappers.js.gz");
+
+		updateLog += downloadFileWithLog("devicesui.js.gz");
+		updateLog += downloadFileWithLog("settingsui.js.gz");
+		updateLog += downloadFileWithLog("filespanelui.js.gz");
+		updateLog += downloadFileWithLog("dashboardui.js.gz");
+
+		updateLog += downloadFileWithLog("index.js.gz");
+		updateLog += downloadFileWithLog("index.html.gz");
+
 		updateUIStatus = UpdateStatusComplete;
 		updateLog += "update UI complete\n";
+		webServerLoop();
 	}
 	else
 	{

@@ -1,4 +1,4 @@
-
+﻿
 
 var settingsUI = {
 
@@ -10,7 +10,7 @@ var settingsUI = {
         nodesSideBar.style.background = theme.primary;
         var firstDevice = false;
         //add addNodeNavItem first --------------------------------------------------
-        if (document.getElementById("devicesPanelFade") == undefined) {
+        if (document.getElementById("addNodeNavItem") == undefined) {
             firstDevice = true;
             var nodeNavItem = nodesSideBar.appendChild(document.createElement("li"));
             nodeNavItem.className = "nav-item";
@@ -24,17 +24,13 @@ var settingsUI = {
             nodeHRef.innerHTML = "<b>" + getLang("addnode") + "</b>";
             nodeHRef.href = "#home";
 
-            var devicesAnchors = document.getElementById("devicesAnchors");
-
-            var devicesNavBar = devicesAnchors.appendChild(document.createElement("ul"));
-            devicesNavBar.style.height = "0px";
-            devicesNavBar.id = "devicesNavBar";
-            devicesNavBar.className = "nav nav-tabs";
-
-            var devicesPanel = document.getElementById("devicesPanel");
-            devicesPanel = devicesPanel.appendChild(document.createElement("div"));
-            devicesPanel.id = "devicesPanelFade";
-            devicesPanel.className = "tab-content col-md-12";
+            //панель не видна, она существует для организии SideBar, сами панели со свойствами устройств сделаны на основе navBar - так сложилось исторически, SideBar только переключает их
+            var nodePropAnchors = document.getElementById("nodePropAnchors");
+            //NavTabs панель для панелей со свойствами нод
+            var nodePropNavBar = nodePropAnchors.appendChild(document.createElement("ul"));
+            nodePropNavBar.style.height = "0px";
+            nodePropNavBar.id = "nodePropNavBar";
+            nodePropNavBar.className = "nav nav-tabs";
         }
 
         for (var nodeKey in configProperties.nodes) {
@@ -96,24 +92,34 @@ var settingsUI = {
                 nodePanelHRef.setAttribute("data-toggle", "tab");
                 nodePanelHRef.onclick = settingsUI.deviceAnchorClick;
                 nodePanelHRef.innerText = getLang("properties");
-                nodePanelHRef.href = "#" + node.alies + "fadepanel";
+                nodePanelHRef.href = "#" + node.alies + "nodePropsPanel";
                 nodePanelHRef.node = node;
-                var devicesPanel = document.getElementById("devicesPanelFade");
-                var div = devicesPanel.appendChild(document.createElement('div'));
+                var nodesPropsPanel = document.getElementById("nodesPropsPanel");
 
-                // div.className = "col-md-" + this.size + " devicediv tab-pane fade";
-                div.className = "devicediv tab-pane fade";
+                //--- nodePropsPanel ---------------------------------------------------------------------------
+                //панель для панелей с быстрым доступам к основным свойствам ноды
+                var nodePropsPanel = nodesPropsPanel.appendChild(document.createElement('div'));
+                nodePropsPanel.className = "devicediv tab-pane fade";
                 if (firstDevice) {
-                    div.className += " active show";
-
+                    nodePropsPanel.className += " active show"; //панель свойств первой ноды активна изначально
                 }
-                div.id = node.alies + "fadepanel";
+                nodePropsPanel.id = node.alies + "nodePropsPanel";
+                nodeAhref.nodefadepanel = nodePropsPanel;
 
-                nodeAhref.nodefadepanel = div;
-                var dataDiv = div.appendChild(document.createElement('div'));
-                dataDiv.id = node.alies + "updatePropPanelDataDiv"
+                var nodePropHolderPanel = nodePropsPanel.appendChild(document.createElement('div'));
+                nodePropHolderPanel.id = node.alies + "bodePropHoder";
+                nodePropHolderPanel.className = "row";
+
+                //подготавливаем панели со свойствами ноды (для каждой ноды своя панель id = node.alies + "nodePropPanel")
+                //смотрите обработчик события onDeviceLoaded() - он запоняет эту панель
+                sender.addCard(nodePropHolderPanel, node.alies + "WifiNodeProp", getLang("wifinodeprop"), 4); //WifiNodePropPanel - свойства WiFi
+                sender.addCard(nodePropHolderPanel, node.alies + "NetworkNodeProp", getLang("networknodeprop"), 4);
+                sender.addCard(nodePropHolderPanel, node.alies + "SystemNodeProp", getLang("systemnodeprop"), 4);
+                sender.addCard(nodePropHolderPanel, node.alies + "UpdateNodeProp", getLang("updatenodeprop"), 4);
+
+                //--- EndOf nodePropsPanel ---------------------------------------------------------------------------
+
                 //Add files submenuitem ------------------
-
                 var filesNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
                 filesNavItem.className = "nav-item";
                 var filesHRef = filesNavItem.appendChild(document.createElement("a"));
@@ -127,8 +133,8 @@ var settingsUI = {
                 filesHRef.node = node;
 
                 //new files tab ----------------
-                var devicesPanel = document.getElementById("devicesPanelFade");
-                var filesDiv = devicesPanel.appendChild(document.createElement('div'));
+                var nodesPropsPanel = document.getElementById("nodesPropsPanel");
+                var filesDiv = nodesPropsPanel.appendChild(document.createElement('div'));
                 filesDiv.className = "devicediv tab-pane fade";
                 filesDiv.id = node.alies + "filesfadepanel";
                 filesHRef.filesList = new FilesList(filesDiv, node);
@@ -169,56 +175,69 @@ var settingsUI = {
         }
     },
 
+    //---------------------------------------------------------------------------------------------------------------------------------------------------
+    //когда очередная нода загружает очередное устройство - строим индикаторы в верхней панели "Настройки" - Online, WiFi AP, WiFi ST, RESTful, MQTT, OTA
+    //и подготавлием панель управления нодой (с кнопками Update, Reset и основными свойствами ноды) - смотрите onConfigChange такая панель создается для каждой
+    //ноды id = node.alies + "nodePropPanel"    
     onDeviceLoaded: function (sender, device) {
-        if (device._new) {
+        if (device._new) { //если это устройство загружено впервые (вновь созданные устройства так же вызовут этот метод)
 
-            var nodeSubmenuUl = document.getElementById(device._alies + "submenu");
-            if (nodeSubmenuUl == undefined) return;
-            var deviceLi = nodeSubmenuUl.appendChild(document.createElement("li"));
+            var nodeSubmenuUl = document.getElementById(device._alies + "submenu"); //ищем пункт sideBar соответствующий ноде которой принадлежит устройство
+            if (nodeSubmenuUl == undefined) return; //если такого пункта нет - выходим
+
+            var node = config.getNodeByHost(device._host); //узнаем какой ноде принадлежит устройство
+            if (node == undefined) return; //выходим если нода не найдена
+
+            var deviceLi = nodeSubmenuUl.appendChild(document.createElement("li")); //добавляем дочерний пукт в меню ноды в sideBar
             deviceLi.className = "nav-item";
-            var deviceAhref = deviceLi.appendChild(document.createElement("a"));
+
+            var deviceAhref = deviceLi.appendChild(document.createElement("a")); //отображаемая часть меню - гиперссылка
             deviceAhref.className = "nav-link";
             deviceAhref.setAttribute("data-toggle", "tab");
+            deviceAhref.href = "#" + device._alies + "_" + device._id; //якорь на панель с таблицей со свойствами выбранного устройства (создается один раз)
+            deviceAhref.node = config.getNodeByHost(device._host); //привязываем пункт меню к ноде которой принадлежит устройства (используется для быстрого поска ноды в будущем)
+            deviceAhref.innerText = device._id; //пункт меню отображает ID нового устройства
+            deviceAhref.onclick = settingsUI.deviceAnchorClick; //обработчик клика на пунк меню (переключение панелей)
+            deviceAhref.parentLi = deviceLi; //сохраняем родительский deviceId
 
-            deviceAhref.href = "#" + device._alies + "_" + device._id;
-            deviceAhref.node = config.getNodeByHost(device._host);
-            deviceAhref.innerText = device._id;
-            deviceAhref.onclick = settingsUI.deviceAnchorClick;
-            deviceAhref.parentLi = deviceLi;
+            
 
-            var devicesWidgetsPanel = document.getElementById("widgetsPanelDataDiv");
-            var devicesAnchors = document.getElementById("devicesNavBar");
-            var devicesPanel = document.getElementById("devicesPanelFade");
-            new TableWidget(devicesAnchors, devicesPanel, device, 12);
-            //network widgets ----------------------------------------------
-            if (device._id == "wifi") {
-                var WiFiAPPanel = settingsUI.getStatusWidget(device._alies + "wifiapStatus", "WiFi AP", undefined);
+            var nodePropAnchors = document.getElementById("nodePropNavBar"); //старая навигационная панель для отображения панелей свойств
+            var wifiPropPanel = document.getElementById(node.alies + "WifiNodePropBody"); //панель для cвойств
+            var networkPropPanel = document.getElementById(node.alies + "NetworkNodePropBody"); 
+            var systemPropPanel = document.getElementById(node.alies + "SystemNodePropBody"); 
+            var updatePropPanel = document.getElementById(node.alies + "UpdateNodePropBody"); 
+            //добавляем панель с таблицей со свойствами нового "device" устройства в панель nodesPropsPanel, якорим навигацию на nodePropAnchors, bootstrap cell size -> 12             
+            new TableWidget(nodePropAnchors, nodesPropsPanel, device, 12);
+
+            //если очередное загруженое устройство WiFi
+            if (device.type.value == WiFiDeviceType) {
+                //индикатор(widget) в верхней панеле для WiFi AP и Wifi ST - подключаем их к событиям WiFi текущей node.WifiDevice - теперь WifiDevice будет отправлять событие 
+                //о своем состоянии непосредственно индикаторам 
+                //сколько будет node столько будет индикаторов для их WiFi device - мы отображаем только индикаторы выбранной в SideBar (текущей) node и ее устройств
+                //смотрите getStatusWidget() метод - если индикатора нет его создадут и подпишут id как node.alies + "wifiapStatus"
+                var WiFiAPPanel = settingsUI.getStatusWidget(node.alies + "wifiapStatus", "WiFi AP", undefined);
+                //подписываем свойство устройства WiFi.wifiaccesspointavailable на обработчик settingsUI.onWiFiAPStatusChange
+                //если WiFi.wifiaccesspointavailable изменит значение, будет вызван settingsUI.onWiFiAPStatusChange
                 device.wifiaccesspointavailable.addValueListner(settingsUI.onWiFiAPStatusChange, WiFiAPPanel);
 
-                var WiFiSTPanel = settingsUI.getStatusWidget(device._alies + "wifistStatus", "WiFi ST", undefined);
+                //так же как и WiFi AP
+                var WiFiSTPanel = settingsUI.getStatusWidget(node.alies + "wifistStatus", "WiFi ST", undefined);
                 device.wifistatus.addValueListner(settingsUI.onWiFiSTStatusChange, WiFiSTPanel);
 
-                var dataDiv = document.getElementById(device._alies + "updatePropPanelDataDiv");
-                if (dataDiv != undefined) {
-                    settingsUI.addPropertyView(dataDiv, device.wifirssi, getLang("wifirssi"), "dBm");
-                    settingsUI.addSpaceView(dataDiv, "1");
-
-                }
+                //панель со свойствами node - добавляем отображени уровня WiFi сигнала (так же подписываем на событие изменения значения WiFi.wifirssi)
+                settingsUI.addPropertyView(wifiPropPanel, device.wifirssi, getLang("wifirssi"), "dBm");
+                settingsUI.addSpaceView(wifiPropPanel, "1");
             }
+            else
+                if (device.type.value == ESPDeviceType) {
 
-            if (device._id == "esp") {
-
-                var dataDiv = document.getElementById(device._alies + "updatePropPanelDataDiv");
-                if (dataDiv != undefined) {
-
-                    settingsUI.addPropertyView(dataDiv, device.espfreesketchspace, getLang("espfreesketchspace"), "byte");
-                    settingsUI.addPropertyView(dataDiv, device.espfreeheap, getLang("espfreeheap"), "byte");
-                    settingsUI.addPropertyView(dataDiv, device.espcpufreqmhz, getLang("espcpufreqmhz"), "mHz");
-                    settingsUI.addSpaceView(dataDiv, "3");
-                    settingsUI.addPropertyView(dataDiv, device.espresetreason, getLang("espresetreason"));
-                    settingsUI.addSpaceView(dataDiv, "2");
-
-                    var resetButton = dataDiv.appendChild(document.createElement('input'));
+                    settingsUI.addPropertyView(systemPropPanel, device.espfreesketchspace, getLang("espfreesketchspace"), "byte");
+                    settingsUI.addPropertyView(systemPropPanel, device.espfreeheap, getLang("espfreeheap"), "byte");
+                    settingsUI.addPropertyView(systemPropPanel, device.espcpufreqmhz, getLang("espcpufreqmhz"), "mHz");                    
+                    settingsUI.addPropertyView(systemPropPanel, device.espresetreason, getLang("espresetreason"));
+                    
+                    var resetButton = systemPropPanel.appendChild(document.createElement('input'));
                     resetButton.className = "btn btn-danger btn-sm";
                     resetButton.type = "button";
                     resetButton.setAttribute("data-toggle", "modal");
@@ -227,82 +246,71 @@ var settingsUI = {
                     resetButton.deviceHost = device._host;
                     resetButton.onclick = settingsUI.modalResetClick;
 
-                    settingsUI.addPropertyView(dataDiv, device.firmwareversion, getLang("firmwareversion"));
-                    settingsUI.addPropertyView(dataDiv, device.firmwarebuildnumber, getLang("firmwarebuildnumber"));
-                    settingsUI.addSpaceView(dataDiv, "5");
+                    settingsUI.addPropertyView(updatePropPanel, device.firmwareversion, getLang("firmwareversion"));
+                    settingsUI.addPropertyView(updatePropPanel, device.firmwarebuildnumber, getLang("firmwarebuildnumber"));
+                    
                 }
-            }
+                else
+                    if (device.type.value == NetworkDeviceType) {
+                        // document.title = device.unitid.value + " :: OWL OS"; //ToDo detect "local" node
 
+                        var RESTfulPanel = settingsUI.getStatusWidget(node.alies + "restfulStatus", "RESTful");
+                        device.restfulavailable.addValueListner(settingsUI.onRESTfulStatusChange, RESTfulPanel);
+                        var node = config.getNodeByHost(device._host);
+                        node.addNetworkStatusListner(settingsUI.onRESTfulOnlineStatusChange, RESTfulPanel);
 
-            if (device._id == "network") {
-                // document.title = device.unitid.value + " :: OWL OS"; //ToDo detect "local" node
+                        var MQTTPanel = settingsUI.getStatusWidget(node.alies + "mqttStatus", "MQTT");
+                        device.mqttclientstate.addValueListner(settingsUI.onMQTTStatusChange, MQTTPanel);
 
-                var RESTfulPanel = settingsUI.getStatusWidget(device._alies + "restfulStatus", "RESTful");
-                device.restfulavailable.addValueListner(settingsUI.onRESTfulStatusChange, RESTfulPanel);
-                var node = config.getNodeByHost(device._host);
-                node.addNetworkStatusListner(settingsUI.onRESTfulOnlineStatusChange, RESTfulPanel);
+                        var OTAPanel = settingsUI.getStatusWidget(node.alies + "otaStatus", "OTA");
+                        device.otaavailable.addValueListner(settingsUI.onOTAStatusChange, OTAPanel);
 
-                var MQTTPanel = settingsUI.getStatusWidget(device._alies + "mqttStatus", "MQTT");
-                device.mqttclientstate.addValueListner(settingsUI.onMQTTStatusChange, MQTTPanel);
+                        settingsUI.addPropertyView(updatePropPanel, device.firmwareversion, getLang("firmwareversion"));
+                        settingsUI.addPropertyView(updatePropPanel, device.firmwarebuildnumber, getLang("firmwarebuildnumber"));
 
-                var OTAPanel = settingsUI.getStatusWidget(device._alies + "otaStatus", "OTA");
-                device.otaavailable.addValueListner(settingsUI.onOTAStatusChange, OTAPanel);
+                        //Update watcher panel 
+                        //Панель обновлений
+                        var updateWatcherId = node.alies + "updateWatcher";
+                        var updateWatcherDiv = document.getElementById(updateWatcherId);
+                        if (updateWatcherDiv == null) {
+                            updateWatcherDiv = updatePropPanel.appendChild(document.createElement('div'));                            
+                            updateWatcherDiv.id = updateWatcherId;
+                            updateWatcherDiv.className = "text-primary";
+                            //one listner to two properties
+                            
+                            var updateButtonHolder = updatePropPanel.appendChild(document.createElement('div'));
+                            updateButtonHolder.className = "row";
+                            var updateuiButton = updateButtonHolder.appendChild(document.createElement('input'));
+                            updateuiButton.id = node.alies +"updateuibutton";
+                            updateuiButton.className = "btn btn-success btn-sm float-right";
+                            updateuiButton.type = "button";
+                            updateuiButton.setAttribute("data-toggle", "modal");
+                            updateuiButton.setAttribute("data-target", "#resetModal");
+                            updateuiButton.value = getLang("updateuibutton");
+                            updateuiButton.node = node;
+                            updateuiButton.onclick = settingsUI.modalUpdateUIClick;
 
-                //Node Fade Panel --------------------------------------------------------
-                var dataDiv = document.getElementById(device._alies + "updatePropPanelDataDiv");
-                if (dataDiv != undefined) {
+                            var updatefirmwareButton = updateButtonHolder.appendChild(document.createElement('input'));
+                            updatefirmwareButton.id = node.alies +"updatefirmwarebutton";
+                            updatefirmwareButton.className = "btn btn-success btn-sm float-right";
+                            updatefirmwareButton.type = "button";
+                            updatefirmwareButton.setAttribute("data-toggle", "modal");
+                            updatefirmwareButton.setAttribute("data-target", "#resetModal");
+                            updatefirmwareButton.value = getLang("updatefirmwarebutton");
+                            updatefirmwareButton.node = node; 
+                            updatefirmwareButton.onclick = settingsUI.modalUpdateFirmwareClick;
 
+                            updateuiButton.style.display = "none";
+                            updatefirmwareButton.style.display = "none";
 
-                    //   addPropertyView(dataDiv, espDevice.firmwareversion, getLang("firmwareversion"));
-                    //  addPropertyView(dataDiv, espDevice.firmwarebuildnumber, getLang("firmwarebuildnumber"));
-                    //  addSpaceView(dataDiv, "5");
+                            updateWatcherDiv.updateuiButton = updateuiButton; // document.getElementById("updateuibutton");
+                            updateWatcherDiv.updatefirmwareButton = updatefirmwareButton;
 
-
-                    settingsUI.addPropertyView(dataDiv, device.firmwareversion, getLang("firmwareversion"));
-                    settingsUI.addPropertyView(dataDiv, device.firmwarebuildnumber, getLang("firmwarebuildnumber"));
-
-                    //Update watcher panel 
-                    var updateWatcherId = device._alies + "updateWatcher";
-                    var updateWatcherDiv = document.getElementById(updateWatcherId);
-                    if (updateWatcherDiv == null) {
-                        updateWatcherDiv = dataDiv.appendChild(document.createElement('div'));
-                        updateWatcherDiv.id = updateWatcherId;
-                        updateWatcherDiv.className = "text-primary";
-                        //one listner to two properties
-                        settingsUI.addSpaceView(dataDiv, "9");
-
-                        var updateuiButton = dataDiv.appendChild(document.createElement('input'));
-                        updateuiButton.id = "updateuibutton";
-                        updateuiButton.className = "btn btn-success btn-sm";
-                        updateuiButton.type = "button";
-                        updateuiButton.setAttribute("data-toggle", "modal");
-                        updateuiButton.setAttribute("data-target", "#resetModal");
-                        updateuiButton.value = getLang("updateuibutton");
-                        updateuiButton.node = deviceAhref.node;
-                        updateuiButton.onclick = settingsUI.modalUpdateUIClick;
-
-                        settingsUI.addSpaceView(dataDiv, "8");
-
-                        var updatefirmwareButton = dataDiv.appendChild(document.createElement('input'));
-                        updatefirmwareButton.id = "updatefirmwarebutton";
-                        updatefirmwareButton.className = "btn btn-success btn-sm";
-                        updatefirmwareButton.type = "button";
-                        updatefirmwareButton.setAttribute("data-toggle", "modal");
-                        updatefirmwareButton.setAttribute("data-target", "#resetModal");
-                        updatefirmwareButton.value = getLang("updatefirmwarebutton");
-                        updatefirmwareButton.onclick = settingsUI.modalUpdateFirmwareClick;
-
-                        updateuiButton.style.display = "none";
-                        updatefirmwareButton.style.display = "none";
-
-                        updateWatcherDiv.updateuiButton = updateuibutton; // document.getElementById("updateuibutton");
-                        updateWatcherDiv.updatefirmwareButton = updatefirmwarebutton;
-
-                        device.updateinfo.addValueListner(settingsUI.onUpdateInfoValueChange, updateWatcherDiv);
-                        device.updatepossible.addValueListner(settingsUI.onUpdateInfoValueChange, updateWatcherDiv);
+                            device.updateinfo.addValueListner(settingsUI.onUpdateInfoValueChange, updateWatcherDiv);
+                            device.updatepossible.addValueListner(settingsUI.onUpdateInfoValueChange, updateWatcherDiv);
+                        }
+                        //}
                     }
-                }
-            }
         }
     },
 
@@ -452,7 +460,7 @@ var settingsUI = {
         updateButton.type = "button";
         updateButton.className = "btn btn-sm btn-success";
         updateButton.id = "updateModalButton";
-        updateButton.onclick = updateUIClick;
+        updateButton.onclick = settingsUI.updateUIClick;
         updateButton.node = node;
         updateButton.innerText = getLang("updateuibutton");
 
@@ -474,32 +482,37 @@ var settingsUI = {
         updateLog.innerHTML = "Update UI started, please wait...<br>";
         updateUIAsync(node.host);
 
-        "use strict";
 
-        sleep(10000).then(function () {
-            getUpdateLogAsyncWithReciever(node.host, updateLogReciever, undefined, updateLog, undefined);
-            return false;
-        });
-        /*
-        sleep(10000).then(() => {
-            getUpdateLogAsyncWithReciever(node.host, updateLogReciever, undefined, updateLog, undefined);
-            return false;
-        });
-        */
+        settingsUI.updateUILogTimer(node, updateLog);
         return false;
     },
 
-    updateLogReciever: function (HTTPResult, upperReciever, sender, upperSender) {
+    updateUILogTimer: function (node, updateLog) {
+        "use strict";
+        sleep(1000).then(function () {
+            getUpdateLogAsyncWithReciever(node.host, settingsUI.updateUILogReciever, node, updateLog, undefined);
+            return false;
+        });
+
+    },
+    updateUILogReciever: function (HTTPResult, node, sender, upperSender) {
         if (!HTTPResult.indexOf("%error") == 0) {
             sender.innerHTML = "Update log:<br>" + HTTPResult;
 
-            var modalFooter = document.getElementById("updateModalFooter");
-            var resetButton = modalFooter.appendChild(document.createElement("button"));
-            resetButton.type = "button";
-            resetButton.className = "btn btn-sm btn-danger";
-            resetButton.id = "resetModalButton";
-            resetButton.onclick = resetClick;
-            resetButton.innerText = getLang("reset");
+            if (HTTPResult.indexOf("complete") == -1) {
+                settingsUI.updateUILogTimer(node, sender);
+            }
+            else {
+                var modalFooter = document.getElementById("updateModalFooter");
+                var resetButton = modalFooter.appendChild(document.createElement("button"));
+                resetButton.type = "button";
+                resetButton.className = "btn btn-sm btn-danger";
+                resetButton.id = "resetModalButton";
+                resetButton.deviceHost = node.host;
+                resetButton.onclick = resetClick;
+                resetButton.innerText = getLang("reset");
+            }
+
         }
         else {
             sender.innerHTML += "HTTP client - " + HTTPResult;
@@ -507,7 +520,9 @@ var settingsUI = {
     },
 
     //--------------------------------------------------------------------------------------------------------------------
-    modalUpdateFirmwareClick: function () {
+    modalUpdateFirmwareClick: function (event) {
+        var updateButton = event.currentTarget;
+        var node = updateButton.node;
 
         makeModalDialog("resetPanel", "firmware", getLang("firmware"), getLang("areYouSure"));
         var modalFooter = document.getElementById("firmwareModalFooter");
@@ -516,7 +531,8 @@ var settingsUI = {
         updateButton.type = "button";
         updateButton.className = "btn btn-sm btn-success";
         updateButton.id = "firmwareModalButton";
-        updateButton.onclick = updateFirmwareClick;
+        updateButton.onclick = settingsUI.updateFirmwareClick;
+        updateButton.node = node;
         updateButton.innerText = getLang("firmwarebutton");
 
         $("#firmwareModal").modal('show');
@@ -525,6 +541,8 @@ var settingsUI = {
     },
 
     updateFirmwareClick: function (event) {
+        var updateButton = event.currentTarget;
+        var node = updateButton.node;
 
         var modalFooter = document.getElementById("firmwareModalFooter");
         modalFooter.removeChild(event.currentTarget);
@@ -533,8 +551,8 @@ var settingsUI = {
         modalBody.innerHTML = "";
         var updateLog = modalBody.appendChild(document.createElement("div"));
         updateLog.innerHTML = getLang("updatefirmware");
-        updateFirmwareAsync();
-        getUpdateLogAsyncWithReciever(updateLogReciever, undefined, updateLog, undefined);
+        updateFirmwareAsync(node.host);
+        getUpdateLogAsyncWithReciever(node.host, settingsUI.updateLogReciever, undefined, updateLog, undefined);
 
         "use strict";
 
@@ -559,6 +577,21 @@ var settingsUI = {
         else {
             sender.innerHTML += "HTTP client - " + HTTPResult;
         }
+    },
+
+    addCard: function (parentDiv, id, text, cellSize) {
+        var cardPanel = parentDiv.appendChild(document.createElement('div'));
+        cardPanel.id = id + "Panel";
+        cardPanel.className = "col-md-" + cellSize;
+        var card = cardPanel.appendChild(document.createElement('div'));
+        card.className = "card text-white bg-primary mb-3";
+        var header = card.appendChild(document.createElement('div'));
+        header.className = "card-header";
+        var headerText = header.appendChild(document.createElement('div'));
+        headerText.innerHTML = text;
+        var body = card.appendChild(document.createElement('div'));
+        body.id = id + "Body"
+        body.className = "card-body";
     },
 
     addPropertyView: function (panelDiv, deviceProperty, text, sufix) {
@@ -619,9 +652,10 @@ var settingsUI = {
         }
         else {
             var firmware = updateInfo[0].split(":")[1];
-            var build = updateInfo[1].split(":")[1];
-            var innerHTML = "<div class='text-light'><strong class='text-light'>" + getLang("updateinfo") + ":</strong> " + firmware + " [<b class='text-warning'>" + getLang("firmwarebuildnumber") + ": </b>" + build + "]</div><br>";
-            if (parseInt(build) > parseInt(networkDevice.firmwarebuildnumber.value)) {
+            var updateBuildVersion = parseInt(updateInfo[1].split(":")[1]);
+            var innerHTML = "<div class='text-light'><strong class='text-light'>" + getLang("updateinfo") + ":</strong> " + firmware + " [<b class='text-warning'>" + getLang("firmwarebuildnumber") + ": </b>" + updateBuildVersion + "]</div><br>";
+            var buildVersion = parseInt(networkDevice.firmwarebuildnumber.value);
+            if (buildVersion < updateBuildVersion) {
                 innerHTML += "<strong class='text-success'>" + getLang("updateexists") + "</strong> - ";
             }
             else {
@@ -644,15 +678,36 @@ var settingsUI = {
                 if (parseInt(networkDevice.updatepossible.value) < 2) {
                     if (updateuibutton != undefined) {
                         updateuibutton.style.display = "block";
+                        if (buildVersion < updateBuildVersion) {
+                            updateuibutton.className = "btn btn-success btn-sm float-sm-right";
+                            innerHTML += "<strong class='text-success'>" + getLang("updateuipossible") + "</strong>";
+                        }
+                        else {
+                            updateuibutton.className = "btn btn-default btn-sm float-sm-right";
+                            innerHTML += "<strong class='text-secondary'>" + getLang("downdateuipossible") + "</strong>";
+                        } 
+
                     }
-                    innerHTML += "<strong class='text-success'>" + getLang("updateuipossible") + "</strong>";
+                    
                 }
                 else {
                     if (updateuibutton != undefined) {
                         updateuibutton.style.display = "block";
                         updatefirmwarebutton.style.display = "block";
+
+                        if (buildVersion < updateBuildVersion) {
+                            updateuibutton.className = "btn btn-success btn-sm float-sm-right";
+                            updatefirmwarebutton.className = "btn btn-success btn-sm float-sm-right";
+                            innerHTML += "<strong class='text-success'>" + getLang("updatepossible") + "</strong>";
+                        }
+                        else {
+                            updateuibutton.className = "btn btn-default btn-sm float-sm-right";
+                            updatefirmwarebutton.className = "btn btn-default btn-sm float-sm-right";
+                            innerHTML += "<strong class='text-secondary'>" + getLang("downdateuipossible") + "</strong>";
+                        } 
+
                     }
-                    innerHTML += "<strong class='text-success'>" + getLang("updatepossible") + "</strong>";
+                    
                 }
             }
             sender.innerHTML = innerHTML;
