@@ -71,6 +71,27 @@ bool filesDelete(String fileName)
   return true;
 }
 
+bool filesRename(String source, String dest)
+{
+	if (!SPIFFS.begin())
+	{
+		debugOut(FileSystem, "An Error has occurred while mounting file system");
+		return false;
+	}
+
+	if (!filesExists(source)) return false;
+
+	if (filesExists(dest))
+	{
+	   SPIFFS.remove(dest);
+    }
+
+	SPIFFS.rename(source, dest);
+
+	return true;
+}
+
+
 
 
 String filesReadString(String fileName)

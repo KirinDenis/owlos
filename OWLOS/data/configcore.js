@@ -132,12 +132,14 @@ var config = {
 
     load: function () {
         var result = false;
+
+
         var stringifyConfig = httpGetWithErrorReson(boardhost + "getwebproperty?property=config"); //boardhost host контроллера с которого идет первичная загрузка
         if (stringifyConfig.indexOf("OWLOSConfig")==0) {
             try {
                 configProperties = defaultWebProp();
                 stringifyConfigLines = stringifyConfig.split(";");
-
+                addToLogNL(stringifyConfigLines);
                 for (var i = 1; i < stringifyConfigLines.length; i++) {
                     if ((!stringifyConfigLines[i].indexOf("dd:")==0) && (!stringifyConfigLines[i].indexOf("ne:")==0)) {
                         var key = stringifyConfigLines[i].split("=")[0];
@@ -237,7 +239,7 @@ var config = {
         }
 
 
-        var subStringLength = 7168;
+        var subStringLength = 1024;
 
         var countedParts = Math.floor(stringifyConfig.length / subStringLength);
 

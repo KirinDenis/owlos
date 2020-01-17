@@ -4,13 +4,6 @@
 
 #define id "webproperties"
 
-bool webSetWebConfig(String _webConfig)
-{
-	debugOut(id, "|<- inside change config=" + _webConfig);
-	filesWriteString("web.config", _webConfig);
-	return true;
-}
-
 String webGetWebConfig()
 {
 	String result = "";
@@ -18,13 +11,31 @@ String webGetWebConfig()
 	{
 		result = filesReadString("web.config");
 	}
-	else
-	{
-		webSetWebConfig(result);
-	}
 
 	debugOut(id, "config=" + result);
 	return result;
+}
+
+bool webSetHead(String _webConfig)
+{
+	debugOut(id, "|<- inside change config=" + _webConfig);
+	filesWriteString("web.temp", _webConfig);
+	return true;
+}
+
+bool webSetBody(String _webConfig)
+{
+	debugOut(id, "|<- inside change config=" + _webConfig);
+	filesAddString("web.temp", _webConfig);	
+	return true;
+}
+
+bool webSetTail(String _webConfig)
+{
+	debugOut(id, "|<- inside change config=" + _webConfig);
+	filesAddString("web.temp", _webConfig);
+	filesRename("web.temp", "web.config");
+	return true;
 }
 
 
@@ -39,7 +50,12 @@ String webOnMessage(String _topic, String _payload)
 	String result = WrongPropertyName;
 	if (String(unitGetTopic() + "/getconfig").equals(_topic)) return webGetWebConfig();
 	else
-		if (String(unitGetTopic() + "/setconfig").equals(_topic)) return String(webSetWebConfig(_payload));
+		if (String(unitGetTopic() + "/sethead").equals(_topic)) return String(webSetHead(_payload));
+		else
+			if (String(unitGetTopic() + "/setbody").equals(_topic)) return String(webSetBody(_payload));
+			else
+				if (String(unitGetTopic() + "/settail").equals(_topic)) return String(webSetTail(_payload));
+
 	return result;
 }
 

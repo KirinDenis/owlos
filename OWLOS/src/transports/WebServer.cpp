@@ -635,7 +635,16 @@ void handleGetWebProperty()
 	{
 		if (webServer.argName(0).equals("property"))
 		{
-			String configProperties = webOnMessage(unitGetTopic() + "/get" + decode(webServer.arg(0)), "");
+			//String configProperties = webOnMessage(unitGetTopic() + "/get" + decode(webServer.arg(0)), "");
+
+			File download = SPIFFS.open("web.config", "r");
+			if (download)
+			{
+				webServer.streamFile(download, "text/html");
+				download.close();
+				return;
+			}
+			/*
 			if ((configProperties.length() == 0) || (configProperties.equals(WrongPropertyName)))
 			{
 				configProperties = "wrong web property: " + webServer.arg(0);
@@ -647,6 +656,7 @@ void handleGetWebProperty()
 				webServer.send(200, "text/plain", configProperties);
 				return;
 			}
+			*/
 		}
 	}
 	handleNotFound();

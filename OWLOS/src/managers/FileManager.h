@@ -4,6 +4,7 @@ bool filesBegin();
 bool filesExists(String fileName);
 int filesGetSize(String fileName);
 bool filesDelete(String fileName);
+bool filesRename(String source, String dest);
 
 String filesReadString(String fileName);
 bool filesWriteString(String fileName, String value);
