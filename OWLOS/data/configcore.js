@@ -237,18 +237,88 @@ var config = {
         }
 
 
-        var configPropertiesJson = stringifyConfig; //JSON.stringify(tempProp);
-        addToLogNL(configPropertiesJson);
-        //var HTTPResult = httpPostWithErrorReson(boardhost + "setwebproperty?property=config&value=" + configPropertiesJson);
-        var HTTPResult = httpPostWithErrorReson(boardhost + "setwebproperty?property=config", configPropertiesJson);
-        if (!HTTPResult.indexOf("%error")==0) {
-            this.onChange();
-            return true;
+        var subStringLength = 7168;
+
+        var countedParts = Math.floor(stringifyConfig.length / subStringLength);
+
+        for (var i = 0; i <= countedParts; i++) {
+
+            var subString = "";
+            var filePartName = "";
+            var HTTPPostResult = "";
+
+            if (i !== countedParts) {
+
+                subString = stringifyConfig.slice(i * subStringLength, (i + 1) * subStringLength);
+
+                if (i == 0) {
+
+                    filePartName = "head";
+
+                }
+                else {
+
+                    filePartName = "body";
+                }
+
+            }
+            else {
+
+                subString = stringifyConfig.slice(i * subStringLength);
+
+                if (i == 0) {
+
+                    HTTPPostResult = httpPostWithErrorReson(boardhost + "setwebproperty?property=head", subString);
+                    addToLogNL("Sending short config string. HEAD");
+
+                    if (!HTTPPostResult.indexOf("%error") == 0) {
+
+                        HTTPPostResult = httpPostWithErrorReson(boardhost + "setwebproperty?property=tail",""); 
+                        addToLogNL("Sening short config string. TAIL");
+
+                        if (!HTTPPostResult.indexOf("%error") == 0) {
+                            this.onChange();
+                            addToLogNL("Sening short config string. FINISHED. Result = OK!");
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+
+                    }
+                    else {
+                        return false;
+                    }
+
+                }
+                else {
+                    filePartName = "tail";
+                }
+
+            }
+
+            HTTPPostResult = httpPostWithErrorReson(boardhost + "setwebproperty?property=" + filePartName, subString);
+            addToLogNL("Sening long config string. Part =" + filePartName);
+
+            if (!HTTPPostResult.indexOf("%error") == 0) {
+
+                if (filePartName == "tail") {
+                    this.onChange();
+                    addToLogNL("Sening long config string. FINISHED. Result = OK!");
+                    return true;
+                }
+                else {
+                    continue; 
+                }
+
+            }
+            else {
+                return false;
+            }
+            
         }
-        else {
-            return false;
-        }
-    },
+
+   },
 
     /*
     configPropertiesToDevice: function () {
