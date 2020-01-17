@@ -45,7 +45,7 @@ var settingsUI = {
                 nodeLi.node = node;
 
                 if (firstDevice) {
-                       nodeLi.className = "active";
+                    nodeLi.className = "active";
                     nodesSideBar.activeLi = nodeLi;
                 }
                 var nodeAhref = nodeLi.appendChild(document.createElement("a"));
@@ -235,7 +235,7 @@ var settingsUI = {
 
 
             if (device._id == "network") {
-               // document.title = device.unitid.value + " :: OWL OS"; //ToDo detect "local" node
+                // document.title = device.unitid.value + " :: OWL OS"; //ToDo detect "local" node
 
                 var RESTfulPanel = settingsUI.getStatusWidget(device._alies + "restfulStatus", "RESTful");
                 device.restfulavailable.addValueListner(settingsUI.onRESTfulStatusChange, RESTfulPanel);
@@ -346,9 +346,9 @@ var settingsUI = {
 
         }
 
-   //     if (aHref.getAttribute("aria-expanded") == "true") {
-   //         document.documentElement.scrollTop = document.documentElement.scrollTop - event.clientY - event.target.offsetHeight;
-   //     }
+        //     if (aHref.getAttribute("aria-expanded") == "true") {
+        //         document.documentElement.scrollTop = document.documentElement.scrollTop - event.clientY - event.target.offsetHeight;
+        //     }
 
         return false;
     },
@@ -490,7 +490,7 @@ var settingsUI = {
     },
 
     updateLogReciever: function (HTTPResult, upperReciever, sender, upperSender) {
-        if (!HTTPResult.indexOf("%error")==0) {
+        if (!HTTPResult.indexOf("%error") == 0) {
             sender.innerHTML = "Update log:<br>" + HTTPResult;
 
             var modalFooter = document.getElementById("updateModalFooter");
@@ -553,7 +553,7 @@ var settingsUI = {
     },
 
     updateLogReciever: function (HTTPResult, upperReciever, sender, upperSender) {
-        if (!HTTPResult.indexOf("%error")==0) {
+        if (!HTTPResult.indexOf("%error") == 0) {
             sender.innerHTML = "Update log:<br>" + HTTPResult;
         }
         else {
@@ -659,7 +659,7 @@ var settingsUI = {
         }
     },
 
-onOnlineStatusChange: function (sender, devices) {
+    onOnlineStatusChange: function (sender, devices) {
         var onlineStatus = getLang("netonline");
         if (devices.networkStatus == NET_ONLINE) {
             sender.className = "badge badge-success";

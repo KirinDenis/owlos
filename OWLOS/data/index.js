@@ -33,6 +33,18 @@ $(document).ready(function () {
         addToLogNL("Ajax error: " + settings.url, 2);
     });
 
+    /*
+    window.onresize = function (event) {
+        var width = window.screen.availWidth;
+        var height = window.screen.availHeight;
+
+        var content = document.getElementById("content");
+        content.style.width = (width - 300) + "px";
+
+        
+    };
+    */
+
     var style = window.getComputedStyle(document.body, null);    
     theme.primary = style.getPropertyValue('--primary');
     theme.secondary = style.getPropertyValue('--secondary');
