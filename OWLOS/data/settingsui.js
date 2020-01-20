@@ -200,13 +200,13 @@ var settingsUI = {
             deviceAhref.onclick = settingsUI.deviceAnchorClick; //обработчик клика на пунк меню (переключение панелей)
             deviceAhref.parentLi = deviceLi; //сохраняем родительский deviceId
 
-            
+
 
             var nodePropAnchors = document.getElementById("nodePropNavBar"); //старая навигационная панель для отображения панелей свойств
             var wifiPropPanel = document.getElementById(node.alies + "WifiNodePropBody"); //панель для cвойств
-            var networkPropPanel = document.getElementById(node.alies + "NetworkNodePropBody"); 
-            var systemPropPanel = document.getElementById(node.alies + "SystemNodePropBody"); 
-            var updatePropPanel = document.getElementById(node.alies + "UpdateNodePropBody"); 
+            var networkPropPanel = document.getElementById(node.alies + "NetworkNodePropBody");
+            var systemPropPanel = document.getElementById(node.alies + "SystemNodePropBody");
+            var updatePropPanel = document.getElementById(node.alies + "UpdateNodePropBody");
             //добавляем панель с таблицей со свойствами нового "device" устройства в панель nodesPropsPanel, якорим навигацию на nodePropAnchors, bootstrap cell size -> 12             
             new TableWidget(nodePropAnchors, nodesPropsPanel, device, 12);
 
@@ -222,21 +222,40 @@ var settingsUI = {
                 device.wifiaccesspointavailable.addValueListner(settingsUI.onWiFiAPStatusChange, WiFiAPPanel);
 
                 //так же как и WiFi AP
-                var WiFiSTPanel = settingsUI.getStatusWidget(node.alies + "wifistStatus", "WiFi ST", undefined);
+                var WiFiSTPanel = settingsUI.getStatusWidget(node.alies + "wifistStatus", "WiFi ST", undefined); //
                 device.wifistatus.addValueListner(settingsUI.onWiFiSTStatusChange, WiFiSTPanel);
 
                 //панель со свойствами node - добавляем отображени уровня WiFi сигнала (так же подписываем на событие изменения значения WiFi.wifirssi)
-                settingsUI.addPropertyView(wifiPropPanel, device.wifirssi, getLang("wifirssi"), "dBm");
+
+
+                var wifiAPCheckbox = settingsUI.addPropertyCheckbox(wifiPropPanel, device.wifiaccesspointavailable, getLang("wifiaccesspointavailable"), "");
+
+                wifiAPCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(wifiPropPanel, device.wifiaccesspointssid, getLang("wifiaccesspointssid"), ""));
+                wifiAPCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(wifiPropPanel, device.wifiaccesspointpassword, getLang("wifiaccesspointpassword"), ""));
+
+                settingsUI.onPropertyCheckboxValueChange(wifiAPCheckbox, wifiAPCheckbox.deviceProperty);
+
                 settingsUI.addSpaceView(wifiPropPanel, "1");
+
+                var wifiSTCheckbox = settingsUI.addPropertyCheckbox(wifiPropPanel, device.wifiavailable, getLang("wifiavailable"), "");
+                wifiSTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(wifiPropPanel, device.wifissid, getLang("wifissid"), ""));
+                wifiSTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(wifiPropPanel, device.wifipassword, getLang("wifipassword"), ""));
+                wifiSTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(wifiPropPanel, device.wifiip, getLang("wifiip"), ""));
+
+                settingsUI.onPropertyCheckboxValueChange(wifiSTCheckbox, wifiSTCheckbox.deviceProperty);
+
+                settingsUI.addPropertyView(wifiPropPanel, device.wifirssi, getLang("wifirssi"), "dBm");
+
+
             }
             else
                 if (device.type.value == ESPDeviceType) {
 
                     settingsUI.addPropertyView(systemPropPanel, device.espfreesketchspace, getLang("espfreesketchspace"), "byte");
                     settingsUI.addPropertyView(systemPropPanel, device.espfreeheap, getLang("espfreeheap"), "byte");
-                    settingsUI.addPropertyView(systemPropPanel, device.espcpufreqmhz, getLang("espcpufreqmhz"), "mHz");                    
+                    settingsUI.addPropertyView(systemPropPanel, device.espcpufreqmhz, getLang("espcpufreqmhz"), "mHz");
                     settingsUI.addPropertyView(systemPropPanel, device.espresetreason, getLang("espresetreason"));
-                    
+
                     var resetButton = systemPropPanel.appendChild(document.createElement('input'));
                     resetButton.className = "btn btn-danger btn-sm";
                     resetButton.type = "button";
@@ -248,7 +267,7 @@ var settingsUI = {
 
                     settingsUI.addPropertyView(updatePropPanel, device.firmwareversion, getLang("firmwareversion"));
                     settingsUI.addPropertyView(updatePropPanel, device.firmwarebuildnumber, getLang("firmwarebuildnumber"));
-                    
+
                 }
                 else
                     if (device.type.value == NetworkDeviceType) {
@@ -265,23 +284,49 @@ var settingsUI = {
                         var OTAPanel = settingsUI.getStatusWidget(node.alies + "otaStatus", "OTA");
                         device.otaavailable.addValueListner(settingsUI.onOTAStatusChange, OTAPanel);
 
+                        var RESTfulCheckbox = settingsUI.addPropertyCheckbox(networkPropPanel, device.restfulavailable, getLang("restfulavailable"), "");
+                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel, device.restfulserverusername, getLang("restfulserverusername"), ""));
+                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel, device.restfulserverpassword, getLang("restfulserverpassword"), ""));
+                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel, device.restfulserverport, getLang("restfulserverport"), ""));
+                        settingsUI.addSpaceView(wifiPropPanel, "2");
+                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel, device.restfulclienturl, getLang("restfulclienturl"), ""));
+                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel, device.restfulclientport, getLang("restfulclientport"), ""));
+                        settingsUI.onPropertyCheckboxValueChange(RESTfulCheckbox, RESTfulCheckbox.deviceProperty);
+
+                        var MQTTCheckbox = settingsUI.addPropertyCheckbox(networkPropPanel, device.mqttavailable, getLang("mqttavailable"), "");
+                        MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel, device.mqtturl, getLang("mqtturl"), ""));
+                        MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel, device.mqttport, getLang("mqttport"), ""));
+                        settingsUI.addSpaceView(wifiPropPanel, "3");
+                        MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel, device.mqttid, getLang("mqttid"), ""));
+                        MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel, device.mqttlogin, getLang("mqttlogin"), ""));
+                        MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel, device.mqttpassword, getLang("mqttpassword"), ""));
+                        settingsUI.onPropertyCheckboxValueChange(MQTTCheckbox, MQTTCheckbox.deviceProperty);
+
+                        var OTACheckbox = settingsUI.addPropertyCheckbox(networkPropPanel, device.otaavailable, getLang("otaavailable"), "");
+                        OTACheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel, device.otaid, getLang("otaid"), ""));
+                        OTACheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel, device.otaport, getLang("otaport"), ""));
+                        OTACheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel, device.otapassword, getLang("otapassword"), ""));
+                        settingsUI.onPropertyCheckboxValueChange(OTACheckbox, OTACheckbox.deviceProperty);
+
                         settingsUI.addPropertyView(updatePropPanel, device.firmwareversion, getLang("firmwareversion"));
                         settingsUI.addPropertyView(updatePropPanel, device.firmwarebuildnumber, getLang("firmwarebuildnumber"));
+
+                        settingsUI.addPropertyEdit(updatePropPanel, device.updatehost, getLang("updatehost"), "")
 
                         //Update watcher panel 
                         //Панель обновлений
                         var updateWatcherId = node.alies + "updateWatcher";
                         var updateWatcherDiv = document.getElementById(updateWatcherId);
                         if (updateWatcherDiv == null) {
-                            updateWatcherDiv = updatePropPanel.appendChild(document.createElement('div'));                            
+                            updateWatcherDiv = updatePropPanel.appendChild(document.createElement('div'));
                             updateWatcherDiv.id = updateWatcherId;
                             updateWatcherDiv.className = "text-primary";
                             //one listner to two properties
-                            
+
                             var updateButtonHolder = updatePropPanel.appendChild(document.createElement('div'));
                             updateButtonHolder.className = "row";
                             var updateuiButton = updateButtonHolder.appendChild(document.createElement('input'));
-                            updateuiButton.id = node.alies +"updateuibutton";
+                            updateuiButton.id = node.alies + "updateuibutton";
                             updateuiButton.className = "btn btn-success btn-sm float-right";
                             updateuiButton.type = "button";
                             updateuiButton.setAttribute("data-toggle", "modal");
@@ -291,13 +336,13 @@ var settingsUI = {
                             updateuiButton.onclick = settingsUI.modalUpdateUIClick;
 
                             var updatefirmwareButton = updateButtonHolder.appendChild(document.createElement('input'));
-                            updatefirmwareButton.id = node.alies +"updatefirmwarebutton";
+                            updatefirmwareButton.id = node.alies + "updatefirmwarebutton";
                             updatefirmwareButton.className = "btn btn-success btn-sm float-right";
                             updatefirmwareButton.type = "button";
                             updatefirmwareButton.setAttribute("data-toggle", "modal");
                             updatefirmwareButton.setAttribute("data-target", "#resetModal");
                             updatefirmwareButton.value = getLang("updatefirmwarebutton");
-                            updatefirmwareButton.node = node; 
+                            updatefirmwareButton.node = node;
                             updatefirmwareButton.onclick = settingsUI.modalUpdateFirmwareClick;
 
                             updateuiButton.style.display = "none";
@@ -594,9 +639,11 @@ var settingsUI = {
         body.className = "card-body";
     },
 
+    //добавляет строку со названием и значением свойства на panelDiv, deviceProperty - отображаемое свойство (подписывается на изменения свойства)
+    //обычно используется для отображения свойств ноды Node/Properties в SideBar разделе Settings
     addPropertyView: function (panelDiv, deviceProperty, text, sufix) {
         if (deviceProperty == undefined) return;
-        var propElementId = panelDiv.id + deviceProperty.parentid + deviceProperty.name;
+        var propElementId = panelDiv.id + deviceProperty.parentid + deviceProperty.name; //дормируем уникальный ID элемента
         var propTextDiv = document.getElementById(propElementId);
         if (propTextDiv == null) {
             propTextDiv = panelDiv.appendChild(document.createElement('div'));
@@ -605,10 +652,227 @@ var settingsUI = {
             propTextDiv.propertyText = text;
             if (sufix == undefined) sufix = "";
             propTextDiv.propertySufix = sufix;
+            //settingsUI.onPropertyViewedValueChange опрашивает значение указанного свойства и формирует HTML для propTextDiv 
+            //смотрите onPropertyViewedValueChange - он работает в паре с этим методом
             deviceProperty.addValueListner(settingsUI.onPropertyViewedValueChange, propTextDiv);
+        }
+        return propTextDiv;
+    },
+    //работает в паре с addPropertyView, "следит" за значением свойства
+    onPropertyViewedValueChange: function (sender, deviceProperty) {
+        sender.innerHTML = "<strong>" + sender.propertyText + ":</strong> " + deviceProperty.value + " " + sender.propertySufix + "<br>";
+    },
+
+    //добавляет редактор указаного свойства deviceProperty на указанную панель panelDiv
+    //работает так же как addPropertyView, но позволяет изменять значение свойства 
+    addPropertyEdit: function (panelDiv, deviceProperty, text, sufix) {
+        if (deviceProperty == undefined) return;
+        var propElementId = panelDiv.id + deviceProperty.parentid + deviceProperty.name;
+        var propTextDiv = document.getElementById(propElementId);
+        if (propTextDiv == null) {
+            propTextDiv = panelDiv.appendChild(document.createElement('div'));
+            propTextDiv.id = propElementId;
+            propTextDiv.className = "text-light";
+            propTextDiv.deviceProperty = deviceProperty;
+            propTextDiv.propertyText = text;
+            if (sufix == undefined) sufix = "";
+            propTextDiv.propertySufix = sufix;
+
+            inputGroup = propTextDiv.appendChild(document.createElement("div"));
+            inputGroup.className = "input-group input-group-sm mb-3";
+
+            var prependDiv = inputGroup.appendChild(document.createElement("div"));
+            prependDiv.className = "input-group-prepend";
+
+            propText = prependDiv.appendChild(document.createElement("label"));
+            propText.className = "input-group-text";
+            propText.setAttribute("for", propElementId + "edit");
+            propTextDiv.propText = propText;
+
+            var propEdit = inputGroup.appendChild(document.createElement('input'));
+            propEdit.className = "form-control";
+            propEdit.id = propElementId + "edit";
+
+            propTextDiv.propEdit = propEdit;
+
+            var appendDiv = inputGroup.appendChild(document.createElement("div"));
+            appendDiv.className = "input-group-append";
+
+            var propSetButton = appendDiv.appendChild(document.createElement("Button"));
+            propSetButton.type = "button";
+            propSetButton.className = "btn btn-outline-success btn-sm";
+            propSetButton.innerText = getLang("set");
+            propSetButton.onclick = settingsUI.propSetButtonClick;
+            propSetButton.propTextDiv = propTextDiv;
+            propTextDiv.propSetButton = propSetButton;
+
+            deviceProperty.addValueListner(settingsUI.onPropertyEditedValueChange, propTextDiv);
+            deviceProperty.addNetworkStatusListner(settingsUI.onPropertyEditNetworkChange, propTextDiv);
+        }
+        return propTextDiv;
+    },
+    //работает в паре с addPropertyEdit
+    onPropertyEditedValueChange: function (sender, deviceProperty) {
+        sender.propText.innerText = sender.propertyText;
+        sender.propEdit.value = deviceProperty.value;
+        //+ deviceProperty.value + " " + sender.propertySufix + "<br>";
+    },
+
+    onPropertyEditNetworkChange: function (sender, deviceProperty) {
+
+        if (deviceProperty.networkStatus == NET_ONLINE) {
+            sender.propEdit.disabled = false;
+
+            sender.propSetButton.className = "btn btn-outline-success btn-sm";
+        } else if (deviceProperty.networkStatus == NET_RECONNECT) {
+            sender.propEdit.disabled = true;
+            sender.propSetButton.className = "btn btn-outline-info btn-sm";
+        } else if (deviceProperty.networkStatus == NET_OFFLINE) {
+            sender.propEdit.disabled = true;
+            sender.propSetButton.className = "btn btn-outline-secondary btn-sm";
+        } else //error
+            if (deviceProperty.networkStatus == NET_ERROR) {
+                sender.propEdit.disabled = true;
+                sender.propSetButton.className = "btn btn-outline-danger btn-sm";
+            }
+
+    },
+
+    propSetButtonClick: function (event) {
+        event.stopPropagation();
+        var propSetButton = event.target; //вытаскиваем "кликнутую" кнопку из event 
+        var propTextDiv = propSetButton.propTextDiv; //вытаскиваем панель со свойством
+        var deviceProperty = propTextDiv.deviceProperty; //вытастиваем свойство устройства
+
+        if (deviceProperty.networkStatus != NET_RECONNECT) {
+            //если свойство устройства не в статуре "в реботе" - асинхронность это хорошо, но переполнять очередь это преступление
+
+            var value = propTextDiv.propEdit.value; //получаем значение свойства устройства введенное пользователем
+
+            if (deviceProperty.type.indexOf("b") != -1) // boolean - представлен в виде combobox а не редактора 
+            {
+                if (propTextDiv.propEdit.selectedIndex == 0) value = "1"; //для устройства 1 - true, 0 - false
+                else value = "0";
+            } //вызываем метод свойства устройства для начала процедуры изменения этого свойства с новым значением value
+            //не назначаем вторичных получателей undefined, undefined - все получатели уже подписаны ранее
+
+            deviceProperty.setValue(value, undefined, undefined);
+        }
+
+        return false;
+    },
+
+    //добавляет флажек связанный с указаным свойствам (свойство обезательно Boolean)
+    //работает так же как addPropertyEdit
+    addPropertyCheckbox: function (panelDiv, deviceProperty, text, sufix) {
+        if (deviceProperty == undefined) return;
+        var propElementId = panelDiv.id + deviceProperty.parentid + deviceProperty.name;
+        var propTextDiv = document.getElementById(propElementId);
+        if (propTextDiv == null) {
+            propTextDiv = panelDiv.appendChild(document.createElement('div'));
+            propTextDiv.className = "input-group input-group-sm mb-3";
+            propTextDiv.id = propElementId;
+            propTextDiv.deviceProperty = deviceProperty;
+            propTextDiv.propertyText = text;
+            propTextDiv.dependetPanels = [];
+            if (sufix == undefined) sufix = "";
+            propTextDiv.propertySufix = sufix;
+
+            // var propFormCheck = propTextDiv.appendChild(document.createElement("form-check"));
+            // propFormCheck.className = "form-check";
+
+
+            var propCheckbox = propTextDiv.appendChild(document.createElement('input'));
+            propCheckbox.id = propElementId + "checkbox";
+            propCheckbox.className = "checkbox";
+            propCheckbox.type = "checkbox";
+            propCheckbox.value = "";
+            propCheckbox.checked = "";
+            propCheckbox.onchange = settingsUI.onPropertyCheckboxChange;
+
+            propText = propTextDiv.appendChild(document.createElement("label"));
+            propText.className = "form-check-label";
+            propText.setAttribute("for", propElementId + "checkbox");
+            propTextDiv.propText = propText;
+
+            propCheckbox.propTextDiv = propTextDiv;
+            propTextDiv.propCheckbox = propCheckbox;
+
+            deviceProperty.addValueListner(settingsUI.onPropertyCheckboxValueChange, propTextDiv);
+            deviceProperty.addNetworkStatusListner(settingsUI.onPropertyCheckboxNetworkChange, propTextDiv);
+
+            
+        }
+        return propTextDiv;
+    },
+    //работает в паре с addPropertyCheckbox
+    onPropertyCheckboxValueChange: function (sender, deviceProperty) {
+        sender.propText.innerHTML = "&nbsp;" + sender.propertyText;
+        if (deviceProperty.value === '1') {
+            sender.propCheckbox.checked = true;
+        }
+        else {
+            sender.propCheckbox.checked = false;
+        }
+
+        if (sender.dependetPanels != undefined) {
+            for (var i = 0; i < sender.dependetPanels.length; i++) {
+                if (deviceProperty.value === '1') {
+                    sender.dependetPanels[i].propText.disabled =
+                        sender.dependetPanels[i].propEdit.disabled =
+                        sender.dependetPanels[i].propSetButton.disabled = false;
+                }
+                else {
+                    sender.dependetPanels[i].propText.disabled =
+                        sender.dependetPanels[i].propEdit.disabled =
+                        sender.dependetPanels[i].propSetButton.disabled = true;
+                }
+            }
         }
     },
 
+    onPropertyCheckboxNetworkChange: function (sender, deviceProperty) {
+
+        if (deviceProperty.networkStatus == NET_ONLINE) {
+            sender.propCheckbox.disabled = false;
+            sender.propText.disabled = false;
+        } else if (deviceProperty.networkStatus == NET_RECONNECT) {
+            sender.propCheckbox.disabled = true;
+            sender.propText.disabled = true;
+        } else if (deviceProperty.networkStatus == NET_OFFLINE) {
+            sender.propCheckbox.disabled = true;
+            sender.propText.disabled = true;
+        } else //error
+            if (deviceProperty.networkStatus == NET_ERROR) {
+                sender.propCheckbox.disabled = true;
+                sender.propText.disabled = true;
+            }
+
+       
+    },
+
+
+    onPropertyCheckboxChange: function (event) {
+        event.stopPropagation();
+        var propCheckbox = event.currentTarget; 
+        var propTextDiv = propCheckbox.propTextDiv; 
+        var deviceProperty = propTextDiv.deviceProperty;
+
+        if (deviceProperty.networkStatus != NET_RECONNECT) {
+            if (propCheckbox.checked) {
+                deviceProperty.setValue("1", undefined, undefined);
+            }
+            else {
+                deviceProperty.setValue("0", undefined, undefined);
+            }
+        }
+
+        return false;
+    }, 
+
+
+
+    //добавляет разделитель (пустое пространства) между свойствами для панели свойств
     addSpaceView: function (panelDiv, number) {
         var propElementId = panelDiv.id + number;
         var propTextDiv = document.getElementById(propElementId);
@@ -637,9 +901,6 @@ var settingsUI = {
         return selectedStatus;
     },
 
-    onPropertyViewedValueChange: function (sender, deviceProperty) {
-        sender.innerHTML = "<strong>" + sender.propertyText + ":</strong> " + deviceProperty.value + " " + sender.propertySufix + "<br>";
-    },
 
     onUpdateInfoValueChange: function (sender, deviceProperty) { //means esp.updateinfo property
 
@@ -685,10 +946,10 @@ var settingsUI = {
                         else {
                             updateuibutton.className = "btn btn-default btn-sm float-sm-right";
                             innerHTML += "<strong class='text-secondary'>" + getLang("downdateuipossible") + "</strong>";
-                        } 
+                        }
 
                     }
-                    
+
                 }
                 else {
                     if (updateuibutton != undefined) {
@@ -704,10 +965,10 @@ var settingsUI = {
                             updateuibutton.className = "btn btn-default btn-sm float-sm-right";
                             updatefirmwarebutton.className = "btn btn-default btn-sm float-sm-right";
                             innerHTML += "<strong class='text-secondary'>" + getLang("downdateuipossible") + "</strong>";
-                        } 
+                        }
 
                     }
-                    
+
                 }
             }
             sender.innerHTML = innerHTML;
