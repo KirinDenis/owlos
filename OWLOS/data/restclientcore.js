@@ -1,6 +1,6 @@
-//var boardhost = "http://192.168.1.10:8084/"; //DEBUG
+var boardhost = "http://192.168.1.12:8084/"; //DEBUG
 //var boardhost = "http://192.168.4.1:8084/"; //DEBUG as WiFi Access Point
-var boardhost = "";
+//var boardhost = "";
 
 function getUnitProperty(host, property) {
     return httpGetWithErrorReson(host + "getunitproperty?property=" + escape(property));
@@ -158,6 +158,44 @@ function httpPostWithErrorReson(_url, _postdata) {
     return _data;
 }
 
+//POST Async
+function httpPostAsyncWithErrorReson(_url, arg, _postdata, asyncReciever, counter, dataString, length) {
+
+    var formData = new FormData();
+    var postdata = [];
+    postdata.push(_postdata);
+    formData.append('postdata', postdata);
+
+    var _data = null;
+    $.ajax({
+        url: encodeURI(_url + arg),
+        type: "POST",
+
+
+        data: formData,
+        contentType: false,
+        processData: false,
+        cache: false,
+        async: true,
+
+        success: function (data) {
+             addToLogNL("call RESTful: " + _url + " result OK", 1);
+            _data = data;
+            asyncReciever(_data, counter, dataString, length, _url);
+        },
+
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+             addToLogNL("call POST async: " + _url + " result ERORR [" + XMLHttpRequest.status + "]", 2);
+            _data = "%error[" + XMLHttpRequest.status + "]";
+            if ((XMLHttpRequest.responseText !== undefined) && (XMLHttpRequest.responseText !== null)) {
+                _data += " response: " + XMLHttpRequest.responseText;
+            }
+            asyncReciever(_data, counter, dataString, length, _url);
+        }
+    });
+
+    return _data;
+}
 
 
 function httpGetAsync(_url) {
@@ -219,7 +257,8 @@ function httpGetAsyncWithReciever(_url, asyncReciever, upperAsyncReciever, sende
                 _data += " response: " + XMLHttpRequest.responseText;
             }
             asyncReciever(_data, upperAsyncReciever, sender, upperSender);
-            XMLHttpRequest.ha
+
+            //XMLHttpRequest.host;
         }
 
     });

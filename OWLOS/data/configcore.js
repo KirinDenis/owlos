@@ -135,7 +135,9 @@ var config = {
 
 
         var stringifyConfig = httpGetWithErrorReson(boardhost + "getwebproperty?property=config"); //boardhost host контроллера с которого идет первичная загрузка
-        if (stringifyConfig.indexOf("OWLOSConfig")==0) {
+        //STOP point
+        //  return;
+        if (stringifyConfig.indexOf("OWLOSConfig") == 0) {
             try {
                 configProperties = defaultWebProp();
                 stringifyConfigLines = stringifyConfig.split(";");
@@ -211,6 +213,10 @@ var config = {
 
         var endOfLine = ";";
         var stringifyConfig = "OWLOSConfig:" + endOfLine;
+        //for (var m = 0; m < 100; m++) {
+        //    stringifyConfig += m + ",";
+        //}
+        
         for (var key in configProperties) {
             if (typeof (configProperties[key]) === 'object') continue;
             stringifyConfig += key + "=" + configProperties[key] + endOfLine;
@@ -219,7 +225,7 @@ var config = {
         for (var dashboardKey in configProperties.dashboards) {
             var dashboard = configProperties.dashboards[dashboardKey];
             stringifyConfig += "dd:" + escape(dashboard.id) + endOfLine;
-            //stringifyConfig += "id=" + escape(dashboard.id) + endOfLine;
+            stringifyConfig += "id=" + escape(dashboard.id) + endOfLine;
 
             for (var widgetKey in dashboard.widgets) {
                 var widget = dashboard.widgets[widgetKey];
@@ -241,86 +247,105 @@ var config = {
 
         var subStringLength = 1024;
 
-        var countedParts = Math.floor(stringifyConfig.length / subStringLength);
+        var saveConfigResult = this.configSendAsync("Start", 0, stringifyConfig, subStringLength, boardhost);
 
-        for (var i = 0; i <= countedParts; i++) {
+        return saveConfigResult;
 
-            var subString = "";
-            var filePartName = "";
-            var HTTPPostResult = "";
+    },
 
-            if (i !== countedParts) {
+    configSendAsync: function (httpResult, counter, dataString, lengthDataSubString, url) {
+        var subString = "";
+        var filePartName = "";
+        var countedSections = Math.floor(dataString.length / lengthDataSubString);
 
-                subString = stringifyConfig.slice(i * subStringLength, (i + 1) * subStringLength);
+        
 
-                if (i == 0) {
 
-                    filePartName = "head";
+        //HTTPClient добавляет строку "%error" в начало Response если запрос не был завешен HTTPCode=200 или произашел TimeOut
+        if (!httpResult.indexOf("%error") == 0) {
+
+            if (counter < countedSections) {
+
+                subString = dataString.slice(counter * lengthDataSubString, (counter + 1) * lengthDataSubString);
+          
+
+                if (counter == 0) {
+
+                    filePartName = "setwebproperty?property=head";
 
                 }
                 else {
 
-                    filePartName = "body";
+                    filePartName = "setwebproperty?property=body";
+
                 }
 
             }
             else {
 
-                subString = stringifyConfig.slice(i * subStringLength);
+                if (counter == countedSections) {
 
-                if (i == 0) {
+                    subString = dataString.slice(counter * lengthDataSubString);
+             
 
-                    HTTPPostResult = httpPostWithErrorReson(boardhost + "setwebproperty?property=head", subString);
-                    addToLogNL("Sending short config string. HEAD");
+                    if (counter == 0) {
 
-                    if (!HTTPPostResult.indexOf("%error") == 0) {
+                        filePartName = "setwebproperty?property=head";
 
-                        HTTPPostResult = httpPostWithErrorReson(boardhost + "setwebproperty?property=tail",""); 
-                        addToLogNL("Sening short config string. TAIL");
+                    }
 
-                        if (!HTTPPostResult.indexOf("%error") == 0) {
-                            this.onChange();
-                            addToLogNL("Sening short config string. FINISHED. Result = OK!");
-                            return true;
-                        }
-                        else {
-                            return false;
-                        }
+                    else {
+
+                        filePartName = "setwebproperty?property=tail";
+
+                    }
+
+                }
+
+                else {
+
+                    if (countedSections !== 0) {
+
+                        addToLogNL("Sending long config string. FINISHED. Result = OK!");
+                        config.onChange();
+                        return true;
+
 
                     }
                     else {
-                        return false;
+
+                        if (counter == 1) {
+
+                            filePartName = "setwebproperty?property=tail";
+                            subString = "";
+
+                        }
+                        else {
+
+                            addToLogNL("Sending short config string. FINISHED. Result = OK!");
+                            config.onChange();
+                            return true;
+
+                        }
                     }
-
-                }
-                else {
-                    filePartName = "tail";
                 }
 
             }
 
-            HTTPPostResult = httpPostWithErrorReson(boardhost + "setwebproperty?property=" + filePartName, subString);
-            addToLogNL("Sening long config string. Part =" + filePartName);
+            counter++;
+            addToLogNL("Sending config string. Still sending! " + filePartName);
+            httpPostAsyncWithErrorReson(url, filePartName, subString, config.configSendAsync, counter, dataString, lengthDataSubString);
 
-            if (!HTTPPostResult.indexOf("%error") == 0) {
+        }
+        else { //если HTTPClient вернул ошибку, возвращаем false 
 
-                if (filePartName == "tail") {
-                    this.onChange();
-                    addToLogNL("Sening long config string. FINISHED. Result = OK!");
-                    return true;
-                }
-                else {
-                    continue; 
-                }
+            addToLogNL("Sending config string ERROR!" + httpResult);
+            return false;
 
-            }
-            else {
-                return false;
-            }
-            
         }
 
-   },
+
+    }
 
     /*
     configPropertiesToDevice: function () {
@@ -333,3 +358,4 @@ var config = {
     }
     */
 }
+
