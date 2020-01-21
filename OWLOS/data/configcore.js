@@ -24,10 +24,10 @@ var config = {
             this.changeListners[k].event(this.changeListners[k].sender, this);
         }
     },
-    addChangeListner: function(_event, _sender) {
+    addChangeListner: function (_event, _sender) {
         try {
             _event(_sender, this);
-        } catch(exception) {
+        } catch (exception) {
             return; // don't add bad listner
         }
         this.changeListners.push(event = { event: _event, sender: _sender });
@@ -55,15 +55,15 @@ var config = {
         var dashboard = this.getDashboardById(_dashboardId);
         if (dashboard != undefined) {
 
-            
-                var widget = {
-                    dashboardId: _dashboardId,
-                    deviceId: _daviceId,
-                    deviceProperty: _deviceProperty,
-                    widgetId: _widgetId,
-                }
-                dashboard.widgets.push(widget);
-            
+
+            var widget = {
+                dashboardId: _dashboardId,
+                deviceId: _daviceId,
+                deviceProperty: _deviceProperty,
+                widgetId: _widgetId,
+            }
+            dashboard.widgets.push(widget);
+
 
             if (!this.locksave) this.save();
             return widget;
@@ -92,11 +92,11 @@ var config = {
                 return this._networkStatus;
             },
             networkStatusListners: [], //подписчики на изменение сетевого состояния 
-            addNetworkStatusListner: function(_event, _sender) { //для добавления нового подписчика(так же как и addValueListner)                                
+            addNetworkStatusListner: function (_event, _sender) { //для добавления нового подписчика(так же как и addValueListner)                                
                 //check event listner and setup current network status 
                 try {
                     _event(_sender, this);
-                } catch(exception) {
+                } catch (exception) {
                     return; // don't add bad listner
                 }
                 this.networkStatusListners.push(event = { event: _event, sender: _sender });
@@ -135,64 +135,69 @@ var config = {
 
 
         var stringifyConfig = httpGetWithErrorReson(boardhost + "getwebproperty?property=config"); //boardhost host контроллера с которого идет первичная загрузка
-        //STOP point
-        //  return;
-        if (stringifyConfig.indexOf("OWLOSConfig") == 0) {
+        if (!stringifyConfig.startsWith("%error")) {
             try {
-                configProperties = defaultWebProp();
-                stringifyConfigLines = stringifyConfig.split(";");
-                addToLogNL(stringifyConfigLines);
-                for (var i = 1; i < stringifyConfigLines.length; i++) {
-                    if ((!stringifyConfigLines[i].indexOf("dd:")==0) && (!stringifyConfigLines[i].indexOf("ne:")==0)) {
-                        var key = stringifyConfigLines[i].split("=")[0];
-                        var value = stringifyConfigLines[i].split("=")[1];
-                        configProperties[key] = value;
-                    }
-                    else { 
-                        if (stringifyConfigLines[i].indexOf("dd:")==0) {  //parse dashboards
-                            var id = stringifyConfigLines[i].split(":")[1];
-                            var dashboard = this.addDashboard(id);
-                            for (var j = i + 1; j < stringifyConfigLines.length; j++) {
-                                if (stringifyConfigLines[j].indexOf("dd:")==0) { i = j - 1; break; }
-                                if (stringifyConfigLines[j].indexOf("ne:")==0) { i = j - 1; break; }
+                configProperties = JSON.parse(unescape(stringifyConfig));
+                //check 
+                if (this.getDashboardById("main") != undefined) {
 
-                                if (stringifyConfigLines[j].indexOf("wt:")==0) {
-                                    var widget = this.addWidget(dashboard.id);
-                                    //widget.dashboardId = stringifyConfigLines[j + 1].split("=")[1];
-                                    widget.deviceId = stringifyConfigLines[j + 2].split("=")[1]
-                                    widget.deviceProperty = stringifyConfigLines[j + 3].split("=")[1]
-                                    widget.widgetId = stringifyConfigLines[j + 4].split("=")[1]
-                                    i = j + 4;
-                                    continue;
+                    var tempNodes = [];
+                    for (var nodeKey in configProperties.nodes) {
+
+                        var tempNode = {
+                            id: configProperties.nodes[nodeKey].id,
+                            host: configProperties.nodes[nodeKey].host,
+                            alies: configProperties.nodes[nodeKey].alies,
+                            recievedDevicesProperties: "",
+                            _networkStatus: NET_OFFLINE,
+                            devices: [],
+                            networkStatusListners: [], //подписчики на изменение сетевого состояния                         
+                            set networkStatus(networkStatus) { //для контроля изменения _networkStatus, для оповещения подписчиков
+                                this._networkStatus = networkStatus; //сохранить новое сетевое состояние
+                                for (var k = 0; k < this.networkStatusListners.length; k++) { //оповестить всех подписчиков
+                                    this.networkStatusListners[k].event(this.networkStatusListners[k].sender, this);
                                 }
-                            }
-                        }  //end of parse dashboards
-                        else {
-                            if (stringifyConfigLines[i].indexOf("ne:")==0) {  //parse nodes                                
-                                this.addNode(stringifyConfigLines[i + 1].split("=")[1], stringifyConfigLines[i + 2].split("=")[1]);
-                                i += 2;
-                            }  //end of parse nodes
+                            },
 
+                            get networkStatus() {//получить текущее сетевое состояние
+                                return this._networkStatus;
+                            },
+
+                            addNetworkStatusListner(_event, _sender) { //для добавления нового подписчика(так же как и addValueListner)                                
+                                //check event listner and setup current network status 
+                                try { _event(_sender, this); } catch {
+                                    return; // don't add bad listner
+                                }
+                                this.networkStatusListners.push(event = { event: _event, sender: _sender });
+                            }
                         }
+                        tempNodes.push(tempNode);
                     }
+                    configProperties.nodes = tempNodes;
+
+                    this.onChange();
+                    result = true;
                 }
-                
+                else {
+                    configProperties = "";
+                }
+
                 result = true;
                 this.locksave = false;
                 this.onChange();
 
-            } 
+            }
             catch (exception) {
                 addToLogNL(getLang("getconfigfailsparse") + exception, 2);
             }
         }
 
-        
+
         if (!result) { //пробуем создать свойства по умолчанию, если их еще нет
             //parse problem, reset properties
             configProperties = defaultWebProp();
 
-            
+
             addToLogNL(getLang("restoredefault"), 1);
             this.addDashboard("main");
             this.addNode(boardhost, "local");
@@ -204,46 +209,38 @@ var config = {
             result = this.save();
 
         }
-        
+
 
         return result;
     },
 
     save: function () {
 
-        var endOfLine = ";";
-        var stringifyConfig = "OWLOSConfig:" + endOfLine;
-        //for (var m = 0; m < 100; m++) {
-        //    stringifyConfig += m + ",";
-        //}
-        
+
+        var tempProp = defaultWebProp();
+
         for (var key in configProperties) {
-            if (typeof (configProperties[key]) === 'object') continue;
-            stringifyConfig += key + "=" + configProperties[key] + endOfLine;
-        }
-
-        for (var dashboardKey in configProperties.dashboards) {
-            var dashboard = configProperties.dashboards[dashboardKey];
-            stringifyConfig += "dd:" + escape(dashboard.id) + endOfLine;
-            stringifyConfig += "id=" + escape(dashboard.id) + endOfLine;
-
-            for (var widgetKey in dashboard.widgets) {
-                var widget = dashboard.widgets[widgetKey];
-                stringifyConfig += "wt:" + endOfLine;;
-                stringifyConfig += "d2=" + escape(widget.dashboardId) + endOfLine;
-                stringifyConfig += "d3=" + escape(widget.deviceId) + endOfLine;
-                stringifyConfig += "d4=" + escape(widget.deviceProperty) + endOfLine;
-                stringifyConfig += "wd=" + escape(widget.widgetId) + endOfLine;
+            if (key != "nodes") {
+                tempProp[key] = configProperties[key];
             }
         }
 
-        for (var nodeKey in configProperties.nodes) {
-            var node = configProperties.nodes[nodeKey];
-            stringifyConfig += "ne:" + endOfLine;            
-            stringifyConfig += "ht=" + escape(node.host) + endOfLine;
-            stringifyConfig += "as=" + escape(node.nodenickname) + endOfLine;
+        for (var node in configProperties.nodes) {
+            var jsonNode = {
+                id: configProperties.nodes[node].id,
+                host: configProperties.nodes[node].host,
+                alies: configProperties.nodes[node].alies,
+                recievedDevicesProperties: "",
+                _networkStatus: NET_OFFLINE,
+                devices: []
+
+            }
+
+            tempProp.nodes.push(jsonNode);
         }
 
+
+        var stringifyConfig = JSON.stringify(tempProp);
 
         var subStringLength = 1024;
 
@@ -258,7 +255,7 @@ var config = {
         var filePartName = "";
         var countedSections = Math.floor(dataString.length / lengthDataSubString);
 
-        
+
 
 
         //HTTPClient добавляет строку "%error" в начало Response если запрос не был завешен HTTPCode=200 или произашел TimeOut
@@ -267,7 +264,7 @@ var config = {
             if (counter < countedSections) {
 
                 subString = dataString.slice(counter * lengthDataSubString, (counter + 1) * lengthDataSubString);
-          
+
 
                 if (counter == 0) {
 
@@ -286,7 +283,7 @@ var config = {
                 if (counter == countedSections) {
 
                     subString = dataString.slice(counter * lengthDataSubString);
-             
+
 
                     if (counter == 0) {
 
