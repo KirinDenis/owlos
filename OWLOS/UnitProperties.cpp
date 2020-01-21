@@ -6,7 +6,7 @@
 #include "src\Managers\UpdateManager.h"
 
 #define DefaultFirmwareVersion "OWL OS IoT Node version 1.7 (beta)"
-#define DefaultFirmwareBuildNumber 57
+#define DefaultFirmwareBuildNumber 58
 
 #define DefaultId "owlnode"
 #define DefaultTopic "world0/area1/front1/room1/"

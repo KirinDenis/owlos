@@ -147,7 +147,7 @@ var config = {
                         var tempNode = {
                             id: configProperties.nodes[nodeKey].id,
                             host: configProperties.nodes[nodeKey].host,
-                            alies: configProperties.nodes[nodeKey].alies,
+                            nodenickname: configProperties.nodes[nodeKey].nodenickname,
                             recievedDevicesProperties: "",
                             _networkStatus: NET_OFFLINE,
                             devices: [],
@@ -201,10 +201,12 @@ var config = {
             addToLogNL(getLang("restoredefault"), 1);
             this.addDashboard("main");
             this.addNode(boardhost, "local");
+            /*
             this.addNode("http://176.100.2.105:8085/", "solomon_1");
             this.addNode("http://176.100.2.105:8086/", "solomon_2");
             this.addNode("http://81.95.178.177:8084/", "home_1");
             this.addNode("http://192.168.1.11:8084/", "home_2");
+            */
 
             result = this.save();
 
@@ -229,7 +231,7 @@ var config = {
             var jsonNode = {
                 id: configProperties.nodes[node].id,
                 host: configProperties.nodes[node].host,
-                alies: configProperties.nodes[node].alies,
+                nodenickname: configProperties.nodes[node].nodenickname,
                 recievedDevicesProperties: "",
                 _networkStatus: NET_OFFLINE,
                 devices: []
