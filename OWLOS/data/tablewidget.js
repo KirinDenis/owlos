@@ -70,7 +70,7 @@ var TableWidget =
             this.device = device;
             this.size = size; //devices.addNewDeviceListner(this.newTable, this); //подписываемся на событие devices о создании нового устройства
             //devices.addDeviceLoadedListner(this.deviceLoaded, this); //подписываемся на событие devices о создании нового устройства
-            //if (document.getElementById(this.device._alies + "_" + this.device._id) != undefined) return; 
+            //if (document.getElementById(this.device._nodenickname + "_" + this.device._id) != undefined) return; 
 
             this.newTable(); //this.nodePropAnchors.innerHTML = "";
             //this.nodesPropsPanel.innerHTML = "";
@@ -91,8 +91,8 @@ var TableWidget =
                 deviceHRef.className += " active";
             }
             deviceHRef.setAttribute("data-toggle", "tab");
-            deviceHRef.innerText = getLang(this.device._alies + "/" + this.device._id);
-            deviceHRef.href = "#" + this.device._alies + "_" + this.device._id;
+            deviceHRef.innerText = getLang(this.device._nodenickname + "/" + this.device._id);
+            deviceHRef.href = "#" + this.device._nodenickname + "_" + this.device._id;
             */
 
             /*
@@ -118,7 +118,7 @@ var TableWidget =
                 div.className = "col-md-" + this.size + " devicediv TableWidget";
             }
 
-            div.id = this.device._alies + "_" + this.device._id;
+            div.id = this.device._nodenickname + "_" + this.device._id;
             /*
             var deviceDiv = div.appendChild(document.createElement('div'));
             deviceDiv.className = "col-md-12 border-0 devicecard";
@@ -132,7 +132,7 @@ var TableWidget =
 
             this.table = div.appendChild(document.createElement('table'));
             this.table.className = "table table-striped table-sm";
-            this.table.id = "devicetable" + this.device._alies + "_" + this.device._id;
+            this.table.id = "devicetable" + this.device._nodenickname + "_" + this.device._id;
             this.table.cellspacing = "0"; //колонки
 
             var thead = this.table.appendChild(document.createElement('thead'));
@@ -183,7 +183,7 @@ var TableWidget =
 
             if (this.device._new) {
                 // $("#devicetable" + this.device._id).DataTable({ searching: false, paging: false, info: false });
-                $("#devicetable" + this.device._alies + "_" + this.device._id).DataTable({
+                $("#devicetable" + this.device._nodenickname + "_" + this.device._id).DataTable({
                     "language": {
                         "lengthMenu": getLang("dt_display") + " _MENU_ " + getLang("dt_recordsperpage"),
                         "info": getLang("dt_showing") + " _START_ " + getLang("dt_to") + " _END_ " + getLang("dt_of") + " _TOTAL_ " + getLang("dt_entries"),
@@ -366,7 +366,7 @@ var TableWidget =
 
         _proto.setDeviceClick = function setDeviceClick(event) {
             event.stopPropagation();
-            var button = event.target; //вытаскиваем "кликнутую" кнопку из event 
+            var button = event.currentTarget; //вытаскиваем "кликнутую" кнопку из event 
 
             var deviceProperty = button.deviceProperty; //вытаскиваем из кнопки - связанное с ней свойство устройства  
 
@@ -394,7 +394,7 @@ var TableWidget =
 
         _proto.getDeviceClick = function getDeviceClick(event) {
             event.stopPropagation();
-            var button = event.target;
+            var button = event.currentTarget;
             var deviceProperty = button.deviceProperty;
 
             if (deviceProperty.networkStatus != NET_RECONNECT) {

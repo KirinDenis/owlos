@@ -329,7 +329,7 @@ function drawActuatorData(actuator, data) {
 function actuatorCheckBoxClick(event) {
 
     event.stopPropagation();
-    var actuator = event.target;
+    var actuator = event.currentTarget;
     if (actuator == null) return true;
     if (actuator.parentActuator != null) actuator = actuator.parentActuator;
     if (actuator == null) return true;

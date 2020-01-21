@@ -3,7 +3,7 @@ var devicesUI = {
 
     appendDevicePins: function (valueSelect) {
         var valueSelectOption = valueSelect.appendChild(document.createElement('option'));
-        valueSelectOption.innerText = "not used";
+        valueSelectOption.innerText = getLang("notused");
         valueSelectOption = valueSelect.appendChild(document.createElement('option'));
         valueSelectOption.innerText = "D0";
         valueSelectOption = valueSelect.appendChild(document.createElement('option'));
@@ -36,7 +36,7 @@ var devicesUI = {
         var addDeviceAhref = event.currentTarget;
         var node = addDeviceAhref.node;
 
-        makeModalDialog("resetPanel", "addDevice", getLang("addDevice") + " " + node.alies, "");
+        makeModalDialog("resetPanel", "addDevice", getLang("adddevicedigalog") + " " + node.nodenickname, "");
         var modalFooter = document.getElementById("addDeviceModalFooter");
         var modalBody = document.getElementById("addDeviceModalBody");
 
@@ -45,7 +45,7 @@ var devicesUI = {
         formGroup.className = "form-group";
         var label = formGroup.appendChild(document.createElement("label"));
         label.setAttribute("for", "typeSelect");
-        label.innerText = "device";
+        label.innerText = getLang("devicetype");
         var inputDiv = formGroup.appendChild(document.createElement("div"));
 
         var typeSelect = formGroup.appendChild(document.createElement('select'));
@@ -53,41 +53,42 @@ var devicesUI = {
         typeSelect.id = "typeSelect";
 
         var valueSelectOption = typeSelect.appendChild(document.createElement('option'));
-        valueSelectOption.innerText = "DHT";
+        valueSelectOption.innerText = getLang("dht");
         valueSelectOption = typeSelect.appendChild(document.createElement('option'));
-        valueSelectOption.innerText = "Light";
+        valueSelectOption.innerText = getLang("light");
         valueSelectOption = typeSelect.appendChild(document.createElement('option'));
-        valueSelectOption.innerText = "Smoke";
+        valueSelectOption.innerText = getLang("smoke");
         valueSelectOption = typeSelect.appendChild(document.createElement('option'));
-        valueSelectOption.innerText = "Motion";
+        valueSelectOption.innerText = getLang("motion");
         valueSelectOption = typeSelect.appendChild(document.createElement('option'));
-        valueSelectOption.innerText = "Sensor";
+        valueSelectOption.innerText = getLang("sensor");
         valueSelectOption = typeSelect.appendChild(document.createElement('option'));
-        valueSelectOption.innerText = "Stepper";
+        valueSelectOption.innerText = getLang("stepper");
         valueSelectOption = typeSelect.appendChild(document.createElement('option'));
-        valueSelectOption.innerText = "LCD";
+        valueSelectOption.innerText = getLang("lcd");
         valueSelectOption = typeSelect.appendChild(document.createElement('option'));
-        valueSelectOption.innerText = "Actuator";
+        valueSelectOption.innerText = getLang("actuator");
         valueSelectOption = typeSelect.appendChild(document.createElement('option'));
-        valueSelectOption.innerText = "Opto";
+        valueSelectOption.innerText = getLang("opto");
         valueSelectOption = typeSelect.appendChild(document.createElement('option'));
-        valueSelectOption.innerText = "Valve";
+        valueSelectOption.innerText = getLang("valve");
 
 
         formGroup = modalBody.appendChild(document.createElement("div"));
         formGroup.className = "form-group";
         label = formGroup.appendChild(document.createElement("label"));
         label.setAttribute("for", "idEdit");
-        label.innerText = "id";
+        label.innerText = getLang("deviceid");
         var idEdit = formGroup.appendChild(document.createElement('input'));
         idEdit.className = "form-control form-control-sm";
         idEdit.id = "idInput";
+        idEdit.placeholder = getLang("deviceidplaceholder");
 
         formGroup = modalBody.appendChild(document.createElement("div"));
         formGroup.className = "form-group";
         label = formGroup.appendChild(document.createElement("label"));
         label.setAttribute("for", "pin1Select");
-        label.innerText = "pin1";
+        label.innerText = getLang("pin") + " 1";
         var pin1Select = formGroup.appendChild(document.createElement('select'));
         pin1Select.className = "form-control form-control-sm";
         pin1Select.id = "pin1Select";
@@ -97,7 +98,7 @@ var devicesUI = {
         formGroup.className = "form-group";
         label = formGroup.appendChild(document.createElement("label"));
         label.setAttribute("for", "pin2Select");
-        label.innerText = "pin2";
+        label.innerText = getLang("pin") + " 2";
         var pin2Select = formGroup.appendChild(document.createElement('select'));
         pin2Select.className = "form-control form-control-sm";
         pin2Select.id = "pin2Select";
@@ -107,7 +108,7 @@ var devicesUI = {
         formGroup.className = "form-group";
         label = formGroup.appendChild(document.createElement("label"));
         label.setAttribute("for", "pin3Select");
-        label.innerText = "pin3";
+        label.innerText = getLang("pin") + " 3";
         var pin3Select = formGroup.appendChild(document.createElement('select'));
         pin3Select.className = "form-control form-control-sm";
         pin3Select.id = "pin3Select";
@@ -117,7 +118,7 @@ var devicesUI = {
         formGroup.className = "form-group";
         label = formGroup.appendChild(document.createElement("label"));
         label.setAttribute("for", "pin4Select");
-        label.innerText = "pin4";
+        label.innerText = getLang("pin") + " 4";
         var pin4Select = formGroup.appendChild(document.createElement('select'));
         pin4Select.className = "form-control form-control-sm";
         pin4Select.id = "pin4Select";
@@ -143,7 +144,7 @@ var devicesUI = {
         addButton.pin4Select = pin4Select;
         addButton.alertDiv = alertDiv;
         addButton.onclick =  devicesUI.doAddDeviceClick;
-        addButton.innerText = getLang("add");
+        addButton.innerText = getLang("adddevicebutton");
 
 
         $("#addDeviceModal").modal('show');
@@ -160,6 +161,7 @@ var devicesUI = {
         addButton.value = 'do...';
         addButton.disable = true;
 
+        //TODO: decode Type from name 
         var httpResult = addDevice(node.host, addButton.typeSelect.selectedIndex + 1, addButton.idEdit.value, addButton.pin1Select.value, addButton.pin2Select.value, addButton.pin3Select.value, addButton.pin4Select.value);
 
         if (httpResult == 1) {
@@ -183,7 +185,7 @@ var devicesUI = {
 
 
     deviceClick: function (event) {
-        var button = event.target;
+        var button = event.currentTarget;
         document.location = button.href;
         return false;
     }

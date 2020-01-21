@@ -71,12 +71,12 @@ var config = {
         return undefined;
     },
 
-    addNode: function (_host, _alies) {
+    addNode: function (_host, _nodenickname) {
         if (this.getNodeByHost(_host) != undefined) return false;
 
         var node = {
             host: _host,
-            alies: _alies,
+            nodenickname: _nodenickname,
             recievedDevicesProperties: "",
             //-------------------------------------------------------------------------------------------------------------
             //сетевое состояние модуля - онлайн, офлайн, переподсоединение ("в работе"), ошибка --> по умолчанию онлайн
@@ -235,7 +235,7 @@ var config = {
             var node = configProperties.nodes[nodeKey];
             stringifyConfig += "ne:" + endOfLine;            
             stringifyConfig += "ht=" + escape(node.host) + endOfLine;
-            stringifyConfig += "as=" + escape(node.alies) + endOfLine;
+            stringifyConfig += "as=" + escape(node.nodenickname) + endOfLine;
         }
 
 

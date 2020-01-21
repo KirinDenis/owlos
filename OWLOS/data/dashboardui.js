@@ -96,7 +96,7 @@ var dashboardUI = {
 
             for (var i = 0; i < configProperties.nodes[node].devices.length; i++) {
                 var valueSelectOption = deviceSelect.appendChild(document.createElement('option'));
-                valueSelectOption.innerText = getLang(configProperties.nodes[node].devices[i]._alies + "/" + configProperties.nodes[node].devices[i]._id);
+                valueSelectOption.innerText = getLang(configProperties.nodes[node].devices[i]._nodenickname + "/" + configProperties.nodes[node].devices[i]._id);
                 valueSelectOption.device = configProperties.nodes[node].devices[i];
             }
         }

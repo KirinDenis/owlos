@@ -35,9 +35,9 @@ var settingsUI = {
 
         for (var nodeKey in configProperties.nodes) {
             var node = configProperties.nodes[nodeKey];
-            if (document.getElementById("nodeNavItem" + node.alies) == undefined) {
+            if (document.getElementById("nodeNavItem" + node.nodenickname) == undefined) {
                 var nodeLi = nodesSideBar.appendChild(document.createElement("li"));
-                nodeLi.id = "nodeNavItem" + node.alies;
+                nodeLi.id = "nodeNavItem" + node.nodenickname;
                 nodeLi.node = node;
 
                 if (firstDevice) {
@@ -45,8 +45,8 @@ var settingsUI = {
                     nodesSideBar.activeLi = nodeLi;
                 }
                 var nodeAhref = nodeLi.appendChild(document.createElement("a"));
-                nodeAhref.id = node.alies + "ahref";
-                nodeAhref.href = "#" + node.alies + "submenu";
+                nodeAhref.id = node.nodenickname + "ahref";
+                nodeAhref.href = "#" + node.nodenickname + "submenu";
 
                 if (firstDevice) {
                     nodeAhref.setAttribute("data-toggle", "collapse");
@@ -57,7 +57,7 @@ var settingsUI = {
                     nodeAhref.setAttribute("data-toggle", "collapse");
                     nodeAhref.setAttribute("aria-expanded", "false");
                 }
-                nodeAhref.innerHTML = "<b>" + node.alies + "</b>";
+                nodeAhref.innerHTML = "<b>" + node.nodenickname + "</b>";
                 //nodeAhref.onclick = settingsUI.deviceAnchorClick;
                 nodeAhref.parentLi = nodeLi;
                 nodeAhref.node = node;
@@ -66,7 +66,7 @@ var settingsUI = {
 
                 nodeLi.nodeSubmenuUl = nodeSubmenuUl;
                 nodeSubmenuUl.className = "collapse list-unstyled";
-                nodeSubmenuUl.id = node.alies + "submenu";
+                nodeSubmenuUl.id = node.nodenickname + "submenu";
 
                 //Add device submenuitem ----------------
 
@@ -91,8 +91,8 @@ var settingsUI = {
                 nodePanelHRef.style.color = theme.warning;
                 nodePanelHRef.setAttribute("data-toggle", "tab");
                 nodePanelHRef.onclick = settingsUI.deviceAnchorClick;
-                nodePanelHRef.innerText = getLang("properties");
-                nodePanelHRef.href = "#" + node.alies + "nodePropsPanel";
+                nodePanelHRef.innerText = getLang("nodeproperties");
+                nodePanelHRef.href = "#" + node.nodenickname + "nodePropsPanel";
                 nodePanelHRef.node = node;
                 var nodesPropsPanel = document.getElementById("nodesPropsPanel");
 
@@ -103,19 +103,25 @@ var settingsUI = {
                 if (firstDevice) {
                     nodePropsPanel.className += " active show"; //панель свойств первой ноды активна изначально
                 }
-                nodePropsPanel.id = node.alies + "nodePropsPanel";
+                nodePropsPanel.id = node.nodenickname + "nodePropsPanel";
                 nodeAhref.nodefadepanel = nodePropsPanel;
 
                 var nodePropHolderPanel = nodePropsPanel.appendChild(document.createElement('div'));
-                nodePropHolderPanel.id = node.alies + "bodePropHoder";
+                nodePropHolderPanel.id = node.nodenickname + "bodePropHoder";
                 nodePropHolderPanel.className = "row";
 
-                //подготавливаем панели со свойствами ноды (для каждой ноды своя панель id = node.alies + "nodePropPanel")
+                //подготавливаем панели со свойствами ноды (для каждой ноды своя панель id = node.nodenickname + "nodePropPanel")
                 //смотрите обработчик события onDeviceLoaded() - он запоняет эту панель
-                sender.addCard(nodePropHolderPanel, node.alies + "WifiNodeProp", getLang("wifinodeprop"), 4); //WifiNodePropPanel - свойства WiFi
-                sender.addCard(nodePropHolderPanel, node.alies + "NetworkNodeProp", getLang("networknodeprop"), 4);
-                sender.addCard(nodePropHolderPanel, node.alies + "SystemNodeProp", getLang("systemnodeprop"), 4);
-                sender.addCard(nodePropHolderPanel, node.alies + "UpdateNodeProp", getLang("updatenodeprop"), 4);
+                sender.addCard(nodePropHolderPanel, node.nodenickname + "NetworkNodeProp", getLang("networknodeprop"), 12);
+                var networkNodePropBody = document.getElementById(node.nodenickname + "NetworkNodePropBody");
+                sender.addDiv(networkNodePropBody, node.nodenickname + "NetworkNodePropBody1", 4);
+                sender.addDiv(networkNodePropBody, node.nodenickname + "NetworkNodePropBody2", 4);
+                sender.addDiv(networkNodePropBody, node.nodenickname + "NetworkNodePropBody3", 4);
+
+                sender.addCard(nodePropHolderPanel, node.nodenickname + "WifiNodeProp", getLang("wifinodeprop"), 4); //WifiNodePropPanel - свойства WiFi                
+                sender.addCard(nodePropHolderPanel, node.nodenickname + "SystemNodeProp", getLang("systemnodeprop"), 4);
+                sender.addCard(nodePropHolderPanel, node.nodenickname + "UpdateNodeProp", getLang("updatenodeprop"), 4);
+
 
                 //--- EndOf nodePropsPanel ---------------------------------------------------------------------------
 
@@ -129,35 +135,56 @@ var settingsUI = {
                 filesHRef.setAttribute("data-toggle", "tab");
                 filesHRef.onclick = settingsUI.deviceAnchorClick;
                 filesHRef.innerText = getLang("files");
-                filesHRef.href = "#" + node.alies + "filesfadepanel";
+                filesHRef.href = "#" + node.nodenickname + "filesfadepanel";
                 filesHRef.node = node;
 
                 //new files tab ----------------
                 var nodesPropsPanel = document.getElementById("nodesPropsPanel");
                 var filesDiv = nodesPropsPanel.appendChild(document.createElement('div'));
                 filesDiv.className = "devicediv tab-pane fade";
-                filesDiv.id = node.alies + "filesfadepanel";
+                filesDiv.id = node.nodenickname + "filesfadepanel";
                 filesHRef.filesList = new FilesList(filesDiv, node);
+
+                //restful items main menu 
+
+
+                var RESTfullNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
+                RESTfullNavItem.className = "nav-item";
+                RESTfullNavItem.id = node.nodenickname + "restfulsubmenu2";
+                
+                var RESTfullHRef = RESTfullNavItem.appendChild(document.createElement("a"));
+                RESTfullHRef.setAttribute("data-toggle", "collapse");
+                RESTfullHRef.parentLi = RESTfullNavItem;
+                RESTfullHRef.style.color = theme.warning;
+                //RESTfullHRef.setAttribute("data-toggle", "tab");
+                RESTfullHRef.innerHTML = getLang("RESTfull");
+                RESTfullHRef.href = "#" + node.nodenickname + "restfulsubmenu";
+                RESTfullHRef.node = node;
+
+                var RESTfulSubmenuUl = RESTfullNavItem.appendChild(document.createElement("ul"));
+                RESTfulSubmenuUl.className = "collapse list-unstyled";
+                RESTfulSubmenuUl.id = node.nodenickname + "restfulsubmenu";
+
 
                 // add Node Status Panel ---------------------------------------------
                 var nodeStatusPanel = document.createElement("div");
-                nodeStatusPanel.id = node.alies + "nodestatuspanel";
+                nodeStatusPanel.id = node.nodenickname + "nodestatuspanel";
                 nodeAhref.nodeStatusPanel = nodeStatusPanel;
 
-                nodeAhref.onlinePanel = settingsUI.getStatusWidget(node.alies + "onlineStatus", "Online", nodeStatusPanel);
+                nodeAhref.onlinePanel = settingsUI.getStatusWidget(node.nodenickname + "onlineStatus", "Online", nodeStatusPanel);
 
                 node.addNetworkStatusListner(settingsUI.onOnlineStatusChange, nodeAhref.onlinePanel);
-                nodeAhref.WiFiAPPanel = settingsUI.getStatusWidget(node.alies + "wifiapStatus", "WiFi AP", nodeStatusPanel);
+                nodeAhref.WiFiAPPanel = settingsUI.getStatusWidget(node.nodenickname + "wifiapStatus", "WiFi AP", nodeStatusPanel);
 
-                nodeAhref.WiFiSTPanel = settingsUI.getStatusWidget(node.alies + "wifistStatus", "WiFi ST", nodeStatusPanel);
-                nodeAhref.RESTfulPanel = settingsUI.getStatusWidget(node.alies + "restfulStatus", "RESTful", nodeStatusPanel);
-                nodeAhref.MQTTPanel = settingsUI.getStatusWidget(node.alies + "mqttStatus", "MQTT", nodeStatusPanel);
-                nodeAhref.OTAPanel = settingsUI.getStatusWidget(node.alies + "otaStatus", "OTA", nodeStatusPanel);
+                nodeAhref.WiFiSTPanel = settingsUI.getStatusWidget(node.nodenickname + "wifistStatus", "WiFi ST", nodeStatusPanel);
+                nodeAhref.RESTfulPanel = settingsUI.getStatusWidget(node.nodenickname + "restfulStatus", "RESTful", nodeStatusPanel);
+                nodeAhref.MQTTPanel = settingsUI.getStatusWidget(node.nodenickname + "mqttStatus", "MQTT", nodeStatusPanel);
+                nodeAhref.OTAPanel = settingsUI.getStatusWidget(node.nodenickname + "otaStatus", "OTA", nodeStatusPanel);
 
                 document.getElementById("nodeStatusPanel").appendChild(nodeStatusPanel);
 
                 var nodeStatusPanelText = document.createElement("div");
-                nodeStatusPanelText.innerHTML = " <strong>" + node.alies + "</strong> at <a href='" + node.host + "' target='_blank'>" + node.host + "</a>";
+                nodeStatusPanelText.innerHTML = " <strong>" + node.nodenickname + "</strong> at <a href='" + node.host + "' target='_blank'>" + node.host + "</a>";
                 document.getElementById("nodeStatusPanelText").appendChild(nodeStatusPanelText);
 
                 nodeStatusPanel.nodeStatusPanelText = nodeStatusPanelText;
@@ -178,11 +205,11 @@ var settingsUI = {
     //---------------------------------------------------------------------------------------------------------------------------------------------------
     //когда очередная нода загружает очередное устройство - строим индикаторы в верхней панели "Настройки" - Online, WiFi AP, WiFi ST, RESTful, MQTT, OTA
     //и подготавлием панель управления нодой (с кнопками Update, Reset и основными свойствами ноды) - смотрите onConfigChange такая панель создается для каждой
-    //ноды id = node.alies + "nodePropPanel"    
+    //ноды id = node.nodenickname + "nodePropPanel"    
     onDeviceLoaded: function (sender, device) {
         if (device._new) { //если это устройство загружено впервые (вновь созданные устройства так же вызовут этот метод)
 
-            var nodeSubmenuUl = document.getElementById(device._alies + "submenu"); //ищем пункт sideBar соответствующий ноде которой принадлежит устройство
+            var nodeSubmenuUl = document.getElementById(device._nodenickname + "restfulsubmenu"); //ищем пункт sideBar соответствующий ноде которой принадлежит устройство
             if (nodeSubmenuUl == undefined) return; //если такого пункта нет - выходим
 
             var node = config.getNodeByHost(device._host); //узнаем какой ноде принадлежит устройство
@@ -194,7 +221,7 @@ var settingsUI = {
             var deviceAhref = deviceLi.appendChild(document.createElement("a")); //отображаемая часть меню - гиперссылка
             deviceAhref.className = "nav-link";
             deviceAhref.setAttribute("data-toggle", "tab");
-            deviceAhref.href = "#" + device._alies + "_" + device._id; //якорь на панель с таблицей со свойствами выбранного устройства (создается один раз)
+            deviceAhref.href = "#" + device._nodenickname + "_" + device._id; //якорь на панель с таблицей со свойствами выбранного устройства (создается один раз)
             deviceAhref.node = config.getNodeByHost(device._host); //привязываем пункт меню к ноде которой принадлежит устройства (используется для быстрого поска ноды в будущем)
             deviceAhref.innerText = device._id; //пункт меню отображает ID нового устройства
             deviceAhref.onclick = settingsUI.deviceAnchorClick; //обработчик клика на пунк меню (переключение панелей)
@@ -203,10 +230,12 @@ var settingsUI = {
 
 
             var nodePropAnchors = document.getElementById("nodePropNavBar"); //старая навигационная панель для отображения панелей свойств
-            var wifiPropPanel = document.getElementById(node.alies + "WifiNodePropBody"); //панель для cвойств
-            var networkPropPanel = document.getElementById(node.alies + "NetworkNodePropBody");
-            var systemPropPanel = document.getElementById(node.alies + "SystemNodePropBody");
-            var updatePropPanel = document.getElementById(node.alies + "UpdateNodePropBody");
+            var wifiPropPanel = document.getElementById(node.nodenickname + "WifiNodePropBody"); //панель для cвойств            
+            var systemPropPanel = document.getElementById(node.nodenickname + "SystemNodePropBody");
+            var updatePropPanel = document.getElementById(node.nodenickname + "UpdateNodePropBody");
+            var networkPropPanel1 = document.getElementById(node.nodenickname + "NetworkNodePropBody1");
+            var networkPropPanel2 = document.getElementById(node.nodenickname + "NetworkNodePropBody2");
+            var networkPropPanel3 = document.getElementById(node.nodenickname + "NetworkNodePropBody3");
             //добавляем панель с таблицей со свойствами нового "device" устройства в панель nodesPropsPanel, якорим навигацию на nodePropAnchors, bootstrap cell size -> 12             
             new TableWidget(nodePropAnchors, nodesPropsPanel, device, 12);
 
@@ -215,14 +244,14 @@ var settingsUI = {
                 //индикатор(widget) в верхней панеле для WiFi AP и Wifi ST - подключаем их к событиям WiFi текущей node.WifiDevice - теперь WifiDevice будет отправлять событие 
                 //о своем состоянии непосредственно индикаторам 
                 //сколько будет node столько будет индикаторов для их WiFi device - мы отображаем только индикаторы выбранной в SideBar (текущей) node и ее устройств
-                //смотрите getStatusWidget() метод - если индикатора нет его создадут и подпишут id как node.alies + "wifiapStatus"
-                var WiFiAPPanel = settingsUI.getStatusWidget(node.alies + "wifiapStatus", "WiFi AP", undefined);
+                //смотрите getStatusWidget() метод - если индикатора нет его создадут и подпишут id как node.nodenickname + "wifiapStatus"
+                var WiFiAPPanel = settingsUI.getStatusWidget(node.nodenickname + "wifiapStatus", "WiFi AP", undefined);
                 //подписываем свойство устройства WiFi.wifiaccesspointavailable на обработчик settingsUI.onWiFiAPStatusChange
                 //если WiFi.wifiaccesspointavailable изменит значение, будет вызван settingsUI.onWiFiAPStatusChange
                 device.wifiaccesspointavailable.addValueListner(settingsUI.onWiFiAPStatusChange, WiFiAPPanel);
 
                 //так же как и WiFi AP
-                var WiFiSTPanel = settingsUI.getStatusWidget(node.alies + "wifistStatus", "WiFi ST", undefined); //
+                var WiFiSTPanel = settingsUI.getStatusWidget(node.nodenickname + "wifistStatus", "WiFi ST", undefined); //
                 device.wifistatus.addValueListner(settingsUI.onWiFiSTStatusChange, WiFiSTPanel);
 
                 //панель со свойствами node - добавляем отображени уровня WiFi сигнала (так же подписываем на событие изменения значения WiFi.wifirssi)
@@ -273,39 +302,39 @@ var settingsUI = {
                     if (device.type.value == NetworkDeviceType) {
                         // document.title = device.unitid.value + " :: OWL OS"; //ToDo detect "local" node
 
-                        var RESTfulPanel = settingsUI.getStatusWidget(node.alies + "restfulStatus", "RESTful");
+                        var RESTfulPanel = settingsUI.getStatusWidget(node.nodenickname + "restfulStatus", "RESTful");
                         device.restfulavailable.addValueListner(settingsUI.onRESTfulStatusChange, RESTfulPanel);
                         var node = config.getNodeByHost(device._host);
                         node.addNetworkStatusListner(settingsUI.onRESTfulOnlineStatusChange, RESTfulPanel);
 
-                        var MQTTPanel = settingsUI.getStatusWidget(node.alies + "mqttStatus", "MQTT");
+                        var MQTTPanel = settingsUI.getStatusWidget(node.nodenickname + "mqttStatus", "MQTT");
                         device.mqttclientstate.addValueListner(settingsUI.onMQTTStatusChange, MQTTPanel);
 
-                        var OTAPanel = settingsUI.getStatusWidget(node.alies + "otaStatus", "OTA");
+                        var OTAPanel = settingsUI.getStatusWidget(node.nodenickname + "otaStatus", "OTA");
                         device.otaavailable.addValueListner(settingsUI.onOTAStatusChange, OTAPanel);
 
-                        var RESTfulCheckbox = settingsUI.addPropertyCheckbox(networkPropPanel, device.restfulavailable, getLang("restfulavailable"), "");
-                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel, device.restfulserverusername, getLang("restfulserverusername"), ""));
-                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel, device.restfulserverpassword, getLang("restfulserverpassword"), ""));
-                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel, device.restfulserverport, getLang("restfulserverport"), ""));
-                        settingsUI.addSpaceView(wifiPropPanel, "2");
-                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel, device.restfulclienturl, getLang("restfulclienturl"), ""));
-                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel, device.restfulclientport, getLang("restfulclientport"), ""));
+                        var RESTfulCheckbox = settingsUI.addPropertyCheckbox(networkPropPanel1, device.restfulavailable, getLang("restfulavailable"), "");
+                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, device.restfulserverusername, getLang("restfulserverusername"), ""));
+                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, device.restfulserverpassword, getLang("restfulserverpassword"), ""));
+                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, device.restfulserverport, getLang("restfulserverport"), ""));
+                        settingsUI.addSpaceView(networkPropPanel1, "2");
+                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, device.restfulclienturl, getLang("restfulclienturl"), ""));
+                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, device.restfulclientport, getLang("restfulclientport"), ""));
                         settingsUI.onPropertyCheckboxValueChange(RESTfulCheckbox, RESTfulCheckbox.deviceProperty);
 
-                        var MQTTCheckbox = settingsUI.addPropertyCheckbox(networkPropPanel, device.mqttavailable, getLang("mqttavailable"), "");
-                        MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel, device.mqtturl, getLang("mqtturl"), ""));
-                        MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel, device.mqttport, getLang("mqttport"), ""));
-                        settingsUI.addSpaceView(wifiPropPanel, "3");
-                        MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel, device.mqttid, getLang("mqttid"), ""));
-                        MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel, device.mqttlogin, getLang("mqttlogin"), ""));
-                        MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel, device.mqttpassword, getLang("mqttpassword"), ""));
+                        var MQTTCheckbox = settingsUI.addPropertyCheckbox(networkPropPanel2, device.mqttavailable, getLang("mqttavailable"), "");
+                        MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel2, device.mqtturl, getLang("mqtturl"), ""));
+                        MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel2, device.mqttport, getLang("mqttport"), ""));
+                        settingsUI.addSpaceView(networkPropPanel2, "3");
+                        MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel2, device.mqttid, getLang("mqttid"), ""));
+                        MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel2, device.mqttlogin, getLang("mqttlogin"), ""));
+                        MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel2, device.mqttpassword, getLang("mqttpassword"), ""));
                         settingsUI.onPropertyCheckboxValueChange(MQTTCheckbox, MQTTCheckbox.deviceProperty);
 
-                        var OTACheckbox = settingsUI.addPropertyCheckbox(networkPropPanel, device.otaavailable, getLang("otaavailable"), "");
-                        OTACheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel, device.otaid, getLang("otaid"), ""));
-                        OTACheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel, device.otaport, getLang("otaport"), ""));
-                        OTACheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel, device.otapassword, getLang("otapassword"), ""));
+                        var OTACheckbox = settingsUI.addPropertyCheckbox(networkPropPanel3, device.otaavailable, getLang("otaavailable"), "");
+                        OTACheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel3, device.otaid, getLang("otaid"), ""));
+                        OTACheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel3, device.otaport, getLang("otaport"), ""));
+                        OTACheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel3, device.otapassword, getLang("otapassword"), ""));
                         settingsUI.onPropertyCheckboxValueChange(OTACheckbox, OTACheckbox.deviceProperty);
 
                         settingsUI.addPropertyView(updatePropPanel, device.firmwareversion, getLang("firmwareversion"));
@@ -315,7 +344,7 @@ var settingsUI = {
 
                         //Update watcher panel 
                         //Панель обновлений
-                        var updateWatcherId = node.alies + "updateWatcher";
+                        var updateWatcherId = node.nodenickname + "updateWatcher";
                         var updateWatcherDiv = document.getElementById(updateWatcherId);
                         if (updateWatcherDiv == null) {
                             updateWatcherDiv = updatePropPanel.appendChild(document.createElement('div'));
@@ -326,7 +355,7 @@ var settingsUI = {
                             var updateButtonHolder = updatePropPanel.appendChild(document.createElement('div'));
                             updateButtonHolder.className = "row";
                             var updateuiButton = updateButtonHolder.appendChild(document.createElement('input'));
-                            updateuiButton.id = node.alies + "updateuibutton";
+                            updateuiButton.id = node.nodenickname + "updateuibutton";
                             updateuiButton.className = "btn btn-success btn-sm float-right";
                             updateuiButton.type = "button";
                             updateuiButton.setAttribute("data-toggle", "modal");
@@ -336,7 +365,7 @@ var settingsUI = {
                             updateuiButton.onclick = settingsUI.modalUpdateUIClick;
 
                             var updatefirmwareButton = updateButtonHolder.appendChild(document.createElement('input'));
-                            updatefirmwareButton.id = node.alies + "updatefirmwarebutton";
+                            updatefirmwareButton.id = node.nodenickname + "updatefirmwarebutton";
                             updatefirmwareButton.className = "btn btn-success btn-sm float-right";
                             updatefirmwareButton.type = "button";
                             updatefirmwareButton.setAttribute("data-toggle", "modal");
@@ -384,7 +413,7 @@ var settingsUI = {
         if (node != undefined) {
 
             if (aHref.nodeStatusPanel == undefined) {
-                aHref = document.getElementById(node.alies + "ahref");
+                aHref = document.getElementById(node.nodenickname + "ahref");
             }
             if (aHref.nodeStatusPanel != undefined) {
                 var nodeStatusPanel = document.getElementById("nodeStatusPanel");
@@ -400,7 +429,7 @@ var settingsUI = {
         }
 
         //     if (aHref.getAttribute("aria-expanded") == "true") {
-        //         document.documentElement.scrollTop = document.documentElement.scrollTop - event.clientY - event.target.offsetHeight;
+        //         document.documentElement.scrollTop = document.documentElement.scrollTop - event.clientY - event.currentTarget.offsetHeight;
         //     }
 
         return false;
@@ -411,7 +440,7 @@ var settingsUI = {
 
         event.stopPropagation();
 
-        makeModalDialog("resetPanel", "addnode", getLang("addnode"), "");
+        makeModalDialog("resetPanel", "addnode", getLang("addnodeheader"), "");
         var modalFooter = document.getElementById("addnodeModalFooter");
         var modalBody = document.getElementById("addnodeModalBody");
 
@@ -419,24 +448,33 @@ var settingsUI = {
         formGroup.className = "form-group";
         label = formGroup.appendChild(document.createElement("label"));
         label.setAttribute("for", "hostEdit");
-        label.innerText = getLang("host");
+        label.innerText = getLang("addnodehost");
         var hostEdit = formGroup.appendChild(document.createElement('input'));
         hostEdit.className = "form-control form-control-sm";
+        hostEdit.placeholder = "http://host:port/ or https://host:port/";
         hostEdit.id = "hostInput";
 
         label = formGroup.appendChild(document.createElement("label"));
-        label.setAttribute("for", "aliesEdit");
-        label.innerText = getLang("alies");
-        var aliesEdit = formGroup.appendChild(document.createElement('input'));
-        aliesEdit.className = "form-control form-control-sm";
-        aliesEdit.id = "aliesInput";
+        label.setAttribute("for", "nodenicknameEdit");
+        label.innerText = getLang("addnodenickname");
+        var nodenicknameEdit = formGroup.appendChild(document.createElement('input'));
+        nodenicknameEdit.className = "form-control form-control-sm";
+        nodenicknameEdit.id = "nodenicknameInput";
+        nodenicknameEdit.placeholder = "room, kitchen, bathroom... ";
 
-        var updateButton = modalFooter.appendChild(document.createElement("button"));
-        updateButton.type = "button";
-        updateButton.className = "btn btn-sm btn-success";
-        updateButton.id = "addnodeModalButton";
-        updateButton.onclick = settingsUI.addNodeUIClick;
-        updateButton.innerText = getLang("addnodebutton");
+        var addNodeButton = modalFooter.appendChild(document.createElement("button"));
+        addNodeButton.type = "button";
+        addNodeButton.className = "btn btn-sm btn-success";
+        addNodeButton.id = "addnodeModalButton";
+        addNodeButton.onclick = settingsUI.addNodeUIClick;
+        addNodeButton.innerText = getLang("addnodebutton");
+
+        var addNodeError = formGroup.appendChild(document.createElement("label"));
+        addNodeError.className = "text-danger";
+
+        addNodeButton.hostEdit = hostEdit;
+        addNodeButton.nodenicknameEdit = nodenicknameEdit;
+        addNodeButton.addNodeError = addNodeError;
 
         $("#addnodeModal").modal('show');
 
@@ -446,10 +484,42 @@ var settingsUI = {
     addNodeUIClick: function (event) {
         event.stopPropagation();
 
-        if (config.addNode(document.getElementById("hostInput").value, document.getElementById("aliesInput").value)) {
+        var addNodeButton = event.currentTarget;
+        var hostEdit = addNodeButton.hostEdit;
+        var nodenicknameEdit = addNodeButton.nodenicknameEdit
+        var addNodeError = addNodeButton.addNodeError;
+
+        if (hostEdit.value.length == 0) {
+            addNodeError.innerText = getLang("addnodeerror_hostempty");
+            return false;
+        }
+
+        var regexp = RegExp("(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})");
+
+        if (!hostEdit.value.match(regexp)) {
+            addNodeError.innerText = getLang("addnodeerror_hostnoturl");
+            return false;
+        }
+
+        if (nodenicknameEdit.value.length == 0) {
+            addNodeError.innerText = getLang("addnodeerror_nicknameempty");
+            return false;
+        }
+
+        if (hostEdit.value.slice(-1) !== '/') {
+            hostEdit.value += '/';
+        }
+
+        if (config.addNode(hostEdit.value, nodenicknameEdit.value)) {
             if (config.save()) {
                 $("#addnodeModal").modal('hide');
             }
+            else {
+                addNodeError.innerText = getLang("addnodeerror_cantsaveconfig");
+            }
+        }
+        else {
+            addNodeError.innerText = getLang("addnodeerror_cantaddnode");
         }
         //else todo ERROR
         return false;
@@ -637,7 +707,17 @@ var settingsUI = {
         var body = card.appendChild(document.createElement('div'));
         body.id = id + "Body"
         body.className = "card-body";
+        return cardPanel;
     },
+
+    addDiv: function (parentDiv, id, cellSize) {
+        parentDiv.className = "card-body row";
+        var divPanel = parentDiv.appendChild(document.createElement('div'));
+        divPanel.id = id;
+        divPanel.className = "col-md-" + cellSize;
+        return divPanel;
+    },
+
 
     //добавляет строку со названием и значением свойства на panelDiv, deviceProperty - отображаемое свойство (подписывается на изменения свойства)
     //обычно используется для отображения свойств ноды Node/Properties в SideBar разделе Settings
@@ -740,7 +820,7 @@ var settingsUI = {
 
     propSetButtonClick: function (event) {
         event.stopPropagation();
-        var propSetButton = event.target; //вытаскиваем "кликнутую" кнопку из event 
+        var propSetButton = event.currentTarget; //вытаскиваем "кликнутую" кнопку из event 
         var propTextDiv = propSetButton.propTextDiv; //вытаскиваем панель со свойством
         var deviceProperty = propTextDiv.deviceProperty; //вытастиваем свойство устройства
 
@@ -888,6 +968,7 @@ var settingsUI = {
     getStatusWidget: function (id, text, nodeStatusPanel) {
         var selectedStatus = document.getElementById(id);
         if (selectedStatus == null) {
+            if (nodeStatusPanel == undefined) return undefined;
             selectedStatus = nodeStatusPanel.appendChild(document.createElement('span'));
             selectedStatus.style.cursor = "pointer";
             selectedStatus.className = "badge badge-secondary";

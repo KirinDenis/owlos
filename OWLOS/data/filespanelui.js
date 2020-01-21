@@ -52,7 +52,7 @@ var FilesList =
                 this.uploadSpan.className = "btn btn-success btn-sm";
                 var table = this.tableDiv.appendChild(document.createElement('table'));
                 table.className = "table table-striped table-sm";
-                table.id = this.node.alies + "filestable";
+                table.id = this.node.nodenickname + "filestable";
                 table.cellspacing = "0";
                 var thead = table.appendChild(document.createElement('thead'));
                 var tr = thead.appendChild(document.createElement('tr'));
@@ -105,7 +105,7 @@ var FilesList =
                     deleteSpan.filesList = this;
                 }
 
-                $("#" + this.node.alies + "filestable").DataTable({
+                $("#" + this.node.nodenickname + "filestable").DataTable({
                     "pageLength": 100,
                     "language": {
                         "lengthMenu": getLang("dt_display") + " _MENU_ " + getLang("dt_recordsperpage"),
@@ -126,7 +126,7 @@ var FilesList =
 
         _proto.deleteClick = function deleteClick(event) {
             event.stopPropagation();
-            var deleteButton = event.target;
+            var deleteButton = event.currentTarget;
             deleteButton.className = "badge badge-warning";
             deleteButton.value = 'do...';
             deleteButton.disable = true;
