@@ -163,6 +163,8 @@
     "pin=контактний роз'єм\n" +
     "adddevicebutton=додати\n" +
     "notused=не використовується\n" +
+    "checkchangedialog=застосувати ці зміни\n" +
+    "applycheck=застосувати\n" +    
     "language=ukraine\n";
 
 var langen = "prepareUnit=prepare UI, please wait...\n" +
@@ -289,6 +291,8 @@ var langen = "prepareUnit=prepare UI, please wait...\n" +
     "pin=pin connector \n" +
     "adddevicebutton=add device\n" +
     "notused=not used\n" +
+    "checkchangedialog=apply this changes\n" +
+    "applycheck=apply\n" +    
     "language=english\n";
 
 var langru = "prepareUnit=подготовка интерфейса пользователя\n" +

@@ -555,7 +555,7 @@ var settingsUI = {
         resetButton.className = "btn btn-sm btn-danger";
         resetButton.id = "resetModalButton";
         resetButton.deviceHost = deviceHost;
-        resetButton.onclick = resetClick;
+        resetButton.onclick = settingsUI.resetClick;
         resetButton.innerText = getLang("reset");
 
         $("#resetModal").modal('show');
@@ -934,8 +934,38 @@ var settingsUI = {
 
     onPropertyCheckboxChange: function (event) {
         event.stopPropagation();
-        var propCheckbox = event.currentTarget; 
-        var propTextDiv = propCheckbox.propTextDiv; 
+        var propCheckbox = event.currentTarget;
+
+        makeModalDialog("resetPanel", "checkboxchange", getLang("checkchangedialog"), getLang("areYouSure"));
+
+
+        var closeHeaderButton = document.getElementById("checkboxchangecloseHeaderButton");
+        var closeButton = document.getElementById("checkboxchangecloseButton");
+        closeHeaderButton.propCheckbox = closeButton.propCheckbox = propCheckbox;
+        closeHeaderButton.onclick = closeButton.onclick = settingsUI.checkboxRollBack;
+
+        var modalFooter = document.getElementById("checkboxchangeModalFooter");
+        var checkChengButton = modalFooter.appendChild(document.createElement("button"));
+        checkChengButton.type = "button";
+        checkChengButton.className = "btn btn-sm btn-danger";
+        checkChengButton.id = "changecheckboxModalButton";
+        checkChengButton.propCheckbox = propCheckbox;
+        checkChengButton.onclick = settingsUI.applyCheckboxChangeClick;
+        checkChengButton.innerText = getLang("applycheck");
+
+        $("#checkboxchangeModal").modal('show');
+
+        return false;
+
+    }, 
+
+    applyCheckboxChangeClick: function (event) {
+        event.stopPropagation();
+        var checkChengButton = event.currentTarget;
+        var propCheckbox = checkChengButton.propCheckbox;
+        var propTextDiv = propCheckbox.propTextDiv;
+        var deviceProperty = propTextDiv.deviceProperty;
+        var propTextDiv = propCheckbox.propTextDiv;
         var deviceProperty = propTextDiv.deviceProperty;
 
         if (deviceProperty.networkStatus != NET_RECONNECT) {
@@ -946,10 +976,17 @@ var settingsUI = {
                 deviceProperty.setValue("0", undefined, undefined);
             }
         }
-
+        $("#checkboxchangeModal").modal('hide');
         return false;
-    }, 
+    },
 
+    checkboxRollBack: function (event) {
+        //non ecent.stopPropagation();
+        var closeButton = event.currentTarget;
+        var propCheckbox = closeButton.propCheckbox;
+        propCheckbox.checked = !propCheckbox.checked;
+        return false;
+    },
 
 
     //добавляет разделитель (пустое пространства) между свойствами для панели свойств

@@ -189,6 +189,7 @@ function makeModalDialog(parentId, id, titleText, bodyText) {
 
     closeHeaderButton.type = "button"
     closeHeaderButton.className = "close"
+    closeHeaderButton.id = id + "closeHeaderButton";
     closeHeaderButton.setAttribute("data-dismiss", "modal");
     closeHeaderButton.setAttribute("aria-label", "Close");
 
@@ -211,6 +212,7 @@ function makeModalDialog(parentId, id, titleText, bodyText) {
     closeButton.setAttribute("data-dismiss", "modal");
     closeButton.setAttribute("aria-label", "Close");
     closeButton.innerText = getLang("cancel");
+    closeButton.id = id + "closeButton";
 }
 
 
