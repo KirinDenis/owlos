@@ -258,7 +258,7 @@ var settingsUI = {
 
 
                 var wifiAPCheckbox = settingsUI.addPropertyCheckbox(wifiPropPanel, device.wifiaccesspointavailable, getLang("wifiaccesspointavailable"), "");
-
+                
                 wifiAPCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(wifiPropPanel, device.wifiaccesspointssid, getLang("wifiaccesspointssid"), ""));
                 wifiAPCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(wifiPropPanel, device.wifiaccesspointpassword, getLang("wifiaccesspointpassword"), ""));
 
@@ -280,11 +280,49 @@ var settingsUI = {
             else
                 if (device.type.value == ESPDeviceType) {
 
+                    if (node.host == boardhost) { //the local node 
+
+                        
+                        var deviceProperty = {
+                            parentid: boardhost,
+                            name: "language",
+                            type: "",
+                            value: configProperties["language"]
+                        }
+                        settingsUI.addPropertyEdit(systemPropPanel, deviceProperty, getLang(deviceProperty.name), "");
+
+                        var deviceProperty = {
+                            parentid: boardhost,
+                            name: "widgetssize",
+                            type: "i",
+                            value: configProperties["widgetssize"]
+                        }
+                        settingsUI.addPropertyEdit(systemPropPanel, deviceProperty, getLang(deviceProperty.name), "");
+
+                        var deviceProperty = {
+                            parentid: boardhost,
+                            name: "speak",
+                            type: "b",
+                            value: configProperties["speak"]
+                        }
+                        settingsUI.addPropertyEdit(systemPropPanel, deviceProperty, getLang(deviceProperty.name), "");
+
+                        var deviceProperty = {
+                            parentid: boardhost,
+                            name: "voice",
+                            type: "i",
+                            value: configProperties["voice"]
+                        }
+                        settingsUI.addPropertyEdit(systemPropPanel, deviceProperty, getLang(deviceProperty.name), "");
+
+                    }
+
                     settingsUI.addPropertyView(systemPropPanel, device.espfreesketchspace, getLang("espfreesketchspace"), "byte");
                     settingsUI.addPropertyView(systemPropPanel, device.espfreeheap, getLang("espfreeheap"), "byte");
                     settingsUI.addPropertyView(systemPropPanel, device.espcpufreqmhz, getLang("espcpufreqmhz"), "mHz");
                     settingsUI.addPropertyView(systemPropPanel, device.espresetreason, getLang("espresetreason"));
 
+                    settingsUI.addSpaceView(systemPropPanel, "4");
                     var resetButton = systemPropPanel.appendChild(document.createElement('input'));
                     resetButton.className = "btn btn-danger btn-sm";
                     resetButton.type = "button";
@@ -294,8 +332,9 @@ var settingsUI = {
                     resetButton.deviceHost = device._host;
                     resetButton.onclick = settingsUI.modalResetClick;
 
-                    settingsUI.addPropertyView(updatePropPanel, device.firmwareversion, getLang("firmwareversion"));
-                    settingsUI.addPropertyView(updatePropPanel, device.firmwarebuildnumber, getLang("firmwarebuildnumber"));
+                   // settingsUI.addPropertyView(updatePropPanel, device.firmwareversion, getLang("firmwareversion"));
+                  //  settingsUI.addPropertyView(updatePropPanel, device.firmwarebuildnumber, getLang("firmwarebuildnumber"));
+                    
 
                 }
                 else
@@ -340,7 +379,8 @@ var settingsUI = {
                         settingsUI.addPropertyView(updatePropPanel, device.firmwareversion, getLang("firmwareversion"));
                         settingsUI.addPropertyView(updatePropPanel, device.firmwarebuildnumber, getLang("firmwarebuildnumber"));
 
-                        settingsUI.addPropertyEdit(updatePropPanel, device.updatehost, getLang("updatehost"), "")
+                        settingsUI.addSpaceView(updatePropPanel, "5");
+                        settingsUI.addPropertyEdit(updatePropPanel, device.updatehost, getLang("updatehost"), "");
 
                         //Update watcher panel 
                         //Панель обновлений
@@ -769,7 +809,8 @@ var settingsUI = {
             propText.setAttribute("for", propElementId + "edit");
             propTextDiv.propText = propText;
 
-            var propEdit = inputGroup.appendChild(document.createElement('input'));
+            var propEdit = createValueEdit(inputGroup, deviceProperty.name, deviceProperty.value, deviceProperty.type)
+            //var propEdit = inputGroup.appendChild(document.createElement('input'));
             propEdit.className = "form-control";
             propEdit.id = propElementId + "edit";
 
@@ -786,8 +827,14 @@ var settingsUI = {
             propSetButton.propTextDiv = propTextDiv;
             propTextDiv.propSetButton = propSetButton;
 
-            deviceProperty.addValueListner(settingsUI.onPropertyEditedValueChange, propTextDiv);
-            deviceProperty.addNetworkStatusListner(settingsUI.onPropertyEditNetworkChange, propTextDiv);
+            if (deviceProperty.addValueListner != undefined) {
+                deviceProperty.addValueListner(settingsUI.onPropertyEditedValueChange, propTextDiv);
+                deviceProperty.addNetworkStatusListner(settingsUI.onPropertyEditNetworkChange, propTextDiv);
+            }
+            else {
+                propText.innerText = text;
+                propEdit.value = deviceProperty.value;
+            }
         }
         return propTextDiv;
     },
@@ -824,19 +871,46 @@ var settingsUI = {
         var propTextDiv = propSetButton.propTextDiv; //вытаскиваем панель со свойством
         var deviceProperty = propTextDiv.deviceProperty; //вытастиваем свойство устройства
 
-        if (deviceProperty.networkStatus != NET_RECONNECT) {
-            //если свойство устройства не в статуре "в реботе" - асинхронность это хорошо, но переполнять очередь это преступление
+        if (deviceProperty.addValueListner != undefined) {
 
-            var value = propTextDiv.propEdit.value; //получаем значение свойства устройства введенное пользователем
+            if (deviceProperty.networkStatus != NET_RECONNECT) {
+                //если свойство устройства не в статуре "в реботе" - асинхронность это хорошо, но переполнять очередь это преступление
 
-            if (deviceProperty.type.indexOf("b") != -1) // boolean - представлен в виде combobox а не редактора 
-            {
-                if (propTextDiv.propEdit.selectedIndex == 0) value = "1"; //для устройства 1 - true, 0 - false
-                else value = "0";
-            } //вызываем метод свойства устройства для начала процедуры изменения этого свойства с новым значением value
-            //не назначаем вторичных получателей undefined, undefined - все получатели уже подписаны ранее
+                var value = propTextDiv.propEdit.value; //получаем значение свойства устройства введенное пользователем
 
-            deviceProperty.setValue(value, undefined, undefined);
+                if (deviceProperty.type.indexOf("b") != -1) // boolean - представлен в виде combobox а не редактора 
+                {
+                    if (propTextDiv.propEdit.selectedIndex == 0) value = "1"; //для устройства 1 - true, 0 - false
+                    else value = "0";
+                } //вызываем метод свойства устройства для начала процедуры изменения этого свойства с новым значением value
+                //не назначаем вторичных получателей undefined, undefined - все получатели уже подписаны ранее
+
+                deviceProperty.setValue(value, undefined, undefined);
+            }
+        }
+        else {
+            var result = false;
+
+            propTextDiv.propEdit.disabled = true;
+            propTextDiv.propSetButton.className = "btn btn-outline-info btn-sm";
+
+            try {
+                configProperties[deviceProperty.name] = propTextDiv.propEdit.value;
+                config.save();
+
+                propTextDiv.propEdit.disabled = false;
+                propTextDiv.propSetButton.className = "btn btn-outline-success btn-sm";
+
+                result = true;
+
+            } catch(exception) {
+                addToLogNL("ERROR save value: " + exception, 2);
+            }
+
+            if (!result) {
+                propTextDiv.propEdit.disabled = true;
+                propTextDiv.propSetButton.className = "btn btn-outline-danger btn-sm";
+            }
         }
 
         return false;

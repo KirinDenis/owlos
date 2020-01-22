@@ -443,9 +443,14 @@ var langru = "prepareUnit=подготовка интерфейса пользо
 
 
 var currentLang = "";
+var lastLang = "";
 
 function getLang(key) {
 
+    if (configProperties.language !== lastLang) {
+        lastLang = configProperties.language;
+        currentLang = "";
+    }
 
     if (currentLang == "") {
         if (configProperties.language.indexOf("ua")==0) {

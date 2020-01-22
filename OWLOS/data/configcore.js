@@ -16,8 +16,7 @@ var configProperties = defaultWebProp();
 //var configPropertiesDevice;
 
 var config = {
-    //temp!!!!!!!
-    locksave: true,
+
     changeListners: [],
     onChange: function () {
         for (var k = 0; k < this.changeListners.length; k++) {
@@ -63,9 +62,7 @@ var config = {
                 widgetId: _widgetId,
             }
             dashboard.widgets.push(widget);
-
-
-            if (!this.locksave) this.save();
+            
             return widget;
         }
         return undefined;
@@ -175,6 +172,9 @@ var config = {
                     }
                     configProperties.nodes = tempNodes;
 
+                    //First node all time is boardhost 
+                    configProperties.nodes[0].host = boardhost;
+
                     this.onChange();
                     result = true;
                 }
@@ -182,8 +182,7 @@ var config = {
                     configProperties = "";
                 }
 
-                result = true;
-                this.locksave = false;
+                result = true;                
                 this.onChange();
 
             }

@@ -1,4 +1,4 @@
-var unitId;
+﻿var unitId;
 var nodesRefreshHandle;
 var autorefreshbutton;
 var refreshbutton;
@@ -215,5 +215,62 @@ function makeModalDialog(parentId, id, titleText, bodyText) {
     closeButton.id = id + "closeButton";
 }
 
+//---------------------------------------------------------------------------------------------------------------------------------------
+// Объект создает таблицы отображающе свойства устройств
+// Реализован упрощенно, для работы в паре с devices парсером - не запоминает ссылкии на созданные таблицы - подразумевается что таблицы и строки 
+// будут создаваться в той же последовательности в которой парястся устройства - device1, prop1, prop2...propN, device2, prop1, prop2...propN...DeviceN...
+function createValueEdit(parentElement, propertyName, propertyValue, propertyType) {
+    var edit = "";
+
+    if (!propertyType.indexOf("r") != -1) {
+        if (propertyType.indexOf("b") != -1) //boolean
+        {
+            edit = parentElement.appendChild(document.createElement('select'));
+            edit.className = "form-control form-control-sm";
+            edit.style.width = "100%";
+            var valueSelectOption = edit.appendChild(document.createElement('option'));
+            valueSelectOption.innerText = "true";
+            valueSelectOption = edit.appendChild(document.createElement('option'));
+            valueSelectOption.innerText = "false";
+            if (propertyValue === "1") edit.selectedIndex = 0; else edit.selectedIndex = 1;
+        } else {
+            edit = parentElement.appendChild(document.createElement('input'));
+            edit.className = "form-control form-control-sm";
+
+            if (propertyType.indexOf("p") != -1) //password
+            {
+                edit.type = "password";
+                edit.placeholder = "Password";
+            }
+
+            if (propertyType.indexOf("i") != -1) //integer
+            {
+                edit.type = "number";
+            }
+
+            if (propertyType.indexOf("f") != -1) //float
+            {
+                edit.type = "number";
+                edit.step = "0.01";
+            }
+
+            edit.style.width = "100%";
+            edit.value = propertyValue;
+        }
+
+        if (propertyType.indexOf("s") != -1) //selected
+        {
+            edit.style.backgroundColor = "#FAFAF0";
+        }
+
+        edit.id = "propValueInput_" + propertyName;
+        edit.propname = propertyName;
+        edit.propvalue = propertyValue; //default
+
+        edit.proptype = propertyType;
+    }
+
+    return edit;
+}
 
 
