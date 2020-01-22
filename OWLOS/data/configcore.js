@@ -50,7 +50,7 @@ var config = {
         return undefined;
     },
 
-    addWidget: function (_dashboardId, _daviceId, _deviceProperty, _widgetId) {
+    addWidget: function (_dashboardId, _daviceId, _deviceProperty, _widgetId, _widgetProperties) {
         var dashboard = this.getDashboardById(_dashboardId);
         if (dashboard != undefined) {
 
@@ -60,9 +60,11 @@ var config = {
                 deviceId: _daviceId,
                 deviceProperty: _deviceProperty,
                 widgetId: _widgetId,
+                widgetProperties: _widgetProperties
             }
             dashboard.widgets.push(widget);
-            
+
+            this.save();
             return widget;
         }
         return undefined;

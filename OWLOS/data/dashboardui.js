@@ -53,9 +53,10 @@ var dashboardUI = {
                 var widget = WidgetsLayer.getWidgetById(widgetProp.widgetId);
                 if (widget != undefined) {
                     var widgetWrapper = new widget.widget(devicesWidgetsPanel, undefined, undefined, configProperties.dashboards[0].widgets[i]);
+                    
                     widgetWrapper.offlineStarter(devicesWidgetsPanel, widgetProp.deviceId, widgetProp.deviceProperty);
                     widgetWrapper.widget.addEventListner(config.widgetEvent, configProperties.dashboards[0].widgets[i]);
-
+                    widgetWrapper.widget.properties = widgetProp.widgetProperties;
                 }
             }
             catch (exception) {
@@ -209,7 +210,7 @@ var dashboardUI = {
 
         var widgetWrapper = new widget.widget(devicesWidgetsPanel, device, deviceProp);
 
-        var configPropertiesWidget = config.addWidget("main", device._id, deviceProp.name, widget.id)
+        var configPropertiesWidget = config.addWidget("main", device._id, deviceProp.name, widget.id, widgetWrapper.widget.properties);
 
         widgetWrapper.widget.addEventListner(config.widgetEvent, configPropertiesWidget);
 

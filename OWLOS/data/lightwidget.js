@@ -18,8 +18,7 @@ var LightWidget =
 
             for (var i = 1; i < 5; i++) {
                 var SVGlevelArc = new SVGArc(baseWidget.svgElement, baseWidget.id + "arcback1" + i, baseWidget.centreX, baseWidget.topMargin, i * baseWidget.radius, baseWidget.size / 14);
-                SVGlevelArc.index = i;
-                SVGlevelArc.color = theme.warning;
+                SVGlevelArc.index = i;                
                 SVGlevelArc.opacity = i * 0.2;
 
                 baseWidget.levelArc.push(SVGlevelArc);
@@ -29,6 +28,9 @@ var LightWidget =
             baseWidget.SVGArcSpinner.radius = baseWidget.radius * 4.5;
 
             baseWidget.clickableToTop();
+
+            baseWidget._properties.lightcolor = theme.warning;            
+            baseWidget.proprties = baseWidget._properties;
 
             return baseWidget;
         }
@@ -50,13 +52,15 @@ var LightWidget =
 
         _proto.drawWidget = function drawWidget() {
             _BaseWidget.prototype.drawWidget.call(this);
-
+            if (this.levelArc == undefined) return;
+            this._data = 80;
             for (var i = 0; i < 4; i++) {
                 this.levelArc[i].hide();
+             
 
                 switch (this._networkStatus) {
                     case NET_ONLINE:
-                        this.toColor(this.levelArc[i], theme.warning);
+                        this.toColor(this.levelArc[i], this.properties.lightcolor);
                       //  this.levelArc[i].opacity = 0.7;
                         break;
 

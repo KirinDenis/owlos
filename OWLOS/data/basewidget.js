@@ -4,6 +4,12 @@ var MOVE_MODE = 1;
 var EVENT_NO = 0;
 var EVENT_DELETE = 1;
 
+function defaultWidgetProperties() {
+    return {
+        backgroundcolor: theme.warning
+    }
+}
+
 var BaseWidget =
 
     function () {
@@ -11,6 +17,8 @@ var BaseWidget =
 
         function BaseWidget(parentPanel, id, size) {
             this.parentPanel = parentPanel; //properties --------------------------------
+
+
 
             this.id = id;
             this._networkStatus = NET_OFFLINE;
@@ -41,8 +49,6 @@ var BaseWidget =
             this.SVGBackpanel = new SVGArc(this.svgElement, this.id + "backpanel", 0, 0, this.width, 1);
             this.SVGBackpanel.drawRoundedRect(this.width, this.height, 5, 10, true, true, true, true);
             this.SVGBackpanel.opacity = 0.3;
-            this.SVGBackpanel.color = theme.light;
-            this.SVGBackpanel.fill = theme.light;
 
             this.SVGBoxBackpanel = new SVGArc(this.svgElement, this.id + "boxbackpanel", 0, 0, this.width, 1);
             this.SVGBoxBackpanel.drawRoundedRect(this.width, 25, 5, 0, true, true, false, false);
@@ -145,6 +151,8 @@ var BaseWidget =
             this.rPanel.onmouseout = this.mouseOut;
             this.rPanel.appendChild(this.svgElement);
             this.mode = WORK_MODE;
+
+            this.properties = defaultWidgetProperties();
         }
 
 
@@ -428,6 +436,9 @@ var BaseWidget =
                 return;
             }
 
+            this.SVGBackpanel.color = this._properties.backgroundcolor;
+            this.SVGBackpanel.fill = this._properties.backgroundcolor;
+
             var oneHangPercent = 360 + 90 + 30 - 240;
             var drawPercent = this._data * (oneHangPercent / 100); //backdown panel
 
@@ -600,7 +611,20 @@ var BaseWidget =
                     this.redrawAll();
                 }
             }
-        }, {
+            },
+
+            {
+                key: "properties",
+                get: function get() {
+                    return this._properties;
+                },
+                set: function set(properties) {
+                    this._properties = properties;
+                    this.drawText();
+                    this.drawWidget();
+                }
+            }, 
+            {
             key: "data",
             get: function get() {
                 return this._data;

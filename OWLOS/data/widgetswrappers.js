@@ -41,6 +41,13 @@ var RadialWidgetWrapper =
             }
         };
 
+        _proto.getWidgetProperties = function () {
+            if (this.widget != undefined) {
+                return this.widget.properties;
+            }
+            return undefined;
+        };
+
         _proto.joinDevice = function joinDevice(device, deviceProperty) {
             this.device = device;
             this.deviceProperty = deviceProperty;
