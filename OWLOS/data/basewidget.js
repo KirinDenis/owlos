@@ -141,6 +141,13 @@ var BaseWidget =
             this.SVGModeIcon.SVGIcon.onclick = this.modeChangeClick;
             */
 
+            this.SVGPropertiesIcon = new SVGIcon(this.svgElement, menuIcon, this.width / 2 - this.rowSize / 2, this.height / 2 - this.rowSize / 2, this.rowSize, this.rowSize);
+            this.SVGPropertiesIcon.fill = theme.light;
+            this.SVGPropertiesIcon.SVGIcon.widget = this;
+            this.SVGPropertiesIcon.SVGIcon.onclick = this.propertiesClick;
+            this.SVGPropertiesIcon.hide();
+
+
             this.rPanel = this.parentPanel.appendChild(document.createElement("div"));
             this.rPanel.id = id + "BaseWidget";
             this.rPanel.widget = this;
@@ -155,6 +162,47 @@ var BaseWidget =
             this.properties = defaultWidgetProperties();
         }
 
+        
+        BaseWidget.prototype.showProperties = function showProperties(_event, _sender) {
+            
+            makeModalDialog("resetPanel", "showProperties", getLang("showProperties"), "");
+            var modalFooter = document.getElementById("showPropertiesModalFooter");
+            var modalBody = document.getElementById("showPropertiesModalBody");
+
+            var formGroup = modalBody.appendChild(document.createElement("div"));
+            formGroup.className = "form-group";
+
+
+            for (var key in _sender.properties) {
+                var label = formGroup.appendChild(document.createElement("label"));
+                label.setAttribute("for", "hostEdit");
+                label.innerText = key;
+                var hostEdit = formGroup.appendChild(document.createElement('input'));
+                hostEdit.className = "form-control form-control-sm";
+                hostEdit.placeholder = "http://host:port/ or https://host:port/";
+                hostEdit.id = "widgetproperty" + key;
+                hostEdit.value = _sender.properties[key];
+                hostEdit.widgetProperty = _sender.properties[key];
+            }
+
+            var addNodeButton = modalFooter.appendChild(document.createElement("button"));
+            addNodeButton.type = "button";
+            addNodeButton.className = "btn btn-sm btn-success";
+            addNodeButton.id = "addnodeModalButton";
+            addNodeButton.widget = _sender;
+            addNodeButton.onclick = _sender.setProperties;
+            addNodeButton.innerText = getLang("addnodebutton");
+
+            var addNodeError = formGroup.appendChild(document.createElement("label"));
+            addNodeError.className = "text-danger";
+
+            addNodeButton.hostEdit = hostEdit;
+            
+            addNodeButton.addNodeError = addNodeError;
+
+            $("#showPropertiesModal").modal('show');
+            
+        };
 
 
         BaseWidget.prototype.addEventListner = function addEventListner(_event, _sender) {
@@ -175,7 +223,26 @@ var BaseWidget =
             this.svgElement.insertBefore(this.SVGLeftIcon.SVGIcon, this.svgElement.childNodes.lastChild);
             this.svgElement.insertBefore(this.SVGRightIcon.SVGIcon, this.svgElement.childNodes.lastChild); // this.svgElement.insertBefore(this.SVGPlusIcon.SVGIcon, this.svgElement.childNodes.lastChild);
             this.svgElement.insertBefore(this.SVGMinusIcon.SVGIcon, this.svgElement.childNodes.lastChild);
+            this.svgElement.insertBefore(this.SVGPropertiesIcon.SVGIcon, this.svgElement.childNodes.lastChild);
         };
+
+
+        BaseWidget.prototype.setProperties = function setProperties(event) {
+            var button = event.currentTarget;
+            var widget = button.widget;
+
+            for (var key in widget.properties) {
+                var hostEdit = document.getElementById("widgetproperty" + key);
+                widget.properties[key] = hostEdit.value;
+            }
+
+            widget.properties = widget.properties;
+
+            config.save();
+
+            $("#showPropertiesModal").modal('hide');
+
+        }
 
         BaseWidget.prototype.moveLeft = function moveLeft(event) {
             var widget = event.currentTarget.widget;
@@ -200,6 +267,17 @@ var BaseWidget =
 
             return true;
         };
+
+        BaseWidget.prototype.propertiesClick = function movepropertiesClick(event) {
+            var widget = event.currentTarget.widget;
+
+            if (widget.mode == MOVE_MODE) {
+                widget.showProperties(event, widget);
+            }
+
+            return true;
+        };
+
 
         BaseWidget.prototype.plusSize = function plusSize(event) {
             var widget = event.currentTarget.widget;
@@ -589,12 +667,15 @@ var BaseWidget =
                     this.SVGRightIcon.hide(); //  this.SVGPlusIcon.hide();
 
                     this.SVGMinusIcon.hide();
+                    this.SVGPropertiesIcon.hide();
+                    
                 } else if (mode == MOVE_MODE) {
                     this.SVGBackpanel.opacity = 0.3;
                     this.SVGLeftIcon.draw();
                     this.SVGRightIcon.draw(); //   this.SVGPlusIcon.draw();
 
                     this.SVGMinusIcon.draw();
+                    this.SVGPropertiesIcon.draw();
                 }
             },
             get: function get() {

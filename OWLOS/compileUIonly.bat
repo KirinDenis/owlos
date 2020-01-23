@@ -72,6 +72,9 @@ D:\7Zip\7z.exe a -mx9 configcore.js.gz configcore.js
 REM copy  "configcore.js.gz" "configcore.js.gz"
 D:\7Zip\7z.exe a -mx9 tablewidget.js.gz tablewidget.js
 REM copy  "tablewidget.js.gz" "tablewidget.js.gz"
+D:\7Zip\7z.exe a -mx9 valuewidget.js.gz valuewidget.js
+REM copy  "valuewidget.js.gz" "valuewidget.js.gz"
+
 
 REM copy  "updateinfo.html" "updateinfo.html"
 

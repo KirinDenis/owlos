@@ -144,6 +144,7 @@ String updateUI()
 		updateLog += downloadFileWithLog("radialwidget.js.gz");
 		updateLog += downloadFileWithLog("smokewidget.js.gz");
 		updateLog += downloadFileWithLog("stepperwidget.js.gz");
+		updateLog += downloadFileWithLog("valuewidget.js.gz");		
 		webServerLoop();
 
 		updateLog += downloadFileWithLog("widgetswrappers.js.gz");

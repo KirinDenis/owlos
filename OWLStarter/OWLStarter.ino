@@ -203,6 +203,7 @@ void loop() {
 			download("radialwidget.js.gz", host + "radialwidget.js.gz");
 			download("smokewidget.js.gz", host + "smokewidget.js.gz");			
 			download("stepperwidget.js.gz", host + "stepperwidget.js.gz");
+			download("valuewidget.js.gz", host + "valuewidget.js.gz");
 						
 			download("widgetswrappers.js.gz", host + "widgetswrappers.js.gz");
 

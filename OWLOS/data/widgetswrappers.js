@@ -161,6 +161,49 @@ var TemperatureWidgetWrapper =
         return TemperatureWidgetWrapper;
     }(RadialWidgetWrapper); //-----------------------------------------------------------------------------------------------------------------------
 
+var ValueWidgetWrapper =
+
+    function (_RadialWidgetWrapper) {
+        "use strict";
+
+        _inheritsLoose(ValueWidgetWrapper, _RadialWidgetWrapper);
+
+        var _proto2 = ValueWidgetWrapper.prototype;
+
+        _proto2.offlineStarter = function offlineStarter(parentPanel, deviceId, devicePropertyName) {
+            _RadialWidgetWrapper.prototype.offlineStarter.call(this, parentPanel, deviceId, devicePropertyName, true);
+
+            this.widget = new ValueWidget(parentPanel, deviceId, configProperties.widgetssize);
+            this.widget.deviceClass = this;
+            this.widget.rPanel.onclick = this.widgetClick;
+            this.draw();
+        };
+
+        function ValueWidgetWrapper(parentPanel, device, deviceProperty, configPropertiesWidget) {
+            var _this;
+
+            _this = _RadialWidgetWrapper.call(this, parentPanel, device, deviceProperty, true, configPropertiesWidget) || this;
+            if (device == undefined) return _assertThisInitialized(_this);
+            return _this;
+        }
+
+        _proto2.draw = function draw() {
+            if (this.widget == undefined) return;
+            if (this.deviceProperty == undefined) return;
+
+            if (this.deviceProperty.networkStatus == NET_ONLINE) {
+                this.widget.refresh(this.deviceProperty.value, this.deviceProperty.value, this.device._id + "-" + getLang("value"));
+            } else {
+                this.widget.refresh(0, "--", this.device._id);
+            }
+
+            this.widget.networkStatus = this.deviceProperty.networkStatus;
+            return true;
+        };
+
+        return ValueWidgetWrapper;
+    }(RadialWidgetWrapper); //-----------------------------------------------------------------------------------------------------------------------
+
 
 var HumidityWidgetWrapper =
     
@@ -945,6 +988,15 @@ var WidgetsLayer = {
         devicesTypes: ";" + ActuatorDeviceType + ";",
         devicesProperties: ";data;"
     },
+
+    ValueWidget: {
+        id: "value",
+        name: getLang("value"),
+        widget: ValueWidgetWrapper,
+        devicesTypes: "any",
+        devicesProperties: "any"
+    },
+
 
     /*
     StepperWidget: {

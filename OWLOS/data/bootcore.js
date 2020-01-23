@@ -133,6 +133,7 @@ function loadingScripts(withInternet) {
                             loadingScript("temperaturewidget.js");
                             loadingScript("graphwidget.js");
                             loadingScript("tablewidget.js");
+                            loadingScript("valuewidget.js");
                             loadingScript("widgetswrappers.js");
                             loadingScript("filespanelui.js");
                             loadingScript("devicesui.js");

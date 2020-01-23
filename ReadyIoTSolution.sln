@@ -56,6 +56,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "data", "data", "{0586AFF7-C
 		OWLOS\data\temperaturewidget.js = OWLOS\data\temperaturewidget.js
 		OWLOS\data\ui.css = OWLOS\data\ui.css
 		OWLOS\data\updateinfo.html = OWLOS\data\updateinfo.html
+		OWLOS\data\valuewidget.js = OWLOS\data\valuewidget.js
 		OWLOS\data\widgetswrappers.js = OWLOS\data\widgetswrappers.js
 	EndProjectSection
 EndProject

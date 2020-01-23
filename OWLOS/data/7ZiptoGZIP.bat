@@ -56,6 +56,7 @@ D:\7Zip\7z.exe a -mx9 smokewidget.js.gz smokewidget.js
 D:\7Zip\7z.exe a -mx9 speechcore.js.gz speechcore.js
 D:\7Zip\7z.exe a -mx9 stepperwidget.js.gz stepperwidget.js
 D:\7Zip\7z.exe a -mx9 temperaturewidget.js.gz temperaturewidget.js
+D:\7Zip\7z.exe a -mx9 valuewidget.js.gz valuewidget.js
 D:\7Zip\7z.exe a -mx9 graphwidget.js.gz graphwidget.js
 D:\7Zip\7z.exe a -mx9 configcore.js.gz configcore.js
 D:\7Zip\7z.exe a -mx9 tablewidget.js.gz tablewidget.js

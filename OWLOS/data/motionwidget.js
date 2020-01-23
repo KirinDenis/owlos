@@ -39,6 +39,8 @@ var MotionWidget =
 
             baseWidget.clickableToTop();
 
+            baseWidget.proprties = baseWidget._properties;
+
             return baseWidget;
         }
 
@@ -56,7 +58,7 @@ var MotionWidget =
 
         _proto.animate = function animate() {
             var baseWidget2 = this;
-
+            if (this.radar1 == undefined) return;
             if (this.animated) {
                 for (var i = 0; i < 4; i++) {
                     this.radar1[i].radius += 0.5;
@@ -85,6 +87,7 @@ var MotionWidget =
             var baseWidget3 = this;
 
             _BaseWidget.prototype.drawWidget.call(this);
+            if (this.radar1 == undefined) return;
 
             if (this._networkStatus == NET_ONLINE && this._data == 1) {
                 if (!this.animated) {

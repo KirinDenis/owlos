@@ -44,11 +44,14 @@ var TemperatureWidget =
 
             baseWidget.clickableToTop();
 
+            baseWidget.proprties = baseWidget._properties;
+
             return baseWidget;
         }
 
         TemperatureWidget.prototype.drawText = function drawText() {
             var baseWidget = _BaseWidget.prototype;
+            if (this.SVGWidgetExtText == undefined) return;
 
             var tempwidgetText = this.widgetText;
             this.widgetText = " C"; //two space width
@@ -88,7 +91,7 @@ var TemperatureWidget =
 
         TemperatureWidget.prototype.drawWidget = function drawWidget() {
             _BaseWidget.prototype.drawWidget.call(this);
-
+            if (this.tempItem == undefined) return;
             var percent = parseFloat(this._data) + 50;
             var tempSize = 20 / 100 * percent;
 

@@ -67,6 +67,8 @@ var SmokeWidget =
 
             baseWidget.clickableToTop();
 
+            baseWidget.proprties = baseWidget._properties;
+
             return baseWidget;
         }
 
@@ -106,7 +108,7 @@ var SmokeWidget =
 
         _proto.drawWidget = function drawWidget() {
             var baseWidget3 = this;
-
+            if (this.level1 == undefined) return;
             _BaseWidget.prototype.drawWidget.call(this);
 
             for (var i = 0; i < 30; i++) {
