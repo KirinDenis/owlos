@@ -9,50 +9,53 @@ var ActuatorWidget =
         _inheritsLoose(ActuatorWidget, _BaseWidget);
 
         function ActuatorWidget(parentPanel, id, size, iconOn, iconOff) {
-            var _this;
-
-            _this = _BaseWidget.call(this, parentPanel, id, size) || this;
+            
+            var baseWidget = _BaseWidget.call(this, parentPanel, id, size) || this;
 
             if (iconOn == undefined && iconOff == undefined) {
-                _this.widgetType = DEFAULT_TYPE;
-                _this.SVGArcBack = new SVGArc(_this.svgElement, _this.id + "arcback", _this.centreX, _this.centreY + _this.topMargin, _this.radius + _this.size / 20, _this.size / 100);
-                _this.SVGArcBack.color = theme.secondary;
-                _this.SVGArcWidget = new SVGArc(_this.svgElement, _this.id + "arcwidget", _this.centreX, _this.centreY + _this.topMargin, _this.radius, _this.size / 14);
-                _this.SVGArcWidget.color = theme.secondary;
-                _this.SVGArcWidget.fill = theme.secondary;
+                baseWidget.widgetType = DEFAULT_TYPE;
+                baseWidget.SVGArcBack = new SVGArc(baseWidget.svgElement, baseWidget.id + "arcback", baseWidget.centreX, baseWidget.centreY + baseWidget.topMargin, baseWidget.radius + baseWidget.size / 20, baseWidget.size / 100);
+                baseWidget.SVGArcBack.color = theme.secondary;
+                baseWidget.SVGArcWidget = new SVGArc(baseWidget.svgElement, baseWidget.id + "arcwidget", baseWidget.centreX, baseWidget.centreY + baseWidget.topMargin, baseWidget.radius, baseWidget.size / 14);
+                baseWidget.SVGArcWidget.color = theme.secondary;
+                baseWidget.SVGArcWidget.fill = theme.secondary;
             } else {
-                _this.widgetType = ICONS_TYPE;
-                _this.rowSize = _this.size / 2.5;
-                _this.iconOn = iconOn;
-                _this.SVGIconOn = new SVGIcon(_this.svgElement, _this.iconOn, _this.width / 2 - _this.rowSize / 2, _this.height / 2 - _this.rowSize / 2, _this.rowSize, _this.rowSize);
-                _this.SVGIconOn.fill = theme.success;
-                _this.SVGIconOn.SVGIcon.widget = _assertThisInitialized(_this);
+                baseWidget.widgetType = ICONS_TYPE;
+                baseWidget.rowSize = baseWidget.size / 2.5;
+                baseWidget.iconOn = iconOn;
+                baseWidget.SVGIconOn = new SVGIcon(baseWidget.svgElement, baseWidget.iconOn, baseWidget.width / 2 - baseWidget.rowSize / 2, baseWidget.height / 2 - baseWidget.rowSize / 2, baseWidget.rowSize, baseWidget.rowSize);
+                baseWidget.SVGIconOn.fill = theme.success;
+                baseWidget.SVGIconOn.SVGIcon.widget = _assertThisInitialized(baseWidget);
 
-                _this.SVGIconOn.hide();
+                baseWidget.SVGIconOn.hide();
 
-                _this.iconOff = iconOff;
-                _this.SVGIconOff = new SVGIcon(_this.svgElement, _this.iconOff, _this.width / 2 - _this.rowSize / 2, _this.height / 2 - _this.rowSize / 2, _this.rowSize, _this.rowSize);
-                _this.SVGIconOff.fill = theme.success;
-                _this.SVGIconOff.SVGIcon.widget = _assertThisInitialized(_this);
+                baseWidget.iconOff = iconOff;
+                baseWidget.SVGIconOff = new SVGIcon(baseWidget.svgElement, baseWidget.iconOff, baseWidget.width / 2 - baseWidget.rowSize / 2, baseWidget.height / 2 - baseWidget.rowSize / 2, baseWidget.rowSize, baseWidget.rowSize);
+                baseWidget.SVGIconOff.fill = theme.success;
+                baseWidget.SVGIconOff.SVGIcon.widget = _assertThisInitialized(baseWidget);
 
-                _this.SVGIconOff.hide();
+                baseWidget.SVGIconOff.hide();
 
-                _this.SVGArcSpinner.y = _this.centreY;
+                baseWidget.SVGArcSpinner.y = baseWidget.centreY;
             }
 
-            _this.SVGWidgetText.hide();
+            baseWidget.SVGWidgetText.hide();
 
-            _this.ShowEqualizer = false;
+            baseWidget.ShowEqualizer = false;
 
-            _this.clickableToTop();
+            baseWidget.clickableToTop();
 
-            return _this;
+            baseWidget.proprties = baseWidget._properties;
+
+            return baseWidget;
         }
 
         var _proto = ActuatorWidget.prototype;
 
         _proto.drawWidget = function drawWidget() {
             _BaseWidget.prototype.drawWidget.call(this);
+
+            if (this.SVGArcBack == undefined) return;
 
             if (this.widgetType == DEFAULT_TYPE) {
                 //back radial widget

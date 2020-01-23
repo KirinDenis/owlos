@@ -6,7 +6,48 @@ var EVENT_DELETE = 1;
 
 function defaultWidgetProperties() {
     return {
-        backgroundcolor: theme.warning
+        headertext: {
+            name: "header text",
+            value: "---",
+            type: "s"
+        },
+
+        headercolor: {
+            name: "header color",
+            value: theme.info,
+            type: "c"
+        },
+
+        headeropacity: {
+            name: "header opacity",
+            value: 0.1,
+            type: "f"
+        },
+
+        backgroundcolor: {
+            name: "baground color",
+            value: theme.dark,
+            type: "c"
+        },
+
+        backgroundopacity: {
+            name: "background opacity",
+            value: 0.1,
+            type: "f"
+        },
+
+        backgroundselectopacity: {
+            name: "background select opacity",
+            value: 0.2,
+            type: "f"
+        },
+
+        showequalizer: {
+            name: "Show equalizer",
+            value: true,
+            type: "b"
+        }
+
     }
 }
 
@@ -16,9 +57,7 @@ var BaseWidget =
         "use strict";
 
         function BaseWidget(parentPanel, id, size) {
-            this.parentPanel = parentPanel; //properties --------------------------------
-
-
+            this.parentPanel = parentPanel;
 
             this.id = id;
             this._networkStatus = NET_OFFLINE;
@@ -48,13 +87,10 @@ var BaseWidget =
 
             this.SVGBackpanel = new SVGArc(this.svgElement, this.id + "backpanel", 0, 0, this.width, 1);
             this.SVGBackpanel.drawRoundedRect(this.width, this.height, 5, 10, true, true, true, true);
-            this.SVGBackpanel.opacity = 0.3;
+            //this.SVGBackpanel.opacity = 0.3;
 
             this.SVGBoxBackpanel = new SVGArc(this.svgElement, this.id + "boxbackpanel", 0, 0, this.width, 1);
             this.SVGBoxBackpanel.drawRoundedRect(this.width, 25, 5, 0, true, true, false, false);
-            this.SVGBoxBackpanel.opacity = 0.1;
-
-            this.SVGBoxBackpanel.fill = theme.info;
 
             this.SVGBackdownpanel = new SVGArc(this.svgElement, this.id + "backdownpanel", 0, this.height - 10, this.width, 1);
             this.SVGBackdownpanel.drawRoundedRect(this.width, 10, 5, 0, false, false, true, true);
@@ -108,8 +144,7 @@ var BaseWidget =
 
                 this.equalizerX.push(equalizerY);
             }
-
-            this.ShowEqualizer = true;
+            
             this.rowSize = this.size / 4;
             this.SVGLeftIcon = new SVGIcon(this.svgElement, leftIcon, this.panding, this.height / 2 - this.rowSize / 2, this.rowSize, this.rowSize);
             this.SVGLeftIcon.fill = theme.light;
@@ -121,25 +156,12 @@ var BaseWidget =
             this.SVGRightIcon.SVGIcon.widget = this;
             this.SVGRightIcon.SVGIcon.onclick = this.moveRight;
             this.SVGRightIcon.hide();
-            /*
-            this.SVGPlusIcon = new SVGIcon(this.svgElement, plusIcon, this.width / 2 - this.rowSize / 2, 0, this.rowSize, this.rowSize);
-            this.SVGPlusIcon.fill = theme.light;
-            this.SVGPlusIcon.SVGIcon.widget = this;
-            this.SVGPlusIcon.SVGIcon.onclick = this.plusSize;
-            this.SVGPlusIcon.hide();
-            */
 
             this.SVGMinusIcon = new SVGIcon(this.svgElement, minusIcon, this.width / 2 - this.rowSize / 2, this.height - this.rowSize, this.rowSize, this.rowSize);
             this.SVGMinusIcon.fill = theme.light;
             this.SVGMinusIcon.SVGIcon.widget = this;
             this.SVGMinusIcon.SVGIcon.onclick = this.deleteWidgetClick;
             this.SVGMinusIcon.hide();
-            /*
-            this.SVGModeIcon = new SVGIcon(this.svgElement, menuIcon, this.width / 24, this.size / 30, this.size / 8, this.size / 8);
-            this.SVGModeIcon.fill = theme.secondary;
-            this.SVGModeIcon.SVGIcon.widget = this;
-            this.SVGModeIcon.SVGIcon.onclick = this.modeChangeClick;
-            */
 
             this.SVGPropertiesIcon = new SVGIcon(this.svgElement, menuIcon, this.width / 2 - this.rowSize / 2, this.height / 2 - this.rowSize / 2, this.rowSize, this.rowSize);
             this.SVGPropertiesIcon.fill = theme.light;
@@ -157,53 +179,10 @@ var BaseWidget =
             this.rPanel.onmouseover = this.mouseOver;
             this.rPanel.onmouseout = this.mouseOut;
             this.rPanel.appendChild(this.svgElement);
-            this.mode = WORK_MODE;
 
             this.properties = defaultWidgetProperties();
+            this.mode = WORK_MODE;
         }
-
-        
-        BaseWidget.prototype.showProperties = function showProperties(_event, _sender) {
-            
-            makeModalDialog("resetPanel", "showProperties", getLang("showProperties"), "");
-            var modalFooter = document.getElementById("showPropertiesModalFooter");
-            var modalBody = document.getElementById("showPropertiesModalBody");
-
-            var formGroup = modalBody.appendChild(document.createElement("div"));
-            formGroup.className = "form-group";
-
-
-            for (var key in _sender.properties) {
-                var label = formGroup.appendChild(document.createElement("label"));
-                label.setAttribute("for", "hostEdit");
-                label.innerText = key;
-                var hostEdit = formGroup.appendChild(document.createElement('input'));
-                hostEdit.className = "form-control form-control-sm";
-                hostEdit.placeholder = "http://host:port/ or https://host:port/";
-                hostEdit.id = "widgetproperty" + key;
-                hostEdit.value = _sender.properties[key];
-                hostEdit.widgetProperty = _sender.properties[key];
-            }
-
-            var addNodeButton = modalFooter.appendChild(document.createElement("button"));
-            addNodeButton.type = "button";
-            addNodeButton.className = "btn btn-sm btn-success";
-            addNodeButton.id = "addnodeModalButton";
-            addNodeButton.widget = _sender;
-            addNodeButton.onclick = _sender.setProperties;
-            addNodeButton.innerText = getLang("addnodebutton");
-
-            var addNodeError = formGroup.appendChild(document.createElement("label"));
-            addNodeError.className = "text-danger";
-
-            addNodeButton.hostEdit = hostEdit;
-            
-            addNodeButton.addNodeError = addNodeError;
-
-            $("#showPropertiesModal").modal('show');
-            
-        };
-
 
         BaseWidget.prototype.addEventListner = function addEventListner(_event, _sender) {
             try {
@@ -226,14 +205,55 @@ var BaseWidget =
             this.svgElement.insertBefore(this.SVGPropertiesIcon.SVGIcon, this.svgElement.childNodes.lastChild);
         };
 
+        BaseWidget.prototype.showProperties = function showProperties(_event, _sender) {
+
+            makeModalDialog("resetPanel", "showProperties", getLang("showProperties"), "");
+            var modalFooter = document.getElementById("showPropertiesModalFooter");
+            var modalBody = document.getElementById("showPropertiesModalBody");
+
+            var formGroup = modalBody.appendChild(document.createElement("div"));
+            formGroup.className = "form-group";
+
+
+            for (var key in _sender.properties) {
+                var label = formGroup.appendChild(document.createElement("label"));
+                label.setAttribute("for", "hostEdit");
+                label.innerText = _sender.properties[key].name;
+                var propEdit = createValueEdit(formGroup, _sender.properties[key].name, _sender.properties[key].value, _sender.properties[key].type);
+                propEdit.className = "form-control form-control-sm";
+                propEdit.placeholder = "type value here";
+                propEdit.id = "widgetproperty" + key;
+                //propEdit.value = _sender.properties[key].value;
+                propEdit.widgetProperty = _sender.properties[key];
+            }
+
+            var addNodeButton = modalFooter.appendChild(document.createElement("button"));
+            addNodeButton.type = "button";
+            addNodeButton.className = "btn btn-sm btn-success";
+            addNodeButton.id = "addnodeModalButton";
+            addNodeButton.widget = _sender;
+            addNodeButton.onclick = _sender.setProperties;
+            addNodeButton.innerText = getLang("addnodebutton");
+
+            var addNodeError = formGroup.appendChild(document.createElement("label"));
+            addNodeError.className = "text-danger";
+
+            addNodeButton.propEdit = propEdit;
+
+            addNodeButton.addNodeError = addNodeError;
+
+            $("#showPropertiesModal").modal('show');
+
+        };
+
 
         BaseWidget.prototype.setProperties = function setProperties(event) {
             var button = event.currentTarget;
             var widget = button.widget;
 
             for (var key in widget.properties) {
-                var hostEdit = document.getElementById("widgetproperty" + key);
-                widget.properties[key] = hostEdit.value;
+                var propEdit = document.getElementById("widgetproperty" + key);
+                widget.properties[key].value = propEdit.value;
             }
 
             widget.properties = widget.properties;
@@ -333,17 +353,22 @@ var BaseWidget =
                 return;
             }
 
-            if (this._data == data && this.widgetText == widgetText && this.label == label) return;
+            if (this._data == data && this.widgetText == widgetText && this._properties.headertext == label) return;
 
-            if (this.widgetText != widgetText) {
-                speak(label + " " + widgetText);
+            if (this._properties.headertext.value === '---') {
+                this._properties.headertext.value = label;
             }
 
-            label = getLang(label);
+
+            if (this.widgetText != widgetText) {
+                speak(this._properties.headertext + " " + widgetText);
+            }
+
+            
             this.historyData = historyData;
             this._data = data;
             this.widgetText = widgetText;
-            this.label = label;
+            
             this.spinnerAngle = 0;
             this.redrawAll();
         };
@@ -395,11 +420,11 @@ var BaseWidget =
             } //Label 
 
 
-            this.SVGLabel.text = this.label;
+            this.SVGLabel.text = this._properties.headertext.value;
             if (this.SVGLabel.width > this.size) {
-                var coef = this.SVGLabel.width / (this.label.length + 3);
+                var coef = this.SVGLabel.width / (this._properties.headertext.value.length + 3);
                 var charCount = (this.size - this.size / 3) / coef;
-                this.SVGLabel.text = this.label.slice(0, parseInt(charCount)) + "...";
+                this.SVGLabel.text = this._properties.headertext.value.slice(0, parseInt(charCount)) + "...";
 
             }
 
@@ -514,8 +539,13 @@ var BaseWidget =
                 return;
             }
 
-            this.SVGBackpanel.color = this._properties.backgroundcolor;
-            this.SVGBackpanel.fill = this._properties.backgroundcolor;
+            this.SVGBackpanel.color = this._properties.backgroundcolor.value;
+            this.SVGBackpanel.fill = this._properties.backgroundcolor.value;
+            this.SVGBackpanel.opacity = this._properties.backgroundopacity.value;
+
+            this.SVGBoxBackpanel.opacity = this._properties.headeropacity.value;
+            this.SVGBoxBackpanel.fill = this._properties.headercolor.value;
+
 
             var oneHangPercent = 360 + 90 + 30 - 240;
             var drawPercent = this._data * (oneHangPercent / 100); //backdown panel
@@ -554,55 +584,67 @@ var BaseWidget =
             } //equalizer --------------------------
 
 
-            for (var x = 0; x < this.eCount; x++) {
-                var equalizerY = this.equalizerX[x];
+            if (this._properties.showequalizer.value === 'true') {
+                for (var x = 0; x < this.eCount; x++) {
+                    var equalizerY = this.equalizerX[x];
 
-                for (var y = 0; y < 5; y++) {
-                    if (this._networkStatus == NET_ONLINE && this.ShowEqualizer) {
-                        equalizerY[y].opacity = (y + 1) * 0.08;
-                    } else {
-                        equalizerY[y].opacity = 0.0;
+                    for (var y = 0; y < 5; y++) {
+                        if (this._networkStatus == NET_ONLINE && (this._properties.showequalizer.value === 'true')) {
+                            equalizerY[y].opacity = (y + 1) * 0.08;
+                        } else {
+                            equalizerY[y].opacity = 0.0;
+                        }
+
+                        equalizerY[y].fill = theme.secondary;
                     }
+                }
 
-                    equalizerY[y].fill = theme.secondary;
+                if (this._networkStatus == NET_ONLINE && (this._properties.showequalizer.value === 'true')) {
+                    if (this.historyData != undefined) {
+                        //reset 
+                        var splitHistory = this.historyData.split(";");
+                        var count = splitHistory[0];
+                        var prop = count / this.eCount;
+                        var bigValue;
+
+                        for (var x = 0; x < count; x++) {
+                            var equalizerY = this.equalizerX[parseInt(x / prop)];
+                            var value = splitHistory[x + 1];
+
+                            if (bigValue == undefined || value > bigValue) {
+                                bigValue = value;
+                            }
+                        }
+
+                        var propValue = parseFloat(bigValue / 5);
+
+                        for (var x = 0; x < count; x++) {
+                            if (count < this.eCount) {
+                                var equalizerY = this.equalizerX[x];
+                            } else {
+                                var equalizerY = this.equalizerX[parseInt(x / prop)];
+                            }
+
+                            var value = parseInt(splitHistory[x + 1] / propValue);
+
+                            for (var y = 0; y < value; y++) {
+                                equalizerY[4 - y].opacity = (1.0 - parseFloat(y / 4.0)) / 2.0;
+                                equalizerY[4 - y].fill = theme.success;
+                            }
+                        }
+                    }
                 }
             }
+            else { //no equalizer
+                for (var x = 0; x < this.eCount; x++) {
+                    var equalizerY = this.equalizerX[x];
+                    for (var y = 0; y < 5; y++) {
+                            equalizerY[y].opacity = 0.0;
 
-            if (this._networkStatus == NET_ONLINE && this.ShowEqualizer) {
-                if (this.historyData != undefined) {
-                    //reset 
-                    var splitHistory = this.historyData.split(";");
-                    var count = splitHistory[0];
-                    var prop = count / this.eCount;
-                    var bigValue;
-
-                    for (var x = 0; x < count; x++) {
-                        var equalizerY = this.equalizerX[parseInt(x / prop)];
-                        var value = splitHistory[x + 1];
-
-                        if (bigValue == undefined || value > bigValue) {
-                            bigValue = value;
-                        }
-                    }
-
-                    var propValue = parseFloat(bigValue / 5);
-
-                    for (var x = 0; x < count; x++) {
-                        if (count < this.eCount) {
-                            var equalizerY = this.equalizerX[x];
-                        } else {
-                            var equalizerY = this.equalizerX[parseInt(x / prop)];
-                        }
-
-                        var value = parseInt(splitHistory[x + 1] / propValue);
-
-                        for (var y = 0; y < value; y++) {
-                            equalizerY[4 - y].opacity = (1.0 - parseFloat(y / 4.0)) / 2.0;
-                            equalizerY[4 - y].fill = theme.success;
-                        }
                     }
                 }
-            } //spinner 
+
+            }
 
 
             if (this._networkStatus == NET_RECONNECT) {
@@ -628,14 +670,14 @@ var BaseWidget =
             var _this = this;
 
             if (this.mouseEnter) {
-                if (this.SVGBackpanel.opacity < 0.1) {
+                if (this.SVGBackpanel.opacity < this._properties.backgroundselectopacity.value) {
                     this.SVGBackpanel.opacity += 0.005;
                     requestAnimationFrame(function () {
                         return _this.drawMouseEnter();
                     });
                 }
             } else {
-                if (this.SVGBackpanel.opacity > 0.02) {
+                if (this.SVGBackpanel.opacity > this._properties.backgroundopacity.value) {
                     this.SVGBackpanel.opacity -= 0.005;
                     requestAnimationFrame(function () {
                         return _this.drawMouseEnter();
@@ -662,15 +704,15 @@ var BaseWidget =
                 this._mode = mode;
 
                 if (mode == WORK_MODE) {
-                    this.SVGBackpanel.opacity = 0.05;
+                    this.SVGBackpanel.opacity = this._properties.backgroundopacity.value;
                     this.SVGLeftIcon.hide();
                     this.SVGRightIcon.hide(); //  this.SVGPlusIcon.hide();
 
                     this.SVGMinusIcon.hide();
                     this.SVGPropertiesIcon.hide();
-                    
+
                 } else if (mode == MOVE_MODE) {
-                    this.SVGBackpanel.opacity = 0.3;
+                    this.SVGBackpanel.opacity = this._properties.backgroundopacity.value * 3;
                     this.SVGLeftIcon.draw();
                     this.SVGRightIcon.draw(); //   this.SVGPlusIcon.draw();
 
@@ -692,20 +734,20 @@ var BaseWidget =
                     this.redrawAll();
                 }
             }
-            },
+        },
 
-            {
-                key: "properties",
-                get: function get() {
-                    return this._properties;
-                },
-                set: function set(properties) {
-                    this._properties = properties;
-                    this.drawText();
-                    this.drawWidget();
-                }
-            }, 
-            {
+        {
+            key: "properties",
+            get: function get() {
+                return this._properties;
+            },
+            set: function set(properties) {
+                this._properties = properties;
+                this.drawText();
+                this.drawWidget();
+            }
+        },
+        {
             key: "data",
             get: function get() {
                 return this._data;

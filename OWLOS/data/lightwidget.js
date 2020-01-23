@@ -1,5 +1,3 @@
-function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
-
 var LightWidget =
     
     function (_BaseWidget) {
@@ -29,7 +27,16 @@ var LightWidget =
 
             baseWidget.clickableToTop();
 
-            baseWidget._properties.lightcolor = theme.warning;            
+            baseWidget._properties.lightcolor =
+                {
+                    name: "light indicator color",
+                    value: theme.warning,
+                    type: "c"
+                };
+
+
+
+                
             baseWidget.proprties = baseWidget._properties;
 
             return baseWidget;
@@ -60,7 +67,7 @@ var LightWidget =
 
                 switch (this._networkStatus) {
                     case NET_ONLINE:
-                        this.toColor(this.levelArc[i], this.properties.lightcolor);
+                        this.toColor(this.levelArc[i], this.properties.lightcolor.value);
                       //  this.levelArc[i].opacity = 0.7;
                         break;
 

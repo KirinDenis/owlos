@@ -232,8 +232,43 @@ function createValueEdit(parentElement, propertyName, propertyValue, propertyTyp
             valueSelectOption.innerText = "true";
             valueSelectOption = edit.appendChild(document.createElement('option'));
             valueSelectOption.innerText = "false";
-            if (propertyValue === "1") edit.selectedIndex = 0; else edit.selectedIndex = 1;
-        } else {
+            if ((propertyValue === "1") || (propertyValue === 'true')) edit.selectedIndex = 0; else edit.selectedIndex = 1;
+        }
+        else
+        if (propertyType.indexOf("c") != -1) {
+            edit = parentElement.appendChild(document.createElement('select'));
+            edit.className = "form-control form-control-sm";
+            edit.style.width = "100%";
+            var valueSelectOption = edit.appendChild(document.createElement('option'));
+            valueSelectOption.innerText = propertyValue;
+            
+            valueSelectOption = edit.appendChild(document.createElement('option'));
+            valueSelectOption.innerText = theme.primary;
+
+            valueSelectOption = edit.appendChild(document.createElement('option'));
+            valueSelectOption.innerText = theme.secondary;
+
+            valueSelectOption = edit.appendChild(document.createElement('option'));
+            valueSelectOption.innerText = theme.success;
+
+            valueSelectOption = edit.appendChild(document.createElement('option'));
+            valueSelectOption.innerText = theme.info;
+
+            valueSelectOption = edit.appendChild(document.createElement('option'));
+            valueSelectOption.innerText = theme.warning;
+
+            valueSelectOption = edit.appendChild(document.createElement('option'));
+            valueSelectOption.innerText = theme.danger;
+
+            valueSelectOption = edit.appendChild(document.createElement('option'));
+            valueSelectOption.innerText = theme.light;
+
+            valueSelectOption = edit.appendChild(document.createElement('option'));
+            valueSelectOption.innerText = theme.dark;
+
+            edit.selectedIndex = 0;
+        }
+        else {
             edit = parentElement.appendChild(document.createElement('input'));
             edit.className = "form-control form-control-sm";
 

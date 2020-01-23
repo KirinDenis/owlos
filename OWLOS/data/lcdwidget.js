@@ -10,89 +10,90 @@ var LCDWidget =
         _inheritsLoose(LCDWidget, _BaseWidget);
 
         function LCDWidget(parentPanel, id, size) {
-            var _this;
+            
+            var baseWidget = _BaseWidget.call(this, parentPanel, id, size) || this;
+            baseWidget.topMargin = baseWidget.size / 20; //this.panding = 5;
 
-            _this = _BaseWidget.call(this, parentPanel, id, size) || this;
-            _this.topMargin = _this.size / 20; //this.panding = 5;
+            baseWidget.width = baseWidget.size * 2;
+            baseWidget.height = baseWidget.size - baseWidget.panding;
+            baseWidget.centreX = baseWidget.width / 2; //  this.centreY = this.height / 2;
 
-            _this.width = _this.size * 2;
-            _this.height = _this.size - _this.panding;
-            _this.centreX = _this.width / 2; //  this.centreY = this.height / 2;
+            baseWidget.widgetTextSize = baseWidget.size / 110;
 
-            _this.widgetTextSize = _this.size / 110;
+            baseWidget.svgElement.setAttributeNS(null, "viewBox", baseWidget.halfPanding + " " + baseWidget.halfPanding + " " + baseWidget.width + " " + baseWidget.height);
 
-            _this.svgElement.setAttributeNS(null, "viewBox", _this.halfPanding + " " + _this.halfPanding + " " + _this.width + " " + _this.height);
+            baseWidget.svgElement.setAttributeNS(null, "width", baseWidget.width);
 
-            _this.svgElement.setAttributeNS(null, "width", _this.width);
+            baseWidget.SVGBackpanel.drawRoundedRect(baseWidget.width, baseWidget.height, 5, 10, true, true, true, true);
+            baseWidget.SVGBoxBackpanel.drawRoundedRect(baseWidget.width, 26, 5, 0, true, true, false, false);
+            baseWidget.SVGBackdownpanel.y += 3;
+            baseWidget.SVGBackdownpanel.drawRoundedRect(baseWidget.width, 10, 5, 0, false, false, true, true);
+            baseWidget.SVGWidgetText1 = new SVGText(baseWidget.svgElement, baseWidget.id + "widgettext1", baseWidget.widgetTextSize);
+            baseWidget.SVGWidgetText1.fontFamily = "monospace";
+            baseWidget.SVGWidgetText2 = new SVGText(baseWidget.svgElement, baseWidget.id + "widgettext2", baseWidget.widgetTextSize);
+            baseWidget.SVGWidgetText2.fontFamily = "monospace";
+            baseWidget.SVGWidgetText3 = new SVGText(baseWidget.svgElement, baseWidget.id + "widgettext3", baseWidget.widgetTextSize);
+            baseWidget.SVGWidgetText3.fontFamily = "monospace";
+            baseWidget.SVGWidgetText4 = new SVGText(baseWidget.svgElement, baseWidget.id + "widgettext4", baseWidget.widgetTextSize);
+            baseWidget.SVGWidgetText4.fontFamily = "monospace";
+            baseWidget.SVGWidgetText1.text = "1234567890ABCSDEFGHL"; //20 chars 
 
-            _this.SVGBackpanel.drawRoundedRect(_this.width, _this.height, 5, 10, true, true, true, true);
-            _this.SVGBoxBackpanel.drawRoundedRect(_this.width, 26, 5, 0, true, true, false, false);
-            _this.SVGBackdownpanel.y += 3;
-            _this.SVGBackdownpanel.drawRoundedRect(_this.width, 10, 5, 0, false, false, true, true);
-            _this.SVGWidgetText1 = new SVGText(_this.svgElement, _this.id + "widgettext1", _this.widgetTextSize);
-            _this.SVGWidgetText1.fontFamily = "monospace";
-            _this.SVGWidgetText2 = new SVGText(_this.svgElement, _this.id + "widgettext2", _this.widgetTextSize);
-            _this.SVGWidgetText2.fontFamily = "monospace";
-            _this.SVGWidgetText3 = new SVGText(_this.svgElement, _this.id + "widgettext3", _this.widgetTextSize);
-            _this.SVGWidgetText3.fontFamily = "monospace";
-            _this.SVGWidgetText4 = new SVGText(_this.svgElement, _this.id + "widgettext4", _this.widgetTextSize);
-            _this.SVGWidgetText4.fontFamily = "monospace";
-            _this.SVGWidgetText1.text = "1234567890ABCSDEFGHL"; //20 chars 
+            baseWidget.SVGLabel.text = "LCD";
+            baseWidget.textWidth = baseWidget.SVGWidgetText1.width;
+            baseWidget.textHeight = baseWidget.SVGWidgetText1.height;
+            baseWidget.widgetLeft = baseWidget.centreX - baseWidget.textWidth / 2;
+            baseWidget.widgetTop = baseWidget.centreY + baseWidget.SVGLabel.height - baseWidget.textHeight * 4 / 2;
+            baseWidget.SVGWidgetBack = new SVGRect(baseWidget.svgElement, baseWidget.id + "widgetback", baseWidget.widgetLeft - baseWidget.panding, baseWidget.widgetTop - parseFloat(baseWidget.textHeight - baseWidget.panding), baseWidget.textWidth + baseWidget.panding * 2, baseWidget.textHeight * 4 + baseWidget.panding);
+            baseWidget.SVGWidgetBack.opacity = 0.2;
+            baseWidget.SVGWidgetBack.color = theme.secondary;
+            baseWidget.SVGWidgetText1.text = "";
+            baseWidget.SVGLabel.text = "";
 
-            _this.SVGLabel.text = "LCD";
-            _this.textWidth = _this.SVGWidgetText1.width;
-            _this.textHeight = _this.SVGWidgetText1.height;
-            _this.widgetLeft = _this.centreX - _this.textWidth / 2;
-            _this.widgetTop = _this.centreY + _this.SVGLabel.height - _this.textHeight * 4 / 2;
-            _this.SVGWidgetBack = new SVGRect(_this.svgElement, _this.id + "widgetback", _this.widgetLeft - _this.panding, _this.widgetTop - parseFloat(_this.textHeight - _this.panding), _this.textWidth + _this.panding * 2, _this.textHeight * 4 + _this.panding);
-            _this.SVGWidgetBack.opacity = 0.2;
-            _this.SVGWidgetBack.color = theme.secondary;
-            _this.SVGWidgetText1.text = "";
-            _this.SVGLabel.text = "";
+            baseWidget.SVGWidgetText.hide();
 
-            _this.SVGWidgetText.hide();
+            baseWidget.SVGArcSpinner.x = baseWidget.centreX;
+            baseWidget.rPanel.onclick = baseWidget.showEditor; //Popup editor 
 
-            _this.SVGArcSpinner.x = _this.centreX;
-            _this.rPanel.onclick = _this.showEditor; //Popup editor 
+            baseWidget.pre = baseWidget.rPanel.appendChild(document.createElement('pre'));
+            baseWidget.pre.className = "LCDTextArea";
+            baseWidget.pre.style.display = 'none';
+            baseWidget.textarea = baseWidget.pre.appendChild(document.createElement('textarea'));
+            baseWidget.textarea.className = "form-control text-white bg-primary";
+            baseWidget.textarea.id = "textarea" + baseWidget.id;
+            baseWidget.textarea.rows = "4";
+            baseWidget.textarea.cols = "25";
 
-            _this.pre = _this.rPanel.appendChild(document.createElement('pre'));
-            _this.pre.className = "LCDTextArea";
-            _this.pre.style.display = 'none';
-            _this.textarea = _this.pre.appendChild(document.createElement('textarea'));
-            _this.textarea.className = "form-control text-white bg-primary";
-            _this.textarea.id = "textarea" + _this.id;
-            _this.textarea.rows = "4";
-            _this.textarea.cols = "25";
+            var elementHeight = baseWidget.pre.getBoundingClientRect().height;
 
-            var elementHeight = _this.pre.getBoundingClientRect().height;
+            baseWidget.pre.style.marginTop = -(elementHeight / 2.0 + baseWidget.size / 1.8) + "px";
+            baseWidget.btnGroup = baseWidget.rPanel.appendChild(document.createElement("p"));
+            baseWidget.btnGroup.style.display = 'none';
+            baseWidget.btnGroup.className = "LCDButtons";
+            baseWidget.btnGroup.role = "group";
+            baseWidget.textElement = baseWidget.btnGroup.appendChild(document.createElement('div'));
+            baseWidget.textElement.className = "text-white";
+            baseWidget.lcdButton = baseWidget.btnGroup.appendChild(document.createElement('input'));
+            baseWidget.lcdButton.className = "btn btn-success text-white LCDButton";
+            baseWidget.lcdButton.id = baseWidget.id + "lcdbutton";
+            baseWidget.lcdButton.type = "button";
+            baseWidget.lcdButton.edit = baseWidget.textarea;
+            baseWidget.lcdButton.lcdid = baseWidget.id;
+            baseWidget.lcdButton.widget = _assertThisInitialized(baseWidget); // this.lcdButton.onclick = lcdButtonClick;
 
-            _this.pre.style.marginTop = -(elementHeight / 2.0 + _this.size / 1.8) + "px";
-            _this.btnGroup = _this.rPanel.appendChild(document.createElement("p"));
-            _this.btnGroup.style.display = 'none';
-            _this.btnGroup.className = "LCDButtons";
-            _this.btnGroup.role = "group";
-            _this.textElement = _this.btnGroup.appendChild(document.createElement('div'));
-            _this.textElement.className = "text-white";
-            _this.lcdButton = _this.btnGroup.appendChild(document.createElement('input'));
-            _this.lcdButton.className = "btn btn-success text-white LCDButton";
-            _this.lcdButton.id = _this.id + "lcdbutton";
-            _this.lcdButton.type = "button";
-            _this.lcdButton.edit = _this.textarea;
-            _this.lcdButton.lcdid = _this.id;
-            _this.lcdButton.widget = _assertThisInitialized(_this); // this.lcdButton.onclick = lcdButtonClick;
+            baseWidget.lcdButton.value = getLang("send");
+            baseWidget.lightButton = baseWidget.btnGroup.appendChild(document.createElement('input'));
+            baseWidget.lightButton.className = "btn btn-info text-white LCDButton";
+            baseWidget.lightButton.id = baseWidget.id + "clearbutton";
+            baseWidget.lightButton.type = "button";
+            baseWidget.lightButton.edit = baseWidget.textarea;
+            baseWidget.lightButton.lcdid = baseWidget.id;
+            baseWidget.lightButton.widget = _assertThisInitialized(baseWidget); //  this.lightButton.onclick = lightButtonClick;
 
-            _this.lcdButton.value = getLang("send");
-            _this.lightButton = _this.btnGroup.appendChild(document.createElement('input'));
-            _this.lightButton.className = "btn btn-info text-white LCDButton";
-            _this.lightButton.id = _this.id + "clearbutton";
-            _this.lightButton.type = "button";
-            _this.lightButton.edit = _this.textarea;
-            _this.lightButton.lcdid = _this.id;
-            _this.lightButton.widget = _assertThisInitialized(_this); //  this.lightButton.onclick = lightButtonClick;
+            baseWidget.lightButton.value = getLang("shortlight");
+            baseWidget.ShowEqualizer = false;
 
-            _this.lightButton.value = getLang("shortlight");
-            _this.ShowEqualizer = false;
-            return _this;
+            baseWidget.proprties = baseWidget._properties;
+            return baseWidget;
         }
 
         var _proto = LCDWidget.prototype;
@@ -170,6 +171,8 @@ var LCDWidget =
 
         _proto.drawText = function drawText() {
             _BaseWidget.prototype.drawText.call(this);
+
+            if (this.SVGWidgetText1 == undefined) return;
 
             switch (this._networkStatus) {
                 case NET_ONLINE:
@@ -274,6 +277,7 @@ var LCDWidget =
         };
 
         _proto.drawWidget = function drawWidget() {
+            if (this.SVGWidgetBack == undefined) return;
             if (this.light == 1) {
                 this.SVGWidgetBack.color = theme.info;
             } else {

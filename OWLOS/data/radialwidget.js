@@ -20,6 +20,8 @@ var RadialWidget =
 
             baseWidget.clickableToTop();
 
+            baseWidget.proprties = baseWidget._properties;
+
             return baseWidget;
         }
 
@@ -27,6 +29,8 @@ var RadialWidget =
 
         _proto.drawWidget = function drawWidget() {
             _BaseWidget.prototype.drawWidget.call(this);
+
+            if (this.SVGArcBack == undefined) return;
 
             var oneHangPercent = 360 + 90 + 30 - 240;
             var drawPercent = this.data * (oneHangPercent / 100); //back radial widget
