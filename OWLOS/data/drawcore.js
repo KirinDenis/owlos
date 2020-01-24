@@ -98,7 +98,7 @@ var SVGText =
             this.SVGText.setAttributeNS(null, "font-family", theme.fontFamily);
            // this.SVGText.setAttributeNS(null, "font-size", this.size + "em");
             svgElement.appendChild(this.SVGText);
-            this._size = size;
+            this.size = size;
         }
 
         var _proto = SVGText.prototype;
