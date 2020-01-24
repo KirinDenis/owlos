@@ -206,16 +206,34 @@ var BaseWidget =
         };
 
         BaseWidget.prototype.showProperties = function showProperties(_event, _sender) {
+            
+
+            _sender.storedProperties = {}; 
+
+            _sender.inParentIndex = Array.prototype.slice.call(_sender.parentPanel.childNodes).indexOf(_sender.rPanel);                        
+            _sender.parentPanel.removeChild(_sender.rPanel);
+            _sender.mode = WORK_MODE;
 
             makeModalDialog("resetPanel", "showProperties", getLang("showProperties"), "");
             var modalFooter = document.getElementById("showPropertiesModalFooter");
             var modalBody = document.getElementById("showPropertiesModalBody");
 
+            modalBody.appendChild(_sender.rPanel);
+
             var formGroup = modalBody.appendChild(document.createElement("div"));
             formGroup.className = "form-group";
 
+            
+            
 
             for (var key in _sender.properties) {
+
+                _sender.storedProperties[key] = {
+                    name: _sender.properties[key].name,
+                    value: _sender.properties[key].value,
+                    type: _sender.properties[key].type                    
+                }
+
                 var label = formGroup.appendChild(document.createElement("label"));
                 label.setAttribute("for", "hostEdit");
                 label.innerText = _sender.properties[key].name;
@@ -223,9 +241,22 @@ var BaseWidget =
                 propEdit.className = "form-control form-control-sm";
                 propEdit.placeholder = "type value here";
                 propEdit.id = "widgetproperty" + key;
+                
                 //propEdit.value = _sender.properties[key].value;
                 propEdit.widgetProperty = _sender.properties[key];
+                propEdit.widget = _sender;
+                propEdit.originalOnChange = propEdit.onchange;
+                propEdit.onchange = _sender.onPropertyChange;
             }
+
+            var closeHeaderButton = document.getElementById("showPropertiescloseHeaderButton");
+            closeHeaderButton.widget = _sender;
+            closeHeaderButton.onclick = _sender.discardProperties;
+
+            var closeButton = document.getElementById("showPropertiescloseButton");
+            closeButton.widget = _sender;
+            closeButton.onclick = _sender.discardProperties;
+
 
             var addNodeButton = modalFooter.appendChild(document.createElement("button"));
             addNodeButton.type = "button";
@@ -251,6 +282,9 @@ var BaseWidget =
             var button = event.currentTarget;
             var widget = button.widget;
 
+            widget.parentPanel.insertBefore(widget.rPanel, widget.parentPanel.childNodes[widget.inParentIndex]);
+            widget.mode = MOVE_MODE;
+
             for (var key in widget.properties) {
                 var propEdit = document.getElementById("widgetproperty" + key);
                 widget.properties[key].value = propEdit.value;
@@ -261,8 +295,43 @@ var BaseWidget =
             config.save();
 
             $("#showPropertiesModal").modal('hide');
+            return false;
+        };
 
-        }
+        BaseWidget.prototype.discardProperties = function discardtProperties(event) {
+            var button = event.currentTarget;
+            var widget = button.widget;
+
+            widget.parentPanel.insertBefore(widget.rPanel, widget.parentPanel.childNodes[widget.inParentIndex]);
+            widget.mode = MOVE_MODE;
+            widget.properties = widget.storedProperties;
+
+            //$("#showPropertiesModal").modal('hide');
+            return false;
+        };
+
+
+        BaseWidget.prototype.onPropertyChange = function onPropertyChange(event) {
+
+            var propEdit = event.currentTarget;
+            var widget = propEdit.widget;
+
+            for (var key in widget.properties) {
+                var _propEdit = document.getElementById("widgetproperty" + key);
+                widget.properties[key].value = _propEdit.value;
+            }
+
+            widget.properties = widget.properties;
+
+            if (propEdit.originalOnChange != undefined) {
+                propEdit.originalOnChange(event);
+            }
+
+            return false;
+
+        };
+
+        
 
         BaseWidget.prototype.moveLeft = function moveLeft(event) {
             var widget = event.currentTarget.widget;
@@ -289,6 +358,7 @@ var BaseWidget =
         };
 
         BaseWidget.prototype.propertiesClick = function movepropertiesClick(event) {
+            event.stopPropagation();
             var widget = event.currentTarget.widget;
 
             if (widget.mode == MOVE_MODE) {

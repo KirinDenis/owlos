@@ -45,7 +45,7 @@ $(document).ready(function () {
     };
     */
 
-    var style = window.getComputedStyle(document.body, null);    
+    var style = window.getComputedStyle(document.body, null);
     theme.primary = style.getPropertyValue('--primary');
     theme.secondary = style.getPropertyValue('--secondary');
     theme.success = style.getPropertyValue('--success');
@@ -67,7 +67,7 @@ $(document).ready(function () {
         theme.dark = '#272B30';
     }
 
-    
+
 
     addToLogNL("get UI configuration...");
     try {
@@ -98,7 +98,7 @@ $(document).ready(function () {
             nodesRefreshHandle = setInterval(nodesRefresh, 10000);
 
             $('#sidebarCollapse').on('click', function () {
-               $('#sidebar').toggleClass('active');
+                $('#sidebar').toggleClass('active');
             });
 
             speak("OWL OS is ready");
@@ -107,10 +107,10 @@ $(document).ready(function () {
             status_online = NET_OFFLINE;
             speak("ERROR with host: " + host);
             addToLogNL("ERROR with host: " + host, 2);
+        }
+
+
     }
-
-
-}
 
 
     catch (exception) {
@@ -118,7 +118,7 @@ $(document).ready(function () {
         addToLogNL("ERROR starting exception: " + exception, 2);
         addToLogNL("ERROR delete configurations files can help fix it: [your host]/deletefile?name=web.config", 2);
     }
-   }
+}
 );
 
 function nodesRefresh() {
@@ -235,63 +235,75 @@ function createValueEdit(parentElement, propertyName, propertyValue, propertyTyp
             if ((propertyValue === "1") || (propertyValue === 'true')) edit.selectedIndex = 0; else edit.selectedIndex = 1;
         }
         else
-        if (propertyType.indexOf("c") != -1) {
-            edit = parentElement.appendChild(document.createElement('select'));
-            edit.className = "form-control form-control-sm";
-            edit.style.width = "100%";
-            var valueSelectOption = edit.appendChild(document.createElement('option'));
-            valueSelectOption.innerText = propertyValue;
-            
-            valueSelectOption = edit.appendChild(document.createElement('option'));
-            valueSelectOption.innerText = theme.primary;
+            if (propertyType.indexOf("c") != -1) {
+                edit = parentElement.appendChild(document.createElement('select'));
+                edit.className = "form-control form-control-sm";
+                edit.style.width = "100%";
+                edit.style.backgroundColor = propertyValue;
+                edit.onchange = colorSelectOnChange;
+                var valueSelectOption = edit.appendChild(document.createElement('option'));
+                valueSelectOption.innerText = propertyValue;
+                valueSelectOption.style.backgroundColor = propertyValue;
 
-            valueSelectOption = edit.appendChild(document.createElement('option'));
-            valueSelectOption.innerText = theme.secondary;
+                valueSelectOption = edit.appendChild(document.createElement('option'));
+                valueSelectOption.innerText = theme.primary;
+                valueSelectOption.style.backgroundColor = theme.primary;
 
-            valueSelectOption = edit.appendChild(document.createElement('option'));
-            valueSelectOption.innerText = theme.success;
+                valueSelectOption = edit.appendChild(document.createElement('option'));
+                valueSelectOption.innerText = theme.secondary;
+                valueSelectOption.style.backgroundColor = theme.secondary;
 
-            valueSelectOption = edit.appendChild(document.createElement('option'));
-            valueSelectOption.innerText = theme.info;
 
-            valueSelectOption = edit.appendChild(document.createElement('option'));
-            valueSelectOption.innerText = theme.warning;
+                valueSelectOption = edit.appendChild(document.createElement('option'));
+                valueSelectOption.innerText = theme.success;
+                valueSelectOption.style.backgroundColor = theme.success;
 
-            valueSelectOption = edit.appendChild(document.createElement('option'));
-            valueSelectOption.innerText = theme.danger;
+                valueSelectOption = edit.appendChild(document.createElement('option'));
+                valueSelectOption.innerText = theme.info;
+                valueSelectOption.style.backgroundColor = theme.info;
 
-            valueSelectOption = edit.appendChild(document.createElement('option'));
-            valueSelectOption.innerText = theme.light;
+                valueSelectOption = edit.appendChild(document.createElement('option'));
+                valueSelectOption.innerText = theme.warning;
+                valueSelectOption.style.backgroundColor = theme.warning;
 
-            valueSelectOption = edit.appendChild(document.createElement('option'));
-            valueSelectOption.innerText = theme.dark;
+                valueSelectOption = edit.appendChild(document.createElement('option'));
+                valueSelectOption.innerText = theme.danger;
+                valueSelectOption.style.backgroundColor = theme.danger;
 
-            edit.selectedIndex = 0;
-        }
-        else {
-            edit = parentElement.appendChild(document.createElement('input'));
-            edit.className = "form-control form-control-sm";
+                valueSelectOption = edit.appendChild(document.createElement('option'));
+                valueSelectOption.innerText = theme.light;
+                valueSelectOption.style.backgroundColor = theme.light;
 
-            if (propertyType.indexOf("p") != -1) //password
-            {
-                edit.type = "password";
-                edit.placeholder = "Password";
+                valueSelectOption = edit.appendChild(document.createElement('option'));
+                valueSelectOption.innerText = theme.dark;
+                valueSelectOption.style.backgroundColor = theme.dark;
+
+                edit.selectedIndex = 0;
             }
+            else {
+                edit = parentElement.appendChild(document.createElement('input'));
+                edit.className = "form-control form-control-sm";
 
-            if (propertyType.indexOf("i") != -1) //integer
-            {
-                edit.type = "number";
+                if (propertyType.indexOf("p") != -1) //password
+                {
+                    edit.type = "password";
+                    edit.placeholder = "Password";
+                }
+
+                if (propertyType.indexOf("i") != -1) //integer
+                {
+                    edit.type = "number";
+                }
+
+                if (propertyType.indexOf("f") != -1) //float
+                {
+                    edit.type = "number";
+                    edit.step = "0.01";
+                }
+
+                edit.style.width = "100%";
+                edit.value = propertyValue;
             }
-
-            if (propertyType.indexOf("f") != -1) //float
-            {
-                edit.type = "number";
-                edit.step = "0.01";
-            }
-
-            edit.style.width = "100%";
-            edit.value = propertyValue;
-        }
 
         if (propertyType.indexOf("s") != -1) //selected
         {
@@ -306,6 +318,12 @@ function createValueEdit(parentElement, propertyName, propertyValue, propertyTyp
     }
 
     return edit;
+}
+
+function colorSelectOnChange(event) {
+    var select = event.currentTarget;
+    select.style.backgroundColor = select.options[select.selectedIndex].style.backgroundColor;
+    return false;
 }
 
 

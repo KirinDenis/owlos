@@ -37,7 +37,7 @@ var LightWidget =
 
 
                 
-            baseWidget.proprties = baseWidget._properties;
+            baseWidget.properties = baseWidget._properties;
 
             return baseWidget;
         }
