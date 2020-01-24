@@ -11,6 +11,15 @@ var ValueWidget =
             baseWidget.topMargin = baseWidget.centreY + baseWidget.size / 10;
             baseWidget.clickableToTop();
 
+            baseWidget._properties.textfontsize =
+                {
+                    name: "Value text size",
+                    value: 1.0,
+                    type: "f"
+                };
+
+            baseWidget.properties = baseWidget._properties;
+
             return baseWidget;
         }
 
@@ -18,14 +27,18 @@ var ValueWidget =
 
 
         _proto.drawText = function drawText() {
+            if (this.properties.textfontsize !== undefined) {
+                this.SVGWidgetText.size = this.properties.textfontsize.value;
+            }
             _BaseWidget.prototype.drawText.call(this);
             this.SVGWidgetText.color = theme.danger;
+            
         };
 
 
         _proto.drawWidget = function drawWidget() {
+        
             _BaseWidget.prototype.drawWidget.call(this);
-
         };
 
         return ValueWidget;

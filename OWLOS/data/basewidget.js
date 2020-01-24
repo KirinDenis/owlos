@@ -42,6 +42,12 @@ function defaultWidgetProperties() {
             type: "f"
         },
 
+        valuetextcolor: {
+                name: "value text color",
+                value: theme.secondary,
+                type: "c"
+         },
+
         showequalizer: {
             name: "Show equalizer",
             value: true,
@@ -402,7 +408,7 @@ var BaseWidget =
 
             switch (this._networkStatus) {
                 case NET_ONLINE:
-                    this.toColor(this.SVGWidgetText, theme.light);
+                    this.toColor(this.SVGWidgetText, this._properties.valuetextcolor.value);
                     break;
 
                 case NET_ERROR:
@@ -753,7 +759,7 @@ var BaseWidget =
                 return this._data;
             },
             set: function set(data) {
-                this._data = _data;
+                this._data = data;
                 this.redrawAll();
             }
         }]);

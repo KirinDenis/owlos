@@ -33,11 +33,8 @@ var LightWidget =
                     value: theme.warning,
                     type: "c"
                 };
-
-
-
                 
-            baseWidget.proprties = baseWidget._properties;
+            baseWidget.properties = baseWidget._properties;
 
             return baseWidget;
         }

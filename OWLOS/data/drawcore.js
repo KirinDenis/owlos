@@ -92,13 +92,13 @@ var SVGText =
 
         function SVGText(svgElement, id, size) {
             this.id = id;
-            this.size = size;
             this.SVGText = document.createElementNS(xmlns, "text");
             this.SVGText.id = this.id;
             this.SVGText.setAttributeNS(null, "height", "auto");
             this.SVGText.setAttributeNS(null, "font-family", theme.fontFamily);
-            this.SVGText.setAttributeNS(null, "font-size", this.size + "em");
+           // this.SVGText.setAttributeNS(null, "font-size", this.size + "em");
             svgElement.appendChild(this.SVGText);
+            this._size = size;
         }
 
         var _proto = SVGText.prototype;
@@ -135,6 +135,15 @@ var SVGText =
                     this.SVGText.setAttributeNS(null, "textLength", textSize);
                 }
             }
+        }, {
+                key: "size",
+                set: function set(size) {
+                    this._size = size;
+                    this.SVGText.setAttributeNS(null, "font-size", size + "em");
+                },
+                get: function get() {
+                    return this._size; 
+                }
         }, {
             key: "x",
             set: function set(x) {
