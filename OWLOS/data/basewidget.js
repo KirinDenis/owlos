@@ -224,7 +224,11 @@ var BaseWidget =
             var modalFooter = document.getElementById("showPropertiesModalFooter");
             var modalBody = document.getElementById("showPropertiesModalBody");
 
-            modalBody.appendChild(_sender.rPanel);
+            var widgetDiv = modalBody.appendChild(document.createElement("div"));
+            widgetDiv.className = "devicesWidgetsPanel";
+            widgetDiv.appendChild(_sender.rPanel);
+
+            
 
             var formGroup = modalBody.appendChild(document.createElement("div"));
             formGroup.className = "form-group";
