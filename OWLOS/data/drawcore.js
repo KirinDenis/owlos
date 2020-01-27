@@ -134,7 +134,10 @@ var SVGText =
                     var textSize = this.size * this.getTextWidth(text);
                     this.SVGText.setAttributeNS(null, "textLength", textSize);
                 }
-            }
+                },
+                get: function get() {
+                    return this.SVGText.textContent;
+                }
         }, {
                 key: "size",
                 set: function set(size) {
@@ -167,7 +170,7 @@ var SVGText =
             }
         }, {
             key: "height",
-            get: function get() {
+                get: function get() {                    
                 return parseFloat(this.SVGText.getBoundingClientRect().height);
             }
         }, {

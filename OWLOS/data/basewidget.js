@@ -36,6 +36,12 @@ function defaultWidgetProperties() {
             type: "f"
         },
 
+        bordercolor: {
+            name: "border color",
+            value: theme.secondary,
+            type: "c"
+        },
+
         backgroundselectopacity: {
             name: "background select opacity",
             value: 0.2,
@@ -69,21 +75,43 @@ var BaseWidget =
             this._networkStatus = NET_OFFLINE;
             this._event = EVENT_NO;
             this.eventListners = [];
+
+            this.rPanel = this.parentPanel.appendChild(document.createElement("frame"));            
+            this.rPanel.id = id + "BaseWidget";                       
+            this.rPanel.widget = this;
+            this.rPanel.className = "col-sm-1";
+            this.rPanel.style.cursor = "pointer";
+            this.rPanel.onload = this.onrPanelLoad;
+            
+            this.mouseEnter = false;
+
+            var body = document.getElementsByTagName("BODY")[0];
+            body.onresize = this.onPanelResize;
+            if (body.widget == undefined) {
+                body.widget = [];
+            }
+            body.widget.push(this);
+            
+            //this.size = size;
+
             this.panding = size / 25;
             this.halfPanding = this.panding / 2;
-            this.size = size;
-            this.radius = this.size / 7;
-            this.width = this.size - this.halfPanding;
-            this.height = this.size - this.halfPanding;
+
+            this.radius = size / 7;
+            this.width = size - this.halfPanding;
+            this.height = size - this.halfPanding;
+            this.topMargin = this.height / 20;
             this.centreX = this.width / 2 + this.panding / 2;
             this.centreY = this.height / 2;
-            this.topMargin = this.height / 20;
+
+            
             this.svgElement = document.createElementNS(xmlns, "svg");
-            this.svgElement.setAttributeNS(null, "viewBox", this.halfPanding + " " + this.halfPanding + " " + this.width + " " + this.height);
-            this.svgElement.setAttributeNS(null, "width", size);
-            this.svgElement.setAttributeNS(null, "height", size);
+            this.svgElement.setAttributeNS(null, "viewBox", "0 " + "0 " + size + " " + size);
+            this.resize(size);
+            //this.svgElement.setAttributeNS(null, "width", size);
+            //this.svgElement.setAttributeNS(null, "height", size);
             this.svgElement.style.display = "block";
-            this.SVGWidgetText = new SVGText(this.svgElement, this.id + "widgettext", this.size / 80);
+            this.SVGWidgetText = new SVGText(this.svgElement, this.id + "widgettext", size / 80);
             this.SVGWidgetText.opacity = 0.7;
             this.SVGWidgetText.color = theme.secondary;
             this.SVGLabel = new SVGText(this.svgElement, this.id + "label", this.size / 150);
@@ -176,19 +204,149 @@ var BaseWidget =
             this.SVGPropertiesIcon.hide();
 
 
-            this.rPanel = this.parentPanel.appendChild(document.createElement("div"));
-            this.rPanel.id = id + "BaseWidget";
-            this.rPanel.widget = this;
-            this.rPanel.className = "Widget";
-            this.rPanel.style.cursor = "pointer";
-            this.mouseEnter = false;
             this.rPanel.onmouseover = this.mouseOver;
             this.rPanel.onmouseout = this.mouseOut;
+
             this.rPanel.appendChild(this.svgElement);
 
             this.properties = defaultWidgetProperties();
             this.mode = WORK_MODE;
+          //  resize(size);
         }
+
+
+        BaseWidget.prototype.drawText = function drawText() {
+            if (this._event == EVENT_DELETE) {
+                return;
+            }
+
+            if (this.SVGWidgetText == undefined) return;
+
+            //Widget text         
+            this.SVGWidgetText.text = this.widgetText;
+
+            if (this.SVGWidgetText.width != 0) {
+                this.SVGWidgetText.x = this.centreX - this.SVGWidgetText.width / 2;
+                this.SVGWidgetText.y = this.centreY + this.SVGWidgetText.height / 2;
+            }
+
+            switch (this._networkStatus) {
+                case NET_ONLINE:
+                    this.toColor(this.SVGWidgetText, this._properties.valuetextcolor.value);
+                    break;
+
+                case NET_ERROR:
+                    this.toColor(this.SVGWidgetText, theme.danger);
+                    break;
+
+                case NET_RECONNECT:
+                    this.toColor(this.SVGWidgetText, theme.info);
+                    break;
+
+                default:
+                    //offline
+                    this.toColor(this.SVGWidgetText, theme.secondary);
+                    break;
+            } //Label 
+
+            if (this.SVGLabel.text !== this._properties.headertext.value) {
+                this.SVGLabel.text = this._properties.headertext.value;
+                if (this.SVGLabel.width > this.size) {
+                    var coef = this.SVGLabel.width / (this._properties.headertext.value.length + 3);
+                    var charCount = (this.size - this.size / 3) / coef;
+                    this.SVGLabel.text = this._properties.headertext.value.slice(0, parseInt(charCount)) + "...";
+
+                }
+            }
+
+                if (this.SVGLabel.width > 0) {
+                    this.SVGLabel.x = this.centreX - this.SVGLabel.width / 2;
+                    this.SVGLabel.y = this.SVGLabel.height;
+                }
+            
+
+            switch (this._networkStatus) {
+                case NET_ONLINE:
+                    this.toColor(this.SVGLabel, theme.light);
+                    break;
+
+                case NET_ERROR:
+                    this.toColor(this.SVGLabel, theme.danger);
+                    break;
+
+                case NET_RECONNECT:
+                    this.toColor(this.SVGLabel, theme.info);
+                    break;
+
+                default:
+                    //offline
+                    this.toColor(this.SVGLabel, theme.secondary);
+                    break;
+            } //Hint
+
+
+            switch (this._networkStatus) {
+                case NET_ONLINE:
+                    this.SVGHint.text = getLang("rid_online");
+                    this.toColor(this.SVGHint, theme.success);
+                    break;
+
+                case NET_ERROR:
+                    this.SVGHint.text = getLang("rid_error");
+                    this.toColor(this.SVGHint, theme.danger);
+                    break;
+
+                case NET_RECONNECT:
+                    this.SVGHint.text = getLang("rid_connect");
+                    this.toColor(this.SVGHint, theme.info);
+                    break;
+
+                default:
+                    //offline
+                    this.SVGHint.text = getLang("rid_offline");
+                    this.toColor(this.SVGHint, theme.secondary);
+                    break;
+            }
+
+            if (this.SVGHint != 0) {
+                this.SVGHint.x = this.centreX - this.SVGHint.width / 2;
+                this.SVGHint.y = this.height - this.SVGHint.height / 2;
+            }
+        } ;
+
+
+        BaseWidget.prototype.resize = function resize(size) {
+
+            this.size = size;
+
+            if (this.SVGWidgetText == undefined) return;
+
+            this.svgElement.setAttributeNS(null, "width", size);
+            this.svgElement.setAttributeNS(null, "height", size);
+
+            //this.drawText();
+
+        }
+
+        BaseWidget.prototype.onPanelResize = function onPanelResize() {
+            var body = document.getElementsByTagName("BODY")[0];
+            for (var widgetKey in body.widget) {
+                var widget = body.widget[widgetKey];
+                widget.resize(widget.rPanel.clientWidth);
+                widget.svgElement.setAttributeNS(null, "width", widget.rPanel.clientWidth);
+                widget.svgElement.setAttributeNS(null, "height", widget.rPanel.clientWidth);
+
+            }            
+        }
+
+        BaseWidget.prototype.onrPanelLoad = function onrPanelLoad(event) {
+            var rPanel = event.currentTarget;
+            var widget = rPanel.widget;
+            widget.resize(widget.rPanel.clientWidth);
+        }
+
+
+        
 
         BaseWidget.prototype.addEventListner = function addEventListner(_event, _sender) {
             try {
@@ -467,101 +625,6 @@ var BaseWidget =
             this.drawText();
         };
 
-        BaseWidget.prototype.drawText = function drawText() {
-            if (this._event == EVENT_DELETE) {
-                return;
-            }
-
-            //Widget text         
-            this.SVGWidgetText.text = this.widgetText;
-
-            if (this.SVGWidgetText.width != 0) {
-                this.SVGWidgetText.x = this.centreX - this.SVGWidgetText.width / 2;
-                this.SVGWidgetText.y = this.centreY + this.SVGWidgetText.height / 2;
-            }
-
-            switch (this._networkStatus) {
-                case NET_ONLINE:
-                    this.toColor(this.SVGWidgetText, this._properties.valuetextcolor.value);
-                    break;
-
-                case NET_ERROR:
-                    this.toColor(this.SVGWidgetText, theme.danger);
-                    break;
-
-                case NET_RECONNECT:
-                    this.toColor(this.SVGWidgetText, theme.info);
-                    break;
-
-                default:
-                    //offline
-                    this.toColor(this.SVGWidgetText, theme.secondary);
-                    break;
-            } //Label 
-
-
-            this.SVGLabel.text = this._properties.headertext.value;
-            if (this.SVGLabel.width > this.size) {
-                var coef = this.SVGLabel.width / (this._properties.headertext.value.length + 3);
-                var charCount = (this.size - this.size / 3) / coef;
-                this.SVGLabel.text = this._properties.headertext.value.slice(0, parseInt(charCount)) + "...";
-
-            }
-
-            if (this.SVGLabel.width != 0) {
-                this.SVGLabel.x = this.centreX - this.SVGLabel.width / 2;
-                this.SVGLabel.y = this.SVGLabel.height;
-            }
-
-            switch (this._networkStatus) {
-                case NET_ONLINE:
-                    this.toColor(this.SVGLabel, theme.light);
-                    break;
-
-                case NET_ERROR:
-                    this.toColor(this.SVGLabel, theme.danger);
-                    break;
-
-                case NET_RECONNECT:
-                    this.toColor(this.SVGLabel, theme.info);
-                    break;
-
-                default:
-                    //offline
-                    this.toColor(this.SVGLabel, theme.secondary);
-                    break;
-            } //Hint
-
-
-            switch (this._networkStatus) {
-                case NET_ONLINE:
-                    this.SVGHint.text = getLang("rid_online");
-                    this.toColor(this.SVGHint, theme.success);
-                    break;
-
-                case NET_ERROR:
-                    this.SVGHint.text = getLang("rid_error");
-                    this.toColor(this.SVGHint, theme.danger);
-                    break;
-
-                case NET_RECONNECT:
-                    this.SVGHint.text = getLang("rid_connect");
-                    this.toColor(this.SVGHint, theme.info);
-                    break;
-
-                default:
-                    //offline
-                    this.SVGHint.text = getLang("rid_offline");
-                    this.toColor(this.SVGHint, theme.secondary);
-                    break;
-            }
-
-            if (this.SVGHint != 0) {
-                this.SVGHint.x = this.centreX - this.SVGHint.width / 2;
-                this.SVGHint.y = this.height - this.SVGHint.height / 2;
-            }
-        } //method true is color, false is fill
-            ;
 
         BaseWidget.prototype.toColor = function toColor(element, color, method) {
             if (this._event == EVENT_DELETE) {
@@ -619,7 +682,7 @@ var BaseWidget =
                 return;
             }
 
-            this.SVGBackpanel.color = this._properties.backgroundcolor.value;
+            this.SVGBackpanel.color = this._properties.bordercolor.value;
             this.SVGBackpanel.fill = this._properties.backgroundcolor.value;
             this.SVGBackpanel.opacity = this._properties.backgroundopacity.value;
 

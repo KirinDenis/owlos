@@ -46,7 +46,16 @@ var dashboardUI = {
         dataDiv.id = "widgetsPanelDataDiv"
         dataDiv.className = "card-body";
 
-        var devicesWidgetsPanel = document.getElementById("widgetsPanelDataDiv");
+        var p = dataDiv.appendChild(document.createElement('p'));
+        p.className = "card-text";
+        
+
+
+
+        var devicesWidgetsPanel = p.appendChild(document.createElement('div'));
+        devicesWidgetsPanel.className = "row";
+
+        //var devicesWidgetsPanel = document.getElementById("widgetsPanelDataDiv");
         for (var i = 0; i < configProperties.dashboards[0].widgets.length; i++) {
             try {
                 var widgetProp = configProperties.dashboards[0].widgets[i];

@@ -10,6 +10,11 @@ var GraphWidget =
         function GraphWidget(parentPanel, id, size, icon) {
 
             var baseWidget = _BaseWidget.call(this, parentPanel, id, size) || this;
+
+            baseWidget.rPanel.className = "col-sm-2";
+           // baseWidget.rPanel.removeChild(baseWidget.svgElement);
+
+            
             baseWidget.topMargin = baseWidget.size / 20; //this.panding = 5;
 
             baseWidget.width = baseWidget.size * 2;
@@ -21,7 +26,8 @@ var GraphWidget =
             baseWidget.graphHeight = baseWidget.height - baseWidget.size / 3.4 ;
             baseWidget.graphTop = baseWidget.size / 3.7;
 
-            baseWidget.svgElement.setAttributeNS(null, "viewBox", baseWidget.halfPanding + " " + baseWidget.halfPanding + " " + baseWidget.width + " " + baseWidget.height);
+            baseWidget.svgElement.setAttributeNS(null, "viewBox", "0 0 " + baseWidget.width + " " + baseWidget.height);
+            
             baseWidget.svgElement.setAttributeNS(null, "width", baseWidget.width);
             baseWidget.svgElement.setAttributeNS(null, "height", baseWidget.height);
 
@@ -101,10 +107,20 @@ var GraphWidget =
 
             baseWidget.SVGMinusIcon.x = baseWidget.width / 2 - baseWidget.rowSize / 2;
 
+         //   baseWidget.rPanel.appendChild(baseWidget.svgElement);
+
             baseWidget.clickableToTop();
 
             return baseWidget;
         }
+
+        GraphWidget.prototype.resize = function resize(size) {
+            _BaseWidget.prototype.resize.call(this, size);
+
+            this.svgElement.setAttributeNS(null, "width", size);
+            this.svgElement.setAttributeNS(null, "height", size / 2);
+
+        };
 
         //  var GraphWidget.prototype = GraphWidget.prototype;
 
