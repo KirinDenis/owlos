@@ -20,7 +20,7 @@ var TemperatureWidget =
             widget.tempTop = widget.height / 4.5 - widget.tempHeight / 2;
             widget.tempItem = [];
 
-            widget.SVGWidgetExtText = new SVGText(widget.svgElement, this.id + "widgetexttext", this.size / 160);
+            widget.SVGWidgetExtText = new SVGText(widget.svgElement, widget.id + "widgetexttext", widget.size / 160);
             widget.SVGWidgetExtText.color = theme.secondary;
 
 
