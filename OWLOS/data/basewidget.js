@@ -1,4 +1,4 @@
-var WORK_MODE = 0;
+﻿var WORK_MODE = 0;
 var MOVE_MODE = 1;
 
 var EVENT_NO = 0;
@@ -76,12 +76,22 @@ var BaseWidget =
             this._event = EVENT_NO;
             this.eventListners = [];
 
+            //IE ------------
+            /*
+            this.rPanel = this.parentPanel.appendChild(document.createElement("iframe"));            
+            this.rPanel.frameBorder = "0";  
+            this.rPanel.scrolling = "no";
+            this.rPanel.width = "100%";
+            */
+            
             this.rPanel = this.parentPanel.appendChild(document.createElement("frame"));            
             this.rPanel.id = id + "BaseWidget";                       
             this.rPanel.widget = this;
             this.rPanel.className = "col-sm-1";
             this.rPanel.style.cursor = "pointer";
             this.rPanel.onload = this.onrPanelLoad;
+            this.rPanel.onmouseover = this.mouseOver;
+            this.rPanel.onmouseout = this.mouseOut;
             
             this.mouseEnter = false;
 
@@ -91,45 +101,62 @@ var BaseWidget =
                 body.widget = [];
             }
             body.widget.push(this);
+
+
+            //IE
+            //закат солнца в ручную
+            /*
+            var event = {
+                currentTarget: this.rPanel                
+            }
+            this.onrPanelLoad(event);
+            */
+            //this.size = size;            
+          //  resize(size);
+        }
+
+        BaseWidget.prototype.onrPanelLoad = function onrPanelLoad(event) {
+            var rPanel = event.currentTarget;
+            var widget = rPanel.widget;
+
+            widget.size = widget.rPanel.clientWidth;
+
+            widget.panding = widget.size / 25;
+            widget.halfPanding = widget.panding / 2;
+
+            widget.radius = widget.size / 7;
+            widget.width = widget.size - widget.halfPanding;
+            widget.height = widget.size - widget.halfPanding;
+            widget.topMargin = widget.height / 20;
+            widget.centreX = widget.width / 2 + widget.panding / 2;
+            widget.centreY = widget.height / 2;
+
             
-            //this.size = size;
+            widget.svgElement = document.createElementNS(xmlns, "svg");
+            widget.svgElement.setAttributeNS(null, "viewBox", "0 " + "0 " + widget.size + " " + widget.size);
+            widget.resize(widget.size);
+            //widget.svgElement.setAttributeNS(null, "width", size);
+            //widget.svgElement.setAttributeNS(null, "height", size);
+            widget.svgElement.style.display = "block";
+            widget.SVGWidgetText = new SVGText(widget.svgElement, widget.id + "widgettext", widget.size / 80);
+            widget.SVGWidgetText.opacity = 0.7;
+            widget.SVGWidgetText.color = theme.secondary;
+            widget.SVGLabel = new SVGText(widget.svgElement, widget.id + "label", widget.size / 150);
+            widget.SVGLabel.color = theme.secondary;
+            widget.SVGHint = new SVGText(widget.svgElement, widget.id + "hint", widget.size / 150);
+            widget.SVGHint.color = theme.secondary;
 
-            this.panding = size / 25;
-            this.halfPanding = this.panding / 2;
+            widget.SVGBackpanel = new SVGArc(widget.svgElement, widget.id + "backpanel", 0, 0, widget.width, 1);
+            widget.SVGBackpanel.drawRoundedRect(widget.width, widget.height, 5, 10, true, true, true, true);
+            //widget.SVGBackpanel.opacity = 0.3;
 
-            this.radius = size / 7;
-            this.width = size - this.halfPanding;
-            this.height = size - this.halfPanding;
-            this.topMargin = this.height / 20;
-            this.centreX = this.width / 2 + this.panding / 2;
-            this.centreY = this.height / 2;
+            widget.SVGBoxBackpanel = new SVGArc(widget.svgElement, widget.id + "boxbackpanel", 0, 0, widget.width, 1);
+            widget.SVGBoxBackpanel.drawRoundedRect(widget.width, 25, 5, 0, true, true, false, false);
 
-            
-            this.svgElement = document.createElementNS(xmlns, "svg");
-            this.svgElement.setAttributeNS(null, "viewBox", "0 " + "0 " + size + " " + size);
-            this.resize(size);
-            //this.svgElement.setAttributeNS(null, "width", size);
-            //this.svgElement.setAttributeNS(null, "height", size);
-            this.svgElement.style.display = "block";
-            this.SVGWidgetText = new SVGText(this.svgElement, this.id + "widgettext", size / 80);
-            this.SVGWidgetText.opacity = 0.7;
-            this.SVGWidgetText.color = theme.secondary;
-            this.SVGLabel = new SVGText(this.svgElement, this.id + "label", this.size / 150);
-            this.SVGLabel.color = theme.secondary;
-            this.SVGHint = new SVGText(this.svgElement, this.id + "hint", this.size / 150);
-            this.SVGHint.color = theme.secondary;
-
-            this.SVGBackpanel = new SVGArc(this.svgElement, this.id + "backpanel", 0, 0, this.width, 1);
-            this.SVGBackpanel.drawRoundedRect(this.width, this.height, 5, 10, true, true, true, true);
-            //this.SVGBackpanel.opacity = 0.3;
-
-            this.SVGBoxBackpanel = new SVGArc(this.svgElement, this.id + "boxbackpanel", 0, 0, this.width, 1);
-            this.SVGBoxBackpanel.drawRoundedRect(this.width, 25, 5, 0, true, true, false, false);
-
-            this.SVGBackdownpanel = new SVGArc(this.svgElement, this.id + "backdownpanel", 0, this.height - 10, this.width, 1);
-            this.SVGBackdownpanel.drawRoundedRect(this.width, 10, 5, 0, false, false, true, true);
-            this.SVGBackdownpanel.opacity = 0.5;
-            this.SVGBackdownpanel.fill = theme.secondary;
+            widget.SVGBackdownpanel = new SVGArc(widget.svgElement, widget.id + "backdownpanel", 0, widget.height - 10, widget.width, 1);
+            widget.SVGBackdownpanel.drawRoundedRect(widget.width, 10, 5, 0, false, false, true, true);
+            widget.SVGBackdownpanel.opacity = 0.5;
+            widget.SVGBackdownpanel.fill = theme.secondary;
 
             var stop1 = document.createElementNS(xmlns, 'stop');
             stop1.setAttribute('stop-color', theme.info);
@@ -150,69 +177,71 @@ var BaseWidget =
             gradient.appendChild(stop1);
             gradient.appendChild(stop2);
             gradient.appendChild(stop3);
-            this.svgElement.appendChild(gradient);
-            this.SVGArcSpinner = new SVGArc(this.svgElement, this.id + "arcwidget", this.centreX, this.centreY + this.topMargin, this.size / 4, this.size / 24);
-            this.SVGArcSpinner.color = 'url(#Gradient)';
-            this.SVGArcSpinner.opacity = 0.4; //equalizer 
+            widget.svgElement.appendChild(gradient);
+            widget.SVGArcSpinner = new SVGArc(widget.svgElement, widget.id + "arcwidget", widget.centreX, widget.centreY + widget.topMargin, widget.size / 4, widget.size / 24);
+            widget.SVGArcSpinner.color = 'url(#Gradient)';
+            widget.SVGArcSpinner.opacity = 0.4; //equalizer 
             //width = 20 
             //height = 5
 
-            this.eCount = 30;
-            this.eWidth = this.size / (this.eCount + 50);
-            this.eRWidth = this.width / 40;
-            this.eHeight = this.eWidth;
-            this.eX = this.width / 2 - this.eWidth * 2 * this.eCount / 2 + this.halfPanding / 2 + 2;
-            this.eY = this.height - this.eHeight * 2 * 5 - 2;
-            this.equalizerX = []; //row
+            widget.eCount = 30;
+            widget.eWidth = widget.size / (widget.eCount + 50);
+            widget.eRWidth = widget.width / 40;
+            widget.eHeight = widget.eWidth;
+            widget.eX = widget.width / 2 - widget.eWidth * 2 * widget.eCount / 2 + widget.halfPanding / 2 + 2;
+            widget.eY = widget.height - widget.eHeight * 2 * 5 - 2;
+            widget.equalizerX = []; //row
 
-            for (var x = 0; x < this.eCount; x++) {
+            for (var x = 0; x < widget.eCount; x++) {
                 var equalizerY = [];
 
                 for (var y = 0; y < 5; y++) {
-                    var SVGEqualizerpanel = new SVGRect(this.svgElement, this.id + "backpanel", this.eX + x * this.eWidth * 2, this.eY + y * this.eHeight * 2, this.eRWidth, this.eRWidth);
+                    var SVGEqualizerpanel = new SVGRect(widget.svgElement, widget.id + "backpanel", widget.eX + x * widget.eWidth * 2, widget.eY + y * widget.eHeight * 2, widget.eRWidth, widget.eRWidth);
                     SVGEqualizerpanel.opacity = 0.0;
                     SVGEqualizerpanel.fill = theme.secondary;
 
                     equalizerY.push(SVGEqualizerpanel);
                 }
 
-                this.equalizerX.push(equalizerY);
+                widget.equalizerX.push(equalizerY);
             }
+
+            widget.rowSize = widget.size / 4;
+            widget.SVGLeftIcon = new SVGIcon(widget.svgElement, leftIcon, widget.panding, widget.height / 2 - widget.rowSize / 2, widget.rowSize, widget.rowSize);
+            widget.SVGLeftIcon.fill = theme.light;
+            widget.SVGLeftIcon.SVGIcon.widget = widget;
+            widget.SVGLeftIcon.SVGIcon.onclick = widget.moveLeft;
+            widget.SVGLeftIcon.hide();
+            widget.SVGRightIcon = new SVGIcon(widget.svgElement, rightIcon, widget.width - widget.rowSize, widget.height / 2 - widget.rowSize / 2, widget.rowSize, widget.rowSize);
+            widget.SVGRightIcon.fill = theme.light;
+            widget.SVGRightIcon.SVGIcon.widget = widget;
+            widget.SVGRightIcon.SVGIcon.onclick = widget.moveRight;
+            widget.SVGRightIcon.hide();
+
+            widget.SVGMinusIcon = new SVGIcon(widget.svgElement, minusIcon, widget.width / 2 - widget.rowSize / 2, widget.height - widget.rowSize, widget.rowSize, widget.rowSize);
+            widget.SVGMinusIcon.fill = theme.light;
+            widget.SVGMinusIcon.SVGIcon.widget = widget;
+            widget.SVGMinusIcon.SVGIcon.onclick = widget.deleteWidgetClick;
+            widget.SVGMinusIcon.hide();
+
+            widget.SVGPropertiesIcon = new SVGIcon(widget.svgElement, menuIcon, widget.width / 2 - widget.rowSize / 2, widget.height / 2 - widget.rowSize / 2, widget.rowSize, widget.rowSize);
+            widget.SVGPropertiesIcon.fill = theme.light;
+            widget.SVGPropertiesIcon.SVGIcon.widget = widget;
+            widget.SVGPropertiesIcon.SVGIcon.onclick = widget.propertiesClick;
+            widget.SVGPropertiesIcon.hide();
+
+
+            //IE 
+            //widget.rPanel.contentDocument.body.appendChild(widget.svgElement);
+            widget.rPanel.appendChild(widget.svgElement);
             
-            this.rowSize = this.size / 4;
-            this.SVGLeftIcon = new SVGIcon(this.svgElement, leftIcon, this.panding, this.height / 2 - this.rowSize / 2, this.rowSize, this.rowSize);
-            this.SVGLeftIcon.fill = theme.light;
-            this.SVGLeftIcon.SVGIcon.widget = this;
-            this.SVGLeftIcon.SVGIcon.onclick = this.moveLeft;
-            this.SVGLeftIcon.hide();
-            this.SVGRightIcon = new SVGIcon(this.svgElement, rightIcon, this.width - this.rowSize, this.height / 2 - this.rowSize / 2, this.rowSize, this.rowSize);
-            this.SVGRightIcon.fill = theme.light;
-            this.SVGRightIcon.SVGIcon.widget = this;
-            this.SVGRightIcon.SVGIcon.onclick = this.moveRight;
-            this.SVGRightIcon.hide();
 
-            this.SVGMinusIcon = new SVGIcon(this.svgElement, minusIcon, this.width / 2 - this.rowSize / 2, this.height - this.rowSize, this.rowSize, this.rowSize);
-            this.SVGMinusIcon.fill = theme.light;
-            this.SVGMinusIcon.SVGIcon.widget = this;
-            this.SVGMinusIcon.SVGIcon.onclick = this.deleteWidgetClick;
-            this.SVGMinusIcon.hide();
+            widget._properties = defaultWidgetProperties();
 
-            this.SVGPropertiesIcon = new SVGIcon(this.svgElement, menuIcon, this.width / 2 - this.rowSize / 2, this.height / 2 - this.rowSize / 2, this.rowSize, this.rowSize);
-            this.SVGPropertiesIcon.fill = theme.light;
-            this.SVGPropertiesIcon.SVGIcon.widget = this;
-            this.SVGPropertiesIcon.SVGIcon.onclick = this.propertiesClick;
-            this.SVGPropertiesIcon.hide();
-
-
-            this.rPanel.onmouseover = this.mouseOver;
-            this.rPanel.onmouseout = this.mouseOut;
-
-            this.rPanel.appendChild(this.svgElement);
-
-            this.properties = defaultWidgetProperties();
+            widget.resize(widget.rPanel.clientWidth);
             this.mode = WORK_MODE;
-          //  resize(size);
         }
+
 
 
         BaseWidget.prototype.drawText = function drawText() {
@@ -333,17 +362,12 @@ var BaseWidget =
             for (var widgetKey in body.widget) {
                 var widget = body.widget[widgetKey];
                 widget.resize(widget.rPanel.clientWidth);
-                widget.svgElement.setAttributeNS(null, "width", widget.rPanel.clientWidth);
-                widget.svgElement.setAttributeNS(null, "height", widget.rPanel.clientWidth);
+               // widget.svgElement.setAttributeNS(null, "width", widget.rPanel.clientWidth);
+              //  widget.svgElement.setAttributeNS(null, "height", widget.rPanel.clientWidth);
 
             }            
         }
 
-        BaseWidget.prototype.onrPanelLoad = function onrPanelLoad(event) {
-            var rPanel = event.currentTarget;
-            var widget = rPanel.widget;
-            widget.resize(widget.rPanel.clientWidth);
-        }
 
 
         
@@ -899,7 +923,18 @@ var BaseWidget =
                 this._data = data;
                 this.redrawAll();
             }
-        }]);
+            },
+            {
+                key: "onload",
+                get: function get() {
+                    return this._onload;
+                },
+                set: function set(onload) {
+                    this._onload = onload;
+                }
+            }
+
+        ]);
 
         return BaseWidget;
     }();

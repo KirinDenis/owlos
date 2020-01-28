@@ -1,6 +1,4 @@
-﻿function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
-
-var MotionWidget =
+﻿var MotionWidget =
 
     function (_BaseWidget) {
         "use strict";
@@ -9,54 +7,63 @@ var MotionWidget =
 
         function MotionWidget(parentPanel, id, size) {
 
-            var baseWidget = _BaseWidget.call(this, parentPanel, id, size) || this;
-            baseWidget.radius = baseWidget.size / 30;
-            baseWidget.topMargin = baseWidget.centreY + baseWidget.size / 20;
-            baseWidget.animated = false;
-            baseWidget.radar1 = [];
-            baseWidget.radar2 = [];
-            baseWidget.radar3 = [];
-            baseWidget.radar4 = [];
+            return _BaseWidget.call(this, parentPanel, id, size) || this;
+            
+        }
+
+        MotionWidget.prototype.onrPanelLoad = function onrPanelLoad(event) {
+            _BaseWidget.prototype.onrPanelLoad.call(this, event);
+            var rPanel = event.currentTarget;
+            var widget = rPanel.widget;
+
+            widget.radius = widget.size / 30;
+            widget.topMargin = widget.centreY + widget.size / 20;
+            widget.animated = false;
+            widget.radar1 = [];
+            widget.radar2 = [];
+            widget.radar3 = [];
+            widget.radar4 = [];
 
             for (var i = 1; i < 5; i++) {
-                var SVGRadarArc1 = new SVGArc(baseWidget.svgElement, baseWidget.id + "arcback1" + i, baseWidget.centreX, baseWidget.topMargin, i * baseWidget.radius, baseWidget.size / 34);
-                var SVGRadarArc2 = new SVGArc(baseWidget.svgElement, baseWidget.id + "arcback2" + i, baseWidget.centreX, baseWidget.topMargin, i * baseWidget.radius, baseWidget.size / 34);
-                var SVGRadarArc3 = new SVGArc(baseWidget.svgElement, baseWidget.id + "arcback3" + i, baseWidget.centreX, baseWidget.topMargin, i * baseWidget.radius, baseWidget.size / 34);
-                var SVGRadarArc4 = new SVGArc(baseWidget.svgElement, baseWidget.id + "arcback4" + i, baseWidget.centreX, baseWidget.topMargin, i * baseWidget.radius, baseWidget.size / 34);
+                var SVGRadarArc1 = new SVGArc(widget.svgElement, widget.id + "arcback1" + i, widget.centreX, widget.topMargin, i * widget.radius, widget.size / 34);
+                var SVGRadarArc2 = new SVGArc(widget.svgElement, widget.id + "arcback2" + i, widget.centreX, widget.topMargin, i * widget.radius, widget.size / 34);
+                var SVGRadarArc3 = new SVGArc(widget.svgElement, widget.id + "arcback3" + i, widget.centreX, widget.topMargin, i * widget.radius, widget.size / 34);
+                var SVGRadarArc4 = new SVGArc(widget.svgElement, widget.id + "arcback4" + i, widget.centreX, widget.topMargin, i * widget.radius, widget.size / 34);
                 SVGRadarArc1.index = SVGRadarArc2.index = SVGRadarArc3.index = SVGRadarArc4.index = i;
                 SVGRadarArc1.color = SVGRadarArc2.color = SVGRadarArc3.color = SVGRadarArc4.color = theme.success;
 
-                baseWidget.radar1.push(SVGRadarArc1);
+                widget.radar1.push(SVGRadarArc1);
 
-                baseWidget.radar2.push(SVGRadarArc2);
+                widget.radar2.push(SVGRadarArc2);
 
-                baseWidget.radar3.push(SVGRadarArc3);
+                widget.radar3.push(SVGRadarArc3);
 
-                baseWidget.radar4.push(SVGRadarArc4);
+                widget.radar4.push(SVGRadarArc4);
             }
 
-            baseWidget.SVGArcSpinner.y = baseWidget.topMargin;
+            widget.SVGArcSpinner.y = widget.topMargin;
 
-            baseWidget.clickableToTop();
+            widget.clickableToTop();
 
-            baseWidget.proprties = baseWidget._properties;
+            widget.proprties = widget._properties;
 
-            return baseWidget;
-        }
+            if (widget.onload != undefined) {
+                widget.onload(widget);
+            }
 
-        var _proto = MotionWidget.prototype;
+        };
 
-        _proto.refresh = function refresh(data, widgetText, label, historyData) {
+        MotionWidget.prototype.refresh = function refresh(data, widgetText, label, historyData) {
             widgetText = getLang(widgetText);
 
             _BaseWidget.prototype.refresh.call(this, data, widgetText, label, historyData);
         };
 
-        _proto.drawText = function drawText() {
+        MotionWidget.prototype.drawText = function drawText() {
             _BaseWidget.prototype.drawText.call(this);
         };
 
-        _proto.animate = function animate() {
+        MotionWidget.prototype.animate = function animate() {
             var baseWidget2 = this;
             if (this.radar1 == undefined) return;
             if (this.animated) {
@@ -83,7 +90,7 @@ var MotionWidget =
             }
         };
 
-        _proto.drawWidget = function drawWidget() {
+        MotionWidget.prototype.drawWidget = function drawWidget() {
             var baseWidget3 = this;
 
             _BaseWidget.prototype.drawWidget.call(this);

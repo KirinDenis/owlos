@@ -446,31 +446,39 @@ var currentLang = "";
 var lastLang = "";
 
 function getLang(key) {
-
-    if (configProperties.language !== lastLang) {
-        lastLang = configProperties.language;
-        currentLang = "";
-    }
-
-    if (currentLang == "") {
-        if (configProperties.language.indexOf("ua")==0) {
-            currentLang = langua.split("\n");
-        }
-        else
-            if (configProperties.language.indexOf("ru")==0) {
-            currentLang = langru.split("\n");
+    try {
+        if (configProperties != undefined) {
+            if (configProperties.language !== lastLang) {
+                lastLang = configProperties.language;
+                currentLang = "";
+            }
         }
         else {
-            currentLang = langen.split("\n");
+            currentLang = "en";
         }
-    }
 
-    for (var i = 0; i < currentLang.length; i++) {
-        if (currentLang[i] === "") continue;
-        if (currentLang[i].indexOf(key + "=") == 0) {
-            return currentLang[i].split("=")[1];
+        if (currentLang == "") {
+            if (configProperties.language.indexOf("ua") == 0) {
+                currentLang = langua.split("\n");
+            }
+            else
+                if (configProperties.language.indexOf("ru") == 0) {
+                    currentLang = langru.split("\n");
+                }
+                else {
+                    currentLang = langen.split("\n");
+                }
         }
-    }
 
+        for (var i = 0; i < currentLang.length; i++) {
+            if (currentLang[i] === "") continue;
+            if (currentLang[i].indexOf(key + "=") == 0) {
+                return currentLang[i].split("=")[1];
+            }
+        }
+        
+    } catch (exceptio) {
+        //return "key" if exception or not found
+    }
     return key;
 }

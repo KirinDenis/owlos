@@ -70,7 +70,7 @@ $(document).ready(function () {
 
 
     addToLogNL("get UI configuration...");
-    try {
+  // try {
         config.addChangeListner(settingsUI.onConfigChange, settingsUI);
         if (config.load()) {
             status_online = NET_ONLINE;
@@ -113,12 +113,12 @@ $(document).ready(function () {
     }
 
 
-    catch (exception) {
-        status_online = NET_OFFLINE;
-        addToLogNL("ERROR starting exception: " + exception, 2);
-        addToLogNL("ERROR delete configurations files can help fix it: [your host]/deletefile?name=web.config", 2);
-    }
-}
+//    catch (exception) {
+  //      status_online = NET_OFFLINE;
+        //addToLogNL("ERROR starting exception: " + exception, 2);
+        //addToLogNL("ERROR delete configurations files can help fix it: [your host]/deletefile?name=web.config", 2);
+    //}
+//}
 );
 
 function nodesRefresh() {
