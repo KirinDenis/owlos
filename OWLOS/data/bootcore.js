@@ -233,6 +233,18 @@ function _inheritsLoose(subClass, superClass) {
     subClass.__proto__ = superClass;
 }
 
+function waitForElement(element, callBack) {
+    window.setTimeout(function () {
+        if ($("#" + element.id).length) {
+            var event = {
+                currentTarget: element
+            }
+            callBack(event);
+        } else {
+            waitForElement(element, callBack);
+        }
+    }, 500)
+}
 
 
 

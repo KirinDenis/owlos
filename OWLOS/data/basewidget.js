@@ -84,14 +84,22 @@ var BaseWidget =
             this.rPanel.width = "100%";
             */
             
-            this.rPanel = this.parentPanel.appendChild(document.createElement("frame"));            
+            this.rPanel = this.parentPanel.appendChild(document.createElement("div"));            
             this.rPanel.id = id + "BaseWidget";                       
             this.rPanel.widget = this;
             this.rPanel.className = "col-sm-1";
             this.rPanel.style.cursor = "pointer";
-            this.rPanel.onload = this.onrPanelLoad;
+            //this.rPanel.onload = this.onrPanelLoad;
             this.rPanel.onmouseover = this.mouseOver;
             this.rPanel.onmouseout = this.mouseOut;
+
+            
+
+            waitForElement(this.rPanel, this.onrPanelLoad);
+
+            //this.iframe = this.rPanel.appendChild(document.createElement("iframe"));
+            //this.iframe.widget = this;
+            //this.iframe.onload = this.onrPanelLoad;
             
             this.mouseEnter = false;
 
@@ -239,7 +247,7 @@ var BaseWidget =
             widget._properties = defaultWidgetProperties();
 
             widget.resize(widget.rPanel.clientWidth);
-            this.mode = WORK_MODE;
+            widget.mode = WORK_MODE;
         }
 
 

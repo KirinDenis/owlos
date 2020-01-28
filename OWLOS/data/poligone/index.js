@@ -15,6 +15,17 @@ $(document).ready(function () {
     theme.dark = style.getPropertyValue('--dark');
     theme.fontFamily = style.fontFamily;
 
+    if (theme.primary === '') { //default dark
+        theme.primary = '#3A3F44';
+        theme.secondary = '#7A8288';
+        theme.success = '#62c462';
+        theme.info = '#5bc0de';
+        theme.warning = '#f89406';
+        theme.danger = '#ee5f5b';
+        theme.light = '#e9ecef';
+        theme.dark = '#272B30';
+    }
+
     var devicesWidgetsPanel = document.getElementById("devicesWidgetsPanel");
 
     var graphWidget = new GraphWidget(devicesWidgetsPanel, "temperature", 150, temperatureIcon).onload = function (widget) {
