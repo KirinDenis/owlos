@@ -37,12 +37,14 @@ var GraphWidget =
             //  widget.svgElement.setAttributeNS(null, "height", widget.height);
 
             widget.SVGBackpanel.drawRoundedRect(widget.width, widget.height, 5, 10, true, true, true, true);
+            widget.SVGBackdownpanel.drawRoundedRect(widget.width, 10, 5, 0, false, false, true, true);            
             widget.SVGBoxBackpanel.drawRoundedRect(widget.width, 26, 5, 0, true, true, false, false);
+            
             //   widget.SVGBackdownpanel.y += 3;
-            widget.SVGBackdownpanel.drawRoundedRect(widget.width, 10, 5, 0, false, false, true, true);
+            
 
             widget.SVGBackdownpanel.width = widget.width;
-            widget.SVGBackdownpanel.y = widget.height;
+           // widget.SVGBackdownpanel.y = widget.height;
             var stop1 = document.createElementNS(xmlns, 'stop');
             stop1.setAttribute('stop-color', theme.success);
             stop1.setAttribute('stop-opacity', "0.7");
@@ -96,7 +98,7 @@ var GraphWidget =
             widget.SVGDownLine.opacity = 0.1;
             widget.SVGDownLine.color = theme.secondary;
 
-
+            
             /*
             if (icon != undefined) {
                 widget.SVGIcon = new SVGIcon(widget.svgElement, icon, widget.width - widget.size / 6, widget.size / 24, widget.size / 8, widget.size / 8);
@@ -113,8 +115,9 @@ var GraphWidget =
             widget.SVGArcSpinner.x = widget.centreX;
             widget.ShowEqualizer = false;
             widget.SVGRightIcon.x = widget.width - widget.rowSize; //  this.SVGPlusIcon.x = this.width / 2 - this.rowSize / 2;
-
-            widget.SVGMinusIcon.x = widget.width / 2 - widget.rowSize / 2;
+            widget.SVGPropertiesIcon.x = widget.width / 2 - widget.rowSize / 2;
+            widget.SVGDeleteIcon.x = widget.width - widget.rowSize + widget.size / 55;
+            
 
             //   widget.widgetHolder.appendChild(widget.svgElement);
 

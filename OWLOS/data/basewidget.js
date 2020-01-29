@@ -14,7 +14,7 @@ function defaultWidgetProperties() {
 
         headercolor: {
             name: "header color",
-            value: theme.info,
+            value: theme.secondary,
             type: "c"
         },
 
@@ -32,7 +32,7 @@ function defaultWidgetProperties() {
 
         backgroundopacity: {
             name: "background opacity",
-            value: 0.1,
+            value: 1.0,
             type: "f"
         },
 
@@ -49,10 +49,10 @@ function defaultWidgetProperties() {
         },
 
         valuetextcolor: {
-                name: "value text color",
-                value: theme.secondary,
-                type: "c"
-         },
+            name: "value text color",
+            value: theme.secondary,
+            type: "c"
+        },
 
         showequalizer: {
             name: "Show equalizer",
@@ -71,20 +71,20 @@ var BaseWidget =
         function BaseWidget(parentPanel, id, size) {
             this.parentPanel = parentPanel;
 
-            this.id = id;            
+            this.id = id;
             this._networkStatus = NET_OFFLINE;
             this._event = EVENT_NO;
             this.mouseEnter = false;
             this.eventListners = [];
-            
-            this.widgetHolder = this.parentPanel.appendChild(document.createElement("div"));            
-            this.widgetHolder.id = id + "BaseWidget";                       
+
+            this.widgetHolder = this.parentPanel.appendChild(document.createElement("div"));
+            this.widgetHolder.id = id + "BaseWidget";
             this.widgetHolder.widget = this;
             this.widgetHolder.className = "col-sm-1";
             this.widgetHolder.style.cursor = "pointer";
             this.widgetHolder.onmouseover = this.mouseOver;
             this.widgetHolder.onmouseout = this.mouseOut;
-           
+
             waitForElement(this.widgetHolder, this.onrPanelLoad);
 
             var body = document.getElementsByTagName("BODY")[0];
@@ -112,11 +112,24 @@ var BaseWidget =
             widget.centreX = widget.width / 2 + widget.panding / 2;
             widget.centreY = widget.height / 2;
 
-            
+
             widget.svgElement = document.createElementNS(xmlns, "svg");
             widget.svgElement.setAttributeNS(null, "viewBox", "0 " + "0 " + widget.size + " " + widget.size);
             widget.resize(widget.size);
             widget.svgElement.style.display = "block";
+
+            widget.SVGBackpanel = new SVGArc(widget.svgElement, widget.id + "backpanel", 0, 0, widget.width, 1);
+            widget.SVGBackpanel.drawRoundedRect(widget.width, widget.height, 5, 10, true, true, true, true);
+            
+            widget.SVGBoxBackpanel = new SVGArc(widget.svgElement, widget.id + "boxbackpanel", 0, 0, widget.width, 1);
+            widget.SVGBoxBackpanel.drawRoundedRect(widget.width, 25, 5, 0, true, true, false, false);
+
+            widget.SVGBackdownpanel = new SVGArc(widget.svgElement, widget.id + "backdownpanel", 0, widget.height - 10, widget.width, 1);
+            widget.SVGBackdownpanel.drawRoundedRect(widget.width, 10, 5, 0, false, false, true, true);
+            widget.SVGBackdownpanel.opacity = 0.5;
+            widget.SVGBackdownpanel.fill = theme.secondary;
+
+
             widget.SVGWidgetText = new SVGText(widget.svgElement, widget.id + "widgettext", widget.size / 80);
             widget.SVGWidgetText.opacity = 0.7;
             widget.SVGWidgetText.color = theme.secondary;
@@ -125,17 +138,6 @@ var BaseWidget =
             widget.SVGHint = new SVGText(widget.svgElement, widget.id + "hint", widget.size / 150);
             widget.SVGHint.color = theme.secondary;
 
-            widget.SVGBackpanel = new SVGArc(widget.svgElement, widget.id + "backpanel", 0, 0, widget.width, 1);
-            widget.SVGBackpanel.drawRoundedRect(widget.width, widget.height, 5, 10, true, true, true, true);
-            //widget.SVGBackpanel.opacity = 0.3;
-
-            widget.SVGBoxBackpanel = new SVGArc(widget.svgElement, widget.id + "boxbackpanel", 0, 0, widget.width, 1);
-            widget.SVGBoxBackpanel.drawRoundedRect(widget.width, 25, 5, 0, true, true, false, false);
-
-            widget.SVGBackdownpanel = new SVGArc(widget.svgElement, widget.id + "backdownpanel", 0, widget.height - 10, widget.width, 1);
-            widget.SVGBackdownpanel.drawRoundedRect(widget.width, 10, 5, 0, false, false, true, true);
-            widget.SVGBackdownpanel.opacity = 0.5;
-            widget.SVGBackdownpanel.fill = theme.secondary;
 
             var stop1 = document.createElementNS(xmlns, 'stop');
             stop1.setAttribute('stop-color', theme.info);
@@ -185,35 +187,31 @@ var BaseWidget =
                 widget.equalizerX.push(equalizerY);
             }
 
-            widget.rowSize = widget.size / 4;
-            widget.SVGLeftIcon = new SVGIcon(widget.svgElement, leftIcon, widget.panding, widget.height / 2 - widget.rowSize / 2, widget.rowSize, widget.rowSize);
+            widget.rowSize = widget.size / 6;
+            widget.SVGLeftIcon = new SVGIcon(widget.svgElement, leftIcon, widget.panding, widget.height - widget.rowSize, widget.rowSize, widget.rowSize);
             widget.SVGLeftIcon.fill = theme.light;
             widget.SVGLeftIcon.SVGIcon.widget = widget;
             widget.SVGLeftIcon.SVGIcon.onclick = widget.moveLeft;
             widget.SVGLeftIcon.hide();
-            widget.SVGRightIcon = new SVGIcon(widget.svgElement, rightIcon, widget.width - widget.rowSize, widget.height / 2 - widget.rowSize / 2, widget.rowSize, widget.rowSize);
+            widget.SVGRightIcon = new SVGIcon(widget.svgElement, rightIcon, widget.width - widget.rowSize, widget.height - widget.rowSize , widget.rowSize, widget.rowSize);
             widget.SVGRightIcon.fill = theme.light;
             widget.SVGRightIcon.SVGIcon.widget = widget;
             widget.SVGRightIcon.SVGIcon.onclick = widget.moveRight;
             widget.SVGRightIcon.hide();
 
-            widget.SVGMinusIcon = new SVGIcon(widget.svgElement, minusIcon, widget.width / 2 - widget.rowSize / 2, widget.height - widget.rowSize, widget.rowSize, widget.rowSize);
-            widget.SVGMinusIcon.fill = theme.light;
-            widget.SVGMinusIcon.SVGIcon.widget = widget;
-            widget.SVGMinusIcon.SVGIcon.onclick = widget.deleteWidgetClick;
-            widget.SVGMinusIcon.hide();
+            widget.SVGDeleteIcon = new SVGIcon(widget.svgElement, deleteIcon, widget.width - widget.rowSize + widget.size / 28, 0, widget.rowSize, widget.rowSize);
+            widget.SVGDeleteIcon.fill = theme.light;
+            widget.SVGDeleteIcon.SVGIcon.widget = widget;
+            widget.SVGDeleteIcon.SVGIcon.onclick = widget.deleteWidgetClick;
+            widget.SVGDeleteIcon.hide();
 
-            widget.SVGPropertiesIcon = new SVGIcon(widget.svgElement, menuIcon, widget.width / 2 - widget.rowSize / 2, widget.height / 2 - widget.rowSize / 2, widget.rowSize, widget.rowSize);
+            widget.SVGPropertiesIcon = new SVGIcon(widget.svgElement, buildIcon, widget.width / 2 - widget.rowSize / 2, widget.height - widget.rowSize , widget.rowSize, widget.rowSize);
             widget.SVGPropertiesIcon.fill = theme.light;
             widget.SVGPropertiesIcon.SVGIcon.widget = widget;
             widget.SVGPropertiesIcon.SVGIcon.onclick = widget.propertiesClick;
             widget.SVGPropertiesIcon.hide();
 
-
-            //IE 
-            //widget.widgetHolder.contentDocument.body.appendChild(widget.svgElement);
             widget.widgetHolder.appendChild(widget.svgElement);
-            
 
             widget._properties = defaultWidgetProperties();
 
@@ -267,11 +265,11 @@ var BaseWidget =
                 }
             }
 
-                if (this.SVGLabel.width > 0) {
-                    this.SVGLabel.x = this.centreX - this.SVGLabel.width / 2;
-                    this.SVGLabel.y = this.SVGLabel.height;
-                }
-            
+            if (this.SVGLabel.width > 0) {
+                this.SVGLabel.x = this.centreX - this.SVGLabel.width / 2;
+                this.SVGLabel.y = this.SVGLabel.height;
+            }
+
 
             switch (this._networkStatus) {
                 case NET_ONLINE:
@@ -473,15 +471,15 @@ var BaseWidget =
             for (var widgetKey in body.widget) {
                 var widget = body.widget[widgetKey];
                 widget.resize(widget.widgetHolder.clientWidth);
-               // widget.svgElement.setAttributeNS(null, "width", widget.widgetHolder.clientWidth);
-              //  widget.svgElement.setAttributeNS(null, "height", widget.widgetHolder.clientWidth);
+                // widget.svgElement.setAttributeNS(null, "width", widget.widgetHolder.clientWidth);
+                //  widget.svgElement.setAttributeNS(null, "height", widget.widgetHolder.clientWidth);
 
-            }            
+            }
         }
 
 
 
-        
+
 
         BaseWidget.prototype.addEventListner = function addEventListner(_event, _sender) {
             try {
@@ -501,16 +499,16 @@ var BaseWidget =
             this.svgElement.insertBefore(this.SVGWidgetText.SVGText, this.svgElement.childNodes.lastChild);
             this.svgElement.insertBefore(this.SVGLeftIcon.SVGIcon, this.svgElement.childNodes.lastChild);
             this.svgElement.insertBefore(this.SVGRightIcon.SVGIcon, this.svgElement.childNodes.lastChild); // this.svgElement.insertBefore(this.SVGPlusIcon.SVGIcon, this.svgElement.childNodes.lastChild);
-            this.svgElement.insertBefore(this.SVGMinusIcon.SVGIcon, this.svgElement.childNodes.lastChild);
+            this.svgElement.insertBefore(this.SVGDeleteIcon.SVGIcon, this.svgElement.childNodes.lastChild);
             this.svgElement.insertBefore(this.SVGPropertiesIcon.SVGIcon, this.svgElement.childNodes.lastChild);
         };
 
         BaseWidget.prototype.showProperties = function showProperties(_event, _sender) {
-            
 
-            _sender.storedProperties = {}; 
 
-            _sender.inParentIndex = Array.prototype.slice.call(_sender.parentPanel.childNodes).indexOf(_sender.widgetHolder);                        
+            _sender.storedProperties = {};
+
+            _sender.inParentIndex = Array.prototype.slice.call(_sender.parentPanel.childNodes).indexOf(_sender.widgetHolder);
             _sender.parentPanel.removeChild(_sender.widgetHolder);
             _sender.mode = WORK_MODE;
 
@@ -522,20 +520,20 @@ var BaseWidget =
             widgetDiv.className = "devicesWidgetsPanel";
             widgetDiv.appendChild(_sender.widgetHolder);
 
-            
+
 
             var formGroup = modalBody.appendChild(document.createElement("div"));
             formGroup.className = "form-group";
 
-            
-            
+
+
 
             for (var key in _sender.properties) {
 
                 _sender.storedProperties[key] = {
                     name: _sender.properties[key].name,
                     value: _sender.properties[key].value,
-                    type: _sender.properties[key].type                    
+                    type: _sender.properties[key].type
                 }
 
                 var label = formGroup.appendChild(document.createElement("label"));
@@ -545,7 +543,7 @@ var BaseWidget =
                 propEdit.className = "form-control form-control-sm";
                 propEdit.placeholder = "type value here";
                 propEdit.id = "widgetproperty" + key;
-                
+
                 //propEdit.value = _sender.properties[key].value;
                 propEdit.widgetProperty = _sender.properties[key];
                 propEdit.widget = _sender;
@@ -635,7 +633,7 @@ var BaseWidget =
 
         };
 
-        
+
 
         BaseWidget.prototype.moveLeft = function moveLeft(event) {
             var widget = event.currentTarget.widget;
@@ -738,11 +736,11 @@ var BaseWidget =
                 speak(this._properties.headertext + " " + widgetText);
             }
 
-            
+
             this.historyData = historyData;
             this._data = data;
             this.widgetText = widgetText;
-            
+
             this.spinnerAngle = 0;
             this.redrawAll();
         };
@@ -819,15 +817,15 @@ var BaseWidget =
             var _this = this;
 
             if (this.mouseEnter) {
-                if (this.SVGBackpanel.opacity < this._properties.backgroundselectopacity.value) {
-                    this.SVGBackpanel.opacity += 0.005;
+                if (this.SVGBackpanel.opacity > this._properties.backgroundselectopacity.value) {
+                    this.SVGBackpanel.opacity -= 0.05;
                     requestAnimationFrame(function () {
                         return _this.drawMouseEnter();
                     });
                 }
             } else {
-                if (this.SVGBackpanel.opacity > this._properties.backgroundopacity.value) {
-                    this.SVGBackpanel.opacity -= 0.005;
+                if (this.SVGBackpanel.opacity < this._properties.backgroundopacity.value) {
+                    this.SVGBackpanel.opacity += 0.005;
                     requestAnimationFrame(function () {
                         return _this.drawMouseEnter();
                     });
@@ -857,15 +855,15 @@ var BaseWidget =
                     this.SVGLeftIcon.hide();
                     this.SVGRightIcon.hide(); //  this.SVGPlusIcon.hide();
 
-                    this.SVGMinusIcon.hide();
+                    this.SVGDeleteIcon.hide();
                     this.SVGPropertiesIcon.hide();
 
                 } else if (mode == MOVE_MODE) {
-                    this.SVGBackpanel.opacity = this._properties.backgroundopacity.value * 3;
+                    this.SVGBackpanel.opacity = this._properties.backgroundopacity.value / 3;
                     this.SVGLeftIcon.draw();
                     this.SVGRightIcon.draw(); //   this.SVGPlusIcon.draw();
 
-                    this.SVGMinusIcon.draw();
+                    this.SVGDeleteIcon.draw();
                     this.SVGPropertiesIcon.draw();
                 }
             },
@@ -905,16 +903,16 @@ var BaseWidget =
                 this._data = data;
                 this.redrawAll();
             }
+        },
+        {
+            key: "onload",
+            get: function get() {
+                return this._onload;
             },
-            {
-                key: "onload",
-                get: function get() {
-                    return this._onload;
-                },
-                set: function set(onload) {
-                    this._onload = onload;
-                }
+            set: function set(onload) {
+                this._onload = onload;
             }
+        }
 
         ]);
 

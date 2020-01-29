@@ -62,6 +62,7 @@
     text-overflow: Ellipsis;
 }
 
+
 .LCDTextArea {
     width: 28ch;
     left: 5%;
@@ -161,8 +162,13 @@ textarea {
     display: inline-flex;
     position: absolute;
     right: 20px;
-    
+    margin-top: -3px;
 }
+
+.headerText {
+    margin-top: 5px;
+}
+
 
 .card-header {
     padding-top: 0.1rem;

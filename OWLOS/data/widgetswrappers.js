@@ -1,12 +1,4 @@
-﻿//function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-//function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-//function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-//function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
-
-//-----------------------------------------------------------------------------------
+﻿//-----------------------------------------------------------------------------------
 //Devices classes -------------------------------------------------------------------
 //Base radial class 
 //-----------------------------------------------------------------------------------
@@ -36,10 +28,15 @@ var RadialWidgetWrapper =
             if (noWidget == undefined || !noWidget) {
                 this.widget = new RadialWidget(parentPanel, deviceId, configProperties.widgetssize);
                 this.widget.deviceClass = this;
-                this.widget.widgetHolder.onclick = this.widgetClick;
-                this.draw();
+                this.widget.onload = this.onWidgetLoad;                
             }
         };
+
+        _proto.onWidgetLoad = function onWidgetLoad(widget) {
+            widget.widgetHolder.onclick = widget.deviceClass.widgetClick;
+            widget.deviceClass.draw();
+        };
+
 
         _proto.getWidgetProperties = function () {
             if (this.widget != undefined) {
@@ -132,8 +129,7 @@ var TemperatureWidgetWrapper =
 
             this.widget = new TemperatureWidget(parentPanel, deviceId, configProperties.widgetssize);
             this.widget.deviceClass = this;
-            this.widget.widgetHolder.onclick = this.widgetClick;
-            this.draw();
+            this.widget.onload = this.onWidgetLoad;
         };
 
         function TemperatureWidgetWrapper(parentPanel, device, deviceProperty, configPropertiesWidget) {
@@ -175,8 +171,7 @@ var ValueWidgetWrapper =
 
             this.widget = new ValueWidget(parentPanel, deviceId, configProperties.widgetssize);
             this.widget.deviceClass = this;
-            this.widget.widgetHolder.onclick = this.widgetClick;
-            this.draw();
+            this.widget.onload = this.onWidgetLoad;
         };
 
         function ValueWidgetWrapper(parentPanel, device, deviceProperty, configPropertiesWidget) {
@@ -219,8 +214,7 @@ var HumidityWidgetWrapper =
 
             this.widget = new RadialWidget(parentPanel, deviceId, configProperties.widgetssize);
             this.widget.deviceClass = this;
-            this.widget.widgetHolder.onclick = this.widgetClick;
-            this.draw();
+            this.widget.onload = this.onWidgetLoad;
         };
 
         function HumidityWidgetWrapper(parentPanel, device, deviceProperty, configPropertiesWidget) {
@@ -305,10 +299,10 @@ var LightWidgetWrapper =
             _RadialWidgetWrapper4.prototype.offlineStarter.call(this, parentPanel, deviceId, devicePropertyName, true);
 
             this.widget = new LightWidget(parentPanel, deviceId, configProperties.widgetssize);
-            this.widget.deviceClass = this;
-            this.widget.widgetHolder.onclick = this.widgetClick;
-            this.draw();
+            this.widget.deviceClass = this;            
+            this.widget.onload = this.onWidgetLoad;
         };
+
 
         function LightWidgetWrapper(parentPanel, device, deviceProperty, configPropertiesWidget) {
             var _this4;
@@ -357,8 +351,7 @@ var SmokeWidgetWrapper =
 
             this.widget = new SmokeWidget(parentPanel, deviceId, configProperties.widgetssize);
             this.widget.deviceClass = this;
-            this.widget.widgetHolder.onclick = this.widgetClick;
-            this.draw();
+            this.widget.onload = this.onWidgetLoad;
         };
 
         function SmokeWidgetWrapper(parentPanel, device, deviceProperty, configPropertiesWidget) {
@@ -408,8 +401,7 @@ var MotionWidgetWrapper =
 
             this.widget = new MotionWidget(parentPanel, deviceId, configProperties.widgetssize);
             this.widget.deviceClass = this;
-            this.widget.widgetHolder.onclick = this.widgetClick;
-            this.draw();
+            this.widget.onload = this.onWidgetLoad;
         };
 
         function MotionWidgetWrapper(parentPanel, device, deviceProperty, configPropertiesWidget) {
@@ -531,10 +523,15 @@ var ActuatorWidgetWrapper =
             if (noWidget == undefined || !noWidget) {
                 this.widget = new ActuatorWidget(parentPanel, deviceId, configProperties.widgetssize);
                 this.widget.deviceClass = this;
-                this.widget.widgetHolder.onclick = this.widgetClick;
-                this.draw();
+                this.widget.onload = this.onWidgetLoad;
             }
         };
+
+        _proto9.onWidgetLoad = function onWidgetLoad(widget) {
+            widget.widgetHolder.onclick = widget.deviceClass.widgetClick;
+            widget.deviceClass.draw();
+        };
+
 
         _proto9.joinDevice = function joinDevice(device, deviceProperty) {
             this.device = device;
@@ -555,54 +552,8 @@ var ActuatorWidgetWrapper =
             if (sender.deviceId == device._id) {
                 sender.joinDevice(device, device[sender.devicePropertyName]);
             }
-        }
-            /*
+        };
             
-                offlineStarter(parentPanel, deviceId, devicePropertyName) {
-                    this.deviceId = deviceId;
-                    this.devicePropertyName = devicePropertyName;
-                    devices.addNetworkStatusListner(this.onNetworkStatusChange, this);
-            
-                    dashboardUI.addDashboardModeListner(this.onDashboardModeChange, this);
-            
-                    this.widget = new ActuatorWidget(parentPanel, deviceId, configProperties.widgetssize);
-                    this.widget.deviceClass = this;
-                    this.widget.widgetHolder.onclick = this.actuatorWidgetClick;
-                    this.draw();
-            
-                }
-            
-            
-                constructor(parentPanel, device, deviceProperty, configPropertiesWidget) {
-                    this.configPropertiesWidget = configPropertiesWidget;
-                    if (device == undefined) {
-                        devices.addDeviceLoadedListner(this.onDeviceLoaded, this);
-                    }
-                    else {
-                        this.offlineStarter(parentPanel, device._id, deviceProperty.name, noWidget);
-                        this.device = device;
-                        this.deviceProperty = deviceProperty;
-                        this.deviceProperty.addNetworkStatusListner(this.onNetworkStatusChange, this);
-                        this.deviceProperty.addValueListner(this.onValueChange, this);
-            
-                    }
-                }
-            
-            
-                onDeviceLoaded(sender, device) {
-                    if (sender.device != undefined) return;
-                    if (sender.deviceId == device._id) {
-                        sender.device = device;
-                        sender.deviceProperty = device[sender.devicePropertyName];
-                        sender.widget.deviceClass.deviceProperty = sender.deviceProperty;
-                        devices.addNetworkStatusListner(sender.onNetworkStatusChange, sender);
-                        sender.deviceProperty.addNetworkStatusListner(sender.onNetworkStatusChange, sender);
-                        sender.deviceProperty.addValueListner(sender.onValueChange, sender);
-                    }
-                }
-                */
-            ;
-
         _proto9.onValueChange = function onValueChange(sender, deviceProperty) {
             sender.draw();
         };
@@ -692,12 +643,16 @@ var LCDWidgetWrapper =
             if (noWidget == undefined || !noWidget) {
                 this.widget = new LCDWidget(parentPanel, deviceId, configProperties.widgetssize);
                 this.widget.deviceClass = this; // this.widget.widgetHolder.onclick = this.widgetClick;
-
-                this.widget.lcdButton.onclick = this.lcdTextClick;
-                this.widget.lightButton.onclick = this.lcdLightClick;
-                this.draw();
+                this.widget.onload = this.onWidgetLoad;
             }
         };
+
+        _proto10.onWidgetLoad = function onWidgetLoad(widget) {
+            this.widget.lcdButton.onclick = this.lcdTextClick;
+            this.widget.lightButton.onclick = this.lcdLightClick;
+            this.draw();
+        };
+
 
         _proto10.joinDevice = function joinDevice(device, deviceProperty) {
             this.device = device;

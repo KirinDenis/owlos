@@ -21,11 +21,14 @@ var dashboardUI = {
         widgetsPanel.id = "widgetsPanel";
         widgetsPanel.className = "col-md-12";
         var infoDiv = widgetsPanel.appendChild(document.createElement('div'));
-        infoDiv.className = "card bg-dark  mb-1";
+        infoDiv.className = "card bg-default  mb-1";
         var headerDiv = infoDiv.appendChild(document.createElement('div'));
         headerDiv.className = "card-header";
 
-        var headerText = headerDiv.appendChild(document.createElement('div'));
+        var headerContent = headerDiv.appendChild(document.createElement('div'));
+
+        var headerText = headerContent.appendChild(document.createElement('div'));
+        headerText.className = "headerText text-light";
         headerText.innerHTML = getLang("dashboard");
 
         var cardHeaderButtonsPanel = headerText.appendChild(document.createElement('div'));
@@ -34,7 +37,7 @@ var dashboardUI = {
         var headerModeButton = cardHeaderButtonsPanel.appendChild(document.createElement('input'));
         headerModeButton.className = "btn btn-secondary btn-sm";
         headerModeButton.type = "button";
-        headerModeButton.value = getLang("dashboardview");
+        headerModeButton.value = getLang("dashboardedit");
         headerModeButton.onclick = dashboardUI.changeDashboadMode;
 
         var addWidgetButton = cardHeaderButtonsPanel.appendChild(document.createElement('input'));
@@ -44,18 +47,15 @@ var dashboardUI = {
         addWidgetButton.onclick = dashboardUI.addWidgetMode;
         
         var dataDiv = infoDiv.appendChild(document.createElement('div'));
-        dataDiv.id = "widgetsPanelDataDiv"
+        
         dataDiv.className = "card-body";
 
         var p = dataDiv.appendChild(document.createElement('p'));
         p.className = "card-text";
-        
-
-
 
         var devicesWidgetsPanel = p.appendChild(document.createElement('div'));
         devicesWidgetsPanel.className = "row";
-
+        devicesWidgetsPanel.id = "widgetsPanelDataDiv"
         //var devicesWidgetsPanel = document.getElementById("widgetsPanelDataDiv");
         for (var i = 0; i < configProperties.dashboards[0].widgets.length; i++) {
             try {
@@ -78,12 +78,25 @@ var dashboardUI = {
 
     },
 
-    changeDashboadMode: function () {
+    changeDashboadMode: function (event) {
+        var headerModeButton = event.currentTarget;
         dashboardUI.dashboardViewMode = !dashboardUI.dashboardViewMode;
 
+        if (dashboardUI.dashboardViewMode) {
+            headerModeButton.value = getLang("dashboardedit");
+            headerModeButton.className = "btn btn-secondary btn-sm";
+        }
+        else {
+            headerModeButton.value = getLang("dashboardview");
+            headerModeButton.className = "btn btn-info btn-sm";
+        }
+
+        
         for (var k = 0; k < dashboardUI.dashboardModeListners.length; k++) {
             dashboardUI.dashboardModeListners[k].event(dashboardUI.dashboardModeListners[k].sender, dashboardUI.dashboardViewMode);
         }
+
+        return false;
     },
 
     addWidgetMode: function () {
