@@ -7,21 +7,28 @@ var TemperatureWidget =
 
         function TemperatureWidget(parentPanel, id, size) {
             
-            var baseWidget = _BaseWidget.call(this, parentPanel, id, size) || this;
-            baseWidget.tempWidth = (baseWidget.width - baseWidget.panding * 2) / 20;
-            baseWidget.tempHeight = baseWidget.height / 15;
-            baseWidget.tempTop = baseWidget.height / 4.5 - baseWidget.tempHeight / 2;
-            baseWidget.tempItem = [];
+            return _BaseWidget.call(this, parentPanel, id, size) || this;
+        }
 
-            this.SVGWidgetExtText = new SVGText(baseWidget.svgElement, this.id + "widgetexttext", this.size / 160);            
-            this.SVGWidgetExtText.color = theme.secondary;
+        TemperatureWidget.prototype.onrPanelLoad = function onrPanelLoad(event) {
+            _BaseWidget.prototype.onrPanelLoad.call(this, event);
+            var rPanel = event.currentTarget;
+            var widget = rPanel.widget;
+
+            widget.tempWidth = (widget.width - widget.panding * 2) / 20;
+            widget.tempHeight = widget.height / 15;
+            widget.tempTop = widget.height / 4.5 - widget.tempHeight / 2;
+            widget.tempItem = [];
+
+            widget.SVGWidgetExtText = new SVGText(widget.svgElement, widget.id + "widgetexttext", widget.size / 160);
+            widget.SVGWidgetExtText.color = theme.secondary;
 
 
             for (var i = 0; i < 20; i++) {
-                var svgRect = new SVGRect(baseWidget.svgElement, baseWidget.id + "tempItem" + i, baseWidget.panding + baseWidget.tempWidth * i, baseWidget.tempTop, baseWidget.tempWidth-2, baseWidget.tempHeight);
+                var svgRect = new SVGRect(widget.svgElement, widget.id + "tempItem" + i, widget.panding + widget.tempWidth * i, widget.tempTop, widget.tempWidth - 2, widget.tempHeight);
                 if (i < 7) {
                     svgRect.fill = theme.info;
-                    
+
                 }
                 else {
                     if (i < 14) {
@@ -34,20 +41,25 @@ var TemperatureWidget =
 
                 svgRect.opacity = 0.0;
 
-                baseWidget.tempItem.push(svgRect);
+                widget.tempItem.push(svgRect);
             }
 
-            baseWidget.tempIndexWidth = (baseWidget.width - baseWidget.panding * 3) / 80;
-            baseWidget.tempIndexHeight = baseWidget.height / 7;
-            baseWidget.tempIndexTop = baseWidget.height / 3.5 - baseWidget.tempIndexHeight / 2;
+            widget.tempIndexWidth = (widget.width - widget.panding * 3) / 80;
+            widget.tempIndexHeight = widget.height / 7;
+            widget.tempIndexTop = widget.height / 3.5 - widget.tempIndexHeight / 2;
 
 
-            baseWidget.clickableToTop();
+            widget.clickableToTop();
 
-            baseWidget.proprties = baseWidget._properties;
+            widget.proprties = widget._properties;
 
-            return baseWidget;
+            if (widget.onload != undefined) {
+                widget.onload(widget);
+            }
+
+
         }
+
 
         TemperatureWidget.prototype.drawText = function drawText() {
             var baseWidget = _BaseWidget.prototype;

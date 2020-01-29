@@ -15,11 +15,11 @@ var StepperWidget =
             this.widgetWidht = this.size / 10;
             this.radius = this.size / 2 - this.widgetWidht;
             this.alphaValue = "80";
-            this.rPanel = this.parentPanel.appendChild(document.createElement("div"));
-            this.rPanel.id = id + "StepperWidget";
-            this.rPanel.stepperWidget = this;
-            this.rPanel.className = "ActuatorWidget";
-            this.rPanel.style.cursor = "pointer";
+            this.widgetHolder = this.parentPanel.appendChild(document.createElement("div"));
+            this.widgetHolder.id = id + "StepperWidget";
+            this.widgetHolder.stepperWidget = this;
+            this.widgetHolder.className = "ActuatorWidget";
+            this.widgetHolder.style.cursor = "pointer";
             this.sPandingTop = this.size / 4;
             this.sPandingLeft = this.size / 7;
             this.sWidth = this.size - this.sPandingLeft * 2;
@@ -32,12 +32,12 @@ var StepperWidget =
                 height: size
             }).get(0), this.rContext = this.rCanvas.getContext("2d");
 
-            var _rCanvas = $(this.rPanel).children("canvas");
+            var _rCanvas = $(this.widgetHolder).children("canvas");
 
             if (_rCanvas.length !== 0) {
                 _rCanvas.replaceWith(this.rCanvas);
             } else {
-                $(this.rCanvas).appendTo($(this.rPanel));
+                $(this.rCanvas).appendTo($(this.widgetHolder));
             }
 
             this.rCanvas.onmousemove = this.mousemove;
@@ -107,7 +107,7 @@ var StepperWidget =
             var elementHeight = 0;
             /*
             if (this.widgetElement == null) {
-                this.widgetElement = this.rPanel.appendChild(document.createElement("h4"));            
+                this.widgetElement = this.widgetHolder.appendChild(document.createElement("h4"));            
                 this.widgetElement.firstTime = true;
             }
             
@@ -135,7 +135,7 @@ var StepperWidget =
             //draw text label --------------
 
             if (this.textElement == null) {
-                this.textElement = this.rPanel.appendChild(document.createElement("div"));
+                this.textElement = this.widgetHolder.appendChild(document.createElement("div"));
                 this.textElement.firstTime = true;
             }
 
@@ -178,7 +178,7 @@ var StepperWidget =
 
 
             if (this.hintElement == null) {
-                this.hintElement = this.rPanel.appendChild(document.createElement("div"));
+                this.hintElement = this.widgetHolder.appendChild(document.createElement("div"));
                 this.hintElement.firstTime = true;
             }
 

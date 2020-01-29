@@ -8,7 +8,8 @@ var dashboardUI = {
         //check event listner and setup current network status 
         try {
             _event(_sender, this);
-        } catch (event) {
+        } catch (exception) {
+            console.error(exception);
             return; // don't add bad listner
         }
         dashboardUI.dashboardModeListners.push(event = { event: _event, sender: _sender });
@@ -20,28 +21,23 @@ var dashboardUI = {
         widgetsPanel.id = "widgetsPanel";
         widgetsPanel.className = "col-md-12";
         var infoDiv = widgetsPanel.appendChild(document.createElement('div'));
-        infoDiv.className = "card bg-dark  mb-1";
+        infoDiv.className = "card bg-default  mb-1";
         var headerDiv = infoDiv.appendChild(document.createElement('div'));
         headerDiv.className = "card-header";
 
-        var headerText = headerDiv.appendChild(document.createElement('div'));
+        var headerContent = headerDiv.appendChild(document.createElement('div'));
+
+        var headerText = headerContent.appendChild(document.createElement('div'));
+        headerText.className = "headerText text-light";
         headerText.innerHTML = getLang("dashboard");
 
         var cardHeaderButtonsPanel = headerText.appendChild(document.createElement('div'));
         cardHeaderButtonsPanel.className = 'cardHeaderButton';
 
-        var saveWidgetsButton = cardHeaderButtonsPanel.appendChild(document.createElement('input'));
-        saveWidgetsButton.className = "btn btn-warning btn-sm";
-        saveWidgetsButton.type = "button";
-        saveWidgetsButton.value = getLang("saveaddedwidget");
-        saveWidgetsButton.hidden = true;
-        saveWidgetsButton.id = "saveWidgetsButton";
-        saveWidgetsButton.onclick = dashboardUI.saveAddedWidget;  
-
         var headerModeButton = cardHeaderButtonsPanel.appendChild(document.createElement('input'));
         headerModeButton.className = "btn btn-secondary btn-sm";
         headerModeButton.type = "button";
-        headerModeButton.value = getLang("dashboardview");
+        headerModeButton.value = getLang("dashboardedit");
         headerModeButton.onclick = dashboardUI.changeDashboadMode;
 
         var addWidgetButton = cardHeaderButtonsPanel.appendChild(document.createElement('input'));
@@ -51,14 +47,15 @@ var dashboardUI = {
         addWidgetButton.onclick = dashboardUI.addWidgetMode;
         
         var dataDiv = infoDiv.appendChild(document.createElement('div'));
-        dataDiv.id = "widgetsPanelDataDiv"
+        
         dataDiv.className = "card-body";
 
         var p = dataDiv.appendChild(document.createElement('p'));
         p.className = "card-text";
+
         var devicesWidgetsPanel = p.appendChild(document.createElement('div'));
         devicesWidgetsPanel.className = "row";
-
+        devicesWidgetsPanel.id = "widgetsPanelDataDiv"
         //var devicesWidgetsPanel = document.getElementById("widgetsPanelDataDiv");
         for (var i = 0; i < configProperties.dashboards[0].widgets.length; i++) {
             try {
@@ -73,6 +70,7 @@ var dashboardUI = {
                 }
             }
             catch (exception) {
+                console.error(exception);
                 addToLogNL("ERROR starting exception: " + exception, 2);
                 addToLogNL("ERROR at widget: " + widgetProp, 2);
             }
@@ -80,12 +78,25 @@ var dashboardUI = {
 
     },
 
-    changeDashboadMode: function () {
+    changeDashboadMode: function (event) {
+        var headerModeButton = event.currentTarget;
         dashboardUI.dashboardViewMode = !dashboardUI.dashboardViewMode;
 
+        if (dashboardUI.dashboardViewMode) {
+            headerModeButton.value = getLang("dashboardedit");
+            headerModeButton.className = "btn btn-secondary btn-sm";
+        }
+        else {
+            headerModeButton.value = getLang("dashboardview");
+            headerModeButton.className = "btn btn-info btn-sm";
+        }
+
+        
         for (var k = 0; k < dashboardUI.dashboardModeListners.length; k++) {
             dashboardUI.dashboardModeListners[k].event(dashboardUI.dashboardModeListners[k].sender, dashboardUI.dashboardViewMode);
         }
+
+        return false;
     },
 
     addWidgetMode: function () {
@@ -241,60 +252,7 @@ var dashboardUI = {
     
         */
 
-    },
-
-    saveAddedWidget: function (event) {   
-        var buttonSave = event.currentTarget;
-        config.cancel = false;
-       // buttonSave.hidden = true;
-
-
-
-        makeModalDialog("resetPanel", "saveConfig", getLang("saveaddedwidget"), getLang("areYouSure"));
-        var modalBody = document.getElementById("saveConfigModalBody");
-        modalBody.innerHTML = "";
-
-        
-        //Body saving status text and progress bar
-
-        var divSavingStatus = modalBody.appendChild(document.createElement("div"));
-        var textStatus = divSavingStatus.appendChild(document.createElement("p"));
-        textStatus.className = "text-center";
-        textStatus.id = "savingTextStatus";
-
-        var divProgressClass = modalBody.appendChild(document.createElement("div"));
-        divProgressClass.className = "progress";
-        divProgressClass.id = "divProgressClass";
-
-        var progressBar = divProgressClass.appendChild(document.createElement("div"));
-        progressBar.className = "progress-bar progress-bar-striped bg-info";
-        progressBar.id = "saveProgressBar";
-        progressBar.setAttribute("role", "progressbar");
-        progressBar.setAttribute("aria-valuenow", "0");
-        progressBar.setAttribute("aria-valuemin", "0");
-        progressBar.setAttribute("aria-valuemax", "100");
-        progressBar.setAttribute("style", "width: 0%");
-        progressBar.innerHTML = "0%";
-
-        // Footer addition button "Close"
-        var modalFooter = document.getElementById("saveConfigModalFooter");
-        var saveCloseButton = modalFooter.appendChild(document.createElement("button"));
-        saveCloseButton.type = "button";
-        saveCloseButton.className = "btn btn-sm btn-success";
-        saveCloseButton.setAttribute("data-dismiss", "modal");
-        saveCloseButton.setAttribute("aria-label", "Close");
-        saveCloseButton.innerText = getLang("close");
-        saveCloseButton.id = "saveConfigsaveCloseButton";
-        saveCloseButton.hidden = true;
-
-
-        $("#saveConfigModal").modal('show');
-
-        config.save();
     }
-
-
-
 }
 
 

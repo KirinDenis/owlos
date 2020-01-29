@@ -1,5 +1,3 @@
-function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
-
 var RadialWidget =
     
     function (_BaseWidget) {
@@ -8,26 +6,36 @@ var RadialWidget =
         _inheritsLoose(RadialWidget, _BaseWidget);
 
         function RadialWidget(parentPanel, id, size) {
-            var baseWidget = _BaseWidget.call(this, parentPanel, id, size) || this;
-            baseWidget.radius = baseWidget.size / 3;
-            baseWidget.topMargin = baseWidget.centreY + baseWidget.size / 10;
-            baseWidget.SVGArcBack = new SVGArc(baseWidget.svgElement, baseWidget.id + "arcback", baseWidget.centreX, baseWidget.topMargin, baseWidget.radius, baseWidget.size / 14);
-            baseWidget.SVGArcBack.color = theme.secondary;
-            baseWidget.SVGArcBack.opacity = 0.5;
-            baseWidget.SVGArcWidget = new SVGArc(baseWidget.svgElement, baseWidget.id + "arcwidget", baseWidget.centreX, baseWidget.topMargin, baseWidget.radius, baseWidget.size / 14);
-            baseWidget.SVGArcWidget.color = theme.secondary;
-            baseWidget.SVGArcSpinner.y = baseWidget.topMargin;
-
-            baseWidget.clickableToTop();
-
-            baseWidget.proprties = baseWidget._properties;
-
-            return baseWidget;
+            return _BaseWidget.call(this, parentPanel, id, size) || this;
         }
 
-        var _proto = RadialWidget.prototype;
+        RadialWidget.prototype.onrPanelLoad = function onrPanelLoad(event) {
+            _BaseWidget.prototype.onrPanelLoad.call(this, event);
+            var rPanel = event.currentTarget;
+            var widget = rPanel.widget;
 
-        _proto.drawWidget = function drawWidget() {
+            widget.radius = widget.size / 3;
+            widget.topMargin = widget.centreY + widget.size / 10;
+            widget.SVGArcBack = new SVGArc(widget.svgElement, widget.id + "arcback", widget.centreX, widget.topMargin, widget.radius, widget.size / 14);
+            widget.SVGArcBack.color = theme.secondary;
+            widget.SVGArcBack.opacity = 0.5;
+            widget.SVGArcWidget = new SVGArc(widget.svgElement, widget.id + "arcwidget", widget.centreX, widget.topMargin, widget.radius, widget.size / 14);
+            widget.SVGArcWidget.color = theme.secondary;
+            widget.SVGArcSpinner.y = widget.topMargin;
+
+            widget.clickableToTop();
+
+            widget.proprties = widget._properties;
+
+            if (widget.onload != undefined) {
+                widget.onload(widget);
+            }
+
+        }
+
+        
+
+        RadialWidget.prototype.drawWidget = function drawWidget() {
             _BaseWidget.prototype.drawWidget.call(this);
 
             if (this.SVGArcBack == undefined) return;

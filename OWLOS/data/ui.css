@@ -3,6 +3,14 @@
     border-left: 1px solid #000;
 }
 
+.iframe {
+    overflow: hidden;
+    display: block;
+    background: none repeat scroll 0% 0% transparent;
+    width: 100%;
+}
+
+
 .devicesWidgetsPanel {
     text-align: center;
 }
@@ -53,6 +61,7 @@
     white-space: NoWrap;
     text-overflow: Ellipsis;
 }
+
 
 .LCDTextArea {
     width: 28ch;
@@ -153,8 +162,13 @@ textarea {
     display: inline-flex;
     position: absolute;
     right: 20px;
-    
+    margin-top: -3px;
 }
+
+.headerText {
+    margin-top: 5px;
+}
+
 
 .card-header {
     padding-top: 0.1rem;

@@ -1,5 +1,3 @@
-function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
-
 var SmokeWidget =
 
     function (_BaseWidget) {
@@ -9,82 +7,89 @@ var SmokeWidget =
 
         function SmokeWidget(parentPanel, id, size) {
 
-            var baseWidget = _BaseWidget.call(this, parentPanel, id, size) || this;
-            baseWidget.radius = baseWidget.size / 30;
-            baseWidget.topMargin = baseWidget.centreY + baseWidget.size / 15;
-            baseWidget.animated = false;
-            baseWidget.levelRectWidth = baseWidget.size / 15;
-            baseWidget.levelRectHeight = baseWidget.size / 100;
-            baseWidget.levelLeft = baseWidget.width - baseWidget.levelRectWidth + baseWidget.halfPanding;
-            baseWidget.levelTop = (baseWidget.height - baseWidget.levelRectHeight * 60 / 2) / 3;
-            baseWidget.level1 = [];
-            baseWidget.level2 = [];
+            return _BaseWidget.call(this, parentPanel, id, size) || this;          
+        }
+
+        SmokeWidget.prototype.onrPanelLoad = function onrPanelLoad(event) {
+            _BaseWidget.prototype.onrPanelLoad.call(this, event);
+            var rPanel = event.currentTarget;
+            var widget = rPanel.widget;
+
+            widget.radius = widget.size / 30;
+            widget.topMargin = widget.centreY + widget.size / 15;
+            widget.animated = false;
+            widget.levelRectWidth = widget.size / 15;
+            widget.levelRectHeight = widget.size / 100;
+            widget.levelLeft = widget.width - widget.levelRectWidth + widget.halfPanding;
+            widget.levelTop = (widget.height - widget.levelRectHeight * 60 / 2) / 3;
+            widget.level1 = [];
+            widget.level2 = [];
 
             for (var i = 0; i < 10; i++) {
-                baseWidget.SVGLevelRect1 = new SVGRect(baseWidget.svgElement, baseWidget.id + "levelrect1" + i, baseWidget.levelLeft, baseWidget.levelTop + i * (baseWidget.levelRectHeight * 2), baseWidget.levelRectWidth, baseWidget.levelRectHeight);
-                baseWidget.SVGLevelRect2 = new SVGRect(baseWidget.svgElement, baseWidget.id + "levelrect2" + i, baseWidget.panding, baseWidget.levelTop + i * (baseWidget.levelRectHeight * 2), baseWidget.levelRectWidth, baseWidget.levelRectHeight);
-                baseWidget.SVGLevelRect1.opacity = baseWidget.SVGLevelRect2.opacity = i / 30;
-                baseWidget.SVGLevelRect1.fill = baseWidget.SVGLevelRect2.fill = theme.danger;
+                widget.SVGLevelRect1 = new SVGRect(widget.svgElement, widget.id + "levelrect1" + i, widget.levelLeft, widget.levelTop + i * (widget.levelRectHeight * 2), widget.levelRectWidth, widget.levelRectHeight);
+                widget.SVGLevelRect2 = new SVGRect(widget.svgElement, widget.id + "levelrect2" + i, widget.panding, widget.levelTop + i * (widget.levelRectHeight * 2), widget.levelRectWidth, widget.levelRectHeight);
+                widget.SVGLevelRect1.opacity = widget.SVGLevelRect2.opacity = i / 30;
+                widget.SVGLevelRect1.fill = widget.SVGLevelRect2.fill = theme.danger;
 
-                baseWidget.level1.push(baseWidget.SVGLevelRect1);
+                widget.level1.push(widget.SVGLevelRect1);
 
-                baseWidget.level2.push(baseWidget.SVGLevelRect2);
+                widget.level2.push(widget.SVGLevelRect2);
             }
 
             for (var i = 10; i < 20; i++) {
-                baseWidget.SVGLevelRect1 = new SVGRect(baseWidget.svgElement, baseWidget.id + "levelrect" + i, baseWidget.levelLeft, baseWidget.levelTop + i * (baseWidget.levelRectHeight * 2), baseWidget.levelRectWidth, baseWidget.levelRectHeight);
-                baseWidget.SVGLevelRect2 = new SVGRect(baseWidget.svgElement, baseWidget.id + "levelrect2" + i, baseWidget.panding, baseWidget.levelTop + i * (baseWidget.levelRectHeight * 2), baseWidget.levelRectWidth, baseWidget.levelRectHeight);
-                baseWidget.SVGLevelRect1.opacity = baseWidget.SVGLevelRect2.opacity = i / 30;
-                baseWidget.SVGLevelRect1.fill = baseWidget.SVGLevelRect2.fill = theme.warning;
+                widget.SVGLevelRect1 = new SVGRect(widget.svgElement, widget.id + "levelrect" + i, widget.levelLeft, widget.levelTop + i * (widget.levelRectHeight * 2), widget.levelRectWidth, widget.levelRectHeight);
+                widget.SVGLevelRect2 = new SVGRect(widget.svgElement, widget.id + "levelrect2" + i, widget.panding, widget.levelTop + i * (widget.levelRectHeight * 2), widget.levelRectWidth, widget.levelRectHeight);
+                widget.SVGLevelRect1.opacity = widget.SVGLevelRect2.opacity = i / 30;
+                widget.SVGLevelRect1.fill = widget.SVGLevelRect2.fill = theme.warning;
 
-                baseWidget.level1.push(baseWidget.SVGLevelRect1);
+                widget.level1.push(widget.SVGLevelRect1);
 
-                baseWidget.level2.push(baseWidget.SVGLevelRect2);
+                widget.level2.push(widget.SVGLevelRect2);
             }
 
             for (var i = 20; i < 30; i++) {
-                baseWidget.SVGLevelRect1 = new SVGRect(baseWidget.svgElement, baseWidget.id + "levelrect" + i, baseWidget.levelLeft, baseWidget.levelTop + i * (baseWidget.levelRectHeight * 2), baseWidget.levelRectWidth, baseWidget.levelRectHeight);
-                baseWidget.SVGLevelRect2 = new SVGRect(baseWidget.svgElement, baseWidget.id + "levelrect2" + i, baseWidget.panding, baseWidget.levelTop + i * (baseWidget.levelRectHeight * 2), baseWidget.levelRectWidth, baseWidget.levelRectHeight);
-                baseWidget.SVGLevelRect1.opacity = baseWidget.SVGLevelRect2.opacity = i / 30;
-                baseWidget.SVGLevelRect1.fill = baseWidget.SVGLevelRect2.fill = theme.success;
+                widget.SVGLevelRect1 = new SVGRect(widget.svgElement, widget.id + "levelrect" + i, widget.levelLeft, widget.levelTop + i * (widget.levelRectHeight * 2), widget.levelRectWidth, widget.levelRectHeight);
+                widget.SVGLevelRect2 = new SVGRect(widget.svgElement, widget.id + "levelrect2" + i, widget.panding, widget.levelTop + i * (widget.levelRectHeight * 2), widget.levelRectWidth, widget.levelRectHeight);
+                widget.SVGLevelRect1.opacity = widget.SVGLevelRect2.opacity = i / 30;
+                widget.SVGLevelRect1.fill = widget.SVGLevelRect2.fill = theme.success;
 
-                baseWidget.level1.push(baseWidget.SVGLevelRect1);
+                widget.level1.push(widget.SVGLevelRect1);
 
-                baseWidget.level2.push(baseWidget.SVGLevelRect2);
+                widget.level2.push(widget.SVGLevelRect2);
             }
 
-            baseWidget.levelArc = [];
+            widget.levelArc = [];
 
             for (var i = 1; i < 5; i++) {
-                var SVGlevelArc = new SVGArc(baseWidget.svgElement, baseWidget.id + "arcback1" + i, baseWidget.centreX, baseWidget.levelTop, i * baseWidget.radius, baseWidget.size / 34);
+                var SVGlevelArc = new SVGArc(widget.svgElement, widget.id + "arcback1" + i, widget.centreX, widget.levelTop, i * widget.radius, widget.size / 34);
                 SVGlevelArc.index = i;
                 SVGlevelArc.fill = theme.danger;
 
-                baseWidget.levelArc.push(SVGlevelArc);
+                widget.levelArc.push(SVGlevelArc);
             }
 
-            baseWidget.SVGArcSpinner.y = baseWidget.topMargin;
+            widget.SVGArcSpinner.y = widget.topMargin;
 
-            baseWidget.clickableToTop();
+            widget.clickableToTop();
 
-            baseWidget.proprties = baseWidget._properties;
+            widget.proprties = widget._properties;
 
-            return baseWidget;
-        }
-
-        var _proto = SmokeWidget.prototype;
-
-        _proto.refresh = function refresh(data, widgetText, label) {
+            if (widget.onload != undefined) {
+                widget.onload(widget);
+            }
+        };
+        
+        SmokeWidget.prototype.refresh = function refresh(data, widgetText, label) {
             widgetText = getLang(widgetText);
 
             _BaseWidget.prototype.refresh.call(this, data, widgetText, label);
         };
 
-        _proto.drawText = function drawText() {
+        SmokeWidget.prototype.drawText = function drawText() {
             _BaseWidget.prototype.drawText.call(this);
         };
 
-        _proto.animate = function animate() {
+        SmokeWidget.prototype.animate = function animate() {
             var baseWidget2 = this;
 
             if (this.animated) {
@@ -106,7 +111,7 @@ var SmokeWidget =
             }
         };
 
-        _proto.drawWidget = function drawWidget() {
+        SmokeWidget.prototype.drawWidget = function drawWidget() {
             var baseWidget3 = this;
             if (this.level1 == undefined) return;
             _BaseWidget.prototype.drawWidget.call(this);

@@ -2,57 +2,66 @@ var DEFAULT_TYPE = 0;
 var ICONS_TYPE = 1;
 
 var ActuatorWidget =
-    
+
     function (_BaseWidget) {
         "use strict";
 
         _inheritsLoose(ActuatorWidget, _BaseWidget);
 
         function ActuatorWidget(parentPanel, id, size, iconOn, iconOff) {
-            
-            var baseWidget = _BaseWidget.call(this, parentPanel, id, size) || this;
-
-            if (iconOn == undefined && iconOff == undefined) {
-                baseWidget.widgetType = DEFAULT_TYPE;
-                baseWidget.SVGArcBack = new SVGArc(baseWidget.svgElement, baseWidget.id + "arcback", baseWidget.centreX, baseWidget.centreY + baseWidget.topMargin, baseWidget.radius + baseWidget.size / 20, baseWidget.size / 100);
-                baseWidget.SVGArcBack.color = theme.secondary;
-                baseWidget.SVGArcWidget = new SVGArc(baseWidget.svgElement, baseWidget.id + "arcwidget", baseWidget.centreX, baseWidget.centreY + baseWidget.topMargin, baseWidget.radius, baseWidget.size / 14);
-                baseWidget.SVGArcWidget.color = theme.secondary;
-                baseWidget.SVGArcWidget.fill = theme.secondary;
-            } else {
-                baseWidget.widgetType = ICONS_TYPE;
-                baseWidget.rowSize = baseWidget.size / 2.5;
-                baseWidget.iconOn = iconOn;
-                baseWidget.SVGIconOn = new SVGIcon(baseWidget.svgElement, baseWidget.iconOn, baseWidget.width / 2 - baseWidget.rowSize / 2, baseWidget.height / 2 - baseWidget.rowSize / 2, baseWidget.rowSize, baseWidget.rowSize);
-                baseWidget.SVGIconOn.fill = theme.success;
-                baseWidget.SVGIconOn.SVGIcon.widget = _assertThisInitialized(baseWidget);
-
-                baseWidget.SVGIconOn.hide();
-
-                baseWidget.iconOff = iconOff;
-                baseWidget.SVGIconOff = new SVGIcon(baseWidget.svgElement, baseWidget.iconOff, baseWidget.width / 2 - baseWidget.rowSize / 2, baseWidget.height / 2 - baseWidget.rowSize / 2, baseWidget.rowSize, baseWidget.rowSize);
-                baseWidget.SVGIconOff.fill = theme.success;
-                baseWidget.SVGIconOff.SVGIcon.widget = _assertThisInitialized(baseWidget);
-
-                baseWidget.SVGIconOff.hide();
-
-                baseWidget.SVGArcSpinner.y = baseWidget.centreY;
-            }
-
-            baseWidget.SVGWidgetText.hide();
-
-            baseWidget.ShowEqualizer = false;
-
-            baseWidget.clickableToTop();
-
-            baseWidget.proprties = baseWidget._properties;
-
-            return baseWidget;
+            var _baseWidget = _BaseWidget.call(this, parentPanel, id, size) || this;
+            _baseWidget.iconOn = iconOn;
+            _baseWidget.iconOff = iconOff;
+            return _baseWidget;
         }
 
-        var _proto = ActuatorWidget.prototype;
+        ActuatorWidget.prototype.onrPanelLoad = function onrPanelLoad(event) {
+            _BaseWidget.prototype.onrPanelLoad.call(this, event);
+            var rPanel = event.currentTarget;
+            var widget = rPanel.widget;
 
-        _proto.drawWidget = function drawWidget() {
+            if (widget.iconOn == undefined && widget.iconOff == undefined) {
+                widget.widgetType = DEFAULT_TYPE;
+                widget.SVGArcBack = new SVGArc(widget.svgElement, widget.id + "arcback", widget.centreX, widget.centreY + widget.topMargin, widget.radius + widget.size / 20, widget.size / 100);
+                widget.SVGArcBack.color = theme.secondary;
+                widget.SVGArcWidget = new SVGArc(widget.svgElement, widget.id + "arcwidget", widget.centreX, widget.centreY + widget.topMargin, widget.radius, widget.size / 14);
+                widget.SVGArcWidget.color = theme.secondary;
+                widget.SVGArcWidget.fill = theme.secondary;
+            } else {
+                widget.widgetType = ICONS_TYPE;
+                widget.rowSize = widget.size / 2.5;                
+                widget.SVGIconOn = new SVGIcon(widget.svgElement, widget.iconOn, widget.width / 2 - widget.rowSize / 2, widget.height / 2 - widget.rowSize / 2, widget.rowSize, widget.rowSize);
+                widget.SVGIconOn.fill = theme.success;
+                widget.SVGIconOn.SVGIcon.widget = _assertThisInitialized(widget);
+                widget.SVGIconOn.hide();
+
+                
+                widget.SVGIconOff = new SVGIcon(widget.svgElement, widget.iconOff, widget.width / 2 - widget.rowSize / 2, widget.height / 2 - widget.rowSize / 2, widget.rowSize, widget.rowSize);
+                widget.SVGIconOff.fill = theme.success;
+                widget.SVGIconOff.SVGIcon.widget = _assertThisInitialized(widget);
+
+                widget.SVGIconOff.hide();
+
+                widget.SVGArcSpinner.y = widget.centreY;
+            }
+
+            widget.SVGWidgetText.hide();
+
+            widget.ShowEqualizer = false;
+
+            widget.clickableToTop();
+
+            widget.proprties = widget._properties;
+
+            if (widget.onload != undefined) {
+                widget.onload(widget);
+            }
+
+        }
+
+
+
+        ActuatorWidget.prototype.drawWidget = function drawWidget() {
             _BaseWidget.prototype.drawWidget.call(this);
 
             if (this.SVGArcBack == undefined) return;

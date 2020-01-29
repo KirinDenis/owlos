@@ -1,87 +1,93 @@
 var LightWidget =
-    
+
     function (_BaseWidget) {
         "use strict";
 
         _inheritsLoose(LightWidget, _BaseWidget);
 
         function LightWidget(parentPanel, id, size) {
-            var baseWidget;
+            return _BaseWidget.call(this, parentPanel, id, size) || this;
+        }
 
-            baseWidget = _BaseWidget.call(this, parentPanel, id, size) || this;
-            baseWidget.radius = baseWidget.size / 10;
-            baseWidget.topMargin = baseWidget.height - baseWidget.size / 6;
-            baseWidget.animated = false;
-            baseWidget.levelArc = [];
+        LightWidget.prototype.onrPanelLoad = function onrPanelLoad(event) {
+            _BaseWidget.prototype.onrPanelLoad.call(this, event);
+            var rPanel = event.currentTarget;
+            var widget = rPanel.widget;
+
+            widget.radius = widget.size / 10;
+            widget.topMargin = widget.height - widget.size / 6;
+            widget.animated = false;
+            widget.levelArc = [];
 
             for (var i = 1; i < 5; i++) {
-                var SVGlevelArc = new SVGArc(baseWidget.svgElement, baseWidget.id + "arcback1" + i, baseWidget.centreX, baseWidget.topMargin, i * baseWidget.radius, baseWidget.size / 14);
-                SVGlevelArc.index = i;                
+                var SVGlevelArc = new SVGArc(widget.svgElement, widget.id + "arcback1" + i, widget.centreX, widget.topMargin, i * widget.radius, widget.size / 14);
+                SVGlevelArc.index = i;
                 SVGlevelArc.opacity = i * 0.2;
 
-                baseWidget.levelArc.push(SVGlevelArc);
+                widget.levelArc.push(SVGlevelArc);
             }
 
-            baseWidget.SVGArcSpinner.y = baseWidget.topMargin;
-            baseWidget.SVGArcSpinner.radius = baseWidget.radius * 4.5;
+            widget.SVGArcSpinner.y = widget.topMargin;
+            widget.SVGArcSpinner.radius = widget.radius * 4.5;
 
-            baseWidget.clickableToTop();
+            widget.clickableToTop();
 
-            baseWidget._properties.lightcolor =
+            widget._properties.lightcolor =
                 {
                     name: "light indicator color",
                     value: theme.warning,
                     type: "c"
                 };
-                
-            baseWidget.properties = baseWidget._properties;
 
-            return baseWidget;
+            widget.properties = widget._properties;
+
+            if (widget.onload != undefined) {
+                widget.onload(widget);
+            }
+
         }
 
-        var _proto = LightWidget.prototype;
-
-        _proto.refresh = function refresh(data, widgetText, label) {
+        LightWidget.prototype.refresh = function refresh(data, widgetText, label) {
             widgetText = getLang(widgetText);
 
             _BaseWidget.prototype.refresh.call(this, data, widgetText, label);
         };
 
-        _proto.drawText = function drawText() {
+        LightWidget.prototype.drawText = function drawText() {
             _BaseWidget.prototype.drawText.call(this);
-
+            if (this.SVGWidgetText == undefined) return;
             this.SVGWidgetText.y = this.size / 5 + this.SVGWidgetText.height / 2;
-            ;
+            
         };
 
-        _proto.drawWidget = function drawWidget() {
+        LightWidget.prototype.drawWidget = function drawWidget() {
             _BaseWidget.prototype.drawWidget.call(this);
             if (this.levelArc == undefined) return;
             this._data = 80;
             for (var i = 0; i < 4; i++) {
                 this.levelArc[i].hide();
-             
+
 
                 switch (this._networkStatus) {
                     case NET_ONLINE:
                         this.toColor(this.levelArc[i], this.properties.lightcolor.value);
-                      //  this.levelArc[i].opacity = 0.7;
+                        //  this.levelArc[i].opacity = 0.7;
                         break;
 
                     case NET_ERROR:
                         this.toColor(this.levelArc[i], theme.danger);
-                       // this.levelArc[i].opacity = 0.4;
+                        // this.levelArc[i].opacity = 0.4;
                         break;
 
                     case NET_RECONNECT:
                         this.toColor(this.levelArc[i], theme.info);
-                       // this.levelArc[i].opacity = 0.4;
+                        // this.levelArc[i].opacity = 0.4;
                         break;
 
                     default:
                         //offline
                         this.toColor(this.levelArc[i], theme.secondary);
-                       // this.levelArc[i].opacity = 0.4;
+                        // this.levelArc[i].opacity = 0.4;
                         break;
                 }
             }

@@ -7,37 +7,44 @@ var GraphWidget =
 
         _inheritsLoose(GraphWidget, _BaseWidget);
 
-        function GraphWidget(parentPanel, id, size, icon) {
+        function GraphWidget(parentPanel, id, size) {
+            return _BaseWidget.call(this, parentPanel, id, size) || this;
+        }
 
-            var baseWidget = _BaseWidget.call(this, parentPanel, id, size) || this;
+        GraphWidget.prototype.onrPanelLoad = function onrPanelLoad(event) {
+            _BaseWidget.prototype.onrPanelLoad.call(this, event);
+            var rPanel = event.currentTarget;
+            var widget = rPanel.widget;
 
-            baseWidget.rPanel.className = "col-sm-2";
-           // baseWidget.rPanel.removeChild(baseWidget.svgElement);
+            widget.widgetHolder.className = "col-sm-2";
+            // widget.widgetHolder.removeChild(widget.svgElement);
 
+
+            widget.topMargin = widget.size / 20; //this.panding = 5;
+
+            widget.width = widget.size * 2;
+            widget.height = widget.size;
+            widget.centreX = widget.width / 2; //  this.centreY = this.height / 2;
+
+            widget.widgetTextSize = widget.size / 110;
+            widget.graphWidth = widget.width - widget.panding;
+            widget.graphHeight = widget.height - widget.size / 3.4;
+            widget.graphTop = widget.size / 3.7;
+
+            widget.svgElement.setAttributeNS(null, "viewBox", "0 0 " + widget.width + " " + widget.height);
+
+            //  widget.svgElement.setAttributeNS(null, "width", widget.width);
+            //  widget.svgElement.setAttributeNS(null, "height", widget.height);
+
+            widget.SVGBackpanel.drawRoundedRect(widget.width, widget.height, 5, 10, true, true, true, true);
+            widget.SVGBackdownpanel.drawRoundedRect(widget.width, 10, 5, 0, false, false, true, true);            
+            widget.SVGBoxBackpanel.drawRoundedRect(widget.width, 26, 5, 0, true, true, false, false);
             
-            baseWidget.topMargin = baseWidget.size / 20; //this.panding = 5;
-
-            baseWidget.width = baseWidget.size * 2;
-            baseWidget.height = baseWidget.size;
-            baseWidget.centreX = baseWidget.width / 2; //  this.centreY = this.height / 2;
-
-            baseWidget.widgetTextSize = baseWidget.size / 110;
-            baseWidget.graphWidth = baseWidget.width - baseWidget.panding;
-            baseWidget.graphHeight = baseWidget.height - baseWidget.size / 3.4 ;
-            baseWidget.graphTop = baseWidget.size / 3.7;
-
-            baseWidget.svgElement.setAttributeNS(null, "viewBox", "0 0 " + baseWidget.width + " " + baseWidget.height);
+            //   widget.SVGBackdownpanel.y += 3;
             
-            baseWidget.svgElement.setAttributeNS(null, "width", baseWidget.width);
-            baseWidget.svgElement.setAttributeNS(null, "height", baseWidget.height);
 
-            baseWidget.SVGBackpanel.drawRoundedRect(baseWidget.width, baseWidget.height, 5, 10, true, true, true, true);
-            baseWidget.SVGBoxBackpanel.drawRoundedRect(baseWidget.width, 26, 5, 0, true, true, false, false);
-            baseWidget.SVGBackdownpanel.y += 3;
-            baseWidget.SVGBackdownpanel.drawRoundedRect(baseWidget.width, 10, 5, 0, false, false, true, true);
-
-            baseWidget.SVGBackdownpanel.width = baseWidget.width;
-            baseWidget.SVGBackdownpanel.y = baseWidget.height;
+            widget.SVGBackdownpanel.width = widget.width;
+           // widget.SVGBackdownpanel.y = widget.height;
             var stop1 = document.createElementNS(xmlns, 'stop');
             stop1.setAttribute('stop-color', theme.success);
             stop1.setAttribute('stop-opacity', "0.7");
@@ -62,61 +69,70 @@ var GraphWidget =
             gradient.appendChild(stop2);
             gradient.appendChild(stop3);
 
-            baseWidget.svgElement.appendChild(gradient);
+            widget.svgElement.appendChild(gradient);
 
-            baseWidget.SVGPath1 = new SVGArc(baseWidget.svgElement, baseWidget.id + "path1", baseWidget.graphTop + " " + baseWidget.halfPanding  + " " + baseWidget.graphWidth + " " + baseWidget.graphHeight);
-            baseWidget.SVGPath1.fill = 'url(#GraphGradient)';
-            baseWidget.SVGPath1.opacity = 0.4;
-            baseWidget.SVGPath2 = new SVGArc(baseWidget.svgElement, baseWidget.id + "path2", baseWidget.graphTop + " " + baseWidget.halfPanding + " " + baseWidget.graphWidth + " " + baseWidget.graphHeight);
-            baseWidget.SVGPath2.color = theme.secondary;
-            baseWidget.SVGPath2.opacity = 0.5;
-            baseWidget.SVGLabel.text = "Graph";
-            baseWidget.widgetLeft = baseWidget.centreX - baseWidget.textWidth / 2;
-            baseWidget.widgetTop = baseWidget.centreY + baseWidget.SVGLabel.height - baseWidget.textHeight * 4 / 2;
-            var labelTextSize = baseWidget.size / 210;
-            baseWidget.SVGTopLabel = new SVGText(baseWidget.svgElement, baseWidget.id + "toplabel", labelTextSize);
-            baseWidget.SVGTopLabel.color = theme.secondary;
-            baseWidget.SVGMiddleLabel = new SVGText(baseWidget.svgElement, baseWidget.id + "toplabel", labelTextSize);
-            baseWidget.SVGMiddleLabel.color = theme.secondary;
-            baseWidget.SVGDownLabel = new SVGText(baseWidget.svgElement, baseWidget.id + "toplabel", labelTextSize);
-            baseWidget.SVGDownLabel.color = theme.secondary;
-            baseWidget.SVGTopLabel.x = baseWidget.SVGMiddleLabel.x = baseWidget.SVGDownLabel.x = baseWidget.width / 48;
-            baseWidget.SVGTopLine = new SVGRect(baseWidget.svgElement, baseWidget.id + "topline", baseWidget.width / 48, 0, baseWidget.graphWidth, 1);
-            baseWidget.SVGTopLine.opacity = 0.1;
-            baseWidget.SVGTopLine.color = theme.secondary;
-            baseWidget.SVGMiddleLine = new SVGRect(baseWidget.svgElement, baseWidget.id + "middlieline", baseWidget.width / 48, 0, baseWidget.graphWidth, 1);
-            baseWidget.SVGMiddleLine.opacity = 0.1;
-            baseWidget.SVGMiddleLine.color = theme.secondary;
-            baseWidget.SVGDownLine = new SVGRect(baseWidget.svgElement, baseWidget.id + "downline", baseWidget.width / 48, 0, baseWidget.graphWidth, 1);
-            baseWidget.SVGDownLine.opacity = 0.1;
-            baseWidget.SVGDownLine.color = theme.secondary;
+            widget.SVGPath1 = new SVGArc(widget.svgElement, widget.id + "path1", widget.graphTop + " " + widget.halfPanding + " " + widget.graphWidth + " " + widget.graphHeight);
+            widget.SVGPath1.fill = 'url(#GraphGradient)';
+            widget.SVGPath1.opacity = 0.4;
+            widget.SVGPath2 = new SVGArc(widget.svgElement, widget.id + "path2", widget.graphTop + " " + widget.halfPanding + " " + widget.graphWidth + " " + widget.graphHeight);
+            widget.SVGPath2.color = theme.secondary;
+            widget.SVGPath2.opacity = 0.5;
+            widget.SVGLabel.text = "Graph";
+            widget.widgetLeft = widget.centreX - widget.textWidth / 2;
+            widget.widgetTop = widget.centreY + widget.SVGLabel.height - widget.textHeight * 4 / 2;
+            var labelTextSize = widget.size / 210;
+            widget.SVGTopLabel = new SVGText(widget.svgElement, widget.id + "toplabel", labelTextSize);
+            widget.SVGTopLabel.color = theme.secondary;
+            widget.SVGMiddleLabel = new SVGText(widget.svgElement, widget.id + "toplabel", labelTextSize);
+            widget.SVGMiddleLabel.color = theme.secondary;
+            widget.SVGDownLabel = new SVGText(widget.svgElement, widget.id + "toplabel", labelTextSize);
+            widget.SVGDownLabel.color = theme.secondary;
+            widget.SVGTopLabel.x = widget.SVGMiddleLabel.x = widget.SVGDownLabel.x = widget.width / 48;
+            widget.SVGTopLine = new SVGRect(widget.svgElement, widget.id + "topline", widget.width / 48, 0, widget.graphWidth, 1);
+            widget.SVGTopLine.opacity = 0.1;
+            widget.SVGTopLine.color = theme.secondary;
+            widget.SVGMiddleLine = new SVGRect(widget.svgElement, widget.id + "middlieline", widget.width / 48, 0, widget.graphWidth, 1);
+            widget.SVGMiddleLine.opacity = 0.1;
+            widget.SVGMiddleLine.color = theme.secondary;
+            widget.SVGDownLine = new SVGRect(widget.svgElement, widget.id + "downline", widget.width / 48, 0, widget.graphWidth, 1);
+            widget.SVGDownLine.opacity = 0.1;
+            widget.SVGDownLine.color = theme.secondary;
 
+            
+            /*
             if (icon != undefined) {
-                baseWidget.SVGIcon = new SVGIcon(baseWidget.svgElement, icon, baseWidget.width - baseWidget.size / 6, baseWidget.size / 24, baseWidget.size / 8, baseWidget.size / 8);
+                widget.SVGIcon = new SVGIcon(widget.svgElement, icon, widget.width - widget.size / 6, widget.size / 24, widget.size / 8, widget.size / 8);
             } else {
-                baseWidget.SVGIcon = new SVGIcon(baseWidget.svgElement, addIcon, baseWidget.width - baseWidget.size / 6, baseWidget.size / 24, baseWidget.size / 8, baseWidget.size / 8);
+                widget.SVGIcon = new SVGIcon(widget.svgElement, addIcon, widget.width - widget.size / 6, widget.size / 24, widget.size / 8, widget.size / 8);
+            }
+            */
+            widget.SVGIcon = new SVGIcon(widget.svgElement, addIcon, widget.width - widget.size / 6, widget.size / 24, widget.size / 8, widget.size / 8);
+
+            widget.SVGIcon.fill = theme.secondary;
+
+            widget.SVGWidgetText.hide();
+
+            widget.SVGArcSpinner.x = widget.centreX;
+            widget.ShowEqualizer = false;
+            widget.SVGRightIcon.x = widget.width - widget.rowSize; //  this.SVGPlusIcon.x = this.width / 2 - this.rowSize / 2;
+            widget.SVGPropertiesIcon.x = widget.width / 2 - widget.rowSize / 2;
+            widget.SVGDeleteIcon.x = widget.width - widget.rowSize + widget.size / 55;
+            
+
+            //   widget.widgetHolder.appendChild(widget.svgElement);
+
+            widget.clickableToTop();
+            widget.proprties = widget._properties;
+            widget.resize(widget.width);
+
+            if (widget.onload != undefined) {
+                widget.onload(widget);
             }
 
-            baseWidget.SVGIcon.fill = theme.secondary;
-
-            baseWidget.SVGWidgetText.hide();
-
-            baseWidget.SVGArcSpinner.x = baseWidget.centreX;
-            baseWidget.ShowEqualizer = false;
-            baseWidget.SVGRightIcon.x = baseWidget.width - baseWidget.rowSize; //  this.SVGPlusIcon.x = this.width / 2 - this.rowSize / 2;
-
-            baseWidget.SVGMinusIcon.x = baseWidget.width / 2 - baseWidget.rowSize / 2;
-
-         //   baseWidget.rPanel.appendChild(baseWidget.svgElement);
-
-            baseWidget.clickableToTop();
-
-            return baseWidget;
-        }
+        };
 
         GraphWidget.prototype.resize = function resize(size) {
-            _BaseWidget.prototype.resize.call(this, size);
-
+            this.size = size;
             this.svgElement.setAttributeNS(null, "width", size);
             this.svgElement.setAttributeNS(null, "height", size / 2);
 

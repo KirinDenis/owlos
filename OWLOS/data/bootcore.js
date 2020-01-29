@@ -69,6 +69,7 @@ function boot() {
         addToLog("loading jQuery from " + jQueryScript.src);
         document.getElementsByTagName('head')[0].appendChild(jQueryScript);
     } catch (error) { //если что то пошло совсем не так
+        console.error(exception);
         addToLogNL("loading scripts exception: " + error, 2);
     }
 }
@@ -233,6 +234,18 @@ function _inheritsLoose(subClass, superClass) {
     subClass.__proto__ = superClass;
 }
 
+function waitForElement(element, callBack) {
+    window.setTimeout(function () {
+        if ($("#" + element.id).length) {
+            var event = {
+                currentTarget: element
+            }
+            callBack(event);
+        } else {
+            waitForElement(element, callBack);
+        }
+    }, 500)
+}
 
 
 
