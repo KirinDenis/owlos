@@ -6,27 +6,32 @@ var ValueWidget =
         _inheritsLoose(ValueWidget, _BaseWidget);
 
         function ValueWidget(parentPanel, id, size) {
-            var baseWidget = _BaseWidget.call(this, parentPanel, id, size) || this;
-            baseWidget.radius = baseWidget.size / 3;
-            baseWidget.topMargin = baseWidget.centreY + baseWidget.size / 10;
-            baseWidget.clickableToTop();
+            return _BaseWidget.call(this, parentPanel, id, size) || this;
+        };
 
-            baseWidget._properties.textfontsize =
+        ValueWidget.prototype.onrPanelLoad = function onrPanelLoad(event) {
+            _BaseWidget.prototype.onrPanelLoad.call(this, event);
+            var rPanel = event.currentTarget;
+            var widget = rPanel.widget;
+
+            widget.radius = widget.size / 3;
+            widget.topMargin = widget.centreY + widget.size / 10;
+            
+            widget._properties.textfontsize =
                 {
                     name: "Value text size",
                     value: 1.0,
                     type: "f"
                 };
 
-            baseWidget.properties = baseWidget._properties;
+            widget.clickableToTop();
+            widget.properties = widget._properties;
 
-            return baseWidget;
-        }
-
-        var _proto = ValueWidget.prototype;
+        };
 
 
-        _proto.drawText = function drawText() {
+        ValueWidget.prototype.drawText = function drawText() {
+            if (this.SVGWidgetText == undefined) return;
             if (this.properties.textfontsize !== undefined) {
                 this.SVGWidgetText.size = this.properties.textfontsize.value;
             }
@@ -36,7 +41,7 @@ var ValueWidget =
         };
 
 
-        _proto.drawWidget = function drawWidget() {
+        ValueWidget.prototype.drawWidget = function drawWidget() {
         
             _BaseWidget.prototype.drawWidget.call(this);
         };

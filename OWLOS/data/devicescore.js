@@ -297,6 +297,7 @@ var devices = {
                     _event(_sender, this);
                 } catch(exception)
                 {
+                    console.error(exception);
                     return; //неправильный метод либо не существует, либо вызовет исключение, не включаем его в число подписчиков
                 }
                 //добавляем нового подписчика в valueListners: [], добавляется как объект-элемент массива, где _event метод обработчик из другого объекта, _sender подписанный объект
@@ -327,6 +328,7 @@ var devices = {
                 try {
                     _event(_sender, this);
                 } catch (exception) {
+                    console.error(exception);
                     return; // don't add bad listner
                 }
                 this.networkStatusListners.push(event = { event: _event, sender: _sender });

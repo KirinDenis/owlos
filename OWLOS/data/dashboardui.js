@@ -8,7 +8,8 @@ var dashboardUI = {
         //check event listner and setup current network status 
         try {
             _event(_sender, this);
-        } catch (event) {
+        } catch (exception) {
+            console.error(exception);
             return; // don't add bad listner
         }
         dashboardUI.dashboardModeListners.push(event = { event: _event, sender: _sender });
@@ -69,6 +70,7 @@ var dashboardUI = {
                 }
             }
             catch (exception) {
+                console.error(exception);
                 addToLogNL("ERROR starting exception: " + exception, 2);
                 addToLogNL("ERROR at widget: " + widgetProp, 2);
             }

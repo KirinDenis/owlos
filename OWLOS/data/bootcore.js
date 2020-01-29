@@ -69,6 +69,7 @@ function boot() {
         addToLog("loading jQuery from " + jQueryScript.src);
         document.getElementsByTagName('head')[0].appendChild(jQueryScript);
     } catch (error) { //если что то пошло совсем не так
+        console.error(exception);
         addToLogNL("loading scripts exception: " + error, 2);
     }
 }

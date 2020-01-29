@@ -71,37 +71,21 @@ var BaseWidget =
         function BaseWidget(parentPanel, id, size) {
             this.parentPanel = parentPanel;
 
-            this.id = id;
+            this.id = id;            
             this._networkStatus = NET_OFFLINE;
             this._event = EVENT_NO;
-            this.eventListners = [];
-
-            //IE ------------
-            /*
-            this.rPanel = this.parentPanel.appendChild(document.createElement("iframe"));            
-            this.rPanel.frameBorder = "0";  
-            this.rPanel.scrolling = "no";
-            this.rPanel.width = "100%";
-            */
-            
-            this.rPanel = this.parentPanel.appendChild(document.createElement("div"));            
-            this.rPanel.id = id + "BaseWidget";                       
-            this.rPanel.widget = this;
-            this.rPanel.className = "col-sm-1";
-            this.rPanel.style.cursor = "pointer";
-            //this.rPanel.onload = this.onrPanelLoad;
-            this.rPanel.onmouseover = this.mouseOver;
-            this.rPanel.onmouseout = this.mouseOut;
-
-            
-
-            waitForElement(this.rPanel, this.onrPanelLoad);
-
-            //this.iframe = this.rPanel.appendChild(document.createElement("iframe"));
-            //this.iframe.widget = this;
-            //this.iframe.onload = this.onrPanelLoad;
-            
             this.mouseEnter = false;
+            this.eventListners = [];
+            
+            this.widgetHolder = this.parentPanel.appendChild(document.createElement("div"));            
+            this.widgetHolder.id = id + "BaseWidget";                       
+            this.widgetHolder.widget = this;
+            this.widgetHolder.className = "col-sm-1";
+            this.widgetHolder.style.cursor = "pointer";
+            this.widgetHolder.onmouseover = this.mouseOver;
+            this.widgetHolder.onmouseout = this.mouseOut;
+           
+            waitForElement(this.widgetHolder, this.onrPanelLoad);
 
             var body = document.getElementsByTagName("BODY")[0];
             body.onresize = this.onPanelResize;
@@ -110,24 +94,13 @@ var BaseWidget =
             }
             body.widget.push(this);
 
-
-            //IE
-            //закат солнца в ручную
-            /*
-            var event = {
-                currentTarget: this.rPanel                
-            }
-            this.onrPanelLoad(event);
-            */
-            //this.size = size;            
-          //  resize(size);
         }
 
         BaseWidget.prototype.onrPanelLoad = function onrPanelLoad(event) {
             var rPanel = event.currentTarget;
             var widget = rPanel.widget;
 
-            widget.size = widget.rPanel.clientWidth;
+            widget.size = widget.widgetHolder.clientWidth;
 
             widget.panding = widget.size / 25;
             widget.halfPanding = widget.panding / 2;
@@ -143,8 +116,6 @@ var BaseWidget =
             widget.svgElement = document.createElementNS(xmlns, "svg");
             widget.svgElement.setAttributeNS(null, "viewBox", "0 " + "0 " + widget.size + " " + widget.size);
             widget.resize(widget.size);
-            //widget.svgElement.setAttributeNS(null, "width", size);
-            //widget.svgElement.setAttributeNS(null, "height", size);
             widget.svgElement.style.display = "block";
             widget.SVGWidgetText = new SVGText(widget.svgElement, widget.id + "widgettext", widget.size / 80);
             widget.SVGWidgetText.opacity = 0.7;
@@ -240,13 +211,13 @@ var BaseWidget =
 
 
             //IE 
-            //widget.rPanel.contentDocument.body.appendChild(widget.svgElement);
-            widget.rPanel.appendChild(widget.svgElement);
+            //widget.widgetHolder.contentDocument.body.appendChild(widget.svgElement);
+            widget.widgetHolder.appendChild(widget.svgElement);
             
 
             widget._properties = defaultWidgetProperties();
 
-            widget.resize(widget.rPanel.clientWidth);
+            widget.resize(widget.widgetHolder.clientWidth);
             widget.mode = WORK_MODE;
         }
 
@@ -349,7 +320,139 @@ var BaseWidget =
                 this.SVGHint.x = this.centreX - this.SVGHint.width / 2;
                 this.SVGHint.y = this.height - this.SVGHint.height / 2;
             }
-        } ;
+        };
+
+        BaseWidget.prototype.drawWidget = function drawWidget() {
+            if (this._event == EVENT_DELETE) {
+                return;
+            }
+            if (this.SVGBackpanel == undefined) return;
+            this.SVGBackpanel.color = this._properties.bordercolor.value;
+            this.SVGBackpanel.fill = this._properties.backgroundcolor.value;
+            this.SVGBackpanel.opacity = this._properties.backgroundopacity.value;
+
+            this.SVGBoxBackpanel.opacity = this._properties.headeropacity.value;
+            this.SVGBoxBackpanel.fill = this._properties.headercolor.value;
+
+
+            var oneHangPercent = 360 + 90 + 30 - 240;
+            var drawPercent = this._data * (oneHangPercent / 100); //backdown panel
+
+            /*
+            switch (this._networkStatus) {
+                case NET_ONLINE: this.SVGBackdownpanel.color = theme.success; break;
+                case NET_ERROR: this.SVGBackdownpanel.color = theme.danger; break;
+                case NET_RECONNECT: this.SVGBackdownpanel.color = theme.info; break;
+                default: //offline
+                    this.SVGBackdownpanel.color = theme.light; break;
+            }
+            */
+
+            switch (this._networkStatus) {
+                case NET_ONLINE:
+                    //this.toColor(this.SVGBackdownpanel, theme.success);
+                    this.SVGBackdownpanel.fill = theme.success;
+                    break;
+
+                case NET_ERROR:
+                    //this.toColor(this.SVGBackdownpanel, theme.danger);
+                    this.SVGBackdownpanel.fill = theme.danger;
+                    break;
+
+                case NET_RECONNECT:
+                    //this.toColor(this.SVGBackdownpanel, theme.info);
+                    this.SVGBackdownpanel.fill = theme.info;
+                    break;
+
+                default:
+                    //offline
+                    //this.toColor(this.SVGBackdownpanel, theme.light);
+                    this.SVGBackdownpanel.fill = theme.light;
+                    break;
+            } //equalizer --------------------------
+
+
+            if (this._properties.showequalizer.value === 'true') {
+                for (var x = 0; x < this.eCount; x++) {
+                    var equalizerY = this.equalizerX[x];
+
+                    for (var y = 0; y < 5; y++) {
+                        if (this._networkStatus == NET_ONLINE && (this._properties.showequalizer.value === 'true')) {
+                            equalizerY[y].opacity = (y + 1) * 0.08;
+                        } else {
+                            equalizerY[y].opacity = 0.0;
+                        }
+
+                        equalizerY[y].fill = theme.secondary;
+                    }
+                }
+
+                if (this._networkStatus == NET_ONLINE && (this._properties.showequalizer.value === 'true')) {
+                    if (this.historyData != undefined) {
+                        //reset 
+                        var splitHistory = this.historyData.split(";");
+                        var count = splitHistory[0];
+                        var prop = count / this.eCount;
+                        var bigValue;
+
+                        for (var x = 0; x < count; x++) {
+                            var equalizerY = this.equalizerX[parseInt(x / prop)];
+                            var value = splitHistory[x + 1];
+
+                            if (bigValue == undefined || value > bigValue) {
+                                bigValue = value;
+                            }
+                        }
+
+                        var propValue = parseFloat(bigValue / 5);
+
+                        for (var x = 0; x < count; x++) {
+                            if (count < this.eCount) {
+                                var equalizerY = this.equalizerX[x];
+                            } else {
+                                var equalizerY = this.equalizerX[parseInt(x / prop)];
+                            }
+
+                            var value = parseInt(splitHistory[x + 1] / propValue);
+
+                            for (var y = 0; y < value; y++) {
+                                equalizerY[4 - y].opacity = (1.0 - parseFloat(y / 4.0)) / 2.0;
+                                equalizerY[4 - y].fill = theme.success;
+                            }
+                        }
+                    }
+                }
+            }
+            else { //no equalizer
+                for (var x = 0; x < this.eCount; x++) {
+                    var equalizerY = this.equalizerX[x];
+                    for (var y = 0; y < 5; y++) {
+                        equalizerY[y].opacity = 0.0;
+
+                    }
+                }
+
+            }
+
+
+            if (this._networkStatus == NET_RECONNECT) {
+                this.spinnerAngle += 1.5;
+
+                if (this.SVGArcSpinner.opacity < 0.8) {
+                    this.SVGArcSpinner.opacity += 0.01;
+                }
+
+                this.SVGArcSpinner.draw(this.spinnerAngle, 240 + this.spinnerAngle);
+                var _this = this;
+                requestAnimationFrame(function () {
+                    return _this.drawWidget();
+                });
+            } else {
+                this.SVGArcSpinner.opacity = 0.0;
+                this.SVGArcSpinner.hide();
+            }
+        };
+
 
 
         BaseWidget.prototype.resize = function resize(size) {
@@ -369,9 +472,9 @@ var BaseWidget =
             var body = document.getElementsByTagName("BODY")[0];
             for (var widgetKey in body.widget) {
                 var widget = body.widget[widgetKey];
-                widget.resize(widget.rPanel.clientWidth);
-               // widget.svgElement.setAttributeNS(null, "width", widget.rPanel.clientWidth);
-              //  widget.svgElement.setAttributeNS(null, "height", widget.rPanel.clientWidth);
+                widget.resize(widget.widgetHolder.clientWidth);
+               // widget.svgElement.setAttributeNS(null, "width", widget.widgetHolder.clientWidth);
+              //  widget.svgElement.setAttributeNS(null, "height", widget.widgetHolder.clientWidth);
 
             }            
         }
@@ -384,6 +487,7 @@ var BaseWidget =
             try {
                 _event(_sender, this);
             } catch (exception) {
+                console.error(exception);
                 return; // don't add bad listner
             }
 
@@ -406,8 +510,8 @@ var BaseWidget =
 
             _sender.storedProperties = {}; 
 
-            _sender.inParentIndex = Array.prototype.slice.call(_sender.parentPanel.childNodes).indexOf(_sender.rPanel);                        
-            _sender.parentPanel.removeChild(_sender.rPanel);
+            _sender.inParentIndex = Array.prototype.slice.call(_sender.parentPanel.childNodes).indexOf(_sender.widgetHolder);                        
+            _sender.parentPanel.removeChild(_sender.widgetHolder);
             _sender.mode = WORK_MODE;
 
             makeModalDialog("resetPanel", "showProperties", getLang("showProperties"), "");
@@ -416,7 +520,7 @@ var BaseWidget =
 
             var widgetDiv = modalBody.appendChild(document.createElement("div"));
             widgetDiv.className = "devicesWidgetsPanel";
-            widgetDiv.appendChild(_sender.rPanel);
+            widgetDiv.appendChild(_sender.widgetHolder);
 
             
 
@@ -482,7 +586,7 @@ var BaseWidget =
             var button = event.currentTarget;
             var widget = button.widget;
 
-            widget.parentPanel.insertBefore(widget.rPanel, widget.parentPanel.childNodes[widget.inParentIndex]);
+            widget.parentPanel.insertBefore(widget.widgetHolder, widget.parentPanel.childNodes[widget.inParentIndex]);
             widget.mode = MOVE_MODE;
 
             for (var key in widget.properties) {
@@ -502,7 +606,7 @@ var BaseWidget =
             var button = event.currentTarget;
             var widget = button.widget;
 
-            widget.parentPanel.insertBefore(widget.rPanel, widget.parentPanel.childNodes[widget.inParentIndex]);
+            widget.parentPanel.insertBefore(widget.widgetHolder, widget.parentPanel.childNodes[widget.inParentIndex]);
             widget.mode = MOVE_MODE;
             widget.properties = widget.storedProperties;
 
@@ -537,9 +641,9 @@ var BaseWidget =
             var widget = event.currentTarget.widget;
 
             if (widget.mode == MOVE_MODE) {
-                var index = Array.prototype.slice.call(widget.parentPanel.childNodes).indexOf(widget.rPanel);
-                widget.parentPanel.removeChild(widget.rPanel);
-                widget.parentPanel.insertBefore(widget.rPanel, widget.parentPanel.childNodes[index - 1]);
+                var index = Array.prototype.slice.call(widget.parentPanel.childNodes).indexOf(widget.widgetHolder);
+                widget.parentPanel.removeChild(widget.widgetHolder);
+                widget.parentPanel.insertBefore(widget.widgetHolder, widget.parentPanel.childNodes[index - 1]);
             }
 
             return true;
@@ -549,9 +653,9 @@ var BaseWidget =
             var widget = event.currentTarget.widget;
 
             if (widget.mode == MOVE_MODE) {
-                var index = Array.prototype.slice.call(widget.parentPanel.childNodes).indexOf(widget.rPanel);
-                widget.parentPanel.removeChild(widget.rPanel);
-                widget.parentPanel.insertBefore(widget.rPanel, widget.parentPanel.childNodes[index + 1]);
+                var index = Array.prototype.slice.call(widget.parentPanel.childNodes).indexOf(widget.widgetHolder);
+                widget.parentPanel.removeChild(widget.widgetHolder);
+                widget.parentPanel.insertBefore(widget.widgetHolder, widget.parentPanel.childNodes[index + 1]);
             }
 
             return true;
@@ -585,9 +689,9 @@ var BaseWidget =
             var widget = event.currentTarget.widget;
             if (widget.mode == MOVE_MODE) {
                 widget._event = EVENT_DELETE;
-                Array.prototype.slice.call(widget.parentPanel.childNodes).indexOf(widget.rPanel);
-                widget.parentPanel.removeChild(widget.rPanel);
-                widget.rPanel.innerHTML = "";
+                Array.prototype.slice.call(widget.parentPanel.childNodes).indexOf(widget.widgetHolder);
+                widget.parentPanel.removeChild(widget.widgetHolder);
+                widget.widgetHolder.innerHTML = "";
             }
             return true;
         };
@@ -709,136 +813,6 @@ var BaseWidget =
             }
         };
 
-        BaseWidget.prototype.drawWidget = function drawWidget() {
-            if (this._event == EVENT_DELETE) {
-                return;
-            }
-
-            this.SVGBackpanel.color = this._properties.bordercolor.value;
-            this.SVGBackpanel.fill = this._properties.backgroundcolor.value;
-            this.SVGBackpanel.opacity = this._properties.backgroundopacity.value;
-
-            this.SVGBoxBackpanel.opacity = this._properties.headeropacity.value;
-            this.SVGBoxBackpanel.fill = this._properties.headercolor.value;
-
-
-            var oneHangPercent = 360 + 90 + 30 - 240;
-            var drawPercent = this._data * (oneHangPercent / 100); //backdown panel
-
-            /*
-            switch (this._networkStatus) {
-                case NET_ONLINE: this.SVGBackdownpanel.color = theme.success; break;
-                case NET_ERROR: this.SVGBackdownpanel.color = theme.danger; break;
-                case NET_RECONNECT: this.SVGBackdownpanel.color = theme.info; break;
-                default: //offline
-                    this.SVGBackdownpanel.color = theme.light; break;
-            }
-            */
-
-            switch (this._networkStatus) {
-                case NET_ONLINE:
-                    //this.toColor(this.SVGBackdownpanel, theme.success);
-                    this.SVGBackdownpanel.fill = theme.success;
-                    break;
-
-                case NET_ERROR:
-                    //this.toColor(this.SVGBackdownpanel, theme.danger);
-                    this.SVGBackdownpanel.fill = theme.danger;
-                    break;
-
-                case NET_RECONNECT:
-                    //this.toColor(this.SVGBackdownpanel, theme.info);
-                    this.SVGBackdownpanel.fill = theme.info;
-                    break;
-
-                default:
-                    //offline
-                    //this.toColor(this.SVGBackdownpanel, theme.light);
-                    this.SVGBackdownpanel.fill = theme.light;
-                    break;
-            } //equalizer --------------------------
-
-
-            if (this._properties.showequalizer.value === 'true') {
-                for (var x = 0; x < this.eCount; x++) {
-                    var equalizerY = this.equalizerX[x];
-
-                    for (var y = 0; y < 5; y++) {
-                        if (this._networkStatus == NET_ONLINE && (this._properties.showequalizer.value === 'true')) {
-                            equalizerY[y].opacity = (y + 1) * 0.08;
-                        } else {
-                            equalizerY[y].opacity = 0.0;
-                        }
-
-                        equalizerY[y].fill = theme.secondary;
-                    }
-                }
-
-                if (this._networkStatus == NET_ONLINE && (this._properties.showequalizer.value === 'true')) {
-                    if (this.historyData != undefined) {
-                        //reset 
-                        var splitHistory = this.historyData.split(";");
-                        var count = splitHistory[0];
-                        var prop = count / this.eCount;
-                        var bigValue;
-
-                        for (var x = 0; x < count; x++) {
-                            var equalizerY = this.equalizerX[parseInt(x / prop)];
-                            var value = splitHistory[x + 1];
-
-                            if (bigValue == undefined || value > bigValue) {
-                                bigValue = value;
-                            }
-                        }
-
-                        var propValue = parseFloat(bigValue / 5);
-
-                        for (var x = 0; x < count; x++) {
-                            if (count < this.eCount) {
-                                var equalizerY = this.equalizerX[x];
-                            } else {
-                                var equalizerY = this.equalizerX[parseInt(x / prop)];
-                            }
-
-                            var value = parseInt(splitHistory[x + 1] / propValue);
-
-                            for (var y = 0; y < value; y++) {
-                                equalizerY[4 - y].opacity = (1.0 - parseFloat(y / 4.0)) / 2.0;
-                                equalizerY[4 - y].fill = theme.success;
-                            }
-                        }
-                    }
-                }
-            }
-            else { //no equalizer
-                for (var x = 0; x < this.eCount; x++) {
-                    var equalizerY = this.equalizerX[x];
-                    for (var y = 0; y < 5; y++) {
-                            equalizerY[y].opacity = 0.0;
-
-                    }
-                }
-
-            }
-
-
-            if (this._networkStatus == NET_RECONNECT) {
-                this.spinnerAngle += 1.5;
-
-                if (this.SVGArcSpinner.opacity < 0.8) {
-                    this.SVGArcSpinner.opacity += 0.01;
-                }
-
-                this.SVGArcSpinner.draw(this.spinnerAngle, 240 + this.spinnerAngle);
-                var _this = this;
-                requestAnimationFrame(function () {
-                    return _this.drawWidget();
-                });
-            } else {
-                this.SVGArcSpinner.opacity = 0.0;
-                this.SVGArcSpinner.hide();
-            }
-        };
 
         BaseWidget.prototype.drawMouseEnter = function drawMouseEnter() {
             if (this._mode != WORK_MODE) return;

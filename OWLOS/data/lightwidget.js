@@ -55,9 +55,9 @@ var LightWidget =
 
         LightWidget.prototype.drawText = function drawText() {
             _BaseWidget.prototype.drawText.call(this);
-
+            if (this.SVGWidgetText == undefined) return;
             this.SVGWidgetText.y = this.size / 5 + this.SVGWidgetText.height / 2;
-            ;
+            
         };
 
         LightWidget.prototype.drawWidget = function drawWidget() {

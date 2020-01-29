@@ -16,8 +16,8 @@ var GraphWidget =
             var rPanel = event.currentTarget;
             var widget = rPanel.widget;
 
-            widget.rPanel.className = "col-sm-2";
-            // widget.rPanel.removeChild(widget.svgElement);
+            widget.widgetHolder.className = "col-sm-2";
+            // widget.widgetHolder.removeChild(widget.svgElement);
 
 
             widget.topMargin = widget.size / 20; //this.panding = 5;
@@ -116,7 +116,7 @@ var GraphWidget =
 
             widget.SVGMinusIcon.x = widget.width / 2 - widget.rowSize / 2;
 
-            //   widget.rPanel.appendChild(widget.svgElement);
+            //   widget.widgetHolder.appendChild(widget.svgElement);
 
             widget.clickableToTop();
             widget.proprties = widget._properties;

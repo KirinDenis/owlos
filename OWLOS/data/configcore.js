@@ -27,6 +27,7 @@ var config = {
         try {
             _event(_sender, this);
         } catch (exception) {
+            console.error(exception);
             return; // don't add bad listner
         }
         this.changeListners.push(event = { event: _event, sender: _sender });
@@ -96,6 +97,7 @@ var config = {
                 try {
                     _event(_sender, this);
                 } catch (exception) {
+                    console.error(exception);
                     return; // don't add bad listner
                 }
                 this.networkStatusListners.push(event = { event: _event, sender: _sender });
@@ -164,7 +166,11 @@ var config = {
 
                             addNetworkStatusListner: function(_event, _sender) { //для добавления нового подписчика(так же как и addValueListner)                                
                                 //check event listner and setup current network status 
-                                try { _event(_sender, this); } catch(exception) {
+                                try {
+                                    _event(_sender, this);
+                                }
+                                catch (exception) {
+                                    console.error(exception);
                                     return; // don't add bad listner
                                 }
                                 this.networkStatusListners.push(event = { event: _event, sender: _sender });
@@ -176,19 +182,17 @@ var config = {
 
                     //First node all time is boardhost 
                     configProperties.nodes[0].host = boardhost;
+                    result = true;
 
                     this.onChange();
-                    result = true;
+                    
                 }
                 else {
                     configProperties = "";
                 }
-
-                result = true;                
-                this.onChange();
-
             }
             catch (exception) {
+                console.error(exception);
                 addToLogNL(getLang("getconfigfailsparse") + exception, 2);
             }
         }

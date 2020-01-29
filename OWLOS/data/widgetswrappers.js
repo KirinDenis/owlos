@@ -36,7 +36,7 @@ var RadialWidgetWrapper =
             if (noWidget == undefined || !noWidget) {
                 this.widget = new RadialWidget(parentPanel, deviceId, configProperties.widgetssize);
                 this.widget.deviceClass = this;
-                this.widget.rPanel.onclick = this.widgetClick;
+                this.widget.widgetHolder.onclick = this.widgetClick;
                 this.draw();
             }
         };
@@ -132,7 +132,7 @@ var TemperatureWidgetWrapper =
 
             this.widget = new TemperatureWidget(parentPanel, deviceId, configProperties.widgetssize);
             this.widget.deviceClass = this;
-            this.widget.rPanel.onclick = this.widgetClick;
+            this.widget.widgetHolder.onclick = this.widgetClick;
             this.draw();
         };
 
@@ -175,7 +175,7 @@ var ValueWidgetWrapper =
 
             this.widget = new ValueWidget(parentPanel, deviceId, configProperties.widgetssize);
             this.widget.deviceClass = this;
-            this.widget.rPanel.onclick = this.widgetClick;
+            this.widget.widgetHolder.onclick = this.widgetClick;
             this.draw();
         };
 
@@ -219,7 +219,7 @@ var HumidityWidgetWrapper =
 
             this.widget = new RadialWidget(parentPanel, deviceId, configProperties.widgetssize);
             this.widget.deviceClass = this;
-            this.widget.rPanel.onclick = this.widgetClick;
+            this.widget.widgetHolder.onclick = this.widgetClick;
             this.draw();
         };
 
@@ -263,7 +263,7 @@ var HistoryDataGraphWidgetWrapper =
 
             this.widget = new GraphWidget(parentPanel, deviceId, configProperties.widgetssize, temperatureIcon);
             this.widget.deviceClass = this;
-            this.widget.rPanel.onclick = this.widgetClick;
+            this.widget.widgetHolder.onclick = this.widgetClick;
             this.draw();
         };
 
@@ -306,7 +306,7 @@ var LightWidgetWrapper =
 
             this.widget = new LightWidget(parentPanel, deviceId, configProperties.widgetssize);
             this.widget.deviceClass = this;
-            this.widget.rPanel.onclick = this.widgetClick;
+            this.widget.widgetHolder.onclick = this.widgetClick;
             this.draw();
         };
 
@@ -357,7 +357,7 @@ var SmokeWidgetWrapper =
 
             this.widget = new SmokeWidget(parentPanel, deviceId, configProperties.widgetssize);
             this.widget.deviceClass = this;
-            this.widget.rPanel.onclick = this.widgetClick;
+            this.widget.widgetHolder.onclick = this.widgetClick;
             this.draw();
         };
 
@@ -408,7 +408,7 @@ var MotionWidgetWrapper =
 
             this.widget = new MotionWidget(parentPanel, deviceId, configProperties.widgetssize);
             this.widget.deviceClass = this;
-            this.widget.rPanel.onclick = this.widgetClick;
+            this.widget.widgetHolder.onclick = this.widgetClick;
             this.draw();
         };
 
@@ -531,7 +531,7 @@ var ActuatorWidgetWrapper =
             if (noWidget == undefined || !noWidget) {
                 this.widget = new ActuatorWidget(parentPanel, deviceId, configProperties.widgetssize);
                 this.widget.deviceClass = this;
-                this.widget.rPanel.onclick = this.widgetClick;
+                this.widget.widgetHolder.onclick = this.widgetClick;
                 this.draw();
             }
         };
@@ -567,7 +567,7 @@ var ActuatorWidgetWrapper =
             
                     this.widget = new ActuatorWidget(parentPanel, deviceId, configProperties.widgetssize);
                     this.widget.deviceClass = this;
-                    this.widget.rPanel.onclick = this.actuatorWidgetClick;
+                    this.widget.widgetHolder.onclick = this.actuatorWidgetClick;
                     this.draw();
             
                 }
@@ -691,7 +691,7 @@ var LCDWidgetWrapper =
 
             if (noWidget == undefined || !noWidget) {
                 this.widget = new LCDWidget(parentPanel, deviceId, configProperties.widgetssize);
-                this.widget.deviceClass = this; // this.widget.rPanel.onclick = this.widgetClick;
+                this.widget.deviceClass = this; // this.widget.widgetHolder.onclick = this.widgetClick;
 
                 this.widget.lcdButton.onclick = this.lcdTextClick;
                 this.widget.lightButton.onclick = this.lcdLightClick;

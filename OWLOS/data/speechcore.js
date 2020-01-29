@@ -7,7 +7,7 @@ function speak(text) {
             window.speechSynthesis.speak(msg);
         }
         catch (exception) {
-
+            console.error(exception);
         }
     }
 }

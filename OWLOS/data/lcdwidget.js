@@ -14,7 +14,7 @@ var LCDWidget =
             var rPanel = event.currentTarget;
             var widget = rPanel.widget;
 
-            widget.rPanel.className = "col-sm-2";
+            widget.widgetHolder.className = "col-sm-2";
 
             widget.topMargin = widget.size / 20; //this.panding = 5;
             widget.width = widget.size * 2;
@@ -54,9 +54,9 @@ var LCDWidget =
             widget.SVGWidgetText.hide();
 
             widget.SVGArcSpinner.x = widget.centreX;
-            widget.rPanel.onclick = widget.showEditor; //Popup editor 
+            widget.widgetHolder.onclick = widget.showEditor; //Popup editor 
 
-            widget.pre = widget.rPanel.appendChild(document.createElement('pre'));
+            widget.pre = widget.widgetHolder.appendChild(document.createElement('pre'));
             widget.pre.className = "LCDTextArea";
             widget.pre.style.display = 'none';
             widget.textarea = widget.pre.appendChild(document.createElement('textarea'));
@@ -68,7 +68,7 @@ var LCDWidget =
             var elementHeight = widget.pre.getBoundingClientRect().height;
 
             widget.pre.style.marginTop = -(elementHeight / 2.0 + widget.size / 1.8) + "px";
-            widget.btnGroup = widget.rPanel.appendChild(document.createElement("p"));
+            widget.btnGroup = widget.widgetHolder.appendChild(document.createElement("p"));
             widget.btnGroup.style.display = 'none';
             widget.btnGroup.className = "LCDButtons";
             widget.btnGroup.role = "group";

@@ -903,7 +903,8 @@ var settingsUI = {
 
                 result = true;
 
-            } catch(exception) {
+            } catch (exception) {
+                console.error(exception);
                 addToLogNL("ERROR save value: " + exception, 2);
             }
 
