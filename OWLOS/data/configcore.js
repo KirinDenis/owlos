@@ -11,12 +11,15 @@ function defaultWebProp() {
 
 }
 
+
+
 var configProperties = defaultWebProp();
 
 //var configPropertiesDevice;
 
 var config = {
 
+    cancel: false,
     changeListners: [],
     onChange: function () {
         for (var k = 0; k < this.changeListners.length; k++) {
@@ -62,10 +65,13 @@ var config = {
                 deviceProperty: _deviceProperty,
                 widgetId: _widgetId,
                 widgetProperties: _widgetProperties
-            }
+            };
             dashboard.widgets.push(widget);
 
-            this.save();
+            var saveButton = document.getElementById("saveWidgetsButton");
+            saveButton.hidden = false;
+
+           // this.save();
             return widget;
         }
         return undefined;
@@ -261,35 +267,21 @@ var config = {
         var subString = "";
         var filePartName = "";
         var countedSections = Math.floor(dataString.length / lengthDataSubString);
+        var sendingAmount = "0";
+        var saveProgressBar = document.getElementById("saveProgressBar");
+        var saveTextStatus = document.getElementById("savingTextStatus");
+        var savingCurrentStatus = "Saving changes";
+        var savingCloseButton = document.getElementById("saveConfigcloseButton");
+        var saveButton = document.getElementById("saveWidgetsButton");
+        var closeButton = document.getElementById("saveConfigsaveCloseButton");
 
+        if (config.cancel == false) {
+            //HTTPClient добавляет строку "%error" в начало Response если запрос не был завешен HTTPCode=200 или произашел TimeOut
+            if (!httpResult.indexOf("%error") == 0) {
 
+                if (counter < countedSections) {
 
-
-        //HTTPClient добавляет строку "%error" в начало Response если запрос не был завешен HTTPCode=200 или произашел TimeOut
-        if (!httpResult.indexOf("%error") == 0) {
-
-            if (counter < countedSections) {
-
-                subString = dataString.slice(counter * lengthDataSubString, (counter + 1) * lengthDataSubString);
-
-
-                if (counter == 0) {
-
-                    filePartName = "setwebproperty?property=head";
-
-                }
-                else {
-
-                    filePartName = "setwebproperty?property=body";
-
-                }
-
-            }
-            else {
-
-                if (counter == countedSections) {
-
-                    subString = dataString.slice(counter * lengthDataSubString);
+                    subString = dataString.slice(counter * lengthDataSubString, (counter + 1) * lengthDataSubString);
 
 
                     if (counter == 0) {
@@ -297,55 +289,161 @@ var config = {
                         filePartName = "setwebproperty?property=head";
 
                     }
-
                     else {
 
-                        filePartName = "setwebproperty?property=tail";
+                        filePartName = "setwebproperty?property=body";
 
                     }
+
+                    sendingAmount = Math.floor((lengthDataSubString * counter / dataString.length) * 100).toString();
+
 
                 }
-
                 else {
 
-                    if (countedSections !== 0) {
+                    if (counter == countedSections) {
 
-                        addToLogNL("Sending long config string. FINISHED. Result = OK!");
-                        config.onChange();
-                        return true;
+                        subString = dataString.slice(counter * lengthDataSubString);
 
 
-                    }
-                    else {
+                        if (counter == 0) {
 
-                        if (counter == 1) {
+                            filePartName = "setwebproperty?property=head";
+
+                        }
+
+                        else {
 
                             filePartName = "setwebproperty?property=tail";
-                            subString = "";
+                            sendingAmount = "100";
+
+                            if (savingCloseButton !== undefined) {
+                                savingCloseButton.disabled = true;
+                            }
+
+                        }
+
+                    }
+
+                    else {
+
+
+
+                        if (countedSections !== 0) {
+
+
+                            sendingAmount = "100";
+                            if (saveProgressBar !== undefined) {
+                                saveProgressBar.setAttribute("aria-valuenow", sendingAmount);
+                                saveProgressBar.setAttribute("style", "width:" + sendingAmount + "%");
+                                saveProgressBar.innerHTML = sendingAmount + "%";
+                            }
+                            if (saveButton !== undefined) {
+                                saveButton.hidden = true;
+                            }
+                            if (saveTextStatus !== undefined) {
+                                saveTextStatus.innerHTML = "Changes saved";
+                            }
+                            if (savingCloseButton !== undefined) {
+                                savingCloseButton.hidden = true;
+                            }
+                            if (closeButton !== undefined) {
+                                closeButton.hidden = false;
+                            }
+
+                            addToLogNL("Sending long config string. FINISHED. Result = OK!");
+                            config.onChange();
+                            return true;
+
 
                         }
                         else {
 
-                            addToLogNL("Sending short config string. FINISHED. Result = OK!");
-                            config.onChange();
-                            return true;
+                            if (counter == 1) {
 
+                                filePartName = "setwebproperty?property=tail";
+                                subString = "";
+                                sendingAmount = "100";
+
+                                if (savingCloseButton !== undefined) {
+                                    savingCloseButton.disabled = true;
+                                }
+
+
+                            }
+                            else {
+
+
+                                sendingAmount = "100";
+                                if (saveProgressBar !== undefined) {
+                                    saveProgressBar.setAttribute("aria-valuenow", sendingAmount);
+                                    saveProgressBar.setAttribute("style", "width:" + sendingAmount + "%");
+                                    saveProgressBar.innerHTML = sendingAmount + "%";
+                                }
+                                if (saveButton !== undefined) {
+                                    saveButton.hidden = true;
+                                }
+                                if (saveTextStatus !== undefined) {
+                                    saveTextStatus.innerHTML = "Changes saved";
+                                }
+
+                                if (savingCloseButton !== undefined) {
+                                    savingCloseButton.hidden = true;
+                                }
+                                if (closeButton !== undefined) {
+                                    closeButton.hidden = false;
+                                }
+
+
+                                addToLogNL("Sending short config string. FINISHED. Result = OK!");
+                                config.onChange();
+                                return true;
+
+                            }
                         }
                     }
+
                 }
 
+                counter++;
+
+
+                if (saveProgressBar !== undefined) {
+                    saveProgressBar.setAttribute("aria-valuenow", sendingAmount);
+                    saveProgressBar.setAttribute("style", "width:" + sendingAmount + "%");
+                    saveProgressBar.innerHTML = sendingAmount + "%";
+                }
+                if (saveTextStatus !== undefined) {
+                    saveTextStatus.innerHTML = savingCurrentStatus;
+                }
+
+                addToLogNL("Sending config string. Still sending! " + filePartName);
+                httpPostAsyncWithErrorReson(url, filePartName, subString, config.configSendAsync, counter, dataString, lengthDataSubString);
+
             }
+            else { //если HTTPClient вернул ошибку, возвращаем false 
 
-            counter++;
-            addToLogNL("Sending config string. Still sending! " + filePartName);
-            httpPostAsyncWithErrorReson(url, filePartName, subString, config.configSendAsync, counter, dataString, lengthDataSubString);
 
+                if (saveTextStatus !== undefined) {
+                    saveTextStatus.innerHTML = "Saving changes error. Close this window and try again later!";
+                }
+                if (savingCloseButton !== undefined) {
+                    savingCloseButton.hidden = true;
+                }
+                if (closeButton !== undefined) {
+                    closeButton.hidden = false;
+                }
+
+                addToLogNL("Sending config string ERROR!" + httpResult);
+                return false;
+
+            }
         }
-        else { //если HTTPClient вернул ошибку, возвращаем false 
-
-            addToLogNL("Sending config string ERROR!" + httpResult);
+        else {
+            //todo if(config.cancel == true)!!!!
+           // check if modal window exist
+            $("#saveConfigModal").modal('hide');
             return false;
-
         }
 
 
