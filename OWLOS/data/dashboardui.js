@@ -45,9 +45,9 @@ var dashboardUI = {
         addWidgetButton.type = "button";
         addWidgetButton.value = getLang("dashboardaddwidget");
         addWidgetButton.onclick = dashboardUI.addWidgetMode;
-        
+
         var dataDiv = infoDiv.appendChild(document.createElement('div'));
-        
+
         dataDiv.className = "card-body";
 
         var p = dataDiv.appendChild(document.createElement('p'));
@@ -63,7 +63,7 @@ var dashboardUI = {
                 var widget = WidgetsLayer.getWidgetById(widgetProp.widgetId);
                 if (widget != undefined) {
                     var widgetWrapper = new widget.widget(devicesWidgetsPanel, undefined, undefined, configProperties.dashboards[0].widgets[i]);
-                    
+
                     widgetWrapper.offlineStarter(devicesWidgetsPanel, widgetProp.deviceId, widgetProp.deviceProperty);
                     widgetWrapper.widget.addEventListner(config.widgetEvent, configProperties.dashboards[0].widgets[i]);
                     widgetWrapper.widget.properties = widgetProp.widgetProperties;
@@ -91,7 +91,7 @@ var dashboardUI = {
             headerModeButton.className = "btn btn-info btn-sm";
         }
 
-        
+
         for (var k = 0; k < dashboardUI.dashboardModeListners.length; k++) {
             dashboardUI.dashboardModeListners[k].event(dashboardUI.dashboardModeListners[k].sender, dashboardUI.dashboardViewMode);
         }

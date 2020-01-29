@@ -62,8 +62,7 @@ var LightWidget =
 
         LightWidget.prototype.drawWidget = function drawWidget() {
             _BaseWidget.prototype.drawWidget.call(this);
-            if (this.levelArc == undefined) return;
-            this._data = 80;
+            if (this.levelArc == undefined) return;            
             for (var i = 0; i < 4; i++) {
                 this.levelArc[i].hide();
 
