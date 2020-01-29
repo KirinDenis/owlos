@@ -30,6 +30,14 @@ var dashboardUI = {
         var cardHeaderButtonsPanel = headerText.appendChild(document.createElement('div'));
         cardHeaderButtonsPanel.className = 'cardHeaderButton';
 
+        var saveWidgetsButton = cardHeaderButtonsPanel.appendChild(document.createElement('input'));
+        saveWidgetsButton.className = "btn btn-warning btn-sm";
+        saveWidgetsButton.type = "button";
+        saveWidgetsButton.value = getLang("saveaddedwidget");
+        saveWidgetsButton.hidden = true;
+        saveWidgetsButton.id = "saveWidgetsButton";
+        saveWidgetsButton.onclick = dashboardUI.saveAddedWidget;  
+
         var headerModeButton = cardHeaderButtonsPanel.appendChild(document.createElement('input'));
         headerModeButton.className = "btn btn-secondary btn-sm";
         headerModeButton.type = "button";
@@ -48,10 +56,6 @@ var dashboardUI = {
 
         var p = dataDiv.appendChild(document.createElement('p'));
         p.className = "card-text";
-        
-
-
-
         var devicesWidgetsPanel = p.appendChild(document.createElement('div'));
         devicesWidgetsPanel.className = "row";
 
@@ -237,7 +241,60 @@ var dashboardUI = {
     
         */
 
+    },
+
+    saveAddedWidget: function (event) {   
+        var buttonSave = event.currentTarget;
+        config.cancel = false;
+       // buttonSave.hidden = true;
+
+
+
+        makeModalDialog("resetPanel", "saveConfig", getLang("saveaddedwidget"), getLang("areYouSure"));
+        var modalBody = document.getElementById("saveConfigModalBody");
+        modalBody.innerHTML = "";
+
+        
+        //Body saving status text and progress bar
+
+        var divSavingStatus = modalBody.appendChild(document.createElement("div"));
+        var textStatus = divSavingStatus.appendChild(document.createElement("p"));
+        textStatus.className = "text-center";
+        textStatus.id = "savingTextStatus";
+
+        var divProgressClass = modalBody.appendChild(document.createElement("div"));
+        divProgressClass.className = "progress";
+        divProgressClass.id = "divProgressClass";
+
+        var progressBar = divProgressClass.appendChild(document.createElement("div"));
+        progressBar.className = "progress-bar progress-bar-striped bg-info";
+        progressBar.id = "saveProgressBar";
+        progressBar.setAttribute("role", "progressbar");
+        progressBar.setAttribute("aria-valuenow", "0");
+        progressBar.setAttribute("aria-valuemin", "0");
+        progressBar.setAttribute("aria-valuemax", "100");
+        progressBar.setAttribute("style", "width: 0%");
+        progressBar.innerHTML = "0%";
+
+        // Footer addition button "Close"
+        var modalFooter = document.getElementById("saveConfigModalFooter");
+        var saveCloseButton = modalFooter.appendChild(document.createElement("button"));
+        saveCloseButton.type = "button";
+        saveCloseButton.className = "btn btn-sm btn-success";
+        saveCloseButton.setAttribute("data-dismiss", "modal");
+        saveCloseButton.setAttribute("aria-label", "Close");
+        saveCloseButton.innerText = getLang("close");
+        saveCloseButton.id = "saveConfigsaveCloseButton";
+        saveCloseButton.hidden = true;
+
+
+        $("#saveConfigModal").modal('show');
+
+        config.save();
     }
+
+
+
 }
 
 
