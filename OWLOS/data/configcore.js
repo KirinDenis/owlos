@@ -68,10 +68,10 @@ var config = {
             };
             dashboard.widgets.push(widget);
 
-            var saveButton = document.getElementById("saveWidgetsButton");
-            saveButton.hidden = false;
+           // var saveButton = document.getElementById("saveWidgetsButton");
+           // saveButton.hidden = false;
 
-           // this.save();
+            this.save();
             return widget;
         }
         return undefined;

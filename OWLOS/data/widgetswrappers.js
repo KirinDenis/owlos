@@ -34,8 +34,8 @@ var RadialWidgetWrapper =
 
         _proto.onWidgetLoad = function onWidgetLoad(widget) {
             widget.widgetHolder.onclick = widget.deviceClass.widgetClick;
-            widget.properties = widget.deviceClass.configPropertiesWidget;
-            //widget.deviceClass.draw();
+            //widget.properties = widget.deviceClass.configPropertiesWidget;
+            widget.deviceClass.draw();
         };
 
 
@@ -530,8 +530,8 @@ var ActuatorWidgetWrapper =
 
         _proto9.onWidgetLoad = function onWidgetLoad(widget) {
             widget.widgetHolder.onclick = widget.deviceClass.widgetClick;
-            widget.properties = widget.deviceClass.configPropertiesWidget;
-            //widget.deviceClass.draw();
+           // widget.properties = widget.deviceClass.configPropertiesWidget;
+            widget.deviceClass.draw();
         };
 
 
