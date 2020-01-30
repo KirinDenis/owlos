@@ -70,7 +70,7 @@ var dashboardUI = {
                 var widgetProp = configProperties.dashboards[0].widgets[i];
                 var widget = WidgetsLayer.getWidgetById(widgetProp.widgetId);
                 if (widget != undefined) {
-                    var widgetWrapper = new widget.widget(devicesWidgetsPanel, undefined, undefined, configProperties.dashboards[0].widgets[i]);
+                    var widgetWrapper = new widget.widget(devicesWidgetsPanel, undefined, undefined, configProperties.dashboards[0].widgets[i], widgetProp.widgetProperties);
 
                     widgetWrapper.offlineStarter(devicesWidgetsPanel, widgetProp.deviceId, widgetProp.deviceProperty);
                     widgetWrapper.widget.addEventListner(config.widgetEvent, configProperties.dashboards[0].widgets[i]);
@@ -240,13 +240,14 @@ var dashboardUI = {
         var deviceProp = devicePropSelect.options[devicePropSelect.selectedIndex].deviceProp;
         var widget = widgetSelect.options[widgetSelect.selectedIndex].widget;
 
-        var widgetWrapper = new widget.widget(devicesWidgetsPanel, device, deviceProp);
+        new widget.widget(devicesWidgetsPanel, device, deviceProp).onload = function (widgetWrapper) {
 
-        var configPropertiesWidget = config.addWidget("main", device._id, deviceProp.name, widget.id, widgetWrapper.widget.properties);
+            var configPropertiesWidget = config.addWidget("main", device._id, deviceProp.name, widget.id, widgetWrapper.widget.properties);
 
-        widgetWrapper.widget.addEventListner(config.widgetEvent, configPropertiesWidget);
+            widgetWrapper.widget.addEventListner(config.widgetEvent, configPropertiesWidget);
 
-        $("#widgetModal").modal('hide');
+            $("#widgetModal").modal('hide');
+        };
 
         /*
             var devicesWidgetsPanel = document.getElementById("widgetsPanelDataDiv");

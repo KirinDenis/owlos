@@ -78,15 +78,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6C1C1756-D7E
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "poligon", "poligon", "{E41163AD-4A6A-4628-9CA9-558A5CA10032}"
 	ProjectSection(SolutionItems) = preProject
-		OWLOS\data\poligone\bootstrap.min.css = OWLOS\data\poligone\bootstrap.min.css
-		OWLOS\data\poligone\bootstrap.min.js = OWLOS\data\poligone\bootstrap.min.js
-		OWLOS\data\poligone\bootstrap.min.light.css = OWLOS\data\poligone\bootstrap.min.light.css
-		OWLOS\data\poligone\devicesproperties.js = OWLOS\data\poligone\devicesproperties.js
-		OWLOS\data\poligone\gaugemeter.js = OWLOS\data\poligone\gaugemeter.js
 		OWLOS\data\poligone\index.html = OWLOS\data\poligone\index.html
 		OWLOS\data\poligone\index.js = OWLOS\data\poligone\index.js
-		OWLOS\data\poligone\jquery.min.js = OWLOS\data\poligone\jquery.min.js
-		OWLOS\data\poligone\unitproperties.js = OWLOS\data\poligone\unitproperties.js
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "devices", "devices", "{E4AC87BE-1B74-436F-AC4C-D9D9342EA354}"

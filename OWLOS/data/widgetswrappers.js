@@ -7,14 +7,17 @@ var RadialWidgetWrapper =
     function () {
         "use strict";
 
-        function RadialWidgetWrapper(parentPanel, device, deviceProperty, noWidget, configPropertiesWidget) {
+        function RadialWidgetWrapper(parentPanel, device, deviceProperty, noWidget, configPropertiesWidget, widgetProperties) {
             this.configPropertiesWidget = configPropertiesWidget;
+            this.widgetProperties = widgetProperties;
 
             if (device == undefined) {
                 devices.addDeviceLoadedListner(this.onDeviceLoaded, this);
             } else {
+                this.device = device;
+                this.deviceProperty = deviceProperty;
                 this.offlineStarter(parentPanel, device._id, deviceProperty.name, noWidget);
-                this.joinDevice(device, deviceProperty);
+                
             }
         }
 
@@ -34,8 +37,20 @@ var RadialWidgetWrapper =
 
         _proto.onWidgetLoad = function onWidgetLoad(widget) {
             widget.widgetHolder.onclick = widget.deviceClass.widgetClick;
+            
+            //widget.deviceClass.draw();
             //widget.properties = widget.deviceClass.configPropertiesWidget;
-            widget.deviceClass.draw();
+            if (widget.deviceClass.widgetProperties != undefined) {
+                widget.properties = widget.deviceClass.widgetProperties;
+            }
+
+            if (widget.deviceClass.device != undefined) {
+                widget.deviceClass.joinDevice(widget.deviceClass.device, widget.deviceClass.deviceProperty);
+            }
+
+            if (widget.deviceClass._onload != undefined) {
+                widget.deviceClass._onload(widget.deviceClass);
+            }
         };
 
 
@@ -113,6 +128,16 @@ var RadialWidgetWrapper =
 
         _proto.draw = function draw() { };
 
+        _createClass(RadialWidgetWrapper, [{
+            key: "onload",
+            get: function get() {
+                return this._onload;
+            },
+            set: function set(onload) {
+                this._onload = onload;
+            }
+        }]);
+
         return RadialWidgetWrapper;
     }();
 
@@ -133,10 +158,10 @@ var TemperatureWidgetWrapper =
             this.widget.onload = this.onWidgetLoad;
         };
 
-        function TemperatureWidgetWrapper(parentPanel, device, deviceProperty, configPropertiesWidget) {
+        function TemperatureWidgetWrapper(parentPanel, device, deviceProperty, configPropertiesWidget, widgetProperties) {
             var _this;
 
-            _this = _RadialWidgetWrapper.call(this, parentPanel, device, deviceProperty, true, configPropertiesWidget) || this;
+            _this = _RadialWidgetWrapper.call(this, parentPanel, device, deviceProperty, true, configPropertiesWidget, widgetProperties) || this;
             if (device == undefined) return _assertThisInitialized(_this);
             return _this;
         }
@@ -175,10 +200,10 @@ var ValueWidgetWrapper =
             this.widget.onload = this.onWidgetLoad;
         };
 
-        function ValueWidgetWrapper(parentPanel, device, deviceProperty, configPropertiesWidget) {
+        function ValueWidgetWrapper(parentPanel, device, deviceProperty, configPropertiesWidget, widgetProperties) {
             var _this;
 
-            _this = _RadialWidgetWrapper.call(this, parentPanel, device, deviceProperty, true, configPropertiesWidget) || this;
+            _this = _RadialWidgetWrapper.call(this, parentPanel, device, deviceProperty, true, configPropertiesWidget, widgetProperties) || this;
             if (device == undefined) return _assertThisInitialized(_this);
             return _this;
         }
@@ -218,10 +243,10 @@ var HumidityWidgetWrapper =
             this.widget.onload = this.onWidgetLoad;
         };
 
-        function HumidityWidgetWrapper(parentPanel, device, deviceProperty, configPropertiesWidget) {
+        function HumidityWidgetWrapper(parentPanel, device, deviceProperty, configPropertiesWidget, widgetProperties) {
             var _this2;
 
-            _this2 = _RadialWidgetWrapper2.call(this, parentPanel, device, deviceProperty, true, configPropertiesWidget) || this;
+            _this2 = _RadialWidgetWrapper2.call(this, parentPanel, device, deviceProperty, true, configPropertiesWidget, widgetProperties) || this;
             if (device == undefined) return _assertThisInitialized(_this2);
             return _this2;
         }
@@ -262,10 +287,10 @@ var HistoryDataGraphWidgetWrapper =
             this.draw();
         };
 
-        function HistoryDataGraphWidgetWrapper(parentPanel, device, deviceProperty, configPropertiesWidget) {
+        function HistoryDataGraphWidgetWrapper(parentPanel, device, deviceProperty, configPropertiesWidget, widgetProperties) {
             var _this3;
 
-            _this3 = _RadialWidgetWrapper3.call(this, parentPanel, device, deviceProperty, true, configPropertiesWidget) || this;
+            _this3 = _RadialWidgetWrapper3.call(this, parentPanel, device, deviceProperty, true, configPropertiesWidget, widgetProperties) || this;
             if (device == undefined) return _assertThisInitialized(_this3);
             return _this3;
         }
@@ -305,10 +330,10 @@ var LightWidgetWrapper =
         };
 
 
-        function LightWidgetWrapper(parentPanel, device, deviceProperty, configPropertiesWidget) {
+        function LightWidgetWrapper(parentPanel, device, deviceProperty, configPropertiesWidget, widgetProperties) {
             var _this4;
 
-            _this4 = _RadialWidgetWrapper4.call(this, parentPanel, device, deviceProperty, true, configPropertiesWidget) || this;
+            _this4 = _RadialWidgetWrapper4.call(this, parentPanel, device, deviceProperty, true, configPropertiesWidget, widgetProperties) || this;
             if (device == undefined) return _assertThisInitialized(_this4);
             return _this4;
         }
@@ -355,10 +380,10 @@ var SmokeWidgetWrapper =
             this.widget.onload = this.onWidgetLoad;
         };
 
-        function SmokeWidgetWrapper(parentPanel, device, deviceProperty, configPropertiesWidget) {
+        function SmokeWidgetWrapper(parentPanel, device, deviceProperty, configPropertiesWidget, widgetProperties) {
             var _this5;
 
-            _this5 = _RadialWidgetWrapper5.call(this, parentPanel, device, deviceProperty, true, configPropertiesWidget) || this;
+            _this5 = _RadialWidgetWrapper5.call(this, parentPanel, device, deviceProperty, true, configPropertiesWidget, widgetProperties) || this;
             if (device == undefined) return _assertThisInitialized(_this5);
             return _this5;
         }
@@ -405,10 +430,10 @@ var MotionWidgetWrapper =
             this.widget.onload = this.onWidgetLoad;
         };
 
-        function MotionWidgetWrapper(parentPanel, device, deviceProperty, configPropertiesWidget) {
+        function MotionWidgetWrapper(parentPanel, device, deviceProperty, configPropertiesWidget, widgetProperties) {
             var _this6;
 
-            _this6 = _RadialWidgetWrapper6.call(this, parentPanel, device, deviceProperty, true, configPropertiesWidget) || this;
+            _this6 = _RadialWidgetWrapper6.call(this, parentPanel, device, deviceProperty, true, configPropertiesWidget, widgetProperties) || this;
             if (device == undefined) return _assertThisInitialized(_this6);
             return _this6;
         }
@@ -503,7 +528,7 @@ var ActuatorWidgetWrapper =
     function () {
         "use strict";
 
-        function ActuatorWidgetWrapper(parentPanel, device, deviceProperty, noWidget, configPropertiesWidget) {
+        function ActuatorWidgetWrapper(parentPanel, device, deviceProperty, noWidget, configPropertiesWidget, widgetProperties) {
             this.configPropertiesWidget = configPropertiesWidget;
 
             if (device == undefined) {
@@ -624,7 +649,7 @@ var LCDWidgetWrapper =
     function () {
         "use strict";
 
-        function LCDWidgetWrapper(parentPanel, device, deviceProperty, noWidget, configPropertiesWidget) {
+        function LCDWidgetWrapper(parentPanel, device, deviceProperty, noWidget, configPropertiesWidget, widgetProperties) {
             this.configPropertiesWidget = configPropertiesWidget;
 
             if (device == undefined) {

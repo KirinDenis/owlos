@@ -889,6 +889,7 @@ var BaseWidget =
                 return this._properties;
             },
             set: function set(properties) {
+                if (properties == undefined) return;
                 this._properties = properties;
                 this.drawText();
                 this.drawWidget();
