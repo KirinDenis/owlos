@@ -68,10 +68,10 @@ var config = {
             };
             dashboard.widgets.push(widget);
 
-           // var saveButton = document.getElementById("saveWidgetsButton");
-           // saveButton.hidden = false;
+            var saveButton = document.getElementById("saveWidgetsButton");
+            saveButton.hidden = false;
 
-            this.save();
+            //this.save();
             return widget;
         }
         return undefined;
@@ -317,7 +317,7 @@ var config = {
                             filePartName = "setwebproperty?property=tail";
                             sendingAmount = "100";
 
-                            if (savingCloseButton !== undefined) {
+                            if (savingCloseButton !== undefined && savingCloseButton !== null) {
                                 savingCloseButton.disabled = true;
                             }
 
@@ -333,23 +333,17 @@ var config = {
 
 
                             sendingAmount = "100";
-                            if (saveProgressBar !== undefined) {
+                            if (saveProgressBar !== undefined && saveProgressBar !== null) {
                                 saveProgressBar.setAttribute("aria-valuenow", sendingAmount);
                                 saveProgressBar.setAttribute("style", "width:" + sendingAmount + "%");
                                 saveProgressBar.innerHTML = sendingAmount + "%";
-                            }
-                            if (saveButton !== undefined) {
+
                                 saveButton.hidden = true;
-                            }
-                            if (saveTextStatus !== undefined) {
                                 saveTextStatus.innerHTML = "Changes saved";
-                            }
-                            if (savingCloseButton !== undefined) {
                                 savingCloseButton.hidden = true;
-                            }
-                            if (closeButton !== undefined) {
                                 closeButton.hidden = false;
-                            }
+                            } 
+                           
 
                             addToLogNL("Sending long config string. FINISHED. Result = OK!");
                             config.onChange();
@@ -365,7 +359,7 @@ var config = {
                                 subString = "";
                                 sendingAmount = "100";
 
-                                if (savingCloseButton !== undefined) {
+                                if (savingCloseButton !== undefined && savingCloseButton !== null) {
                                     savingCloseButton.disabled = true;
                                 }
 
@@ -375,26 +369,17 @@ var config = {
 
 
                                 sendingAmount = "100";
-                                if (saveProgressBar !== undefined) {
+                                if (saveProgressBar !== undefined && saveProgressBar !== null) {
                                     saveProgressBar.setAttribute("aria-valuenow", sendingAmount);
                                     saveProgressBar.setAttribute("style", "width:" + sendingAmount + "%");
                                     saveProgressBar.innerHTML = sendingAmount + "%";
-                                }
-                                if (saveButton !== undefined) {
-                                    saveButton.hidden = true;
-                                }
-                                if (saveTextStatus !== undefined) {
-                                    saveTextStatus.innerHTML = "Changes saved";
-                                }
 
-                                if (savingCloseButton !== undefined) {
+                                    saveButton.hidden = true;
+                                    saveTextStatus.innerHTML = "Changes saved";
                                     savingCloseButton.hidden = true;
-                                }
-                                if (closeButton !== undefined) {
                                     closeButton.hidden = false;
                                 }
-
-
+                             
                                 addToLogNL("Sending short config string. FINISHED. Result = OK!");
                                 config.onChange();
                                 return true;
@@ -408,14 +393,13 @@ var config = {
                 counter++;
 
 
-                if (saveProgressBar !== undefined) {
+                if (saveProgressBar !== undefined && saveProgressBar !== null) {
                     saveProgressBar.setAttribute("aria-valuenow", sendingAmount);
                     saveProgressBar.setAttribute("style", "width:" + sendingAmount + "%");
                     saveProgressBar.innerHTML = sendingAmount + "%";
-                }
-                if (saveTextStatus !== undefined) {
                     saveTextStatus.innerHTML = savingCurrentStatus;
                 }
+                
 
                 addToLogNL("Sending config string. Still sending! " + filePartName);
                 httpPostAsyncWithErrorReson(url, filePartName, subString, config.configSendAsync, counter, dataString, lengthDataSubString);
@@ -424,15 +408,12 @@ var config = {
             else { //если HTTPClient вернул ошибку, возвращаем false 
 
 
-                if (saveTextStatus !== undefined) {
+                if (saveTextStatus !== undefined && saveTextStatus !== null) {
                     saveTextStatus.innerHTML = "Saving changes error. Close this window and try again later!";
-                }
-                if (savingCloseButton !== undefined) {
                     savingCloseButton.hidden = true;
-                }
-                if (closeButton !== undefined) {
                     closeButton.hidden = false;
                 }
+                
 
                 addToLogNL("Sending config string ERROR!" + httpResult);
                 return false;
@@ -440,9 +421,15 @@ var config = {
             }
         }
         else {
-            //todo if(config.cancel == true)!!!!
-           // check if modal window exist
-            $("#saveConfigModal").modal('hide');
+
+            var modalWindowBody = document.getElementById("saveConfigModalBody");
+
+            if (modalWindowBody !== null && modalWindowBody !== undefined) {
+                $('#saveConfigModal').on('shown.bs.modal', function (e) {
+                    $("#saveConfigModal").modal('hide');
+                });
+            }
+ 
             return false;
         }
 
