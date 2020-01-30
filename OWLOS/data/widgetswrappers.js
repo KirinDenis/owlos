@@ -530,12 +530,14 @@ var ActuatorWidgetWrapper =
 
         function ActuatorWidgetWrapper(parentPanel, device, deviceProperty, noWidget, configPropertiesWidget, widgetProperties) {
             this.configPropertiesWidget = configPropertiesWidget;
+            this.widgetProperties = widgetProperties;
 
             if (device == undefined) {
                 devices.addDeviceLoadedListner(this.onDeviceLoaded, this);
             } else {
+                this.device = device;
+                this.deviceProperty = deviceProperty;
                 this.offlineStarter(parentPanel, device._id, deviceProperty.name, noWidget);
-                this.joinDevice(device, deviceProperty);
             }
         }
 
@@ -555,8 +557,19 @@ var ActuatorWidgetWrapper =
 
         _proto9.onWidgetLoad = function onWidgetLoad(widget) {
             widget.widgetHolder.onclick = widget.deviceClass.widgetClick;
-           // widget.properties = widget.deviceClass.configPropertiesWidget;
-            widget.deviceClass.draw();
+
+            if (widget.deviceClass.widgetProperties != undefined) {
+                widget.properties = widget.deviceClass.widgetProperties;
+            }
+
+            if (widget.deviceClass.device != undefined) {
+                widget.deviceClass.joinDevice(widget.deviceClass.device, widget.deviceClass.deviceProperty);
+            }
+
+            if (widget.deviceClass._onload != undefined) {
+                widget.deviceClass._onload(widget.deviceClass);
+            }
+
         };
 
 
@@ -639,6 +652,17 @@ var ActuatorWidgetWrapper =
             this.widget.networkStatus = this.deviceProperty.networkStatus;
             return true;
         };
+
+        _createClass(ActuatorWidgetWrapper, [{
+            key: "onload",
+            get: function get() {
+                return this._onload;
+            },
+            set: function set(onload) {
+                this._onload = onload;
+            }
+        }]);
+
 
         return ActuatorWidgetWrapper;
     }(); //LCD ----------------------------------------------------------------------------------
