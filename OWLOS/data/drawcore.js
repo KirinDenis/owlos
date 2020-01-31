@@ -302,8 +302,7 @@ var SVGArc =
             this.id = id;
             this.x = x;
             this.y = y;
-            this._radius = radius;
-            this.lineWidth = lineWidth;
+            this._radius = radius;            
             this.SVGArc = document.createElementNS(xmlns, "path");
             this.SVGArc.setAttributeNS(null, 'x', x);
             this.SVGArc.setAttributeNS(null, 'y', y);
@@ -418,7 +417,18 @@ var SVGArc =
             get: function get() {
                 return parseFloat(this.SVGArc.getAttributeNS(null, 'opacity'));
             }
-        }, {
+            },
+            {
+                key: "linewidth",
+                set: function set(linewidth) {
+                    
+                    this.SVGArc.setAttributeNS(null, 'stroke-width', parseFloat(linewidth));
+                },
+                get: function get() {
+                    return parseFloat(this.SVGArc.getAttributeNS(null, 'stroke-width'));
+                }
+            }, 
+            {
             key: "radius",
             set: function set(radius) {
                 this._radius = parseFloat(radius);

@@ -56,7 +56,7 @@ function defaultWidgetProperties() {
 
         showequalizer: {
             name: "Show equalizer",
-            value: true,
+            value: 'true',
             type: "b"
         }
 

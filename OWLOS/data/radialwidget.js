@@ -1,4 +1,4 @@
-var RadialWidget =
+﻿var RadialWidget =
     
     function (_BaseWidget) {
         "use strict";
@@ -14,16 +14,68 @@ var RadialWidget =
             var rPanel = event.currentTarget;
             var widget = rPanel.widget;
 
+            widget._properties.linewidth =
+                {
+                    name: "line width",
+                    value: 10,
+                    type: "i"
+                };
+
+
+            widget._properties.rangetype =
+                {
+                    name: "range type percent",
+                    value: 'true',
+                    type: "b"
+                };
+
+
+            widget._properties.min =
+                {
+                    name: "min",
+                    value: 0,
+                    type: "f"
+                };
+
+            widget._properties.max =
+                {
+                    name: "max",
+                    value: 100,
+                    type: "f"
+                };
+
+            widget._properties.percentbackgroundcolor =
+              {
+                name: "percent bacground color",
+                value: theme.secondary,
+                type: "c"
+                };
+
+            widget._properties.percentbackgroundopacity =
+                {
+                name: "percent bacground opacity",
+                    value: 0.5,
+                    type: "f"
+                };
+
+
+            widget._properties.percentcolor =
+                {
+                    name: "percent color",
+                    value: theme.info,
+                    type: "c"
+                };
+
+
             widget.radius = widget.size / 3;
             widget.topMargin = widget.centreY + widget.size / 10;
-            widget.SVGArcBack = new SVGArc(widget.svgElement, widget.id + "arcback", widget.centreX, widget.topMargin, widget.radius, widget.size / 14);
-            widget.SVGArcBack.color = theme.secondary;
-            widget.SVGArcBack.opacity = 0.5;
-            widget.SVGArcWidget = new SVGArc(widget.svgElement, widget.id + "arcwidget", widget.centreX, widget.topMargin, widget.radius, widget.size / 14);
-            widget.SVGArcWidget.color = theme.secondary;
+            widget.SVGArcBack = new SVGArc(widget.svgElement, widget.id + "arcback", widget.centreX, widget.topMargin, widget.radius, widget._properties.linewidth);
+            widget.SVGArcWidget = new SVGArc(widget.svgElement, widget.id + "arcwidget", widget.centreX, widget.topMargin, widget.radius, widget._properties.linewidth);            
             widget.SVGArcSpinner.y = widget.topMargin;
 
+
             widget.clickableToTop();
+
 
             widget.proprties = widget._properties;
 
@@ -40,16 +92,34 @@ var RadialWidget =
 
             if (this.SVGArcBack == undefined) return;
 
-            var oneHangPercent = 360 + 90 + 30 - 240;
-            var drawPercent = this.data * (oneHangPercent / 100); //back radial widget
+            var _data = this.data;
+            if (this._properties.rangetype.value !== 'true') { //когда randge
+                var range = this._properties.max.value - this._properties.min.value;
+                _data = this.data / (range / 100);
+            }
+            else {
+                //TODO Error Write Ситуация когда проценты
+                if ((_data > 100) || (_data < 0)) {
+                    this.toColor(this.SVGArcWidget, theme.warning);
+                }
+            }
 
+            var oneHangPercent = 360 + 90 + 30 - 240;
+            var drawPercent = _data * (oneHangPercent / 100); //back radial widget
+
+            this.SVGArcBack.linewidth = this._properties.linewidth.value;
+            this.SVGArcWidget.linewidth = this._properties.linewidth.value;
+
+            this.SVGArcBack.color = this._properties.percentbackgroundcolor.value;
+            this.SVGArcBack.opacity = this._properties.percentbackgroundopacity.value;
+            
             this.SVGArcBack.draw(240, 240 + oneHangPercent); //radial widget
 
             this.SVGArcWidget.draw(240, 240 + drawPercent);
 
             switch (this._networkStatus) {
                 case NET_ONLINE:
-                    this.toColor(this.SVGArcWidget, theme.success);
+                    this.toColor(this.SVGArcWidget, this._properties.percentcolor.value);
                     break;
 
                 case NET_ERROR:

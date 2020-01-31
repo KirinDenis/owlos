@@ -2,12 +2,12 @@
 //Devices classes -------------------------------------------------------------------
 //Base radial class 
 //-----------------------------------------------------------------------------------
-var RadialWidgetWrapper =
+var BaseWidgetWrapper =
     
     function () {
         "use strict";
 
-        function RadialWidgetWrapper(parentPanel, device, deviceProperty, noWidget, configPropertiesWidget, widgetProperties) {
+        function BaseWidgetWrapper(parentPanel, device, deviceProperty, noWidget, configPropertiesWidget, widgetProperties) {
             this.configPropertiesWidget = configPropertiesWidget;
             this.widgetProperties = widgetProperties;
 
@@ -21,7 +21,7 @@ var RadialWidgetWrapper =
             }
         }
 
-        var _proto = RadialWidgetWrapper.prototype;
+        var _proto = BaseWidgetWrapper.prototype;
 
         _proto.offlineStarter = function offlineStarter(parentPanel, deviceId, devicePropertyName, noWidget) {
             this.deviceId = deviceId;
@@ -126,9 +126,9 @@ var RadialWidgetWrapper =
 
         _proto.refresh = function refresh() { };
 
-        _proto.draw = function draw() { };
+        _proto.draw = function draw() {};
 
-        _createClass(RadialWidgetWrapper, [{
+        _createClass(BaseWidgetWrapper, [{
             key: "onload",
             get: function get() {
                 return this._onload;
@@ -138,20 +138,66 @@ var RadialWidgetWrapper =
             }
         }]);
 
-        return RadialWidgetWrapper;
+        return BaseWidgetWrapper;
     }();
+
+
+var RadialWidgetWrapper =
+
+    function (_BaseWidgetWrapper) {
+        "use strict";
+
+        _inheritsLoose(RadialWidgetWrapper, _BaseWidgetWrapper);
+
+        var _proto2 = RadialWidgetWrapper.prototype;
+
+        _proto2.offlineStarter = function offlineStarter(parentPanel, deviceId, devicePropertyName) {
+            _BaseWidgetWrapper.prototype.offlineStarter.call(this, parentPanel, deviceId, devicePropertyName, true);
+
+            this.widget = new RadialWidget(parentPanel, deviceId, configProperties.widgetssize);
+            this.widget.deviceClass = this;
+            this.widget.onload = this.onWidgetLoad;
+        };
+
+        function RadialWidgetWrapper(parentPanel, device, deviceProperty, configPropertiesWidget, widgetProperties) {
+            var _this;
+
+            _this = _BaseWidgetWrapper.call(this, parentPanel, device, deviceProperty, true, configPropertiesWidget, widgetProperties) || this;
+            if (device == undefined) return _assertThisInitialized(_this);
+            return _this;
+        }
+
+        _proto2.draw = function draw() {
+            if (this.widget == undefined) return;
+            if (this.deviceProperty == undefined) return;
+
+            if (this.deviceProperty.networkStatus == NET_ONLINE) {
+                this.widget.refresh(this.deviceProperty.value, this.deviceProperty.value, this.device._id);
+            } else {
+                this.widget.refresh(0, "--", this.device._id);
+            }
+
+            this.widget.networkStatus = this.deviceProperty.networkStatus;
+            return true;
+        };
+
+        return RadialWidgetWrapper;
+    }(BaseWidgetWrapper);
+
+//-----------------------------------------------------------------------------------------------------------------------
+
 
 var TemperatureWidgetWrapper =
     
-    function (_RadialWidgetWrapper) {
+    function (_BaseWidgetWrapper) {
         "use strict";
 
-        _inheritsLoose(TemperatureWidgetWrapper, _RadialWidgetWrapper);
+        _inheritsLoose(TemperatureWidgetWrapper, _BaseWidgetWrapper);
 
         var _proto2 = TemperatureWidgetWrapper.prototype;
 
         _proto2.offlineStarter = function offlineStarter(parentPanel, deviceId, devicePropertyName) {
-            _RadialWidgetWrapper.prototype.offlineStarter.call(this, parentPanel, deviceId, devicePropertyName, true);
+            _BaseWidgetWrapper.prototype.offlineStarter.call(this, parentPanel, deviceId, devicePropertyName, true);
 
             this.widget = new TemperatureWidget(parentPanel, deviceId, configProperties.widgetssize);
             this.widget.deviceClass = this;
@@ -161,7 +207,7 @@ var TemperatureWidgetWrapper =
         function TemperatureWidgetWrapper(parentPanel, device, deviceProperty, configPropertiesWidget, widgetProperties) {
             var _this;
 
-            _this = _RadialWidgetWrapper.call(this, parentPanel, device, deviceProperty, true, configPropertiesWidget, widgetProperties) || this;
+            _this = _BaseWidgetWrapper.call(this, parentPanel, device, deviceProperty, true, configPropertiesWidget, widgetProperties) || this;
             if (device == undefined) return _assertThisInitialized(_this);
             return _this;
         }
@@ -181,19 +227,19 @@ var TemperatureWidgetWrapper =
         };
 
         return TemperatureWidgetWrapper;
-    }(RadialWidgetWrapper); //-----------------------------------------------------------------------------------------------------------------------
+    }(BaseWidgetWrapper); //-----------------------------------------------------------------------------------------------------------------------
 
 var ValueWidgetWrapper =
 
-    function (_RadialWidgetWrapper) {
+    function (_BaseWidgetWrapper) {
         "use strict";
 
-        _inheritsLoose(ValueWidgetWrapper, _RadialWidgetWrapper);
+        _inheritsLoose(ValueWidgetWrapper, _BaseWidgetWrapper);
 
         var _proto2 = ValueWidgetWrapper.prototype;
 
         _proto2.offlineStarter = function offlineStarter(parentPanel, deviceId, devicePropertyName) {
-            _RadialWidgetWrapper.prototype.offlineStarter.call(this, parentPanel, deviceId, devicePropertyName, true);
+            _BaseWidgetWrapper.prototype.offlineStarter.call(this, parentPanel, deviceId, devicePropertyName, true);
 
             this.widget = new ValueWidget(parentPanel, deviceId, configProperties.widgetssize);
             this.widget.deviceClass = this;
@@ -203,7 +249,7 @@ var ValueWidgetWrapper =
         function ValueWidgetWrapper(parentPanel, device, deviceProperty, configPropertiesWidget, widgetProperties) {
             var _this;
 
-            _this = _RadialWidgetWrapper.call(this, parentPanel, device, deviceProperty, true, configPropertiesWidget, widgetProperties) || this;
+            _this = _BaseWidgetWrapper.call(this, parentPanel, device, deviceProperty, true, configPropertiesWidget, widgetProperties) || this;
             if (device == undefined) return _assertThisInitialized(_this);
             return _this;
         }
@@ -223,20 +269,20 @@ var ValueWidgetWrapper =
         };
 
         return ValueWidgetWrapper;
-    }(RadialWidgetWrapper); //-----------------------------------------------------------------------------------------------------------------------
+    }(BaseWidgetWrapper); //-----------------------------------------------------------------------------------------------------------------------
 
 
 var HumidityWidgetWrapper =
     
-    function (_RadialWidgetWrapper2) {
+    function (_BaseWidgetWrapper2) {
         "use strict";
 
-        _inheritsLoose(HumidityWidgetWrapper, _RadialWidgetWrapper2);
+        _inheritsLoose(HumidityWidgetWrapper, _BaseWidgetWrapper2);
 
         var _proto3 = HumidityWidgetWrapper.prototype;
 
         _proto3.offlineStarter = function offlineStarter(parentPanel, deviceId, devicePropertyName) {
-            _RadialWidgetWrapper2.prototype.offlineStarter.call(this, parentPanel, deviceId, devicePropertyName, true);
+            _BaseWidgetWrapper2.prototype.offlineStarter.call(this, parentPanel, deviceId, devicePropertyName, true);
 
             this.widget = new RadialWidget(parentPanel, deviceId, configProperties.widgetssize);
             this.widget.deviceClass = this;
@@ -246,7 +292,7 @@ var HumidityWidgetWrapper =
         function HumidityWidgetWrapper(parentPanel, device, deviceProperty, configPropertiesWidget, widgetProperties) {
             var _this2;
 
-            _this2 = _RadialWidgetWrapper2.call(this, parentPanel, device, deviceProperty, true, configPropertiesWidget, widgetProperties) || this;
+            _this2 = _BaseWidgetWrapper2.call(this, parentPanel, device, deviceProperty, true, configPropertiesWidget, widgetProperties) || this;
             if (device == undefined) return _assertThisInitialized(_this2);
             return _this2;
         }
@@ -266,20 +312,20 @@ var HumidityWidgetWrapper =
         };
 
         return HumidityWidgetWrapper;
-    }(RadialWidgetWrapper); //HistoryData Graph ------------------------------------------------------------------------------------------------------
+    }(BaseWidgetWrapper); //HistoryData Graph ------------------------------------------------------------------------------------------------------
 
 
 var HistoryDataGraphWidgetWrapper =
     
-    function (_RadialWidgetWrapper3) {
+    function (_BaseWidgetWrapper3) {
         "use strict";
 
-        _inheritsLoose(HistoryDataGraphWidgetWrapper, _RadialWidgetWrapper3);
+        _inheritsLoose(HistoryDataGraphWidgetWrapper, _BaseWidgetWrapper3);
 
         var _proto4 = HistoryDataGraphWidgetWrapper.prototype;
 
         _proto4.offlineStarter = function offlineStarter(parentPanel, deviceId, devicePropertyName) {
-            _RadialWidgetWrapper3.prototype.offlineStarter.call(this, parentPanel, deviceId, devicePropertyName, true);
+            _BaseWidgetWrapper3.prototype.offlineStarter.call(this, parentPanel, deviceId, devicePropertyName, true);
 
             this.widget = new GraphWidget(parentPanel, deviceId, configProperties.widgetssize, temperatureIcon);
             this.widget.deviceClass = this;
@@ -290,7 +336,7 @@ var HistoryDataGraphWidgetWrapper =
         function HistoryDataGraphWidgetWrapper(parentPanel, device, deviceProperty, configPropertiesWidget, widgetProperties) {
             var _this3;
 
-            _this3 = _RadialWidgetWrapper3.call(this, parentPanel, device, deviceProperty, true, configPropertiesWidget, widgetProperties) || this;
+            _this3 = _BaseWidgetWrapper3.call(this, parentPanel, device, deviceProperty, true, configPropertiesWidget, widgetProperties) || this;
             if (device == undefined) return _assertThisInitialized(_this3);
             return _this3;
         }
@@ -310,19 +356,19 @@ var HistoryDataGraphWidgetWrapper =
         };
 
         return HistoryDataGraphWidgetWrapper;
-    }(RadialWidgetWrapper);
+    }(BaseWidgetWrapper);
 
 var LightWidgetWrapper =
     
-    function (_RadialWidgetWrapper4) {
+    function (_BaseWidgetWrapper4) {
         "use strict";
 
-        _inheritsLoose(LightWidgetWrapper, _RadialWidgetWrapper4);
+        _inheritsLoose(LightWidgetWrapper, _BaseWidgetWrapper4);
 
         var _proto5 = LightWidgetWrapper.prototype;
 
         _proto5.offlineStarter = function offlineStarter(parentPanel, deviceId, devicePropertyName) {
-            _RadialWidgetWrapper4.prototype.offlineStarter.call(this, parentPanel, deviceId, devicePropertyName, true);
+            _BaseWidgetWrapper4.prototype.offlineStarter.call(this, parentPanel, deviceId, devicePropertyName, true);
 
             this.widget = new LightWidget(parentPanel, deviceId, configProperties.widgetssize);
             this.widget.deviceClass = this;            
@@ -333,7 +379,7 @@ var LightWidgetWrapper =
         function LightWidgetWrapper(parentPanel, device, deviceProperty, configPropertiesWidget, widgetProperties) {
             var _this4;
 
-            _this4 = _RadialWidgetWrapper4.call(this, parentPanel, device, deviceProperty, true, configPropertiesWidget, widgetProperties) || this;
+            _this4 = _BaseWidgetWrapper4.call(this, parentPanel, device, deviceProperty, true, configPropertiesWidget, widgetProperties) || this;
             if (device == undefined) return _assertThisInitialized(_this4);
             return _this4;
         }
@@ -361,19 +407,19 @@ var LightWidgetWrapper =
         };
 
         return LightWidgetWrapper;
-    }(RadialWidgetWrapper);
+    }(BaseWidgetWrapper);
 
 var SmokeWidgetWrapper =
     
-    function (_RadialWidgetWrapper5) {
+    function (_BaseWidgetWrapper5) {
         "use strict";
 
-        _inheritsLoose(SmokeWidgetWrapper, _RadialWidgetWrapper5);
+        _inheritsLoose(SmokeWidgetWrapper, _BaseWidgetWrapper5);
 
         var _proto6 = SmokeWidgetWrapper.prototype;
 
         _proto6.offlineStarter = function offlineStarter(parentPanel, deviceId, devicePropertyName) {
-            _RadialWidgetWrapper5.prototype.offlineStarter.call(this, parentPanel, deviceId, devicePropertyName, true);
+            _BaseWidgetWrapper5.prototype.offlineStarter.call(this, parentPanel, deviceId, devicePropertyName, true);
 
             this.widget = new SmokeWidget(parentPanel, deviceId, configProperties.widgetssize);
             this.widget.deviceClass = this;
@@ -383,7 +429,7 @@ var SmokeWidgetWrapper =
         function SmokeWidgetWrapper(parentPanel, device, deviceProperty, configPropertiesWidget, widgetProperties) {
             var _this5;
 
-            _this5 = _RadialWidgetWrapper5.call(this, parentPanel, device, deviceProperty, true, configPropertiesWidget, widgetProperties) || this;
+            _this5 = _BaseWidgetWrapper5.call(this, parentPanel, device, deviceProperty, true, configPropertiesWidget, widgetProperties) || this;
             if (device == undefined) return _assertThisInitialized(_this5);
             return _this5;
         }
@@ -411,19 +457,19 @@ var SmokeWidgetWrapper =
         };
 
         return SmokeWidgetWrapper;
-    }(RadialWidgetWrapper);
+    }(BaseWidgetWrapper);
 
 var MotionWidgetWrapper =
     
-    function (_RadialWidgetWrapper6) {
+    function (_BaseWidgetWrapper6) {
         "use strict";
 
-        _inheritsLoose(MotionWidgetWrapper, _RadialWidgetWrapper6);
+        _inheritsLoose(MotionWidgetWrapper, _BaseWidgetWrapper6);
 
         var _proto7 = MotionWidgetWrapper.prototype;
 
         _proto7.offlineStarter = function offlineStarter(parentPanel, deviceId, devicePropertyName) {
-            _RadialWidgetWrapper6.prototype.offlineStarter.call(this, parentPanel, deviceId, devicePropertyName, true);
+            _BaseWidgetWrapper6.prototype.offlineStarter.call(this, parentPanel, deviceId, devicePropertyName, true);
 
             this.widget = new MotionWidget(parentPanel, deviceId, configProperties.widgetssize);
             this.widget.deviceClass = this;
@@ -433,7 +479,7 @@ var MotionWidgetWrapper =
         function MotionWidgetWrapper(parentPanel, device, deviceProperty, configPropertiesWidget, widgetProperties) {
             var _this6;
 
-            _this6 = _RadialWidgetWrapper6.call(this, parentPanel, device, deviceProperty, true, configPropertiesWidget, widgetProperties) || this;
+            _this6 = _BaseWidgetWrapper6.call(this, parentPanel, device, deviceProperty, true, configPropertiesWidget, widgetProperties) || this;
             if (device == undefined) return _assertThisInitialized(_this6);
             return _this6;
         }
@@ -482,17 +528,17 @@ var MotionWidgetWrapper =
         };
 
         return MotionWidgetWrapper;
-    }(RadialWidgetWrapper);
+    }(BaseWidgetWrapper);
 
 var SensorWidgetWrapper =
     
-    function (_RadialWidgetWrapper7) {
+    function (_BaseWidgetWrapper7) {
         "use strict";
 
-        _inheritsLoose(SensorWidgetWrapper, _RadialWidgetWrapper7);
+        _inheritsLoose(SensorWidgetWrapper, _BaseWidgetWrapper7);
 
         function SensorWidgetWrapper() {
-            return _RadialWidgetWrapper7.apply(this, arguments) || this;
+            return _BaseWidgetWrapper7.apply(this, arguments) || this;
         }
 
         var _proto8 = SensorWidgetWrapper.prototype;
@@ -520,7 +566,7 @@ var SensorWidgetWrapper =
         };
 
         return SensorWidgetWrapper;
-    }(RadialWidgetWrapper); //Acturator ----------------------------------------------------------------------------------
+    }(BaseWidgetWrapper); //Acturator ----------------------------------------------------------------------------------
 
 
 var ActuatorWidgetWrapper =
@@ -528,7 +574,7 @@ var ActuatorWidgetWrapper =
     function () {
         "use strict";
 
-        function ActuatorWidgetWrapper(parentPanel, device, deviceProperty, noWidget, configPropertiesWidget, widgetProperties) {
+        function ActuatorWidgetWrapper(parentPanel, device, deviceProperty, configPropertiesWidget, widgetProperties) {
             this.configPropertiesWidget = configPropertiesWidget;
             this.widgetProperties = widgetProperties;
 
@@ -924,13 +970,14 @@ var StepperWidgetWrapper =
 
 
 var WidgetsLayer = {
-    /*
+    
     RadialWidget: {
         id: "radialwidget",
         name: getLang("radial"),
-        widget: RadialWidgetWrapper
-    },
-    */
+        widget: RadialWidgetWrapper,
+        devicesTypes: "any",
+        devicesProperties: "any"
+    },    
     TemperatureWidget: {
         id: "temperature",
         name: getLang("temperature"),

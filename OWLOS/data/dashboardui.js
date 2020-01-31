@@ -71,6 +71,7 @@ var dashboardUI = {
                 var widget = WidgetsLayer.getWidgetById(widgetProp.widgetId);
                 if (widget != undefined) {
                     var widgetWrapper = new widget.widget(devicesWidgetsPanel, undefined, undefined, configProperties.dashboards[0].widgets[i], widgetProp.widgetProperties);
+                                                          
 
                     widgetWrapper.offlineStarter(devicesWidgetsPanel, widgetProp.deviceId, widgetProp.deviceProperty);
                     widgetWrapper.widget.addEventListner(config.widgetEvent, configProperties.dashboards[0].widgets[i]);
