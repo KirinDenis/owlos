@@ -7,56 +7,56 @@ var EVENT_DELETE = 1;
 function defaultWidgetProperties() {
     return {
         headertext: {
-            name: "header text",
+            tab: "G",
             value: "---",
             type: "s"
         },
 
-        headercolor: {
-            name: "header color",
+        headercolor: {            
+            tab: "C",
             value: theme.secondary,
             type: "c"
         },
 
-        headeropacity: {
-            name: "header opacity",
+        headeropacity: {            
+            tab: "O",
             value: 0.1,
             type: "f"
         },
 
-        backgroundcolor: {
-            name: "baground color",
+        backgroundcolor: {            
+            tab: "C",
             value: theme.dark,
             type: "c"
         },
 
-        backgroundopacity: {
-            name: "background opacity",
+        backgroundopacity: {            
+            tab: "O",
             value: 1.0,
             type: "f"
         },
 
-        bordercolor: {
-            name: "border color",
+        bordercolor: {            
+            tab: "C",
             value: theme.secondary,
             type: "c"
         },
 
-        backgroundselectopacity: {
-            name: "background select opacity",
+        backgroundselectopacity: {            
+            tab: "O",
             value: 0.2,
             type: "f"
         },
 
-        valuetextcolor: {
-            name: "value text color",
+        valuetextcolor: {            
+            tab: "C",
             value: theme.secondary,
             type: "c"
         },
 
-        showequalizer: {
-            name: "Show equalizer",
-            value: 'true',
+        showequalizer: {            
+            tab: "G",
+            value: 'false',
             type: "b"
         }
 
@@ -509,47 +509,97 @@ var BaseWidget =
             _sender.storedProperties = {};
 
             _sender.inParentIndex = Array.prototype.slice.call(_sender.parentPanel.childNodes).indexOf(_sender.widgetHolder);
+            _sender.inParentClass = _sender.widgetHolder.className;
             _sender.parentPanel.removeChild(_sender.widgetHolder);
+            _sender.widgetHolder.className = "col-sm-4";
             _sender.mode = WORK_MODE;
-
-            makeModalDialog("resetPanel", "showProperties", getLang("showProperties"), "");
-            var modalFooter = document.getElementById("showPropertiesModalFooter");
-            var modalBody = document.getElementById("showPropertiesModalBody");
+            
+             makeModalDialog("resetPanel", "showProperties", getLang("showproperties"), "");                
+             var modalBody = document.getElementById("showPropertiesModalBody");
+             var modalFooter = document.getElementById("showPropertiesModalFooter");
 
             var widgetDiv = modalBody.appendChild(document.createElement("div"));
-            widgetDiv.className = "devicesWidgetsPanel";
+            widgetDiv.className = "devicesWidgetsPanel d-flex justify-content-center";
             widgetDiv.appendChild(_sender.widgetHolder);
 
+            var propUl = modalBody.appendChild(document.createElement("ul"));
+            propUl.className = "nav nav-tabs";
 
+            var tabContent = modalBody.appendChild(document.createElement("div"));
+            tabContent.className = "tab-content";
 
-            var formGroup = modalBody.appendChild(document.createElement("div"));
-            formGroup.className = "form-group";
-
-
-
-
+            var isFirstTab = true;
             for (var key in _sender.properties) {
 
                 _sender.storedProperties[key] = {
-                    name: _sender.properties[key].name,
+                    tab: _sender.properties[key].tab,
                     value: _sender.properties[key].value,
                     type: _sender.properties[key].type
                 }
 
-                var label = formGroup.appendChild(document.createElement("label"));
+                var tabName = _sender.properties[key].tab;
+                if (tabName === 'G') { tabName = "General"; }
+                else 
+                    if (tabName === 'C') { tabName = "Color"; }
+                    else
+                        if (tabName === 'O') { tabName = "Opacity"; }
+
+
+                var tabPane = document.getElementById(tabName + "PropTab");
+                var formGroup = document.getElementById(tabName + "PropForm");
+                if (formGroup == null) {
+                    var propLi = propUl.appendChild(document.createElement("li"));
+                    propLi.className = "nav-item";
+                    var aHref = propLi.appendChild(document.createElement("a"));
+                    aHref.setAttribute("data-toggle", "tab");
+                    aHref.href = "#" + tabName + "PropTab";
+                    aHref.innerText = tabName;
+
+                    tabPane = tabContent.appendChild(document.createElement("div"));                    
+                    tabPane.id = tabName + "PropTab";
+                    formGroup = tabPane.appendChild(document.createElement("div"));
+                    formGroup.className = "form-group";
+                    formGroup.id = tabName + "PropForm";
+
+                    if (isFirstTab) {
+                        aHref.className = "nav-link active";
+                        tabPane.className = "tab-pane fade show active";
+                        isFirstTab = false;
+                    }
+                    else {
+                        aHref.className = "nav-link";
+                        tabPane.className = "tab-pane fade";
+                    }
+                }
+
+                var inputGroup = formGroup.appendChild(document.createElement("div"));
+                inputGroup.className = "input-group input-group-sm mb-3";
+
+                var prependDiv = inputGroup.appendChild(document.createElement("div"));
+                prependDiv.className = "input-group-prepend";
+
+
+                var label = prependDiv.appendChild(document.createElement("label"));
+                label.className = "input-group-text";
                 label.setAttribute("for", "hostEdit");
-                label.innerText = _sender.properties[key].name;
-                var propEdit = createValueEdit(formGroup, _sender.properties[key].name, _sender.properties[key].value, _sender.properties[key].type);
+                label.innerText = key;
+                var propEdit = createValueEdit(inputGroup, _sender.properties[key].name, _sender.properties[key].value, _sender.properties[key].type);
                 propEdit.className = "form-control form-control-sm";
                 propEdit.placeholder = "type value here";
-                propEdit.id = "widgetproperty" + key;
+                propEdit.id = "widgetproperty" + key;                
 
                 //propEdit.value = _sender.properties[key].value;
                 propEdit.widgetProperty = _sender.properties[key];
                 propEdit.widget = _sender;
                 propEdit.originalOnChange = propEdit.onchange;
                 propEdit.onchange = _sender.onPropertyChange;
+                propEdit.onkeyup = _sender.onPropertyChange;
+
+
             }
+
+            var setPropError = formGroup.appendChild(document.createElement("label"));
+            setPropError.className = "text-danger";
 
             var closeHeaderButton = document.getElementById("showPropertiescloseHeaderButton");
             closeHeaderButton.widget = _sender;
@@ -559,21 +609,36 @@ var BaseWidget =
             closeButton.widget = _sender;
             closeButton.onclick = _sender.discardProperties;
 
+            var setAllWidgetsPropButton = modalFooter.appendChild(document.createElement("button"));
+            setAllWidgetsPropButton.type = "button";
+            setAllWidgetsPropButton.className = "btn btn-sm btn-warning";
+            setAllWidgetsPropButton.id = "allwidgetsModalButton";
+            setAllWidgetsPropButton.widget = _sender;
+            setAllWidgetsPropButton.onclick = _sender.setAllWidgetsProperties;
+            setAllWidgetsPropButton.innerText = getLang("setallwidgetspropbutton");
+            setAllWidgetsPropButton.propEdit = propEdit;
+            setAllWidgetsPropButton.setPropError = setPropError;
 
-            var addNodeButton = modalFooter.appendChild(document.createElement("button"));
-            addNodeButton.type = "button";
-            addNodeButton.className = "btn btn-sm btn-success";
-            addNodeButton.id = "addnodeModalButton";
-            addNodeButton.widget = _sender;
-            addNodeButton.onclick = _sender.setProperties;
-            addNodeButton.innerText = getLang("addnodebutton");
+            var setPropButton = modalFooter.appendChild(document.createElement("button"));
+            setPropButton.type = "button";
+            setPropButton.className = "btn btn-sm btn-success";
+            setPropButton.id = "addnodeModalButton";
+            setPropButton.widget = _sender;
+            setPropButton.onclick = _sender.setProperties;
+            setPropButton.innerText = getLang("setpropbutton");
+            setPropButton.propEdit = propEdit;
+            setPropButton.setPropError = setPropError;
 
-            var addNodeError = formGroup.appendChild(document.createElement("label"));
-            addNodeError.className = "text-danger";
+            $('#showPropertiesModal').on('hidden.bs.modal', function (event) {
+                if (document.getElementById("showPropertiesModal").setProp != undefined) {
+                    return;
+                }
+                var event = {
+                    currentTarget: closeHeaderButton
+                }
+                _sender.discardProperties(event);
+            })
 
-            addNodeButton.propEdit = propEdit;
-
-            addNodeButton.addNodeError = addNodeError;
 
             $("#showPropertiesModal").modal('show');
 
@@ -581,10 +646,12 @@ var BaseWidget =
 
 
         BaseWidget.prototype.setProperties = function setProperties(event) {
+            event.stopPropagation();
             var button = event.currentTarget;
             var widget = button.widget;
 
             widget.parentPanel.insertBefore(widget.widgetHolder, widget.parentPanel.childNodes[widget.inParentIndex]);
+            widget.widgetHolder.className = widget.inParentClass;
             widget.mode = MOVE_MODE;
 
             for (var key in widget.properties) {
@@ -595,19 +662,57 @@ var BaseWidget =
             widget.properties = widget.properties;
 
             config.save();
-
+            
+            document.getElementById("showPropertiesModal").setProp = true;
             $("#showPropertiesModal").modal('hide');
             return false;
         };
+
+        BaseWidget.prototype.setAllWidgetsProperties = function setProperties(event) {
+            event.stopPropagation();
+            var button = event.currentTarget;
+            var widget = button.widget;
+
+            widget.parentPanel.insertBefore(widget.widgetHolder, widget.parentPanel.childNodes[widget.inParentIndex]);
+            widget.widgetHolder.className = widget.inParentClass;
+            widget.mode = MOVE_MODE;
+
+
+            for (var i = 0; i < configProperties.dashboards[0].widgets.length; i++) {
+                
+                var widgetProp = configProperties.dashboards[0].widgets[i];
+                var widgetHolder = document.getElementById(widgetProp.deviceId + "BaseWidget");
+                if (widgetHolder == null) continue;
+                var someWidget = widgetHolder.widget;
+
+                for (var key in someWidget.properties) {
+                    if (key === 'headertext') continue;
+                    var propEdit = document.getElementById("widgetproperty" + key);
+                    if (propEdit != null) {
+                        someWidget.properties[key].value = propEdit.value;
+                    }
+                }
+                someWidget.properties = someWidget.properties;
+            }
+
+            config.save();
+
+            document.getElementById("showPropertiesModal").setProp = true;
+            $("#showPropertiesModal").modal('hide');
+            return false;
+        };
+
 
         BaseWidget.prototype.discardProperties = function discardtProperties(event) {
             var button = event.currentTarget;
             var widget = button.widget;
 
             widget.parentPanel.insertBefore(widget.widgetHolder, widget.parentPanel.childNodes[widget.inParentIndex]);
+            widget.widgetHolder.className = widget.inParentClass;
             widget.mode = MOVE_MODE;
             widget.properties = widget.storedProperties;
 
+            
             //$("#showPropertiesModal").modal('hide');
             return false;
         };
@@ -629,7 +734,7 @@ var BaseWidget =
                 propEdit.originalOnChange(event);
             }
 
-            return false;
+            return true;
 
         };
 

@@ -1,5 +1,5 @@
 ﻿var RadialWidget =
-    
+
     function (_BaseWidget) {
         "use strict";
 
@@ -16,7 +16,7 @@
 
             widget._properties.linewidth =
                 {
-                    name: "line width",
+                    tab: "G",
                     value: 10,
                     type: "i"
                 };
@@ -24,7 +24,7 @@
 
             widget._properties.rangetype =
                 {
-                    name: "range type percent",
+                    tab: "G",
                     value: 'true',
                     type: "b"
                 };
@@ -32,28 +32,31 @@
 
             widget._properties.min =
                 {
-                    name: "min",
+                    tab: "G",
                     value: 0,
                     type: "f"
                 };
 
             widget._properties.max =
                 {
-                    name: "max",
+
+                    tab: "G",
                     value: 100,
                     type: "f"
                 };
 
             widget._properties.percentbackgroundcolor =
-              {
-                name: "percent bacground color",
-                value: theme.secondary,
-                type: "c"
+                {
+
+                    tab: "C",
+                    value: theme.secondary,
+                    type: "c"
                 };
 
             widget._properties.percentbackgroundopacity =
                 {
-                name: "percent bacground opacity",
+
+                    tab: "O",
                     value: 0.5,
                     type: "f"
                 };
@@ -61,7 +64,7 @@
 
             widget._properties.percentcolor =
                 {
-                    name: "percent color",
+                    tab: "C",
                     value: theme.info,
                     type: "c"
                 };
@@ -70,7 +73,7 @@
             widget.radius = widget.size / 3;
             widget.topMargin = widget.centreY + widget.size / 10;
             widget.SVGArcBack = new SVGArc(widget.svgElement, widget.id + "arcback", widget.centreX, widget.topMargin, widget.radius, widget._properties.linewidth);
-            widget.SVGArcWidget = new SVGArc(widget.svgElement, widget.id + "arcwidget", widget.centreX, widget.topMargin, widget.radius, widget._properties.linewidth);            
+            widget.SVGArcWidget = new SVGArc(widget.svgElement, widget.id + "arcwidget", widget.centreX, widget.topMargin, widget.radius, widget._properties.linewidth);
             widget.SVGArcSpinner.y = widget.topMargin;
 
 
@@ -85,7 +88,7 @@
 
         }
 
-        
+
 
         RadialWidget.prototype.drawWidget = function drawWidget() {
             _BaseWidget.prototype.drawWidget.call(this);
@@ -112,7 +115,7 @@
 
             this.SVGArcBack.color = this._properties.percentbackgroundcolor.value;
             this.SVGArcBack.opacity = this._properties.percentbackgroundopacity.value;
-            
+
             this.SVGArcBack.draw(240, 240 + oneHangPercent); //radial widget
 
             this.SVGArcWidget.draw(240, 240 + drawPercent);

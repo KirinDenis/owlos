@@ -11,13 +11,13 @@
 }
 
 
-.devicesWidgetsPanel {
-    text-align: center;
+.devicesWidgetsPanel {    
+    padding-bottom: 15px;
 }
 
 .devicePanelDiv {
     position: Relative;
-    text-align: Bottom;
+    
     padding-top: 7px;
     height: 120px;
     margin-bottom: 40px;

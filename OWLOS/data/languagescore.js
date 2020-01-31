@@ -166,6 +166,9 @@
     "notused=не використовується\n" +
     "checkchangedialog=застосувати ці зміни\n" +
     "applycheck=застосувати\n" +    
+    "showproperties=Властивості віджета\n" +
+    "setallwidgetspropbutton=Застосувати до всіх\n" +
+    "setpropbutton=Застосувати\n" +
     "language=ukraine\n";
 
 var langen = "prepareUnit=prepare UI, please wait...\n" +

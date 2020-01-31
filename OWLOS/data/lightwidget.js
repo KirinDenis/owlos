@@ -34,7 +34,7 @@ var LightWidget =
 
             widget._properties.lightcolor =
                 {
-                    name: "light indicator color",
+                    tab: "C",
                     value: theme.warning,
                     type: "c"
                 };
@@ -57,12 +57,12 @@ var LightWidget =
             _BaseWidget.prototype.drawText.call(this);
             if (this.SVGWidgetText == undefined) return;
             this.SVGWidgetText.y = this.size / 5 + this.SVGWidgetText.height / 2;
-            
+
         };
 
         LightWidget.prototype.drawWidget = function drawWidget() {
             _BaseWidget.prototype.drawWidget.call(this);
-            if (this.levelArc == undefined) return;            
+            if (this.levelArc == undefined) return;
             for (var i = 0; i < 4; i++) {
                 this.levelArc[i].hide();
 
