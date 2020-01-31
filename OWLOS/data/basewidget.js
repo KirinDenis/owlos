@@ -50,7 +50,7 @@ function defaultWidgetProperties() {
 
         valuetextcolor: {            
             tab: "C",
-            value: theme.secondary,
+            value: theme.light,
             type: "c"
         },
 
@@ -126,7 +126,7 @@ var BaseWidget =
 
             widget.SVGBackdownpanel = new SVGArc(widget.svgElement, widget.id + "backdownpanel", 0, widget.height - 10, widget.width, 1);
             widget.SVGBackdownpanel.drawRoundedRect(widget.width, 10, 5, 0, false, false, true, true);
-            widget.SVGBackdownpanel.opacity = 0.5;
+            widget.SVGBackdownpanel.opacity = 0.9;
             widget.SVGBackdownpanel.fill = theme.secondary;
 
 

@@ -26,6 +26,7 @@ var GraphWidget =
             widget.height = widget.size;
             widget.centreX = widget.width / 2; //  this.centreY = this.height / 2;
 
+            
             widget.widgetTextSize = widget.size / 110;
             widget.graphWidth = widget.width - widget.panding;
             widget.graphHeight = widget.height - widget.size / 3.4;
@@ -36,47 +37,54 @@ var GraphWidget =
             //  widget.svgElement.setAttributeNS(null, "width", widget.width);
             //  widget.svgElement.setAttributeNS(null, "height", widget.height);
 
-            widget.SVGBackpanel.drawRoundedRect(widget.width, widget.height, 5, 10, true, true, true, true);
-            widget.SVGBackdownpanel.drawRoundedRect(widget.width, 10, 5, 0, false, false, true, true);            
+            widget.SVGBackpanel.drawRoundedRect(widget.width - 5, widget.height - 6, 5, 10, true, true, true, true);
+            widget.SVGBackdownpanel.drawRoundedRect(widget.width - 5, 10, 5, 0, false, false, true, true);
             widget.SVGBoxBackpanel.drawRoundedRect(widget.width, 26, 5, 0, true, true, false, false);
-            
+
             //   widget.SVGBackdownpanel.y += 3;
+
+
+            widget._properties.lineColor = { tab: "Graph", value: theme.success, type: "c" };
+            widget._properties.lineOpacity = { tab: "Graph", value: 0.5, type: "f" };
+
+            widget._properties.backOpacity = { tab: "Graph", value: 0.4, type: "f" };
+
+            widget._properties.gradient1Color = { tab: "Graph", value: theme.success, type: "c" };
+            widget._properties.gradient1Opacity = { tab: "Graph", value: 0.7, type: "f" };
+            widget._properties.gradient1Offset = { tab: "Graph", value: 0, type: "i" };
+
+            widget._properties.gradient2Color = { tab: "Graph", value: theme.success, type: "c" };
+            widget._properties.gradient2Opacity = { tab: "Graph", value: 0.4, type: "f" };
+            widget._properties.gradient2Offset = { tab: "Graph", value: 60, type: "i" };
+
+            widget._properties.gradient3Color = { tab: "Graph", value: theme.success, type: "c" };
+            widget._properties.gradient3Opacity = { tab: "Graph", value: 0.2, type: "f" };
+            widget._properties.gradient3Offset = { tab: "Graph", value: 80, type: "i" };
             
+            widget.SVGBackdownpanel.width = widget.width;            
+            widget.stop1 = document.createElementNS(xmlns, 'stop');
+            widget.stop2 = document.createElementNS(xmlns, 'stop');
+            widget.stop2.setAttribute('class', 'stop2');
+            widget.stop3 = document.createElementNS(xmlns, 'stop');
+            widget.stop3.setAttribute('class', 'stop3');
 
-            widget.SVGBackdownpanel.width = widget.width;
-           // widget.SVGBackdownpanel.y = widget.height;
-            var stop1 = document.createElementNS(xmlns, 'stop');
-            stop1.setAttribute('stop-color', theme.success);
-            stop1.setAttribute('stop-opacity', "0.7");
-            stop1.setAttribute('offset', "0%");
-            var stop2 = document.createElementNS(xmlns, 'stop');
-            stop2.setAttribute('class', 'stop2');
-            stop2.setAttribute('stop-color', theme.success);
-            stop2.setAttribute('stop-opacity', "0.4");
-            stop2.setAttribute('offset', "60%");
-            var stop3 = document.createElementNS(xmlns, 'stop');
-            stop3.setAttribute('class', 'stop3');
-            stop3.setAttribute('stop-color', theme.success);
-            stop3.setAttribute('stop-opacity', "0.2");
-            stop3.setAttribute('offset', "80%");
-            var gradient = document.createElementNS(xmlns, 'linearGradient');
-            gradient.id = 'GraphGradient';
-            gradient.setAttribute('x1', '0');
-            gradient.setAttribute('x2', '0');
-            gradient.setAttribute('y1', '0');
-            gradient.setAttribute('y2', '1');
-            gradient.appendChild(stop1);
-            gradient.appendChild(stop2);
-            gradient.appendChild(stop3);
+            widget.gradient = document.createElementNS(xmlns, 'linearGradient');
+            widget.gradient.id = widget.id + 'GraphGradient';
+            widget.gradient.setAttribute('x1', '0');
+            widget.gradient.setAttribute('x2', '0');
+            widget.gradient.setAttribute('y1', '0');
+            widget.gradient.setAttribute('y2', '1');
+            widget.gradient.appendChild(widget.stop1);
+            widget.gradient.appendChild(widget.stop2);
+            widget.gradient.appendChild(widget.stop3);
 
-            widget.svgElement.appendChild(gradient);
+
+            widget.svgElement.appendChild(widget.gradient);
 
             widget.SVGPath1 = new SVGArc(widget.svgElement, widget.id + "path1", widget.graphTop + " " + widget.halfPanding + " " + widget.graphWidth + " " + widget.graphHeight);
-            widget.SVGPath1.fill = 'url(#GraphGradient)';
-            widget.SVGPath1.opacity = 0.4;
+            widget.SVGPath1.fill = 'url(#' + widget.id + 'GraphGradient)';
+            
             widget.SVGPath2 = new SVGArc(widget.svgElement, widget.id + "path2", widget.graphTop + " " + widget.halfPanding + " " + widget.graphWidth + " " + widget.graphHeight);
-            widget.SVGPath2.color = theme.secondary;
-            widget.SVGPath2.opacity = 0.5;
             widget.SVGLabel.text = "Graph";
             widget.widgetLeft = widget.centreX - widget.textWidth / 2;
             widget.widgetTop = widget.centreY + widget.SVGLabel.height - widget.textHeight * 4 / 2;
@@ -87,7 +95,7 @@ var GraphWidget =
             widget.SVGMiddleLabel.color = theme.secondary;
             widget.SVGDownLabel = new SVGText(widget.svgElement, widget.id + "toplabel", labelTextSize);
             widget.SVGDownLabel.color = theme.secondary;
-            widget.SVGTopLabel.x = widget.SVGMiddleLabel.x = widget.SVGDownLabel.x = widget.width / 48;
+            widget.SVGTopLabel.x = widget.SVGMiddleLabel.x = widget.SVGDownLabel.x = widget.width / 40;
             widget.SVGTopLine = new SVGRect(widget.svgElement, widget.id + "topline", widget.width / 48, 0, widget.graphWidth, 1);
             widget.SVGTopLine.opacity = 0.1;
             widget.SVGTopLine.color = theme.secondary;
@@ -98,7 +106,7 @@ var GraphWidget =
             widget.SVGDownLine.opacity = 0.1;
             widget.SVGDownLine.color = theme.secondary;
 
-            
+
             /*
             if (icon != undefined) {
                 widget.SVGIcon = new SVGIcon(widget.svgElement, icon, widget.width - widget.size / 6, widget.size / 24, widget.size / 8, widget.size / 8);
@@ -117,7 +125,7 @@ var GraphWidget =
             widget.SVGRightIcon.x = widget.width - widget.rowSize; //  this.SVGPlusIcon.x = this.width / 2 - this.rowSize / 2;
             widget.SVGPropertiesIcon.x = widget.width / 2 - widget.rowSize / 2;
             widget.SVGDeleteIcon.x = widget.width - widget.rowSize + widget.size / 55;
-            
+
 
             //   widget.widgetHolder.appendChild(widget.svgElement);
 
@@ -154,21 +162,39 @@ var GraphWidget =
         };
 
         GraphWidget.prototype.drawWidget = function drawWidget() {
+            if (this.graphWidth == undefined) {
+                return;
+            }
             if (this.historyData != undefined) {
+
+                
+                this.stop1.setAttribute('stop-color', this.properties.gradient1Color.value);
+                this.stop1.setAttribute('stop-opacity', this.properties.gradient1Opacity.value);
+                this.stop1.setAttribute('offset', this.properties.gradient1Offset.value + '%');
+
+                this.stop2.setAttribute('stop-color', this.properties.gradient2Color.value);
+                this.stop2.setAttribute('stop-opacity', this.properties.gradient2Opacity.value);
+                this.stop2.setAttribute('offset', this.properties.gradient2Offset.value + '%');
+
+                this.stop3.setAttribute('stop-color', ' ' + this.properties.gradient3Color.value);
+                this.stop3.setAttribute('stop-opacity', this.properties.gradient3Opacity.value);
+                this.stop3.setAttribute('offset', this.properties.gradient3Offset.value + '%');                
+
                 //reset 
                 var updatedFilteredData = this.historyDataFilter(this.graphWidth, this.historyData, 1, 1); //It is important to draw Y lalues at first and curve after!!!
 
                 this.grawYValuesPoints(this.SVGTopLabel, this.SVGMiddleLabel, this.SVGDownLabel, updatedFilteredData);
-                var d = this.curveForDrawing(updatedFilteredData, this.graphHeight, this.graphTop, this.panding * 1.2);
+                var d = this.curveForDrawing(updatedFilteredData, this.graphHeight, this.graphTop, this.panding * 0.9 + 10);
 
                 switch (this._networkStatus) {
                     case NET_ONLINE:
-                        this.SVGPath1.opacity = 0.4;
-                        this.toColor(this.SVGPath2, theme.success);
+                        this.SVGPath1.opacity = this._properties.backOpacity.value;
+                        this.SVGPath2.opacity = this._properties.lineOpacity.value;
+                        this.toColor(this.SVGPath2, this._properties.lineColor.value);
                         this.toColor(this.SVGTopLabel, theme.secondary);
                         this.toColor(this.SVGMiddleLabel, theme.secondary);
                         this.toColor(this.SVGDownLabel, theme.secondary);
-                        this.SVGIcon.fill = theme.secondary;
+                        this.SVGIcon.fill = this._properties.backOpacity.value;
                         break;
 
                     case NET_ERROR:

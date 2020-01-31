@@ -279,6 +279,15 @@ var HumidityWidgetWrapper =
 
         _inheritsLoose(HumidityWidgetWrapper, _BaseWidgetWrapper2);
 
+        function HumidityWidgetWrapper(parentPanel, device, deviceProperty, configPropertiesWidget, widgetProperties) {
+            var _this2;
+
+            _this2 = _BaseWidgetWrapper2.call(this, parentPanel, device, deviceProperty, true, configPropertiesWidget, widgetProperties) || this;
+            if (device == undefined) return _assertThisInitialized(_this2);
+            return _this2;
+        }
+
+
         var _proto3 = HumidityWidgetWrapper.prototype;
 
         _proto3.offlineStarter = function offlineStarter(parentPanel, deviceId, devicePropertyName) {
@@ -288,14 +297,6 @@ var HumidityWidgetWrapper =
             this.widget.deviceClass = this;
             this.widget.onload = this.onWidgetLoad;
         };
-
-        function HumidityWidgetWrapper(parentPanel, device, deviceProperty, configPropertiesWidget, widgetProperties) {
-            var _this2;
-
-            _this2 = _BaseWidgetWrapper2.call(this, parentPanel, device, deviceProperty, true, configPropertiesWidget, widgetProperties) || this;
-            if (device == undefined) return _assertThisInitialized(_this2);
-            return _this2;
-        }
 
         _proto3.draw = function draw() {
             if (this.widget == undefined) return;
@@ -322,17 +323,6 @@ var HistoryDataGraphWidgetWrapper =
 
         _inheritsLoose(HistoryDataGraphWidgetWrapper, _BaseWidgetWrapper3);
 
-        var _proto4 = HistoryDataGraphWidgetWrapper.prototype;
-
-        _proto4.offlineStarter = function offlineStarter(parentPanel, deviceId, devicePropertyName) {
-            _BaseWidgetWrapper3.prototype.offlineStarter.call(this, parentPanel, deviceId, devicePropertyName, true);
-
-            this.widget = new GraphWidget(parentPanel, deviceId, configProperties.widgetssize, temperatureIcon);
-            this.widget.deviceClass = this;
-            this.widget.widgetHolder.onclick = this.widgetClick;
-            this.draw();
-        };
-
         function HistoryDataGraphWidgetWrapper(parentPanel, device, deviceProperty, configPropertiesWidget, widgetProperties) {
             var _this3;
 
@@ -340,6 +330,40 @@ var HistoryDataGraphWidgetWrapper =
             if (device == undefined) return _assertThisInitialized(_this3);
             return _this3;
         }
+
+        var _proto4 = HistoryDataGraphWidgetWrapper.prototype;
+
+        _proto4.offlineStarter = function offlineStarter(parentPanel, deviceId, devicePropertyName) {
+            _BaseWidgetWrapper3.prototype.offlineStarter.call(this, parentPanel, deviceId, devicePropertyName, true);
+
+            this.widget = new GraphWidget(parentPanel, deviceId, configProperties.widgetssize, temperatureIcon);
+            this.widget.deviceClass = this;
+            this.widget.onload = this.onWidgetLoad;                
+
+           // this.widget.deviceClass = this;
+            //this.widget.widgetHolder.onclick = this.widgetClick;
+            //this.draw();
+
+        };
+
+        _proto4.onWidgetLoad = function onWidgetLoad(widget) {
+            widget.widgetHolder.onclick = widget.deviceClass.widgetClick;
+
+            //widget.deviceClass.draw();
+            //widget.properties = widget.deviceClass.configPropertiesWidget;
+            if (widget.deviceClass.widgetProperties != undefined) {
+                widget.properties = widget.deviceClass.widgetProperties;
+            }
+
+            if (widget.deviceClass.device != undefined) {
+                widget.deviceClass.joinDevice(widget.deviceClass.device, widget.deviceClass.deviceProperty);
+            }
+
+            if (widget.deviceClass._onload != undefined) {
+                widget.deviceClass._onload(widget.deviceClass);
+            }
+        };
+
 
         _proto4.draw = function draw() {
             if (this.widget == undefined) return;
@@ -583,7 +607,7 @@ var ActuatorWidgetWrapper =
             } else {
                 this.device = device;
                 this.deviceProperty = deviceProperty;
-                this.offlineStarter(parentPanel, device._id, deviceProperty.name, noWidget);
+                this.offlineStarter(parentPanel, device._id, deviceProperty.name, false);
             }
         }
 

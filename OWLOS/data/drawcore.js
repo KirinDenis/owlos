@@ -116,6 +116,16 @@ var SVGText =
             return width;
         };
 
+        _proto.getTextHeight = function getTextWidth(text) {
+            var element = document.body.appendChild(document.createElement("div"));
+            element.className = "WidgetText";
+            element.innerHTML = text;
+            var width = element.getBoundingClientRect().height;
+            //element.remove();
+            document.body.removeChild(element);
+            return width;
+        };
+
         _proto.visible = function visible() {
             this.SVGText.style.display = "block";
         };
@@ -168,13 +178,15 @@ var SVGText =
             }
         }, {
             key: "width",
-            get: function get() {
-                return parseFloat(this.SVGText.getBoundingClientRect().width);
+                get: function get() {
+                    return parseFloat(this.size * this.getTextWidth(this.text));
+                //return parseFloat(this.SVGText.getBoundingClientRect().width);
             }
         }, {
             key: "height",
                 get: function get() {                    
-                return parseFloat(this.SVGText.getBoundingClientRect().height);
+                    return parseFloat(this.size * this.getTextHeight(this.text));
+                //return parseFloat(this.SVGText.getBoundingClientRect().height);
             }
         }, {
             key: "color",
@@ -306,7 +318,7 @@ var SVGArc =
             this.SVGArc = document.createElementNS(xmlns, "path");
             this.SVGArc.setAttributeNS(null, 'x', x);
             this.SVGArc.setAttributeNS(null, 'y', y);
-            this.SVGArc.setAttributeNS(null, 'stroke-width', this.lineWidth);
+            this.SVGArc.setAttributeNS(null, 'stroke-width', lineWidth);
             this.SVGArc.setAttributeNS(null, 'stroke-linejoin', "round");
             this.SVGArc.setAttributeNS(null, 'fill', 'none');
             svgElement.appendChild(this.SVGArc);
