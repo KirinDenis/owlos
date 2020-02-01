@@ -26,8 +26,8 @@ var SmokeWidget =
             widget.level2 = [];
 
             for (var i = 0; i < 10; i++) {
-                widget.SVGLevelRect1 = new SVGRect(widget.svgElement, widget.id + "levelrect1" + i, widget.levelLeft, widget.levelTop + i * (widget.levelRectHeight * 2), widget.levelRectWidth, widget.levelRectHeight);
-                widget.SVGLevelRect2 = new SVGRect(widget.svgElement, widget.id + "levelrect2" + i, widget.panding, widget.levelTop + i * (widget.levelRectHeight * 2), widget.levelRectWidth, widget.levelRectHeight);
+                widget.SVGLevelRect1 = new SVGRect(widget.SVGViewBox, widget.id + "levelrect1" + i, widget.levelLeft, widget.levelTop + i * (widget.levelRectHeight * 2), widget.levelRectWidth, widget.levelRectHeight);
+                widget.SVGLevelRect2 = new SVGRect(widget.SVGViewBox, widget.id + "levelrect2" + i, widget.panding, widget.levelTop + i * (widget.levelRectHeight * 2), widget.levelRectWidth, widget.levelRectHeight);
                 widget.SVGLevelRect1.opacity = widget.SVGLevelRect2.opacity = i / 30;
                 widget.SVGLevelRect1.fill = widget.SVGLevelRect2.fill = theme.danger;
 
@@ -37,8 +37,8 @@ var SmokeWidget =
             }
 
             for (var i = 10; i < 20; i++) {
-                widget.SVGLevelRect1 = new SVGRect(widget.svgElement, widget.id + "levelrect" + i, widget.levelLeft, widget.levelTop + i * (widget.levelRectHeight * 2), widget.levelRectWidth, widget.levelRectHeight);
-                widget.SVGLevelRect2 = new SVGRect(widget.svgElement, widget.id + "levelrect2" + i, widget.panding, widget.levelTop + i * (widget.levelRectHeight * 2), widget.levelRectWidth, widget.levelRectHeight);
+                widget.SVGLevelRect1 = new SVGRect(widget.SVGViewBox, widget.id + "levelrect" + i, widget.levelLeft, widget.levelTop + i * (widget.levelRectHeight * 2), widget.levelRectWidth, widget.levelRectHeight);
+                widget.SVGLevelRect2 = new SVGRect(widget.SVGViewBox, widget.id + "levelrect2" + i, widget.panding, widget.levelTop + i * (widget.levelRectHeight * 2), widget.levelRectWidth, widget.levelRectHeight);
                 widget.SVGLevelRect1.opacity = widget.SVGLevelRect2.opacity = i / 30;
                 widget.SVGLevelRect1.fill = widget.SVGLevelRect2.fill = theme.warning;
 
@@ -48,8 +48,8 @@ var SmokeWidget =
             }
 
             for (var i = 20; i < 30; i++) {
-                widget.SVGLevelRect1 = new SVGRect(widget.svgElement, widget.id + "levelrect" + i, widget.levelLeft, widget.levelTop + i * (widget.levelRectHeight * 2), widget.levelRectWidth, widget.levelRectHeight);
-                widget.SVGLevelRect2 = new SVGRect(widget.svgElement, widget.id + "levelrect2" + i, widget.panding, widget.levelTop + i * (widget.levelRectHeight * 2), widget.levelRectWidth, widget.levelRectHeight);
+                widget.SVGLevelRect1 = new SVGRect(widget.SVGViewBox, widget.id + "levelrect" + i, widget.levelLeft, widget.levelTop + i * (widget.levelRectHeight * 2), widget.levelRectWidth, widget.levelRectHeight);
+                widget.SVGLevelRect2 = new SVGRect(widget.SVGViewBox, widget.id + "levelrect2" + i, widget.panding, widget.levelTop + i * (widget.levelRectHeight * 2), widget.levelRectWidth, widget.levelRectHeight);
                 widget.SVGLevelRect1.opacity = widget.SVGLevelRect2.opacity = i / 30;
                 widget.SVGLevelRect1.fill = widget.SVGLevelRect2.fill = theme.success;
 
@@ -61,7 +61,7 @@ var SmokeWidget =
             widget.levelArc = [];
 
             for (var i = 1; i < 5; i++) {
-                var SVGlevelArc = new SVGArc(widget.svgElement, widget.id + "arcback1" + i, widget.centreX, widget.levelTop, i * widget.radius, widget.size / 34);
+                var SVGlevelArc = new SVGArc(widget.SVGViewBox, widget.id + "arcback1" + i, widget.centreX, widget.levelTop, i * widget.radius, widget.size / 34);
                 SVGlevelArc.index = i;
                 SVGlevelArc.fill = theme.danger;
 

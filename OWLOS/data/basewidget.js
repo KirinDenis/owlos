@@ -1,4 +1,59 @@
-﻿var WORK_MODE = 0;
+﻿/*
+ 
+Виджет (Widget) - https://ru.wikipedia.org/wiki/%D0%AD%D0%BB%D0%B5%D0%BC%D0%B5%D0%BD%D1%82_%D0%B8%D0%BD%D1%82%D0%B5%D1%80%D1%84%D0%B5%D0%B9%D1%81%D0%B0
+ 
+Реализация базового(родительского) виджета.Все виджеты наследники объекта BaseWidget описанного в этом файле. 
+-------------------------------------------------------------------------------------------------------------
+
+Особенности реализации, примечания:
+-----------------------------------
+- Виджеты в этом проекте реализуются как можно более независимо от остальных модулей, идея заключается в том, что виджеты можно использовать для других проектов, особо не модифицируя код. 
+
+- Для визуализации был выбран SVG - векторная графика, относительно быстрый рендеринг, отсутствие "пиксилиризации".Изначально, в первых версиях использовался классический HTML Canvas, что 
+вызвало ряд проблем, в том числе - "пиксилиризация" шрифтов, сложности масштабирования.
+
+- Так как виджеты "отвязаны" от основного проекта, существует ряд объектов "оберток"(Wrappers), их реализацию можно увидеть в файле WidgetsWrappers.js.
+
+- Для совместимости с Internet Explorer пришлось отказаться от классов и "правильного" наследования https://babeljs.io/docs/en/learn/
+
+Архитектура и свойства виджетов:
+--------------------------------
+- виджет формирует изображение(рисует векторную картинку, рендерит контент) в корневом HTML DIV элементе - WidgetHolder, WidgetHolder родительский элемент для всех используемых
+  SVG элементов виджета. Так же, в данной реализации WidgetHolder осуществляет сопряжение виджетов с сеткой Bootstrap, сопрягая расположение элементов внутри страницы. 
+
+- как правило на верхний уровень WidgetHolder помещается только один SVG ViewBox элемент SVGViewBox - на этом уровне SVGViewBox отвечает за скалинг остальных элементов. Таким образом 
+  WidgetHolder позволяет масштабировать и позиционировать виджет используя Bootstrap, а в SVGViewBox отвечает за масштаб элементов внутри виджета. 
+
+- для правильного внутреннего масштабирования, SVG элементы должны "знать" исходный размер области экрана для от рисовки (изначально), по этой причине инициализация виджета происходит в 
+  два этапа - "конструктор" (классы не поддерживаются - поэтому метод function BaseWidget(...) формально играет роль конструктора) 
+    1) инкапсулирует WidgetHolder элемент, назначает ему Bootstrap HTML ClassName - например "col-sm-1" (одна ячайка в 12 разрядной сетке).
+
+    2) создает функция с потоком ожидания готовности WidgetHolder waitForElement(), этой функции передается адрес метода onrPanelLoad() который будет вызван как только ожидающий поток 
+    "обнаружит" возможность работать со свойствами WidgetHolder в рамках DOM.
+
+    3) В момент вызова onrPanelLoad() WidgetHolder находится на экране и получил все необходимые DOM свойства, в частности размер. onrPanelLoad() инкапсулирует SVGViewBox и все необходимые 
+    SVG элементы - привязываясь к текущему размеру WidgetHolder.
+    3.1) виджет предоставляет событие .onload - реализовав обработчик этого события, внешняя программа может "узнать" о том когда виджет загружен и готов к использованию. 
+
+    4) "конструктор" function BaseWidget(...) назначает обработчик события document..body.onresize - таким образом все привязанные к первоначальному размеру WidgetHolder элементы могут "узнают" об 
+    изменениях масштаба экрана. А так как все они помещены в SVGViewBox - достаточно изменять его размер симметрично изменениям размера экрана и сетки bootstrap.
+
+ - методы refresh(), drawText(), drawWidget():
+ -- все виджеты обязаны наследовать и перекрывать эти методы для внесения изменений в визуализацию виджита. 
+ -- refresh() создан для передачи отображаемых данных в виджет (в данном случае данных микроконтроллера)
+ -- drawText() управляет SVG текстовыми элементами виджета. 
+ -- drawWidget() управляет SVG графическими элементами виджета. 
+ -- drawText() и DrawWidget() реализованы отдельно, по той причине что многие изменяемые данные, представляют собой текст - для экономии ресурсов и повышения производительности, были решено 
+    "перерисовывать" текст отдельно. 
+
+Использование:
+ - вызвать baseWidget(), в параметрах назначить родительский HTML элемент. 
+ - по необходимости реализовать baseWidget.onload обработчик, и настроить виджет в этом обработчике. 
+ - по мере необходимости вызывать метод refresh() передавая новые данные для отображения виджетом (данные зависят от конкретного типа виджета)
+
+*/
+
+var WORK_MODE = 0;
 var MOVE_MODE = 1;
 
 var EVENT_NO = 0;
@@ -113,29 +168,29 @@ var BaseWidget =
             widget.centreY = widget.height / 2;
 
 
-            widget.svgElement = document.createElementNS(xmlns, "svg");
-            widget.svgElement.setAttributeNS(null, "viewBox", "0 " + "0 " + widget.size + " " + widget.size);
+            widget.SVGViewBox = document.createElementNS(xmlns, "svg");
+            widget.SVGViewBox.setAttributeNS(null, "viewBox", "0 " + "0 " + widget.size + " " + widget.size);
             widget.resize(widget.size);
-            widget.svgElement.style.display = "block";
+            widget.SVGViewBox.style.display = "block";
 
-            widget.SVGBackpanel = new SVGArc(widget.svgElement, widget.id + "backpanel", 0, 0, widget.width, 1);
+            widget.SVGBackpanel = new SVGArc(widget.SVGViewBox, widget.id + "backpanel", 0, 0, widget.width, 1);
             widget.SVGBackpanel.drawRoundedRect(widget.width, widget.height, 5, 10, true, true, true, true);
             
-            widget.SVGBoxBackpanel = new SVGArc(widget.svgElement, widget.id + "boxbackpanel", 0, 0, widget.width, 1);
+            widget.SVGBoxBackpanel = new SVGArc(widget.SVGViewBox, widget.id + "boxbackpanel", 0, 0, widget.width, 1);
             widget.SVGBoxBackpanel.drawRoundedRect(widget.width, 25, 5, 0, true, true, false, false);
 
-            widget.SVGBackdownpanel = new SVGArc(widget.svgElement, widget.id + "backdownpanel", 0, widget.height - 10, widget.width, 1);
+            widget.SVGBackdownpanel = new SVGArc(widget.SVGViewBox, widget.id + "backdownpanel", 0, widget.height - 10, widget.width, 1);
             widget.SVGBackdownpanel.drawRoundedRect(widget.width, 10, 5, 0, false, false, true, true);
             widget.SVGBackdownpanel.opacity = 0.9;
             widget.SVGBackdownpanel.fill = theme.secondary;
 
 
-            widget.SVGWidgetText = new SVGText(widget.svgElement, widget.id + "widgettext", widget.size / 80);
+            widget.SVGWidgetText = new SVGText(widget.SVGViewBox, widget.id + "widgettext", widget.size / 80);
             widget.SVGWidgetText.opacity = 0.7;
             widget.SVGWidgetText.color = theme.secondary;
-            widget.SVGLabel = new SVGText(widget.svgElement, widget.id + "label", widget.size / 150);
+            widget.SVGLabel = new SVGText(widget.SVGViewBox, widget.id + "label", widget.size / 150);
             widget.SVGLabel.color = theme.secondary;
-            widget.SVGHint = new SVGText(widget.svgElement, widget.id + "hint", widget.size / 150);
+            widget.SVGHint = new SVGText(widget.SVGViewBox, widget.id + "hint", widget.size / 150);
             widget.SVGHint.color = theme.secondary;
 
 
@@ -158,8 +213,8 @@ var BaseWidget =
             gradient.appendChild(stop1);
             gradient.appendChild(stop2);
             gradient.appendChild(stop3);
-            widget.svgElement.appendChild(gradient);
-            widget.SVGArcSpinner = new SVGArc(widget.svgElement, widget.id + "arcwidget", widget.centreX, widget.centreY + widget.topMargin, widget.size / 4, widget.size / 24);
+            widget.SVGViewBox.appendChild(gradient);
+            widget.SVGArcSpinner = new SVGArc(widget.SVGViewBox, widget.id + "arcwidget", widget.centreX, widget.centreY + widget.topMargin, widget.size / 4, widget.size / 24);
             widget.SVGArcSpinner.color = 'url(#Gradient)';
             widget.SVGArcSpinner.opacity = 0.4; //equalizer 
             //width = 20 
@@ -177,7 +232,7 @@ var BaseWidget =
                 var equalizerY = [];
 
                 for (var y = 0; y < 5; y++) {
-                    var SVGEqualizerpanel = new SVGRect(widget.svgElement, widget.id + "backpanel", widget.eX + x * widget.eWidth * 2, widget.eY + y * widget.eHeight * 2, widget.eRWidth, widget.eRWidth);
+                    var SVGEqualizerpanel = new SVGRect(widget.SVGViewBox, widget.id + "backpanel", widget.eX + x * widget.eWidth * 2, widget.eY + y * widget.eHeight * 2, widget.eRWidth, widget.eRWidth);
                     SVGEqualizerpanel.opacity = 0.0;
                     SVGEqualizerpanel.fill = theme.secondary;
 
@@ -188,30 +243,30 @@ var BaseWidget =
             }
 
             widget.rowSize = widget.size / 6;
-            widget.SVGLeftIcon = new SVGIcon(widget.svgElement, leftIcon, widget.panding, widget.height - widget.rowSize, widget.rowSize, widget.rowSize);
+            widget.SVGLeftIcon = new SVGIcon(widget.SVGViewBox, leftIcon, widget.panding, widget.height - widget.rowSize, widget.rowSize, widget.rowSize);
             widget.SVGLeftIcon.fill = theme.light;
             widget.SVGLeftIcon.SVGIcon.widget = widget;
             widget.SVGLeftIcon.SVGIcon.onclick = widget.moveLeft;
             widget.SVGLeftIcon.hide();
-            widget.SVGRightIcon = new SVGIcon(widget.svgElement, rightIcon, widget.width - widget.rowSize, widget.height - widget.rowSize , widget.rowSize, widget.rowSize);
+            widget.SVGRightIcon = new SVGIcon(widget.SVGViewBox, rightIcon, widget.width - widget.rowSize, widget.height - widget.rowSize , widget.rowSize, widget.rowSize);
             widget.SVGRightIcon.fill = theme.light;
             widget.SVGRightIcon.SVGIcon.widget = widget;
             widget.SVGRightIcon.SVGIcon.onclick = widget.moveRight;
             widget.SVGRightIcon.hide();
 
-            widget.SVGDeleteIcon = new SVGIcon(widget.svgElement, deleteIcon, widget.width - widget.rowSize + widget.size / 28, 0, widget.rowSize, widget.rowSize);
+            widget.SVGDeleteIcon = new SVGIcon(widget.SVGViewBox, deleteIcon, widget.width - widget.rowSize + widget.size / 28, 0, widget.rowSize, widget.rowSize);
             widget.SVGDeleteIcon.fill = theme.light;
             widget.SVGDeleteIcon.SVGIcon.widget = widget;
             widget.SVGDeleteIcon.SVGIcon.onclick = widget.deleteWidgetClick;
             widget.SVGDeleteIcon.hide();
 
-            widget.SVGPropertiesIcon = new SVGIcon(widget.svgElement, buildIcon, widget.width / 2 - widget.rowSize / 2, widget.height - widget.rowSize , widget.rowSize, widget.rowSize);
+            widget.SVGPropertiesIcon = new SVGIcon(widget.SVGViewBox, buildIcon, widget.width / 2 - widget.rowSize / 2, widget.height - widget.rowSize , widget.rowSize, widget.rowSize);
             widget.SVGPropertiesIcon.fill = theme.light;
             widget.SVGPropertiesIcon.SVGIcon.widget = widget;
             widget.SVGPropertiesIcon.SVGIcon.onclick = widget.propertiesClick;
             widget.SVGPropertiesIcon.hide();
 
-            widget.widgetHolder.appendChild(widget.svgElement);
+            widget.widgetHolder.appendChild(widget.SVGViewBox);
 
             widget._properties = defaultWidgetProperties();
 
@@ -459,8 +514,8 @@ var BaseWidget =
 
             if (this.SVGWidgetText == undefined) return;
 
-            this.svgElement.setAttributeNS(null, "width", size);
-            this.svgElement.setAttributeNS(null, "height", size);
+            this.SVGViewBox.setAttributeNS(null, "width", size);
+            this.SVGViewBox.setAttributeNS(null, "height", size);
 
             //this.drawText();
 
@@ -471,13 +526,11 @@ var BaseWidget =
             for (var widgetKey in body.widget) {
                 var widget = body.widget[widgetKey];
                 widget.resize(widget.widgetHolder.clientWidth);
-                // widget.svgElement.setAttributeNS(null, "width", widget.widgetHolder.clientWidth);
-                //  widget.svgElement.setAttributeNS(null, "height", widget.widgetHolder.clientWidth);
+                // widget.SVGViewBox.setAttributeNS(null, "width", widget.widgetHolder.clientWidth);
+                //  widget.SVGViewBox.setAttributeNS(null, "height", widget.widgetHolder.clientWidth);
 
             }
         }
-
-
 
 
 
@@ -496,11 +549,11 @@ var BaseWidget =
         };
 
         BaseWidget.prototype.clickableToTop = function clickableToTop() {
-            this.svgElement.insertBefore(this.SVGWidgetText.SVGText, this.svgElement.childNodes.lastChild);
-            this.svgElement.insertBefore(this.SVGLeftIcon.SVGIcon, this.svgElement.childNodes.lastChild);
-            this.svgElement.insertBefore(this.SVGRightIcon.SVGIcon, this.svgElement.childNodes.lastChild); // this.svgElement.insertBefore(this.SVGPlusIcon.SVGIcon, this.svgElement.childNodes.lastChild);
-            this.svgElement.insertBefore(this.SVGDeleteIcon.SVGIcon, this.svgElement.childNodes.lastChild);
-            this.svgElement.insertBefore(this.SVGPropertiesIcon.SVGIcon, this.svgElement.childNodes.lastChild);
+            this.SVGViewBox.insertBefore(this.SVGWidgetText.SVGText, this.SVGViewBox.childNodes.lastChild);
+            this.SVGViewBox.insertBefore(this.SVGLeftIcon.SVGIcon, this.SVGViewBox.childNodes.lastChild);
+            this.SVGViewBox.insertBefore(this.SVGRightIcon.SVGIcon, this.SVGViewBox.childNodes.lastChild); // this.SVGViewBox.insertBefore(this.SVGPlusIcon.SVGIcon, this.SVGViewBox.childNodes.lastChild);
+            this.SVGViewBox.insertBefore(this.SVGDeleteIcon.SVGIcon, this.SVGViewBox.childNodes.lastChild);
+            this.SVGViewBox.insertBefore(this.SVGPropertiesIcon.SVGIcon, this.SVGViewBox.childNodes.lastChild);
         };
 
         BaseWidget.prototype.showProperties = function showProperties(_event, _sender) {
@@ -780,8 +833,8 @@ var BaseWidget =
             var widget = event.currentTarget.widget;
 
             if (widget.mode == MOVE_MODE) {
-                widget.svgElement.setAttributeNS(null, "width", widget.width += 25);
-                widget.svgElement.setAttributeNS(null, "height", widget.height += 25);
+                widget.SVGViewBox.setAttributeNS(null, "width", widget.width += 25);
+                widget.SVGViewBox.setAttributeNS(null, "height", widget.height += 25);
             }
 
             return true;

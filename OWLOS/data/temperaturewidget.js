@@ -20,12 +20,12 @@ var TemperatureWidget =
             widget.tempTop = widget.height / 4.5 - widget.tempHeight / 2;
             widget.tempItem = [];
 
-            widget.SVGWidgetExtText = new SVGText(widget.svgElement, widget.id + "widgetexttext", widget.size / 160);
+            widget.SVGWidgetExtText = new SVGText(widget.SVGViewBox, widget.id + "widgetexttext", widget.size / 160);
             widget.SVGWidgetExtText.color = theme.secondary;
 
 
             for (var i = 0; i < 20; i++) {
-                var svgRect = new SVGRect(widget.svgElement, widget.id + "tempItem" + i, widget.panding + widget.tempWidth * i, widget.tempTop, widget.tempWidth - 2, widget.tempHeight);
+                var svgRect = new SVGRect(widget.SVGViewBox, widget.id + "tempItem" + i, widget.panding + widget.tempWidth * i, widget.tempTop, widget.tempWidth - 2, widget.tempHeight);
                 if (i < 7) {
                     svgRect.fill = theme.info;
 

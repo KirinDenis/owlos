@@ -20,7 +20,7 @@ var LightWidget =
             widget.levelArc = [];
 
             for (var i = 1; i < 5; i++) {
-                var SVGlevelArc = new SVGArc(widget.svgElement, widget.id + "arcback1" + i, widget.centreX, widget.topMargin, i * widget.radius, widget.size / 14);
+                var SVGlevelArc = new SVGArc(widget.SVGViewBox, widget.id + "arcback1" + i, widget.centreX, widget.topMargin, i * widget.radius, widget.size / 14);
                 SVGlevelArc.index = i;
                 SVGlevelArc.opacity = i * 0.2;
 

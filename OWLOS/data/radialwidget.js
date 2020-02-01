@@ -72,8 +72,8 @@
 
             widget.radius = widget.size / 3;
             widget.topMargin = widget.centreY + widget.size / 10;
-            widget.SVGArcBack = new SVGArc(widget.svgElement, widget.id + "arcback", widget.centreX, widget.topMargin, widget.radius, widget._properties.linewidth);
-            widget.SVGArcWidget = new SVGArc(widget.svgElement, widget.id + "arcwidget", widget.centreX, widget.topMargin, widget.radius, widget._properties.linewidth);
+            widget.SVGArcBack = new SVGArc(widget.SVGViewBox, widget.id + "arcback", widget.centreX, widget.topMargin, widget.radius, widget._properties.linewidth);
+            widget.SVGArcWidget = new SVGArc(widget.SVGViewBox, widget.id + "arcwidget", widget.centreX, widget.topMargin, widget.radius, widget._properties.linewidth);
             widget.SVGArcSpinner.y = widget.topMargin;
 
 

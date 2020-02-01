@@ -22,21 +22,21 @@ var ActuatorWidget =
 
             if (widget.iconOn == undefined && widget.iconOff == undefined) {
                 widget.widgetType = DEFAULT_TYPE;
-                widget.SVGArcBack = new SVGArc(widget.svgElement, widget.id + "arcback", widget.centreX, widget.centreY + widget.topMargin, widget.radius + widget.size / 20, widget.size / 100);
+                widget.SVGArcBack = new SVGArc(widget.SVGViewBox, widget.id + "arcback", widget.centreX, widget.centreY + widget.topMargin, widget.radius + widget.size / 20, widget.size / 100);
                 widget.SVGArcBack.color = theme.secondary;
-                widget.SVGArcWidget = new SVGArc(widget.svgElement, widget.id + "arcwidget", widget.centreX, widget.centreY + widget.topMargin, widget.radius, widget.size / 14);
+                widget.SVGArcWidget = new SVGArc(widget.SVGViewBox, widget.id + "arcwidget", widget.centreX, widget.centreY + widget.topMargin, widget.radius, widget.size / 14);
                 widget.SVGArcWidget.color = theme.secondary;
                 widget.SVGArcWidget.fill = theme.secondary;
             } else {
                 widget.widgetType = ICONS_TYPE;
                 widget.rowSize = widget.size / 2.5;                
-                widget.SVGIconOn = new SVGIcon(widget.svgElement, widget.iconOn, widget.width / 2 - widget.rowSize / 2, widget.height / 2 - widget.rowSize / 2, widget.rowSize, widget.rowSize);
+                widget.SVGIconOn = new SVGIcon(widget.SVGViewBox, widget.iconOn, widget.width / 2 - widget.rowSize / 2, widget.height / 2 - widget.rowSize / 2, widget.rowSize, widget.rowSize);
                 widget.SVGIconOn.fill = theme.success;
                 widget.SVGIconOn.SVGIcon.widget = _assertThisInitialized(widget);
                 widget.SVGIconOn.hide();
 
                 
-                widget.SVGIconOff = new SVGIcon(widget.svgElement, widget.iconOff, widget.width / 2 - widget.rowSize / 2, widget.height / 2 - widget.rowSize / 2, widget.rowSize, widget.rowSize);
+                widget.SVGIconOff = new SVGIcon(widget.SVGViewBox, widget.iconOff, widget.width / 2 - widget.rowSize / 2, widget.height / 2 - widget.rowSize / 2, widget.rowSize, widget.rowSize);
                 widget.SVGIconOff.fill = theme.success;
                 widget.SVGIconOff.SVGIcon.widget = _assertThisInitialized(widget);
 

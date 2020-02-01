@@ -17,7 +17,7 @@ var GraphWidget =
             var widget = rPanel.widget;
 
             widget.widgetHolder.className = "col-sm-2";
-            // widget.widgetHolder.removeChild(widget.svgElement);
+            // widget.widgetHolder.removeChild(widget.SVGViewBox);
 
 
             widget.topMargin = widget.size / 20; //this.panding = 5;
@@ -32,10 +32,10 @@ var GraphWidget =
             widget.graphHeight = widget.height - widget.size / 3.4;
             widget.graphTop = widget.size / 3.7;
 
-            widget.svgElement.setAttributeNS(null, "viewBox", "0 0 " + widget.width + " " + widget.height);
+            widget.SVGViewBox.setAttributeNS(null, "viewBox", "0 0 " + widget.width + " " + widget.height);
 
-            //  widget.svgElement.setAttributeNS(null, "width", widget.width);
-            //  widget.svgElement.setAttributeNS(null, "height", widget.height);
+            //  widget.SVGViewBox.setAttributeNS(null, "width", widget.width);
+            //  widget.SVGViewBox.setAttributeNS(null, "height", widget.height);
 
             widget.SVGBackpanel.drawRoundedRect(widget.width - 5, widget.height - 6, 5, 10, true, true, true, true);
             widget.SVGBackdownpanel.drawRoundedRect(widget.width - 5, 10, 5, 0, false, false, true, true);
@@ -79,42 +79,42 @@ var GraphWidget =
             widget.gradient.appendChild(widget.stop3);
 
 
-            widget.svgElement.appendChild(widget.gradient);
+            widget.SVGViewBox.appendChild(widget.gradient);
 
-            widget.SVGPath1 = new SVGArc(widget.svgElement, widget.id + "path1", widget.graphTop + " " + widget.halfPanding + " " + widget.graphWidth + " " + widget.graphHeight);
+            widget.SVGPath1 = new SVGArc(widget.SVGViewBox, widget.id + "path1", widget.graphTop + " " + widget.halfPanding + " " + widget.graphWidth + " " + widget.graphHeight);
             widget.SVGPath1.fill = 'url(#' + widget.id + 'GraphGradient)';
             
-            widget.SVGPath2 = new SVGArc(widget.svgElement, widget.id + "path2", widget.graphTop + " " + widget.halfPanding + " " + widget.graphWidth + " " + widget.graphHeight);
+            widget.SVGPath2 = new SVGArc(widget.SVGViewBox, widget.id + "path2", widget.graphTop + " " + widget.halfPanding + " " + widget.graphWidth + " " + widget.graphHeight);
             widget.SVGLabel.text = "Graph";
             widget.widgetLeft = widget.centreX - widget.textWidth / 2;
             widget.widgetTop = widget.centreY + widget.SVGLabel.height - widget.textHeight * 4 / 2;
             var labelTextSize = widget.size / 210;
-            widget.SVGTopLabel = new SVGText(widget.svgElement, widget.id + "toplabel", labelTextSize);
+            widget.SVGTopLabel = new SVGText(widget.SVGViewBox, widget.id + "toplabel", labelTextSize);
             widget.SVGTopLabel.color = theme.secondary;
-            widget.SVGMiddleLabel = new SVGText(widget.svgElement, widget.id + "toplabel", labelTextSize);
+            widget.SVGMiddleLabel = new SVGText(widget.SVGViewBox, widget.id + "toplabel", labelTextSize);
             widget.SVGMiddleLabel.color = theme.secondary;
-            widget.SVGDownLabel = new SVGText(widget.svgElement, widget.id + "toplabel", labelTextSize);
+            widget.SVGDownLabel = new SVGText(widget.SVGViewBox, widget.id + "toplabel", labelTextSize);
             widget.SVGDownLabel.color = theme.secondary;
             widget.SVGTopLabel.x = widget.SVGMiddleLabel.x = widget.SVGDownLabel.x = widget.width / 40;
-            widget.SVGTopLine = new SVGRect(widget.svgElement, widget.id + "topline", widget.width / 48, 0, widget.graphWidth, 1);
+            widget.SVGTopLine = new SVGRect(widget.SVGViewBox, widget.id + "topline", widget.width / 48, 0, widget.graphWidth, 1);
             widget.SVGTopLine.opacity = 0.1;
             widget.SVGTopLine.color = theme.secondary;
-            widget.SVGMiddleLine = new SVGRect(widget.svgElement, widget.id + "middlieline", widget.width / 48, 0, widget.graphWidth, 1);
+            widget.SVGMiddleLine = new SVGRect(widget.SVGViewBox, widget.id + "middlieline", widget.width / 48, 0, widget.graphWidth, 1);
             widget.SVGMiddleLine.opacity = 0.1;
             widget.SVGMiddleLine.color = theme.secondary;
-            widget.SVGDownLine = new SVGRect(widget.svgElement, widget.id + "downline", widget.width / 48, 0, widget.graphWidth, 1);
+            widget.SVGDownLine = new SVGRect(widget.SVGViewBox, widget.id + "downline", widget.width / 48, 0, widget.graphWidth, 1);
             widget.SVGDownLine.opacity = 0.1;
             widget.SVGDownLine.color = theme.secondary;
 
 
             /*
             if (icon != undefined) {
-                widget.SVGIcon = new SVGIcon(widget.svgElement, icon, widget.width - widget.size / 6, widget.size / 24, widget.size / 8, widget.size / 8);
+                widget.SVGIcon = new SVGIcon(widget.SVGViewBox, icon, widget.width - widget.size / 6, widget.size / 24, widget.size / 8, widget.size / 8);
             } else {
-                widget.SVGIcon = new SVGIcon(widget.svgElement, addIcon, widget.width - widget.size / 6, widget.size / 24, widget.size / 8, widget.size / 8);
+                widget.SVGIcon = new SVGIcon(widget.SVGViewBox, addIcon, widget.width - widget.size / 6, widget.size / 24, widget.size / 8, widget.size / 8);
             }
             */
-            widget.SVGIcon = new SVGIcon(widget.svgElement, addIcon, widget.width - widget.size / 6, widget.size / 24, widget.size / 8, widget.size / 8);
+            widget.SVGIcon = new SVGIcon(widget.SVGViewBox, addIcon, widget.width - widget.size / 6, widget.size / 24, widget.size / 8, widget.size / 8);
 
             widget.SVGIcon.fill = theme.secondary;
 
@@ -127,7 +127,7 @@ var GraphWidget =
             widget.SVGDeleteIcon.x = widget.width - widget.rowSize + widget.size / 55;
 
 
-            //   widget.widgetHolder.appendChild(widget.svgElement);
+            //   widget.widgetHolder.appendChild(widget.SVGViewBox);
 
             widget.clickableToTop();
             widget.proprties = widget._properties;
@@ -141,8 +141,8 @@ var GraphWidget =
 
         GraphWidget.prototype.resize = function resize(size) {
             this.size = size;
-            this.svgElement.setAttributeNS(null, "width", size);
-            this.svgElement.setAttributeNS(null, "height", size / 2);
+            this.SVGViewBox.setAttributeNS(null, "width", size);
+            this.SVGViewBox.setAttributeNS(null, "height", size / 2);
 
         };
 

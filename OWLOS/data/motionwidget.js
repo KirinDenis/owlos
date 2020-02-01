@@ -25,10 +25,10 @@
             widget.radar4 = [];
 
             for (var i = 1; i < 5; i++) {
-                var SVGRadarArc1 = new SVGArc(widget.svgElement, widget.id + "arcback1" + i, widget.centreX, widget.topMargin, i * widget.radius, widget.size / 34);
-                var SVGRadarArc2 = new SVGArc(widget.svgElement, widget.id + "arcback2" + i, widget.centreX, widget.topMargin, i * widget.radius, widget.size / 34);
-                var SVGRadarArc3 = new SVGArc(widget.svgElement, widget.id + "arcback3" + i, widget.centreX, widget.topMargin, i * widget.radius, widget.size / 34);
-                var SVGRadarArc4 = new SVGArc(widget.svgElement, widget.id + "arcback4" + i, widget.centreX, widget.topMargin, i * widget.radius, widget.size / 34);
+                var SVGRadarArc1 = new SVGArc(widget.SVGViewBox, widget.id + "arcback1" + i, widget.centreX, widget.topMargin, i * widget.radius, widget.size / 34);
+                var SVGRadarArc2 = new SVGArc(widget.SVGViewBox, widget.id + "arcback2" + i, widget.centreX, widget.topMargin, i * widget.radius, widget.size / 34);
+                var SVGRadarArc3 = new SVGArc(widget.SVGViewBox, widget.id + "arcback3" + i, widget.centreX, widget.topMargin, i * widget.radius, widget.size / 34);
+                var SVGRadarArc4 = new SVGArc(widget.SVGViewBox, widget.id + "arcback4" + i, widget.centreX, widget.topMargin, i * widget.radius, widget.size / 34);
                 SVGRadarArc1.index = SVGRadarArc2.index = SVGRadarArc3.index = SVGRadarArc4.index = i;
                 SVGRadarArc1.color = SVGRadarArc2.color = SVGRadarArc3.color = SVGRadarArc4.color = theme.success;
 

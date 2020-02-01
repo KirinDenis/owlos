@@ -22,21 +22,21 @@ var LCDWidget =
             widget.centreX = widget.width / 2; //  this.centreY = this.height / 2;
             widget.widgetTextSize = widget.size / 110;
 
-            widget.svgElement.setAttributeNS(null, "viewBox", "0 0 " + widget.width + " " + widget.height);
+            widget.SVGViewBox.setAttributeNS(null, "viewBox", "0 0 " + widget.width + " " + widget.height);
 
-            //widget.svgElement.setAttributeNS(null, "width", widget.width);
+            //widget.SVGViewBox.setAttributeNS(null, "width", widget.width);
 
             widget.SVGBackpanel.drawRoundedRect(widget.width, widget.height, 5, 10, true, true, true, true);
             widget.SVGBoxBackpanel.drawRoundedRect(widget.width, 26, 5, 0, true, true, false, false);
             widget.SVGBackdownpanel.y += 3;
             widget.SVGBackdownpanel.drawRoundedRect(widget.width, 10, 5, 0, false, false, true, true);
-            widget.SVGWidgetText1 = new SVGText(widget.svgElement, widget.id + "widgettext1", widget.widgetTextSize);
+            widget.SVGWidgetText1 = new SVGText(widget.SVGViewBox, widget.id + "widgettext1", widget.widgetTextSize);
             widget.SVGWidgetText1.fontFamily = "monospace";
-            widget.SVGWidgetText2 = new SVGText(widget.svgElement, widget.id + "widgettext2", widget.widgetTextSize);
+            widget.SVGWidgetText2 = new SVGText(widget.SVGViewBox, widget.id + "widgettext2", widget.widgetTextSize);
             widget.SVGWidgetText2.fontFamily = "monospace";
-            widget.SVGWidgetText3 = new SVGText(widget.svgElement, widget.id + "widgettext3", widget.widgetTextSize);
+            widget.SVGWidgetText3 = new SVGText(widget.SVGViewBox, widget.id + "widgettext3", widget.widgetTextSize);
             widget.SVGWidgetText3.fontFamily = "monospace";
-            widget.SVGWidgetText4 = new SVGText(widget.svgElement, widget.id + "widgettext4", widget.widgetTextSize);
+            widget.SVGWidgetText4 = new SVGText(widget.SVGViewBox, widget.id + "widgettext4", widget.widgetTextSize);
             widget.SVGWidgetText4.fontFamily = "monospace";
             widget.SVGWidgetText1.text = "1234567890ABCSDEFGHL"; //20 chars 
 
@@ -45,7 +45,7 @@ var LCDWidget =
             widget.textHeight = widget.SVGWidgetText1.height;
             widget.widgetLeft = widget.centreX - widget.textWidth / 2;
             widget.widgetTop = widget.centreY + widget.SVGLabel.height - widget.textHeight * 4 / 2;
-            widget.SVGWidgetBack = new SVGRect(widget.svgElement, widget.id + "widgetback", widget.widgetLeft - widget.panding, widget.widgetTop - parseFloat(widget.textHeight - widget.panding), widget.textWidth + widget.panding * 2, widget.textHeight * 4 + widget.panding);
+            widget.SVGWidgetBack = new SVGRect(widget.SVGViewBox, widget.id + "widgetback", widget.widgetLeft - widget.panding, widget.widgetTop - parseFloat(widget.textHeight - widget.panding), widget.textWidth + widget.panding * 2, widget.textHeight * 4 + widget.panding);
             widget.SVGWidgetBack.opacity = 0.2;
             widget.SVGWidgetBack.color = theme.secondary;
             widget.SVGWidgetText1.text = "";
@@ -104,8 +104,8 @@ var LCDWidget =
 
         LCDWidget.prototype.resize = function resize(size) {
             this.size = size;
-            this.svgElement.setAttributeNS(null, "width", size);
-            this.svgElement.setAttributeNS(null, "height", size / 2);
+            this.SVGViewBox.setAttributeNS(null, "width", size);
+            this.SVGViewBox.setAttributeNS(null, "height", size / 2);
 
         };
         
