@@ -53,102 +53,134 @@
 
 */
 
-var WORK_MODE = 0;
-var MOVE_MODE = 1;
+// флажки режимов виджета
+var WORK_MODE = 0; // в этом режиме виджет отображает данные
+var MOVE_MODE = 1; // в этом режиме виджет отображает элементы управления собой - переместить, изменить свойства, удалить
 
-var EVENT_NO = 0;
-var EVENT_DELETE = 1;
+// флажки состояний виджета
+var EVENT_NO = 0; // ничего нет 
+var EVENT_DELETE = 1; // виджет удаляется 
 
+// функция возвращает объект свойств виджета по умолчанию - цвета, прозрачность, основные размеры элементов, все дочерний виджеты наследуют и дополняют эти свойства
+// виджет вызывает эту функцию что бы настроить свой стиль отображения по умолчанию. Программа или пользователь могут менять эти свойства, создавая новые стили виджета
+// ConfigCore.js сохраняет новые и измененные свойства виджетов в память микроконтроллера.
 function defaultWidgetProperties() {
-    return {
-        headertext: {
-            tab: "G",
+    /*
+    каждое свойство виджета представлено отдельным объектом с тремя собственными свойствами(у всех свойств эти объекты одинаковы)
+
+    название_свойства: {
+        tab: -> код или имя закладки для диалога управления свойствами виджета, допустимы коды:
+        "G" - закладка General
+        "C" - закладка Color
+        "O" - закладка Opacity
+        если значение поля не G C O, то допустимо любое значение, соответствующая закладка появится в диалоге свойств
+        эелемнт управления свойством объекта будет помещен в указанную закладку
+        value: -> значение свойства
+        type: -> тип свойства(флажок):
+        "i" - integer
+        "f" - float
+        "b" - boolean
+        "c" - color
+        "p" - password(*** значение свойства будет замаскировано)
+        "s" - selected - редактор значения свойства будет выделен отдельным цветом
+    }
+    */
+    return { // вернем созданный объект как результат этой функции
+        headertext: { // свойство виджета - текст заголовка (верхний текст в виджете, по умолчанию "---")
+            tab: "G", // закладка General
             value: "---",
-            type: "s"
+            type: "s" // редактор выделен
         },
 
-        headercolor: {            
-            tab: "C",
+        headercolor: { // цвет панели заголовка           
+            tab: "C", // закладка Colors
             value: theme.secondary,
-            type: "c"
+            type: "c" // тип редактора - редактор цветов
         },
 
-        headeropacity: {            
+        headeropacity: { // прозрачность панели заголовка            
             tab: "O",
             value: 0.1,
             type: "f"
         },
 
-        backgroundcolor: {            
+        backgroundcolor: { // цвет фона виджета           
             tab: "C",
             value: theme.dark,
             type: "c"
         },
 
-        backgroundopacity: {            
+        backgroundopacity: { // прозрачность фона          
             tab: "O",
             value: 1.0,
             type: "f"
         },
 
-        bordercolor: {            
+        bordercolor: { // цвет бордюра           
             tab: "C",
             value: theme.secondary,
             type: "c"
         },
 
-        backgroundselectopacity: {            
+        backgroundselectopacity: { // прозрачность фона виджета когда пользователь указал на него мышью           
             tab: "O",
             value: 0.2,
             type: "f"
         },
 
-        valuetextcolor: {            
+        valuetextcolor: { // цвет основного текста виджета (обычно этот текст отображает данные переданные через метод refresh())            
             tab: "C",
             value: theme.light,
             type: "c"
         },
 
-        showequalizer: {            
+        showequalizer: { // отображать эквалайзер          
             tab: "G",
             value: 'false',
             type: "b"
         }
-
     }
 }
-
+//------------------------------------------------------------------------------------------------------------------------------------------
+// Объект базового виджета, общее описание находится в начале этого файла
 var BaseWidget =
 
     function () {
-        "use strict";
+        "use strict"; //https://www.w3schools.com/js/js_strict.asp
 
-        function BaseWidget(parentPanel, id, size) {
-            this.parentPanel = parentPanel;
+        // "конструктор" виджета, все "наследники" обязаны вызывать этот метод первым
+        // parentPanel - HTML элемент в который будет помещен виджет
+        // id - уникальный идентификатор этого виджета (не путать с DOM HTML element.id)
+        function BaseWidget(parentPanel, id) {
 
-            this.id = id;
-            this._networkStatus = NET_OFFLINE;
-            this._event = EVENT_NO;
-            this.mouseEnter = false;
-            this.eventListners = [];
+            this.parentPanel = parentPanel; // сохраняем родительскую панель в свойство виджета 
+            this.id = id; // сохраняем id виджита
+            this._networkStatus = NET_OFFLINE; // по умолчанию виджет "считает" что не подключен к сети
+            this._event = EVENT_NO; // никаких состояний нет 
+            this.mouseEnter = false; // сбрасываем индикатор нахождения мыши над виджетом
+            this.eventListners = []; // готовим массив слушателей событий виджета 
 
+            // подготовка основной (родительский) панели виджета (все остальные элементы будут дочерний к этой панели)
             this.widgetHolder = this.parentPanel.appendChild(document.createElement("div"));
-            this.widgetHolder.id = id + "BaseWidget";
-            this.widgetHolder.widget = this;
-            this.widgetHolder.className = "col-sm-1";
-            this.widgetHolder.style.cursor = "pointer";
-            this.widgetHolder.onmouseover = this.mouseOver;
-            this.widgetHolder.onmouseout = this.mouseOut;
+            this.widgetHolder.id = id + "BaseWidget"; // назначаем DOM HTML element.id панели (он должен быть уникален для всего DOM)
+            this.widgetHolder.widget = this; // в дальнейшем эта панель будет использована в других потоках, сохраним ссылку на текущий виджет в ее свойстве
+            this.widgetHolder.className = "col-sm-1"; // назначаем Bootstrap класс для панели (одна ячейка из двенадцати по умолчанию) (в случае использования с Bootstrap)
+            this.widgetHolder.style.cursor = "pointer"; // переопределяем тип курсора
+            this.widgetHolder.onmouseover = this.mouseOver; // когда пользователь наведет мышью на виджет сработает этот обработчик события 
+            this.widgetHolder.onmouseout = this.mouseOut; // когда пользователь уберет мышь этот обработчик 
 
+            // вызываем функцию с отдельным потоком ожидания появления панели widgetHolder в текущем DOM
+            // когда панель будет готова к использованию waitForElement() вызовет метод onrPanelLoad() в этом объекте
             waitForElement(this.widgetHolder, this.onrPanelLoad);
 
+            // назначаем обработчик события body.onresize в этом объекте виджета, когда окно браузера изменит размер - виджет узнает об этом
             var body = document.getElementsByTagName("BODY")[0];
             body.onresize = this.onPanelResize;
             if (body.widget == undefined) {
                 body.widget = [];
             }
             body.widget.push(this);
-
+            // NOTЕ: "конструктор" завершается, далее waitForElement() вызовет onrPanelLoad() для того что бы продолжить создание виджета            
         }
 
         BaseWidget.prototype.onrPanelLoad = function onrPanelLoad(event) {
