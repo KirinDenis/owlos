@@ -15,8 +15,8 @@ var ActuatorWidget =
             return _baseWidget;
         }
 
-        ActuatorWidget.prototype.onrPanelLoad = function onrPanelLoad(event) {
-            _BaseWidget.prototype.onrPanelLoad.call(this, event);
+        ActuatorWidget.prototype.onWidgetHolderLoad = function onWidgetHolderLoad(event) {
+            _BaseWidget.prototype.onWidgetHolderLoad.call(this, event);
             var rPanel = event.currentTarget;
             var widget = rPanel.widget;
 

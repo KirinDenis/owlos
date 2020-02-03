@@ -9,8 +9,8 @@ var LCDWidget =
             return _BaseWidget.call(this, parentPanel, id, size) || this;         
         }
 
-        LCDWidget.prototype.onrPanelLoad = function onrPanelLoad(event) {
-            _BaseWidget.prototype.onrPanelLoad.call(this, event);
+        LCDWidget.prototype.onWidgetHolderLoad = function onWidgetHolderLoad(event) {
+            _BaseWidget.prototype.onWidgetHolderLoad.call(this, event);
             var rPanel = event.currentTarget;
             var widget = rPanel.widget;
 
@@ -26,8 +26,8 @@ var LCDWidget =
 
             //widget.SVGViewBox.setAttributeNS(null, "width", widget.width);
 
-            widget.SVGBackpanel.drawRoundedRect(widget.width, widget.height, 5, 10, true, true, true, true);
-            widget.SVGBoxBackpanel.drawRoundedRect(widget.width, 26, 5, 0, true, true, false, false);
+            widget.SVGBackgroundPanel.drawRoundedRect(widget.width, widget.height, 5, 10, true, true, true, true);
+            widget.SVGHeaderPanel.drawRoundedRect(widget.width, 26, 5, 0, true, true, false, false);
             widget.SVGBackdownpanel.y += 3;
             widget.SVGBackdownpanel.drawRoundedRect(widget.width, 10, 5, 0, false, false, true, true);
             widget.SVGWidgetText1 = new SVGText(widget.SVGViewBox, widget.id + "widgettext1", widget.widgetTextSize);
@@ -40,16 +40,16 @@ var LCDWidget =
             widget.SVGWidgetText4.fontFamily = "monospace";
             widget.SVGWidgetText1.text = "1234567890ABCSDEFGHL"; //20 chars 
 
-            widget.SVGLabel.text = "LCD";
+            widget.SVGHeaderText.text = "LCD";
             widget.textWidth = widget.SVGWidgetText1.width;
             widget.textHeight = widget.SVGWidgetText1.height;
             widget.widgetLeft = widget.centreX - widget.textWidth / 2;
-            widget.widgetTop = widget.centreY + widget.SVGLabel.height - widget.textHeight * 4 / 2;
+            widget.widgetTop = widget.centreY + widget.SVGHeaderText.height - widget.textHeight * 4 / 2;
             widget.SVGWidgetBack = new SVGRect(widget.SVGViewBox, widget.id + "widgetback", widget.widgetLeft - widget.panding, widget.widgetTop - parseFloat(widget.textHeight - widget.panding), widget.textWidth + widget.panding * 2, widget.textHeight * 4 + widget.panding);
             widget.SVGWidgetBack.opacity = 0.2;
             widget.SVGWidgetBack.color = theme.secondary;
             widget.SVGWidgetText1.text = "";
-            widget.SVGLabel.text = "";
+            widget.SVGHeaderText.text = "";
 
             widget.SVGWidgetText.hide();
 
@@ -227,15 +227,15 @@ var LCDWidget =
             this.SVGWidgetText4.x = this.widgetLeft;
             this.SVGWidgetText4.y = this.SVGWidgetText3.y + this.SVGWidgetText4.height;
             /*
-            this.SVGLabel.text = this.label;
-            this.SVGLabel.x = this.width / 2 - this.SVGLabel.width / 2;
-            this.SVGLabel.y = this.SVGLabel.height - this.panding;
+            this.SVGHeaderText.text = this.label;
+            this.SVGHeaderText.x = this.width / 2 - this.SVGHeaderText.width / 2;
+            this.SVGHeaderText.y = this.SVGHeaderText.height - this.panding;
              switch (this.networkStatus) {
-                case NET_ONLINE: this.SVGLabel.color = theme.light; break;
-                case NET_ERROR: this.SVGLabel.color = theme.danger; break;
-                case NET_RECONNECT: this.SVGLabel.color = theme.info; break;
+                case NET_ONLINE: this.SVGHeaderText.color = theme.light; break;
+                case NET_ERROR: this.SVGHeaderText.color = theme.danger; break;
+                case NET_RECONNECT: this.SVGHeaderText.color = theme.info; break;
                 default: //offline
-                    this.SVGLabel.color = theme.secondary; break;
+                    this.SVGHeaderText.color = theme.secondary; break;
             }
                this.SVGWidgetText1.color = theme.light;
             this.SVGWidgetText2.color = theme.light;

@@ -21,6 +21,9 @@
 - виджет формирует изображение(рисует векторную картинку, рендерит контент) в корневом HTML DIV элементе - WidgetHolder, WidgetHolder родительский элемент для всех используемых
   SVG элементов виджета. Так же, в данной реализации WidgetHolder осуществляет сопряжение виджетов с сеткой Bootstrap, сопрягая расположение элементов внутри страницы. 
 
+- для большинства SVG элементов реализованы классы обертки, регламентирующие прямое использование свойств DOM SVG элементов, все классы расположены в файле DrawCore.js.
+  DrawCore.js самодостаточный файл, вы можете использовать его отдельно для свои SVG проектов. 
+
 - как правило на верхний уровень WidgetHolder помещается только один SVG ViewBox элемент SVGViewBox - на этом уровне SVGViewBox отвечает за скалинг остальных элементов. Таким образом 
   WidgetHolder позволяет масштабировать и позиционировать виджет используя Bootstrap, а в SVGViewBox отвечает за масштаб элементов внутри виджета. 
 
@@ -28,10 +31,10 @@
   два этапа - "конструктор" (классы не поддерживаются - поэтому метод function BaseWidget(...) формально играет роль конструктора) 
     1) инкапсулирует WidgetHolder элемент, назначает ему Bootstrap HTML ClassName - например "col-sm-1" (одна ячайка в 12 разрядной сетке).
 
-    2) создает функция с потоком ожидания готовности WidgetHolder waitForElement(), этой функции передается адрес метода onrPanelLoad() который будет вызван как только ожидающий поток 
+    2) создает функция с потоком ожидания готовности WidgetHolder waitForElement(), этой функции передается адрес метода onWidgetHolderLoad() который будет вызван как только ожидающий поток 
     "обнаружит" возможность работать со свойствами WidgetHolder в рамках DOM.
 
-    3) В момент вызова onrPanelLoad() WidgetHolder находится на экране и получил все необходимые DOM свойства, в частности размер. onrPanelLoad() инкапсулирует SVGViewBox и все необходимые 
+    3) В момент вызова onWidgetHolderLoad() WidgetHolder находится на экране и получил все необходимые DOM свойства, в частности размер. onWidgetHolderLoad() инкапсулирует SVGViewBox и все необходимые 
     SVG элементы - привязываясь к текущему размеру WidgetHolder.
     3.1) виджет предоставляет событие .onload - реализовав обработчик этого события, внешняя программа может "узнать" о том когда виджет загружен и готов к использованию. 
 
@@ -61,93 +64,13 @@ var MOVE_MODE = 1; // в этом режиме виджет отображает
 var EVENT_NO = 0; // ничего нет 
 var EVENT_DELETE = 1; // виджет удаляется 
 
-// функция возвращает объект свойств виджета по умолчанию - цвета, прозрачность, основные размеры элементов, все дочерний виджеты наследуют и дополняют эти свойства
-// виджет вызывает эту функцию что бы настроить свой стиль отображения по умолчанию. Программа или пользователь могут менять эти свойства, создавая новые стили виджета
-// ConfigCore.js сохраняет новые и измененные свойства виджетов в память микроконтроллера.
-function defaultWidgetProperties() {
-    /*
-    каждое свойство виджета представлено отдельным объектом с тремя собственными свойствами(у всех свойств эти объекты одинаковы)
-
-    название_свойства: {
-        tab: -> код или имя закладки для диалога управления свойствами виджета, допустимы коды:
-        "G" - закладка General
-        "C" - закладка Color
-        "O" - закладка Opacity
-        если значение поля не G C O, то допустимо любое значение, соответствующая закладка появится в диалоге свойств
-        эелемнт управления свойством объекта будет помещен в указанную закладку
-        value: -> значение свойства
-        type: -> тип свойства(флажок):
-        "i" - integer
-        "f" - float
-        "b" - boolean
-        "c" - color
-        "p" - password(*** значение свойства будет замаскировано)
-        "s" - selected - редактор значения свойства будет выделен отдельным цветом
-    }
-    */
-    return { // вернем созданный объект как результат этой функции
-        headertext: { // свойство виджета - текст заголовка (верхний текст в виджете, по умолчанию "---")
-            tab: "G", // закладка General
-            value: "---",
-            type: "s" // редактор выделен
-        },
-
-        headercolor: { // цвет панели заголовка           
-            tab: "C", // закладка Colors
-            value: theme.secondary,
-            type: "c" // тип редактора - редактор цветов
-        },
-
-        headeropacity: { // прозрачность панели заголовка            
-            tab: "O",
-            value: 0.1,
-            type: "f"
-        },
-
-        backgroundcolor: { // цвет фона виджета           
-            tab: "C",
-            value: theme.dark,
-            type: "c"
-        },
-
-        backgroundopacity: { // прозрачность фона          
-            tab: "O",
-            value: 1.0,
-            type: "f"
-        },
-
-        bordercolor: { // цвет бордюра           
-            tab: "C",
-            value: theme.secondary,
-            type: "c"
-        },
-
-        backgroundselectopacity: { // прозрачность фона виджета когда пользователь указал на него мышью           
-            tab: "O",
-            value: 0.2,
-            type: "f"
-        },
-
-        valuetextcolor: { // цвет основного текста виджета (обычно этот текст отображает данные переданные через метод refresh())            
-            tab: "C",
-            value: theme.light,
-            type: "c"
-        },
-
-        showequalizer: { // отображать эквалайзер          
-            tab: "G",
-            value: 'false',
-            type: "b"
-        }
-    }
-}
 //------------------------------------------------------------------------------------------------------------------------------------------
 // Объект базового виджета, общее описание находится в начале этого файла
 var BaseWidget =
 
     function () {
         "use strict"; //https://www.w3schools.com/js/js_strict.asp
-
+        //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         // "конструктор" виджета, все "наследники" обязаны вызывать этот метод первым
         // parentPanel - HTML элемент в который будет помещен виджет
         // id - уникальный идентификатор этого виджета (не путать с DOM HTML element.id)
@@ -170,8 +93,8 @@ var BaseWidget =
             this.widgetHolder.onmouseout = this.mouseOut; // когда пользователь уберет мышь этот обработчик 
 
             // вызываем функцию с отдельным потоком ожидания появления панели widgetHolder в текущем DOM
-            // когда панель будет готова к использованию waitForElement() вызовет метод onrPanelLoad() в этом объекте
-            waitForElement(this.widgetHolder, this.onrPanelLoad);
+            // когда панель будет готова к использованию waitForElement() вызовет метод onWidgetHolderLoad() в этом объекте
+            waitForElement(this.widgetHolder, this.onWidgetHolderLoad);
 
             // назначаем обработчик события body.onresize в этом объекте виджета, когда окно браузера изменит размер - виджет узнает об этом
             var body = document.getElementsByTagName("BODY")[0];
@@ -180,335 +103,315 @@ var BaseWidget =
                 body.widget = [];
             }
             body.widget.push(this);
-            // NOTЕ: "конструктор" завершается, далее waitForElement() вызовет onrPanelLoad() для того что бы продолжить создание виджета            
+            // NOTЕ: "конструктор" завершается, далее waitForElement() вызовет onWidgetHolderLoad() для того что бы продолжить создание виджета            
         }
-
-        BaseWidget.prototype.onrPanelLoad = function onrPanelLoad(event) {
-            var rPanel = event.currentTarget;
-            var widget = rPanel.widget;
-
+        //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        // вызывается из потока ожидания когда WrapperHolder готов к пользованию (DOM properties ready)
+        BaseWidget.prototype.onWidgetHolderLoad = function onWidgetHolderLoad(event) {
+            // так как метод будет вызван из другого потока, невозможно использовать this или прямую ссылку на объект
+            // waitForElement поместит ссылку на widget в event.currentTarget
+            var widgetHolder = event.currentTarget;
+            // WrapperHolder содержит ссылку на "свой" виджет, изымаем ее, теперь widget ссылка на текущий виджет (смотрите метод "конструктор" выше)
+            var widget = widgetHolder.widget;
+            // onWidgetHolderLoad вызывается тогда когда widgetHolder получил DOM свойства - используем текущий DOM размер widgetHolder для масштабирования всех SVG элементов
             widget.size = widget.widgetHolder.clientWidth;
 
-            widget.panding = widget.size / 25;
+            // получив текущий масштаб готовим константы для расстановки SVG элементов внутри виджета
+            widget.panding = widget.size / 25; // отступ от края виджета 1/25 его размера
             widget.halfPanding = widget.panding / 2;
-
-            widget.radius = widget.size / 7;
-            widget.width = widget.size - widget.halfPanding;
+            widget.radius = widget.size / 7; // для встроенных радиальных элементов
+            widget.width = widget.size - widget.halfPanding; // внутренние размеры области прорисовки
             widget.height = widget.size - widget.halfPanding;
-            widget.topMargin = widget.height / 20;
-            widget.centreX = widget.width / 2 + widget.panding / 2;
-            widget.centreY = widget.height / 2;
+            widget.topMargin = widget.height / 20; // отступ от верхней границы
+            widget.centreX = widget.width / 2 + widget.panding / 2; // центр по горизонтали
+            widget.centreY = widget.height / 2; // центр по вертикали
 
-
+            // инкапсулируем SVG ViewBox - все остальные SVG элементы будут помещены в него. Обратите внимание на масштаб. 
             widget.SVGViewBox = document.createElementNS(xmlns, "svg");
             widget.SVGViewBox.setAttributeNS(null, "viewBox", "0 " + "0 " + widget.size + " " + widget.size);
-            widget.resize(widget.size);
-            widget.SVGViewBox.style.display = "block";
+            widget.SVGViewBox.style.display = "block"; // HTML DOM -> https://www.w3schools.com/cssref/pr_class_display.asp
 
-            widget.SVGBackpanel = new SVGArc(widget.SVGViewBox, widget.id + "backpanel", 0, 0, widget.width, 1);
-            widget.SVGBackpanel.drawRoundedRect(widget.width, widget.height, 5, 10, true, true, true, true);
-            
-            widget.SVGBoxBackpanel = new SVGArc(widget.SVGViewBox, widget.id + "boxbackpanel", 0, 0, widget.width, 1);
-            widget.SVGBoxBackpanel.drawRoundedRect(widget.width, 25, 5, 0, true, true, false, false);
-
+            // фоновая панель (подложка) виджета (фон и бордюр)
+            widget.SVGBackgroundPanel = new SVGArc(widget.SVGViewBox, widget.id + "backgroundpanel", 0, 0, widget.width, 1);
+            widget.SVGBackgroundPanel.drawRoundedRect(widget.width, widget.height, 5, 10, true, true, true, true);
+            // панель для заголовка (верхняя часть виджета с его названием)
+            widget.SVGHeaderPanel = new SVGArc(widget.SVGViewBox, widget.id + "headerpanel", 0, 0, widget.width, 1);
+            widget.SVGHeaderPanel.drawRoundedRect(widget.width, 25, 5, 0, true, true, false, false);
+            // нижняя панель виджета, отображает сетевое состояние
             widget.SVGBackdownpanel = new SVGArc(widget.SVGViewBox, widget.id + "backdownpanel", 0, widget.height - 10, widget.width, 1);
             widget.SVGBackdownpanel.drawRoundedRect(widget.width, 10, 5, 0, false, false, true, true);
             widget.SVGBackdownpanel.opacity = 0.9;
             widget.SVGBackdownpanel.fill = theme.secondary;
-
-
+            // основной текст виджета - обычно расположен в центре. Используется многими виджетами для отображения данных 
+            // widget.size / 80 - размер шрифта текст относительно текущего масштаба widgetHolder
             widget.SVGWidgetText = new SVGText(widget.SVGViewBox, widget.id + "widgettext", widget.size / 80);
             widget.SVGWidgetText.opacity = 0.7;
             widget.SVGWidgetText.color = theme.secondary;
-            widget.SVGLabel = new SVGText(widget.SVGViewBox, widget.id + "label", widget.size / 150);
-            widget.SVGLabel.color = theme.secondary;
+            // текст для заголовка виджета, находится над SVGHeaderPanel панелью
+            widget.SVGHeaderText = new SVGText(widget.SVGViewBox, widget.id + "headertext", widget.size / 150);
+            widget.SVGHeaderText.color = theme.secondary;
+            // подпись внизу виджета, обычно информация о сетевом состоянии виджета (находится над SVGBackdownpanel)
             widget.SVGHint = new SVGText(widget.SVGViewBox, widget.id + "hint", widget.size / 150);
             widget.SVGHint.color = theme.secondary;
 
-
-            var stop1 = document.createElementNS(xmlns, 'stop');
+            // подготавливаем градиент для спиннера (спиннер будет отображаться когда виджет уходит в состояния ожидания)
+            var stop1 = document.createElementNS(xmlns, 'stop'); // первый фрагмент градиента 
             stop1.setAttribute('stop-color', theme.info);
             stop1.setAttribute('stop-opacity', "0.7");
             stop1.setAttribute('offset', "0%");
-            var stop2 = document.createElementNS(xmlns, 'stop');
+            var stop2 = document.createElementNS(xmlns, 'stop'); // второй фрагмент градиента 
             stop2.setAttribute('class', 'stop2');
             stop2.setAttribute('stop-color', theme.info);
             stop2.setAttribute('stop-opacity', "0.4");
             stop2.setAttribute('offset', "20%");
-            var stop3 = document.createElementNS(xmlns, 'stop');
+            var stop3 = document.createElementNS(xmlns, 'stop'); // третий фрагмент градиента 
             stop3.setAttribute('class', 'stop3');
             stop3.setAttribute('stop-color', theme.info);
             stop3.setAttribute('stop-opacity', "0.0");
             stop3.setAttribute('offset', "60%");
-            var gradient = document.createElementNS(xmlns, 'linearGradient');
-            gradient.id = 'Gradient';
+            var gradient = document.createElementNS(xmlns, 'linearGradient'); // создаем градиент 
+            gradient.id = widget.id + 'widgetspinnergradient'; //глобальное ID для этого градиента
             gradient.appendChild(stop1);
             gradient.appendChild(stop2);
             gradient.appendChild(stop3);
-            widget.SVGViewBox.appendChild(gradient);
+            widget.SVGViewBox.appendChild(gradient); // SVGViewBox будет удерживать градиент в DOM                        
+            // создаем спиннер
             widget.SVGArcSpinner = new SVGArc(widget.SVGViewBox, widget.id + "arcwidget", widget.centreX, widget.centreY + widget.topMargin, widget.size / 4, widget.size / 24);
-            widget.SVGArcSpinner.color = 'url(#Gradient)';
-            widget.SVGArcSpinner.opacity = 0.4; //equalizer 
-            //width = 20 
-            //height = 5
+            widget.SVGArcSpinner.color = 'url(#' + widget.id + 'widgetspinnergradient)'; // цвет спиннера - градиент 
+            widget.SVGArcSpinner.opacity = 0.4; //полупрозрачный 
 
-            widget.eCount = 30;
-            widget.eWidth = widget.size / (widget.eCount + 50);
-            widget.eRWidth = widget.width / 40;
-            widget.eHeight = widget.eWidth;
-            widget.eX = widget.width / 2 - widget.eWidth * 2 * widget.eCount / 2 + widget.halfPanding / 2 + 2;
-            widget.eY = widget.height - widget.eHeight * 2 * 5 - 2;
-            widget.equalizerX = []; //row
-
-            for (var x = 0; x < widget.eCount; x++) {
-                var equalizerY = [];
-
-                for (var y = 0; y < 5; y++) {
-                    var SVGEqualizerpanel = new SVGRect(widget.SVGViewBox, widget.id + "backpanel", widget.eX + x * widget.eWidth * 2, widget.eY + y * widget.eHeight * 2, widget.eRWidth, widget.eRWidth);
-                    SVGEqualizerpanel.opacity = 0.0;
+            // создаем эквалайзер 
+            // состоит из множества элементов, каждый элемент находится в своем массиве (столбце), каждый такой массив в массиве столбцов
+            // 30 столбцов по 5 элементов в каждом (150 элементов в эквалайзере)
+            widget.eCount = 30; // эквалайзер из 30 секций
+            widget.eWidth = widget.size / (widget.eCount + 50); // ширина эквалайзера
+            widget.eRWidth = widget.width / 40; // ширина одного элемента
+            widget.eHeight = widget.eWidth; // высота элемента
+            widget.eX = widget.width / 2 - widget.eWidth * 2 * widget.eCount / 2 + widget.halfPanding / 2 + 2; // сдвиг слева 
+            widget.eY = widget.height - widget.eHeight * 2 * 5 - 2; // сдвиг сверху
+            widget.equalizerX = []; // массив для хранения элементов эквалайзера (столбцов с элементами)
+            // инкапсулируем элементы эквалайзера
+            for (var x = 0; x < widget.eCount; x++) { // движемся по колонкам слева направо 
+                var equalizerY = []; // элементы одного столбца 
+                for (var y = 0; y < 5; y++) { // 5 элементов в одном столбце 
+                    // инкапсулируем каждый элемент и помещаем на свое место 
+                    var SVGEqualizerpanel = new SVGRect(widget.SVGViewBox, widget.id + "equalizerpanel" + parseInt(x) + "_" + parseInt(y), widget.eX + x * widget.eWidth * 2, widget.eY + y * widget.eHeight * 2, widget.eRWidth, widget.eRWidth);
+                    SVGEqualizerpanel.opacity = 0.0; // по умолчанию элемент не виден
                     SVGEqualizerpanel.fill = theme.secondary;
-
+                    // помещаем элемент в столбец
                     equalizerY.push(SVGEqualizerpanel);
                 }
-
+                // помещаем столбец с элементами в массив столбцов эквалайзера 
                 widget.equalizerX.push(equalizerY);
             }
-
-            widget.rowSize = widget.size / 6;
+            // кнопки управления виджетом - отображаются в режиме "Редактирования виджета" (сдвиг влево, сдвиг вправо, удаление, настройка свойств виджета)
+            // кнопки реализованы на основе SVGImage (Icons)
+            widget.rowSize = widget.size / 6; // относительный размер одной кнопки 
+            // кнопка сдвига влево
+            // данные для прорисовки иконки кнопки "leftIcon" находится в DrawCore.js 
             widget.SVGLeftIcon = new SVGIcon(widget.SVGViewBox, leftIcon, widget.panding, widget.height - widget.rowSize, widget.rowSize, widget.rowSize);
             widget.SVGLeftIcon.fill = theme.light;
             widget.SVGLeftIcon.SVGIcon.widget = widget;
-            widget.SVGLeftIcon.SVGIcon.onclick = widget.moveLeft;
-            widget.SVGLeftIcon.hide();
-            widget.SVGRightIcon = new SVGIcon(widget.SVGViewBox, rightIcon, widget.width - widget.rowSize, widget.height - widget.rowSize , widget.rowSize, widget.rowSize);
+            widget.SVGLeftIcon.SVGIcon.onclick = widget.moveLeft; // назначаем обработчик события по клику на эту кнопку (смотрите метод moveLeft())
+            widget.SVGLeftIcon.hide(); // по умолчанию кнопка скрыта 
+            // кнопка сдвига вправо
+            widget.SVGRightIcon = new SVGIcon(widget.SVGViewBox, rightIcon, widget.width - widget.rowSize, widget.height - widget.rowSize, widget.rowSize, widget.rowSize);
             widget.SVGRightIcon.fill = theme.light;
             widget.SVGRightIcon.SVGIcon.widget = widget;
             widget.SVGRightIcon.SVGIcon.onclick = widget.moveRight;
             widget.SVGRightIcon.hide();
-
+            // кнопка удаления виджета 
             widget.SVGDeleteIcon = new SVGIcon(widget.SVGViewBox, deleteIcon, widget.width - widget.rowSize + widget.size / 28, 0, widget.rowSize, widget.rowSize);
             widget.SVGDeleteIcon.fill = theme.light;
             widget.SVGDeleteIcon.SVGIcon.widget = widget;
             widget.SVGDeleteIcon.SVGIcon.onclick = widget.deleteWidgetClick;
             widget.SVGDeleteIcon.hide();
-
-            widget.SVGPropertiesIcon = new SVGIcon(widget.SVGViewBox, buildIcon, widget.width / 2 - widget.rowSize / 2, widget.height - widget.rowSize , widget.rowSize, widget.rowSize);
+            // кнопка отображения диалога редактирования свойств виджета 
+            widget.SVGPropertiesIcon = new SVGIcon(widget.SVGViewBox, buildIcon, widget.width / 2 - widget.rowSize / 2, widget.height - widget.rowSize, widget.rowSize, widget.rowSize);
             widget.SVGPropertiesIcon.fill = theme.light;
             widget.SVGPropertiesIcon.SVGIcon.widget = widget;
             widget.SVGPropertiesIcon.SVGIcon.onclick = widget.propertiesClick;
             widget.SVGPropertiesIcon.hide();
 
+            // помещаем созданные SVG элементы в панель widgetHolder 
             widget.widgetHolder.appendChild(widget.SVGViewBox);
 
-            widget._properties = defaultWidgetProperties();
+            // применяем свойства отображения виджета по умолчанию (пользователь может изменять свойства виджета runtime, смотрите диалог редактирования свойств виджета)
+            // NOTE:
+            // вызов widget._properties не приводит к вызову setter "properties" (смотрите в этом объекте setter properties)
+            // в свою очередь вызов widget.properties вызовет setter, который вызовет методы drawText() и drawWidget() - таким образом, изменив свойства отображения виджета и 
+            // вызвав widget.properties = someNewProperties или даже widget.properties = widget.properties вы "заставите" виджет перерисовать SVG элементы и визуально изменить стиль.
+            //      -> родительский объекты baseWidget намерено использует вызов widget._properties, не производит перерисовку SVG элементов
+            //      -> все дочерние объекты baseWidget обязаны явно вызвать setter widget.properties в своих перезагруженных методах onWidgetHolderLoad и применить свои стили для SVG
+            //      элементов виджета
+            widget._properties = widget.defaultWidgetProperties();
 
+            // применяем текущий размер widgetHolder к SVGViewBox
             widget.resize(widget.widgetHolder.clientWidth);
+            // переводим виджет в режим WORK_MODE
             widget.mode = WORK_MODE;
-        }
-
-
-
+        };
+        //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        // отрисовка текстовых SVG элементов виджета
         BaseWidget.prototype.drawText = function drawText() {
-            if (this._event == EVENT_DELETE) {
-                return;
-            }
+            if (this._event == EVENT_DELETE) { return; } // если виджет в состоянии удаления, не рисуем ничего
 
-            if (this.SVGWidgetText == undefined) return;
+            if (this.SVGWidgetText == undefined) return; // если SVG элементы не готовы (не был вызван onWidgetHolderLoad()) и кто то обратился к этому методу 
 
-            //Widget text         
+            // центральный текст виджета, обычно отображает данные, помещаем в него текст  
             this.SVGWidgetText.text = this.widgetText;
-
-            if (this.SVGWidgetText.width != 0) {
-                this.SVGWidgetText.x = this.centreX - this.SVGWidgetText.width / 2;
-                this.SVGWidgetText.y = this.centreY + this.SVGWidgetText.height / 2;
+            // размер текста и размера шрифта могли изменится - пере центрируем текст внутри виджета 
+            // также может изменится размер самого виджета и текст нуждается в новой центровке
+            if (this.SVGWidgetText.width != 0) { // если текст не пуст (назначения не пустой строки в качестве текста виджета должно было изменить его ширину)
+                this.SVGWidgetText.x = this.centreX - this.SVGWidgetText.width / 2; // центрируем по горизонтали 
+                this.SVGWidgetText.y = this.centreY + this.SVGWidgetText.height / 2; // центрируем по вертикали 
             }
 
-            switch (this._networkStatus) {
-                case NET_ONLINE:
-                    this.toColor(this.SVGWidgetText, this._properties.valuetextcolor.value);
-                    break;
-
-                case NET_ERROR:
-                    this.toColor(this.SVGWidgetText, theme.danger);
-                    break;
-
-                case NET_RECONNECT:
-                    this.toColor(this.SVGWidgetText, theme.info);
-                    break;
-
-                default:
-                    //offline
-                    this.toColor(this.SVGWidgetText, theme.secondary);
-                    break;
-            } //Label 
-
-            if (this.SVGLabel.text !== this._properties.headertext.value) {
-                this.SVGLabel.text = this._properties.headertext.value;
-                if (this.SVGLabel.width > this.size) {
-                    var coef = this.SVGLabel.width / (this._properties.headertext.value.length + 3);
+            // текст заголовка виджета 
+            if (this.SVGHeaderText.text !== this._properties.headertext.value) { // если текст изменился 
+                this.SVGHeaderText.text = this._properties.headertext.value; // переносим текст в SVG элемент 
+                if (this.SVGHeaderText.width > this.size) { // если ширина текста более ширины виджета 
+                    // вычисляем допустимое количество символов для заголовка (что бы умещались в ширину виджета)
+                    var coef = this.SVGHeaderText.width / (this._properties.headertext.value.length + 3);
                     var charCount = (this.size - this.size / 3) / coef;
-                    this.SVGLabel.text = this._properties.headertext.value.slice(0, parseInt(charCount)) + "...";
-
+                    // отрезаем допустимое количество символов, дополняем строку "..."
+                    this.SVGHeaderText.text = this._properties.headertext.value.slice(0, parseInt(charCount)) + "...";
                 }
             }
-
-            if (this.SVGLabel.width > 0) {
-                this.SVGLabel.x = this.centreX - this.SVGLabel.width / 2;
-                this.SVGLabel.y = this.SVGLabel.height;
+            // центрируем текст заголовка 
+            if (this.SVGHeaderText.width > 0) {
+                this.SVGHeaderText.x = this.centreX - this.SVGHeaderText.width / 2;
+                this.SVGHeaderText.y = this.SVGHeaderText.height;
             }
 
-
+            // цвета текстовых SVG элементов, зависят от сетевого статуса виджета 
             switch (this._networkStatus) {
-                case NET_ONLINE:
-                    this.toColor(this.SVGLabel, theme.light);
-                    break;
-
-                case NET_ERROR:
-                    this.toColor(this.SVGLabel, theme.danger);
-                    break;
-
-                case NET_RECONNECT:
-                    this.toColor(this.SVGLabel, theme.info);
-                    break;
-
-                default:
-                    //offline
-                    this.toColor(this.SVGLabel, theme.secondary);
-                    break;
-            } //Hint
-
-
-            switch (this._networkStatus) {
-                case NET_ONLINE:
-                    this.SVGHint.text = getLang("rid_online");
+                case NET_ONLINE: // когда виджет онлайн 
+                    // toColor() - метод реализующий плавную смену градиентов цвета (анимация)
+                    // this._properties.valuetextcolor.value свойства виджета определяющее цвет главного текста в онлайн режиме (пользователь может назначить свой цвет)
+                    this.toColor(this.SVGWidgetText, this._properties.valuetextcolor.value);
+                    this.toColor(this.SVGHeaderText, theme.light);
+                    this.SVGHint.text = getLang("rid_online"); // назначаем текст для нижней подписи виджета (сетевой статус) в этом кейсе
                     this.toColor(this.SVGHint, theme.success);
                     break;
-
-                case NET_ERROR:
+                case NET_ERROR: // ошибка сети
+                    this.toColor(this.SVGWidgetText, theme.danger);
+                    this.toColor(this.SVGHeaderText, theme.danger);
                     this.SVGHint.text = getLang("rid_error");
                     this.toColor(this.SVGHint, theme.danger);
                     break;
-
-                case NET_RECONNECT:
+                case NET_RECONNECT: // пере подключение (при таком статусе виджет ожидает соединения с сетью)
+                    this.toColor(this.SVGWidgetText, theme.info);
+                    this.toColor(this.SVGHeaderText, theme.info);
                     this.SVGHint.text = getLang("rid_connect");
                     this.toColor(this.SVGHint, theme.info);
                     break;
-
                 default:
-                    //offline
+                    //по умолчанию виджет оффлайн, не подключен к сети 
+                    this.toColor(this.SVGWidgetText, theme.secondary);
+                    this.toColor(this.SVGHeaderText, theme.secondary);
                     this.SVGHint.text = getLang("rid_offline");
                     this.toColor(this.SVGHint, theme.secondary);
                     break;
             }
 
+            // центрируем нижний текст виджета, сетевой статус
             if (this.SVGHint != 0) {
                 this.SVGHint.x = this.centreX - this.SVGHint.width / 2;
                 this.SVGHint.y = this.height - this.SVGHint.height / 2;
             }
         };
-
+        //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        // отрисовка векторных-графических SVG элементов виджета
         BaseWidget.prototype.drawWidget = function drawWidget() {
-            if (this._event == EVENT_DELETE) {
-                return;
-            }
-            if (this.SVGBackpanel == undefined) return;
-            this.SVGBackpanel.color = this._properties.bordercolor.value;
-            this.SVGBackpanel.fill = this._properties.backgroundcolor.value;
-            this.SVGBackpanel.opacity = this._properties.backgroundopacity.value;
+            if (this._event == EVENT_DELETE) { return; } // если виджет удаляется ничего не делаем
+            if (this.SVGBackgroundPanel == undefined) return; // если SVG элементы виджета не готовы ничего не делаем (не был вызван onWidgetHolderLoad())
 
-            this.SVGBoxBackpanel.opacity = this._properties.headeropacity.value;
-            this.SVGBoxBackpanel.fill = this._properties.headercolor.value;
+            // назначаем цвет фона и бордюра фоновой панели
+            // this._properties.bordercolor.value свойство виджета хранящая цвет (может быть изменено пользователем - по этой причине переопределяем цвет)
+            this.SVGBackgroundPanel.color = this._properties.bordercolor.value;
+            this.SVGBackgroundPanel.fill = this._properties.backgroundcolor.value;
+            this.SVGBackgroundPanel.opacity = this._properties.backgroundopacity.value; // прозрачность фона виджета так же может меняться
+            // назначаем цвет панели заголовка 
+            this.SVGHeaderPanel.opacity = this._properties.headeropacity.value;
+            this.SVGHeaderPanel.fill = this._properties.headercolor.value;
 
-
-            var oneHangPercent = 360 + 90 + 30 - 240;
-            var drawPercent = this._data * (oneHangPercent / 100); //backdown panel
-
-            /*
-            switch (this._networkStatus) {
-                case NET_ONLINE: this.SVGBackdownpanel.color = theme.success; break;
-                case NET_ERROR: this.SVGBackdownpanel.color = theme.danger; break;
-                case NET_RECONNECT: this.SVGBackdownpanel.color = theme.info; break;
-                default: //offline
-                    this.SVGBackdownpanel.color = theme.light; break;
-            }
-            */
-
+            // в зависимости от состояния сети, цвет нижней панели виджета меняется 
             switch (this._networkStatus) {
                 case NET_ONLINE:
-                    //this.toColor(this.SVGBackdownpanel, theme.success);
                     this.SVGBackdownpanel.fill = theme.success;
                     break;
-
                 case NET_ERROR:
-                    //this.toColor(this.SVGBackdownpanel, theme.danger);
                     this.SVGBackdownpanel.fill = theme.danger;
                     break;
-
                 case NET_RECONNECT:
-                    //this.toColor(this.SVGBackdownpanel, theme.info);
                     this.SVGBackdownpanel.fill = theme.info;
                     break;
-
                 default:
-                    //offline
-                    //this.toColor(this.SVGBackdownpanel, theme.light);
                     this.SVGBackdownpanel.fill = theme.light;
                     break;
-            } //equalizer --------------------------
+            }
 
-
+            // рисуем эквалайзер если соответствующий флажок установлен в true
             if (this._properties.showequalizer.value === 'true') {
-                for (var x = 0; x < this.eCount; x++) {
+                for (var x = 0; x < this.eCount; x++) { // обходим все столбцы 
                     var equalizerY = this.equalizerX[x];
-
-                    for (var y = 0; y < 5; y++) {
-                        if (this._networkStatus == NET_ONLINE && (this._properties.showequalizer.value === 'true')) {
+                    for (var y = 0; y < 5; y++) { // обходим все элементы в столбцах 
+                        if (this._networkStatus == NET_ONLINE) { // если виджет онлайн делаем элемент видимым
+                            equalizerY[y].fill = theme.secondary; // цвет каждого элемента по умолчанию "неактивен" 
                             equalizerY[y].opacity = (y + 1) * 0.08;
-                        } else {
+                        } else { // если виджет оффлайн скрываем все элементы эквалайзера 
                             equalizerY[y].opacity = 0.0;
                         }
-
-                        equalizerY[y].fill = theme.secondary;
                     }
                 }
+                // отмечаем активные элементы эквалайзера 
+                if (this._networkStatus == NET_ONLINE) { // если он онлайн 
+                    if (this.historyData != undefined) { // если виджету назначили historyData
+                        // historyData - CSV строка в специальном формате, при помощи которой внешний код передает виджету данные для отображения в эквалайзере
+                        // формат historyData:
+                        // количество_элементов;значение_float_первого_элемента;значение_float_второго_элемента;...значение_float_последнего_элемента;
+                        // номер последнего_элемента = количество_элементов
 
-                if (this._networkStatus == NET_ONLINE && (this._properties.showequalizer.value === 'true')) {
-                    if (this.historyData != undefined) {
-                        //reset 
-                        var splitHistory = this.historyData.split(";");
-                        var count = splitHistory[0];
-                        var prop = count / this.eCount;
-                        var bigValue;
-
+                        var splitHistory = this.historyData.split(";"); // парсим содержимое CSV в массив строк
+                        var count = splitHistory[0]; // вынимаем количество_элементов
+                        var prop = count / this.eCount; // сопоставляем количество присланных элементов с количеством столбцов эквалайзера 
+                        var bigValue; // переменная для поиска самого большого значения элемента, изначально undefined
+                        // ищем элемент с самым большим значением и помещаем это значение в bigValue
                         for (var x = 0; x < count; x++) {
                             var equalizerY = this.equalizerX[parseInt(x / prop)];
                             var value = splitHistory[x + 1];
-
                             if (bigValue == undefined || value > bigValue) {
                                 bigValue = value;
                             }
                         }
-
+                        // в высоту эквалайзер состоит из 5 элементов, вычисляем шаг возрастания значения элементов исходя из значения самого большого
+                        // например если самое большое значение 100, а значение для текущего столбца 30 то:
+                        // 100 / 5 = 20 (20 шаг для элементов снизу вверх)
+                        // первый элемент с низу 20, выше 40, еще выше 60 и так далее до 100
+                        // 20 < 30 - отображаем первый элемент снизу
+                        // 40 > 30 - второй и все элементы выше не отображаются 
                         var propValue = parseFloat(bigValue / 5);
 
-                        for (var x = 0; x < count; x++) {
-                            if (count < this.eCount) {
-                                var equalizerY = this.equalizerX[x];
-                            } else {
+                        //обходим все элементы эквалайзера и определяем их цвет для текущих значений historyData
+                        for (var x = 0; x < count; x++) { // столбцы 
+                            if (count < this.eCount) { // количество данных в historyData может не соответствовать количеству столбцов
+                                var equalizerY = this.equalizerX[x]; // если данных меньше 
+                            } else { // если данных больше "уплотняем" эквалайзер 
                                 var equalizerY = this.equalizerX[parseInt(x / prop)];
                             }
-
+                            // вынимаем значение для текущего столбца, учитывая выравнивание всех столбцов относительно столбца с самым большим значением
                             var value = parseInt(splitHistory[x + 1] / propValue);
-
-                            for (var y = 0; y < value; y++) {
-                                equalizerY[4 - y].opacity = (1.0 - parseFloat(y / 4.0)) / 2.0;
+                            // value значение данных для текущего столбца, превращенное в количество видимых (окрашенных) элементов снизу-вверх
+                            for (var y = 0; y < value; y++) { // изменяем цвет только для элементов согласно текущему значению historyData - относительно значения самого большого элемента из нее
+                                equalizerY[4 - y].opacity = (1.0 - parseFloat(y / 4.0)) / 2.0; // прозрачность элемента зависит от его позиции относительно по высоте (самые нижние ярче)
                                 equalizerY[4 - y].fill = theme.success;
                             }
                         }
                     }
                 }
             }
-            else { //no equalizer
+            else { // если эквалайзер отключен, прячем его элементы 
                 for (var x = 0; x < this.eCount; x++) {
                     var equalizerY = this.equalizerX[x];
                     for (var y = 0; y < 5; y++) {
@@ -516,28 +419,29 @@ var BaseWidget =
 
                     }
                 }
-
             }
 
-
+            // когда сетевое состояние виджета находится в режиме - пере подключение, отображаем спиннер (анимация)           
             if (this._networkStatus == NET_RECONNECT) {
-                this.spinnerAngle += 1.5;
+                this.spinnerAngle += 1.5; // приращение угла вращения спиннера (влияет на скорость вращения, чем больше угол тем быстрее и на оборот)
 
-                if (this.SVGArcSpinner.opacity < 0.8) {
+                if (this.SVGArcSpinner.opacity < 0.8) { // постепенно наращиваем непрозрачность спиннера  
                     this.SVGArcSpinner.opacity += 0.01;
                 }
-
+                // рисуем спиннер с вращением на новый угол
                 this.SVGArcSpinner.draw(this.spinnerAngle, 240 + this.spinnerAngle);
                 var _this = this;
+                // готовим потом для анимации, браузер вызовет метод drawWidget() когда очередной анимационный фрейм будет возможен 
+                // https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
+                // TODO: привязку ко времени 
                 requestAnimationFrame(function () {
                     return _this.drawWidget();
                 });
-            } else {
+            } else { // если сетевой статус не NET_RECONNECT, прячем спиннер, не вызываем анимацию
                 this.SVGArcSpinner.opacity = 0.0;
                 this.SVGArcSpinner.hide();
             }
         };
-
 
 
         BaseWidget.prototype.resize = function resize(size) {
@@ -598,10 +502,10 @@ var BaseWidget =
             _sender.parentPanel.removeChild(_sender.widgetHolder);
             _sender.widgetHolder.className = "col-sm-4";
             _sender.mode = WORK_MODE;
-            
-             makeModalDialog("resetPanel", "showProperties", getLang("showproperties"), "");                
-             var modalBody = document.getElementById("showPropertiesModalBody");
-             var modalFooter = document.getElementById("showPropertiesModalFooter");
+
+            makeModalDialog("resetPanel", "showProperties", getLang("showproperties"), "");
+            var modalBody = document.getElementById("showPropertiesModalBody");
+            var modalFooter = document.getElementById("showPropertiesModalFooter");
 
             var widgetDiv = modalBody.appendChild(document.createElement("div"));
             widgetDiv.className = "devicesWidgetsPanel d-flex justify-content-center";
@@ -624,7 +528,7 @@ var BaseWidget =
 
                 var tabName = _sender.properties[key].tab;
                 if (tabName === 'G') { tabName = "General"; }
-                else 
+                else
                     if (tabName === 'C') { tabName = "Color"; }
                     else
                         if (tabName === 'O') { tabName = "Opacity"; }
@@ -640,7 +544,7 @@ var BaseWidget =
                     aHref.href = "#" + tabName + "PropTab";
                     aHref.innerText = tabName;
 
-                    tabPane = tabContent.appendChild(document.createElement("div"));                    
+                    tabPane = tabContent.appendChild(document.createElement("div"));
                     tabPane.id = tabName + "PropTab";
                     formGroup = tabPane.appendChild(document.createElement("div"));
                     formGroup.className = "form-group";
@@ -671,7 +575,7 @@ var BaseWidget =
                 var propEdit = createValueEdit(inputGroup, _sender.properties[key].name, _sender.properties[key].value, _sender.properties[key].type);
                 propEdit.className = "form-control form-control-sm";
                 propEdit.placeholder = "type value here";
-                propEdit.id = "widgetproperty" + key;                
+                propEdit.id = "widgetproperty" + key;
 
                 //propEdit.value = _sender.properties[key].value;
                 propEdit.widgetProperty = _sender.properties[key];
@@ -747,7 +651,7 @@ var BaseWidget =
             widget.properties = widget.properties;
 
             config.save();
-            
+
             document.getElementById("showPropertiesModal").setProp = true;
             $("#showPropertiesModal").modal('hide');
             return false;
@@ -764,7 +668,7 @@ var BaseWidget =
 
 
             for (var i = 0; i < configProperties.dashboards[0].widgets.length; i++) {
-                
+
                 var widgetProp = configProperties.dashboards[0].widgets[i];
                 var widgetHolder = document.getElementById(widgetProp.deviceId + "BaseWidget");
                 if (widgetHolder == null) continue;
@@ -797,7 +701,7 @@ var BaseWidget =
             widget.mode = MOVE_MODE;
             widget.properties = widget.storedProperties;
 
-            
+
             //$("#showPropertiesModal").modal('hide');
             return false;
         };
@@ -1007,21 +911,103 @@ var BaseWidget =
             var _this = this;
 
             if (this.mouseEnter) {
-                if (this.SVGBackpanel.opacity > this._properties.backgroundselectopacity.value) {
-                    this.SVGBackpanel.opacity -= 0.05;
+                if (this.SVGBackgroundPanel.opacity > this._properties.backgroundselectopacity.value) {
+                    this.SVGBackgroundPanel.opacity -= 0.05;
                     requestAnimationFrame(function () {
                         return _this.drawMouseEnter();
                     });
                 }
             } else {
-                if (this.SVGBackpanel.opacity < this._properties.backgroundopacity.value) {
-                    this.SVGBackpanel.opacity += 0.005;
+                if (this.SVGBackgroundPanel.opacity < this._properties.backgroundopacity.value) {
+                    this.SVGBackgroundPanel.opacity += 0.005;
                     requestAnimationFrame(function () {
                         return _this.drawMouseEnter();
                     });
                 }
             }
         };
+
+        // возвращает объект свойств виджета по умолчанию - цвета, прозрачность, основные размеры элементов, все дочерний виджеты наследуют и дополняют эти свойства
+        // виджет вызывает эту функцию что бы настроить свой стиль отображения по умолчанию. Программа или пользователь могут менять эти свойства, создавая новые стили виджета
+        // ConfigCore.js сохраняет новые и измененные свойства виджетов в память микроконтроллера.
+        BaseWidget.prototype.defaultWidgetProperties = function defaultWidgetProperties() {
+            /*
+            каждое свойство виджета представлено отдельным объектом с тремя собственными свойствами(у всех свойств эти объекты одинаковы)
+        
+            название_свойства: {
+                tab: -> код или имя закладки для диалога управления свойствами виджета, допустимы коды:
+                "G" - закладка General
+                "C" - закладка Color
+                "O" - закладка Opacity
+                если значение поля не G C O, то допустимо любое значение, соответствующая закладка появится в диалоге свойств
+                эелемнт управления свойством объекта будет помещен в указанную закладку
+                value: -> значение свойства
+                type: -> тип свойства(флажок):
+                "i" - integer
+                "f" - float
+                "b" - boolean
+                "c" - color
+                "p" - password(*** значение свойства будет замаскировано)
+                "s" - selected - редактор значения свойства будет выделен отдельным цветом
+            }
+            */
+            return { // вернем созданный объект как результат этой функции
+                headertext: { // свойство виджета - текст заголовка (верхний текст в виджете, по умолчанию "---")
+                    tab: "G", // закладка General
+                    value: "---",
+                    type: "s" // редактор выделен
+                },
+
+                headercolor: { // цвет панели заголовка           
+                    tab: "C", // закладка Colors
+                    value: theme.secondary,
+                    type: "c" // тип редактора - редактор цветов
+                },
+
+                headeropacity: { // прозрачность панели заголовка            
+                    tab: "O",
+                    value: 0.1,
+                    type: "f"
+                },
+
+                backgroundcolor: { // цвет фона виджета           
+                    tab: "C",
+                    value: theme.dark,
+                    type: "c"
+                },
+
+                backgroundopacity: { // прозрачность фона          
+                    tab: "O",
+                    value: 1.0,
+                    type: "f"
+                },
+
+                bordercolor: { // цвет бордюра           
+                    tab: "C",
+                    value: theme.secondary,
+                    type: "c"
+                },
+
+                backgroundselectopacity: { // прозрачность фона виджета когда пользователь указал на него мышью           
+                    tab: "O",
+                    value: 0.2,
+                    type: "f"
+                },
+
+                valuetextcolor: { // цвет основного текста виджета (обычно этот текст отображает данные переданные через метод refresh())            
+                    tab: "C",
+                    value: theme.light,
+                    type: "c"
+                },
+
+                showequalizer: { // отображать эквалайзер          
+                    tab: "G",
+                    value: 'false',
+                    type: "b"
+                }
+            }
+        };
+
 
         _createClass(BaseWidget, [{
             key: "event",
@@ -1041,7 +1027,7 @@ var BaseWidget =
                 this._mode = mode;
 
                 if (mode == WORK_MODE) {
-                    this.SVGBackpanel.opacity = this._properties.backgroundopacity.value;
+                    this.SVGBackgroundPanel.opacity = this._properties.backgroundopacity.value;
                     this.SVGLeftIcon.hide();
                     this.SVGRightIcon.hide(); //  this.SVGPlusIcon.hide();
 
@@ -1049,7 +1035,7 @@ var BaseWidget =
                     this.SVGPropertiesIcon.hide();
 
                 } else if (mode == MOVE_MODE) {
-                    this.SVGBackpanel.opacity = this._properties.backgroundopacity.value / 3;
+                    this.SVGBackgroundPanel.opacity = this._properties.backgroundopacity.value / 3;
                     this.SVGLeftIcon.draw();
                     this.SVGRightIcon.draw(); //   this.SVGPlusIcon.draw();
 

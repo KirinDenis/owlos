@@ -9,8 +9,8 @@
             return _BaseWidget.call(this, parentPanel, id, size) || this;
         }
 
-        RadialWidget.prototype.onrPanelLoad = function onrPanelLoad(event) {
-            _BaseWidget.prototype.onrPanelLoad.call(this, event);
+        RadialWidget.prototype.onWidgetHolderLoad = function onWidgetHolderLoad(event) {
+            _BaseWidget.prototype.onWidgetHolderLoad.call(this, event);
             var rPanel = event.currentTarget;
             var widget = rPanel.widget;
 

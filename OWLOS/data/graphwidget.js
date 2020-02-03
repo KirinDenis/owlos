@@ -11,8 +11,8 @@ var GraphWidget =
             return _BaseWidget.call(this, parentPanel, id, size) || this;
         }
 
-        GraphWidget.prototype.onrPanelLoad = function onrPanelLoad(event) {
-            _BaseWidget.prototype.onrPanelLoad.call(this, event);
+        GraphWidget.prototype.onWidgetHolderLoad = function onWidgetHolderLoad(event) {
+            _BaseWidget.prototype.onWidgetHolderLoad.call(this, event);
             var rPanel = event.currentTarget;
             var widget = rPanel.widget;
 
@@ -37,9 +37,9 @@ var GraphWidget =
             //  widget.SVGViewBox.setAttributeNS(null, "width", widget.width);
             //  widget.SVGViewBox.setAttributeNS(null, "height", widget.height);
 
-            widget.SVGBackpanel.drawRoundedRect(widget.width - 5, widget.height - 6, 5, 10, true, true, true, true);
+            widget.SVGBackgroundPanel.drawRoundedRect(widget.width - 5, widget.height - 6, 5, 10, true, true, true, true);
             widget.SVGBackdownpanel.drawRoundedRect(widget.width - 5, 10, 5, 0, false, false, true, true);
-            widget.SVGBoxBackpanel.drawRoundedRect(widget.width, 26, 5, 0, true, true, false, false);
+            widget.SVGHeaderPanel.drawRoundedRect(widget.width, 26, 5, 0, true, true, false, false);
 
             //   widget.SVGBackdownpanel.y += 3;
 
@@ -85,9 +85,9 @@ var GraphWidget =
             widget.SVGPath1.fill = 'url(#' + widget.id + 'GraphGradient)';
             
             widget.SVGPath2 = new SVGArc(widget.SVGViewBox, widget.id + "path2", widget.graphTop + " " + widget.halfPanding + " " + widget.graphWidth + " " + widget.graphHeight);
-            widget.SVGLabel.text = "Graph";
+            widget.SVGHeaderText.text = "Graph";
             widget.widgetLeft = widget.centreX - widget.textWidth / 2;
-            widget.widgetTop = widget.centreY + widget.SVGLabel.height - widget.textHeight * 4 / 2;
+            widget.widgetTop = widget.centreY + widget.SVGHeaderText.height - widget.textHeight * 4 / 2;
             var labelTextSize = widget.size / 210;
             widget.SVGTopLabel = new SVGText(widget.SVGViewBox, widget.id + "toplabel", labelTextSize);
             widget.SVGTopLabel.color = theme.secondary;

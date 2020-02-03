@@ -10,8 +10,8 @@ var SmokeWidget =
             return _BaseWidget.call(this, parentPanel, id, size) || this;          
         }
 
-        SmokeWidget.prototype.onrPanelLoad = function onrPanelLoad(event) {
-            _BaseWidget.prototype.onrPanelLoad.call(this, event);
+        SmokeWidget.prototype.onWidgetHolderLoad = function onWidgetHolderLoad(event) {
+            _BaseWidget.prototype.onWidgetHolderLoad.call(this, event);
             var rPanel = event.currentTarget;
             var widget = rPanel.widget;
 
