@@ -709,17 +709,9 @@ var BaseWidget =
             widget.mode = MOVE_MODE;
 
             // находим все виджеты в системе, применяем измененные свойства текущего виджета ко всем 
-            for (var i = 0; i < configProperties.dashboards[0].widgets.length; i++) {
-                // получаем dashboard свойства очередного виджета
-                // NOTE: не путать со свойствами отображения виджета, которые мы будем применять
-                // widgetProp из dashboard - это ID виджета, связь с устройством и так далее (смотрите configcore.js)
-                var widgetProp = configProperties.dashboards[0].widgets[i];
-                // widgetHolder для очередного виджета - находим по DOM.element ID
-                var widgetHolder = document.getElementById(widgetProp.deviceId + "BaseWidget");
-                // если панель удалена, не существует, но данные о виджете по прежнему находится в dashboard - ничего не делаем
-                if (widgetHolder == null) continue;
-                // получаем ссылку на очередной виджет из очередного widgetHolder
-                var someWidget = widgetHolder.widget;
+            var body = document.getElementsByTagName("BODY")[0];
+            for (var widgetKey in body.widgets) {
+                var someWidget = body.widgets[widgetKey];             
                 // перечисляем все свойства очередного виджета
                 for (var key in someWidget.properties) {
                     if (key === 'headertext') continue; // игнорируем свойства содержащее текст для заголовка виджета - они у всех виджетов разные
@@ -735,6 +727,7 @@ var BaseWidget =
                         someWidget.properties[key].value = propEdit.value; //используем его значение в качестве нового значения свойства очередного виджета
                     }
                 }
+            
                 // все свойства очередного виджета перечислены и им назначены новые значения - обратимся к setter .properties для того что бы виджет перерисовал свои SVG элементы
                 someWidget.properties = someWidget.properties;
             }
@@ -750,8 +743,11 @@ var BaseWidget =
         // обработчик клика на кнопки "Закрыть", "Отменить" для диалога редактирования свойств виджета 
         // так же вызывается самим модальным диалогом в момент его закрытия (если не нажаты "наши" кнопки, но диалог все равно закрывается)
         BaseWidget.prototype.discardProperties = function discardtProperties(event) {
+            //event может быть создан не событием и только содержать event.currentTarget, смотрите $('#showPropertiesModal').on('hidden.bs.modal', function (event) в showProperties()
+            if (event.stopPropagation != undefined) {
+                event.stopPropagation();
+            }
             // так же как для setProperties() - получаем ссылку на виджет, переносим его в панель виджетов
-            event.stopPropagation();
             var button = event.currentTarget;
             var widget = button.widget;
             widget.widgetHolder.parentElement.removeChild(widget.widgetHolder);
@@ -761,6 +757,9 @@ var BaseWidget =
             // возвращаем ранее сохраненные значения свойств виджета смотрите showProperties()
             // используем setter properties - виджет применит сохранные свойства ко всем своим SVG элементам 
             widget.properties = widget.storedProperties;
+            // так же как для setProperties(), взводим setProp, закрываем диалог
+            document.getElementById("showPropertiesModal").setProp = true;
+            $("#showPropertiesModal").modal('hide');
             // NOTE:
             // диалог закроется без вызова $("#showPropertiesModal").modal('hide');
             // потому что кнопкам был задан атрибуты button.setAttribute("data-dismiss", "modal") и button.setAttribute("aria-label", "Close")
@@ -768,7 +767,7 @@ var BaseWidget =
             return false;
         };
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        // обработчик события вызывается всеми редакторами свойств виджета, когда пользоваль меняет им значене 
+        // обработчик события вызывается всеми редакторами свойств виджета, когда пользователь меняет им значение 
         BaseWidget.prototype.onPropertyChange = function onPropertyChange(event) {
 
             var propEdit = event.currentTarget;
@@ -788,8 +787,6 @@ var BaseWidget =
             return true;
 
         };
-
-
 
         BaseWidget.prototype.moveLeft = function moveLeft(event) {
             var widget = event.currentTarget.widget;

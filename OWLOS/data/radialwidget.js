@@ -21,14 +21,12 @@
                     type: "i"
                 };
 
-
             widget._properties.rangetype =
                 {
                     tab: "G",
                     value: 'true',
                     type: "b"
                 };
-
 
             widget._properties.min =
                 {
@@ -39,7 +37,6 @@
 
             widget._properties.max =
                 {
-
                     tab: "G",
                     value: 100,
                     type: "f"
@@ -47,7 +44,6 @@
 
             widget._properties.percentbackgroundcolor =
                 {
-
                     tab: "C",
                     value: theme.secondary,
                     type: "c"
@@ -55,20 +51,17 @@
 
             widget._properties.percentbackgroundopacity =
                 {
-
                     tab: "O",
                     value: 0.5,
                     type: "f"
                 };
 
-
             widget._properties.percentcolor =
                 {
                     tab: "C",
-                    value: theme.info,
+                    value: theme.success,
                     type: "c"
                 };
-
 
             widget.radius = widget.size / 3;
             widget.topMargin = widget.centreY + widget.size / 10;
@@ -76,9 +69,7 @@
             widget.SVGArcWidget = new SVGArc(widget.SVGViewBox, widget.id + "arcwidget", widget.centreX, widget.topMargin, widget.radius, widget._properties.linewidth);
             widget.SVGArcSpinner.y = widget.topMargin;
 
-
             widget.clickableToTop();
-
 
             widget.proprties = widget._properties;
 
