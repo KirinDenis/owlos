@@ -15,6 +15,7 @@
             //if (document.getElementById(this.device._nodenickname + "_" + this.device._id) != undefined) return; 
 
             this.newTable(); //this.nodePropAnchors.innerHTML = "";
+            
             //this.nodesPropsPanel.innerHTML = "";
         } //слушатель (получатель) событие создания нового устройство (устройство не содержит свойств на данном этапе)
 

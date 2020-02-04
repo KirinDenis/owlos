@@ -26,6 +26,7 @@ var ValueWidget =
 
             widget.clickableToTop();
             widget.properties = widget._properties;
+            widget.doOnLoad();
 
         };
 

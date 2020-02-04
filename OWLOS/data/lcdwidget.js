@@ -96,10 +96,7 @@ var LCDWidget =
 
             widget.proprties = widget._properties;
             widget.resize(widget.width);
-            if (widget.onload != undefined) {
-                widget.onload(widget);
-            }
-
+            widget.doOnLoad();
         };
 
         LCDWidget.prototype.resize = function resize(size) {
