@@ -73,10 +73,7 @@
 
             widget.proprties = widget._properties;
 
-            if (widget.onload != undefined) {
-                widget.onload(widget);
-            }
-
+            widget.doOnLoad();
         }
 
 

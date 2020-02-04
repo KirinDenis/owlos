@@ -41,10 +41,7 @@ var LightWidget =
 
             widget.properties = widget._properties;
 
-            if (widget.onload != undefined) {
-                widget.onload(widget);
-            }
-
+            widget.doOnLoad();
         }
 
         LightWidget.prototype.refresh = function refresh(data, widgetText, label) {

@@ -133,10 +133,7 @@ var GraphWidget =
             widget.proprties = widget._properties;
             widget.resize(widget.width);
 
-            if (widget.onload != undefined) {
-                widget.onload(widget);
-            }
-
+            widget.doOnLoad();
         };
 
         GraphWidget.prototype.resize = function resize(size) {

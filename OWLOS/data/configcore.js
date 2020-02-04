@@ -57,8 +57,6 @@ var config = {
     addWidget: function (_dashboardId, _daviceId, _deviceProperty, _widgetId, _widgetProperties) {
         var dashboard = this.getDashboardById(_dashboardId);
         if (dashboard != undefined) {
-
-
             var widget = {
                 dashboardId: _dashboardId,
                 deviceId: _daviceId,
@@ -75,6 +73,33 @@ var config = {
             return widget;
         }
         return undefined;
+    },
+
+    getWidgetConfigPropById: function (id) {
+        for (var i = 0; i < configProperties.dashboards[0].widgets.length; i++) {
+            if (configProperties.dashboards[0].widgets[i].widgetId === id) {
+                return configProperties.dashboards[0].widgets[i];
+            }
+        }
+        return undefined;
+    },
+
+    onWidgetChange: function (widget) {
+        var widgetConfigProp = config.getWidgetConfigPropById(widget.id);
+        if (widgetConfigProp == undefined) {
+            return;
+        }
+        widgetConfigProp.widgetProperties = widget.properties;
+        //TODO: Показать кнопку сохранения 
+    },
+
+    onWidgetDelete: function (widget) {
+        var widgetConfigProp = config.getWidgetConfigPropById(widget.id);
+        if (widgetConfigProp == undefined) return;
+
+        //TODO: поправить удаление из массива
+        configProperties.dashboards[0].widgets.splice(configProperties.dashboards[0].widgets.indexOf(widgetConfigProp), 1);
+         //TODO: Показать кнопку сохранения 
     },
 
     addNode: function (_host, _nodenickname) {
@@ -124,18 +149,7 @@ var config = {
         return undefined;
     },
 
-    widgetEvent: function (configPropertiesWidget, widget) {
-        //widget.event the event what happend
-        if (widget.event == EVENT_DELETE) {
-            for (var i = 0; i < configProperties.dashboards[0].widgets.length; i++) {
-                if (configPropertiesWidget == configProperties.dashboards[0].widgets[i]) {
-                    configProperties.dashboards[0].widgets.splice(i, 1);
-                    config.save();
-                    return;
-                }
-            }
-        }
-    },
+
 
     load: function () {
         var result = false;

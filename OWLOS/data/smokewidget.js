@@ -74,9 +74,7 @@ var SmokeWidget =
 
             widget.proprties = widget._properties;
 
-            if (widget.onload != undefined) {
-                widget.onload(widget);
-            }
+            widget.doOnLoad();
         };
         
         SmokeWidget.prototype.refresh = function refresh(data, widgetText, label) {
