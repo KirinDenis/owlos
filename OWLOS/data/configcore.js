@@ -20,21 +20,28 @@ var configProperties = defaultWebProp();
 var config = {
 
     cancel: false,
-    changeListners: [],
-    onChange: function () {
-        for (var k = 0; k < this.changeListners.length; k++) {
-            this.changeListners[k].event(this.changeListners[k].sender, this);
+    _onchange: [],
+    doOnChange: function () {
+        for (var key in config._onchange) {
+            config._onchange[key](configProperties);
         }
     },
-    addChangeListner: function (_event, _sender) {
-        try {
-            _event(_sender, this);
-        } catch (exception) {
-            console.error(exception);
-            return; // don't add bad listner
-        }
-        this.changeListners.push(event = { event: _event, sender: _sender });
+
+    set onChange(onchange) {
+        config._onchange.push(onchange);
     },
+
+    _onload: [],
+    doOnLoad: function () {
+        for (var key in config._onload) {
+            config._onload[key](configProperties);
+        }
+    },
+
+    set onLoad(onload) {
+        config._onload.push(onload);
+    },
+
 
     addDashboard: function (_id) {
         var dashboard = {
@@ -66,10 +73,9 @@ var config = {
             };
             dashboard.widgets.push(widget);
 
-            var saveButton = document.getElementById("saveWidgetsButton");
-            saveButton.hidden = false;
+            config.doOnChange();
 
-            //this.save();
+            
             return widget;
         }
         return undefined;
@@ -90,7 +96,7 @@ var config = {
             return;
         }
         widgetConfigProp.widgetProperties = widget.properties;
-        //TODO: Показать кнопку сохранения 
+        config.doOnChange();
     },
 
     onWidgetDelete: function (widget) {
@@ -99,7 +105,7 @@ var config = {
 
         //TODO: поправить удаление из массива
         configProperties.dashboards[0].widgets.splice(configProperties.dashboards[0].widgets.indexOf(widgetConfigProp), 1);
-         //TODO: Показать кнопку сохранения 
+        config.doOnChange();
     },
 
     addNode: function (_host, _nodenickname) {
@@ -204,7 +210,7 @@ var config = {
                     configProperties.nodes[0].host = boardhost;
                     result = true;
 
-                    this.onChange();
+                    this.doOnLoad();
                     
                 }
                 else {
@@ -360,7 +366,7 @@ var config = {
                            
 
                             addToLogNL("Sending long config string. FINISHED. Result = OK!");
-                            config.onChange();
+                            
                             return true;
 
 
@@ -395,7 +401,7 @@ var config = {
                                 }
                              
                                 addToLogNL("Sending short config string. FINISHED. Result = OK!");
-                                config.onChange();
+                                
                                 return true;
 
                             }

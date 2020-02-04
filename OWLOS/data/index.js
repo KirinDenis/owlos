@@ -71,7 +71,9 @@ $(document).ready(function () {
 
     addToLogNL("get UI configuration...");
   // try {
-        config.addChangeListner(settingsUI.onConfigChange, settingsUI);
+         
+    config.onLoad = settingsUI.onConfigLoad;
+    config.onLoad = dashboardUI.onConfigLoad;
         if (config.load()) {
             status_online = NET_ONLINE;
             speak("OWL OS is started");
@@ -88,7 +90,7 @@ $(document).ready(function () {
             devices.addDeviceLoadedListner(settingsUI.onDeviceLoaded, settingsUI);
             nodesRefresh();
 
-            dashboardUI.initDashboard();
+            
 
             document.getElementById("mainContainer").style.display = "block";
             var boot = document.getElementById("boot");
@@ -100,6 +102,7 @@ $(document).ready(function () {
             $('#sidebarCollapse').on('click', function () {
                 $('#sidebar').toggleClass('active');
             });
+
 
             speak("OWL OS is ready");
         }

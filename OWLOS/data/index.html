@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <script src='bootcore.js'></script>
 </head>
-<body>
+<body onbeforeunload="return BeforeUnloadEvent()">
     <pre id="boot" style="font-size: 11px;"><code id="bootLog" style="white-space: pre-wrap; overflow-y:scroll;"></code></pre>
     <div class="container-fluid" id="mainContainer" style="display: none">
         <div class="row">
@@ -105,7 +105,10 @@
     <script>
         boot();
 
-
+        function BeforeUnloadEvent() {
+            return "Are you sure?";
+        }
+        
 
 
     </script>

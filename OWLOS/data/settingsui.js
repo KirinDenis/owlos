@@ -2,7 +2,7 @@
 
 var settingsUI = {
 
-    onConfigChange: function (sender, configPropertieserties) {
+    onConfigLoad: function (configProperties) {
 
         if (configProperties.nodes.length == 0) return;
 
@@ -112,15 +112,15 @@ var settingsUI = {
 
                 //подготавливаем панели со свойствами ноды (для каждой ноды своя панель id = node.nodenickname + "nodePropPanel")
                 //смотрите обработчик события onDeviceLoaded() - он запоняет эту панель
-                sender.addCard(nodePropHolderPanel, node.nodenickname + "NetworkNodeProp", getLang("networknodeprop"), 12);
+                settingsUI.addCard(nodePropHolderPanel, node.nodenickname + "NetworkNodeProp", getLang("networknodeprop"), 12);
                 var networkNodePropBody = document.getElementById(node.nodenickname + "NetworkNodePropBody");
-                sender.addDiv(networkNodePropBody, node.nodenickname + "NetworkNodePropBody1", 4);
-                sender.addDiv(networkNodePropBody, node.nodenickname + "NetworkNodePropBody2", 4);
-                sender.addDiv(networkNodePropBody, node.nodenickname + "NetworkNodePropBody3", 4);
+                settingsUI.addDiv(networkNodePropBody, node.nodenickname + "NetworkNodePropBody1", 4);
+                settingsUI.addDiv(networkNodePropBody, node.nodenickname + "NetworkNodePropBody2", 4);
+                settingsUI.addDiv(networkNodePropBody, node.nodenickname + "NetworkNodePropBody3", 4);
 
-                sender.addCard(nodePropHolderPanel, node.nodenickname + "WifiNodeProp", getLang("wifinodeprop"), 4); //WifiNodePropPanel - свойства WiFi                
-                sender.addCard(nodePropHolderPanel, node.nodenickname + "SystemNodeProp", getLang("systemnodeprop"), 4);
-                sender.addCard(nodePropHolderPanel, node.nodenickname + "UpdateNodeProp", getLang("updatenodeprop"), 4);
+                settingsUI.addCard(nodePropHolderPanel, node.nodenickname + "WifiNodeProp", getLang("wifinodeprop"), 4); //WifiNodePropPanel - свойства WiFi                
+                settingsUI.addCard(nodePropHolderPanel, node.nodenickname + "SystemNodeProp", getLang("systemnodeprop"), 4);
+                settingsUI.addCard(nodePropHolderPanel, node.nodenickname + "UpdateNodeProp", getLang("updatenodeprop"), 4);
 
 
                 //--- EndOf nodePropsPanel ---------------------------------------------------------------------------

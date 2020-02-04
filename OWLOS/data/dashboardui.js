@@ -15,7 +15,7 @@ var dashboardUI = {
         dashboardUI.dashboardModeListners.push(event = { event: _event, sender: _sender });
     },
 
-    initDashboard: function () {
+    onConfigLoad: function (configProperties) {
         var devicesWidgetsPanel = document.getElementById("devicesWidgetsPanel");
         var widgetsPanel = devicesWidgetsPanel.appendChild(document.createElement('div'));
         widgetsPanel.id = "widgetsPanel";
@@ -41,6 +41,8 @@ var dashboardUI = {
         saveWidgetsButton.hidden = true;
         saveWidgetsButton.id = "saveWidgetsButton";
         saveWidgetsButton.onclick = dashboardUI.saveAddedWidget;  
+
+        config.onChange = dashboardUI.onConfigChange;
 
         var headerModeButton = cardHeaderButtonsPanel.appendChild(document.createElement('input'));
         headerModeButton.className = "btn btn-secondary btn-sm";
@@ -332,6 +334,11 @@ var dashboardUI = {
         }
 
         config.cancel = true;
+    },
+
+    onConfigChange: function (configProperties) {
+        var saveButton = document.getElementById("saveWidgetsButton");
+        saveButton.hidden = false;
     }
 
 }
