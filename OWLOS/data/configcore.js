@@ -247,9 +247,10 @@ var config = {
         return result;
     },
 
+    // асинхронный метод сохранения внесенных изменений в настройки (передача строки разбитой на небольшие части в ноду) 
     save: function () {
 
-
+        //формирование строки из текущих настроек подключенных нод
         var tempProp = defaultWebProp();
 
         for (var key in configProperties) {
@@ -272,30 +273,46 @@ var config = {
             tempProp.nodes.push(jsonNode);
         }
 
-
+        //конвертирование в формат JSON
         var stringifyConfig = JSON.stringify(tempProp);
 
+        //установка размера подстроки
         var subStringLength = 1024;
 
+        // вызов функции сохранения
         var saveConfigResult = this.configSendAsync("Start", 0, stringifyConfig, subStringLength, boardhost);
 
         return saveConfigResult;
 
     },
 
+    //функция асинхронной передачи строки через RESTfull POST запрос с/без отображением(я) состояния передачи строки в модельном окне
+    //эта функция является одноврененно и функцией обратного вызова для выполняемого RESTfull POST запроса 
+    //аргументы функции: httpResult - результат выполнения RESTfull POST запроса, counter - счетчик, dataString - вся передаваемая строка, lengthDataSubString - длина подстроки, url - адрес для отправки RESTfull POST запроса
     configSendAsync: function (httpResult, counter, dataString, lengthDataSubString, url) {
+        // передаваемая подстрока
         var subString = "";
+        // информация о передаваемой части строки для сохранения в файл web.config (для временного хранения передаваемых данных файл web.temp)
         var filePartName = "";
+        // расчет количества подстрок (строка разбирая на подстроки) для передачи
         var countedSections = Math.floor(dataString.length / lengthDataSubString);
+        // часть переданной строки в %
         var sendingAmount = "0";
+
+        // текущий статус передачи строки отображающийся в модельном окне
+        var savingCurrentStatus = "Saving changes";
+
+        // элементы модального окна отобрающего процесс передачи строки
         var saveProgressBar = document.getElementById("saveProgressBar");
         var saveTextStatus = document.getElementById("savingTextStatus");
-        var savingCurrentStatus = "Saving changes";
         var savingCloseButton = document.getElementById("saveConfigcloseButton");
         var saveButton = document.getElementById("saveWidgetsButton");
         var closeButton = document.getElementById("saveConfigsaveCloseButton");
 
+
+        //Проверка была ли отменена передача строки
         if (config.cancel == false) {
+
             //HTTPClient добавляет строку "%error" в начало Response если запрос не был завешен HTTPCode=200 или произашел TimeOut
             if (!httpResult.indexOf("%error") == 0) {
 
@@ -422,12 +439,13 @@ var config = {
                 
 
                 addToLogNL("Sending config string. Still sending! " + filePartName);
+                //вызов функции асинхронного выполнения RESTfull POST запроса 
                 httpPostAsyncWithErrorReson(url, filePartName, subString, config.configSendAsync, counter, dataString, lengthDataSubString);
 
             }
-            else { //если HTTPClient вернул ошибку, возвращаем false 
+            else { 
 
-
+                //если HTTPClient вернул ошибку, сообщаем об ошибке в модальном окне еслт оно открыто, возвращаем false
                 if (saveTextStatus !== undefined && saveTextStatus !== null) {
                     saveTextStatus.innerHTML = "Saving changes error. Close this window and try again later!";
                     savingCloseButton.hidden = true;
@@ -435,12 +453,13 @@ var config = {
                 }
                 
 
-                addToLogNL("Sending config string ERROR!" + httpResult);
+               addToLogNL("Sending config string ERROR!" + httpResult);
                 return false;
 
             }
         }
         else {
+            // если была отменена передача строки (нажатие кнопки "отменить" в модельном окне), закрываем модельное окно  и возвращаем false
 
             var modalWindowBody = document.getElementById("saveConfigModalBody");
 
