@@ -155,7 +155,7 @@ function doProSidebar() {
     var sideBarDashboardLi = sideBarUl.appendChild(document.createElement("li"));
     sideBarDashboardLi.className = "nav-item";
     var sideBarDashboardaHref = sideBarDashboardLi.appendChild(document.createElement("a"));
-    sideBarDashboardaHref.className = "nav-link active show";
+    sideBarDashboardaHref.className = "nav-link";
     sideBarDashboardaHref.href = "#dashboard";
     sideBarDashboardaHref.setAttribute("data-toggle", "tab");
     sideBarDashboardaHref.innerText = "dashborad";
@@ -187,42 +187,6 @@ function doProSidebar() {
     sideBarConsoleaHref.innerText = "console";
     sideBarConsoleaHref.id = "console-tab"; //temp 
     sideBarConsoleaHref.onclick = function (event) { $(this).removeClass('active'); };
-
-    /*
-
-            <ul>
-                <li class="nav-item active show">
-                    <a href="#home" class="nav-link" data-toggle="tab">
-                        <i class="fa fa-tachometer-alt"></i>
-                        <span class="menu-text" id="home-tab">Dashboar</span>
-                        <span class="badge badge-pill badge-success">5</span>
-                        <span class="badge badge-pill badge-secondary">1</span>
-                    </a>
-
-                </li>
-                <li class="sidebar-dropdown">
-                    <a href="#settings" class="nav-link" data-toggle="tab">
-                        <i class="fa fa-tachometer-alt"></i>
-                        <span class="menu-text" id="settings-tab">Settings</span>
-                        <span class="badge badge-pill badge-warning">New</span>
-                    </a>
-                    <div class="sidebar-submenu">
-                        <ul id="settingsSideBarUl"></ul>
-                    </div>
-                </li>
-
-                <li class="nav-item">
-                    <a href="#console" class="nav-link" data-toggle="tab">
-                        <i class="fa fa-tachometer-alt"></i>
-                        <span class="menu-text" id="console-tab">Console</span>
-                        <span class="badge badge-pill badge-warning">New</span>
-                    </a>
-                </li>
-
-
-            </ul>
-            */
-
 
     jQuery(function ($) {
 

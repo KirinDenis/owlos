@@ -91,6 +91,7 @@ var BaseWidget =
             this.widgetHolder.style.cursor = "pointer"; // переопределяем тип курсора
             this.widgetHolder.onmouseover = this.mouseOver; // когда пользователь наведет мышью на виджет сработает этот обработчик события 
             this.widgetHolder.onmouseout = this.mouseOut; // когда пользователь уберет мышь этот обработчик 
+            this.widgetHolder.style.display = "block";
 
             // вызываем функцию с отдельным потоком ожидания появления панели widgetHolder в текущем DOM
             // когда панель будет готова к использованию waitForElement() вызовет метод onWidgetHolderLoad() в этом объекте
