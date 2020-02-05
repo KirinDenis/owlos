@@ -157,10 +157,21 @@ function doProSidebar() {
     var sideBarDashboardaHref = sideBarDashboardLi.appendChild(document.createElement("a"));
     sideBarDashboardaHref.className = "nav-link";
     sideBarDashboardaHref.href = "#dashboard";
-    sideBarDashboardaHref.setAttribute("data-toggle", "tab");
-    sideBarDashboardaHref.innerText = "dashborad";
-    sideBarDashboardaHref.id = "home-tab"; //temp 
+    sideBarDashboardaHref.setAttribute("data-toggle", "tab");    
     sideBarDashboardaHref.onclick = function (event) { $(this).removeClass('active'); };
+
+    sideBarDashboardaHref.appendChild(document.createElement("i")).className = "fa fa-tachometer-alt";
+    var sideBarDashboardaHrefSpan = sideBarDashboardaHref.appendChild(document.createElement("span"));
+    sideBarDashboardaHrefSpan.className = "menu-text";
+    sideBarDashboardaHrefSpan.id = "home-tab"; 
+    sideBarDashboardaHrefSpan = sideBarDashboardaHref.appendChild(document.createElement("span"));
+    sideBarDashboardaHrefSpan.className = "badge badge-pill badge-success";
+    sideBarDashboardaHrefSpan.id = "sideBarDashboardaHrefOnlineSpan";
+    
+    sideBarDashboardaHrefSpan = sideBarDashboardaHref.appendChild(document.createElement("span"));
+    sideBarDashboardaHrefSpan.className = "badge badge-pill badge-secondary";
+    sideBarDashboardaHrefSpan.id = "sideBarDashboardaHrefOfflineSpan";
+
 
     var sideBarSettingsLi = sideBarUl.appendChild(document.createElement("li"));
     sideBarSettingsLi.className = "sidebar-dropdown";
@@ -168,9 +179,13 @@ function doProSidebar() {
     sideBarSettingsaHref.className = "nav-link";
     sideBarSettingsaHref.href = "#settings";
     sideBarSettingsaHref.setAttribute("data-toggle", "tab");
-    sideBarSettingsaHref.innerText = "settings";
-    sideBarSettingsaHref.id = "settings-tab"; //temp
     sideBarSettingsaHref.onclick = function (event) { $(this).removeClass('active'); };
+
+    sideBarSettingsaHref.appendChild(document.createElement("i")).className = "fa fa-cog";
+    var sideBarSettingsaHrefSpan = sideBarSettingsaHref.appendChild(document.createElement("span"));
+    sideBarSettingsaHrefSpan.className = "menu-text";
+    sideBarSettingsaHrefSpan.id = "settings-tab"; 
+
 
     var sideBarSettingsLiSubmenu = sideBarSettingsLi.appendChild(document.createElement("div"));
     sideBarSettingsLiSubmenu.className = "sidebar-submenu";
@@ -184,9 +199,14 @@ function doProSidebar() {
     sideBarConsoleaHref.className = "nav-link";
     sideBarConsoleaHref.href = "#console";
     sideBarConsoleaHref.setAttribute("data-toggle", "tab");
-    sideBarConsoleaHref.innerText = "console";
-    sideBarConsoleaHref.id = "console-tab"; //temp 
+        
     sideBarConsoleaHref.onclick = function (event) { $(this).removeClass('active'); };
+
+    sideBarConsoleaHref.appendChild(document.createElement("i")).className = "fa fa-file-code";
+    var sideBarConsoleaHrefSpan = sideBarConsoleaHref.appendChild(document.createElement("span"));
+    sideBarConsoleaHrefSpan.className = "menu-text";
+    sideBarConsoleaHrefSpan.id = "console-tab"; 
+
 
     jQuery(function ($) {
 
