@@ -174,6 +174,7 @@ function doProSidebar() {
 
     var sideBarSettingsLiSubmenu = sideBarSettingsLi.appendChild(document.createElement("div"));
     sideBarSettingsLiSubmenu.className = "sidebar-submenu";
+    sideBarSettingsLiSubmenu.style.display = "block";
     var sideBarSettingsLiSubmenuUl = sideBarSettingsLiSubmenu.appendChild(document.createElement("ul"));
     sideBarSettingsLiSubmenuUl.id = "settingsSideBarUl";
 

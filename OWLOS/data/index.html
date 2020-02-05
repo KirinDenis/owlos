@@ -10,9 +10,8 @@
           integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
 
 </head>
-<body>
-
-    <!-- onbeforeunload="return BeforeUnloadEvent()" -->
+<body  onbeforeunload="return BeforeUnloadEvent()">
+    
     <pre id="boot" style="font-size: 11px;"><code id="bootLog" style="white-space: pre-wrap; overflow-y:scroll;"></code></pre>
 
     <div class="page-wrapper default-theme sidebar-bg bg1 toggled">
@@ -77,7 +76,15 @@
             <div id="overlay" class="overlay"></div>
             <div class="container-fluid">
                 <div class="row">
-
+                    <nav class="navbar bg-primary">
+                        <form class="form-inline my-2 my-lg-0">
+                            <span type="button" id="sidebarCollapse" class="badge badge-default">
+                                <span>|-|</span>
+                            </span>
+                            <div class="nodestatuspanel" id="nodeStatusPanel"></div>
+                            <div class="nodestatuspanel" id="nodeStatusPanelText"></div>
+                        </form>
+                    </nav>
 
                     <div class="tab-content col-sm-12" id="nodesPropsPanel">
 
@@ -88,8 +95,6 @@
                             <div class="col-sm-12" id="basicPanel">
                             </div>
                         </div>
-
-
 
                         <div class="tab-pane fade" id="console">
                             <div class="row">
@@ -123,21 +128,6 @@
          -->
             <div id="nodePropAnchors"> </div>
 
-            <nav class="navbar bg-primary">
-
-                <form class="form-inline my-2 my-lg-0">
-                    <span type="button" id="sidebarCollapse" class="badge badge-default">
-                        <span>|-|</span>
-                    </span>
-
-                    <div class="nodestatuspanel" id="nodeStatusPanel">
-                    </div>
-
-                    <div class="nodestatuspanel" id="nodeStatusPanelText">
-
-                    </div>
-                </form>
-            </nav>
 
 
         </main>
