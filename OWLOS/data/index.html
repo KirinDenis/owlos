@@ -5,97 +5,133 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <script src='bootcore.js'></script>
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+          integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+
 </head>
-<body onbeforeunload="return BeforeUnloadEvent()">
+<body  onbeforeunload="return BeforeUnloadEvent()">
+    
     <pre id="boot" style="font-size: 11px;"><code id="bootLog" style="white-space: pre-wrap; overflow-y:scroll;"></code></pre>
-    <div class="container-fluid" id="mainContainer" style="display: none">
-        <div class="row">
 
-            <div class="col-sm-12">
-                <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-                    <a class="navbar-brand" href="#">OWL OS</a>
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="navbarColor01">
-                        <ul class="nav navbar-nav mr-auto" id="mainTab" role="tablist">
-                            <li class="nav-item">
-                                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" aria-controls="home" aria-selected="true">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false">Devices</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="console-tab" data-toggle="tab" href="#console" role="tab" aria-controls="console" aria-selected="false">Console</a>
-                            </li>
-                        </ul>
-                    </div>
-                </nav>
-
-                <div class="tab-content" id="mainTabContent">
-                    <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                        <div class="row" id="devicesWidgetsPanel">
+    <div class="page-wrapper default-theme sidebar-bg bg1 toggled">
+        <nav id="sidebar" class="sidebar-wrapper">
+            <div class="sidebar-content">
+                <div class="sidebar-item sidebar-menu" id="mainSideBar">
+                    <!--
+                        <div class="sidebar-item sidebar-brand">
+                            <a href="https://github.com/KirinDenis/owlos">OWL OS</a>
                         </div>
-                        <div class="col-sm-12" id="basicPanel">
+                        
+                    <div class="sidebar-item sidebar-header d-flex flex-nowrap">
+                        <div class="user-info">
+                            <span class="user-name">
+                                version
+                                <strong>1.7</strong>
+                            </span>
+                            <span class="user-role">Administrator</span>
+                            <span class="user-status">
+                                <i class="fa fa-circle"></i>
+                                <span>Online</span>
+                            </span>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+                    <ul>
+                        <li class="nav-item active show">
+                            <a href="#home" class="nav-link" data-toggle="tab">
+                                <i class="fa fa-tachometer-alt"></i>
+                                <span class="menu-text" id="home-tab">Dashboar</span>
+                                <span class="badge badge-pill badge-success">5</span>
+                                <span class="badge badge-pill badge-secondary">1</span>
+                            </a>
 
-                        <div id="nodePropAnchors"> </div>
+                        </li>
+                        <li class="sidebar-dropdown">
+                            <a href="#settings" class="nav-link" data-toggle="tab">
+                                <i class="fa fa-tachometer-alt"></i>
+                                <span class="menu-text" id="settings-tab">Settings</span>
+                                <span class="badge badge-pill badge-warning">New</span>
+                            </a>
+                            <div class="sidebar-submenu">
+                                <ul id="settingsSideBarUl"></ul>
+                            </div>
+                        </li>
 
-                        <div id="nodesPropsPanelHolder" class="container-fluid">
-                            <div class="wrapper row">
-                                <!-- Sidebar Holder -->
-                                <nav id="sidebar" class="bs-docs-sidebar">
-                                    <ul id="nodesSideBar" class="list-unstyled components"></ul>
-                                </nav>
-
-                                <div id="content">
-                                    <nav class="navbar bg-primary">
-
-                                        <form class="form-inline my-2 my-lg-0">
-                                            <span type="button" id="sidebarCollapse" class="badge badge-default">
-                                                <span>|-|</span>
-                                            </span>
-
-                                            <div class="nodestatuspanel" id="nodeStatusPanel">
-                                            </div>
-
-                                            <div class="nodestatuspanel" id="nodeStatusPanelText">
-
-                                            </div>
-                                        </form>
-                                    </nav>
-
-                                    
-                                        <div id="nodesPropsPanel" class="tab-content col-md-12">
-
-                                        </div>
-                                    
-
-                                </div>
+                        <li class="nav-item">
+                            <a href="#console" class="nav-link" data-toggle="tab">
+                                <i class="fa fa-tachometer-alt"></i>
+                                <span class="menu-text" id="console-tab">Console</span>
+                                <span class="badge badge-pill badge-warning">New</span>
+                            </a>
+                        </li>
 
 
+                    </ul>
+                    -->
+                </div>
+            </div>
+        </nav>
+        <!-- page-content  -->
+        <main class="page-content pt-2">
+            <div id="overlay" class="overlay"></div>
+            <div class="container-fluid">
+                <div class="row">
+                    <nav class="navbar bg-primary">
+                        <form class="form-inline my-2 my-lg-0">
+                            <span type="button" id="sidebarCollapse" class="badge badge-default">
+                                <span>|-|</span>
+                            </span>
+                            <div class="nodestatuspanel" id="nodeStatusPanel"></div>
+                            <div class="nodestatuspanel" id="nodeStatusPanelText"></div>
+                        </form>
+                    </nav>
+
+                    <div class="tab-content col-sm-12" id="nodesPropsPanel">
+
+
+                        <div class="tab-pane fade" id="dashboard">
+                            <div class="row" id="devicesWidgetsPanel">
+                            </div>
+                            <div class="col-sm-12" id="basicPanel">
                             </div>
                         </div>
 
-                    </div>
-                    <div class="tab-pane fade" id="console" role="tabpanel" aria-labelledby="console-tab">
-                        <div class="row">
-                            <div class="col-md-12 devicediv">
-                                <div id="consolePanel" class="col-md-12 border-0 devicecard">
+                        <div class="tab-pane fade" id="console">
+                            <div class="row">
+                                <div class="col-md-12 devicediv">
+                                    <div id="consolePanel" class="col-md-12 border-0 devicecard">
 
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
+
+
                     </div>
+
+
 
                 </div>
-                <div id="uploadPanel" class="row"></div>
-                <div id="addDevicePanel" class="row"></div>
-                <div id="resetPanel" class="row"></div>
             </div>
-        </div>
+
+
+            <div id="uploadPanel" class="row"></div>
+            <div id="addDevicePanel" class="row"></div>
+            <div id="resetPanel" class="row"></div>
+
+            <!--
+
+    <nav id="sidebar" class="bs-docs-sidebar">
+        <ul id="nodesSideBar" class="list-unstyled components"></ul>
+    </nav>
+         -->
+            <div id="nodePropAnchors"> </div>
+
+
+
+        </main>
+        <!-- page-content" -->
     </div>
     <footer class="footer">
         <div class="container col-md-12" id="footerContainer">
@@ -108,7 +144,7 @@
         function BeforeUnloadEvent() {
             return "Are you sure?";
         }
-        
+
 
 
     </script>

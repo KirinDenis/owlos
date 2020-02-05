@@ -71,14 +71,14 @@ $(document).ready(function () {
 
     addToLogNL("get UI configuration...");
   // try {
-         
+    doProSidebar();         
     config.onLoad = settingsUI.onConfigLoad;
     config.onLoad = dashboardUI.onConfigLoad;
         if (config.load()) {
             status_online = NET_ONLINE;
             speak("OWL OS is started");
 
-
+            
             document.getElementById("home-tab").innerText = getLang("homeTab");
             document.getElementById("settings-tab").innerText = getLang("settingsTab");
             document.getElementById("console-tab").innerText = getLang("consoleTab");
@@ -92,7 +92,7 @@ $(document).ready(function () {
 
             
 
-            document.getElementById("mainContainer").style.display = "block";
+        //    document.getElementById("mainContainer").style.display = "block";
             var boot = document.getElementById("boot");
             boot.parentElement.removeChild(boot);
             document.getElementById("consolePanel").appendChild(boot);
@@ -103,6 +103,7 @@ $(document).ready(function () {
                 $('#sidebar').toggleClass('active');
             });
 
+            
 
             speak("OWL OS is ready");
         }
@@ -123,6 +124,198 @@ $(document).ready(function () {
     //}
 //}
 );
+
+function doProSidebar() {
+    var mainSideBar = document.getElementById("mainSideBar");
+    var sideBarOWLOS = mainSideBar.appendChild(document.createElement("div"));
+    sideBarOWLOS.className = "sidebar-item sidebar-brand";
+    var hRef = sideBarOWLOS.appendChild(document.createElement("a"));
+    hRef.href = "https://github.com/KirinDenis/owlos";
+    hRef.innerText = "OWL OS";
+
+    var sideBarHeader = mainSideBar.appendChild(document.createElement("div"));
+    sideBarHeader.className = "sidebar-item sidebar-header d-flex flex-nowrap";
+    var sideBarHeaderInfo = sideBarHeader.appendChild(document.createElement("div"));
+    sideBarHeaderInfo.className = "user-info";
+    var sideBarHeaderInfoVersion = sideBarHeaderInfo.appendChild(document.createElement("span"));
+    sideBarHeaderInfoVersion.className = "user-name";
+    sideBarHeaderInfoVersion.innerHTML = "version<strong>1.7</strong>";
+    var sideBarHeaderInfoRole = sideBarHeaderInfo.appendChild(document.createElement("span"));
+    sideBarHeaderInfoRole.className = "user-role";
+    sideBarHeaderInfoRole.innerHTML = "Administrator";
+    var sideBarHeaderInfoStatus = sideBarHeaderInfo.appendChild(document.createElement("span"));
+    sideBarHeaderInfoStatus.className = "user-status";
+    var sideBarHeaderInfoRoleI = sideBarHeaderInfoStatus.appendChild(document.createElement("i"));
+    sideBarHeaderInfoRoleI.className = "fa fa-circle";
+    var sideBarHeaderInfoRoleSpan = sideBarHeaderInfoStatus.appendChild(document.createElement("span"));
+    sideBarHeaderInfoRoleSpan.innerHTML = "Online";
+    
+    var sideBarUl = mainSideBar.appendChild(document.createElement("ul"));
+
+    var sideBarDashboardLi = sideBarUl.appendChild(document.createElement("li"));
+    sideBarDashboardLi.className = "nav-item";
+    var sideBarDashboardaHref = sideBarDashboardLi.appendChild(document.createElement("a"));
+    sideBarDashboardaHref.className = "nav-link active show";
+    sideBarDashboardaHref.href = "#dashboard";
+    sideBarDashboardaHref.setAttribute("data-toggle", "tab");
+    sideBarDashboardaHref.innerText = "dashborad";
+    sideBarDashboardaHref.id = "home-tab"; //temp 
+    sideBarDashboardaHref.onclick = function (event) { $(this).removeClass('active'); };
+
+    var sideBarSettingsLi = sideBarUl.appendChild(document.createElement("li"));
+    sideBarSettingsLi.className = "sidebar-dropdown";
+    var sideBarSettingsaHref = sideBarSettingsLi.appendChild(document.createElement("a"));
+    sideBarSettingsaHref.className = "nav-link";
+    sideBarSettingsaHref.href = "#settings";
+    sideBarSettingsaHref.setAttribute("data-toggle", "tab");
+    sideBarSettingsaHref.innerText = "settings";
+    sideBarSettingsaHref.id = "settings-tab"; //temp
+    sideBarSettingsaHref.onclick = function (event) { $(this).removeClass('active'); };
+
+    var sideBarSettingsLiSubmenu = sideBarSettingsLi.appendChild(document.createElement("div"));
+    sideBarSettingsLiSubmenu.className = "sidebar-submenu";
+    sideBarSettingsLiSubmenu.style.display = "block";
+    var sideBarSettingsLiSubmenuUl = sideBarSettingsLiSubmenu.appendChild(document.createElement("ul"));
+    sideBarSettingsLiSubmenuUl.id = "settingsSideBarUl";
+
+    var sideBarConsoleLi = sideBarUl.appendChild(document.createElement("li"));
+    sideBarConsoleLi.className = "nav-item";
+    var sideBarConsoleaHref = sideBarConsoleLi.appendChild(document.createElement("a"));
+    sideBarConsoleaHref.className = "nav-link";
+    sideBarConsoleaHref.href = "#console";
+    sideBarConsoleaHref.setAttribute("data-toggle", "tab");
+    sideBarConsoleaHref.innerText = "console";
+    sideBarConsoleaHref.id = "console-tab"; //temp 
+    sideBarConsoleaHref.onclick = function (event) { $(this).removeClass('active'); };
+
+    /*
+
+            <ul>
+                <li class="nav-item active show">
+                    <a href="#home" class="nav-link" data-toggle="tab">
+                        <i class="fa fa-tachometer-alt"></i>
+                        <span class="menu-text" id="home-tab">Dashboar</span>
+                        <span class="badge badge-pill badge-success">5</span>
+                        <span class="badge badge-pill badge-secondary">1</span>
+                    </a>
+
+                </li>
+                <li class="sidebar-dropdown">
+                    <a href="#settings" class="nav-link" data-toggle="tab">
+                        <i class="fa fa-tachometer-alt"></i>
+                        <span class="menu-text" id="settings-tab">Settings</span>
+                        <span class="badge badge-pill badge-warning">New</span>
+                    </a>
+                    <div class="sidebar-submenu">
+                        <ul id="settingsSideBarUl"></ul>
+                    </div>
+                </li>
+
+                <li class="nav-item">
+                    <a href="#console" class="nav-link" data-toggle="tab">
+                        <i class="fa fa-tachometer-alt"></i>
+                        <span class="menu-text" id="console-tab">Console</span>
+                        <span class="badge badge-pill badge-warning">New</span>
+                    </a>
+                </li>
+
+
+            </ul>
+            */
+
+
+    jQuery(function ($) {
+
+        // Dropdown menu
+        $(".sidebar-dropdown > a").click(function () {
+            $(".sidebar-submenu").slideUp(200);
+            if ($(this).parent().hasClass("active")) {
+                $(".sidebar-dropdown").removeClass("active");
+                $(this).parent().removeClass("active");
+            } else {
+                $(".sidebar-dropdown").removeClass("active");
+                $(this).next(".sidebar-submenu").slideDown(200);
+                $(this).parent().addClass("active");
+            }
+
+        });
+
+        //toggle sidebar
+        $("#toggle-sidebar").click(function () {
+            $(".page-wrapper").toggleClass("toggled");
+        });
+        //Pin sidebar
+        $("#pin-sidebar").click(function () {
+            if ($(".page-wrapper").hasClass("pinned")) {
+                // unpin sidebar when hovered
+                $(".page-wrapper").removeClass("pinned");
+                $("#sidebar").unbind("hover");
+            } else {
+                $(".page-wrapper").addClass("pinned");
+                $("#sidebar").hover(
+                    function () {
+                        console.log("mouseenter");
+                        $(".page-wrapper").addClass("sidebar-hovered");
+                    },
+                    function () {
+                        console.log("mouseout");
+                        $(".page-wrapper").removeClass("sidebar-hovered");
+                    }
+                )
+
+            }
+        });
+
+
+        //toggle sidebar overlay
+        $("#overlay").click(function () {
+            $(".page-wrapper").toggleClass("toggled");
+        });
+
+        //switch between themes 
+        var themes = "default-theme legacy-theme chiller-theme ice-theme cool-theme light-theme";
+        $('[data-theme]').click(function () {
+            $('[data-theme]').removeClass("selected");
+            $(this).addClass("selected");
+            $('.page-wrapper').removeClass(themes);
+            $('.page-wrapper').addClass($(this).attr('data-theme'));
+        });
+
+        // switch between background images
+        var bgs = "bg1 bg2 bg3 bg4";
+        $('[data-bg]').click(function () {
+            $('[data-bg]').removeClass("selected");
+            $(this).addClass("selected");
+            $('.page-wrapper').removeClass(bgs);
+            $('.page-wrapper').addClass($(this).attr('data-bg'));
+        });
+
+        // toggle background image
+        $("#toggle-bg").change(function (e) {
+            e.preventDefault();
+            $('.page-wrapper').toggleClass("sidebar-bg");
+        });
+
+        // toggle border radius
+        $("#toggle-border-radius").change(function (e) {
+            e.preventDefault();
+            $('.page-wrapper').toggleClass("border-radius-on");
+        });
+
+        //custom scroll bar is only used on desktop
+        /*
+        if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            $(".sidebar-content").mCustomScrollbar({
+                axis: "y",
+                autoHideScrollbar: true,
+                scrollInertia: 300
+            });
+            $(".sidebar-content").addClass("desktop");
+
+        }
+        */
+    });
+}
 
 function nodesRefresh() {
     for (var node in configProperties.nodes) {
