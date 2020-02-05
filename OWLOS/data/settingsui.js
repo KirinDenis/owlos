@@ -6,12 +6,12 @@ var settingsUI = {
 
         if (configProperties.nodes.length == 0) return;
 
-        var nodesSideBar = document.getElementById("nodesSideBar");
-        nodesSideBar.style.background = theme.primary;
-        var firstDevice = false;
+        var nodesSideBar = document.getElementById("settingsSideBarUl");
+      //  nodesSideBar.style.background = theme.primary;
+        
         //add addNodeNavItem first --------------------------------------------------
         if (document.getElementById("addNodeNavItem") == undefined) {
-            firstDevice = true;
+            
             var nodeNavItem = nodesSideBar.appendChild(document.createElement("li"));
             nodeNavItem.className = "nav-item";
             nodeNavItem.id = "addNodeNavItem";
@@ -40,24 +40,14 @@ var settingsUI = {
                 nodeLi.id = "nodeNavItem" + node.nodenickname;
                 nodeLi.node = node;
 
-                if (firstDevice) {
-                    nodeLi.className = "active";
-                    nodesSideBar.activeLi = nodeLi;
-                }
                 var nodeAhref = nodeLi.appendChild(document.createElement("a"));
                 nodeAhref.id = node.nodenickname + "ahref";
                 nodeAhref.href = "#" + node.nodenickname + "submenu";
 
-                if (firstDevice) {
-                    nodeAhref.setAttribute("data-toggle", "collapse");
-                    nodeAhref.setAttribute("aria-expanded", "true");
-
-                }
-                else {
                     nodeAhref.setAttribute("data-toggle", "collapse");
                     nodeAhref.setAttribute("aria-expanded", "false");
-                }
-                nodeAhref.innerHTML = "<b>" + node.nodenickname + "</b>";
+
+                nodeAhref.innerHTML = node.nodenickname;
                 //nodeAhref.onclick = settingsUI.deviceAnchorClick;
                 nodeAhref.parentLi = nodeLi;
                 nodeAhref.node = node;
@@ -99,10 +89,7 @@ var settingsUI = {
                 //--- nodePropsPanel ---------------------------------------------------------------------------
                 //панель для панелей с быстрым доступам к основным свойствам ноды
                 var nodePropsPanel = nodesPropsPanel.appendChild(document.createElement('div'));
-                nodePropsPanel.className = "devicediv tab-pane fade";
-                if (firstDevice) {
-                    nodePropsPanel.className += " active show"; //панель свойств первой ноды активна изначально
-                }
+                nodePropsPanel.className = "tab-pane fade";
                 nodePropsPanel.id = node.nodenickname + "nodePropsPanel";
                 nodeAhref.nodefadepanel = nodePropsPanel;
 
@@ -141,7 +128,7 @@ var settingsUI = {
                 //new files tab ----------------
                 var nodesPropsPanel = document.getElementById("nodesPropsPanel");
                 var filesDiv = nodesPropsPanel.appendChild(document.createElement('div'));
-                filesDiv.className = "devicediv tab-pane fade";
+                filesDiv.className = "tab-pane fade";
                 filesDiv.id = node.nodenickname + "filesfadepanel";
                 filesHRef.filesList = new FilesList(filesDiv, node);
 
@@ -188,16 +175,8 @@ var settingsUI = {
                 document.getElementById("nodeStatusPanelText").appendChild(nodeStatusPanelText);
 
                 nodeStatusPanel.nodeStatusPanelText = nodeStatusPanelText;
-                if (firstDevice) {
-                    document.getElementById("nodeStatusPanel").currentStatusPanel = nodeStatusPanel;
-                    nodeStatusPanel.style.display = "block";
-                    nodeStatusPanelText.style.display = "block";
-                }
-                else {
                     nodeStatusPanel.style.display = "none";
                     nodeStatusPanelText.style.display = "none";
-                }
-                firstDevice = false;
             }
         }
     },
@@ -429,24 +408,14 @@ var settingsUI = {
     },
 
     deviceAnchorClick: function (event) {
-
+        
         var aHref = event.currentTarget;
 
-        var nodesSideBar = document.getElementById("nodesSideBar");
+     
         $(this).removeClass('active');
-        nodesSideBar.activeLi.className = "";
-        if (nodesSideBar.acriveHref != undefined) {
-            if (nodesSideBar.acriveHref.nodefadepanel != undefined) {
-                nodesSideBar.acriveHref.nodefadepanel.className = "devicediv tab-pane fade";
-            }
-        }
-        nodesSideBar.acriveHref = aHref;
-        if (aHref.nodefadepanel != undefined) {
-            aHref.nodefadepanel.className = "devicediv tab-pane fade active show";
-        }
 
         aHref.parentLi.className = "active";
-        nodesSideBar.activeLi = aHref.parentLi;
+        
         document.location = aHref.href;
 
         var node = aHref.node;
@@ -471,6 +440,7 @@ var settingsUI = {
         //     if (aHref.getAttribute("aria-expanded") == "true") {
         //         document.documentElement.scrollTop = document.documentElement.scrollTop - event.clientY - event.currentTarget.offsetHeight;
         //     }
+        
 
         return false;
     },
