@@ -40,9 +40,13 @@ var devicesUI = {
         var modalFooter = document.getElementById("addDeviceModalFooter");
         var modalBody = document.getElementById("addDeviceModalBody");
 
+        var titleDeviceText = modalBody.appendChild(document.createElement("p"));
+        titleDeviceText.innerHTML = getLang("device");
+        titleDeviceText.className = "text-center";
 
         var formGroup = modalBody.appendChild(document.createElement("div"));
         formGroup.className = "form-group";
+
         var label = formGroup.appendChild(document.createElement("label"));
         label.setAttribute("for", "typeSelect");
         label.innerText = getLang("devicetype");
@@ -51,6 +55,7 @@ var devicesUI = {
         var typeSelect = formGroup.appendChild(document.createElement('select'));
         typeSelect.className = "form-control form-control-sm";
         typeSelect.id = "typeSelect";
+
 
         var valueSelectOption = typeSelect.appendChild(document.createElement('option'));
         valueSelectOption.innerText = getLang("dht");
@@ -124,11 +129,57 @@ var devicesUI = {
         pin4Select.id = "pin4Select";
         devicesUI.appendDevicePins(pin4Select);
 
+        //Checkbox for auto widget adding
+        var checkBoxDiv = modalBody.appendChild(document.createElement("div"));
+        checkBoxDiv.className = "custom-control custom-checkbox";
+
+
+        var checkBoxInput = checkBoxDiv.appendChild(document.createElement("input"));
+        checkBoxInput.type = "checkbox";
+        checkBoxInput.className = "custom-control-input";
+        checkBoxInput.id = "autoAddWidget";
+        checkBoxInput.checked = true;
+        checkBoxInput.onchange = devicesUI.checkBoxClick;
+
+        var checkBoxLabel = checkBoxDiv.appendChild(document.createElement("label"));
+        checkBoxLabel.className = "custom-control-label";
+        checkBoxLabel.setAttribute("for", "autoAddWidget");
+        checkBoxLabel.innerHTML = getLang("autoaddwidget");
+
+        var addWidgetGroup = modalBody.appendChild(document.createElement("div"));
+        addWidgetGroup.style.display = "block";
+        addWidgetGroup.id = "addWidgetGroup";
+
+        var titleWidgetText = addWidgetGroup.appendChild(document.createElement("p"));
+        titleWidgetText.innerHTML = getLang("widget");
+        titleWidgetText.className = "text-center";
+        
+        //device properties select
+        var formGroupDeviceProperties = addWidgetGroup.appendChild(document.createElement("div"));
+        var devicePropLabel = formGroupDeviceProperties.appendChild(document.createElement("label"));
+        devicePropLabel.setAttribute("for", "devicePropSelect");
+        devicePropLabel.innerText = getLang("devicesporplist");
+        var devicePropSelect = formGroupDeviceProperties.appendChild(document.createElement('select'));
+        devicePropSelect.className = "form-control form-control-sm";
+        devicePropSelect.id = "devicePropertySelected";
+
+        //widgets select 
+        var formGroupWidgetSelect = addWidgetGroup.appendChild(document.createElement("div"));
+        var widgetLabel = formGroupWidgetSelect.appendChild(document.createElement("label"));
+        widgetLabel.setAttribute("for", "widgetSelect");
+        widgetLabel.innerText = getLang("widgetslist");
+        var widgetSelect = formGroupWidgetSelect.appendChild(document.createElement('select'));
+        widgetSelect.className = "form-control form-control-sm";
+        widgetSelect.id = "widgetTypeSelected";
+
+
 
         var alertDiv = modalBody.appendChild(document.createElement('div'));
 
        // var modalFooter = modalContent.appendChild(document.createElement("div"));
        // modalFooter.className = "modal-footer";
+
+
 
         var addButton = modalFooter.appendChild(document.createElement("button"));
         addButton.type = "button";
@@ -188,5 +239,21 @@ var devicesUI = {
         var button = event.currentTarget;
         document.location = button.href;
         return false;
+    },
+
+    checkBoxClick: function (event) {
+        var checkBox = event.currentTarget;
+        var divGroup = document.getElementById("addWidgetGroup");
+
+        if (checkBox.checked == true) {
+
+            divGroup.style.display = "block";
+        }
+        else {
+
+            divGroup.style.display = "none";
+        }
+
+        return true;
     }
 }
