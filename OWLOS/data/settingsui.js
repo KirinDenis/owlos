@@ -7,18 +7,18 @@ var settingsUI = {
         if (configProperties.nodes.length == 0) return;
 
         var nodesSideBar = document.getElementById("settingsSideBarUl");
-      //  nodesSideBar.style.background = theme.primary;
-        
+        //  nodesSideBar.style.background = theme.primary;
+
         //add addNodeNavItem first --------------------------------------------------
         if (document.getElementById("addNodeNavItem") == undefined) {
-            
+
             var nodeNavItem = nodesSideBar.appendChild(document.createElement("li"));
             nodeNavItem.className = "nav-item";
             nodeNavItem.id = "addNodeNavItem";
             var nodeHRef = nodeNavItem.appendChild(document.createElement("a"));
             nodeHRef.className = "nav-link";
             nodeHRef.parentLi = nodeLi;
-            nodeHRef.style.color = theme.success;
+            //nodeHRef.style.color = theme.success;
             nodeHRef.setAttribute("data-toggle", "tab");
             nodeHRef.onclick = settingsUI.addNodeClick;
             nodeHRef.innerHTML = "<b>" + getLang("addnode") + "</b>";
@@ -39,15 +39,15 @@ var settingsUI = {
                 var nodeLi = nodesSideBar.appendChild(document.createElement("li"));
                 nodeLi.id = "nodeNavItem" + node.nodenickname;
                 nodeLi.node = node;
-
-                var nodeAhref = nodeLi.appendChild(document.createElement("a"));
-                nodeAhref.id = node.nodenickname + "ahref";
+                
+                var nodeAhref = nodeLi.appendChild(document.createElement("a"));                
                 nodeAhref.href = "#" + node.nodenickname + "submenu";
-
-                    nodeAhref.setAttribute("data-toggle", "collapse");
-                    nodeAhref.setAttribute("aria-expanded", "false");
-
+                nodeAhref.setAttribute("data-toggle", "collapse");
+                nodeAhref.setAttribute("aria-expanded", "false");
                 nodeAhref.innerHTML = node.nodenickname;
+                nodeAhref.id = node.nodenickname + "ahref";
+
+
                 //nodeAhref.onclick = settingsUI.deviceAnchorClick;
                 nodeAhref.parentLi = nodeLi;
                 nodeAhref.node = node;
@@ -65,10 +65,10 @@ var settingsUI = {
                 var deviceHRef = deviceNavItem.appendChild(document.createElement("a"));
                 deviceHRef.className = "nav-link";
                 deviceHRef.parentLi = nodeLi;
-                deviceHRef.style.color = theme.success;
+                //deviceHRef.style.color = theme.success;
                 deviceHRef.setAttribute("data-toggle", "tab");
                 deviceHRef.onclick = devicesUI.addDeviceClick;
-                deviceHRef.innerText = getLang("adddevice");
+                deviceHRef.innerHTML = "<b>" + getLang("adddevice") + "</b>";
                 deviceHRef.href = "#home";
                 deviceHRef.node = node;
 
@@ -78,7 +78,7 @@ var settingsUI = {
                 var nodePanelHRef = nodePanelNavItem.appendChild(document.createElement("a"));
                 nodePanelHRef.className = "nav-link";
                 nodePanelHRef.parentLi = nodeLi;
-                nodePanelHRef.style.color = theme.warning;
+                //nodePanelHRef.style.color = theme.warning;
                 nodePanelHRef.setAttribute("data-toggle", "tab");
                 nodePanelHRef.onclick = settingsUI.deviceAnchorClick;
                 nodePanelHRef.innerText = getLang("nodeproperties");
@@ -118,7 +118,7 @@ var settingsUI = {
                 var filesHRef = filesNavItem.appendChild(document.createElement("a"));
                 filesHRef.className = "nav-link";
                 filesHRef.parentLi = nodeLi;
-                filesHRef.style.color = theme.warning;
+                //filesHRef.style.color = theme.warning;
                 filesHRef.setAttribute("data-toggle", "tab");
                 filesHRef.onclick = settingsUI.deviceAnchorClick;
                 filesHRef.innerText = getLang("files");
@@ -135,20 +135,32 @@ var settingsUI = {
                 //restful items main menu 
 
 
-                var RESTfullNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
-                RESTfullNavItem.className = "nav-item";
-                RESTfullNavItem.id = node.nodenickname + "restfulsubmenu2";
-                
-                var RESTfullHRef = RESTfullNavItem.appendChild(document.createElement("a"));
-                RESTfullHRef.setAttribute("data-toggle", "collapse");
-                RESTfullHRef.parentLi = RESTfullNavItem;
-                RESTfullHRef.style.color = theme.warning;
-                //RESTfullHRef.setAttribute("data-toggle", "tab");
-                RESTfullHRef.innerHTML = getLang("RESTfull");
-                RESTfullHRef.href = "#" + node.nodenickname + "restfulsubmenu";
-                RESTfullHRef.node = node;
+                var RESTfulNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
+                RESTfulNavItem.className = "nav-item";
+                RESTfulNavItem.id = node.nodenickname + "restfulsubmenu2";
 
-                var RESTfulSubmenuUl = RESTfullNavItem.appendChild(document.createElement("ul"));
+                var RESTfulAhref = RESTfulNavItem.appendChild(document.createElement("a"));
+                RESTfulAhref.setAttribute("data-toggle", "collapse");
+                RESTfulAhref.parentLi = RESTfulNavItem;
+                //RESTfulAhref.style.color = theme.warning;
+                //RESTfulHRef.setAttribute("data-toggle", "tab");
+                //RESTfulHRef.innerHTML = getLang("RESTful");
+                RESTfulAhref.href = "#" + node.nodenickname + "restfulsubmenu";
+                RESTfulAhref.node = node;
+
+                RESTfulAhref.appendChild(document.createElement("i")).className = "fa fa-bolt";
+                var RESTfulAhrefSpan = RESTfulAhref.appendChild(document.createElement("span"));
+                RESTfulAhrefSpan.className = "menu-text";
+                RESTfulAhrefSpan.innerHTML = getLang("RESTful");
+
+                RESTfulAhrefSpan = RESTfulAhref.appendChild(document.createElement("span"));
+                RESTfulAhrefSpan.className = "badge badge-pill badge-warning";
+                RESTfulAhrefSpan.id = node.nodenickname + "RESTfulAhrefDeviceCountSpan";
+                RESTfulAhrefSpan.innerHTML = "0";
+                RESTfulAhrefSpan.devicesCount = 0;
+
+
+                var RESTfulSubmenuUl = RESTfulNavItem.appendChild(document.createElement("ul"));
                 RESTfulSubmenuUl.className = "collapse list-unstyled";
                 RESTfulSubmenuUl.id = node.nodenickname + "restfulsubmenu";
 
@@ -175,8 +187,8 @@ var settingsUI = {
                 document.getElementById("nodeStatusPanelText").appendChild(nodeStatusPanelText);
 
                 nodeStatusPanel.nodeStatusPanelText = nodeStatusPanelText;
-                    nodeStatusPanel.style.display = "none";
-                    nodeStatusPanelText.style.display = "none";
+                nodeStatusPanel.style.display = "none";
+                nodeStatusPanelText.style.display = "none";
             }
         }
     },
@@ -196,6 +208,12 @@ var settingsUI = {
 
             var deviceLi = nodeSubmenuUl.appendChild(document.createElement("li")); //добавляем дочерний пукт в меню ноды в sideBar
             deviceLi.className = "nav-item";
+
+            //submenu devices count 
+            
+            var RESTfulAhrefSpan = document.getElementById(device._nodenickname + "RESTfulAhrefDeviceCountSpan");
+            RESTfulAhrefSpan.devicesCount++;
+            RESTfulAhrefSpan.innerHTML = parseInt(RESTfulAhrefSpan.devicesCount);
 
             var deviceAhref = deviceLi.appendChild(document.createElement("a")); //отображаемая часть меню - гиперссылка
             deviceAhref.className = "nav-link";
@@ -237,7 +255,7 @@ var settingsUI = {
 
 
                 var wifiAPCheckbox = settingsUI.addPropertyCheckbox(wifiPropPanel, device.wifiaccesspointavailable, getLang("wifiaccesspointavailable"), "");
-                
+
                 wifiAPCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(wifiPropPanel, device.wifiaccesspointssid, getLang("wifiaccesspointssid"), ""));
                 wifiAPCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(wifiPropPanel, device.wifiaccesspointpassword, getLang("wifiaccesspointpassword"), ""));
 
@@ -261,7 +279,7 @@ var settingsUI = {
 
                     if (node.host == boardhost) { //the local node 
 
-                        
+
                         var deviceProperty = {
                             parentid: boardhost,
                             name: "language",
@@ -311,9 +329,9 @@ var settingsUI = {
                     resetButton.deviceHost = device._host;
                     resetButton.onclick = settingsUI.modalResetClick;
 
-                   // settingsUI.addPropertyView(updatePropPanel, device.firmwareversion, getLang("firmwareversion"));
-                  //  settingsUI.addPropertyView(updatePropPanel, device.firmwarebuildnumber, getLang("firmwarebuildnumber"));
-                    
+                    // settingsUI.addPropertyView(updatePropPanel, device.firmwareversion, getLang("firmwareversion"));
+                    //  settingsUI.addPropertyView(updatePropPanel, device.firmwarebuildnumber, getLang("firmwarebuildnumber"));
+
 
                 }
                 else
@@ -408,14 +426,14 @@ var settingsUI = {
     },
 
     deviceAnchorClick: function (event) {
-        
+
         var aHref = event.currentTarget;
 
-     
+
         $(this).removeClass('active');
 
         aHref.parentLi.className = "active";
-        
+
         document.location = aHref.href;
 
         var node = aHref.node;
@@ -440,7 +458,7 @@ var settingsUI = {
         //     if (aHref.getAttribute("aria-expanded") == "true") {
         //         document.documentElement.scrollTop = document.documentElement.scrollTop - event.clientY - event.currentTarget.offsetHeight;
         //     }
-        
+
 
         return false;
     },
@@ -521,15 +539,10 @@ var settingsUI = {
         }
 
         if (config.addNode(hostEdit.value, nodenicknameEdit.value)) {
-            if (config.save()) {
-                $("#addnodeModal").modal('hide');
-            }
-            else {
-                addNodeError.innerText = getLang("addnodeerror_cantsaveconfig");
-            }
+            $("#addnodeModal").modal('hide');
         }
         else {
-            addNodeError.innerText = getLang("addnodeerror_cantaddnode");
+            addNodeError.innerText = getLang("addnodeerror_cantsaveconfig");
         }
         //else todo ERROR
         return false;
@@ -926,7 +939,7 @@ var settingsUI = {
             deviceProperty.addValueListner(settingsUI.onPropertyCheckboxValueChange, propTextDiv);
             deviceProperty.addNetworkStatusListner(settingsUI.onPropertyCheckboxNetworkChange, propTextDiv);
 
-            
+
         }
         return propTextDiv;
     },
@@ -973,7 +986,7 @@ var settingsUI = {
                 sender.propText.disabled = true;
             }
 
-       
+
     },
 
 
@@ -1002,7 +1015,7 @@ var settingsUI = {
 
         return false;
 
-    }, 
+    },
 
     applyCheckboxChangeClick: function (event) {
         event.stopPropagation();

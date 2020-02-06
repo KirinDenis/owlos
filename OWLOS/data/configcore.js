@@ -72,10 +72,7 @@ var config = {
                 widgetProperties: _widgetProperties
             };
             dashboard.widgets.push(widget);
-
-            config.doOnChange();
-
-            
+            config.doOnChange();            
             return widget;
         }
         return undefined;
@@ -143,6 +140,7 @@ var config = {
             devices: []
         }
         configProperties.nodes.push(node);
+        config.doOnChange();
         return true;
     },
 

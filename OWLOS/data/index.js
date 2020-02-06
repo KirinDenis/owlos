@@ -70,59 +70,59 @@ $(document).ready(function () {
 
 
     addToLogNL("get UI configuration...");
-  // try {
-    doProSidebar();         
+    // try {
+    doProSidebar();
     config.onLoad = settingsUI.onConfigLoad;
     config.onLoad = dashboardUI.onConfigLoad;
-        if (config.load()) {
-            status_online = NET_ONLINE;
-            speak("OWL OS is started");
-
-            
-            document.getElementById("home-tab").innerText = getLang("homeTab");
-            document.getElementById("settings-tab").innerText = getLang("settingsTab");
-            document.getElementById("console-tab").innerText = getLang("consoleTab");
-
-            addToLogNL(getLang("prepareUnit"));
+    if (config.load()) {
+        status_online = NET_ONLINE;
+        speak("OWL OS is started");
 
 
+        document.getElementById("home-tab").innerText = getLang("homeTab");
+        document.getElementById("settings-tab").innerText = getLang("settingsTab");
+        document.getElementById("console-tab").innerText = getLang("consoleTab");
 
-            devices.addDeviceLoadedListner(settingsUI.onDeviceLoaded, settingsUI);
-            nodesRefresh();
+        addToLogNL(getLang("prepareUnit"));
 
-            
+
+
+        devices.addDeviceLoadedListner(settingsUI.onDeviceLoaded, settingsUI);
+        nodesRefresh();
+
+
 
         //    document.getElementById("mainContainer").style.display = "block";
-            var boot = document.getElementById("boot");
-            boot.parentElement.removeChild(boot);
-            document.getElementById("consolePanel").appendChild(boot);
+        var boot = document.getElementById("boot");
+        boot.parentElement.removeChild(boot);
+        document.getElementById("consolePanel").appendChild(boot);
 
-            nodesRefreshHandle = setInterval(nodesRefresh, 10000);
+        nodesRefreshHandle = setInterval(nodesRefresh, 10000);
 
-            $('#sidebarCollapse').on('click', function () {
-                $('#sidebar').toggleClass('active');
-            });
-
-            
-
-            speak("OWL OS is ready");
-        }
-        else {
-            status_online = NET_OFFLINE;
-            speak("ERROR with host: " + host);
-            addToLogNL("ERROR with host: " + host, 2);
-        }
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar').toggleClass('active');
+        });
 
 
+
+        speak("OWL OS is ready");
+    }
+    else {
+        status_online = NET_OFFLINE;
+        speak("ERROR with host: " + host);
+        addToLogNL("ERROR with host: " + host, 2);
     }
 
 
-//    catch (exception) {
-  //      status_online = NET_OFFLINE;
-        //addToLogNL("ERROR starting exception: " + exception, 2);
-        //addToLogNL("ERROR delete configurations files can help fix it: [your host]/deletefile?name=web.config", 2);
+}
+
+
+    //    catch (exception) {
+    //      status_online = NET_OFFLINE;
+    //addToLogNL("ERROR starting exception: " + exception, 2);
+    //addToLogNL("ERROR delete configurations files can help fix it: [your host]/deletefile?name=web.config", 2);
     //}
-//}
+    //}
 );
 
 function doProSidebar() {
@@ -145,47 +145,56 @@ function doProSidebar() {
     sideBarHeaderInfoRole.innerHTML = "Administrator";
     var sideBarHeaderInfoStatus = sideBarHeaderInfo.appendChild(document.createElement("span"));
     sideBarHeaderInfoStatus.className = "user-status";
-    var sideBarHeaderInfoRoleI = sideBarHeaderInfoStatus.appendChild(document.createElement("i"));
-    sideBarHeaderInfoRoleI.className = "fa fa-circle";
+    sideBarHeaderInfoStatus.appendChild(document.createElement("i")).className = "fa fa-circle";
+    
     var sideBarHeaderInfoRoleSpan = sideBarHeaderInfoStatus.appendChild(document.createElement("span"));
     sideBarHeaderInfoRoleSpan.innerHTML = "Online";
-    
+
     var sideBarUl = mainSideBar.appendChild(document.createElement("ul"));
 
     var sideBarDashboardLi = sideBarUl.appendChild(document.createElement("li"));
     sideBarDashboardLi.className = "nav-item";
-    var sideBarDashboardaHref = sideBarDashboardLi.appendChild(document.createElement("a"));
-    sideBarDashboardaHref.className = "nav-link";
-    sideBarDashboardaHref.href = "#dashboard";
-    sideBarDashboardaHref.setAttribute("data-toggle", "tab");    
-    sideBarDashboardaHref.onclick = function (event) { $(this).removeClass('active'); };
+    var sideBarDashboardAhref = sideBarDashboardLi.appendChild(document.createElement("a"));
+    sideBarDashboardAhref.className = "nav-link";
+    sideBarDashboardAhref.href = "#dashboard";
+    sideBarDashboardAhref.setAttribute("data-toggle", "tab");
+    sideBarDashboardAhref.onclick = function (event) { $(this).removeClass('active'); };
 
-    sideBarDashboardaHref.appendChild(document.createElement("i")).className = "fa fa-tachometer-alt";
-    var sideBarDashboardaHrefSpan = sideBarDashboardaHref.appendChild(document.createElement("span"));
-    sideBarDashboardaHrefSpan.className = "menu-text";
-    sideBarDashboardaHrefSpan.id = "home-tab"; 
-    sideBarDashboardaHrefSpan = sideBarDashboardaHref.appendChild(document.createElement("span"));
-    sideBarDashboardaHrefSpan.className = "badge badge-pill badge-success";
-    sideBarDashboardaHrefSpan.id = "sideBarDashboardaHrefOnlineSpan";
-    
-    sideBarDashboardaHrefSpan = sideBarDashboardaHref.appendChild(document.createElement("span"));
-    sideBarDashboardaHrefSpan.className = "badge badge-pill badge-secondary";
-    sideBarDashboardaHrefSpan.id = "sideBarDashboardaHrefOfflineSpan";
+    sideBarDashboardAhref.appendChild(document.createElement("i")).className = "fa fa-tachometer-alt";
+    var sideBarDashboardAhrefSpan = sideBarDashboardAhref.appendChild(document.createElement("span"));
+    sideBarDashboardAhrefSpan.className = "menu-text";
+    sideBarDashboardAhrefSpan.id = "home-tab";
+
+    sideBarDashboardAhrefSpan = sideBarDashboardAhref.appendChild(document.createElement("span"));
+    sideBarDashboardAhrefSpan.className = "badge badge-pill badge-success";
+    sideBarDashboardAhrefSpan.id = "sideBarDashboardAhrefOnlineSpan";
+
+    config.onLoad = function (configProperties) {
+        sideBarDashboardAhrefSpan.innerHTML = configProperties.dashboards[0].widgets.length;
+    }
+
+    config.onChange = function (configProperties) {
+        sideBarDashboardAhrefSpan.innerHTML = configProperties.dashboards[0].widgets.length;
+    }
+
+
+    //sideBarDashboardAhrefSpan = sideBarDashboardAhref.appendChild(document.createElement("span"));
+    //sideBarDashboardAhrefSpan.className = "badge badge-pill badge-secondary";
+    //sideBarDashboardAhrefSpan.id = "sideBarDashboardAhrefOfflineSpan";
 
 
     var sideBarSettingsLi = sideBarUl.appendChild(document.createElement("li"));
     sideBarSettingsLi.className = "sidebar-dropdown";
-    var sideBarSettingsaHref = sideBarSettingsLi.appendChild(document.createElement("a"));
-    sideBarSettingsaHref.className = "nav-link";
-    sideBarSettingsaHref.href = "#settings";
-    sideBarSettingsaHref.setAttribute("data-toggle", "tab");
-    sideBarSettingsaHref.onclick = function (event) { $(this).removeClass('active'); };
+    var sideBarSettingsAhref = sideBarSettingsLi.appendChild(document.createElement("a"));
+    sideBarSettingsAhref.className = "nav-link";
+    sideBarSettingsAhref.href = "#settings";
+    sideBarSettingsAhref.setAttribute("data-toggle", "tab");
+    sideBarSettingsAhref.onclick = function (event) { $(this).removeClass('active'); };
 
-    sideBarSettingsaHref.appendChild(document.createElement("i")).className = "fa fa-cog";
-    var sideBarSettingsaHrefSpan = sideBarSettingsaHref.appendChild(document.createElement("span"));
-    sideBarSettingsaHrefSpan.className = "menu-text";
-    sideBarSettingsaHrefSpan.id = "settings-tab"; 
-
+    sideBarSettingsAhref.appendChild(document.createElement("i")).className = "fa fa-cog";
+    var sideBarSettingsAhrefSpan = sideBarSettingsAhref.appendChild(document.createElement("span"));
+    sideBarSettingsAhrefSpan.className = "menu-text";
+    sideBarSettingsAhrefSpan.id = "settings-tab";
 
     var sideBarSettingsLiSubmenu = sideBarSettingsLi.appendChild(document.createElement("div"));
     sideBarSettingsLiSubmenu.className = "sidebar-submenu";
@@ -195,17 +204,17 @@ function doProSidebar() {
 
     var sideBarConsoleLi = sideBarUl.appendChild(document.createElement("li"));
     sideBarConsoleLi.className = "nav-item";
-    var sideBarConsoleaHref = sideBarConsoleLi.appendChild(document.createElement("a"));
-    sideBarConsoleaHref.className = "nav-link";
-    sideBarConsoleaHref.href = "#console";
-    sideBarConsoleaHref.setAttribute("data-toggle", "tab");
-        
-    sideBarConsoleaHref.onclick = function (event) { $(this).removeClass('active'); };
+    var sideBarConsoleAhref = sideBarConsoleLi.appendChild(document.createElement("a"));
+    sideBarConsoleAhref.className = "nav-link";
+    sideBarConsoleAhref.href = "#console";
+    sideBarConsoleAhref.setAttribute("data-toggle", "tab");
 
-    sideBarConsoleaHref.appendChild(document.createElement("i")).className = "fa fa-file-code";
-    var sideBarConsoleaHrefSpan = sideBarConsoleaHref.appendChild(document.createElement("span"));
-    sideBarConsoleaHrefSpan.className = "menu-text";
-    sideBarConsoleaHrefSpan.id = "console-tab"; 
+    sideBarConsoleAhref.onclick = function (event) { $(this).removeClass('active'); };
+
+    sideBarConsoleAhref.appendChild(document.createElement("i")).className = "fa fa-file-code";
+    var sideBarConsoleAhrefSpan = sideBarConsoleAhref.appendChild(document.createElement("span"));
+    sideBarConsoleAhrefSpan.className = "menu-text";
+    sideBarConsoleAhrefSpan.id = "console-tab";
 
 
     jQuery(function ($) {
