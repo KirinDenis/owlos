@@ -61,13 +61,14 @@ var config = {
         return undefined;
     },
 
-    addWidget: function (_dashboardId, _daviceId, _deviceProperty, _widgetId, _widgetProperties) {
+    addWidget: function (_dashboardId, _daviceId, _deviceProperty, _widgetWrapperId,  _widgetId, _widgetProperties) {
         var dashboard = this.getDashboardById(_dashboardId);
         if (dashboard != undefined) {
             var widget = {
                 dashboardId: _dashboardId,
                 deviceId: _daviceId,
                 deviceProperty: _deviceProperty,
+                widgetWrapperId: _widgetWrapperId,
                 widgetId: _widgetId,
                 widgetProperties: _widgetProperties
             };

@@ -70,9 +70,9 @@ var dashboardUI = {
         for (var i = 0; i < configProperties.dashboards[0].widgets.length; i++) {
             try {
                 var widgetProp = configProperties.dashboards[0].widgets[i];
-                var widget = WidgetsLayer.getWidgetById(widgetProp.widgetId);
-                if (widget != undefined) {
-                    var widgetWrapper = new widget.widget(devicesWidgetsPanel, undefined, undefined, configProperties.dashboards[0].widgets[i], widgetProp.widgetProperties);
+                var widgetLayer = WidgetsLayer.getWidgetById(widgetProp.widgetWrapperId);
+                if (widgetLayer != undefined) {
+                    var widgetWrapper = new widgetLayer.widget(devicesWidgetsPanel, undefined, undefined, configProperties.dashboards[0].widgets[i], widgetProp.widgetProperties);
                                                           
 
                     widgetWrapper.offlineStarter(devicesWidgetsPanel, widgetProp.deviceId, widgetProp.deviceProperty);                    
@@ -225,7 +225,7 @@ var dashboardUI = {
                 if ((WidgetsLayer[widget].devicesProperties.indexOf(";" + deviceProp.name + ";") != -1) || (WidgetsLayer[widget].devicesProperties == "any")) {
                     var widgetSelectOption = widgetSelect.appendChild(document.createElement('option'));
                     widgetSelectOption.innerText = WidgetsLayer[widget].name;
-                    widgetSelectOption.widget = WidgetsLayer[widget];
+                    widgetSelectOption.widgetLayer = WidgetsLayer[widget];
                 }
             }
         }
@@ -242,11 +242,11 @@ var dashboardUI = {
         var valueSelectOption = deviceSelect.options[deviceSelect.selectedIndex];
         var device = valueSelectOption.device;
         var deviceProp = devicePropSelect.options[devicePropSelect.selectedIndex].deviceProp;
-        var widget = widgetSelect.options[widgetSelect.selectedIndex].widget;
+        var widgetLayer = widgetSelect.options[widgetSelect.selectedIndex].widgetLayer;
 
-        new widget.widget(devicesWidgetsPanel, device, deviceProp).onload = function (widgetWrapper) {
+        new widgetLayer.widget(devicesWidgetsPanel, device, deviceProp).onload = function (widgetWrapper) {
 
-            var configPropertiesWidget = config.addWidget("main", device._id, deviceProp.name, widgetWrapper.widget.id, widgetWrapper.widget.properties);
+            var configPropertiesWidget = config.addWidget("main", device._id, deviceProp.name, widgetLayer.id, widgetWrapper.widget.id, widgetWrapper.widget.properties);
 
             widgetWrapper.widget.onchange = config.onWidgetChange;
             widgetWrapper.widget.ondelete = config.onWidgetDelete;

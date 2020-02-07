@@ -71,12 +71,14 @@ $(document).ready(function () {
 
     addToLogNL("get UI configuration...");
     // try {
+
     doProSidebar();
     config.onLoad = settingsUI.onConfigLoad;
     config.onLoad = dashboardUI.onConfigLoad;
     if (config.load()) {
         status_online = NET_ONLINE;
         speak("OWL OS is started");
+
 
 
         document.getElementById("home-tab").innerText = getLang("homeTab");
@@ -103,6 +105,10 @@ $(document).ready(function () {
             $('#sidebar').toggleClass('active');
         });
 
+        $(".page-wrapper").toggleClass("toggled");
+     //   $("#sidebar").removeClass("active");  
+      //  document.getElementById("sideBarDashboardAhref").className = "nav-link active";
+      //  document.location = document.getElementById("sideBarDashboardAhref").href;
 
 
         speak("OWL OS is ready");
@@ -126,7 +132,19 @@ $(document).ready(function () {
 );
 
 function doProSidebar() {
-    var mainSideBar = document.getElementById("mainSideBar");
+    
+
+    var pageWrapper = document.getElementById("pagewrapper");
+    var sideBar = pageWrapper.appendChild(document.createElement("nav"));
+    sideBar.id = "sidebar";
+    sideBar.className = "sidebar-wrapper";
+    var sideBarContent = sideBar.appendChild(document.createElement("div"));
+    sideBarContent.className = "sidebar-content";
+    var mainSideBar = sideBarContent.appendChild(document.createElement("div"));
+    mainSideBar.id = "mainSideBar";
+    mainSideBar.className = "sidebar-item sidebar-menu";
+
+//    var mainSideBar = document.getElementById("mainSideBar");
     var sideBarOWLOS = mainSideBar.appendChild(document.createElement("div"));
     sideBarOWLOS.className = "sidebar-item sidebar-brand";
     var hRef = sideBarOWLOS.appendChild(document.createElement("a"));
@@ -152,13 +170,18 @@ function doProSidebar() {
 
     var sideBarUl = mainSideBar.appendChild(document.createElement("ul"));
 
+
     var sideBarDashboardLi = sideBarUl.appendChild(document.createElement("li"));
+    sideBarDashboardLi.id = "sideBarDashboardLi";
     sideBarDashboardLi.className = "nav-item";
     var sideBarDashboardAhref = sideBarDashboardLi.appendChild(document.createElement("a"));
+    sideBarDashboardAhref.id = "sideBarDashboardAhref";
     sideBarDashboardAhref.className = "nav-link";
+    
     sideBarDashboardAhref.href = "#dashboard";
     sideBarDashboardAhref.setAttribute("data-toggle", "tab");
     sideBarDashboardAhref.onclick = function (event) { $(this).removeClass('active'); };
+
 
     sideBarDashboardAhref.appendChild(document.createElement("i")).className = "fa fa-tachometer-alt";
     var sideBarDashboardAhrefSpan = sideBarDashboardAhref.appendChild(document.createElement("span"));
