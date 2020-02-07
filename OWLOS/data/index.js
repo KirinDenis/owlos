@@ -102,7 +102,7 @@ $(document).ready(function () {
         nodesRefreshHandle = setInterval(nodesRefresh, 10000);
 
         $('#sidebarCollapse').on('click', function () {
-            $('#sidebar').toggleClass('active');
+            $('.page-wrapper').toggleClass('active');
         });
 
         $(".page-wrapper").toggleClass("toggled");
