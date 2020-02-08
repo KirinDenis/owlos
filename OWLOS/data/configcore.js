@@ -61,7 +61,7 @@ var config = {
         return undefined;
     },
 
-    addWidget: function (_dashboardId, _daviceId, _deviceProperty, _widgetWrapperId,  _widgetId, _widgetProperties) {
+    addWidget: function (_dashboardId, _daviceId, _deviceProperty, _widgetWrapperId, _widgetId, _widgetProperties) {
         var dashboard = this.getDashboardById(_dashboardId);
         if (dashboard != undefined) {
             var widget = {
@@ -73,7 +73,7 @@ var config = {
                 widgetProperties: _widgetProperties
             };
             dashboard.widgets.push(widget);
-            config.doOnChange();            
+            config.doOnChange();
             return widget;
         }
         return undefined;
@@ -189,7 +189,7 @@ var config = {
                                 return this._networkStatus;
                             },
 
-                            addNetworkStatusListner: function(_event, _sender) { //для добавления нового подписчика(так же как и addValueListner)                                
+                            addNetworkStatusListner: function (_event, _sender) { //для добавления нового подписчика(так же как и addValueListner)                                
                                 //check event listner and setup current network status 
                                 try {
                                     _event(_sender, this);
@@ -210,7 +210,7 @@ var config = {
                     result = true;
 
                     this.doOnLoad();
-                    
+
                 }
                 else {
                     configProperties = "";
@@ -307,103 +307,60 @@ var config = {
         var savingCloseButton = document.getElementById("saveConfigcloseButton");
         var saveButton = document.getElementById("saveWidgetsButton");
         var closeButton = document.getElementById("saveConfigsaveCloseButton");
-
-
         //Проверка была ли отменена передача строки
         if (config.cancel == false) {
-
             //HTTPClient добавляет строку "%error" в начало Response если запрос не был завешен HTTPCode=200 или произашел TimeOut
             if (!httpResult.indexOf("%error") == 0) {
-
                 if (counter < countedSections) {
-
                     subString = dataString.slice(counter * lengthDataSubString, (counter + 1) * lengthDataSubString);
-
-
                     if (counter == 0) {
-
                         filePartName = "setwebproperty?property=head";
-
                     }
                     else {
-
                         filePartName = "setwebproperty?property=body";
-
                     }
-
                     sendingAmount = Math.floor((lengthDataSubString * counter / dataString.length) * 100).toString();
-
-
                 }
                 else {
-
                     if (counter == countedSections) {
-
                         subString = dataString.slice(counter * lengthDataSubString);
-
-
                         if (counter == 0) {
-
                             filePartName = "setwebproperty?property=head";
-
                         }
-
                         else {
-
                             filePartName = "setwebproperty?property=tail";
                             sendingAmount = "100";
 
                             if (savingCloseButton !== undefined && savingCloseButton !== null) {
                                 savingCloseButton.disabled = true;
                             }
-
                         }
-
                     }
-
                     else {
-
-
-
                         if (countedSections !== 0) {
-
-
                             sendingAmount = "100";
                             if (saveProgressBar !== undefined && saveProgressBar !== null) {
                                 saveProgressBar.setAttribute("aria-valuenow", sendingAmount);
                                 saveProgressBar.setAttribute("style", "width:" + sendingAmount + "%");
                                 saveProgressBar.innerHTML = sendingAmount + "%";
-
                                 saveButton.hidden = true;
                                 saveTextStatus.innerHTML = "Changes saved";
                                 savingCloseButton.hidden = true;
                                 closeButton.hidden = false;
-                            } 
-                           
-
-                            addToLogNL("Sending long config string. FINISHED. Result = OK!");
-                            
+                            }
+                            addToLogNL("Sending long config string. FINISHED. Result = OK");
                             return true;
-
-
                         }
                         else {
-
                             if (counter == 1) {
-
                                 filePartName = "setwebproperty?property=tail";
                                 subString = "";
                                 sendingAmount = "100";
-
                                 if (savingCloseButton !== undefined && savingCloseButton !== null) {
                                     savingCloseButton.disabled = true;
                                 }
-
-
                             }
                             else {
-
-
                                 sendingAmount = "100";
                                 if (saveProgressBar !== undefined && saveProgressBar !== null) {
                                     saveProgressBar.setAttribute("aria-valuenow", sendingAmount);
@@ -415,63 +372,45 @@ var config = {
                                     savingCloseButton.hidden = true;
                                     closeButton.hidden = false;
                                 }
-                             
-                                addToLogNL("Sending short config string. FINISHED. Result = OK!");
-                                
+                                addToLogNL("Sending short config string. FINISHED. Result = OK");
                                 return true;
-
                             }
                         }
                     }
-
                 }
-
                 counter++;
-
-
                 if (saveProgressBar !== undefined && saveProgressBar !== null) {
                     saveProgressBar.setAttribute("aria-valuenow", sendingAmount);
                     saveProgressBar.setAttribute("style", "width:" + sendingAmount + "%");
                     saveProgressBar.innerHTML = sendingAmount + "%";
                     saveTextStatus.innerHTML = savingCurrentStatus;
                 }
-                
-
                 addToLogNL("Sending config string. Still sending! " + filePartName);
                 //вызов функции асинхронного выполнения RESTfull POST запроса 
                 httpPostAsyncWithErrorReson(url, filePartName, subString, config.configSendAsync, counter, dataString, lengthDataSubString);
-
             }
-            else { 
-
+            else {
                 //если HTTPClient вернул ошибку, сообщаем об ошибке в модальном окне еслт оно открыто, возвращаем false
                 if (saveTextStatus !== undefined && saveTextStatus !== null) {
                     saveTextStatus.innerHTML = "Saving changes error. Close this window and try again later!";
                     savingCloseButton.hidden = true;
                     closeButton.hidden = false;
                 }
-                
 
-               addToLogNL("Sending config string ERROR!" + httpResult);
+                addToLogNL("Sending config string ERROR: " + httpResult);
                 return false;
-
             }
         }
         else {
             // если была отменена передача строки (нажатие кнопки "отменить" в модельном окне), закрываем модельное окно  и возвращаем false
-
             var modalWindowBody = document.getElementById("saveConfigModalBody");
-
             if (modalWindowBody !== null && modalWindowBody !== undefined) {
                 $('#saveConfigModal').on('shown.bs.modal', function (e) {
                     $("#saveConfigModal").modal('hide');
                 });
             }
- 
             return false;
         }
-
-
     }
 
     /*

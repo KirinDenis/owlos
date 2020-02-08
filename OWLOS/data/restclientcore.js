@@ -81,8 +81,7 @@ function httpGet(_url) {
             _data = "%error[" + XMLHttpRequest.status + "]";
             if ((XMLHttpRequest.responseText !== undefined) && (XMLHttpRequest.responseText !== null)) {
                 _data += " response: " + XMLHttpRequest.responseText;
-            }
-            asyncReciever(_data, upperAsyncReciever, sender, upperSender);
+            }            
         }
     });
 
@@ -114,7 +113,6 @@ function httpGetWithErrorReson(_url) {
             if ((XMLHttpRequest.responseText !== undefined) && (XMLHttpRequest.responseText !== null)) {
                 _data += " response: " + XMLHttpRequest.responseText;
             }
-            asyncReciever(_data, upperAsyncReciever, sender, upperSender);
         }
     });
 
@@ -150,8 +148,7 @@ function httpPostWithErrorReson(_url, _postdata) {
             _data = "%error[" + XMLHttpRequest.status + "]";
             if ((XMLHttpRequest.responseText !== undefined) && (XMLHttpRequest.responseText !== null)) {
                 _data += " response: " + XMLHttpRequest.responseText;
-            }
-            asyncReciever(_data, upperAsyncReciever, sender, upperSender);
+            }            
         }
     });
 
@@ -181,7 +178,9 @@ function httpPostAsyncWithErrorReson(_url, arg, _postdata, asyncReciever, counte
         success: function (data) {
              addToLogNL("call RESTful: " + _url + " result OK", 1);
             _data = data;
-            asyncReciever(_data, counter, dataString, length, _url);
+            if (asyncReciever != undefined) {
+                asyncReciever(_data, counter, dataString, length, _url);
+            }
         },
 
         error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -190,7 +189,9 @@ function httpPostAsyncWithErrorReson(_url, arg, _postdata, asyncReciever, counte
             if ((XMLHttpRequest.responseText !== undefined) && (XMLHttpRequest.responseText !== null)) {
                 _data += " response: " + XMLHttpRequest.responseText;
             }
-            asyncReciever(_data, counter, dataString, length, _url);
+            if (asyncReciever != undefined) {
+                asyncReciever(_data, counter, dataString, length, _url);
+            }
         }
     });
 
@@ -198,7 +199,7 @@ function httpPostAsyncWithErrorReson(_url, arg, _postdata, asyncReciever, counte
 }
 
 
-function httpGetAsync(_url) {
+function httpGetAsync(_url, asyncReciever, upperAsyncReciever, sender, upperSender) {
     var _data = null;
     $.ajax({
         url: encodeURI(_url),
@@ -223,7 +224,9 @@ function httpGetAsync(_url) {
             if ((XMLHttpRequest.responseText !== undefined) && (XMLHttpRequest.responseText !== null)) {
                 _data += " response: " + XMLHttpRequest.responseText;
             }
-            asyncReciever(_data, upperAsyncReciever, sender, upperSender);
+            if (asyncReciever != undefined) {
+                asyncReciever(_data, upperAsyncReciever, sender, upperSender);
+            }
         }
     });
 
@@ -247,7 +250,9 @@ function httpGetAsyncWithReciever(_url, asyncReciever, upperAsyncReciever, sende
         success: function (data) {
             addToLogNL("call RESTful async: " + _url + " result OK", 1);
             _data = data;
-            asyncReciever(_data, upperAsyncReciever, sender, upperSender);
+            if (asyncReciever != undefined) {
+                asyncReciever(_data, upperAsyncReciever, sender, upperSender);
+            }
         },
         
         error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -256,7 +261,9 @@ function httpGetAsyncWithReciever(_url, asyncReciever, upperAsyncReciever, sende
             if ((XMLHttpRequest.responseText !== undefined) && (XMLHttpRequest.responseText !== null)) {
                 _data += " response: " + XMLHttpRequest.responseText;
             }
-            asyncReciever(_data, upperAsyncReciever, sender, upperSender);
+            if (asyncReciever != undefined) {
+                asyncReciever(_data, upperAsyncReciever, sender, upperSender);
+            }
 
             //XMLHttpRequest.host;
         }

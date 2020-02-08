@@ -432,9 +432,15 @@ var settingsUI = {
 
         $(this).removeClass('active');
 
+        document.getElementById("sidebarText").style.display = "none";
+        document.getElementById("sidebarText").innerText = "";
+        document.getElementById("dashboardButtonsPanel").style.display = "none";
+
         aHref.parentLi.className = "active";
 
         document.location = aHref.href;
+
+
 
         var node = aHref.node;
         if (node != undefined) {
@@ -577,7 +583,7 @@ var settingsUI = {
         resetButton.type = "button";
         resetButton.className = "btn btn-sm btn-danger";
         resetButton.id = "resetModalButton";
-        resetButton.deviceHost = deviceHost;
+        resetButton.nodeHost = deviceHost;
         resetButton.onclick = settingsUI.resetClick;
         resetButton.innerText = getLang("reset");
 
@@ -646,8 +652,8 @@ var settingsUI = {
                 resetButton.type = "button";
                 resetButton.className = "btn btn-sm btn-danger";
                 resetButton.id = "resetModalButton";
-                resetButton.deviceHost = node.host;
-                resetButton.onclick = resetClick;
+                resetButton.nodeHost = nodeHost;                
+                resetButton.onclick = SettingsIU.resetClick;
                 resetButton.innerText = getLang("reset");
             }
 
@@ -656,7 +662,16 @@ var settingsUI = {
             sender.innerHTML += "HTTP client - " + HTTPResult;
         }
     },
+    resetClick: function (event) {
+        var resetButton = event.currentTarget;
+        reset(resetButton.nodeHost);
 
+        sleep(5000).then(function () {
+            location.reload();
+            return false;
+        });
+
+    },
     //--------------------------------------------------------------------------------------------------------------------
     modalUpdateFirmwareClick: function (event) {
         var updateButton = event.currentTarget;

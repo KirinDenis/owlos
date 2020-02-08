@@ -16,14 +16,25 @@
 
     <div id="pagewrapper" class="page-wrapper default-theme sidebar-bg bg1">
         <main class="page-content pt-2">
-
+            <div id="overlay" class="overlay"></div>
             <nav class="navbar">
                 <form class="form-inline my-2 my-lg-0">
-                    <span type="button" id="sidebarCollapse" class="badge badge-default">
-                        <span>|-|</span>
+                    <span type="button" id="toggle-sidebar" class="badge badge-warning fa fa-bars">
                     </span>
+                    <span type="button" id="pin-sidebar" class="badge badge-success fa fa-anchor">
+                    </span>
+                    <span type="button" id="nodeStatusPanelText" class="badge badge-default">
+                    </span>
+                    <span type="button" id="sidebarText" class="badge badge-default">
+                    </span>
+
+                </form>
+
+                <form class="form-inline my-2 my-lg-0">
+                    <div class="nodestatuspanel" id="saveButtonPanel"></div>
+                    <div class="nodestatuspanel" id="dashboardButtonsPanel"></div>
                     <div class="nodestatuspanel" id="nodeStatusPanel"></div>
-                    <div class="nodestatuspanel" id="nodeStatusPanelText"></div>
+
                 </form>
             </nav>
 

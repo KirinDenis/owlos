@@ -1,18 +1,9 @@
-.navbar {
+.navbar, .tab-pane, .row {
     border: 0px;
-    border-left: 1px solid #000;
 }
 
-.iframe {
-    overflow: hidden;
-    display: block;
-    background: none repeat scroll 0% 0% transparent;
-    width: 100%;
-}
-
-
-.devicesWidgetsPanel {
-    padding-bottom: 15px;
+.tab-pane {
+    margin-right: 30px;
 }
 
 .devicePanelDiv {

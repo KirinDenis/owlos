@@ -1,5 +1,5 @@
 ﻿var langua = "prepareUnit=підготовка інтерфейсу користувача\n" +
-    "homeTab=Головна\n" +
+    "dashboardTab=Панель пристроїв\n" +
     "unitTab=Модуль\n" +
     "settingsTab=Налаштування\n" +
     "filesTab=Файли\n" +
@@ -124,6 +124,7 @@
     "dashboardview=режим перегляду\n" +
     "dashboardedit=режим редагування\n" +
     "dashboardaddwidget=додати віджет\n" +
+    "dashboardaddwidgetbutton=додати\n" +
     "nodeslist=список вузлів та пристроїв\n" +
     "devicesporplist=властивості пристроїв\n" +
     "widgetslist=список виджетів для вибраної властивості\n" +
@@ -169,6 +170,8 @@
     "showproperties=Властивості віджета\n" +
     "setallwidgetspropbutton=Застосувати до всіх\n" +
     "setpropbutton=Застосувати\n" +
+    "saveaddedwidget=Збереження\n" +
+    "closebutton=Закрити\n" +
     "language=ukraine\n";
 
 var langen = "prepareUnit=prepare UI, please wait...\n" +
