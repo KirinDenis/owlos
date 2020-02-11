@@ -24,7 +24,7 @@ void setup() {
   debugOut("setup", "started...");//if Utils.h "Debug=true" start writing log to Serial
   ESP.wdtEnable(0); //Software watch dog
 
-  scriptCompile();
+  testCompile();
 
   filesBegin(); //prepare Flash file systeme (see Tools/Flash size item - use 2M Flash Size, is ZERO size by default -> switch to 2M  
   unitInit();
@@ -41,7 +41,7 @@ void setup() {
   Main Loop
   -------------------------------------------------------------------------------------------------------------------------*/
 void loop() {
-  scriptRun();
+  scriptsRun();
   //check WiFi and MQTT stack are available
   //first time Main::loop() calling the transport is not available
   if (!transportAvailable()) //if not connected

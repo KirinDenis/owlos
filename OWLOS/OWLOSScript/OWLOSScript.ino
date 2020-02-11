@@ -13,14 +13,16 @@
   Main Setup
   -------------------------------------------------------------------------------------------------------------------------*/
 void setup() {
-  
+  delay(1000); 
   Serial.begin(115200);
-  delay(100); 
-  Serial.println("Start");
-
-  test();
   
+  Serial.println("Start");
+  delay(1000); 
 
+ // scriptCompile();
+  
+  //scriptsSave();
+   testCompile();
 
   
 }
@@ -29,6 +31,7 @@ void setup() {
   Main Loop
   -------------------------------------------------------------------------------------------------------------------------*/
 void loop() {
-  run();
-  delay(10); //Main::loop() sleep interval
+ scriptsRun();
+ Serial.println("loop");
+  delay(1000); //Main::loop() sleep interval
 }

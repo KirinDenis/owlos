@@ -1,4 +1,4 @@
-#include <Arduino.h>
+
 
 bool filesBegin();
 bool filesExists(String fileName);
@@ -18,4 +18,5 @@ float filesReadFloat(String fileName);
 bool filesWriteFloat(String fileName, float value);
 
 String filesGetList(String path);
+
 bool filesWriteStructure(String fileName, void *value);
