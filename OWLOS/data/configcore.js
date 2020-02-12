@@ -251,6 +251,12 @@ var config = {
 
         //формирование строки из текущих настроек подключенных нод
         var tempProp = defaultWebProp();
+        //кнопка сохранения виджета
+        var saveButton = document.getElementById("saveWidgetsButton");
+        if (saveButton !== undefined && saveButton !== null) { 
+            saveButton.hidden = true;
+        } 
+
 
         for (var key in configProperties) {
             if (key != "nodes") {
@@ -374,7 +380,7 @@ var config = {
                                 saveProgressBar.setAttribute("style", "width:" + sendingAmount + "%");
                                 saveProgressBar.innerHTML = sendingAmount + "%";
 
-                                saveButton.hidden = true;
+                               // saveButton.hidden = true;
                                 saveTextStatus.innerHTML = "Changes saved";
                                 savingCloseButton.hidden = true;
                                 closeButton.hidden = false;
@@ -410,7 +416,7 @@ var config = {
                                     saveProgressBar.setAttribute("style", "width:" + sendingAmount + "%");
                                     saveProgressBar.innerHTML = sendingAmount + "%";
 
-                                    saveButton.hidden = true;
+                                 //   saveButton.hidden = true;
                                     saveTextStatus.innerHTML = "Changes saved";
                                     savingCloseButton.hidden = true;
                                     closeButton.hidden = false;
@@ -444,13 +450,16 @@ var config = {
             }
             else { 
 
-                //если HTTPClient вернул ошибку, сообщаем об ошибке в модальном окне еслт оно открыто, возвращаем false
+                //если HTTPClient вернул ошибку, сообщаем об ошибке в модальном окне если оно открыто, возвращаем false
                 if (saveTextStatus !== undefined && saveTextStatus !== null) {
                     saveTextStatus.innerHTML = "Saving changes error. Close this window and try again later!";
                     savingCloseButton.hidden = true;
                     closeButton.hidden = false;
                 }
-                
+                //возвращаем кнопку сохранить изменения
+                if (saveButton !== undefined && saveButton !== null) {
+                    saveButton.hidden = false;
+                } 
 
                addToLogNL("Sending config string ERROR!" + httpResult);
                 return false;
@@ -458,7 +467,7 @@ var config = {
             }
         }
         else {
-            // если была отменена передача строки (нажатие кнопки "отменить" в модельном окне), закрываем модельное окно  и возвращаем false
+            // если была отменена передача строки (нажатие кнопки "отменить" в модельном окне), закрываем модельное окно и возвращаем false
 
             var modalWindowBody = document.getElementById("saveConfigModalBody");
 
