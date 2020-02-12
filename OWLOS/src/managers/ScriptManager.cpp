@@ -89,14 +89,14 @@ typedef struct Variable
 {
 	int type;   //тип переменой
 	char *name; //имя переменой
-	char *value;//значение 
+	char *value;//значение переменой
 };
 //запись одного скрипта 
 typedef struct Script
 {
 	String name;       //имя (уникально)
 	String byteCode;   //исходный байт-код (assembler)
-	int status = stopStatus; текущий статус выполнения
+	int status = stopStatus; //текущий статус выполнения
 	int ip = -1;           //Instruction Point - указатель выполняемой инструкции в script[..].data (сегмент кода)
 	int codeCount = 0;     //количество инструкций
 	int dataCount = 0;     //количество переменных

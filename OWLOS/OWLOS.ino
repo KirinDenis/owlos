@@ -22,7 +22,8 @@ void setup() {
   Serial.begin(PORTSPEED);  //setup Serial Monitor at PORTSPEED BAUD speed - see Utils.h for Constant definition
   delay(ONETENTHOFSECOND);  //sleep 1/10 of second
   debugOut("setup", "started...");//if Utils.h "Debug=true" start writing log to Serial
-  ESP.wdtEnable(0); //Software watch dog
+  //ESP.wdtEnable(0); //Software watch dog
+  ESP.wdtDisable();
 
   testCompile();
 
