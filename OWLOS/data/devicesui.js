@@ -374,7 +374,9 @@ var devicesUI = {
             if (autoAddWidgetCheckBox !== null) {
 
                 if (autoAddWidgetCheckBox.checked == true) {
-                    var devicesWidgetsPanel = document.getElementById("widgetsPanelDataDiv");
+
+                    var devicesWidgetsPanel = document.getElementById("devicesWidgetsPanel");
+
                     var defaultWidgets = [];
                     var widgetLayer = "";
                     var widgetWrapper = "";
