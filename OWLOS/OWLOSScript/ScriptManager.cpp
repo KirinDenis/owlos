@@ -261,7 +261,7 @@ int runWrite(int index) {
 	int ip = scripts[index].ip;
 	if (scripts[index].code[ip].type != writeCode) return -1;
 
-	//Serial.println(String(scripts[index].data[scripts[index].code[ip].arg1Addr].value));
+	Serial.println(String(scripts[index].data[scripts[index].code[ip].arg1Addr].value));
 
 	return ++ip;
 }
@@ -432,7 +432,6 @@ bool scriptsRun() {
 }
 
 bool scriptsCompile(int index) {
-
 	
 	scripts[index].ip = 0;
 	scripts[index].codeCount = 0;
@@ -607,8 +606,6 @@ bool scriptsLoad() {
 	String result = filesReadString("scripts");
 	if (!result) return false;
 
-
-
 	String lineDelimiter = "\r";
 	String scriptDelimiter = ":";
 	String keyDelimiter = "=";
@@ -656,11 +653,15 @@ bool scriptsLoad() {
 void testCompile()
 {
 
-	//Serial.println(ESP.getFreeHeap());
+	Serial.println(ESP.getFreeHeap());
 	scriptsCreate("script1", "var a=10\nvar b=10\nvar c=10000\nsum a,b,b\nsum a,b,b\nsum a,b,b\nwrite b\nifupper b,c,99\ngoto 0\n");
+	Serial.println(ESP.getFreeHeap());
 	scriptsCreate("script2", "var a=10\nvar b=10\nvar w=10\nvar c=10000\nsum a,b,b\nwrite b\ngetprop wifi,wifirssi,w\nwrite w\ngoto 0\n");
+	Serial.println(ESP.getFreeHeap());
 	scriptsCreate("script3", "var a=10\nvar b=10\nvar w=10\nvar c=10000\ngetprop wifi,wifirssi,w\nwrite w\ngoto 0\n");
+	Serial.println(ESP.getFreeHeap());
 	scriptsCreate("script4", "var t=0\nvar h=0\nvar a=0\nvar v=1\nvar hlimit=40\ngetprop dht,temperature,t\ngetprop dht,humidity,h\nwrite t\nwrite h\nifupper hlimit,h,0\nsetprop rele,data,v\ngoto 0\n");
+	Serial.println(ESP.getFreeHeap());
 	
 	scriptsSave();
 	//Serial.println(ESP.getFreeHeap());
