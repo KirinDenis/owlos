@@ -140,7 +140,7 @@ var BaseWidget =
 
             // фоновая панель (подложка) виджета (фон и бордюр)
             widget.SVGBackgroundPanel = new SVGArc(widget.SVGViewBox, widget.id + "backgroundpanel", 0, 0, widget.width, 1);
-            widget.SVGBackgroundPanel.drawRoundedRect(widget.width, widget.height, 5, 10, true, true, true, true);
+            widget.SVGBackgroundPanel.drawRoundedRect(widget.width, widget.height, 5, 10, true, true, true, true);            
             // панель для заголовка (верхняя часть виджета с его названием)
             widget.SVGHeaderPanel = new SVGArc(widget.SVGViewBox, widget.id + "headerpanel", 0, 0, widget.width, 1);
             widget.SVGHeaderPanel.drawRoundedRect(widget.width, 25, 5, 0, true, true, false, false);

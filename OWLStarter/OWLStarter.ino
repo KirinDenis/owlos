@@ -38,7 +38,7 @@ ESP8266WiFiMulti WiFiMulti;
 bool readyToUpdate = false;
 
 void setup() {
-	ESP.wdtDisable(); //disable ESP8266 software watch dog
+	ESP.wdtEnable(0); //disable ESP8266 software watch dog
 	Serial.begin(115200);
 	delay(1000);
 

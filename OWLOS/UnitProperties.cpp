@@ -6,7 +6,7 @@
 #include "src\Managers\UpdateManager.h"
 
 #define DefaultFirmwareVersion "OWL OS IoT Node version 1.7 (beta)"
-#define DefaultFirmwareBuildNumber 58
+#define DefaultFirmwareBuildNumber 59
 
 #define DefaultId "owlnode"
 #define DefaultTopic "world0/area1/front1/room1/"
@@ -14,7 +14,7 @@
 #define DefaultWiFiAccessPointAvailable 1
 #define DefaultWiFiAccessPointSSID "owlnode"
 #define DefaultWiFiAccessPointPassword  "1122334455"
-#define DefaultWiFiAccessPointIP  "192.168.0.1"
+#define DefaultWiFiAccessPointIP  "192.168.4.1"
 
 
 //->TODO:Clear WiFi settings before release

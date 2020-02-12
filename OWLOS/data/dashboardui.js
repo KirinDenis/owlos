@@ -16,57 +16,35 @@ var dashboardUI = {
     },
 
     onConfigLoad: function (configProperties) {
-        var devicesWidgetsPanel = document.getElementById("devicesWidgetsPanel");
-        var widgetsPanel = devicesWidgetsPanel.appendChild(document.createElement('div'));
-        widgetsPanel.id = "widgetsPanel";
-        widgetsPanel.className = "col-md-12";
-        var infoDiv = widgetsPanel.appendChild(document.createElement('div'));
-        infoDiv.className = "card bg-default  mb-1";
-        var headerDiv = infoDiv.appendChild(document.createElement('div'));
-        headerDiv.className = "card-header";
 
-        var headerContent = headerDiv.appendChild(document.createElement('div'));
 
-        var headerText = headerContent.appendChild(document.createElement('div'));
-        headerText.className = "headerText text-light";
-        headerText.innerHTML = getLang("dashboard");
+        var saveButtonPanel = document.getElementById("saveButtonPanel");
 
-        var cardHeaderButtonsPanel = headerText.appendChild(document.createElement('div'));
-        cardHeaderButtonsPanel.className = 'cardHeaderButton';
-
-        var saveWidgetsButton = cardHeaderButtonsPanel.appendChild(document.createElement('input'));
+        var saveWidgetsButton = saveButtonPanel.appendChild(document.createElement('input'));
         saveWidgetsButton.className = "btn btn-warning btn-sm";
         saveWidgetsButton.type = "button";
         saveWidgetsButton.value = getLang("saveaddedwidget");
         saveWidgetsButton.hidden = true;
         saveWidgetsButton.id = "saveWidgetsButton";
         saveWidgetsButton.onclick = dashboardUI.saveAddedWidget;  
-
         config.onChange = dashboardUI.onConfigChange;
 
-        var headerModeButton = cardHeaderButtonsPanel.appendChild(document.createElement('input'));
+
+        var dashboardButtonsPanel = document.getElementById("dashboardButtonsPanel");
+        var headerModeButton = dashboardButtonsPanel.appendChild(document.createElement('input'));
         headerModeButton.className = "btn btn-secondary btn-sm";
         headerModeButton.type = "button";
         headerModeButton.value = getLang("dashboardedit");
-        headerModeButton.onclick = dashboardUI.changeDashboadMode;
+        headerModeButton.onclick = dashboardUI.changeDashboadMode;        
 
-        var addWidgetButton = cardHeaderButtonsPanel.appendChild(document.createElement('input'));
+        var addWidgetButton = dashboardButtonsPanel.appendChild(document.createElement('input'));
         addWidgetButton.className = "btn btn-success btn-sm";
         addWidgetButton.type = "button";
         addWidgetButton.value = getLang("dashboardaddwidget");
         addWidgetButton.onclick = dashboardUI.addWidgetMode;
 
-        var dataDiv = infoDiv.appendChild(document.createElement('div'));
-
-        dataDiv.className = "card-body";
-
-        var p = dataDiv.appendChild(document.createElement('p'));
-        p.className = "card-text";
-
-        var devicesWidgetsPanel = p.appendChild(document.createElement('div'));
-        devicesWidgetsPanel.className = "row";
-        devicesWidgetsPanel.id = "widgetsPanelDataDiv"
-        //var devicesWidgetsPanel = document.getElementById("widgetsPanelDataDiv");
+        var devicesWidgetsPanel = document.getElementById("devicesWidgetsPanel");
+        
         for (var i = 0; i < configProperties.dashboards[0].widgets.length; i++) {
             try {
                 var widgetProp = configProperties.dashboards[0].widgets[i];
@@ -176,7 +154,7 @@ var dashboardUI = {
         widgetButton.id = "widgetModalButton";
         widgetButton.deviceSelect = deviceSelect;
         widgetButton.onclick = dashboardUI.addWidgetClick;
-        widgetButton.innerText = getLang("widgetslist");
+        widgetButton.innerText = getLang("dashboardaddwidgetbutton");
 
         $("#widgetModal").modal('show');
 
@@ -233,7 +211,7 @@ var dashboardUI = {
     },
 
     addWidgetClick: function (event) {
-        var devicesWidgetsPanel = document.getElementById("widgetsPanelDataDiv");
+        var devicesWidgetsPanel = document.getElementById("devicesWidgetsPanel");
         var button = event.currentTarget;
         var deviceSelect = button.deviceSelect;
         var devicePropSelect = deviceSelect.devicePropSelect;
@@ -310,7 +288,7 @@ var dashboardUI = {
             saveCloseButton.className = "btn btn-sm btn-success";
             saveCloseButton.setAttribute("data-dismiss", "modal");
             saveCloseButton.setAttribute("aria-label", "Close");
-            saveCloseButton.innerText = getLang("close");
+            saveCloseButton.innerText = getLang("closebutton");
             saveCloseButton.id = "saveConfigsaveCloseButton";
             saveCloseButton.hidden = true;
 

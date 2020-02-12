@@ -19,6 +19,7 @@
 
 #include "WebServer.h"
 #include "..\Managers\DeviceManager.h"
+#include "..\Managers\ScriptManager.h"
 #include "..\Managers\UpdateManager.h"
 #include "..\..\UnitProperties.h"
 #include "..\..\WebProperties.h"

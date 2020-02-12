@@ -181,7 +181,7 @@ var GraphWidget =
                 var updatedFilteredData = this.historyDataFilter(this.graphWidth, this.historyData, 1, 1); //It is important to draw Y lalues at first and curve after!!!
 
                 this.grawYValuesPoints(this.SVGTopLabel, this.SVGMiddleLabel, this.SVGDownLabel, updatedFilteredData);
-                var d = this.curveForDrawing(updatedFilteredData, this.graphHeight, this.graphTop, this.panding * 0.9 + 10);
+                var d = this.curveForDrawing(updatedFilteredData, this.graphHeight, this.graphTop, this.panding);
 
                 switch (this._networkStatus) {
                     case NET_ONLINE:

@@ -10,6 +10,7 @@
 #include "UnitProperties.h"
 #include "src\Utils\Utils.h"
 #include "src\Managers\DeviceManager.h"
+#include "src\Managers\ScriptManager.h"
 #include "src\Managers\FileManager.h"
 #include "src\Managers\TransportManager.h"
 
@@ -17,11 +18,13 @@
 /*-------------------------------------------------------------------------------------------------------------------------
   Main Setup
   -------------------------------------------------------------------------------------------------------------------------*/
-void setup() {
-  ESP.wdtDisable();
+void setup() {  
   Serial.begin(PORTSPEED);  //setup Serial Monitor at PORTSPEED BAUD speed - see Utils.h for Constant definition
   delay(ONETENTHOFSECOND);  //sleep 1/10 of second
   debugOut("setup", "started...");//if Utils.h "Debug=true" start writing log to Serial
+  ESP.wdtEnable(0); //Software watch dog
+
+  testCompile();
 
   filesBegin(); //prepare Flash file systeme (see Tools/Flash size item - use 2M Flash Size, is ZERO size by default -> switch to 2M  
   unitInit();
@@ -38,6 +41,7 @@ void setup() {
   Main Loop
   -------------------------------------------------------------------------------------------------------------------------*/
 void loop() {
+  scriptsRun();
   //check WiFi and MQTT stack are available
   //first time Main::loop() calling the transport is not available
   if (!transportAvailable()) //if not connected

@@ -33,18 +33,6 @@ $(document).ready(function () {
         addToLogNL("Ajax error: " + settings.url, 2);
     });
 
-    /*
-    window.onresize = function (event) {
-        var width = window.screen.availWidth;
-        var height = window.screen.availHeight;
-
-        var content = document.getElementById("content");
-        content.style.width = (width - 300) + "px";
-
-        
-    };
-    */
-
     var style = window.getComputedStyle(document.body, null);
     theme.primary = style.getPropertyValue('--primary');
     theme.secondary = style.getPropertyValue('--secondary');
@@ -67,48 +55,28 @@ $(document).ready(function () {
         theme.dark = '#272B30';
     }
 
-
-
     addToLogNL("get UI configuration...");
     // try {
 
-    doProSidebar();
+    createProSidebar();
     config.onLoad = settingsUI.onConfigLoad;
     config.onLoad = dashboardUI.onConfigLoad;
     if (config.load()) {
         status_online = NET_ONLINE;
         speak("OWL OS is started");
-
-
-
-        document.getElementById("home-tab").innerText = getLang("homeTab");
-        document.getElementById("settings-tab").innerText = getLang("settingsTab");
-        document.getElementById("console-tab").innerText = getLang("consoleTab");
-
+       
         addToLogNL(getLang("prepareUnit"));
-
-
 
         devices.addDeviceLoadedListner(settingsUI.onDeviceLoaded, settingsUI);
         nodesRefresh();
 
-
-
-        //    document.getElementById("mainContainer").style.display = "block";
         var boot = document.getElementById("boot");
         boot.parentElement.removeChild(boot);
         document.getElementById("consolePanel").appendChild(boot);
 
         nodesRefreshHandle = setInterval(nodesRefresh, 10000);
 
-        $('#sidebarCollapse').on('click', function () {
-            $('#sidebar').toggleClass('active');
-        });
-
         $(".page-wrapper").toggleClass("toggled");
-     //   $("#sidebar").removeClass("active");  
-      //  document.getElementById("sideBarDashboardAhref").className = "nav-link active";
-      //  document.location = document.getElementById("sideBarDashboardAhref").href;
 
 
         speak("OWL OS is ready");
@@ -131,7 +99,35 @@ $(document).ready(function () {
     //}
 );
 
-function doProSidebar() {
+function proSideBarMenuClick(event) {
+    var nodeStatusPanel = document.getElementById("nodeStatusPanel");
+    if (nodeStatusPanel != undefined) {
+        if (nodeStatusPanel.currentStatusPanel != undefined) {
+            nodeStatusPanel.currentStatusPanel.style.display = "none";
+            nodeStatusPanel.currentStatusPanel.nodeStatusPanelText.style.display = "none";                
+        } 
+    }
+    return false;
+}
+
+function proSideBarDashboardMenuClick(event) {
+    $(this).removeClass('active'); 
+    document.getElementById("sidebarText").style.display = "block";
+    document.getElementById("sidebarText").innerText = event.currentTarget.addressText;
+    document.getElementById("dashboardButtonsPanel").style.display = "block";
+    return proSideBarMenuClick(event);
+}
+
+function proSideBarConsoleMenuClick(event) {
+    $(this).removeClass('active'); 
+    document.getElementById("sidebarText").style.display = "none";
+    document.getElementById("sidebarText").innerText = "";
+    document.getElementById("dashboardButtonsPanel").style.display = "none";
+    return proSideBarMenuClick(event);
+}
+
+
+function createProSidebar() {
     
 
     var pageWrapper = document.getElementById("pagewrapper");
@@ -157,7 +153,7 @@ function doProSidebar() {
     sideBarHeaderInfo.className = "user-info";
     var sideBarHeaderInfoVersion = sideBarHeaderInfo.appendChild(document.createElement("span"));
     sideBarHeaderInfoVersion.className = "user-name";
-    sideBarHeaderInfoVersion.innerHTML = "version<strong>1.7</strong>";
+    sideBarHeaderInfoVersion.innerHTML = "version<strong> 1.7</strong>";
     var sideBarHeaderInfoRole = sideBarHeaderInfo.appendChild(document.createElement("span"));
     sideBarHeaderInfoRole.className = "user-role";
     sideBarHeaderInfoRole.innerHTML = "Administrator";
@@ -170,7 +166,7 @@ function doProSidebar() {
 
     var sideBarUl = mainSideBar.appendChild(document.createElement("ul"));
 
-
+    //Панель управления 
     var sideBarDashboardLi = sideBarUl.appendChild(document.createElement("li"));
     sideBarDashboardLi.id = "sideBarDashboardLi";
     sideBarDashboardLi.className = "nav-item";
@@ -180,17 +176,20 @@ function doProSidebar() {
     
     sideBarDashboardAhref.href = "#dashboard";
     sideBarDashboardAhref.setAttribute("data-toggle", "tab");
-    sideBarDashboardAhref.onclick = function (event) { $(this).removeClass('active'); };
+    sideBarDashboardAhref.onclick = proSideBarDashboardMenuClick; 
+    sideBarDashboardAhref.addressText = getLang("dashboardTab");
 
 
     sideBarDashboardAhref.appendChild(document.createElement("i")).className = "fa fa-tachometer-alt";
     var sideBarDashboardAhrefSpan = sideBarDashboardAhref.appendChild(document.createElement("span"));
-    sideBarDashboardAhrefSpan.className = "menu-text";
-    sideBarDashboardAhrefSpan.id = "home-tab";
+    sideBarDashboardAhrefSpan.className = "menu-text";    
+    sideBarDashboardAhrefSpan.innerText = sideBarDashboardAhref.addressText;
+    document.getElementById("sidebarText").innerText = sideBarDashboardAhref.addressText;
 
     sideBarDashboardAhrefSpan = sideBarDashboardAhref.appendChild(document.createElement("span"));
     sideBarDashboardAhrefSpan.className = "badge badge-pill badge-success";
-    sideBarDashboardAhrefSpan.id = "sideBarDashboardAhrefOnlineSpan";
+    sideBarDashboardAhrefSpan.id = "sideBarDashboardAhrefSpan";
+    
 
     config.onLoad = function (configProperties) {
         sideBarDashboardAhrefSpan.innerHTML = configProperties.dashboards[0].widgets.length;
@@ -201,11 +200,7 @@ function doProSidebar() {
     }
 
 
-    //sideBarDashboardAhrefSpan = sideBarDashboardAhref.appendChild(document.createElement("span"));
-    //sideBarDashboardAhrefSpan.className = "badge badge-pill badge-secondary";
-    //sideBarDashboardAhrefSpan.id = "sideBarDashboardAhrefOfflineSpan";
-
-
+    //настройки  
     var sideBarSettingsLi = sideBarUl.appendChild(document.createElement("li"));
     sideBarSettingsLi.className = "sidebar-dropdown";
     var sideBarSettingsAhref = sideBarSettingsLi.appendChild(document.createElement("a"));
@@ -218,6 +213,7 @@ function doProSidebar() {
     var sideBarSettingsAhrefSpan = sideBarSettingsAhref.appendChild(document.createElement("span"));
     sideBarSettingsAhrefSpan.className = "menu-text";
     sideBarSettingsAhrefSpan.id = "settings-tab";
+    sideBarSettingsAhrefSpan.innerText = getLang("settingsTab");
 
     var sideBarSettingsLiSubmenu = sideBarSettingsLi.appendChild(document.createElement("div"));
     sideBarSettingsLiSubmenu.className = "sidebar-submenu";
@@ -231,13 +227,13 @@ function doProSidebar() {
     sideBarConsoleAhref.className = "nav-link";
     sideBarConsoleAhref.href = "#console";
     sideBarConsoleAhref.setAttribute("data-toggle", "tab");
-
-    sideBarConsoleAhref.onclick = function (event) { $(this).removeClass('active'); };
+    sideBarConsoleAhref.addressText = getLang("consoleTab");
+    sideBarConsoleAhref.onclick = proSideBarConsoleMenuClick;
 
     sideBarConsoleAhref.appendChild(document.createElement("i")).className = "fa fa-file-code";
     var sideBarConsoleAhrefSpan = sideBarConsoleAhref.appendChild(document.createElement("span"));
     sideBarConsoleAhrefSpan.className = "menu-text";
-    sideBarConsoleAhrefSpan.id = "console-tab";
+    sideBarConsoleAhrefSpan.innerText = sideBarConsoleAhref.addressText;
 
 
     jQuery(function ($) {
@@ -349,21 +345,8 @@ function sleep(time) {
     */
 }
 
-function resetClick(event) {
-    reset(event.currentTarget.deviceHost);
 
-    sleep(5000).then(function () {
-        location.reload();
-        return false;
-    });
 
-    /*
-    sleep(5000).then(() => {
-        location.reload();
-        return false;
-    });
-    */
-}
 
 
 //--------------------------------------------------------------------------------------------------------------------
@@ -427,10 +410,7 @@ function makeModalDialog(parentId, id, titleText, bodyText) {
     closeButton.id = id + "closeButton";
 }
 
-//---------------------------------------------------------------------------------------------------------------------------------------
-// Объект создает таблицы отображающе свойства устройств
-// Реализован упрощенно, для работы в паре с devices парсером - не запоминает ссылкии на созданные таблицы - подразумевается что таблицы и строки 
-// будут создаваться в той же последовательности в которой парястся устройства - device1, prop1, prop2...propN, device2, prop1, prop2...propN...DeviceN...
+
 function createValueEdit(parentElement, propertyName, propertyValue, propertyType) {
     var edit = "";
 
