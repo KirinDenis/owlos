@@ -1,55 +1,67 @@
 ﻿/*
+
+  Ready IoT Solution OWLOS
+  (c) Konstantin Brul, Vitalii Glushchenko, Denys Melnychuk, Denis Kirin
+
 Встроеный скрипт. 
 
-Менеджер:
-scriptCreate(name, sourceCode)
-- создать скрипт (имя, source code):
--- вызывает компиляция, если нет ошибок, сохраняет данные и байт код в файл с именем скрипта. Иначе возвращает ошибку. Добавляет Свойства в запись о скриптах. 
+Менеджер поддерживает:
+- выполнение нескольких скриптов одновременно. 
+- динамическую - загрузку, компиляцию, выполнение, остановку - без перезагрузки микроконтроллера. 
+- квантование выполнения инструкций каждого скрипта отдельно (сколько инструкций за один loop())
+- хранение скриптов и их свойств в файлах. 
+- загрузку скриптов при старте микроконтроллера. 
+- останувку скрипта если тот привел к сбою микроконтроллера (при старте и загрузки скриптов такой скрипт выполнятся не будет)
+- динамическое распределение памяти для хранения и выполнения скриптов. 
+- редактирование, замену скрипта. 
+- удаление скриптов. 
+- доступ к свойствам устройств подключеных к микроконтроллеру на чтение-запись. (без перезапуска микроконтроллера (устройства могут добавляется динамически))
 
-scriptRun(name)
-- запускает скрипт - имя. 
--- скрипт выполняется инструкция за инструкций, перед выполнением инструкции создается файл scriptName.inrun, который удаляется после выполнения инструкции (или в него IP)
-   если перед выполнением файл содержит IP - иснтрукция вызвала фатальный сбой контроллера - script останавливается и переходит в режим "ошиба исполненния"
--- при запуске контроллера все скрипты с состоянием Run - автоматически запускаются. 
+Зачем нужен скрипт менеджер, возможные сценарии использования:
+"Классика" программирования микроконтроллера выглядит так - подключить устройства к PIN, написать (найти) библиотеки программно обслуживающие устройства, 
+написать код реализующий логический уровень взаимодействия устройств.
+Например, для реализации проекта "умной" лампочки, вам понадобится реле, датчик освещенности, датчик движения - подключить их к микроконтроллеру - это прийдется делать в любом случае, 
+с OWL OS или без нее :)
 
-scriptStop(name)
-- останавливает выполнение скрипта. 
+Написать код на C/C++ считывающий показания датчиков, анализирующий и значения и принимающий решение - включить или выключить лампочку (через реле). 
+Вы все это проделали - "прошили" контроллера и теперь при уровне освещености менее 300 единиц включается свет. 
+- Если вас не устраивает уровень 300 вы возвращаетесь к исходному коду, изменяете 300 на 200, после чего снимаете микроконтроллер, "перепрошиваете" и возвращаете все на место. 
+- Если вы хотите еще реле или геркон или DHT - вы каждый раз повторяете эти действия - переписываете, снимаете, перепрошивает
+(оцените ESP8266 OTA - это сильно облегчит жизнь https://randomnerdtutorials.com/esp8266-ota-updates-with-arduino-ide-over-the-air/)
 
-scriptCreate(name, sourceCode)
-- замена - создает и перекомпилирует скрипт с таким же именем. 
---если скрипт исполнялся - останавливает и ждет Run
+- Любое изменение в логике работы вашего проекта, потребует в самом лучшем случае изменение кода прошивки и перепровки контроллера, что само по себе интересно первые раз 50, потом 
+превращается в рутину и начинает утомлять. 
 
-scriptDelete(name)
-- удаляет скрипт. 
+- Если вы захотите управлять лампочкой через сеть, в своем приложение - изучите как работать с WiFi, выберите протокол HTTP или MQTT или разработайте свой, найдите, напишите сервер, 
+реализуйте клиентское приложение с UI, отладте все, предусмотрите возможность выбора другой сети WiFi или используйте ESP8266 в режиме WiFi точки доступа - поверте это все очень 
+интересные задачи и займут уйму времени. (Посмотрите исходный код OWL OS - как это делаем мы, найдите неточности и ошибки, помогите нам их исправить и сделать OWL OS еще надежнее)
 
-Поддерживается много скриптов, исполнение паралельно. 
-Свойства скрипта:
-- Имя (оно же имя файла)
-Состояния:
-- исполняется. 
-- остановлен. 
-- ошибка компиляции. 
-- ошибка исполнения. 
+Тоже самое с OWL OS:
+- Соберите схему, подключите устройства. 
+- Зайдите в OWL OS UI, укажите какие устройства были подключены. Теперь вы можете упралять подключенными устройствами через сетъ. 
+- В OWL OS UI скрипт редакторе опишите логику взаимодействия устройств:
 
+  1 getDeviceProp lightsensor, light, _light  //получить текущие показания сенсора с ID lightsensor
+  2 ifupper _light, 300, 5                    //если показани показания более 300 единиц выполнить инструкцию из строки 5
+  3 setDeviceProp rele, data, 0               //если показания меньше равны 300 выключить реле с ID rele
+  4 goto 1                                    //проверить показания lightsensor сново
+  5 setDeviceProp rele, data, 1               //мы перешли сюда из 3 строки, если light > 300 - включаем реле  
+  6 goto 1                                    //проверить показания lightsensor сново 
 
-Квантование:
-- сколько инструкций можно выполнить за один Loop
+- Изменяйте сценарий, изменяйте логику, добавляйте новые устройства, добавляейте новые микроконтроллеры. 
 
-API для доступа к переменным - к текущему состоянию
 */
-
 
 #include <Arduino.h>
 
 #include "DeviceManager.h"
 #include "..\..\UnitProperties.h"
 
-#define heapLimit 5000 //5kb of heap must be free 
+#define heapLimit 5000 //не компилировать и не загружать скрипт если количество heap после этого станет меньше 5Kb 
 
-#define scriptSize 4
-#define codeSize 100
-#define dataSize 100
+#define scriptSize 10 //сколько скриптов можно загрузить одновременно
 
+//коды инструкций для байт-кода
 #define stopCode 0
 #define sumCode 1
 #define writeCode 2
@@ -57,44 +69,45 @@ API для доступа к переменным - к текущему сост
 #define ifupperCode 4
 #define getpropCode 5
 #define setpropCode 6
+//статусы скрипта 
+#define stopStatus 0  //скрипт остановлен не выполняется
+#define runStatus 1   //скрипт выполняется
+#define compilerErrorStatus 2 //ошибка компиляции скрипта
+#define runtimeErrorStatus 3 //ошибка выполнения скрипта (возможно был фатальный сбой, не возобновляейте выполнение такого скрипта, без проверки). 
 
-#define stopStatus 0
-#define runStatus 1
-#define compilerErrorStatus 2
-#define runtimeErrorStatus 3
-
-struct Instruction
+//байт-код одной инструкции
+typedef struct Instruction
 {
-	int type = stopCode;
-	int arg1Addr;
-	int arg2Addr;
+	int type = stopCode; //код инструкции, по умолчаю Stop - такая иснтрукция оставит скрипт - script[..].status = stopStatus
+	int arg1Addr;        //адрес первого аргумета
+    int arg2Addr;        //адрес второго аргумета  
 	int arg3Addr;
-	int resultAddr;
+	int resultAddr;      //адрес результата   
 };
-
+//переменная для байт-кода инструкций arg1Addr..arg2Addr - адреса таких переменых в массиве script[..].data (сегмент данных)
 typedef struct Variable
 {
-	int type;
-	char *name;
-	char *value;
-
+	int type;   //тип переменой
+	char *name; //имя переменой
+	char *value;//значение 
 };
-
+//запись одного скрипта 
 typedef struct Script
 {
-	String name;
-	String byteCode;
-	int status = stopStatus;
-	int ip = -1;           //instruction pointer
-	int codeCount = 0;
-	int dataCount = 0;
-	int timeQuant = 1; // -1 forever
-	int quantCounter = 0;
+	String name;       //имя (уникально)
+	String byteCode;   //исходный байт-код (assembler)
+	int status = stopStatus; текущий статус выполнения
+	int ip = -1;           //Instruction Point - указатель выполняемой инструкции в script[..].data (сегмент кода)
+	int codeCount = 0;     //количество инструкций
+	int dataCount = 0;     //количество переменных
+	int timeQuant = 1;     //квант времени выполнения - количество инструкций за один loop() микроконтроллера для этого скрипта 
+	int quantCounter = 0;  //счетчик отработанных квантов времени, кога > timeQuant выполнение прерывается до следующего loop()
 
-	Instruction* code;
-	Variable* data;
+	Instruction* code;    //сегмент кода, по этому указателю, последовательно хранятся инструкции байт-кода скрипта 
+	Variable* data;       //сегмен данных, хранит указатель на все переменые используемые скриптом
 };
 
+//количество загруженных скриптов. 
 int scriptCount = -1;
 
 Script scripts[scriptSize];
@@ -145,7 +158,6 @@ bool scriptsSave() {
 }
 
 
-
 bool scriptsDelete(String name) {
 	int index = scriptsGetByIndex(name);
 	if (index != -1)
@@ -176,6 +188,15 @@ bool scriptsRun(String name) {
 	return false;
 }
 
+char* stringToArray(String str)
+{
+	//free(array);
+	char *array;
+	array = (char *)malloc(sizeof(char) * (str.length() + 1));
+	strcpy(array, str.c_str());
+	return array;
+}
+
 
 //Instruction managment functions ------------------------------
 int pushInstruction(int index, int addr, int type, int arg1Addr, int arg2Addr, int arg3Addr, int resultAddr) {
@@ -193,11 +214,16 @@ int pushInstruction(int index, int addr, int type, int arg1Addr, int arg2Addr, i
 
 int pushData(int index, String name, String value) {
 
-	scripts[index].data[scripts[index].dataCount].name = (char *)malloc(sizeof(char) * (name.length() + 1));
-	strcpy(scripts[index].data[scripts[index].dataCount].name, name.c_str());
+	free(scripts[index].data[scripts[index].dataCount].name);
+	scripts[index].data[scripts[index].dataCount].name = stringToArray(name);
 
-	scripts[index].data[scripts[index].dataCount].value = (char *)malloc(sizeof(char) * (value.length() + 1));
-	strcpy(scripts[index].data[scripts[index].dataCount].value, value.c_str());
+	free(scripts[index].data[scripts[index].dataCount].value);
+	scripts[index].data[scripts[index].dataCount].value = stringToArray(value);
+	//scripts[index].data[scripts[index].dataCount].name = (char *)malloc(sizeof(char) * (name.length() + 1));
+	//strcpy(scripts[index].data[scripts[index].dataCount].name, name.c_str());
+
+	//scripts[index].data[scripts[index].dataCount].value = (char *)malloc(sizeof(char) * (value.length() + 1));
+	//strcpy(scripts[index].data[scripts[index].dataCount].value, value.c_str());
 
 
 	//	scripts[index].data[scripts[index].dataCount].name = _name;
@@ -240,7 +266,13 @@ int runSum(int index) {
 	String result = String(arg1 + arg2);
 	////Serial.println("-->" + String(result));
 
-	strcpy(scripts[index].data[scripts[index].code[ip].resultAddr].value, result.c_str());
+
+	//TODO RELOCATE FOR scripts[index].data[scripts[index].code[ip].resultAddr].value
+	//strcpy(scripts[index].data[scripts[index].code[ip].resultAddr].value, result.c_str());
+
+	free(scripts[index].data[scripts[index].code[ip].resultAddr].value);
+	scripts[index].data[scripts[index].code[ip].resultAddr].value = stringToArray(result);
+
 
 	////Serial.println("!->" + String(scripts[index].code[ip].arg1Addr));
 	////Serial.println("!->" + String(scripts[index].code[ip].arg2Addr));
@@ -441,7 +473,9 @@ bool scriptsCompile(int index) {
 	scripts[index].ip = 0;
 	scripts[index].codeCount = 0;
 	scripts[index].dataCount = 0;
-
+	free(scripts[index].code);
+	free(scripts[index].data);
+	//TODO: Free momery for code data
 	String prog = "";
 	String lineDelimiter = "\n";
 	String argDelimiter = ",";
@@ -669,6 +703,7 @@ void testCompile()
 	Serial.println(ESP.getFreeHeap());
 
 	scriptsSave();
+	
 	//Serial.println(ESP.getFreeHeap());
 	//scriptsLoad();
 

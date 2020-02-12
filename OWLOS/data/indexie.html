@@ -15,9 +15,6 @@
     <script src='jquery.dataTables.min.js'></script>
     <script src='dataTables.min.js'></script>
 
-
-
-
     <script src='bootcore.js'></script>
     <script src='configcore.js'></script>
     <script src='restclientcore.js'></script>
@@ -53,99 +50,90 @@
 
     <script src='index.js'></script>
 </head>
-<body>
+<body  onbeforeunload="return BeforeUnloadEvent()">
+    
     <pre id="boot" style="font-size: 11px;"><code id="bootLog" style="white-space: pre-wrap; overflow-y:scroll;"></code></pre>
-    <div class="container-fluid" id="mainContainer" style="display: none">
-        <div class="row">
 
-            <div class="col-sm-12">
-                <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-                    <a class="navbar-brand" href="#">OWL OS</a>
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="navbarColor01">
-                        <ul class="nav navbar-nav mr-auto" id="mainTab" role="tablist">
-                            <li class="nav-item">
-                                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" aria-controls="home" aria-selected="true">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false">Devices</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="console-tab" data-toggle="tab" href="#console" role="tab" aria-controls="console" aria-selected="false">Console</a>
-                            </li>
-                        </ul>
-                    </div>
-                </nav>
+    <div id="pagewrapper" class="page-wrapper default-theme sidebar-bg bg1">
+        <main class="page-content pt-2">
+            <div id="overlay" class="overlay"></div>
+            <nav class="navbar">
+                <form class="form-inline my-2 my-lg-0">
+                    <span type="button" id="toggle-sidebar" class="badge badge-warning fa fa-bars">
+                    </span>
+                    <span type="button" id="pin-sidebar" class="badge badge-success fa fa-anchor">
+                    </span>
+                    <span type="button" id="nodeStatusPanelText" class="badge badge-default">
+                    </span>
+                    <span type="button" id="sidebarText" class="badge badge-default">
+                    </span>
 
-                <div class="tab-content" id="mainTabContent">
-                    <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                        <div class="row devicesWidgetsPanel" id="devicesWidgetsPanel">
+                </form>
+
+                <form class="form-inline my-2 my-lg-0">
+                    <div class="nodestatuspanel" id="saveButtonPanel"></div>
+                    <div class="nodestatuspanel" id="dashboardButtonsPanel"></div>
+                    <div class="nodestatuspanel" id="nodeStatusPanel"></div>
+
+                </form>
+            </nav>
+
+            <div class="container-fluid">
+                <div class="row">
+
+                    <div class="tab-content col-sm-12" id="nodesPropsPanel">
+                        <div class="tab-pane fade active show" id="dashboard">
+                            <div class="row" id="devicesWidgetsPanel">
+                            </div>
+                            <div class="col-sm-12" id="basicPanel">
+                            </div>
                         </div>
-                        <div class="col-sm-12" id="basicPanel">
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
 
-                        <div id="nodePropAnchors"> </div>
-
-                        <div id="nodesPropsPanelHolder" class="container-fluid">
-                            <div class="wrapper row">
-                                <!-- Sidebar Holder -->
-                                <nav id="sidebar" class="bs-docs-sidebar">
-                                    <ul id="nodesSideBar" class="list-unstyled components"></ul>
-                                </nav>
-
-                                <div id="content">
-                                    <nav class="navbar bg-primary">
-
-                                        <form class="form-inline my-2 my-lg-0">
-                                            <span type="button" id="sidebarCollapse" class="badge badge-default">
-                                                <span>|-|</span>
-                                            </span>
-
-                                            <div class="nodestatuspanel" id="nodeStatusPanel">
-                                            </div>
-
-                                            <div class="nodestatuspanel" id="nodeStatusPanelText">
-
-                                            </div>
-                                        </form>
-                                    </nav>
-
-                                    <div id="nodesPropsPanel">
+                        <div class="tab-pane fade" id="console">
+                            <div class="row">
+                                <div class="col-md-12 devicediv">
+                                    <div id="consolePanel" class="col-md-12 border-0 devicecard">
 
                                     </div>
-
-                                </div>
-
-
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="tab-pane fade" id="console" role="tabpanel" aria-labelledby="console-tab">
-                        <div class="row">
-                            <div class="col-md-12 devicediv">
-                                <div id="consolePanel" class="col-md-12 border-0 devicecard">
-
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
-                <div id="uploadPanel" class="row"></div>
-                <div id="addDevicePanel" class="row"></div>
-                <div id="resetPanel" class="row"></div>
             </div>
-        </div>
+
+
+            <div id="uploadPanel" class="row"></div>
+            <div id="addDevicePanel" class="row"></div>
+            <div id="resetPanel" class="row"></div>
+
+            <!--
+
+    <nav id="sidebar" class="bs-docs-sidebar">
+        <ul id="nodesSideBar" class="list-unstyled components"></ul>
+    </nav>
+         -->
+            <div id="nodePropAnchors"> </div>
+
+
+
+        </main>
+        
     </div>
     <footer class="footer">
         <div class="container col-md-12" id="footerContainer">
             OWL OS
         </div>
     </footer>
+    <script>
+        boot();
+
+        function BeforeUnloadEvent() {
+            return "Are you sure?";
+        }
+
+
+
+    </script>
 </body>
 </html>
