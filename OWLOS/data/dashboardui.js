@@ -144,7 +144,7 @@ var dashboardUI = {
         deviceSelect.widgetSelect = widgetSelect;
 
         var event = { currentTarget: deviceSelect };
-        dashboardUI.onDeviceSelect(event)
+        dashboardUI.onDeviceSelect(event);
 
 
         //end of Body form ----------
