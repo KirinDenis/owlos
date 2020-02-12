@@ -13,16 +13,19 @@
   Main Setup
   -------------------------------------------------------------------------------------------------------------------------*/
 void setup() {
-  delay(1000); 
+  delay(1000);
+  ESP.wdtEnable(0); //Software watch dog
+  
   Serial.begin(115200);
   
   Serial.println("Start");
   delay(1000); 
-
+testCompile();
+  
  // scriptCompile();
   
   //scriptsSave();
-   testCompile();
+   //
 
   
 }
@@ -31,7 +34,11 @@ void setup() {
   Main Loop
   -------------------------------------------------------------------------------------------------------------------------*/
 void loop() {
+
  scriptsRun();
+
+ Serial.println(ESP.getFreeHeap());
  Serial.println("loop");
-  delay(1000); //Main::loop() sleep interval
+ 
+  delay(100); //Main::loop() sleep interval
 }

@@ -44,7 +44,7 @@ API для доступа к переменным - к текущему сост
 #include "DeviceManager.h"
 #include "..\..\UnitProperties.h"
 
-#define scriptSize 4
+#define scriptSize 5
 
 #define stopCode 0
 #define sumCode 1
@@ -70,15 +70,15 @@ struct Instruction
 
 struct Variable
 {
-	String name;
-	String value;
+	String name = "";
+	String value = "";
 
 };
 
 struct Script
 {
-	String name;
-	String byteCode;
+	String name = "";
+	String byteCode = "";
 	int status = stopStatus;
 	int ip = -1;           //instruction pointer
 	int codeCount = 0;
@@ -86,8 +86,8 @@ struct Script
 	int timeQuant = 1; // -1 forever
 	int quantCounter = 0;
 
-	Instruction code[50];
-	Variable data[50];
+	Instruction code[30];
+	Variable data[20];
 };
 
 int scriptCount = -1;
@@ -97,6 +97,8 @@ Script scripts[scriptSize];
 //Script managment's functions -------------------------------
 
 void scriptsReset(int index) {
+
+
 	if ((index < 0) || (index > scriptSize - 1)) return;
 	scripts[index].name = "";
 	scripts[index].byteCode = "";
@@ -490,6 +492,14 @@ bool scriptsCompile(int index) {
 }
 
 bool scriptsCreate(String name, String byteCode) {
+
+	debugOut("--> STRING:", String(sizeof(scripts)));
+	debugOut("--> STRING:", String(sizeof(scripts[0].code)));
+	debugOut("--> STRING:", String(sizeof(scripts[0].code[0])));
+	debugOut("--> STRING:", String(sizeof(scripts[0].data)));
+	debugOut("--> STRING:", String(sizeof(scripts[0].data[0])));
+	debugOut("--> STRING:", String(sizeof(scripts[0].name)));
+
 	int index = -1;
 	for (int i = 0; i < scriptSize; i++)
 	{
