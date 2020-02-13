@@ -3,52 +3,52 @@
   Ready IoT Solution OWLOS
   (c) Konstantin Brul, Vitalii Glushchenko, Denys Melnychuk, Denis Kirin
 
-Встроеный скрипт. 
+Встроеный скрипт.
 
 Менеджер поддерживает:
-- выполнение нескольких скриптов одновременно. 
-- динамическую - загрузку, компиляцию, выполнение, остановку - без перезагрузки микроконтроллера. 
+- выполнение нескольких скриптов одновременно.
+- динамическую - загрузку, компиляцию, выполнение, остановку - без перезагрузки микроконтроллера.
 - квантование выполнения инструкций каждого скрипта отдельно (сколько инструкций за один loop())
-- хранение скриптов и их свойств в файлах. 
-- загрузку скриптов при старте микроконтроллера. 
+- хранение скриптов и их свойств в файлах.
+- загрузку скриптов при старте микроконтроллера.
 - останувку скрипта если тот привел к сбою микроконтроллера (при старте и загрузки скриптов такой скрипт выполнятся не будет)
-- динамическое распределение памяти для хранения и выполнения скриптов. 
-- редактирование, замену скрипта. 
-- удаление скриптов. 
+- динамическое распределение памяти для хранения и выполнения скриптов.
+- редактирование, замену скрипта.
+- удаление скриптов.
 - доступ к свойствам устройств подключеных к микроконтроллеру на чтение-запись. (без перезапуска микроконтроллера (устройства могут добавляется динамически))
 
 Зачем нужен скрипт менеджер, возможные сценарии использования:
-"Классика" программирования микроконтроллера выглядит так - подключить устройства к PIN, написать (найти) библиотеки программно обслуживающие устройства, 
+"Классика" программирования микроконтроллера выглядит так - подключить устройства к PIN, написать (найти) библиотеки программно обслуживающие устройства,
 написать код реализующий логический уровень взаимодействия устройств.
-Например, для реализации проекта "умной" лампочки, вам понадобится реле, датчик освещенности, датчик движения - подключить их к микроконтроллеру - это прийдется делать в любом случае, 
+Например, для реализации проекта "умной" лампочки, вам понадобится реле, датчик освещенности, датчик движения - подключить их к микроконтроллеру - это прийдется делать в любом случае,
 с OWL OS или без нее :)
 
-Написать код на C/C++ считывающий показания датчиков, анализирующий и значения и принимающий решение - включить или выключить лампочку (через реле). 
-Вы все это проделали - "прошили" контроллера и теперь при уровне освещености менее 300 единиц включается свет. 
-- Если вас не устраивает уровень 300 вы возвращаетесь к исходному коду, изменяете 300 на 200, после чего снимаете микроконтроллер, "перепрошиваете" и возвращаете все на место. 
+Написать код на C/C++ считывающий показания датчиков, анализирующий и значения и принимающий решение - включить или выключить лампочку (через реле).
+Вы все это проделали - "прошили" контроллера и теперь при уровне освещености менее 300 единиц включается свет.
+- Если вас не устраивает уровень 300 вы возвращаетесь к исходному коду, изменяете 300 на 200, после чего снимаете микроконтроллер, "перепрошиваете" и возвращаете все на место.
 - Если вы хотите еще реле или геркон или DHT - вы каждый раз повторяете эти действия - переписываете, снимаете, перепрошивает
 (оцените ESP8266 OTA - это сильно облегчит жизнь https://randomnerdtutorials.com/esp8266-ota-updates-with-arduino-ide-over-the-air/)
 
-- Любое изменение в логике работы вашего проекта, потребует в самом лучшем случае изменение кода прошивки и перепровки контроллера, что само по себе интересно первые раз 50, потом 
-превращается в рутину и начинает утомлять. 
+- Любое изменение в логике работы вашего проекта, потребует в самом лучшем случае изменение кода прошивки и перепровки контроллера, что само по себе интересно первые раз 50, потом
+превращается в рутину и начинает утомлять.
 
-- Если вы захотите управлять лампочкой через сеть, в своем приложение - изучите как работать с WiFi, выберите протокол HTTP или MQTT или разработайте свой, найдите, напишите сервер, 
-реализуйте клиентское приложение с UI, отладте все, предусмотрите возможность выбора другой сети WiFi или используйте ESP8266 в режиме WiFi точки доступа - поверте это все очень 
+- Если вы захотите управлять лампочкой через сеть, в своем приложение - изучите как работать с WiFi, выберите протокол HTTP или MQTT или разработайте свой, найдите, напишите сервер,
+реализуйте клиентское приложение с UI, отладте все, предусмотрите возможность выбора другой сети WiFi или используйте ESP8266 в режиме WiFi точки доступа - поверте это все очень
 интересные задачи и займут уйму времени. (Посмотрите исходный код OWL OS - как это делаем мы, найдите неточности и ошибки, помогите нам их исправить и сделать OWL OS еще надежнее)
 
 Тоже самое с OWL OS:
-- Соберите схему, подключите устройства. 
-- Зайдите в OWL OS UI, укажите какие устройства были подключены. Теперь вы можете упралять подключенными устройствами через сетъ. 
+- Соберите схему, подключите устройства.
+- Зайдите в OWL OS UI, укажите какие устройства были подключены. Теперь вы можете упралять подключенными устройствами через сетъ.
 - В OWL OS UI скрипт редакторе опишите логику взаимодействия устройств:
 
   1 getDeviceProp lightsensor, light, _light  //получить текущие показания сенсора с ID lightsensor
   2 ifupper _light, 300, 5                    //если показани показания более 300 единиц выполнить инструкцию из строки 5
   3 setDeviceProp rele, data, 0               //если показания меньше равны 300 выключить реле с ID rele
   4 goto 1                                    //проверить показания lightsensor сново
-  5 setDeviceProp rele, data, 1               //мы перешли сюда из 3 строки, если light > 300 - включаем реле  
-  6 goto 1                                    //проверить показания lightsensor сново 
+  5 setDeviceProp rele, data, 1               //мы перешли сюда из 3 строки, если light > 300 - включаем реле
+  6 goto 1                                    //проверить показания lightsensor сново
 
-- Изменяйте сценарий, изменяйте логику, добавляйте новые устройства, добавляейте новые микроконтроллеры. 
+- Изменяйте сценарий, изменяйте логику, добавляйте новые устройства, добавляейте новые микроконтроллеры.
 
 */
 
@@ -80,7 +80,7 @@ typedef struct Instruction
 {
 	int type = stopCode; //код инструкции, по умолчаю Stop - такая иснтрукция оставит скрипт - script[..].status = stopStatus
 	int arg1Addr;        //адрес первого аргумета
-    int arg2Addr;        //адрес второго аргумета  
+	int arg2Addr;        //адрес второго аргумета  
 	int arg3Addr;
 	int resultAddr;      //адрес результата   
 };
@@ -106,6 +106,42 @@ typedef struct Script
 	Instruction* code;    //сегмент кода, по этому указателю, последовательно хранятся инструкции байт-кода скрипта 
 	Variable* data;       //сегмен данных, хранит указатель на все переменые используемые скриптом
 };
+
+/* Архитектура -------------------------------------------------------------------------------------------------------------------------------------------------
+Script.code массив состоящий из структур (записей) Instruction, формирует адресное пространство байт-кода
+Каждая инструкция идентифицируется своим полем Instruction.type
+Поле Script.ip - указатель инструкций, содержит адрес текущей исполняемой инструкции в Script.code.
+В момент исполнения инструкция может изменять Script.ip, таким образом указывая адрес следующей инструкции.
+
+Например:
+- в независимости от результата выполнения инструкции sum (суммирование), следующей инструкцие будет Script.ip+1
+- в свою очередь инструкция goto (безусловный переход) изменит Script.ip на адрес указанный в ее аргументе.
+
+Script.data массив хранящий все переменые скрипта описаные струцтурой Variable - одна ячейка одна переменая.
+Аргументы инструкций (arg1addr, arg2addr...) содержат адреса переменых из Script.data, таким образом- значительно упращается реализация управлением памятью,
+а варианты использования инструкций становятся более гибкими.
+
+Интерпретация инструкций:
+- каждая инструкция интерпретируется двумя функциями addNNN и runNNN (где NNN имя инструкции).
+- addNNN размещает инструкцию в Script.code по определенному адресу (адрес инструкции) в Script.code, адрес передается в качестве аргумента функции addNNN. Так же addNNN размещает
+аргументы инструкции в Script.data, при этом адреса аргументов инструкции в Script.data сохраняются в записи самой инструкции в Script.code.
+- runNNN интерпретирует выполнение действий инструкции и выбирает следующий Script.ip
+- глобальные функции executeInstruction и scriptsRun работают совместно:
+-- executeInstruction декодирует Instruction.type текущей инструкции указанной Script.ip и вызывает соответствующею этому типу инструкции runNNN - который в свою очередь возвращает
+   следущий script.ip (для следующей инструкции) или (важно) -1 если произошла ошибка выполнения инструкции. Фунцкия executeInstruction возвращает истину (true) если инструкцию
+   удалось выполнить (script.ip не равен -1), или ложь (false) если не удалось выполнить инструкцию.
+-- scriptRun последовательно вызывает executeInstruction до тех пока очередной вызов не вернет ложь, в этом случае выполнения скрипта прекращается.
+
+					   script.data[var1,     var2,    var3 ... varBBB]
+											  ^        ^
+                                              |        |
+
+script.code[inst1(arg1addr, arg2addr), inst2(arg1addr, arg2addr), inst3(..), inst4(..) ... instZZZ(..)]
+										^
+										| script.ip (current instruction is inst2)
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
+*/
 
 //количество загруженных скриптов. 
 int scriptCount = -1;
@@ -191,9 +227,13 @@ bool scriptsRun(String name) {
 char* stringToArray(String str)
 {
 	//free(array);
+	//Serial.println("-->get 1");
 	char *array;
+	//Serial.println("-->get 2");
 	array = (char *)malloc(sizeof(char) * (str.length() + 1));
+	//Serial.println("-->get 3");
 	strcpy(array, str.c_str());
+	//Serial.println("-->get 4");
 	return array;
 }
 
@@ -213,12 +253,21 @@ int pushInstruction(int index, int addr, int type, int arg1Addr, int arg2Addr, i
 }
 
 int pushData(int index, String name, String value) {
-
-	free(scripts[index].data[scripts[index].dataCount].name);
+	//Serial.println("-->push data 1");
+	if (scripts[index].data[scripts[index].dataCount].name != nullptr)
+	{
+	 // free(scripts[index].data[scripts[index].dataCount].name);
+    }
+	//Serial.println("-->push data 2");
 	scripts[index].data[scripts[index].dataCount].name = stringToArray(name);
+	//Serial.println("-->push data 3");
 
-	free(scripts[index].data[scripts[index].dataCount].value);
+	if (scripts[index].data[scripts[index].dataCount].value != nullptr)
+	{
+	//	free(scripts[index].data[scripts[index].dataCount].value);
+	}
 	scripts[index].data[scripts[index].dataCount].value = stringToArray(value);
+	//Serial.println("-->push data 4");
 	//scripts[index].data[scripts[index].dataCount].name = (char *)malloc(sizeof(char) * (name.length() + 1));
 	//strcpy(scripts[index].data[scripts[index].dataCount].name, name.c_str());
 
@@ -347,22 +396,22 @@ int runGetProp(int index) {
 	int ip = scripts[index].ip;
 	if (scripts[index].code[ip].type != getpropCode) return -1;
 
-	String deviceId = scripts[index].data[scripts[index].code[ip].arg1Addr].value;	
+	String deviceId = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
 	String deviceProp = scripts[index].data[scripts[index].code[ip].arg2Addr].value;
-	
+
 	String value = devicesGetDeviceProperty(deviceId, deviceProp);
-	
-	if ((value.length() == 0) || (value ==  WrongPropertyName)) //then try get this property from unit
+
+	if ((value.length() == 0) || (value == WrongPropertyName)) //then try get this property from unit
 	{
-		value = unitOnMessage(unitGetTopic() + "/get" + deviceProp, "", NoTransportMask);	
+		value = unitOnMessage(unitGetTopic() + "/get" + deviceProp, "", NoTransportMask);
 	}
-	
+
 	if ((value.length() == 0) || (value == WrongPropertyName))
 	{
 		return -1; //temporary
-	}	
+	}
 	strcpy(scripts[index].data[scripts[index].code[ip].arg3Addr].value, value.c_str());
-	
+
 	return ++ip;
 }
 
@@ -377,23 +426,23 @@ int addSetProp(int index, int addr, int arg1Addr, int arg2Addr, int arg3Addr) {
 int runSetProp(int index) {
 	int ip = scripts[index].ip;
 	if (scripts[index].code[ip].type != setpropCode) return -1;
-	
+
 	String deviceId = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
 	String deviceProp = scripts[index].data[scripts[index].code[ip].arg2Addr].value;
 	String value = scripts[index].data[scripts[index].code[ip].arg3Addr].value;
 
 	String result = devicesSetDeviceProperty(deviceId, deviceProp, value);
-	
+
 	if ((result.length() == 0) || (result == WrongPropertyName)) //try set unit property
 	{
-		result = unitOnMessage(unitGetTopic() + "/set" + deviceProp, value, NoTransportMask);	
+		result = unitOnMessage(unitGetTopic() + "/set" + deviceProp, value, NoTransportMask);
 	}
-	
+
 	if ((result.length() == 0) || (result == WrongPropertyName))
 	{
 		return -1;
 	}
-	
+
 	return ++ip;
 }
 
@@ -609,6 +658,7 @@ bool scriptsCompile(int index) {
 }
 
 bool scriptsCreate(String name, String byteCode) {
+	//byteCode = "var a=10\nvar b=10\nvar c=10000\nsum a,b,b\nsum a,b,b\nsum a,b,b\nwrite b\nifupper b,c,99\ngoto 0\n";
 	int index = -1;
 	for (int i = 0; i < scriptSize; i++)
 	{
@@ -624,7 +674,8 @@ bool scriptsCreate(String name, String byteCode) {
 		scriptCount++;
 		index = scriptCount;
 	}
-	scriptsReset[index];	
+	//Serial.println("script index" + String(index));
+	scriptsReset[index];
 	scripts[index].name = name;
 	filesWriteInt(scripts[index].name + ".rf", -1); //escapre RF flag 
 	scripts[index].byteCode = byteCode;
@@ -691,19 +742,20 @@ bool scriptsLoad() {
 
 void testCompile()
 {
-
-	Serial.println(ESP.getFreeHeap());
+	
+	//Serial.println(ESP.getFreeHeap());
 	scriptsCreate("script1", "var a=10\nvar b=10\nvar c=10000\nsum a,b,b\nsum a,b,b\nsum a,b,b\nwrite b\nifupper b,c,99\ngoto 0\n");
-	Serial.println(ESP.getFreeHeap());
-	scriptsCreate("script2", "var a=10\nvar b=10\nvar w=10\nvar c=10000\nsum a,b,b\nwrite b\ngetprop wifi,wifirssi,w\nwrite w\ngoto 0\n");
-	Serial.println(ESP.getFreeHeap());
-	scriptsCreate("script3", "var a=10\nvar b=10\nvar w=10\nvar c=10000\ngetprop wifi,wifirssi,w\nwrite w\ngoto 0\n");
-	Serial.println(ESP.getFreeHeap());
-	scriptsCreate("script4", "var t=0\nvar h=0\nvar a=0\nvar v=1\nvar hlimit=40\ngetprop dht,temperature,t\ngetprop dht,humidity,h\nwrite t\nwrite h\nifupper hlimit,h,0\nsetprop rele,data,v\ngoto 0\n");
-	Serial.println(ESP.getFreeHeap());
+	//Serial.println(ESP.getFreeHeap());
+	//scriptsCreate("script2", "var a=10\nvar b=10\nvar w=10\nvar c=10000\nsum a,b,b\nwrite b\ngetprop wifi,wifirssi,w\nwrite w\ngoto 0\n");
+	//Serial.println(ESP.getFreeHeap());
+	//scriptsCreate("script3", "var a=10\nvar b=10\nvar w=10\nvar c=10000\ngetprop wifi,wifirssi,w\nwrite w\ngoto 0\n");
+	//Serial.println(ESP.getFreeHeap());
+	//scriptsCreate("script4", "var t=0\nvar h=0\nvar a=0\nvar v=1\nvar hlimit=40\ngetprop dht,temperature,t\ngetprop dht,humidity,h\nwrite t\nwrite h\nifupper hlimit,h,0\nsetprop rele,data,v\ngoto 0\n");
+	//Serial.println(ESP.getFreeHeap());
 
 	scriptsSave();
 	
+
 	//Serial.println(ESP.getFreeHeap());
 	//scriptsLoad();
 

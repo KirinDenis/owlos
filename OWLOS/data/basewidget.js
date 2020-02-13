@@ -650,7 +650,7 @@ var BaseWidget =
                     currentTarget: closeHeaderButton
                 }
                 // вызываем наш обработчик клика на closeHeaderButton
-                widget.discardProperties(event);
+                widget.discardProperties(event);                
             })
 
             // отображаем созданный диалог 
