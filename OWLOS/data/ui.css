@@ -52,6 +52,14 @@
     text-overflow: Ellipsis;
 }
 
+.ScriptTextArea {
+    width: 80ch;
+    position: Absolute;
+    overflow: Hidden;
+    white-space: NoWrap;    
+    text-overflow: Ellipsis;
+}
+
 
 .LCDTextArea {
     width: 28ch;

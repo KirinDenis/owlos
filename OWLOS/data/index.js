@@ -64,7 +64,7 @@ $(document).ready(function () {
     if (config.load()) {
         status_online = NET_ONLINE;
         speak("OWL OS is started");
-       
+
         addToLogNL(getLang("prepareUnit"));
 
         devices.addDeviceLoadedListner(settingsUI.onDeviceLoaded, settingsUI);
@@ -78,6 +78,10 @@ $(document).ready(function () {
 
         $(".page-wrapper").toggleClass("toggled");
 
+        $("#createScript").click(function (event) {
+            var textArea = document.getElementById("scriptText");
+            httpPostAsyncWithErrorReson(boardhost + "createscript", "?name=main1", escape(textArea.value));
+        });
 
         speak("OWL OS is ready");
     }

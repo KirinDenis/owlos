@@ -861,6 +861,37 @@ void handleUpdateFirmware()
 			updateFirmware();
 		}
 }
+//----------------------------------------------------------------------------------------------
+//Create script 
+void handleCreateScript()
+{
+	debugOut("script create request", "1");
+	webServerAddCORSHeaders();
+	if (webServer.args() > 1)
+		debugOut("script create request", "2"); {
+		if (webServer.argName(1).equals("name"))
+		{
+			debugOut("script create request", "3");
+			debugOut("script create request", decode(webServer.arg(0)));
+			String result = String(scriptsCreate(decode(webServer.arg(1)), decode(webServer.arg(0))));
+
+			debugOut("script create result", result);
+			if ((result.length() == 0) || (result.equals("0")))
+			{
+				result = "wrong script: " + webServer.arg(0) + "=" + webServer.arg(1);
+				webServer.send(404, "text/html", result);
+				return;
+			}
+			else
+			{
+				webServer.send(200, "text/plain", result);
+				return;
+			}
+
+		}
+	}
+	handleNotFound();
+}
 
 
 //----------------------------------------------------------------------------------------------
@@ -920,7 +951,8 @@ bool webServerBegin()
 	webServer.on("/updatelog", handleUpdateLog);
 	webServer.on("/updateui", handleUpdateUI);
 	webServer.on("/updatefirmware", handleUpdateFirmware);
-
+	webServer.on("/createscript", HTTP_POST, handleCreateScript);
+	
 	webServer.begin();
 
 	debugOut(WebServerId, "started at access point as: " + unitGetWiFiAccessPointIP() + ":" + String(unitGetRESTfulServerPort()) + " at local network as: " + unitGetWiFiIP() + ":" + String(unitGetRESTfulServerPort()));
