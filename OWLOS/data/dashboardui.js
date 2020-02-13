@@ -291,11 +291,29 @@ var dashboardUI = {
             saveCloseButton.innerText = getLang("closebutton");
             saveCloseButton.id = "saveConfigsaveCloseButton";
             saveCloseButton.hidden = true;
+      
 
             //Button cancel interrapt function
             var savingCloseButton = document.getElementById("saveConfigcloseButton");
             savingCloseButton.onclick = dashboardUI.addWidgetCancel;
         }
+
+
+        $('#saveConfigModal').on('hide.bs.modal', function (event) {
+
+            if (config.cancel === true) {
+                config.cancel = false;
+                return true;
+            }
+            else {
+  
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                    return false;
+            }
+            
+        });
+
 
         $("#saveConfigModal").modal('show');
 
