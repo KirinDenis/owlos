@@ -314,7 +314,6 @@ var config = {
         var saveButton = document.getElementById("saveWidgetsButton");
         var closeButton = document.getElementById("saveConfigsaveCloseButton");
 
-
         //Проверка была ли отменена передача строки
         if (config.cancel == false) {
 
@@ -384,6 +383,7 @@ var config = {
                                 saveTextStatus.innerHTML = "Changes saved";
                                 savingCloseButton.hidden = true;
                                 closeButton.hidden = false;
+                                config.cancel = true;
                             } 
                            
 
@@ -420,6 +420,7 @@ var config = {
                                     saveTextStatus.innerHTML = "Changes saved";
                                     savingCloseButton.hidden = true;
                                     closeButton.hidden = false;
+                                    config.cancel = true;
                                 }
                              
                                 addToLogNL("Sending short config string. FINISHED. Result = OK!");
@@ -455,6 +456,7 @@ var config = {
                     saveTextStatus.innerHTML = "Saving changes error. Close this window and try again later!";
                     savingCloseButton.hidden = true;
                     closeButton.hidden = false;
+                    config.cancel = true;
                 }
                 //возвращаем кнопку сохранить изменения
                 if (saveButton !== undefined && saveButton !== null) {
@@ -470,7 +472,6 @@ var config = {
             // если была отменена передача строки (нажатие кнопки "отменить" в модельном окне), закрываем модельное окно и возвращаем false
 
             var modalWindowBody = document.getElementById("saveConfigModalBody");
-
             if (modalWindowBody !== null && modalWindowBody !== undefined) {
                 $('#saveConfigModal').on('shown.bs.modal', function (e) {
                     $("#saveConfigModal").modal('hide');
