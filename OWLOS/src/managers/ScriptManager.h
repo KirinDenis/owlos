@@ -1,3 +1,4 @@
+String scriptsGetAll();
 bool scriptsSave();
 bool scriptsRun();
 bool scriptsCreate(String name, String byteCode);

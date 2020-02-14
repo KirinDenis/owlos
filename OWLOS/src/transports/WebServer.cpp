@@ -893,6 +893,12 @@ void handleCreateScript()
 	handleNotFound();
 }
 
+void handleGetAllScripts() {
+	webServerAddCORSHeaders();
+	webServer.send(200, "text/plain", scriptsGetAll());
+}
+
+
 
 //----------------------------------------------------------------------------------------------
 bool webServerBegin()
@@ -952,6 +958,7 @@ bool webServerBegin()
 	webServer.on("/updateui", handleUpdateUI);
 	webServer.on("/updatefirmware", handleUpdateFirmware);
 	webServer.on("/createscript", HTTP_POST, handleCreateScript);
+	webServer.on("/getallscripts", handleGetAllScripts);
 	
 	webServer.begin();
 

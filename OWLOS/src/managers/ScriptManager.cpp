@@ -178,7 +178,7 @@ int scriptsGetByIndex(String name) {
 	return -1;
 }
 
-bool scriptsSave() {
+String scriptsGetAll() {
 	String result = "";
 	for (int i = 0; i < scriptSize; i++) {
 		if (scripts[i].name.length() != 0) { //zero string - script deleted
@@ -190,9 +190,12 @@ bool scriptsSave() {
 			result += "timequant=" + String(scripts[i].timeQuant) + "\r";
 		}
 	}
-	return filesWriteString("scripts", result);
+	return result;
 }
 
+bool scriptsSave() {
+	return filesWriteString("scripts", scriptsGetAll());
+}
 
 bool scriptsDelete(String name) {
 	int index = scriptsGetByIndex(name);

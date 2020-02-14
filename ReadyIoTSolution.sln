@@ -48,6 +48,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "data", "data", "{0586AFF7-C
 		OWLOS\data\popper.min.js = OWLOS\data\popper.min.js
 		OWLOS\data\radialwidget.js = OWLOS\data\radialwidget.js
 		OWLOS\data\restclientcore.js = OWLOS\data\restclientcore.js
+		OWLOS\data\scriptscore.js = OWLOS\data\scriptscore.js
 		OWLOS\data\settingsui.js = OWLOS\data\settingsui.js
 		OWLOS\data\smokewidget.js = OWLOS\data\smokewidget.js
 		OWLOS\data\speechcore.js = OWLOS\data\speechcore.js

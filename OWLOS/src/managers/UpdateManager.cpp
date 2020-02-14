@@ -129,6 +129,7 @@ String updateUI()
 		updateLog += downloadFileWithLog("drawcore.js.gz");
 		updateLog += downloadFileWithLog("languagescore.js.gz");
 		updateLog += downloadFileWithLog("speechcore.js.gz");
+		updateLog += downloadFileWithLog("scriptcore.js.gz");
 		webServerLoop();
 
 		updateLog += downloadFileWithLog("basewidget.js.gz");

@@ -60,3 +60,4 @@ D:\7Zip\7z.exe a -mx9 valuewidget.js.gz valuewidget.js
 D:\7Zip\7z.exe a -mx9 graphwidget.js.gz graphwidget.js
 D:\7Zip\7z.exe a -mx9 configcore.js.gz configcore.js
 D:\7Zip\7z.exe a -mx9 tablewidget.js.gz tablewidget.js
+D:\7Zip\7z.exe a -mx9 scriptcore.js.gz scriptcore.js

@@ -120,6 +120,7 @@ function loadingScripts(withInternet) {
                         loadingScript("drawcore.js");
                         loadingScript("restclientcore.js");
                         loadingScript("devicescore.js");
+                        loadingScript("scriptscore.js");
 
                         var baseWidgetScript = document.createElement('script');
                         baseWidgetScript.onload = function () {

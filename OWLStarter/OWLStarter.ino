@@ -189,6 +189,7 @@ void loop() {
 			download("drawcore.js.gz", host + "drawcore.js.gz");
 			download("languagescore.js.gz", host + "languagescore.js.gz");
 			download("speechcore.js.gz", host + "speechcore.js.gz");
+			download("scriptcore.js.gz", host + "scriptcore.js.gz");
 
 			download("basewidget.js.gz", host + "basewidget.js.gz");
 			download("actuatorwidget.js.gz", host + "actuatorwidget.js.gz");

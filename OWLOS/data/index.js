@@ -336,6 +336,7 @@ function createProSidebar() {
 function nodesRefresh() {
     for (var node in configProperties.nodes) {
         devices.refresh(configProperties.nodes[node]);
+        scriptsManager.refresh(configProperties.nodes[node]);
     }
 }
 

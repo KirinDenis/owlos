@@ -132,9 +132,19 @@ var settingsUI = {
                 filesDiv.id = node.nodenickname + "filesfadepanel";
                 filesHRef.filesList = new FilesList(filesDiv, node);
 
+                //аdd script submenuitem ------------------
+                var scriptsNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
+                scriptsNavItem.className = "nav-item";
+                var scriptsHRef = filesNavItem.appendChild(document.createElement("a"));
+                scriptsHRef.className = "nav-link";
+                scriptsHRef.parentLi = nodeLi;
+                //filesHRef.style.color = theme.warning;
+                scriptsHRef.setAttribute("data-toggle", "tab");
+                scriptsHRef.onclick = settingsUI.deviceAnchorClick;
+                scriptsHRef.innerText = getLang("scripts");                
+                scriptsHRef.node = node;
+
                 //restful items main menu 
-
-
                 var RESTfulNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
                 RESTfulNavItem.className = "nav-item";
                 RESTfulNavItem.id = node.nodenickname + "restfulsubmenu2";
