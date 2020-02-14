@@ -1,6 +1,11 @@
-﻿function createScript(_nodehost) {
+﻿var stopScriptStatus = 0;  //скрипт остановлен не выполняется
+var runScriptStatus = 1;   //скрипт выполняется
+var compilerScriptErrorStatus = 2; //ошибка компиляции скрипта
+var runtimeScriptErrorStatus = 3; //ошибка выполнения скрипта (возможно был фатальный сбой, не возобновляейте выполнение такого скрипта, без проверки). 
+
+function createScript(_node) {
     return {
-        nodehost: _nodehost,
+        node: _node,
         name: "",
         status: "",
         bytecode: "",
@@ -65,23 +70,27 @@ var scriptsManager = {
         }
     },
 
-    getScript: function (nodehost, name) {
+    getScript: function (node, name) {
         for (var scriptKey in scriptsManager.scripts) {
-            if ((scriptsManager.scripts[scriptKey].nodehost === nodehost) && (scriptsManager.scripts[scriptKey].name === name)) {
+            if ((scriptsManager.scripts[scriptKey].node === node) && (scriptsManager.scripts[scriptKey].name === name)) {
                 return scriptsManager.scripts[scriptKey];
             }
         }
         return undefined;
     },
 
-    createOrReplace: function (script) {
-        httpPostAsyncWithErrorReson(script.nodehost + "createscript", "?name=" + escape(script.name), escape(script.bytecode));
+    createOrReplace: function (script, asyncReciever, sender) {
+        httpPostAsyncWithErrorReson(script.node.host + "createscript", "?name=" + escape(script.name), escape(script.bytecode), asyncReciever, sender);
+    },
+
+    delete: function (script, asyncReciever, sender) {
+        deleteScript(script.node.host, escape(script.name));
     },
 
     pushScript: function (script) {
-        var existScript = scriptsManager.getScript(script.nodehost, script.name);
-        if (existScript != undefined) { 
-            existScript = script;
+        var existScript = scriptsManager.getScript(script.node, script.name);
+        if (existScript != undefined) {            
+            existScript = script;            
             this.doOnChange(script);
         }
         else {
@@ -106,7 +115,7 @@ var scriptsManager = {
                         scriptsManager.pushScript(script);
                     }
 
-                    script = createScript(node.host);
+                    script = createScript(node);
                     script.name = recievedScripts[i].split(":")[1];
                 }
                 else {

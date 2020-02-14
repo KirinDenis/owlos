@@ -68,6 +68,8 @@ $(document).ready(function () {
         addToLogNL(getLang("prepareUnit"));
 
         devices.addDeviceLoadedListner(settingsUI.onDeviceLoaded, settingsUI);
+        scriptsManager.onNew = settingsUI.onScriptNew;
+        scriptsManager.onChange = settingsUI.onScriptChange;
         nodesRefresh();
 
         var boot = document.getElementById("boot");
@@ -78,10 +80,12 @@ $(document).ready(function () {
 
         $(".page-wrapper").toggleClass("toggled");
 
+        /*
         $("#createScript").click(function (event) {
             var textArea = document.getElementById("scriptText");
             httpPostAsyncWithErrorReson(boardhost + "createscript", "?name=main1", escape(textArea.value));
         });
+        */
 
         speak("OWL OS is ready");
     }
@@ -213,7 +217,7 @@ function createProSidebar() {
     sideBarSettingsAhref.setAttribute("data-toggle", "tab");
     sideBarSettingsAhref.onclick = function (event) { $(this).removeClass('active'); };
 
-    sideBarSettingsAhref.appendChild(document.createElement("i")).className = "fa fa-cog";
+    sideBarSettingsAhref.appendChild(document.createElement("i")).className = "fa fa-cogs";
     var sideBarSettingsAhrefSpan = sideBarSettingsAhref.appendChild(document.createElement("span"));
     sideBarSettingsAhrefSpan.className = "menu-text";
     sideBarSettingsAhrefSpan.id = "settings-tab";

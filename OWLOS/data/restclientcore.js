@@ -35,6 +35,11 @@ function deleteFile(host, name) {
     return httpGet(host + "deletefile?name=" + name);
 }
 
+function deleteScript(host, name) {
+    return httpGet(host + "deletescript?name=" + name);
+}
+
+
 function reset(host) {
     return httpGetAsync(host + "reset");
 }

@@ -157,7 +157,7 @@
     "updatehost=URL сервера оновлень\n" +
     "updatenodeprop=панель оновлень прошивки\n" +
     "nodeproperties=властивості вузла\n" +
-    "RESTfull=пристрої (RESTful API)\n" +  
+    "RESTful=пристрої\n" +  
     "adddevicedigalog=додати новий пристрій до вузлу\n" +
     "devicetype=тип пристрою\n" +
     "deviceid=ID пристрою\n" +
@@ -172,6 +172,8 @@
     "setpropbutton=Застосувати\n" +
     "saveaddedwidget=Збереження\n" +
     "closebutton=Закрити\n" +
+    "createscript=+ додати скріпт\n" +
+    "scripts=скріпти\n" +
     "language=ukraine\n";
 
 var langen = "prepareUnit=prepare UI, please wait...\n" +

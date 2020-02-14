@@ -17,11 +17,12 @@ var settingsUI = {
             nodeNavItem.id = "addNodeNavItem";
             var nodeHRef = nodeNavItem.appendChild(document.createElement("a"));
             nodeHRef.className = "nav-link";
+            nodeHRef.style.color = theme.warning;
             nodeHRef.parentLi = nodeLi;
             //nodeHRef.style.color = theme.success;
             nodeHRef.setAttribute("data-toggle", "tab");
             nodeHRef.onclick = settingsUI.addNodeClick;
-            nodeHRef.innerHTML = "<b>" + getLang("addnode") + "</b>";
+            nodeHRef.innerHTML = getLang("addnode");
             nodeHRef.href = "#home";
 
             //панель не видна, она существует для организии SideBar, сами панели со свойствами устройств сделаны на основе navBar - так сложилось исторически, SideBar только переключает их
@@ -58,19 +59,96 @@ var settingsUI = {
                 nodeSubmenuUl.className = "collapse list-unstyled";
                 nodeSubmenuUl.id = node.nodenickname + "submenu";
 
-                //Add device submenuitem ----------------
 
-                var deviceNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
+
+                //аdd script submenuitem ------------------
+                var scriptsNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
+                scriptsNavItem.className = "nav-item";
+                var scriptsAhref = scriptsNavItem.appendChild(document.createElement("a"));
+                scriptsAhref.className = "nav-link";
+                scriptsAhref.parentLi = nodeLi;
+                //filesHRef.style.color = theme.warning;
+                scriptsAhref.setAttribute("data-toggle", "collapse");
+                scriptsAhref.onclick = settingsUI.deviceAnchorClick;                
+                scriptsAhref.href = "#" + node.nodenickname + "scriptssubmenu";
+                scriptsAhref.node = node;
+
+                scriptsAhref.appendChild(document.createElement("i")).className = "fa fa-bolt";
+
+                var scriptsAhrefSpan = scriptsAhref.appendChild(document.createElement("span"));
+                scriptsAhrefSpan.className = "menu-text";
+                scriptsAhrefSpan.innerHTML = "<b>" + getLang("scripts") + "</b>";                
+
+                scriptsAhrefSpan = scriptsAhref.appendChild(document.createElement("span"));
+                scriptsAhrefSpan.className = "badge badge-pill badge-warning";
+                scriptsAhrefSpan.id = node.nodenickname + "scriptsAhrefDeviceCountSpan";
+                scriptsAhrefSpan.innerHTML = "0";
+                scriptsAhrefSpan.devicesCount = 0;
+
+               
+                var scriptsSubmenuUl = scriptsNavItem.appendChild(document.createElement("ul"));
+                scriptsSubmenuUl.className = "collapse list-unstyled";
+                scriptsSubmenuUl.id = node.nodenickname + "scriptssubmenu";
+
+                //+add script submenu item 
+                var scriptsAddLi = scriptsSubmenuUl.appendChild(document.createElement("li"));
+                scriptsAddLi.className = "nav-item";
+
+                var scriptsAddAhref = scriptsAddLi.appendChild(document.createElement("a"));
+                scriptsAddAhref.id = node.nodenickname + "scriptaddahref";
+                scriptsAddAhref.className = "nav-link";
+                scriptsAddAhref.style.color = theme.warning;
+                scriptsAddAhref.setAttribute("data-toggle", "tab");
+                scriptsAddAhref.href = "#";
+                scriptsAddAhref.node = node; //привязываем пункт меню к ноде 
+                scriptsAddAhref.innerHTML = getLang("createscript");
+                scriptsAddAhref.onclick = settingsUI.createScriptClick;
+                scriptsAddAhref.parentLi = scriptsAddLi; //сохраняем родительский deviceId
+
+
+                
+                //restful items main menu ----------------------
+                var RESTfulNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
+                RESTfulNavItem.className = "nav-item";
+                RESTfulNavItem.id = node.nodenickname + "restfulsubmenu2";
+
+                var RESTfulAhref = RESTfulNavItem.appendChild(document.createElement("a"));
+                RESTfulAhref.setAttribute("data-toggle", "collapse");
+                RESTfulAhref.parentLi = RESTfulNavItem;
+                RESTfulAhref.href = "#" + node.nodenickname + "restfulsubmenu";
+                RESTfulAhref.node = node;
+
+                RESTfulAhref.appendChild(document.createElement("i")).className = "fa fa-cog";
+                var RESTfulAhrefSpan = RESTfulAhref.appendChild(document.createElement("span"));
+                RESTfulAhrefSpan.className = "menu-text";
+                RESTfulAhrefSpan.innerHTML = "<b>" + getLang("RESTful") + "</b>";
+
+                RESTfulAhrefSpan = RESTfulAhref.appendChild(document.createElement("span"));
+                RESTfulAhrefSpan.className = "badge badge-pill badge-warning";
+                RESTfulAhrefSpan.id = node.nodenickname + "RESTfulAhrefDeviceCountSpan";
+                RESTfulAhrefSpan.innerHTML = "0";
+                RESTfulAhrefSpan.devicesCount = 0;
+
+
+                var RESTfulSubmenuUl = RESTfulNavItem.appendChild(document.createElement("ul"));
+                RESTfulSubmenuUl.className = "collapse list-unstyled";
+                RESTfulSubmenuUl.id = node.nodenickname + "restfulsubmenu";
+
+                //Add device submenuitem ----------------
+                var deviceNavItem = RESTfulSubmenuUl.appendChild(document.createElement("li"));
                 deviceNavItem.className = "nav-item";
                 var deviceHRef = deviceNavItem.appendChild(document.createElement("a"));
                 deviceHRef.className = "nav-link";
+                deviceHRef.style.color = theme.warning;
                 deviceHRef.parentLi = nodeLi;
                 //deviceHRef.style.color = theme.success;
                 deviceHRef.setAttribute("data-toggle", "tab");
                 deviceHRef.onclick = devicesUI.addDeviceClick;
-                deviceHRef.innerHTML = "<b>" + getLang("adddevice") + "</b>";
+                deviceHRef.innerHTML = getLang("adddevice");
                 deviceHRef.href = "#home";
                 deviceHRef.node = node;
+
+
 
                 //Node Tab panel ----------------------
                 var nodePanelNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
@@ -132,47 +210,6 @@ var settingsUI = {
                 filesDiv.id = node.nodenickname + "filesfadepanel";
                 filesHRef.filesList = new FilesList(filesDiv, node);
 
-                //аdd script submenuitem ------------------
-                var scriptsNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
-                scriptsNavItem.className = "nav-item";
-                var scriptsHRef = filesNavItem.appendChild(document.createElement("a"));
-                scriptsHRef.className = "nav-link";
-                scriptsHRef.parentLi = nodeLi;
-                //filesHRef.style.color = theme.warning;
-                scriptsHRef.setAttribute("data-toggle", "tab");
-                scriptsHRef.onclick = settingsUI.deviceAnchorClick;
-                scriptsHRef.innerText = getLang("scripts");                
-                scriptsHRef.node = node;
-
-                //restful items main menu 
-                var RESTfulNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
-                RESTfulNavItem.className = "nav-item";
-                RESTfulNavItem.id = node.nodenickname + "restfulsubmenu2";
-
-                var RESTfulAhref = RESTfulNavItem.appendChild(document.createElement("a"));
-                RESTfulAhref.setAttribute("data-toggle", "collapse");
-                RESTfulAhref.parentLi = RESTfulNavItem;
-                //RESTfulAhref.style.color = theme.warning;
-                //RESTfulHRef.setAttribute("data-toggle", "tab");
-                //RESTfulHRef.innerHTML = getLang("RESTful");
-                RESTfulAhref.href = "#" + node.nodenickname + "restfulsubmenu";
-                RESTfulAhref.node = node;
-
-                RESTfulAhref.appendChild(document.createElement("i")).className = "fa fa-bolt";
-                var RESTfulAhrefSpan = RESTfulAhref.appendChild(document.createElement("span"));
-                RESTfulAhrefSpan.className = "menu-text";
-                RESTfulAhrefSpan.innerHTML = getLang("RESTful");
-
-                RESTfulAhrefSpan = RESTfulAhref.appendChild(document.createElement("span"));
-                RESTfulAhrefSpan.className = "badge badge-pill badge-warning";
-                RESTfulAhrefSpan.id = node.nodenickname + "RESTfulAhrefDeviceCountSpan";
-                RESTfulAhrefSpan.innerHTML = "0";
-                RESTfulAhrefSpan.devicesCount = 0;
-
-
-                var RESTfulSubmenuUl = RESTfulNavItem.appendChild(document.createElement("ul"));
-                RESTfulSubmenuUl.className = "collapse list-unstyled";
-                RESTfulSubmenuUl.id = node.nodenickname + "restfulsubmenu";
 
 
                 // add Node Status Panel ---------------------------------------------
@@ -200,6 +237,218 @@ var settingsUI = {
                 nodeStatusPanel.style.display = "none";
                 nodeStatusPanelText.style.display = "none";
             }
+        }
+    },
+
+    onScriptNew: function (script) {
+        var scriptsSubmenuUl = document.getElementById(script.node.nodenickname + "scriptssubmenu"); 
+        if (scriptsSubmenuUl == undefined) return; 
+
+        var scriptsLi = scriptsSubmenuUl.appendChild(document.createElement("li")); 
+        scriptsLi.className = "nav-item";
+
+        var scriptsAhref = scriptsLi.appendChild(document.createElement("a")); 
+        scriptsAhref.id = script.node.nodenickname + "_" + script.name + "scriptahref";
+        scriptsAhref.className = "nav-link";
+        scriptsAhref.setAttribute("data-toggle", "tab");
+        scriptsAhref.href = "#" + script.node.nodenickname + "_" + script.name + "panel"; //якорь на панель 
+        scriptsAhref.node = script.node; //привязываем пункт меню к ноде 
+        scriptsAhref.innerText = script.name; 
+        scriptsAhref.onclick = settingsUI.deviceAnchorClick; //обработчик клика на пунк меню (переключение панелей)
+        scriptsAhref.parentLi = scriptsLi; //сохраняем родительский deviceId
+
+        switch (parseInt(script.status)) {
+            case stopScriptStatus: scriptsAhref.style.color = ""; break;
+            case runScriptStatus: scriptsAhref.style.color = theme.success; break;
+            case compilerScriptErrorStatus: scriptsAhref.style.color = theme.warning; break;
+            default:
+                scriptsAhref.style.color = theme.danger; break;
+        }
+
+
+        //Script panel 
+        var nodesPropsPanel = document.getElementById("nodesPropsPanel");
+        var div = nodesPropsPanel.appendChild(document.createElement('div'));
+        div.id = script.node.nodenickname + "_" + script.name + "panel";
+        div.className = "devicediv tab-pane fade md-form"; 
+
+        var pre = div.appendChild(document.createElement('pre'));
+        var textArea = pre.appendChild(document.createElement('textarea'));
+        textArea.id = script.node.nodenickname + "_" + script.name + "textarea";
+        textArea.className = "md-textarea form-control";
+        textArea.cols = 80;
+        textArea.rows = 20;
+        textArea.value = script.bytecode;
+
+
+        var scriptExecuteButton = pre.appendChild(document.createElement('button'));
+        scriptExecuteButton.type = "button";
+        scriptExecuteButton.id = script.node.nodenickname + "_" + script.name + "executionButton";
+        scriptExecuteButton.className = "btn btn-sm btn-success";
+        scriptExecuteButton.script = script;
+        scriptExecuteButton.textArea = textArea;
+        scriptExecuteButton.labels = label;
+        scriptExecuteButton.onclick = settingsUI.scriptExecuteClick;
+        scriptExecuteButton.innerText = getLang("scriptexecute");
+
+        var deleteExecuteButton = pre.appendChild(document.createElement('button'));
+        deleteExecuteButton.type = "button";
+        deleteExecuteButton.id = script.node.nodenickname + "_" + script.name + "deleteButton";
+        deleteExecuteButton.className = "btn btn-sm btn-warning";
+        deleteExecuteButton.script = script;
+        deleteExecuteButton.textArea = textArea;
+        deleteExecuteButton.labels = label;
+        deleteExecuteButton.onclick = settingsUI.scriptDeleteClick;
+        deleteExecuteButton.innerText = getLang("scriptdelete");
+
+        var label = pre.appendChild(document.createElement('label'));
+        label.id = script.node.nodenickname + "_" + script.name + "label";
+        label.for = script.node.nodenickname + "_" + script.name + "textarea";
+        label.innerHTML = "script: " + script.name;        
+    },
+
+    scriptExecuteClick: function(event) {
+        var scriptExecuteButton = event.currentTarget;
+        scriptExecuteButton.className = "btn btn-sm btn-default";
+        var textArea = scriptExecuteButton.textArea;
+        var script = scriptExecuteButton.script;
+        script.bytecode = textArea.value;
+
+        scriptsManager.createOrReplace(script, settingsUI.executeScriptAsynReciever, scriptExecuteButton);
+        return false; 
+    },
+
+    scriptDeleteClick: function (event) {
+        var scriptDeleteButton = event.currentTarget;
+        scriptDeleteButton.className = "btn btn-sm btn-default";        
+        var script = scriptDeleteButton.script;
+       
+        scriptsManager.delete(script); //, settingsUI.executeScriptAsynReciever, scriptExecuteButton);
+        return false;
+    },
+
+
+    executeScriptAsynReciever: function (HTTPResult, sender) {
+        var scriptExecuteButton = sender;
+        var label = scriptExecuteButton.label;
+        var node = scriptExecuteButton.node;
+
+        if (!HTTPResult.indexOf("%error") == 0) {
+            scriptExecuteButton.className = "btn btn-sm btn-success";
+            node.networkStatus = NET_ONLINE;            
+            scriptsManager.refresh(node);
+        }
+        else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
+            if (HTTPResult.indexOf("reponse") != -1) {
+                node.networkStatus = NET_ERROR;
+            }
+            else {
+                node.networkStatus = NET_OFFLINE;
+            }
+            scriptExecuteButton.className = "btn btn-sm btn-danger";
+            label.style.color = theme.danger;
+            label.innerText = HTTPResult;
+        }
+    },
+
+
+    onScriptChange: function (script) {
+        var scriptsAhref = document.getElementById(script.node.nodenickname + "_" + script.name + "scriptahref"); 
+        if (scriptsAhref == undefined) return; 
+        scriptsAhref.innerText = script.name; 
+
+        switch (parseInt(script.status)) {
+            case stopScriptStatus: scriptsAhref.style.color = ""; break;
+            case runScriptStatus: scriptsAhref.style.color = theme.success; break;
+            case compilerScriptErrorStatus: scriptsAhref.style.color = theme.warning; break;
+            default:
+                scriptsAhref.style.color = theme.danger; break;
+        }
+
+
+        var textArea = document.getElementById(script.node.nodenickname + "_" + script.name + "textarea");
+        var label = document.getElementById(script.node.nodenickname + "_" + script.name + "label");
+        if (textArea.value !== script.bytecode) {
+            if (textArea === document.activeElement) {
+                label.style.color = theme.danger;
+                label.innerHTML = "script: " + script.name + " Warning: changed outside or not save";
+            }
+            else {
+                label.innerHTML = "script: " + script.name;
+                label.style.color = "";
+                textArea.value = script.bytecode;
+            }
+        }
+
+    },
+
+    createScriptClick: function (event) {
+        var scriptsAddAhref = event.currentTarget;
+        event.stopPropagation();
+
+        makeModalDialog("resetPanel", "addscript", getLang("addscriptheader"), "");
+        var modalFooter = document.getElementById("addscriptModalFooter");
+        var modalBody = document.getElementById("addscriptModalBody");
+
+        formGroup = modalBody.appendChild(document.createElement("div"));
+        formGroup.className = "form-group";
+        label = formGroup.appendChild(document.createElement("label"));
+        label.setAttribute("for", "hostEdit");
+        label.innerText = getLang("addscriptname");
+        var addScriptEdit = formGroup.appendChild(document.createElement('input'));
+        addScriptEdit.className = "form-control form-control-sm";
+        addScriptEdit.placeholder = "";
+        addScriptEdit.id = "addscriptInput";
+
+        var addScriptButton = modalFooter.appendChild(document.createElement("button"));
+        addScriptButton.type = "button";
+        addScriptButton.id = "addscriptModalButton";
+        addScriptButton.className = "btn btn-sm btn-success";        
+        addScriptButton.node = scriptsAddAhref.node; 
+        addScriptButton.onclick = settingsUI.createScriptUIClick;
+        addScriptButton.innerText = getLang("addscriptbutton");
+
+        var addScriptError = formGroup.appendChild(document.createElement("label"));
+        addScriptError.className = "text-danger";
+
+        addScriptButton.addScriptEdit = addScriptEdit;        
+        addScriptButton.addScriptError = addScriptError;
+
+        $("#addscriptModal").modal('show');
+
+        return false;
+    },
+
+    createScriptUIClick: function (event) {
+        var addScriptButton = event.currentTarget;
+        var addScriptEdit = addScriptButton.addScriptEdit;
+        var node = addScriptButton.node;
+        if (addScriptButton.script == undefined) {
+            addScriptButton.script = createScript(node);
+        }
+        addScriptButton.script.name = addScriptEdit.value;
+        scriptsManager.createOrReplace(addScriptButton.script, settingsUI.createScriptAsynReciever, addScriptButton);
+        return false; 
+    },
+
+    createScriptAsynReciever: function (HTTPResult, sender) {
+        var addScriptButton = sender;
+        var addScriptError = addScriptButton.addScriptError;
+        var node = addScriptButton.node;
+
+        if (!HTTPResult.indexOf("%error") == 0) {
+            node.networkStatus = NET_ONLINE;
+            $("#addscriptModal").modal('hide');    
+            scriptsManager.refresh(node);            
+        }
+        else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
+            if (HTTPResult.indexOf("reponse") != -1) {
+                node.networkStatus = NET_ERROR;
+            }
+            else {
+                node.networkStatus = NET_OFFLINE;
+            }
+            addScriptError.innerText = HTTPResult;
         }
     },
 
@@ -234,9 +483,8 @@ var settingsUI = {
             deviceAhref.onclick = settingsUI.deviceAnchorClick; //обработчик клика на пунк меню (переключение панелей)
             deviceAhref.parentLi = deviceLi; //сохраняем родительский deviceId
 
-
-
             var nodePropAnchors = document.getElementById("nodePropNavBar"); //старая навигационная панель для отображения панелей свойств
+            var nodesPropsPanel = document.getElementById("nodesPropsPanel");
             var wifiPropPanel = document.getElementById(node.nodenickname + "WifiNodePropBody"); //панель для cвойств            
             var systemPropPanel = document.getElementById(node.nodenickname + "SystemNodePropBody");
             var updatePropPanel = document.getElementById(node.nodenickname + "UpdateNodePropBody");

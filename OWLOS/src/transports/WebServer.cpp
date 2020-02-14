@@ -898,6 +898,19 @@ void handleGetAllScripts() {
 	webServer.send(200, "text/plain", scriptsGetAll());
 }
 
+void handleDeleteScript()
+{
+	webServerAddCORSHeaders();
+	if (webServer.args() > 0)
+	{
+		if (webServer.argName(0).equals("name"))
+		{
+			webServer.send(200, "text/plain", String(scriptsDelete(webServer.arg(0))));
+			return;
+		}
+	}
+	handleNotFound();
+}
 
 
 //----------------------------------------------------------------------------------------------
@@ -959,6 +972,7 @@ bool webServerBegin()
 	webServer.on("/updatefirmware", handleUpdateFirmware);
 	webServer.on("/createscript", HTTP_POST, handleCreateScript);
 	webServer.on("/getallscripts", handleGetAllScripts);
+	webServer.on("/deletescript", handleDeleteScript);
 	
 	webServer.begin();
 

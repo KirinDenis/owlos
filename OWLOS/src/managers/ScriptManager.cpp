@@ -151,7 +151,9 @@ Script scripts[scriptSize];
 //Script managment's functions -------------------------------
 
 void scriptsReset(int index) {
+	Serial.println("Delete   " + String(index));
 	if ((index < 0) || (index > scriptSize - 1)) return;
+	Serial.println("Delete 3  " + String(index));
 	filesWriteInt(scripts[index].name + ".rf", -1); //escapre RF flag 
 	scripts[index].name = "";
 	scripts[index].byteCode = "";
@@ -161,8 +163,8 @@ void scriptsReset(int index) {
 	scripts[index].dataCount = 0;
 	scripts[index].timeQuant = 2;
 	scripts[index].quantCounter = 0;
-	free(scripts[0].code);
-	free(scripts[0].data);
+//	free(scripts[0].code);
+//	free(scripts[0].data);
 	return;
 }
 
@@ -198,10 +200,13 @@ bool scriptsSave() {
 }
 
 bool scriptsDelete(String name) {
+	Serial.println("Delete");
 	int index = scriptsGetByIndex(name);
 	if (index != -1)
 	{
-		scriptsReset[index];
+		Serial.println("Delete 2");
+		scriptsReset(index);
+		scriptsSave();
 		return true;
 	}
 	return false;
@@ -678,7 +683,7 @@ bool scriptsCreate(String name, String byteCode) {
 		index = scriptCount;
 	}
 	//Serial.println("script index" + String(index));
-	scriptsReset[index];
+	scriptsReset(index);
 	scripts[index].name = name;
 	filesWriteInt(scripts[index].name + ".rf", -1); //escapre RF flag 
 	scripts[index].byteCode = byteCode;
@@ -691,6 +696,7 @@ bool scriptsCreate(String name, String byteCode) {
 	{
 		scripts[index].status = compilerErrorStatus;
 	}
+	scriptsSave();
 	return true;
 }
 
@@ -714,7 +720,7 @@ bool scriptsLoad() {
 		{
 			String scriptName = line.substring(line.indexOf(scriptDelimiter) + 1);
 			scriptCount++;
-			scriptsReset[scriptCount];
+			scriptsReset(scriptCount);
 			scripts[scriptCount].name = scriptName;
 			//Serial.println("name:" + scriptName);
 		}
@@ -747,7 +753,7 @@ void testCompile()
 {
 	
 	//Serial.println(ESP.getFreeHeap());
-	scriptsCreate("script1", "var a=10\nvar b=10\nvar c=10000\nsum a,b,b\nsum a,b,b\nsum a,b,b\nwrite b\nifupper b,c,99\ngoto 0\n");
+	//scriptsCreate("script1", "var a=10\nvar b=10\nvar c=10000\nsum a,b,b\nsum a,b,b\nsum a,b,b\nwrite b\nifupper b,c,99\ngoto 0\n");
 	//Serial.println(ESP.getFreeHeap());
 	//scriptsCreate("script2", "var a=10\nvar b=10\nvar w=10\nvar c=10000\nsum a,b,b\nwrite b\ngetprop wifi,wifirssi,w\nwrite w\ngoto 0\n");
 	//Serial.println(ESP.getFreeHeap());
@@ -756,7 +762,7 @@ void testCompile()
 	//scriptsCreate("script4", "var t=0\nvar h=0\nvar a=0\nvar v=1\nvar hlimit=40\ngetprop dht,temperature,t\ngetprop dht,humidity,h\nwrite t\nwrite h\nifupper hlimit,h,0\nsetprop rele,data,v\ngoto 0\n");
 	//Serial.println(ESP.getFreeHeap());
 
-	scriptsSave();
+	//scriptsSave();
 	
 
 	//Serial.println(ESP.getFreeHeap());
