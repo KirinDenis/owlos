@@ -180,7 +180,34 @@ int scriptsGetByIndex(String name) {
 	return -1;
 }
 
+
 String scriptsGetAll() {
+	String result = "";
+	String valueName = "";
+	String value = "";
+	for (int i = 0; i < scriptSize; i++) {
+		if (scripts[i].name.length() != 0) { //zero string - script deleted
+			result += "script:" + scripts[i].name + "\r";
+			result += "status=" + String(scripts[i].status) + "\r";
+			result += "bytecode=" + String(scripts[i].byteCode) + "\r";
+			result += "codecount=" + String(scripts[i].codeCount) + "\r";
+			result += "datacount=" + String(scripts[i].dataCount) + "\r";
+			result += "timequant=" + String(scripts[i].timeQuant) + "\r";
+			result += "ip=" + String(scripts[i].ip) + "\r";
+			result += "variables=\n";
+			for (int j = 0; j < scripts[i].dataCount; j++) {
+				valueName = scripts[i].data[j].name;
+				value = scripts[i].data[j].value;
+				result += valueName + "=" + value + "\n";
+			}
+			result += "\r";
+
+		}
+	}
+	return result;
+}
+
+String scriptsGetAllClean() {
 	String result = "";
 	for (int i = 0; i < scriptSize; i++) {
 		if (scripts[i].name.length() != 0) { //zero string - script deleted
@@ -196,7 +223,7 @@ String scriptsGetAll() {
 }
 
 bool scriptsSave() {
-	return filesWriteString("scripts", scriptsGetAll());
+	return filesWriteString("scripts", scriptsGetAllClean());
 }
 
 bool scriptsDelete(String name) {
@@ -292,7 +319,7 @@ int pushData(int index, String name, String value) {
 int getDataAddr(int index, String name) {
 	String _name;
 	for (int i = 0; i < scripts[index].dataCount; i++) {
-		_name = *scripts[index].data[i].name;
+		_name = scripts[index].data[i].name;
 		if (_name == name) {
 			return i;
 		}

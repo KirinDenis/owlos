@@ -11,7 +11,10 @@ function createScript(_node) {
         bytecode: "",
         codecount: 0,
         datacount: 0,
-        timequant: 0
+        timequant: 0,
+        ip: 0,
+        variables: "",
+        deleted: false
     };
 }
 
@@ -38,6 +41,17 @@ var scriptsManager = {
 
     set onChange(onchange) {
         scriptsManager._onchange.push(onchange);
+    },
+
+    _ondelete: [],
+    doOnDelete: function (script) {
+        for (var key in scriptsManager._ondelete) {
+            scriptsManager._ondelete[key](script);
+        }
+    },
+
+    set onDelete(ondelete) {
+        scriptsManager._ondelete.push(ondelete);
     },
 
 
@@ -70,6 +84,14 @@ var scriptsManager = {
         }
     },
 
+    createOrReplace: function (script, asyncReciever, sender) {
+        httpPostAsyncWithErrorReson(script.node.host + "createscript", "?name=" + escape(script.name), escape(script.bytecode), asyncReciever, sender);
+    },
+
+    delete: function (script, asyncReciever, sender) {
+        deleteScriptAsync(script.node.host, escape(script.name), asyncReciever, sender);
+    },
+
     getScript: function (node, name) {
         for (var scriptKey in scriptsManager.scripts) {
             if ((scriptsManager.scripts[scriptKey].node === node) && (scriptsManager.scripts[scriptKey].name === name)) {
@@ -79,28 +101,30 @@ var scriptsManager = {
         return undefined;
     },
 
-    createOrReplace: function (script, asyncReciever, sender) {
-        httpPostAsyncWithErrorReson(script.node.host + "createscript", "?name=" + escape(script.name), escape(script.bytecode), asyncReciever, sender);
-    },
-
-    delete: function (script, asyncReciever, sender) {
-        deleteScript(script.node.host, escape(script.name));
-    },
-
     pushScript: function (script) {
-        var existScript = scriptsManager.getScript(script.node, script.name);
-        if (existScript != undefined) {            
-            existScript = script;            
-            this.doOnChange(script);
+        for (var scriptKey in scriptsManager.scripts) {
+            if ((scriptsManager.scripts[scriptKey].node === script.node) && (scriptsManager.scripts[scriptKey].name === script.name)) {
+                scriptsManager.scripts[scriptKey] = script;
+                scriptsManager.doOnChange(scriptsManager.scripts[scriptKey]);
+                return;
+            }
         }
-        else {
-            scriptsManager.scripts.push(script); //TODO onNew event 
-            this.doOnNew(script);            
-        }
+        
+         scriptsManager.scripts.push(script); //TODO onNew event 
+         this.doOnNew(script);            
+        
     },
 
     parseScripts: function (httpResult, node) {
+
+        for (var scriptKey in scriptsManager.scripts) {
+            if ((scriptsManager.scripts[scriptKey].node === node)) {
+                scriptsManager.scripts[scriptKey].deleted = true; //все удалены перед началом парсинга
+            }
+        }
+
         var recievedScripts = httpResult.split("\r");
+
 
         if (recievedScripts !== "") {//если первичный парсинг удался
 
@@ -135,6 +159,22 @@ var scriptsManager = {
                 scriptsManager.pushScript(script);
             }
         }
+
+        var deleted = false;
+        while (!deleted) {
+            deleted = true;
+            for (var scriptKey in scriptsManager.scripts) { //удаляем удаленные на стороне ноды 
+                if ((scriptsManager.scripts[scriptKey].node === node)) {
+                    if (scriptsManager.scripts[scriptKey].deleted === true) {
+                        this.doOnDelete(scriptsManager.scripts[scriptKey]);
+                        scriptsManager.scripts.splice(scriptKey, 1);
+                        deleted = false;
+                        break;
+                    }
+                }
+            }
+        }
+
 
     }
 

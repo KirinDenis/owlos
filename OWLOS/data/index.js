@@ -68,8 +68,6 @@ $(document).ready(function () {
         addToLogNL(getLang("prepareUnit"));
 
         devices.addDeviceLoadedListner(settingsUI.onDeviceLoaded, settingsUI);
-        scriptsManager.onNew = settingsUI.onScriptNew;
-        scriptsManager.onChange = settingsUI.onScriptChange;
         nodesRefresh();
 
         var boot = document.getElementById("boot");
@@ -79,6 +77,13 @@ $(document).ready(function () {
         nodesRefreshHandle = setInterval(nodesRefresh, 10000);
 
         $(".page-wrapper").toggleClass("toggled");
+
+        document.getElementById("toggle-sidebar").style.display = "block";
+        document.getElementById("pin-sidebar").style.display = "block";
+        document.getElementById("nodeStatusPanelText").style.display = "block";
+        document.getElementById("sidebarText").style.display = "block";
+
+        
 
         /*
         $("#createScript").click(function (event) {

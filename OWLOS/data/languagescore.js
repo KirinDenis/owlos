@@ -174,6 +174,9 @@
     "closebutton=Закрити\n" +
     "createscript=+ додати скріпт\n" +
     "scripts=скріпти\n" +
+    "scriptexecute=виконати\n" +
+    "scriptpause=пауза\n" +
+    "scriptdelete=вилучити\n" +    
     "language=ukraine\n";
 
 var langen = "prepareUnit=prepare UI, please wait...\n" +

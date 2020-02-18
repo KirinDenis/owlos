@@ -105,6 +105,9 @@ var settingsUI = {
                 scriptsAddAhref.onclick = settingsUI.createScriptClick;
                 scriptsAddAhref.parentLi = scriptsAddLi; //сохраняем родительский deviceId
 
+                scriptsManager.onNew = settingsUI.onScriptNew;
+                scriptsManager.onChange = settingsUI.onScriptChange;
+                scriptsManager.onDelete = settingsUI.onScriptDelete;
 
                 
                 //restful items main menu ----------------------
@@ -154,6 +157,7 @@ var settingsUI = {
                 var nodePanelNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
                 nodePanelNavItem.className = "nav-item";
                 var nodePanelHRef = nodePanelNavItem.appendChild(document.createElement("a"));
+                nodePanelHRef.id = node.nodenickname + "nodePropsHref";
                 nodePanelHRef.className = "nav-link";
                 nodePanelHRef.parentLi = nodeLi;
                 //nodePanelHRef.style.color = theme.warning;
@@ -245,8 +249,9 @@ var settingsUI = {
         if (scriptsSubmenuUl == undefined) return; 
 
         var scriptsLi = scriptsSubmenuUl.appendChild(document.createElement("li")); 
+        scriptsLi.id = script.node.nodenickname + "_" + script.name + "li";
         scriptsLi.className = "nav-item";
-
+        
         var scriptsAhref = scriptsLi.appendChild(document.createElement("a")); 
         scriptsAhref.id = script.node.nodenickname + "_" + script.name + "scriptahref";
         scriptsAhref.className = "nav-link";
@@ -256,6 +261,7 @@ var settingsUI = {
         scriptsAhref.innerText = script.name; 
         scriptsAhref.onclick = settingsUI.deviceAnchorClick; //обработчик клика на пунк меню (переключение панелей)
         scriptsAhref.parentLi = scriptsLi; //сохраняем родительский deviceId
+        scriptsLi.scriptsAhref = scriptsAhref;
 
         switch (parseInt(script.status)) {
             case stopScriptStatus: scriptsAhref.style.color = ""; break;
@@ -268,20 +274,34 @@ var settingsUI = {
 
         //Script panel 
         var nodesPropsPanel = document.getElementById("nodesPropsPanel");
-        var div = nodesPropsPanel.appendChild(document.createElement('div'));
-        div.id = script.node.nodenickname + "_" + script.name + "panel";
-        div.className = "devicediv tab-pane fade md-form"; 
+        var scriptTab = nodesPropsPanel.appendChild(document.createElement('div'));
+        scriptTab.id = script.node.nodenickname + "_" + script.name + "panel";
+        scriptTab.className = "tab-pane fade md-form"; 
+        scriptsLi.panel = scriptTab;
 
-        var pre = div.appendChild(document.createElement('pre'));
+        var scriptHolder = scriptTab.appendChild(document.createElement('div'));
+        scriptHolder.className = "row";
+
+        var byteCodeCardDiv = scriptHolder.appendChild(document.createElement('div'));
+        byteCodeCardDiv.className = "col-md-8";
+        var byteCodeCard = byteCodeCardDiv.appendChild(document.createElement('div'));
+        byteCodeCard.className = "card text-white bg-primary mb-3";
+        var byteCodeCardHeader = byteCodeCard.appendChild(document.createElement('div'));
+        byteCodeCardHeader.className = "card-header";
+        byteCodeCardHeader.innerText = script.name + " script bytecode";
+        var byteCodeCardBody = byteCodeCard.appendChild(document.createElement('div'));
+        byteCodeCardBody.className = "card-body";
+        var pre = byteCodeCardBody.appendChild(document.createElement('pre'));
         var textArea = pre.appendChild(document.createElement('textarea'));
         textArea.id = script.node.nodenickname + "_" + script.name + "textarea";
         textArea.className = "md-textarea form-control";
+        textArea.placeholder = getLang("inputcodehere");
         textArea.cols = 80;
         textArea.rows = 20;
         textArea.value = script.bytecode;
 
 
-        var scriptExecuteButton = pre.appendChild(document.createElement('button'));
+        var scriptExecuteButton = byteCodeCardDiv.appendChild(document.createElement('button'));
         scriptExecuteButton.type = "button";
         scriptExecuteButton.id = script.node.nodenickname + "_" + script.name + "executionButton";
         scriptExecuteButton.className = "btn btn-sm btn-success";
@@ -289,73 +309,68 @@ var settingsUI = {
         scriptExecuteButton.textArea = textArea;
         scriptExecuteButton.labels = label;
         scriptExecuteButton.onclick = settingsUI.scriptExecuteClick;
-        scriptExecuteButton.innerText = getLang("scriptexecute");
+        scriptExecuteButton.appendChild(document.createElement("i")).className = "fa fa-bolt";
+        var scriptExecuteButtonSpan = scriptExecuteButton.appendChild(document.createElement("span"));
+        scriptExecuteButtonSpan.innerHTML = " " + getLang("scriptexecute");
 
-        var deleteExecuteButton = pre.appendChild(document.createElement('button'));
-        deleteExecuteButton.type = "button";
-        deleteExecuteButton.id = script.node.nodenickname + "_" + script.name + "deleteButton";
-        deleteExecuteButton.className = "btn btn-sm btn-warning";
-        deleteExecuteButton.script = script;
-        deleteExecuteButton.textArea = textArea;
-        deleteExecuteButton.labels = label;
-        deleteExecuteButton.onclick = settingsUI.scriptDeleteClick;
-        deleteExecuteButton.innerText = getLang("scriptdelete");
+        var scriptPauseButton = byteCodeCardDiv.appendChild(document.createElement('button'));
+        scriptPauseButton.type = "button";
+        scriptPauseButton.id = script.node.nodenickname + "_" + script.name + "pauseButton";
+        scriptPauseButton.className = "btn btn-sm btn-warning";
+        scriptPauseButton.script = script;
+        scriptPauseButton.node = script.node; //когда ноду удалят и прийдет ActiveReciever - Script может уже не быть
+        scriptPauseButton.scriptExecuteButton = scriptExecuteButton;
+        scriptPauseButton.textArea = textArea;
+        scriptPauseButton.labels = label;
+        scriptPauseButton.onclick = settingsUI.scriptPauseClick;
+        scriptPauseButton.appendChild(document.createElement("i")).className = "fa fa-pause";
+        var scriptPauseButtonSpan = scriptPauseButton.appendChild(document.createElement("span"));
+        scriptPauseButtonSpan.innerHTML = " " + getLang("scriptpause");
 
-        var label = pre.appendChild(document.createElement('label'));
+        scriptExecuteButton.scriptPauseButton = scriptPauseButton;
+       
+        var scriptDeleteButton = byteCodeCardDiv.appendChild(document.createElement('button'));
+        scriptDeleteButton.type = "button";
+        scriptDeleteButton.id = script.node.nodenickname + "_" + script.name + "deleteButton";
+        scriptDeleteButton.className = "btn btn-sm btn-danger";
+        scriptDeleteButton.script = script;
+        scriptDeleteButton.node = script.node; //когда ноду удалят и прийдет ActiveReciever - Script может уже не быть
+        scriptDeleteButton.scriptExecuteButton = scriptExecuteButton;
+        scriptDeleteButton.scriptPauseButton = scriptPauseButton;
+        scriptDeleteButton.textArea = textArea;        
+        scriptDeleteButton.labels = label;        
+        scriptDeleteButton.onclick = settingsUI.scriptDeleteClick;        
+        scriptDeleteButton.appendChild(document.createElement("i")).className = "fa fa-trash";
+        var scriptDeleteButtonSpan = scriptDeleteButton.appendChild(document.createElement("span"));
+        scriptDeleteButtonSpan.innerHTML = " " + getLang("scriptdelete");
+
+
+        scriptExecuteButton.scriptDeleteButton = scriptDeleteButton;
+
+        var label = byteCodeCardDiv.appendChild(document.createElement('label'));
         label.id = script.node.nodenickname + "_" + script.name + "label";
         label.for = script.node.nodenickname + "_" + script.name + "textarea";
-        label.innerHTML = "script: " + script.name;        
+
+        var scriptStatusCardDiv = scriptHolder.appendChild(document.createElement('div'));
+        scriptStatusCardDiv.className = "col-md-4";
+        var scriptStatusCard = scriptStatusCardDiv.appendChild(document.createElement('div'));
+        scriptStatusCard.className = "card text-white bg-primary mb-3";
+        var scriptStatusCardHeader = scriptStatusCard.appendChild(document.createElement('div'));
+        scriptStatusCardHeader.className = "card-header";
+        scriptStatusCardHeader.innerText = script.name + " status";
+        var scriptStatusCardBody = scriptStatusCard.appendChild(document.createElement('div'));
+        scriptStatusCardBody.className = "card-body";
+        var scriptStatusPre = scriptStatusCardBody.appendChild(document.createElement('pre'));
+        var statusLabel = scriptStatusPre.appendChild(document.createElement('label'));
+        statusLabel.id = script.node.nodenickname + "_" + script.name + "statuslabel";
+        settingsUI.buildScriptStatus(script);
+                
     },
-
-    scriptExecuteClick: function(event) {
-        var scriptExecuteButton = event.currentTarget;
-        scriptExecuteButton.className = "btn btn-sm btn-default";
-        var textArea = scriptExecuteButton.textArea;
-        var script = scriptExecuteButton.script;
-        script.bytecode = textArea.value;
-
-        scriptsManager.createOrReplace(script, settingsUI.executeScriptAsynReciever, scriptExecuteButton);
-        return false; 
-    },
-
-    scriptDeleteClick: function (event) {
-        var scriptDeleteButton = event.currentTarget;
-        scriptDeleteButton.className = "btn btn-sm btn-default";        
-        var script = scriptDeleteButton.script;
-       
-        scriptsManager.delete(script); //, settingsUI.executeScriptAsynReciever, scriptExecuteButton);
-        return false;
-    },
-
-
-    executeScriptAsynReciever: function (HTTPResult, sender) {
-        var scriptExecuteButton = sender;
-        var label = scriptExecuteButton.label;
-        var node = scriptExecuteButton.node;
-
-        if (!HTTPResult.indexOf("%error") == 0) {
-            scriptExecuteButton.className = "btn btn-sm btn-success";
-            node.networkStatus = NET_ONLINE;            
-            scriptsManager.refresh(node);
-        }
-        else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
-            if (HTTPResult.indexOf("reponse") != -1) {
-                node.networkStatus = NET_ERROR;
-            }
-            else {
-                node.networkStatus = NET_OFFLINE;
-            }
-            scriptExecuteButton.className = "btn btn-sm btn-danger";
-            label.style.color = theme.danger;
-            label.innerText = HTTPResult;
-        }
-    },
-
 
     onScriptChange: function (script) {
-        var scriptsAhref = document.getElementById(script.node.nodenickname + "_" + script.name + "scriptahref"); 
-        if (scriptsAhref == undefined) return; 
-        scriptsAhref.innerText = script.name; 
+        var scriptsAhref = document.getElementById(script.node.nodenickname + "_" + script.name + "scriptahref");
+        if (scriptsAhref == undefined) return;
+        scriptsAhref.innerText = script.name;
 
         switch (parseInt(script.status)) {
             case stopScriptStatus: scriptsAhref.style.color = ""; break;
@@ -379,8 +394,174 @@ var settingsUI = {
                 textArea.value = script.bytecode;
             }
         }
-
+        settingsUI.buildScriptStatus(script);
     },
+
+    buildScriptStatus: function (script) {
+        var statusLabel = document.getElementById(script.node.nodenickname + "_" + script.name + "statuslabel");
+        statusLabel.innerHTML = "<b>Status: </b>" + script.status + "\n" +
+            "<b>codecount: </b>" + script.codecount + "\n" +
+            "<b>datacount: </b>" + script.datacount + "\n" +
+            "<b>timequant: </b>" + script.timequant + "\n" +
+            "<b>ip: </b>" + script.ip + "\n" +
+            "<b>variables: </b>" + script.variables;
+    },
+
+    onScriptDelete: function (script) {
+        var scriptsLi = document.getElementById(script.node.nodenickname + "_" + script.name + "li");        
+        scriptsLi.parentElement.removeChild(scriptsLi);
+        scriptsLi.innerHTML = "";
+
+        var scriptsPanel = document.getElementById(script.node.nodenickname + "_" + script.name + "panel");
+        scriptsPanel.parentElement.removeChild(scriptsPanel);
+        scriptsPanel.innerHTML = "";
+
+        var scriptsSubmenuUl = document.getElementById(script.node.nodenickname + "scriptssubmenu"); 
+        for (childKey in scriptsSubmenuUl.childNodes) {
+            var scriptsLi = scriptsSubmenuUl.childNodes[childKey];
+            if (scriptsLi.scriptsAhref != undefined) {        
+                var event = {
+                    currentTarget: scriptsLi.scriptsAhref
+                }                
+                settingsUI.deviceAnchorClick(event);
+                $(scriptsLi.scriptsAhref).toggleClass("active");
+                $(scriptsLi.panel).toggleClass("active show");
+                return;
+            }
+        }
+
+        var nodePanelHRef = document.getElementById(script.node.nodenickname + "nodePropsHref");
+        var nodePropsPanel = document.getElementById(script.node.nodenickname + "nodePropsPanel");
+        var event = {
+            currentTarget: nodePanelHRef
+        }
+        settingsUI.deviceAnchorClick(event);
+        $(nodePanelHRef).toggleClass("active");
+        $(nodePropsPanel).toggleClass("active show");
+    },
+
+    scriptExecuteClick: function (event) {
+        var scriptExecuteButton = event.currentTarget;
+        scriptExecuteButton.className = "btn btn-sm btn-secondary";
+        var textArea = scriptExecuteButton.textArea;
+        var script = scriptExecuteButton.script;
+        script.bytecode = textArea.value;
+
+        var scriptPauseButton = scriptExecuteButton.scriptPauseButton;
+        scriptPauseButton.className = "btn btn-sm btn-secondary";
+        var scriptDeleteButton = scriptExecuteButton.scriptDeleteButton;
+        scriptDeleteButton.className = "btn btn-sm btn-secondary";
+        var textArea = scriptExecuteButton.textArea;
+        textArea.style.backgroundColor = theme.secondary;
+        textArea.disabled = true;
+
+
+        scriptsManager.createOrReplace(script, settingsUI.executeScriptAsyncReciever, scriptExecuteButton);
+        return false;
+    },
+
+    executeScriptAsyncReciever: function (HTTPResult, sender) {
+        var scriptExecuteButton = sender;
+        var label = scriptExecuteButton.label;
+        var script = scriptExecuteButton.script;
+
+        var scriptPauseButton = scriptExecuteButton.scriptPauseButton;
+        scriptPauseButton.className = "btn btn-sm btn-warning";
+        var scriptDeleteButton = scriptExecuteButton.scriptDeleteButton;
+        scriptDeleteButton.className = "btn btn-sm btn-danger";
+        var textArea = scriptExecuteButton.textArea;
+        textArea.style.backgroundColor = "";
+        textArea.disabled = false;
+
+
+        if (!HTTPResult.indexOf("%error") == 0) {
+            scriptExecuteButton.className = "btn btn-sm btn-success";
+            script.node.networkStatus = NET_ONLINE;            
+            scriptsManager.refresh(script.node);
+        }
+        else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
+            if (HTTPResult.indexOf("reponse") != -1) {
+                script.node.networkStatus = NET_ERROR;
+            }
+            else {
+                script.node.networkStatus = NET_OFFLINE;
+            }
+            scriptExecuteButton.className = "btn btn-sm btn-danger";
+            label.style.color = theme.danger;
+            label.innerText = HTTPResult;
+        }
+    },
+
+    scriptDeleteClick: function (event) {
+        var scriptDeleteButton = event.currentTarget;
+
+        makeModalDialog("resetPanel", "deletescript", getLang("deletescript"), "");
+        var modalBody = document.getElementById("deletescriptModalBody");
+        modalBody.appendChild(document.createElement('label')).innerHTML = getLang("areyousuredeletescript");
+
+        var modalFooter = document.getElementById("deletescriptModalFooter");
+
+        var scriptModalDeleteButton = modalFooter.appendChild(document.createElement('button'));
+        scriptModalDeleteButton.type = "button";
+        scriptModalDeleteButton.id = event.currentTarget.id + "modal";
+        scriptModalDeleteButton.className = "btn btn-sm btn-danger";
+        scriptModalDeleteButton.scriptDeleteButton = event.currentTarget;
+        scriptModalDeleteButton.onclick = settingsUI.scriptModalDeleteClick;
+        scriptModalDeleteButton.appendChild(document.createElement("i")).className = "fa fa-trash";
+        var scriptModalDeleteButtonSpan = scriptModalDeleteButton.appendChild(document.createElement("span"));
+        scriptModalDeleteButtonSpan.innerHTML = " " + getLang("scriptdelete");
+        
+        $("#deletescriptModal").modal('show');
+        return false;
+    },
+
+    scriptModalDeleteClick: function (event) {        
+        var scriptModalDeleteButton = event.currentTarget;
+        var scriptDeleteButton = scriptModalDeleteButton.scriptDeleteButton;
+        $("#deletescriptModal").modal('hide');
+
+        scriptDeleteButton.className = "btn btn-sm btn-secondary";
+        var script = scriptDeleteButton.script;
+
+        var scriptExecuteButton = scriptDeleteButton.scriptExecuteButton;
+        scriptExecuteButton.className = "btn btn-sm btn-secondary";
+
+        var scriptPauseButton = scriptDeleteButton.scriptPauseButton;
+        scriptPauseButton.className = "btn btn-sm btn-secondary";
+
+        var textArea = scriptDeleteButton.textArea;
+        textArea.style.backgroundColor = theme.secondary;
+        textArea.disabled = true;
+
+        scriptsManager.delete(script, settingsUI.scriptDeleteAsyncReciever, scriptDeleteButton); 
+        return false;
+    },
+
+    scriptDeleteAsyncReciever: function (HTTPResult, sender) {
+
+        var scriptExecuteButton = sender;
+        var label = scriptExecuteButton.label;
+        var node = scriptExecuteButton.node;
+
+        if (!HTTPResult.indexOf("%error") == 0) {
+            node.networkStatus = NET_ONLINE; //UI редактора скрипта удалит onScriptDelete
+            scriptsManager.refresh(node);
+        }
+        else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
+
+
+            if (HTTPResult.indexOf("reponse") != -1) {
+                node.networkStatus = NET_ERROR;
+            }
+            else {
+                node.networkStatus = NET_OFFLINE;
+            }
+            scriptExecuteButton.className = "btn btn-sm btn-danger";
+            label.style.color = theme.danger;
+            label.innerText = HTTPResult;
+        }
+    },
+
 
     createScriptClick: function (event) {
         var scriptsAddAhref = event.currentTarget;
@@ -688,13 +869,13 @@ var settingsUI = {
         var aHref = event.currentTarget;
 
 
-        $(this).removeClass('active');
+        $(aHref).removeClass('active');
 
         document.getElementById("sidebarText").style.display = "none";
         document.getElementById("sidebarText").innerText = "";
         document.getElementById("dashboardButtonsPanel").style.display = "none";
-
-        aHref.parentLi.className = "active";
+        
+        //$(aHref).toggleClass("active");
 
         document.location = aHref.href;
 
