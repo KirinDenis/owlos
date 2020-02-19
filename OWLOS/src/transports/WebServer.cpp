@@ -864,22 +864,19 @@ void handleUpdateFirmware()
 //----------------------------------------------------------------------------------------------
 //Create script 
 void handleCreateScript()
-{
-	debugOut("script create request", "1");
+{	
 	webServerAddCORSHeaders();
 	if (webServer.args() > 1)
-		debugOut("script create request", "2"); {
+	{
 		if (webServer.argName(1).equals("name"))
 		{
-			debugOut("script create request", "3");
-			debugOut("script create request", decode(webServer.arg(0)));
+
 			String result = String(scriptsCreate(decode(webServer.arg(1)), decode(webServer.arg(0))));
 
-			debugOut("script create result", result);
-			if ((result.length() == 0) || (result.equals("0")))
-			{
-				result = "wrong script: " + webServer.arg(0) + "=" + webServer.arg(1);
-				webServer.send(404, "text/html", result);
+
+			if (result.length() != 0)
+			{				
+				webServer.send(503, "text/html", result);
 				return;
 			}
 			else

@@ -174,7 +174,7 @@
     "closebutton=Закрити\n" +
     "createscript=+ додати скріпт\n" +
     "scripts=скріпти\n" +
-    "scriptexecute=виконати\n" +
+    "scriptexecute=виконати (F8)\n" +
     "scriptpause=пауза\n" +
     "scriptdelete=вилучити\n" +    
     "language=ukraine\n";

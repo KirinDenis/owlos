@@ -156,10 +156,8 @@ Script scripts[scriptSize];
 
 //Script managment's functions -------------------------------
 
-void scriptsReset(int index) {
-	Serial.println("Delete   " + String(index));
-	if ((index < 0) || (index > scriptSize - 1)) return;
-	Serial.println("Delete 3  " + String(index));
+void scriptsReset(int index) {	
+	if ((index < 0) || (index > scriptSize - 1)) return;	
 	filesWriteInt(scripts[index].name + ".rf", -1); //escapre RF flag 
 	scripts[index].name = "";
 	scripts[index].byteCode = "";
@@ -191,8 +189,10 @@ String scriptsGetAll() {
 	String result = "";
 	String valueName = "";
 	String value = "";
+	Serial.println("GAS 1");
 	for (int i = 0; i < scriptSize; i++) {
 		if (scripts[i].name.length() != 0) { //zero string - script deleted
+			Serial.println("GAS 2");
 			result += "script:" + scripts[i].name + "\r";
 			result += "status=" + String(scripts[i].status) + "\r";
 			result += "bytecode=" + String(scripts[i].byteCode) + "\r";
@@ -201,15 +201,18 @@ String scriptsGetAll() {
 			result += "timequant=" + String(scripts[i].timeQuant) + "\r";
 			result += "ip=" + String(scripts[i].ip) + "\r";
 			result += "variables=\n";
-			for (int j = 0; j < scripts[i].dataCount; j++) {
+			Serial.println("GAS 3");
+			for (int j = 0; j < scripts[i].dataCount; j++) {				
 				valueName = scripts[i].data[j].name;
 				value = scripts[i].data[j].value;
+				Serial.println("GAS 4 " + valueName + " " + value);
 				result += valueName + "=" + value + "\n";
 			}
 			result += "\r";
 
 		}
 	}
+	Serial.println("GAS 7");
 	return result;
 }
 
@@ -232,12 +235,10 @@ bool scriptsSave() {
 	return filesWriteString("scripts", scriptsGetAllClean());
 }
 
-bool scriptsDelete(String name) {
-	Serial.println("Delete");
+bool scriptsDelete(String name) {	
 	int index = scriptsGetByIndex(name);
 	if (index != -1)
-	{
-		Serial.println("Delete 2");
+	{		
 		scriptsReset(index);
 		scriptsSave();
 		return true;
@@ -397,9 +398,13 @@ int addGoto(int index, int addr, int arg1Addr) {
 
 int runGoto(int index) {
 	int ip = scripts[index].ip;
-	////Serial.println("-- goto: " + String(scripts[index].code[ip].arg1Addr));
+	
 	if (scripts[index].code[ip].type != gotoCode) return -1;
-	return scripts[index].code[ip].arg1Addr;
+	if (scripts[index].code[ip].arg1Addr == -1) return -1;
+	String value1 = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
+	int arg1 = std::atoi(value1.c_str());
+	Serial.println("-- goto: " + String(arg1));
+	return arg1;
 }
 
 int addIfupper(int index, int addr, int arg1Addr, int arg2Addr, int arg3Addr) {
@@ -418,7 +423,12 @@ int runIfupper(int index) {
 	float arg1 = std::atof(value1.c_str());
 	float arg2 = std::atof(value2.c_str());
 	if (arg1 > arg2) {
-		return scripts[index].code[ip].arg3Addr;
+		if (scripts[index].code[ip].arg3Addr == -1) return -1;
+		String value3 = scripts[index].data[scripts[index].code[ip].arg3Addr].value;
+		int arg3 = std::atoi(value3.c_str());
+		Serial.println("-- ifupper: " + String(arg3));
+		return arg3;
+
 	}
 	else {
 		return ++ip;
@@ -558,8 +568,29 @@ bool scriptsRun() {
 	return true;
 }
 
-bool scriptsCompile(int index) {
+String clearSpace(String str, bool atBegin)
+{
+	Serial.println("--> clear: " + str);
+	String cleanString = "";
+	bool stopClean = !atBegin;
+	char spaceChar = 0x20;
+	char tabChar = 0x09;	
+	for (int i = 0; i < str.length(); i++) {		
+		if ((atBegin && (!stopClean)) || !atBegin)
+		{
+			if (str[i] == spaceChar) continue;
+			if (str[i] == tabChar) continue;
+		}
+		stopClean = true; 		
+		cleanString += str[i];		
+	}
+	Serial.println("<-- clear: " + cleanString);
+	return cleanString;
+}
 
+//return empty string if OK, else setring with error code
+String scriptsCompile(int index) {
+	String result = ""; //no error
 	scripts[index].ip = 0;
 	scripts[index].codeCount = 0;
 	scripts[index].dataCount = 0;
@@ -576,130 +607,173 @@ bool scriptsCompile(int index) {
 	//calculate code and data size 
 	int _dataCount = 10; //reserve one 
 	int _codeCount = 10; //reserve one 
-	String byteCode = scripts[index].byteCode;
+	String byteCode = scripts[index].byteCode + "\n";
 	while ((linePos = byteCode.indexOf(lineDelimiter)) != -1)
 	{
-		command = byteCode.substring(0, linePos);
-		if (command.indexOf("var ") == 0) _dataCount++;
+		command = clearSpace(byteCode.substring(0, linePos), true);
+		if (command.length() != 0)
+		{
+	
+
+		if ((command.indexOf("var ") == 0) || (command.indexOf(":") > 0)) _dataCount++;
 		else
 			_codeCount++;
+	}
 		byteCode.remove(0, linePos + lineDelimiter.length());
 	}
 
 	if ((ESP.getFreeHeap() - heapLimit) < (sizeof(Instruction) * _codeCount + sizeof(Variable) * _dataCount))
 	{
 		//out of heap
-		return false;
+		return "out of heap";
 	}
 
-	//Serial.println("-->" + String(_codeCount));
-	//Serial.println("-->" + String(_dataCount));
+	Serial.println("-->" + String(_codeCount));
+	Serial.println("-->" + String(_dataCount));
 
 	scripts[index].code = (Instruction*)malloc(sizeof(Instruction) * _codeCount);
-
 	scripts[index].data = (Variable*)malloc(sizeof(Variable) * _dataCount);
+
+	//выборка label (меток) для перехода
+	_codeCount = 0;
+	linePos = 0;
+	byteCode = scripts[index].byteCode + "\n";
+	while ((linePos = byteCode.indexOf(lineDelimiter)) != -1)
+	{
+		Serial.println("-->label" + String(linePos));
+		command = clearSpace(byteCode.substring(0, linePos), true);
+		if (command.length() != 0)
+		{
+			if (command.indexOf(":") > 0)
+			{
+				String labelName = command.substring(0, command.indexOf(':'));
+				pushData(index, labelName, String(_codeCount));
+			}
+			else		
+				if (command.indexOf("var ") == -1)
+				{
+					_codeCount++;
+				}
+			
+		}
+		byteCode.remove(0, linePos + lineDelimiter.length());
+	}
+
 
 	//return to parse code
 	linePos = 0;
-	byteCode = scripts[index].byteCode;
+	int lineCount = 0;
+	byteCode = scripts[index].byteCode + "\n";
 	while ((linePos = byteCode.indexOf(lineDelimiter)) != -1)
 	{
-		command = byteCode.substring(0, linePos);
-
-		if (command.indexOf("var ") == 0) //variable
-		{
-			//Serial.println("->" + command);
-			String varArg = command.substring(4, command.length());
-			String varName = varArg.substring(0, varArg.indexOf('='));
-			String varValue = varArg.substring(varArg.indexOf('=') + 1);
-			//Serial.println("-->var " + varName + " " + varValue);
-			pushData(index, varName, varValue);
-		}
-		else //Instruction parsin section
+		command = clearSpace(byteCode.substring(0, linePos), true);
+		lineCount++;
+		if ((command.length() != 0) && (command.indexOf(":") == -1))
 		{
 
-			String instruction = command.substring(0, command.indexOf(" ") + 1);
-			String args = command.substring(command.indexOf(" ") + 1) + argDelimiter;
-			int argPos = 0;
-			int argCount = 0;
-			String arg;
-			String arg1;
-			String arg2;
-			String arg3;
-			while ((argPos = args.indexOf(argDelimiter)) != -1)
+			if (command.indexOf("var ") == 0) //variable
 			{
-				arg = args.substring(0, argPos);
-				switch (argCount)
+				//Serial.println("->" + command);
+				String varArg = command.substring(4, command.length());
+				String varName = clearSpace(varArg.substring(0, varArg.indexOf('=')), false);
+				String varValue = varArg.substring(varArg.indexOf('=') + 1);
+				Serial.println("-->var " + varName + " " + varValue);
+				pushData(index, varName, varValue);
+			}
+			else //Instruction parsin section
+			{
+
+				String instruction = command.substring(0, command.indexOf(" ") + 1);
+				String args = command.substring(command.indexOf(" ") + 1) + argDelimiter;
+				int argPos = 0;
+				int argCount = 0;
+				String arg;
+				String arg1;
+				String arg2;
+				String arg3;
+				while ((argPos = args.indexOf(argDelimiter)) != -1)
 				{
-				case 0: arg1 = arg; break;
-				case 1: arg2 = arg; break;
-				case 2: arg3 = arg; break;
+					arg = args.substring(0, argPos);
+					switch (argCount)
+					{
+					case 0: arg1 = arg; break;
+					case 1: arg2 = arg; break;
+					case 2: arg3 = arg; break;
+					}
+					argCount++;
+					args.remove(0, argPos + argDelimiter.length());
 				}
-				argCount++;
-				args.remove(0, argPos + argDelimiter.length());
-			}
 
-			if (instruction.indexOf("sum ") == 0) //sum
-			{
-				//Serial.println("->" + instruction);
-				//Serial.println("-->Sum" + arg1 + arg2 + arg3);
-				addSum(index, scripts[index].codeCount, getDataAddr(index, arg1), getDataAddr(index, arg2), getDataAddr(index, arg3));
-				scripts[index].codeCount++;
-			}
-			else
-				if (instruction.indexOf("write ") == 0) //write
+				if (instruction.indexOf("sum ") == 0) //sum
 				{
 					//Serial.println("->" + instruction);
-					//Serial.println("-->write" + arg1);
-					addWrite(index, scripts[index].codeCount, getDataAddr(index, arg1));
+					//Serial.println("-->Sum" + arg1 + arg2 + arg3);
+					addSum(index, scripts[index].codeCount, getDataAddr(index, arg1), getDataAddr(index, arg2), getDataAddr(index, arg3));
 					scripts[index].codeCount++;
 				}
 				else
-					if (instruction.indexOf("goto ") == 0) //goto
+					if (instruction.indexOf("write ") == 0) //write
 					{
 						//Serial.println("->" + instruction);
-						//Serial.println("-->goto" + arg1);
-						addGoto(index, scripts[index].codeCount, std::atoi(arg1.c_str()));
+						//Serial.println("-->write" + arg1);
+						addWrite(index, scripts[index].codeCount, getDataAddr(index, arg1));
 						scripts[index].codeCount++;
 					}
 					else
-						if (instruction.indexOf("ifupper ") == 0) //ifupper
+						if (instruction.indexOf("goto ") == 0) //goto
 						{
 							//Serial.println("->" + instruction);
-							//Serial.println("-->ifupper" + arg1 + arg2 + arg3);
-							addIfupper(index, scripts[index].codeCount, getDataAddr(index, arg1), getDataAddr(index, arg2), std::atoi(arg3.c_str()));
+							//Serial.println("-->goto" + arg1);
+							//addGoto(index, scripts[index].codeCount, std::atoi(arg1.c_str()));
+							addGoto(index, scripts[index].codeCount, getDataAddr(index, arg1));
+							
 							scripts[index].codeCount++;
 						}
 						else
-							if (instruction.indexOf("getprop ") == 0) //getprop
+							if (instruction.indexOf("ifupper ") == 0) //ifupper
 							{
 								//Serial.println("->" + instruction);
-								//Serial.println("-->getprop" + arg1 + arg2 + arg3);
-								int arg1Addr = pushData(index, arg1 + String(scripts[index].codeCount), arg1);
-								int arg2Addr = pushData(index, arg2 + String(scripts[index].codeCount), arg2);
-								addGetProp(index, scripts[index].codeCount, arg1Addr, arg2Addr, getDataAddr(index, arg3));
+								//Serial.println("-->ifupper" + arg1 + arg2 + arg3);
+								addIfupper(index, scripts[index].codeCount, getDataAddr(index, arg1), getDataAddr(index, arg2), getDataAddr(index, arg3));
 								scripts[index].codeCount++;
 							}
 							else
-								if (instruction.indexOf("setprop ") == 0) //setprop
+								if (instruction.indexOf("getprop ") == 0) //getprop
 								{
 									//Serial.println("->" + instruction);
-									//Serial.println("-->setprop" + arg1 + arg2 + arg3);
+									//Serial.println("-->getprop" + arg1 + arg2 + arg3);
 									int arg1Addr = pushData(index, arg1 + String(scripts[index].codeCount), arg1);
 									int arg2Addr = pushData(index, arg2 + String(scripts[index].codeCount), arg2);
-									addSetProp(index, scripts[index].codeCount, arg1Addr, arg2Addr, getDataAddr(index, arg3));
+									addGetProp(index, scripts[index].codeCount, arg1Addr, arg2Addr, getDataAddr(index, arg3));
 									scripts[index].codeCount++;
 								}
+								else
+									if (instruction.indexOf("setprop ") == 0) //setprop
+									{
+										//Serial.println("->" + instruction);
+										//Serial.println("-->setprop" + arg1 + arg2 + arg3);
+										int arg1Addr = pushData(index, arg1 + String(scripts[index].codeCount), arg1);
+										int arg2Addr = pushData(index, arg2 + String(scripts[index].codeCount), arg2);
+										addSetProp(index, scripts[index].codeCount, arg1Addr, arg2Addr, getDataAddr(index, arg3));
+										scripts[index].codeCount++;
+									}
+									else
+									{
+										result = "bad instruction at line: " + String(lineCount);
+										break;
+									}
 
+			}
 		}
 
 		byteCode.remove(0, linePos + lineDelimiter.length());
 	}
-	return true;
+	return result;
 }
 
-bool scriptsCreate(String name, String byteCode) {
+String scriptsCreate(String name, String byteCode) {
 	//byteCode = "var a=10\nvar b=10\nvar c=10000\nsum a,b,b\nsum a,b,b\nsum a,b,b\nwrite b\nifupper b,c,99\ngoto 0\n";
+	String result = "";
 	int index = -1;
 	for (int i = 0; i < scriptSize; i++)
 	{
@@ -711,7 +785,7 @@ bool scriptsCreate(String name, String byteCode) {
 	}
 
 	if (index == -1) {
-		if (scriptCount >= scriptSize - 2) return false;
+		if (scriptCount >= scriptSize - 2) return "VM scripts limit is owerflow (limit=" + String(scriptSize) + " scripts)";
 		scriptCount++;
 		index = scriptCount;
 	}
@@ -721,7 +795,8 @@ bool scriptsCreate(String name, String byteCode) {
 	filesWriteInt(scripts[index].name + ".rf", -1); //escapre RF flag 
 	scripts[index].byteCode = byteCode;
 
-	if (scriptsCompile(index))
+	result = scriptsCompile(index);
+	if (result.length() == 0)
 	{
 		scripts[index].status = runStatus;
 	}
@@ -730,7 +805,7 @@ bool scriptsCreate(String name, String byteCode) {
 		scripts[index].status = compilerErrorStatus;
 	}
 	scriptsSave();
-	return true;
+	return result;
 }
 
 bool scriptsLoad() {

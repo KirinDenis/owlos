@@ -299,7 +299,7 @@ var settingsUI = {
         textArea.cols = 80;
         textArea.rows = 20;
         textArea.value = script.bytecode;
-
+        textArea.onkeydown = settingsUI.textAreaOnKeyDown;
 
         var scriptExecuteButton = byteCodeCardDiv.appendChild(document.createElement('button'));
         scriptExecuteButton.type = "button";
@@ -312,6 +312,8 @@ var settingsUI = {
         scriptExecuteButton.appendChild(document.createElement("i")).className = "fa fa-bolt";
         var scriptExecuteButtonSpan = scriptExecuteButton.appendChild(document.createElement("span"));
         scriptExecuteButtonSpan.innerHTML = " " + getLang("scriptexecute");
+
+        textArea.scriptExecuteButton = scriptExecuteButton;
 
         var scriptPauseButton = byteCodeCardDiv.appendChild(document.createElement('button'));
         scriptPauseButton.type = "button";
@@ -350,6 +352,7 @@ var settingsUI = {
         var label = byteCodeCardDiv.appendChild(document.createElement('label'));
         label.id = script.node.nodenickname + "_" + script.name + "label";
         label.for = script.node.nodenickname + "_" + script.name + "textarea";
+        scriptExecuteButton.label = label;
 
         var scriptStatusCardDiv = scriptHolder.appendChild(document.createElement('div'));
         scriptStatusCardDiv.className = "col-md-4";
@@ -439,6 +442,34 @@ var settingsUI = {
         $(nodePanelHRef).toggleClass("active");
         $(nodePropsPanel).toggleClass("active show");
     },
+    //https://stackoverflow.com/questions/6637341/use-tab-to-indent-in-textarea
+    textAreaOnKeyDown: function (event) {
+        var keyCode = event.keyCode || event.which;
+        var textArea = event.currentTarget;
+
+        if (keyCode == 0x09) { //tab key code
+            event.preventDefault();
+            var start = textArea.selectionStart;
+            var end = textArea.selectionEnd;
+
+            // set textarea value to: text before caret + tab + text after caret
+            $(textArea).val($(textArea).val().substring(0, start)
+                + "\t"
+                + $(textArea).val().substring(end));
+
+            // put caret at right position again
+            textArea.selectionStart =
+                textArea.selectionEnd = start + 1;
+        }
+        else
+            if (keyCode == 0x77) { //F8
+                event = {
+                    currentTarget: textArea.scriptExecuteButton
+                }
+                settingsUI.scriptExecuteClick(event);
+            }
+
+    },
 
     scriptExecuteClick: function (event) {
         var scriptExecuteButton = event.currentTarget;
@@ -478,6 +509,9 @@ var settingsUI = {
             scriptExecuteButton.className = "btn btn-sm btn-success";
             script.node.networkStatus = NET_ONLINE;            
             scriptsManager.refresh(script.node);
+            label.style.color = theme.success;
+            label.innerText = "execute-OK";
+
         }
         else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
             if (HTTPResult.indexOf("reponse") != -1) {
