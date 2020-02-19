@@ -64,6 +64,9 @@
 #include "..\..\UnitProperties.h"
 
 #define heapLimit 5000 //не компилировать и не загружать скрипт если количество heap после этого станет меньше 5Kb 
+#define FLT_EPSILON 1.0E-6 //определение точности вычислений
+#define FLT_MAX     3.40282347E+38F
+#define FLT_MIN     1.17549435E-38F
 
 #define scriptSize 10 //сколько скриптов можно загрузить одновременно
 
@@ -75,6 +78,9 @@
 #define ifupperCode 4
 #define getpropCode 5
 #define setpropCode 6
+#define subCode 7
+#define multCode 8
+#define devCode 9
 //статусы скрипта 
 #define stopStatus 0  //скрипт остановлен не выполняется
 #define runStatus 1   //скрипт выполняется
@@ -375,6 +381,48 @@ int runSum(int index) {
 	return ++ip;
 }
 
+
+int addSub(int index, int addr, int arg1Addr, int arg2Addr, int resultAddr) {
+	scripts[index].code[addr].type = subCode;
+	scripts[index].code[addr].arg1Addr = arg1Addr;
+	scripts[index].code[addr].arg2Addr = arg2Addr;
+	scripts[index].code[addr].resultAddr = resultAddr;
+	return 1;
+}
+
+int runSub(int index) {
+	int ip = scripts[index].ip;
+	if (scripts[index].code[ip].type != subCode) return -1;
+	String value1 = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
+	String value2 = scripts[index].data[scripts[index].code[ip].arg2Addr].value;
+
+	////Serial.println("-->" + String(value1));
+	////Serial.println("-->" + String(value2));
+	float arg1 = std::atof(value1.c_str());
+	float arg2 = std::atof(value2.c_str());
+	String result = String(arg1 - arg2);
+	////Serial.println("-->" + String(result));
+
+
+	//TODO RELOCATE FOR scripts[index].data[scripts[index].code[ip].resultAddr].value
+	//strcpy(scripts[index].data[scripts[index].code[ip].resultAddr].value, result.c_str());
+
+	free(scripts[index].data[scripts[index].code[ip].resultAddr].value);
+	scripts[index].data[scripts[index].code[ip].resultAddr].value = stringToArray(result);
+
+
+	////Serial.println("!->" + String(scripts[index].code[ip].arg1Addr));
+	////Serial.println("!->" + String(scripts[index].code[ip].arg2Addr));
+	////Serial.println("!->" + String(scripts[index].code[ip].resultAddr));
+	////Serial.println("2!->" + String(scripts[index].data[scripts[index].code[ip].arg1Addr].value));
+	////Serial.println("2!->" + String(scripts[index].data[scripts[index].code[ip].arg2Addr].value));
+	////Serial.println("2!->" + String(scripts[index].data[scripts[index].code[ip].resultAddr].value));
+
+	return ++ip;
+}
+
+
+
 int addWrite(int index, int addr, int arg1Addr) {
 	scripts[index].code[addr].type = writeCode;
 	scripts[index].code[addr].arg1Addr = arg1Addr;
@@ -510,6 +558,9 @@ bool executeInstruction(int index) {
 		break;
 	case sumCode:
 		scripts[index].ip = runSum(index);
+		break;
+	case subCode:
+		scripts[index].ip = runSub(index);
 		break;
 	case writeCode:
 		scripts[index].ip = runWrite(index);
@@ -758,10 +809,18 @@ String scriptsCompile(int index) {
 										scripts[index].codeCount++;
 									}
 									else
-									{
+										if (instruction.indexOf("sub ") == 0) //sum
+										{
+											//Serial.println("->" + instruction);
+											//Serial.println("-->Sum" + arg1 + arg2 + arg3);
+											addSub(index, scripts[index].codeCount, getDataAddr(index, arg1), getDataAddr(index, arg2), getDataAddr(index, arg3));
+											scripts[index].codeCount++;
+										}
+		             			        else
+									    {
 										result = "bad instruction at line: " + String(lineCount);
 										break;
-									}
+									    }
 
 			}
 		}
@@ -855,7 +914,10 @@ bool scriptsLoad() {
 	return true;
 }
 
-
+bool nearlyEqyal(float a, float b)
+{
+	return fabs(a - b) <= FLT_EPSILON;
+}
 
 void testCompile()
 {
