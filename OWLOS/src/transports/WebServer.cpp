@@ -870,7 +870,8 @@ void handleCreateScript()
 	{
 		if (webServer.argName(1).equals("name"))
 		{
-
+			debugOut(WebServerId, webServer.arg(0));
+			debugOut(WebServerId, decode(webServer.arg(0)));
 			String result = String(scriptsCreate(decode(webServer.arg(1)), decode(webServer.arg(0))));
 
 

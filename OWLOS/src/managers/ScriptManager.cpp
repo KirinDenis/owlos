@@ -342,11 +342,11 @@ int getDataAddr(int index, String name) {
 
 //--------------------------------------------------------------------------------------------------------
 //instructions
-int addSum(int index, int addr, int arg1Addr, int arg2Addr, int resultAddr) {
+int addSum(int index, int addr, int resultAddr, int arg1Addr, int arg2Addr) {
 	scripts[index].code[addr].type = sumCode;
-	scripts[index].code[addr].arg1Addr = arg1Addr;
-	scripts[index].code[addr].arg2Addr = arg2Addr;
 	scripts[index].code[addr].resultAddr = resultAddr;
+	scripts[index].code[addr].arg1Addr = arg1Addr;
+	scripts[index].code[addr].arg2Addr = arg2Addr;	
 	return 1;
 }
 
@@ -356,12 +356,12 @@ int runSum(int index) {
 	String value1 = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
 	String value2 = scripts[index].data[scripts[index].code[ip].arg2Addr].value;
 
-	////Serial.println("-->" + String(value1));
-	////Serial.println("-->" + String(value2));
+	Serial.println("-->" + String(value1));
+	Serial.println("-->" + String(value2));
 	float arg1 = std::atof(value1.c_str());
 	float arg2 = std::atof(value2.c_str());
 	String result = String(arg1 + arg2);
-	////Serial.println("-->" + String(result));
+	Serial.println("-->" + String(result));
 
 
 	//TODO RELOCATE FOR scripts[index].data[scripts[index].code[ip].resultAddr].value
@@ -382,7 +382,7 @@ int runSum(int index) {
 }
 
 
-int addSub(int index, int addr, int arg1Addr, int arg2Addr, int resultAddr) {
+int addSub(int index, int addr, int resultAddr, int arg1Addr, int arg2Addr) {
 	scripts[index].code[addr].type = subCode;
 	scripts[index].code[addr].arg1Addr = arg1Addr;
 	scripts[index].code[addr].arg2Addr = arg2Addr;
@@ -668,7 +668,14 @@ String scriptsCompile(int index) {
 
 		if ((command.indexOf("var ") == 0) || (command.indexOf(":") > 0)) _dataCount++;
 		else
+		{
 			_codeCount++;
+			if ((command.indexOf("setprop ") == 0) || (command.indexOf("getprop ") == 0)) //эти инструкции создают две переменные для хранения своих аргументов
+			{
+				_dataCount += 2;
+			}
+
+		}
 	}
 		byteCode.remove(0, linePos + lineDelimiter.length());
 	}
@@ -733,58 +740,94 @@ String scriptsCompile(int index) {
 			}
 			else //Instruction parsin section
 			{
-
-				String instruction = command.substring(0, command.indexOf(" ") + 1);
-				String args = command.substring(command.indexOf(" ") + 1) + argDelimiter;
-				int argPos = 0;
-				int argCount = 0;
-				String arg;
-				String arg1;
-				String arg2;
-				String arg3;
-				while ((argPos = args.indexOf(argDelimiter)) != -1)
+				Serial.println("INSTRACTION: " + command);
+				if (command.indexOf("=") > 0) //если есть символ "=" и это уже точно не var значит это выражение +,-,\ или *
 				{
-					arg = args.substring(0, argPos);
-					switch (argCount)
+					Serial.println("-> MATH");
+					String resultArg = clearSpace(command.substring(0, command.indexOf("=")), false);
+					String args = command.substring(command.indexOf("=") + 1);
+					if (args.indexOf("+") > 0)
 					{
-					case 0: arg1 = arg; break;
-					case 1: arg2 = arg; break;
-					case 2: arg3 = arg; break;
-					}
-					argCount++;
-					args.remove(0, argPos + argDelimiter.length());
-				}
+						int resultAddr = getDataAddr(index, resultArg);
+						int arg1Addr = getDataAddr(index, clearSpace(args.substring(0, args.indexOf("+")), false));
+						int arg2Addr = getDataAddr(index, clearSpace(args.substring(args.indexOf("+") + 1), false));
 
-				if (instruction.indexOf("sum ") == 0) //sum
-				{
-					//Serial.println("->" + instruction);
-					//Serial.println("-->Sum" + arg1 + arg2 + arg3);
-					addSum(index, scripts[index].codeCount, getDataAddr(index, arg1), getDataAddr(index, arg2), getDataAddr(index, arg3));
+						if ((resultAddr == -1) || (arg1Addr == -1) || (arg2Addr == -1))
+						{
+							result = "variable no exists at line: " + String(lineCount);
+							break;
+						}
+						else
+						{
+							addSum(index, scripts[index].codeCount, resultAddr, arg1Addr, arg2Addr);
+						}
+					}
+					else 
+						if (args.indexOf("-") > 0)
+						{
+							int resultAddr = getDataAddr(index, resultArg);
+							int arg1Addr = getDataAddr(index, clearSpace(args.substring(0, args.indexOf("-")), false));
+							int arg2Addr = getDataAddr(index, clearSpace(args.substring(args.indexOf("-") + 1), false));
+							Serial.println("1->" + String(resultAddr));
+							Serial.println("2->" + String(arg1Addr));
+							Serial.println("3->" + String(arg2Addr));
+							if ((resultAddr == -1) || (arg1Addr == -1) || (arg2Addr == -1))
+							{
+								result = "variable no exists at line: " + String(lineCount);
+								break;
+							}
+							else
+							{
+								addSub(index, scripts[index].codeCount, resultAddr, arg1Addr, arg2Addr);
+							}
+						}
+						else //TODO: делить и умножить
+						{ 
+							//если небыл математический оператор
+							result = "bad expression at line: " + String(lineCount);
+							break;
+						}
+
+					
 					scripts[index].codeCount++;
 				}
 				else
+				{
+					String instruction = command.substring(0, command.indexOf(" ") + 1);
+					String args = command.substring(command.indexOf(" ") + 1) + argDelimiter;
+					int argPos = 0;
+					int argCount = 0;
+					String arg;
+					String arg1;
+					String arg2;
+					String arg3;
+					while ((argPos = args.indexOf(argDelimiter)) != -1)
+					{
+						arg = args.substring(0, argPos);
+						switch (argCount)
+						{
+						case 0: arg1 = arg; break;
+						case 1: arg2 = arg; break;
+						case 2: arg3 = arg; break;
+						}
+						argCount++;
+						args.remove(0, argPos + argDelimiter.length());
+					}
+
 					if (instruction.indexOf("write ") == 0) //write
 					{
-						//Serial.println("->" + instruction);
-						//Serial.println("-->write" + arg1);
 						addWrite(index, scripts[index].codeCount, getDataAddr(index, arg1));
 						scripts[index].codeCount++;
 					}
 					else
 						if (instruction.indexOf("goto ") == 0) //goto
 						{
-							//Serial.println("->" + instruction);
-							//Serial.println("-->goto" + arg1);
-							//addGoto(index, scripts[index].codeCount, std::atoi(arg1.c_str()));
 							addGoto(index, scripts[index].codeCount, getDataAddr(index, arg1));
-							
 							scripts[index].codeCount++;
 						}
 						else
 							if (instruction.indexOf("ifupper ") == 0) //ifupper
 							{
-								//Serial.println("->" + instruction);
-								//Serial.println("-->ifupper" + arg1 + arg2 + arg3);
 								addIfupper(index, scripts[index].codeCount, getDataAddr(index, arg1), getDataAddr(index, arg2), getDataAddr(index, arg3));
 								scripts[index].codeCount++;
 							}
@@ -816,12 +859,12 @@ String scriptsCompile(int index) {
 											addSub(index, scripts[index].codeCount, getDataAddr(index, arg1), getDataAddr(index, arg2), getDataAddr(index, arg3));
 											scripts[index].codeCount++;
 										}
-		             			        else
-									    {
-										result = "bad instruction at line: " + String(lineCount);
-										break;
-									    }
-
+										else
+										{
+											result = "bad instruction at line: " + String(lineCount);
+											break;
+										}
+				}
 			}
 		}
 
