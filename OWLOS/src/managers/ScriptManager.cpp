@@ -82,6 +82,8 @@
 #define multCode 8
 #define devCode 9
 #define letCode 10
+#define iflowerCode 11
+#define ifequalCode 12
 //статусы скрипта 
 #define stopStatus 0  //скрипт остановлен не выполняется
 #define runStatus 1   //скрипт выполняется
@@ -346,7 +348,7 @@ int getDataAddr(int index, String name) {
 int addLet(int index, int addr, int resultAddr, int arg1Addr) {
 	scripts[index].code[addr].type = letCode;
 	scripts[index].code[addr].resultAddr = resultAddr;
-	scripts[index].code[addr].arg1Addr = arg1Addr;	
+	scripts[index].code[addr].arg1Addr = arg1Addr;
 	return 1;
 }
 
@@ -354,7 +356,7 @@ int runLet(int index) {
 	int ip = scripts[index].ip;
 	if (scripts[index].code[ip].type != letCode) return -1;
 
-	String value1 = scripts[index].data[scripts[index].code[ip].arg1Addr].value;	
+	String value1 = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
 
 	free(scripts[index].data[scripts[index].code[ip].resultAddr].value);
 	scripts[index].data[scripts[index].code[ip].resultAddr].value = stringToArray(value1);
@@ -482,7 +484,6 @@ int runIfupper(int index) {
 		if (scripts[index].code[ip].arg3Addr == -1) return -1;
 		String value3 = scripts[index].data[scripts[index].code[ip].arg3Addr].value;
 		int arg3 = std::atoi(value3.c_str());
-		Serial.println("-- ifupper: " + String(arg3));
 		return arg3;
 
 	}
@@ -490,6 +491,60 @@ int runIfupper(int index) {
 		return ++ip;
 	}
 }
+
+int addIflower(int index, int addr, int arg1Addr, int arg2Addr, int arg3Addr) {
+	scripts[index].code[addr].type = iflowerCode;
+	scripts[index].code[addr].arg1Addr = arg1Addr;
+	scripts[index].code[addr].arg2Addr = arg2Addr;
+	scripts[index].code[addr].arg3Addr = arg3Addr;
+	return 1;
+}
+
+int runIflower(int index) {
+	int ip = scripts[index].ip;
+	if (scripts[index].code[ip].type != iflowerCode) return -1;
+	String value1 = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
+	String value2 = scripts[index].data[scripts[index].code[ip].arg2Addr].value;
+	float arg1 = std::atof(value1.c_str());
+	float arg2 = std::atof(value2.c_str());
+	if (arg1 < arg2) {
+		if (scripts[index].code[ip].arg3Addr == -1) return -1;
+		String value3 = scripts[index].data[scripts[index].code[ip].arg3Addr].value;
+		int arg3 = std::atoi(value3.c_str());		
+		return arg3;
+	}
+	else {
+		return ++ip;
+	}
+}
+
+int addIfequal(int index, int addr, int arg1Addr, int arg2Addr, int arg3Addr) {
+	scripts[index].code[addr].type = ifequalCode;
+	scripts[index].code[addr].arg1Addr = arg1Addr;
+	scripts[index].code[addr].arg2Addr = arg2Addr;
+	scripts[index].code[addr].arg3Addr = arg3Addr;
+	return 1;
+}
+
+int runIfequal(int index) {
+	int ip = scripts[index].ip;
+	if (scripts[index].code[ip].type != ifequalCode) return -1;
+	String value1 = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
+	String value2 = scripts[index].data[scripts[index].code[ip].arg2Addr].value;
+	float arg1 = std::atof(value1.c_str());
+	float arg2 = std::atof(value2.c_str());
+	if (arg1 == arg2) {
+		if (scripts[index].code[ip].arg3Addr == -1) return -1;
+		String value3 = scripts[index].data[scripts[index].code[ip].arg3Addr].value;
+		int arg3 = std::atoi(value3.c_str());
+		return arg3;
+	}
+	else {
+		return ++ip;
+	}
+}
+
+
 
 int addGetProp(int index, int addr, int arg1Addr, int arg2Addr, int arg3Addr) {
 	scripts[index].code[addr].type = getpropCode;
@@ -582,6 +637,12 @@ bool executeInstruction(int index) {
 	case ifupperCode:
 		scripts[index].ip = runIfupper(index);
 		break;
+	case iflowerCode:
+		scripts[index].ip = runIflower(index);
+		break;
+	case ifequalCode:
+		scripts[index].ip = runIfequal(index);
+		break;
 	case getpropCode:
 		scripts[index].ip = runGetProp(index);
 		break;
@@ -637,7 +698,7 @@ String clearComment(String str)
 }
 
 String clearSpace(String str, bool atBegin)
-{	
+{
 	if (atBegin)
 	{
 		str = clearComment(str);
@@ -697,6 +758,8 @@ String scriptsCompile(int index) {
 				//в скорости резирвируя место для двух аргументов 
 				//например a=b+c не требует еще памяти в data[], однако a=100+20 требует резервирования места под две переменных
 				if (((command.indexOf("setprop ") == 0) || (command.indexOf("getprop ") == 0))
+					||
+					(command.indexOf("if ") == 0) //if goto инструкция тоже может создать две переменных, даже в случае if 10 > 20 goto begin (это соответсвует синтаксису)
 					||
 					((command.indexOf("=") > 0) && ((command.indexOf("+") > 0) || (command.indexOf("-") > 0) || (command.indexOf("\\") > 0) || (command.indexOf("*") > 0)))) //для математических операторов
 					//^^ в строке есть оператор "=" и один из математических операторов
@@ -769,8 +832,8 @@ String scriptsCompile(int index) {
 			}
 			else //Instruction parsin section
 			{
-
-				if (command.indexOf("=") > 0) //если есть символ "=" и это уже точно не var значит это выражение +,-,\ или *
+				//парсер математических выражений ---------------------------------------------------------------------------
+				if ((command.indexOf("=") > 0) && (command.indexOf("if ") != 0)) //если есть символ "=" и это уже точно не var значит это выражение +,-,\ или * И ЭТО НЕ ИНСТРУКЦИЯ IF GOTO
 				{
 					//синтаксис математических выражений:
 					//<переменная><=><переменная|значение>[<+|-|\|*><переменная|значение>]
@@ -803,7 +866,7 @@ String scriptsCompile(int index) {
 						if (argsAddr == -1) //переменная для не указана, возможно это численое выражение, например b=77 
 						{
 							float argsfloat = args.toFloat();
-							if (argsfloat == 0) 
+							if (argsfloat == 0)
 							{
 								result = "bad argument at right side of expression at line: " + String(lineCount);
 								break;
@@ -826,8 +889,9 @@ String scriptsCompile(int index) {
 							float arg1float = arg1.toFloat();
 							if (arg1float == 0) https://www.arduino.cc/reference/en/language/variables/data-types/string/functions/tofloat/ //не число
 							{
-								result = "bad first argument at line: " + String(lineCount);
-								break;
+								//прейдется считать такой аргумент числом равным 0
+								//иначе мы не может делать выражения вида a = 0 -> 0.toFloat() == 0 ошибка 
+								arg1 = "0";
 							}
 							arg1Addr = pushData(index, "arg1" + String(lineCount), arg1); //создаем переменую для аргумента, сохраняем адрес
 						}
@@ -837,8 +901,7 @@ String scriptsCompile(int index) {
 							float arg2float = arg2.toFloat();
 							if (arg2float == 0)
 							{
-								result = "bad second argument at line: " + String(lineCount);
-								break;
+								arg2 = "0";
 							}
 							arg2Addr = pushData(index, "arg2" + String(lineCount), arg2);
 						}
@@ -856,52 +919,120 @@ String scriptsCompile(int index) {
 							}
 					}
 					scripts[index].codeCount++;
-				}
+				} //ENDOF парсер математических выражений
+				//парсер условного перехода IF GOTO ---------------------------------------------------------------------------
 				else
-				{
-					String instruction = command.substring(0, command.indexOf(" ") + 1);
-					String args = command.substring(command.indexOf(" ") + 1) + argDelimiter;
-					int argPos = 0;
-					int argCount = 0;
-					String arg;
-					String arg1;
-					String arg2;
-					String arg3;
-					while ((argPos = args.indexOf(argDelimiter)) != -1)
+					if (command.indexOf("if ") == 0)
 					{
-						arg = args.substring(0, argPos);
-						switch (argCount)
+						if (command.indexOf("goto") == -1)
 						{
-						case 0: arg1 = arg; break;
-						case 1: arg2 = arg; break;
-						case 2: arg3 = arg; break;
+							result = "wrong GOTO in IF instruction at line: " + String(lineCount);
+							break;
 						}
-						argCount++;
-						args.remove(0, argPos + argDelimiter.length());
-					}
 
-					if (instruction.indexOf("write ") == 0) //write
-					{
-						addWrite(index, scripts[index].codeCount, getDataAddr(index, arg1));
-						scripts[index].codeCount++;
-					}
-					else
-						if (instruction.indexOf("goto ") == 0) //goto
+						String args = command.substring(command.indexOf(" ") + 1);
+						args = clearSpace(args.substring(0, args.indexOf("goto")), false);						
+						String gotoArg = clearSpace(command.substring(command.indexOf("goto") + 4), false);
+						
+						int gotoAddr = getDataAddr(index, gotoArg);
+						if (gotoAddr == -1)
 						{
-							addGoto(index, scripts[index].codeCount, getDataAddr(index, arg1));
+							result = "bad label name for GOTO at IF instruction at line: " + String(lineCount);
+							break;
+						}
+
+						Serial.println("ARGS2-->" + args);
+						String ifOperator = "";
+						if (args.indexOf(">") > 0) { ifOperator = ">"; }
+						else
+							if (args.indexOf("<") > 0) { ifOperator = "<"; }
+							else
+								if (args.indexOf("=") > 0) { ifOperator = "="; }
+								else
+								{
+									result = "wrong operator > or < or = in IF instruction at line: " + String(lineCount);
+									break;
+								}
+
+						String arg1 = args.substring(0, args.indexOf(ifOperator));
+						String arg2 = args.substring(args.indexOf(ifOperator) + 1);
+						//если в качестве аргументов указаны переменные, ищем их адреса
+						int arg1Addr = getDataAddr(index, arg1);
+						int arg2Addr = getDataAddr(index, arg2);
+
+						if (arg1Addr == -1) //переменная для первого аргумента не указана, возможно это численое выражение if 100 < a goto begin
+						{
+							float arg1float = arg1.toFloat();
+							if (arg1float == 0) { arg1 = "0"; }
+							arg1Addr = pushData(index, "arg1" + String(lineCount), arg1);
+						}
+
+						if (arg2Addr == -1) //переменная для второго аргумента не указана, возможно это численое выражение a=100+b, и да - возможно a=100+50
+						{
+							float arg2float = arg2.toFloat();
+							if (arg2float == 0) { arg2 = "0"; }
+							arg2Addr = pushData(index, "arg2" + String(lineCount), arg2);
+						}
+						//все аргументы установлены, создаем соответсвующею инструкцию 
+						if (ifOperator == ">") {
+							addIfupper(index, scripts[index].codeCount, arg1Addr, arg2Addr, gotoAddr);
+						}
+						else
+							if (ifOperator == "<") {
+								addIflower(index, scripts[index].codeCount, arg1Addr, arg2Addr, gotoAddr);
+							}
+							else
+								if (ifOperator == "=") {
+									addIfequal(index, scripts[index].codeCount, arg1Addr, arg2Addr, gotoAddr);
+								}
+
+						scripts[index].codeCount++;
+					}//ENDOF парсер условного перехода IF GOTO --------------------------------------------------------------------
+					//парсеры остальных инструкций 
+					else
+					{
+						String instruction = command.substring(0, command.indexOf(" ") + 1);
+						String args = command.substring(command.indexOf(" ") + 1) + argDelimiter;
+						int argPos = 0;
+						int argCount = 0;
+						String arg;
+						String arg1;
+						String arg2;
+						String arg3;
+						while ((argPos = args.indexOf(argDelimiter)) != -1)
+						{
+							arg = args.substring(0, argPos);
+							switch (argCount)
+							{
+							case 0: arg1 = arg; break;
+							case 1: arg2 = arg; break;
+							case 2: arg3 = arg; break;
+							}
+							argCount++;
+							args.remove(0, argPos + argDelimiter.length());
+						}
+
+						if (instruction.indexOf("write ") == 0) //write
+						{
+							addWrite(index, scripts[index].codeCount, getDataAddr(index, arg1));
 							scripts[index].codeCount++;
 						}
 						else
+							if (instruction.indexOf("goto ") == 0) //goto
+							{
+								addGoto(index, scripts[index].codeCount, getDataAddr(index, arg1));
+								scripts[index].codeCount++;
+							}
+						/*else
 							if (instruction.indexOf("ifupper ") == 0) //ifupper
 							{
 								addIfupper(index, scripts[index].codeCount, getDataAddr(index, arg1), getDataAddr(index, arg2), getDataAddr(index, arg3));
 								scripts[index].codeCount++;
 							}
+							*/
 							else
 								if (instruction.indexOf("getprop ") == 0) //getprop
 								{
-									//Serial.println("->" + instruction);
-									//Serial.println("-->getprop" + arg1 + arg2 + arg3);
 									int arg1Addr = pushData(index, arg1 + String(scripts[index].codeCount), arg1);
 									int arg2Addr = pushData(index, arg2 + String(scripts[index].codeCount), arg2);
 									addGetProp(index, scripts[index].codeCount, arg1Addr, arg2Addr, getDataAddr(index, arg3));
@@ -910,8 +1041,6 @@ String scriptsCompile(int index) {
 								else
 									if (instruction.indexOf("setprop ") == 0) //setprop
 									{
-										//Serial.println("->" + instruction);
-										//Serial.println("-->setprop" + arg1 + arg2 + arg3);
 										int arg1Addr = pushData(index, arg1 + String(scripts[index].codeCount), arg1);
 										int arg2Addr = pushData(index, arg2 + String(scripts[index].codeCount), arg2);
 										addSetProp(index, scripts[index].codeCount, arg1Addr, arg2Addr, getDataAddr(index, arg3));
@@ -920,8 +1049,6 @@ String scriptsCompile(int index) {
 									else
 										if (instruction.indexOf("sub ") == 0) //sum
 										{
-											//Serial.println("->" + instruction);
-											//Serial.println("-->Sum" + arg1 + arg2 + arg3);
 											addSub(index, scripts[index].codeCount, getDataAddr(index, arg1), getDataAddr(index, arg2), getDataAddr(index, arg3));
 											scripts[index].codeCount++;
 										}
@@ -930,7 +1057,7 @@ String scriptsCompile(int index) {
 											result = "bad instruction at line: " + String(lineCount);
 											break;
 										}
-				}
+					} //ENFOF парсеры остальных инструкций ------------------------------------------------------------------------------
 			}
 		}
 
@@ -940,7 +1067,6 @@ String scriptsCompile(int index) {
 }
 
 String scriptsCreate(String name, String byteCode) {
-	//byteCode = "var a=10\nvar b=10\nvar c=10000\nsum a,b,b\nsum a,b,b\nsum a,b,b\nwrite b\nifupper b,c,99\ngoto 0\n";
 	String result = "";
 	int index = -1;
 	for (int i = 0; i < scriptSize; i++)

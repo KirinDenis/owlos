@@ -86,7 +86,9 @@ var scriptsManager = {
 
     createOrReplace: function (script, asyncReciever, sender) {
         //JavaScript escape function not code "+" char as %2B - we need this char for Script 
-        var byteCodeEscape = escape(script.bytecode).replace("+", "%2B");
+        var byteCodeEscape = escape(script.bytecode).replace("+", "%2B").replace(">", "%3E").replace("<", "%3C");
+        // %3E >
+        // %3C <
         httpPostAsyncWithErrorReson(script.node.host + "createscript", "?name=" + escape(script.name), byteCodeEscape, asyncReciever, sender);
     },
 

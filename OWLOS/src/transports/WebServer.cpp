@@ -148,6 +148,8 @@ String decode(String param)
 	param.replace("%40", "@");
 	param.replace("%5B", "[");
 	param.replace("%5D", "]");
+	param.replace("%3E", ">");
+	param.replace("%3C", "<");
 	param.replace("%0A", "\n");
 	param.replace("%0D", "\n");
 	param.replace("%09", "\t");
