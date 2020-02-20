@@ -2,6 +2,8 @@ String scriptsGetAll();
 bool scriptsDelete(String name);
 bool scriptsSave();
 bool scriptsRun();
+bool scriptsStartDebug(String name);
+String scriptsDebugNext(String name);
 String scriptsCreate(String name, String byteCode);
 String scriptsCompile(int index);
 bool scriptsLoad();

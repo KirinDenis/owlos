@@ -89,6 +89,7 @@
 #define runStatus 1   //скрипт выполняется
 #define compilerErrorStatus 2 //ошибка компиляции скрипта
 #define runtimeErrorStatus 3 //ошибка выполнения скрипта (возможно был фатальный сбой, не возобновляейте выполнение такого скрипта, без проверки). 
+#define debugStatus 4
 
 //байт-код одной инструкции
 typedef struct Instruction
@@ -98,6 +99,7 @@ typedef struct Instruction
 	int arg2Addr;        //адрес второго аргумета  
 	int arg3Addr;
 	int resultAddr;      //адрес результата   
+	int lineNumber;
 };
 //переменная для байт-кода инструкций arg1Addr..arg2Addr - адреса таких переменых в массиве script[..].data (сегмент данных)
 typedef struct Variable
@@ -111,8 +113,9 @@ typedef struct Script
 {
 	String name;       //имя (уникально)
 	String byteCode;   //исходный байт-код (assembler)
-	int status = stopStatus; //текущий статус выполнения
-	int ip = -1;           //Instruction Point - указатель выполняемой инструкции в script[..].data (сегмент кода)
+	int status = stopStatus; //текущий статус выполнения	
+	int ip = -1;           //Instruction Point - указатель выполняемой инструкции в script[..].data (сегмент кода)	
+	int debugLineNumber = -1;
 	int codeCount = 0;     //количество инструкций
 	int dataCount = 0;     //количество переменных
 	int timeQuant = 1;     //квант времени выполнения - количество инструкций за один loop() микроконтроллера для этого скрипта 
@@ -198,30 +201,27 @@ String scriptsGetAll() {
 	String result = "";
 	String valueName = "";
 	String value = "";
-	Serial.println("GAS 1");
 	for (int i = 0; i < scriptSize; i++) {
-		if (scripts[i].name.length() != 0) { //zero string - script deleted
-			Serial.println("GAS 2");
+		if (scripts[i].name.length() != 0) { //zero string - script deleted			
 			result += "script:" + scripts[i].name + "\r";
 			result += "status=" + String(scripts[i].status) + "\r";
+			result += "debuglinenumber=" + String(scripts[i].debugLineNumber) + "\r";
 			result += "bytecode=" + String(scripts[i].byteCode) + "\r";
 			result += "codecount=" + String(scripts[i].codeCount) + "\r";
 			result += "datacount=" + String(scripts[i].dataCount) + "\r";
 			result += "timequant=" + String(scripts[i].timeQuant) + "\r";
 			result += "ip=" + String(scripts[i].ip) + "\r";
-			result += "variables=\n";
-			Serial.println("GAS 3");
+			result += "variables=\n";			
 			for (int j = 0; j < scripts[i].dataCount; j++) {
 				valueName = scripts[i].data[j].name;
-				value = scripts[i].data[j].value;
-				Serial.println("GAS 4 " + valueName + " " + value);
+				value = scripts[i].data[j].value;				
 				result += valueName + "=" + value + "\n";
 			}
 			result += "\r";
 
 		}
 	}
-	Serial.println("GAS 7");
+
 	return result;
 }
 
@@ -345,10 +345,11 @@ int getDataAddr(int index, String name) {
 
 //--------------------------------------------------------------------------------------------------------
 //instructions
-int addLet(int index, int addr, int resultAddr, int arg1Addr) {
+int addLet(int index, int addr, int resultAddr, int arg1Addr, int lineNumber) {
 	scripts[index].code[addr].type = letCode;
 	scripts[index].code[addr].resultAddr = resultAddr;
 	scripts[index].code[addr].arg1Addr = arg1Addr;
+	scripts[index].code[addr].lineNumber = lineNumber;
 	return 1;
 }
 
@@ -365,11 +366,12 @@ int runLet(int index) {
 }
 
 
-int addSum(int index, int addr, int resultAddr, int arg1Addr, int arg2Addr) {
+int addSum(int index, int addr, int resultAddr, int arg1Addr, int arg2Addr, int lineNumber) {
 	scripts[index].code[addr].type = sumCode;
 	scripts[index].code[addr].resultAddr = resultAddr;
 	scripts[index].code[addr].arg1Addr = arg1Addr;
 	scripts[index].code[addr].arg2Addr = arg2Addr;
+	scripts[index].code[addr].lineNumber = lineNumber;
 	return 1;
 }
 
@@ -392,11 +394,12 @@ int runSum(int index) {
 }
 
 
-int addSub(int index, int addr, int resultAddr, int arg1Addr, int arg2Addr) {
+int addSub(int index, int addr, int resultAddr, int arg1Addr, int arg2Addr, int lineNumber) {
 	scripts[index].code[addr].type = subCode;
 	scripts[index].code[addr].arg1Addr = arg1Addr;
 	scripts[index].code[addr].arg2Addr = arg2Addr;
 	scripts[index].code[addr].resultAddr = resultAddr;
+	scripts[index].code[addr].lineNumber = lineNumber;
 	return 1;
 }
 
@@ -433,9 +436,10 @@ int runSub(int index) {
 
 
 
-int addWrite(int index, int addr, int arg1Addr) {
+int addWrite(int index, int addr, int arg1Addr, int lineNumber) {
 	scripts[index].code[addr].type = writeCode;
 	scripts[index].code[addr].arg1Addr = arg1Addr;
+	scripts[index].code[addr].lineNumber = lineNumber;
 	return 1;
 }
 
@@ -448,9 +452,10 @@ int runWrite(int index) {
 	return ++ip;
 }
 
-int addGoto(int index, int addr, int arg1Addr) {
+int addGoto(int index, int addr, int arg1Addr, int lineNumber) {
 	scripts[index].code[addr].type = gotoCode;
 	scripts[index].code[addr].arg1Addr = arg1Addr;
+	scripts[index].code[addr].lineNumber = lineNumber;
 	return 1;
 }
 
@@ -465,11 +470,12 @@ int runGoto(int index) {
 	return arg1;
 }
 
-int addIfupper(int index, int addr, int arg1Addr, int arg2Addr, int arg3Addr) {
+int addIfupper(int index, int addr, int arg1Addr, int arg2Addr, int arg3Addr, int lineNumber) {
 	scripts[index].code[addr].type = ifupperCode;
 	scripts[index].code[addr].arg1Addr = arg1Addr;
 	scripts[index].code[addr].arg2Addr = arg2Addr;
 	scripts[index].code[addr].arg3Addr = arg3Addr;
+	scripts[index].code[addr].lineNumber = lineNumber;
 	return 1;
 }
 
@@ -492,11 +498,12 @@ int runIfupper(int index) {
 	}
 }
 
-int addIflower(int index, int addr, int arg1Addr, int arg2Addr, int arg3Addr) {
+int addIflower(int index, int addr, int arg1Addr, int arg2Addr, int arg3Addr, int lineNumber) {
 	scripts[index].code[addr].type = iflowerCode;
 	scripts[index].code[addr].arg1Addr = arg1Addr;
 	scripts[index].code[addr].arg2Addr = arg2Addr;
 	scripts[index].code[addr].arg3Addr = arg3Addr;
+	scripts[index].code[addr].lineNumber = lineNumber;
 	return 1;
 }
 
@@ -518,11 +525,12 @@ int runIflower(int index) {
 	}
 }
 
-int addIfequal(int index, int addr, int arg1Addr, int arg2Addr, int arg3Addr) {
+int addIfequal(int index, int addr, int arg1Addr, int arg2Addr, int arg3Addr, int lineNumber) {
 	scripts[index].code[addr].type = ifequalCode;
 	scripts[index].code[addr].arg1Addr = arg1Addr;
 	scripts[index].code[addr].arg2Addr = arg2Addr;
 	scripts[index].code[addr].arg3Addr = arg3Addr;
+	scripts[index].code[addr].lineNumber = lineNumber;
 	return 1;
 }
 
@@ -545,12 +553,12 @@ int runIfequal(int index) {
 }
 
 
-
-int addGetProp(int index, int addr, int arg1Addr, int arg2Addr, int arg3Addr) {
+int addGetProp(int index, int addr, int arg1Addr, int arg2Addr, int arg3Addr, int lineNumber) {
 	scripts[index].code[addr].type = getpropCode;
 	scripts[index].code[addr].arg1Addr = arg1Addr;
 	scripts[index].code[addr].arg2Addr = arg2Addr;
 	scripts[index].code[addr].arg3Addr = arg3Addr;
+	scripts[index].code[addr].lineNumber = lineNumber;
 	return 1;
 }
 
@@ -577,11 +585,12 @@ int runGetProp(int index) {
 	return ++ip;
 }
 
-int addSetProp(int index, int addr, int arg1Addr, int arg2Addr, int arg3Addr) {
+int addSetProp(int index, int addr, int arg1Addr, int arg2Addr, int arg3Addr, int lineNumber) {
 	scripts[index].code[addr].type = setpropCode;
 	scripts[index].code[addr].arg1Addr = arg1Addr;
 	scripts[index].code[addr].arg2Addr = arg2Addr;
 	scripts[index].code[addr].arg3Addr = arg3Addr;
+	scripts[index].code[addr].lineNumber = lineNumber;
 	return 1;
 }
 
@@ -612,7 +621,7 @@ int runSetProp(int index) {
 //--------------------------------------------------------------------------------------------------------
 //Executor and Compiler
 bool executeInstruction(int index) {
-	int ip = scripts[index].ip;
+	int ip = scripts[index].ip;	
 	//Serial.println("CODE -->" + String(ip));
 	switch (scripts[index].code[ip].type)
 	{
@@ -652,8 +661,14 @@ bool executeInstruction(int index) {
 	default:
 		scripts[index].ip = -1;
 	}
+
+	
 	//Serial.println("CODE --<" + String(scripts[index].ip));
-	if (scripts[index].ip != -1) return true;
+	if (scripts[index].ip != -1)
+	{
+		scripts[index].debugLineNumber = scripts[index].code[scripts[index].ip].lineNumber;
+		return true;
+	}
 	else
 		return false;
 }
@@ -677,6 +692,8 @@ bool scriptsRun() {
 					filesWriteInt(scripts[i].name + ".rf", scripts[i].ip); //up RF flag (store last instruction)
 					bool result = executeInstruction(i);
 					filesWriteInt(scripts[i].name + ".rf", -1); //escapre RF flag 
+
+
 					if (!result)
 					{
 						scripts[i].status = stopStatus;
@@ -684,12 +701,51 @@ bool scriptsRun() {
 					}
 					scripts[i].quantCounter++;
 					if (scripts[i].quantCounter > scripts[i].timeQuant) break;
+
 				}
 			}
 		}
 	}
 	return true;
 }
+
+String scriptsDebugNext(String name) 
+{
+	int index = scriptsGetByIndex(name);
+	if (index != -1)
+	{
+
+		if (scripts[index].name.length() != 0)
+		{
+			if (scripts[index].status == debugStatus)
+			{
+				bool result = executeInstruction(index);
+
+				if (!result)
+				{
+					scripts[index].status = stopStatus;
+				}
+			}
+		}
+		return scriptsGetAll();
+	}
+	return "";
+}
+
+bool scriptsStartDebug(String name)
+{
+	Serial.println("-->DEBUG" + name);
+	int index = scriptsGetByIndex(name);
+	Serial.println("-->DEBUG" + String(index));
+	if (index != -1)
+	{
+		scripts[index].status = debugStatus;
+		scripts[index].ip = 0;
+		return true;
+	}
+	return false;
+}
+
 
 String clearComment(String str)
 {
@@ -841,7 +897,7 @@ String scriptsCompile(int index) {
 				if ((command.indexOf("=") > 0) && (command.indexOf("if ") != 0)) //если есть символ "=" и это уже точно не var значит это выражение +,-,\ или * И ЭТО НЕ ИНСТРУКЦИЯ IF GOTO
 				{
 					//синтаксис математических выражений:
-					//<переменная><=><переменная|значение>[<+|-|\|*><переменная|значение>]
+					//<переменная><=><переменная|значение>[<+|-|\|*><переменная|значение>]					
 					//^^^обязательно переменная, обязательно знак развенства, обязательно переменая или числовое значение [возможна вторая часть, если она есть обязательно математический оператор
 					//<+|-|\|*>,обезательно переменная или значение]
 					//без второго аргумента это инструкция let (присвоить a=100, b=c)
@@ -874,7 +930,7 @@ String scriptsCompile(int index) {
 							if (argsfloat == 0) { args = "0"; }
 							argsAddr = pushData(index, "args" + String(lineCount), args); //создаем переменую для аргумента, сохраняем адрес
 						}
-						addLet(index, scripts[index].codeCount, resultAddr, argsAddr);
+						addLet(index, scripts[index].codeCount, resultAddr, argsAddr, lineCount);
 					}
 					else
 					{
@@ -908,9 +964,9 @@ String scriptsCompile(int index) {
 						}
 
 						//результат и оба аргумента определены, компилируем в нужную инструкцию
-						if (mathOperator == '+') { addSum(index, scripts[index].codeCount, resultAddr, arg1Addr, arg2Addr); }
+						if (mathOperator == '+') { addSum(index, scripts[index].codeCount, resultAddr, arg1Addr, arg2Addr, lineCount); }
 						else
-							if (mathOperator == '-') { addSub(index, scripts[index].codeCount, resultAddr, arg1Addr, arg2Addr); }
+							if (mathOperator == '-') { addSub(index, scripts[index].codeCount, resultAddr, arg1Addr, arg2Addr, lineCount); }
 						//TODO: else '\' '*'
 							else
 							{ //такого не должно случится, но если что то совсем пошло не так
@@ -923,6 +979,7 @@ String scriptsCompile(int index) {
 				} //ENDOF парсер математических выражений
 				//парсер условного перехода IF GOTO ---------------------------------------------------------------------------
 				else
+					//<if><переменная|значение><">"|"<|"="><переменная|значение><goto><метка>
 					if (command.indexOf("if ") == 0)
 					{
 						if (command.indexOf("goto") == -1)
@@ -942,7 +999,6 @@ String scriptsCompile(int index) {
 							break;
 						}
 
-						Serial.println("ARGS2-->" + args);
 						String ifOperator = "";
 						if (args.indexOf(">") > 0) { ifOperator = ">"; }
 						else
@@ -976,15 +1032,15 @@ String scriptsCompile(int index) {
 						}
 						//все аргументы установлены, создаем соответсвующею инструкцию 
 						if (ifOperator == ">") {
-							addIfupper(index, scripts[index].codeCount, arg1Addr, arg2Addr, gotoAddr);
+							addIfupper(index, scripts[index].codeCount, arg1Addr, arg2Addr, gotoAddr, lineCount);
 						}
 						else
 							if (ifOperator == "<") {
-								addIflower(index, scripts[index].codeCount, arg1Addr, arg2Addr, gotoAddr);
+								addIflower(index, scripts[index].codeCount, arg1Addr, arg2Addr, gotoAddr, lineCount);
 							}
 							else
 								if (ifOperator == "=") {
-									addIfequal(index, scripts[index].codeCount, arg1Addr, arg2Addr, gotoAddr);
+									addIfequal(index, scripts[index].codeCount, arg1Addr, arg2Addr, gotoAddr, lineCount);
 								}
 
 						scripts[index].codeCount++;
@@ -1015,13 +1071,13 @@ String scriptsCompile(int index) {
 
 						if (instruction.indexOf("write ") == 0) //write
 						{
-							addWrite(index, scripts[index].codeCount, getDataAddr(index, arg1));
+							addWrite(index, scripts[index].codeCount, getDataAddr(index, arg1), lineCount);
 							scripts[index].codeCount++;
 						}
 						else
 							if (instruction.indexOf("goto ") == 0) //goto
 							{
-								addGoto(index, scripts[index].codeCount, getDataAddr(index, arg1));
+								addGoto(index, scripts[index].codeCount, getDataAddr(index, arg1), lineCount);
 								scripts[index].codeCount++;
 							}
 							else
@@ -1029,7 +1085,7 @@ String scriptsCompile(int index) {
 								{
 									int arg1Addr = pushData(index, arg1 + String(scripts[index].codeCount), arg1);
 									int arg2Addr = pushData(index, arg2 + String(scripts[index].codeCount), arg2);
-									addGetProp(index, scripts[index].codeCount, arg1Addr, arg2Addr, getDataAddr(index, arg3));
+									addGetProp(index, scripts[index].codeCount, arg1Addr, arg2Addr, getDataAddr(index, arg3), lineCount);
 									scripts[index].codeCount++;
 								}
 								else
@@ -1042,7 +1098,7 @@ String scriptsCompile(int index) {
 										{
 											arg3Addr = pushData(index, "arg3" + String(lineCount), arg3);
 										}
-										addSetProp(index, scripts[index].codeCount, arg1Addr, arg2Addr, arg3Addr);
+										addSetProp(index, scripts[index].codeCount, arg1Addr, arg2Addr, arg3Addr, lineCount);
 										scripts[index].codeCount++;
 									}
 									else

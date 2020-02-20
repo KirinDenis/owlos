@@ -1,13 +1,16 @@
 ﻿var stopScriptStatus = 0;  //скрипт остановлен не выполняется
 var runScriptStatus = 1;   //скрипт выполняется
+var debugScriptStatus = 4;
 var compilerScriptErrorStatus = 2; //ошибка компиляции скрипта
 var runtimeScriptErrorStatus = 3; //ошибка выполнения скрипта (возможно был фатальный сбой, не возобновляейте выполнение такого скрипта, без проверки). 
+
 
 function createScript(_node) {
     return {
         node: _node,
         name: "",
         status: "",
+        debuglinenumber: "",
         bytecode: "",
         codecount: 0,
         datacount: 0,
@@ -90,6 +93,28 @@ var scriptsManager = {
         // %3E >
         // %3C <
         httpPostAsyncWithErrorReson(script.node.host + "createscript", "?name=" + escape(script.name), byteCodeEscape, asyncReciever, sender);
+    },
+
+    startDebug: function (script) {
+        httpGet(script.node.host + "startdebugscript?name=" + escape(script.name));
+    },
+
+    debugNext: function (script) {
+        var httpResult = httpGet(script.node.host + "debugnextscript?name=" + escape(script.name));
+        if (!httpResult.indexOf("%error") == 0) {
+            script.node.networkStatus = NET_ONLINE;
+            scriptsManager.parseScripts(httpResult, script.node);
+            return true;
+        }
+        else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
+            if (httpResult.indexOf("reponse") != -1) {
+                script.node.networkStatus = NET_ERROR;
+            }
+            else {
+                script.node.networkStatus = NET_OFFLINE;
+            }
+        }
+        return false;
     },
 
     delete: function (script, asyncReciever, sender) {

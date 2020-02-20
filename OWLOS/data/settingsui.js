@@ -40,8 +40,8 @@ var settingsUI = {
                 var nodeLi = nodesSideBar.appendChild(document.createElement("li"));
                 nodeLi.id = "nodeNavItem" + node.nodenickname;
                 nodeLi.node = node;
-                
-                var nodeAhref = nodeLi.appendChild(document.createElement("a"));                
+
+                var nodeAhref = nodeLi.appendChild(document.createElement("a"));
                 nodeAhref.href = "#" + node.nodenickname + "submenu";
                 nodeAhref.setAttribute("data-toggle", "collapse");
                 nodeAhref.setAttribute("aria-expanded", "false");
@@ -69,7 +69,7 @@ var settingsUI = {
                 scriptsAhref.parentLi = nodeLi;
                 //filesHRef.style.color = theme.warning;
                 scriptsAhref.setAttribute("data-toggle", "collapse");
-                scriptsAhref.onclick = settingsUI.deviceAnchorClick;                
+                scriptsAhref.onclick = settingsUI.deviceAnchorClick;
                 scriptsAhref.href = "#" + node.nodenickname + "scriptssubmenu";
                 scriptsAhref.node = node;
 
@@ -77,7 +77,7 @@ var settingsUI = {
 
                 var scriptsAhrefSpan = scriptsAhref.appendChild(document.createElement("span"));
                 scriptsAhrefSpan.className = "menu-text";
-                scriptsAhrefSpan.innerHTML = "<b>" + getLang("scripts") + "</b>";                
+                scriptsAhrefSpan.innerHTML = "<b>" + getLang("scripts") + "</b>";
 
                 scriptsAhrefSpan = scriptsAhref.appendChild(document.createElement("span"));
                 scriptsAhrefSpan.className = "badge badge-pill badge-warning";
@@ -85,7 +85,7 @@ var settingsUI = {
                 scriptsAhrefSpan.innerHTML = "0";
                 scriptsAhrefSpan.devicesCount = 0;
 
-               
+
                 var scriptsSubmenuUl = scriptsNavItem.appendChild(document.createElement("ul"));
                 scriptsSubmenuUl.className = "collapse list-unstyled";
                 scriptsSubmenuUl.id = node.nodenickname + "scriptssubmenu";
@@ -109,7 +109,7 @@ var settingsUI = {
                 scriptsManager.onChange = settingsUI.onScriptChange;
                 scriptsManager.onDelete = settingsUI.onScriptDelete;
 
-                
+
                 //restful items main menu ----------------------
                 var RESTfulNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
                 RESTfulNavItem.className = "nav-item";
@@ -245,20 +245,20 @@ var settingsUI = {
     },
 
     onScriptNew: function (script) {
-        var scriptsSubmenuUl = document.getElementById(script.node.nodenickname + "scriptssubmenu"); 
-        if (scriptsSubmenuUl == undefined) return; 
+        var scriptsSubmenuUl = document.getElementById(script.node.nodenickname + "scriptssubmenu");
+        if (scriptsSubmenuUl == undefined) return;
 
-        var scriptsLi = scriptsSubmenuUl.appendChild(document.createElement("li")); 
+        var scriptsLi = scriptsSubmenuUl.appendChild(document.createElement("li"));
         scriptsLi.id = script.node.nodenickname + "_" + script.name + "li";
         scriptsLi.className = "nav-item";
-        
-        var scriptsAhref = scriptsLi.appendChild(document.createElement("a")); 
+
+        var scriptsAhref = scriptsLi.appendChild(document.createElement("a"));
         scriptsAhref.id = script.node.nodenickname + "_" + script.name + "scriptahref";
         scriptsAhref.className = "nav-link";
         scriptsAhref.setAttribute("data-toggle", "tab");
         scriptsAhref.href = "#" + script.node.nodenickname + "_" + script.name + "panel"; //якорь на панель 
         scriptsAhref.node = script.node; //привязываем пункт меню к ноде 
-        scriptsAhref.innerText = script.name; 
+        scriptsAhref.innerText = script.name;
         scriptsAhref.onclick = settingsUI.deviceAnchorClick; //обработчик клика на пунк меню (переключение панелей)
         scriptsAhref.parentLi = scriptsLi; //сохраняем родительский deviceId
         scriptsLi.scriptsAhref = scriptsAhref;
@@ -276,7 +276,7 @@ var settingsUI = {
         var nodesPropsPanel = document.getElementById("nodesPropsPanel");
         var scriptTab = nodesPropsPanel.appendChild(document.createElement('div'));
         scriptTab.id = script.node.nodenickname + "_" + script.name + "panel";
-        scriptTab.className = "tab-pane fade md-form"; 
+        scriptTab.className = "tab-pane fade md-form";
         scriptsLi.panel = scriptTab;
 
         var scriptHolder = scriptTab.appendChild(document.createElement('div'));
@@ -330,7 +330,22 @@ var settingsUI = {
         scriptPauseButtonSpan.innerHTML = " " + getLang("scriptpause");
 
         scriptExecuteButton.scriptPauseButton = scriptPauseButton;
-       
+
+        var scriptDebugButton = byteCodeCardDiv.appendChild(document.createElement('button'));
+        scriptDebugButton.type = "button";
+        scriptDebugButton.id = script.node.nodenickname + "_" + script.name + "pauseButton";
+        scriptDebugButton.className = "btn btn-sm btn-warning";
+        scriptDebugButton.script = script;
+        scriptDebugButton.node = script.node;
+        scriptDebugButton.scriptExecuteButton = scriptExecuteButton;
+        scriptDebugButton.textArea = textArea;
+        scriptDebugButton.labels = label;
+        scriptDebugButton.onclick = settingsUI.scriptDebugClick;
+        scriptDebugButton.appendChild(document.createElement("i")).className = "fa fa-bug";
+        scriptDebugButton.debugNext = false;
+        var scriptDebugButtonSpan = scriptDebugButton.appendChild(document.createElement("span"));
+        scriptDebugButtonSpan.innerHTML = " " + getLang("scriptstartdebug");
+
         var scriptDeleteButton = byteCodeCardDiv.appendChild(document.createElement('button'));
         scriptDeleteButton.type = "button";
         scriptDeleteButton.id = script.node.nodenickname + "_" + script.name + "deleteButton";
@@ -339,9 +354,9 @@ var settingsUI = {
         scriptDeleteButton.node = script.node; //когда ноду удалят и прийдет ActiveReciever - Script может уже не быть
         scriptDeleteButton.scriptExecuteButton = scriptExecuteButton;
         scriptDeleteButton.scriptPauseButton = scriptPauseButton;
-        scriptDeleteButton.textArea = textArea;        
-        scriptDeleteButton.labels = label;        
-        scriptDeleteButton.onclick = settingsUI.scriptDeleteClick;        
+        scriptDeleteButton.textArea = textArea;
+        scriptDeleteButton.labels = label;
+        scriptDeleteButton.onclick = settingsUI.scriptDeleteClick;
         scriptDeleteButton.appendChild(document.createElement("i")).className = "fa fa-trash";
         var scriptDeleteButtonSpan = scriptDeleteButton.appendChild(document.createElement("span"));
         scriptDeleteButtonSpan.innerHTML = " " + getLang("scriptdelete");
@@ -367,7 +382,7 @@ var settingsUI = {
         var statusLabel = scriptStatusPre.appendChild(document.createElement('label'));
         statusLabel.id = script.node.nodenickname + "_" + script.name + "statuslabel";
         settingsUI.buildScriptStatus(script);
-                
+
     },
 
     onScriptChange: function (script) {
@@ -398,11 +413,69 @@ var settingsUI = {
             }
         }
         settingsUI.buildScriptStatus(script);
+        if (script.status == debugScriptStatus) {
+            settingsUI.selectCodeLine(textArea, script.debuglinenumber);
+        }
+    },
+
+    //https://stackoverflow.com/questions/13650534/how-to-select-line-of-text-in-textarea
+    selectCodeLine: function selectTextareaLine(tarea, lineNum) {
+        lineNum--; // array starts at 0
+        var lines = tarea.value.split("\n");
+
+        // calculate start/end
+        var startPos = 0, endPos = tarea.value.length;
+        for (var x = 0; x < lines.length; x++) {
+            if (x == lineNum) {
+                break;
+            }
+            startPos += (lines[x].length + 1);
+
+        }
+
+        var endPos = lines[lineNum].length + startPos;
+
+        // do selection
+        // Chrome / Firefox
+
+        if (typeof (tarea.selectionStart) != "undefined") {
+            tarea.focus();
+            tarea.selectionStart = startPos;
+            tarea.selectionEnd = endPos;
+            return true;
+        }
+
+        // IE
+        if (document.selection && document.selection.createRange) {
+            tarea.focus();
+            tarea.select();
+            var range = document.selection.createRange();
+            range.collapse(true);
+            range.moveEnd("character", endPos);
+            range.moveStart("character", startPos);
+            range.select();
+            return true;
+        }
+
+        return false;
+    },
+
+    scriptDebugClick: function (event) {
+        var scriptDebugButton = event.currentTarget;
+        if (scriptDebugButton.debugNext == false) {
+            scriptDebugButton.debugNext = true;
+            scriptsManager.startDebug(scriptDebugButton.script);
+        }
+        else {
+            scriptsManager.debugNext(scriptDebugButton.script);
+            
+        }
     },
 
     buildScriptStatus: function (script) {
         var statusLabel = document.getElementById(script.node.nodenickname + "_" + script.name + "statuslabel");
         statusLabel.innerHTML = "<b>Status: </b>" + script.status + "\n" +
+            "<b>debuglinenumber: </b>" + script.debuglinenumber + "\n" +
             "<b>codecount: </b>" + script.codecount + "\n" +
             "<b>datacount: </b>" + script.datacount + "\n" +
             "<b>timequant: </b>" + script.timequant + "\n" +
@@ -411,7 +484,7 @@ var settingsUI = {
     },
 
     onScriptDelete: function (script) {
-        var scriptsLi = document.getElementById(script.node.nodenickname + "_" + script.name + "li");        
+        var scriptsLi = document.getElementById(script.node.nodenickname + "_" + script.name + "li");
         scriptsLi.parentElement.removeChild(scriptsLi);
         scriptsLi.innerHTML = "";
 
@@ -419,13 +492,13 @@ var settingsUI = {
         scriptsPanel.parentElement.removeChild(scriptsPanel);
         scriptsPanel.innerHTML = "";
 
-        var scriptsSubmenuUl = document.getElementById(script.node.nodenickname + "scriptssubmenu"); 
+        var scriptsSubmenuUl = document.getElementById(script.node.nodenickname + "scriptssubmenu");
         for (childKey in scriptsSubmenuUl.childNodes) {
             var scriptsLi = scriptsSubmenuUl.childNodes[childKey];
-            if (scriptsLi.scriptsAhref != undefined) {        
+            if (scriptsLi.scriptsAhref != undefined) {
                 var event = {
                     currentTarget: scriptsLi.scriptsAhref
-                }                
+                }
                 settingsUI.deviceAnchorClick(event);
                 $(scriptsLi.scriptsAhref).toggleClass("active");
                 $(scriptsLi.panel).toggleClass("active show");
@@ -507,7 +580,7 @@ var settingsUI = {
 
         if (!HTTPResult.indexOf("%error") == 0) {
             scriptExecuteButton.className = "btn btn-sm btn-success";
-            script.node.networkStatus = NET_ONLINE;            
+            script.node.networkStatus = NET_ONLINE;
             scriptsManager.refresh(script.node);
             label.style.color = theme.success;
             label.innerText = "execute-OK";
@@ -544,12 +617,12 @@ var settingsUI = {
         scriptModalDeleteButton.appendChild(document.createElement("i")).className = "fa fa-trash";
         var scriptModalDeleteButtonSpan = scriptModalDeleteButton.appendChild(document.createElement("span"));
         scriptModalDeleteButtonSpan.innerHTML = " " + getLang("scriptdelete");
-        
+
         $("#deletescriptModal").modal('show');
         return false;
     },
 
-    scriptModalDeleteClick: function (event) {        
+    scriptModalDeleteClick: function (event) {
         var scriptModalDeleteButton = event.currentTarget;
         var scriptDeleteButton = scriptModalDeleteButton.scriptDeleteButton;
         $("#deletescriptModal").modal('hide');
@@ -567,7 +640,7 @@ var settingsUI = {
         textArea.style.backgroundColor = theme.secondary;
         textArea.disabled = true;
 
-        scriptsManager.delete(script, settingsUI.scriptDeleteAsyncReciever, scriptDeleteButton); 
+        scriptsManager.delete(script, settingsUI.scriptDeleteAsyncReciever, scriptDeleteButton);
         return false;
     },
 
@@ -618,15 +691,15 @@ var settingsUI = {
         var addScriptButton = modalFooter.appendChild(document.createElement("button"));
         addScriptButton.type = "button";
         addScriptButton.id = "addscriptModalButton";
-        addScriptButton.className = "btn btn-sm btn-success";        
-        addScriptButton.node = scriptsAddAhref.node; 
+        addScriptButton.className = "btn btn-sm btn-success";
+        addScriptButton.node = scriptsAddAhref.node;
         addScriptButton.onclick = settingsUI.createScriptUIClick;
         addScriptButton.innerText = getLang("addscriptbutton");
 
         var addScriptError = formGroup.appendChild(document.createElement("label"));
         addScriptError.className = "text-danger";
 
-        addScriptButton.addScriptEdit = addScriptEdit;        
+        addScriptButton.addScriptEdit = addScriptEdit;
         addScriptButton.addScriptError = addScriptError;
 
         $("#addscriptModal").modal('show');
@@ -643,7 +716,7 @@ var settingsUI = {
         }
         addScriptButton.script.name = addScriptEdit.value;
         scriptsManager.createOrReplace(addScriptButton.script, settingsUI.createScriptAsynReciever, addScriptButton);
-        return false; 
+        return false;
     },
 
     createScriptAsynReciever: function (HTTPResult, sender) {
@@ -653,8 +726,8 @@ var settingsUI = {
 
         if (!HTTPResult.indexOf("%error") == 0) {
             node.networkStatus = NET_ONLINE;
-            $("#addscriptModal").modal('hide');    
-            scriptsManager.refresh(node);            
+            $("#addscriptModal").modal('hide');
+            scriptsManager.refresh(node);
         }
         else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
             if (HTTPResult.indexOf("reponse") != -1) {
@@ -684,7 +757,7 @@ var settingsUI = {
             deviceLi.className = "nav-item";
 
             //submenu devices count 
-            
+
             var RESTfulAhrefSpan = document.getElementById(device._nodenickname + "RESTfulAhrefDeviceCountSpan");
             RESTfulAhrefSpan.devicesCount++;
             RESTfulAhrefSpan.innerHTML = parseInt(RESTfulAhrefSpan.devicesCount);
@@ -908,7 +981,7 @@ var settingsUI = {
         document.getElementById("sidebarText").style.display = "none";
         document.getElementById("sidebarText").innerText = "";
         document.getElementById("dashboardButtonsPanel").style.display = "none";
-        
+
         //$(aHref).toggleClass("active");
 
         document.location = aHref.href;
@@ -1125,7 +1198,7 @@ var settingsUI = {
                 resetButton.type = "button";
                 resetButton.className = "btn btn-sm btn-danger";
                 resetButton.id = "resetModalButton";
-                resetButton.nodeHost = nodeHost;                
+                resetButton.nodeHost = nodeHost;
                 resetButton.onclick = SettingsIU.resetClick;
                 resetButton.innerText = getLang("reset");
             }

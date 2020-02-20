@@ -912,6 +912,43 @@ void handleDeleteScript()
 	handleNotFound();
 }
 
+void handleStartDebugScript()
+{
+	debugOut(WebServerId, "StartDebug 11 ");
+	webServerAddCORSHeaders();
+	debugOut(WebServerId, "StartDebug 22 ");
+	if (webServer.args() > 0)
+	{
+		debugOut(WebServerId, "StartDebug 33 ");
+		if (webServer.argName(0).equals("name"))
+		{
+			debugOut(WebServerId, "StartDebug 44 ");
+			webServer.send(200, "text/plain", String(scriptsStartDebug(webServer.arg(0))));
+			return;
+		}
+	}
+	handleNotFound();
+}
+
+void handleDebugNextScript()
+{
+	debugOut(WebServerId, "StartDebug 1 ");
+	webServerAddCORSHeaders();
+	debugOut(WebServerId, "StartDebug 2 ");
+	if (webServer.args() > 0)
+	{
+		debugOut(WebServerId, "StartDebug 3 ");
+		if (webServer.argName(0).equals("name"))
+		{
+			debugOut(WebServerId, "StartDebug 4 ");
+			webServer.send(200, "text/plain", String(scriptsDebugNext(webServer.arg(0))));
+			return;
+		}
+	}
+	handleNotFound();
+}
+
+
 
 //----------------------------------------------------------------------------------------------
 bool webServerBegin()
@@ -972,7 +1009,10 @@ bool webServerBegin()
 	webServer.on("/updatefirmware", handleUpdateFirmware);
 	webServer.on("/createscript", HTTP_POST, handleCreateScript);
 	webServer.on("/getallscripts", handleGetAllScripts);
-	webServer.on("/deletescript", handleDeleteScript);
+	webServer.on("/startdebugscript", handleStartDebugScript);
+	webServer.on("/debugnextscript", handleDebugNextScript);
+	
+
 	
 	webServer.begin();
 
