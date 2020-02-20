@@ -510,7 +510,7 @@ int runIflower(int index) {
 	if (arg1 < arg2) {
 		if (scripts[index].code[ip].arg3Addr == -1) return -1;
 		String value3 = scripts[index].data[scripts[index].code[ip].arg3Addr].value;
-		int arg3 = std::atoi(value3.c_str());		
+		int arg3 = std::atoi(value3.c_str());
 		return arg3;
 	}
 	else {
@@ -757,7 +757,7 @@ String scriptsCompile(int index) {
 				//однако анализ займет процессорное время, а это значит компиляция будет более медленее, по этой причине жертвуем памятью и выигрываем 
 				//в скорости резирвируя место для двух аргументов 
 				//например a=b+c не требует еще памяти в data[], однако a=100+20 требует резервирования места под две переменных
-				if (((command.indexOf("setprop ") == 0) || (command.indexOf("getprop ") == 0))
+				if ((command.indexOf("getprop ") == 0)
 					||
 					(command.indexOf("if ") == 0) //if goto инструкция тоже может создать две переменных, даже в случае if 10 > 20 goto begin (это соответсвует синтаксису)
 					||
@@ -766,6 +766,11 @@ String scriptsCompile(int index) {
 				{
 					_dataCount += 2;
 				}
+				else
+					if (command.indexOf("setprop ") == 0)
+					{
+						_dataCount += 3;
+					}
 
 			}
 		}
@@ -866,11 +871,7 @@ String scriptsCompile(int index) {
 						if (argsAddr == -1) //переменная для не указана, возможно это численое выражение, например b=77 
 						{
 							float argsfloat = args.toFloat();
-							if (argsfloat == 0)
-							{
-								result = "bad argument at right side of expression at line: " + String(lineCount);
-								break;
-							}
+							if (argsfloat == 0) { args = "0"; }
 							argsAddr = pushData(index, "args" + String(lineCount), args); //создаем переменую для аргумента, сохраняем адрес
 						}
 						addLet(index, scripts[index].codeCount, resultAddr, argsAddr);
@@ -931,9 +932,9 @@ String scriptsCompile(int index) {
 						}
 
 						String args = command.substring(command.indexOf(" ") + 1);
-						args = clearSpace(args.substring(0, args.indexOf("goto")), false);						
+						args = clearSpace(args.substring(0, args.indexOf("goto")), false);
 						String gotoArg = clearSpace(command.substring(command.indexOf("goto") + 4), false);
-						
+
 						int gotoAddr = getDataAddr(index, gotoArg);
 						if (gotoAddr == -1)
 						{
@@ -1023,13 +1024,6 @@ String scriptsCompile(int index) {
 								addGoto(index, scripts[index].codeCount, getDataAddr(index, arg1));
 								scripts[index].codeCount++;
 							}
-						/*else
-							if (instruction.indexOf("ifupper ") == 0) //ifupper
-							{
-								addIfupper(index, scripts[index].codeCount, getDataAddr(index, arg1), getDataAddr(index, arg2), getDataAddr(index, arg3));
-								scripts[index].codeCount++;
-							}
-							*/
 							else
 								if (instruction.indexOf("getprop ") == 0) //getprop
 								{
@@ -1043,20 +1037,19 @@ String scriptsCompile(int index) {
 									{
 										int arg1Addr = pushData(index, arg1 + String(scripts[index].codeCount), arg1);
 										int arg2Addr = pushData(index, arg2 + String(scripts[index].codeCount), arg2);
-										addSetProp(index, scripts[index].codeCount, arg1Addr, arg2Addr, getDataAddr(index, arg3));
+										int arg3Addr = getDataAddr(index, arg3);
+										if (arg3Addr == -1)
+										{
+											arg3Addr = pushData(index, "arg3" + String(lineCount), arg3);
+										}
+										addSetProp(index, scripts[index].codeCount, arg1Addr, arg2Addr, arg3Addr);
 										scripts[index].codeCount++;
 									}
 									else
-										if (instruction.indexOf("sub ") == 0) //sum
-										{
-											addSub(index, scripts[index].codeCount, getDataAddr(index, arg1), getDataAddr(index, arg2), getDataAddr(index, arg3));
-											scripts[index].codeCount++;
-										}
-										else
-										{
-											result = "bad instruction at line: " + String(lineCount);
-											break;
-										}
+									{
+										result = "bad instruction at line: " + String(lineCount);
+										break;
+									}
 					} //ENFOF парсеры остальных инструкций ------------------------------------------------------------------------------
 			}
 		}
