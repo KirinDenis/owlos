@@ -41,18 +41,18 @@
 - Зайдите в OWL OS UI, укажите какие устройства были подключены. Теперь вы можете упралять подключенными устройствами через сетъ.
 - В OWL OS UI скрипт редакторе опишите логику взаимодействия устройств:
 
-Скрипт состоит с двух блоков. Первый - определение необходимого числа переменных, второй непосредственное исполнение операций (инструкций). При использований оператора перехода на строку, 
-нулевой строкой считается строка начала блока выполнения операций (инструкций). 
+Скрипт состоит с двух блоков. Первый - определение необходимого числа переменных, второй непосредственное исполнение операций (инструкций). При использований оператора перехода на строку,
+нулевой строкой считается строка начала блока выполнения операций (инструкций).
 
 Пример байт кода (проверяет значение освещенности и если освещенность выше заданной отключает освещение):
-    
-	var _light=0                                  // опреление переменной _light и присвоение ей значения 0. Первый блок, в данном примере он состоит всего из одной строки     
-    getDeviceProp lightsensor, light, _light      //получить текущие показания освещенности light с сенсора с ID lightsensor и записать этого значение в переменную _light. Начало второго блока. Эта строка считается "нулевой" для оператора перехода goto
-    ifupper _light, 300, 4                        //если показания освещенности более 300 единиц выполнить инструкцию из строки 4
-    setprop rele, data, 1                         //переходим сюда, если показания освещенности меньше или равны 300, замыкаем (включаем) реле с ID rele
-    goto 0                                        //переход на строку 0 для проверки показания освещенности light с сенсора с ID lightsensor и записать этого значение в переменную _light
-    setprop rele, data, 0                         //мы перешли сюда из 3 строки, если освещенность выше 300 ( _light > 300 ) - размыкаем (выключаем) реле
-    goto 0                                        //переход на строку 0 для проверки показания освещенности light с сенсора с ID lightsensor и записать этого значение в переменную _light
+
+	var _light=0                                  // опреление переменной _light и присвоение ей значения 0. Первый блок, в данном примере он состоит всего из одной строки
+	getDeviceProp lightsensor, light, _light      //получить текущие показания освещенности light с сенсора с ID lightsensor и записать этого значение в переменную _light. Начало второго блока. Эта строка считается "нулевой" для оператора перехода goto
+	ifupper _light, 300, 4                        //если показания освещенности более 300 единиц выполнить инструкцию из строки 4
+	setprop rele, data, 1                         //переходим сюда, если показания освещенности меньше или равны 300, замыкаем (включаем) реле с ID rele
+	goto 0                                        //переход на строку 0 для проверки показания освещенности light с сенсора с ID lightsensor и записать этого значение в переменную _light
+	setprop rele, data, 0                         //мы перешли сюда из 3 строки, если освещенность выше 300 ( _light > 300 ) - размыкаем (выключаем) реле
+	goto 0                                        //переход на строку 0 для проверки показания освещенности light с сенсора с ID lightsensor и записать этого значение в переменную _light
 
 - Изменяйте сценарий, изменяйте логику, добавляйте новые устройства, добавляейте новые микроконтроллеры.
 
@@ -81,6 +81,7 @@
 #define subCode 7
 #define multCode 8
 #define devCode 9
+#define letCode 10
 //статусы скрипта 
 #define stopStatus 0  //скрипт остановлен не выполняется
 #define runStatus 1   //скрипт выполняется
@@ -146,7 +147,7 @@ Script.data массив хранящий все переменые скрипт
 
 					   script.data[var1,     var2,    var3 ... varBBB]
 											  ^        ^
-                                              |        |
+											  |        |
 
 script.code[inst1(arg1addr, arg2addr), inst2(arg1addr, arg2addr), inst3(..), inst4(..) ... instZZZ(..)]
 										^
@@ -162,8 +163,8 @@ Script scripts[scriptSize];
 
 //Script managment's functions -------------------------------
 
-void scriptsReset(int index) {	
-	if ((index < 0) || (index > scriptSize - 1)) return;	
+void scriptsReset(int index) {
+	if ((index < 0) || (index > scriptSize - 1)) return;
 	filesWriteInt(scripts[index].name + ".rf", -1); //escapre RF flag 
 	scripts[index].name = "";
 	scripts[index].byteCode = "";
@@ -173,8 +174,8 @@ void scriptsReset(int index) {
 	scripts[index].dataCount = 0;
 	scripts[index].timeQuant = 2;
 	scripts[index].quantCounter = 0;
-//	free(scripts[0].code);
-//	free(scripts[0].data);
+	//	free(scripts[0].code);
+	//	free(scripts[0].data);
 	return;
 }
 
@@ -208,7 +209,7 @@ String scriptsGetAll() {
 			result += "ip=" + String(scripts[i].ip) + "\r";
 			result += "variables=\n";
 			Serial.println("GAS 3");
-			for (int j = 0; j < scripts[i].dataCount; j++) {				
+			for (int j = 0; j < scripts[i].dataCount; j++) {
 				valueName = scripts[i].data[j].name;
 				value = scripts[i].data[j].value;
 				Serial.println("GAS 4 " + valueName + " " + value);
@@ -241,10 +242,10 @@ bool scriptsSave() {
 	return filesWriteString("scripts", scriptsGetAllClean());
 }
 
-bool scriptsDelete(String name) {	
+bool scriptsDelete(String name) {
 	int index = scriptsGetByIndex(name);
 	if (index != -1)
-	{		
+	{
 		scriptsReset(index);
 		scriptsSave();
 		return true;
@@ -304,15 +305,15 @@ int pushData(int index, String name, String value) {
 	//Serial.println("-->push data 1");
 	if (scripts[index].data[scripts[index].dataCount].name != nullptr)
 	{
-	 // free(scripts[index].data[scripts[index].dataCount].name);
-    }
+		// free(scripts[index].data[scripts[index].dataCount].name);
+	}
 	//Serial.println("-->push data 2");
 	scripts[index].data[scripts[index].dataCount].name = stringToArray(name);
 	//Serial.println("-->push data 3");
 
 	if (scripts[index].data[scripts[index].dataCount].value != nullptr)
 	{
-	//	free(scripts[index].data[scripts[index].dataCount].value);
+		//	free(scripts[index].data[scripts[index].dataCount].value);
 	}
 	scripts[index].data[scripts[index].dataCount].value = stringToArray(value);
 	//Serial.println("-->push data 4");
@@ -342,41 +343,48 @@ int getDataAddr(int index, String name) {
 
 //--------------------------------------------------------------------------------------------------------
 //instructions
+int addLet(int index, int addr, int resultAddr, int arg1Addr) {
+	scripts[index].code[addr].type = letCode;
+	scripts[index].code[addr].resultAddr = resultAddr;
+	scripts[index].code[addr].arg1Addr = arg1Addr;	
+	return 1;
+}
+
+int runLet(int index) {
+	int ip = scripts[index].ip;
+	if (scripts[index].code[ip].type != letCode) return -1;
+
+	String value1 = scripts[index].data[scripts[index].code[ip].arg1Addr].value;	
+
+	free(scripts[index].data[scripts[index].code[ip].resultAddr].value);
+	scripts[index].data[scripts[index].code[ip].resultAddr].value = stringToArray(value1);
+
+	return ++ip;
+}
+
+
 int addSum(int index, int addr, int resultAddr, int arg1Addr, int arg2Addr) {
 	scripts[index].code[addr].type = sumCode;
 	scripts[index].code[addr].resultAddr = resultAddr;
 	scripts[index].code[addr].arg1Addr = arg1Addr;
-	scripts[index].code[addr].arg2Addr = arg2Addr;	
+	scripts[index].code[addr].arg2Addr = arg2Addr;
 	return 1;
 }
 
 int runSum(int index) {
 	int ip = scripts[index].ip;
 	if (scripts[index].code[ip].type != sumCode) return -1;
+
 	String value1 = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
 	String value2 = scripts[index].data[scripts[index].code[ip].arg2Addr].value;
 
-	Serial.println("-->" + String(value1));
-	Serial.println("-->" + String(value2));
 	float arg1 = std::atof(value1.c_str());
 	float arg2 = std::atof(value2.c_str());
+
 	String result = String(arg1 + arg2);
-	Serial.println("-->" + String(result));
-
-
-	//TODO RELOCATE FOR scripts[index].data[scripts[index].code[ip].resultAddr].value
-	//strcpy(scripts[index].data[scripts[index].code[ip].resultAddr].value, result.c_str());
 
 	free(scripts[index].data[scripts[index].code[ip].resultAddr].value);
 	scripts[index].data[scripts[index].code[ip].resultAddr].value = stringToArray(result);
-
-
-	////Serial.println("!->" + String(scripts[index].code[ip].arg1Addr));
-	////Serial.println("!->" + String(scripts[index].code[ip].arg2Addr));
-	////Serial.println("!->" + String(scripts[index].code[ip].resultAddr));
-	////Serial.println("2!->" + String(scripts[index].data[scripts[index].code[ip].arg1Addr].value));
-	////Serial.println("2!->" + String(scripts[index].data[scripts[index].code[ip].arg2Addr].value));
-	////Serial.println("2!->" + String(scripts[index].data[scripts[index].code[ip].resultAddr].value));
 
 	return ++ip;
 }
@@ -446,7 +454,7 @@ int addGoto(int index, int addr, int arg1Addr) {
 
 int runGoto(int index) {
 	int ip = scripts[index].ip;
-	
+
 	if (scripts[index].code[ip].type != gotoCode) return -1;
 	if (scripts[index].code[ip].arg1Addr == -1) return -1;
 	String value1 = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
@@ -556,6 +564,9 @@ bool executeInstruction(int index) {
 	case stopCode: //default
 		scripts[index].ip = -1;
 		break;
+	case letCode:
+		scripts[index].ip = runLet(index);
+		break;
 	case sumCode:
 		scripts[index].ip = runSum(index);
 		break;
@@ -619,25 +630,35 @@ bool scriptsRun() {
 	return true;
 }
 
-String clearSpace(String str, bool atBegin)
+String clearComment(String str)
 {
-	Serial.println("--> clear: " + str);
+	if (str.indexOf("//") == -1) return str;
+	return str.substring(0, str.indexOf("//"));
+}
+
+String clearSpace(String str, bool atBegin)
+{	
+	if (atBegin)
+	{
+		str = clearComment(str);
+	}
 	String cleanString = "";
 	bool stopClean = !atBegin;
 	char spaceChar = 0x20;
-	char tabChar = 0x09;	
-	for (int i = 0; i < str.length(); i++) {		
+	char tabChar = 0x09;
+	for (int i = 0; i < str.length(); i++) {
 		if ((atBegin && (!stopClean)) || !atBegin)
 		{
 			if (str[i] == spaceChar) continue;
 			if (str[i] == tabChar) continue;
 		}
-		stopClean = true; 		
-		cleanString += str[i];		
+		stopClean = true;
+		cleanString += str[i];
 	}
-	Serial.println("<-- clear: " + cleanString);
 	return cleanString;
 }
+
+
 
 //return empty string if OK, else setring with error code
 String scriptsCompile(int index) {
@@ -664,19 +685,27 @@ String scriptsCompile(int index) {
 		command = clearSpace(byteCode.substring(0, linePos), true);
 		if (command.length() != 0)
 		{
-	
 
-		if ((command.indexOf("var ") == 0) || (command.indexOf(":") > 0)) _dataCount++;
-		else
-		{
-			_codeCount++;
-			if ((command.indexOf("setprop ") == 0) || (command.indexOf("getprop ") == 0)) //эти инструкции создают две переменные для хранения своих аргументов
+
+			if ((command.indexOf("var ") == 0) || (command.indexOf(":") > 0)) _dataCount++;
+			else
 			{
-				_dataCount += 2;
-			}
+				_codeCount++;
+				//эти инструкции создают две переменные для хранения своих аргументов
+				//при этом математические операторы могут использовать переменные в качестве аргументов, и память для них будет зарезервирована в var 
+				//однако анализ займет процессорное время, а это значит компиляция будет более медленее, по этой причине жертвуем памятью и выигрываем 
+				//в скорости резирвируя место для двух аргументов 
+				//например a=b+c не требует еще памяти в data[], однако a=100+20 требует резервирования места под две переменных
+				if (((command.indexOf("setprop ") == 0) || (command.indexOf("getprop ") == 0))
+					||
+					((command.indexOf("=") > 0) && ((command.indexOf("+") > 0) || (command.indexOf("-") > 0) || (command.indexOf("\\") > 0) || (command.indexOf("*") > 0)))) //для математических операторов
+					//^^ в строке есть оператор "=" и один из математических операторов
+				{
+					_dataCount += 2;
+				}
 
+			}
 		}
-	}
 		byteCode.remove(0, linePos + lineDelimiter.length());
 	}
 
@@ -707,12 +736,12 @@ String scriptsCompile(int index) {
 				String labelName = command.substring(0, command.indexOf(':'));
 				pushData(index, labelName, String(_codeCount));
 			}
-			else		
+			else
 				if (command.indexOf("var ") == -1)
 				{
 					_codeCount++;
 				}
-			
+
 		}
 		byteCode.remove(0, linePos + lineDelimiter.length());
 	}
@@ -740,55 +769,92 @@ String scriptsCompile(int index) {
 			}
 			else //Instruction parsin section
 			{
-				Serial.println("INSTRACTION: " + command);
+
 				if (command.indexOf("=") > 0) //если есть символ "=" и это уже точно не var значит это выражение +,-,\ или *
 				{
-					Serial.println("-> MATH");
-					String resultArg = clearSpace(command.substring(0, command.indexOf("=")), false);
-					String args = command.substring(command.indexOf("=") + 1);
-					if (args.indexOf("+") > 0)
-					{
-						int resultAddr = getDataAddr(index, resultArg);
-						int arg1Addr = getDataAddr(index, clearSpace(args.substring(0, args.indexOf("+")), false));
-						int arg2Addr = getDataAddr(index, clearSpace(args.substring(args.indexOf("+") + 1), false));
+					//синтаксис математических выражений:
+					//<переменная><=><переменная|значение>[<+|-|\|*><переменная|значение>]
+					//^^^обязательно переменная, обязательно знак развенства, обязательно переменая или числовое значение [возможна вторая часть, если она есть обязательно математический оператор
+					//<+|-|\|*>,обезательно переменная или значение]
+					//без второго аргумента это инструкция let (присвоить a=100, b=c)
 
-						if ((resultAddr == -1) || (arg1Addr == -1) || (arg2Addr == -1))
-						{
-							result = "variable no exists at line: " + String(lineCount);
-							break;
-						}
-						else
-						{
-							addSum(index, scripts[index].codeCount, resultAddr, arg1Addr, arg2Addr);
-						}
+					String resultArg = clearSpace(command.substring(0, command.indexOf("=")), false); //переменная для сохранения результата (левая часть выражения)
+					int resultAddr = getDataAddr(index, resultArg);
+					if (resultAddr == -1) // нет переменной для сохранения результата, ошибка, обрываем компиляцию
+					{
+						result = "result variable no exists at line: " + String(lineCount);
+						break;
 					}
-					else 
-						if (args.indexOf("-") > 0)
+					//парсим правую часть (аргументы)
+					String args = clearSpace(command.substring(command.indexOf("=") + 1), false);
+					//ищем математических оператор
+					char mathOperator = 0x00; // 0x00 если не найдем 
+					if (args.indexOf("+") > 0) { mathOperator = '+'; }
+					else
+						if (args.indexOf("-") > 0) { mathOperator = '-'; }
+					//TODO:... "\" и "*"
+
+					if (mathOperator == 0x00) //если не нашли математический оператор
+					{
+						//оператор "=" есть но нет математического оператора в правой части, возможно это инструкция let
+						//синтаксис <переменная><=><переменная|значение>
+						//в этом случае вся вторая часть выражения либо переменная, либо числовое значение
+						int argsAddr = getDataAddr(index, args);
+						if (argsAddr == -1) //переменная для не указана, возможно это численое выражение, например b=77 
 						{
-							int resultAddr = getDataAddr(index, resultArg);
-							int arg1Addr = getDataAddr(index, clearSpace(args.substring(0, args.indexOf("-")), false));
-							int arg2Addr = getDataAddr(index, clearSpace(args.substring(args.indexOf("-") + 1), false));
-							Serial.println("1->" + String(resultAddr));
-							Serial.println("2->" + String(arg1Addr));
-							Serial.println("3->" + String(arg2Addr));
-							if ((resultAddr == -1) || (arg1Addr == -1) || (arg2Addr == -1))
+							float argsfloat = args.toFloat();
+							if (argsfloat == 0) 
 							{
-								result = "variable no exists at line: " + String(lineCount);
+								result = "bad argument at right side of expression at line: " + String(lineCount);
 								break;
 							}
-							else
-							{
-								addSub(index, scripts[index].codeCount, resultAddr, arg1Addr, arg2Addr);
-							}
+							argsAddr = pushData(index, "args" + String(lineCount), args); //создаем переменую для аргумента, сохраняем адрес
 						}
-						else //TODO: делить и умножить
-						{ 
-							//если небыл математический оператор
-							result = "bad expression at line: " + String(lineCount);
-							break;
+						addLet(index, scripts[index].codeCount, resultAddr, argsAddr);
+					}
+					else
+					{
+						//парсим первый и второй параметр выражения зная математический оператор (разрезаем на arg1[mathOperator]arg2 --> a+b c-100 2*x)
+						String arg1 = clearSpace(args.substring(0, args.indexOf(mathOperator)), false);
+						String arg2 = clearSpace(args.substring(args.indexOf(mathOperator) + 1), false);
+						//если в качестве аргументов указаны переменные, ищем их адреса
+						int arg1Addr = getDataAddr(index, arg1);
+						int arg2Addr = getDataAddr(index, arg2);
+
+						if (arg1Addr == -1) //переменная для первого аргумента не указана, возможно это численое выражение a=100+b
+						{
+							float arg1float = arg1.toFloat();
+							if (arg1float == 0) https://www.arduino.cc/reference/en/language/variables/data-types/string/functions/tofloat/ //не число
+							{
+								result = "bad first argument at line: " + String(lineCount);
+								break;
+							}
+							arg1Addr = pushData(index, "arg1" + String(lineCount), arg1); //создаем переменую для аргумента, сохраняем адрес
 						}
 
-					
+						if (arg2Addr == -1) //переменная для второго аргумента не указана, возможно это численое выражение a=100+b, и да - возможно a=100+50
+						{
+							float arg2float = arg2.toFloat();
+							if (arg2float == 0)
+							{
+								result = "bad second argument at line: " + String(lineCount);
+								break;
+							}
+							arg2Addr = pushData(index, "arg2" + String(lineCount), arg2);
+						}
+
+						//результат и оба аргумента определены, компилируем в нужную инструкцию
+						if (mathOperator == '+') { addSum(index, scripts[index].codeCount, resultAddr, arg1Addr, arg2Addr); }
+						else
+							if (mathOperator == '-') { addSub(index, scripts[index].codeCount, resultAddr, arg1Addr, arg2Addr); }
+						//TODO: else '\' '*'
+							else
+							{ //такого не должно случится, но если что то совсем пошло не так
+								result = "bad expression at line: " + String(lineCount);
+								break;
+
+							}
+					}
 					scripts[index].codeCount++;
 				}
 				else
@@ -964,7 +1030,7 @@ bool nearlyEqyal(float a, float b)
 
 void testCompile()
 {
-	
+
 	//Serial.println(ESP.getFreeHeap());
 	//scriptsCreate("script1", "var a=10\nvar b=10\nvar c=10000\nsum a,b,b\nsum a,b,b\nsum a,b,b\nwrite b\nifupper b,c,99\ngoto 0\n");
 	//Serial.println(ESP.getFreeHeap());
@@ -976,7 +1042,7 @@ void testCompile()
 	//Serial.println(ESP.getFreeHeap());
 
 	//scriptsSave();
-	
+
 
 	//Serial.println(ESP.getFreeHeap());
 	//scriptsLoad();
