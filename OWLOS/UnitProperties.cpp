@@ -1,3 +1,43 @@
+/* ----------------------------------------------------------------------------
+Ready IoT Solution - OWLOS
+Copyright 2019, 2020 by:
+- Konstantin Brul (konstabrul@gmail.com)
+- Vitalii Glushchenko (cehoweek@gmail.com)
+- Denys Melnychuk (meldenvar@gmail.com)
+- Denis Kirin (deniskirinacs@gmail.com)
+
+This file is part of Ready IoT Solution - OWLOS
+
+OWLOS is free software : you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+OWLOS is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with OWL OS. If not, see < https://www.gnu.org/licenses/>.
+
+GitHub: https://github.com/KirinDenis/owlos
+
+(Этот файл — часть Ready IoT Solution - OWLOS.
+
+OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
+ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
+была опубликована Фондом свободного программного обеспечения; версии 3
+лицензии, любой более поздней версии.
+
+OWLOS распространяется в надежде, что она будет полезной, но БЕЗО ВСЯКИХ
+ГАРАНТИЙ; даже без неявной гарантии ТОВАРНОГО ВИДА или ПРИГОДНОСТИ ДЛЯ
+ОПРЕДЕЛЕННЫХ ЦЕЛЕЙ.
+Подробнее см.в Стандартной общественной лицензии GNU.
+
+Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
+этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
+--------------------------------------------------------------------------------------*/
 
 #include "UnitProperties.h"
 #include "src\Managers\DeviceManager.h"
@@ -198,9 +238,9 @@ bool unitInit()
 
 String unitGetAllProperties()
 {
-    String result = "properties for:wifi\n"; 
-	result += "id=wifi//r\n";    
-	result += "type=" + String(WiFiType) + "//r\n";    
+	String result = "properties for:wifi\n";
+	result += "id=wifi//r\n";
+	result += "type=" + String(WiFiType) + "//r\n";
 	result += "wifiaccesspointavailable=" + String(unitGetWiFiAccessPointAvailable()) + "//bs\n";
 	result += "wifiaccesspointssid=" + unitGetWiFiAccessPointSSID() + "//s\n";
 	result += "wifiaccesspointpassword=" + unitGetWiFiAccessPointPassword() + "//sp\n";
@@ -221,8 +261,8 @@ String unitGetAllProperties()
 	result += unitGetAllWiFiEncryptionTypes() + "//r\n";
 
 
-    result += "properties for:network\n"; 
-	result += "id=network//r\n";    
+	result += "properties for:network\n";
+	result += "id=network//r\n";
 	result += "type=" + String(NetworkType) + "//r\n";
 	result += "firmwareversion=" + unitGetFirmwareVersion() + "//r\n";
 	result += "firmwarebuildnumber=" + String(unitGetFirmwareBuildNumber()) + "//ri\n";
@@ -252,11 +292,11 @@ String unitGetAllProperties()
 	result += "updateuistatus=" + String(updateGetUpdateUIStatus()) + "//ir\n";
 	result += "updatefirmwarestatus=" + String(updateGetUpdateFirmwareStatus()) + "//ir\n";
 	result += "updatehost=" + unitGetUpdateHost() + "//s\n";
-	
+
 	/**/
-        result += "properties for:esp\n"; 
-	result += "id=esp//r\n";    
-	result += "type=" + String(ESPType) + "//r\n";    
+	result += "properties for:esp\n";
+	result += "id=esp//r\n";
+	result += "type=" + String(ESPType) + "//r\n";
 	result += "espresetinfo=" + unitGetESPResetInfo() + "//r\n";
 	result += "espreset=" + String(unitGetESPReset()) + "//sb\n";
 	result += "esprestart=" + String(unitGetESPRestart()) + "//b\n";
@@ -299,7 +339,9 @@ void unitSubscribe()
 
 String onGetProperty(String _property, String _payload, int transportMask)
 {
+#ifdef DetailedDebug 
 	debugOut(unitid, "|-> get property " + _property + " = " + _payload);
+#endif 
 	if (transportMask && MQTTMask != 0)
 	{
 		transportPublish(topic + "/" + _property, _payload);
@@ -309,300 +351,303 @@ String onGetProperty(String _property, String _payload, int transportMask)
 
 String unitOnMessage(String _topic, String _payload, int transportMask)
 {
-  String result = WrongPropertyName;
-  if (String(topic + "/getunitid").equals(_topic)) return onGetProperty("id", unitGetUnitId(), transportMask); 
-  else
-  if (String(topic + "/setunitid").equals(_topic)) return String(unitSetUnitId(_payload));
-  else 
-  if (String(topic + "/gettopic").equals(_topic)) return onGetProperty("topic", unitGetTopic(), transportMask); 
-  else
-  if (String(topic + "/settopic").equals(_topic)) return String(unitSetTopic(_payload));
-  else 
-  if (String(topic + "/getfirmwareversion").equals(_topic)) return onGetProperty("firmwareversion", unitGetFirmwareVersion(), transportMask); 
-  else
-  if (String(topic + "/setfirmwareversion").equals(_topic)) return String(unitSetFirmwareVersion(_payload));
-  else 
-  if (String(topic + "/getfirmwarebuildnumber").equals(_topic)) return onGetProperty("firmwarebuildnumber", String(unitGetFirmwareBuildNumber()), transportMask); 
-  else
-  if (String(topic + "/setfirmwarebuildnumber").equals(_topic)) return String(unitSetFirmwareBuildNumber(std::atoi (_payload.c_str())));
-  else 
-  if (String(topic + "/getwifiaccesspointavailable").equals(_topic)) return String(onGetProperty("wifiapavailable", String(unitGetWiFiAccessPointAvailable()), transportMask)); 
-  else
-  if (String(topic + "/setwifiaccesspointavailable").equals(_topic)) return String(unitSetWiFiAccessPointAvailable(std::atoi(_payload.c_str())));
-  else 
-  if (String(topic + "/getwifiaccesspointssid").equals(_topic)) return onGetProperty("wifiaccesspointssid", unitGetWiFiAccessPointSSID(), transportMask); 
-  else
-  if (String(topic + "/setwifiaccesspointssid").equals(_topic)) return String(unitSetWiFiAccessPointSSID(_payload));
-  else 
-  if (String(topic + "/getwifiaccesspointpassword").equals(_topic)) return onGetProperty("wifipassword", unitGetWiFiAccessPointPassword(), transportMask); 
-  else
-  if (String(topic + "/setwifiaccesspointpassword").equals(_topic)) return String(unitSetWiFiAccessPointPassword(_payload));
-  else 
-  if (String(topic + "/getwifiaccesspointip").equals(_topic)) return onGetProperty("wifiaccesspointip", unitGetWiFiAccessPointIP(), transportMask); 
-  else
-  if (String(topic + "/setwifiaccesspointip").equals(_topic)) return String(unitSetWiFiAccessPointIP(_payload));
-  else 
-  if (String(topic + "/getwifiavailable").equals(_topic)) return String(onGetProperty("wifiavailable", String(unitGetWiFiAvailable()), transportMask)); 
-  else
-  if (String(topic + "/setwifiavailable").equals(_topic)) return String(unitSetWiFiAvailable(std::atoi(_payload.c_str())));
-  else 
-  if (String(topic + "/getwifissid").equals(_topic)) return onGetProperty("wifissid", unitGetWiFiSSID(), transportMask); 
-  else
-  if (String(topic + "/setwifissid").equals(_topic)) return String(unitSetWiFiSSID(_payload));
-  else 
-  if (String(topic + "/getwifipassword").equals(_topic)) return onGetProperty("wifipassword", unitGetWiFiPassword(), transportMask); 
-  else
-  if (String(topic + "/setwifipassword").equals(_topic)) return String(unitSetWiFiPassword(_payload));
-  else 
-  if (String(topic + "/getwifiip").equals(_topic)) return onGetProperty("wifiip", unitGetWiFiIP(), transportMask); 
-  else
-  if (String(topic + "/setwifiip").equals(_topic)) return String(unitSetWiFiIP(_payload));
-  else 
-  if (String(topic + "/getwifiisconnected").equals(_topic)) return onGetProperty("wifiisconnected", String(unitGetWiFiIsConnected()), transportMask); 
-  else
-  if (String(topic + "/setwifiisconnected").equals(_topic)) return String(unitSetWiFiIsConnected(std::atoi (_payload.c_str())));
-  else 
-  if (String(topic + "/getconnectedwifissid").equals(_topic)) return onGetProperty("connectedwifissid", unitGetConnectedWiFiSSID(), transportMask); 
+	String result = WrongPropertyName;
+	if (String(topic + "/getunitid").equals(_topic)) return onGetProperty("id", unitGetUnitId(), transportMask);
+	else
+		if (String(topic + "/setunitid").equals(_topic)) return String(unitSetUnitId(_payload));
+		else
+			if (String(topic + "/gettopic").equals(_topic)) return onGetProperty("topic", unitGetTopic(), transportMask);
+			else
+				if (String(topic + "/settopic").equals(_topic)) return String(unitSetTopic(_payload));
+				else
+					if (String(topic + "/getfirmwareversion").equals(_topic)) return onGetProperty("firmwareversion", unitGetFirmwareVersion(), transportMask);
+					else
+						if (String(topic + "/setfirmwareversion").equals(_topic)) return String(unitSetFirmwareVersion(_payload));
+						else
+							if (String(topic + "/getfirmwarebuildnumber").equals(_topic)) return onGetProperty("firmwarebuildnumber", String(unitGetFirmwareBuildNumber()), transportMask);
+							else
+								if (String(topic + "/setfirmwarebuildnumber").equals(_topic)) return String(unitSetFirmwareBuildNumber(std::atoi(_payload.c_str())));
+								else
+									if (String(topic + "/getwifiaccesspointavailable").equals(_topic)) return String(onGetProperty("wifiapavailable", String(unitGetWiFiAccessPointAvailable()), transportMask));
+									else
+										if (String(topic + "/setwifiaccesspointavailable").equals(_topic)) return String(unitSetWiFiAccessPointAvailable(std::atoi(_payload.c_str())));
+										else
+											if (String(topic + "/getwifiaccesspointssid").equals(_topic)) return onGetProperty("wifiaccesspointssid", unitGetWiFiAccessPointSSID(), transportMask);
+											else
+												if (String(topic + "/setwifiaccesspointssid").equals(_topic)) return String(unitSetWiFiAccessPointSSID(_payload));
+												else
+													if (String(topic + "/getwifiaccesspointpassword").equals(_topic)) return onGetProperty("wifipassword", unitGetWiFiAccessPointPassword(), transportMask);
+													else
+														if (String(topic + "/setwifiaccesspointpassword").equals(_topic)) return String(unitSetWiFiAccessPointPassword(_payload));
+														else
+															if (String(topic + "/getwifiaccesspointip").equals(_topic)) return onGetProperty("wifiaccesspointip", unitGetWiFiAccessPointIP(), transportMask);
+															else
+																if (String(topic + "/setwifiaccesspointip").equals(_topic)) return String(unitSetWiFiAccessPointIP(_payload));
+																else
+																	if (String(topic + "/getwifiavailable").equals(_topic)) return String(onGetProperty("wifiavailable", String(unitGetWiFiAvailable()), transportMask));
+																	else
+																		if (String(topic + "/setwifiavailable").equals(_topic)) return String(unitSetWiFiAvailable(std::atoi(_payload.c_str())));
+																		else
+																			if (String(topic + "/getwifissid").equals(_topic)) return onGetProperty("wifissid", unitGetWiFiSSID(), transportMask);
+																			else
+																				if (String(topic + "/setwifissid").equals(_topic)) return String(unitSetWiFiSSID(_payload));
+																				else
+																					if (String(topic + "/getwifipassword").equals(_topic)) return onGetProperty("wifipassword", unitGetWiFiPassword(), transportMask);
+																					else
+																						if (String(topic + "/setwifipassword").equals(_topic)) return String(unitSetWiFiPassword(_payload));
+																						else
+																							if (String(topic + "/getwifiip").equals(_topic)) return onGetProperty("wifiip", unitGetWiFiIP(), transportMask);
+																							else
+																								if (String(topic + "/setwifiip").equals(_topic)) return String(unitSetWiFiIP(_payload));
+																								else
+																									if (String(topic + "/getwifiisconnected").equals(_topic)) return onGetProperty("wifiisconnected", String(unitGetWiFiIsConnected()), transportMask);
+																									else
+																										if (String(topic + "/setwifiisconnected").equals(_topic)) return String(unitSetWiFiIsConnected(std::atoi(_payload.c_str())));
+																										else
+																											if (String(topic + "/getconnectedwifissid").equals(_topic)) return onGetProperty("connectedwifissid", unitGetConnectedWiFiSSID(), transportMask);
 
-  else 
-  if (String(topic + "/getrestfulavailable").equals(_topic)) return onGetProperty("restfulavailable", String(unitGetRESTfulAvailable()), transportMask); 
-  else
-  if (String(topic + "/setrestfulavailable").equals(_topic)) return String(unitSetRESTfulAvailable(std::atoi (_payload.c_str())));
-  else 
-  if (String(topic + "/getrestfulserverusername").equals(_topic)) return onGetProperty("restfulserverusername", unitGetRESTfulServerUsername(), transportMask); 
-  else
-  if (String(topic + "/setrestfulserverusername").equals(_topic)) return String(unitSetRESTfulServerUsername(_payload));
-  else 
-  if (String(topic + "/getrestfulserverpassword").equals(_topic)) return onGetProperty("restfulserverpassword", unitGetRESTfulServerPassword(), transportMask); 
-  else
-  if (String(topic + "/setrestfulserverpassword").equals(_topic)) return String(unitSetRESTfulServerPassword(_payload));
-  else 
-  if (String(topic + "/getrestfulserverport").equals(_topic)) return onGetProperty("restfulserverport", String(unitGetRESTfulServerPort()), transportMask); 
-  else
-  if (String(topic + "/setrestfulserverport").equals(_topic)) return String(unitSetRESTfulServerPort(std::atoi (_payload.c_str())));
-  else 
-  if (String(topic + "/getrestfulclientport").equals(_topic)) return onGetProperty("restfulclientport", String(unitGetRESTfulClientPort()), transportMask); 
-  else
-  if (String(topic + "/setrestfulclientport").equals(_topic)) return String(unitSetRESTfulClientPort(std::atoi (_payload.c_str())));
-  else 
-  if (String(topic + "/getrestfulclienturl").equals(_topic)) return onGetProperty("restfulclienturl", unitGetRESTfulClientURL(), transportMask); 
-  else
-  if (String(topic + "/setrestfulclienturl").equals(_topic)) return String(unitSetRESTfulClientURL(_payload));
-  else 
-  if (String(topic + "/getmqttavailable").equals(_topic)) return onGetProperty("mqttavailable", String(unitGetMQTTAvailable()), transportMask); 
-  else
-  if (String(topic + "/setmqttavailable").equals(_topic)) return String(unitSetMQTTAvailable(std::atoi (_payload.c_str())));
-  else 
-  if (String(topic + "/getmqttport").equals(_topic)) return onGetProperty("mqttport", String(unitGetMQTTPort()), transportMask); 
-  else
-  if (String(topic + "/setmqttport").equals(_topic)) return String(unitSetMQTTPort(std::atoi (_payload.c_str())));
-  else 
-  if (String(topic + "/getmqtturl").equals(_topic)) return onGetProperty("mqtturl", unitGetMQTTURL(), transportMask); 
-  else
-  if (String(topic + "/setmqtturl").equals(_topic)) return String(unitSetMQTTURL(_payload));
-  else 
-  if (String(topic + "/getmqttid").equals(_topic)) return onGetProperty("mqttid", unitGetMQTTID(), transportMask); 
-  else
-  if (String(topic + "/setmqttid").equals(_topic)) return String(unitSetMQTTID(_payload));
-  else 
-  if (String(topic + "/getmqttlogin").equals(_topic)) return onGetProperty("mqttlogin", unitGetMQTTLogin(), transportMask); 
-  else
-  if (String(topic + "/setmqttlogin").equals(_topic)) return String(unitSetMQTTLogin(_payload));
-  else 
-  if (String(topic + "/getmqttpassword").equals(_topic)) return onGetProperty("mqttpassword", unitGetMQTTPassword(), transportMask); 
-  else
-  if (String(topic + "/setmqttpassword").equals(_topic)) return String(unitSetMQTTPassword(_payload));
-  else 
-  if (String(topic + "/getmqttclientconnected").equals(_topic)) return String(unitGetMQTTClientConnected()); 
-  else 
-  if (String(topic + "/getmqttclientstate").equals(_topic)) return String(unitGetMQTTClientState()); 
-  else 
-  if (String(topic + "/getotaavailable").equals(_topic)) return onGetProperty("otaavailable", String(unitGetOTAAvailable()), transportMask); 
-  else
-  if (String(topic + "/setotaavailable").equals(_topic)) return String(unitSetOTAAvailable(std::atoi (_payload.c_str())));
-  else 
-  if (String(topic + "/getotaport").equals(_topic)) return onGetProperty("otaport", String(unitGetOTAPort()), transportMask); 
-  else
-  if (String(topic + "/setotaport").equals(_topic)) return String(unitSetOTAPort(std::atoi (_payload.c_str())));
-  else 
-  if (String(topic + "/getotaid").equals(_topic)) return onGetProperty("otaid", unitGetOTAID(), transportMask); 
-  else
-  if (String(topic + "/setotaid").equals(_topic)) return String(unitSetOTAID(_payload));
-  else 
-  if (String(topic + "/getotapassword").equals(_topic)) return onGetProperty("otapassword", unitGetMQTTPassword(), transportMask); 
-  else
-  if (String(topic + "/setotapassword").equals(_topic)) return String(unitSetOTAPassword(_payload));
-// WiFi parameters
-  else 
-  if (String(topic + "/getwifirssi").equals(_topic)) return onGetProperty("wifirssi", String(unitGetWiFiRSSI()), transportMask); 
-  else
-  if (String(topic + "/setwifirssi").equals(_topic)) return String(unitSetWiFiRSSI(std::atoi (_payload.c_str())));
-  else 
-  if (String(topic + "/getwifimode").equals(_topic)) return onGetProperty("wifimode", String(unitGetWiFiMode()), transportMask); 
-  else
-  if (String(topic + "/setwifimode").equals(_topic)) return String(unitSetWiFiMode((WiFiMode_t)std::atoi (_payload.c_str())));
-  else 
-  if (String(topic + "/getwifistatus").equals(_topic)) return onGetProperty("wifistatus", String(unitGetWiFiStatus()), transportMask); 
-  else
-  if (String(topic + "/setwifistatus").equals(_topic)) return String(unitSetWiFiStatus(std::atoi (_payload.c_str())));
-  else 
-  if (String(topic + "/getwifistatustostring").equals(_topic)) return onGetProperty("wifistatustostring", String(unitGetWiFiStatusToString()), transportMask); 
-  else 
-  if (String(topic + "/getscanwifinetworks").equals(_topic)) return onGetProperty("wifinetworkscount", String(unitGetScanWiFiNetworks()), transportMask); 
-  else
-  if (String(topic + "/setscanwifinetworks").equals(_topic)) return String(unitSetScanWiFiNetworks(std::atoi (_payload.c_str())));
-  else 
-  if (String(topic + "/getwifinetworkscount").equals(_topic)) return onGetProperty("wifinetworkscount", String(unitGetWiFiNetworksCount()), transportMask); 
-  else
-  if (String(topic + "/setwifinetworkscount").equals(_topic)) return String(unitSetWiFiNetworksCount(std::atoi (_payload.c_str())));
-  else 
-  if (String(topic + "/getwifinetworksparameters").equals(_topic)) return unitGetWiFiNetworksParameters(); 
-  else 
-  if (String(topic + "/getallwifimodes").equals(_topic)) return unitGetAllWiFiModes(); 
-  else 
-  if (String(topic + "/getallwifistatuses").equals(_topic)) return String(unitGetAllWiFiStatuses()); 
-  else 
-  if (String(topic + "/getallwifiencryptiontypes").equals(_topic)) return String(unitGetAllWiFiEncryptionTypes()); 
+																											else
+																												if (String(topic + "/getrestfulavailable").equals(_topic)) return onGetProperty("restfulavailable", String(unitGetRESTfulAvailable()), transportMask);
+																												else
+																													if (String(topic + "/setrestfulavailable").equals(_topic)) return String(unitSetRESTfulAvailable(std::atoi(_payload.c_str())));
+																													else
+																														if (String(topic + "/getrestfulserverusername").equals(_topic)) return onGetProperty("restfulserverusername", unitGetRESTfulServerUsername(), transportMask);
+																														else
+																															if (String(topic + "/setrestfulserverusername").equals(_topic)) return String(unitSetRESTfulServerUsername(_payload));
+																															else
+																																if (String(topic + "/getrestfulserverpassword").equals(_topic)) return onGetProperty("restfulserverpassword", unitGetRESTfulServerPassword(), transportMask);
+																																else
+																																	if (String(topic + "/setrestfulserverpassword").equals(_topic)) return String(unitSetRESTfulServerPassword(_payload));
+																																	else
+																																		if (String(topic + "/getrestfulserverport").equals(_topic)) return onGetProperty("restfulserverport", String(unitGetRESTfulServerPort()), transportMask);
+																																		else
+																																			if (String(topic + "/setrestfulserverport").equals(_topic)) return String(unitSetRESTfulServerPort(std::atoi(_payload.c_str())));
+																																			else
+																																				if (String(topic + "/getrestfulclientport").equals(_topic)) return onGetProperty("restfulclientport", String(unitGetRESTfulClientPort()), transportMask);
+																																				else
+																																					if (String(topic + "/setrestfulclientport").equals(_topic)) return String(unitSetRESTfulClientPort(std::atoi(_payload.c_str())));
+																																					else
+																																						if (String(topic + "/getrestfulclienturl").equals(_topic)) return onGetProperty("restfulclienturl", unitGetRESTfulClientURL(), transportMask);
+																																						else
+																																							if (String(topic + "/setrestfulclienturl").equals(_topic)) return String(unitSetRESTfulClientURL(_payload));
+																																							else
+																																								if (String(topic + "/getmqttavailable").equals(_topic)) return onGetProperty("mqttavailable", String(unitGetMQTTAvailable()), transportMask);
+																																								else
+																																									if (String(topic + "/setmqttavailable").equals(_topic)) return String(unitSetMQTTAvailable(std::atoi(_payload.c_str())));
+																																									else
+																																										if (String(topic + "/getmqttport").equals(_topic)) return onGetProperty("mqttport", String(unitGetMQTTPort()), transportMask);
+																																										else
+																																											if (String(topic + "/setmqttport").equals(_topic)) return String(unitSetMQTTPort(std::atoi(_payload.c_str())));
+																																											else
+																																												if (String(topic + "/getmqtturl").equals(_topic)) return onGetProperty("mqtturl", unitGetMQTTURL(), transportMask);
+																																												else
+																																													if (String(topic + "/setmqtturl").equals(_topic)) return String(unitSetMQTTURL(_payload));
+																																													else
+																																														if (String(topic + "/getmqttid").equals(_topic)) return onGetProperty("mqttid", unitGetMQTTID(), transportMask);
+																																														else
+																																															if (String(topic + "/setmqttid").equals(_topic)) return String(unitSetMQTTID(_payload));
+																																															else
+																																																if (String(topic + "/getmqttlogin").equals(_topic)) return onGetProperty("mqttlogin", unitGetMQTTLogin(), transportMask);
+																																																else
+																																																	if (String(topic + "/setmqttlogin").equals(_topic)) return String(unitSetMQTTLogin(_payload));
+																																																	else
+																																																		if (String(topic + "/getmqttpassword").equals(_topic)) return onGetProperty("mqttpassword", unitGetMQTTPassword(), transportMask);
+																																																		else
+																																																			if (String(topic + "/setmqttpassword").equals(_topic)) return String(unitSetMQTTPassword(_payload));
+																																																			else
+																																																				if (String(topic + "/getmqttclientconnected").equals(_topic)) return String(unitGetMQTTClientConnected());
+																																																				else
+																																																					if (String(topic + "/getmqttclientstate").equals(_topic)) return String(unitGetMQTTClientState());
+																																																					else
+																																																						if (String(topic + "/getotaavailable").equals(_topic)) return onGetProperty("otaavailable", String(unitGetOTAAvailable()), transportMask);
+																																																						else
+																																																							if (String(topic + "/setotaavailable").equals(_topic)) return String(unitSetOTAAvailable(std::atoi(_payload.c_str())));
+																																																							else
+																																																								if (String(topic + "/getotaport").equals(_topic)) return onGetProperty("otaport", String(unitGetOTAPort()), transportMask);
+																																																								else
+																																																									if (String(topic + "/setotaport").equals(_topic)) return String(unitSetOTAPort(std::atoi(_payload.c_str())));
+																																																									else
+																																																										if (String(topic + "/getotaid").equals(_topic)) return onGetProperty("otaid", unitGetOTAID(), transportMask);
+																																																										else
+																																																											if (String(topic + "/setotaid").equals(_topic)) return String(unitSetOTAID(_payload));
+																																																											else
+																																																												if (String(topic + "/getotapassword").equals(_topic)) return onGetProperty("otapassword", unitGetMQTTPassword(), transportMask);
+																																																												else
+																																																													if (String(topic + "/setotapassword").equals(_topic)) return String(unitSetOTAPassword(_payload));
+	// WiFi parameters
+																																																													else
+																																																														if (String(topic + "/getwifirssi").equals(_topic)) return onGetProperty("wifirssi", String(unitGetWiFiRSSI()), transportMask);
+																																																														else
+																																																															if (String(topic + "/setwifirssi").equals(_topic)) return String(unitSetWiFiRSSI(std::atoi(_payload.c_str())));
+																																																															else
+																																																																if (String(topic + "/getwifimode").equals(_topic)) return onGetProperty("wifimode", String(unitGetWiFiMode()), transportMask);
+																																																																else
+																																																																	if (String(topic + "/setwifimode").equals(_topic)) return String(unitSetWiFiMode((WiFiMode_t)std::atoi(_payload.c_str())));
+																																																																	else
+																																																																		if (String(topic + "/getwifistatus").equals(_topic)) return onGetProperty("wifistatus", String(unitGetWiFiStatus()), transportMask);
+																																																																		else
+																																																																			if (String(topic + "/setwifistatus").equals(_topic)) return String(unitSetWiFiStatus(std::atoi(_payload.c_str())));
+																																																																			else
+																																																																				if (String(topic + "/getwifistatustostring").equals(_topic)) return onGetProperty("wifistatustostring", String(unitGetWiFiStatusToString()), transportMask);
+																																																																				else
+																																																																					if (String(topic + "/getscanwifinetworks").equals(_topic)) return onGetProperty("wifinetworkscount", String(unitGetScanWiFiNetworks()), transportMask);
+																																																																					else
+																																																																						if (String(topic + "/setscanwifinetworks").equals(_topic)) return String(unitSetScanWiFiNetworks(std::atoi(_payload.c_str())));
+																																																																						else
+																																																																							if (String(topic + "/getwifinetworkscount").equals(_topic)) return onGetProperty("wifinetworkscount", String(unitGetWiFiNetworksCount()), transportMask);
+																																																																							else
+																																																																								if (String(topic + "/setwifinetworkscount").equals(_topic)) return String(unitSetWiFiNetworksCount(std::atoi(_payload.c_str())));
+																																																																								else
+																																																																									if (String(topic + "/getwifinetworksparameters").equals(_topic)) return unitGetWiFiNetworksParameters();
+																																																																									else
+																																																																										if (String(topic + "/getallwifimodes").equals(_topic)) return unitGetAllWiFiModes();
+																																																																										else
+																																																																											if (String(topic + "/getallwifistatuses").equals(_topic)) return String(unitGetAllWiFiStatuses());
+																																																																											else
+																																																																												if (String(topic + "/getallwifiencryptiontypes").equals(_topic)) return String(unitGetAllWiFiEncryptionTypes());
 
-/**/
-//ESP class parameters
-  else 
-  if (String(topic + "/getespresetinfo").equals(_topic)) return onGetProperty("espresetinfo", unitGetESPResetInfo(), transportMask); 
-  else
-  if (String(topic + "/setespresetinfo").equals(_topic)) return String(unitSetESPResetInfo(_payload));
-  else 
-  if (String(topic + "/getespreset").equals(_topic)) return onGetProperty("espreset", String(unitGetESPReset()), transportMask); 
-  else
-  if (String(topic + "/setespreset").equals(_topic)) return String(unitSetESPReset(std::atoi (_payload.c_str())));
-  else 
-  if (String(topic + "/getesprestart").equals(_topic)) return onGetProperty("esprestart", String(unitGetESPRestart()), transportMask); 
-  else
-  if (String(topic + "/setesprestart").equals(_topic)) return String(unitSetESPRestart(std::atoi (_payload.c_str())));
-  else 
-  if (String(topic + "/getespvcc").equals(_topic)) return onGetProperty("espvcc", String(unitGetESPVcc()), transportMask); 
-  else
-  if (String(topic + "/setespvcc").equals(_topic)) return String(unitSetESPVcc(std::atoi (_payload.c_str())));
-  else 
-  if (String(topic + "/getespchipid").equals(_topic)) return onGetProperty("espchipid", String(unitGetESPChipId()), transportMask); 
-  else
-  if (String(topic + "/setespchipid").equals(_topic)) return String(unitSetESPChipId(std::atoi (_payload.c_str())));
-  else 
-  if (String(topic + "/getespfreeheap").equals(_topic)) return onGetProperty("espfreeheap", String(unitGetESPFreeHeap()), transportMask); 
-  else
-  if (String(topic + "/setespfreeheap").equals(_topic)) return String(unitSetESPFreeHeap(std::atoi (_payload.c_str())));
-  else 
-  if (String(topic + "/getespmaxfreeblocksize").equals(_topic)) return onGetProperty("espmaxfreeblocksize", String(unitGetESPMaxFreeBlockSize()), transportMask); 
-  else
-  if (String(topic + "/setespmaxfreeblocksize").equals(_topic)) return String(unitSetESPMaxFreeBlockSize(std::atoi (_payload.c_str())));
-  else 
-  if (String(topic + "/getespheapfragmentation").equals(_topic)) return onGetProperty("espheapfragmentation", String(unitGetESPHeapFragmentation()), transportMask); 
-  else
-  if (String(topic + "/setespheapfragmentation").equals(_topic)) return String(unitSetESPHeapFragmentation(std::atoi (_payload.c_str())));
-  else 
-  if (String(topic + "/getespsdkversion").equals(_topic)) return onGetProperty("espsdkversion", String(*unitGetESPSdkVersion()), transportMask); 
-  else
-  if (String(topic + "/setespsdkversion").equals(_topic)) return String(unitSetESPSdkVersion(_payload));
-  else 
-  if (String(topic + "/getespcoreversion").equals(_topic)) return onGetProperty("espcoreversion", unitGetESPCoreVersion(), transportMask); 
-  else
-  if (String(topic + "/setespcoreversion").equals(_topic)) return String(unitSetESPCoreVersion(_payload));
-  else 
-  if (String(topic + "/getespfullversion").equals(_topic)) return onGetProperty("espfullversion", unitGetESPFullVersion(), transportMask); 
-  else
-  if (String(topic + "/setespfullversion").equals(_topic)) return String(unitSetESPFullVersion(_payload));
-  else 
-  if (String(topic + "/getespbootversion").equals(_topic)) return onGetProperty("espbootversion", String(unitGetESPBootVersion()), transportMask); 
-  else
-  if (String(topic + "/setespbootversion").equals(_topic)) return String(unitSetESPBootVersion(std::atoi (_payload.c_str())));
-  else 
-  if (String(topic + "/getespbootmode").equals(_topic)) return onGetProperty("espbootmode", String(unitGetESPBootMode()), transportMask); 
-  else
-  if (String(topic + "/setespbootmode").equals(_topic)) return String(unitSetESPBootMode(std::atoi (_payload.c_str())));
-  else 
-  if (String(topic + "/getespcpufreqmhz").equals(_topic)) return onGetProperty("espcpufreqmhz", String(unitGetESPCpuFreqMHz()), transportMask); 
-  else
-  if (String(topic + "/setespcpufreqmhz").equals(_topic)) return String(unitSetESPCpuFreqMHz(std::atoi (_payload.c_str())));
-  else 
-  if (String(topic + "/getespflashchipid").equals(_topic)) return onGetProperty("espflashchipid", String(unitGetESPFlashChipId()), transportMask); 
-  else
-  if (String(topic + "/setespflashchipid").equals(_topic)) return String(unitSetESPFlashChipId(std::atoi (_payload.c_str())));
-  else 
-  if (String(topic + "/getespflashchipvendorid").equals(_topic)) return onGetProperty("espflashchipvendorid", String(unitGetESPFlashChipVendorId()), transportMask); 
-  else
-  if (String(topic + "/setespflashchipvendorid").equals(_topic)) return String(unitSetESPFlashChipVendorId(std::atoi (_payload.c_str())));
-  else 
-  if (String(topic + "/getespflashchiprealsize").equals(_topic)) return onGetProperty("espflashchiprealsize", String(unitGetESPFlashChipRealSize()), transportMask); 
-  else
-  if (String(topic + "/setespflashchiprealsize").equals(_topic)) return String(unitSetESPFlashChipRealSize(std::atoi (_payload.c_str())));
-  else 
-  if (String(topic + "/getespflashchipsize").equals(_topic)) return onGetProperty("espflashchipsize", String(unitGetESPFlashChipSize()), transportMask); 
-  else
-  if (String(topic + "/setespflashchipsize").equals(_topic)) return String(unitSetESPFlashChipSize(std::atoi (_payload.c_str())));
-  else 
-  if (String(topic + "/getespflashchipspeed").equals(_topic)) return onGetProperty("espflashchipspeed", String(unitGetESPFlashChipSpeed()), transportMask); 
-  else
-  if (String(topic + "/setespflashchipspeed").equals(_topic)) return String(unitSetESPFlashChipSpeed(std::atoi (_payload.c_str())));
-  else 
-  if (String(topic + "/getespsketchsize").equals(_topic)) return onGetProperty("espsketchsize", String(unitGetESPSketchSize()), transportMask); 
-  else
-  if (String(topic + "/setespsketchsize").equals(_topic)) return String(unitSetESPSketchSize(std::atoi (_payload.c_str())));
-  else 
-  if (String(topic + "/getespfreesketchspace").equals(_topic)) return onGetProperty("espfreesketchspace", String(unitGetESPFreeSketchSpace()), transportMask); 
-  else
-  if (String(topic + "/setespfreesketchspace").equals(_topic)) return String(unitSetESPFreeSketchSpace(std::atoi (_payload.c_str())));
-  else 
-  if (String(topic + "/getespflashchipmode").equals(_topic)) return onGetProperty("espflashchipmode", String(unitGetESPFlashChipMode()), transportMask); 
-  else
-  if (String(topic + "/setespflashchipmode").equals(_topic)) return String(unitSetESPFlashChipMode(std::atoi (_payload.c_str())));
-  else 
-  if (String(topic + "/getespsketchmd5").equals(_topic)) return onGetProperty("espsketchmd5", unitGetESPSketchMD5(), transportMask); 
-  else
-  if (String(topic + "/setespsketchmd5").equals(_topic)) return String(unitSetESPSketchMD5(_payload));
-  else 
-  if (String(topic + "/getespresetreason").equals(_topic)) return onGetProperty("espresetreason", unitGetESPResetReason(), transportMask); 
-  else
-  if (String(topic + "/setespresetreason").equals(_topic)) return String(unitSetESPResetReason(_payload));
-  else 
-  if (String(topic + "/getespmagicflashchipsize").equals(_topic)) return onGetProperty("espmagicflashchipsize", String(unitGetESPMagicFlashChipSize((uint8_t)std::atoi (_payload.c_str()))), transportMask); 
-  else
-  if (String(topic + "/setespmagicflashchipsize").equals(_topic)) return String(unitSetESPMagicFlashChipSize(std::atoi (_payload.c_str())));
-  else 
-  if (String(topic + "/getespmagicflashchipspeed").equals(_topic)) return onGetProperty("espmagicflashchipspeed", String(unitGetESPMagicFlashChipSpeed((uint8_t)std::atoi (_payload.c_str()))), transportMask); 
-  else
-  if (String(topic + "/setespmagicflashchipspeed").equals(_topic)) return String(unitSetESPMagicFlashChipSpeed(std::atoi (_payload.c_str())));
-  else 
-  if (String(topic + "/getespmagicflashchipmode").equals(_topic)) return onGetProperty("espmagicflashchipmode", String(unitGetESPMagicFlashChipMode((uint8_t)std::atoi (_payload.c_str()))), transportMask); 
-  else
-  if (String(topic + "/setespmagicflashchipmode").equals(_topic)) return String(unitSetESPMagicFlashChipMode(std::atoi (_payload.c_str())));
-  //Pins
-  else 
-  if (String(topic + "/getbusypins").equals(_topic)) return unitGetBusyPins();
-  else 
-  if (String(topic + "/getpinsmap").equals(_topic)) return unitGetPinsMap();  
-  else
-  if (String(topic + "/getupdateavailable").equals(_topic)) return onGetProperty("updateavailable", String(unitGetUpdateAvailable()), transportMask);
-  else
-  if (String(topic + "/setupdateavailable").equals(_topic)) return String(unitSetUpdateAvailable(std::atoi(_payload.c_str())));
-  else
-  if (String(topic + "/getupdatepossible").equals(_topic)) return onGetProperty("updatepossible", String(updateGetUpdatePossible()), transportMask);
-  else
-  if (String(topic + "/getupdateinfo").equals(_topic)) return onGetProperty("updateinfo", String(updateGetUpdateInfo()), transportMask);
-  else
-  if (String(topic + "/getupdateuistatus").equals(_topic)) return onGetProperty("updateuistatus", String(updateGetUpdateUIStatus()), transportMask);
-  else
-  if (String(topic + "/getupdatefirmwarestatus").equals(_topic)) return onGetProperty("updateufirmwarestatus", String(updateGetUpdateFirmwareStatus()), transportMask);
-  else
-  if (String(topic + "/getupdatehost").equals(_topic)) return onGetProperty("updatehost", unitGetUpdateHost(), transportMask);
-  else
-  if (String(topic + "/setupdatehost").equals(_topic)) return String(unitSetUpdateHost(_payload));
-  else 
-  //Update 
-  return result;
+	/**/
+	//ESP class parameters
+																																																																												else
+																																																																													if (String(topic + "/getespresetinfo").equals(_topic)) return onGetProperty("espresetinfo", unitGetESPResetInfo(), transportMask);
+																																																																													else
+																																																																														if (String(topic + "/setespresetinfo").equals(_topic)) return String(unitSetESPResetInfo(_payload));
+																																																																														else
+																																																																															if (String(topic + "/getespreset").equals(_topic)) return onGetProperty("espreset", String(unitGetESPReset()), transportMask);
+																																																																															else
+																																																																																if (String(topic + "/setespreset").equals(_topic)) return String(unitSetESPReset(std::atoi(_payload.c_str())));
+																																																																																else
+																																																																																	if (String(topic + "/getesprestart").equals(_topic)) return onGetProperty("esprestart", String(unitGetESPRestart()), transportMask);
+																																																																																	else
+																																																																																		if (String(topic + "/setesprestart").equals(_topic)) return String(unitSetESPRestart(std::atoi(_payload.c_str())));
+																																																																																		else
+																																																																																			if (String(topic + "/getespvcc").equals(_topic)) return onGetProperty("espvcc", String(unitGetESPVcc()), transportMask);
+																																																																																			else
+																																																																																				if (String(topic + "/setespvcc").equals(_topic)) return String(unitSetESPVcc(std::atoi(_payload.c_str())));
+																																																																																				else
+																																																																																					if (String(topic + "/getespchipid").equals(_topic)) return onGetProperty("espchipid", String(unitGetESPChipId()), transportMask);
+																																																																																					else
+																																																																																						if (String(topic + "/setespchipid").equals(_topic)) return String(unitSetESPChipId(std::atoi(_payload.c_str())));
+																																																																																						else
+																																																																																							if (String(topic + "/getespfreeheap").equals(_topic)) return onGetProperty("espfreeheap", String(unitGetESPFreeHeap()), transportMask);
+																																																																																							else
+																																																																																								if (String(topic + "/setespfreeheap").equals(_topic)) return String(unitSetESPFreeHeap(std::atoi(_payload.c_str())));
+																																																																																								else
+																																																																																									if (String(topic + "/getespmaxfreeblocksize").equals(_topic)) return onGetProperty("espmaxfreeblocksize", String(unitGetESPMaxFreeBlockSize()), transportMask);
+																																																																																									else
+																																																																																										if (String(topic + "/setespmaxfreeblocksize").equals(_topic)) return String(unitSetESPMaxFreeBlockSize(std::atoi(_payload.c_str())));
+																																																																																										else
+																																																																																											if (String(topic + "/getespheapfragmentation").equals(_topic)) return onGetProperty("espheapfragmentation", String(unitGetESPHeapFragmentation()), transportMask);
+																																																																																											else
+																																																																																												if (String(topic + "/setespheapfragmentation").equals(_topic)) return String(unitSetESPHeapFragmentation(std::atoi(_payload.c_str())));
+																																																																																												else
+																																																																																													if (String(topic + "/getespsdkversion").equals(_topic)) return onGetProperty("espsdkversion", String(*unitGetESPSdkVersion()), transportMask);
+																																																																																													else
+																																																																																														if (String(topic + "/setespsdkversion").equals(_topic)) return String(unitSetESPSdkVersion(_payload));
+																																																																																														else
+																																																																																															if (String(topic + "/getespcoreversion").equals(_topic)) return onGetProperty("espcoreversion", unitGetESPCoreVersion(), transportMask);
+																																																																																															else
+																																																																																																if (String(topic + "/setespcoreversion").equals(_topic)) return String(unitSetESPCoreVersion(_payload));
+																																																																																																else
+																																																																																																	if (String(topic + "/getespfullversion").equals(_topic)) return onGetProperty("espfullversion", unitGetESPFullVersion(), transportMask);
+																																																																																																	else
+																																																																																																		if (String(topic + "/setespfullversion").equals(_topic)) return String(unitSetESPFullVersion(_payload));
+																																																																																																		else
+																																																																																																			if (String(topic + "/getespbootversion").equals(_topic)) return onGetProperty("espbootversion", String(unitGetESPBootVersion()), transportMask);
+																																																																																																			else
+																																																																																																				if (String(topic + "/setespbootversion").equals(_topic)) return String(unitSetESPBootVersion(std::atoi(_payload.c_str())));
+																																																																																																				else
+																																																																																																					if (String(topic + "/getespbootmode").equals(_topic)) return onGetProperty("espbootmode", String(unitGetESPBootMode()), transportMask);
+																																																																																																					else
+																																																																																																						if (String(topic + "/setespbootmode").equals(_topic)) return String(unitSetESPBootMode(std::atoi(_payload.c_str())));
+																																																																																																						else
+																																																																																																							if (String(topic + "/getespcpufreqmhz").equals(_topic)) return onGetProperty("espcpufreqmhz", String(unitGetESPCpuFreqMHz()), transportMask);
+																																																																																																							else
+																																																																																																								if (String(topic + "/setespcpufreqmhz").equals(_topic)) return String(unitSetESPCpuFreqMHz(std::atoi(_payload.c_str())));
+																																																																																																								else
+																																																																																																									if (String(topic + "/getespflashchipid").equals(_topic)) return onGetProperty("espflashchipid", String(unitGetESPFlashChipId()), transportMask);
+																																																																																																									else
+																																																																																																										if (String(topic + "/setespflashchipid").equals(_topic)) return String(unitSetESPFlashChipId(std::atoi(_payload.c_str())));
+																																																																																																										else
+																																																																																																											if (String(topic + "/getespflashchipvendorid").equals(_topic)) return onGetProperty("espflashchipvendorid", String(unitGetESPFlashChipVendorId()), transportMask);
+																																																																																																											else
+																																																																																																												if (String(topic + "/setespflashchipvendorid").equals(_topic)) return String(unitSetESPFlashChipVendorId(std::atoi(_payload.c_str())));
+																																																																																																												else
+																																																																																																													if (String(topic + "/getespflashchiprealsize").equals(_topic)) return onGetProperty("espflashchiprealsize", String(unitGetESPFlashChipRealSize()), transportMask);
+																																																																																																													else
+																																																																																																														if (String(topic + "/setespflashchiprealsize").equals(_topic)) return String(unitSetESPFlashChipRealSize(std::atoi(_payload.c_str())));
+																																																																																																														else
+																																																																																																															if (String(topic + "/getespflashchipsize").equals(_topic)) return onGetProperty("espflashchipsize", String(unitGetESPFlashChipSize()), transportMask);
+																																																																																																															else
+																																																																																																																if (String(topic + "/setespflashchipsize").equals(_topic)) return String(unitSetESPFlashChipSize(std::atoi(_payload.c_str())));
+																																																																																																																else
+																																																																																																																	if (String(topic + "/getespflashchipspeed").equals(_topic)) return onGetProperty("espflashchipspeed", String(unitGetESPFlashChipSpeed()), transportMask);
+																																																																																																																	else
+																																																																																																																		if (String(topic + "/setespflashchipspeed").equals(_topic)) return String(unitSetESPFlashChipSpeed(std::atoi(_payload.c_str())));
+																																																																																																																		else
+																																																																																																																			if (String(topic + "/getespsketchsize").equals(_topic)) return onGetProperty("espsketchsize", String(unitGetESPSketchSize()), transportMask);
+																																																																																																																			else
+																																																																																																																				if (String(topic + "/setespsketchsize").equals(_topic)) return String(unitSetESPSketchSize(std::atoi(_payload.c_str())));
+																																																																																																																				else
+																																																																																																																					if (String(topic + "/getespfreesketchspace").equals(_topic)) return onGetProperty("espfreesketchspace", String(unitGetESPFreeSketchSpace()), transportMask);
+																																																																																																																					else
+																																																																																																																						if (String(topic + "/setespfreesketchspace").equals(_topic)) return String(unitSetESPFreeSketchSpace(std::atoi(_payload.c_str())));
+																																																																																																																						else
+																																																																																																																							if (String(topic + "/getespflashchipmode").equals(_topic)) return onGetProperty("espflashchipmode", String(unitGetESPFlashChipMode()), transportMask);
+																																																																																																																							else
+																																																																																																																								if (String(topic + "/setespflashchipmode").equals(_topic)) return String(unitSetESPFlashChipMode(std::atoi(_payload.c_str())));
+																																																																																																																								else
+																																																																																																																									if (String(topic + "/getespsketchmd5").equals(_topic)) return onGetProperty("espsketchmd5", unitGetESPSketchMD5(), transportMask);
+																																																																																																																									else
+																																																																																																																										if (String(topic + "/setespsketchmd5").equals(_topic)) return String(unitSetESPSketchMD5(_payload));
+																																																																																																																										else
+																																																																																																																											if (String(topic + "/getespresetreason").equals(_topic)) return onGetProperty("espresetreason", unitGetESPResetReason(), transportMask);
+																																																																																																																											else
+																																																																																																																												if (String(topic + "/setespresetreason").equals(_topic)) return String(unitSetESPResetReason(_payload));
+																																																																																																																												else
+																																																																																																																													if (String(topic + "/getespmagicflashchipsize").equals(_topic)) return onGetProperty("espmagicflashchipsize", String(unitGetESPMagicFlashChipSize((uint8_t)std::atoi(_payload.c_str()))), transportMask);
+																																																																																																																													else
+																																																																																																																														if (String(topic + "/setespmagicflashchipsize").equals(_topic)) return String(unitSetESPMagicFlashChipSize(std::atoi(_payload.c_str())));
+																																																																																																																														else
+																																																																																																																															if (String(topic + "/getespmagicflashchipspeed").equals(_topic)) return onGetProperty("espmagicflashchipspeed", String(unitGetESPMagicFlashChipSpeed((uint8_t)std::atoi(_payload.c_str()))), transportMask);
+																																																																																																																															else
+																																																																																																																																if (String(topic + "/setespmagicflashchipspeed").equals(_topic)) return String(unitSetESPMagicFlashChipSpeed(std::atoi(_payload.c_str())));
+																																																																																																																																else
+																																																																																																																																	if (String(topic + "/getespmagicflashchipmode").equals(_topic)) return onGetProperty("espmagicflashchipmode", String(unitGetESPMagicFlashChipMode((uint8_t)std::atoi(_payload.c_str()))), transportMask);
+																																																																																																																																	else
+																																																																																																																																		if (String(topic + "/setespmagicflashchipmode").equals(_topic)) return String(unitSetESPMagicFlashChipMode(std::atoi(_payload.c_str())));
+	//Pins
+																																																																																																																																		else
+																																																																																																																																			if (String(topic + "/getbusypins").equals(_topic)) return unitGetBusyPins();
+																																																																																																																																			else
+																																																																																																																																				if (String(topic + "/getpinsmap").equals(_topic)) return unitGetPinsMap();
+																																																																																																																																				else
+																																																																																																																																					if (String(topic + "/getupdateavailable").equals(_topic)) return onGetProperty("updateavailable", String(unitGetUpdateAvailable()), transportMask);
+																																																																																																																																					else
+																																																																																																																																						if (String(topic + "/setupdateavailable").equals(_topic)) return String(unitSetUpdateAvailable(std::atoi(_payload.c_str())));
+																																																																																																																																						else
+																																																																																																																																							if (String(topic + "/getupdatepossible").equals(_topic)) return onGetProperty("updatepossible", String(updateGetUpdatePossible()), transportMask);
+																																																																																																																																							else
+																																																																																																																																								if (String(topic + "/getupdateinfo").equals(_topic)) return onGetProperty("updateinfo", String(updateGetUpdateInfo()), transportMask);
+																																																																																																																																								else
+																																																																																																																																									if (String(topic + "/getupdateuistatus").equals(_topic)) return onGetProperty("updateuistatus", String(updateGetUpdateUIStatus()), transportMask);
+																																																																																																																																									else
+																																																																																																																																										if (String(topic + "/getupdatefirmwarestatus").equals(_topic)) return onGetProperty("updateufirmwarestatus", String(updateGetUpdateFirmwareStatus()), transportMask);
+																																																																																																																																										else
+																																																																																																																																											if (String(topic + "/getupdatehost").equals(_topic)) return onGetProperty("updatehost", unitGetUpdateHost(), transportMask);
+																																																																																																																																											else
+																																																																																																																																												if (String(topic + "/setupdatehost").equals(_topic)) return String(unitSetUpdateHost(_payload));
+																																																																																																																																												else
+																																																																																																																																													//Update 
+																																																																																																																																													return result;
 }
 
 bool onInsideChange(String _property, String _value)
 {
+#ifdef DetailedDebug 
 	debugOut(unitid, "|<- inside change " + _property + " = " + _value);
+#endif
+
 	filesWriteString(String(DefaultId) + "." + _property, _value);
 	if (transportAvailable())
 	{
@@ -625,7 +670,9 @@ String _getStringPropertyValue(String _property, String _defaultvalue)
 		unitOnMessage(topic + "/set" + _property, result, NoTransportMask);
 	}
 	propertyFileReaded += _property + ";";
+#ifdef DetailedDebug 
 	debugOut(unitid, _property + "=" + result);
+#endif
 	return result;
 }
 //Integer property
@@ -641,7 +688,10 @@ int _getIntPropertyValue(String _property, int _defaultvalue)
 		unitOnMessage(topic + "/set" + _property, String(result), NoTransportMask);
 	}
 	propertyFileReaded += _property + ";";
+#ifdef DetailedDebug 
 	debugOut(unitid, _property + "=" + String(result));
+#endif
+
 	return result;
 }
 
@@ -737,15 +787,23 @@ String unitGetWiFiAccessPointIP()
 	if (unitGetWiFiAccessPointAvailable() == 1)
 	{
 		IPAddress real_wifiaccesspointip = WiFi.softAPIP();
+#ifdef DetailedDebug 
 		debugOut(unitid, "Current Access Point IP: " + real_wifiaccesspointip.toString());
+#endif
 		if (propertyFileReaded.indexOf("wifiaccesspointip;") < 0) wifiaccesspointip = _getStringPropertyValue("wifiaccesspointip", real_wifiaccesspointip.toString());
 
 		if (!real_wifiaccesspointip.toString().equals(wifiaccesspointip))
 		{
+#ifdef DetailedDebug 
 			debugOut(unitid, "Current Access Point IP not equals");
+#endif
+
 			if (!unitSetWiFiAccessPointIP(wifiaccesspointip))
 			{
+#ifdef DetailedDebug 
 				debugOut(unitid, "Can't change Access Point IP to: " + wifiaccesspointip);
+#endif
+
 				wifiaccesspointip = NotAvailable;
 			}
 		}
@@ -755,15 +813,20 @@ String unitGetWiFiAccessPointIP()
 		WiFi.softAPdisconnect(true);
 		wifiaccesspointip = NotAvailable;
 	}
-
+#ifdef DetailedDebug 
 	debugOut(unitid, "wifiaccesspointip=" + wifiaccesspointip);
+#endif
+
 	return wifiaccesspointip;
 }
 
 bool unitSetWiFiAccessPointIP(String _wifiaccesspointip)
 {
 	IPAddress real_wifiaccesspointip;
+#ifdef DetailedDebug 
 	debugOut(unitid, "Current Access Point IP: " + WiFi.softAPIP().toString());
+#endif
+
 	if (real_wifiaccesspointip.fromString(_wifiaccesspointip))
 	{
 		if (WiFi.softAPConfig(real_wifiaccesspointip, real_wifiaccesspointip, IPAddress(255, 255, 255, 0)))
@@ -870,17 +933,13 @@ bool unitSetRESTfulServerPassword(String _restfulserverpassword)
 //RESTfulServerPort()  
 int unitGetRESTfulServerPort()
 {
-	debugOut(unitid, "get port step 1");
 	if (propertyFileReaded.indexOf("restfulserverport;") < 0)
 	{
-		debugOut(unitid, "get port step 2");
 		restfulserverport = _getIntPropertyValue("restfulserverport", DefaultRESTfulServerPort);
-		debugOut(unitid, "get port result=" + String(restfulserverport));
 		return restfulserverport;
 	}
 	else
 	{
-		debugOut(unitid, "get port step 3");
 		return restfulserverport;
 	}
 }
@@ -1595,7 +1654,7 @@ String unitGetUpdateHost()
 	else return updatehost;
 }
 bool unitSetUpdateHost(String _updatehost)
-{	
+{
 	updatehost = _updatehost;
 	return onInsideChange("updatehost", updatehost);
 }

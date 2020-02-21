@@ -196,7 +196,6 @@ int scriptsGetByIndex(String name) {
 	return -1;
 }
 
-
 String scriptsGetAll() {
 	String result = "";
 	String valueName = "";
@@ -277,14 +276,10 @@ bool scriptsRun(String name) {
 
 char* stringToArray(String str)
 {
-	//free(array);
-	//Serial.println("-->get 1");
-	char *array;
-	//Serial.println("-->get 2");
-	array = (char *)malloc(sizeof(char) * (str.length() + 1));
-	//Serial.println("-->get 3");
-	strcpy(array, str.c_str());
-	//Serial.println("-->get 4");
+	//free(array);	
+	char *array;	
+	array = (char *)malloc(sizeof(char) * (str.length() + 1));	
+	strcpy(array, str.c_str());	
 	return array;
 }
 
@@ -304,30 +299,19 @@ int pushInstruction(int index, int addr, int type, int arg1Addr, int arg2Addr, i
 }
 
 int pushData(int index, String name, String value) {
-	//Serial.println("-->push data 1");
+	
 	if (scripts[index].data[scripts[index].dataCount].name != nullptr)
 	{
 		// free(scripts[index].data[scripts[index].dataCount].name);
-	}
-	//Serial.println("-->push data 2");
+	}	
 	scripts[index].data[scripts[index].dataCount].name = stringToArray(name);
-	//Serial.println("-->push data 3");
+	
 
 	if (scripts[index].data[scripts[index].dataCount].value != nullptr)
 	{
 		//	free(scripts[index].data[scripts[index].dataCount].value);
 	}
 	scripts[index].data[scripts[index].dataCount].value = stringToArray(value);
-	//Serial.println("-->push data 4");
-	//scripts[index].data[scripts[index].dataCount].name = (char *)malloc(sizeof(char) * (name.length() + 1));
-	//strcpy(scripts[index].data[scripts[index].dataCount].name, name.c_str());
-
-	//scripts[index].data[scripts[index].dataCount].value = (char *)malloc(sizeof(char) * (value.length() + 1));
-	//strcpy(scripts[index].data[scripts[index].dataCount].value, value.c_str());
-
-
-	//	scripts[index].data[scripts[index].dataCount].name = _name;
-	//	scripts[index].data[scripts[index].dataCount].value = _value;
 
 	return scripts[index].dataCount++;
 }
@@ -409,27 +393,12 @@ int runSub(int index) {
 	String value1 = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
 	String value2 = scripts[index].data[scripts[index].code[ip].arg2Addr].value;
 
-	////Serial.println("-->" + String(value1));
-	////Serial.println("-->" + String(value2));
 	float arg1 = std::atof(value1.c_str());
 	float arg2 = std::atof(value2.c_str());
 	String result = String(arg1 - arg2);
-	////Serial.println("-->" + String(result));
-
-
-	//TODO RELOCATE FOR scripts[index].data[scripts[index].code[ip].resultAddr].value
-	//strcpy(scripts[index].data[scripts[index].code[ip].resultAddr].value, result.c_str());
 
 	free(scripts[index].data[scripts[index].code[ip].resultAddr].value);
 	scripts[index].data[scripts[index].code[ip].resultAddr].value = stringToArray(result);
-
-
-	////Serial.println("!->" + String(scripts[index].code[ip].arg1Addr));
-	////Serial.println("!->" + String(scripts[index].code[ip].arg2Addr));
-	////Serial.println("!->" + String(scripts[index].code[ip].resultAddr));
-	////Serial.println("2!->" + String(scripts[index].data[scripts[index].code[ip].arg1Addr].value));
-	////Serial.println("2!->" + String(scripts[index].data[scripts[index].code[ip].arg2Addr].value));
-	////Serial.println("2!->" + String(scripts[index].data[scripts[index].code[ip].resultAddr].value));
 
 	return ++ip;
 }
@@ -465,8 +434,7 @@ int runGoto(int index) {
 	if (scripts[index].code[ip].type != gotoCode) return -1;
 	if (scripts[index].code[ip].arg1Addr == -1) return -1;
 	String value1 = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
-	int arg1 = std::atoi(value1.c_str());
-	Serial.println("-- goto: " + String(arg1));
+	int arg1 = std::atoi(value1.c_str());	
 	return arg1;
 }
 
@@ -621,8 +589,7 @@ int runSetProp(int index) {
 //--------------------------------------------------------------------------------------------------------
 //Executor and Compiler
 bool executeInstruction(int index) {
-	int ip = scripts[index].ip;	
-	//Serial.println("CODE -->" + String(ip));
+	int ip = scripts[index].ip;		
 	switch (scripts[index].code[ip].type)
 	{
 	case stopCode: //default
@@ -662,8 +629,7 @@ bool executeInstruction(int index) {
 		scripts[index].ip = -1;
 	}
 
-	
-	//Serial.println("CODE --<" + String(scripts[index].ip));
+		
 	if (scripts[index].ip != -1)
 	{
 		scripts[index].debugLineNumber = scripts[index].code[scripts[index].ip].lineNumber;
@@ -733,10 +699,8 @@ String scriptsDebugNext(String name)
 }
 
 bool scriptsStartDebug(String name)
-{
-	Serial.println("-->DEBUG" + name);
-	int index = scriptsGetByIndex(name);
-	Serial.println("-->DEBUG" + String(index));
+{	
+	int index = scriptsGetByIndex(name);	
 	if (index != -1)
 	{
 		scripts[index].status = debugStatus;
@@ -839,8 +803,6 @@ String scriptsCompile(int index) {
 		return "out of heap";
 	}
 
-	Serial.println("-->" + String(_codeCount));
-	Serial.println("-->" + String(_dataCount));
 
 	scripts[index].code = (Instruction*)malloc(sizeof(Instruction) * _codeCount);
 	scripts[index].data = (Variable*)malloc(sizeof(Variable) * _dataCount);
@@ -851,7 +813,7 @@ String scriptsCompile(int index) {
 	byteCode = scripts[index].byteCode + "\n";
 	while ((linePos = byteCode.indexOf(lineDelimiter)) != -1)
 	{
-		Serial.println("-->label" + String(linePos));
+
 		command = clearSpace(byteCode.substring(0, linePos), true);
 		if (command.length() != 0)
 		{
@@ -884,11 +846,10 @@ String scriptsCompile(int index) {
 
 			if (command.indexOf("var ") == 0) //variable
 			{
-				//Serial.println("->" + command);
 				String varArg = command.substring(4, command.length());
 				String varName = clearSpace(varArg.substring(0, varArg.indexOf('=')), false);
 				String varValue = varArg.substring(varArg.indexOf('=') + 1);
-				Serial.println("-->var " + varName + " " + varValue);
+
 				pushData(index, varName, varValue);
 			}
 			else //Instruction parsin section
@@ -1131,8 +1092,7 @@ String scriptsCreate(String name, String byteCode) {
 		if (scriptCount >= scriptSize - 2) return "VM scripts limit is owerflow (limit=" + String(scriptSize) + " scripts)";
 		scriptCount++;
 		index = scriptCount;
-	}
-	//Serial.println("script index" + String(index));
+	}	
 	scriptsReset(index);
 	scripts[index].name = name;
 	filesWriteInt(scripts[index].name + ".rf", -1); //escapre RF flag 
@@ -1165,15 +1125,13 @@ bool scriptsLoad() {
 	while ((linePos = result.indexOf(lineDelimiter)) != -1)
 	{
 		line = result.substring(0, linePos);
-		//Serial.println(line);
-
+	
 		if (line.indexOf("script:") == 0) //script section
 		{
 			String scriptName = line.substring(line.indexOf(scriptDelimiter) + 1);
 			scriptCount++;
 			scriptsReset(scriptCount);
-			scripts[scriptCount].name = scriptName;
-			//Serial.println("name:" + scriptName);
+			scripts[scriptCount].name = scriptName;	
 		}
 		else //key section
 		{
@@ -1205,103 +1163,6 @@ bool nearlyEqyal(float a, float b)
 
 void testCompile()
 {
-
-	//Serial.println(ESP.getFreeHeap());
-	//scriptsCreate("script1", "var a=10\nvar b=10\nvar c=10000\nsum a,b,b\nsum a,b,b\nsum a,b,b\nwrite b\nifupper b,c,99\ngoto 0\n");
-	//Serial.println(ESP.getFreeHeap());
-	//scriptsCreate("script2", "var a=10\nvar b=10\nvar w=10\nvar c=10000\nsum a,b,b\nwrite b\ngetprop wifi,wifirssi,w\nwrite w\ngoto 0\n");
-	//Serial.println(ESP.getFreeHeap());
-	//scriptsCreate("script3", "var a=10\nvar b=10\nvar w=10\nvar c=10000\ngetprop wifi,wifirssi,w\nwrite w\ngoto 0\n");
-	//Serial.println(ESP.getFreeHeap());
-	//scriptsCreate("script4", "var t=0\nvar h=0\nvar a=0\nvar v=1\nvar hlimit=40\ngetprop dht,temperature,t\ngetprop dht,humidity,h\nwrite t\nwrite h\nifupper hlimit,h,0\nsetprop rele,data,v\ngoto 0\n");
-	//Serial.println(ESP.getFreeHeap());
-
-	//scriptsSave();
-
-
-	//Serial.println(ESP.getFreeHeap());
-	//scriptsLoad();
-
-
-	/*
-	//Serial.println("A");
-
-	scripts[0].codeCount = 100;
-	scripts[0].dataCount = 100;
-	//while (true)
-	{
-		//Serial.println(ESP.getFreeHeap());
-		scripts[0].code = (Instruction*)malloc(sizeof(Instruction) * scripts[0].codeCount);
-		scripts[0].data = (Variable*)malloc(sizeof(Variable) * scripts[0].dataCount);
-		//Serial.println(ESP.getFreeHeap());
-		//Serial.println("B2");
-		int index = 0;
-		for (int addr = 0; addr < scripts[0].codeCount; addr++) {
-
-			scripts[index].code[addr].type = sumCode;
-			scripts[index].code[addr].arg1Addr = 222 + addr;
-			scripts[index].code[addr].arg2Addr = 333 + addr;
-			scripts[index].code[addr].resultAddr = 444 + addr;
-			//Serial.println("B3");
-			scripts[index].data[addr].type = addr;
-			//Serial.println("B31");
-			scripts[index].data[addr].name = "name" + String(addr);
-			scripts[index].data[addr].value = "value123123" + String(addr);
-			//Serial.println("B4");
-
-			//addSum(0, i, 10, 20, 40);
-			//pushData(0, "123", "1233");
-		}
-
-
-		for (int addr = 0; addr < scripts[0].codeCount; addr++) {
-
-			//Serial.println(String(scripts[index].code[addr].type));
-			//Serial.println(String(scripts[index].code[addr].arg1Addr));
-			//Serial.println(String(scripts[index].code[addr].arg2Addr));
-			//Serial.println(String(scripts[index].code[addr].resultAddr));
-
-			//Serial.println(scripts[index].data[addr].name);
-			//Serial.println(scripts[index].data[addr].value);
-			//addSum(0, i, 10, 20, 40);
-			//pushData(0, "123", "1233");
-		}
-
-		//Serial.println("C");
-		//Serial.println("-->" + String(sizeof(scripts[0])));
-		//Serial.println("-->" + String(sizeof(scripts[0].code)));
-		//Serial.println("-->" + String(sizeof(scripts[0].code[0])));
-
-		//Serial.println(ESP.getFreeHeap());
-		free(scripts[0].code);
-		free(scripts[0].data);
-	}
-	*/
-
-	/*
-	//Serial.println("-->" + String(sizeof(scripts[0])));
-	//Serial.println(ESP.getFreeHeap());
-	scripts[0].code = (Instruction*)malloc(sizeof(Instruction) * 1000);
-	//Serial.println(ESP.getFreeHeap());
-	//realloc((Instruction*)scripts[0].code, sizeof(Instruction) * 10);
-	//Serial.println("-->" + String(sizeof(scripts[0])));
-	//Serial.println("-->" + String(sizeof(scripts[0].code)));
-	//Serial.println("-->" + String(sizeof(scripts[0].code[0])));
-	//Serial.println("-->" + String(sizeof(scripts[0].code[2])));
-
-	free(scripts[0].code);
-	//Serial.println(ESP.getFreeHeap());
-	Instruction i;
-	i.arg1Addr = 123;
-	scripts[0].code[999].arg1Addr = 123;
-	//Serial.println("-->" + String(scripts[0].code[999].arg1Addr));
-
-
-	//Serial.println("B2");
-	for (int i = 0; i < 999; i++) {
-		addSum(0, i, 10, 20, 40);
-		//Serial.println("C");
-	}
-	*/
+ //Put some code for non UI tests
 }
 

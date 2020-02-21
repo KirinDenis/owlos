@@ -1,3 +1,44 @@
+﻿/* ----------------------------------------------------------------------------
+Ready IoT Solution - OWLOS
+Copyright 2019, 2020 by:
+- Konstantin Brul (konstabrul@gmail.com)
+- Vitalii Glushchenko (cehoweek@gmail.com)
+- Denys Melnychuk (meldenvar@gmail.com)
+- Denis Kirin (deniskirinacs@gmail.com)
+
+This file is part of Ready IoT Solution - OWLOS
+
+OWLOS is free software : you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+OWLOS is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with OWL OS. If not, see < https://www.gnu.org/licenses/>.
+
+GitHub: https://github.com/KirinDenis/owlos
+
+(Этот файл — часть Ready IoT Solution - OWLOS.
+
+OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
+ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
+была опубликована Фондом свободного программного обеспечения; версии 3
+лицензии, любой более поздней версии.
+
+OWLOS распространяется в надежде, что она будет полезной, но БЕЗО ВСЯКИХ
+ГАРАНТИЙ; даже без неявной гарантии ТОВАРНОГО ВИДА или ПРИГОДНОСТИ ДЛЯ
+ОПРЕДЕЛЕННЫХ ЦЕЛЕЙ.
+Подробнее см.в Стандартной общественной лицензии GNU.
+
+Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
+этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
+--------------------------------------------------------------------------------------*/
+
 #include <FS.h>
 #include "..\Utils\Utils.h"
 
@@ -10,7 +51,9 @@ bool filesBegin()
 {
 	if (!SPIFFS.begin())
 	{
+#ifdef DetailedDebug 
 		debugOut(FileSystem, "File system not available before, try MOUNT new FLASH drive, please wait...");
+#endif
 		SPIFFS.format();
 	}
 
@@ -18,11 +61,15 @@ bool filesBegin()
 
 	if (result)
 	{
+#ifdef DetailedDebug 
 		debugOut(FileSystem, "File system mount OK");
+#endif
 	}
 	else
 	{
+#ifdef DetailedDebug 
 		debugOut(FileSystem, "File system mount FAIL");
+#endif
 	}
 
 	return result;
@@ -37,7 +84,9 @@ int filesGetSize(String fileName)
 {
 	if (!SPIFFS.begin())
 	{
+#ifdef DetailedDebug 
 		debugOut(FileSystem, "An Error has occurred while mounting file system");
+#endif
 		return -1;
 	}
 
@@ -47,7 +96,9 @@ int filesGetSize(String fileName)
 	File file = SPIFFS.open(fileName, "r");
 
 	if (!file) {
+#ifdef DetailedDebug 
 		debugOut(FileSystem, "There was an error opening the file: " + fileName);
+#endif
 		return -3;
 	}
 
@@ -60,7 +111,9 @@ bool filesDelete(String fileName)
 {
 	if (!SPIFFS.begin())
 	{
+#ifdef DetailedDebug 
 		debugOut(FileSystem, "An Error has occurred while mounting file system");
+#endif
 		return false;
 	}
 
@@ -75,7 +128,9 @@ bool filesRename(String source, String dest)
 {
 	if (!SPIFFS.begin())
 	{
+#ifdef DetailedDebug 
 		debugOut(FileSystem, "An Error has occurred while mounting file system");
+#endif
 		return false;
 	}
 
@@ -96,7 +151,9 @@ String filesReadString(String fileName)
 	String result = String();
 	if (!SPIFFS.begin())
 	{
+#ifdef DetailedDebug 
 		debugOut(FileSystem, "An Error has occurred while mounting file system");
+#endif
 		return result;
 	}
 
@@ -104,7 +161,10 @@ String filesReadString(String fileName)
 	File file = SPIFFS.open(fileName, "r");
 
 	if (!file) {
+#ifdef DetailedDebug 
 		debugOut(FileSystem, "There was an error opening the file for reading: " + fileName);
+#endif
+
 		return result;
 	}
 
@@ -118,19 +178,25 @@ bool filesWriteString(String fileName, String value)
 
 	if (!SPIFFS.begin())
 	{
+#ifdef DetailedDebug 
 		debugOut(FileSystem, "An Error has occurred while mounting file system");
+#endif
 		return false;
 	}
 
 	File file = SPIFFS.open(fileName, "w");
 	if (!file) {
+#ifdef DetailedDebug 
 		debugOut(FileSystem, "There was an error opening the file for writing: " + fileName);
+#endif
 		return false;
 	}
 
 	if (!file.print(value))
 	{
+#ifdef DetailedDebug 
 		debugOut(FileSystem, "File write failed");
+#endif
 	}
 	file.close();
 }
@@ -140,19 +206,25 @@ bool filesAppendString(String fileName, String value)
 
 	if (!SPIFFS.begin())
 	{
+#ifdef DetailedDebug 
 		debugOut(FileSystem, "An Error has occurred while mounting file system");
+#endif
 		return false;
 	}
 
 	File file = SPIFFS.open(fileName, "a");
 	if (!file) {
+#ifdef DetailedDebug 
 		debugOut(FileSystem, "There was an error opening the file for writing: " + fileName);
+#endif
 		return false;
 	}
 
 	if (!file.println(value))
 	{
+#ifdef DetailedDebug 
 		debugOut(FileSystem, "File write failed");
+#endif
 	}
 	file.close();
 }
@@ -162,19 +234,25 @@ bool filesAddString(String fileName, String value)
 
 	if (!SPIFFS.begin())
 	{
+#ifdef DetailedDebug 
 		debugOut(FileSystem, "An Error has occurred while mounting file system");
+#endif
 		return false;
 	}
 
 	File file = SPIFFS.open(fileName, "a");
 	if (!file) {
+#ifdef DetailedDebug 
 		debugOut(FileSystem, "There was an error opening the file for writing: " + fileName);
+#endif
 		return false;
 	}
 
 	if (!file.print(value))
 	{
+#ifdef DetailedDebug 
 		debugOut(FileSystem, "File write failed");
+#endif
 	}
 	file.close();
 }
@@ -231,20 +309,25 @@ bool filesWriteStructure(String fileName, void *value)
 {
 	if (!SPIFFS.begin())
 	{
-		debugOut(FileSystem, "An Error has occurred while mounting file system");
+#ifdef DetailedDebug debugOut(FileSystem, "An Error has occurred while mounting file system");
 		return false;
+#endif
 	}
 
 	File file = SPIFFS.open(fileName, "w");
 	if (!file) {
+#ifdef DetailedDebug 
 		debugOut(FileSystem, "There was an error opening the file for writing: " + fileName);
+#endif
 		return false;
 	}
 
 	int writedSize = file.write((byte*)&value, sizeof(value));
 	if (writedSize != sizeof(value))
 	{
+#ifdef DetailedDebug 
 		debugOut(FileSystem, "File write failed");
+#endif
 		return false;
 	}
 	file.close();

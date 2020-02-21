@@ -1,123 +1,165 @@
+﻿/* ----------------------------------------------------------------------------
+Ready IoT Solution - OWLOS
+Copyright 2019, 2020 by:
+- Konstantin Brul (konstabrul@gmail.com)
+- Vitalii Glushchenko (cehoweek@gmail.com)
+- Denys Melnychuk (meldenvar@gmail.com)
+- Denis Kirin (deniskirinacs@gmail.com)
+
+This file is part of Ready IoT Solution - OWLOS
+
+OWLOS is free software : you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+OWLOS is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with OWL OS. If not, see < https://www.gnu.org/licenses/>.
+
+GitHub: https://github.com/KirinDenis/owlos
+
+(Этот файл — часть Ready IoT Solution - OWLOS.
+
+OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
+ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
+была опубликована Фондом свободного программного обеспечения; версии 3
+лицензии, любой более поздней версии.
+
+OWLOS распространяется в надежде, что она будет полезной, но БЕЗО ВСЯКИХ
+ГАРАНТИЙ; даже без неявной гарантии ТОВАРНОГО ВИДА или ПРИГОДНОСТИ ДЛЯ
+ОПРЕДЕЛЕННЫХ ЦЕЛЕЙ.
+Подробнее см.в Стандартной общественной лицензии GNU.
+
+Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
+этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
+--------------------------------------------------------------------------------------*/
+
 #include "MotionDevice.h"
 
 bool MotionDevice::init()
 {
-  if (id.length() == 0) id = DeviceID;
-  BaseDevice::init(id);
-
-  //init properies
-  getPin();
-  pinMode(pin, INPUT);
+	if (id.length() == 0) id = DeviceID;
+	BaseDevice::init(id);
+	//init properies
+	getPin();
+	pinMode(pin, INPUT);
 }
 
 bool MotionDevice::begin(String _topic)
 {
-  BaseDevice::begin(_topic);
-  available = true;
-  setType(Motion);
-  setAvailable(available);
-  return available;
+	BaseDevice::begin(_topic);
+	available = true;
+	setType(Motion);
+	setAvailable(available);
+	return available;
 }
 
 String MotionDevice::getAllProperties()
 {
-  String result = BaseDevice::getAllProperties();
-  result += "motion=" + String(motion) + "\n";
-  result += "pin=" + String(pin) + "\n";
-  return result;
+	String result = BaseDevice::getAllProperties();
+	result += "motion=" + String(motion) + "\n";
+	result += "pin=" + String(pin) + "\n";
+	return result;
 }
 
 bool MotionDevice::query()
 {
-  if (BaseDevice::query())
-  {
-    int _motion = motion;
-    getMotion();
-    if (_motion != motion)
-    {
-      onInsideChange("motion", String(motion));
-      motionTriger++;
-    }
-
-	//Fill array of history data
-	if (millis() >= lastHistoryMillis + historyInterval)
+	if (BaseDevice::query())
 	{
-                if (motion == 1)  motionTriger++; //motion all time at "1"
-		lastHistoryMillis = millis();
-		setHistoryData(motionTriger);
-		motionHistoryFileTriger = motionTriger;
-		motionTriger = 0.0;
+		int _motion = motion;
+		getMotion();
+		if (_motion != motion)
+		{
+			onInsideChange("motion", String(motion));
+			motionTriger++;
+		}
+
+		//Fill array of history data
+		if (millis() >= lastHistoryMillis + historyInterval)
+		{
+			if (motion == 1)  motionTriger++; //motion all time at "1"
+			lastHistoryMillis = millis();
+			setHistoryData(motionTriger);
+			motionHistoryFileTriger = motionTriger;
+			motionTriger = 0.0;
+		}
+
+		//Write history data to file
+		if (millis() >= lastHistoryFileWriteMillis + historyFileWriteInterval)
+		{
+			if (motion == 1)  motionHistoryFileTriger++; //motion all time at "1"
+			lastHistoryFileWriteMillis = millis();
+			writeHistoryFile(motionHistoryFileTriger);
+			motionHistoryFileTriger = 0.0;
+		}
+
+
+		return true;
 	}
-
-	//Write history data to file
-	if (millis() >= lastHistoryFileWriteMillis + historyFileWriteInterval)
-	{
-		if (motion == 1)  motionHistoryFileTriger++; //motion all time at "1"
-		lastHistoryFileWriteMillis = millis();
-		writeHistoryFile(motionHistoryFileTriger);
-		motionHistoryFileTriger = 0.0;
-	}
-
-
-    return true;
-  }
-  return false;
+	return false;
 };
-
 
 bool MotionDevice::publish()
 {
-  if (BaseDevice::publish())
-  {
-    onInsideChange("motion", String(motion));
-    return true;
-  }
-  return false;
+	if (BaseDevice::publish())
+	{
+		onInsideChange("motion", String(motion));
+		return true;
+	}
+	return false;
 };
 
 String MotionDevice::onMessage(String _topic, String _payload, int transportMask)
 {
-  String result = BaseDevice::onMessage(_topic, _payload, transportMask);
-  if (!available) return result;
-  //Motion sensor GPIO 1-pin (A0 by default)
-  if (String(topic + "/getpin").equals(_topic))
-  {
-    result = onGetProperty("pin", String(getPin()), transportMask);
-  }
-  else if (String(topic + "/setpin").equals(_topic))
-  {
-          result = String(setPin(std::atoi(_payload.c_str())));
-  }
-  else if ((String(topic + "/getmotion").equals(_topic)) ||  (String(topic + "/setmotion").equals(_topic)))
-  {
-    result = onGetProperty("motion", String(getMotion()), transportMask);
-  }
-  return result;
+	String result = BaseDevice::onMessage(_topic, _payload, transportMask);
+	if (!available) return result;
+	//Motion sensor GPIO 1-pin (A0 by default)
+	if (String(topic + "/getpin").equals(_topic))
+	{
+		result = onGetProperty("pin", String(getPin()), transportMask);
+	}
+	else if (String(topic + "/setpin").equals(_topic))
+	{
+		result = String(setPin(std::atoi(_payload.c_str())));
+	}
+	else if ((String(topic + "/getmotion").equals(_topic)) || (String(topic + "/setmotion").equals(_topic)))
+	{
+		result = onGetProperty("motion", String(getMotion()), transportMask);
+	}
+	return result;
 }
 
 //Motion Sensor 1-pin (A0 by default) ----------------------------------------------------
 int MotionDevice::getPin()
 {
-  if (filesExists(id + ".pin"))
-  {
-    pin = filesReadInt(id + ".pin");
-  }
-    if (DetailedDebug) debugOut(id, "pin=" + String(pin));
-  return pin;
+	if (filesExists(id + ".pin"))
+	{
+		pin = filesReadInt(id + ".pin");
+	}
+#ifdef DetailedDebug
+	debugOut(id, "pin=" + String(pin));
+#endif
+	return pin;
 }
 
 bool MotionDevice::setPin(int _pin)
 {
-  pin = _pin;
-  pinMode(pin, INPUT);
-  filesWriteInt(id + ".pin", pin);
-  return onInsideChange("pin", String(pin));
+	pin = _pin;
+	pinMode(pin, INPUT);
+	filesWriteInt(id + ".pin", pin);
+	return onInsideChange("pin", String(pin));
 }
-
 
 int MotionDevice::getMotion()
 {
-  motion = digitalRead(pin);
-  if (DetailedDebug) debugOut(id, "motion=" + String(motion));  
-  return motion;
+	motion = digitalRead(pin);
+#ifdef DetailedDebug
+	debugOut(id, "motion=" + String(motion));
+#endif
+	return motion;
 }

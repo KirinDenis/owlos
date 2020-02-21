@@ -1,11 +1,43 @@
-/***
-  version 1.7 beta 
-  -------------------------------------------------------------------------------------------------------------------------
-  Ready IoT Solution OWLOS 
-  (c) Konstantin Brul, Vitalii Glushchenko, Denys Melnychuk, Denis Kirin
+/*----------------------------------------------------------------------------
+Ready IoT Solution - OWLOS
+Copyright 2019, 2020 by:
+- Konstantin Brul (konstabrul@gmail.com)
+- Vitalii Glushchenko (cehoweek@gmail.com)
+- Denys Melnychuk (meldenvar@gmail.com)
+- Denis Kirin (deniskirinacs@gmail.com)
 
+This file is part of Ready IoT Solution - OWLOS
 
-  ------------------------------------------------------------------------------------------------------------------------*/
+OWLOS is free software : you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+OWLOS is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with OWL OS. If not, see < https://www.gnu.org/licenses/>.
+
+GitHub: https://github.com/KirinDenis/owlos
+
+(Этот файл — часть Ready IoT Solution - OWLOS.
+
+OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
+ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
+была опубликована Фондом свободного программного обеспечения; версии 3
+лицензии, любой более поздней версии.
+
+OWLOS распространяется в надежде, что она будет полезной, но БЕЗО ВСЯКИХ
+ГАРАНТИЙ; даже без неявной гарантии ТОВАРНОГО ВИДА или ПРИГОДНОСТИ ДЛЯ
+ОПРЕДЕЛЕННЫХ ЦЕЛЕЙ.
+Подробнее см.в Стандартной общественной лицензии GNU.
+
+Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
+этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
+--------------------------------------------------------------------------------------*/
 
 #include "UnitProperties.h"
 #include "src\Utils\Utils.h"
@@ -21,7 +53,9 @@
 void setup() {  
   Serial.begin(PORTSPEED);  //setup Serial Monitor at PORTSPEED BAUD speed - see Utils.h for Constant definition
   delay(ONETENTHOFSECOND);  //sleep 1/10 of second
+  
   debugOut("setup", "started...");//if Utils.h "Debug=true" start writing log to Serial
+
   //ESP.wdtEnable(0); //Software watch dog
   ESP.wdtDisable();
 
@@ -35,7 +69,9 @@ void setup() {
   //Ther is not connected at begin(), see Main::Loop() transportReconnect() function using
   //The begin() just setup connection properties
   transportBegin();
+  #ifdef DetailedDebug 
   debugOut("setup", "complete");//if Utils.h "Debug=true" start writing log to Serial
+  #endif
 }
 
 /*-------------------------------------------------------------------------------------------------------------------------
@@ -49,7 +85,9 @@ void loop() {
   {
     if (transportReconnect()) //DO connection routin, see Transport.cpp
     {
-      debugOut(unitGetUnitId(), "Transport available"); //if HEAD and MQTT Brokker is available setuping devices
+      #ifdef DetailedDebug 
+	  debugOut(unitGetUnitId(), "Transport available"); //if HEAD and MQTT Brokker is available setuping devices
+	  #endif
       transportSetCallBack(Callback); //Regist Callback function for loopback subscribed messages (from MQTT Publishers)
       devicesBegin(unitGetTopic()); //initilize devices network properties, each device must publish() here TYPE and AVAILABLE status
       unitSubscribe();
@@ -58,7 +96,9 @@ void loop() {
     }
     else //if can't connect to transport
     {
-      debugOut(unitGetUnitId(), "Transport NOT available, check network connection, WiFi and URLs at Unit properties");
+      #ifdef DetailedDebug 
+	  debugOut(unitGetUnitId(), "Transport NOT available, check network connection, WiFi and URLs at Unit properties");
+	  #endif
     }
   }
 //  else //if network (Transport) to be available
@@ -79,7 +119,9 @@ void Callback(char* _topic, byte* _payload, unsigned int length) {
 
   if (unitGetMQTTAvailable() == 1)
   {
-  	debugOut(TransportID, "onMessage topic - " + String(_topic));
+  	#ifdef DetailedDebug 
+	debugOut(TransportID, "onMessage topic - " + String(_topic));
+	#endif
 
   	char payload_buff[PayloadBufferSize]; // create character buffer with ending by null terminator (zero string format)
   	int i;

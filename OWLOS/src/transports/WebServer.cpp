@@ -1,3 +1,45 @@
+﻿/* ----------------------------------------------------------------------------
+Ready IoT Solution - OWLOS
+Copyright 2019, 2020 by:
+- Konstantin Brul (konstabrul@gmail.com)
+- Vitalii Glushchenko (cehoweek@gmail.com)
+- Denys Melnychuk (meldenvar@gmail.com)
+- Denis Kirin (deniskirinacs@gmail.com)
+
+This file is part of Ready IoT Solution - OWLOS
+
+OWLOS is free software : you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+OWLOS is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with OWL OS. If not, see < https://www.gnu.org/licenses/>.
+
+GitHub: https://github.com/KirinDenis/owlos
+
+(Этот файл — часть Ready IoT Solution - OWLOS.
+
+OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
+ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
+была опубликована Фондом свободного программного обеспечения; версии 3
+лицензии, любой более поздней версии.
+
+OWLOS распространяется в надежде, что она будет полезной, но БЕЗО ВСЯКИХ
+ГАРАНТИЙ; даже без неявной гарантии ТОВАРНОГО ВИДА или ПРИГОДНОСТИ ДЛЯ
+ОПРЕДЕЛЕННЫХ ЦЕЛЕЙ.
+Подробнее см.в Стандартной общественной лицензии GNU.
+
+Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
+этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
+--------------------------------------------------------------------------------------*/
+
+
 //#define USESSL
 #define NOTUSESSL
 
@@ -97,7 +139,9 @@ aA4UzF0VOAUXbuowgVHJwkZJKGVfLiyhJGOidLAUlw==
 void webServerAddCORSHeaders()
 {
 	String clientIP = webServer.client().remoteIP().toString();
+#ifdef DetailedDebug 
 	debugOut(WebServerId, "client: " + clientIP + " ask: " + webServer.uri());
+#endif
 
 	if (unitGetRESTfulAvailable() == 1)
 	{
@@ -361,10 +405,14 @@ void handleUploadFile()
 {
 	webServerAddCORSHeaders();
 	HTTPUpload& http_uploadFile = webServer.upload();
+#ifdef DetailedDebug
 	debugOut(WebServerId, "upload: " + http_uploadFile.filename + " status: " + String(http_uploadFile.status));
+#endif
 	if (http_uploadFile.status == UPLOAD_FILE_START)
 	{
+#ifdef DetailedDebug
 		debugOut(WebServerId, "upload start: " + http_uploadFile.filename);
+#endif
 		String filename = http_uploadFile.filename;
 		//if (!filename.startsWith("/")) filename = "/"+filename;
 		//Serial.print("Upload File Name: "); Serial.println(filename);
@@ -379,19 +427,25 @@ void handleUploadFile()
 			{
 				if (http_uploadFile.currentSize * 2 > ESP.getFreeHeap()) //HEAP is end
 				{
+#ifdef DetailedDebug
 					debugOut(WebServerId, "upload aborted, reson: end of unit heap");
+#endif
 					webServer.send(504, "text/plain", "upload aborted, reson: end of unit heap");
 				}
 				else
 				{
 					fs_uploadFile.write(http_uploadFile.buf, http_uploadFile.currentSize);
+#ifdef DetailedDebug
 					debugOut(WebServerId, "upload write: " + String(http_uploadFile.currentSize));
+#endif
 				}
 
 			}
 			else
 			{
+#ifdef DetailedDebug
 				debugOut(WebServerId, "upload write error");
+#endif
 			}
 		}
 		else
@@ -401,24 +455,32 @@ void handleUploadFile()
 				{
 					fs_uploadFile.close();
 					String html = http_uploadFile.filename;
+#ifdef DetailedDebug
 					debugOut(WebServerId, "uploaded success: " + html);
+#endif
 					webServer.send(200, "text/plain", html);
 				}
 				else
 				{
+#ifdef DetailedDebug
 					debugOut(WebServerId, "upload can't create file");
+#endif
 					webServer.send(503, "text/plain", http_uploadFile.filename);
 				}
 			}
 			else
 				if (http_uploadFile.status == UPLOAD_FILE_ABORTED)
 				{
+#ifdef DetailedDebug
 					debugOut(WebServerId, "upload aborted");
+#endif
 					webServer.send(504, "text/plain", http_uploadFile.filename);
 				}
 				else
 				{
+#ifdef DetailedDebug
 					debugOut(WebServerId, "upload bad file name, size or content for ESP FlashFileSystem");
+#endif
 					webServer.send(505, "text/plain", "upload bad file name, size or content for ESP FlashFileSystem");
 				}
 }
@@ -673,10 +735,7 @@ void handleSetWebProperty()
 	{
 		if (webServer.argName(1).equals("property"))
 		{
-
-			String result = webOnMessage(unitGetTopic() + "/set" + decode(webServer.arg(1)), decode(webServer.arg(0)));
-
-			debugOut("web", result);
+			String result = webOnMessage(unitGetTopic() + "/set" + decode(webServer.arg(1)), decode(webServer.arg(0)));			
 			if ((result.length() == 0) || (result.equals("0")))
 			{
 				result = "wrong unit property set: " + webServer.arg(0) + "=" + webServer.arg(1);
@@ -688,7 +747,6 @@ void handleSetWebProperty()
 				webServer.send(200, "text/plain", result);
 				return;
 			}
-
 		}
 	}
 	handleNotFound();
@@ -872,11 +930,7 @@ void handleCreateScript()
 	{
 		if (webServer.argName(1).equals("name"))
 		{
-			debugOut(WebServerId, webServer.arg(0));
-			debugOut(WebServerId, decode(webServer.arg(0)));
 			String result = String(scriptsCreate(decode(webServer.arg(1)), decode(webServer.arg(0))));
-
-
 			if (result.length() != 0)
 			{				
 				webServer.send(503, "text/html", result);
@@ -914,15 +968,11 @@ void handleDeleteScript()
 
 void handleStartDebugScript()
 {
-	debugOut(WebServerId, "StartDebug 11 ");
 	webServerAddCORSHeaders();
-	debugOut(WebServerId, "StartDebug 22 ");
 	if (webServer.args() > 0)
-	{
-		debugOut(WebServerId, "StartDebug 33 ");
+	{		
 		if (webServer.argName(0).equals("name"))
-		{
-			debugOut(WebServerId, "StartDebug 44 ");
+		{	
 			webServer.send(200, "text/plain", String(scriptsStartDebug(webServer.arg(0))));
 			return;
 		}
@@ -932,15 +982,11 @@ void handleStartDebugScript()
 
 void handleDebugNextScript()
 {
-	debugOut(WebServerId, "StartDebug 1 ");
 	webServerAddCORSHeaders();
-	debugOut(WebServerId, "StartDebug 2 ");
 	if (webServer.args() > 0)
-	{
-		debugOut(WebServerId, "StartDebug 3 ");
+	{		
 		if (webServer.argName(0).equals("name"))
 		{
-			debugOut(WebServerId, "StartDebug 4 ");
 			webServer.send(200, "text/plain", String(scriptsDebugNext(webServer.arg(0))));
 			return;
 		}
@@ -954,7 +1000,9 @@ void handleDebugNextScript()
 bool webServerBegin()
 {
 	if (started) return true;
+#ifdef DetailedDebug
 	debugOut(WebServerId, "RESTful start by configuration flag");
+#endif
 	/* Time disable for Access Point no Internet mode
 	configTime(3 * 3600, 0, "pool.ntp.org", "time.nist.gov");
 
@@ -1011,12 +1059,11 @@ bool webServerBegin()
 	webServer.on("/getallscripts", handleGetAllScripts);
 	webServer.on("/startdebugscript", handleStartDebugScript);
 	webServer.on("/debugnextscript", handleDebugNextScript);
-	
-
-	
+		
 	webServer.begin();
 
 	debugOut(WebServerId, "started at access point as: " + unitGetWiFiAccessPointIP() + ":" + String(unitGetRESTfulServerPort()) + " at local network as: " + unitGetWiFiIP() + ":" + String(unitGetRESTfulServerPort()));
+
 	started = true;
 	return true;
 }

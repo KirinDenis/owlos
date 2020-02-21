@@ -1,3 +1,45 @@
+﻿/* ----------------------------------------------------------------------------
+Ready IoT Solution - OWLOS
+Copyright 2019, 2020 by:
+- Konstantin Brul (konstabrul@gmail.com)
+- Vitalii Glushchenko (cehoweek@gmail.com)
+- Denys Melnychuk (meldenvar@gmail.com)
+- Denis Kirin (deniskirinacs@gmail.com)
+
+This file is part of Ready IoT Solution - OWLOS
+
+OWLOS is free software : you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+OWLOS is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with OWL OS. If not, see < https://www.gnu.org/licenses/>.
+
+GitHub: https://github.com/KirinDenis/owlos
+
+(Этот файл — часть Ready IoT Solution - OWLOS.
+
+OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
+ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
+была опубликована Фондом свободного программного обеспечения; версии 3
+лицензии, любой более поздней версии.
+
+OWLOS распространяется в надежде, что она будет полезной, но БЕЗО ВСЯКИХ
+ГАРАНТИЙ; даже без неявной гарантии ТОВАРНОГО ВИДА или ПРИГОДНОСТИ ДЛЯ
+ОПРЕДЕЛЕННЫХ ЦЕЛЕЙ.
+Подробнее см.в Стандартной общественной лицензии GNU.
+
+Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
+этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
+--------------------------------------------------------------------------------------*/
+
+
 #include <Arduino.h>
 #include <ESP8266HTTPClient.h>
 #include <ESP8266httpUpdate.h>
@@ -17,14 +59,12 @@
 #define UpdateOnlyUI 1
 #define UpdateBoth 2
 
-
-
 //-2 no getUpdatePossible is called
 //-1 not possible, available disable
 //0 not possible server not available
 //1 possible only UI, need Reset
 //2 possible both firmware and UI
-int updatePossible = UpdateNotBegin;
+byte updatePossible = UpdateNotBegin;
 
 String updateLog("[not started, check update possible]");
 
@@ -33,9 +73,12 @@ String updateLog("[not started, check update possible]");
 #define UpdateStatusComplete 2
 #define UpdateStatusUndefined 3
 
-int updateUIStatus = UpdateStatusUndefined;
+byte updateUIStatus = UpdateStatusUndefined;
+byte updateFirmwareStatus = UpdateStatusUndefined;
 
-int updateFirmwareStatus = UpdateStatusUndefined;
+#define UPDATE_SKIP_COUNT 20
+
+byte skipLoopCount = 0;
 
 #define DefaultUpdateInfo "[none]"
 String updateInfo(DefaultUpdateInfo);
@@ -59,25 +102,33 @@ int updateGetUpdatePossible()
 	}
 	else
 	{
-		if (!downloadFile(UpdateInfoFile, unitGetUpdateHost() + UpdateInfoFile))
+		skipLoopCount++;
+		if (skipLoopCount > UPDATE_SKIP_COUNT)
 		{
-			updatePossible = UpdateServerNotAvailable;
-		}
-		else
-		{  
-			//update info downloaded OK
-			updateInfo = filesReadString(UpdateInfoFile);
-			if (unitGetESPBootMode() > 0) //booting with hardware reset
+			skipLoopCount = 0;
+			if (!downloadFile(UpdateInfoFile, unitGetUpdateHost() + UpdateInfoFile))
 			{
-				updatePossible = UpdateBoth;
+				updatePossible = UpdateServerNotAvailable;
 			}
 			else
-			{ //software or other boot				
-				updatePossible = UpdateOnlyUI;
+			{
+				//update info downloaded OK
+				updateInfo = filesReadString(UpdateInfoFile);
+				if (unitGetESPBootMode() > 0) //booting with hardware reset
+				{
+					updatePossible = UpdateBoth;
+				}
+				else
+				{ //software or other boot				
+					updatePossible = UpdateOnlyUI;
+				}
 			}
 		}
 	}
+
+#ifdef DetailedDebug 
 	debugOut(updateid, "check update possible result: " + String(updatePossible));
+#endif
 	return updatePossible;
 }
 
@@ -92,12 +143,12 @@ String downloadFileWithLog(String fileName)
 	int result = downloadFile(fileName, host + fileName);
 	if (result == 1)
 	{
-		return host + fileName + " OK"  + "\n";
+		return host + fileName + " OK" + "\n";
 	}
 	else
 	{
 		return host + fileName + " fail" + "\n";
-	}	
+	}
 }
 
 String updateUI()
@@ -145,7 +196,7 @@ String updateUI()
 		updateLog += downloadFileWithLog("radialwidget.js.gz");
 		updateLog += downloadFileWithLog("smokewidget.js.gz");
 		updateLog += downloadFileWithLog("stepperwidget.js.gz");
-		updateLog += downloadFileWithLog("valuewidget.js.gz");		
+		updateLog += downloadFileWithLog("valuewidget.js.gz");
 		webServerLoop();
 
 		updateLog += downloadFileWithLog("widgetswrappers.js.gz");
@@ -181,7 +232,9 @@ int updateFirmware()
 	{
 		updateLog += "update firmware started\n";
 		updateFirmwareStatus = UpdateStatusStarted;
+#ifdef DetailedDebug 
 		debugOut(updateid, "Update firmware started\n");
+#endif
 		String host = unitGetUpdateHost();
 		WiFiClient client;
 		ESPhttpUpdate.setLedPin(LED_BUILTIN, LOW);
@@ -202,13 +255,19 @@ int updateFirmware()
 
 		switch (ret) {
 		case HTTP_UPDATE_FAILED:
+#ifdef DetailedDebug 
 			debugOut(updateid, "update error: [" + String(ESPhttpUpdate.getLastError()) + "] " + ESPhttpUpdate.getLastErrorString().c_str());
+#endif
 			break;
 		case HTTP_UPDATE_NO_UPDATES:
+#ifdef DetailedDebug 
 			debugOut(updateid, "no updates");
+#endif
 			break;
 		case HTTP_UPDATE_OK:
+#ifdef DetailedDebug 
 			debugOut(updateid, "update OK");
+#endif
 			break;
 		}
 		updateFirmwareStatus = UpdateStatusComplete;
@@ -218,7 +277,9 @@ int updateFirmware()
 	else
 	{
 		updateFirmwareStatus = UpdateStatusUndefined;
+#ifdef DetailedDebug 
 		debugOut(updateid, "Update firmware fail");
+#endif
 		updateLog += "update firmware fail\n";
 	}
 	return 0;

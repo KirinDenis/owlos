@@ -1,3 +1,45 @@
+﻿/* ----------------------------------------------------------------------------
+Ready IoT Solution - OWLOS
+Copyright 2019, 2020 by:
+- Konstantin Brul (konstabrul@gmail.com)
+- Vitalii Glushchenko (cehoweek@gmail.com)
+- Denys Melnychuk (meldenvar@gmail.com)
+- Denis Kirin (deniskirinacs@gmail.com)
+
+This file is part of Ready IoT Solution - OWLOS
+
+OWLOS is free software : you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+OWLOS is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with OWL OS. If not, see < https://www.gnu.org/licenses/>.
+
+GitHub: https://github.com/KirinDenis/owlos
+
+(Этот файл — часть Ready IoT Solution - OWLOS.
+
+OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
+ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
+была опубликована Фондом свободного программного обеспечения; версии 3
+лицензии, любой более поздней версии.
+
+OWLOS распространяется в надежде, что она будет полезной, но БЕЗО ВСЯКИХ
+ГАРАНТИЙ; даже без неявной гарантии ТОВАРНОГО ВИДА или ПРИГОДНОСТИ ДЛЯ
+ОПРЕДЕЛЕННЫХ ЦЕЛЕЙ.
+Подробнее см.в Стандартной общественной лицензии GNU.
+
+Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
+этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
+--------------------------------------------------------------------------------------*/
+
+
 //ALL DEVICES constructors must be called here, current unit topic must be puted as parameter
 #include "DeviceManager.h"
 #include "..\..\UnitProperties.h"
@@ -13,20 +55,21 @@ BaseDevice * devicesList[DevicesLimit];
 void devicesInit(String _topic)
 {
 	__topic = _topic;
-
+	
+#ifdef DetailedDebug
 	debugOut("deviceconfig", devicesLoadFromConfig());
+#else
+	devicesLoadFromConfig();
+#endif
 
 }
 
-
 void devicesBegin(String unitTopic)
 {
-
 	for (int i = 0; i < devicesCount; i++)
 	{
 		devicesList[i]->begin(unitTopic);
 	}
-
 }
 
 void devicesLoop()
@@ -218,7 +261,9 @@ bool devicesSaveToConfig(int type, String id, int pin1, int pin2, int pin3, int 
 
 String devicesLoadFromConfig()
 {
+#ifdef DetailedDebug
 	debugOut("deviceconfig", "load");
+#endif
 	String deviceList = filesReadString("deviceslist");
 	if (deviceList.length() == 0) return "bad device list counfig file";
 
@@ -229,7 +274,11 @@ String devicesLoadFromConfig()
 
 	int linePos = 0;
 	String line;
+
+#ifdef DetailedDebug
 	debugOut("deviceconfig", "doparse");
+#endif
+
 	while ((linePos = deviceList.indexOf(lineDelimiter)) != -1)
 	{
 		line = deviceList.substring(0, linePos);
@@ -270,8 +319,10 @@ String devicesLoadFromConfig()
 //External device manager API -------------------------------------------------
 String devicesAdd(int type, String id, int pin1, int pin2, int pin3, int pin4)
 {
+#ifdef DetailedDebug
 	debugOut("devicesadd", id);
 	debugOut("devicesadd", busyPins);
+#endif
 	if (devicesCount >= DevicesLimit) return "bad, devices count out of limit range";
 	if (id.length() == 0) return "bad, id is zero length string";
 	if (type < 0) return "bad, device type";
@@ -299,14 +350,6 @@ String devicesAdd(int type, String id, int pin1, int pin2, int pin3, int pin4)
 
 	if (type == DHTDeviceType)
 	{
-		//if (busyPins.indexOf("DHT:" + String(DHTPIN)) >= 0) return "bad, (DHT22).temperature default pin " + String(DHTPIN) + " is busy " + busyPins;
-		//if (checkPinBusy(DHTPIN))
-		//{
-			//if (busyPins.indexOf("(DHT22).humidity:" + String(DHTPIN)) < 0)
-			//{
-//				return "bad, (DHT22).temperature default pin " + String(DHTPIN) + " is busy " + busyPins;
-			//}
-		//}
 
 		DHTDevice * dhtDevice = new DHTDevice;
 		dhtDevice->init(id);
@@ -450,6 +493,9 @@ String devicesAdd(int type, String id, int pin1, int pin2, int pin3, int pin4)
 											}
 	//if device added at RUNTIME
 	if (transportAvailable()) devicesList[devicesCount - 1]->begin(unitGetTopic());
+#ifdef DetailedDebug
 	debugOut("devicesadd", "OK");
+#endif
+
 	return "1";
 }
