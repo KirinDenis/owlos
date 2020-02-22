@@ -59,7 +59,6 @@
 */
 
 #include <Arduino.h>
-
 #include "DeviceManager.h"
 #include "..\..\UnitProperties.h"
 
@@ -283,6 +282,7 @@ char* stringToArray(String str)
 	return array;
 }
 
+
 //Instruction managment functions ------------------------------
 int pushInstruction(int index, int addr, int type, int arg1Addr, int arg2Addr, int arg3Addr, int resultAddr) {
 
@@ -348,6 +348,7 @@ int runLet(int index) {
 	return ++ip;
 }
 
+
 int addSum(int index, int addr, int resultAddr, int arg1Addr, int arg2Addr, int lineNumber) {
 	scripts[index].code[addr].type = sumCode;
 	scripts[index].code[addr].resultAddr = resultAddr;
@@ -375,6 +376,7 @@ int runSum(int index) {
 	return ++ip;
 }
 
+
 int addSub(int index, int addr, int resultAddr, int arg1Addr, int arg2Addr, int lineNumber) {
 	scripts[index].code[addr].type = subCode;
 	scripts[index].code[addr].arg1Addr = arg1Addr;
@@ -399,6 +401,82 @@ int runSub(int index) {
 
 	return ++ip;
 }
+
+
+int addMult(int index, int addr, int resultAddr, int arg1Addr, int arg2Addr, int lineNumber) {
+	scripts[index].code[addr].type = multCode;
+	scripts[index].code[addr].resultAddr = resultAddr;
+	scripts[index].code[addr].arg1Addr = arg1Addr;
+	scripts[index].code[addr].arg2Addr = arg2Addr;
+	scripts[index].code[addr].lineNumber = lineNumber;
+	return 1;
+}
+
+int runMult(int index) {
+	int ip = scripts[index].ip;
+	if (scripts[index].code[ip].type != multCode) return -1;
+
+	String value1 = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
+	String value2 = scripts[index].data[scripts[index].code[ip].arg2Addr].value;
+
+	float arg1 = std::atof(value1.c_str());
+	float arg2 = std::atof(value2.c_str());
+
+	//проверка выйдет ли результат умножения arg1 за arg2 за размер float
+	if (arg1 != 0.0f) {
+		
+		float argForCheckMax = FLT_MAX / arg1;
+		float argForCheckMin = FLT_MIN / arg1;
+	
+		if ((argForCheckMin > arg2) || (argForCheckMax < arg2)) return -1;
+	}
+	
+	String result = String(arg1*arg2);
+
+	free(scripts[index].data[scripts[index].code[ip].resultAddr].value);
+	scripts[index].data[scripts[index].code[ip].resultAddr].value = stringToArray(result);
+
+	return ++ip;
+}
+
+
+int addDev(int index, int addr, int resultAddr, int arg1Addr, int arg2Addr, int lineNumber) {
+	scripts[index].code[addr].type = devCode;
+	scripts[index].code[addr].resultAddr = resultAddr;
+	scripts[index].code[addr].arg1Addr = arg1Addr;
+	scripts[index].code[addr].arg2Addr = arg2Addr;
+	scripts[index].code[addr].lineNumber = lineNumber;
+	return 1;
+}
+
+int runDev(int index) {
+	int ip = scripts[index].ip;
+	if (scripts[index].code[ip].type != devCode) return -1;
+
+	String value1 = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
+	String value2 = scripts[index].data[scripts[index].code[ip].arg2Addr].value;
+
+	float arg1 = std::atof(value1.c_str());
+	float arg2 = std::atof(value2.c_str());
+
+	//Проверка на ноль делителя
+	if (arg2 == 0.0f) return -1;
+
+	////Если  -1< agr2 < 1 проверяем не выйдет ли результат деления за float
+	 if ((arg2 > -1) && (arg2 < 1)) {
+	  float argCheckMax = FLT_MAX * arg2;
+	  float argCheckMin = FLT_MIN * arg2;      
+	  if ((arg1 > argCheckMax) || (arg1 < argCheckMin)) return -1;
+	 }
+	
+    String result = String(arg1/arg2);
+	
+	free(scripts[index].data[scripts[index].code[ip].resultAddr].value);
+	scripts[index].data[scripts[index].code[ip].resultAddr].value = stringToArray(result);
+
+	return ++ip;
+}
+
 
 int addWrite(int index, int addr, int arg1Addr, int lineNumber) {
 	scripts[index].code[addr].type = writeCode;
@@ -599,6 +677,12 @@ bool executeInstruction(int index) {
 	case subCode:
 		scripts[index].ip = runSub(index);
 		break;
+	case multCode:
+		scripts[index].ip = runMult(index);
+		break;
+	case devCode:
+		scripts[index].ip = runDev(index);
+		break;
 	case writeCode:
 		scripts[index].ip = runWrite(index);
 		break;
@@ -776,7 +860,7 @@ String scriptsCompile(int index) {
 					||
 					(command.indexOf("if ") == 0) //if goto инструкция тоже может создать две переменных, даже в случае if 10 > 20 goto begin (это соответсвует синтаксису)
 					||
-					((command.indexOf("=") > 0) && ((command.indexOf("+") > 0) || (command.indexOf("-") > 0) || (command.indexOf("\\") > 0) || (command.indexOf("*") > 0)))) //для математических операторов
+					((command.indexOf("=") > 0) && ((command.indexOf("+") > 0) || (command.indexOf("-") > 0) || (command.indexOf("/") > 0) || (command.indexOf("*") > 0)))) //для математических операторов
 					//^^ в строке есть оператор "=" и один из математических операторов
 				{
 					_dataCount += 2;
@@ -852,6 +936,7 @@ String scriptsCompile(int index) {
 				//парсер математических выражений ---------------------------------------------------------------------------
 				if ((command.indexOf("=") > 0) && (command.indexOf("if ") != 0)) //если есть символ "=" и это уже точно не var значит это выражение +,-,\ или * И ЭТО НЕ ИНСТРУКЦИЯ IF GOTO
 				{
+					//TODO учесть возможность отрицательных значений т.е. знак "-" перед значением!!!!
 					//синтаксис математических выражений:
 					//<переменная><=><переменная|значение>[<+|-|\|*><переменная|значение>]					
 					//^^^обязательно переменная, обязательно знак развенства, обязательно переменая или числовое значение [возможна вторая часть, если она есть обязательно математический оператор
@@ -869,10 +954,15 @@ String scriptsCompile(int index) {
 					String args = clearSpace(command.substring(command.indexOf("=") + 1), false);
 					//ищем математических оператор
 					char mathOperator = 0x00; // 0x00 если не найдем 
+				
 					if (args.indexOf("+") > 0) { mathOperator = '+'; }
 					else
 						if (args.indexOf("-") > 0) { mathOperator = '-'; }
-					//TODO:... "\" и "*"
+					else
+						if (args.indexOf("/") > 0) { mathOperator = '/'; }
+					else
+						if (args.indexOf("*") > 0) { mathOperator = '*'; }
+					
 
 					if (mathOperator == 0x00) //если не нашли математический оператор
 					{
@@ -923,8 +1013,11 @@ String scriptsCompile(int index) {
 						if (mathOperator == '+') { addSum(index, scripts[index].codeCount, resultAddr, arg1Addr, arg2Addr, lineCount); }
 						else
 							if (mathOperator == '-') { addSub(index, scripts[index].codeCount, resultAddr, arg1Addr, arg2Addr, lineCount); }
-						//TODO: else '\' '*'
-							else
+						else
+							if (mathOperator == '*') { addMult(index, scripts[index].codeCount, resultAddr, arg1Addr, arg2Addr, lineCount); }
+						else
+							if (mathOperator == '/') { addDev(index, scripts[index].codeCount, resultAddr, arg1Addr, arg2Addr, lineCount); }
+					    else
 							{ //такого не должно случится, но если что то совсем пошло не так
 								result = "bad expression at line: " + String(lineCount);
 								break;
@@ -1151,10 +1244,6 @@ bool scriptsLoad() {
 	return true;
 }
 
-bool nearlyEqyal(float a, float b)
-{
-	return fabs(a - b) <= FLT_EPSILON;
-}
 
 void testCompile()
 {
