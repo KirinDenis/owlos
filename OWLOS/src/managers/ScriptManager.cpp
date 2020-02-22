@@ -283,7 +283,6 @@ char* stringToArray(String str)
 	return array;
 }
 
-
 //Instruction managment functions ------------------------------
 int pushInstruction(int index, int addr, int type, int arg1Addr, int arg2Addr, int arg3Addr, int resultAddr) {
 
@@ -349,7 +348,6 @@ int runLet(int index) {
 	return ++ip;
 }
 
-
 int addSum(int index, int addr, int resultAddr, int arg1Addr, int arg2Addr, int lineNumber) {
 	scripts[index].code[addr].type = sumCode;
 	scripts[index].code[addr].resultAddr = resultAddr;
@@ -377,7 +375,6 @@ int runSum(int index) {
 	return ++ip;
 }
 
-
 int addSub(int index, int addr, int resultAddr, int arg1Addr, int arg2Addr, int lineNumber) {
 	scripts[index].code[addr].type = subCode;
 	scripts[index].code[addr].arg1Addr = arg1Addr;
@@ -402,8 +399,6 @@ int runSub(int index) {
 
 	return ++ip;
 }
-
-
 
 int addWrite(int index, int addr, int arg1Addr, int lineNumber) {
 	scripts[index].code[addr].type = writeCode;
