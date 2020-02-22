@@ -62,12 +62,26 @@
 #include "DeviceManager.h"
 #include "..\..\UnitProperties.h"
 
+#define SCRIPT_ID "script" 
+
+//Раскоментируйте этот флаг что бы включить трасерт
+//#define SCRIPT_TRACERT
+
 #define heapLimit 5000 //не компилировать и не загружать скрипт если количество heap после этого станет меньше 5Kb 
 #define FLT_EPSILON 1.0E-6 //определение точности вычислений
 #define FLT_MAX     3.40282347E+38F
 #define FLT_MIN     1.17549435E-38F
 
 #define scriptSize 10 //сколько скриптов можно загрузить одновременно
+
+#define STOP_IF_DEVICE_NOTREADY "STOP_IF_DEVICE_NOTREADY" //если в скрипте будет определена переменная с таким именем и устройство не готово - программа остановится
+//статусы скрипта 
+#define stopStatus 0  //скрипт остановлен не выполняется
+#define runStatus 1   //скрипт выполняется
+#define compilerErrorStatus 2 //ошибка компиляции скрипта
+#define runtimeErrorStatus 3 //ошибка выполнения скрипта (возможно был фатальный сбой, не возобновляейте выполнение такого скрипта, без проверки). 
+#define debugStatus 4
+#define criticalRunStatus 5   //скрипт выполняется
 
 //коды инструкций для байт-кода
 #define stopCode 0
@@ -83,12 +97,6 @@
 #define letCode 10
 #define iflowerCode 11
 #define ifequalCode 12
-//статусы скрипта 
-#define stopStatus 0  //скрипт остановлен не выполняется
-#define runStatus 1   //скрипт выполняется
-#define compilerErrorStatus 2 //ошибка компиляции скрипта
-#define runtimeErrorStatus 3 //ошибка выполнения скрипта (возможно был фатальный сбой, не возобновляейте выполнение такого скрипта, без проверки). 
-#define debugStatus 4
 
 //байт-код одной инструкции
 typedef struct Instruction
@@ -113,6 +121,7 @@ typedef struct Script
 	String name;       //имя (уникально)
 	String byteCode;   //исходный байт-код (assembler)
 	int status = stopStatus; //текущий статус выполнения	
+	bool firstTime = false;
 	int ip = -1;           //Instruction Point - указатель выполняемой инструкции в script[..].data (сегмент кода)	
 	int debugLineNumber = -1;
 	int codeCount = 0;     //количество инструкций
@@ -173,10 +182,11 @@ void scriptsReset(int index) {
 	scripts[index].name = "";
 	scripts[index].byteCode = "";
 	scripts[index].status = stopStatus;
+	scripts[index].firstTime = false;
 	scripts[index].ip = -1;
 	scripts[index].codeCount = 0;
 	scripts[index].dataCount = 0;
-	scripts[index].timeQuant = 2;
+	scripts[index].timeQuant = 1;
 	scripts[index].quantCounter = 0;
 	//	free(scripts[0].code);
 	//	free(scripts[0].data);
@@ -522,7 +532,7 @@ int addIfupper(int index, int addr, int arg1Addr, int arg2Addr, int arg3Addr, in
 
 int runIfupper(int index) {
 	int ip = scripts[index].ip;
-	if (scripts[index].code[ip].type != ifupperCode) return -1;
+	if (scripts[index].code[ip].type != ifupperCode) return -1;	
 	String value1 = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
 	String value2 = scripts[index].data[scripts[index].code[ip].arg2Addr].value;
 	float arg1 = std::atof(value1.c_str());
@@ -617,7 +627,7 @@ int runGetProp(int index) {
 		value = unitOnMessage(unitGetTopic() + "/get" + deviceProp, "", NoTransportMask);
 	}
 
-	if ((value.length() == 0) || (value == WrongPropertyName))
+	if (((value.length() == 0) || (value == WrongPropertyName)) && (getDataAddr(index, STOP_IF_DEVICE_NOTREADY) != -1))
 	{
 		return -1; //temporary
 	}
@@ -650,7 +660,7 @@ int runSetProp(int index) {
 		result = unitOnMessage(unitGetTopic() + "/set" + deviceProp, value, NoTransportMask);
 	}
 
-	if ((result.length() == 0) || (result == WrongPropertyName))
+	if (((value.length() == 0) || (value == WrongPropertyName)) && (getDataAddr(index, STOP_IF_DEVICE_NOTREADY) != -1))
 	{
 		return -1;
 	}
@@ -723,29 +733,61 @@ bool scriptsRun() {
 	{
 		if (scripts[i].name.length() != 0)
 		{
-			if (scripts[i].status == runStatus)
+#ifdef SCRIPT_TRACERT					
+			debugOut(SCRIPT_ID, "script: " + scripts[i].name + " status: " + String(scripts[i].status) + " quants: " + String(scripts[i].timeQuant));
+#endif
+
+			if ((scripts[i].status == runStatus) || (scripts[i].status == criticalRunStatus))
 			{
 				scripts[i].quantCounter = 0;
 				while (true)
 				{
-					int lastInstructionCode = filesReadInt(scripts[i].name + ".rf"); //run flag					
-					if (lastInstructionCode != -1) //loose last instruction TODO: use the value for debug
+					if (scripts[i].firstTime)
 					{
-						scripts[i].status = runtimeErrorStatus;
-						break;
+						int lastInstructionCode = filesReadInt(scripts[i].name + ".rf"); //run flag					
+#ifdef SCRIPT_TRACERT					
+						debugOut(SCRIPT_ID, "-> LI: " + String(lastInstructionCode));
+#endif
+						scripts[i].firstTime = false;
+						if (lastInstructionCode != -1) //loose last instruction TODO: use the value for debug
+						{
+							if (scripts[i].status != criticalRunStatus)
+							{
+								scripts[i].status = runtimeErrorStatus;
+								break;
+							}
+						}
+
 					}
+#ifdef SCRIPT_TRACERT					
+					debugOut(SCRIPT_ID, "-> addr: " + String(scripts[i].ip));
+#endif
+
+
+					
 					filesWriteInt(scripts[i].name + ".rf", scripts[i].ip); //up RF flag (store last instruction)
 					bool result = executeInstruction(i);
-					filesWriteInt(scripts[i].name + ".rf", -1); //escapre RF flag 
+					
+					bool fwResult = filesWriteInt(scripts[i].name + ".rf", -1); //escapre RF flag 
 
+#ifdef SCRIPT_TRACERT	
+					debugOut(SCRIPT_ID, "fwResult: " + String(fwResult));
+					debugOut(SCRIPT_ID, "<- addr: " + String(scripts[i].ip));
+#endif
 
 					if (!result)
 					{
 						scripts[i].status = stopStatus;
+#ifdef SCRIPT_TRACERT					
+						debugOut(SCRIPT_ID, "stop by instruction result");
+#endif
 						break;
 					}
 					scripts[i].quantCounter++;
-					if (scripts[i].quantCounter > scripts[i].timeQuant) break;
+#ifdef SCRIPT_TRACERT					
+					debugOut(SCRIPT_ID, "quants counter: " + String(scripts[i].quantCounter));
+#endif
+					if (scripts[i].quantCounter >= scripts[i].timeQuant) break;
 
 				}
 			}
@@ -1183,6 +1225,7 @@ String scriptsCreate(String name, String byteCode) {
 	}	
 	scriptsReset(index);
 	scripts[index].name = name;
+	scripts[index].firstTime = false;
 	filesWriteInt(scripts[index].name + ".rf", -1); //escapre RF flag 
 	scripts[index].byteCode = byteCode;
 
@@ -1220,6 +1263,7 @@ bool scriptsLoad() {
 			scriptCount++;
 			scriptsReset(scriptCount);
 			scripts[scriptCount].name = scriptName;	
+			scripts[scriptCount].firstTime = true;
 		}
 		else //key section
 		{

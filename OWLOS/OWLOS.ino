@@ -56,8 +56,8 @@ void setup() {
   
   debugOut("setup", "started...");//if Utils.h "Debug=true" start writing log to Serial
 
-  //ESP.wdtEnable(0); //Software watch dog
-  ESP.wdtDisable();
+  ESP.wdtEnable(ONEMINUTE); //Software watch dog
+  //ESP.wdtDisable();
 
   scriptsLoad();
 
@@ -77,8 +77,7 @@ void setup() {
 /*-------------------------------------------------------------------------------------------------------------------------
   Main Loop
   -------------------------------------------------------------------------------------------------------------------------*/
-void loop() {
-  scriptsRun();
+void loop() {  
   //check WiFi and MQTT stack are available
   //first time Main::loop() calling the transport is not available
   if (!transportAvailable()) //if not connected
@@ -106,7 +105,8 @@ void loop() {
     transportLoop(); //Ping MQTT (at this version MQTT used only, FFR Ping RESTful to
     //give CPU time quantum to each device. Like are sample -> temperature sensor can check physical sensor value
     devicesLoop(); //the deviceLoop() more actual for sensors devices, the actuator devices wait until Sub()->OnMessage() happens, see Main::Callback(...) function
-
+	//Scripts loop
+	scriptsRun();
   }
   delay(ONETENTHOFSECOND); //Main::loop() sleep interval
 }

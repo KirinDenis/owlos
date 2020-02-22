@@ -199,6 +199,7 @@ bool filesWriteString(String fileName, String value)
 #endif
 	}
 	file.close();
+	return true;
 }
 
 bool filesAppendString(String fileName, String value)
@@ -227,6 +228,7 @@ bool filesAppendString(String fileName, String value)
 #endif
 	}
 	file.close();
+	return true;
 }
 
 bool filesAddString(String fileName, String value)
@@ -255,6 +257,7 @@ bool filesAddString(String fileName, String value)
 #endif
 	}
 	file.close();
+	return true;
 }
 
 
@@ -265,10 +268,8 @@ int filesReadInt(String fileName)
 	{
 		return std::atoi(str.c_str());
 	}
-	else
-	{
-		return -1;
-	}
+
+	return 0;
 }
 
 bool filesWriteInt(String fileName, int value)
@@ -283,10 +284,7 @@ float filesReadFloat(String fileName)
 	{
 		return std::atof(str.c_str());
 	}
-	else
-	{
-		return -1;
-	}
+	return 0.0;
 }
 
 bool filesWriteFloat(String fileName, float value)
