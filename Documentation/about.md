@@ -1,3 +1,5 @@
 About OWLOS
-[![OWLOSlogo](https://github.com/KirinDenis/owlos/blob/master/Documentation/logo.png =100x100)](https://github.com/KirinDenis/owlos/)
+[![OWLOSlogo](https://github.com/KirinDenis/owlos/blob/master/Documentation/logo.png)](https://github.com/KirinDenis/owlos/)
+
+<img src="https://github.com/KirinDenis/owlos/blob/master/Documentation/logo.png" alt="logo" width="100"/>
 
