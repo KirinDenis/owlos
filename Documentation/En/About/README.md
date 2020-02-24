@@ -15,6 +15,12 @@ Open Source IoT Operation System.
 - can integrate with other nodes running under OWL OS - organizing an internal network. without using a servers
 - available in source code http://localhost:8080/Home/Documentation?docref=howtoinstall
 
+http://localhost:8080/Home/Documentation?docref=Documentation/HowToInstall.md
+
+http://localhost:8080/Home/?localref=Documentation/HowToInstall.md&elementid=indexmd
+
+[[! http://localhost:8080/Home/Documentation?docref=Documentation/HowToInstall.md] 123]
+
 # How to build:
   - isnstall Arduino Studio 1.8.9. or upper.
   - isnstall COM port driver if your ESP8266 board use CH340 chip https://wiki.wemos.cc/downloads
