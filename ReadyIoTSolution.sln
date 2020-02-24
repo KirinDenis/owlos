@@ -144,7 +144,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "utils", "utils", "{9C6397B1
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{316B14D1-C8D3-4967-AE3D-05B373054110}"
 	ProjectSection(SolutionItems) = preProject
-		about.md = about.md
+		Documentation\about.md = Documentation\about.md
 	EndProjectSection
 EndProject
 Global
