@@ -260,9 +260,12 @@ function httpGetAsync(_url, asyncReciever, upperAsyncReciever, sender, upperSend
         contentType: "text/plain charset=utf-8",
         dataType: "text",
 
-        success: function (data) {
+        success: function (_data) {
             addToLogNL("call RESTful async: " + _url + " result OK", 1);
-            _data = data;
+            if (asyncReciever != undefined) {
+                asyncReciever(_data, upperAsyncReciever, sender, upperSender);
+            }
+
         },
 
         error: function (XMLHttpRequest, textStatus, errorThrown) {
