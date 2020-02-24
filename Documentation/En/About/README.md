@@ -13,14 +13,9 @@ Open Source IoT Operation System.
 	- can work on a local network
 	- can work via the Internet 
 - can integrate with other nodes running under OWL OS - organizing an internal network. without using a servers
-- available in source code http://localhost:8080/Home/Documentation?docref=howtoinstall
+- available in source code 
 
-http://localhost:8080/Home/Documentation?docref=Documentation/HowToInstall.md
-
-http://localhost:8080/Home/?localref=Documentation/HowToInstall.md&elementid=indexmd
-
-
-[![OWLOSlogo](http://localhost:8080/Home/Documentation?docref=Documentation/HowToInstall.md)]
+[![How to install](http://81.95.178.177:8080/Home/Documentation?docref=Documentation/HowToInstall.md)]
 
 # How to build:
   - isnstall Arduino Studio 1.8.9. or upper.
