@@ -1,7 +1,7 @@
-# OWL OS
+﻿# OWL OS
 Open Source IoT Operation System.
-- ?? ??????? ??????? ???????
-- ready to connect sensors, actuators, LCD, DHT, Stepper and other devices
+- не требует наличие сервера
+- готова для подключения устройств, actuators, LCD, DHT, Stepper and other devices
 - does't require programming skills
 - built-in user interface - use web browser to access and manage your OWL OS nodes
 - built-in RESTful server
