@@ -1,3 +1,5 @@
+http://localhost:8080/Home/Documentation?docref=howtoinstall
+
 # OWL OS
 Open Source IoT Operation System.
 - does't require internet access or additional servers
