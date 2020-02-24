@@ -70,7 +70,7 @@ OWLOS распространяется в надежде, что она буде
 #define DefaultRESTfulServerUsername "admin"
 #define DefaultRESTfulServerPassword "admin"
 #define DefaultRESTfulServerPort 8084
-#define DefaultRESTfulClientPort 8082
+#define DefaultRESTfulClientPort 8080
 #define DefaultRESTfulClientURL ""
 
 //->TODO:Clear MQTT settings before release
@@ -133,7 +133,7 @@ OWLOS распространяется в надежде, что она буде
 
 //Update 
 #define DefaultUpdateAvailable true
-#define DefaultUpdateHost "http://81.95.178.177:8082/update/"
+#define DefaultUpdateHost "http://81.95.178.177:8080/update/"
 
 //to make read property from file once, use this CSV string
 String propertyFileReaded("");

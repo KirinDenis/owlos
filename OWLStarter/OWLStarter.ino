@@ -66,7 +66,7 @@ OWLOS распространяется в надежде, что она буде
 #include <ESP8266httpUpdate.h>
 #include <FS.h>
 
-String host = "http://81.95.178.177:8082/update/";
+String host = "http://81.95.178.177:8080/update/";
 ESP8266WiFiMulti WiFiMulti;
 
 bool readyToUpdate = false;
