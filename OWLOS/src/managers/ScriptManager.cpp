@@ -3,7 +3,7 @@
   Ready IoT Solution OWLOS
   (c) Konstantin Brul, Vitalii Glushchenko, Denys Melnychuk, Denis Kirin
 
-Встроеный скрипт.
+Battle Hamster script
 
 Менеджер поддерживает:
 - выполнение нескольких скриптов одновременно.
@@ -67,71 +67,80 @@
 //Раскоментируйте этот флаг что бы включить трасерт
 //#define SCRIPT_TRACERT
 
-#define heapLimit 5000 //не компилировать и не загружать скрипт если количество heap после этого станет меньше 5Kb 
+#define HEAP_LIMIT	5000 //не компилировать и не загружать скрипт если количество heap после этого станет меньше 5Kb 
 #define FLT_EPSILON 1.0E-6 //определение точности вычислений
 #define FLT_MAX     3.40282347E+38F
 #define FLT_MIN     1.17549435E-38F
 
-#define scriptSize 10 //сколько скриптов можно загрузить одновременно
+#define SCRIPT_SIZE 10 //сколько скриптов можно загрузить одновременно
 
-#define STOP_IF_DEVICE_NOTREADY "STOP_IF_DEVICE_NOTREADY" //если в скрипте будет определена переменная с таким именем и устройство не готово - программа остановится
 //статусы скрипта 
-#define stopStatus 0  //скрипт остановлен не выполняется
-#define runStatus 1   //скрипт выполняется
-#define compilerErrorStatus 2 //ошибка компиляции скрипта
-#define runtimeErrorStatus 3 //ошибка выполнения скрипта (возможно был фатальный сбой, не возобновляейте выполнение такого скрипта, без проверки). 
-#define debugStatus 4
-#define criticalRunStatus 5   //скрипт выполняется
+#define STOP_STATUS				0 //скрипт остановлен не выполняется
+#define RUN_STATUS				1 //скрипт выполняется
+#define COMPILE_ERROR_STATUS	2 //ошибка компиляции скрипта
+#define RUNTIME_ERROR_STATUS	3 //ошибка выполнения скрипта (возможно был фатальный сбой, не возобновляейте выполнение такого скрипта, без проверки). 
+#define DEBUG_STATUS			4 //скрип в режиме отладки, пошаговое исполнение инструкций
+#define CRITICAL_RUN_STATUS		5 //тоже что и RUN_STATUS, но в случае перезагрузки модуля и взведения аварийного флага в файле [scriptName].rf != -1 скрипт продолжит исполнение
 
-//коды инструкций для байт-кода
-#define stopCode 0
-#define sumCode 1
-#define writeCode 2
-#define gotoCode 3
-#define ifupperCode 4
-#define getpropCode 5
-#define setpropCode 6
-#define subCode 7
-#define multCode 8
-#define devCode 9
-#define letCode 10
-#define iflowerCode 11
-#define ifequalCode 12
+//byteCode коды инструкций (смотрите структуру Instruction поле type)
+#define STOP_INSTRUCTION		0b00000000
+#define IF_UPPER_INSTRUCTION	0b00000001
+#define IF_LOWER_INSTUCTION		0b00000010
+#define IF_EQUAL_INSTUCTION		0b00000011
+#define GOTO_INSTRUCTION		0b00000100
+#define LET_INSTRUCTION			0b00000101
+#define ADD_INSTRUCTION			0b00000110
+#define SUB_INSTRUCTION			0b00000111
+#define MULT_INSTRUCTION		0b00001000
+#define DEV_INSTRUCTION			0b00001001
+#define GET_DRIVER_PROPERTY_INSTRUCTION	0b00001011
+#define SET_DRIVER_PROPERTY_INSTRUCTION	0b00001100
+#define SERIAL_OUT_INSTRUCTION	0b00001101
+
+//определения управляющих переменых и переменных опций компиляции
+#define STOP_IF_DEVICE_NOTREADY "STOP_IF_DEVICE_NOTREADY" //если в скрипте будет определена переменная с таким именем и устройство не готово - программа остановится
 
 //байт-код одной инструкции
 typedef struct Instruction
 {
-	int type = stopCode; //код инструкции, по умолчаю Stop - такая иснтрукция оставит скрипт - script[..].status = stopStatus
+	byte type = STOP_INSTRUCTION; //код инструкции, по умолчаю Stop - такая иснтрукция оставит скрипт - script[..].status = STOP_STATUS
 	int arg1Addr;        //адрес первого аргумета
 	int arg2Addr;        //адрес второго аргумета  
-	int arg3Addr;
+	int arg3Addr;		 //адрес третъего аргумета  
 	int resultAddr;      //адрес результата   
-	int lineNumber;
+	int lineNumber;	     //хранит номер строки инструкции в исходном коде - нужен для UI пошаговой отладки  
 };
 //переменная для байт-кода инструкций arg1Addr..arg2Addr - адреса таких переменых в массиве script[..].data (сегмент данных)
 typedef struct Variable
 {
-	int type;   //тип переменой
-	char *name; //имя переменой
-	char *value;//значение переменой
+	byte type;   //тип переменой
+	char *name;  //имя переменой
+	char *value; //значение переменой
 };
-//запись одного скрипта 
+//структура данных для одного скрипта 
 typedef struct Script
 {
-	String name;       //имя (уникально)
-	String byteCode;   //исходный байт-код (assembler)
-	int status = stopStatus; //текущий статус выполнения	
+	String name;           //имя (уникально)
+	String byteCode;       //исходный код (assembler)
+	byte status = STOP_STATUS; //текущий статус выполнения	
 	bool firstTime = false;
 	int ip = -1;           //Instruction Point - указатель выполняемой инструкции в script[..].data (сегмент кода)	
-	int debugLineNumber = -1;
+	int debugLineNumber = -1; //строка в исходном коде соответствующая текущей выполняемой инструкции из Script.ip
 	int codeCount = 0;     //количество инструкций
 	int dataCount = 0;     //количество переменных
 	int timeQuant = 1;     //квант времени выполнения - количество инструкций за один loop() микроконтроллера для этого скрипта 
 	int quantCounter = 0;  //счетчик отработанных квантов времени, кога > timeQuant выполнение прерывается до следующего loop()
 
-	Instruction* code;    //сегмент кода, по этому указателю, последовательно хранятся инструкции байт-кода скрипта 
-	Variable* data;       //сегмен данных, хранит указатель на все переменые используемые скриптом
+	Instruction* code;     //сегмент кода, по этому указателю, последовательно хранятся инструкции байт-кода скрипта 
+	Variable* data;        //сегмен данных, хранит указатель на все переменые используемые скриптом
 };
+
+//количество загруженных скриптов. 
+int scriptCount = -1;
+
+//массив со структурами Script. Одновремено может исполнятся независимо до SCRIPT_SIZE скриптов
+Script scripts[SCRIPT_SIZE];
+
 
 /* Архитектура -------------------------------------------------------------------------------------------------------------------------------------------------
 Script.code массив состоящий из структур (записей) Instruction, формирует адресное пространство байт-кода
@@ -167,50 +176,77 @@ script.code[inst1(arg1addr, arg2addr), inst2(arg1addr, arg2addr), inst3(..), ins
 										| script.ip (current instruction is inst2)
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------
-*/
 
-//количество загруженных скриптов. 
-int scriptCount = -1;
+Функции делятся на три основные группы:
+- функции управления исполнением скриптов
+	Отвечают за ВСЕ скрипты - хранение, удаление, загрузка, выгрузка, получение данных о состоянии скриптов (исполняется, остановлен, ошибка)
+- функции инструкций
+	Реализуют исполнение байт-кода каждой отдельной инструкции, а так же отвечают за размещене инструкций и данных в сегмендах code и data
+- функции исполнения инструкций
+	Реализуют компиляцию исходного кода в байт-кода, исполнение байт-кода, контролируют ошибки исполнения и отладку
 
-Script scripts[scriptSize];
-
-//Script managment's functions -------------------------------
-
-void scriptsReset(int index) {
-	if ((index < 0) || (index > scriptSize - 1)) return;
-	filesWriteInt(scripts[index].name + ".rf", -1); //escapre RF flag 
+Секция функций управления исполнением скриптов ------------------------------------------------------------------------------------------------------
+/*-----------------------------------------------------------------------------
+Сбрасыватъ (очищает) указаную запись скрипта в массиве скриптов
+Параметр int index - индекс скрипта в массиве
+Ничего не возвращает true если запись очищена, false если индекс ошибочен
+-----------------------------------------------------------------------------*/
+bool scriptsReset(int index) {
+	if ((index < 0) || (index > SCRIPT_SIZE - 1)) return false; //если вышли за размер массива
+		filesWriteInt(scripts[index].name + ".rf", -1); //очищаем файл флажек аварийной остановки скрипта, если в этом файлы не -1 скрипт не будет исполнятъся
+		//сбрасываем поля записи 
 	scripts[index].name = "";
 	scripts[index].byteCode = "";
-	scripts[index].status = stopStatus;
+	scripts[index].status = STOP_STATUS;
 	scripts[index].firstTime = false;
 	scripts[index].ip = -1;
 	scripts[index].codeCount = 0;
 	scripts[index].dataCount = 0;
 	scripts[index].timeQuant = 1;
 	scripts[index].quantCounter = 0;
+	//на данном этапе, было выяснено что ESP8266 освобождение heap free() вызывает непредвиденые сбои, пока не используется
+	//TODO: найти безопасный способ освобождения кучи
 	//	free(scripts[0].code);
 	//	free(scripts[0].data);
-	return;
+	return true;
 }
-
+/*-----------------------------------------------------------------------------
+Возвращает индекс записи скрипта с именем name
+Параметр String name - имя искомого скрипта (уникально)
+Возвращает индекс скрипта или -1 если скипт с таким именем не существует
+-----------------------------------------------------------------------------*/
 int scriptsGetByIndex(String name) {
-
-	for (int i = 0; i < scriptSize; i++)
+	//последовательно перебираем все скрипты в массиве 
+	//НЕ ИСПОЛЬЗУЕМ scriptCount - скрипты в середине массива могут быть удалены, поэтому:
+	//scriptCount - количество загруженных скриптов 
+	//SCRIPT_SIZE - размер всего массива с записями скриптов
+	//
+	//Пример:
+	//Scripts[Sript0Structure, Sript1Structure,(..deleted..),(..deleted),Sript4Structure..Sript(SCRIPT_SIZE-1)Structure]	
+	//в этом массиве 4 скрипта, с индексами 0,1,4 и SCRIPT_SIZE-1 (в массивах индекс первого элемента равен 0)
+	//при этом scriptCount = 4, а SCRIPT_SIZE количеству всех элементов массива, например десяти. 
+	//если мы ошибочно сделаем цикл for по scriptCount-1, мы не достигнем Sript4Structure и Sript(SCRIPT_SIZE-1)Structure элементов массива
+	for (int i = 0; i < SCRIPT_SIZE; i++)
 	{
-		if (scripts[i].name == name)
+		if (scripts[i].name == name) //если имя из параметра совпадает с именем скипта 
 		{
-			return i;
+			return i; //возвращаем индекс найденого скрипта
 		}
 	}
-	return -1;
+	return -1; //попадем сюда если ничего не нашли - возвращаем -1
 }
-
+/*-----------------------------------------------------------------------------
+Возвращает данные о состоянии всех скрипров в текстовом формате, используется для 
+передачи данных UI (для примера смотрите scriptscore.js)
+Параметров нет
+Возвращает данные или пустую строку если нет скриптов
+-----------------------------------------------------------------------------*/
 String scriptsGetAll() {
 	String result = "";
 	String valueName = "";
 	String value = "";
-	for (int i = 0; i < scriptSize; i++) {
-		if (scripts[i].name.length() != 0) { //zero string - script deleted			
+	for (int i = 0; i < SCRIPT_SIZE; i++) {  //перебираем все записи
+		if (scripts[i].name.length() != 0) { //если имя скрипта не пустая строка, добавляем данные о скрипте в строку 
 			result += "script:" + scripts[i].name + "\r";
 			result += "status=" + String(scripts[i].status) + "\r";
 			result += "debuglinenumber=" + String(scripts[i].debugLineNumber) + "\r";
@@ -219,23 +255,27 @@ String scriptsGetAll() {
 			result += "datacount=" + String(scripts[i].dataCount) + "\r";
 			result += "timequant=" + String(scripts[i].timeQuant) + "\r";
 			result += "ip=" + String(scripts[i].ip) + "\r";
-			result += "variables=\n";			
+			result += "variables=\n";
+			//собираем данные о переменых и их значениях 
 			for (int j = 0; j < scripts[i].dataCount; j++) {
 				valueName = scripts[i].data[j].name;
-				value = scripts[i].data[j].value;				
+				value = scripts[i].data[j].value;
 				result += valueName + "=" + value + "\n";
 			}
 			result += "\r";
-
 		}
 	}
-
 	return result;
 }
-
+/*-----------------------------------------------------------------------------
+Тоже что и scriptsGetAll(), но в более сжатом формате, используется для хранения
+скриптов в файле. 
+Параметров нет
+Возвращает данные или пустую строку если нет скриптов
+-----------------------------------------------------------------------------*/
 String scriptsGetAllClean() {
 	String result = "";
-	for (int i = 0; i < scriptSize; i++) {
+	for (int i = 0; i < SCRIPT_SIZE; i++) {
 		if (scripts[i].name.length() != 0) { //zero string - script deleted
 			result += "script:" + scripts[i].name + "\r";
 			result += "status=" + String(scripts[i].status) + "\r";
@@ -247,99 +287,159 @@ String scriptsGetAllClean() {
 	}
 	return result;
 }
-
+/*-----------------------------------------------------------------------------
+Собирает данные о скриптах и сохраняет их в файл с именем "scripts"
+Параметров нет
+Возвращает true если удалось записать данные в файл, false в случае ошибки 
+-----------------------------------------------------------------------------*/
 bool scriptsSave() {
 	return filesWriteString("scripts", scriptsGetAllClean());
 }
-
+/*-----------------------------------------------------------------------------
+Останавливает и удаляет указанный скрипт, перезаписывает файл хранящий 
+данные о скриптах. 
+Параметер String name имя удаляемого скрипта
+Возвращает true если удалось удалить скрипт с таким именем, false если скрипт
+не существует
+-----------------------------------------------------------------------------*/
 bool scriptsDelete(String name) {
-	int index = scriptsGetByIndex(name);
-	if (index != -1)
+	int index = scriptsGetByIndex(name); //узнаем существует ли скрипт с таким именем
+	if (index != -1) //если существует index != -1
 	{
-		scriptsReset(index);
-		scriptsSave();
-		return true;
+		scriptCount--;
+		scriptsReset(index); //очищаем запись скрипта 
+		return scriptsSave(); //сохраняем скриптры, если удалось сохранить scriptsSave() вернет true
 	}
-	return false;
+	return false; //не удалось удалить, возвращем false
 }
-
+/*-----------------------------------------------------------------------------
+Останавливает указанный скрипт, похожа на scriptsDelete(..), но скрипт останется в 
+памяти и его исполнение может быть возобновлено позже. 
+Остановленый скрипт не возобновит работу после перезагрузки контроллера.
+Параметер String name имя останавливаемого скрипта
+Возвращает true если удалось остановить скрипт с таким именем, false если скрипт
+не существует
+-----------------------------------------------------------------------------*/
 bool scriptsStop(String name) {
 	int index = scriptsGetByIndex(name);
 	if (index != -1)
 	{
-		scripts[index].status = stopStatus;
-		return true;
+		//устанавливаем статус скрипта в STOP_STATUS, с таким статусом инструкции скрипта 
+		//исполнятся не будут 
+		scripts[index].status = STOP_STATUS; 
+		return scriptsSave(); //сохраняем скриптры
 	}
 	return false;
 }
-
+/*-----------------------------------------------------------------------------
+Возобновляет выполнение остановленого скрипта, похожа на scriptsStop(..)
+При перезапуске контроллера такой скрипт автоматически будет запущен
+Критические ошибки в момент исполнения - остановят этот скрипт, сбросив
+значение флажка scripts[index].status
+Параметер String name имя запускаемого скрипта
+Возвращает true если удалось запустить скрипт, false если нет
+-----------------------------------------------------------------------------*/
 bool scriptsRun(String name) {
 	int index = scriptsGetByIndex(name);
 	if (index != -1)
 	{
-		scripts[index].status = runStatus;
-		return true;
+		scripts[index].ip = 0; //сбрасываем указатель инструкции на первую инструкцию
+		scripts[index].status = RUN_STATUS; //инструкции скрипта с таким статусом продолжат исполнение
+		return scriptsSave(); //сохраняем скриптры
 	}
 	return false;
 }
 
+//Секция функций инструкций ------------------------------------------------------------------------------------------------------
+/*-----------------------------------------------------------------------------
+Размещает в heap массив char[], получает указатель на созданый массив, 
+переносит символы из строки str в созданный массив
+Параметер String srt строка с символами
+Возвращает указатель на массив char[] с символами входящей строки
+-----------------------------------------------------------------------------*/
 char* stringToArray(String str)
 {
-	//free(array);	
-	char *array;	
-	array = (char *)malloc(sizeof(char) * (str.length() + 1));	
-	strcpy(array, str.c_str());	
+	//TODO: есть идея, передавать в будущем указатель на предидущий массив char[], но пока не выяснено, не работает free()  вызывает сбой (через раз)
+	char *array; //указатель на массив 
+	array = (char *)malloc(sizeof(char) * (str.length() + 1)); //просим heap размером str под указатель 
+	strcpy(array, str.c_str()); //копируем символы 
 	return array;
 }
-
-
-//Instruction managment functions ------------------------------
-int pushInstruction(int index, int addr, int type, int arg1Addr, int arg2Addr, int arg3Addr, int resultAddr) {
-
-	Instruction* instruction = (Instruction *)malloc(sizeof(Instruction));
-	instruction->type = sumCode;
-	instruction->arg1Addr = arg1Addr;
-	instruction->arg2Addr = arg2Addr;
-	instruction->arg3Addr = arg3Addr;
-	instruction->resultAddr = resultAddr;
-	scripts[index].code[addr] = *instruction;
-
-	return 1;
-}
-
+/*-----------------------------------------------------------------------------
+Помещает переменую name и ее данные в сегмент данных (data[])
+Параметры:
+- int index индекс скрипта (определят какому скрипту принадлежит переменная)
+- String name имя переменной 
+- String value значение переменной 
+Возвращает resultIndex индекс переменной в сегменте данных, полный адрес переменной:
+scripts[index].data[resultIndex]
+Возвращает индекс добавленой переменой
+-----------------------------------------------------------------------------*/
 int pushData(int index, String name, String value) {
-	
-	if (scripts[index].data[scripts[index].dataCount].name != nullptr)
-	{
-		// free(scripts[index].data[scripts[index].dataCount].name);
-	}	
-	scripts[index].data[scripts[index].dataCount].name = stringToArray(name);
-	
+	/*
+	так как данная функция размещает переменные последовательно - от идекса 0 до dataCount
+	изначально, при первом обращении 
+	scripts[index].dataCount = 0 - переменных нет
+	после первого обращения
+	scripts[index].dataCount = 1 - одна переменная есть
+	поэтому в реализации pushData(..) scripts[index].dataCount используется как указатель 
+	следующей переменной. 
 
-	if (scripts[index].data[scripts[index].dataCount].value != nullptr)
-	{
-		//	free(scripts[index].data[scripts[index].dataCount].value);
-	}
+	Компилятор при первом проходе подсчитывает общее количество переменных в скрипте, 
+	После чего запрашивает у heap нужное количество памяти для scripts[index].data[..]
+	По этой причине scripts[index].dataCount может быть использован для индексации 
+	внутри scripts[index].data[..]
+
+	!ЭТУ ФУНКЦИЮ ИСПОЛЬЗУЕТ ТОЛЬКО КОМПИЛЯТОР - и он отвечает за размер и индексацию внутри 
+	массива scripts[index].data[..]
+
+	Когда в скрипте было указано 
+	var a=10, то имя переменой будет "a", а значение "10"
+	TODO: тип переменных
+	*/
+    //переносим имя переменой 
+	scripts[index].data[scripts[index].dataCount].name = stringToArray(name);
+	//переносим ее данные 
 	scripts[index].data[scripts[index].dataCount].value = stringToArray(value);
 
+	/*
+	!Очень коварный момент, на самом деле эта функция возвращает индекс в сегменте данных куда 
+	только что была добавлена переменная scripts[index].data[scripts[index].dataCount]
+	При этом после scripts[index].dataCount увеличится на 1 и станет указывать количиство переменных 
+	(или индекс свободного места под следующею переменну в данном контексте)
+
+	return ++scripts[index].dataCount; -> сначало увеличит счетчик на 1, а потом вернет значение 
+	return scripts[index].dataCount++; -> сначало вернет значение, а потом увеличит счетчик на 1
+
+	"казнить нельзя помиловать" от операторов return и ++
+    */
 	return scripts[index].dataCount++;
 }
 
+/*-----------------------------------------------------------------------------
+Возвращает индекс переменой в сегменте данных указаного скрипта по ее имени
+Параметры:
+- int index индекс скрипта 
+- String name имя переменной 
+Возвращает индекс переменной или -1 если переменной с таким именем не существует
+-----------------------------------------------------------------------------*/
 int getDataAddr(int index, String name) {
-	String _name;
-	for (int i = 0; i < scripts[index].dataCount; i++) {
-		_name = scripts[index].data[i].name;
-		if (_name == name) {
-			return i;
+	String _name; //из за того что для хранения имен и значений сегмент данных data[..] использует 
+	              // указатели на массивы char[] в динамической памяти, мы не рискнули делать прямое ставнение 
+	              //name или name.c_str() с scripts[index].data[i].name
+	for (int i = 0; i < scripts[index].dataCount; i++) { //перебираем все переменные
+		_name = scripts[index].data[i].name; //переносим имя переменой в строку 
+		if (_name == name) { //сравниваем имена
+			return i; //если нашли переменую с таким именем возвращаем ее имя 
 		}
 	}
-	return -1;
+	return -1; //если не нашли
 }
 
 //--------------------------------------------------------------------------------------------------------
-//instructions
+//ИНСТРУКЦИИ
 int addLet(int index, int addr, int resultAddr, int arg1Addr, int lineNumber) {
-	scripts[index].code[addr].type = letCode;
+	scripts[index].code[addr].type = LET_INSTRUCTION;
 	scripts[index].code[addr].resultAddr = resultAddr;
 	scripts[index].code[addr].arg1Addr = arg1Addr;
 	scripts[index].code[addr].lineNumber = lineNumber;
@@ -348,7 +448,7 @@ int addLet(int index, int addr, int resultAddr, int arg1Addr, int lineNumber) {
 
 int runLet(int index) {
 	int ip = scripts[index].ip;
-	if (scripts[index].code[ip].type != letCode) return -1;
+	if (scripts[index].code[ip].type != LET_INSTRUCTION) return -1;
 
 	String value1 = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
 
@@ -358,9 +458,8 @@ int runLet(int index) {
 	return ++ip;
 }
 
-
 int addSum(int index, int addr, int resultAddr, int arg1Addr, int arg2Addr, int lineNumber) {
-	scripts[index].code[addr].type = sumCode;
+	scripts[index].code[addr].type = ADD_INSTRUCTION;
 	scripts[index].code[addr].resultAddr = resultAddr;
 	scripts[index].code[addr].arg1Addr = arg1Addr;
 	scripts[index].code[addr].arg2Addr = arg2Addr;
@@ -370,7 +469,7 @@ int addSum(int index, int addr, int resultAddr, int arg1Addr, int arg2Addr, int 
 
 int runSum(int index) {
 	int ip = scripts[index].ip;
-	if (scripts[index].code[ip].type != sumCode) return -1;
+	if (scripts[index].code[ip].type != ADD_INSTRUCTION) return -1;
 
 	String value1 = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
 	String value2 = scripts[index].data[scripts[index].code[ip].arg2Addr].value;
@@ -386,9 +485,8 @@ int runSum(int index) {
 	return ++ip;
 }
 
-
 int addSub(int index, int addr, int resultAddr, int arg1Addr, int arg2Addr, int lineNumber) {
-	scripts[index].code[addr].type = subCode;
+	scripts[index].code[addr].type = SUB_INSTRUCTION;
 	scripts[index].code[addr].arg1Addr = arg1Addr;
 	scripts[index].code[addr].arg2Addr = arg2Addr;
 	scripts[index].code[addr].resultAddr = resultAddr;
@@ -398,7 +496,7 @@ int addSub(int index, int addr, int resultAddr, int arg1Addr, int arg2Addr, int 
 
 int runSub(int index) {
 	int ip = scripts[index].ip;
-	if (scripts[index].code[ip].type != subCode) return -1;
+	if (scripts[index].code[ip].type != SUB_INSTRUCTION) return -1;
 	String value1 = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
 	String value2 = scripts[index].data[scripts[index].code[ip].arg2Addr].value;
 
@@ -414,7 +512,7 @@ int runSub(int index) {
 
 
 int addMult(int index, int addr, int resultAddr, int arg1Addr, int arg2Addr, int lineNumber) {
-	scripts[index].code[addr].type = multCode;
+	scripts[index].code[addr].type = MULT_INSTRUCTION;
 	scripts[index].code[addr].resultAddr = resultAddr;
 	scripts[index].code[addr].arg1Addr = arg1Addr;
 	scripts[index].code[addr].arg2Addr = arg2Addr;
@@ -424,7 +522,7 @@ int addMult(int index, int addr, int resultAddr, int arg1Addr, int arg2Addr, int
 
 int runMult(int index) {
 	int ip = scripts[index].ip;
-	if (scripts[index].code[ip].type != multCode) return -1;
+	if (scripts[index].code[ip].type != MULT_INSTRUCTION) return -1;
 
 	String value1 = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
 	String value2 = scripts[index].data[scripts[index].code[ip].arg2Addr].value;
@@ -434,13 +532,13 @@ int runMult(int index) {
 
 	//проверка выйдет ли результат умножения arg1 за arg2 за размер float
 	if (arg1 != 0.0f) {
-		
+
 		float argForCheckMax = FLT_MAX / arg1;
 		float argForCheckMin = FLT_MIN / arg1;
-	
+
 		if ((argForCheckMin > arg2) || (argForCheckMax < arg2)) return -1;
 	}
-	
+
 	String result = String(arg1*arg2);
 
 	free(scripts[index].data[scripts[index].code[ip].resultAddr].value);
@@ -449,9 +547,8 @@ int runMult(int index) {
 	return ++ip;
 }
 
-
 int addDev(int index, int addr, int resultAddr, int arg1Addr, int arg2Addr, int lineNumber) {
-	scripts[index].code[addr].type = devCode;
+	scripts[index].code[addr].type = DEV_INSTRUCTION;
 	scripts[index].code[addr].resultAddr = resultAddr;
 	scripts[index].code[addr].arg1Addr = arg1Addr;
 	scripts[index].code[addr].arg2Addr = arg2Addr;
@@ -461,7 +558,7 @@ int addDev(int index, int addr, int resultAddr, int arg1Addr, int arg2Addr, int 
 
 int runDev(int index) {
 	int ip = scripts[index].ip;
-	if (scripts[index].code[ip].type != devCode) return -1;
+	if (scripts[index].code[ip].type != DEV_INSTRUCTION) return -1;
 
 	String value1 = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
 	String value2 = scripts[index].data[scripts[index].code[ip].arg2Addr].value;
@@ -473,14 +570,14 @@ int runDev(int index) {
 	if (arg2 == 0.0f) return -1;
 
 	////Если  -1< agr2 < 1 проверяем не выйдет ли результат деления за float
-	 if ((arg2 > -1) && (arg2 < 1)) {
-	  float argCheckMax = FLT_MAX * arg2;
-	  float argCheckMin = FLT_MIN * arg2;      
-	  if ((arg1 > argCheckMax) || (arg1 < argCheckMin)) return -1;
-	 }
-	
-    String result = String(arg1/arg2);
-	
+	if ((arg2 > -1) && (arg2 < 1)) {
+		float argCheckMax = FLT_MAX * arg2;
+		float argCheckMin = FLT_MIN * arg2;
+		if ((arg1 > argCheckMax) || (arg1 < argCheckMin)) return -1;
+	}
+
+	String result = String(arg1 / arg2);
+
 	free(scripts[index].data[scripts[index].code[ip].resultAddr].value);
 	scripts[index].data[scripts[index].code[ip].resultAddr].value = stringToArray(result);
 
@@ -489,7 +586,7 @@ int runDev(int index) {
 
 
 int addWrite(int index, int addr, int arg1Addr, int lineNumber) {
-	scripts[index].code[addr].type = writeCode;
+	scripts[index].code[addr].type = SERIAL_OUT_INSTRUCTION;
 	scripts[index].code[addr].arg1Addr = arg1Addr;
 	scripts[index].code[addr].lineNumber = lineNumber;
 	return 1;
@@ -497,7 +594,7 @@ int addWrite(int index, int addr, int arg1Addr, int lineNumber) {
 
 int runWrite(int index) {
 	int ip = scripts[index].ip;
-	if (scripts[index].code[ip].type != writeCode) return -1;
+	if (scripts[index].code[ip].type != SERIAL_OUT_INSTRUCTION) return -1;
 
 	Serial.println(String(scripts[index].data[scripts[index].code[ip].arg1Addr].value));
 
@@ -505,7 +602,7 @@ int runWrite(int index) {
 }
 
 int addGoto(int index, int addr, int arg1Addr, int lineNumber) {
-	scripts[index].code[addr].type = gotoCode;
+	scripts[index].code[addr].type = GOTO_INSTRUCTION;
 	scripts[index].code[addr].arg1Addr = arg1Addr;
 	scripts[index].code[addr].lineNumber = lineNumber;
 	return 1;
@@ -514,15 +611,15 @@ int addGoto(int index, int addr, int arg1Addr, int lineNumber) {
 int runGoto(int index) {
 	int ip = scripts[index].ip;
 
-	if (scripts[index].code[ip].type != gotoCode) return -1;
+	if (scripts[index].code[ip].type != GOTO_INSTRUCTION) return -1;
 	if (scripts[index].code[ip].arg1Addr == -1) return -1;
 	String value1 = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
-	int arg1 = std::atoi(value1.c_str());	
+	int arg1 = std::atoi(value1.c_str());
 	return arg1;
 }
 
 int addIfupper(int index, int addr, int arg1Addr, int arg2Addr, int arg3Addr, int lineNumber) {
-	scripts[index].code[addr].type = ifupperCode;
+	scripts[index].code[addr].type = IF_UPPER_INSTRUCTION;
 	scripts[index].code[addr].arg1Addr = arg1Addr;
 	scripts[index].code[addr].arg2Addr = arg2Addr;
 	scripts[index].code[addr].arg3Addr = arg3Addr;
@@ -532,7 +629,7 @@ int addIfupper(int index, int addr, int arg1Addr, int arg2Addr, int arg3Addr, in
 
 int runIfupper(int index) {
 	int ip = scripts[index].ip;
-	if (scripts[index].code[ip].type != ifupperCode) return -1;	
+	if (scripts[index].code[ip].type != IF_UPPER_INSTRUCTION) return -1;
 	String value1 = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
 	String value2 = scripts[index].data[scripts[index].code[ip].arg2Addr].value;
 	float arg1 = std::atof(value1.c_str());
@@ -550,7 +647,7 @@ int runIfupper(int index) {
 }
 
 int addIflower(int index, int addr, int arg1Addr, int arg2Addr, int arg3Addr, int lineNumber) {
-	scripts[index].code[addr].type = iflowerCode;
+	scripts[index].code[addr].type = IF_LOWER_INSTUCTION;
 	scripts[index].code[addr].arg1Addr = arg1Addr;
 	scripts[index].code[addr].arg2Addr = arg2Addr;
 	scripts[index].code[addr].arg3Addr = arg3Addr;
@@ -560,7 +657,7 @@ int addIflower(int index, int addr, int arg1Addr, int arg2Addr, int arg3Addr, in
 
 int runIflower(int index) {
 	int ip = scripts[index].ip;
-	if (scripts[index].code[ip].type != iflowerCode) return -1;
+	if (scripts[index].code[ip].type != IF_LOWER_INSTUCTION) return -1;
 	String value1 = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
 	String value2 = scripts[index].data[scripts[index].code[ip].arg2Addr].value;
 	float arg1 = std::atof(value1.c_str());
@@ -577,7 +674,7 @@ int runIflower(int index) {
 }
 
 int addIfequal(int index, int addr, int arg1Addr, int arg2Addr, int arg3Addr, int lineNumber) {
-	scripts[index].code[addr].type = ifequalCode;
+	scripts[index].code[addr].type = IF_EQUAL_INSTUCTION;
 	scripts[index].code[addr].arg1Addr = arg1Addr;
 	scripts[index].code[addr].arg2Addr = arg2Addr;
 	scripts[index].code[addr].arg3Addr = arg3Addr;
@@ -587,7 +684,7 @@ int addIfequal(int index, int addr, int arg1Addr, int arg2Addr, int arg3Addr, in
 
 int runIfequal(int index) {
 	int ip = scripts[index].ip;
-	if (scripts[index].code[ip].type != ifequalCode) return -1;
+	if (scripts[index].code[ip].type != IF_EQUAL_INSTUCTION) return -1;
 	String value1 = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
 	String value2 = scripts[index].data[scripts[index].code[ip].arg2Addr].value;
 	float arg1 = std::atof(value1.c_str());
@@ -605,7 +702,7 @@ int runIfequal(int index) {
 
 
 int addGetProp(int index, int addr, int arg1Addr, int arg2Addr, int arg3Addr, int lineNumber) {
-	scripts[index].code[addr].type = getpropCode;
+	scripts[index].code[addr].type = GET_DRIVER_PROPERTY_INSTRUCTION;
 	scripts[index].code[addr].arg1Addr = arg1Addr;
 	scripts[index].code[addr].arg2Addr = arg2Addr;
 	scripts[index].code[addr].arg3Addr = arg3Addr;
@@ -615,7 +712,7 @@ int addGetProp(int index, int addr, int arg1Addr, int arg2Addr, int arg3Addr, in
 
 int runGetProp(int index) {
 	int ip = scripts[index].ip;
-	if (scripts[index].code[ip].type != getpropCode) return -1;
+	if (scripts[index].code[ip].type != GET_DRIVER_PROPERTY_INSTRUCTION) return -1;
 
 	String deviceId = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
 	String deviceProp = scripts[index].data[scripts[index].code[ip].arg2Addr].value;
@@ -637,7 +734,7 @@ int runGetProp(int index) {
 }
 
 int addSetProp(int index, int addr, int arg1Addr, int arg2Addr, int arg3Addr, int lineNumber) {
-	scripts[index].code[addr].type = setpropCode;
+	scripts[index].code[addr].type = SET_DRIVER_PROPERTY_INSTRUCTION;
 	scripts[index].code[addr].arg1Addr = arg1Addr;
 	scripts[index].code[addr].arg2Addr = arg2Addr;
 	scripts[index].code[addr].arg3Addr = arg3Addr;
@@ -647,7 +744,7 @@ int addSetProp(int index, int addr, int arg1Addr, int arg2Addr, int arg3Addr, in
 
 int runSetProp(int index) {
 	int ip = scripts[index].ip;
-	if (scripts[index].code[ip].type != setpropCode) return -1;
+	if (scripts[index].code[ip].type != SET_DRIVER_PROPERTY_INSTRUCTION) return -1;
 
 	String deviceId = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
 	String deviceProp = scripts[index].data[scripts[index].code[ip].arg2Addr].value;
@@ -668,57 +765,55 @@ int runSetProp(int index) {
 	return ++ip;
 }
 
-
-//--------------------------------------------------------------------------------------------------------
-//Executor and Compiler
+//Секция функций компиляции и исполнения инструкций скриптов ---------------------------------------------------------------------------------------
 bool executeInstruction(int index) {
-	int ip = scripts[index].ip;		
+	int ip = scripts[index].ip;
 	switch (scripts[index].code[ip].type)
 	{
-	case stopCode: //default
+	case STOP_INSTRUCTION: //default
 		scripts[index].ip = -1;
 		break;
-	case letCode:
+	case LET_INSTRUCTION:
 		scripts[index].ip = runLet(index);
 		break;
-	case sumCode:
+	case ADD_INSTRUCTION:
 		scripts[index].ip = runSum(index);
 		break;
-	case subCode:
+	case SUB_INSTRUCTION:
 		scripts[index].ip = runSub(index);
 		break;
-	case multCode:
+	case MULT_INSTRUCTION:
 		scripts[index].ip = runMult(index);
 		break;
-	case devCode:
+	case DEV_INSTRUCTION:
 		scripts[index].ip = runDev(index);
 		break;
-	case writeCode:
+	case SERIAL_OUT_INSTRUCTION:
 		scripts[index].ip = runWrite(index);
 		break;
-	case gotoCode:
+	case GOTO_INSTRUCTION:
 		scripts[index].ip = runGoto(index);
 		break;
-	case ifupperCode:
+	case IF_UPPER_INSTRUCTION:
 		scripts[index].ip = runIfupper(index);
 		break;
-	case iflowerCode:
+	case IF_LOWER_INSTUCTION:
 		scripts[index].ip = runIflower(index);
 		break;
-	case ifequalCode:
+	case IF_EQUAL_INSTUCTION:
 		scripts[index].ip = runIfequal(index);
 		break;
-	case getpropCode:
+	case GET_DRIVER_PROPERTY_INSTRUCTION:
 		scripts[index].ip = runGetProp(index);
 		break;
-	case setpropCode:
+	case SET_DRIVER_PROPERTY_INSTRUCTION:
 		scripts[index].ip = runSetProp(index);
 		break;
 	default:
 		scripts[index].ip = -1;
 	}
 
-		
+
 	if (scripts[index].ip != -1)
 	{
 		scripts[index].debugLineNumber = scripts[index].code[scripts[index].ip].lineNumber;
@@ -729,7 +824,7 @@ bool executeInstruction(int index) {
 }
 
 bool scriptsRun() {
-	for (int i = 0; i < scriptSize; i++)
+	for (int i = 0; i < SCRIPT_SIZE; i++)
 	{
 		if (scripts[i].name.length() != 0)
 		{
@@ -737,7 +832,7 @@ bool scriptsRun() {
 			debugOut(SCRIPT_ID, "script: " + scripts[i].name + " status: " + String(scripts[i].status) + " quants: " + String(scripts[i].timeQuant));
 #endif
 
-			if ((scripts[i].status == runStatus) || (scripts[i].status == criticalRunStatus))
+			if ((scripts[i].status == RUN_STATUS) || (scripts[i].status == CRITICAL_RUN_STATUS))
 			{
 				scripts[i].quantCounter = 0;
 				while (true)
@@ -751,9 +846,9 @@ bool scriptsRun() {
 						scripts[i].firstTime = false;
 						if (lastInstructionCode != -1) //loose last instruction TODO: use the value for debug
 						{
-							if (scripts[i].status != criticalRunStatus)
+							if (scripts[i].status != CRITICAL_RUN_STATUS)
 							{
-								scripts[i].status = runtimeErrorStatus;
+								scripts[i].status = RUNTIME_ERROR_STATUS;
 								break;
 							}
 						}
@@ -764,10 +859,10 @@ bool scriptsRun() {
 #endif
 
 
-					
+
 					filesWriteInt(scripts[i].name + ".rf", scripts[i].ip); //up RF flag (store last instruction)
 					bool result = executeInstruction(i);
-					
+
 					bool fwResult = filesWriteInt(scripts[i].name + ".rf", -1); //escapre RF flag 
 
 #ifdef SCRIPT_TRACERT	
@@ -777,7 +872,7 @@ bool scriptsRun() {
 
 					if (!result)
 					{
-						scripts[i].status = stopStatus;
+						scripts[i].status = STOP_STATUS;
 #ifdef SCRIPT_TRACERT					
 						debugOut(SCRIPT_ID, "stop by instruction result");
 #endif
@@ -796,7 +891,7 @@ bool scriptsRun() {
 	return true;
 }
 
-String scriptsDebugNext(String name) 
+String scriptsDebugNext(String name)
 {
 	int index = scriptsGetByIndex(name);
 	if (index != -1)
@@ -804,13 +899,13 @@ String scriptsDebugNext(String name)
 
 		if (scripts[index].name.length() != 0)
 		{
-			if (scripts[index].status == debugStatus)
+			if (scripts[index].status == DEBUG_STATUS)
 			{
 				bool result = executeInstruction(index);
 
 				if (!result)
 				{
-					scripts[index].status = stopStatus;
+					scripts[index].status = STOP_STATUS;
 				}
 			}
 		}
@@ -820,11 +915,11 @@ String scriptsDebugNext(String name)
 }
 
 bool scriptsStartDebug(String name)
-{	
-	int index = scriptsGetByIndex(name);	
+{
+	int index = scriptsGetByIndex(name);
 	if (index != -1)
 	{
-		scripts[index].status = debugStatus;
+		scripts[index].status = DEBUG_STATUS;
 		scripts[index].ip = 0;
 		return true;
 	}
@@ -918,7 +1013,7 @@ String scriptsCompile(int index) {
 		byteCode.remove(0, linePos + lineDelimiter.length());
 	}
 
-	if ((ESP.getFreeHeap() - heapLimit) < (sizeof(Instruction) * _codeCount + sizeof(Variable) * _dataCount))
+	if ((ESP.getFreeHeap() - HEAP_LIMIT) < (sizeof(Instruction) * _codeCount + sizeof(Variable) * _dataCount))
 	{
 		//out of heap
 		return "out of heap";
@@ -996,15 +1091,15 @@ String scriptsCompile(int index) {
 					String args = clearSpace(command.substring(command.indexOf("=") + 1), false);
 					//ищем математических оператор
 					char mathOperator = 0x00; // 0x00 если не найдем 
-				
+
 					if (args.indexOf("+") > 0) { mathOperator = '+'; }
 					else
 						if (args.indexOf("-") > 0) { mathOperator = '-'; }
-					else
-						if (args.indexOf("/") > 0) { mathOperator = '/'; }
-					else
-						if (args.indexOf("*") > 0) { mathOperator = '*'; }
-					
+						else
+							if (args.indexOf("/") > 0) { mathOperator = '/'; }
+							else
+								if (args.indexOf("*") > 0) { mathOperator = '*'; }
+
 
 					if (mathOperator == 0x00) //если не нашли математический оператор
 					{
@@ -1055,16 +1150,16 @@ String scriptsCompile(int index) {
 						if (mathOperator == '+') { addSum(index, scripts[index].codeCount, resultAddr, arg1Addr, arg2Addr, lineCount); }
 						else
 							if (mathOperator == '-') { addSub(index, scripts[index].codeCount, resultAddr, arg1Addr, arg2Addr, lineCount); }
-						else
-							if (mathOperator == '*') { addMult(index, scripts[index].codeCount, resultAddr, arg1Addr, arg2Addr, lineCount); }
-						else
-							if (mathOperator == '/') { addDev(index, scripts[index].codeCount, resultAddr, arg1Addr, arg2Addr, lineCount); }
-					    else
-							{ //такого не должно случится, но если что то совсем пошло не так
-								result = "bad expression at line: " + String(lineCount);
-								break;
+							else
+								if (mathOperator == '*') { addMult(index, scripts[index].codeCount, resultAddr, arg1Addr, arg2Addr, lineCount); }
+								else
+									if (mathOperator == '/') { addDev(index, scripts[index].codeCount, resultAddr, arg1Addr, arg2Addr, lineCount); }
+									else
+									{ //такого не должно случится, но если что то совсем пошло не так
+										result = "bad expression at line: " + String(lineCount);
+										break;
 
-							}
+									}
 					}
 					scripts[index].codeCount++;
 				} //ENDOF парсер математических выражений
@@ -1209,7 +1304,7 @@ String scriptsCompile(int index) {
 String scriptsCreate(String name, String byteCode) {
 	String result = "";
 	int index = -1;
-	for (int i = 0; i < scriptSize; i++)
+	for (int i = 0; i < SCRIPT_SIZE; i++)
 	{
 		if ((scripts[i].name == name) || (scripts[i].name.length() == 0))
 		{
@@ -1219,10 +1314,10 @@ String scriptsCreate(String name, String byteCode) {
 	}
 
 	if (index == -1) {
-		if (scriptCount >= scriptSize - 2) return "VM scripts limit is owerflow (limit=" + String(scriptSize) + " scripts)";
+		if (scriptCount >= SCRIPT_SIZE - 2) return "VM scripts limit is owerflow (limit=" + String(SCRIPT_SIZE) + " scripts)";
 		scriptCount++;
 		index = scriptCount;
-	}	
+	}
 	scriptsReset(index);
 	scripts[index].name = name;
 	scripts[index].firstTime = false;
@@ -1232,11 +1327,11 @@ String scriptsCreate(String name, String byteCode) {
 	result = scriptsCompile(index);
 	if (result.length() == 0)
 	{
-		scripts[index].status = runStatus;
+		scripts[index].status = RUN_STATUS;
 	}
 	else
 	{
-		scripts[index].status = compilerErrorStatus;
+		scripts[index].status = COMPILE_ERROR_STATUS;
 	}
 	scriptsSave();
 	return result;
@@ -1256,13 +1351,13 @@ bool scriptsLoad() {
 	while ((linePos = result.indexOf(lineDelimiter)) != -1)
 	{
 		line = result.substring(0, linePos);
-	
+
 		if (line.indexOf("script:") == 0) //script section
 		{
 			String scriptName = line.substring(line.indexOf(scriptDelimiter) + 1);
 			scriptCount++;
 			scriptsReset(scriptCount);
-			scripts[scriptCount].name = scriptName;	
+			scripts[scriptCount].name = scriptName;
 			scripts[scriptCount].firstTime = true;
 		}
 		else //key section
@@ -1291,6 +1386,6 @@ bool scriptsLoad() {
 
 void testCompile()
 {
- //Put some code for non UI tests
+	//Put some code for non UI tests
 }
 
