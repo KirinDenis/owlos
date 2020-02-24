@@ -19,7 +19,8 @@ http://localhost:8080/Home/Documentation?docref=Documentation/HowToInstall.md
 
 http://localhost:8080/Home/?localref=Documentation/HowToInstall.md&elementid=indexmd
 
-[[! http://localhost:8080/Home/Documentation?docref=Documentation/HowToInstall.md] 123]
+
+[![OWLOSlogo](http://localhost:8080/Home/Documentation?docref=Documentation/HowToInstall.md)]
 
 # How to build:
   - isnstall Arduino Studio 1.8.9. or upper.
