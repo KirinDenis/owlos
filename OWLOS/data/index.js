@@ -19,7 +19,7 @@ FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along
-with OWL OS. If not, see < https://www.gnu.org/licenses/>.
+with OWLOS. If not, see < https://www.gnu.org/licenses/>.
 
 GitHub: https://github.com/KirinDenis/owlos
 
@@ -104,7 +104,7 @@ $(document).ready(function () {
     config.onLoad = dashboardUI.onConfigLoad;
     if (config.load()) {
         status_online = NET_ONLINE;
-        speak("OWL OS is started");
+        speak("OWLOS is started");
 
         addToLogNL(getLang("prepareUnit"));
 
@@ -133,7 +133,7 @@ $(document).ready(function () {
         });
         */
 
-        speak("OWL OS is ready");
+        speak("OWLOS is ready");
     }
     else {
         status_online = NET_OFFLINE;
@@ -199,7 +199,7 @@ function createProSidebar() {
     sideBarOWLOS.className = "sidebar-item sidebar-brand";
     var hRef = sideBarOWLOS.appendChild(document.createElement("a"));
     hRef.href = "https://github.com/KirinDenis/owlos";
-    hRef.innerText = "OWL OS";
+    hRef.innerText = "OWLOS";
 
     var sideBarHeader = mainSideBar.appendChild(document.createElement("div"));
     sideBarHeader.className = "sidebar-item sidebar-header d-flex flex-nowrap";

@@ -19,7 +19,7 @@ FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along
-with OWL OS. If not, see < https://www.gnu.org/licenses/>.
+with OWLOS. If not, see < https://www.gnu.org/licenses/>.
 
 GitHub: https://github.com/KirinDenis/owlos
 
@@ -40,25 +40,25 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------
-//Загрузчик OWL OS front части.
-//Загружает JavaScript и CSS модули необходимые для работы OWL OS.
+//Загрузчик OWLOS front части.
+//Загружает JavaScript и CSS модули необходимые для работы OWLOS.
 //Проверяет возможность подключения к Internet - если нет - меняет путь загрузки некоторых модулей, подгружая их из Модуля (что медлено, но дает возможность автономной работы)
 //при начальной загрузкой браузером, подгружается только index.html и bootcore.js -> которая в свою очередь в фоновом режиме грузит весь остальной контент. 
 //index.html в начале загрузки отображает консоль вывода, что позволяет bootcore.js информировать пользователя о процессе загрузки и возможных проблемах. (смотрите index.html)
 
-//Существует 3 способа загрузки UI OWL OS:
+//Существует 3 способа загрузки UI OWLOS:
 // 1) Браузер грузит UI подключивший к модулю как к WiFi станции в локальной сети или через Интернет forwarding (проброшен порт и модуль выставлен в мир)
 // - index.html и bootcore.js загружаются из flash памяти модуля, через встроенный web сервер, после чего bootcore.js - определяет доступен ли интернет,
-// -- если ДА - "стандартный" контент (jQury, bootstrap, dataTable...) грузятся из интернет, в свою очередь OWL OS модули из flash модуля.
+// -- если ДА - "стандартный" контент (jQury, bootstrap, dataTable...) грузятся из интернет, в свою очередь OWLOS модули из flash модуля.
 // -- если НЕТ - все грузится из flash  
 // 2) Браузер грузит UI подключившись к модулю в режиме WiFi точки доступа (режим "чистое поле" интернета нет)
 //    компьютер или телефон должен быть подключен к модулю как станция, IP модуля по умолчанию 192.168.4.1
 // - также как и в первом случае БЕЗ интернета
-// 3) [отладка] Файлы входящие в OWL OS UI должны быть на вашем локальном диске. Откройте restclientcore.js и укажите host=[текущий адрес модуля в сети http://адрес:port], 
+// 3) [отладка] Файлы входящие в OWLOS UI должны быть на вашем локальном диске. Откройте restclientcore.js и укажите host=[текущий адрес модуля в сети http://адрес:port], 
 //    откройте index.html браузером как файл. Это самый быстрый способ загрузки UI и хороший способ для отладки. 
 
 //NOTE: функции работы с консолью реализованы в этом же модули ниже, по завершению загрузки консоль переместится в соответствующий раздел главного меню 
-//OWL OS UI - там можно детально изучить процесс загрузки
+//OWLOS UI - там можно детально изучить процесс загрузки
 //^^^---------------------------------------------------------------------------------------------------------------------------------------------------
 
 //Global flags 
@@ -142,7 +142,7 @@ function loadingScripts(withInternet) {
             resolve();//говорим наверх что все хорошо -> https://learn.javascript.ru/promise
             if (withInternet) loadCSS("https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.css"); //следующий CSS с интернет
             else loadCSS("dataTables.min.css");//без 
-            loadCSS("ui.css"); //это OWL OS UI CSS - его грузим из модуля
+            loadCSS("ui.css"); //это OWLOS UI CSS - его грузим из модуля
             //first jQuery Tables
             var jQueryTablesScript = document.createElement('script'); //многие зависят от jQueryTables, например datatables.js - по этому будем ожидать его загрузки что бы продолжить
             jQueryTablesScript.onload = function () {//jQueryTables.js загрузились
@@ -186,7 +186,7 @@ function loadingScripts(withInternet) {
                             //var unitPropertiesScript = document.createElement('script'); //с ожиданием
                             //unitPropertiesScript.onload = function () { //when unit properties is loading we can start index script
 
-                            loadingScript("index.js"); //ядро OWL OS UI, грузится последним, стартует систему
+                            loadingScript("index.js"); //ядро OWLOS UI, грузится последним, стартует систему
                             //}
                             //--> NOTE: код ниже - обратное сворачивание загрузчкив контента (стек загрузки)
                             //unitPropertiesScript.src = "unitproperties.js";

@@ -19,7 +19,7 @@ FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along
-with OWL OS. If not, see < https://www.gnu.org/licenses/>.
+with OWLOS. If not, see < https://www.gnu.org/licenses/>.
 
 GitHub: https://github.com/KirinDenis/owlos
 
@@ -150,7 +150,7 @@ void webServerAddCORSHeaders()
 		webServer.sendHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 		webServer.sendHeader("Access-Control-Allow-Origin", "*");
 		webServer.sendHeader("Server", "HELLO " + clientIP);
-		webServer.sendHeader("Server", "OWL OS " + unitGetUnitId());
+		webServer.sendHeader("Server", "OWLOS " + unitGetUnitId());
 	}
 	else
 	{
@@ -208,7 +208,7 @@ void handleNotFound() {
 
 	if (!webServer.authenticate(stringToChar(unitGetRESTfulServerUsername()), stringToChar(unitGetRESTfulServerPassword())))
 	{
-		return webServer.requestAuthentication(DIGEST_AUTH, "OWL OS", "no auth");
+		return webServer.requestAuthentication(DIGEST_AUTH, "OWLOS", "no auth");
 	}
 
 

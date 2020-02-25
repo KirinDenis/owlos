@@ -19,7 +19,7 @@ REM FOR A PARTICULAR PURPOSE.
 REM See the GNU General Public License for more details.
 
 REM You should have received a copy of the GNU General Public License along
-REM with OWL OS. If not, see < https://www.gnu.org/licenses/>.
+REM with OWLOS. If not, see < https://www.gnu.org/licenses/>.
 
 REM GitHub: https://github.com/KirinDenis/owlos
 

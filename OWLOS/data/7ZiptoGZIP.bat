@@ -1,5 +1,5 @@
 REM 
-REM The integrated web server OWL OS supports .GZ archiving to reduce traffic.
+REM The integrated web server OWLOS supports .GZ archiving to reduce traffic.
 REM If the Web server does not find the corresponding .GZ file, it searches for the uncompressed file, otherwise
 REM issues HTTP Code 404.
 REM 

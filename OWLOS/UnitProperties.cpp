@@ -19,7 +19,7 @@ FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along
-with OWL OS. If not, see < https://www.gnu.org/licenses/>.
+with OWLOS. If not, see < https://www.gnu.org/licenses/>.
 
 GitHub: https://github.com/KirinDenis/owlos
 
@@ -45,7 +45,7 @@ OWLOS распространяется в надежде, что она буде
 #include "src\Managers\TransportManager.h"
 #include "src\Managers\UpdateManager.h"
 
-#define DefaultFirmwareVersion "OWL OS IoT Node version 1.7 (beta)"
+#define DefaultFirmwareVersion "OWLOS IoT Node version 1.7 (beta)"
 #define DefaultFirmwareBuildNumber 59
 
 #define DefaultId "owlnode"

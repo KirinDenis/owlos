@@ -7,4 +7,4 @@
   - build and upload OWL firmware on your board.
   * after uploading:  
 	- connect to WiFi access point owlunit[YOURESPCHIPID]  PWD: 1122334455
-	- browse http://192.168.4.1:8084 to access OWL OS UI LGN: admin PWD: admin
+	- browse http://192.168.4.1:8084 to access OWLOS UI LGN: admin PWD: admin
