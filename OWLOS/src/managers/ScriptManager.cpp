@@ -1,11 +1,73 @@
 ﻿/*
 
-  Ready IoT Solution OWLOS
-  (c) Konstantin Brul, Vitalii Glushchenko, Denys Melnychuk, Denis Kirin
+Ready IoT Solution - OWLOS
+Copyright 2019, 2020 by:
+- Konstantin Brul (konstabrul@gmail.com)
+- Vitalii Glushchenko (cehoweek@gmail.com)
+- Denys Melnychuk (meldenvar@gmail.com)
+- Denis Kirin (deniskirinacs@gmail.com)
 
-Battle Hamster script
+This file is part of Ready IoT Solution - OWLOS
 
-Менеджер поддерживает:
+OWLOS is free software : you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+OWLOS is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with OWL OS. If not, see < https://www.gnu.org/licenses/>.
+
+GitHub: https://github.com/KirinDenis/owlos
+
+(Этот файл — часть Ready IoT Solution - OWLOS.
+
+OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
+ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
+была опубликована Фондом свободного программного обеспечения; версии 3
+лицензии, любой более поздней версии.
+
+OWLOS распространяется в надежде, что она будет полезной, но БЕЗО ВСЯКИХ
+ГАРАНТИЙ; даже без неявной гарантии ТОВАРНОГО ВИДА или ПРИГОДНОСТИ ДЛЯ
+ОПРЕДЕЛЕННЫХ ЦЕЛЕЙ.
+Подробнее см.в Стандартной общественной лицензии GNU.
+
+Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
+этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
+
+   ____       _        _____     _____      _      U _____ u
+U | __")u U  /"\  u   |_ " _|   |_ " _|    |"|     \| ___"|/
+ \|  _ \/  \/ _ \/      | |       | |    U | | u    |  _|"
+  | |_) |  / ___ \     /| |\     /| |\    \| |/__   | |___
+  |____/  /_/   \_\   u |_|U    u |_|U     |_____|  |_____|
+ _|| \\_   \\    >>   _// \\_   _// \\_    //  \\   <<   >>
+(__) (__) (__)  (__) (__) (__) (__) (__)  (_")("_) (__) (__)
+  _   _       _        __  __     ____       _____   U _____ u    ____
+ |'| |'|  U  /"\  u  U|' \/ '|u  / __"| u   |_ " _|  \| ___"|/ U |  _"\ u
+/| |_| |\  \/ _ \/   \| |\/| |/ <\___ \/      | |     |  _|"    \| |_) |/
+U|  _  |u  / ___ \    | |  | |   u___) |     /| |\    | |___     |  _ <
+ |_| |_|  /_/   \_\   |_|  |_|   |____/>>   u |_|U    |_____|    |_| \_\
+ //   \\   \\    >>  <<,-,,-.     )(  (__)  _// \\_   <<   >>    //   \\_
+(_") ("_) (__)  (__)  (./  \.)   (__)      (__) (__) (__) (__)  (__)  (__)
+
+  .-')                 _  .-')                _ (`-.   .-') _
+ ( OO ).              ( \( -O )              ( (OO  ) (  OO) )
+(_)---\_)    .-----.   ,------.    ,-.-')   _.`     \ /     '._
+/    _ |    '  .--./   |   /`. '   |  |OO) (__...--'' |'--...__)
+\  :` `.    |  |('-.   |  /  | |   |  |  \  |  /  | | '--.  .--'
+ '..`''.)  /_) |OO  )  |  |_.' |   |  |(_/  |  |_.' |    |  |
+.-._)   \  ||  |`-'|   |  .  '.'  ,|  |_.'  |  .___.'    |  |
+\       / (_'  '--'\   |  |\  \  (_|  |     |  |         |  |
+ `-----'     `-----'   `--' '--'   `--'     `--'         `--'
+ //ANSII ART MAKE WITH USING http://patorjk.com/software/taag/#p=testall&h=0&f=Ghost&t=Battle%20Hamster%20Script
+
+Battle Hamster Script
+
+Скрипт поддерживает:
 - выполнение нескольких скриптов одновременно.
 - динамическую - загрузку, компиляцию, выполнение, остановку - без перезагрузки микроконтроллера.
 - квантование выполнения инструкций каждого скрипта отдельно (сколько инструкций за один loop())
@@ -141,6 +203,14 @@ int scriptCount = -1;
 //массив со структурами Script. Одновремено может исполнятся независимо до SCRIPT_SIZE скриптов
 Script scripts[SCRIPT_SIZE];
 
+//Синтаксические определители
+#define CODE_LINE_DELIMITER  "\n"	//делитель строк
+#define CODE_ARGS_DELIMITER  ","	//делитель аргументов инструкций
+#define STRUCTURE_LINE_DELIMITER "\r"
+#define STRUCTURE_SCRIPT_DELIMITER  ":"
+#define STRUCTURE_KEY_DELIMITER  "="
+
+
 
 /* Архитектура -------------------------------------------------------------------------------------------------------------------------------------------------
 Script.code массив состоящий из структур (записей) Instruction, формирует адресное пространство байт-кода
@@ -193,8 +263,8 @@ script.code[inst1(arg1addr, arg2addr), inst2(arg1addr, arg2addr), inst3(..), ins
 -----------------------------------------------------------------------------*/
 bool scriptsReset(int index) {
 	if ((index < 0) || (index > SCRIPT_SIZE - 1)) return false; //если вышли за размер массива
-		filesWriteInt(scripts[index].name + ".rf", -1); //очищаем файл флажек аварийной остановки скрипта, если в этом файлы не -1 скрипт не будет исполнятъся
-		//сбрасываем поля записи 
+	filesWriteInt(scripts[index].name + ".rf", -1); //очищаем файл флажек аварийной остановки скрипта, если в этом файлы не -1 скрипт не будет исполнятъся
+	//сбрасываем поля записи 
 	scripts[index].name = "";
 	scripts[index].byteCode = "";
 	scripts[index].status = STOP_STATUS;
@@ -236,12 +306,15 @@ int scriptsGetByIndex(String name) {
 	return -1; //попадем сюда если ничего не нашли - возвращаем -1
 }
 /*-----------------------------------------------------------------------------
-Возвращает данные о состоянии всех скрипров в текстовом формате, используется для 
+Возвращает данные о состоянии всех скрипров в текстовом формате, используется для
 передачи данных UI (для примера смотрите scriptscore.js)
 Параметров нет
 Возвращает данные или пустую строку если нет скриптов
 -----------------------------------------------------------------------------*/
 String scriptsGetAll() {
+	//ВАЖНО: поля скрипта и их значения разделяются "=", строки с полями "\r", 
+	//в свою очередь строки исходного кода скрипта и состояния переменных разделяются "\n"
+	//что позволяет легко хранить и парсить обе структуры в одном файле (строке)
 	String result = "";
 	String valueName = "";
 	String value = "";
@@ -250,17 +323,17 @@ String scriptsGetAll() {
 			result += "script:" + scripts[i].name + "\r";
 			result += "status=" + String(scripts[i].status) + "\r";
 			result += "debuglinenumber=" + String(scripts[i].debugLineNumber) + "\r";
-			result += "bytecode=" + String(scripts[i].byteCode) + "\r";
+			result += "bytecode=" + String(scripts[i].byteCode) + "\r"; //!САМ исходный построчно код разделен "\n" 
 			result += "codecount=" + String(scripts[i].codeCount) + "\r";
 			result += "datacount=" + String(scripts[i].dataCount) + "\r";
 			result += "timequant=" + String(scripts[i].timeQuant) + "\r";
 			result += "ip=" + String(scripts[i].ip) + "\r";
 			result += "variables=\n";
-			//собираем данные о переменых и их значениях 
+			//собираем данные о переменых и их значениях
 			for (int j = 0; j < scripts[i].dataCount; j++) {
 				valueName = scripts[i].data[j].name;
 				value = scripts[i].data[j].value;
-				result += valueName + "=" + value + "\n";
+				result += valueName + "=" + value + "\n"; //переменные разделяются по "\n"
 			}
 			result += "\r";
 		}
@@ -269,7 +342,7 @@ String scriptsGetAll() {
 }
 /*-----------------------------------------------------------------------------
 Тоже что и scriptsGetAll(), но в более сжатом формате, используется для хранения
-скриптов в файле. 
+скриптов в файле.
 Параметров нет
 Возвращает данные или пустую строку если нет скриптов
 -----------------------------------------------------------------------------*/
@@ -290,14 +363,14 @@ String scriptsGetAllClean() {
 /*-----------------------------------------------------------------------------
 Собирает данные о скриптах и сохраняет их в файл с именем "scripts"
 Параметров нет
-Возвращает true если удалось записать данные в файл, false в случае ошибки 
+Возвращает true если удалось записать данные в файл, false в случае ошибки
 -----------------------------------------------------------------------------*/
 bool scriptsSave() {
 	return filesWriteString("scripts", scriptsGetAllClean());
 }
 /*-----------------------------------------------------------------------------
-Останавливает и удаляет указанный скрипт, перезаписывает файл хранящий 
-данные о скриптах. 
+Останавливает и удаляет указанный скрипт, перезаписывает файл хранящий
+данные о скриптах.
 Параметер String name имя удаляемого скрипта
 Возвращает true если удалось удалить скрипт с таким именем, false если скрипт
 не существует
@@ -313,8 +386,8 @@ bool scriptsDelete(String name) {
 	return false; //не удалось удалить, возвращем false
 }
 /*-----------------------------------------------------------------------------
-Останавливает указанный скрипт, похожа на scriptsDelete(..), но скрипт останется в 
-памяти и его исполнение может быть возобновлено позже. 
+Останавливает указанный скрипт, похожа на scriptsDelete(..), но скрипт останется в
+памяти и его исполнение может быть возобновлено позже.
 Остановленый скрипт не возобновит работу после перезагрузки контроллера.
 Параметер String name имя останавливаемого скрипта
 Возвращает true если удалось остановить скрипт с таким именем, false если скрипт
@@ -326,7 +399,7 @@ bool scriptsStop(String name) {
 	{
 		//устанавливаем статус скрипта в STOP_STATUS, с таким статусом инструкции скрипта 
 		//исполнятся не будут 
-		scripts[index].status = STOP_STATUS; 
+		scripts[index].status = STOP_STATUS;
 		return scriptsSave(); //сохраняем скриптры
 	}
 	return false;
@@ -352,7 +425,7 @@ bool scriptsRun(String name) {
 
 //Секция функций инструкций ------------------------------------------------------------------------------------------------------
 /*-----------------------------------------------------------------------------
-Размещает в heap массив char[], получает указатель на созданый массив, 
+Размещает в heap массив char[], получает указатель на созданый массив,
 переносит символы из строки str в созданный массив
 Параметер String srt строка с символами
 Возвращает указатель на массив char[] с символами входящей строки
@@ -369,8 +442,8 @@ char* stringToArray(String str)
 Помещает переменую name и ее данные в сегмент данных (data[])
 Параметры:
 - int index индекс скрипта (определят какому скрипту принадлежит переменная)
-- String name имя переменной 
-- String value значение переменной 
+- String name имя переменной
+- String value значение переменной
 Возвращает resultIndex индекс переменной в сегменте данных, полный адрес переменной:
 scripts[index].data[resultIndex]
 Возвращает индекс добавленой переменой
@@ -378,55 +451,55 @@ scripts[index].data[resultIndex]
 int pushData(int index, String name, String value) {
 	/*
 	так как данная функция размещает переменные последовательно - от идекса 0 до dataCount
-	изначально, при первом обращении 
+	изначально, при первом обращении
 	scripts[index].dataCount = 0 - переменных нет
 	после первого обращения
 	scripts[index].dataCount = 1 - одна переменная есть
-	поэтому в реализации pushData(..) scripts[index].dataCount используется как указатель 
-	следующей переменной. 
+	поэтому в реализации pushData(..) scripts[index].dataCount используется как указатель
+	следующей переменной.
 
-	Компилятор при первом проходе подсчитывает общее количество переменных в скрипте, 
+	Компилятор при первом проходе подсчитывает общее количество переменных в скрипте,
 	После чего запрашивает у heap нужное количество памяти для scripts[index].data[..]
-	По этой причине scripts[index].dataCount может быть использован для индексации 
+	По этой причине scripts[index].dataCount может быть использован для индексации
 	внутри scripts[index].data[..]
 
-	!ЭТУ ФУНКЦИЮ ИСПОЛЬЗУЕТ ТОЛЬКО КОМПИЛЯТОР - и он отвечает за размер и индексацию внутри 
+	!ЭТУ ФУНКЦИЮ ИСПОЛЬЗУЕТ ТОЛЬКО КОМПИЛЯТОР - и он отвечает за размер и индексацию внутри
 	массива scripts[index].data[..]
 
-	Когда в скрипте было указано 
+	Когда в скрипте было указано
 	var a=10, то имя переменой будет "a", а значение "10"
 	TODO: тип переменных
 	*/
-    //переносим имя переменой 
+	//переносим имя переменой 
 	scripts[index].data[scripts[index].dataCount].name = stringToArray(name);
 	//переносим ее данные 
 	scripts[index].data[scripts[index].dataCount].value = stringToArray(value);
 
 	/*
-	!Очень коварный момент, на самом деле эта функция возвращает индекс в сегменте данных куда 
+	!Очень коварный момент, на самом деле эта функция возвращает индекс в сегменте данных куда
 	только что была добавлена переменная scripts[index].data[scripts[index].dataCount]
-	При этом после scripts[index].dataCount увеличится на 1 и станет указывать количиство переменных 
+	При этом после scripts[index].dataCount увеличится на 1 и станет указывать количиство переменных
 	(или индекс свободного места под следующею переменну в данном контексте)
 
-	return ++scripts[index].dataCount; -> сначало увеличит счетчик на 1, а потом вернет значение 
+	return ++scripts[index].dataCount; -> сначало увеличит счетчик на 1, а потом вернет значение
 	return scripts[index].dataCount++; -> сначало вернет значение, а потом увеличит счетчик на 1
 
 	"казнить нельзя помиловать" от операторов return и ++
-    */
+	*/
 	return scripts[index].dataCount++;
 }
 
 /*-----------------------------------------------------------------------------
 Возвращает индекс переменой в сегменте данных указаного скрипта по ее имени
 Параметры:
-- int index индекс скрипта 
-- String name имя переменной 
+- int index индекс скрипта
+- String name имя переменной
 Возвращает индекс переменной или -1 если переменной с таким именем не существует
 -----------------------------------------------------------------------------*/
 int getDataAddr(int index, String name) {
 	String _name; //из за того что для хранения имен и значений сегмент данных data[..] использует 
-	              //указатели на массивы char[] в динамической памяти, мы не рискнули делать прямое ставнение 
-	              //name или name.c_str() с scripts[index].data[i].name
+				  //указатели на массивы char[] в динамической памяти, мы не рискнули делать прямое ставнение 
+				  //name или name.c_str() с scripts[index].data[i].name
 	for (int i = 0; i < scripts[index].dataCount; i++) { //перебираем все переменные
 		_name = scripts[index].data[i].name; //переносим имя переменой в строку 
 		if (_name == name) { //сравниваем имена
@@ -700,7 +773,6 @@ int runIfequal(int index) {
 	}
 }
 
-
 int addGetProp(int index, int addr, int arg1Addr, int arg2Addr, int arg3Addr, int lineNumber) {
 	scripts[index].code[addr].type = GET_DRIVER_PROPERTY_INSTRUCTION;
 	scripts[index].code[addr].arg1Addr = arg1Addr;
@@ -813,7 +885,6 @@ bool executeInstruction(int index) {
 		scripts[index].ip = -1;
 	}
 
-
 	if (scripts[index].ip != -1)
 	{
 		scripts[index].debugLineNumber = scripts[index].code[scripts[index].ip].lineNumber;
@@ -852,24 +923,17 @@ bool scriptsRun() {
 								break;
 							}
 						}
-
 					}
 #ifdef SCRIPT_TRACERT					
 					debugOut(SCRIPT_ID, "-> addr: " + String(scripts[i].ip));
 #endif
-
-
-
 					filesWriteInt(scripts[i].name + ".rf", scripts[i].ip); //up RF flag (store last instruction)
 					bool result = executeInstruction(i);
-
 					bool fwResult = filesWriteInt(scripts[i].name + ".rf", -1); //escapre RF flag 
-
 #ifdef SCRIPT_TRACERT	
 					debugOut(SCRIPT_ID, "fwResult: " + String(fwResult));
 					debugOut(SCRIPT_ID, "<- addr: " + String(scripts[i].ip));
 #endif
-
 					if (!result)
 					{
 						scripts[i].status = STOP_STATUS;
@@ -927,15 +991,38 @@ bool scriptsStartDebug(String name)
 }
 
 
+/*-----------------------------------------------------------------------------
+Вспомогательная функция, удаляет коментарий из строки исходного кода скрипта 
+Используется компилятором scriptsCompile(..)
+- Коментатии обозначены символами "//"
+- В одной строке может быть один коментарий
+- Все что после символов коментария компилятор "не видит"
+Параметр:
+String str одна строка исходного кода
+Результат: содержимое строки str до начала коментария, без "//" например:
+str -> a = a + 1 //increment value of variable a
+result -> a = a + 1
+-----------------------------------------------------------------------------*/
 String clearComment(String str)
 {
 	if (str.indexOf("//") == -1) return str;
 	return str.substring(0, str.indexOf("//"));
 }
 
+/*-----------------------------------------------------------------------------
+Вспомогательная функция, удаляет пробелы и табуляции в одной строчке кода 
+скрипта. 
+Используется компилятором scriptsCompile(..)
+Опционально может удалять пробелы и табуляции только в начале строки. 
+Параметры:
+String str одна строка исходного кода
+bool atBegin флажек - если true удаляются пробелы и табуляции только в начале строки, 
+если false - все встреченые пробелы и табуляции в троке str
+Результат: содержимое строки str без пробелов и табуляций
+-----------------------------------------------------------------------------*/
 String clearSpace(String str, bool atBegin)
 {
-	if (atBegin)
+	if (atBegin) 
 	{
 		str = clearComment(str);
 	}
@@ -955,44 +1042,51 @@ String clearSpace(String str, bool atBegin)
 	return cleanString;
 }
 
-
-
-//return empty string if OK, else setring with error code
+/*-----------------------------------------------------------------------------
+Компилятор скрипта в байт код. Производит синтаксический разбор исходного кода
+скрипта в три прохода.
+Первый проход - подсчитывает количество инструкций и переменных (данных),
+вычисляет необходимый размер сегмента кода code[] и сегмента данных data[]
+Второй проход - выбирает метки перехода (Labels:)
+Третирй проход - разбирает исходный код и декодирует инструкции и переменные
+перенася их в сегменты.
+Параметр:
+- int index индекс скрипта
+Возвращает пустую строку если компиляция прошла успешно, строку с сообщением
+об ошибке если компиляция не удалась.
+-----------------------------------------------------------------------------*/
 String scriptsCompile(int index) {
-	String result = ""; //no error
-	scripts[index].ip = 0;
-	scripts[index].codeCount = 0;
-	scripts[index].dataCount = 0;
-	free(scripts[index].code);
-	free(scripts[index].data);
-	//TODO: Free momery for code data
-	String prog = "";
-	String lineDelimiter = "\n";
-	String argDelimiter = ",";
+	String result = ""; //строка с результатом, по умолчанию пуста, ошибок небыло
+	scripts[index].ip = 0; //сбрасывает указатель инструкций
+	scripts[index].codeCount = 0; //сбрасывает счетчик инструкций
+	scripts[index].dataCount = 0; //сбрасывает счетчик переменных (данных)
+	free(scripts[index].code); //освобождает heap сегмента кода 
+	free(scripts[index].data); //освобождает heap сегмента данных 
 
-	int linePos = 0;
-	String command;
+	int linePos = 0; //сбрасываем указатель текущей разбираемой строки скрипта 
+	String command; //буфффер для разбора строк
 
-	//calculate code and data size 
-	int _dataCount = 10; //reserve one 
-	int _codeCount = 10; //reserve one 
-	String byteCode = scripts[index].byteCode + "\n";
-	while ((linePos = byteCode.indexOf(lineDelimiter)) != -1)
+	//Первый проход, подсчитываем необходимый размер сегментов кода и данных ----------------------------------------------------------------------------------
+	int _dataCount = 10; //резервируем место для инструкций
+	int _codeCount = 10; //резервируем место для данных 
+	//^^^так поступать не совсем "честно", мы заведомо даем себе возможность ошибится на какое то количество инструкций и данных
+	//   но в таком виде это работает надежнее
+	String byteCode = scripts[index].byteCode + CODE_LINE_DELIMITER; //создаем рабочую копию скрипта, добавляем конец строки - пользователь вероятнее всего
+															   //не поставил enter после последней инструкции
+	while ((linePos = byteCode.indexOf(CODE_LINE_DELIMITER)) != -1) //выбираем из кода скрипта строку за строкой (пока в тексте есть хотябы один символ конца строки)
 	{
-		command = clearSpace(byteCode.substring(0, linePos), true);
-		if (command.length() != 0)
+		command = clearSpace(byteCode.substring(0, linePos), true); //удаляем пробелы и табуляции в начале строки 
+		if (command.length() != 0) //если строка не пуста 
 		{
-
-
-			if ((command.indexOf("var ") == 0) || (command.indexOf(":") > 0)) _dataCount++;
+			if ((command.indexOf("var ") == 0) || (command.indexOf(":") > 0)) _dataCount++; //если строка содержит слово "var" или символ ":" - это переменая или метка
 			else
 			{
-				_codeCount++;
-				//эти инструкции создают две переменные для хранения своих аргументов
-				//при этом математические операторы могут использовать переменные в качестве аргументов, и память для них будет зарезервирована в var 
-				//однако анализ займет процессорное время, а это значит компиляция будет более медленее, по этой причине жертвуем памятью и выигрываем 
-				//в скорости резирвируя место для двух аргументов 
-				//например a=b+c не требует еще памяти в data[], однако a=100+20 требует резервирования места под две переменных
+				_codeCount++; //уначе в строке инструкция
+					//эти инструкции создают две переменные для хранения своих аргументов
+					//при этом математические операторы могут использовать переменные в качестве аргументов, и память для них будет зарезервирована в var 
+					//однако анализ займет процессорное время, а это значит компиляция будет более медленее, по этой причине жертвуем памятью и выигрываем 
+					//в скорости резирвируя место для двух аргументов 
+					//например a=b+c не требует еще памяти в data[], однако a=100+20 требует резервирования места под две переменных
 				if ((command.indexOf("getprop ") == 0)
 					||
 					(command.indexOf("if ") == 0) //if goto инструкция тоже может создать две переменных, даже в случае if 10 > 20 goto begin (это соответсвует синтаксису)
@@ -1003,70 +1097,76 @@ String scriptsCompile(int index) {
 					_dataCount += 2;
 				}
 				else
-					if (command.indexOf("setprop ") == 0)
+					if (command.indexOf("setprop ") == 0) //эта инструкция своими аргументами может занять до трех переменных
 					{
 						_dataCount += 3;
 					}
-
 			}
 		}
-		byteCode.remove(0, linePos + lineDelimiter.length());
-	}
+		//выризаем обработаною строку из копии исходного кода скрипта  
+		byteCode.remove(0, linePos + 1); //"1" длина разделителя "\n"
+	} //берем следующею строку 
 
+	// проверям не выйдет ли полученый байт код за установленые пределы heap памяти 
 	if ((ESP.getFreeHeap() - HEAP_LIMIT) < (sizeof(Instruction) * _codeCount + sizeof(Variable) * _dataCount))
 	{
-		//out of heap
+		//байткод переполнит память, отказываемся от компиляции
 		return "out of heap";
 	}
-
-
+	//выделяем память в heap для сегмента кода и данных 
 	scripts[index].code = (Instruction*)malloc(sizeof(Instruction) * _codeCount);
 	scripts[index].data = (Variable*)malloc(sizeof(Variable) * _dataCount);
 
-	//выборка label (меток) для перехода
-	_codeCount = 0;
+	//Второй проход: выборка label (меток) для перехода --------------------------------------------------------------------------------------------------------------
+	//метко считается строка соответсвующая синтаксису <имя_метки><:> где имя_метки уникальнпо
+	//данные метри - имя и адрес сохраняются в сегменте данных
+	//адрес метки - количество инструкций от начала сегмента кода (адрес первой инструкции 0)
+	//инструкции переходов goto, if goto - находят свою метку по имене в сегменте данных и получают 
+	//адрес следующей инструкции (адрес перехода) из data[..].value метки 
+	_codeCount = 0; // будет использован как счетчик инструкций
 	linePos = 0;
-	byteCode = scripts[index].byteCode + "\n";
-	while ((linePos = byteCode.indexOf(lineDelimiter)) != -1)
+	byteCode = scripts[index].byteCode + CODE_LINE_DELIMITER; //новая копия кода скрипта 
+	while ((linePos = byteCode.indexOf(CODE_LINE_DELIMITER)) != -1) //разбор строк скрипта так же как и при подсчете размере выделяемой памяти
 	{
-
 		command = clearSpace(byteCode.substring(0, linePos), true);
 		if (command.length() != 0)
 		{
-			if (command.indexOf(":") > 0)
+			if (command.indexOf(":") > 0) //если встретили метку 
 			{
-				String labelName = command.substring(0, command.indexOf(':'));
-				pushData(index, labelName, String(_codeCount));
+				String labelName = command.substring(0, command.indexOf(':')); //получаем имя метки
+				pushData(index, labelName, String(_codeCount)); //помещаем метку в сегмент данных, _codeCount - адрес инструкции после метки 
+				//пример:
+				//нашли c=1, нет "var ", тогда _codeCount++ == 1 (адрес следующей инструкции), адрес c=1 == 0
+				//нашли begin:, метка, помещаем в сегмент данных data[..].name="begin" data[..].value="1" (метка не инструкция, у нее нет адреса для IP)
+				//нашли a=c+3, не переменная, _codeCount++ == 2, при этом адрес инструкции a=c+3 == 1
+				//нашли goto begin, не переменная, использует метку begin, value которой "1" - переходим к инструкции по адресу 1 -> a=c+3
 			}
 			else
-				if (command.indexOf("var ") == -1)
+				if (command.indexOf("var ") == -1) //не переменная и не метка 
 				{
-					_codeCount++;
+					_codeCount++; //значит была инструкция, адрес следующей _codeCount++ 
 				}
-
 		}
-		byteCode.remove(0, linePos + lineDelimiter.length());
+		byteCode.remove(0, linePos + 1); //удаляем очередную разобранную строку 
 	}
 
-
-	//return to parse code
-	linePos = 0;
+	//Третий проход: компиляция - декодирование инструкций, размещение байкода инструкций в сегменте кода, декодирование переменых размещение в сегменте данных
+	//Перебор строк кода реализован так же как при первом и втором проходе - создаем копию кода скрипта, идем строка за строкой, вырезаем пройденые строки
+	linePos = 0; 
 	int lineCount = 0;
-	byteCode = scripts[index].byteCode + "\n";
-	while ((linePos = byteCode.indexOf(lineDelimiter)) != -1)
+	byteCode = scripts[index].byteCode + CODE_LINE_DELIMITER;
+	while ((linePos = byteCode.indexOf(CODE_LINE_DELIMITER)) != -1) //разбор на троки так же как и при первух двух проходах
 	{
-		command = clearSpace(byteCode.substring(0, linePos), true);
-		lineCount++;
-		if ((command.length() != 0) && (command.indexOf(":") == -1))
+		command = clearSpace(byteCode.substring(0, linePos), true); //удаляем пробелы и табуляции в начале строки
+		lineCount++;  //первая строчка в исходном коде (это значение так же используется при пошаговорй отладке, для навигации в тексте исходного кода скрипта на стороне UI)
+		if ((command.length() != 0) && (command.indexOf(":") == -1)) //если строка пуста или строка содержит метку, пропускаем ее (метки мы выбрали во время второго прохода)
 		{
-
-			if (command.indexOf("var ") == 0) //variable
+			if (command.indexOf("var ") == 0) //если в строке переменная, разберем ее синтаксис и поместим в сегмент данных. Синтаксис <var ><имя_переменной><=><значение_переменной>
 			{
-				String varArg = command.substring(4, command.length());
-				String varName = clearSpace(varArg.substring(0, varArg.indexOf('=')), false);
-				String varValue = varArg.substring(varArg.indexOf('=') + 1);
-
-				pushData(index, varName, varValue);
+				String varArg = command.substring(command.indexOf(" ") + 1);  //отделяем <имя_переменной><=><значение_переменной> 
+				String varName = clearSpace(varArg.substring(0, varArg.indexOf('=')), false); //отделяем  <имя_переменной> и удаляем пробелы и табуляции
+				String varValue = varArg.substring(varArg.indexOf('=') + 1); //отделяем <значение_переменной> (НЕ УБИРАЕМ ПРОБЕЛЫ, возможно это var a=Hello World)
+				pushData(index, varName, varValue); //помещаем переменную в сегмент данных
 			}
 			else //Instruction parsin section
 			{
@@ -1168,35 +1268,35 @@ String scriptsCompile(int index) {
 					//<if><переменная|значение><">"|"<|"="><переменная|значение><goto><метка>
 					if (command.indexOf("if ") == 0)
 					{
-						if (command.indexOf("goto") == -1)
+						if (command.indexOf("goto") == -1) //проверяем есть ли оператор "goto" в конструкции "if goto" 
 						{
 							result = "wrong GOTO in IF instruction at line: " + String(lineCount);
 							break;
 						}
 
-						String args = command.substring(command.indexOf(" ") + 1);
-						args = clearSpace(args.substring(0, args.indexOf("goto")), false);
-						String gotoArg = clearSpace(command.substring(command.indexOf("goto") + 4), false);
+						String args = command.substring(command.indexOf(" ") + 1); //отделяем if -> <переменная|значение><">"|"<|"="><переменная|значение><goto><метка>
+						args = clearSpace(args.substring(0, args.indexOf("goto")), false); //отделяем аргументы и оператор -> <переменная|значение><">"|"<|"="><переменная|значение>
+						String gotoArg = clearSpace(command.substring(command.indexOf("goto") + 4), false); //отделяем goto и метку -> <goto><метка>
 
-						int gotoAddr = getDataAddr(index, gotoArg);
+						int gotoAddr = getDataAddr(index, gotoArg); //проверляем существует ли метка описаная в goto
 						if (gotoAddr == -1)
 						{
 							result = "bad label name for GOTO at IF instruction at line: " + String(lineCount);
 							break;
 						}
 
-						String ifOperator = "";
+						String ifOperator = ""; //ищем какой условный оператор использован
 						if (args.indexOf(">") > 0) { ifOperator = ">"; }
 						else
 							if (args.indexOf("<") > 0) { ifOperator = "<"; }
 							else
 								if (args.indexOf("=") > 0) { ifOperator = "="; }
 								else
-								{
+								{   //не удалось найти или распознать использованый оператор
 									result = "wrong operator > or < or = in IF instruction at line: " + String(lineCount);
 									break;
 								}
-
+						//условный оператор известен, разделяем по нему аргументы 
 						String arg1 = args.substring(0, args.indexOf(ifOperator));
 						String arg2 = args.substring(args.indexOf(ifOperator) + 1);
 						//если в качестве аргументов указаны переменные, ищем их адреса
@@ -1234,27 +1334,30 @@ String scriptsCompile(int index) {
 					//парсеры остальных инструкций 
 					else
 					{
-						String instruction = command.substring(0, command.indexOf(" ") + 1);
-						String args = command.substring(command.indexOf(" ") + 1) + argDelimiter;
+						//для всех инструкций ниже, справедил синтаксис <имя_инструкции><аргумент_1>[<,аргумент_2>[<,аргумент_3>..[<,аргумент_N>]]]
+						//данная реализация пока ограничена тремя аргументами 
+						String instruction = command.substring(0, command.indexOf(" ") + 1); //отделяем название <имя_инструкции>
+						String args = command.substring(command.indexOf(" ") + 1) + CODE_ARGS_DELIMITER; //для упрощения разбота, добывляем "," после последнего аргумента
+						//парсим аргументы инструкции, мы не знаем сколько их
 						int argPos = 0;
 						int argCount = 0;
-						String arg;
-						String arg1;
-						String arg2;
-						String arg3;
-						while ((argPos = args.indexOf(argDelimiter)) != -1)
+						String arg = "";
+						String arg1 = "";
+						String arg2 = "";
+						String arg3 = "";
+						while ((argPos = args.indexOf(CODE_ARGS_DELIMITER)) != -1)
 						{
 							arg = args.substring(0, argPos);
 							switch (argCount)
 							{
-							case 0: arg1 = arg; break;
-							case 1: arg2 = arg; break;
-							case 2: arg3 = arg; break;
+							case 0: arg1 = arg; break; //найден первый аргумент 
+							case 1: arg2 = arg; break; //второй 
+							case 2: arg3 = arg; break; //третий 
 							}
-							argCount++;
-							args.remove(0, argPos + argDelimiter.length());
+							argCount++; //запоминаем количество найденых аргументов 
+							args.remove(0, argPos + 1); //"1" размер CODE_ARGS_DELIMITER ","
 						}
-
+						//далее ищем какую же инструкцию и ее аргументы мы разпарсили выше
 						if (instruction.indexOf("write ") == 0) //write
 						{
 							addWrite(index, scripts[index].codeCount, getDataAddr(index, arg1), lineCount);
@@ -1288,19 +1391,43 @@ String scriptsCompile(int index) {
 										scripts[index].codeCount++;
 									}
 									else
-									{
+									{  //<имя_инструкции> не распознано, возвращаем ошибку, останавливаем компиляцию
 										result = "bad instruction at line: " + String(lineCount);
 										break;
 									}
 					} //ENFOF парсеры остальных инструкций ------------------------------------------------------------------------------
 			}
 		}
-
-		byteCode.remove(0, linePos + lineDelimiter.length());
+		byteCode.remove(0, linePos + 1); //вырезаем разобраную строчку кода, переходим к следующей 
 	}
+	//компиляция окончена или прервана, возвращаем результат, если не пустая строка - произошла ошивка компиляции
 	return result;
 }
 
+/*-----------------------------------------------------------------------------
+Создает новый скрипт или заменяет существующей с именем name
+- скрипт будет откомпилирован
+- если компиляция прошла удачно, скрипт будет запущен
+- сбрасывает статус скрипта (если был скрипт с таким именем ранее) - хороший 
+способ оперативной отладки и исправления ошибок. Пользователь на стороне UI,
+редактирует исходный кода скрипта и вызывает scriptsCreate(..) каждый раз 
+когда желает достичь результата. Если в коде ошибки или скрипт не может быть 
+запущен по каким то причинам пользователю сообщат об этом. 
+- если достаточно памяти виртуальной машины и даже если скрипт не удалось 
+откомпилировать и\или запустить - скрипт будет сохранен в файле на стороне 
+микроконтроллера. 
+- если запуск скрипта приведет к фатальному сбою микроконтроллера, при 
+перезагрузке скрипт будет подгружен из файла, но не будет запущен автоматически, 
+статус такого скрипта будет изменен на "привел к критическому сбою", пользователь 
+может "перезабусутить" такой скрипт после востановления 
+микроконтроллера, осозновая все риски. 
+Параметры:
+String name имя скрипта 
+String byteCode исходный код скрипта 
+Результат:
+Пустая строка если скрипт удалось сохранить и скомпилировать, иначе 
+строка с описанием ошибки
+-----------------------------------------------------------------------------*/
 String scriptsCreate(String name, String byteCode) {
 	String result = "";
 	int index = -1;
@@ -1336,25 +1463,32 @@ String scriptsCreate(String name, String byteCode) {
 	scriptsSave();
 	return result;
 }
-
+/*-----------------------------------------------------------------------------
+Загружает записи всех скриптов из файла (из flash микроконтроллера)
+- для всех загруженых скриптов вызывается scriptsCompile(..) для перекомпиляции. 
+- если перед сохранением у скрипта был установлен статус х_RUN_STATUS скрипт 
+будет запущен. При этом, исполнитель инструкций scriptsRun() не будет продолжать 
+исполнение скрипта, если его исполнение привело к сбою - статус такого скрипта 
+будет автоматически сброшен в scriptsRun()
+- пользователь может продожить исполнение остановленого скрипта. 
+Параметров нет
+Результа, вернет true если удалось загрузить, false если нет
+-----------------------------------------------------------------------------*/
 bool scriptsLoad() {
 	scriptCount = -1;
 	String result = filesReadString("scripts");
 	if (!result) return false;
 
-	String lineDelimiter = "\r";
-	String scriptDelimiter = ":";
-	String keyDelimiter = "=";
 	int linePos = 0;
 	String line;
 
-	while ((linePos = result.indexOf(lineDelimiter)) != -1)
+	while ((linePos = result.indexOf(STRUCTURE_LINE_DELIMITER)) != -1)
 	{
 		line = result.substring(0, linePos);
 
 		if (line.indexOf("script:") == 0) //script section
 		{
-			String scriptName = line.substring(line.indexOf(scriptDelimiter) + 1);
+			String scriptName = line.substring(line.indexOf(STRUCTURE_SCRIPT_DELIMITER) + 1);
 			scriptCount++;
 			scriptsReset(scriptCount);
 			scripts[scriptCount].name = scriptName;
@@ -1362,8 +1496,8 @@ bool scriptsLoad() {
 		}
 		else //key section
 		{
-			String key = line.substring(0, line.indexOf(keyDelimiter));
-			String value = line.substring(line.indexOf(keyDelimiter) + 1);
+			String key = line.substring(0, line.indexOf(STRUCTURE_KEY_DELIMITER));
+			String value = line.substring(line.indexOf(STRUCTURE_KEY_DELIMITER) + 1);
 
 			if (key == "status") scripts[scriptCount].status = std::atoi(value.c_str());
 			else
@@ -1378,12 +1512,15 @@ bool scriptsLoad() {
 						else
 							if (key == "timequant")  scripts[scriptCount].timeQuant = std::atoi(value.c_str());
 		}
-		result.remove(0, linePos + lineDelimiter.length());
+		result.remove(0, linePos + 1);
 	}
 	return true;
 }
 
 
+/*-----------------------------------------------------------------------------
+Используется для запуска тестов разработчиками 
+-----------------------------------------------------------------------------*/
 void testCompile()
 {
 	//Put some code for non UI tests
