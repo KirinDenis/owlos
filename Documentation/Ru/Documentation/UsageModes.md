@@ -1,6 +1,7 @@
 # Режимы использования (RESTful + UI)
 1. OWLOS WiFi в режиме точки доступа, файлы UI находятся в SPIFFS ESP8266 - клиент любое устройство с доступом к WiFi и браузером. (Работает медлено, но клиент не нуждается в подготовке)
-[![OWLOS в режиме WiFiточки доступа с файлами UI](https://github.com/KirinDenis/owlos/raw/master/Documentation/En/Documentation/owlos_scheme_WiFIAPusage.png)
+[![OWLOS в режиме WiFiточки доступа с файлами UI](https://github.com/KirinDenis/owlos/raw/master/Documentation/En/Documentation/owlos_scheme_WiFIAPusage.png|width=100px)
+
 2. OWLOS WiFi в режиме точки доступа, файлы UI находятся на стороне клиента - клиент любое устройство с доступом к WiFi и браузером. (Работает быстро, но на стороне клиента должна быть копия всех UI файлов)
 [![OWLOS в режиме WiFiточки доступа без файлов UI](https://github.com/KirinDenis/owlos/raw/master/Documentation/En/Documentation/owlos_scheme_WiFIAPusageUintClient.png)
 
