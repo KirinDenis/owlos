@@ -23,3 +23,9 @@ Open Source IoT Operation System.
   * after uploading:  
 	- connect to WiFi access point owlunit[YOURESPCHIPID]  PWD: 1122334455
 	- browse http://192.168.4.1:8084 to access OWLOS UI LGN: admin PWD: admin
+	
+# Copyright 2019, 2020 by:
+- Konstantin Brul (konstabrul@gmail.com)
+- Vitalii Glushchenko (cehoweek@gmail.com)
+- Denys Melnychuk (meldenvar@gmail.com)
+- Denis Kirin (deniskirinacs@gmail.com)
