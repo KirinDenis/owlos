@@ -142,10 +142,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "utils", "utils", "{9C6397B1
 		OWLOS\src\utils\Utils.h = OWLOS\src\utils\Utils.h
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{316B14D1-C8D3-4967-AE3D-05B373054110}"
-	ProjectSection(SolutionItems) = preProject
-		Documentation\about.md = Documentation\about.md
-	EndProjectSection
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OWLOSResources", "OWLOSResources", "{0DE788A3-BBF4-4E4D-81BB-58F1A2AEC80F}"
 EndProject
 Global
 	GlobalSection(SolutionProperties) = preSolution
