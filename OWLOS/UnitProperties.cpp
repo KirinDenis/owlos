@@ -1216,9 +1216,6 @@ bool unitSetScanWiFiNetworks(int _scanwifinetworks)
 //GetWiFiNetworksCount
 int8_t unitGetWiFiNetworksCount()
 {
-	/*if (wifinetworkscount != 0)*/ return wifinetworkscount;
-	unitGetScanWiFiNetworks();
-	onInsideChange("wifinetworkscount", String(wifinetworkscount));
 	return wifinetworkscount;
 }
 bool unitSetWiFiNetworksCount(int _wifinetworkscount)
@@ -1232,13 +1229,7 @@ String unitGetWiFiNetworksParameters()
 	String result = "wifinetworkscount=" + String(unitGetWiFiNetworksCount()) + "//r\n";
 	for (int8_t i = 0; i < wifinetworkscount; i++)
 	{
-		String hidden;
-		if (WiFi.isHidden(i))  hidden = ";hidden";
-		else hidden = "";
-		String encr;
-		if (WiFi.encryptionType(i) == ENC_TYPE_NONE) encr = ";open";
-		else encr = "";
-		result += "wifinetwork" + String(i) + "=SSID:" + WiFi.SSID(i) + ";RSSI:" + String(WiFi.RSSI(i)) + ";channel:" + String(WiFi.channel(i)) + ";BSSID:" + WiFi.BSSIDstr(i) + encr + hidden + ";//r\n";
+		result += "wifinetwork" + String(i) + "=SSID:" + WiFi.SSID(i) + ";RSSI:" + String(WiFi.RSSI(i)) + ";channel:" + String(WiFi.channel(i)) + ";BSSID:" + WiFi.BSSIDstr(i) + ";encryption:" + String(WiFi.encryptionType(i)) + ";hinden:" + String(WiFi.isHidden(i)) + ";//r\n";
 	}
 	return result;
 }
