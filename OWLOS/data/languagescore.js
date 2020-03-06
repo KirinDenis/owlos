@@ -342,7 +342,7 @@ var langen = "prepareUnit=prepare UI, please wait...\n" +
     "notused=not used\n" +
     "checkchangedialog=apply this changes\n" +
     "applycheck=apply\n" +
-    "dashboardTab=Панель пристроїв\n" +
+    "dashboardTab=Widgets\n" +
     "addnode=+ додати вузол\n" +
     "addnodeheader=додати вузол\n" +
     "addnodehost=адреса вузла в мережі\n" +

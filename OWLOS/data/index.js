@@ -102,10 +102,12 @@ $(document).ready(function () {
     addToLogNL("get UI configuration...");
     // try {
 
-    createProSidebar();
+ 
+    config.onLoad = onConfigLoad;
     config.onLoad = settingsUI.onConfigLoad;
     config.onLoad = dashboardUI.onConfigLoad;
     if (config.load()) {
+        
         status_online = NET_ONLINE;
         speak("OWLOS is started");
 
@@ -120,12 +122,6 @@ $(document).ready(function () {
 
         nodesRefreshHandle = setInterval(nodesRefresh, 10000);
 
-        $(".page-wrapper").toggleClass("toggled");
-
-        document.getElementById("toggle-sidebar").style.display = "block";
-        document.getElementById("pin-sidebar").style.display = "block";
-        document.getElementById("nodeStatusPanelText").style.display = "block";
-        document.getElementById("sidebarText").style.display = "block";
 
         
 
@@ -155,6 +151,18 @@ $(document).ready(function () {
     //}
     //}
 );
+
+
+function onConfigLoad(configProperties) {
+    createProSidebar();
+    $(".page-wrapper").toggleClass("toggled");
+
+    document.getElementById("toggle-sidebar").style.display = "block";
+    document.getElementById("pin-sidebar").style.display = "block";
+    document.getElementById("nodeStatusPanelText").style.display = "block";
+    document.getElementById("sidebarText").style.display = "block";
+
+}
 
 function proSideBarMenuClick(event) {
     var nodeStatusPanel = document.getElementById("nodeStatusPanel");
