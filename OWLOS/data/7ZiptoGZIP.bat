@@ -35,8 +35,8 @@ D:\7Zip\7z.exe a -mx9 dataTables.min.css.gz dataTables.min.css
 D:\7Zip\7z.exe a -mx9 dataTables.min.js.gz dataTables.min.js 
 D:\7Zip\7z.exe a -mx9 dashboardui.js.gz dashboardui.js 
 D:\7Zip\7z.exe a -mx9 widgetswrappers.js.gz widgetswrappers.js 
-D:\7Zip\7z.exe a -mx9 devicescore.js.gz devicescore.js 
-D:\7Zip\7z.exe a -mx9 devicesui.js.gz devicesui.js 
+D:\7Zip\7z.exe a -mx9 driverscore.js.gz driverscore.js 
+D:\7Zip\7z.exe a -mx9 driversui.js.gz driversui.js 
 D:\7Zip\7z.exe a -mx9 drawcore.js.gz drawcore.js 
 D:\7Zip\7z.exe a -mx9 filespanelui.js.gz filespanelui.js 
 D:\7Zip\7z.exe a -mx9 index.html.gz index.html 

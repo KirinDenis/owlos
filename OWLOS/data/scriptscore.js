@@ -203,7 +203,7 @@ var scriptsManager = {
             for (var i = 0; i < recievedScripts.length; i++) {//перечисляем все строки в HTTPResult 
                 if (recievedScripts[i] === "") continue; //если строка пуста, берем следующею
 
-                if (recievedScripts[i].indexOf("script:") == 0) { //если заголовок устройства найден                    
+                if (recievedScripts[i].indexOf("script:") == 0) { //если заголовок драйвера найден                    
                     //add previos 
                     if (script != undefined) {
                         scriptsManager.pushScript(script);

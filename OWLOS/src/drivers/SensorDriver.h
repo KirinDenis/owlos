@@ -40,40 +40,25 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 #include <Arduino.h>
-#include "BaseDevice.h"
+#include "BaseDriver.h"
 
-#define DeviceID "valve"
+#define DriverID "sensor"
 
-class ValveDevice : public BaseDevice {
+class SensorDriver : public BaseDriver {
   public:
     bool init();
-    bool begin(String _topic);
+    bool begin(String _Topic);
     bool query();
     String getAllProperties();
     bool publish();
     String onMessage(String _topic, String _payload, int transportMask);
 
-    int getPin1();
-    bool setPin1(int _pin1);
-    int getPin2();
-    bool setPin2(int _pin2);
-    int getPin3();
-    bool setPin3(int _pin3);
-    int getPosition();
-    bool setPosition(int _position);
-    int getMinimumphysicalposition();
-    int getMaximumphysicalposition();
-    int getphysicalposition();
+    int getPin();
+    bool setPin(int _pin);
 
+    String getData();
   private:
-  void toMinMaxPosition(int _pin);
-    int pin1 = D1;
-    int pin2 = D2;
-    int pin3 = A0;
-    int position=0; // 0 - close, 100 - open
-    int minimumphysicalposition = 0; // valve is close
-    int maximumphysicalposition = 1023; // valve is open
-    int physicalposition = 0; // valve first is close
-    int newphysicalposition=0;
-
+    int pin = SENSORPIN;
+    String data = "nan";
+	float sensorTriger = 0;
 };

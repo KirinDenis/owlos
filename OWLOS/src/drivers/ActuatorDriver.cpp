@@ -39,94 +39,93 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-#include "SensorDevice.h"
+#include "ActuatorDriver.h"
 
-bool SensorDevice::init()
+bool ActuatorDriver::init()
 {
-	if (id.length() == 0) id = DeviceID;
-	BaseDevice::init(id);
-
+	if (id.length() == 0) id = DriverID;
+	BaseDriver::init(id);
+	//init properies 
 	getPin();
-	pinMode(pin, INPUT);
+	pinMode(pin, OUTPUT);
+
+	getData();
+	setData(data, false);
 }
 
-
-bool SensorDevice::begin(String _topic)
+bool ActuatorDriver::begin(String _topic)
 {
-	BaseDevice::begin(_topic);
-	available = true;
-	setType(Sensor);
+	BaseDriver::begin(_topic);
+	setType(Actuator);
 	setAvailable(available);
 	return available;
 }
 
-bool SensorDevice::query()
+bool ActuatorDriver::query()
 {
-	if (BaseDevice::query())
+	if (BaseDriver::query())
 	{
-		//for sensor publish data() as it changed 
-		String _data = data;
-		if (!_data.equals(getData()))
+		//for actuator publish data() as it changed 
+		int _data = data;
+		if (_data != getData())
 		{
-			onInsideChange("data", data);
-			//TODO getData return int, check if getData == 0
-			sensorTriger++;
+			onInsideChange("data", String(data));
 		}
-
-		//Fill array of history data
-		if (millis() >= lastHistoryMillis + historyInterval)
-		{
-			lastHistoryMillis = millis();
-			setHistoryData(sensorTriger);
-		}
-
 		return true;
 	}
 	return false;
 };
 
-
-String SensorDevice::getAllProperties()
+String ActuatorDriver::getAllProperties()
 {
-	String result = BaseDevice::getAllProperties();
-	result += "data=" + data + "//rb\n";
+	String result = BaseDriver::getAllProperties();
+	result += "data=" + String(data) + "//b\n";
 	result += "pin=" + String(pin) + "//i\n";
 	return result;
 }
 
-
-bool SensorDevice::publish()
+bool ActuatorDriver::publish()
 {
-	if (BaseDevice::publish())
+	if (BaseDriver::publish())
 	{
-		onInsideChange("data", data);
+		onInsideChange("data", String(data));
 		return true;
 	}
 	return false;
 };
 
-String SensorDevice::onMessage(String _topic, String _payload, int transportMask)
+String ActuatorDriver::onMessage(String _topic, String _payload, int transportMask)
 {
-	String result = BaseDevice::onMessage(_topic, _payload, transportMask);
+	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
+
 	if (!available) return result;
-	//Sensor sensor GPIO 1-pin (A0 by default)
+
+	//Actuator GPIO 1-pin (D4 by default)
 	if (String(topic + "/getpin").equals(_topic))
 	{
 		result = onGetProperty("pin", String(getPin()), transportMask);
 	}
-	else if (String(topic + "/setpin").equals(_topic))
-	{
-		result = String(setPin(std::atoi(_payload.c_str())));
-	}
-	else if ((String(topic + "/getdata").equals(_topic)) || (String(topic + "/setdata").equals(_topic)))
-	{
-		result = onGetProperty("data", getData(), transportMask);
-	}
+	else
+		if (String(topic + "/setpin").equals(_topic))
+		{
+			result = String(setPin(std::atoi(_payload.c_str())));
+		}
+		else
+			//Position -----------------------------------------------------------------
+			if (String(topic + "/getdata").equals(_topic))
+			{
+				result = onGetProperty("data", String(getData()), transportMask);
+			}
+			else
+				if (String(topic + "/setdata").equals(_topic))
+				{
+					result = String(setData(std::atoi(_payload.c_str()), true));
+				}
 	return result;
 }
 
-//Sensor Sensor 1-pin (A0 by default) ----------------------------------------------------
-int SensorDevice::getPin()
+//Actuator GPIO 1-pin (D4 by default) ----------------------------------------------------
+int ActuatorDriver::getPin()
 {
 	if (filesExists(id + ".pin"))
 	{
@@ -135,13 +134,14 @@ int SensorDevice::getPin()
 #ifdef DetailedDebug
 	debugOut(id, "pin=" + String(pin));
 #endif
+
 	return pin;
 }
 
-bool SensorDevice::setPin(int _pin)
+bool ActuatorDriver::setPin(int _pin)
 {
 	pin = _pin;
-	pinMode(pin, INPUT);
+	pinMode(pin, OUTPUT);
 	filesWriteInt(id + ".pin", pin);
 	if (available)
 	{
@@ -150,13 +150,28 @@ bool SensorDevice::setPin(int _pin)
 	return true;
 }
 
-
-String SensorDevice::getData()
+//Data -------------------------------------------
+int ActuatorDriver::getData()
 {
-	int _data = digitalRead(pin);
-	data = String(_data);
+	if (filesExists(id + ".data"))
+	{
+		data = filesReadInt(id + ".data");
+	}
 #ifdef DetailedDebug
-	debugOut(id, "data=" + data);
+	debugOut(id, "data=" + String(data));
 #endif
+
 	return data;
 }
+
+bool ActuatorDriver::setData(int _data, bool doEvent)
+{
+	data = _data;
+	digitalWrite(pin, data);
+	if (doEvent)
+	{
+		filesWriteInt(id + ".data", data);
+		return onInsideChange("data", String(data));
+	}
+	return true;
+};

@@ -56,8 +56,8 @@ OWLOS распространяется в надежде, что она буде
 
 #define WebServerDefaultPort 8080
 
-#define TestDeviceType 0 
-#define DHTDeviceType  1
+#define TestDriverType 0 
+#define DHTDriverType  1
 #define Light  2
 #define Smoke  3
 #define Motion  4

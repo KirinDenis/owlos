@@ -39,10 +39,10 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-var devicesUI = {
+var driversUI = {
 
 
-    appendDevicePins: function (valueSelect) {
+    appendDriverPins: function (valueSelect) {
         var valueSelectOption = valueSelect.appendChild(document.createElement('option'));
         valueSelectOption.innerText = getLang("notused");
         valueSelectOption = valueSelect.appendChild(document.createElement('option'));
@@ -70,7 +70,7 @@ var devicesUI = {
 
     },
 
-    appendDeviceDigitalOnlyPins: function (valueSelect) {
+    appendDriverDigitalOnlyPins: function (valueSelect) {
         var valueSelectOption = valueSelect.appendChild(document.createElement('option'));
         valueSelectOption.innerText = "D0";
         valueSelectOption = valueSelect.appendChild(document.createElement('option'));
@@ -93,44 +93,44 @@ var devicesUI = {
         valueSelectOption.innerText = "D9";
     },
 
-    appendDeviceAnalogOnlyPins: function (valueSelect) {
+    appendDriverAnalogOnlyPins: function (valueSelect) {
         var valueSelectOption = valueSelect.appendChild(document.createElement('option'));
         valueSelectOption.innerText = "A0";
     },
 
 
-    appendDeviceNotUsedPins: function (valueSelect) {
+    appendDriverNotUsedPins: function (valueSelect) {
         var valueSelectOption = valueSelect.appendChild(document.createElement('option'));
         valueSelectOption.innerText = getLang("notused");
     },
 
-    addDeviceClick: function (event) {
+    addDriverClick: function (event) {
         event.stopPropagation();
-        settingsUI.deviceAnchorClick(event);
+        settingsUI.driverAnchorClick(event);
 
-        var addDeviceAhref = event.currentTarget;
-        var node = addDeviceAhref.node;
+        var addDriverAhref = event.currentTarget;
+        var node = addDriverAhref.node;
 
-        makeModalDialog("resetPanel", "addDevice", getLang("adddevicedigalog") + " " + node.nodenickname, "");
-        var modalFooter = document.getElementById("addDeviceModalFooter");
-        var modalBody = document.getElementById("addDeviceModalBody");
+        makeModalDialog("resetPanel", "addDriver", getLang("adddriverdigalog") + " " + node.nodenickname, "");
+        var modalFooter = document.getElementById("addDriverModalFooter");
+        var modalBody = document.getElementById("addDriverModalBody");
 
-        var titleDeviceText = modalBody.appendChild(document.createElement("p"));
-        titleDeviceText.innerHTML = getLang("device");
-        titleDeviceText.className = "text-center";
+        var titleDriverText = modalBody.appendChild(document.createElement("p"));
+        titleDriverText.innerHTML = getLang("driver");
+        titleDriverText.className = "text-center";
 
         var formGroup = modalBody.appendChild(document.createElement("div"));
         formGroup.className = "form-group";
 
         var label = formGroup.appendChild(document.createElement("label"));
         label.setAttribute("for", "typeSelect");
-        label.innerText = getLang("devicetype");
+        label.innerText = getLang("drivertype");
         var inputDiv = formGroup.appendChild(document.createElement("div"));
 
         var typeSelect = formGroup.appendChild(document.createElement('select'));
         typeSelect.className = "form-control form-control-sm";
         typeSelect.id = "typeSelect";
-        typeSelect.onchange = devicesUI.pinsAndWidget;
+        typeSelect.onchange = driversUI.pinsAndWidget;
 
 
         var valueSelectOption = typeSelect.appendChild(document.createElement('option'));
@@ -159,11 +159,11 @@ var devicesUI = {
         formGroup.className = "form-group";
         label = formGroup.appendChild(document.createElement("label"));
         label.setAttribute("for", "idEdit");
-        label.innerText = getLang("deviceid");
+        label.innerText = getLang("driverid");
         var idEdit = formGroup.appendChild(document.createElement('input'));
         idEdit.className = "form-control form-control-sm";
         idEdit.id = "idInput";
-        idEdit.placeholder = getLang("deviceidplaceholder");
+        idEdit.placeholder = getLang("driveridplaceholder");
 
 
         formGroup = modalBody.appendChild(document.createElement("div"));
@@ -176,7 +176,7 @@ var devicesUI = {
         var pin1Select = formGroup.appendChild(document.createElement('select'));
         pin1Select.className = "form-control form-control-sm";
         pin1Select.id = "pin1Select";
-        devicesUI.appendDeviceNotUsedPins(pin1Select);
+        driversUI.appendDriverNotUsedPins(pin1Select);
 
         formGroup = modalBody.appendChild(document.createElement("div"));
         formGroup.className = "form-group";
@@ -188,7 +188,7 @@ var devicesUI = {
         var pin2Select = formGroup.appendChild(document.createElement('select'));
         pin2Select.className = "form-control form-control-sm";
         pin2Select.id = "pin2Select";
-        devicesUI.appendDeviceNotUsedPins(pin2Select);
+        driversUI.appendDriverNotUsedPins(pin2Select);
 
         formGroup = modalBody.appendChild(document.createElement("div"));
         formGroup.className = "form-group";
@@ -200,7 +200,7 @@ var devicesUI = {
         var pin3Select = formGroup.appendChild(document.createElement('select'));
         pin3Select.className = "form-control form-control-sm";
         pin3Select.id = "pin3Select";
-        devicesUI.appendDeviceNotUsedPins(pin3Select);
+        driversUI.appendDriverNotUsedPins(pin3Select);
 
         formGroup = modalBody.appendChild(document.createElement("div"));
         formGroup.className = "form-group";
@@ -212,7 +212,7 @@ var devicesUI = {
         var pin4Select = formGroup.appendChild(document.createElement('select'));
         pin4Select.className = "form-control form-control-sm";
         pin4Select.id = "pin4Select";
-        devicesUI.appendDeviceNotUsedPins(pin4Select);
+        driversUI.appendDriverNotUsedPins(pin4Select);
 
         //Checkbox for auto widget adding
         var checkBoxDiv = modalBody.appendChild(document.createElement("div"));
@@ -224,7 +224,7 @@ var devicesUI = {
         checkBoxInput.className = "custom-control-input";
         checkBoxInput.id = "autoAddWidget";
         checkBoxInput.checked = true;
-        checkBoxInput.onchange = devicesUI.checkBoxClick;
+        checkBoxInput.onchange = driversUI.checkBoxClick;
 
         var checkBoxLabel = checkBoxDiv.appendChild(document.createElement("label"));
         checkBoxLabel.className = "custom-control-label";
@@ -239,14 +239,14 @@ var devicesUI = {
         titleWidgetText.innerHTML = getLang("widget");
         titleWidgetText.className = "text-center";
         
-        //device properties select
-        var formGroupDeviceProperties = addWidgetGroup.appendChild(document.createElement("div"));
-        var devicePropLabel = formGroupDeviceProperties.appendChild(document.createElement("label"));
-        devicePropLabel.setAttribute("for", "devicePropSelect");
-        devicePropLabel.innerText = getLang("devicesporplist");
-        var devicePropSelect = formGroupDeviceProperties.appendChild(document.createElement('select'));
-        devicePropSelect.className = "form-control form-control-sm";
-        devicePropSelect.id = "devicePropertySelected";
+        //driver properties select
+        var formGroupDriverProperties = addWidgetGroup.appendChild(document.createElement("div"));
+        var driverPropLabel = formGroupDriverProperties.appendChild(document.createElement("label"));
+        driverPropLabel.setAttribute("for", "driverPropSelect");
+        driverPropLabel.innerText = getLang("driversporplist");
+        var driverPropSelect = formGroupDriverProperties.appendChild(document.createElement('select'));
+        driverPropSelect.className = "form-control form-control-sm";
+        driverPropSelect.id = "driverPropertySelected";
 
         //widgets select 
         var formGroupWidgetSelect = addWidgetGroup.appendChild(document.createElement("div"));
@@ -265,12 +265,12 @@ var devicesUI = {
        // modalFooter.className = "modal-footer";
 
         event = { currentTarget: typeSelect };
-        devicesUI.pinsAndWidget(event);
+        driversUI.pinsAndWidget(event);
 
         var addButton = modalFooter.appendChild(document.createElement("button"));
         addButton.type = "button";
         addButton.className = "btn btn-success btn-sm";
-        addButton.id = "addDeviceModalButton";
+        addButton.id = "addDriverModalButton";
         addButton.node = node;
         //   addButton.setAttribute("data-dismiss", "modal");
         addButton.typeSelect = typeSelect;
@@ -280,23 +280,23 @@ var devicesUI = {
         addButton.pin3Select = pin3Select;
         addButton.pin4Select = pin4Select;
         addButton.alertDiv = alertDiv;
-        addButton.onclick =  devicesUI.doAddDeviceClick;
-        addButton.innerText = getLang("adddevicebutton");
+        addButton.onclick =  driversUI.doAddDriverClick;
+        addButton.innerText = getLang("adddriverbutton");
 
 
-        $("#addDeviceModal").modal('show');
+        $("#addDriverModal").modal('show');
 
         return false;
     },
 
     pinsAndWidget: function (event) {
-        var deviceSelected = event.currentTarget;
+        var driverSelected = event.currentTarget;
         var maxPinsAmount = 4;
         var currentDiv = "";
         var currentOptions = "";
         var pinsInfo = [];
         
-        switch (deviceSelected.selectedIndex+1) {
+        switch (driverSelected.selectedIndex+1) {
             case 1:
                 pinsInfo.push("digital");
                 console.log("dht");
@@ -315,11 +315,11 @@ var devicesUI = {
                 break;
             case 5:
                 pinsInfo.push("digital");
-                console.log("sensor device");
+                console.log("sensor driver");
                 break;
             case 6:
                 pinsInfo.push("digital", "digital", "digital", "digital");
-                console.log("stepper device");
+                console.log("stepper driver");
                 break;
             case 7:
                 pinsInfo.push("digital", "digital");
@@ -331,11 +331,11 @@ var devicesUI = {
                 break;
             case 9:
                 pinsInfo.push("digital", "digital");
-                console.log("Opto device");
+                console.log("Opto driver");
                 break;
             case 10:
                 pinsInfo.push("digital", "digital", "analog");
-                console.log("valve device");
+                console.log("valve driver");
                 break;
 
 
@@ -369,24 +369,24 @@ var devicesUI = {
                 if (pinsIndex < pinsInfo.length) {
                     switch (pinsInfo[pinsIndex]) {
                         case "digital":
-                            devicesUI.appendDeviceDigitalOnlyPins(currentOptions);
+                            driversUI.appendDriverDigitalOnlyPins(currentOptions);
                             console.log("digital");
                             break;
                         case "analog":
-                            devicesUI.appendDeviceAnalogOnlyPins(currentOptions);
+                            driversUI.appendDriverAnalogOnlyPins(currentOptions);
                             console.log("analog");
                             break;
                         case "universal":
-                            devicesUI.appendDevicePins(currentOptions);
+                            driversUI.appendDriverPins(currentOptions);
                             console.log("universal");
                             break;
                         default:
-                            devicesUI.appendDeviceNotUsedPins(currentOptions);
+                            driversUI.appendDriverNotUsedPins(currentOptions);
                             console.log('notused');
                     }
                 }
                 else {
-                    devicesUI.appendDeviceNotUsedPins(currentOptions);
+                    driversUI.appendDriverNotUsedPins(currentOptions);
                 }
             }
 
@@ -397,7 +397,7 @@ var devicesUI = {
         pinsInfo.length = 0;
     },
 
-    doAddDeviceClick: function (event) {
+    doAddDriverClick: function (event) {
         event.stopPropagation();
         var addButton = event.currentTarget;
         var node = addButton.node;
@@ -407,7 +407,7 @@ var devicesUI = {
         addButton.disable = true;
 
         //TODO: decode Type from name 
-        var httpResult = addDevice(node.host, addButton.typeSelect.selectedIndex + 1, addButton.idEdit.value, addButton.pin1Select.value, addButton.pin2Select.value, addButton.pin3Select.value, addButton.pin4Select.value);
+        var httpResult = addDriver(node.host, addButton.typeSelect.selectedIndex + 1, addButton.idEdit.value, addButton.pin1Select.value, addButton.pin2Select.value, addButton.pin3Select.value, addButton.pin4Select.value);
 
         if (httpResult == 1) {
 
@@ -416,7 +416,7 @@ var devicesUI = {
 
                 if (autoAddWidgetCheckBox.checked == true) {
 
-                    var devicesWidgetsPanel = document.getElementById("devicesWidgetsPanel");
+                    var driversWidgetsPanel = document.getElementById("driversWidgetsPanel");
 
                     var defaultWidgets = [];
                     var widgetLayer = "";
@@ -428,16 +428,16 @@ var devicesUI = {
 
                             defaultWidgets.push({
                                 widgetType: "temperature",
-                                devicePropertyName: "temperature"
+                                driverPropertyName: "temperature"
                             }, {
                                 widgetType: "humidity",
-                                devicePropertyName: "humidity"
+                                driverPropertyName: "humidity"
                             }, {
                                 widgetType: "historydatagraph",
-                                devicePropertyName: "humidityhistorydata"
+                                driverPropertyName: "humidityhistorydata"
                             },{
                                     widgetType: "historydatagraph",
-                                    devicePropertyName: "temperaturehistorydata"
+                                    driverPropertyName: "temperaturehistorydata"
                             });
 
 
@@ -447,7 +447,7 @@ var devicesUI = {
 
                             defaultWidgets.push({
                                 widgetType: "light",
-                                devicePropertyName: "light"
+                                driverPropertyName: "light"
                             });
 
 
@@ -457,10 +457,10 @@ var devicesUI = {
 
                             defaultWidgets.push({
                                 widgetType: "smoke",
-                                devicePropertyName: "smoke"
+                                driverPropertyName: "smoke"
                             }, {
                                 widgetType: "historydatagraph",
-                                devicePropertyName: "historydata"
+                                driverPropertyName: "historydata"
                             });
 
 
@@ -470,10 +470,10 @@ var devicesUI = {
 
                             defaultWidgets.push({
                                 widgetType: "motion",
-                                devicePropertyName: "motion"
+                                driverPropertyName: "motion"
                             }, {
                                 widgetType: "historydatagraph",
-                                devicePropertyName: "historydata"
+                                driverPropertyName: "historydata"
                             });
 
                             console.log("motion detector");
@@ -482,30 +482,30 @@ var devicesUI = {
 
                             defaultWidgets.push({
                                 widgetType: "sensor",
-                                devicePropertyName: "sensor"
+                                driverPropertyName: "sensor"
                             }, {
                                 widgetType: "historydatagraph",
-                                devicePropertyName: "historydata"
+                                driverPropertyName: "historydata"
                             });
 
-                            console.log("sensor device");
+                            console.log("sensor driver");
                             break;
                         case 6:
 
                             defaultWidgets.push({
                                 widgetType: "value",
-                                devicePropertyName: "position"
+                                driverPropertyName: "position"
                             }, {
                                 widgetType: "historydatagraph",
-                                devicePropertyName: "historydata"
+                                driverPropertyName: "historydata"
                             });
 
-                            console.log("stepper device");
+                            console.log("stepper driver");
                             break;
                         case 7:
                             defaultWidgets.push({
                                 widgetType: "lcd",
-                                devicePropertyName: "text"
+                                driverPropertyName: "text"
                             });
                             
                             console.log("LCD");
@@ -514,10 +514,10 @@ var devicesUI = {
 
                             defaultWidgets.push({
                                 widgetType: "actuator",
-                                devicePropertyName: "data"
+                                driverPropertyName: "data"
                             }, {
                                 widgetType: "historydatagraph",
-                                devicePropertyName: "historydata"
+                                driverPropertyName: "historydata"
                             });
 
                             console.log("Actuator");
@@ -526,26 +526,26 @@ var devicesUI = {
 
                             defaultWidgets.push({
                                 widgetType: "value",
-                                devicePropertyName: "data"
+                                driverPropertyName: "data"
                             }, {
                                 widgetType: "historydatagraph",
-                                devicePropertyName: "historydata"
+                                driverPropertyName: "historydata"
                             });
 
 
-                            console.log("Opto device");
+                            console.log("Opto driver");
                             break;
                         case 10:
 
                             defaultWidgets.push({
                                 widgetType: "value",
-                                devicePropertyName: "position"
+                                driverPropertyName: "position"
                             }, {
                                 widgetType: "historydatagraph",
-                                devicePropertyName: "historydata"
+                                driverPropertyName: "historydata"
                             });
 
-                            console.log("valve device");
+                            console.log("valve driver");
                             break;
 
                         default:
@@ -557,11 +557,11 @@ var devicesUI = {
                             widgetLayer = WidgetsLayer.getWidgetById(defaultWidgets[defaultWidgetIndex].widgetType); ///òèï âèäæåòà (widget id)
                             if (widgetLayer !== undefined) {
 
-                                widgetWrapper = new widgetLayer.widget(devicesWidgetsPanel, undefined, undefined, configProperties.dashboards[0].widgets[0], undefined);
-                                widgetWrapper.offlineStarter(devicesWidgetsPanel, addButton.idEdit.value, defaultWidgets[defaultWidgetIndex].devicePropertyName);
+                                widgetWrapper = new widgetLayer.widget(driversWidgetsPanel, undefined, undefined, configProperties.dashboards[0].widgets[0], undefined);
+                                widgetWrapper.offlineStarter(driversWidgetsPanel, addButton.idEdit.value, defaultWidgets[defaultWidgetIndex].driverPropertyName);
                                 widgetWrapper.widget.onchange = config.onWidgetChange;
                                 widgetWrapper.widget.ondelete = config.onWidgetDelete;
-                                config.addWidget("main", addButton.idEdit.value, defaultWidgets[defaultWidgetIndex].devicePropertyName, defaultWidgets[defaultWidgetIndex].widgetType, widgetWrapper.widget.id, widgetWrapper.widget.properties);
+                                config.addWidget("main", addButton.idEdit.value, defaultWidgets[defaultWidgetIndex].driverPropertyName, defaultWidgets[defaultWidgetIndex].widgetType, widgetWrapper.widget.id, widgetWrapper.widget.properties);
 
                             }
                         }
@@ -573,15 +573,15 @@ var devicesUI = {
             }
 
 
-            $("#addDeviceModal").modal('hide');
-            // renderDevicesProperties(); TODO model refresh
+            $("#addDriverModal").modal('hide');
+            // renderDriversProperties(); TODO model refresh
         }
         else {
             addButton.alertDiv.innerHTML = "";
-            var addDeviceAlert = addButton.alertDiv.appendChild(document.createElement('div'));
-            addDeviceAlert.className = "alert alert-danger";
-            addDeviceAlert.role = "alert";
-            addDeviceAlert.innerText = httpResult;
+            var addDriverAlert = addButton.alertDiv.appendChild(document.createElement('div'));
+            addDriverAlert.className = "alert alert-danger";
+            addDriverAlert.role = "alert";
+            addDriverAlert.innerText = httpResult;
 
             addButton.className = "btn btn-success btn-sm";
             addButton.value = 'add';
@@ -592,7 +592,7 @@ var devicesUI = {
     },
 
 
-    deviceClick: function (event) {
+    driverClick: function (event) {
         var button = event.currentTarget;
         document.location = button.href;
         return false;

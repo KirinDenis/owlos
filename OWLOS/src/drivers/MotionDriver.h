@@ -40,12 +40,13 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 #include <Arduino.h>
-#include "BaseDevice.h"
+#include "BaseDriver.h"
 
-#define DeviceID "smoke"
+#define DriverID "motion"
 
-class SmokeDevice : public BaseDevice {
+class MotionDriver : public BaseDriver {
   public:
+    bool init();
     bool begin(String _Topic);
     bool query();
     String getAllProperties();
@@ -55,8 +56,10 @@ class SmokeDevice : public BaseDevice {
     int getPin();
     bool setPin(int _pin);
 
-    String getSmoke();
+    int getMotion();
   private:
-    int pin = SMOKEPIN;
-    String smoke = "nan";
+    int pin = MOTIONPIN;
+    int motion = 0;
+    float motionTriger = 0.0;
+	float motionHistoryFileTriger = 0.0;
 };

@@ -26,9 +26,9 @@ $(document).ready(function () {
         theme.dark = '#272B30';
     }
 
-    var devicesWidgetsPanel = document.getElementById("devicesWidgetsPanel");
+    var driversWidgetsPanel = document.getElementById("driversWidgetsPanel");
 
-    var radialWidget = new RadialWidget(devicesWidgetsPanel, "temperature", 250).onload = function (widget) {
+    var radialWidget = new RadialWidget(driversWidgetsPanel, "temperature", 250).onload = function (widget) {
         widget.refresh(1, "10%", "radial");
         widget.networkStatus = 1;
     }

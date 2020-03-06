@@ -44,79 +44,79 @@ var TableWidget =
     function () {
         "use strict";
 
-        function TableWidget(nodePropAnchors, nodesPropsPanel, device, size) {
+        function TableWidget(nodePropAnchors, nodesPropsPanel, driver, size) {
             //панели в UI для рендеринга таблиц
             this.nodePropAnchors = nodePropAnchors; //document.getElementById("nodePropAnchors");
 
             this.nodesPropsPanel = nodesPropsPanel; // document.getElementById("nodesPropsPanel");
 
-            this.device = device;
-            this.size = size; //devices.addNewDeviceListner(this.newTable, this); //подписываемся на событие devices о создании нового устройства
-            //devices.addDeviceLoadedListner(this.deviceLoaded, this); //подписываемся на событие devices о создании нового устройства
-            //if (document.getElementById(this.device._nodenickname + "_" + this.device._id) != undefined) return; 
+            this.driver = driver;
+            this.size = size; //drivers.addNewDriverListner(this.newTable, this); //подписываемся на событие drivers о создании нового драйвера
+            //drivers.addDriverLoadedListner(this.driverLoaded, this); //подписываемся на событие drivers о создании нового драйвера
+            //if (document.getElementById(this.driver._nodenickname + "_" + this.driver._id) != undefined) return; 
 
             this.newTable(); //this.nodePropAnchors.innerHTML = "";
             
             //this.nodesPropsPanel.innerHTML = "";
-        } //слушатель (получатель) событие создания нового устройство (устройство не содержит свойств на данном этапе)
+        } //слушатель (получатель) событие создания нового драйвер (драйвер не содержит свойств на данном этапе)
 
 
         var _proto = TableWidget.prototype;
 
         _proto.newTable = function newTable() {
-            //добавляет кнопку в панель быстрого выбора устройств
+            //добавляет кнопку в панель быстрого выбора драйвер
             if (this.nodePropAnchors != undefined) { }
             /*
-            var deviceNavItem = this.nodePropAnchors.appendChild(document.createElement("li"));
-            deviceNavItem.className = "nav-item";
-            var deviceHRef = deviceNavItem.appendChild(document.createElement("a"));
-            deviceHRef.className = "nav-link";
-            if (firstDevice) {
-                deviceHRef.className += " active";
+            var driverNavItem = this.nodePropAnchors.appendChild(document.createElement("li"));
+            driverNavItem.className = "nav-item";
+            var driverHRef = driverNavItem.appendChild(document.createElement("a"));
+            driverHRef.className = "nav-link";
+            if (firstDriver) {
+                driverHRef.className += " active";
             }
-            deviceHRef.setAttribute("data-toggle", "tab");
-            deviceHRef.innerText = getLang(this.device._nodenickname + "/" + this.device._id);
-            deviceHRef.href = "#" + this.device._nodenickname + "_" + this.device._id;
+            driverHRef.setAttribute("data-toggle", "tab");
+            driverHRef.innerText = getLang(this.driver._nodenickname + "/" + this.driver._id);
+            driverHRef.href = "#" + this.driver._nodenickname + "_" + this.driver._id;
             */
 
             /*
             var anchorHref = this.nodePropAnchors.appendChild(document.createElement('button'));
             anchorHref.type = "button";
-            anchorHref.href = "#" + this.device._id;
-            anchorHref.onclick = this.deviceAnchorClick;
-            anchorHref.innerText = this.device._id;
+            anchorHref.href = "#" + this.driver._id;
+            anchorHref.onclick = this.driverAnchorClick;
+            anchorHref.innerText = this.driver._id;
             anchorHref.className = "btn btn-default";
             */
-            //добавлет таблицу для свойств нового устройства
+            //добавлет таблицу для свойств нового драйвера
 
 
             var div = this.nodesPropsPanel.appendChild(document.createElement('div'));
 
             if (this.nodePropAnchors != undefined) {
-                // div.className = "col-md-" + this.size + " devicediv tab-pane fade";
-                div.className = "devicediv tab-pane fade"; //if (firstDevice) {
+                // div.className = "col-md-" + this.size + " driverdiv tab-pane fade";
+                div.className = "driverdiv tab-pane fade"; //if (firstDriver) {
                 //div.className += " active show";
-                //firstDevice = false;
+                //firstDriver = false;
                 //}
             } else {
-                div.className = "col-md-" + this.size + " devicediv TableWidget";
+                div.className = "col-md-" + this.size + " driverdiv TableWidget";
             }
 
-            div.id = this.device._nodenickname + "_" + this.device._id;
+            div.id = this.driver._nodenickname + "_" + this.driver._id;
             /*
-            var deviceDiv = div.appendChild(document.createElement('div'));
-            deviceDiv.className = "col-md-12 border-0 devicecard";
-            var deviceDivHeader = deviceDiv.appendChild(document.createElement('div'));
-            deviceDivHeader.className = "card-header text-light";
-            deviceDivHeader.innerText = this.device._id;
-            var tableDiv = deviceDiv.appendChild(document.createElement('div'));
+            var driverDiv = div.appendChild(document.createElement('div'));
+            driverDiv.className = "col-md-12 border-0 drivercard";
+            var driverDivHeader = driverDiv.appendChild(document.createElement('div'));
+            driverDivHeader.className = "card-header text-light";
+            driverDivHeader.innerText = this.driver._id;
+            var tableDiv = driverDiv.appendChild(document.createElement('div'));
             tableDiv.className = "card-body"; 
             */
             //таблица
 
             this.table = div.appendChild(document.createElement('table'));
             this.table.className = "table table-striped table-sm";
-            this.table.id = "devicetable" + this.device._nodenickname + "_" + this.device._id;
+            this.table.id = "drivertable" + this.driver._nodenickname + "_" + this.driver._id;
             this.table.cellspacing = "0"; //колонки
 
             var thead = this.table.appendChild(document.createElement('thead'));
@@ -148,26 +148,26 @@ var TableWidget =
             anchorTopHref.href = "#top";
             anchorTopHref.innerText = getLang("top"); //создает tbody
 
-            this.tbody = this.table.appendChild(document.createElement('tbody')); //назначает счетчик свойств устройства (строк таблицы)
+            this.tbody = this.table.appendChild(document.createElement('tbody')); //назначает счетчик свойств драйвера (строк таблицы)
 
             this.tbody.propertyCount = 0;
             /*---------------------------------------------
-            //подписывается на событие вызываемое при создании нового свойства устройства 
+            //подписывается на событие вызываемое при создании нового свойства драйвера 
             //передает текущий tbody в качестве сендера
-            device.addNewPropertyListner(deviceTable.newProperty, tbody);
+            driver.addNewPropertyListner(driverTable.newProperty, tbody);
             */
 
-            for (var _i = 0, _Object$keys = Object.keys(this.device); _i < _Object$keys.length; _i++) {
-                var devicePropertyKey = _Object$keys[_i];
+            for (var _i = 0, _Object$keys = Object.keys(this.driver); _i < _Object$keys.length; _i++) {
+                var driverPropertyKey = _Object$keys[_i];
 
-                if (this.device[devicePropertyKey].parentid != undefined) {
-                    this.addProperty(this.device[devicePropertyKey]);
+                if (this.driver[driverPropertyKey].parentid != undefined) {
+                    this.addProperty(this.driver[driverPropertyKey]);
                 }
             }
 
-            if (this.device._new) {
-                // $("#devicetable" + this.device._id).DataTable({ searching: false, paging: false, info: false });
-                $("#devicetable" + this.device._nodenickname + "_" + this.device._id).DataTable({
+            if (this.driver._new) {
+                // $("#drivertable" + this.driver._id).DataTable({ searching: false, paging: false, info: false });
+                $("#drivertable" + this.driver._nodenickname + "_" + this.driver._id).DataTable({
                     "language": {
                         "lengthMenu": getLang("dt_display") + " _MENU_ " + getLang("dt_recordsperpage"),
                         "info": getLang("dt_showing") + " _START_ " + getLang("dt_to") + " _END_ " + getLang("dt_of") + " _TOTAL_ " + getLang("dt_entries"),
@@ -184,13 +184,13 @@ var TableWidget =
                 $('.dataTables_length').addClass('bs-select');
                 $('[data-toggle="tooltip"]').tooltip();
             }
-        } //слушатель события создания нового свойства устройства - добавляет соответствующею строку в последнею созданую таблицу
+        } //слушатель события создания нового свойства драйвера - добавляет соответствующею строку в последнею созданую таблицу
             //tbody последней таблицы 
-            //deviceProperty объек с новым свойством устройства, смотрите devices.newDeviceProperty() в конце метода
+            //driverProperty объек с новым свойством драйвера, смотрите drivers.newDriverProperty() в конце метода
             ;
 
-        _proto.addProperty = function addProperty(deviceProperty) {
-            var node = config.getNodeByHost(deviceProperty.parenthost);
+        _proto.addProperty = function addProperty(driverProperty) {
+            var node = config.getNodeByHost(driverProperty.parenthost);
             if (node == undefined) return;
             this.tbody.propertyCount++; //инкрементируем счетчик свойств
 
@@ -206,24 +206,24 @@ var TableWidget =
             getPropHref.target = "_blank";
             getPropHref.setAttribute("data-toggle", "tooltip");
             getPropHref.setAttribute("data-placement", "top"); //назначаем слушатель события изменения значения свойства, использующий созданную ссылку в качестве Sender 
-            //тут надо рассмотреть deviceProperty.addValueListner(..) метод - посмотрите на него - при назначении 
+            //тут надо рассмотреть driverProperty.addValueListner(..) метод - посмотрите на него - при назначении 
             //слушателя, для его проверки он вызовет матод слушателя (для проверки, секция try{}catch)
-            //сейчас этот метод deviceTable.onDevicePropValueChangeGetaHref() из текущего объекта
+            //сейчас этот метод driverTable.onDriverPropValueChangeGetaHref() из текущего объекта
             //а sender для этого метода текущая ссылка getPropHref
-            //при вызове deviceTable.onDevicePropValueChangeGetaHref() в качестве параметра передадут DevicePorperty объект который 
-            //связан с этой строкой таблицы ибо он "deviceProperty" ниже
-            //Посмотрите сейчас на метод deviceTable.onDevicePropValueChangeGetaHref - он настраивает ссылку getPropHref согласно 
-            //свойствам deviceProperty - таким образом мы "убиваем двух зайцев" - и настраиваем внешний вид элемента (ссылки) и готовим 
+            //при вызове driverTable.onDriverPropValueChangeGetaHref() в качестве параметра передадут DriverPorperty объект который 
+            //связан с этой строкой таблицы ибо он "driverProperty" ниже
+            //Посмотрите сейчас на метод driverTable.onDriverPropValueChangeGetaHref - он настраивает ссылку getPropHref согласно 
+            //свойствам driverProperty - таким образом мы "убиваем двух зайцев" - и настраиваем внешний вид элемента (ссылки) и готовим 
             //метод слушатель события изменения значения свойства - теперь как бы не менялось свойста, у нас есть код который будет "перерисовать" связанный
             //                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  
             //элемент и нам не надо более не о чем заботиться.
             //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-            deviceProperty.addValueListner(this.onDevicePropValueChangeGetaHref, getPropHref); //третъя колонка, текущее значение свойства устройства 
+            driverProperty.addValueListner(this.onDriverPropValueChangeGetaHref, getPropHref); //третъя колонка, текущее значение свойства драйвера 
 
             var valueTd = tr.appendChild(document.createElement('td'));
             var valueSpan = valueTd.appendChild(document.createElement('span'));
-            valueSpan.className = "align-middle"; //ссылка вызывающая API для назначения свойства устройства, так же как для воторой колонки 
+            valueSpan.className = "align-middle"; //ссылка вызывающая API для назначения свойства драйвера, так же как для воторой колонки 
 
             var setPropHref = valueSpan.appendChild(document.createElement('a'));
             setPropHref.target = "_blank";
@@ -231,11 +231,11 @@ var TableWidget =
             setPropHref.setAttribute("data-placement", "top"); //так же как и для второй колонки - назначаем метод слушатель изменения объекта, он же "рисует" setPropHref элемент в 
             //зависимости от текущего значения свойства
 
-            deviceProperty.addValueListner(this.onDevicePropValueChangeSetaHref, setPropHref); //четвертая колонка - редактор значения свойства, реализован так же как элементы для второй и третей колонки, со своим слушателем события
-            //учитывает тип свойства устройства - создает соответствующие типы редакторов createValueEdit() <-- TODO: метод старый, нуждается в рефакторинге 
+            driverProperty.addValueListner(this.onDriverPropValueChangeSetaHref, setPropHref); //четвертая колонка - редактор значения свойства, реализован так же как элементы для второй и третей колонки, со своим слушателем события
+            //учитывает тип свойства драйвера - создает соответствующие типы редакторов createValueEdit() <-- TODO: метод старый, нуждается в рефакторинге 
 
-            var edit = createValueEdit(tr.appendChild(document.createElement('td')), deviceProperty.name, deviceProperty.value, deviceProperty.type);
-            deviceProperty.addValueListner(this.onDevicePropValueChangeEdit, edit); //пятая и шестая колонка, кнопки Set value и Get Value 
+            var edit = createValueEdit(tr.appendChild(document.createElement('td')), driverProperty.name, driverProperty.value, driverProperty.type);
+            driverProperty.addValueListner(this.onDriverPropValueChangeEdit, edit); //пятая и шестая колонка, кнопки Set value и Get Value 
 
             var setButtonTd = tr.appendChild(document.createElement('td'));
             var getButtonTd = tr.appendChild(document.createElement('td')); //кнопка Get value 
@@ -247,16 +247,16 @@ var TableWidget =
             getSpan.style.height = "25px";
             getSpan.style.width = "50px";
             getSpan.innerText = "get";
-            getSpan.deviceProperty = deviceProperty; //кнопка запоминает свойство устройства 
+            getSpan.driverProperty = driverProperty; //кнопка запоминает свойство драйвера 
 
-            getSpan.onclick = this.getDeviceClick; //обработчик клика - должне бызвать в объекте со свойством устройство асинхронный вызов API и обработать результа
+            getSpan.onclick = this.getDriverClick; //обработчик клика - должне бызвать в объекте со свойством драйвер асинхронный вызов API и обработать результа
 
-            deviceProperty.addNetworkStatusListner(this.onDevicePropNetworkStatusChange, getSpan); //кнопка так же является получателем изменения статуса свойства устройства
+            driverProperty.addNetworkStatusListner(this.onDriverPropNetworkStatusChange, getSpan); //кнопка так же является получателем изменения статуса свойства драйвера
 
-            node.addNetworkStatusListner(this.onDevicePropNetworkStatusChange, getSpan); //подписка на глобальный сетевой статус
+            node.addNetworkStatusListner(this.onDriverPropNetworkStatusChange, getSpan); //подписка на глобальный сетевой статус
             //кнопка Set value не создается если свойство ReadOnly
 
-            if (!deviceProperty.type.indexOf("r")!=-1) {
+            if (!driverProperty.type.indexOf("r")!=-1) {
                 //так же как и Set value кнопка - асинхронно меняет значение свойства и ожидает результат
                 var span = setButtonTd.appendChild(document.createElement('a'));
                 span.className = "badge badge-secondary";
@@ -266,65 +266,65 @@ var TableWidget =
                 span.style.width = "50px";
                 span.setAttribute("data-toggle", "tooltip");
                 span.setAttribute("data-placement", "top");
-                span.deviceProperty = deviceProperty;
+                span.driverProperty = driverProperty;
                 span.edit = edit;
-                span.onclick = this.setDeviceClick;
+                span.onclick = this.setDriverClick;
                 span.innerText = "set";
-                deviceProperty.addNetworkStatusListner(this.onDevicePropNetworkStatusChange, span);
-                node.addNetworkStatusListner(this.onDevicePropNetworkStatusChange, span);
+                driverProperty.addNetworkStatusListner(this.onDriverPropNetworkStatusChange, span);
+                node.addNetworkStatusListner(this.onDriverPropNetworkStatusChange, span);
             }
 
             return tr; //FFR: возвращет созданую строку таблицы, пока не используется
         };
 
-        _proto.deviceLoaded = function deviceLoaded(sender, device) { } //кноки подписываются на изменение сетевого статуса свойства устройства, этот метод слушатель соответствующего события в свойстве устройства
+        _proto.driverLoaded = function driverLoaded(sender, driver) { } //кноки подписываются на изменение сетевого статуса свойства драйвера, этот метод слушатель соответствующего события в свойстве драйвера
             //и будет вызвать если сетевой статус изменится (обе кнопки Get и Set подписаны этом методом и будут представлены как sender)
             ;
 
-        _proto.onDevicePropNetworkStatusChange = function onDevicePropNetworkStatusChange(sender, deviceProperty) {
-            if (deviceProperty.networkStatus == NET_ONLINE) {
+        _proto.onDriverPropNetworkStatusChange = function onDriverPropNetworkStatusChange(sender, driverProperty) {
+            if (driverProperty.networkStatus == NET_ONLINE) {
                 sender.className = "badge badge-success";
-            } else if (deviceProperty.networkStatus == NET_RECONNECT) {
+            } else if (driverProperty.networkStatus == NET_RECONNECT) {
                 sender.className = "badge badge-warning";
-            } else if (deviceProperty.networkStatus == NET_OFFLINE) {
+            } else if (driverProperty.networkStatus == NET_OFFLINE) {
                 sender.className = "badge badge-secondary";
             } else //error
-                if (deviceProperty.networkStatus == NET_ERROR) {
+                if (driverProperty.networkStatus == NET_ERROR) {
                     sender.className = "badge badge-danger";
                 }
         } //обработчик слушатель события изменения свойста для ссылки из второй колонки таблицы (смотрите метод создания строки таблицы)
             ;
 
-        _proto.onDevicePropValueChangeGetaHref = function onDevicePropValueChangeGetaHref(sender, deviceProperty) {
+        _proto.onDriverPropValueChangeGetaHref = function onDriverPropValueChangeGetaHref(sender, driverProperty) {
             //ссылка представлена тут как sender 
-            sender.title = "Get '" + deviceProperty.name + "' device property value [RESTful API execute]"; //настройка подсказки
+            sender.title = "Get '" + driverProperty.name + "' driver property value [RESTful API execute]"; //настройка подсказки
 
-            sender.innerText = deviceProperty.name;
+            sender.innerText = driverProperty.name;
 
-            if (deviceProperty.type.indexOf("s") != -1) {
+            if (driverProperty.type.indexOf("s") != -1) {
                 sender.className = "text-warning";
             }
 
-            sender.href = deviceProperty.parenthost + "getdeviceproperty?id=" + deviceProperty.parentid + "&property=" + deviceProperty.name; //настройка вызова RESTful API по клику на ссылку
+            sender.href = driverProperty.parenthost + "getdriverproperty?id=" + driverProperty.parentid + "&property=" + driverProperty.name; //настройка вызова RESTful API по клику на ссылку
         } //обработчик слушатель события изменения свойста для ссылки из третей (так же как и для второй, только вызов RESTful API Set )
             ;
 
-        _proto.onDevicePropValueChangeSetaHref = function onDevicePropValueChangeSetaHref(sender, deviceProperty) {
-            sender.title = "Set '" + deviceProperty.name + "' device property value [RESTful API execute][return '1' if success]";
-            sender.href = deviceProperty.parenthost + "setdeviceproperty?id=" + deviceProperty.parentid + "&property=" + deviceProperty.name + "&value=" + deviceProperty.value;
+        _proto.onDriverPropValueChangeSetaHref = function onDriverPropValueChangeSetaHref(sender, driverProperty) {
+            sender.title = "Set '" + driverProperty.name + "' driver property value [RESTful API execute][return '1' if success]";
+            sender.href = driverProperty.parenthost + "setdriverproperty?id=" + driverProperty.parentid + "&property=" + driverProperty.name + "&value=" + driverProperty.value;
 
-            if (deviceProperty.type.indexOf("b") != -1) {
-                //если тип свойства устройства boolean 
-                if (deviceProperty.value === "1") sender.innerText = "true"; else sender.innerText = "false";
+            if (driverProperty.type.indexOf("b") != -1) {
+                //если тип свойства драйвера boolean 
+                if (driverProperty.value === "1") sender.innerText = "true"; else sender.innerText = "false";
             } else {
                 //иначе текстовое представление - текст может быть очень длинным, ограничиваем в 20 символов
-                var cutValue = deviceProperty.value;
+                var cutValue = driverProperty.value;
 
                 if (cutValue.length > 20) {
                     cutValue = cutValue.slice(0, 20) + "...";
                 }
 
-                if (deviceProperty.type.indexOf("p") != -1) {
+                if (driverProperty.type.indexOf("p") != -1) {
                     var temp = "";
                     for (var i = 0; i < cutValue.length; i++) {
                         temp += "*";
@@ -335,66 +335,66 @@ var TableWidget =
                 sender.innerText = cutValue;
             }
         } //обработчик слушатель события изменения свойста для редактора свойствае, если свойство изменит значение - редактор предложит пользователю новое измененое значение
-            //это интересно работает когда несколько пользователей независимо редактируют разные свойства устройств независимо друг от другда
+            //это интересно работает когда несколько пользователей независимо редактируют разные свойства драйвер независимо друг от другда
             ;
 
-        _proto.onDevicePropValueChangeEdit = function onDevicePropValueChangeEdit(sender, deviceProperty) {
-            if (deviceProperty.type.indexOf("b") != -1) {
+        _proto.onDriverPropValueChangeEdit = function onDriverPropValueChangeEdit(sender, driverProperty) {
+            if (driverProperty.type.indexOf("b") != -1) {
                 //boolean
-                if (deviceProperty.value == "1") {
+                if (driverProperty.value == "1") {
                     sender.selectedIndex = 0;
                 } else {
                     sender.selectedIndex = 1;
                 }
             } else {
-                sender.value = deviceProperty.value;
+                sender.value = driverProperty.value;
             }
-        } //когда пользоватеь кликнет кнопку Set в одной из строк таблицы (изменение значения свойства устройства)
+        } //когда пользоватеь кликнет кнопку Set в одной из строк таблицы (изменение значения свойства драйвера)
             //для понимания этого метода необходимо учитывать, что все остальные элементы строки, связаные с текущем свойством, 
             //были подписаны на его изменениея - смотрите newProperty() метод этого объекта
-            //По этой причине, все кнопке остается только "попросить" объект свойства устройства изменить его значения и не заботится о результате
-            //все что произойдет далее с RESTful API, Unit, свойством - будет выслано самим объектом DeviceProperty соответствующим подписчикам
+            //По этой причине, все кнопке остается только "попросить" объект свойства драйвера изменить его значения и не заботится о результате
+            //все что произойдет далее с RESTful API, Unit, свойством - будет выслано самим объектом DriverProperty соответствующим подписчикам
             ;
 
-        _proto.setDeviceClick = function setDeviceClick(event) {
+        _proto.setDriverClick = function setDriverClick(event) {
             event.stopPropagation();
             var button = event.currentTarget; //вытаскиваем "кликнутую" кнопку из event 
 
-            var deviceProperty = button.deviceProperty; //вытаскиваем из кнопки - связанное с ней свойство устройства  
+            var driverProperty = button.driverProperty; //вытаскиваем из кнопки - связанное с ней свойство драйвера  
 
-            if (deviceProperty.networkStatus != NET_RECONNECT) {
-                //если свойство устройства не в статуре "в реботе" - асинхронность это хорошо, но переполнять очередь это преступление
+            if (driverProperty.networkStatus != NET_RECONNECT) {
+                //если свойство драйвера не в статуре "в реботе" - асинхронность это хорошо, но переполнять очередь это преступление
                 var edit = button.edit; //вытаскиваем редактор свойства (он в строке таблицы вместе с кнопкой)
 
-                var value = edit.value; //получаем значение свойства устройства введенное пользователем
+                var value = edit.value; //получаем значение свойства драйвера введенное пользователем
 
                 if (edit.proptype.indexOf("b") != -1) // boolean - представлен в виде combobox а не редактора 
                 {
-                    if (edit.selectedIndex == 0) value = "1"; //для устройства 1 - true, 0 - false
+                    if (edit.selectedIndex == 0) value = "1"; //для драйвера 1 - true, 0 - false
                     else value = "0";
-                } //вызываем метод свойства устройства для начала процедуры изменения этого свойства с новым значением value
+                } //вызываем метод свойства драйвера для начала процедуры изменения этого свойства с новым значением value
                 //не назначаем вторичных получателей undefined, undefined - все получатели уже подписаны ранее
 
 
-                deviceProperty.setValue(value, undefined, undefined);
+                driverProperty.setValue(value, undefined, undefined);
             }
 
             return false;
-        } //клик на кнопку получить значение свойства устройства - так же как и setDeviceClick, с той разницей что никакое value не передается, а полученое value будет 
-            //передано всем подписчикам DeviceProperty.value 
+        } //клик на кнопку получить значение свойства драйвера - так же как и setDriverClick, с той разницей что никакое value не передается, а полученое value будет 
+            //передано всем подписчикам DriverProperty.value 
             ;
 
-        _proto.getDeviceClick = function getDeviceClick(event) {
+        _proto.getDriverClick = function getDriverClick(event) {
             event.stopPropagation();
             var button = event.currentTarget;
-            var deviceProperty = button.deviceProperty;
+            var driverProperty = button.driverProperty;
 
-            if (deviceProperty.networkStatus != NET_RECONNECT) {
-                deviceProperty.getValue(undefined, undefined);
+            if (driverProperty.networkStatus != NET_RECONNECT) {
+                driverProperty.getValue(undefined, undefined);
             }
 
             return false;
         };
 
         return TableWidget;
-    }(); //ENDOF deviceTable
+    }(); //ENDOF driverTable

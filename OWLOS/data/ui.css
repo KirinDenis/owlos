@@ -6,7 +6,7 @@
     margin-right: 30px;
 }
 
-.devicePanelDiv {
+.driverPanelDiv {
     position: Relative;
     padding-top: 7px;
     height: 120px;
@@ -90,7 +90,7 @@
     background-color: #515960;
 }
 
-.devicediv {
+.driverdiv {
     margin: 5px -5px 2px -5px;
 }
 

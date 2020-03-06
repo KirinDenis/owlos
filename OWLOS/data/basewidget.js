@@ -548,7 +548,7 @@ var BaseWidget =
             // заполняем modalBody и modalFooter элементами отображающими свойства данного виджета
             // создаем панель в верхней части диалога в которой будем отображать виджет - пользователь сможет видеть результаты изменения свойств виджета
             var widgetDiv = modalBody.appendChild(document.createElement("div"));
-            widgetDiv.className = "devicesWidgetsPanel d-flex justify-content-center";
+            widgetDiv.className = "driversWidgetsPanel d-flex justify-content-center";
             widgetDiv.appendChild(widget.widgetHolder);
 
             // свойств очень много - модальный диалог может получится слишком длииным и не влазить в окно браузера, что не очень удобно для пользователя

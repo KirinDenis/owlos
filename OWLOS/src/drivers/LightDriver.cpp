@@ -39,93 +39,81 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-#include "ActuatorDevice.h"
+#include "LightDriver.h"
 
-bool ActuatorDevice::init()
+bool LightDriver::begin(String _topic)
 {
-	if (id.length() == 0) id = DeviceID;
-	BaseDevice::init(id);
-	//init properies 
-	getPin();
-	pinMode(pin, OUTPUT);
+	if (id.length() == 0) id = DriverID;
+	BaseDriver::init(id);
 
-	getData();
-	setData(data, false);
-}
-
-bool ActuatorDevice::begin(String _topic)
-{
-	BaseDevice::begin(_topic);
-	setType(Actuator);
+	BaseDriver::begin(_topic);
+	available = true;
+	setType(Light);
 	setAvailable(available);
+	//TEMP:
+	trap = 50;
 	return available;
 }
 
-bool ActuatorDevice::query()
+bool LightDriver::query()
 {
-	if (BaseDevice::query())
+	if (BaseDriver::query())
 	{
-		//for actuator publish data() as it changed 
-		int _data = data;
-		if (_data != getData())
+		int _light = std::atoi(light.c_str());
+		getLight();
+		int different = std::atoi(light.c_str()) - _light;
+		if ((different > trap) || (different < -trap))
 		{
-			onInsideChange("data", String(data));
+			onInsideChange("light", light);
 		}
 		return true;
 	}
 	return false;
 };
 
-String ActuatorDevice::getAllProperties()
+
+String LightDriver::getAllProperties()
 {
-	String result = BaseDevice::getAllProperties();
-	result += "data=" + String(data) + "//b\n";
-	result += "pin=" + String(pin) + "//i\n";
+	String result = BaseDriver::getAllProperties();
+	result += "light=" + light + "\n";
+	result += "pin=" + String(pin) + "\n";
 	return result;
 }
 
-bool ActuatorDevice::publish()
+
+bool LightDriver::publish()
 {
-	if (BaseDevice::publish())
+	if (BaseDriver::publish())
 	{
-		onInsideChange("data", String(data));
+		onInsideChange("light", light);
 		return true;
 	}
 	return false;
 };
 
-String ActuatorDevice::onMessage(String _topic, String _payload, int transportMask)
+String LightDriver::onMessage(String _topic, String _payload, int transportMask)
 {
-	String result = BaseDevice::onMessage(_topic, _payload, transportMask);
-
+	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
 	if (!available) return result;
 
-	//Actuator GPIO 1-pin (D4 by default)
+	//Light sensor GPIO 1-pin (A0 by default)
 	if (String(topic + "/getpin").equals(_topic))
 	{
 		result = onGetProperty("pin", String(getPin()), transportMask);
 	}
-	else
-		if (String(topic + "/setpin").equals(_topic))
-		{
-			result = String(setPin(std::atoi(_payload.c_str())));
-		}
-		else
-			//Position -----------------------------------------------------------------
-			if (String(topic + "/getdata").equals(_topic))
-			{
-				result = onGetProperty("data", String(getData()), transportMask);
-			}
-			else
-				if (String(topic + "/setdata").equals(_topic))
-				{
-					result = String(setData(std::atoi(_payload.c_str()), true));
-				}
+	else if (String(topic + "/setpin").equals(_topic))
+	{
+		result = String(setPin(std::atoi(_payload.c_str())));
+	}
+	else if ((String(topic + "/getlight").equals(_topic)) || (String(topic + "/setlight").equals(_topic)))
+	{
+		result = onGetProperty("light", getLight(), transportMask);
+	}
 	return result;
 }
 
-//Actuator GPIO 1-pin (D4 by default) ----------------------------------------------------
-int ActuatorDevice::getPin()
+//Light Sensor 1-pin (A0 by default) ----------------------------------------------------
+int LightDriver::getPin()
 {
 	if (filesExists(id + ".pin"))
 	{
@@ -134,14 +122,13 @@ int ActuatorDevice::getPin()
 #ifdef DetailedDebug
 	debugOut(id, "pin=" + String(pin));
 #endif
-
 	return pin;
 }
 
-bool ActuatorDevice::setPin(int _pin)
+bool LightDriver::setPin(int _pin)
 {
 	pin = _pin;
-	pinMode(pin, OUTPUT);
+	pinMode(pin, INPUT);
 	filesWriteInt(id + ".pin", pin);
 	if (available)
 	{
@@ -150,28 +137,12 @@ bool ActuatorDevice::setPin(int _pin)
 	return true;
 }
 
-//Data -------------------------------------------
-int ActuatorDevice::getData()
+String LightDriver::getLight()
 {
-	if (filesExists(id + ".data"))
-	{
-		data = filesReadInt(id + ".data");
-	}
+	int _light = analogRead(pin);
+	light = String(_light);
 #ifdef DetailedDebug
-	debugOut(id, "data=" + String(data));
+	debugOut(id, "light=" + light);
 #endif
-
-	return data;
+	return light;
 }
-
-bool ActuatorDevice::setData(int _data, bool doEvent)
-{
-	data = _data;
-	digitalWrite(pin, data);
-	if (doEvent)
-	{
-		filesWriteInt(id + ".data", data);
-		return onInsideChange("data", String(data));
-	}
-	return true;
-};

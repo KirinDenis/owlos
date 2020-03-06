@@ -39,11 +39,11 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-#include "BaseDevice.h"
+#include "BaseDriver.h"
 
   //init() is called before transport accessable, when ESP is Setupping()
-  //Devices load default GPIO and other property values from Flash file system thanks to Init()
-bool BaseDevice::init(String _id)
+  //Drivers load default GPIO and other property values from Flash file system thanks to Init()
+bool BaseDriver::init(String _id)
 {
 	id = _id;
 
@@ -63,8 +63,8 @@ bool BaseDevice::init(String _id)
 	return true;
 }
 
-//begin(..) is called after transport accessable when Unit knows its and devices' IDs and Topics
-bool BaseDevice::begin(String _topic)
+//begin(..) is called after transport accessable when Unit knows its and drivers' IDs and Topics
+bool BaseDriver::begin(String _topic)
 {
 	topic = _topic + '/' + id;
 	#ifdef DetailedDebug 
@@ -76,7 +76,7 @@ bool BaseDevice::begin(String _topic)
 	return available;
 }
 
-bool BaseDevice::query()
+bool BaseDriver::query()
 {
 	if (available)
 	{
@@ -88,12 +88,12 @@ bool BaseDevice::query()
 	return false;
 }
 
-//Gets all Device properties at .INI format:
+//Gets all Driver properties at .INI format:
 //propName1=prop1Value
 //propName2=prop2Value
 //...
 //propNameNNN=propNNNValue
-String BaseDevice::getAllProperties()
+String BaseDriver::getAllProperties()
 {
 	//flags started with "//" chars at end of the string:
 	//r - read only
@@ -119,7 +119,7 @@ String BaseDevice::getAllProperties()
 	return result;
 }
 
-bool BaseDevice::publish()
+bool BaseDriver::publish()
 {
 	if (available)
 	{
@@ -131,13 +131,13 @@ bool BaseDevice::publish()
 	return false;
 }
 
-void BaseDevice::subscribe()
+void BaseDriver::subscribe()
 {
 	//now UnitProperties.cpp subscribes to all
 	//transportSubscribe(topic + "/#");
 }
 
-String BaseDevice::onMessage(String _topic, String _payload, int transportMask)
+String BaseDriver::onMessage(String _topic, String _payload, int transportMask)
 {
 	//ID --------------------------------------------------------------------
 	if (String(topic + "/getid").equals(_topic))
@@ -228,7 +228,7 @@ String BaseDevice::onMessage(String _topic, String _payload, int transportMask)
 }
 
 //Called when client gets a property from network
-String BaseDevice::onGetProperty(String _property, String _payload, int transportMask)
+String BaseDriver::onGetProperty(String _property, String _payload, int transportMask)
 {
 #ifdef DetailedDebug
 	debugOut(id, "|-> get property " + _property + " = " + _payload);
@@ -240,7 +240,7 @@ String BaseDevice::onGetProperty(String _property, String _payload, int transpor
 	return _payload;
 }
 
-bool BaseDevice::onInsideChange(String _property, String _payload/*, int transportMask*/)
+bool BaseDriver::onInsideChange(String _property, String _payload/*, int transportMask*/)
 {
 #ifdef DetailedDebug
 	debugOut(id, "|<- inside change " + _property + " = " + _payload);
@@ -262,7 +262,7 @@ bool BaseDevice::onInsideChange(String _property, String _payload/*, int transpo
 	*/
 }
 
-int BaseDevice::getAvailable()
+int BaseDriver::getAvailable()
 {
 	if (filesExists(id + ".available"))
 	{
@@ -274,14 +274,14 @@ int BaseDevice::getAvailable()
 	return available;
 }
 
-bool BaseDevice::setAvailable(int _available)
+bool BaseDriver::setAvailable(int _available)
 {
 	available = _available;
 	filesWriteInt(id + ".available", available);
 	return onInsideChange("available", String(available));
 }
 
-int BaseDevice::getType()
+int BaseDriver::getType()
 {
 #ifdef DetailedDebug
 	debugOut(id, "type=" + type);
@@ -289,14 +289,14 @@ int BaseDevice::getType()
 	return type;
 }
 
-bool BaseDevice::setType(int _type)
+bool BaseDriver::setType(int _type)
 {
 	type = _type;
 	filesWriteInt(id + ".type", type);
 	return onInsideChange("type", String(type));
 }
 
-float BaseDevice::getTrap()
+float BaseDriver::getTrap()
 {
 	if (filesExists(id + ".trap"))
 	{
@@ -308,14 +308,14 @@ float BaseDevice::getTrap()
 	return trap;
 }
 
-bool BaseDevice::setTrap(float _trap)
+bool BaseDriver::setTrap(float _trap)
 {
 	trap = _trap;
 	filesWriteFloat(id + ".trap", trap);
 	return onInsideChange("trap", String(trap));
 }
 
-int BaseDevice::getQueryInterval()
+int BaseDriver::getQueryInterval()
 {
 	if (filesExists(id + ".queryinterval"))
 	{
@@ -327,14 +327,14 @@ int BaseDevice::getQueryInterval()
 	return queryInterval;
 }
 
-bool BaseDevice::setQueryInterval(int _queryInterval)
+bool BaseDriver::setQueryInterval(int _queryInterval)
 {
 	queryInterval = _queryInterval;
 	filesWriteInt(id + ".queryinterval", queryInterval);
 	return onInsideChange("queryinterval", String(queryInterval));
 }
 
-int BaseDevice::getPublishInterval()
+int BaseDriver::getPublishInterval()
 {
 	if (filesExists(id + ".publishinterval"))
 	{
@@ -346,7 +346,7 @@ int BaseDevice::getPublishInterval()
 	return publishInterval;
 }
 
-bool BaseDevice::setPublishInterval(int _publishInterval)
+bool BaseDriver::setPublishInterval(int _publishInterval)
 {
 	publishInterval = _publishInterval;
 	filesWriteInt(id + ".publishinterval", publishInterval);
@@ -354,7 +354,7 @@ bool BaseDevice::setPublishInterval(int _publishInterval)
 }
 
 //HistoryData property GET<->SET wrappers
-String BaseDevice::getHistoryData()
+String BaseDriver::getHistoryData()
 {
 	String	dataHistory = String(historyCount) + ";";
 
@@ -366,7 +366,7 @@ String BaseDevice::getHistoryData()
 	return dataHistory;
 }
 
-bool BaseDevice::setHistoryData(float _historydata)
+bool BaseDriver::setHistoryData(float _historydata)
 {
 
 	if (historyCount < historySize) {
@@ -386,7 +386,7 @@ bool BaseDevice::setHistoryData(float _historydata)
 }
 
 //HistoryFile property Read<->Write wrappers
-String BaseDevice::readHistoryFile()
+String BaseDriver::readHistoryFile()
 {
 	String result = "";
 	for (int i = 0; i < filesIndexesSize; i++)
@@ -401,7 +401,7 @@ String BaseDevice::readHistoryFile()
 }
 
 
-bool BaseDevice::writeHistoryFile(float _historydata)
+bool BaseDriver::writeHistoryFile(float _historydata)
 {
 
 	bool result = false;

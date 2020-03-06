@@ -39,53 +39,58 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-#include <LiquidCrystal_I2C.h> //https://www.dfrobot.com/wiki/index.php/I2C/TWI_LCD1602_Module_(Gadgeteer_Compatible)_(SKU:_DFR0063)   http://www.dfrobot.com/wiki/index.php?title=I2C/TWI_LCD1602_Module_(SKU:_DFR0063) Download: http://www.dfrobot.com/image/data/DFR0154/LiquidCrystal_I2Cv1-1.rar
+#pragma once
 #include <Arduino.h>
-#include "BaseDevice.h"
+#include <DHT.h>
+#include "BaseDriver.h"
 
-#define DeviceID "lcd"
-#define LCDLoopInterval 200
+#define DriverID "DHT"
 
-class LCDDevice : public BaseDevice {
-  public:
-    bool init();
-    
-	bool begin(String _topic);
-    String getAllProperties();
-    String onMessage(String _topic, String _payload, int transportMask);
+class DHTDriver : public BaseDriver {
+public:
+	bool DHTsetup(int pin, int dhttype);
+	float DHTgetTemperature();
+	float DHTgetHumidity();
 
-    int getAddr();
-    bool setAddr(int _addr,  bool doEvent);
+	bool begin(String _Topic);
+	bool query();
+	String getAllProperties();
+	bool publish();
+	String onMessage(String _topic, String _payload, int transportMask);
+	int getPin();
+	bool setPin(int _pin);
+	int getDHTType();
+	bool setDHTType(int _dhttype);
+	String getTemperature();
+	String getHumidity();
 
-    int getCols();
-    bool setCols(int _cols,  bool doEvent);
+	
+	String getTemperatureHistoryData();
+	bool setTemperatureHistoryData(float _historydata);
 
-    int getRows();
-    bool setRows(int _rows,  bool doEvent);
+	String getHumidityHistoryData();
+	bool setHumidityHistoryData(float _historydata);
 
-    String getText();
-    bool setText(String _text,  bool doEvent);
+	//History file property Read<->Write wrappers
+	String readTemperatureHistoryFile();
+	bool writeTemperatureHistoryFile(float _historydata);
 
-    int getBacklight();
-    bool setBacklight(int _backlight,  bool doEvent);
+private:
+	bool DHTSetuped = false;
+	bool DHTSetupResult = false;
+	DHT * dht = nullptr;
+	int pin = DHTPIN;
+	int dhttype = DHT22;
+	String temperature = "nan";
+	String humidity = "nan";
+	int temperatureHistoryCount = 0;
+	int humidityHistoryCount = 0;
+	float *temperatureHistoryData = new float[historySize]();
+	float *humidityHistoryData = new float[historySize]();
 
-    int getClear();
-    bool setClear(int _clear,  bool doEvent);
+	int currentTemperatureFile = 0;
+	int currentTemperatureFileIndex = 0;
+	int historyTemperatureFileCount = 0;
+	int *temperatureHistoryFilesIndexes = new int[filesIndexesSize]();
 
-    int getX();
-    bool setX(int _x,  bool doEvent);
-
-    int getY();
-    bool setY(int _y,  bool doEvent);
-
-
-  private:
-    int addr = 0x3F; 
-    int cols = 20;
-    int rows = 4;
-    int backlight = 1;
-    int clear = 0;
-    int x = 0;
-    int y = 0;
-    String text = "";
 };

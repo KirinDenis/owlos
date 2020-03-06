@@ -62,11 +62,11 @@ OWLOS распространяется в надежде, что она буде
 //^^^---------------------------------------------------------------------------------------------------------------------------------------------------
 
 //Global flags 
-const NET_OFFLINE = 0;
+const NET_OFFLINE = 0; 
 const NET_ONLINE = 1;
 const NET_ERROR = 2;
 const NET_RECONNECT = 3;
-const NET_REFRESH = 4; //используется объектом devices только (устанавливается в момент начала цикла перезагрузки данных устройств)
+const NET_REFRESH = 4; //используется объектом drivers только (устанавливается в момент начала цикла перезагрузки данных драйвер)
 
 //var UIWatch = 'light';
 var UIWatch = '';
@@ -160,7 +160,7 @@ function loadingScripts(withInternet) {
                         loadingScript("speechcore.js");
                         loadingScript("drawcore.js");
                         loadingScript("restclientcore.js");
-                        loadingScript("devicescore.js");
+                        loadingScript("driverscore.js");
                         loadingScript("scriptscore.js");
 
                         var baseWidgetScript = document.createElement('script');
@@ -179,7 +179,7 @@ function loadingScripts(withInternet) {
                             loadingScript("valuewidget.js");
                             loadingScript("widgetswrappers.js");
                             loadingScript("filespanelui.js");
-                            loadingScript("devicesui.js");
+                            loadingScript("driversui.js");
                             loadingScript("dashboardui.js");
                             loadingScript("settingsui.js");
 

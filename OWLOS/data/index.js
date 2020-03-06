@@ -111,7 +111,7 @@ $(document).ready(function () {
 
         addToLogNL(getLang("prepareUnit"));
 
-        devices.addDeviceLoadedListner(settingsUI.onDeviceLoaded, settingsUI);
+        drivers.addDriverLoadedListner(settingsUI.onDriverLoaded, settingsUI);
         nodesRefresh();
 
         var boot = document.getElementById("boot");
@@ -388,7 +388,7 @@ function createProSidebar() {
 
 function nodesRefresh() {
     for (var node in configProperties.nodes) {
-        devices.refresh(configProperties.nodes[node]);
+        drivers.refresh(configProperties.nodes[node]);
         scriptsManager.refresh(configProperties.nodes[node]);
     }
 }
@@ -409,7 +409,7 @@ function sleep(time) {
 
 //--------------------------------------------------------------------------------------------------------------------
 function makeModalDialog(parentId, id, titleText, bodyText) {
-    document.getElementById("addDevicePanel").innerHTML = ""; //TODO: remake this modal to
+    document.getElementById("addDriverPanel").innerHTML = ""; //TODO: remake this modal to
 
     var parentPanel = document.getElementById(parentId);
     parentPanel.innerHTML = "";

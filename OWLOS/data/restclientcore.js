@@ -52,24 +52,24 @@ function setUnitProperty(host, property, value) {
     return httpGetWithErrorReson(host + "setunitproperty?property=" + escape(property) + "&value=" + escape(value));
 }
 
-function setDeviceProperty(host, id, property, value) {
-    return httpGetWithErrorReson(host + "setdeviceproperty?id=" + id + "&property=" + escape(property) + "&value=" + escape(value));
+function setDriverProperty(host, id, property, value) {
+    return httpGetWithErrorReson(host + "setdriverproperty?id=" + id + "&property=" + escape(property) + "&value=" + escape(value));
 }
 
-function setDevicePropertyAsync(host, id, property, value) {
-    return httpGetAsync(host + "setdeviceproperty?id=" + id + "&property=" + escape(property) + "&value=" + escape(value));
+function setDriverPropertyAsync(host, id, property, value) {
+    return httpGetAsync(host + "setdriverproperty?id=" + id + "&property=" + escape(property) + "&value=" + escape(value));
 }
 
-function setDevicePropertyAsyncWithReciever(host, id, property, value, asyncReciever, upperAsyncReciever, sender, upperSender) {
-    return httpGetAsyncWithReciever(host + "setdeviceproperty?id=" + id + "&property=" + escape(property) + "&value=" + escape(value), asyncReciever, upperAsyncReciever, sender, upperSender);
+function setDriverPropertyAsyncWithReciever(host, id, property, value, asyncReciever, upperAsyncReciever, sender, upperSender) {
+    return httpGetAsyncWithReciever(host + "setdriverproperty?id=" + id + "&property=" + escape(property) + "&value=" + escape(value), asyncReciever, upperAsyncReciever, sender, upperSender);
 }
 
-function getDeviceProperty(host, id, property) {
-    return httpGetWithErrorReson(host + "getdeviceproperty?id=" + id + "&property=" + escape(property));
+function getDriverProperty(host, id, property) {
+    return httpGetWithErrorReson(host + "getdriverproperty?id=" + id + "&property=" + escape(property));
 }
 
-function getDevicePropertyAsyncWithReciever(host, id, property, asyncReciever, upperAsyncReciever, sender, upperSender) {
-    return httpGetAsyncWithReciever(host + "getdeviceproperty?id=" + id + "&property=" + escape(property), asyncReciever, upperAsyncReciever, sender, upperSender);
+function getDriverPropertyAsyncWithReciever(host, id, property, asyncReciever, upperAsyncReciever, sender, upperSender) {
+    return httpGetAsyncWithReciever(host + "getdriverproperty?id=" + id + "&property=" + escape(property), asyncReciever, upperAsyncReciever, sender, upperSender);
 }
 
 
@@ -86,8 +86,8 @@ function reset(host) {
     return httpGetAsync(host + "reset");
 }
 
-function addDevice(host, type, id, pin1, pin2, pin3, pin4, pin5) {
-    return httpGetWithErrorReson(host + "adddevice?type=" + type + "&id=" + id + "&pin1=" + pin1 + "&pin2=" + pin2 + "&pin3=" + pin3 + "&pin4=" + pin4);
+function addDriver(host, type, id, pin1, pin2, pin3, pin4, pin5) {
+    return httpGetWithErrorReson(host + "adddriver?type=" + type + "&id=" + id + "&pin1=" + pin1 + "&pin2=" + pin2 + "&pin3=" + pin3 + "&pin4=" + pin4);
 }
 
 function updateUIAsync(host) {

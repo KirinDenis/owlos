@@ -39,12 +39,12 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-#include "ValveDevice.h"
+#include "ValveDriver.h"
 
-bool ValveDevice::init()
+bool ValveDriver::init()
 {
-	if (id.length() == 0) id = DeviceID;
-	BaseDevice::init(id);
+	if (id.length() == 0) id = DriverID;
+	BaseDriver::init(id);
 	//init properies
 	getPin1();
 	getPin2();
@@ -57,17 +57,17 @@ bool ValveDevice::init()
 	return true;
 }
 
-bool ValveDevice::begin(String _topic)
+bool ValveDriver::begin(String _topic)
 {
-	BaseDevice::begin(_topic);
+	BaseDriver::begin(_topic);
 	setType(Valve);
 	setAvailable(available);
 	return available;
 }
 
-bool ValveDevice::query()
+bool ValveDriver::query()
 {
-	if (BaseDevice::query())
+	if (BaseDriver::query())
 	{
 		// publish Valve data if they are changed 
 		int oldPosition = position;
@@ -85,9 +85,9 @@ bool ValveDevice::query()
 	return false;
 };
 
-String ValveDevice::getAllProperties()
+String ValveDriver::getAllProperties()
 {
-	String result = BaseDevice::getAllProperties();
+	String result = BaseDriver::getAllProperties();
 	result += "position=" + String(position) + "\n";
 	result += "pin1=" + String(pin1) + "\n";
 	result += "pin2=" + String(pin2) + "\n";
@@ -99,9 +99,9 @@ String ValveDevice::getAllProperties()
 }
 
 
-bool ValveDevice::publish()
+bool ValveDriver::publish()
 {
-	if (BaseDevice::publish())
+	if (BaseDriver::publish())
 	{
 		onInsideChange("position", String(position));
 		onInsideChange("physicalposition", String(physicalposition));
@@ -110,9 +110,9 @@ bool ValveDevice::publish()
 	return false;
 };
 
-String ValveDevice::onMessage(String _topic, String _payload, int transportMask)
+String ValveDriver::onMessage(String _topic, String _payload, int transportMask)
 {
-	String result = BaseDevice::onMessage(_topic, _payload, transportMask);
+	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
 	if (!available) return result;
 	//Valve close pin1 (D1 by default)
 	if (String(topic + "/getpin1").equals(_topic))
@@ -170,7 +170,7 @@ String ValveDevice::onMessage(String _topic, String _payload, int transportMask)
 	return result;
 }
 
-int ValveDevice::getPin1()
+int ValveDriver::getPin1()
 {
 	if (filesExists(id + ".pin1"))
 	{
@@ -182,7 +182,7 @@ int ValveDevice::getPin1()
 	return pin1;
 }
 
-bool ValveDevice::setPin1(int _pin1)
+bool ValveDriver::setPin1(int _pin1)
 {
 	pin1 = _pin1;
 	pinMode(pin1, OUTPUT);
@@ -191,7 +191,7 @@ bool ValveDevice::setPin1(int _pin1)
 	return onInsideChange("pin1", String(pin1));
 }
 
-int ValveDevice::getPin2()
+int ValveDriver::getPin2()
 {
 	if (filesExists(id + ".pin2"))
 	{
@@ -203,7 +203,7 @@ int ValveDevice::getPin2()
 	return pin2;
 }
 
-bool ValveDevice::setPin2(int _pin2)
+bool ValveDriver::setPin2(int _pin2)
 {
 	pin2 = _pin2;
 	pinMode(pin2, OUTPUT);
@@ -212,7 +212,7 @@ bool ValveDevice::setPin2(int _pin2)
 	return onInsideChange("pin2", String(pin2));
 }
 
-int ValveDevice::getPin3()
+int ValveDriver::getPin3()
 {
 	if (filesExists(id + ".pin3"))
 	{
@@ -224,7 +224,7 @@ int ValveDevice::getPin3()
 	return pin3;
 }
 
-bool ValveDevice::setPin3(int _pin3)
+bool ValveDriver::setPin3(int _pin3)
 {
 	pin3 = _pin3;
 	pinMode(pin3, INPUT);
@@ -232,7 +232,7 @@ bool ValveDevice::setPin3(int _pin3)
 	return onInsideChange("pin3", String(pin3));
 }
 
-int ValveDevice::getphysicalposition()
+int ValveDriver::getphysicalposition()
 {
 	if (filesExists(id + ".physicalposition"))
 	{
@@ -244,7 +244,7 @@ int ValveDevice::getphysicalposition()
 	return physicalposition;
 }
 
-int ValveDevice::getMinimumphysicalposition()
+int ValveDriver::getMinimumphysicalposition()
 {
 	if (filesExists(id + ".minimumphysicalposition"))
 	{
@@ -256,7 +256,7 @@ int ValveDevice::getMinimumphysicalposition()
 	return minimumphysicalposition;
 }
 
-int ValveDevice::getMaximumphysicalposition()
+int ValveDriver::getMaximumphysicalposition()
 {
 	if (filesExists(id + ".maximumphysicalposition"))
 	{
@@ -268,7 +268,7 @@ int ValveDevice::getMaximumphysicalposition()
 	return maximumphysicalposition;
 }
 
-int ValveDevice::getPosition()
+int ValveDriver::getPosition()
 {
 	if (filesExists(id + ".position"))
 	{
@@ -280,7 +280,7 @@ int ValveDevice::getPosition()
 	return position;
 }
 
-bool ValveDevice::setPosition(int _position)
+bool ValveDriver::setPosition(int _position)
 {
 	// valve stop commands, valve has veto for all output pins LOW level
 	bool result = false;
@@ -309,7 +309,7 @@ bool ValveDevice::setPosition(int _position)
 	return onInsideChange("physicalposition", String(physicalposition));
 }
 
-void ValveDevice::toMinMaxPosition(int _pin)
+void ValveDriver::toMinMaxPosition(int _pin)
 {
 	physicalposition = analogRead(pin3);
 	digitalWrite(_pin, LOW); //move command

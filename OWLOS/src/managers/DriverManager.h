@@ -40,56 +40,38 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 #include <Arduino.h>
-#include "BaseDevice.h"
 
-#define DeviceID "stepper1"
-#define StepperLoopInterval 200
+#include "..\Utils\Utils.h"
 
-class StepperDevice : public BaseDevice {
-  public:
-    bool init();
-    bool begin(String _topic);
-    String getAllProperties();
-    String onMessage(String _topic, String _payload, int transportMask);
+#include "..\Drivers\BaseDriver.h"
+#include "..\Drivers\DHTDriver.h"
+#include "..\Drivers\StepperDriver.h"
+#include "..\Drivers\LightDriver.h"
+#include "..\Drivers\SmokeDriver.h"
+#include "..\Drivers\MotionDriver.h"
+#include "..\Drivers\SensorDriver.h"
+#include "..\Drivers\ActuatorDriver.h"
+#include "..\Drivers\LCDDriver.h"
+#include "..\Drivers\OptoDriver.h"
+#include "..\Drivers\ValveDriver.h"
 
-    int getPin1();
-    bool setPin1(int _pin1);
-    int getPin2();
-    bool setPin2(int _pin2);
-    int getPin3();
-    bool setPin3(int _pin3);
-    int getPin4();
-    bool setPin4(int _pin4);
-    int getToPosition();
-    bool setToPosition(int _toPosition);
-    int getBusy();
-    bool setBusy(int _busy);
-    int getStop();
-    bool setStop(int _stop);
-    int getPosition();
-    bool setPosition(int _toPosition,  bool doEvent);
-    int getRange();
-    bool setRange(int _range);
-    int getSpeed();
-    bool setSpeed(int _speed);
+void driversInit(String _topic);
+void driversBegin(String unitTopic);
+void driversLoop();
+void driversSubscribe();
+void driversCallback(String _topic, String _payload);
+String driversGetDriversId();
+BaseDriver* driversGetDriver(String id);
+String driversGetDriverProperty(String id, String property);
+String driversSetDriverProperty(String id, String property, String value);
+String driversGetDriverProperties(String id);
+String driversGetAllDriversProperties();
 
-
-  private:
-    int pin1 = STEPPERPIN1;
-    int pin2 = STEPPERPIN2;
-    int pin3 = STEPPERPIN3;
-    int pin4 = STEPPERPIN4;
-
-    int toPosition = 5000;
-    int busy = 0;
-    int stop = 1;
-    int position = 5000;
-    int range = 10000;
-    int speed = 2000;
-
-    int lookup[8] = {B01000, B01100, B00100, B00110, B00010, B00011, B00001, B01001};
-    int countsperrev = 512; // number of steps per full revolution
-
-    void doStop();
-    void doOutput(int out);
-};
+bool checkPinBusy(int pin);
+String driversGetBusyPins();
+String driversGetPinsMap();
+int driversPinNameToValue(String pinName);
+String driversValueToPinName(int pinValue);
+bool driversSaveToConfig(int type, String id, int pin1, int pin2, int pin3, int pin4);
+String driversLoadFromConfig();
+String driversAdd(int type, String id, int pin1, int pin2, int pin3, int pin4);

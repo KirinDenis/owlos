@@ -39,12 +39,12 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-#include "DHTDevice.h"
+#include "DHTDriver.h"
 
 /*-------------------------------------------------------------------------------------------------------------------------
   Setup DHT sensor
   -------------------------------------------------------------------------------------------------------------------------*/
-bool DHTDevice::DHTsetup(int pin, int dhttype)
+bool DHTDriver::DHTsetup(int pin, int dhttype)
 {
 #ifdef DetailedDebug 
 	debugOut(id, "setup");
@@ -72,7 +72,7 @@ bool DHTDevice::DHTsetup(int pin, int dhttype)
 /*-------------------------------------------------------------------------------------------------------------------------
   DHT sensor get temperature value
   -------------------------------------------------------------------------------------------------------------------------*/
-float DHTDevice::DHTgetTemperature()
+float DHTDriver::DHTgetTemperature()
 {
 	if (dht == nullptr)
 	{
@@ -88,7 +88,7 @@ float DHTDevice::DHTgetTemperature()
 /*-------------------------------------------------------------------------------------------------------------------------
   DHT sensor get humidity value
   -------------------------------------------------------------------------------------------------------------------------*/
-float DHTDevice::DHTgetHumidity()
+float DHTDriver::DHTgetHumidity()
 {
 	if (dht == nullptr)
 	{
@@ -101,13 +101,13 @@ float DHTDevice::DHTgetHumidity()
 }
 
 
-bool DHTDevice::begin(String _topic)
+bool DHTDriver::begin(String _topic)
 {
 
-	if (id.length() == 0) id = DeviceID;
-	BaseDevice::init(id);
+	if (id.length() == 0) id = DriverID;
+	BaseDriver::init(id);
 
-	if (BaseDevice::begin(_topic))
+	if (BaseDriver::begin(_topic))
 	{
 
 		getPin();
@@ -130,15 +130,15 @@ bool DHTDevice::begin(String _topic)
 	}
 
 	trap = 0.1f;
-	setType(DHTDeviceType);
+	setType(DHTDriverType);
 	setAvailable(available);
 	return available;
 }
 
-bool DHTDevice::query()
+bool DHTDriver::query()
 {
 
-	if (BaseDevice::query())
+	if (BaseDriver::query())
 	{
 
 		float _temperature = std::atof(temperature.c_str());
@@ -184,10 +184,10 @@ bool DHTDevice::query()
 	return false;
 }
 
-String DHTDevice::getAllProperties()
+String DHTDriver::getAllProperties()
 {
 
-	String result = BaseDevice::getAllProperties();
+	String result = BaseDriver::getAllProperties();
 	result += "temperature=" + getTemperature() + "//rf\n";
 	result += "temperaturehistorydata=" + getTemperatureHistoryData() + "//r\n";
 	result += "temperaturehistoryfile=//r\n";
@@ -199,9 +199,9 @@ String DHTDevice::getAllProperties()
 }
 
 
-bool DHTDevice::publish()
+bool DHTDriver::publish()
 {
-	if (BaseDevice::publish())
+	if (BaseDriver::publish())
 	{
 		onInsideChange("temperature", temperature);
 		onInsideChange("humidity", humidity);
@@ -210,10 +210,10 @@ bool DHTDevice::publish()
 	return false;
 }
 
-String DHTDevice::onMessage(String _topic, String _payload, int transportMask)
+String DHTDriver::onMessage(String _topic, String _payload, int transportMask)
 {
 
-	String result = BaseDevice::onMessage(_topic, _payload, transportMask);
+	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
 	if (!available) return result;
 	if (String(topic + "/getpin").equals(_topic))
 	{
@@ -247,7 +247,7 @@ String DHTDevice::onMessage(String _topic, String _payload, int transportMask)
 	return result;
 }
 
-int DHTDevice::getPin()
+int DHTDriver::getPin()
 {
 	if (filesExists(id + ".pin"))
 	{
@@ -259,7 +259,7 @@ int DHTDevice::getPin()
 	return pin;
 }
 
-bool DHTDevice::setPin(int _pin)
+bool DHTDriver::setPin(int _pin)
 {
 	pin = _pin;
 	DHTSetuped = false;
@@ -272,7 +272,7 @@ bool DHTDevice::setPin(int _pin)
 	return true;
 }
 
-int DHTDevice::getDHTType()
+int DHTDriver::getDHTType()
 {
 	if (filesExists(id + ".dhttype"))
 	{
@@ -284,7 +284,7 @@ int DHTDevice::getDHTType()
 	return dhttype;
 }
 
-bool DHTDevice::setDHTType(int _dhttype)
+bool DHTDriver::setDHTType(int _dhttype)
 {
 	dhttype = _dhttype;
 	DHTSetuped = false;
@@ -297,7 +297,7 @@ bool DHTDevice::setDHTType(int _dhttype)
 }
 
 
-String DHTDevice::getTemperature()
+String DHTDriver::getTemperature()
 {
 	if (dht == nullptr)
 	{
@@ -328,7 +328,7 @@ String DHTDevice::getTemperature()
 	return temperature;
 }
 
-String DHTDevice::getHumidity()
+String DHTDriver::getHumidity()
 {
 
 	if (dht == nullptr)
@@ -360,7 +360,7 @@ String DHTDevice::getHumidity()
 	return humidity;
 }
 
-String DHTDevice::getTemperatureHistoryData()
+String DHTDriver::getTemperatureHistoryData()
 {
 	String	dataHistory = String(temperatureHistoryCount) + ";";
 
@@ -372,7 +372,7 @@ String DHTDevice::getTemperatureHistoryData()
 	return dataHistory;
 }
 
-bool DHTDevice::setTemperatureHistoryData(float _historydata)
+bool DHTDriver::setTemperatureHistoryData(float _historydata)
 {
 	if (isnan(_historydata)) return false;
 
@@ -392,7 +392,7 @@ bool DHTDevice::setTemperatureHistoryData(float _historydata)
 	return true;
 }
 
-String DHTDevice::getHumidityHistoryData()
+String DHTDriver::getHumidityHistoryData()
 {
 	String	dataHistory = String(humidityHistoryCount) + ";";
 
@@ -404,7 +404,7 @@ String DHTDevice::getHumidityHistoryData()
 	return dataHistory;
 }
 
-bool DHTDevice::setHumidityHistoryData(float _historydata)
+bool DHTDriver::setHumidityHistoryData(float _historydata)
 {
 	if (isnan(_historydata)) return false;
 	if (humidityHistoryCount < historySize) {
@@ -424,7 +424,7 @@ bool DHTDevice::setHumidityHistoryData(float _historydata)
 }
 
 //TemperatureHistoryFile property Read<->Write wrappers
-String DHTDevice::readTemperatureHistoryFile()
+String DHTDriver::readTemperatureHistoryFile()
 {
 	String result = "";
 	for (int i = 0; i < filesIndexesSize; i++)
@@ -439,7 +439,7 @@ String DHTDevice::readTemperatureHistoryFile()
 }
 
 
-bool DHTDevice::writeTemperatureHistoryFile(float _historydata)
+bool DHTDriver::writeTemperatureHistoryFile(float _historydata)
 {
 
 	bool result = false;

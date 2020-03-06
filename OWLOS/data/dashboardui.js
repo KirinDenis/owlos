@@ -84,17 +84,17 @@ var dashboardUI = {
         addWidgetButton.value = getLang("dashboardaddwidget");
         addWidgetButton.onclick = dashboardUI.addWidgetMode;
 
-        var devicesWidgetsPanel = document.getElementById("devicesWidgetsPanel");
+        var driversWidgetsPanel = document.getElementById("driversWidgetsPanel");
         
         for (var i = 0; i < configProperties.dashboards[0].widgets.length; i++) {
             try {
                 var widgetProp = configProperties.dashboards[0].widgets[i];
                 var widgetLayer = WidgetsLayer.getWidgetById(widgetProp.widgetWrapperId);
                 if (widgetLayer != undefined) {
-                    var widgetWrapper = new widgetLayer.widget(devicesWidgetsPanel, undefined, undefined, configProperties.dashboards[0].widgets[i], widgetProp.widgetProperties);
+                    var widgetWrapper = new widgetLayer.widget(driversWidgetsPanel, undefined, undefined, configProperties.dashboards[0].widgets[i], widgetProp.widgetProperties);
                                                           
 
-                    widgetWrapper.offlineStarter(devicesWidgetsPanel, widgetProp.deviceId, widgetProp.deviceProperty);                    
+                    widgetWrapper.offlineStarter(driversWidgetsPanel, widgetProp.driverId, widgetProp.driverProperty);                    
                     widgetWrapper.widget.onchange = config.onWidgetChange;
                     widgetWrapper.widget.ondelete = config.onWidgetDelete;
                     widgetWrapper.widget.properties = widgetProp.widgetProperties;
@@ -140,37 +140,37 @@ var dashboardUI = {
         var formGroup = modalBody.appendChild(document.createElement("div"));
         formGroup.className = "form-group";
 
-        //device select 
-        var deviceLabel = formGroup.appendChild(document.createElement("label"));
-        deviceLabel.setAttribute("for", "deviceSelect");
-        deviceLabel.innerText = getLang("nodeslist");
-        var deviceSelect = formGroup.appendChild(document.createElement('select'));
-        deviceSelect.className = "form-control form-control-sm";
-        deviceSelect.id = "typeSelect";
+        //driver select 
+        var driverLabel = formGroup.appendChild(document.createElement("label"));
+        driverLabel.setAttribute("for", "driverSelect");
+        driverLabel.innerText = getLang("nodeslist");
+        var driverSelect = formGroup.appendChild(document.createElement('select'));
+        driverSelect.className = "form-control form-control-sm";
+        driverSelect.id = "typeSelect";
 
         for (var node in configProperties.nodes) {
 
-            for (var i = 0; i < configProperties.nodes[node].devices.length; i++) {
-                var valueSelectOption = deviceSelect.appendChild(document.createElement('option'));
-                valueSelectOption.innerText = getLang(configProperties.nodes[node].devices[i]._nodenickname + "/" + configProperties.nodes[node].devices[i]._id);
-                valueSelectOption.device = configProperties.nodes[node].devices[i];
+            for (var i = 0; i < configProperties.nodes[node].drivers.length; i++) {
+                var valueSelectOption = driverSelect.appendChild(document.createElement('option'));
+                valueSelectOption.innerText = getLang(configProperties.nodes[node].drivers[i]._nodenickname + "/" + configProperties.nodes[node].drivers[i]._id);
+                valueSelectOption.driver = configProperties.nodes[node].drivers[i];
             }
         }
 
-        deviceSelect.onchange = dashboardUI.onDeviceSelect;
-        //device property select 
+        driverSelect.onchange = dashboardUI.onDriverSelect;
+        //driver property select 
 
-        var devicePropLabel = formGroup.appendChild(document.createElement("label"));
-        devicePropLabel.setAttribute("for", "devicePropSelect");
-        devicePropLabel.innerText = getLang("devicesporplist");
-        var devicePropSelect = formGroup.appendChild(document.createElement('select'));
-        devicePropSelect.className = "form-control form-control-sm";
-        devicePropSelect.id = "typeSelect";
+        var driverPropLabel = formGroup.appendChild(document.createElement("label"));
+        driverPropLabel.setAttribute("for", "driverPropSelect");
+        driverPropLabel.innerText = getLang("driversporplist");
+        var driverPropSelect = formGroup.appendChild(document.createElement('select'));
+        driverPropSelect.className = "form-control form-control-sm";
+        driverPropSelect.id = "typeSelect";
 
-        devicePropSelect.onchange = dashboardUI.onDevicePropSelect;
+        driverPropSelect.onchange = dashboardUI.onDriverPropSelect;
 
         //widgets 
-        //device select 
+        //driver select 
         var widgetLabel = formGroup.appendChild(document.createElement("label"));
         widgetLabel.setAttribute("for", "widgetSelect");
         widgetLabel.innerText = getLang("widgetslist");
@@ -180,12 +180,12 @@ var dashboardUI = {
 
 
 
-        deviceSelect.devicePropSelect = devicePropSelect;
-        devicePropSelect.deviceSelect = deviceSelect;
-        deviceSelect.widgetSelect = widgetSelect;
+        driverSelect.driverPropSelect = driverPropSelect;
+        driverPropSelect.driverSelect = driverSelect;
+        driverSelect.widgetSelect = widgetSelect;
 
-        var event = { currentTarget: deviceSelect };
-        dashboardUI.onDeviceSelect(event);
+        var event = { currentTarget: driverSelect };
+        dashboardUI.onDriverSelect(event);
 
 
         //end of Body form ----------
@@ -193,7 +193,7 @@ var dashboardUI = {
         widgetButton.type = "button";
         widgetButton.className = "btn btn-sm btn-success";
         widgetButton.id = "widgetModalButton";
-        widgetButton.deviceSelect = deviceSelect;
+        widgetButton.driverSelect = driverSelect;
         widgetButton.onclick = dashboardUI.addWidgetClick;
         widgetButton.innerText = getLang("dashboardaddwidgetbutton");
 
@@ -202,46 +202,46 @@ var dashboardUI = {
 
     },
 
-    onDeviceSelect: function (event) {
-        var deviceSelect = event.currentTarget;
-        var devicePropSelect = deviceSelect.devicePropSelect;
-        var widgetSelect = deviceSelect.widgetSelect;
-        var valueSelectOption = deviceSelect.options[deviceSelect.selectedIndex];
+    onDriverSelect: function (event) {
+        var driverSelect = event.currentTarget;
+        var driverPropSelect = driverSelect.driverPropSelect;
+        var widgetSelect = driverSelect.widgetSelect;
+        var valueSelectOption = driverSelect.options[driverSelect.selectedIndex];
 
 
-        var device = valueSelectOption.device;
+        var driver = valueSelectOption.driver;
 
-        devicePropSelect.options.length = 0;
-        for (var deviceProp in device) {
-            if ((device[deviceProp].name == undefined) || (device[deviceProp].type == undefined)) continue;
-            var propSelectOption = devicePropSelect.appendChild(document.createElement('option'));
-            propSelectOption.innerText = device[deviceProp].name;
-            propSelectOption.deviceProp = device[deviceProp];
+        driverPropSelect.options.length = 0;
+        for (var driverProp in driver) {
+            if ((driver[driverProp].name == undefined) || (driver[driverProp].type == undefined)) continue;
+            var propSelectOption = driverPropSelect.appendChild(document.createElement('option'));
+            propSelectOption.innerText = driver[driverProp].name;
+            propSelectOption.driverProp = driver[driverProp];
         }
 
-        var devicePropSelectOption = devicePropSelect.options[devicePropSelect.selectedIndex];
-        var deviceProp = devicePropSelectOption.deviceProp;
-        dashboardUI.refreshWidgetsSelect(widgetSelect, device, deviceProp);
+        var driverPropSelectOption = driverPropSelect.options[driverPropSelect.selectedIndex];
+        var driverProp = driverPropSelectOption.driverProp;
+        dashboardUI.refreshWidgetsSelect(widgetSelect, driver, driverProp);
     },
 
-    onDevicePropSelect: function (event) {
-        var devicePropSelect = event.currentTarget;
-        var deviceSelect = devicePropSelect.deviceSelect;
-        var widgetSelect = deviceSelect.widgetSelect;
+    onDriverPropSelect: function (event) {
+        var driverPropSelect = event.currentTarget;
+        var driverSelect = driverPropSelect.driverSelect;
+        var widgetSelect = driverSelect.widgetSelect;
 
-        var deviceSelectOption = deviceSelect.options[deviceSelect.selectedIndex];
-        var device = deviceSelectOption.device;
-        var devicePropSelectOption = devicePropSelect.options[devicePropSelect.selectedIndex];
-        var deviceProp = devicePropSelectOption.deviceProp;
-        dashboardUI.refreshWidgetsSelect(widgetSelect, device, deviceProp);
+        var driverSelectOption = driverSelect.options[driverSelect.selectedIndex];
+        var driver = driverSelectOption.driver;
+        var driverPropSelectOption = driverPropSelect.options[driverPropSelect.selectedIndex];
+        var driverProp = driverPropSelectOption.driverProp;
+        dashboardUI.refreshWidgetsSelect(widgetSelect, driver, driverProp);
     },
 
-    refreshWidgetsSelect: function (widgetSelect, device, deviceProp) {
+    refreshWidgetsSelect: function (widgetSelect, driver, driverProp) {
         widgetSelect.options.length = 0;
         for (var widget in WidgetsLayer) {
             if (WidgetsLayer[widget].widget == undefined) continue;
-            if ((WidgetsLayer[widget].devicesTypes.indexOf(";" + device.type.value + ";") != -1) || (WidgetsLayer[widget].devicesTypes == "any")) {
-                if ((WidgetsLayer[widget].devicesProperties.indexOf(";" + deviceProp.name + ";") != -1) || (WidgetsLayer[widget].devicesProperties == "any")) {
+            if ((WidgetsLayer[widget].driversTypes.indexOf(";" + driver.type.value + ";") != -1) || (WidgetsLayer[widget].driversTypes == "any")) {
+                if ((WidgetsLayer[widget].driversProperties.indexOf(";" + driverProp.name + ";") != -1) || (WidgetsLayer[widget].driversProperties == "any")) {
                     var widgetSelectOption = widgetSelect.appendChild(document.createElement('option'));
                     widgetSelectOption.innerText = WidgetsLayer[widget].name;
                     widgetSelectOption.widgetLayer = WidgetsLayer[widget];
@@ -252,20 +252,20 @@ var dashboardUI = {
     },
 
     addWidgetClick: function (event) {
-        var devicesWidgetsPanel = document.getElementById("devicesWidgetsPanel");
+        var driversWidgetsPanel = document.getElementById("driversWidgetsPanel");
         var button = event.currentTarget;
-        var deviceSelect = button.deviceSelect;
-        var devicePropSelect = deviceSelect.devicePropSelect;
-        var widgetSelect = deviceSelect.widgetSelect;
+        var driverSelect = button.driverSelect;
+        var driverPropSelect = driverSelect.driverPropSelect;
+        var widgetSelect = driverSelect.widgetSelect;
 
-        var valueSelectOption = deviceSelect.options[deviceSelect.selectedIndex];
-        var device = valueSelectOption.device;
-        var deviceProp = devicePropSelect.options[devicePropSelect.selectedIndex].deviceProp;
+        var valueSelectOption = driverSelect.options[driverSelect.selectedIndex];
+        var driver = valueSelectOption.driver;
+        var driverProp = driverPropSelect.options[driverPropSelect.selectedIndex].driverProp;
         var widgetLayer = widgetSelect.options[widgetSelect.selectedIndex].widgetLayer;
 
-        new widgetLayer.widget(devicesWidgetsPanel, device, deviceProp).onload = function (widgetWrapper) {
+        new widgetLayer.widget(driversWidgetsPanel, driver, driverProp).onload = function (widgetWrapper) {
 
-            var configPropertiesWidget = config.addWidget("main", device._id, deviceProp.name, widgetLayer.id, widgetWrapper.widget.id, widgetWrapper.widget.properties);
+            var configPropertiesWidget = config.addWidget("main", driver._id, driverProp.name, widgetLayer.id, widgetWrapper.widget.id, widgetWrapper.widget.properties);
 
             widgetWrapper.widget.onchange = config.onWidgetChange;
             widgetWrapper.widget.ondelete = config.onWidgetDelete;
@@ -275,14 +275,14 @@ var dashboardUI = {
         };
 
         /*
-            var devicesWidgetsPanel = document.getElementById("widgetsPanelDataDiv");
-            var device = devices.getDeviceById("temperature");    
-            new TemperatureWidgetWrapper(devicesWidgetsPanel, device, device.temperature);
-            new TemperatureWidgetWrapper(devicesWidgetsPanel, device, device.temperature, 1);
+            var driversWidgetsPanel = document.getElementById("widgetsPanelDataDiv");
+            var driver = drivers.getDriverById("temperature");    
+            new TemperatureWidgetWrapper(driversWidgetsPanel, driver, driver.temperature);
+            new TemperatureWidgetWrapper(driversWidgetsPanel, driver, driver.temperature, 1);
         
-            var device = devices.getDeviceById("humidiry");
-            new HumidityDevice(devicesWidgetsPanel, device, device.humidity);
-            new HumidityDevice(devicesWidgetsPanel, device, device.humidity, 1);
+            var driver = drivers.getDriverById("humidiry");
+            new HumidityDriver(driversWidgetsPanel, driver, driver.humidity);
+            new HumidityDriver(driversWidgetsPanel, driver, driver.humidity, 1);
     
         */
 

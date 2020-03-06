@@ -40,7 +40,7 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 #include "UnitProperties.h"
-#include "src\Managers\DeviceManager.h"
+#include "src\Managers\DriverManager.h"
 #include "src\Managers\FileManager.h"
 #include "src\Managers\TransportManager.h"
 #include "src\Managers\UpdateManager.h"
@@ -209,7 +209,7 @@ uint32_t espmagicflashchipspeed(DefaultESPMagicFlashChipSpeed);
 FlashMode_t espmagicflashchipmode((FlashMode_t)DefaultESPMagicFlashChipMode);
 
 //Pins routins 
-//busyPins variable is original declarated at DevicesManager, this flag only control changes of state
+//busyPins variable is original declarated at DriversManager, this flag only control changes of state
 String _busyPins(DefaultBusyPins);
 String pinsMap(DefaultPinsMap);
 
@@ -1607,7 +1607,7 @@ bool unitSetESPMagicFlashChipMode(int _espmagicflashchipmode)
 //Pins 
 String unitGetBusyPins()
 {
-	String __busyPins = devicesGetBusyPins();
+	String __busyPins = driversGetBusyPins();
 	if (!String(__busyPins).equals(_busyPins)) onInsideChange("busypins", String(__busyPins));
 	if (__busyPins.length() == 0) return " ";
 	else return _busyPins = __busyPins;
@@ -1615,7 +1615,7 @@ String unitGetBusyPins()
 
 String unitGetPinsMap()
 {
-	String _pinsMap = devicesGetPinsMap();
+	String _pinsMap = driversGetPinsMap();
 	if (!String(_pinsMap).equals(pinsMap)) onInsideChange("pinsmap", String(_pinsMap));
 	return pinsMap = _pinsMap;
 }

@@ -39,61 +39,77 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-#include "SmokeDevice.h"
+#include "SensorDriver.h"
 
-bool SmokeDevice::begin(String _topic)
+bool SensorDriver::init()
 {
-	if (id.length() == 0) id = DeviceID;
-	BaseDevice::init(id);
+	if (id.length() == 0) id = DriverID;
+	BaseDriver::init(id);
 
-	BaseDevice::begin(_topic);
+	getPin();
+	pinMode(pin, INPUT);
+}
+
+
+bool SensorDriver::begin(String _topic)
+{
+	BaseDriver::begin(_topic);
 	available = true;
-
-	trap = 80;
-	setType(Smoke);
+	setType(Sensor);
 	setAvailable(available);
 	return available;
 }
 
-String SmokeDevice::getAllProperties()
+bool SensorDriver::query()
 {
-	String result = BaseDevice::getAllProperties();
-	result += "smoke=" + smoke + "//rsi\n";
+	if (BaseDriver::query())
+	{
+		//for sensor publish data() as it changed 
+		String _data = data;
+		if (!_data.equals(getData()))
+		{
+			onInsideChange("data", data);
+			//TODO getData return int, check if getData == 0
+			sensorTriger++;
+		}
+
+		//Fill array of history data
+		if (millis() >= lastHistoryMillis + historyInterval)
+		{
+			lastHistoryMillis = millis();
+			setHistoryData(sensorTriger);
+		}
+
+		return true;
+	}
+	return false;
+};
+
+
+String SensorDriver::getAllProperties()
+{
+	String result = BaseDriver::getAllProperties();
+	result += "data=" + data + "//rb\n";
 	result += "pin=" + String(pin) + "//i\n";
 	return result;
 }
 
-bool SmokeDevice::query()
+
+bool SensorDriver::publish()
 {
-	if (BaseDevice::query())
+	if (BaseDriver::publish())
 	{
-		int _smoke = std::atoi(smoke.c_str());
-		getSmoke();
-		float different = std::atoi(smoke.c_str()) - _smoke;
-		if ((different > trap) || (different < -trap))
-		{
-			onInsideChange("smoke", smoke);
-		}
+		onInsideChange("data", data);
 		return true;
 	}
 	return false;
-}
+};
 
-bool SmokeDevice::publish()
+String SensorDriver::onMessage(String _topic, String _payload, int transportMask)
 {
-	if (BaseDevice::publish())
-	{
-		onInsideChange("smoke", smoke);
-		return true;
-	}
-	return false;
-}
-
-String SmokeDevice::onMessage(String _topic, String _payload, int transportMask)
-{
-	String result = BaseDevice::onMessage(_topic, _payload, transportMask);
+	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
 	if (!available) return result;
-	//Smoke sensor GPIO 1-pin (A0 by default)
+	//Sensor sensor GPIO 1-pin (A0 by default)
 	if (String(topic + "/getpin").equals(_topic))
 	{
 		result = onGetProperty("pin", String(getPin()), transportMask);
@@ -102,15 +118,15 @@ String SmokeDevice::onMessage(String _topic, String _payload, int transportMask)
 	{
 		result = String(setPin(std::atoi(_payload.c_str())));
 	}
-	else if ((String(topic + "/getsmoke").equals(_topic)) || (String(topic + "/setsmoke").equals(_topic)))
+	else if ((String(topic + "/getdata").equals(_topic)) || (String(topic + "/setdata").equals(_topic)))
 	{
-		result = onGetProperty("smoke", getSmoke(), transportMask);
+		result = onGetProperty("data", getData(), transportMask);
 	}
 	return result;
 }
 
-//Smoke Sensor 1-pin (A0 by default) ----------------------------------------------------
-int SmokeDevice::getPin()
+//Sensor Sensor 1-pin (A0 by default) ----------------------------------------------------
+int SensorDriver::getPin()
 {
 	if (filesExists(id + ".pin"))
 	{
@@ -122,21 +138,25 @@ int SmokeDevice::getPin()
 	return pin;
 }
 
-bool SmokeDevice::setPin(int _pin)
+bool SensorDriver::setPin(int _pin)
 {
 	pin = _pin;
 	pinMode(pin, INPUT);
 	filesWriteInt(id + ".pin", pin);
-	return onInsideChange("pin", String(pin));
+	if (available)
+	{
+		return onInsideChange("pin", String(pin));
+	}
+	return true;
 }
 
 
-String SmokeDevice::getSmoke()
+String SensorDriver::getData()
 {
-	int _smoke = analogRead(pin);
-	smoke = String(_smoke);
+	int _data = digitalRead(pin);
+	data = String(_data);
 #ifdef DetailedDebug
-	debugOut(id, "smoke=" + smoke);
+	debugOut(id, "data=" + data);
 #endif
-	return smoke;
+	return data;
 }

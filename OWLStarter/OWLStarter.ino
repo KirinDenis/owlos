@@ -219,7 +219,7 @@ void loop() {
 			download("bootcore.js.gz", host + "bootcore.js.gz");
 			download("restclientcore.js.gz", host + "restclientcore.js.gz");
 			download("configcore.js.gz", host + "configcore.js.gz");
-			download("devicescore.js.gz", host + "devicescore.js.gz");
+			download("driverscore.js.gz", host + "driverscore.js.gz");
 			download("drawcore.js.gz", host + "drawcore.js.gz");
 			download("languagescore.js.gz", host + "languagescore.js.gz");
 			download("speechcore.js.gz", host + "speechcore.js.gz");
@@ -242,7 +242,7 @@ void loop() {
 						
 			download("widgetswrappers.js.gz", host + "widgetswrappers.js.gz");
 
-			download("devicesui.js.gz", host + "devicesui.js.gz");
+			download("driversui.js.gz", host + "driversui.js.gz");
 			download("settingsui.js.gz", host + "settingsui.js.gz");			
 			download("filespanelui.js.gz", host + "filespanelui.js.gz");
 			download("dashboardui.js.gz", host + "dashboardui.js.gz");

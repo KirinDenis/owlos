@@ -41,7 +41,7 @@ OWLOS распространяется в надежде, что она буде
 
 #include "UnitProperties.h"
 #include "src\Utils\Utils.h"
-#include "src\Managers\DeviceManager.h"
+#include "src\Managers\DriverManager.h"
 #include "src\Managers\ScriptManager.h"
 #include "src\Managers\FileManager.h"
 #include "src\Managers\TransportManager.h"
@@ -63,7 +63,7 @@ void setup() {
 
   filesBegin(); //prepare Flash file systeme (see Tools/Flash size item - use 2M Flash Size, is ZERO size by default -> switch to 2M  
   unitInit();
-  devicesInit(unitGetTopic()); //prepare onboard Unit's devices
+  driversInit(unitGetTopic()); //prepare onboard Unit's drivers
 
   //Setup network stack - WiFi -> after MQTT -- if both available Transport accessable, if not Unit try reconnect forever (every 5 sec by default)
   //Ther is not connected at begin(), see Main::Loop() transportReconnect() function using
@@ -85,12 +85,12 @@ void loop() {
     if (transportReconnect()) //DO connection routin, see Transport.cpp
     {
       #ifdef DetailedDebug 
-	  debugOut(unitGetUnitId(), "Transport available"); //if HEAD and MQTT Brokker is available setuping devices
+	  debugOut(unitGetUnitId(), "Transport available"); //if HEAD and MQTT Brokker is available setuping drivers
 	  #endif
       transportSetCallBack(Callback); //Regist Callback function for loopback subscribed messages (from MQTT Publishers)
-      devicesBegin(unitGetTopic()); //initilize devices network properties, each device must publish() here TYPE and AVAILABLE status
+      driversBegin(unitGetTopic()); //initilize drivers network properties, each driver must publish() here TYPE and AVAILABLE status
       unitSubscribe();
-      //devicesSubscribe();  //subscribe() all AVAILABLE devices to here topics (see: deviceID), the topic -> UnitTopic+ESPChipID/DeviceId
+      //driversSubscribe();  //subscribe() all AVAILABLE drivers to here topics (see: driverID), the topic -> UnitTopic+ESPChipID/DriverId
       
     }
     else //if can't connect to transport
@@ -103,8 +103,8 @@ void loop() {
 //  else //if network (Transport) to be available
   {
     transportLoop(); //Ping MQTT (at this version MQTT used only, FFR Ping RESTful to
-    //give CPU time quantum to each device. Like are sample -> temperature sensor can check physical sensor value
-    devicesLoop(); //the deviceLoop() more actual for sensors devices, the actuator devices wait until Sub()->OnMessage() happens, see Main::Callback(...) function
+    //give CPU time quantum to each driver. Like are sample -> temperature sensor can check physical sensor value
+    driversLoop(); //the driverLoop() more actual for sensors drivers, the actuator drivers wait until Sub()->OnMessage() happens, see Main::Callback(...) function
 	//Scripts loop
 	scriptsRun();
   }
@@ -136,8 +136,8 @@ void Callback(char* _topic, byte* _payload, unsigned int length) {
 	  if (unitOnMessage(String(_topic), String(payload_buff), MQTTMask).equals(WrongPropertyName))
 	  {
 	    //if not UNIT property
-	    //Put recieved message to all devices, each device can process any topic recieved by Unit
-	    devicesCallback(String(_topic), String(payload_buff));
+	    //Put recieved message to all drivers, each driver can process any topic recieved by Unit
+	    driversCallback(String(_topic), String(payload_buff));
 	  }
   }
 }

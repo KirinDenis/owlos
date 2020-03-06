@@ -39,14 +39,14 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-#include "LCDDevice.h"
+#include "LCDDriver.h"
 
 LiquidCrystal_I2C * lcd;
 
-bool LCDDevice::init()
+bool LCDDriver::init()
 {
-	if (id.length() == 0) id = DeviceID;
-	BaseDevice::init(id);
+	if (id.length() == 0) id = DriverID;
+	BaseDriver::init(id);
 
 	getAddr();
 	getCols();
@@ -71,17 +71,17 @@ bool LCDDevice::init()
 
 }
 
-bool LCDDevice::begin(String _topic)
+bool LCDDriver::begin(String _topic)
 {
-	BaseDevice::begin(_topic);
+	BaseDriver::begin(_topic);
 	setType(LCD);
 	setAvailable(available);
 	return available;
 }
 
-String LCDDevice::getAllProperties()
+String LCDDriver::getAllProperties()
 {
-	String result = BaseDevice::getAllProperties();
+	String result = BaseDriver::getAllProperties();
 	result += "text=" + text + "//s\n";
 	result += "backlight=" + String(backlight) + "//b\n";
 	result += "clear=" + String(clear) + "//b\n";
@@ -93,9 +93,9 @@ String LCDDevice::getAllProperties()
 	return result;
 }
 
-String LCDDevice::onMessage(String _topic, String _payload, int transportMask)
+String LCDDriver::onMessage(String _topic, String _payload, int transportMask)
 {
-	String result = BaseDevice::onMessage(_topic, _payload, transportMask);
+	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
 	if (!available) return result;
 
 	if (String(topic + "/gettext").equals(_topic))
@@ -175,7 +175,7 @@ String LCDDevice::onMessage(String _topic, String _payload, int transportMask)
 }
 
 //Text -------------------------------------------
-String LCDDevice::getText()
+String LCDDriver::getText()
 {
 	if (filesExists(id + ".text"))
 	{
@@ -187,12 +187,12 @@ String LCDDevice::getText()
 	return text;
 }
 
-bool LCDDevice::setText(String _text, bool doEvent)
+bool LCDDriver::setText(String _text, bool doEvent)
 {
 	text = _text;
 	if ((x == 0) && (y == 0))
 	{
-		//TODO Array related to LCD device rows count
+		//TODO Array related to LCD driver rows count
 		setClear(1, false);
 		String r1 = text.substring(0, cols);
 		String r2 = text.substring(cols + 1, cols * 2);
@@ -224,7 +224,7 @@ bool LCDDevice::setText(String _text, bool doEvent)
 }
 
 //Addr --------------------------------------------------------------
-int LCDDevice::getAddr()
+int LCDDriver::getAddr()
 {
 	if (filesExists(id + ".addr"))
 	{
@@ -236,7 +236,7 @@ int LCDDevice::getAddr()
 	return addr;
 }
 
-bool LCDDevice::setAddr(int _addr, bool doEvent)
+bool LCDDriver::setAddr(int _addr, bool doEvent)
 {
 	addr = _addr;
 	filesWriteInt(id + ".addr", addr);
@@ -249,7 +249,7 @@ bool LCDDevice::setAddr(int _addr, bool doEvent)
 }
 
 //Cols --------------------------------------------------------------
-int LCDDevice::getCols()
+int LCDDriver::getCols()
 {
 	if (filesExists(id + ".cols"))
 	{
@@ -261,7 +261,7 @@ int LCDDevice::getCols()
 	return cols;
 }
 
-bool LCDDevice::setCols(int _cols, bool doEvent)
+bool LCDDriver::setCols(int _cols, bool doEvent)
 {
 	cols = _cols;
 	filesWriteInt(id + ".cols", cols);
@@ -274,7 +274,7 @@ bool LCDDevice::setCols(int _cols, bool doEvent)
 }
 
 //Rows --------------------------------------------------------------
-int LCDDevice::getRows()
+int LCDDriver::getRows()
 {
 	if (filesExists(id + ".rows"))
 	{
@@ -286,7 +286,7 @@ int LCDDevice::getRows()
 	return rows;
 }
 
-bool LCDDevice::setRows(int _rows, bool doEvent)
+bool LCDDriver::setRows(int _rows, bool doEvent)
 {
 	rows = _rows;
 	filesWriteInt(id + ".rows", rows);
@@ -300,7 +300,7 @@ bool LCDDevice::setRows(int _rows, bool doEvent)
 
 
 //Backlight
-int LCDDevice::getBacklight()
+int LCDDriver::getBacklight()
 {
 	if (filesExists(id + ".backlight"))
 	{
@@ -312,7 +312,7 @@ int LCDDevice::getBacklight()
 	return backlight;
 }
 
-bool LCDDevice::setBacklight(int _backlight, bool doEvent)
+bool LCDDriver::setBacklight(int _backlight, bool doEvent)
 {
 	backlight = _backlight;
 	if (backlight)
@@ -332,7 +332,7 @@ bool LCDDevice::setBacklight(int _backlight, bool doEvent)
 	return true;
 }
 //Clear
-int LCDDevice::getClear()
+int LCDDriver::getClear()
 {
 	clear = 0; //clear is function, 0 is not executed now
 #ifdef DetailedDebug
@@ -341,7 +341,7 @@ int LCDDevice::getClear()
 	return clear;
 }
 
-bool LCDDevice::setClear(int _clear, bool doEvent)
+bool LCDDriver::setClear(int _clear, bool doEvent)
 {
 	clear = _clear;
 	if (clear)
@@ -357,7 +357,7 @@ bool LCDDevice::setClear(int _clear, bool doEvent)
 	return true;
 }
 //X
-int LCDDevice::getX()
+int LCDDriver::getX()
 {
 	if (filesExists(id + ".x"))
 	{
@@ -369,7 +369,7 @@ int LCDDevice::getX()
 	return x;
 }
 
-bool LCDDevice::setX(int _x, bool doEvent)
+bool LCDDriver::setX(int _x, bool doEvent)
 {
 	if (_x < 0) _x = 0;
 	if (_x > cols) _x = cols;
@@ -384,7 +384,7 @@ bool LCDDevice::setX(int _x, bool doEvent)
 }
 
 //Y
-int LCDDevice::getY()
+int LCDDriver::getY()
 {
 	if (filesExists(id + ".y"))
 	{
@@ -396,7 +396,7 @@ int LCDDevice::getY()
 	return y;
 }
 
-bool LCDDevice::setY(int _y, bool doEvent)
+bool LCDDriver::setY(int _y, bool doEvent)
 {
 	if (_y < 0) _y = 0;
 	if (_y > rows) _y = rows;

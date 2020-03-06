@@ -39,13 +39,13 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-#include "OptoDevice.h"
+#include "OptoDriver.h"
 
 
-bool OptoDevice::init()
+bool OptoDriver::init()
 {
-	if (id.length() == 0) id = DeviceID;
-	BaseDevice::init(id);
+	if (id.length() == 0) id = DriverID;
+	BaseDriver::init(id);
 	//init properies
 	getPin1();
 	getPin2();
@@ -55,18 +55,18 @@ bool OptoDevice::init()
 
 }
 
-bool OptoDevice::begin(String _topic)
+bool OptoDriver::begin(String _topic)
 {
-	BaseDevice::begin(_topic);
+	BaseDriver::begin(_topic);
 	setType(Opto);
 	setAvailable(available);
-	/*BaseDevice::*/setQueryInterval(queryInterval);
+	/*BaseDriver::*/setQueryInterval(queryInterval);
 	return available;
 }
 
-bool OptoDevice::query()
+bool OptoDriver::query()
 {
-	if (BaseDevice::query())
+	if (BaseDriver::query())
 	{
 		//for Opto publish data as it changed 
 		String _data = data;
@@ -80,9 +80,9 @@ bool OptoDevice::query()
 };
 
 
-String OptoDevice::getAllProperties()
+String OptoDriver::getAllProperties()
 {
-	String result = BaseDevice::getAllProperties();
+	String result = BaseDriver::getAllProperties();
 	result += "data=" + data + "\n";
 	result += "pin1=" + String(pin1) + "\n";
 	result += "pin2=" + String(pin2) + "\n";
@@ -90,9 +90,9 @@ String OptoDevice::getAllProperties()
 }
 
 
-bool OptoDevice::publish()
+bool OptoDriver::publish()
 {
-	if (BaseDevice::publish())
+	if (BaseDriver::publish())
 	{
 		onInsideChange("data", data);
 		return true;
@@ -100,9 +100,9 @@ bool OptoDevice::publish()
 	return false;
 };
 
-String OptoDevice::onMessage(String _topic, String _payload, int transportMask)
+String OptoDriver::onMessage(String _topic, String _payload, int transportMask)
 {
-	String result = BaseDevice::onMessage(_topic, _payload, transportMask);
+	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
 	if (!available) return result;
 	//Opto sensor GPIO 2-pin (D5 by default)
 	if (String(topic + "/getpin1").equals(_topic))
@@ -130,7 +130,7 @@ String OptoDevice::onMessage(String _topic, String _payload, int transportMask)
 }
 
 //Opto -pin1 GPIO 2 (D5 by default) ----------------------------------------------------
-int OptoDevice::getPin1()
+int OptoDriver::getPin1()
 {
 	if (filesExists(id + ".pin1"))
 	{
@@ -142,7 +142,7 @@ int OptoDevice::getPin1()
 	return pin1;
 }
 
-bool OptoDevice::setPin1(int _pin1)
+bool OptoDriver::setPin1(int _pin1)
 {
 	pin1 = _pin1;
 	pinMode(pin1, INPUT);
@@ -151,7 +151,7 @@ bool OptoDevice::setPin1(int _pin1)
 }
 
 //Opto -pin2 GPIO 3 (D6 by default) ----------------------------------------------------
-int OptoDevice::getPin2()
+int OptoDriver::getPin2()
 {
 	if (filesExists(id + ".pin2"))
 	{
@@ -163,7 +163,7 @@ int OptoDevice::getPin2()
 	return pin2;
 }
 
-bool OptoDevice::setPin2(int _pin2)
+bool OptoDriver::setPin2(int _pin2)
 {
 	pin2 = _pin2;
 	pinMode(pin2, INPUT);
@@ -171,7 +171,7 @@ bool OptoDevice::setPin2(int _pin2)
 	return onInsideChange("pin2", String(pin2));
 }
 
-String OptoDevice::getData()
+String OptoDriver::getData()
 {
 	sensor1Condition = digitalRead(pin1);
 	sensor2Condition = digitalRead(pin2);

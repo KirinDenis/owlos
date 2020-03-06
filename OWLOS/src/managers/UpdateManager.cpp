@@ -176,7 +176,7 @@ String updateUI()
 		updateLog += downloadFileWithLog("bootcore.js.gz");
 		updateLog += downloadFileWithLog("restclientcore.js.gz");
 		updateLog += downloadFileWithLog("configcore.js.gz");
-		updateLog += downloadFileWithLog("devicescore.js.gz");
+		updateLog += downloadFileWithLog("driverscore.js.gz");
 		updateLog += downloadFileWithLog("drawcore.js.gz");
 		updateLog += downloadFileWithLog("languagescore.js.gz");
 		updateLog += downloadFileWithLog("speechcore.js.gz");
@@ -201,7 +201,7 @@ String updateUI()
 
 		updateLog += downloadFileWithLog("widgetswrappers.js.gz");
 
-		updateLog += downloadFileWithLog("devicesui.js.gz");
+		updateLog += downloadFileWithLog("driversui.js.gz");
 		updateLog += downloadFileWithLog("settingsui.js.gz");
 		updateLog += downloadFileWithLog("filespanelui.js.gz");
 		updateLog += downloadFileWithLog("dashboardui.js.gz");

@@ -187,7 +187,7 @@ var FilesList =
         _proto.uploadClick = function uploadClick(event) {
             var filesListObject = event.currentTarget.filesList; //event.stopPropagation();
 
-            document.getElementById("addDevicePanel").innerHTML = "";
+            document.getElementById("addDriverPanel").innerHTML = "";
             document.getElementById("resetPanel").innerHTML = "";
             var uploadPanel = document.getElementById("uploadPanel");
             uploadPanel.innerHTML = "";

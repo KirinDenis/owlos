@@ -40,23 +40,23 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------
-// Этот класс реализует объектную модель устройств подключенных к микроконтроллеру.
+// Этот класс реализует объектную модель драйвер подключенных к микроконтроллеру.
 // 
-// Перед началом изучения этого класса - вызовите API getalldevicesproperties и изучите формат передачи
-// свойств устройств: http://youruniturl:yourunitport/getalldevicesproperties (например http://192.168.1.10:8084/getalldevicesproperties)
+// Перед началом изучения этого класса - вызовите API getalldriversproperties и изучите формат передачи
+// свойств драйвер: http://youruniturl:yourunitport/getalldriversproperties (например http://192.168.1.10:8084/getalldriversproperties)
 
 // Примечания:
 // "парсинг" - синтаксический анализ https://ru.wikipedia.org/wiki/%D0%A1%D0%B8%D0%BD%D1%82%D0%B0%D0%BA%D1%81%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9_%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7
 // "распарсить" - подвергнуть синтаксическому анализу
-// "актуатор" - исполнительное устройство https://ru.wikipedia.org/wiki/%D0%98%D1%81%D0%BF%D0%BE%D0%BB%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D1%83%D1%81%D1%82%D1%80%D0%BE%D0%B9%D1%81%D1%82%D0%B2%D0%BE
+// "актуатор" - исполнительное драйвер https://ru.wikipedia.org/wiki/%D0%98%D1%81%D0%BF%D0%BE%D0%BB%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D1%83%D1%81%D1%82%D1%80%D0%BE%D0%B9%D1%81%D1%82%D0%B2%D0%BE
 // "сенсор" - датчик https://ru.wikipedia.org/wiki/%D0%94%D0%B0%D1%82%D1%87%D0%B8%D0%BA
 // "event" - событие
-// "device" - устройство, в данном контексте любой сенсор или актуатор подключенный к микроконтроллеру
+// "driver" - драйвер, в данном контексте любой сенсор или актуатор подключенный к микроконтроллеру
 
 /*
  *  The structure:
- *  devices.devices[*] (events: newDevice, deviceLoaded)
- *                  |--->device1[*] (events: newProperty)
+ *  drivers.drivers[*] (events: newDriver, driverLoaded)
+ *                  |--->driver1[*] (events: newProperty)
  *                  |            |--->property1[*] (events: networkStatus, value)
  *                  |            |              |-->parentId
  *                  |            |              |-->networkStatus  
@@ -71,7 +71,7 @@ OWLOS распространяется в надежде, что она буде
  *                  |            |
  *                  |            |--->property...[*]
  *                  |            |
- *                  |--->device2[*] (events: newProperty)
+ *                  |--->driver2[*] (events: newProperty)
  *                  |            |--->property1[*] (events: networkStatus, value)
  *                  |            |              |-->parentId
  *                  |            |              |-->networkStatus
@@ -85,46 +85,46 @@ OWLOS распространяется в надежде, что она буде
  *                  |            |              |--> ...
  *                  |            |
  *                  |            |--->property...[*]
- *                  |--->device...[*]
+ *                  |--->driver...[*]
  *                  |            |--->property...[*]
  *                  |            |              |-->... 
  * ----------------------------------------------------------------------------------------------------------
  * События (events):
- * Уровня объекта devices:
+ * Уровня объекта drivers:
  * - networkStatus сетевое состояние всего модуля
- * - newDevice новое устройство найдено при парсинге
- * - deviceLoaded парсинг свойств очередного устройства завершен (обратите внимание на свойство device._new - true если это новое устройство)
- * Уровня объекта device:
- * - newProperty когда при парсинге найдено новое свойство устройства
- * Уровня объекта deviceProperty:
+ * - newDriver новое драйвер найдено при парсинге
+ * - driverLoaded парсинг свойств очередного драйвера завершен (обратите внимание на свойство driver._new - true если это новое драйвер)
+ * Уровня объекта driver:
+ * - newProperty когда при парсинге найдено новое свойство драйвера
+ * Уровня объекта driverProperty:
  * - networkStatus когда состояние сети изменилось - Online, Offline, Error или Reconnect
- * - value когда значение свойства устройство изменилось (либо при парсинге, либо программно - например актуатор поменял состояние с OFF на ON)
+ * - value когда значение свойства драйвер изменилось (либо при парсинге, либо программно - например актуатор поменял состояние с OFF на ON)
  */
 
-//Devices type codes:
-const TestDeviceType = 0;
-const DHTDeviceType = 1;
-const LightDeviceType = 2;
-const SmokeDeviceType = 3;
-const MotionDeviceType = 4;
-const SensorDeviceType = 5;
-const StepperDeviceType = 6;
-const LCDDeviceType = 7;
-const ActuatorDeviceType = 8;
-const OptoDeviceType = 9;
-const ValveDeviceType = 10;
-const WiFiDeviceType = 11;
-const NetworkDeviceType = 12;
-const ESPDeviceType = 13;
-const ConfigDeviceType = 14;
+//Drivers type codes:
+const TestDriverType = 0;
+const DHTDriverType = 1;
+const LightDriverType = 2;
+const SmokeDriverType = 3;
+const MotionDriverType = 4;
+const SensorDriverType = 5;
+const StepperDriverType = 6;
+const LCDDriverType = 7;
+const ActuatorDriverType = 8;
+const OptoDriverType = 9;
+const ValveDriverType = 10;
+const WiFiDriverType = 11;
+const NetworkDriverType = 12;
+const ESPDriverType = 13;
+const ConfigDriverType = 14;
 
-var devices = {
-    // результат getalldevicesproperties либо пустая строка
+var drivers = {
+    // результат getalldriversproperties либо пустая строка
     
-    //массив объектов с устройствами
-    //devices: [],
+    //массив объектов с драйверами
+    //drivers: [],
 
-    //запросить свойства устройств, если удачно - распарсить результат, обновить свойства объектов с устройствами (devices[])
+    //запросить свойства драйвер, если удачно - распарсить результат, обновить свойства объектов с драйверами (drivers[])
     //асинхронный
     //вызывается внешним кодом, обычно с интервалом 10-15 секунд (смотрите index.js)
     refresh: function (node) {
@@ -132,7 +132,7 @@ var devices = {
         // асинхронный HTTP запрос
         // this.refreshResult - метод который будет вызван HTTPClient-ом по окончанию асинхронного запроса
         // this - ссылка на экземпляр этого объекта        
-        httpGetAsyncWithReciever(node.host + "getalldevicesproperties", this.refreshResult, node);
+        httpGetAsyncWithReciever(node.host + "getalldriversproperties", this.refreshResult, node);
     },
 
     //вызывается асинхронным HTTPClient по окончанию запроса, указан как параметр в httpGetAsyncWithReciever, смотрите this.refresh()
@@ -143,10 +143,10 @@ var devices = {
         //HTTPClient добавляет строку "%error" в начало Response если запрос не был завешен HTTPCode=200 или произошел TimeOut
         if (!httpResult.indexOf("%error")==0) {
             node.networkStatus = NET_ONLINE;
-            //если запрос был выполнен удачно, парсим новые данные об устройствах, изменяем свойства devices[] и добавляем новые device если они появились
-            //перед изучением парсинга, посмотрите результат API getalldevicesproperties как текст
-            //!-> asyncReciever это этот же класс devices!
-            devices.parseDevices(httpResult, node);
+            //если запрос был выполнен удачно, парсим новые данные об драйверах, изменяем свойства drivers[] и добавляем новые driver если они появились
+            //перед изучением парсинга, посмотрите результат API getalldriversproperties как текст
+            //!-> asyncReciever это этот же класс drivers!
+            drivers.parseDrivers(httpResult, node);
 
         }
         else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
@@ -156,7 +156,7 @@ var devices = {
             else {
                 node.networkStatus = NET_OFFLINE;
             }
-            node.parsedDevices = "";
+            node.parsedDrivers = "";
         }
     },
     //-------------------------------------------------------------------------------------------------------------
@@ -165,81 +165,81 @@ var devices = {
     //подписанные методы, если соответствующие события произойдут
     //массив "подписантов", содержит ссылки на объекты типа {метод, объект} - где метод который надо вызвать, объект - ссылка на объект 
     //делавший подписку    
-    newDeviceListners: [],
+    newDriverListners: [],
     //подписка для внешних объектов - _event - метод в классе подписчике для вызова, _sender класс подписчик
-    //--> данная подписка для события которое вызовется в случае добавления нового устройства в список
-    addNewDeviceListner: function (_event, _sender) {
-        this.newDeviceListners.push(event = {
+    //--> данная подписка для события которое вызовется в случае добавления нового драйвера в список
+    addNewDriverListner: function (_event, _sender) {
+        this.newDriverListners.push(event = {
             event: _event,
             sender: _sender
         });
     },
 
-    deviceLoadedListners: [],
-    addDeviceLoadedListner: function (_event, _sender) {
-        this.deviceLoadedListners.push(event = {
+    driverLoadedListners: [],
+    addDriverLoadedListner: function (_event, _sender) {
+        this.driverLoadedListners.push(event = {
             event: _event,
             sender: _sender
         });
     },
-    onDeviceLoaded: function (device) {
-        for (var k = 0; k < this.deviceLoadedListners.length; k++) {
-            this.deviceLoadedListners[k].event(this.deviceLoadedListners[k].sender, device);
+    onDriverLoaded: function (driver) {
+        for (var k = 0; k < this.driverLoadedListners.length; k++) {
+            this.driverLoadedListners[k].event(this.driverLoadedListners[k].sender, driver);
         }
     },
-    //получить объект устройства по его ID
-    getDeviceById: function (deviceId, host) {
+    //получить объект драйвера по его ID
+    getDriverById: function (driverId, host) {
         var node = config.getNodeByHost(host);
         if (node == undefined) return undefined;
-        for (var i = 0; i < node.devices.length; i++) {
-            if (node.devices[i]._id === deviceId) {
-               return node.devices[i];
+        for (var i = 0; i < node.drivers.length; i++) {
+            if (node.drivers[i]._id === driverId) {
+               return node.drivers[i];
             }                
         }
         return undefined;
     },
     //-------------------------------------------------------------------------------------------------------------
-    //парсинг (синтаксический разбор) свойств устройств прошедших от микроконтроллер - смотрите refresh()
-    //этот метод будет вызываться множество раз, по этой причине он не только создает устройства и их свойства
-    //а так же проверяет было ли устройство создано и как изменились его свойства после предыдущего парсинга
-    parseDevices: function (httpResult, node) {
+    //парсинг (синтаксический разбор) свойств драйвер прошедших от микроконтроллер - смотрите refresh()
+    //этот метод будет вызываться множество раз, по этой причине он не только создает драйвера и их свойства
+    //а так же проверяет было ли драйвер создано и как изменились его свойства после предыдущего парсинга
+    parseDrivers: function (httpResult, node) {
         //первичный парсинг, помещаем строку пришедшую от HTTPClient в массив строк, разделяя по "\n"
-        node.recievedDevicesProperties = httpResult.split("\n");
+        node.recievedDriversProperties = httpResult.split("\n");
         
-        if (node.recievedDevicesProperties !== "") {//если первичный парсинг удался
+        if (node.recievedDriversProperties !== "") {//если первичный парсинг удался
             
-            var device = undefined; //сбрасываем будущий объект со свойствами устройства 
+            var driver = undefined; //сбрасываем будущий объект со свойствами драйвера 
             
-            for (var i = 0; i < node.recievedDevicesProperties.length; i++) {//перечисляем все строки в HTTPResult 
-                if (node.recievedDevicesProperties[i] === "") continue; //если строка пуста, берем следующею
-                //--> разбор устройств
-                if (node.recievedDevicesProperties[i].indexOf("properties for:")==0) { //если заголовок устройства найден                    
+            for (var i = 0; i < node.recievedDriversProperties.length; i++) {//перечисляем все строки в HTTPResult 
+                if (node.recievedDriversProperties[i] === "") continue; //если строка пуста, берем следующею
+                //--> разбор драйвер
+                if (node.recievedDriversProperties[i].indexOf("properties for:")==0) { //если заголовок драйвера найден                    
 
-                    if (device != undefined) {
-                        this.onDeviceLoaded(device);
+                    if (driver != undefined) {
+                        this.onDriverLoaded(driver);
                     }
-                    device = undefined;
-                    //извлекаем ID очередного устройства
-                    currentId = node.recievedDevicesProperties[i].split(":")[1];
-                    //пробуем отыскать устройство с таким ID среди уже существующих 
-                    for (var j = 0; j < node.devices.length; j++) {
-                        if (node.devices[j]._id === currentId) { //устройство с таким ID существует
-                            device = node.devices[j]; //указываем существующее устройство как обрабатываемое в текущей итерации 
-                            device._new = false;
-                            newDevice = false; //указываем для текущее устройство уже существует
-                            break; //прекращаем поиск, устройство найдено
+                    driver = undefined;
+                    //извлекаем ID очередного драйвера
+                    currentId = node.recievedDriversProperties[i].split(":")[1];
+                    //пробуем отыскать драйвер с таким ID среди уже существующих 
+                    for (var j = 0; j < node.drivers.length; j++) {
+                        if (node.drivers[j]._id === currentId) { //драйвер с таким ID существует
+                            driver = node.drivers[j]; //указываем существующее драйвер как обрабатываемое в текущей итерации 
+                            driver._new = false;
+                            newDriver = false; //указываем для текущее драйвер уже существует
+                            break; //прекращаем поиск, драйвер найдено
                         }
                     }
 
-                    if (device == undefined) {//если устройство с текущем ID еще не существуем 
-                        device = this.addDevice(currentId, node);
+                    if (driver == undefined) {//если драйвер с текущем ID еще не существуем 
+                        driver = this.addDriver(currentId, node);
                     }
                 }
-                //--> разбор свойств устройств
-                else {//если текущая строка не является объявлением очередного устройства, значит эта строка со свойством и значением свойства от последнего найденного устройства
-                    //свойства устройств должны быть в формате [PropertyName]=[PropertyValue]<[//]PropertyType>
+                //--> разбор свойств драйвер
+                else {//если текущая строка не является объявлением очередного драйвера, значит эта строка со свойством и значением свойства от последнего найденного драйвера
+                    //свойства драйвер должны быть в формате [PropertyName]=[PropertyValue]<[//]PropertyType>
                     //где:
-                    //PropertyName - название свойства(уникальное в рамках одного устройства)
+                    //PropertyName - название свойства(уникальное в рамках одного драйвера)
                     //PropertyValue - значение этого свойства
                     //если после значения свойства указаны "//" то после них должны идти флаги с PropertyType типом свойства
                     //PropertyType флаги: один символ-один флаг, регистр имеет значение                    
@@ -254,7 +254,7 @@ var devices = {
                     //if not read only - write accessable
 
                     //вторичный парсинг, помещаем строку в массив, разделяя по "=", первый элемент название, второй значение и тип
-                    var parsedProp = node.recievedDevicesProperties[i].split("=");
+                    var parsedProp = node.recievedDriversProperties[i].split("=");
                     if (parsedProp.length < 2) continue; //не удалось распарсить свойство
                     //забираем название свойства
                     var propertyName = parsedProp[0];
@@ -270,30 +270,30 @@ var devices = {
                         var propertyType = "";
                     } 
 
-                    if (device[propertyName] != undefined) {//если такое свойство уже существует
-                        if (device[propertyName].value != propertyValue) {//и если предыдущее значение не равно текущему                            
-                            device[propertyName].value = propertyValue;//меняем значение свойства на новое
+                    if (driver[propertyName] != undefined) {//если такое свойство уже существует
+                        if (driver[propertyName].value != propertyValue) {//и если предыдущее значение не равно текущему                            
+                            driver[propertyName].value = propertyValue;//меняем значение свойства на новое
                         }
                     }
-                    else { //если такого свойства еще нет у объекта, создаем его, смотрите метод "newDeviceProperty"
-                        this.newDeviceProperty(device, propertyName, propertyValue, propertyType);
+                    else { //если такого свойства еще нет у объекта, создаем его, смотрите метод "newDriverProperty"
+                        this.newDriverProperty(driver, propertyName, propertyValue, propertyType);
                     }
                 }
             } //ENDOF for
-            if (device != undefined) {
-                this.onDeviceLoaded(device);
+            if (driver != undefined) {
+                this.onDriverLoaded(driver);
             }
         }
-    }, //ENDOF parse devices
+    }, //ENDOF parse drivers
 
-    addDevice: function (currentId, node) {
-        device = { //создаем новый объект представляющий устройство
-            _id: currentId, //навастриваем уникальный ID устройства, для идентификации объекта с устройством в будущем
+    addDriver: function (currentId, node) {
+        driver = { //создаем новый объект представляющий драйвер
+            _id: currentId, //навастриваем уникальный ID драйвера, для идентификации объекта с драйверм в будущем
             _new: true,
             _nodenickname: node.nodenickname,
             _host: node.host,
-            //создаем внутри объекта устройства, свойства и методы для обслуживания сторонних объектов желающих подписаться на
-            //событие - создания нового свойства у устройства, смотрите newDeviceListners[] в классе devices для большей информации
+            //создаем внутри объекта драйвера, свойства и методы для обслуживания сторонних объектов желающих подписаться на
+            //событие - создания нового свойства у драйвера, смотрите newDriverListners[] в классе drivers для большей информации
             //массив подписчиков на newProperty event
             newPropertyListners: [],
             //метод для организации подписки
@@ -303,36 +303,36 @@ var devices = {
                     sender: _sender
                 });
             },
-        }; //новый объект для устройства сформирован
-        //добавляем объект устройство в список устройств для объекта devices
-        node.devices.push(device);
-        //произошло событие newDevice -> вызываем всех его подписчиков(точнее вызываем методы которые подписчики предоставили ранее, смотрите: addNewDeviceListner )
-        for (var k = 0; k < this.newDeviceListners.length; k++) {
-            this.newDeviceListners[k].event(this.newDeviceListners[k].sender, device);
+        }; //новый объект для драйвера сформирован
+        //добавляем объект драйвер в список драйвер для объекта drivers
+        node.drivers.push(driver);
+        //произошло событие newDriver -> вызываем всех его подписчиков(точнее вызываем методы которые подписчики предоставили ранее, смотрите: addNewDriverListner )
+        for (var k = 0; k < this.newDriverListners.length; k++) {
+            this.newDriverListners[k].event(this.newDriverListners[k].sender, driver);
         }
-        return device;
+        return driver;
     },
 
-    //добавляет новое свойство в существующее устройство
+    //добавляет новое свойство в существующее драйвер
     //ну вот казалось бы - того свойства - название, значение, тип...но на практике, в целостной системе есть множество зависимых объектов
-    //взаимодействующих со свойствами устройств - изменяют их, зависят от их значения и так далее.
-    //Например, индикатор температуры "следит" за значением свойства tepmerature в устройстве termometr
+    //взаимодействующих со свойствами драйвер - изменяют их, зависят от их значения и так далее.
+    //Например, индикатор температуры "следит" за значением свойства tepmerature в драйвере termometr
     //За этим же свойством следит и график температуры и таблица отображающая свойства  termometr
     //есть два пути как решать такую задачу
-    //1) все "заинтересованные" объекты, по мере надобности опрашивают соответствующие свойства устройства
-    //2) все "заинтересованные" объекты подписываются на событие которое будет вызвано объектом устройства, только в том случае если значение свойства изменится.
-    //мы идем по второму пути - следящих объектов может быть сколько угодно, они ничего не делают пока свойство устройства не изменится.
-    //по этой причине, хоть это может и показаться странным - в классе devices больше кода обслуживает не само устройства, а его свойства. 
-    newDeviceProperty: function (device, propertyName, propertyValue, propertyType) {
+    //1) все "заинтересованные" объекты, по мере надобности опрашивают соответствующие свойства драйвера
+    //2) все "заинтересованные" объекты подписываются на событие которое будет вызвано объектом драйвера, только в том случае если значение свойства изменится.
+    //мы идем по второму пути - следящих объектов может быть сколько угодно, они ничего не делают пока свойство драйвера не изменится.
+    //по этой причине, хоть это может и показаться странным - в классе drivers больше кода обслуживает не само драйвера, а его свойства. 
+    newDriverProperty: function (driver, propertyName, propertyValue, propertyType) {
         //создаем новое свойство
-        device[propertyName] = {
-            parenthost: device._host,
-            parentid: device._id, //запоминаем какому устройству оно принадлежит
+        driver[propertyName] = {
+            parenthost: driver._host,
+            parentid: driver._id, //запоминаем какому драйверу оно принадлежит
             name: propertyName, //назначаем имя свойства            
             _value: propertyValue, //истинное прямое значение свойства
             set value(value) { //метод для изменения значения свойства (для внешнего вызова)
                 this._value = value; //запоминаем предложение новое значение свойства
-                //перечисляем всех подписчиков события изменения свойства устройства
+                //перечисляем всех подписчиков события изменения свойства драйвера
                 for (var k = 0; k < this.valueListners.length; k++) {
                     this.valueListners[k].event(this.valueListners[k].sender, this); //вызываем всех кто подписался
                 }
@@ -340,7 +340,7 @@ var devices = {
             get value() { //для тех объектов которые хотят получить значение свойства 
                 return this._value;
             },
-            valueListners: [], //массив подписчиков на событие изменения свойства(смотрите this.newDeviceListners для большей информации о механизме событий)
+            valueListners: [], //массив подписчиков на событие изменения свойства(смотрите this.newDriverListners для большей информации о механизме событий)
             addValueListner: function (_event, _sender) { //регистрация подписки на изменения свойства                
                 try { //проверяем готов ли метод слушателя для обработчики этого события
                     _event(_sender, this);
@@ -355,10 +355,10 @@ var devices = {
                     sender: _sender
                 });
             },
-            //endof device property value ---------------------------------
+            //endof driver property value ---------------------------------
             type: propertyType, //тип свойства -> "si" - выделенный integer, "p" - пароль, "br" - boolean readonly, "" - string которую можно изменять
 
-            //далее идут свойсва и методы необходимые для организации асинхронного RESTful взаимодействия свойства объекта с устройством
+            //далее идут свойсва и методы необходимые для организации асинхронного RESTful взаимодействия свойства объекта с драйверм
             sendedValue: undefined, //временно хранилища, для желаемого нового значения свойства, которое будет назначено если HTTPCient не вернет ошибки            
             //сетевое состояние свойства - онлайн, оффлайн, пере подсоединение ("в работе"), ошибка --> по умолчанию онлайн
             _networkStatus: NET_ONLINE,
@@ -383,8 +383,8 @@ var devices = {
                 this.networkStatusListners.push(event = { event: _event, sender: _sender });
             },
             //endof network status property, event and listners       
-            //сетевое ("физическое") изменение свойства устройства 
-            //вызов этого метода приведет к асинхронному вызову RESTful API изменяющей свойства устройства на стороне Unit
+            //сетевое ("физическое") изменение свойства драйвера 
+            //вызов этого метода приведет к асинхронному вызову RESTful API изменяющей свойства драйвера на стороне Unit
             setValue: function (_value, upperReciever, upperSender) {
                 if (this.networkStatus == NET_RECONNECT) {//если текущее сетевое состояния свойства - в работе (пере подключение), ничего не делаем выходим
                     return;
@@ -398,11 +398,11 @@ var devices = {
                         //делаем асинхронный вызов API                        
                         //передаем метод в этом объекте который надо вызвать по окончанию ссылку на этот объект свойства this.setValueReciever и this
                         //обратите внимание - передаем не value а this.sendedValue - значение на которое хотим изменить это свойство
-                        setDevicePropertyAsyncWithReciever(this.parenthost, this.parentid, this.name, this.sendedValue, this.setValueReciever, upperReciever, this, upperSender);
+                        setDriverPropertyAsyncWithReciever(this.parenthost, this.parentid, this.name, this.sendedValue, this.setValueReciever, upperReciever, this, upperSender);
                     }
                     else { //если сетевое состояние "не в сети" или "пере подключение", заменяем вызов для установки значения, на вызов для пере подключения и получения текущего значения
-                        //идея в том, что на верхнем уровне, если пользователь попытается изменить значение свойство, в тот момент когда устройство было не в сети или содержало ошибку
-                        //то вместо назначения свойства, будет проведено пере подключение и попытка получить текущее значение с устройства.
+                        //идея в том, что на верхнем уровне, если пользователь попытается изменить значение свойство, в тот момент когда драйвер было не в сети или содержало ошибку
+                        //то вместо назначения свойства, будет проведено пере подключение и попытка получить текущее значение с драйвера.
                         //например, реле и лампочкой управляет 5 пользователей, произошел сетевой сбой, и все ушли в офлайн.За какое то время сеть восстановилась, но некоторые
                         //пользователя запомнили состояние реле как включено, некоторые как выключено - и те и другие пробуют изменить это значения, не зная о его текущем состоянии.
                         //По этой причине, мы перекрываем такие действия, переводя их в направлении получения значения, перед тем как оно будет изменено.
@@ -411,13 +411,13 @@ var devices = {
                     }
                 }
             },
-            //асинхронный получатель будет вызван из HTTPClient после попытки изменить свойство устройства
+            //асинхронный получатель будет вызван из HTTPClient после попытки изменить свойство драйвера
             //как было сказано выше - это будет другой поток и мы не имеем право использовать this
             setValueReciever: function (HTTPResult, upperReciever, sender, upperSender) {
                 if (!HTTPResult.indexOf("%error")==0) {//если не было сетевой ошибки
-                    if (HTTPResult === "1") { //микроконтроллер  вернет "1" в качестве результата, если удалось изменить значения свойства устройства
+                    if (HTTPResult === "1") { //микроконтроллер  вернет "1" в качестве результата, если удалось изменить значения свойства драйвера
                         sender.networkStatus = NET_ONLINE; //разрешаем сетевой статус как "в сети" - до этого мы переходили в статус "в работе"
-                        sender.value = sender.sendedValue; //ранее мы сохранили желаемое значение свойства, назначаем его в качестве нового значения свойства устройства
+                        sender.value = sender.sendedValue; //ранее мы сохранили желаемое значение свойства, назначаем его в качестве нового значения свойства драйвера
                         //^^смотрите реализацию setter-a свойства value - все подписчики узнают о том что свойство было изменено                        
                     }
                     else {
@@ -428,7 +428,7 @@ var devices = {
                     if (!HTTPResult.indexOf("response")!=-1) {//если HTTPClient вернул "%error" и в этой строке не было слова "response" - соединение не было установлено, статус "не в сети"
                         sender.networkStatus = NET_OFFLINE;
                     }
-                    else { //если ответ был, но он не HTTPResult 200 OK - ошибка либо устройства либо Unit 
+                    else { //если ответ был, но он не HTTPResult 200 OK - ошибка либо драйвера либо Unit 
                         sender.networkStatus = NET_ERROR;
                     }
                 }
@@ -436,14 +436,14 @@ var devices = {
                     upperReciever(upperSender, sender); //(!НЕ ПУТАТЬ С ПОДПИСЧИКАМИ!)
                 }
             },
-            //получение значения свойства устройства, асинхронно через RESTful API - реализовано так же как и setValueReciever
+            //получение значения свойства драйвера, асинхронно через RESTful API - реализовано так же как и setValueReciever
             //с той разницей что будет вызвано при всех статусах кроме "в работе"
             getValue: function (upperReciever, upperSender) {
                 if (this.networkStatus == NET_RECONNECT) {
                     return;
                 }
                 this.networkStatus = NET_RECONNECT;
-                getDevicePropertyAsyncWithReciever(this.parenthost, this.parentid, this.name, this.getValueReciever, upperReciever, this, upperSender);
+                getDriverPropertyAsyncWithReciever(this.parenthost, this.parentid, this.name, this.getValueReciever, upperReciever, this, upperSender);
             },
             //асинхронный получатель значения свойства, отличается от "Set", там что примет от HTTPClient новое значение свойства, если не было ошибки сети
             getValueReciever: function (HTTPResult, upperReciever, sender, upperSender) {
@@ -455,7 +455,7 @@ var devices = {
                     if (!HTTPResult.indexOf("response")!=-1) { //уходим в оффлайн если ошибки
                         sender.networkStatus = NET_OFFLINE;
                     }
-                    else { //device error
+                    else { //driver error
                         sender.networkStatus = NET_ERROR;
                     }
                 }
@@ -463,13 +463,13 @@ var devices = {
                     upperReciever(upperSender, sender);
                 }
             }
-        }//ENDOF creation new device property object
-        //после того как новое свойство устройства создано, вызовем всех подписчиков соответствующего события
-        for (var k = 0; k < device.newPropertyListners.length; k++) {
-            device.newPropertyListners[k].event(device.newPropertyListners[k].sender, device[propertyName]);
+        }//ENDOF creation new driver property object
+        //после того как новое свойство драйвера создано, вызовем всех подписчиков соответствующего события
+        for (var k = 0; k < driver.newPropertyListners.length; k++) {
+            driver.newPropertyListners[k].event(driver.newPropertyListners[k].sender, driver[propertyName]);
         }
 
-    }//ENDOF newDeviceProperty method 
-} //ENDOF devices object 
+    }//ENDOF newDriverProperty method 
+} //ENDOF drivers object 
 
 

@@ -65,7 +65,7 @@ var settingsUI = {
             nodeHRef.innerHTML = getLang("addnode");
             nodeHRef.href = "#home";
 
-            //панель не видна, она существует для организии SideBar, сами панели со свойствами устройств сделаны на основе navBar - так сложилось исторически, SideBar только переключает их
+            //панель не видна, она существует для организии SideBar, сами панели со свойствами драйвер сделаны на основе navBar - так сложилось исторически, SideBar только переключает их
             var nodePropAnchors = document.getElementById("nodePropAnchors");
             //NavTabs панель для панелей со свойствами нод
             var nodePropNavBar = nodePropAnchors.appendChild(document.createElement("ul"));
@@ -89,7 +89,7 @@ var settingsUI = {
                 nodeAhref.id = node.nodenickname + "ahref";
 
 
-                //nodeAhref.onclick = settingsUI.deviceAnchorClick;
+                //nodeAhref.onclick = settingsUI.driverAnchorClick;
                 nodeAhref.parentLi = nodeLi;
                 nodeAhref.node = node;
                 node.addNetworkStatusListner(settingsUI.onNetworkChange, nodeAhref);
@@ -109,7 +109,7 @@ var settingsUI = {
                 scriptsAhref.parentLi = nodeLi;
                 //filesHRef.style.color = theme.warning;
                 scriptsAhref.setAttribute("data-toggle", "collapse");
-                scriptsAhref.onclick = settingsUI.deviceAnchorClick;
+                scriptsAhref.onclick = settingsUI.driverAnchorClick;
                 scriptsAhref.href = "#" + node.nodenickname + "scriptssubmenu";
                 scriptsAhref.node = node;
 
@@ -121,9 +121,9 @@ var settingsUI = {
 
                 scriptsAhrefSpan = scriptsAhref.appendChild(document.createElement("span"));
                 scriptsAhrefSpan.className = "badge badge-pill badge-warning";
-                scriptsAhrefSpan.id = node.nodenickname + "scriptsAhrefDeviceCountSpan";
+                scriptsAhrefSpan.id = node.nodenickname + "scriptsAhrefDriverCountSpan";
                 scriptsAhrefSpan.innerHTML = "0";
-                scriptsAhrefSpan.devicesCount = 0;
+                scriptsAhrefSpan.driversCount = 0;
 
 
                 var scriptsSubmenuUl = scriptsNavItem.appendChild(document.createElement("ul"));
@@ -143,7 +143,7 @@ var settingsUI = {
                 scriptsAddAhref.node = node; //привязываем пункт меню к ноде 
                 scriptsAddAhref.innerHTML = getLang("createscript");
                 scriptsAddAhref.onclick = settingsUI.createScriptClick;
-                scriptsAddAhref.parentLi = scriptsAddLi; //сохраняем родительский deviceId
+                scriptsAddAhref.parentLi = scriptsAddLi; //сохраняем родительский driverId
 
                 scriptsManager.onNew = settingsUI.onScriptNew;
                 scriptsManager.onChange = settingsUI.onScriptChange;
@@ -168,28 +168,28 @@ var settingsUI = {
 
                 RESTfulAhrefSpan = RESTfulAhref.appendChild(document.createElement("span"));
                 RESTfulAhrefSpan.className = "badge badge-pill badge-warning";
-                RESTfulAhrefSpan.id = node.nodenickname + "RESTfulAhrefDeviceCountSpan";
+                RESTfulAhrefSpan.id = node.nodenickname + "RESTfulAhrefDriverCountSpan";
                 RESTfulAhrefSpan.innerHTML = "0";
-                RESTfulAhrefSpan.devicesCount = 0;
+                RESTfulAhrefSpan.driversCount = 0;
 
 
                 var RESTfulSubmenuUl = RESTfulNavItem.appendChild(document.createElement("ul"));
                 RESTfulSubmenuUl.className = "collapse list-unstyled";
                 RESTfulSubmenuUl.id = node.nodenickname + "restfulsubmenu";
 
-                //Add device submenuitem ----------------
-                var deviceNavItem = RESTfulSubmenuUl.appendChild(document.createElement("li"));
-                deviceNavItem.className = "nav-item";
-                var deviceHRef = deviceNavItem.appendChild(document.createElement("a"));
-                deviceHRef.className = "nav-link";
-                deviceHRef.style.color = theme.warning;
-                deviceHRef.parentLi = nodeLi;
-                //deviceHRef.style.color = theme.success;
-                deviceHRef.setAttribute("data-toggle", "tab");
-                deviceHRef.onclick = devicesUI.addDeviceClick;
-                deviceHRef.innerHTML = getLang("adddevice");
-                deviceHRef.href = "#home";
-                deviceHRef.node = node;
+                //Add driver submenuitem ----------------
+                var driverNavItem = RESTfulSubmenuUl.appendChild(document.createElement("li"));
+                driverNavItem.className = "nav-item";
+                var driverHRef = driverNavItem.appendChild(document.createElement("a"));
+                driverHRef.className = "nav-link";
+                driverHRef.style.color = theme.warning;
+                driverHRef.parentLi = nodeLi;
+                //driverHRef.style.color = theme.success;
+                driverHRef.setAttribute("data-toggle", "tab");
+                driverHRef.onclick = driversUI.addDriverClick;
+                driverHRef.innerHTML = getLang("adddriver");
+                driverHRef.href = "#home";
+                driverHRef.node = node;
 
 
 
@@ -202,7 +202,7 @@ var settingsUI = {
                 nodePanelHRef.parentLi = nodeLi;
                 //nodePanelHRef.style.color = theme.warning;
                 nodePanelHRef.setAttribute("data-toggle", "tab");
-                nodePanelHRef.onclick = settingsUI.deviceAnchorClick;
+                nodePanelHRef.onclick = settingsUI.driverAnchorClick;
                 nodePanelHRef.innerText = getLang("nodeproperties");
                 nodePanelHRef.href = "#" + node.nodenickname + "nodePropsPanel";
                 nodePanelHRef.node = node;
@@ -220,7 +220,7 @@ var settingsUI = {
                 nodePropHolderPanel.className = "row";
 
                 //подготавливаем панели со свойствами ноды (для каждой ноды своя панель id = node.nodenickname + "nodePropPanel")
-                //смотрите обработчик события onDeviceLoaded() - он запоняет эту панель
+                //смотрите обработчик события onDriverLoaded() - он запоняет эту панель
                 settingsUI.addCard(nodePropHolderPanel, node.nodenickname + "NetworkNodeProp", getLang("networknodeprop"), 12);
                 var networkNodePropBody = document.getElementById(node.nodenickname + "NetworkNodePropBody");
                 settingsUI.addDiv(networkNodePropBody, node.nodenickname + "NetworkNodePropBody1", 4);
@@ -242,7 +242,7 @@ var settingsUI = {
                 filesHRef.parentLi = nodeLi;
                 //filesHRef.style.color = theme.warning;
                 filesHRef.setAttribute("data-toggle", "tab");
-                filesHRef.onclick = settingsUI.deviceAnchorClick;
+                filesHRef.onclick = settingsUI.driverAnchorClick;
                 filesHRef.innerText = getLang("files");
                 filesHRef.href = "#" + node.nodenickname + "filesfadepanel";
                 filesHRef.node = node;
@@ -299,8 +299,8 @@ var settingsUI = {
         scriptsAhref.href = "#" + script.node.nodenickname + "_" + script.name + "panel"; //якорь на панель 
         scriptsAhref.node = script.node; //привязываем пункт меню к ноде 
         scriptsAhref.innerText = script.name;
-        scriptsAhref.onclick = settingsUI.deviceAnchorClick; //обработчик клика на пунк меню (переключение панелей)
-        scriptsAhref.parentLi = scriptsLi; //сохраняем родительский deviceId
+        scriptsAhref.onclick = settingsUI.driverAnchorClick; //обработчик клика на пунк меню (переключение панелей)
+        scriptsAhref.parentLi = scriptsLi; //сохраняем родительский driverId
         scriptsLi.scriptsAhref = scriptsAhref;
 
         switch (parseInt(script.status)) {
@@ -539,7 +539,7 @@ var settingsUI = {
                 var event = {
                     currentTarget: scriptsLi.scriptsAhref
                 }
-                settingsUI.deviceAnchorClick(event);
+                settingsUI.driverAnchorClick(event);
                 $(scriptsLi.scriptsAhref).toggleClass("active");
                 $(scriptsLi.panel).toggleClass("active show");
                 return;
@@ -551,7 +551,7 @@ var settingsUI = {
         var event = {
             currentTarget: nodePanelHRef
         }
-        settingsUI.deviceAnchorClick(event);
+        settingsUI.driverAnchorClick(event);
         $(nodePanelHRef).toggleClass("active");
         $(nodePropsPanel).toggleClass("active show");
     },
@@ -781,35 +781,35 @@ var settingsUI = {
     },
 
     //---------------------------------------------------------------------------------------------------------------------------------------------------
-    //когда очередная нода загружает очередное устройство - строим индикаторы в верхней панели "Настройки" - Online, WiFi AP, WiFi ST, RESTful, MQTT, OTA
+    //когда очередная нода загружает очередное драйвер - строим индикаторы в верхней панели "Настройки" - Online, WiFi AP, WiFi ST, RESTful, MQTT, OTA
     //и подготавлием панель управления нодой (с кнопками Update, Reset и основными свойствами ноды) - смотрите onConfigChange такая панель создается для каждой
     //ноды id = node.nodenickname + "nodePropPanel"    
-    onDeviceLoaded: function (sender, device) {
-        if (device._new) { //если это устройство загружено впервые (вновь созданные устройства так же вызовут этот метод)
+    onDriverLoaded: function (sender, driver) {
+        if (driver._new) { //если это драйвер загружено впервые (вновь созданные драйвера так же вызовут этот метод)
 
-            var nodeSubmenuUl = document.getElementById(device._nodenickname + "restfulsubmenu"); //ищем пункт sideBar соответствующий ноде которой принадлежит устройство
+            var nodeSubmenuUl = document.getElementById(driver._nodenickname + "restfulsubmenu"); //ищем пункт sideBar соответствующий ноде которой принадлежит драйвер
             if (nodeSubmenuUl == undefined) return; //если такого пункта нет - выходим
 
-            var node = config.getNodeByHost(device._host); //узнаем какой ноде принадлежит устройство
+            var node = config.getNodeByHost(driver._host); //узнаем какой ноде принадлежит драйвер
             if (node == undefined) return; //выходим если нода не найдена
 
-            var deviceLi = nodeSubmenuUl.appendChild(document.createElement("li")); //добавляем дочерний пукт в меню ноды в sideBar
-            deviceLi.className = "nav-item";
+            var driverLi = nodeSubmenuUl.appendChild(document.createElement("li")); //добавляем дочерний пукт в меню ноды в sideBar
+            driverLi.className = "nav-item";
 
-            //submenu devices count 
+            //submenu drivers count 
 
-            var RESTfulAhrefSpan = document.getElementById(device._nodenickname + "RESTfulAhrefDeviceCountSpan");
-            RESTfulAhrefSpan.devicesCount++;
-            RESTfulAhrefSpan.innerHTML = parseInt(RESTfulAhrefSpan.devicesCount);
+            var RESTfulAhrefSpan = document.getElementById(driver._nodenickname + "RESTfulAhrefDriverCountSpan");
+            RESTfulAhrefSpan.driversCount++;
+            RESTfulAhrefSpan.innerHTML = parseInt(RESTfulAhrefSpan.driversCount);
 
-            var deviceAhref = deviceLi.appendChild(document.createElement("a")); //отображаемая часть меню - гиперссылка
-            deviceAhref.className = "nav-link";
-            deviceAhref.setAttribute("data-toggle", "tab");
-            deviceAhref.href = "#" + device._nodenickname + "_" + device._id; //якорь на панель с таблицей со свойствами выбранного устройства (создается один раз)
-            deviceAhref.node = config.getNodeByHost(device._host); //привязываем пункт меню к ноде которой принадлежит устройства (используется для быстрого поска ноды в будущем)
-            deviceAhref.innerText = device._id; //пункт меню отображает ID нового устройства
-            deviceAhref.onclick = settingsUI.deviceAnchorClick; //обработчик клика на пунк меню (переключение панелей)
-            deviceAhref.parentLi = deviceLi; //сохраняем родительский deviceId
+            var driverAhref = driverLi.appendChild(document.createElement("a")); //отображаемая часть меню - гиперссылка
+            driverAhref.className = "nav-link";
+            driverAhref.setAttribute("data-toggle", "tab");
+            driverAhref.href = "#" + driver._nodenickname + "_" + driver._id; //якорь на панель с таблицей со свойствами выбранного драйвера (создается один раз)
+            driverAhref.node = config.getNodeByHost(driver._host); //привязываем пункт меню к ноде которой принадлежит драйвера (используется для быстрого поска ноды в будущем)
+            driverAhref.innerText = driver._id; //пункт меню отображает ID нового драйвера
+            driverAhref.onclick = settingsUI.driverAnchorClick; //обработчик клика на пунк меню (переключение панелей)
+            driverAhref.parentLi = driverLi; //сохраняем родительский driverId
 
             var nodePropAnchors = document.getElementById("nodePropNavBar"); //старая навигационная панель для отображения панелей свойств
             var nodesPropsPanel = document.getElementById("nodesPropsPanel");
@@ -819,91 +819,91 @@ var settingsUI = {
             var networkPropPanel1 = document.getElementById(node.nodenickname + "NetworkNodePropBody1");
             var networkPropPanel2 = document.getElementById(node.nodenickname + "NetworkNodePropBody2");
             var networkPropPanel3 = document.getElementById(node.nodenickname + "NetworkNodePropBody3");
-            //добавляем панель с таблицей со свойствами нового "device" устройства в панель nodesPropsPanel, якорим навигацию на nodePropAnchors, bootstrap cell size -> 12             
-            new TableWidget(nodePropAnchors, nodesPropsPanel, device, 12);
+            //добавляем панель с таблицей со свойствами нового "driver" драйвера в панель nodesPropsPanel, якорим навигацию на nodePropAnchors, bootstrap cell size -> 12             
+            new TableWidget(nodePropAnchors, nodesPropsPanel, driver, 12);
 
-            //если очередное загруженое устройство WiFi
-            if (device.type.value == WiFiDeviceType) {
-                //индикатор(widget) в верхней панеле для WiFi AP и Wifi ST - подключаем их к событиям WiFi текущей node.WifiDevice - теперь WifiDevice будет отправлять событие 
+            //если очередное загруженое драйвер WiFi
+            if (driver.type.value == WiFiDriverType) {
+                //индикатор(widget) в верхней панеле для WiFi AP и Wifi ST - подключаем их к событиям WiFi текущей node.WifiDriver - теперь WifiDriver будет отправлять событие 
                 //о своем состоянии непосредственно индикаторам 
-                //сколько будет node столько будет индикаторов для их WiFi device - мы отображаем только индикаторы выбранной в SideBar (текущей) node и ее устройств
+                //сколько будет node столько будет индикаторов для их WiFi driver - мы отображаем только индикаторы выбранной в SideBar (текущей) node и ее драйвер
                 //смотрите getStatusWidget() метод - если индикатора нет его создадут и подпишут id как node.nodenickname + "wifiapStatus"
                 var WiFiAPPanel = settingsUI.getStatusWidget(node.nodenickname + "wifiapStatus", "WiFi AP", undefined);
-                //подписываем свойство устройства WiFi.wifiaccesspointavailable на обработчик settingsUI.onWiFiAPStatusChange
+                //подписываем свойство драйвера WiFi.wifiaccesspointavailable на обработчик settingsUI.onWiFiAPStatusChange
                 //если WiFi.wifiaccesspointavailable изменит значение, будет вызван settingsUI.onWiFiAPStatusChange
-                device.wifiaccesspointavailable.addValueListner(settingsUI.onWiFiAPStatusChange, WiFiAPPanel);
+                driver.wifiaccesspointavailable.addValueListner(settingsUI.onWiFiAPStatusChange, WiFiAPPanel);
 
                 //так же как и WiFi AP
                 var WiFiSTPanel = settingsUI.getStatusWidget(node.nodenickname + "wifistStatus", "WiFi ST", undefined); //
-                device.wifistatus.addValueListner(settingsUI.onWiFiSTStatusChange, WiFiSTPanel);
+                driver.wifistatus.addValueListner(settingsUI.onWiFiSTStatusChange, WiFiSTPanel);
 
                 //панель со свойствами node - добавляем отображени уровня WiFi сигнала (так же подписываем на событие изменения значения WiFi.wifirssi)
 
 
-                var wifiAPCheckbox = settingsUI.addPropertyCheckbox(wifiPropPanel, device.wifiaccesspointavailable, getLang("wifiaccesspointavailable"), "");
+                var wifiAPCheckbox = settingsUI.addPropertyCheckbox(wifiPropPanel, driver.wifiaccesspointavailable, getLang("wifiaccesspointavailable"), "");
 
-                wifiAPCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(wifiPropPanel, device.wifiaccesspointssid, getLang("wifiaccesspointssid"), ""));
-                wifiAPCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(wifiPropPanel, device.wifiaccesspointpassword, getLang("wifiaccesspointpassword"), ""));
+                wifiAPCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(wifiPropPanel, driver.wifiaccesspointssid, getLang("wifiaccesspointssid"), ""));
+                wifiAPCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(wifiPropPanel, driver.wifiaccesspointpassword, getLang("wifiaccesspointpassword"), ""));
 
-                settingsUI.onPropertyCheckboxValueChange(wifiAPCheckbox, wifiAPCheckbox.deviceProperty);
+                settingsUI.onPropertyCheckboxValueChange(wifiAPCheckbox, wifiAPCheckbox.driverProperty);
 
                 settingsUI.addSpaceView(wifiPropPanel, "1");
 
-                var wifiSTCheckbox = settingsUI.addPropertyCheckbox(wifiPropPanel, device.wifiavailable, getLang("wifiavailable"), "");
-                wifiSTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(wifiPropPanel, device.wifissid, getLang("wifissid"), ""));
-                wifiSTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(wifiPropPanel, device.wifipassword, getLang("wifipassword"), ""));
-                wifiSTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(wifiPropPanel, device.wifiip, getLang("wifiip"), ""));
+                var wifiSTCheckbox = settingsUI.addPropertyCheckbox(wifiPropPanel, driver.wifiavailable, getLang("wifiavailable"), "");
+                wifiSTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(wifiPropPanel, driver.wifissid, getLang("wifissid"), ""));
+                wifiSTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(wifiPropPanel, driver.wifipassword, getLang("wifipassword"), ""));
+                wifiSTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(wifiPropPanel, driver.wifiip, getLang("wifiip"), ""));
 
-                settingsUI.onPropertyCheckboxValueChange(wifiSTCheckbox, wifiSTCheckbox.deviceProperty);
+                settingsUI.onPropertyCheckboxValueChange(wifiSTCheckbox, wifiSTCheckbox.driverProperty);
 
-                settingsUI.addPropertyView(wifiPropPanel, device.wifirssi, getLang("wifirssi"), "dBm");
+                settingsUI.addPropertyView(wifiPropPanel, driver.wifirssi, getLang("wifirssi"), "dBm");
 
 
             }
             else
-                if (device.type.value == ESPDeviceType) {
+                if (driver.type.value == ESPDriverType) {
 
                     if (node.host == boardhost) { //the local node 
 
 
-                        var deviceProperty = {
+                        var driverProperty = {
                             parentid: boardhost,
                             name: "language",
                             type: "",
                             value: configProperties["language"]
                         }
-                        settingsUI.addPropertyEdit(systemPropPanel, deviceProperty, getLang(deviceProperty.name), "");
+                        settingsUI.addPropertyEdit(systemPropPanel, driverProperty, getLang(driverProperty.name), "");
 
-                        var deviceProperty = {
+                        var driverProperty = {
                             parentid: boardhost,
                             name: "widgetssize",
                             type: "i",
                             value: configProperties["widgetssize"]
                         }
-                        settingsUI.addPropertyEdit(systemPropPanel, deviceProperty, getLang(deviceProperty.name), "");
+                        settingsUI.addPropertyEdit(systemPropPanel, driverProperty, getLang(driverProperty.name), "");
 
-                        var deviceProperty = {
+                        var driverProperty = {
                             parentid: boardhost,
                             name: "speak",
                             type: "b",
                             value: configProperties["speak"]
                         }
-                        settingsUI.addPropertyEdit(systemPropPanel, deviceProperty, getLang(deviceProperty.name), "");
+                        settingsUI.addPropertyEdit(systemPropPanel, driverProperty, getLang(driverProperty.name), "");
 
-                        var deviceProperty = {
+                        var driverProperty = {
                             parentid: boardhost,
                             name: "voice",
                             type: "i",
                             value: configProperties["voice"]
                         }
-                        settingsUI.addPropertyEdit(systemPropPanel, deviceProperty, getLang(deviceProperty.name), "");
+                        settingsUI.addPropertyEdit(systemPropPanel, driverProperty, getLang(driverProperty.name), "");
 
                     }
 
-                    settingsUI.addPropertyView(systemPropPanel, device.espfreesketchspace, getLang("espfreesketchspace"), "byte");
-                    settingsUI.addPropertyView(systemPropPanel, device.espfreeheap, getLang("espfreeheap"), "byte");
-                    settingsUI.addPropertyView(systemPropPanel, device.espcpufreqmhz, getLang("espcpufreqmhz"), "mHz");
-                    settingsUI.addPropertyView(systemPropPanel, device.espresetreason, getLang("espresetreason"));
+                    settingsUI.addPropertyView(systemPropPanel, driver.espfreesketchspace, getLang("espfreesketchspace"), "byte");
+                    settingsUI.addPropertyView(systemPropPanel, driver.espfreeheap, getLang("espfreeheap"), "byte");
+                    settingsUI.addPropertyView(systemPropPanel, driver.espcpufreqmhz, getLang("espcpufreqmhz"), "mHz");
+                    settingsUI.addPropertyView(systemPropPanel, driver.espresetreason, getLang("espresetreason"));
 
                     settingsUI.addSpaceView(systemPropPanel, "4");
                     var resetButton = systemPropPanel.appendChild(document.createElement('input'));
@@ -912,58 +912,58 @@ var settingsUI = {
                     resetButton.setAttribute("data-toggle", "modal");
                     resetButton.setAttribute("data-target", "#resetModal");
                     resetButton.value = getLang("reset");
-                    resetButton.deviceHost = device._host;
+                    resetButton.driverHost = driver._host;
                     resetButton.onclick = settingsUI.modalResetClick;
 
-                    // settingsUI.addPropertyView(updatePropPanel, device.firmwareversion, getLang("firmwareversion"));
-                    //  settingsUI.addPropertyView(updatePropPanel, device.firmwarebuildnumber, getLang("firmwarebuildnumber"));
+                    // settingsUI.addPropertyView(updatePropPanel, driver.firmwareversion, getLang("firmwareversion"));
+                    //  settingsUI.addPropertyView(updatePropPanel, driver.firmwarebuildnumber, getLang("firmwarebuildnumber"));
 
 
                 }
                 else
-                    if (device.type.value == NetworkDeviceType) {
-                        // document.title = device.unitid.value + " :: OWLOS"; //ToDo detect "local" node
+                    if (driver.type.value == NetworkDriverType) {
+                        // document.title = driver.unitid.value + " :: OWLOS"; //ToDo detect "local" node
 
                         var RESTfulPanel = settingsUI.getStatusWidget(node.nodenickname + "restfulStatus", "RESTful");
-                        device.restfulavailable.addValueListner(settingsUI.onRESTfulStatusChange, RESTfulPanel);
-                        var node = config.getNodeByHost(device._host);
+                        driver.restfulavailable.addValueListner(settingsUI.onRESTfulStatusChange, RESTfulPanel);
+                        var node = config.getNodeByHost(driver._host);
                         node.addNetworkStatusListner(settingsUI.onRESTfulOnlineStatusChange, RESTfulPanel);
 
                         var MQTTPanel = settingsUI.getStatusWidget(node.nodenickname + "mqttStatus", "MQTT");
-                        device.mqttclientstate.addValueListner(settingsUI.onMQTTStatusChange, MQTTPanel);
+                        driver.mqttclientstate.addValueListner(settingsUI.onMQTTStatusChange, MQTTPanel);
 
                         var OTAPanel = settingsUI.getStatusWidget(node.nodenickname + "otaStatus", "OTA");
-                        device.otaavailable.addValueListner(settingsUI.onOTAStatusChange, OTAPanel);
+                        driver.otaavailable.addValueListner(settingsUI.onOTAStatusChange, OTAPanel);
 
-                        var RESTfulCheckbox = settingsUI.addPropertyCheckbox(networkPropPanel1, device.restfulavailable, getLang("restfulavailable"), "");
-                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, device.restfulserverusername, getLang("restfulserverusername"), ""));
-                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, device.restfulserverpassword, getLang("restfulserverpassword"), ""));
-                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, device.restfulserverport, getLang("restfulserverport"), ""));
+                        var RESTfulCheckbox = settingsUI.addPropertyCheckbox(networkPropPanel1, driver.restfulavailable, getLang("restfulavailable"), "");
+                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, driver.restfulserverusername, getLang("restfulserverusername"), ""));
+                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, driver.restfulserverpassword, getLang("restfulserverpassword"), ""));
+                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, driver.restfulserverport, getLang("restfulserverport"), ""));
                         settingsUI.addSpaceView(networkPropPanel1, "2");
-                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, device.restfulclienturl, getLang("restfulclienturl"), ""));
-                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, device.restfulclientport, getLang("restfulclientport"), ""));
-                        settingsUI.onPropertyCheckboxValueChange(RESTfulCheckbox, RESTfulCheckbox.deviceProperty);
+                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, driver.restfulclienturl, getLang("restfulclienturl"), ""));
+                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, driver.restfulclientport, getLang("restfulclientport"), ""));
+                        settingsUI.onPropertyCheckboxValueChange(RESTfulCheckbox, RESTfulCheckbox.driverProperty);
 
-                        var MQTTCheckbox = settingsUI.addPropertyCheckbox(networkPropPanel2, device.mqttavailable, getLang("mqttavailable"), "");
-                        MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel2, device.mqtturl, getLang("mqtturl"), ""));
-                        MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel2, device.mqttport, getLang("mqttport"), ""));
+                        var MQTTCheckbox = settingsUI.addPropertyCheckbox(networkPropPanel2, driver.mqttavailable, getLang("mqttavailable"), "");
+                        MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel2, driver.mqtturl, getLang("mqtturl"), ""));
+                        MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel2, driver.mqttport, getLang("mqttport"), ""));
                         settingsUI.addSpaceView(networkPropPanel2, "3");
-                        MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel2, device.mqttid, getLang("mqttid"), ""));
-                        MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel2, device.mqttlogin, getLang("mqttlogin"), ""));
-                        MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel2, device.mqttpassword, getLang("mqttpassword"), ""));
-                        settingsUI.onPropertyCheckboxValueChange(MQTTCheckbox, MQTTCheckbox.deviceProperty);
+                        MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel2, driver.mqttid, getLang("mqttid"), ""));
+                        MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel2, driver.mqttlogin, getLang("mqttlogin"), ""));
+                        MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel2, driver.mqttpassword, getLang("mqttpassword"), ""));
+                        settingsUI.onPropertyCheckboxValueChange(MQTTCheckbox, MQTTCheckbox.driverProperty);
 
-                        var OTACheckbox = settingsUI.addPropertyCheckbox(networkPropPanel3, device.otaavailable, getLang("otaavailable"), "");
-                        OTACheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel3, device.otaid, getLang("otaid"), ""));
-                        OTACheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel3, device.otaport, getLang("otaport"), ""));
-                        OTACheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel3, device.otapassword, getLang("otapassword"), ""));
-                        settingsUI.onPropertyCheckboxValueChange(OTACheckbox, OTACheckbox.deviceProperty);
+                        var OTACheckbox = settingsUI.addPropertyCheckbox(networkPropPanel3, driver.otaavailable, getLang("otaavailable"), "");
+                        OTACheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel3, driver.otaid, getLang("otaid"), ""));
+                        OTACheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel3, driver.otaport, getLang("otaport"), ""));
+                        OTACheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel3, driver.otapassword, getLang("otapassword"), ""));
+                        settingsUI.onPropertyCheckboxValueChange(OTACheckbox, OTACheckbox.driverProperty);
 
-                        settingsUI.addPropertyView(updatePropPanel, device.firmwareversion, getLang("firmwareversion"));
-                        settingsUI.addPropertyView(updatePropPanel, device.firmwarebuildnumber, getLang("firmwarebuildnumber"));
+                        settingsUI.addPropertyView(updatePropPanel, driver.firmwareversion, getLang("firmwareversion"));
+                        settingsUI.addPropertyView(updatePropPanel, driver.firmwarebuildnumber, getLang("firmwarebuildnumber"));
 
                         settingsUI.addSpaceView(updatePropPanel, "5");
-                        settingsUI.addPropertyEdit(updatePropPanel, device.updatehost, getLang("updatehost"), "");
+                        settingsUI.addPropertyEdit(updatePropPanel, driver.updatehost, getLang("updatehost"), "");
 
                         //Update watcher panel 
                         //Панель обновлений
@@ -1003,15 +1003,15 @@ var settingsUI = {
                             updateWatcherDiv.updateuiButton = updateuiButton; // document.getElementById("updateuibutton");
                             updateWatcherDiv.updatefirmwareButton = updatefirmwareButton;
 
-                            device.updateinfo.addValueListner(settingsUI.onUpdateInfoValueChange, updateWatcherDiv);
-                            device.updatepossible.addValueListner(settingsUI.onUpdateInfoValueChange, updateWatcherDiv);
+                            driver.updateinfo.addValueListner(settingsUI.onUpdateInfoValueChange, updateWatcherDiv);
+                            driver.updatepossible.addValueListner(settingsUI.onUpdateInfoValueChange, updateWatcherDiv);
                         }
                         //}
                     }
         }
     },
 
-    deviceAnchorClick: function (event) {
+    driverAnchorClick: function (event) {
 
         var aHref = event.currentTarget;
 
@@ -1160,7 +1160,7 @@ var settingsUI = {
 
     modalResetClick: function (event) {
 
-        var deviceHost = event.currentTarget.deviceHost;
+        var driverHost = event.currentTarget.driverHost;
 
         makeModalDialog("resetPanel", "reset", getLang("resetunit"), getLang("areYouSure"));
         var modalFooter = document.getElementById("resetModalFooter");
@@ -1169,7 +1169,7 @@ var settingsUI = {
         resetButton.type = "button";
         resetButton.className = "btn btn-sm btn-danger";
         resetButton.id = "resetModalButton";
-        resetButton.nodeHost = deviceHost;
+        resetButton.nodeHost = driverHost;
         resetButton.onclick = settingsUI.resetClick;
         resetButton.innerText = getLang("reset");
 
@@ -1343,11 +1343,11 @@ var settingsUI = {
     },
 
 
-    //добавляет строку со названием и значением свойства на panelDiv, deviceProperty - отображаемое свойство (подписывается на изменения свойства)
+    //добавляет строку со названием и значением свойства на panelDiv, driverProperty - отображаемое свойство (подписывается на изменения свойства)
     //обычно используется для отображения свойств ноды Node/Properties в SideBar разделе Settings
-    addPropertyView: function (panelDiv, deviceProperty, text, sufix) {
-        if (deviceProperty == undefined) return;
-        var propElementId = panelDiv.id + deviceProperty.parentid + deviceProperty.name; //дормируем уникальный ID элемента
+    addPropertyView: function (panelDiv, driverProperty, text, sufix) {
+        if (driverProperty == undefined) return;
+        var propElementId = panelDiv.id + driverProperty.parentid + driverProperty.name; //дормируем уникальный ID элемента
         var propTextDiv = document.getElementById(propElementId);
         if (propTextDiv == null) {
             propTextDiv = panelDiv.appendChild(document.createElement('div'));
@@ -1358,26 +1358,26 @@ var settingsUI = {
             propTextDiv.propertySufix = sufix;
             //settingsUI.onPropertyViewedValueChange опрашивает значение указанного свойства и формирует HTML для propTextDiv 
             //смотрите onPropertyViewedValueChange - он работает в паре с этим методом
-            deviceProperty.addValueListner(settingsUI.onPropertyViewedValueChange, propTextDiv);
+            driverProperty.addValueListner(settingsUI.onPropertyViewedValueChange, propTextDiv);
         }
         return propTextDiv;
     },
     //работает в паре с addPropertyView, "следит" за значением свойства
-    onPropertyViewedValueChange: function (sender, deviceProperty) {
-        sender.innerHTML = "<strong>" + sender.propertyText + ":</strong> " + deviceProperty.value + " " + sender.propertySufix + "<br>";
+    onPropertyViewedValueChange: function (sender, driverProperty) {
+        sender.innerHTML = "<strong>" + sender.propertyText + ":</strong> " + driverProperty.value + " " + sender.propertySufix + "<br>";
     },
 
-    //добавляет редактор указаного свойства deviceProperty на указанную панель panelDiv
+    //добавляет редактор указаного свойства driverProperty на указанную панель panelDiv
     //работает так же как addPropertyView, но позволяет изменять значение свойства 
-    addPropertyEdit: function (panelDiv, deviceProperty, text, sufix) {
-        if (deviceProperty == undefined) return;
-        var propElementId = panelDiv.id + deviceProperty.parentid + deviceProperty.name;
+    addPropertyEdit: function (panelDiv, driverProperty, text, sufix) {
+        if (driverProperty == undefined) return;
+        var propElementId = panelDiv.id + driverProperty.parentid + driverProperty.name;
         var propTextDiv = document.getElementById(propElementId);
         if (propTextDiv == null) {
             propTextDiv = panelDiv.appendChild(document.createElement('div'));
             propTextDiv.id = propElementId;
             propTextDiv.className = "text-light";
-            propTextDiv.deviceProperty = deviceProperty;
+            propTextDiv.driverProperty = driverProperty;
             propTextDiv.propertyText = text;
             if (sufix == undefined) sufix = "";
             propTextDiv.propertySufix = sufix;
@@ -1393,7 +1393,7 @@ var settingsUI = {
             propText.setAttribute("for", propElementId + "edit");
             propTextDiv.propText = propText;
 
-            var propEdit = createValueEdit(inputGroup, deviceProperty.name, deviceProperty.value, deviceProperty.type)
+            var propEdit = createValueEdit(inputGroup, driverProperty.name, driverProperty.value, driverProperty.type)
             //var propEdit = inputGroup.appendChild(document.createElement('input'));
             propEdit.className = "form-control";
             propEdit.id = propElementId + "edit";
@@ -1411,38 +1411,38 @@ var settingsUI = {
             propSetButton.propTextDiv = propTextDiv;
             propTextDiv.propSetButton = propSetButton;
 
-            if (deviceProperty.addValueListner != undefined) {
-                deviceProperty.addValueListner(settingsUI.onPropertyEditedValueChange, propTextDiv);
-                deviceProperty.addNetworkStatusListner(settingsUI.onPropertyEditNetworkChange, propTextDiv);
+            if (driverProperty.addValueListner != undefined) {
+                driverProperty.addValueListner(settingsUI.onPropertyEditedValueChange, propTextDiv);
+                driverProperty.addNetworkStatusListner(settingsUI.onPropertyEditNetworkChange, propTextDiv);
             }
             else {
                 propText.innerText = text;
-                propEdit.value = deviceProperty.value;
+                propEdit.value = driverProperty.value;
             }
         }
         return propTextDiv;
     },
     //работает в паре с addPropertyEdit
-    onPropertyEditedValueChange: function (sender, deviceProperty) {
+    onPropertyEditedValueChange: function (sender, driverProperty) {
         sender.propText.innerText = sender.propertyText;
-        sender.propEdit.value = deviceProperty.value;
-        //+ deviceProperty.value + " " + sender.propertySufix + "<br>";
+        sender.propEdit.value = driverProperty.value;
+        //+ driverProperty.value + " " + sender.propertySufix + "<br>";
     },
 
-    onPropertyEditNetworkChange: function (sender, deviceProperty) {
+    onPropertyEditNetworkChange: function (sender, driverProperty) {
 
-        if (deviceProperty.networkStatus == NET_ONLINE) {
+        if (driverProperty.networkStatus == NET_ONLINE) {
             sender.propEdit.disabled = false;
 
             sender.propSetButton.className = "btn btn-outline-success btn-sm";
-        } else if (deviceProperty.networkStatus == NET_RECONNECT) {
+        } else if (driverProperty.networkStatus == NET_RECONNECT) {
             sender.propEdit.disabled = true;
             sender.propSetButton.className = "btn btn-outline-info btn-sm";
-        } else if (deviceProperty.networkStatus == NET_OFFLINE) {
+        } else if (driverProperty.networkStatus == NET_OFFLINE) {
             sender.propEdit.disabled = true;
             sender.propSetButton.className = "btn btn-outline-secondary btn-sm";
         } else //error
-            if (deviceProperty.networkStatus == NET_ERROR) {
+            if (driverProperty.networkStatus == NET_ERROR) {
                 sender.propEdit.disabled = true;
                 sender.propSetButton.className = "btn btn-outline-danger btn-sm";
             }
@@ -1453,23 +1453,23 @@ var settingsUI = {
         event.stopPropagation();
         var propSetButton = event.currentTarget; //вытаскиваем "кликнутую" кнопку из event 
         var propTextDiv = propSetButton.propTextDiv; //вытаскиваем панель со свойством
-        var deviceProperty = propTextDiv.deviceProperty; //вытастиваем свойство устройства
+        var driverProperty = propTextDiv.driverProperty; //вытастиваем свойство драйвера
 
-        if (deviceProperty.addValueListner != undefined) {
+        if (driverProperty.addValueListner != undefined) {
 
-            if (deviceProperty.networkStatus != NET_RECONNECT) {
-                //если свойство устройства не в статуре "в реботе" - асинхронность это хорошо, но переполнять очередь это преступление
+            if (driverProperty.networkStatus != NET_RECONNECT) {
+                //если свойство драйвера не в статуре "в реботе" - асинхронность это хорошо, но переполнять очередь это преступление
 
-                var value = propTextDiv.propEdit.value; //получаем значение свойства устройства введенное пользователем
+                var value = propTextDiv.propEdit.value; //получаем значение свойства драйвера введенное пользователем
 
-                if (deviceProperty.type.indexOf("b") != -1) // boolean - представлен в виде combobox а не редактора 
+                if (driverProperty.type.indexOf("b") != -1) // boolean - представлен в виде combobox а не редактора 
                 {
-                    if (propTextDiv.propEdit.selectedIndex == 0) value = "1"; //для устройства 1 - true, 0 - false
+                    if (propTextDiv.propEdit.selectedIndex == 0) value = "1"; //для драйвера 1 - true, 0 - false
                     else value = "0";
-                } //вызываем метод свойства устройства для начала процедуры изменения этого свойства с новым значением value
+                } //вызываем метод свойства драйвера для начала процедуры изменения этого свойства с новым значением value
                 //не назначаем вторичных получателей undefined, undefined - все получатели уже подписаны ранее
 
-                deviceProperty.setValue(value, undefined, undefined);
+                driverProperty.setValue(value, undefined, undefined);
             }
         }
         else {
@@ -1479,7 +1479,7 @@ var settingsUI = {
             propTextDiv.propSetButton.className = "btn btn-outline-info btn-sm";
 
             try {
-                configProperties[deviceProperty.name] = propTextDiv.propEdit.value;
+                configProperties[driverProperty.name] = propTextDiv.propEdit.value;
                 config.save();
 
                 propTextDiv.propEdit.disabled = false;
@@ -1503,15 +1503,15 @@ var settingsUI = {
 
     //добавляет флажек связанный с указаным свойствам (свойство обезательно Boolean)
     //работает так же как addPropertyEdit
-    addPropertyCheckbox: function (panelDiv, deviceProperty, text, sufix) {
-        if (deviceProperty == undefined) return;
-        var propElementId = panelDiv.id + deviceProperty.parentid + deviceProperty.name;
+    addPropertyCheckbox: function (panelDiv, driverProperty, text, sufix) {
+        if (driverProperty == undefined) return;
+        var propElementId = panelDiv.id + driverProperty.parentid + driverProperty.name;
         var propTextDiv = document.getElementById(propElementId);
         if (propTextDiv == null) {
             propTextDiv = panelDiv.appendChild(document.createElement('div'));
             propTextDiv.className = "input-group input-group-sm mb-3";
             propTextDiv.id = propElementId;
-            propTextDiv.deviceProperty = deviceProperty;
+            propTextDiv.driverProperty = driverProperty;
             propTextDiv.propertyText = text;
             propTextDiv.dependetPanels = [];
             if (sufix == undefined) sufix = "";
@@ -1537,17 +1537,17 @@ var settingsUI = {
             propCheckbox.propTextDiv = propTextDiv;
             propTextDiv.propCheckbox = propCheckbox;
 
-            deviceProperty.addValueListner(settingsUI.onPropertyCheckboxValueChange, propTextDiv);
-            deviceProperty.addNetworkStatusListner(settingsUI.onPropertyCheckboxNetworkChange, propTextDiv);
+            driverProperty.addValueListner(settingsUI.onPropertyCheckboxValueChange, propTextDiv);
+            driverProperty.addNetworkStatusListner(settingsUI.onPropertyCheckboxNetworkChange, propTextDiv);
 
 
         }
         return propTextDiv;
     },
     //работает в паре с addPropertyCheckbox
-    onPropertyCheckboxValueChange: function (sender, deviceProperty) {
+    onPropertyCheckboxValueChange: function (sender, driverProperty) {
         sender.propText.innerHTML = "&nbsp;" + sender.propertyText;
-        if (deviceProperty.value === '1') {
+        if (driverProperty.value === '1') {
             sender.propCheckbox.checked = true;
         }
         else {
@@ -1556,7 +1556,7 @@ var settingsUI = {
 
         if (sender.dependetPanels != undefined) {
             for (var i = 0; i < sender.dependetPanels.length; i++) {
-                if (deviceProperty.value === '1') {
+                if (driverProperty.value === '1') {
                     sender.dependetPanels[i].propText.disabled =
                         sender.dependetPanels[i].propEdit.disabled =
                         sender.dependetPanels[i].propSetButton.disabled = false;
@@ -1570,19 +1570,19 @@ var settingsUI = {
         }
     },
 
-    onPropertyCheckboxNetworkChange: function (sender, deviceProperty) {
+    onPropertyCheckboxNetworkChange: function (sender, driverProperty) {
 
-        if (deviceProperty.networkStatus == NET_ONLINE) {
+        if (driverProperty.networkStatus == NET_ONLINE) {
             sender.propCheckbox.disabled = false;
             sender.propText.disabled = false;
-        } else if (deviceProperty.networkStatus == NET_RECONNECT) {
+        } else if (driverProperty.networkStatus == NET_RECONNECT) {
             sender.propCheckbox.disabled = true;
             sender.propText.disabled = true;
-        } else if (deviceProperty.networkStatus == NET_OFFLINE) {
+        } else if (driverProperty.networkStatus == NET_OFFLINE) {
             sender.propCheckbox.disabled = true;
             sender.propText.disabled = true;
         } else //error
-            if (deviceProperty.networkStatus == NET_ERROR) {
+            if (driverProperty.networkStatus == NET_ERROR) {
                 sender.propCheckbox.disabled = true;
                 sender.propText.disabled = true;
             }
@@ -1623,16 +1623,16 @@ var settingsUI = {
         var checkChengButton = event.currentTarget;
         var propCheckbox = checkChengButton.propCheckbox;
         var propTextDiv = propCheckbox.propTextDiv;
-        var deviceProperty = propTextDiv.deviceProperty;
+        var driverProperty = propTextDiv.driverProperty;
         var propTextDiv = propCheckbox.propTextDiv;
-        var deviceProperty = propTextDiv.deviceProperty;
+        var driverProperty = propTextDiv.driverProperty;
 
-        if (deviceProperty.networkStatus != NET_RECONNECT) {
+        if (driverProperty.networkStatus != NET_RECONNECT) {
             if (propCheckbox.checked) {
-                deviceProperty.setValue("1", undefined, undefined);
+                driverProperty.setValue("1", undefined, undefined);
             }
             else {
-                deviceProperty.setValue("0", undefined, undefined);
+                driverProperty.setValue("0", undefined, undefined);
             }
         }
         $("#checkboxchangeModal").modal('hide');
@@ -1679,12 +1679,12 @@ var settingsUI = {
     },
 
 
-    onUpdateInfoValueChange: function (sender, deviceProperty) { //means esp.updateinfo property
+    onUpdateInfoValueChange: function (sender, driverProperty) { //means esp.updateinfo property
 
-        var networkDevice = devices.getDeviceById("network", deviceProperty.parenthost);
-        //var espDevice = devices.getDeviceById("esp", deviceProperty.parenthost);
+        var networkDriver = drivers.getDriverById("network", driverProperty.parenthost);
+        //var espDriver = drivers.getDriverById("esp", driverProperty.parenthost);
 
-        var updateInfo = networkDevice.updateinfo.value.split(";");
+        var updateInfo = networkDriver.updateinfo.value.split(";");
         if (updateInfo.length < 3) {
             sender.innerHTML = "<strong class='text-light'>" + getLang("updateinfo") + ":</strong> " + getLang("noupdateinfo") + "<br>";
         }
@@ -1692,7 +1692,7 @@ var settingsUI = {
             var firmware = updateInfo[0].split(":")[1];
             var updateBuildVersion = parseInt(updateInfo[1].split(":")[1]);
             var innerHTML = "<div class='text-light'><strong class='text-light'>" + getLang("updateinfo") + ":</strong> " + firmware + " [<b class='text-warning'>" + getLang("firmwarebuildnumber") + ": </b>" + updateBuildVersion + "]</div><br>";
-            var buildVersion = parseInt(networkDevice.firmwarebuildnumber.value);
+            var buildVersion = parseInt(networkDriver.firmwarebuildnumber.value);
             if (buildVersion < updateBuildVersion) {
                 innerHTML += "<strong class='text-success'>" + getLang("updateexists") + "</strong> - ";
             }
@@ -1703,7 +1703,7 @@ var settingsUI = {
             updateuibutton = sender.updateuiButton; // document.getElementById("updateuibutton");
             updatefirmwarebutton = sender.updatefirmwareButton; // document.getElementById("updatefirmwarebutton");
 
-            if (parseInt(networkDevice.updatepossible.value) < 1) {
+            if (parseInt(networkDriver.updatepossible.value) < 1) {
                 //hide buttons
                 if (updateuibutton != undefined) {
                     updateuibutton.style.display = "none";
@@ -1713,7 +1713,7 @@ var settingsUI = {
             }
             else {
                 //Show update buttons
-                if (parseInt(networkDevice.updatepossible.value) < 2) {
+                if (parseInt(networkDriver.updatepossible.value) < 2) {
                     if (updateuibutton != undefined) {
                         updateuibutton.style.display = "block";
                         if (buildVersion < updateBuildVersion) {
@@ -1752,14 +1752,14 @@ var settingsUI = {
         }
     },
 
-    onOnlineStatusChange: function (sender, devices) {
+    onOnlineStatusChange: function (sender, drivers) {
         var onlineStatus = getLang("netonline");
-        if (devices.networkStatus == NET_ONLINE) {
+        if (drivers.networkStatus == NET_ONLINE) {
             sender.className = "badge badge-success";
 
         }
         else
-            if (devices.networkStatus == NET_REFRESH) {
+            if (drivers.networkStatus == NET_REFRESH) {
                 sender.className = "badge badge-info";
                 onlineStatus = getLang("netrefresh");
             }
@@ -1774,8 +1774,8 @@ var settingsUI = {
     },
 
 
-    onWiFiAPStatusChange: function (sender, deviceProperty) {
-        if (deviceProperty.value == 1) {
+    onWiFiAPStatusChange: function (sender, driverProperty) {
+        if (driverProperty.value == 1) {
             sender.className = "badge badge-success";
 
         }
@@ -1784,11 +1784,11 @@ var settingsUI = {
         }
     },
 
-    onWiFiSTStatusChange: function (sender, deviceProperty) {
+    onWiFiSTStatusChange: function (sender, driverProperty) {
         var wifiSTconection = getLang("nostate");
         sender.className = "badge badge-secondary";
 
-        switch (parseInt(deviceProperty.value)) {
+        switch (parseInt(driverProperty.value)) {
             case 0:
                 wifiSTconection = getLang("idlestatus");
                 sender.className = "badge badge-warning";
@@ -1826,8 +1826,8 @@ var settingsUI = {
         $('[data-toggle="popover"]').popover();
     },
 
-    onRESTfulStatusChange: function (sender, deviceProperty) {
-        if (deviceProperty.value == 1) {
+    onRESTfulStatusChange: function (sender, driverProperty) {
+        if (driverProperty.value == 1) {
             sender.className = "badge badge-success";
 
         }
@@ -1836,28 +1836,28 @@ var settingsUI = {
         }
     },
 
-    onRESTfulOnlineStatusChange: function (sender, devices) {
+    onRESTfulOnlineStatusChange: function (sender, drivers) {
         var onlineStatus = getLang("netonline");
-        if (devices.networkStatus == NET_ONLINE) {
+        if (drivers.networkStatus == NET_ONLINE) {
             sender.className = "badge badge-success";
         }
         else
-            if (devices.networkStatus == NET_ERROR) {
+            if (drivers.networkStatus == NET_ERROR) {
                 sender.className = "badge badge-danger";
             }
             else
-                if (devices.networkStatus == NET_OFFLINE) {
+                if (drivers.networkStatus == NET_OFFLINE) {
 
                     sender.className = "badge badge-secondary";
                 }
     },
 
-    onMQTTStatusChange: function (sender, deviceProperty) {
+    onMQTTStatusChange: function (sender, driverProperty) {
 
         sender.className = "badge badge-secondary";
         mqttState = getLang("nostate");
 
-        switch (parseInt(deviceProperty.value)) {
+        switch (parseInt(driverProperty.value)) {
             case -5:
                 sender.className = "badge badge-warning";
                 mqttState = getLang("debugmode");
@@ -1922,8 +1922,8 @@ var settingsUI = {
         $('[data-toggle="popover"]').popover();
     },
 
-    onOTAStatusChange: function (sender, deviceProperty) {
-        if (deviceProperty.value == 1) {
+    onOTAStatusChange: function (sender, driverProperty) {
+        if (driverProperty.value == 1) {
             sender.className = "badge badge-success";
         }
         else {

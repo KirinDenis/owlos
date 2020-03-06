@@ -39,64 +39,86 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-#include "LightDevice.h"
+#include "MotionDriver.h"
 
-bool LightDevice::begin(String _topic)
+bool MotionDriver::init()
 {
-	if (id.length() == 0) id = DeviceID;
-	BaseDevice::init(id);
+	if (id.length() == 0) id = DriverID;
+	BaseDriver::init(id);
+	//init properies
+	getPin();
+	pinMode(pin, INPUT);
+}
 
-	BaseDevice::begin(_topic);
+bool MotionDriver::begin(String _topic)
+{
+	BaseDriver::begin(_topic);
 	available = true;
-	setType(Light);
+	setType(Motion);
 	setAvailable(available);
-	//TEMP:
-	trap = 50;
 	return available;
 }
 
-bool LightDevice::query()
+String MotionDriver::getAllProperties()
 {
-	if (BaseDevice::query())
-	{
-		int _light = std::atoi(light.c_str());
-		getLight();
-		int different = std::atoi(light.c_str()) - _light;
-		if ((different > trap) || (different < -trap))
-		{
-			onInsideChange("light", light);
-		}
-		return true;
-	}
-	return false;
-};
-
-
-String LightDevice::getAllProperties()
-{
-	String result = BaseDevice::getAllProperties();
-	result += "light=" + light + "\n";
+	String result = BaseDriver::getAllProperties();
+	result += "motion=" + String(motion) + "\n";
 	result += "pin=" + String(pin) + "\n";
 	return result;
 }
 
-
-bool LightDevice::publish()
+bool MotionDriver::query()
 {
-	if (BaseDevice::publish())
+	if (BaseDriver::query())
 	{
-		onInsideChange("light", light);
+		int _motion = motion;
+		getMotion();
+		if (_motion != motion)
+		{
+			onInsideChange("motion", String(motion));
+			motionTriger++;
+		}
+
+		//Fill array of history data
+		if (millis() >= lastHistoryMillis + historyInterval)
+		{
+			if (motion == 1)  motionTriger++; //motion all time at "1"
+			lastHistoryMillis = millis();
+			setHistoryData(motionTriger);
+			motionHistoryFileTriger = motionTriger;
+			motionTriger = 0.0;
+		}
+
+		//Write history data to file
+		if (millis() >= lastHistoryFileWriteMillis + historyFileWriteInterval)
+		{
+			if (motion == 1)  motionHistoryFileTriger++; //motion all time at "1"
+			lastHistoryFileWriteMillis = millis();
+			writeHistoryFile(motionHistoryFileTriger);
+			motionHistoryFileTriger = 0.0;
+		}
+
+
 		return true;
 	}
 	return false;
 };
 
-String LightDevice::onMessage(String _topic, String _payload, int transportMask)
+bool MotionDriver::publish()
 {
-	String result = BaseDevice::onMessage(_topic, _payload, transportMask);
-	if (!available) return result;
+	if (BaseDriver::publish())
+	{
+		onInsideChange("motion", String(motion));
+		return true;
+	}
+	return false;
+};
 
-	//Light sensor GPIO 1-pin (A0 by default)
+String MotionDriver::onMessage(String _topic, String _payload, int transportMask)
+{
+	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
+	if (!available) return result;
+	//Motion sensor GPIO 1-pin (A0 by default)
 	if (String(topic + "/getpin").equals(_topic))
 	{
 		result = onGetProperty("pin", String(getPin()), transportMask);
@@ -105,15 +127,15 @@ String LightDevice::onMessage(String _topic, String _payload, int transportMask)
 	{
 		result = String(setPin(std::atoi(_payload.c_str())));
 	}
-	else if ((String(topic + "/getlight").equals(_topic)) || (String(topic + "/setlight").equals(_topic)))
+	else if ((String(topic + "/getmotion").equals(_topic)) || (String(topic + "/setmotion").equals(_topic)))
 	{
-		result = onGetProperty("light", getLight(), transportMask);
+		result = onGetProperty("motion", String(getMotion()), transportMask);
 	}
 	return result;
 }
 
-//Light Sensor 1-pin (A0 by default) ----------------------------------------------------
-int LightDevice::getPin()
+//Motion Sensor 1-pin (A0 by default) ----------------------------------------------------
+int MotionDriver::getPin()
 {
 	if (filesExists(id + ".pin"))
 	{
@@ -125,24 +147,19 @@ int LightDevice::getPin()
 	return pin;
 }
 
-bool LightDevice::setPin(int _pin)
+bool MotionDriver::setPin(int _pin)
 {
 	pin = _pin;
 	pinMode(pin, INPUT);
 	filesWriteInt(id + ".pin", pin);
-	if (available)
-	{
-		return onInsideChange("pin", String(pin));
-	}
-	return true;
+	return onInsideChange("pin", String(pin));
 }
 
-String LightDevice::getLight()
+int MotionDriver::getMotion()
 {
-	int _light = analogRead(pin);
-	light = String(_light);
+	motion = digitalRead(pin);
 #ifdef DetailedDebug
-	debugOut(id, "light=" + light);
+	debugOut(id, "motion=" + String(motion));
 #endif
-	return light;
+	return motion;
 }

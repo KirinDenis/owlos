@@ -60,7 +60,7 @@ OWLOS распространяется в надежде, что она буде
 #endif
 
 #include "WebServer.h"
-#include "..\Managers\DeviceManager.h"
+#include "..\Managers\DriverManager.h"
 #include "..\Managers\ScriptManager.h"
 #include "..\Managers\UpdateManager.h"
 #include "..\..\UnitProperties.h"
@@ -258,13 +258,13 @@ void handleNotFound() {
 	message += "<a href='http://" + ip + "/setunitproperty?property=foo&value=bar' target='_blank'>http://" + ip + "/setproperty?property=foo&value=bar</a> set unit property<br>";
 	message += "<font color='red'><b>Be careful, changing the unit's properties can do its unmanagement</b></font><br>";
 	message += "The unit must be rebooted after changing the property value<br>";
-	message += "<br><b>Device's API:</b><br>";
-	message += "<a href='http://" + ip + "/adddevice?type=foo&id=bar&pin1=foo&pin2=foo&pin3=foo&pin4=foo' target='_blank'>http://" + ip + "/adddevice?type=foo&id=bar&pin1=foo&pin2=foo&pin3=foo&pin4=foo</a> add new device<br>";
-	message += "<a href='http://" + ip + "/getdevicesid' target='_blank'>http://" + ip + "/getdevicesid</a> get all devices IDs<br>";
-	message += "<a href='http://" + ip + "/getdeviceproperty?id=foo&property=bar' target='_blank'>http://" + ip + "/getdeviceproperty?id=foo&property=bar</a> get device property<br>";
-	message += "<a href='http://" + ip + "/setdeviceproperty?id=foo&property=bar&value=bar' target='_blank'>http://" + ip + "/setdeviceproperty?id=foo&property=bar&value=bar</a> set device property<br>";
-	message += "<a href='http://" + ip + "/getdeviceproperties?id=foo' target='_blank'>http://" + ip + "/getdeviceproperties?id=foo</a> get device's all properties<br>";
-	message += "<a href='http://" + ip + "/getalldevicesproperties' target='_blank'>http://" + ip + "/getalldevicesproperties</a> get all devices all properties<br>";
+	message += "<br><b>Driver's API:</b><br>";
+	message += "<a href='http://" + ip + "/adddriver?type=foo&id=bar&pin1=foo&pin2=foo&pin3=foo&pin4=foo' target='_blank'>http://" + ip + "/adddriver?type=foo&id=bar&pin1=foo&pin2=foo&pin3=foo&pin4=foo</a> add new driver<br>";
+	message += "<a href='http://" + ip + "/getdriversid' target='_blank'>http://" + ip + "/getdriversid</a> get all drivers IDs<br>";
+	message += "<a href='http://" + ip + "/getdriverproperty?id=foo&property=bar' target='_blank'>http://" + ip + "/getdriverproperty?id=foo&property=bar</a> get driver property<br>";
+	message += "<a href='http://" + ip + "/setdriverproperty?id=foo&property=bar&value=bar' target='_blank'>http://" + ip + "/setdriverproperty?id=foo&property=bar&value=bar</a> set driver property<br>";
+	message += "<a href='http://" + ip + "/getdriverproperties?id=foo' target='_blank'>http://" + ip + "/getdriverproperties?id=foo</a> get driver's all properties<br>";
+	message += "<a href='http://" + ip + "/getalldriversproperties' target='_blank'>http://" + ip + "/getalldriversproperties</a> get all drivers all properties<br>";
 	message += "<a href='http://" + ip + "/reset' target='_blank'>http://" + ip + "/reset</a> reset unit<br>";
 
 	message += "<font color='#208ECD'><h3>Available RESTful APIs for access point " + unitGetWiFiAccessPointSSID() + ":</h3></font>";
@@ -277,12 +277,12 @@ void handleNotFound() {
 	message += "<a href='http://" + acip + "/setunitproperty?property=foo&value=bar' target='_blank'>http://" + acip + "/setproperty?property=foo&value=bar</a> set unit property<br>";
 	message += "<font color='red'><b>Be careful, changing the unit's properties can do its unmanagement</b></font><br>";
 	message += "The unit must be rebooted after changing the property value<br>";
-	message += "<br><b>Device's API:</b><br>";
-	message += "<a href='http://" + acip + "/getdevicesid' target='_blank'>http://" + acip + "/getdevicesid</a> get all devices IDs<br>";
-	message += "<a href='http://" + acip + "/getdeviceproperty?id=foo&property=bar' target='_blank'>http://" + acip + "/getdeviceproperty?id=foo&property=bar</a> get device property<br>";
-	message += "<a href='http://" + acip + "/setdeviceproperty?id=foo&property=bar&value=bar' target='_blank'>http://" + acip + "/setdeviceproperty?id=foo&property=bar&value=bar</a> set device property<br>";
-	message += "<a href='http://" + acip + "/getdeviceproperties?id=foo' target='_blank'>http://" + acip + "/getdeviceproperties?id=foo</a> get device's all properties<br>";
-	message += "<a href='http://" + acip + "/getalldevicesproperties' target='_blank'>http://" + acip + "/getalldevicesproperties</a> get all devices all properties<br>";
+	message += "<br><b>Driver's API:</b><br>";
+	message += "<a href='http://" + acip + "/getdriversid' target='_blank'>http://" + acip + "/getdriversid</a> get all drivers IDs<br>";
+	message += "<a href='http://" + acip + "/getdriverproperty?id=foo&property=bar' target='_blank'>http://" + acip + "/getdriverproperty?id=foo&property=bar</a> get driver property<br>";
+	message += "<a href='http://" + acip + "/setdriverproperty?id=foo&property=bar&value=bar' target='_blank'>http://" + acip + "/setdriverproperty?id=foo&property=bar&value=bar</a> set driver property<br>";
+	message += "<a href='http://" + acip + "/getdriverproperties?id=foo' target='_blank'>http://" + acip + "/getdriverproperties?id=foo</a> get driver's all properties<br>";
+	message += "<a href='http://" + acip + "/getalldriversproperties' target='_blank'>http://" + acip + "/getalldriversproperties</a> get all drivers all properties<br>";
 
 
 	message += "</font></body></html>";
@@ -544,7 +544,7 @@ void handleGetAllUnitProperties()
 }
 
 //----------------------------------------------------------------------------------------------
-void handleAddDevice()
+void handleAddDriver()
 {
 	webServerAddCORSHeaders();
 	if (webServer.args() > 5)
@@ -554,21 +554,21 @@ void handleAddDevice()
 		{
 			int _type = std::atoi(webServer.arg(0).c_str());
 			String _id = webServer.arg(1);
-			int _pin1 = devicesPinNameToValue(webServer.arg(2));
-			int _pin2 = devicesPinNameToValue(webServer.arg(3));
-			int _pin3 = devicesPinNameToValue(webServer.arg(4));
-			int _pin4 = devicesPinNameToValue(webServer.arg(5));
+			int _pin1 = driversPinNameToValue(webServer.arg(2));
+			int _pin2 = driversPinNameToValue(webServer.arg(3));
+			int _pin3 = driversPinNameToValue(webServer.arg(4));
+			int _pin4 = driversPinNameToValue(webServer.arg(5));
 
-			String result = devicesAdd(_type, _id, _pin1, _pin2, _pin3, _pin4);
+			String result = driversAdd(_type, _id, _pin1, _pin2, _pin3, _pin4);
 			if (!result.equals("1"))
 			{
 				webServer.send(503, "text/html", result);
 			}
 			else
 			{
-				if (!devicesSaveToConfig(_type, _id, _pin1, _pin2, _pin3, _pin4))
+				if (!driversSaveToConfig(_type, _id, _pin1, _pin2, _pin3, _pin4))
 				{
-					webServer.send(503, "text/html", "bad, device added but not stored to configuration file");
+					webServer.send(503, "text/html", "bad, driver added but not stored to configuration file");
 				}
 				else
 				{
@@ -581,29 +581,29 @@ void handleAddDevice()
 	handleNotFound();
 }
 //----------------------------------------------------------------------------------------------
-void handleGetDevicesId()
+void handleGetDriversId()
 {
 	webServerAddCORSHeaders();
-	webServer.send(200, "text/plain", devicesGetDevicesId());
+	webServer.send(200, "text/plain", driversGetDriversId());
 }
 
 //----------------------------------------------------------------------------------------------
-void handleGetDeviceProperties()
+void handleGetDriverProperties()
 {
 	webServerAddCORSHeaders();
 	if (webServer.args() > 0)
 	{
 		if (webServer.argName(0).equals("id"))
 		{
-			String deviceProp = devicesGetDeviceProperties(webServer.arg(0));
-			if (deviceProp.length() == 0)
+			String driverProp = driversGetDriverProperties(webServer.arg(0));
+			if (driverProp.length() == 0)
 			{
-				deviceProp = "wrong device id: " + webServer.arg(0) + " use GetDevicesId API to get all devices list";
-				webServer.send(404, "text/html", deviceProp);
+				driverProp = "wrong driver id: " + webServer.arg(0) + " use GetDriversId API to get all drivers list";
+				webServer.send(404, "text/html", driverProp);
 			}
 			else
 			{
-				webServer.send(200, "text/plain", deviceProp);
+				webServer.send(200, "text/plain", driverProp);
 			}
 			return;
 		}
@@ -611,37 +611,37 @@ void handleGetDeviceProperties()
 	handleNotFound();
 }
 //----------------------------------------------------------------------------------------------
-void handleGetDeviceProperty()
+void handleGetDriverProperty()
 {
 	webServerAddCORSHeaders();
 	if (webServer.args() > 1)
 	{
 		if ((webServer.argName(0).equals("id")) && (webServer.argName(1).equals("property")))
 		{
-			String deviceProp = devicesGetDeviceProperty(webServer.arg(0), decode(webServer.arg(1)));
-			if (deviceProp.length() == 0) //then try get this property from unit 
+			String driverProp = driversGetDriverProperty(webServer.arg(0), decode(webServer.arg(1)));
+			if (driverProp.length() == 0) //then try get this property from unit 
 			{
-				deviceProp = unitOnMessage(unitGetTopic() + "/get" + decode(webServer.arg(1)), "", NoTransportMask);
+				driverProp = unitOnMessage(unitGetTopic() + "/get" + decode(webServer.arg(1)), "", NoTransportMask);
 			}
 
-			if (deviceProp.length() == 0)
+			if (driverProp.length() == 0)
 			{
-				deviceProp = "wrong device id: " + webServer.arg(0) + " use GetDevicesId API to get all devices list";
-				webServer.send(404, "text/html", deviceProp);
+				driverProp = "wrong driver id: " + webServer.arg(0) + " use GetDriversId API to get all drivers list";
+				webServer.send(404, "text/html", driverProp);
 			}
-			else if (deviceProp.equals(NotAvailable))
+			else if (driverProp.equals(NotAvailable))
 			{
-				deviceProp = "device property: " + webServer.arg(1) + " set as NOT Available";
-				webServer.send(404, "text/html", deviceProp);
+				driverProp = "driver property: " + webServer.arg(1) + " set as NOT Available";
+				webServer.send(404, "text/html", driverProp);
 			}
-			else if (deviceProp.equals(WrongPropertyName))
+			else if (driverProp.equals(WrongPropertyName))
 			{
-				deviceProp = "device property: " + webServer.arg(1) + " not exists";
-				webServer.send(404, "text/html", deviceProp);
+				driverProp = "driver property: " + webServer.arg(1) + " not exists";
+				webServer.send(404, "text/html", driverProp);
 			}
 			else
 			{
-				webServer.send(200, "text/plain", deviceProp);
+				webServer.send(200, "text/plain", driverProp);
 			}
 			return;
 		}
@@ -649,14 +649,14 @@ void handleGetDeviceProperty()
 	handleNotFound();
 }
 //----------------------------------------------------------------------------------------------
-void handleSetDeviceProperty()
+void handleSetDriverProperty()
 {
 	webServerAddCORSHeaders();
 	if (webServer.args() > 2)
 	{
 		if ((webServer.argName(0).equals("id")) && (webServer.argName(1).equals("property")) && (webServer.argName(2).equals("value")))
 		{
-			String result = devicesSetDeviceProperty(webServer.arg(0), decode(webServer.arg(1)), decode(webServer.arg(2)));
+			String result = driversSetDriverProperty(webServer.arg(0), decode(webServer.arg(1)), decode(webServer.arg(2)));
 			if (result.length() == 0) //try set unit property
 			{
 				result = unitOnMessage(unitGetTopic() + "/set" + decode(webServer.arg(1)), decode(webServer.arg(2)), NoTransportMask);
@@ -664,22 +664,22 @@ void handleSetDeviceProperty()
 
 			if (result.length() == 0)
 			{
-				result = "wrong device id: " + webServer.arg(0) + " use GetDevicesId API to get all devices list";
+				result = "wrong driver id: " + webServer.arg(0) + " use GetDriversId API to get all drivers list";
 				webServer.send(404, "text/html", result);
 			}
 			else if (result.equals(NotAvailable))
 			{
-				result = "device property: " + webServer.arg(1) + " set as NOT Available";
+				result = "driver property: " + webServer.arg(1) + " set as NOT Available";
 				webServer.send(404, "text/html", result);
 			}
 			else if (result.equals(WrongPropertyName))
 			{
-				result = "device property: " + webServer.arg(1) + " not exists";
+				result = "driver property: " + webServer.arg(1) + " not exists";
 				webServer.send(404, "text/html", result);
 			}
 			else if (result.equals("0"))
 			{
-				result = "device property: " + webServer.arg(1) + " can't be modify";
+				result = "driver property: " + webServer.arg(1) + " can't be modify";
 				webServer.send(404, "text/html", result);
 			}
 			else
@@ -753,9 +753,9 @@ void handleSetWebProperty()
 }
 
 //----------------------------------------------------------------------------------------------
-void handleGetAllDevicesProperties() {
+void handleGetAllDriversProperties() {
 	webServerAddCORSHeaders();
-	webServer.send(200, "text/plain", devicesGetAllDevicesProperties());
+	webServer.send(200, "text/plain", driversGetAllDriversProperties());
 }
 
 //----------------------------------------------------------------------------------------------
@@ -782,7 +782,7 @@ void handlesetpinmode()
 	}
 	int pin = -1;
 	if (webServer.arg(0).equals("BUILTIN_LED")) pin = BUILTIN_LED;
-	else pin = devicesPinNameToValue(webServer.arg(0));
+	else pin = driversPinNameToValue(webServer.arg(0));
 	if (pin == -1)
 	{
 		webServer.send(404, "text/html", "wrong pin: " + webServer.arg(0));
@@ -822,7 +822,7 @@ void handlereadpin()
 		handleNotFound();
 		return;
 	}
-	int pin = devicesPinNameToValue(webServer.arg(0));
+	int pin = driversPinNameToValue(webServer.arg(0));
 	if (pin == -1)
 	{
 		webServer.send(404, "text/html", "wrong pin: " + webServer.arg(0));
@@ -855,7 +855,7 @@ void handlewritepin()
 	}
 	int pin = -1;
 	if (webServer.arg(0).equals("BUILTIN_LED")) pin = BUILTIN_LED;
-	else pin = devicesPinNameToValue(webServer.arg(0));
+	else pin = driversPinNameToValue(webServer.arg(0));
 	if (pin == -1)
 	{
 		webServer.send(404, "text/html", "wrong pin: " + webServer.arg(0));
@@ -1038,12 +1038,12 @@ bool webServerBegin()
 	webServer.on("/getunitproperty", handleGetUnitProperty);
 	webServer.on("/setunitproperty", handleSetUnitProperty);
 	webServer.on("/getallunitproperties", handleGetAllUnitProperties);
-	webServer.on("/adddevice", handleAddDevice);
-	webServer.on("/getdevicesid", handleGetDevicesId);
-	webServer.on("/getdeviceproperty", handleGetDeviceProperty);
-	webServer.on("/setdeviceproperty", handleSetDeviceProperty);
-	webServer.on("/getdeviceproperties", handleGetDeviceProperties);
-	webServer.on("/getalldevicesproperties", handleGetAllDevicesProperties);
+	webServer.on("/adddriver", handleAddDriver);
+	webServer.on("/getdriversid", handleGetDriversId);
+	webServer.on("/getdriverproperty", handleGetDriverProperty);
+	webServer.on("/setdriverproperty", handleSetDriverProperty);
+	webServer.on("/getdriverproperties", handleGetDriverProperties);
+	webServer.on("/getalldriversproperties", handleGetAllDriversProperties);
 	webServer.on("/getwebproperty", handleGetWebProperty);
 	webServer.on("/setwebproperty", HTTP_POST, handleSetWebProperty);
 	webServer.on("/reset", handleReset);

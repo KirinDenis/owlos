@@ -294,7 +294,7 @@ var LCDWidget =
               */
 
             /*        
-            //var newValue = getParsedDeviceProperty(this.id, "text");
+            //var newValue = getParsedDriverProperty(this.id, "text");
             if (this.percent !== this.textarea.storedValue) {
                 this.textarea.value = this.percent;
                 this.textarea.storedValue = this.percent;

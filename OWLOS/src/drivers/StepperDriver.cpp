@@ -39,12 +39,12 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-#include "StepperDevice.h"
+#include "StepperDriver.h"
 
-bool StepperDevice::init()
+bool StepperDriver::init()
 {
-	if (id.length() == 0) id = DeviceID;
-	BaseDevice::init(id);
+	if (id.length() == 0) id = DriverID;
+	BaseDriver::init(id);
 
 	//init properies
 	getPin1();
@@ -72,19 +72,19 @@ bool StepperDevice::init()
 	}
 }
 
-bool StepperDevice::begin(String _topic)
+bool StepperDriver::begin(String _topic)
 {
 	setBusy(0);
 	setStop(0);
-	BaseDevice::begin(_topic);
+	BaseDriver::begin(_topic);
 	setType(Stepper);
 	setAvailable(available);
 	return available;
 }
 
-String StepperDevice::getAllProperties()
+String StepperDriver::getAllProperties()
 {
-	String result = BaseDevice::getAllProperties();
+	String result = BaseDriver::getAllProperties();
 	result += "position=" + String(position) + "//is\n";
 	result += "pin1=" + String(pin1) + "//i\n";
 	result += "pin2=" + String(pin2) + "//i\n";
@@ -98,9 +98,9 @@ String StepperDevice::getAllProperties()
 	return result;
 }
 
-String StepperDevice::onMessage(String _topic, String _payload, int transportMask)
+String StepperDriver::onMessage(String _topic, String _payload, int transportMask)
 {
-	String result = BaseDevice::onMessage(_topic, _payload, transportMask);
+	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
 	if (!available) return result;
 	//Stepper GPIO 1-pin (D4 by default)
 	if (String(topic + "/getpin1").equals(_topic))
@@ -142,7 +142,7 @@ String StepperDevice::onMessage(String _topic, String _payload, int transportMas
 					result = String(setPin4(std::atoi(_payload.c_str())));
 				}
 				else
-					//Stepper device to position step counter -----------------------------------
+					//Stepper driver to position step counter -----------------------------------
 					if (String(topic + "/gettoposition").equals(_topic))
 					{
 						result = onGetProperty("toposition", String(getToPosition()), transportMask);
@@ -205,7 +205,7 @@ String StepperDevice::onMessage(String _topic, String _payload, int transportMas
 }
 
 //Stepper GPIO 1-pin (D4 by default) ----------------------------------------------------
-int StepperDevice::getPin1()
+int StepperDriver::getPin1()
 {
 	if (filesExists(id + ".pin1"))
 	{
@@ -217,7 +217,7 @@ int StepperDevice::getPin1()
 	return pin1;
 }
 
-bool StepperDevice::setPin1(int _pin1)
+bool StepperDriver::setPin1(int _pin1)
 {
 	pin1 = _pin1;
 	pinMode(pin1, OUTPUT);
@@ -226,7 +226,7 @@ bool StepperDevice::setPin1(int _pin1)
 }
 
 //Stepper GPIO 2-pin (D5 by default) ----------------------------------------------------
-int StepperDevice::getPin2()
+int StepperDriver::getPin2()
 {
 	if (filesExists(id + ".pin2"))
 	{
@@ -238,7 +238,7 @@ int StepperDevice::getPin2()
 	return pin2;
 }
 
-bool StepperDevice::setPin2(int _pin2)
+bool StepperDriver::setPin2(int _pin2)
 {
 	pin2 = _pin2;
 	pinMode(pin2, OUTPUT);
@@ -247,7 +247,7 @@ bool StepperDevice::setPin2(int _pin2)
 }
 
 //Stepper GPIO 3-pin (D6 by default) ----------------------------------------------------
-int StepperDevice::getPin3()
+int StepperDriver::getPin3()
 {
 	if (filesExists(id + ".pin3"))
 	{
@@ -259,7 +259,7 @@ int StepperDevice::getPin3()
 	return pin3;
 }
 
-bool StepperDevice::setPin3(int _pin3)
+bool StepperDriver::setPin3(int _pin3)
 {
 	pin3 = _pin3;
 	pinMode(pin3, OUTPUT);
@@ -268,7 +268,7 @@ bool StepperDevice::setPin3(int _pin3)
 }
 
 //Stepper GPIO 4-pin (D7 by default) ----------------------------------------------------
-int StepperDevice::getPin4()
+int StepperDriver::getPin4()
 {
 	if (filesExists(id + ".pin4"))
 	{
@@ -280,7 +280,7 @@ int StepperDevice::getPin4()
 	return pin4;
 }
 
-bool StepperDevice::setPin4(int _pin4)
+bool StepperDriver::setPin4(int _pin4)
 {
 	pin4 = _pin4;
 	pinMode(pin4, OUTPUT);
@@ -291,7 +291,7 @@ bool StepperDevice::setPin4(int _pin4)
 // TO POSITION -----------------------------------------------------------------------------------------------------------
 //Set toPosition property - stepper count steps to -> _toPosition value (Position property change by the stepper count way
 //------------------------------------------------------------------------------------------------------------------------
-int StepperDevice::getToPosition()
+int StepperDriver::getToPosition()
 {
 	if (filesExists(id + ".toposition"))
 	{
@@ -303,7 +303,7 @@ int StepperDevice::getToPosition()
 	return toPosition;
 }
 
-bool StepperDevice::setToPosition(int _toPosition)
+bool StepperDriver::setToPosition(int _toPosition)
 {
 	if (busy == 1)
 	{
@@ -382,7 +382,7 @@ bool StepperDevice::setToPosition(int _toPosition)
 }
 
 // Busy -------------------------------------------
-int StepperDevice::getBusy()
+int StepperDriver::getBusy()
 {
 	if (filesExists(id + ".busy"))
 	{
@@ -394,7 +394,7 @@ int StepperDevice::getBusy()
 	return busy;
 }
 
-bool StepperDevice::setBusy(int _busy)
+bool StepperDriver::setBusy(int _busy)
 {
 	busy = _busy;
 	filesWriteInt(id + ".busy", busy);
@@ -402,7 +402,7 @@ bool StepperDevice::setBusy(int _busy)
 }
 
 // Stop -------------------------------------------
-int StepperDevice::getStop()
+int StepperDriver::getStop()
 {
 	if (filesExists(id + ".stop"))
 	{
@@ -414,7 +414,7 @@ int StepperDevice::getStop()
 	return stop;
 }
 
-bool StepperDevice::setStop(int _stop) {
+bool StepperDriver::setStop(int _stop) {
 	stop = _stop;
 	filesWriteInt(id + ".stop", stop);
 	bool result = onInsideChange("stop", String(stop));
@@ -426,7 +426,7 @@ bool StepperDevice::setStop(int _stop) {
 }
 
 //Position -------------------------------------------
-int StepperDevice::getPosition()
+int StepperDriver::getPosition()
 {
 	if (filesExists(id + ".position"))
 	{
@@ -438,7 +438,7 @@ int StepperDevice::getPosition()
 	return position;
 }
 
-bool StepperDevice::setPosition(int _position, bool doEvent)
+bool StepperDriver::setPosition(int _position, bool doEvent)
 {
 	position = _position;
 
@@ -451,7 +451,7 @@ bool StepperDevice::setPosition(int _position, bool doEvent)
 }
 
 //Range -------------------------------------------
-int StepperDevice::getRange()
+int StepperDriver::getRange()
 {
 	if (filesExists(id + ".range"))
 	{
@@ -463,7 +463,7 @@ int StepperDevice::getRange()
 	return range;
 }
 
-bool StepperDevice::setRange(int _range)
+bool StepperDriver::setRange(int _range)
 {
 	range = _range;
 	filesWriteInt(id + ".range", range);
@@ -471,7 +471,7 @@ bool StepperDevice::setRange(int _range)
 }
 
 //Speed -------------------------------------------
-int StepperDevice::getSpeed()
+int StepperDriver::getSpeed()
 {
 	if (filesExists(id + ".speed"))
 	{
@@ -483,7 +483,7 @@ int StepperDevice::getSpeed()
 	return speed;
 }
 
-bool StepperDevice::setSpeed(int _speed)
+bool StepperDriver::setSpeed(int _speed)
 {
 	speed = _speed;
 	filesWriteInt(id + ".speed", speed);
@@ -494,7 +494,7 @@ bool StepperDevice::setSpeed(int _speed)
 //------------------------------------------------------------------------------------------------
 //DO ---------------------------------------------------------------------------------------------
 //DO Stop ----------------------------------------------------------------------------------------
-void StepperDevice::doStop()
+void StepperDriver::doStop()
 {
 	digitalWrite(pin1, B00000);
 	digitalWrite(pin2, B00000);
@@ -502,7 +502,7 @@ void StepperDevice::doStop()
 	digitalWrite(pin4, B00000);
 }
 
-void StepperDevice::doOutput(int out) {
+void StepperDriver::doOutput(int out) {
 	digitalWrite(pin1, bitRead(lookup[out], 0));
 	digitalWrite(pin2, bitRead(lookup[out], 1));
 	digitalWrite(pin3, bitRead(lookup[out], 2));

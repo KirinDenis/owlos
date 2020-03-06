@@ -56,7 +56,7 @@ function defaultWebProp() {
 
 var configProperties = defaultWebProp();
 
-//var configPropertiesDevice;
+//var configPropertiesDriver;
 
 var config = {
 
@@ -102,13 +102,13 @@ var config = {
         return undefined;
     },
 
-    addWidget: function (_dashboardId, _daviceId, _deviceProperty, _widgetWrapperId,  _widgetId, _widgetProperties) {
+    addWidget: function (_dashboardId, _daviceId, _driverProperty, _widgetWrapperId,  _widgetId, _widgetProperties) {
         var dashboard = this.getDashboardById(_dashboardId);
         if (dashboard != undefined) {
             var widget = {
                 dashboardId: _dashboardId,
-                deviceId: _daviceId,
-                deviceProperty: _deviceProperty,
+                driverId: _daviceId,
+                driverProperty: _driverProperty,
                 widgetWrapperId: _widgetWrapperId,
                 widgetId: _widgetId,
                 widgetProperties: _widgetProperties
@@ -153,10 +153,10 @@ var config = {
         var node = {
             host: _host,
             nodenickname: _nodenickname,
-            recievedDevicesProperties: "",
+            recievedDriversProperties: "",
             //-------------------------------------------------------------------------------------------------------------
             //сетевое состояние модуля - онлайн, офлайн, переподсоединение ("в работе"), ошибка --> по умолчанию онлайн
-            //NOTE: у каждого свойства есть свое сетевое состояние и связанные события - это глобальный флаг для всех устройств и элементов UI
+            //NOTE: у каждого свойства есть свое сетевое состояние и связанные события - это глобальный флаг для всех драйвер и элементов UI
             _networkStatus: NET_OFFLINE, //offline по умолчанию
             set networkStatus(networkStatus) { //для контроля изменения _networkStatus, для оповещения подписчиков
                 this._networkStatus = networkStatus; //сохранить новое сетевое состояние
@@ -179,7 +179,7 @@ var config = {
                 this.networkStatusListners.push(event = { event: _event, sender: _sender });
             },
 
-            devices: []
+            drivers: []
         }
         configProperties.nodes.push(node);
         config.doOnChange();
@@ -215,9 +215,9 @@ var config = {
                             id: configProperties.nodes[nodeKey].id,
                             host: configProperties.nodes[nodeKey].host,
                             nodenickname: configProperties.nodes[nodeKey].nodenickname,
-                            recievedDevicesProperties: "",
+                            recievedDriversProperties: "",
                             _networkStatus: NET_OFFLINE,
-                            devices: [],
+                            drivers: [],
                             networkStatusListners: [], //подписчики на изменение сетевого состояния                         
                             set networkStatus(networkStatus) { //для контроля изменения _networkStatus, для оповещения подписчиков
                                 this._networkStatus = networkStatus; //сохранить новое сетевое состояние
@@ -310,9 +310,9 @@ var config = {
                 id: configProperties.nodes[node].id,
                 host: configProperties.nodes[node].host,
                 nodenickname: configProperties.nodes[node].nodenickname,
-                recievedDevicesProperties: "",
+                recievedDriversProperties: "",
                 _networkStatus: NET_OFFLINE,
-                devices: []
+                drivers: []
 
             }
 
@@ -526,13 +526,13 @@ var config = {
     }
 
     /*
-    configPropertiesToDevice: function () {
-        var configPropertiesDevice = devices.addDevice("config");
-        devices.newDeviceProperty(configPropertiesDevice, "type", 14, "ri"); //14 is config device type
-        devices.newDeviceProperty(configPropertiesDevice, "language", configProperties.language, "");
-        devices.newDeviceProperty(configPropertiesDevice, "speak", configProperties.speack, "b");
-        devices.newDeviceProperty(configPropertiesDevice, "voice", configProperties.voice, "i");
-        devices.onDeviceLoaded(configPropertiesDevice);
+    configPropertiesToDriver: function () {
+        var configPropertiesDriver = drivers.addDriver("config");
+        drivers.newDriverProperty(configPropertiesDriver, "type", 14, "ri"); //14 is config driver type
+        drivers.newDriverProperty(configPropertiesDriver, "language", configProperties.language, "");
+        drivers.newDriverProperty(configPropertiesDriver, "speak", configProperties.speack, "b");
+        drivers.newDriverProperty(configPropertiesDriver, "voice", configProperties.voice, "i");
+        drivers.onDriverLoaded(configPropertiesDriver);
     }
     */
 }

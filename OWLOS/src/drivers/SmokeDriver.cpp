@@ -39,86 +39,61 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-#include "MotionDevice.h"
+#include "SmokeDriver.h"
 
-bool MotionDevice::init()
+bool SmokeDriver::begin(String _topic)
 {
-	if (id.length() == 0) id = DeviceID;
-	BaseDevice::init(id);
-	//init properies
-	getPin();
-	pinMode(pin, INPUT);
-}
+	if (id.length() == 0) id = DriverID;
+	BaseDriver::init(id);
 
-bool MotionDevice::begin(String _topic)
-{
-	BaseDevice::begin(_topic);
+	BaseDriver::begin(_topic);
 	available = true;
-	setType(Motion);
+
+	trap = 80;
+	setType(Smoke);
 	setAvailable(available);
 	return available;
 }
 
-String MotionDevice::getAllProperties()
+String SmokeDriver::getAllProperties()
 {
-	String result = BaseDevice::getAllProperties();
-	result += "motion=" + String(motion) + "\n";
-	result += "pin=" + String(pin) + "\n";
+	String result = BaseDriver::getAllProperties();
+	result += "smoke=" + smoke + "//rsi\n";
+	result += "pin=" + String(pin) + "//i\n";
 	return result;
 }
 
-bool MotionDevice::query()
+bool SmokeDriver::query()
 {
-	if (BaseDevice::query())
+	if (BaseDriver::query())
 	{
-		int _motion = motion;
-		getMotion();
-		if (_motion != motion)
+		int _smoke = std::atoi(smoke.c_str());
+		getSmoke();
+		float different = std::atoi(smoke.c_str()) - _smoke;
+		if ((different > trap) || (different < -trap))
 		{
-			onInsideChange("motion", String(motion));
-			motionTriger++;
+			onInsideChange("smoke", smoke);
 		}
-
-		//Fill array of history data
-		if (millis() >= lastHistoryMillis + historyInterval)
-		{
-			if (motion == 1)  motionTriger++; //motion all time at "1"
-			lastHistoryMillis = millis();
-			setHistoryData(motionTriger);
-			motionHistoryFileTriger = motionTriger;
-			motionTriger = 0.0;
-		}
-
-		//Write history data to file
-		if (millis() >= lastHistoryFileWriteMillis + historyFileWriteInterval)
-		{
-			if (motion == 1)  motionHistoryFileTriger++; //motion all time at "1"
-			lastHistoryFileWriteMillis = millis();
-			writeHistoryFile(motionHistoryFileTriger);
-			motionHistoryFileTriger = 0.0;
-		}
-
-
 		return true;
 	}
 	return false;
-};
+}
 
-bool MotionDevice::publish()
+bool SmokeDriver::publish()
 {
-	if (BaseDevice::publish())
+	if (BaseDriver::publish())
 	{
-		onInsideChange("motion", String(motion));
+		onInsideChange("smoke", smoke);
 		return true;
 	}
 	return false;
-};
+}
 
-String MotionDevice::onMessage(String _topic, String _payload, int transportMask)
+String SmokeDriver::onMessage(String _topic, String _payload, int transportMask)
 {
-	String result = BaseDevice::onMessage(_topic, _payload, transportMask);
+	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
 	if (!available) return result;
-	//Motion sensor GPIO 1-pin (A0 by default)
+	//Smoke sensor GPIO 1-pin (A0 by default)
 	if (String(topic + "/getpin").equals(_topic))
 	{
 		result = onGetProperty("pin", String(getPin()), transportMask);
@@ -127,15 +102,15 @@ String MotionDevice::onMessage(String _topic, String _payload, int transportMask
 	{
 		result = String(setPin(std::atoi(_payload.c_str())));
 	}
-	else if ((String(topic + "/getmotion").equals(_topic)) || (String(topic + "/setmotion").equals(_topic)))
+	else if ((String(topic + "/getsmoke").equals(_topic)) || (String(topic + "/setsmoke").equals(_topic)))
 	{
-		result = onGetProperty("motion", String(getMotion()), transportMask);
+		result = onGetProperty("smoke", getSmoke(), transportMask);
 	}
 	return result;
 }
 
-//Motion Sensor 1-pin (A0 by default) ----------------------------------------------------
-int MotionDevice::getPin()
+//Smoke Sensor 1-pin (A0 by default) ----------------------------------------------------
+int SmokeDriver::getPin()
 {
 	if (filesExists(id + ".pin"))
 	{
@@ -147,7 +122,7 @@ int MotionDevice::getPin()
 	return pin;
 }
 
-bool MotionDevice::setPin(int _pin)
+bool SmokeDriver::setPin(int _pin)
 {
 	pin = _pin;
 	pinMode(pin, INPUT);
@@ -155,11 +130,13 @@ bool MotionDevice::setPin(int _pin)
 	return onInsideChange("pin", String(pin));
 }
 
-int MotionDevice::getMotion()
+
+String SmokeDriver::getSmoke()
 {
-	motion = digitalRead(pin);
+	int _smoke = analogRead(pin);
+	smoke = String(_smoke);
 #ifdef DetailedDebug
-	debugOut(id, "motion=" + String(motion));
+	debugOut(id, "smoke=" + smoke);
 #endif
-	return motion;
+	return smoke;
 }

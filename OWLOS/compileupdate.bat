@@ -69,10 +69,10 @@ D:\7Zip\7z.exe a -mx9 dataTables.min.js.gz dataTables.min.js
 REM copy  "dataTables.min.js.gz" "dataTables.min.js.gz"
 D:\7Zip\7z.exe a -mx9 widgetswrappers.js.gz widgetswrappers.js 
 REM copy  "widgetswrappers.js.gz" "widgetswrappers.js.gz"
-D:\7Zip\7z.exe a -mx9 devicescore.js.gz devicescore.js 
-REM copy  "devicescore.js.gz" "devicescore.js.gz"
-D:\7Zip\7z.exe a -mx9 devicesui.js.gz devicesui.js 
-REM copy  "devicesui.js.gz" "devicesui.js.gz"
+D:\7Zip\7z.exe a -mx9 driverscore.js.gz driverscore.js 
+REM copy  "driverscore.js.gz" "driverscore.js.gz"
+D:\7Zip\7z.exe a -mx9 driversui.js.gz driversui.js 
+REM copy  "driversui.js.gz" "driversui.js.gz"
 D:\7Zip\7z.exe a -mx9 drawcore.js.gz drawcore.js 
 REM copy  "drawcore.js.gz" "drawcore.js.gz"
 D:\7Zip\7z.exe a -mx9 dashboardui.js.gz dashboardui.js 

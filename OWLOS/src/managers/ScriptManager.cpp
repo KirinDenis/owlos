@@ -77,11 +77,11 @@ Battle Hamster Script
 - динамическое распределение памяти для хранения и выполнения скриптов.
 - редактирование, замену скрипта.
 - удаление скриптов.
-- доступ к свойствам устройств подключенных к микроконтроллеру на чтение-запись. (без перезапуска микроконтроллера (устройства могут добавляется динамически))
+- доступ к свойствам драйвер подключенных к микроконтроллеру на чтение-запись. (без перезапуска микроконтроллера (драйвера могут добавляется динамически))
 
 Зачем нужен скрипт менеджер, возможные сценарии использования:
-"Классика" программирования микроконтроллера выглядит так - подключить устройства к PIN, написать (найти) библиотеки программно обслуживающие устройства,
-написать код реализующий логический уровень взаимодействия устройств. Например, для реализации проекта "умной" лампочки, вам понадобится реле, датчик освещенности, датчик движения - подключить их к микроконтроллеру - это придется делать в любом случае,
+"Классика" программирования микроконтроллера выглядит так - подключить драйвера к PIN, написать (найти) библиотеки программно обслуживающие драйвера,
+написать код реализующий логический уровень взаимодействия драйвер. Например, для реализации проекта "умной" лампочки, вам понадобится реле, датчик освещенности, датчик движения - подключить их к микроконтроллеру - это придется делать в любом случае,
 с OWLOS или без нее :)
 
 Написать код на C/C++ считывающий показания датчиков, анализирующий и значения и принимающий решение - включить или выключить лампочку (через реле).
@@ -98,9 +98,9 @@ Battle Hamster Script
 интересные задачи и займут уйму времени. (Посмотрите исходный код OWLOS - как это делаем мы, найдите неточности и ошибки, помогите нам их исправить и сделать OWLOS еще надежнее)
 
 Тоже самое с OWLOS:
-- Соберите схему, подключите устройства.
-- Зайдите в OWLOS UI, укажите какие устройства были подключены. Теперь вы можете управлять подключенными устройствами через сеть.
-- В OWLOS UI скрипт редакторе опишите логику взаимодействия устройств:
+- Соберите схему, подключите драйвера.
+- Зайдите в OWLOS UI, укажите какие драйвера были подключены. Теперь вы можете управлять подключенными драйверами через сеть.
+- В OWLOS UI скрипт редакторе опишите логику взаимодействия драйвер:
 
 Скрипт состоит с двух блоков. Первый - определение необходимого числа переменных, второй непосредственное исполнение операций (инструкций). При использование оператора перехода на строку,
 нулевой строкой считается строка начала блока выполнения операций (инструкций).
@@ -108,18 +108,18 @@ Battle Hamster Script
 Пример байт кода (проверяет значение освещенности и если освещенность выше заданной отключает освещение):
 
 	var _light=0                                  // определение переменной _light и присвоение ей значения 0. Первый блок, в данном примере он состоит всего из одной строки
-	getDeviceProp lightsensor, light, _light      //получить текущие показания освещенности light с сенсора с ID lightsensor и записать этого значение в переменную _light. Начало второго блока. Эта строка считается "нулевой" для оператора перехода goto
+	getDriverProp lightsensor, light, _light      //получить текущие показания освещенности light с сенсора с ID lightsensor и записать этого значение в переменную _light. Начало второго блока. Эта строка считается "нулевой" для оператора перехода goto
 	ifupper _light, 300, 4                        //если показания освещенности более 300 единиц выполнить инструкцию из строки 4
 	setprop relay, data, 1                        //переходим сюда, если показания освещенности меньше или равны 300, замыкаем (включаем) реле с ID relay
 	goto 0                                        //переход на строку 0 для проверки показания освещенности light с сенсора с ID lightsensor и записать этого значение в переменную _light
 	setprop relay, data, 0                        //мы перешли сюда из 3 строки, если освещенность выше 300 ( _light > 300 ) - размыкаем (выключаем) реле
 	goto 0                                        //переход на строку 0 для проверки показания освещенности light с сенсора с ID lightsensor и записать этого значение в переменную _light
 
-- Изменяйте сценарий, изменяйте логику, добавляйте новые устройства, добавляйте новые микроконтроллеры.
+- Изменяйте сценарий, изменяйте логику, добавляйте новые драйвера, добавляйте новые микроконтроллеры.
 */
 
 #include <Arduino.h>
-#include "DeviceManager.h"
+#include "DriverManager.h"
 #include "..\..\UnitProperties.h"
 
 #define SCRIPT_ID "script" 
@@ -157,7 +157,7 @@ Battle Hamster Script
 #define SERIAL_OUT_INSTRUCTION	0b00001101
 
 //определения управляющих переменных и переменных опций компиляции
-#define STOP_IF_DEVICE_NOTREADY "STOP_IF_DEVICE_NOTREADY" //если в скрипте будет определена переменная с таким именем и устройство не готово - программа остановится
+#define STOP_IF_DEVICE_NOTREADY "STOP_IF_DEVICE_NOTREADY" //если в скрипте будет определена переменная с таким именем и драйвер не готово - программа остановится
 
 //байт-код одной инструкции
 typedef struct Instruction
@@ -790,14 +790,14 @@ int runGetProp(int index) {
 	int ip = scripts[index].ip;
 	if (scripts[index].code[ip].type != GET_DRIVER_PROPERTY_INSTRUCTION) return -1;
 
-	String deviceId = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
-	String deviceProp = scripts[index].data[scripts[index].code[ip].arg2Addr].value;
+	String driverId = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
+	String driverProp = scripts[index].data[scripts[index].code[ip].arg2Addr].value;
 
-	String value = devicesGetDeviceProperty(deviceId, deviceProp);
+	String value = driversGetDriverProperty(driverId, driverProp);
 
 	if ((value.length() == 0) || (value == WrongPropertyName)) //then try get this property from unit
 	{
-		value = unitOnMessage(unitGetTopic() + "/get" + deviceProp, "", NoTransportMask);
+		value = unitOnMessage(unitGetTopic() + "/get" + driverProp, "", NoTransportMask);
 	}
 
 	if (((value.length() == 0) || (value == WrongPropertyName)) && (getDataAddr(index, STOP_IF_DEVICE_NOTREADY) != -1))
@@ -822,15 +822,15 @@ int runSetProp(int index) {
 	int ip = scripts[index].ip;
 	if (scripts[index].code[ip].type != SET_DRIVER_PROPERTY_INSTRUCTION) return -1;
 
-	String deviceId = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
-	String deviceProp = scripts[index].data[scripts[index].code[ip].arg2Addr].value;
+	String driverId = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
+	String driverProp = scripts[index].data[scripts[index].code[ip].arg2Addr].value;
 	String value = scripts[index].data[scripts[index].code[ip].arg3Addr].value;
 
-	String result = devicesSetDeviceProperty(deviceId, deviceProp, value);
+	String result = driversSetDriverProperty(driverId, driverProp, value);
 
 	if ((result.length() == 0) || (result == WrongPropertyName)) //try set unit property
 	{
-		result = unitOnMessage(unitGetTopic() + "/set" + deviceProp, value, NoTransportMask);
+		result = unitOnMessage(unitGetTopic() + "/set" + driverProp, value, NoTransportMask);
 	}
 
 	if (((value.length() == 0) || (value == WrongPropertyName)) && (getDataAddr(index, STOP_IF_DEVICE_NOTREADY) != -1))

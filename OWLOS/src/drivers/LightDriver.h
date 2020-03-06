@@ -40,11 +40,11 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 #include <Arduino.h>
-#include "BaseDevice.h"
+#include "BaseDriver.h"
 
-#define DeviceID "light"
+#define DriverID "light"
 
-class LightDevice : public BaseDevice {
+class LightDriver : public BaseDriver {
   public:
     bool begin(String _Topic);
     bool query();

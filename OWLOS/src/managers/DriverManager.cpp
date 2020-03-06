@@ -41,117 +41,117 @@ OWLOS распространяется в надежде, что она буде
 
 
 //ALL DEVICES constructors must be called here, current unit topic must be puted as parameter
-#include "DeviceManager.h"
+#include "DriverManager.h"
 #include "..\..\UnitProperties.h"
 
 String __topic;
 String busyPins;
 
-#define DevicesLimit 20
-int devicesCount = 0;
-BaseDevice * devicesList[DevicesLimit];
+#define DriversLimit 20
+int driversCount = 0;
+BaseDriver * driversList[DriversLimit];
 
 
-void devicesInit(String _topic)
+void driversInit(String _topic)
 {
 	__topic = _topic;
 	
 #ifdef DetailedDebug
-	debugOut("deviceconfig", devicesLoadFromConfig());
+	debugOut("driverconfig", driversLoadFromConfig());
 #else
-	devicesLoadFromConfig();
+	driversLoadFromConfig();
 #endif
 
 }
 
-void devicesBegin(String unitTopic)
+void driversBegin(String unitTopic)
 {
-	for (int i = 0; i < devicesCount; i++)
+	for (int i = 0; i < driversCount; i++)
 	{
-		devicesList[i]->begin(unitTopic);
+		driversList[i]->begin(unitTopic);
 	}
 }
 
-void devicesLoop()
+void driversLoop()
 {
 	//ALL DEVICES must be call .publish() method from this main loop procedure
-	for (int i = 0; i < devicesCount; i++)
+	for (int i = 0; i < driversCount; i++)
 	{
-		devicesList[i]->query();
-		devicesList[i]->publish();
+		driversList[i]->query();
+		driversList[i]->publish();
 	}
 }
 
-void devicesSubscribe()
+void driversSubscribe()
 {
 	//ALL DEVICES method .subscribe() must be called here with current _topic and _payload values
-	for (int i = 0; i < devicesCount; i++)
+	for (int i = 0; i < driversCount; i++)
 	{
-		devicesList[i]->subscribe();
+		driversList[i]->subscribe();
 	}
 }
 
-void devicesCallback(String _topic, String _payload)
+void driversCallback(String _topic, String _payload)
 {
 	//ALL DEVICES method .onMessage() must be called here with current _topic and _payload values
-	for (int i = 0; i < devicesCount; i++)
+	for (int i = 0; i < driversCount; i++)
 	{
-		devicesList[i]->onMessage(_topic, _payload, MQTTMask);
+		driversList[i]->onMessage(_topic, _payload, MQTTMask);
 	}
 }
 
-String devicesGetDevicesId()
+String driversGetDriversId()
 {
-	String result = "deviceid;type;available\n";
-	for (int i = 0; i < devicesCount; i++)
+	String result = "driverid;type;available\n";
+	for (int i = 0; i < driversCount; i++)
 	{
-		result += devicesList[i]->id + ";" + String(devicesList[i]->getType()) + ";" + String(devicesList[i]->getAvailable()) + "\n";
+		result += driversList[i]->id + ";" + String(driversList[i]->getType()) + ";" + String(driversList[i]->getAvailable()) + "\n";
 	}
 	return result;
 };
 
-BaseDevice* devicesGetDevice(String id)
+BaseDriver* driversGetDriver(String id)
 {
-	for (int i = 0; i < devicesCount; i++)
+	for (int i = 0; i < driversCount; i++)
 	{
-		if (devicesList[i]->id.equals(id))
+		if (driversList[i]->id.equals(id))
 		{
-			return devicesList[i];
+			return driversList[i];
 		}
 	}
 	return NULL;
 }
 
-String devicesGetDeviceProperty(String id, String property)
+String driversGetDriverProperty(String id, String property)
 {
-	BaseDevice* baseDevice = devicesGetDevice(id);
-	if (baseDevice == NULL) return "";
+	BaseDriver* baseDriver = driversGetDriver(id);
+	if (baseDriver == NULL) return "";
 
-	return baseDevice->onMessage(__topic + "/" + id + "/get" + property, "", NoTransportMask);
+	return baseDriver->onMessage(__topic + "/" + id + "/get" + property, "", NoTransportMask);
 }
 
-String devicesSetDeviceProperty(String id, String property, String value)
+String driversSetDriverProperty(String id, String property, String value)
 {
-	BaseDevice* baseDevice = devicesGetDevice(id);
-	if (baseDevice == NULL) return "";
+	BaseDriver* baseDriver = driversGetDriver(id);
+	if (baseDriver == NULL) return "";
 
-	return baseDevice->onMessage(__topic + "/" + id + "/set" + property, value, MQTTMask);
+	return baseDriver->onMessage(__topic + "/" + id + "/set" + property, value, MQTTMask);
 }
 
-String devicesGetDeviceProperties(String id)
+String driversGetDriverProperties(String id)
 {
-	BaseDevice* baseDevice = devicesGetDevice(id);
-	if (baseDevice == NULL) return "";
-	return baseDevice->getAllProperties();
+	BaseDriver* baseDriver = driversGetDriver(id);
+	if (baseDriver == NULL) return "";
+	return baseDriver->getAllProperties();
 }
 
-String devicesGetAllDevicesProperties()
+String driversGetAllDriversProperties()
 {
 	String result = unitGetAllProperties();
-	for (int i = 0; i < devicesCount; i++)
+	for (int i = 0; i < driversCount; i++)
 	{
-		result += "properties for:" + devicesList[i]->id + "\n";
-		result += devicesList[i]->getAllProperties();
+		result += "properties for:" + driversList[i]->id + "\n";
+		result += driversList[i]->getAllProperties();
 	}
 	return result;
 }
@@ -167,7 +167,7 @@ void addBusyPin(int type, String id, int pin)
 	busyPins += "[" + String(type) + "]" + id + ":" + String(pin) + ";";
 }
 
-String devicesGetBusyPins()
+String driversGetBusyPins()
 {
 	return busyPins;
 }
@@ -192,11 +192,11 @@ String checkPinMaping(int pin)
 #endif
 	case A0: return String();
 	}
-	return "wrong pin maping value, at this board model available next pin's values: " + devicesGetPinsMap();
+	return "wrong pin maping value, at this board model available next pin's values: " + driversGetPinsMap();
 }
 
 
-String devicesGetPinsMap()
+String driversGetPinsMap()
 {
 	return "D0-" + String(D0) + ";" +
 		"D1-" + String(D1) + ";" +
@@ -215,7 +215,7 @@ String devicesGetPinsMap()
 		"A0-" + String(A0) + ";";
 }
 
-int devicesPinNameToValue(String pinName)
+int driversPinNameToValue(String pinName)
 {
 	if (pinName.equals("D0")) return D0;
 	if (pinName.equals("D1")) return D1;
@@ -234,7 +234,7 @@ int devicesPinNameToValue(String pinName)
 	return -1;
 }
 
-String devicesValueToPinName(int pinValue)
+String driversValueToPinName(int pinValue)
 {
 	if (pinValue == D0) return "D0";
 	if (pinValue == D1) return "D1";
@@ -253,19 +253,19 @@ String devicesValueToPinName(int pinValue)
 	return String();
 }
 
-bool devicesSaveToConfig(int type, String id, int pin1, int pin2, int pin3, int pin4)
+bool driversSaveToConfig(int type, String id, int pin1, int pin2, int pin3, int pin4)
 {
-	String device = String(type) + ";" + id + ";" + String(pin1) + ";" + String(pin2) + ";" + String(pin3) + ";" + String(pin4) + ";\n";
-	return filesAppendString("deviceslist", device);
+	String driver = String(type) + ";" + id + ";" + String(pin1) + ";" + String(pin2) + ";" + String(pin3) + ";" + String(pin4) + ";\n";
+	return filesAppendString("driverslist", driver);
 }
 
-String devicesLoadFromConfig()
+String driversLoadFromConfig()
 {
 #ifdef DetailedDebug
-	debugOut("deviceconfig", "load");
+	debugOut("driverconfig", "load");
 #endif
-	String deviceList = filesReadString("deviceslist");
-	if (deviceList.length() == 0) return "bad device list counfig file";
+	String driverList = filesReadString("driverslist");
+	if (driverList.length() == 0) return "bad driver list counfig file";
 
 	String result = String();
 
@@ -276,12 +276,12 @@ String devicesLoadFromConfig()
 	String line;
 
 #ifdef DetailedDebug
-	debugOut("deviceconfig", "doparse");
+	debugOut("driverconfig", "doparse");
 #endif
 
-	while ((linePos = deviceList.indexOf(lineDelimiter)) != -1)
+	while ((linePos = driverList.indexOf(lineDelimiter)) != -1)
 	{
-		line = deviceList.substring(0, linePos);
+		line = driverList.substring(0, linePos);
 		int valuePos = 0;
 		int valueCount = 0;
 		String value;
@@ -308,24 +308,24 @@ String devicesLoadFromConfig()
 		}
 		if (id.length() != 0)
 		{
-			result += "{" + devicesAdd(std::atoi(type.c_str()), id, std::atoi(pin1.c_str()), std::atoi(pin2.c_str()), std::atoi(pin3.c_str()), std::atoi(pin4.c_str())) + "}";
+			result += "{" + driversAdd(std::atoi(type.c_str()), id, std::atoi(pin1.c_str()), std::atoi(pin2.c_str()), std::atoi(pin3.c_str()), std::atoi(pin4.c_str())) + "}";
 		}
 
-		deviceList.remove(0, linePos + lineDelimiter.length());
+		driverList.remove(0, linePos + lineDelimiter.length());
 	}
 	return result;
 }
 
-//External device manager API -------------------------------------------------
-String devicesAdd(int type, String id, int pin1, int pin2, int pin3, int pin4)
+//External driver manager API -------------------------------------------------
+String driversAdd(int type, String id, int pin1, int pin2, int pin3, int pin4)
 {
 #ifdef DetailedDebug
-	debugOut("devicesadd", id);
-	debugOut("devicesadd", busyPins);
+	debugOut("driversadd", id);
+	debugOut("driversadd", busyPins);
 #endif
-	if (devicesCount >= DevicesLimit) return "bad, devices count out of limit range";
+	if (driversCount >= DriversLimit) return "bad, drivers count out of limit range";
 	if (id.length() == 0) return "bad, id is zero length string";
-	if (type < 0) return "bad, device type";
+	if (type < 0) return "bad, driver type";
 
 	if (checkPinBusy(pin1)) return "bad, pin1:" + String(pin1) + " busy " + busyPins;
 	if (checkPinBusy(pin2)) return "bad, pin2:" + String(pin2) + " busy " + busyPins;
@@ -343,67 +343,67 @@ String devicesAdd(int type, String id, int pin1, int pin2, int pin3, int pin4)
 
 	id.toLowerCase();
 
-	for (int i = 0; i < devicesCount; i++)
+	for (int i = 0; i < driversCount; i++)
 	{
-		if (devicesList[i]->id.equals(id)) return "bad, id: " + id + " exists";
+		if (driversList[i]->id.equals(id)) return "bad, id: " + id + " exists";
 	}
 
-	if (type == DHTDeviceType)
+	if (type == DHTDriverType)
 	{
 
-		DHTDevice * dhtDevice = new DHTDevice;
-		dhtDevice->init(id);
-		dhtDevice->id = id;
-		dhtDevice->setPin(pin1);
+		DHTDriver * dhtDriver = new DHTDriver;
+		dhtDriver->init(id);
+		dhtDriver->id = id;
+		dhtDriver->setPin(pin1);
 		addBusyPin(type, id + "DHT", pin1);
-		devicesCount++;
-		devicesList[devicesCount - 1] = dhtDevice;
+		driversCount++;
+		driversList[driversCount - 1] = dhtDriver;
 	}
 	else
 			if (type == Light)
 			{
 				if (pin1 < 0) return "bad, pin1 wrong value";
-				LightDevice * lightDevice = new LightDevice;
-				lightDevice->init(id);
-				lightDevice->setPin(pin1);
+				LightDriver * lightDriver = new LightDriver;
+				lightDriver->init(id);
+				lightDriver->setPin(pin1);
 				addBusyPin(type, id, pin1);
-				devicesCount++;
-				devicesList[devicesCount - 1] = lightDevice;
+				driversCount++;
+				driversList[driversCount - 1] = lightDriver;
 			}
 			else
 				if (type == Smoke)
 				{
 					if (pin1 <= 0) return "bad, pin1 wrong value";
-					SmokeDevice * smokeDevice = new SmokeDevice;
-					smokeDevice->init(id);
-					smokeDevice->setPin(pin1);
+					SmokeDriver * smokeDriver = new SmokeDriver;
+					smokeDriver->init(id);
+					smokeDriver->setPin(pin1);
 					addBusyPin(type, id, pin1);
-					devicesCount++;
-					devicesList[devicesCount - 1] = smokeDevice;
+					driversCount++;
+					driversList[driversCount - 1] = smokeDriver;
 				}
 				else
 					if (type == Motion)
 					{
 						if (pin1 < 0) return "bad, pin1 wrong value";
-						MotionDevice * motionDevice = new MotionDevice;
-						motionDevice->id = id;
-						motionDevice->setPin(pin1);
+						MotionDriver * motionDriver = new MotionDriver;
+						motionDriver->id = id;
+						motionDriver->setPin(pin1);
 						addBusyPin(type, id, pin1);
-						motionDevice->init();
-						devicesCount++;
-						devicesList[devicesCount - 1] = motionDevice;
+						motionDriver->init();
+						driversCount++;
+						driversList[driversCount - 1] = motionDriver;
 					}
 					else
 						if (type == Sensor)
 						{
 							if (pin1 < 0) return "bad, pin1 wrong value";
-							SensorDevice * sensorDevice = new SensorDevice;
-							sensorDevice->id = id;
-							sensorDevice->setPin(pin1);
+							SensorDriver * sensorDriver = new SensorDriver;
+							sensorDriver->id = id;
+							sensorDriver->setPin(pin1);
 							addBusyPin(type, id, pin1);
-							sensorDevice->init();
-							devicesCount++;
-							devicesList[devicesCount - 1] = sensorDevice;
+							sensorDriver->init();
+							driversCount++;
+							driversList[driversCount - 1] = sensorDriver;
 						}
 						else
 							if (type == Stepper)
@@ -413,44 +413,44 @@ String devicesAdd(int type, String id, int pin1, int pin2, int pin3, int pin4)
 								if (pin3 < 0) return "bad, pin3 wrong value";
 								if (pin4 < 0) return "bad, pin4 wrong value";
 								if ((pin1 == pin2) || (pin1 == pin3) || (pin1 == pin4) || (pin2 == pin3) || (pin2 == pin4) || (pin3 == pin4)) return "bad, duplicate pins values";
-								StepperDevice * stepperDevice = new StepperDevice;
-								stepperDevice->id = id;
-								stepperDevice->setPin1(pin1);
-								stepperDevice->setPin2(pin2);
-								stepperDevice->setPin3(pin3);
-								stepperDevice->setPin4(pin4);
+								StepperDriver * stepperDriver = new StepperDriver;
+								stepperDriver->id = id;
+								stepperDriver->setPin1(pin1);
+								stepperDriver->setPin2(pin2);
+								stepperDriver->setPin3(pin3);
+								stepperDriver->setPin4(pin4);
 								addBusyPin(type, id, pin1);
 								addBusyPin(type, id, pin2);
 								addBusyPin(type, id, pin3);
 								addBusyPin(type, id, pin4);
-								stepperDevice->init();
-								devicesCount++;
-								devicesList[devicesCount - 1] = stepperDevice;
+								stepperDriver->init();
+								driversCount++;
+								driversList[driversCount - 1] = stepperDriver;
 							}
 							else
 								if (type == LCD)
 								{
 									if (checkPinBusy(D1)) return "bad, CLOCK pin busy:" + String(D1) + " busy " + busyPins;
 									if (checkPinBusy(D2)) return "bad, DATA pin busy:" + String(D2) + " busy " + busyPins;
-									LCDDevice * lcdDevice = new LCDDevice;
-									lcdDevice->id = id;
+									LCDDriver * lcdDriver = new LCDDriver;
+									lcdDriver->id = id;
 									addBusyPin(type, id, D1);
 									addBusyPin(type, id, D2);
-									lcdDevice->init();
-									devicesCount++;
-									devicesList[devicesCount - 1] = lcdDevice;
+									lcdDriver->init();
+									driversCount++;
+									driversList[driversCount - 1] = lcdDriver;
 								}
 								else
 									if (type == Actuator)
 									{
 										if (pin1 < 0) return "bad, pin1 wrong value";
-										ActuatorDevice * actuatorDevice = new ActuatorDevice;
-										actuatorDevice->id = id;
-										actuatorDevice->init();
-										actuatorDevice->setPin(pin1);
+										ActuatorDriver * actuatorDriver = new ActuatorDriver;
+										actuatorDriver->id = id;
+										actuatorDriver->init();
+										actuatorDriver->setPin(pin1);
 										addBusyPin(type, id, pin1);
-										devicesCount++;
-										devicesList[devicesCount - 1] = actuatorDevice;
+										driversCount++;
+										driversList[driversCount - 1] = actuatorDriver;
 									}
 									else
 										if (type == Opto)
@@ -458,15 +458,15 @@ String devicesAdd(int type, String id, int pin1, int pin2, int pin3, int pin4)
 											if (pin1 < 0) return "bad, pin1 wrong value";
 											if (pin2 < 0) return "bad, pin2 wrong value";
 											if (pin1 == pin2) return "bad, dublicate pins values";
-											OptoDevice * optoDevice = new OptoDevice;
-											optoDevice->init();
-											optoDevice->id = id;
-											optoDevice->setPin1(pin1);
-											optoDevice->setPin2(pin2);
+											OptoDriver * optoDriver = new OptoDriver;
+											optoDriver->init();
+											optoDriver->id = id;
+											optoDriver->setPin1(pin1);
+											optoDriver->setPin2(pin2);
 											addBusyPin(type, id, pin1);
 											addBusyPin(type, id, pin2);
-											devicesCount++;
-											devicesList[devicesCount - 1] = optoDevice;
+											driversCount++;
+											driversList[driversCount - 1] = optoDriver;
 										}
 										else
 											if (type == Valve)
@@ -475,26 +475,26 @@ String devicesAdd(int type, String id, int pin1, int pin2, int pin3, int pin4)
 												if (pin2 < 0) return "bad, pin2 wrong value";
 												if (pin3 < 0) return "bad, pin3 wrong value";
 												if ((pin1 == pin2) || (pin1 == pin3) || (pin2 == pin3)) return "bad, duplicate pins values";
-												ValveDevice * valveDevice = new ValveDevice;
-												valveDevice->init();
-												valveDevice->id = id;
-												valveDevice->setPin1(pin1);
-												valveDevice->setPin2(pin2);
-												valveDevice->setPin3(pin3);
+												ValveDriver * valveDriver = new ValveDriver;
+												valveDriver->init();
+												valveDriver->id = id;
+												valveDriver->setPin1(pin1);
+												valveDriver->setPin2(pin2);
+												valveDriver->setPin3(pin3);
 												addBusyPin(type, id, pin1);
 												addBusyPin(type, id, pin2);
 												addBusyPin(type, id, pin3);
-												devicesCount++;
-												devicesList[devicesCount - 1] = valveDevice;
+												driversCount++;
+												driversList[driversCount - 1] = valveDriver;
 											}
 											else
 											{
-												return "bad, device type";
+												return "bad, driver type";
 											}
-	//if device added at RUNTIME
-	if (transportAvailable()) devicesList[devicesCount - 1]->begin(unitGetTopic());
+	//if driver added at RUNTIME
+	if (transportAvailable()) driversList[driversCount - 1]->begin(unitGetTopic());
 #ifdef DetailedDebug
-	debugOut("devicesadd", "OK");
+	debugOut("driversadd", "OK");
 #endif
 
 	return "1";
