@@ -66,6 +66,9 @@ $(document).ready(function () {
     addToLogNL("OK loading scripts");
     addToLogNL("[START]", 1);
 
+    //Check languages DEBUG
+    //langCompare(langua, langru, document.getElementById("bootLog"));
+
     jQuery.readyException = function (error) {
         addToLogNL("jQuery error: " + error, 2);
     };

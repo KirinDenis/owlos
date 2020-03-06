@@ -221,7 +221,6 @@ var langua = "prepareUnit=підготовка інтерфейсу корист
     "language=ukraine\n";
 
 var langen = "prepareUnit=prepare UI, please wait...\n" +
-    "homeTab=Home\n" +
     "unitTab=Unit\n" +
     "settingsTab=Settings\n" +
     "filesTab=Files\n" +
@@ -260,7 +259,6 @@ var langen = "prepareUnit=prepare UI, please wait...\n" +
     "rid_error=error\n" +
     "rid_connect=connecting...\n" +
     "rid_offline=offline\n" +
-    //connection statuses 
     "connected=connected\n" +
     "disconnected=disconnected\n" +
     "idlestatus=idle status\n" +
@@ -331,13 +329,11 @@ var langen = "prepareUnit=prepare UI, please wait...\n" +
     "updatehost=Update server URL\n" +
     "updatenodeprop=node update panel\n" +
     "nodeproperties=node properties\n" +
-    "RESTfull=devices (RESTful API)\n" +
     "addnodeerror_hostempty=host can't be empty\n" +
     "addnodeerror_hostnoturl=host is not HTTP(S) URL\n" +
     "addnodeerror_nicknameempty=nickname can't be empty\n" +
     "addnodeerror_cantsaveconfig=can't save configuration to node\n" +
     "addnodeerror_cantaddnode=can't add node\n" +
-    "adddevicedialog=add device\n" +
     "devicetype=device type\n" +
     "deviceid=device ID\n" +
     "deviceidplaceholder=in small latin letters without spaces\n" +
@@ -345,11 +341,66 @@ var langen = "prepareUnit=prepare UI, please wait...\n" +
     "adddevicebutton=add device\n" +
     "notused=not used\n" +
     "checkchangedialog=apply this changes\n" +
-    "applycheck=apply\n" +    
+    "applycheck=apply\n" +
+    "dashboardTab=Панель пристроїв\n" +
+    "addnode=+ додати вузол\n" +
+    "addnodeheader=додати вузол\n" +
+    "addnodehost=адреса вузла в мережі\n" +
+    "addnodenickname=прізвисько\n" +
+    "addnodebutton=додати\n" +
+    "temperature=температура\n" +
+    "humidity=вологість\n" +
+    "dht=датчик температури і вологості (DHT)\n" +
+    "sensor=датчик (sensor)\n" +
+    "actuator=цифровий привід (actuator)\n" +
+    "opto=оптична пара\n" +
+    "valve=вентиль\n" +
+    "light=освітленість\n" +
+    "smoke=задимлення\n" +
+    "stepper=кроковий двигун\n" +
+    "lcd=рідко-кристалічний екран\n" +
+    "led=світлодіод\n" +
+    "beep=зумер\n" +
+    "relay=реле\n" +
+    "motion=рух\n" +
+    "dark=темно\n" +
+    "norm=середньо\n" +
+    "high=висока\n" +
+    "low=низька\n" +
+    "smokelow=низьке\n" +
+    "smokenorm=середне\n" +
+    "smokehigh=високе\n" +
+    "yesmotion=є\n" +
+    "nomotion=немає\n" +
+    "lcd=екран\n" +
+    "send=відпр.\n" +
+    "clear=підсв.\n" +
+    "detect=виявлено\n" +
+    "notdetect=немає\n" +
+    "downdateuipossible=Остарення можливі\n" +
+    "dashboard=Панель пристроїв\n" +
+    "dashboardview=режим перегляду\n" +
+    "dashboardedit=режим редагування\n" +
+    "dashboardaddwidget=додати віджет\n" +
+    "dashboardaddwidgetbutton=додати\n" +
+    "nodeslist=список вузлів та пристроїв\n" +
+    "devicesporplist=властивості пристроїв\n" +
+    "widgetslist=список виджетів для вибраної властивості\n" +
+    "RESTful=пристрої\n" +
+    "adddevicedigalog=додати новий пристрій до вузлу\n" +
+    "showproperties=Властивості віджета\n" +
+    "setallwidgetspropbutton=Застосувати до всіх\n" +
+    "setpropbutton=Застосувати\n" +
+    "saveaddedwidget=Збереження\n" +
+    "closebutton=Закрити\n" +
+    "createscript=+ додати скріпт\n" +
+    "scripts=скріпти\n" +
+    "scriptexecute=виконати (F8)\n" +
+    "scriptpause=пауза\n" +
+    "scriptdelete=вилучити\n" +
     "language=english\n";
 
 var langru = "prepareUnit=подготовка интерфейса пользователя\n" +
-    "homeTab=Главная\n" +
     "unitTab=Модуль\n" +
     "settingsTab=Настройки\n" +
     "filesTab=Файлы\n" +
@@ -384,7 +435,6 @@ var langru = "prepareUnit=подготовка интерфейса пользо
     "files=файлы\n" +
     "uploadfiles=загрузить файлы в модуль\n" +
     "selectfiles=выбирите файлы\n" +
-    //devices IDs translate
     "temperature=температура\n" +
     "humidity=влажность\n" +
     "light=освещённость\n" +
@@ -400,10 +450,9 @@ var langru = "prepareUnit=подготовка интерфейса пользо
     "low=низкое\n" +
     "smokelow=низкое\n" +
     "smokenorm=средне\n" +
-    "smokehigh=высокое\n" +    
+    "smokehigh=высокое\n" +
     "yesmotion=есть\n" +
     "nomotion=нет\n" +
-
     "rid_online=\n" +
     "rid_error=ошибка\n" +
     "rid_connect=соединение...\n" +
@@ -411,22 +460,21 @@ var langru = "prepareUnit=подготовка интерфейса пользо
     "lcd=экран\n" +
     "send=отпр.\n" +
     "clear=очис.\n" +
-	//connection statuses
-	"connected=подключено\n"+
-	"disconnected=разъединено\n" +
-	"idlestatus=смена статуса\n"+
-    "nossidavailable=выбранная сеть не доступна\n"+ 
-	"scancompleted=сканирование завершено\n"+
-	"connectfailed=не удается подключиться\n"+
-    "connectionlost=подключение утрачено\n"+
-    "nostate=не определен\n"+
-    "debugmode=режим отладки\n"+
-    "connectiontimeout=время соединения вышло\n"+
-	"badprotocol=неверный протокол\n"+
-    "badclientid=неверный идентификатор клиента\n"+
-    "unavailable=не доступно\n"+
-    "badcredentials=неверные учетные данные\n"+
-    "unauthorized=не разрешено\n"+
+    "connected=подключено\n" +
+    "disconnected=разъединено\n" +
+    "idlestatus=смена статуса\n" +
+    "nossidavailable=выбранная сеть не доступна\n" +
+    "scancompleted=сканирование завершено\n" +
+    "connectfailed=не удается подключиться\n" +
+    "connectionlost=подключение утрачено\n" +
+    "nostate=не определен\n" +
+    "debugmode=режим отладки\n" +
+    "connectiontimeout=время соединения вышло\n" +
+    "badprotocol=неверный протокол\n" +
+    "badclientid=неверный идентификатор клиента\n" +
+    "unavailable=не доступно\n" +
+    "badcredentials=неверные учетные данные\n" +
+    "unauthorized=не разрешено\n" +
     "connectionstatus=Статус подключения: \n" +
     "detect=обнаружено\n" +
     "notdetect=нет\n" +
@@ -486,12 +534,49 @@ var langru = "prepareUnit=подготовка интерфейса пользо
     "addnodeerror_nicknameempty=никнаме не может быть пустым\n" +
     "addnodeerror_cantsaveconfig=невозможно сохранить настройки в модуле\n" +
     "addnodeerror_cantaddnode=невозможно добавить модуль\n" +
-    "adddevicedialog=добавить новое устройство\n" +
     "devicetype=тип устройства\n" +
     "deviceid=ID устройства\n" +
     "deviceidplaceholder=маленькими латинскими буквами без пробелов\n" +
     "pin=контактный разьем \n" +
     "adddevicebutton=добавить\n" +
+    "dashboardTab=Панель пристроїв\n" +
+    "addnode=+ додати вузол\n" +
+    "addnodeheader=додати вузол\n" +
+    "addnodehost=адреса вузла в мережі\n" +
+    "addnodenickname=прізвисько\n" +
+    "addnodebutton=додати\n" +
+    "dht=датчик температури і вологості (DHT)\n" +
+    "sensor=датчик (sensor)\n" +
+    "actuator=цифровий привід (actuator)\n" +
+    "opto=оптична пара\n" +
+    "valve=вентиль\n" +
+    "stepper=кроковий двигун\n" +
+    "downdateuipossible=Остарення можливі\n" +
+    "dashboard=Панель пристроїв\n" +
+    "dashboardview=режим перегляду\n" +
+    "dashboardedit=режим редагування\n" +
+    "dashboardaddwidget=додати віджет\n" +
+    "dashboardaddwidgetbutton=додати\n" +
+    "nodeslist=список вузлів та пристроїв\n" +
+    "devicesporplist=властивості пристроїв\n" +
+    "widgetslist=список виджетів для вибраної властивості\n" +
+    "networknodeprop=мережеві налаштування модуля\n" +
+    "nodeproperties=властивості вузла\n" +
+    "RESTful=пристрої\n" +
+    "adddevicedigalog=додати новий пристрій до вузлу\n" +
+    "notused=не використовується\n" +
+    "checkchangedialog=застосувати ці зміни\n" +
+    "applycheck=застосувати\n" +
+    "showproperties=Властивості віджета\n" +
+    "setallwidgetspropbutton=Застосувати до всіх\n" +
+    "setpropbutton=Застосувати\n" +
+    "saveaddedwidget=Збереження\n" +
+    "closebutton=Закрити\n" +
+    "createscript=+ додати скріпт\n" +
+    "scripts=скріпти\n" +
+    "scriptexecute=виконати (F8)\n" +
+    "scriptpause=пауза\n" +
+    "scriptdelete=вилучити\n" +
     "language=russian\n";
 
 
@@ -534,4 +619,44 @@ function getLang(key) {
         //return "key" if exception or not found
     }
     return key;
+}
+
+function langCompare(source, dest, panel) {
+    var sourceLang = source.split("\n");
+    var destLang = dest.split("\n");
+
+    dest += "------------=---------\n"
+
+    for (var i = 0; i < sourceLang.length; i++) {
+        if (sourceLang[i] === "") continue;
+        var sourceKey = sourceLang[i].split("=")[0];    
+        var found = false;
+        for (var j = 0; j < destLang.length; j++) {
+            if (destLang[j].indexOf(sourceKey + "=") == 0) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            dest += sourceLang[i] + "\n"
+        }
+    }
+
+    var destLang = dest.split("\n");
+    dest = "";
+
+    for (var i = 0; i < destLang.length; i++) {
+        if (destLang[i] === "") continue;
+        var destKey = destLang[i].split("=")[0];
+        var found = false;
+        for (var j = 0; j < sourceLang.length; j++) {
+            if (sourceLang[j].indexOf(destKey + "=") == 0) {
+                dest += '"' + destLang[i] + '\\n" +\n';
+                break;
+            }
+        }
+    }
+
+    panel.innerHTML = dest;
+
 }
