@@ -345,7 +345,7 @@ var langen = "prepareUnit=prepare UI, please wait...\n" +
     "notused=Not used\n" +
     "checkchangedialog=Apply this changes\n" +
     "applycheck=Apply\n" +
-    "dashboardTab=Widgets panel\n" +
+    "dashboardTab=Dashboard\n" +
     "addnode=Add new node\n" +
     "addnodeheader=Adding new node\n" +
     "addnodehost=Node network address\n" +
@@ -384,11 +384,12 @@ var langen = "prepareUnit=prepare UI, please wait...\n" +
     "dashboard=Drivers panel\n" +
     "dashboardview=View mode\n" +
     "dashboardedit=Edit mode\n" +
-    "dashboardaddwidget=Add widget\n" +
+    "dashboardaddwidget=Add new widget\n" +
     "dashboardaddwidgetbutton=Add\n" +
-    "nodeslist=List of nodes\n" +
+    "nodeslist=List of nodes/drivers \n" +
     "driversporplist=Drivers properties\n" +
     "widgetslist=List of compatible widgets\n" +
+    "autoaddwidget=Add widget\n" +
     "RESTful=Drivers\n" +
     "adddriverdigalog=Adding new driver to node\n" +
     "showproperties=Widget properties\n" +
