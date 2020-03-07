@@ -101,6 +101,91 @@ var settingsUI = {
 
 
 
+                //Node Tab panel ----------------------
+                var nodePanelNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
+                nodePanelNavItem.className = "nav-item";
+                var nodePanelHRef = nodePanelNavItem.appendChild(document.createElement("a"));
+                nodePanelHRef.id = node.nodenickname + "nodePropsHref";
+                nodePanelHRef.className = "nav-link";
+                nodePanelHRef.parentLi = nodeLi;
+                //nodePanelHRef.style.color = theme.warning;
+                nodePanelHRef.setAttribute("data-toggle", "tab");
+                nodePanelHRef.onclick = settingsUI.driverAnchorClick;
+                nodePanelHRef.innerText = getLang("nodeproperties");
+                nodePanelHRef.href = "#" + node.nodenickname + "nodePropsPanel";
+                nodePanelHRef.node = node;
+                var nodesPropsPanel = document.getElementById("nodesPropsPanel");
+
+                //--- nodePropsPanel ---------------------------------------------------------------------------
+                //панель для панелей с быстрым доступам к основным свойствам ноды
+                var nodePropsPanel = nodesPropsPanel.appendChild(document.createElement('div'));
+                nodePropsPanel.className = "tab-pane fade";
+                nodePropsPanel.id = node.nodenickname + "nodePropsPanel";
+                nodeAhref.nodefadepanel = nodePropsPanel;
+
+                var nodePropHolderPanel = nodePropsPanel.appendChild(document.createElement('div'));
+                nodePropHolderPanel.id = node.nodenickname + "bodePropHoder";
+                nodePropHolderPanel.className = "row";
+
+                //подготавливаем панели со свойствами ноды (для каждой ноды своя панель id = node.nodenickname + "nodePropPanel")
+                //смотрите обработчик события onDriverLoaded() - он запоняет эту панель
+                settingsUI.addCard(nodePropHolderPanel, node.nodenickname + "NetworkNodeProp", getLang("networknodeprop"), 12);
+                var networkNodePropBody = document.getElementById(node.nodenickname + "NetworkNodePropBody");
+                settingsUI.addDiv(networkNodePropBody, node.nodenickname + "NetworkNodePropBody1", 4);
+                settingsUI.addDiv(networkNodePropBody, node.nodenickname + "NetworkNodePropBody2", 4);
+                settingsUI.addDiv(networkNodePropBody, node.nodenickname + "NetworkNodePropBody3", 4);
+
+                settingsUI.addCard(nodePropHolderPanel, node.nodenickname + "WifiNodeProp", getLang("wifinodeprop"), 4); //WifiNodePropPanel - свойства WiFi                
+                settingsUI.addCard(nodePropHolderPanel, node.nodenickname + "SystemNodeProp", getLang("systemnodeprop"), 4);
+                settingsUI.addCard(nodePropHolderPanel, node.nodenickname + "UpdateNodeProp", getLang("updatenodeprop"), 4);
+
+
+                //--- EndOf nodePropsPanel ---------------------------------------------------------------------------
+
+
+
+                //restful items main menu ----------------------
+                var RESTfulNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
+                RESTfulNavItem.className = "nav-item";
+                RESTfulNavItem.id = node.nodenickname + "restfulsubmenu2";
+
+                var RESTfulAhref = RESTfulNavItem.appendChild(document.createElement("a"));
+                RESTfulAhref.setAttribute("data-toggle", "collapse");
+                RESTfulAhref.parentLi = RESTfulNavItem;
+                RESTfulAhref.href = "#" + node.nodenickname + "restfulsubmenu";
+                RESTfulAhref.node = node;
+
+                RESTfulAhref.appendChild(document.createElement("i")).className = "fa fa-cog";
+                var RESTfulAhrefSpan = RESTfulAhref.appendChild(document.createElement("span"));
+                RESTfulAhrefSpan.className = "menu-text";
+                RESTfulAhrefSpan.innerHTML = "<b>" + getLang("RESTful") + "</b>";
+
+                RESTfulAhrefSpan = RESTfulAhref.appendChild(document.createElement("span"));
+                RESTfulAhrefSpan.className = "badge badge-pill badge-warning";
+                RESTfulAhrefSpan.id = node.nodenickname + "RESTfulAhrefDriverCountSpan";
+                RESTfulAhrefSpan.innerHTML = "0";
+                RESTfulAhrefSpan.driversCount = 0;
+
+
+                var RESTfulSubmenuUl = RESTfulNavItem.appendChild(document.createElement("ul"));
+                RESTfulSubmenuUl.className = "collapse list-unstyled";
+                RESTfulSubmenuUl.id = node.nodenickname + "restfulsubmenu";
+
+                //Add driver submenuitem ----------------
+                var driverNavItem = RESTfulSubmenuUl.appendChild(document.createElement("li"));
+                driverNavItem.className = "nav-item";
+                var driverHRef = driverNavItem.appendChild(document.createElement("a"));
+                driverHRef.className = "nav-link";
+                driverHRef.style.color = theme.warning;
+                driverHRef.parentLi = nodeLi;
+                //driverHRef.style.color = theme.success;
+                driverHRef.setAttribute("data-toggle", "tab");
+                driverHRef.onclick = driversUI.addDriverClick;
+                driverHRef.innerHTML = getLang("adddriver");
+                driverHRef.href = "#home";
+                driverHRef.node = node;
+
+
                 //аdd script submenuitem ------------------
                 var scriptsNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
                 scriptsNavItem.className = "nav-item";
@@ -150,89 +235,6 @@ var settingsUI = {
                 scriptsManager.onDelete = settingsUI.onScriptDelete;
 
 
-                //restful items main menu ----------------------
-                var RESTfulNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
-                RESTfulNavItem.className = "nav-item";
-                RESTfulNavItem.id = node.nodenickname + "restfulsubmenu2";
-
-                var RESTfulAhref = RESTfulNavItem.appendChild(document.createElement("a"));
-                RESTfulAhref.setAttribute("data-toggle", "collapse");
-                RESTfulAhref.parentLi = RESTfulNavItem;
-                RESTfulAhref.href = "#" + node.nodenickname + "restfulsubmenu";
-                RESTfulAhref.node = node;
-
-                RESTfulAhref.appendChild(document.createElement("i")).className = "fa fa-cog";
-                var RESTfulAhrefSpan = RESTfulAhref.appendChild(document.createElement("span"));
-                RESTfulAhrefSpan.className = "menu-text";
-                RESTfulAhrefSpan.innerHTML = "<b>" + getLang("RESTful") + "</b>";
-
-                RESTfulAhrefSpan = RESTfulAhref.appendChild(document.createElement("span"));
-                RESTfulAhrefSpan.className = "badge badge-pill badge-warning";
-                RESTfulAhrefSpan.id = node.nodenickname + "RESTfulAhrefDriverCountSpan";
-                RESTfulAhrefSpan.innerHTML = "0";
-                RESTfulAhrefSpan.driversCount = 0;
-
-
-                var RESTfulSubmenuUl = RESTfulNavItem.appendChild(document.createElement("ul"));
-                RESTfulSubmenuUl.className = "collapse list-unstyled";
-                RESTfulSubmenuUl.id = node.nodenickname + "restfulsubmenu";
-
-                //Add driver submenuitem ----------------
-                var driverNavItem = RESTfulSubmenuUl.appendChild(document.createElement("li"));
-                driverNavItem.className = "nav-item";
-                var driverHRef = driverNavItem.appendChild(document.createElement("a"));
-                driverHRef.className = "nav-link";
-                driverHRef.style.color = theme.warning;
-                driverHRef.parentLi = nodeLi;
-                //driverHRef.style.color = theme.success;
-                driverHRef.setAttribute("data-toggle", "tab");
-                driverHRef.onclick = driversUI.addDriverClick;
-                driverHRef.innerHTML = getLang("adddriver");
-                driverHRef.href = "#home";
-                driverHRef.node = node;
-
-
-
-                //Node Tab panel ----------------------
-                var nodePanelNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
-                nodePanelNavItem.className = "nav-item";
-                var nodePanelHRef = nodePanelNavItem.appendChild(document.createElement("a"));
-                nodePanelHRef.id = node.nodenickname + "nodePropsHref";
-                nodePanelHRef.className = "nav-link";
-                nodePanelHRef.parentLi = nodeLi;
-                //nodePanelHRef.style.color = theme.warning;
-                nodePanelHRef.setAttribute("data-toggle", "tab");
-                nodePanelHRef.onclick = settingsUI.driverAnchorClick;
-                nodePanelHRef.innerText = getLang("nodeproperties");
-                nodePanelHRef.href = "#" + node.nodenickname + "nodePropsPanel";
-                nodePanelHRef.node = node;
-                var nodesPropsPanel = document.getElementById("nodesPropsPanel");
-
-                //--- nodePropsPanel ---------------------------------------------------------------------------
-                //панель для панелей с быстрым доступам к основным свойствам ноды
-                var nodePropsPanel = nodesPropsPanel.appendChild(document.createElement('div'));
-                nodePropsPanel.className = "tab-pane fade";
-                nodePropsPanel.id = node.nodenickname + "nodePropsPanel";
-                nodeAhref.nodefadepanel = nodePropsPanel;
-
-                var nodePropHolderPanel = nodePropsPanel.appendChild(document.createElement('div'));
-                nodePropHolderPanel.id = node.nodenickname + "bodePropHoder";
-                nodePropHolderPanel.className = "row";
-
-                //подготавливаем панели со свойствами ноды (для каждой ноды своя панель id = node.nodenickname + "nodePropPanel")
-                //смотрите обработчик события onDriverLoaded() - он запоняет эту панель
-                settingsUI.addCard(nodePropHolderPanel, node.nodenickname + "NetworkNodeProp", getLang("networknodeprop"), 12);
-                var networkNodePropBody = document.getElementById(node.nodenickname + "NetworkNodePropBody");
-                settingsUI.addDiv(networkNodePropBody, node.nodenickname + "NetworkNodePropBody1", 4);
-                settingsUI.addDiv(networkNodePropBody, node.nodenickname + "NetworkNodePropBody2", 4);
-                settingsUI.addDiv(networkNodePropBody, node.nodenickname + "NetworkNodePropBody3", 4);
-
-                settingsUI.addCard(nodePropHolderPanel, node.nodenickname + "WifiNodeProp", getLang("wifinodeprop"), 4); //WifiNodePropPanel - свойства WiFi                
-                settingsUI.addCard(nodePropHolderPanel, node.nodenickname + "SystemNodeProp", getLang("systemnodeprop"), 4);
-                settingsUI.addCard(nodePropHolderPanel, node.nodenickname + "UpdateNodeProp", getLang("updatenodeprop"), 4);
-
-
-                //--- EndOf nodePropsPanel ---------------------------------------------------------------------------
 
                 //Add files submenuitem ------------------
                 var filesNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
