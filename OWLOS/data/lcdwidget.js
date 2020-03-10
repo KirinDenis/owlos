@@ -55,7 +55,7 @@ var LCDWidget =
             var rPanel = event.currentTarget;
             var widget = rPanel.widget;
 
-            widget.widgetHolder.className = "col-sm-2";
+            widget.widgetHolder.className = "col-6 col-sm-4 col-lg-2";
 
             widget.topMargin = widget.size / 20; //this.panding = 5;
             widget.width = widget.size * 2;

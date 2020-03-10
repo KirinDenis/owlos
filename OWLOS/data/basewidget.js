@@ -128,7 +128,12 @@ var BaseWidget =
             this.widgetHolder = this.parentPanel.appendChild(document.createElement("div"));
             this.widgetHolder.id = id + "BaseWidget"; // назначаем DOM HTML element.id панели (он должен быть уникален для всего DOM)
             this.widgetHolder.widget = this; // в дальнейшем эта панель будет использована в других потоках, сохраним ссылку на текущий виджет в ее свойстве
-            this.widgetHolder.className = "col-sm-1"; // назначаем Bootstrap класс для панели (одна ячейка из двенадцати по умолчанию) (в случае использования с Bootstrap)
+            //see: http://shoelace.io/
+            //see: https://getbootstrap.com/docs/4.0/layout/grid/
+            //container width  None (auto)  540px     720px    960px    1140px
+            //Class prefix        col-     col-sm-  col-md-   col-lg-   col-xl- (1..12)
+            //по умолчанию (когда длина меньше чем 540 - под два виджета на панель, когда больше 6 виджетов, более 960 - двенадцать виджетов 
+            this.widgetHolder.className = "col-3 col-sm-2 col-lg-1"; // назначаем Bootstrap класс для панели (одна ячейка из двенадцати по умолчанию) (в случае использования с Bootstrap)
             this.widgetHolder.style.cursor = "pointer"; // переопределяем тип курсора
             this.widgetHolder.onmouseover = this.mouseOver; // когда пользователь наведет мышью на виджет сработает этот обработчик события 
             this.widgetHolder.onmouseout = this.mouseOut; // когда пользователь уберет мышь этот обработчик 
@@ -508,16 +513,27 @@ var BaseWidget =
             if (this.SVGWidgetText == undefined) return; // если виджет "не готов" (не инкапсулированы SVG элементы) выходим
             // все SVG элементы расположенный в SVGViewBox - изменение его размеров повлияет не размеры остальных элементов
             this.SVGViewBox.setAttributeNS(null, "width", size);
-            this.SVGViewBox.setAttributeNS(null, "height", size);
+            this.SVGViewBox.setAttributeNS(null, "height", size );
         }
 
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         // обработчик события document...body.onresize(), вызывается когда браузер меняет свой размер 
         // NOTE: только один виджет назначает body этот обработчик
         BaseWidget.prototype.onPanelResize = function onPanelResize() {
+            //see: https://ryanve.com/lab/dimensions/
+            //see: https://coderwall.com/p/wpjw4w/change-the-bootstrap-navbar-breakpoint
+            var switchToMobile = 768;
             var body = document.getElementsByTagName("BODY")[0]; // ранее, в "конструкторе" мы добавили body свойство widget[] - массив всех созданных виджетов (каждый новый виджет добавляет себя в этот массив)
             for (var widgetKey in body.widgets) { //перечисляем все виджеты и изменяем их размер
                 var widget = body.widgets[widgetKey]; // изымаем очередной виджет
+
+                if (window.innerWidth < switchToMobile) {
+                   // widget.widgetHolder.className = "col-sm-2";
+                }
+                else {
+                    //widget.widgetHolder.className = "col-sm-1";
+                }
+
                 widget.resize(widget.widgetHolder.clientWidth); // меняем размер
             }
         }

@@ -56,7 +56,7 @@ var GraphWidget =
             var rPanel = event.currentTarget;
             var widget = rPanel.widget;
 
-            widget.widgetHolder.className = "col-sm-2";
+            widget.widgetHolder.className = "col-6 col-sm-4 col-lg-2";
             // widget.widgetHolder.removeChild(widget.SVGViewBox);
 
 
