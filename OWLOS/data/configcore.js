@@ -346,7 +346,7 @@ var config = {
         var sendingAmount = "0";
 
         // текущий статус передачи строки отображающийся в модельном окне
-        var savingCurrentStatus = "Saving changes";
+        var savingCurrentStatus = getLang("savingchanges"); 
 
         // элементы модального окна отобрающего процесс передачи строки
         var saveProgressBar = document.getElementById("saveProgressBar");
@@ -421,7 +421,7 @@ var config = {
                                 saveProgressBar.innerHTML = sendingAmount + "%";
 
                                // saveButton.hidden = true;
-                                saveTextStatus.innerHTML = "Changes saved";
+                                saveTextStatus.innerHTML = getLang("сhangessaved");
                                 savingCloseButton.hidden = true;
                                 closeButton.hidden = false;
                                 config.cancel = true;
@@ -458,7 +458,7 @@ var config = {
                                     saveProgressBar.innerHTML = sendingAmount + "%";
 
                                  //   saveButton.hidden = true;
-                                    saveTextStatus.innerHTML = "Changes saved";
+                                    saveTextStatus.innerHTML = getLang("сhangessaved");
                                     savingCloseButton.hidden = true;
                                     closeButton.hidden = false;
                                     config.cancel = true;
@@ -494,7 +494,7 @@ var config = {
 
                 //если HTTPClient вернул ошибку, сообщаем об ошибке в модальном окне если оно открыто, возвращаем false
                 if (saveTextStatus !== undefined && saveTextStatus !== null) {
-                    saveTextStatus.innerHTML = "Saving changes error. Close this window and try again later!";
+                    saveTextStatus.innerHTML = getLang("savechangeserror");
                     savingCloseButton.hidden = true;
                     closeButton.hidden = false;
                     config.cancel = true;
