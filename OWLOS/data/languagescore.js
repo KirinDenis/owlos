@@ -42,7 +42,7 @@ OWLOS распространяется в надежде, что она буде
 var langua = "prepareUnit=Підготовка інтерфейсу користувача\n" +
     "dashboardTab=Панель пристроїв\n" +
     "unitTab=Модуль\n" +
-    "settingsTab=Налаштування\n" +
+    "settingsTab=Вузли\n" +
     "filesTab=Файли\n" +
     "consoleTab=Консоль\n" +
     "network=Мережа\n" +
@@ -231,7 +231,7 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
 
 var langen = "prepareUnit=prepare UI, please wait...\n" +
     "unitTab=Node\n" +
-    "settingsTab=Settings\n" +
+    "settingsTab=Nodes\n" +
     "filesTab=Files\n" +
     "consoleTab=Console\n" +
     "network=Network\n" +
@@ -420,7 +420,7 @@ var langen = "prepareUnit=prepare UI, please wait...\n" +
 
 var langru = "prepareUnit=Подготовка интерфейса пользователя\n" +
     "unitTab=Нода\n" +
-    "settingsTab=Настройки\n" +
+    "settingsTab=Узлы\n" +
     "filesTab=Файлы\n" +
     "consoleTab=Консоль\n" +
     "network=Сетъ\n" +
@@ -578,7 +578,7 @@ var langru = "prepareUnit=Подготовка интерфейса пользо
     "nodeslist=Список узлов/драйверов \n" +
     "driver=Драйвер\n" +
     "driversporplist=Свойства драйвера\n" +
-    "widgetslist=Список виджето для выбранного свойства\n" +
+    "widgetslist=Список виджетов для выбранного свойства\n" +
     "networknodeprop=Сетевые настройки узла\n" +
     "nodeproperties=Свойства узла\n" +
     "RESTful=Драйвера\n" +
