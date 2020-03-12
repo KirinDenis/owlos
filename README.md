@@ -1,7 +1,7 @@
 ![OWLOS в режиме WiFi точки доступа без файлов UI](https://github.com/KirinDenis/owlos/blob/master/OWLOSResource/images/owlos_scheme_WiFIMixedUsage.jpg)
 
 # OWLOS 
-### open source network operating system for managing IoT drivers.
+### open source network operating system for managing IoT devices.
 
 - doesn't require internet access or additional servers
 - ready to connect with sensors, actuators, LCD, DHT, Stepper and other drivers
