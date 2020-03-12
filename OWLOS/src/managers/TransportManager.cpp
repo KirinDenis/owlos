@@ -38,14 +38,23 @@ OWLOS распространяется в надежде, что она буде
 Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
-
+#include <core_version.h>
 #include "TransportManager.h"
 #include "..\..\UnitProperties.h"
 #include "..\Managers\OTAManager.h"
 #include "..\Transports\WebServer.h"
 #include "..\Utils\Utils.h"
 
-ESP8266WiFiMulti WiFiMulti;
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
+	ESP8266WiFiMulti _WiFiMulti;
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+    #include <esp_wifi.h>
+	#include <WiFiAP.h>
+	WiFiMulti _WiFiMulti;
+#endif
+
 WiFiClient wifiClient;
 MQTTClient _MQTTClient(wifiClient);
 
@@ -76,7 +85,15 @@ bool transportBegin()
 		if (unitGetWiFiAccessPointAvailable() == 1)
 		{
 			unitSetWiFiMode(WIFI_AP);
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 			wifi_station_disconnect();
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+			esp_wifi_disconnect();
+			esp_wifi_stop();
+			esp_wifi_deinit();
+#endif
 			debugOut(TransportID, "WiFi mode Access Point");
 		}
 		else
@@ -90,7 +107,16 @@ bool transportBegin()
 			{
 				unitSetWiFiMode(WIFI_OFF);
 				WiFi.softAPdisconnect(true);
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 				wifi_station_disconnect();
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+				esp_wifi_disconnect();
+				esp_wifi_stop();
+				esp_wifi_deinit();
+#endif
+
 				debugOut(TransportID, "no WiFi mode select, WiFi not accessable");
 				return false;
 			}
@@ -126,7 +152,7 @@ bool transportAvailable()
 		if (unitGetWiFiAccessPointAvailable() == 0)  wifiAPResult = true;
 	}
 
-	if ((unitGetWiFiAvailable() == 1) && (WiFiMulti.run() == WL_CONNECTED))
+	if ((unitGetWiFiAvailable() == 1) && (_WiFiMulti.run() == WL_CONNECTED))
 	{
 		wifiResult = true;
 	}
@@ -150,7 +176,16 @@ bool WiFiAccessPointReconnect()
 	{
 		if (WiFiAccessPointConnected) return true;
 		String accessPointIP = unitGetWiFiAccessPointIP(); //this API set Access Point IP from Unit Property OR set this Property as default IP OR return Utils.NaN
-		if (WiFi.softAP(unitGetWiFiAccessPointSSID(), unitGetWiFiAccessPointPassword()))
+		bool softAPResult = false;
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
+		softAPResult = WiFi.softAP(unitGetWiFiAccessPointSSID(), unitGetWiFiAccessPointPassword());
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+		softAPResult = WiFi.softAP(unitGetWiFiAccessPointSSID().c_str(), unitGetWiFiAccessPointPassword().c_str());
+#endif
+
+		if (softAPResult)
 		{
 			WiFiAccessPointConnected = true;
 			debugOut(TransportID, "Started as WiFi Access Point: " + unitGetWiFiAccessPointSSID() + " IP: " + accessPointIP);
@@ -174,7 +209,7 @@ bool WiFiAccessPointReconnect()
 //--------------------------------------------------------------------------------------------------------------
 bool WiFiReconnect()
 {
-	if (WiFiMulti.run() == WL_CONNECTED) return true;
+	if (_WiFiMulti.run() == WL_CONNECTED) return true;
 
 	if (unitGetWiFiAvailable() == 1)
 	{
@@ -186,16 +221,23 @@ bool WiFiReconnect()
 			return false;
 		}
 
-		if (WiFiMulti.run() != WL_CONNECTED)
+		if (_WiFiMulti.run() != WL_CONNECTED)
 		{
 			debugOut(TransportID, "try to connect to - " + WiFiSSID + " wait ");
-			if (!WiFiMulti.existsAP(WiFiSSID.c_str(), unitGetWiFiPassword().c_str()))
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
+			if (!_WiFiMulti.existsAP(WiFiSSID.c_str(), unitGetWiFiPassword().c_str()))
 			{
-				WiFiMulti.addAP(WiFiSSID.c_str(), unitGetWiFiPassword().c_str());
+				_WiFiMulti.addAP(WiFiSSID.c_str(), unitGetWiFiPassword().c_str());
 			}
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+			_WiFiMulti.addAP(WiFiSSID.c_str(), unitGetWiFiPassword().c_str());
+#endif
+
 
 			int wait = 0;
-			while (WiFiMulti.run() != WL_CONNECTED)
+			while (_WiFiMulti.run() != WL_CONNECTED)
 			{
 				delay(500);
 				wait++;
@@ -207,7 +249,7 @@ bool WiFiReconnect()
 				}
 			}
 
-			if (WiFiMulti.run() == WL_CONNECTED)
+			if (_WiFiMulti.run() == WL_CONNECTED)
 			{
 				debugOut(TransportID, "WiFi connected as Client success, local IP: " + unitGetWiFiIP());
 				return true;
@@ -244,7 +286,7 @@ bool transportReconnect()
 		if (unitGetWiFiAccessPointAvailable() == 1) wifiAPResult = true;
 	}
 
-	if ((unitGetWiFiAvailable() == 1) && (WiFiMulti.run() != WL_CONNECTED))
+	if ((unitGetWiFiAvailable() == 1) && (_WiFiMulti.run() != WL_CONNECTED))
 	{
 		wifiResult = WiFiReconnect();
 	}
@@ -368,8 +410,18 @@ bool transportPublish(String _topic, String _payload)
 	return true; //if MQTT is not available and RESTful change the property
 }
 
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 ESP8266WiFiMulti transportGetWifiMulti()
 {
-	return WiFiMulti;
+	return _WiFiMulti;
 }
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+WiFiMulti transportGetWifiMulti()
+{
+	return _WiFiMulti;
+}
+#endif
+
 

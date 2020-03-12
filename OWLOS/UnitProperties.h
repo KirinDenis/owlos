@@ -39,7 +39,21 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
+#include <core_version.h>
+
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 #include <ESP8266WiFi.h>
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+#include <WiFi.h>
+#include <WiFiClient.h>
+#include <WiFiType.h>
+#include <rom/rtc.h>
+#endif
+
+
+
 #include "src\Utils\Utils.h"
 
 bool unitInit();
@@ -141,8 +155,18 @@ bool unitSetOTAPassword(String _otapassword);
 int32_t unitGetWiFiRSSI();
 bool unitSetWiFiRSSI(int _currentwifirssi);
 
+
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 WiFiMode_t unitGetWiFiMode();
 bool unitSetWiFiMode(WiFiMode_t _wifimode);
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+wifi_mode_t unitGetWiFiMode();
+bool unitSetWiFiMode(wifi_mode_t _wifimode);
+#endif
+
+
 String unitGetAllWiFiModes();
 
 wl_status_t unitGetWiFiStatus();

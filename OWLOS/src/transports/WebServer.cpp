@@ -39,24 +39,49 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-
+#include <core_version.h>
 //#define USESSL
 #define NOTUSESSL
 
-#include <ESP.h>
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
+#include <ESP826WiFi.h>
+#include <ESP8266mDNS.h>
 #include <FS.h>
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+#include <WiFi.h>
+#include <ESPmDNS.h>
+#include <SPIFFS.h>
+#endif
+
+
+#include <ESP.h>
+
 #include <Arduino.h>
 
-#include <ESP8266WiFi.h>
 #include <WiFiClient.h>
-#include <ESP8266mDNS.h>
+
 
 #ifdef USESSL
-#include <ESP8266WebServerSecure.h>
+	#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
+	#include <ESP8266WebServerSecure.h>
+	#endif
+
+	#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+	#include <WebServerSecure.h>
+	#endif
+
 #endif
 
 #ifdef NOTUSESSL
-#include <ESP8266WebServer.h>
+	#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
+	#include <ESP8266WebServer.h>
+	#endif
+
+	#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+	#include <WebServer.h>
+	#endif
 #endif
 
 #include "WebServer.h"
@@ -68,11 +93,28 @@ OWLOS распространяется в надежде, что она буде
 
 
 #ifdef USESSL
+
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 BearSSL::ESP8266WebServerSecure webServer(unitGetRESTfulServerPort());
 #endif
 
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+BearSSL::WebServerSecure webServer(unitGetRESTfulServerPort());
+#endif
+
+#endif
+
 #ifdef NOTUSESSL
+
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 ESP8266WebServer webServer(unitGetRESTfulServerPort());
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+WebServer webServer(unitGetRESTfulServerPort());
+#endif
+
+
 #endif
 
 int __RESTfulPort;
@@ -872,8 +914,10 @@ void handlewritepin()
 	if (_value.equals("LOW")) value = LOW;
 	else if (_value.equals("HIGH")) value = HIGH;
 	else value = std::atoi(webServer.arg(1).c_str());
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	if (pin == A0) analogWrite(pin, value);
 	else digitalWrite(pin, value);
+#endif
 	webServer.send(200, "text/html", "1");
 	return;
 }

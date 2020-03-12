@@ -39,11 +39,18 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
+
 #include "UnitProperties.h"
 #include "src\Managers\DriverManager.h"
 #include "src\Managers\FileManager.h"
 #include "src\Managers\TransportManager.h"
 #include "src\Managers\UpdateManager.h"
+
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+extern "C" int rom_phy_get_vdd33();
+#endif
+
 
 #define DefaultFirmwareVersion "OWLOS IoT Node version 1.7 (beta)"
 #define DefaultFirmwareBuildNumber 59
@@ -171,7 +178,15 @@ String otapassword(DefaultOTAPassword);
 
 //WiFi properties
 int32_t wifirssi((int32_t)DefaultWiFiRSSI);
+
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 WiFiMode_t wifimode((WiFiMode_t)DefaultWiFiMode);
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+wifi_mode_t wifimode((wifi_mode_t)DefaultWiFiMode);
+#endif
+
 wl_status_t wifistatus((wl_status_t)DefaultWiFiStatus);
 String wifistatustostring(DefaultWiFiStatusToString);
 int wifiisconnected(DefaultWiFiIsConnected);
@@ -482,8 +497,16 @@ String unitOnMessage(String _topic, String _payload, int transportMask)
 																																																															else
 																																																																if (String(topic + "/getwifimode").equals(_topic)) return onGetProperty("wifimode", String(unitGetWiFiMode()), transportMask);
 																																																																else
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 																																																																	if (String(topic + "/setwifimode").equals(_topic)) return String(unitSetWiFiMode((WiFiMode_t)std::atoi(_payload.c_str())));
 																																																																	else
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+																																																																		if (String(topic + "/setwifimode").equals(_topic)) return String(unitSetWiFiMode((wifi_mode_t)std::atoi(_payload.c_str())));
+																																																																		else
+
+#endif
 																																																																		if (String(topic + "/getwifistatus").equals(_topic)) return onGetProperty("wifistatus", String(unitGetWiFiStatus()), transportMask);
 																																																																		else
 																																																																			if (String(topic + "/setwifistatus").equals(_topic)) return String(unitSetWiFiStatus(std::atoi(_payload.c_str())));
@@ -698,8 +721,17 @@ int _getIntPropertyValue(String _property, int _defaultvalue)
 //Getters and Setters section ---------------------------------------------------------------
 String unitGetUnitId()
 {
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	if (propertyFileReaded.indexOf("unitid;") < 0) return unitid = _getStringPropertyValue("unitid", DefaultId + String(ESP.getChipId(), HEX));
 	else return unitid;
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+	
+	if (propertyFileReaded.indexOf("unitid;") < 0) return unitid = _getStringPropertyValue("unitid", DefaultId + String((int)ESP.getEfuseMac(), (unsigned char)HEX));
+	
+	else return unitid;
+#endif
 }
 
 bool unitSetUnitId(String _unitid)
@@ -760,8 +792,15 @@ bool unitSetWiFiAccessPointAvailable(int _wifiapavailable)
 //WiFiAccessPointSSID
 String unitGetWiFiAccessPointSSID()
 {
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	if (propertyFileReaded.indexOf("wifiaccesspointssid;") < 0) return wifiaccesspointssid = _getStringPropertyValue("wifiaccesspointssid", DefaultId + String(ESP.getChipId()));
 	else return wifiaccesspointssid;
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+	if (propertyFileReaded.indexOf("wifiaccesspointssid;") < 0) return wifiaccesspointssid = _getStringPropertyValue("wifiaccesspointssid", DefaultId + String((int)ESP.getEfuseMac()));
+	else return wifiaccesspointssid;
+#endif
 }
 
 bool unitSetWiFiAccessPointSSID(String _wifiaccesspointssid)
@@ -1031,8 +1070,15 @@ bool unitSetMQTTID(String _mqttid)
 //MQTTLogin()  
 String unitGetMQTTLogin()
 {
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	if (propertyFileReaded.indexOf("mqttlogin;") < 0) return mqttlogin = _getStringPropertyValue("mqttlogin", DefaultMQTTLogin + String(ESP.getChipId(), HEX));
 	else return mqttlogin;
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+	if (propertyFileReaded.indexOf("mqttlogin;") < 0) return mqttlogin = _getStringPropertyValue("mqttlogin", DefaultMQTTLogin + String((int)ESP.getEfuseMac(), (unsigned char)HEX));
+	else return mqttlogin;
+#endif	
 }
 bool unitSetMQTTLogin(String _mqttlogin)
 {
@@ -1098,8 +1144,16 @@ bool unitSetOTAPort(int _otaport)
 //OTAID()  
 String unitGetOTAID()
 {
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	if (propertyFileReaded.indexOf("otaid;") < 0) return otaid = _getStringPropertyValue("otaid", DefaultOTAID + String(ESP.getChipId()));
 	else return otaid;
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+	if (propertyFileReaded.indexOf("otaid;") < 0) return otaid = _getStringPropertyValue("otaid", DefaultOTAID + String((int)ESP.getEfuseMac()));
+	else return otaid;
+#endif
+	
 }
 bool unitSetOTAID(String _otaid)
 {
@@ -1121,6 +1175,7 @@ bool unitSetOTAPassword(String _otapassword)
 
 // WiFi parameters
 //WiFiMode
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 WiFiMode_t unitGetWiFiMode()
 {
 	WiFiMode_t _wifimode = WiFi.getMode();
@@ -1136,6 +1191,26 @@ bool unitSetWiFiMode(WiFiMode_t _wifimode)
 	}
 	return false;
 }
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+wifi_mode_t unitGetWiFiMode()
+{
+	wifi_mode_t _wifimode = WiFi.getMode();
+	if (_wifimode != wifimode) onInsideChange("wifimode", String(_wifimode));
+	return wifimode = _wifimode;
+}
+bool unitSetWiFiMode(wifi_mode_t _wifimode)
+{
+	if (WiFi.mode(_wifimode))
+	{
+		wifimode = _wifimode;
+		return onInsideChange("wifimode", String(wifimode));
+	}
+	return false;
+}
+#endif
+
 
 // Get all WiFi modes
 String unitGetAllWiFiModes()
@@ -1229,7 +1304,13 @@ String unitGetWiFiNetworksParameters()
 	String result = "wifinetworkscount=" + String(unitGetWiFiNetworksCount()) + "//r\n";
 	for (int8_t i = 0; i < wifinetworkscount; i++)
 	{
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 		result += "wifinetwork" + String(i) + "=SSID:" + WiFi.SSID(i) + ";RSSI:" + String(WiFi.RSSI(i)) + ";channel:" + String(WiFi.channel(i)) + ";BSSID:" + WiFi.BSSIDstr(i) + ";encryption:" + String(WiFi.encryptionType(i)) + ";hinden:" + String(WiFi.isHidden(i)) + ";//r\n";
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+		result += "wifinetwork" + String(i) + "=SSID:" + WiFi.SSID(i) + ";RSSI:" + String(WiFi.RSSI(i)) + ";channel:" + String(WiFi.channel(i)) + ";BSSID:" + WiFi.BSSIDstr(i) + ";encryption:" + String(WiFi.encryptionType(i)) + ";//r\n";
+#endif
 	}
 	return result;
 }
@@ -1259,8 +1340,10 @@ int unitGetWiFiIsConnected()
 	return wifiisconnected = _wifiisconnected;
 }
 
+//https://github.com/KirinDenis/owlos/issues/7
 bool unitSetWiFiIsConnected(int _connected1disconnected0)
 {
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	int _wifiisconnected;
 	if (_connected1disconnected0 == 1) // command to connect
 	{
@@ -1279,6 +1362,12 @@ bool unitSetWiFiIsConnected(int _connected1disconnected0)
 	unitGetWiFiStatus();
 	wifiisconnected = _wifiisconnected;
 	return true;
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+	return false;
+#endif
+
 }
 
 //GetConnectedWiFiSSID
@@ -1295,8 +1384,15 @@ String unitGetConnectedWiFiSSID()
 //ESPResetInfo()  
 String unitGetESPResetInfo()
 {
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	if (propertyFileReaded.indexOf("espresetinfo;") < 0) return espresetinfo = ESP.getResetInfo();
 	else return espresetinfo;
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+	if (propertyFileReaded.indexOf("espresetinfo;") < 0) return espresetinfo = "CPU1: " + String(rtc_get_reset_reason(0)) + ";CPU2: " + String(rtc_get_reset_reason(1)) + ";";
+	else return espresetinfo;
+#endif
 }
 bool unitSetESPResetInfo(String _espresetinfo)
 {
@@ -1316,7 +1412,13 @@ bool unitSetESPReset(int _espreset)
 	if (espreset == 1)
 	{
 		delay(100);
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 		ESP.reset();
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+		ESP.restart();
+#endif
 	}
 	return result;
 }
@@ -1342,9 +1444,18 @@ bool unitSetESPRestart(int _esprestart)
 //ESPGetVcc()  
 uint16_t unitGetESPVcc()
 {
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	if (propertyFileReaded.indexOf("espvcc;") < 0) return espvcc = ESP.getVcc();
 	else return espvcc;
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+	
+	if (propertyFileReaded.indexOf("espvcc;") < 0) return espvcc = rom_phy_get_vdd33();
+	else return espvcc;
+#endif
 }
+
 bool unitSetESPVcc(int _espvcc)
 {
 	return false;
@@ -1353,8 +1464,15 @@ bool unitSetESPVcc(int _espvcc)
 //ESPGetChipId()  
 uint32_t unitGetESPChipId()
 {
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	if (propertyFileReaded.indexOf("espchipid;") < 0) return espchipid = ESP.getChipId();
 	else return espchipid;
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4	
+		if (propertyFileReaded.indexOf("espchipid;") < 0) return espchipid = (int)ESP.getEfuseMac();
+		else return espchipid;
+#endif
 }
 bool unitSetESPChipId(int _espchipid)
 {
@@ -1375,8 +1493,14 @@ bool unitSetESPFreeHeap(int _espfreeheap)
 //ESPGetMaxFreeBlockSize
 uint16_t unitGetESPMaxFreeBlockSize()
 {
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	if (propertyFileReaded.indexOf("espmaxfreeblocksize;") < 0) return espmaxfreeblocksize = ESP.getMaxFreeBlockSize();
 	else return espmaxfreeblocksize;
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+	return -1;
+#endif	
 }
 bool unitSetESPMaxFreeBlockSize(int _espmaxfreeblocksize)
 {
@@ -1386,8 +1510,14 @@ bool unitSetESPMaxFreeBlockSize(int _espmaxfreeblocksize)
 //ESPGetHeapFragmentation
 uint8_t unitGetESPHeapFragmentation()
 {
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	if (propertyFileReaded.indexOf("espheapfragmentation;") < 0) return espheapfragmentation = ESP.getHeapFragmentation();
 	else return espheapfragmentation;
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+	return -1;
+#endif
 }
 bool unitSetESPHeapFragmentation(int _espheapfragmentation)
 {
@@ -1408,8 +1538,14 @@ bool unitSetESPSdkVersion(String _espsdkversion)
 //ESPGetCoreVersion
 String unitGetESPCoreVersion()
 {
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	if (propertyFileReaded.indexOf("espcoreversion;") < 0) return espcoreversion = ESP.getCoreVersion();
 	else return espcoreversion;
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+	return NotAvailable;
+#endif
 }
 bool unitSetESPCoreVersion(String _espcoreversion)
 {
@@ -1419,8 +1555,14 @@ bool unitSetESPCoreVersion(String _espcoreversion)
 //ESPGetFullVersion
 String unitGetESPFullVersion()
 {
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	if (propertyFileReaded.indexOf("espfullversion;") < 0) return espfullversion = ESP.getFullVersion();
 	else return espfullversion;
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+	return NotAvailable;
+#endif
 }
 
 bool unitSetESPFullVersion(String _espfullversion)
@@ -1431,8 +1573,15 @@ bool unitSetESPFullVersion(String _espfullversion)
 //ESPGetBootVersion
 uint8_t unitGetESPBootVersion()
 {
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	if (propertyFileReaded.indexOf("espbootversion;") < 0) return espbootversion = ESP.getBootVersion();
 	else return espbootversion;
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+	return -1;
+#endif
+
 }
 bool unitSetESPBootVersion(int _espbootversion)
 {
@@ -1442,8 +1591,16 @@ bool unitSetESPBootVersion(int _espbootversion)
 //ESPGetBootMode
 uint8_t unitGetESPBootMode()
 {
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	if (propertyFileReaded.indexOf("espbootmode;") < 0) return espbootmode = ESP.getBootMode();
 	else return espbootmode;
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+	return -1;
+#endif
+
+
 }
 bool unitSetESPBootMode(int _espbootmode)
 {
@@ -1464,8 +1621,14 @@ bool unitSetESPCpuFreqMHz(int _espcpufreqmhz)
 //ESPGetFlashChipId
 uint32_t unitGetESPFlashChipId()
 {
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	if (propertyFileReaded.indexOf("espflashchipid;") < 0) return espflashchipid = ESP.getFlashChipId();
 	else return espflashchipid;
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+	return -1;
+#endif
 }
 bool unitSetESPFlashChipId(int _espflashchipid)
 {
@@ -1475,8 +1638,15 @@ bool unitSetESPFlashChipId(int _espflashchipid)
 //ESPGetFlashChipVendorId
 uint8_t unitGetESPFlashChipVendorId()
 {
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	if (propertyFileReaded.indexOf("espflashchipvendorid;") < 0) return espflashchipvendorid = ESP.getFlashChipVendorId();
 	else return espflashchipvendorid;
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+	return -1;
+#endif
+
 }
 bool unitSetESPFlashChipVendorId(int _espflashchipvendorid)
 {
@@ -1486,8 +1656,15 @@ bool unitSetESPFlashChipVendorId(int _espflashchipvendorid)
 //ESPGetFlashChipRealSize
 uint32_t unitGetESPFlashChipRealSize()
 {
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	if (propertyFileReaded.indexOf("espflashchiprealsize;") < 0) return espflashchiprealsize = ESP.getFlashChipRealSize();
 	else return espflashchiprealsize;
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+	return -1;
+#endif
+
 }
 bool unitSetESPFlashChipRealSize(int _espflashchiprealsize)
 {
@@ -1563,8 +1740,18 @@ bool unitSetESPSketchMD5(String _espsketchmd5)
 //ESPGetResetReason
 String unitGetESPResetReason()
 {
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	if (propertyFileReaded.indexOf("espresetreason;") < 0) return espresetreason = ESP.getResetReason();
 	else return espresetreason;
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+	if (propertyFileReaded.indexOf("espresetreason;") < 0) return espresetreason = "CPU1: " + String(rtc_get_reset_reason(0)) + ";CPU2: " + String(rtc_get_reset_reason(1)) + ";";
+	else return espresetreason;
+
+#endif
+
+	
 }
 bool unitSetESPResetReason(String _espresetreason)
 {

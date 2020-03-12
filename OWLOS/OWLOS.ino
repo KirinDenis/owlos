@@ -39,12 +39,12 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-#include "UnitProperties.h"
+//#include "UnitProperties.h"
 #include "src\Utils\Utils.h"
-#include "src\Managers\DriverManager.h"
-#include "src\Managers\ScriptManager.h"
-#include "src\Managers\FileManager.h"
-#include "src\Managers\TransportManager.h"
+//#include "src\Managers\DriverManager.h"
+//#include "src\Managers\ScriptManager.h"
+//#include "src\Managers\FileManager.h"
+//#include "src\Managers\TransportManager.h"
 
 
 /*-------------------------------------------------------------------------------------------------------------------------
@@ -55,9 +55,11 @@ void setup() {
   delay(ONETENTHOFSECOND);  //sleep 1/10 of second
   
   debugOut("setup", "started...");//if Utils.h "Debug=true" start writing log to Serial
-
+  /*
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
   ESP.wdtEnable(ONEMINUTE); //Software watch dog
   //ESP.wdtDisable();
+#endif
 
   scriptsLoad();
 
@@ -72,6 +74,7 @@ void setup() {
   #ifdef DetailedDebug 
   debugOut("setup", "complete");//if Utils.h "Debug=true" start writing log to Serial
   #endif
+  */
 }
 
 /*-------------------------------------------------------------------------------------------------------------------------
@@ -80,6 +83,7 @@ void setup() {
 void loop() {  
   //check WiFi and MQTT stack are available
   //first time Main::loop() calling the transport is not available
+  /*
   if (!transportAvailable()) //if not connected
   {
     if (transportReconnect()) //DO connection routin, see Transport.cpp
@@ -108,6 +112,7 @@ void loop() {
 	//Scripts loop
 	scriptsRun();
   }
+  */
   delay(ONETENTHOFSECOND); //Main::loop() sleep interval
 }
 
@@ -116,7 +121,7 @@ void loop() {
   If MQTT Client recieve published packet with subscrabed topic - this procedure is called ASYNC
   -------------------------------------------------------------------------------------------------------------------------*/
 void Callback(char* _topic, byte* _payload, unsigned int length) {
-
+/*
   if (unitGetMQTTAvailable() == 1)
   {
   	#ifdef DetailedDebug 
@@ -140,4 +145,5 @@ void Callback(char* _topic, byte* _payload, unsigned int length) {
 	    driversCallback(String(_topic), String(payload_buff));
 	  }
   }
+  */
 }

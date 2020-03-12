@@ -39,17 +39,28 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-#include <FS.h>
+#include <core_version.h>
 #include "..\Utils\Utils.h"
 
 #define FileSystem "File System"
+
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
+#include <FS.h>
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+#include <FS.h>
+#include <SPIFFS.h>
+#endif
+
+#define FORMAT_SPIFFS_IF_FAILED true
 
 //NOTE: DON'T forget "Tools/Flash Size" set to 1M-2M, it is desable by default
 //http://wikihandbk.com/wiki/ESP8266:%D0%9F%D1%80%D0%BE%D1%88%D0%B8%D0%B2%D0%BA%D0%B8/Arduino/%D0%A0%D0%B0%D0%B1%D0%BE%D1%82%D0%B0_%D1%81_%D1%84%D0%B0%D0%B9%D0%BB%D0%BE%D0%B2%D0%BE%D0%B9_%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%BE%D0%B9_%D0%B2_%D0%B0%D0%B4%D0%B4%D0%BE%D0%BD%D0%B5_ESP8266_%D0%B4%D0%BB%D1%8F_IDE_Arduino
 //https://github.com/esp8266/arduino-esp8266fs-plugin/releases/download/0.3.0/ESP8266FS-0.3.0.zip
 bool filesBegin()
 {
-	if (!SPIFFS.begin())
+	if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED))
 	{
 #ifdef DetailedDebug 
 		debugOut(FileSystem, "File system not available before, try MOUNT new FLASH drive, please wait...");
@@ -176,7 +187,7 @@ String filesReadString(String fileName)
 bool filesWriteString(String fileName, String value)
 {
 
-	if (!SPIFFS.begin())
+	if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED))
 	{
 #ifdef DetailedDebug 
 		debugOut(FileSystem, "An Error has occurred while mounting file system");
@@ -294,12 +305,33 @@ bool filesWriteFloat(String fileName, float value)
 
 String filesGetList(String path)
 {
+	if (!SPIFFS.begin())
+	{
+#ifdef DetailedDebug 
+		debugOut(FileSystem, "An Error has occurred while mounting file system");
+#endif
+		return "";
+	}
+
 	String result = "";
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	Dir dir = SPIFFS.openDir(path);
 	while (dir.next())
 	{
 		result += dir.fileName() + " " + dir.fileSize() + "\n";
 	}
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+	File root = SPIFFS.open("/");
+
+	File file = root.openNextFile();
+
+	while (file) {
+		result += String(file.name()) + " " + String(file.size()) + "\n";
+		file = root.openNextFile();
+	}
+#endif
 	return result;
 }
 
