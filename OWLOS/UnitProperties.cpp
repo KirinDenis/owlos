@@ -67,9 +67,9 @@ extern "C" int rom_phy_get_vdd33();
 //->TODO:Clear WiFi settings before release
 // office
 // Dennis home
-#define DefaultWiFiAvailable 0
-#define DefaultWiFiSSID ""
-#define DefaultWiFiPassword ""
+#define DefaultWiFiAvailable 1
+#define DefaultWiFiSSID "Palata#13"
+#define DefaultWiFiPassword "qweasdzxc1234"
 // test for office
 
 
@@ -667,6 +667,7 @@ String unitOnMessage(String _topic, String _payload, int transportMask)
 
 bool onInsideChange(String _property, String _value)
 {
+	return true;
 #ifdef DetailedDebug 
 	debugOut(unitid, "|<- inside change " + _property + " = " + _value);
 #endif
