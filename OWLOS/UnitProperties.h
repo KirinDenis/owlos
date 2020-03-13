@@ -104,10 +104,10 @@ int unitGetRESTfulAvailable();
 bool unitSetRESTfulAvailable(int _restfulavailable);
 
 String unitGetRESTfulServerUsername();
-bool unitSetRESTfulServerUsername(String _restfulserverusername);
+bool unitSetRESTfulServerUsername(String _webserverlogin);
 
 String unitGetRESTfulServerPassword();
-bool unitSetRESTfulServerPassword(String _restfulserverpassword);
+bool unitSetRESTfulServerPassword(String _webserverpwd);
 
 int unitGetRESTfulServerPort();
 bool unitSetRESTfulServerPort(int _restfulserverport);

@@ -68,7 +68,7 @@ bool filesBegin()
 		SPIFFS.format();
 	}
 
-	bool result = SPIFFS.begin();
+	bool result = SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED);
 
 	if (result)
 	{
@@ -88,12 +88,12 @@ bool filesBegin()
 
 bool filesExists(String fileName)
 {
-	return SPIFFS.exists(fileName);
+	return SPIFFS.exists("/" + fileName);
 }
 
 int filesGetSize(String fileName)
 {
-	if (!SPIFFS.begin())
+	if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED))
 	{
 #ifdef DetailedDebug 
 		debugOut(FileSystem, "An Error has occurred while mounting file system");
@@ -101,10 +101,10 @@ int filesGetSize(String fileName)
 		return -1;
 	}
 
-	if (!filesExists(fileName)) return -2;
+	if (!filesExists( fileName)) return -2;
 
 	// open file for reading
-	File file = SPIFFS.open(fileName, "r");
+	File file = SPIFFS.open("/" + fileName, "r");
 
 	if (!file) {
 #ifdef DetailedDebug 
@@ -120,7 +120,7 @@ int filesGetSize(String fileName)
 
 bool filesDelete(String fileName)
 {
-	if (!SPIFFS.begin())
+	if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED))
 	{
 #ifdef DetailedDebug 
 		debugOut(FileSystem, "An Error has occurred while mounting file system");
@@ -130,14 +130,14 @@ bool filesDelete(String fileName)
 
 	if (!filesExists(fileName)) return false;
 
-	SPIFFS.remove(fileName);
+	SPIFFS.remove("/" + fileName);
 
 	return true;
 }
 
 bool filesRename(String source, String dest)
 {
-	if (!SPIFFS.begin())
+	if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED))
 	{
 #ifdef DetailedDebug 
 		debugOut(FileSystem, "An Error has occurred while mounting file system");
@@ -149,10 +149,10 @@ bool filesRename(String source, String dest)
 
 	if (filesExists(dest))
 	{
-		SPIFFS.remove(dest);
+		SPIFFS.remove("/" + dest);
 	}
 
-	SPIFFS.rename(source, dest);
+	SPIFFS.rename("/" + source, "/" + dest);
 
 	return true;
 }
@@ -160,7 +160,7 @@ bool filesRename(String source, String dest)
 String filesReadString(String fileName)
 {
 	String result = String();
-	if (!SPIFFS.begin())
+	if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED))
 	{
 #ifdef DetailedDebug 
 		debugOut(FileSystem, "An Error has occurred while mounting file system");
@@ -169,7 +169,7 @@ String filesReadString(String fileName)
 	}
 
 	// open file for reading
-	File file = SPIFFS.open(fileName, "r");
+	File file = SPIFFS.open("/" + fileName, "r");
 
 	if (!file) {
 #ifdef DetailedDebug 
@@ -194,8 +194,10 @@ bool filesWriteString(String fileName, String value)
 #endif
 		return false;
 	}
+	File file;
 
-	File file = SPIFFS.open(fileName, "w");
+	file = SPIFFS.open("/" + fileName, "w");
+
 	if (!file) {
 #ifdef DetailedDebug 
 		debugOut(FileSystem, "There was an error opening the file for writing: " + fileName);
@@ -216,7 +218,7 @@ bool filesWriteString(String fileName, String value)
 bool filesAppendString(String fileName, String value)
 {
 
-	if (!SPIFFS.begin())
+	if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED))
 	{
 #ifdef DetailedDebug 
 		debugOut(FileSystem, "An Error has occurred while mounting file system");
@@ -224,7 +226,7 @@ bool filesAppendString(String fileName, String value)
 		return false;
 	}
 
-	File file = SPIFFS.open(fileName, "a");
+	File file = SPIFFS.open("/" + fileName, "a");
 	if (!file) {
 #ifdef DetailedDebug 
 		debugOut(FileSystem, "There was an error opening the file for writing: " + fileName);
@@ -245,7 +247,7 @@ bool filesAppendString(String fileName, String value)
 bool filesAddString(String fileName, String value)
 {
 
-	if (!SPIFFS.begin())
+	if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED))
 	{
 #ifdef DetailedDebug 
 		debugOut(FileSystem, "An Error has occurred while mounting file system");
@@ -253,7 +255,7 @@ bool filesAddString(String fileName, String value)
 		return false;
 	}
 
-	File file = SPIFFS.open(fileName, "a");
+	File file = SPIFFS.open("/" + fileName, "a");
 	if (!file) {
 #ifdef DetailedDebug 
 		debugOut(FileSystem, "There was an error opening the file for writing: " + fileName);
@@ -305,7 +307,7 @@ bool filesWriteFloat(String fileName, float value)
 
 String filesGetList(String path)
 {
-	if (!SPIFFS.begin())
+	if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED))
 	{
 #ifdef DetailedDebug 
 		debugOut(FileSystem, "An Error has occurred while mounting file system");
@@ -337,14 +339,14 @@ String filesGetList(String path)
 
 bool filesWriteStructure(String fileName, void *value)
 {
-	if (!SPIFFS.begin())
+	if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED))
 	{
 #ifdef DetailedDebug debugOut(FileSystem, "An Error has occurred while mounting file system");
 		return false;
 #endif
 	}
 
-	File file = SPIFFS.open(fileName, "w");
+	File file = SPIFFS.open("/" + fileName, "w");
 	if (!file) {
 #ifdef DetailedDebug 
 		debugOut(FileSystem, "There was an error opening the file for writing: " + fileName);

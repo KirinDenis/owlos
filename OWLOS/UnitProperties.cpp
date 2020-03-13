@@ -67,7 +67,7 @@ extern "C" int rom_phy_get_vdd33();
 //->TODO:Clear WiFi settings before release
 // office
 // Dennis home
-#define DefaultWiFiAvailable 1
+#define DefaultWiFiAvailable 0
 #define DefaultWiFiSSID "Palata#13"
 #define DefaultWiFiPassword "qweasdzxc1234"
 // test for office
@@ -152,15 +152,15 @@ String firmwareversion(DefaultFirmwareVersion);
 int firmwarebuildnumber(DefaultFirmwareBuildNumber);
 int wifiapavailable(DefaultWiFiAccessPointAvailable);
 String wifiaccesspointssid(DefaultWiFiAccessPointSSID);
-String wifiaccesspointpassword(DefaultWiFiAccessPointPassword);
+String wifiappassword(DefaultWiFiAccessPointPassword);
 String wifiaccesspointip(DefaultWiFiAccessPointIP);
 int wifiavailable(DefaultWiFiAvailable);
 String wifissid(DefaultWiFiSSID);
 String wifipassword(DefaultWiFiPassword);
 String wifiip(NotAvailable);
 int restfulavailable(DefaultRESTfulAvailable);
-String restfulserverusername(DefaultRESTfulServerUsername);
-String restfulserverpassword(DefaultRESTfulServerPassword);
+String webserverlogin(DefaultRESTfulServerUsername);
+String webserverpwd(DefaultRESTfulServerPassword);
 int restfulserverport(DefaultRESTfulServerPort);
 int restfulclientport(DefaultRESTfulClientPort);
 String restfulclienturl(DefaultRESTfulClientURL);
@@ -258,7 +258,7 @@ String unitGetAllProperties()
 	result += "type=" + String(WiFiType) + "//r\n";
 	result += "wifiaccesspointavailable=" + String(unitGetWiFiAccessPointAvailable()) + "//bs\n";
 	result += "wifiaccesspointssid=" + unitGetWiFiAccessPointSSID() + "//s\n";
-	result += "wifiaccesspointpassword=" + unitGetWiFiAccessPointPassword() + "//sp\n";
+	result += "wifiappassword=" + unitGetWiFiAccessPointPassword() + "//sp\n";
 	result += "wifiaccesspointip=" + unitGetWiFiAccessPointIP() + "//\n";
 	result += "wifiavailable=" + String(unitGetWiFiAvailable()) + "//bs\n";
 	result += "wifissid=" + unitGetWiFiSSID() + "//s\n";
@@ -284,8 +284,8 @@ String unitGetAllProperties()
 	result += "unitid=" + unitGetUnitId() + "//\n";
 	result += "topic=" + unitGetTopic() + "//\n";
 	result += "restfulavailable=" + String(unitGetRESTfulAvailable()) + "//bs\n";
-	result += "restfulserverusername=" + unitGetRESTfulServerUsername() + "//\n";
-	result += "restfulserverpassword=" + unitGetRESTfulServerPassword() + "//sp\n";
+	result += "webserverlogin=" + unitGetRESTfulServerUsername() + "//\n";
+	result += "webserverpwd=" + unitGetRESTfulServerPassword() + "//sp\n";
 	result += "restfulserverport=" + String(unitGetRESTfulServerPort()) + "//i\n";
 	result += "restfulclientport=" + String(unitGetRESTfulClientPort()) + "//i\n";
 	result += "restfulclienturl=" + unitGetRESTfulClientURL() + "//\n";
@@ -391,9 +391,9 @@ String unitOnMessage(String _topic, String _payload, int transportMask)
 											else
 												if (String(topic + "/setwifiaccesspointssid").equals(_topic)) return String(unitSetWiFiAccessPointSSID(_payload));
 												else
-													if (String(topic + "/getwifiaccesspointpassword").equals(_topic)) return onGetProperty("wifipassword", unitGetWiFiAccessPointPassword(), transportMask);
+													if (String(topic + "/getwifiappassword").equals(_topic)) return onGetProperty("wifipassword", unitGetWiFiAccessPointPassword(), transportMask);
 													else
-														if (String(topic + "/setwifiaccesspointpassword").equals(_topic)) return String(unitSetWiFiAccessPointPassword(_payload));
+														if (String(topic + "/setwifiappassword").equals(_topic)) return String(unitSetWiFiAccessPointPassword(_payload));
 														else
 															if (String(topic + "/getwifiaccesspointip").equals(_topic)) return onGetProperty("wifiaccesspointip", unitGetWiFiAccessPointIP(), transportMask);
 															else
@@ -426,13 +426,13 @@ String unitOnMessage(String _topic, String _payload, int transportMask)
 																												else
 																													if (String(topic + "/setrestfulavailable").equals(_topic)) return String(unitSetRESTfulAvailable(std::atoi(_payload.c_str())));
 																													else
-																														if (String(topic + "/getrestfulserverusername").equals(_topic)) return onGetProperty("restfulserverusername", unitGetRESTfulServerUsername(), transportMask);
+																														if (String(topic + "/getwebserverlogin").equals(_topic)) return onGetProperty("webserverlogin", unitGetRESTfulServerUsername(), transportMask);
 																														else
-																															if (String(topic + "/setrestfulserverusername").equals(_topic)) return String(unitSetRESTfulServerUsername(_payload));
+																															if (String(topic + "/setwebserverlogin").equals(_topic)) return String(unitSetRESTfulServerUsername(_payload));
 																															else
-																																if (String(topic + "/getrestfulserverpassword").equals(_topic)) return onGetProperty("restfulserverpassword", unitGetRESTfulServerPassword(), transportMask);
+																																if (String(topic + "/getwebserverpwd").equals(_topic)) return onGetProperty("webserverpwd", unitGetRESTfulServerPassword(), transportMask);
 																																else
-																																	if (String(topic + "/setrestfulserverpassword").equals(_topic)) return String(unitSetRESTfulServerPassword(_payload));
+																																	if (String(topic + "/setwebserverpwd").equals(_topic)) return String(unitSetRESTfulServerPassword(_payload));
 																																	else
 																																		if (String(topic + "/getrestfulserverport").equals(_topic)) return onGetProperty("restfulserverport", String(unitGetRESTfulServerPort()), transportMask);
 																																		else
@@ -667,16 +667,23 @@ String unitOnMessage(String _topic, String _payload, int transportMask)
 
 bool onInsideChange(String _property, String _value)
 {
-	return true;
+	///return true;
 #ifdef DetailedDebug 
 	debugOut(unitid, "|<- inside change " + _property + " = " + _value);
 #endif
 
 	filesWriteString(String(DefaultId) + "." + _property, _value);
+	
 	if (transportAvailable())
 	{
 		return transportPublish(topic + "/" + _property, _value);
 	}
+	
+
+#ifdef DetailedDebug 
+	debugOut(unitid, "|-> inside change ");
+#endif
+
 	return true;
 }
 //-------------------------------------------------------------------------------------------
@@ -812,14 +819,14 @@ bool unitSetWiFiAccessPointSSID(String _wifiaccesspointssid)
 //WiFiAccessPointPassword
 String unitGetWiFiAccessPointPassword()
 {
-	if (propertyFileReaded.indexOf("wifiaccesspointpassword;") < 0) return wifiaccesspointpassword = _getStringPropertyValue("wifiaccesspointpassword", DefaultWiFiAccessPointPassword);
-	else return wifiaccesspointpassword;
+	if (propertyFileReaded.indexOf("wifiappassword;") < 0) return wifiappassword = _getStringPropertyValue("wifiappassword", DefaultWiFiAccessPointPassword);
+	else return wifiappassword;
 }
 
-bool unitSetWiFiAccessPointPassword(String _wifiaccesspointpassword)
+bool unitSetWiFiAccessPointPassword(String _wifiappassword)
 {
-	wifiaccesspointpassword = _wifiaccesspointpassword;
-	return  onInsideChange("wifiaccesspointpassword", String(wifiaccesspointpassword));
+	wifiappassword = _wifiappassword;
+	return  onInsideChange("wifiappassword", String(wifiappassword));
 }
 //WiFiAccessPointIP
 String unitGetWiFiAccessPointIP()
@@ -949,25 +956,25 @@ bool unitSetRESTfulAvailable(int _restfulavailable)
 //RESTfulServerUsername
 String unitGetRESTfulServerUsername()
 {
-	if (propertyFileReaded.indexOf("restfulserverusername;") < 0) return restfulserverusername = _getStringPropertyValue("restfulserverusername", DefaultRESTfulServerUsername);
-	else return restfulserverusername;
+	if (propertyFileReaded.indexOf("webserverlogin;") < 0) return webserverlogin = _getStringPropertyValue("webserverlogin", DefaultRESTfulServerUsername);
+	else return webserverlogin;
 }
-bool unitSetRESTfulServerUsername(String _restfulserverusername)
+bool unitSetRESTfulServerUsername(String _webserverlogin)
 {
-	restfulserverusername = _restfulserverusername;
-	return  onInsideChange("restfulserverusername", String(restfulserverusername));
+	webserverlogin = _webserverlogin;
+	return  onInsideChange("webserverlogin", String(webserverlogin));
 }
 
 //RESTfulServerPassword
 String unitGetRESTfulServerPassword()
 {
-	if (propertyFileReaded.indexOf("restfulserverpassword;") < 0) return restfulserverpassword = _getStringPropertyValue("restfulserverpassword", DefaultRESTfulServerPassword);
-	else return restfulserverpassword;
+	if (propertyFileReaded.indexOf("webserverpwd;") < 0) return webserverpwd = _getStringPropertyValue("webserverpwd", DefaultRESTfulServerPassword);
+	else return webserverpwd;
 }
-bool unitSetRESTfulServerPassword(String _restfulserverpassword)
+bool unitSetRESTfulServerPassword(String _webserverpwd)
 {
-	restfulserverpassword = _restfulserverpassword;
-	return  onInsideChange("restfulserverpassword", String(restfulserverpassword));
+	webserverpwd = _webserverpwd;
+	return  onInsideChange("webserverpwd", String(webserverpwd));
 }
 
 //RESTfulServerPort()  
@@ -1183,6 +1190,7 @@ WiFiMode_t unitGetWiFiMode()
 	if (_wifimode != wifimode) onInsideChange("wifimode", String(_wifimode));
 	return wifimode = _wifimode;
 }
+
 bool unitSetWiFiMode(WiFiMode_t _wifimode)
 {
 	if (WiFi.mode(_wifimode))
@@ -1201,6 +1209,7 @@ wifi_mode_t unitGetWiFiMode()
 	if (_wifimode != wifimode) onInsideChange("wifimode", String(_wifimode));
 	return wifimode = _wifimode;
 }
+
 bool unitSetWiFiMode(wifi_mode_t _wifimode)
 {
 	if (WiFi.mode(_wifimode))

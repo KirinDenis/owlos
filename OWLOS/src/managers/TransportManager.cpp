@@ -56,7 +56,7 @@ OWLOS распространяется в надежде, что она буде
 #endif
 
 WiFiClient wifiClient;
-MQTTClient _MQTTClient(wifiClient);
+MQTTClient * _MQTTClient;
 
 bool WiFiAccessPointConnected(false);
 long lastTryCheck(-ONESECOND);
@@ -66,15 +66,116 @@ long lastTryMQTTReconnect(-ONEMINUTE);
 int storedWiFiAPState(-1);
 int storedWiFiSTState(-1);
 
+bool wifiAPResult = false;
+bool wifiResult = false;
+
+
 MQTTClient* getMQTTClient() {
-	return &_MQTTClient;
+	return _MQTTClient;
 }
+
+
+void WiFiEvent(WiFiEvent_t event)
+{
+	switch (event) {
+	case SYSTEM_EVENT_WIFI_READY:
+		debugOut(TransportID,"WiFi interface ready");
+		break;
+	case SYSTEM_EVENT_SCAN_DONE:
+		debugOut(TransportID,"Completed scan for access points");
+		break;
+	case SYSTEM_EVENT_STA_START:
+		debugOut(TransportID,"WiFi client started");
+		break;
+	case SYSTEM_EVENT_STA_STOP:
+		debugOut(TransportID,"WiFi clients stopped");
+		break;
+	case SYSTEM_EVENT_STA_CONNECTED:
+		debugOut(TransportID,"Connected to access point");
+		break;
+	case SYSTEM_EVENT_STA_DISCONNECTED:
+		debugOut(TransportID,"Disconnected from WiFi access point");
+		break;
+	case SYSTEM_EVENT_STA_AUTHMODE_CHANGE:
+		debugOut(TransportID,"Authentication mode of access point has changed");
+		break;
+	case SYSTEM_EVENT_STA_GOT_IP:
+		//TODO: setIP
+		break;
+	case SYSTEM_EVENT_STA_LOST_IP:
+		debugOut(TransportID,"Lost IP address and IP address is reset to 0");
+		break;
+	case SYSTEM_EVENT_STA_WPS_ER_SUCCESS:
+		debugOut(TransportID,"WiFi Protected Setup (WPS): succeeded in enrollee mode");
+		break;
+	case SYSTEM_EVENT_STA_WPS_ER_FAILED:
+		debugOut(TransportID,"WiFi Protected Setup (WPS): failed in enrollee mode");
+		break;
+	case SYSTEM_EVENT_STA_WPS_ER_TIMEOUT:
+		debugOut(TransportID,"WiFi Protected Setup (WPS): timeout in enrollee mode");
+		break;
+	case SYSTEM_EVENT_STA_WPS_ER_PIN:
+		debugOut(TransportID,"WiFi Protected Setup (WPS): pin code in enrollee mode");
+		break;
+	case SYSTEM_EVENT_AP_START:
+		debugOut(TransportID,"WiFi access point started");
+		break;
+	case SYSTEM_EVENT_AP_STOP:
+		debugOut(TransportID,"WiFi access point  stopped");
+		break;
+	case SYSTEM_EVENT_AP_STACONNECTED:
+		debugOut(TransportID,"Client connected");
+		break;
+	case SYSTEM_EVENT_AP_STADISCONNECTED:
+		debugOut(TransportID,"Client disconnected");
+		break;
+	case SYSTEM_EVENT_AP_STAIPASSIGNED:
+		debugOut(TransportID,"Assigned IP address to client");
+		break;
+	case SYSTEM_EVENT_AP_PROBEREQRECVED:
+		debugOut(TransportID,"Received probe request");
+		break;
+	case SYSTEM_EVENT_GOT_IP6:
+		debugOut(TransportID,"IPv6 is preferred");
+		break;
+	case SYSTEM_EVENT_ETH_START:
+		debugOut(TransportID,"Ethernet started");
+		break;
+	case SYSTEM_EVENT_ETH_STOP:
+		debugOut(TransportID,"Ethernet stopped");
+		break;
+	case SYSTEM_EVENT_ETH_CONNECTED:
+		debugOut(TransportID,"Ethernet connected");
+		break;
+	case SYSTEM_EVENT_ETH_DISCONNECTED:
+		debugOut(TransportID,"Ethernet disconnected");
+		break;
+	case SYSTEM_EVENT_ETH_GOT_IP:
+		debugOut(TransportID,"Obtained IP address");
+		break;
+	default: break;
+	}
+}
+
 
 bool transportBegin()
 {
 #ifdef DetailedDebug 
 	debugOut(TransportID, "begin");
+	WiFi.onEvent(WiFiEvent);
 #endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+	//disable ESP32 Power Save
+	debugOut(TransportID, "ESP32 Power Mode UP");
+	esp_wifi_set_ps(WIFI_PS_NONE);
+	WiFi.setSleep(false);
+#endif
+
+	if (_MQTTClient == nullptr)
+	{
+		_MQTTClient = new MQTTClient(wifiClient);
+	}
 
 	if ((unitGetWiFiAccessPointAvailable() == 1) && (unitGetWiFiAvailable() == 1))
 	{
@@ -84,16 +185,21 @@ bool transportBegin()
 	else
 		if (unitGetWiFiAccessPointAvailable() == 1)
 		{
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+			if (_WiFiMulti.run() == WL_CONNECTED)
+			{
+				esp_wifi_disconnect();
+				esp_wifi_stop();
+				esp_wifi_deinit();
+		}
+#endif
+
 			unitSetWiFiMode(WIFI_AP);
+
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 			wifi_station_disconnect();
 #endif
 
-#ifdef ARDUINO_ESP32_RELEASE_1_0_4
-			esp_wifi_disconnect();
-			esp_wifi_stop();
-			esp_wifi_deinit();
-#endif
 			debugOut(TransportID, "WiFi mode Access Point");
 		}
 		else
@@ -142,6 +248,7 @@ bool transportAvailable()
 	bool result = false;
 	bool wifiAPResult = false;
 	bool wifiResult = false;
+
 
 	if ((unitGetWiFiAccessPointAvailable() == 1) && (WiFiAccessPointConnected == true))
 	{
@@ -215,6 +322,7 @@ bool WiFiReconnect()
 	{
 
 		String WiFiSSID = unitGetWiFiSSID();
+		String WiFiPassword = unitGetWiFiPassword();
 		if (WiFiSSID.length() == 0)
 		{
 			debugOut(TransportID, "WiFi SSID not defined");
@@ -223,19 +331,20 @@ bool WiFiReconnect()
 
 		if (_WiFiMulti.run() != WL_CONNECTED)
 		{
-			debugOut(TransportID, "try to connect to - " + WiFiSSID + " wait ");
+			debugOut(TransportID, "try to connect to - " + WiFiSSID + ":" + WiFiPassword  + " wait ");
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
-			if (!_WiFiMulti.existsAP(WiFiSSID.c_str(), unitGetWiFiPassword().c_str()))
+			if (!_WiFiMulti.existsAP(WiFiSSID.c_str(), WiFiPassword.c_str()))
 			{
-				_WiFiMulti.addAP(WiFiSSID.c_str(), unitGetWiFiPassword().c_str());
+				_WiFiMulti.addAP(WiFiSSID.c_str(), WiFiPassword.c_str());
 			}
+
+
 #endif
 
-#ifdef ARDUINO_ESP32_RELEASE_1_0_4
-			_WiFiMulti.addAP(WiFiSSID.c_str(), unitGetWiFiPassword().c_str());
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4			
+			_WiFiMulti.addAP(WiFiSSID.c_str(), WiFiPassword.c_str());
 #endif
-
-
+			
 			int wait = 0;
 			while (_WiFiMulti.run() != WL_CONNECTED)
 			{
@@ -248,6 +357,7 @@ bool WiFiReconnect()
 					break;
 				}
 			}
+
 
 			if (_WiFiMulti.run() == WL_CONNECTED)
 			{
@@ -274,8 +384,6 @@ bool transportReconnect()
 	debugOut(TransportID, "begin reconnect, WiFi AP=" + String(unitGetWiFiAccessPointAvailable()) + " WiFi ST=" + String(unitGetWiFiAvailable()));
 
 	bool result = false;
-	bool wifiAPResult = false;
-	bool wifiResult = false;
 
 	if ((unitGetWiFiAccessPointAvailable() == 1) && (!WiFiAccessPointConnected))
 	{
@@ -325,7 +433,7 @@ bool MQTTReconnect()
 {
 	if (unitGetMQTTAvailable() == 1)
 	{
-		if (!_MQTTClient.connected())
+		if (!_MQTTClient->connected())
 		{
 
 			if (lastTryMQTTReconnect + ONEMINUTE > millis())
@@ -340,14 +448,14 @@ bool MQTTReconnect()
 #ifdef DetailedDebug 
 			debugOut(TransportID, "Connecting to MQTT broker ...");
 #endif
-			_MQTTClient.setServer(stringToChar(unitGetMQTTURL()), unitGetMQTTPort());    // Configure MQTT connexion
-			if (_MQTTClient.connect(unitGetMQTTID().c_str(), unitGetMQTTLogin().c_str(), unitGetMQTTPassword().c_str()))
+			_MQTTClient->setServer(stringToChar(unitGetMQTTURL()), unitGetMQTTPort());    // Configure MQTT connexion
+			if (_MQTTClient->connect(unitGetMQTTID().c_str(), unitGetMQTTLogin().c_str(), unitGetMQTTPassword().c_str()))
 			{
 				debugOut(TransportID, "OK");
 				return true;
 			}
 			else {
-				debugOut(TransportID, "Fail - " + String(_MQTTClient.state()));
+				debugOut(TransportID, "Fail - " + String(_MQTTClient->state()));
 				return false;
 			}
 		}
@@ -366,7 +474,7 @@ void transportSetCallBack(MQTT_CALLBACK_SIGNATURE)
 {
 	if (MQTTReconnect())
 	{
-		_MQTTClient.setCallback(callback);
+		_MQTTClient->setCallback(callback);
 	}
 }
 
@@ -377,17 +485,20 @@ void transportSubscribe(String _topic)
 #ifdef DetailedDebug 
 		debugOut(TransportID, "Subscribe to - " + _topic);
 #endif
-		_MQTTClient.subscribe(_topic.c_str());
+		_MQTTClient->subscribe(_topic.c_str());
 	}
 
 }
 
 void transportLoop()
 {
+	if ((wifiAPResult) || (wifiResult)) 
+	{
+		
 	if (MQTTReconnect())
 	{
 		MQTTReconnect();
-		_MQTTClient.loop();
+		_MQTTClient->loop();
 	}
 
 	if (unitGetRESTfulAvailable() == 1)
@@ -399,13 +510,14 @@ void transportLoop()
 	{
 		OTALoop();
 	}
+	}
 }
 
 bool transportPublish(String _topic, String _payload)
 {
 	if (MQTTReconnect())
 	{
-		return _MQTTClient.publish(_topic.c_str(), _payload.c_str(), true);
+		return _MQTTClient->publish(_topic.c_str(), _payload.c_str(), true);
 	}
 	return true; //if MQTT is not available and RESTful change the property
 }

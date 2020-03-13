@@ -845,7 +845,7 @@ var settingsUI = {
                 var wifiAPCheckbox = settingsUI.addPropertyCheckbox(wifiPropPanel, driver.wifiaccesspointavailable, getLang("wifiaccesspointavailable"), "");
 
                 wifiAPCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(wifiPropPanel, driver.wifiaccesspointssid, getLang("wifiaccesspointssid"), ""));
-                wifiAPCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(wifiPropPanel, driver.wifiaccesspointpassword, getLang("wifiaccesspointpassword"), ""));
+                wifiAPCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(wifiPropPanel, driver.wifiappassword, getLang("wifiappassword"), ""));
 
                 settingsUI.onPropertyCheckboxValueChange(wifiAPCheckbox, wifiAPCheckbox.driverProperty);
 
@@ -938,8 +938,8 @@ var settingsUI = {
                         driver.otaavailable.addValueListner(settingsUI.onOTAStatusChange, OTAPanel);
 
                         var RESTfulCheckbox = settingsUI.addPropertyCheckbox(networkPropPanel1, driver.restfulavailable, getLang("restfulavailable"), "");
-                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, driver.restfulserverusername, getLang("restfulserverusername"), ""));
-                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, driver.restfulserverpassword, getLang("restfulserverpassword"), ""));
+                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, driver.webserverlogin, getLang("webserverlogin"), ""));
+                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, driver.webserverpwd, getLang("webserverpwd"), ""));
                         RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, driver.restfulserverport, getLang("restfulserverport"), ""));
                         settingsUI.addSpaceView(networkPropPanel1, "2");
                         RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, driver.restfulclienturl, getLang("restfulclienturl"), ""));

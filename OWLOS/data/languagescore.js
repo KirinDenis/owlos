@@ -171,8 +171,8 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "widgetslist=Список виджетів для обраної властивості\n" +
     "networknodeprop=Мережеві налаштування ноди\n" +
     "restfulavailable=Включити підтримку Web (RESTful)\n" +
-    "restfulserverusername=Логін для Web сервера\n" +
-    "restfulserverpassword=Пароль для Web сервера\n" +
+    "webserverlogin=Логін для Web сервера\n" +
+    "webserverpwd=Пароль для Web сервера\n" +
     "restfulserverport=Порт Web сервера\n" +
     "restfulclienturl=URL RESTful сервера для клієнта\n" +
     "restfulclientport=Порт RESTful сервера для клієнта\n" +
@@ -189,7 +189,7 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "wifinodeprop=Налаштування WiFi модуля\n" +
     "wifiaccesspointavailable=Включити режим WiFi точки доступу\n" +
     "wifiaccesspointssid=SSID для точки доступу\n" +
-    "wifiaccesspointpassword=Пароль для точки доступу\n" +
+    "wifiappassword=Пароль для точки доступу\n" +
     "wifiavailable=Включити режим WiFi станції (клієнта)\n" +
     "wifissid=SSID WiFi роутера\n" +
     "wifipassword=Пароль WiFi роутера\n" +
@@ -311,8 +311,8 @@ var langen = "prepareUnit=prepare UI, please wait...\n" +
     "updatefirmware=After firmware is updating, the unit self restarting. Please wait 30 sec, before the page after reloading. See Serial Monitor for more information.\n" +
     "networknodeprop=Node network properties\n" +
     "restfulavailable=Enable Web(RESTful) supporting\n" +
-    "restfulserverusername=Web server login\n" +
-    "restfulserverpassword=Web server password\n" +
+    "webserverlogin=Web server login\n" +
+    "webserverpwd=Web server password\n" +
     "restfulserverport=Web server port\n" +
     "restfulclienturl=RESTful client URL\n" +
     "restfulclientport=RESTful client port\n" +
@@ -329,7 +329,7 @@ var langen = "prepareUnit=prepare UI, please wait...\n" +
     "wifinodeprop=Node WiFi properties\n" +
     "wifiaccesspointavailable=Enable WiFi Access Point mode \n" +
     "wifiaccesspointssid=WiFi Access Point SSID\n" +
-    "wifiaccesspointpassword=WiFi Access Point password\n" +
+    "wifiappassword=WiFi Access Point password\n" +
     "wifiavailable=Enable WiFi Station mode\n" +
     "wifissid=WiFi router SSID\n" +
     "wifipassword=WiFi router password\n" +
@@ -521,8 +521,8 @@ var langru = "prepareUnit=Подготовка интерфейса пользо
     "firmwarebutton=Начать обновление прошивки\n" +
     "updatefirmware=После окончания обновления прошивки, модуть перезапустится автоматически. UI перезагрузится через 30 секунд. Используйте монитор порта для большей информации\n" +
     "restfulavailable=Включить поддержку Web(RESTful)\n" +
-    "restfulserverusername=Логин для Web сервера\n" +
-    "restfulserverpassword=Пароль для Web сервера\n" +
+    "webserverlogin=Логин для Web сервера\n" +
+    "webserverpwd=Пароль для Web сервера\n" +
     "restfulserverport=Порт Web сервера\n" +
     "restfulclienturl=URL RESTful сервера для клиента\n" +
     "restfulclientport=Порт RESTful сервера для клиента\n" +
@@ -539,7 +539,7 @@ var langru = "prepareUnit=Подготовка интерфейса пользо
     "wifinodeprop=Настройки WiFi модуля\n" +
     "wifiaccesspointavailable=Включить режим WiFi точки доступа\n" +
     "wifiaccesspointssid=SSID для точки доступа\n" +
-    "wifiaccesspointpassword=Пароль для точки доступа\n" +
+    "wifiappassword=Пароль для точки доступа\n" +
     "wifiavailable=Включить режим WiFi станции (клиента)\n" +
     "wifissid=SSID WiFi роутера\n" +
     "wifipassword=Пароль WiFi роутера\n" +

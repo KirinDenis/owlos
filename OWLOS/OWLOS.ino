@@ -52,7 +52,7 @@ OWLOS распространяется в надежде, что она буде
   -------------------------------------------------------------------------------------------------------------------------*/
 void setup() {  
   Serial.begin(PORTSPEED);  //setup Serial Monitor at PORTSPEED BAUD speed - see Utils.h for Constant definition
-//  delay(ONETENTHOFSECOND);  //sleep 1/10 of second
+  delay(ONETENTHOFSECOND);  //sleep 1/10 of second
   
   debugOut("setup", "started...");//if Utils.h "Debug=true" start writing log to Serial
   
@@ -61,12 +61,10 @@ void setup() {
   //ESP.wdtDisable();
 #endif
 
-  scriptsLoad();
-
-  filesBegin(); //prepare Flash file systeme (see Tools/Flash size item - use 2M Flash Size, is ZERO size by default -> switch to 2M  
+  filesBegin(); //prepare Flash file systeme (see Tools/Flash size item - use 2M Flash Size, is ZERO size by default -> switch to 2M    
   unitInit();
   driversInit(unitGetTopic()); //prepare onboard Unit's drivers
-
+  scriptsLoad();
   //Setup network stack - WiFi -> after MQTT -- if both available Transport accessable, if not Unit try reconnect forever (every 5 sec by default)
   //Ther is not connected at begin(), see Main::Loop() transportReconnect() function using
   //The begin() just setup connection properties
