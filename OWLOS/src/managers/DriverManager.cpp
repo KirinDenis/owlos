@@ -38,7 +38,8 @@ OWLOS распространяется в надежде, что она буде
 Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
-
+#include <core_version.h>
+#include "../utils/GPIOMap.h"
 
 //ALL DEVICES constructors must be called here, current unit topic must be puted as parameter
 #include "DriverManager.h"

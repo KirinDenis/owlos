@@ -55,16 +55,16 @@ void setup() {
   delay(ONETENTHOFSECOND);  //sleep 1/10 of second
   
   debugOut("setup", "started...");//if Utils.h "Debug=true" start writing log to Serial
-
+  
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
   ESP.wdtEnable(ONEMINUTE); //Software watch dog
   //ESP.wdtDisable();
+#endif
 
-  scriptsLoad();
-
-  filesBegin(); //prepare Flash file systeme (see Tools/Flash size item - use 2M Flash Size, is ZERO size by default -> switch to 2M  
+  filesBegin(); //prepare Flash file systeme (see Tools/Flash size item - use 2M Flash Size, is ZERO size by default -> switch to 2M    
   unitInit();
   driversInit(unitGetTopic()); //prepare onboard Unit's drivers
-
+  scriptsLoad();
   //Setup network stack - WiFi -> after MQTT -- if both available Transport accessable, if not Unit try reconnect forever (every 5 sec by default)
   //Ther is not connected at begin(), see Main::Loop() transportReconnect() function using
   //The begin() just setup connection properties
@@ -72,6 +72,7 @@ void setup() {
   #ifdef DetailedDebug 
   debugOut("setup", "complete");//if Utils.h "Debug=true" start writing log to Serial
   #endif
+  
 }
 
 /*-------------------------------------------------------------------------------------------------------------------------
@@ -80,6 +81,7 @@ void setup() {
 void loop() {  
   //check WiFi and MQTT stack are available
   //first time Main::loop() calling the transport is not available
+  
   if (!transportAvailable()) //if not connected
   {
     if (transportReconnect()) //DO connection routin, see Transport.cpp
@@ -93,12 +95,6 @@ void loop() {
       //driversSubscribe();  //subscribe() all AVAILABLE drivers to here topics (see: driverID), the topic -> UnitTopic+ESPChipID/DriverId
       
     }
-    else //if can't connect to transport
-    {
-      #ifdef DetailedDebug 
-	  debugOut(unitGetUnitId(), "Transport NOT available, check network connection, WiFi and URLs at Unit properties");
-	  #endif
-    }
   }
 //  else //if network (Transport) to be available
   {
@@ -108,6 +104,7 @@ void loop() {
 	//Scripts loop
 	scriptsRun();
   }
+  
   delay(ONETENTHOFSECOND); //Main::loop() sleep interval
 }
 
@@ -140,4 +137,5 @@ void Callback(char* _topic, byte* _payload, unsigned int length) {
 	    driversCallback(String(_topic), String(payload_buff));
 	  }
   }
+
 }

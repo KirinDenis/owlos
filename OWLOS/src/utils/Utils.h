@@ -42,7 +42,7 @@ OWLOS распространяется в надежде, что она буде
 #include <Arduino.h>
 
 #define Debug true
-//#define DetailedDebug
+#define DetailedDebug true
 #define WriteDebugLogs false
 #define LogFilesSize 1024*10
 #define LogFile1 "log1"
@@ -50,6 +50,7 @@ OWLOS распространяется в надежде, что она буде
 #define PORTSPEED 115200
 #define ONETENTHOFSECOND 100
 #define ONESECOND 1000
+#define TENSECOND 10000
 #define ONEMINUTE 60000 
 
 #define PayloadBufferSize 255
@@ -71,6 +72,7 @@ OWLOS распространяется в надежде, что она буде
 #define NetworkType 12
 #define ESPType 13
 #define Config 14
+
 
 //Transport masks
 #define NoTransportMask 0b00000000

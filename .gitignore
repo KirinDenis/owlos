@@ -346,3 +346,5 @@ MigrationBackup/
 
 
 .ionide/
+*.blend1
+*.psd

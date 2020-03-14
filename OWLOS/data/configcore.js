@@ -326,14 +326,14 @@ var config = {
         var subStringLength = 1024;
 
         // вызов функции сохранения
-        var saveConfigResult = this.configSendAsync("Start", 0, stringifyConfig, subStringLength, boardhost);
+        this.configSendAsync("Start", 0, stringifyConfig, subStringLength, boardhost);
 
-        return saveConfigResult;
+        return true;
 
     },
 
     //функция асинхронной передачи строки через RESTfull POST запрос с/без отображением(я) состояния передачи строки в модельном окне
-    //эта функция является одноврененно и функцией обратного вызова для выполняемого RESTfull POST запроса 
+    //эта функция является одновременно и функцией обратного вызова для выполняемого RESTfull POST запроса 
     //аргументы функции: httpResult - результат выполнения RESTfull POST запроса, counter - счетчик, dataString - вся передаваемая строка, lengthDataSubString - длина подстроки, url - адрес для отправки RESTfull POST запроса
     configSendAsync: function (httpResult, counter, dataString, lengthDataSubString, url) {
         // передаваемая подстрока

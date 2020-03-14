@@ -136,8 +136,8 @@ $(document).ready(function () {
     }
     else {
         status_online = NET_OFFLINE;
-        speak("ERROR with host: " + host);
-        addToLogNL("ERROR with host: " + host, 2);
+        speak("ERROR with host: " + boardhost);
+        addToLogNL("ERROR with host: " + boardhost, 2);
     }
 
 

@@ -38,11 +38,21 @@ OWLOS распространяется в надежде, что она буде
 Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
-
+#include <core_version.h>
 #include <Arduino.h>
+
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 #include <ESP8266WiFi.h>
 #include <ESP8266WiFiMulti.h>
 #include <ESP8266HTTPClient.h>
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+#include <WiFi.h>
+#include <WiFiMulti.h>
+#include <HTTPClient.h>
+#endif
+
 
 #include "..\Transports\MQTTClient.h"
 
@@ -60,5 +70,13 @@ void transportSubscribe(String topic);
 void transportLoop();
 bool transportPublish(String topic, String payload);
 
+
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 ESP8266WiFiMulti transportGetWifiMulti();
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+WiFiMulti transportGetWifiMulti();
+#endif
+
 

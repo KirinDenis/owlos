@@ -39,24 +39,49 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-
+#include <core_version.h>
 //#define USESSL
 #define NOTUSESSL
 
-#include <ESP.h>
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
+#include <ESP8266WiFi.h>
+#include <ESP8266mDNS.h>
 #include <FS.h>
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+#include <WiFi.h>
+#include <ESPmDNS.h>
+#include <SPIFFS.h>
+#endif
+
+
+#include <ESP.h>
+
 #include <Arduino.h>
 
-#include <ESP8266WiFi.h>
 #include <WiFiClient.h>
-#include <ESP8266mDNS.h>
+
 
 #ifdef USESSL
-#include <ESP8266WebServerSecure.h>
+	#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
+	#include <ESP8266WebServerSecure.h>
+	#endif
+
+	#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+	#include <WebServerSecure.h>
+	#endif
+
 #endif
 
 #ifdef NOTUSESSL
-#include <ESP8266WebServer.h>
+	#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
+	#include <ESP8266WebServer.h>
+	#endif
+
+	#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+	#include <WebServer.h>
+	#endif
 #endif
 
 #include "WebServer.h"
@@ -68,11 +93,27 @@ OWLOS распространяется в надежде, что она буде
 
 
 #ifdef USESSL
-BearSSL::ESP8266WebServerSecure webServer(unitGetRESTfulServerPort());
+
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
+BearSSL::ESP8266WebServerSecure * webServer;
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+BearSSL::WebServerSecure * webServer;
+#endif
+
 #endif
 
 #ifdef NOTUSESSL
-ESP8266WebServer webServer(unitGetRESTfulServerPort());
+
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
+ESP8266WebServer * webServer;
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+WebServer * webServer;
+#endif
+
 #endif
 
 int __RESTfulPort;
@@ -138,24 +179,24 @@ aA4UzF0VOAUXbuowgVHJwkZJKGVfLiyhJGOidLAUlw==
 
 void webServerAddCORSHeaders()
 {
-	String clientIP = webServer.client().remoteIP().toString();
+	String clientIP = webServer->client().remoteIP().toString();
 #ifdef DetailedDebug 
-	debugOut(WebServerId, "client: " + clientIP + " ask: " + webServer.uri());
+	debugOut(WebServerId, "client: " + clientIP + " ask: " + webServer->uri());
 #endif
 
 	if (unitGetRESTfulAvailable() == 1)
 	{
-		webServer.sendHeader("Access-Control-Max-Age", "10000");
-		webServer.sendHeader("Access-Control-Allow-Methods", "GET, OPTIONS, PUT, POST"); //only GET allowed at this version
-		webServer.sendHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-		webServer.sendHeader("Access-Control-Allow-Origin", "*");
-		webServer.sendHeader("Server", "HELLO " + clientIP);
-		webServer.sendHeader("Server", "OWLOS " + unitGetUnitId());
+		webServer->sendHeader("Access-Control-Max-Age", "10000");
+		webServer->sendHeader("Access-Control-Allow-Methods", "GET, OPTIONS, PUT, POST"); //only GET allowed at this version
+		webServer->sendHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+		webServer->sendHeader("Access-Control-Allow-Origin", "*");
+		webServer->sendHeader("Server", "HELLO " + clientIP);
+		webServer->sendHeader("Server", "OWLOS " + unitGetUnitId());
 	}
 	else
 	{
 		debugOut(WebServerId, "RESTful stop by configuration flag");
-		webServer.stop();
+		webServer->stop();
 	}
 }
 
@@ -206,14 +247,14 @@ void handleNotFound() {
 	String acip = unitGetWiFiAccessPointIP() + ":" + String(unitGetRESTfulServerPort());
 	String ip = unitGetWiFiIP() + ":" + String(unitGetRESTfulServerPort());
 
-	if (!webServer.authenticate(stringToChar(unitGetRESTfulServerUsername()), stringToChar(unitGetRESTfulServerPassword())))
+	if (!webServer->authenticate(stringToChar(unitGetRESTfulServerUsername()), stringToChar(unitGetRESTfulServerPassword())))
 	{
-		return webServer.requestAuthentication(DIGEST_AUTH, "OWLOS", "no auth");
+		return webServer->requestAuthentication(DIGEST_AUTH, "OWLOS", "no auth");
 	}
 
 
 	//Web UI section -----------
-	String fileName = webServer.uri().substring(1);
+	String fileName = webServer->uri().substring(1);
 
 	if (fileName.length() == 0) fileName = "index.html";
 
@@ -226,7 +267,7 @@ void handleNotFound() {
 		File download = SPIFFS.open(fileName, "r");
 		if (download)
 		{
-			webServer.streamFile(download, contentType);
+			webServer->streamFile(download, contentType);
 			download.close();
 			return;
 		}
@@ -237,11 +278,11 @@ void handleNotFound() {
 	String message = "<html><header><title>" + helloString + "</title>";
 	message += "<style>a{color: #00DC00;text-decoration: none;} a:hover {text-decoration: underline;} a:active {text-decoration: underline;}}</style></header>";
 	message += "<body  bgcolor='#4D4D4D'><font color='#A5A5A5'>" + GetLogoHTML() + "<h3>" + helloString + "</h3>";
-	message += "<b>URI not found http://" + ip + webServer.uri() + " or http://" + acip + webServer.uri() + "</b><br>";
+	message += "<b>URI not found http://" + ip + webServer->uri() + " or http://" + acip + webServer->uri() + "</b><br>";
 	message += "Method: ";
-	message += (webServer.method() == HTTP_GET) ? "GET" : "POST";
+	message += (webServer->method() == HTTP_GET) ? "GET" : "POST";
 	message += "<br>Arguments: ";
-	message += webServer.args();
+	message += webServer->args();
 	message += "<br>";
 	message += "<font color='#208ECD'><h3>Available RESTful APIs for local network " + unitGetWiFiSSID() + ":</h3></font>";
 	message += "<b>Log's API:</b><br>";
@@ -287,31 +328,31 @@ void handleNotFound() {
 
 	message += "</font></body></html>";
 
-	for (uint8_t i = 0; i < webServer.args(); i++) {
-		message += " " + webServer.argName(i) + ": " + webServer.arg(i) + "\n";
+	for (uint8_t i = 0; i < webServer->args(); i++) {
+		message += " " + webServer->argName(i) + ": " + webServer->arg(i) + "\n";
 	}
 
-	debugOut(WebServerId, "404: URI not found http://" + ip + webServer.uri() + "or http://" + acip + webServer.uri());
-	webServer.send(404, "text/html", message);
+	debugOut(WebServerId, "404: URI not found http://" + ip + webServer->uri() + "or http://" + acip + webServer->uri());
+	webServer->send(404, "text/html", message);
 
 }
 //----------------------------------------------------------------------------------------------
 void handleCORS()
 {
 	webServerAddCORSHeaders();
-	webServer.send(200, "text/plain", "");
+	webServer->send(200, "text/plain", "");
 }
 
 //----------------------------------------------------------------------------------------------
 void handleGetLog()
 {
 	webServerAddCORSHeaders();
-	if (webServer.args() > 0)
+	if (webServer->args() > 0)
 	{
-		if (webServer.argName(0).equals("number"))
+		if (webServer->argName(0).equals("number"))
 		{
 			String log = "wrong log number argument";
-			if (webServer.arg(0).equals("1"))
+			if (webServer->arg(0).equals("1"))
 			{
 				log = filesReadString(LogFile1);
 			}
@@ -319,7 +360,7 @@ void handleGetLog()
 			{
 				log = filesReadString(LogFile2);
 			}
-			webServer.send(200, "text/plain", log);
+			webServer->send(200, "text/plain", log);
 			return;
 		}
 	}
@@ -330,11 +371,11 @@ void handleGetLog()
 void handleGetFileList()
 {
 	webServerAddCORSHeaders();
-	if (webServer.args() > 0)
+	if (webServer->args() > 0)
 	{
-		if (webServer.argName(0).equals("path"))
+		if (webServer->argName(0).equals("path"))
 		{
-			webServer.send(200, "text/plain", filesGetList(webServer.arg(0)));
+			webServer->send(200, "text/plain", filesGetList(webServer->arg(0)));
 			return;
 		}
 	}
@@ -345,11 +386,11 @@ void handleGetFileList()
 void handleDeleteFile()
 {
 	webServerAddCORSHeaders();
-	if (webServer.args() > 0)
+	if (webServer->args() > 0)
 	{
-		if (webServer.argName(0).equals("name"))
+		if (webServer->argName(0).equals("name"))
 		{
-			webServer.send(200, "text/plain", String(filesDelete(webServer.arg(0))));
+			webServer->send(200, "text/plain", String(filesDelete(webServer->arg(0))));
 			return;
 		}
 	}
@@ -360,30 +401,30 @@ void handleDeleteFile()
 void handleDownloadFile()
 {
 	webServerAddCORSHeaders();
-	if (webServer.args() > 0)
+	if (webServer->args() > 0)
 	{
-		if (webServer.argName(0).equals("name"))
+		if (webServer->argName(0).equals("name"))
 		{
-			String filename = webServer.arg(0);
+			String filename = webServer->arg(0);
 			if (filesExists(filename))
 			{
 				File download = SPIFFS.open(filename, "r");
 				if (download)
 				{
-					webServer.sendHeader("Content-Type", "text/text");
-					webServer.sendHeader("Content-Disposition", "attachment; filename=" + filename);
-					webServer.sendHeader("Connection", "close");
-					webServer.streamFile(download, "application/octet-stream");
+					webServer->sendHeader("Content-Type", "text/text");
+					webServer->sendHeader("Content-Disposition", "attachment; filename=" + filename);
+					webServer->sendHeader("Connection", "close");
+					webServer->streamFile(download, "application/octet-stream");
 					download.close();
 					return;
 				}
 				else
 				{
-					webServer.send(403, "text/plain", "file '" + filename + "' can't be open");
+					webServer->send(403, "text/plain", "file '" + filename + "' can't be open");
 					return;
 				}
 			}
-			webServer.send(403, "text/plain", "file '" + filename + "' not exist");
+			webServer->send(403, "text/plain", "file '" + filename + "' not exist");
 			return;
 		}
 	}
@@ -397,14 +438,14 @@ void handleUpload() {
 	html += "<FORM action='/uploadfile' method='post' enctype='multipart/form-data'>";
 	html += "<input class='buttons' style='width:50%' type='file' name='fileupload' id = 'fileupload' value=''><br>";
 	html += "<br><button class='buttons' style='width:10%' type='submit'>upload</button><br>";
-	webServer.send(200, "text/html", html);
+	webServer->send(200, "text/html", html);
 }
 //----------------------------------------------------------------------------------------------
 File fs_uploadFile;
 void handleUploadFile()
 {
 	webServerAddCORSHeaders();
-	HTTPUpload& http_uploadFile = webServer.upload();
+	HTTPUpload& http_uploadFile = webServer->upload();
 #ifdef DetailedDebug
 	debugOut(WebServerId, "upload: " + http_uploadFile.filename + " status: " + String(http_uploadFile.status));
 #endif
@@ -430,7 +471,7 @@ void handleUploadFile()
 #ifdef DetailedDebug
 					debugOut(WebServerId, "upload aborted, reson: end of unit heap");
 #endif
-					webServer.send(504, "text/plain", "upload aborted, reson: end of unit heap");
+					webServer->send(504, "text/plain", "upload aborted, reson: end of unit heap");
 				}
 				else
 				{
@@ -458,14 +499,14 @@ void handleUploadFile()
 #ifdef DetailedDebug
 					debugOut(WebServerId, "uploaded success: " + html);
 #endif
-					webServer.send(200, "text/plain", html);
+					webServer->send(200, "text/plain", html);
 				}
 				else
 				{
 #ifdef DetailedDebug
 					debugOut(WebServerId, "upload can't create file");
 #endif
-					webServer.send(503, "text/plain", http_uploadFile.filename);
+					webServer->send(503, "text/plain", http_uploadFile.filename);
 				}
 			}
 			else
@@ -474,14 +515,14 @@ void handleUploadFile()
 #ifdef DetailedDebug
 					debugOut(WebServerId, "upload aborted");
 #endif
-					webServer.send(504, "text/plain", http_uploadFile.filename);
+					webServer->send(504, "text/plain", http_uploadFile.filename);
 				}
 				else
 				{
 #ifdef DetailedDebug
 					debugOut(WebServerId, "upload bad file name, size or content for ESP FlashFileSystem");
 #endif
-					webServer.send(505, "text/plain", "upload bad file name, size or content for ESP FlashFileSystem");
+					webServer->send(505, "text/plain", "upload bad file name, size or content for ESP FlashFileSystem");
 				}
 }
 
@@ -489,20 +530,20 @@ void handleUploadFile()
 void handleGetUnitProperty()
 {
 	webServerAddCORSHeaders();
-	if (webServer.args() > 0)
+	if (webServer->args() > 0)
 	{
-		if (webServer.argName(0).equals("property"))
+		if (webServer->argName(0).equals("property"))
 		{
-			String unitProp = unitOnMessage(unitGetTopic() + "/get" + decode(webServer.arg(0)), "", NoTransportMask);
+			String unitProp = unitOnMessage(unitGetTopic() + "/get" + decode(webServer->arg(0)), "", NoTransportMask);
 			if ((unitProp.length() == 0) || (unitProp.equals(WrongPropertyName)))
 			{
-				unitProp = "wrong unit property: " + webServer.arg(0);
-				webServer.send(404, "text/html", unitProp);
+				unitProp = "wrong unit property: " + webServer->arg(0);
+				webServer->send(404, "text/html", unitProp);
 				return;
 			}
 			else
 			{
-				webServer.send(200, "text/plain", unitProp);
+				webServer->send(200, "text/plain", unitProp);
 				return;
 			}
 
@@ -514,20 +555,20 @@ void handleGetUnitProperty()
 void handleSetUnitProperty()
 {
 	webServerAddCORSHeaders();
-	if (webServer.args() > 1)
+	if (webServer->args() > 1)
 	{
-		if ((webServer.argName(0).equals("property")) && (webServer.argName(1).equals("value")))
+		if ((webServer->argName(0).equals("property")) && (webServer->argName(1).equals("value")))
 		{
-			String result = unitOnMessage(unitGetTopic() + "/set" + decode(webServer.arg(0)), decode(webServer.arg(1)), NoTransportMask);
+			String result = unitOnMessage(unitGetTopic() + "/set" + decode(webServer->arg(0)), decode(webServer->arg(1)), NoTransportMask);
 			if ((result.length() == 0) || (result.equals("0")))
 			{
-				result = "wrong unit property set: " + webServer.arg(0) + "=" + webServer.arg(1);
-				webServer.send(404, "text/html", result);
+				result = "wrong unit property set: " + webServer->arg(0) + "=" + webServer->arg(1);
+				webServer->send(404, "text/html", result);
 				return;
 			}
 			else
 			{
-				webServer.send(200, "text/plain", result);
+				webServer->send(200, "text/plain", result);
 				return;
 			}
 
@@ -539,7 +580,7 @@ void handleSetUnitProperty()
 void handleGetAllUnitProperties()
 {
 	webServerAddCORSHeaders();
-	webServer.send(200, "text/plain", unitGetAllProperties());
+	webServer->send(200, "text/plain", unitGetAllProperties());
 	return;
 }
 
@@ -547,32 +588,32 @@ void handleGetAllUnitProperties()
 void handleAddDriver()
 {
 	webServerAddCORSHeaders();
-	if (webServer.args() > 5)
+	if (webServer->args() > 5)
 	{
-		if ((webServer.argName(0).equals("type")) && (webServer.argName(1).equals("id")) && (webServer.argName(2).equals("pin1"))
-			&& (webServer.argName(3).equals("pin2")) && (webServer.argName(4).equals("pin3")) && (webServer.argName(5).equals("pin4")))
+		if ((webServer->argName(0).equals("type")) && (webServer->argName(1).equals("id")) && (webServer->argName(2).equals("pin1"))
+			&& (webServer->argName(3).equals("pin2")) && (webServer->argName(4).equals("pin3")) && (webServer->argName(5).equals("pin4")))
 		{
-			int _type = std::atoi(webServer.arg(0).c_str());
-			String _id = webServer.arg(1);
-			int _pin1 = driversPinNameToValue(webServer.arg(2));
-			int _pin2 = driversPinNameToValue(webServer.arg(3));
-			int _pin3 = driversPinNameToValue(webServer.arg(4));
-			int _pin4 = driversPinNameToValue(webServer.arg(5));
+			int _type = std::atoi(webServer->arg(0).c_str());
+			String _id = webServer->arg(1);
+			int _pin1 = driversPinNameToValue(webServer->arg(2));
+			int _pin2 = driversPinNameToValue(webServer->arg(3));
+			int _pin3 = driversPinNameToValue(webServer->arg(4));
+			int _pin4 = driversPinNameToValue(webServer->arg(5));
 
 			String result = driversAdd(_type, _id, _pin1, _pin2, _pin3, _pin4);
 			if (!result.equals("1"))
 			{
-				webServer.send(503, "text/html", result);
+				webServer->send(503, "text/html", result);
 			}
 			else
 			{
 				if (!driversSaveToConfig(_type, _id, _pin1, _pin2, _pin3, _pin4))
 				{
-					webServer.send(503, "text/html", "bad, driver added but not stored to configuration file");
+					webServer->send(503, "text/html", "bad, driver added but not stored to configuration file");
 				}
 				else
 				{
-					webServer.send(200, "text/html", "1");
+					webServer->send(200, "text/html", "1");
 				}
 			}
 			return;
@@ -584,26 +625,26 @@ void handleAddDriver()
 void handleGetDriversId()
 {
 	webServerAddCORSHeaders();
-	webServer.send(200, "text/plain", driversGetDriversId());
+	webServer->send(200, "text/plain", driversGetDriversId());
 }
 
 //----------------------------------------------------------------------------------------------
 void handleGetDriverProperties()
 {
 	webServerAddCORSHeaders();
-	if (webServer.args() > 0)
+	if (webServer->args() > 0)
 	{
-		if (webServer.argName(0).equals("id"))
+		if (webServer->argName(0).equals("id"))
 		{
-			String driverProp = driversGetDriverProperties(webServer.arg(0));
+			String driverProp = driversGetDriverProperties(webServer->arg(0));
 			if (driverProp.length() == 0)
 			{
-				driverProp = "wrong driver id: " + webServer.arg(0) + " use GetDriversId API to get all drivers list";
-				webServer.send(404, "text/html", driverProp);
+				driverProp = "wrong driver id: " + webServer->arg(0) + " use GetDriversId API to get all drivers list";
+				webServer->send(404, "text/html", driverProp);
 			}
 			else
 			{
-				webServer.send(200, "text/plain", driverProp);
+				webServer->send(200, "text/plain", driverProp);
 			}
 			return;
 		}
@@ -614,34 +655,34 @@ void handleGetDriverProperties()
 void handleGetDriverProperty()
 {
 	webServerAddCORSHeaders();
-	if (webServer.args() > 1)
+	if (webServer->args() > 1)
 	{
-		if ((webServer.argName(0).equals("id")) && (webServer.argName(1).equals("property")))
+		if ((webServer->argName(0).equals("id")) && (webServer->argName(1).equals("property")))
 		{
-			String driverProp = driversGetDriverProperty(webServer.arg(0), decode(webServer.arg(1)));
+			String driverProp = driversGetDriverProperty(webServer->arg(0), decode(webServer->arg(1)));
 			if (driverProp.length() == 0) //then try get this property from unit 
 			{
-				driverProp = unitOnMessage(unitGetTopic() + "/get" + decode(webServer.arg(1)), "", NoTransportMask);
+				driverProp = unitOnMessage(unitGetTopic() + "/get" + decode(webServer->arg(1)), "", NoTransportMask);
 			}
 
 			if (driverProp.length() == 0)
 			{
-				driverProp = "wrong driver id: " + webServer.arg(0) + " use GetDriversId API to get all drivers list";
-				webServer.send(404, "text/html", driverProp);
+				driverProp = "wrong driver id: " + webServer->arg(0) + " use GetDriversId API to get all drivers list";
+				webServer->send(404, "text/html", driverProp);
 			}
 			else if (driverProp.equals(NotAvailable))
 			{
-				driverProp = "driver property: " + webServer.arg(1) + " set as NOT Available";
-				webServer.send(404, "text/html", driverProp);
+				driverProp = "driver property: " + webServer->arg(1) + " set as NOT Available";
+				webServer->send(404, "text/html", driverProp);
 			}
 			else if (driverProp.equals(WrongPropertyName))
 			{
-				driverProp = "driver property: " + webServer.arg(1) + " not exists";
-				webServer.send(404, "text/html", driverProp);
+				driverProp = "driver property: " + webServer->arg(1) + " not exists";
+				webServer->send(404, "text/html", driverProp);
 			}
 			else
 			{
-				webServer.send(200, "text/plain", driverProp);
+				webServer->send(200, "text/plain", driverProp);
 			}
 			return;
 		}
@@ -652,39 +693,39 @@ void handleGetDriverProperty()
 void handleSetDriverProperty()
 {
 	webServerAddCORSHeaders();
-	if (webServer.args() > 2)
+	if (webServer->args() > 2)
 	{
-		if ((webServer.argName(0).equals("id")) && (webServer.argName(1).equals("property")) && (webServer.argName(2).equals("value")))
+		if ((webServer->argName(0).equals("id")) && (webServer->argName(1).equals("property")) && (webServer->argName(2).equals("value")))
 		{
-			String result = driversSetDriverProperty(webServer.arg(0), decode(webServer.arg(1)), decode(webServer.arg(2)));
+			String result = driversSetDriverProperty(webServer->arg(0), decode(webServer->arg(1)), decode(webServer->arg(2)));
 			if (result.length() == 0) //try set unit property
 			{
-				result = unitOnMessage(unitGetTopic() + "/set" + decode(webServer.arg(1)), decode(webServer.arg(2)), NoTransportMask);
+				result = unitOnMessage(unitGetTopic() + "/set" + decode(webServer->arg(1)), decode(webServer->arg(2)), NoTransportMask);
 			}
 
 			if (result.length() == 0)
 			{
-				result = "wrong driver id: " + webServer.arg(0) + " use GetDriversId API to get all drivers list";
-				webServer.send(404, "text/html", result);
+				result = "wrong driver id: " + webServer->arg(0) + " use GetDriversId API to get all drivers list";
+				webServer->send(404, "text/html", result);
 			}
 			else if (result.equals(NotAvailable))
 			{
-				result = "driver property: " + webServer.arg(1) + " set as NOT Available";
-				webServer.send(404, "text/html", result);
+				result = "driver property: " + webServer->arg(1) + " set as NOT Available";
+				webServer->send(404, "text/html", result);
 			}
 			else if (result.equals(WrongPropertyName))
 			{
-				result = "driver property: " + webServer.arg(1) + " not exists";
-				webServer.send(404, "text/html", result);
+				result = "driver property: " + webServer->arg(1) + " not exists";
+				webServer->send(404, "text/html", result);
 			}
 			else if (result.equals("0"))
 			{
-				result = "driver property: " + webServer.arg(1) + " can't be modify";
-				webServer.send(404, "text/html", result);
+				result = "driver property: " + webServer->arg(1) + " can't be modify";
+				webServer->send(404, "text/html", result);
 			}
 			else
 			{
-				webServer.send(200, "text/plain", result);
+				webServer->send(200, "text/plain", result);
 			}
 			return;
 		}
@@ -696,29 +737,29 @@ void handleSetDriverProperty()
 void handleGetWebProperty()
 {
 	webServerAddCORSHeaders();
-	if (webServer.args() > 0)
+	if (webServer->args() > 0)
 	{
-		if (webServer.argName(0).equals("property"))
+		if (webServer->argName(0).equals("property"))
 		{
-			//String configProperties = webOnMessage(unitGetTopic() + "/get" + decode(webServer.arg(0)), "");
+			//String configProperties = webOnMessage(unitGetTopic() + "/get" + decode(webServer->arg(0)), "");
 
 			File download = SPIFFS.open("web.config", "r");
 			if (download)
 			{
-				webServer.streamFile(download, "text/html");
+				webServer->streamFile(download, "text/html");
 				download.close();
 				return;
 			}
 			/*
 			if ((configProperties.length() == 0) || (configProperties.equals(WrongPropertyName)))
 			{
-				configProperties = "wrong web property: " + webServer.arg(0);
-				webServer.send(404, "text/html", configProperties);
+				configProperties = "wrong web property: " + webServer->arg(0);
+				webServer->send(404, "text/html", configProperties);
 				return;
 			}
 			else
 			{
-				webServer.send(200, "text/plain", configProperties);
+				webServer->send(200, "text/plain", configProperties);
 				return;
 			}
 			*/
@@ -731,20 +772,20 @@ void handleGetWebProperty()
 void handleSetWebProperty()
 {
 	webServerAddCORSHeaders();
-	if (webServer.args() > 1)
+	if (webServer->args() > 1)
 	{
-		if (webServer.argName(1).equals("property"))
+		if (webServer->argName(1).equals("property"))
 		{
-			String result = webOnMessage(unitGetTopic() + "/set" + decode(webServer.arg(1)), decode(webServer.arg(0)));			
+			String result = webOnMessage(unitGetTopic() + "/set" + decode(webServer->arg(1)), decode(webServer->arg(0)));			
 			if ((result.length() == 0) || (result.equals("0")))
 			{
-				result = "wrong unit property set: " + webServer.arg(0) + "=" + webServer.arg(1);
-				webServer.send(404, "text/html", result);
+				result = "wrong unit property set: " + webServer->arg(0) + "=" + webServer->arg(1);
+				webServer->send(404, "text/html", result);
 				return;
 			}
 			else
 			{
-				webServer.send(200, "text/plain", result);
+				webServer->send(200, "text/plain", result);
 				return;
 			}
 		}
@@ -755,13 +796,13 @@ void handleSetWebProperty()
 //----------------------------------------------------------------------------------------------
 void handleGetAllDriversProperties() {
 	webServerAddCORSHeaders();
-	webServer.send(200, "text/plain", driversGetAllDriversProperties());
+	webServer->send(200, "text/plain", driversGetAllDriversProperties());
 }
 
 //----------------------------------------------------------------------------------------------
 void handleReset() {
 	webServerAddCORSHeaders();
-	webServer.send(200, "text/plain", "1");
+	webServer->send(200, "text/plain", "1");
 	unitSetESPReset(1);
 }
 
@@ -770,30 +811,30 @@ void handleReset() {
 void handlesetpinmode()
 {
 	webServerAddCORSHeaders();
-	if (webServer.args() < 2)
+	if (webServer->args() < 2)
 	{
 		handleNotFound();
 		return;
 	}
-	if (!(webServer.argName(0).equals("pin")) || !(webServer.argName(1).equals("mode")))
+	if (!(webServer->argName(0).equals("pin")) || !(webServer->argName(1).equals("mode")))
 	{
 		handleNotFound();
 		return;
 	}
 	int pin = -1;
-	if (webServer.arg(0).equals("BUILTIN_LED")) pin = BUILTIN_LED;
-	else pin = driversPinNameToValue(webServer.arg(0));
+	if (webServer->arg(0).equals("BUILTIN_LED")) pin = BUILTIN_LED;
+	else pin = driversPinNameToValue(webServer->arg(0));
 	if (pin == -1)
 	{
-		webServer.send(404, "text/html", "wrong pin: " + webServer.arg(0));
+		webServer->send(404, "text/html", "wrong pin: " + webServer->arg(0));
 		return;
 	}
 	if (checkPinBusy(pin))
 	{
-		webServer.send(404, "text/html", "busy pin: " + webServer.arg(0));
+		webServer->send(404, "text/html", "busy pin: " + webServer->arg(0));
 		return;
 	}
-	String _mode = webServer.arg(1);
+	String _mode = webServer->arg(1);
 	_mode.toUpperCase();
 	int mode = 0;
 	if (_mode.equals("INPUT")) mode = INPUT;
@@ -801,87 +842,89 @@ void handlesetpinmode()
 	else if (_mode.equals("INPUT_PULLUP")) mode = INPUT_PULLUP;
 	else
 	{
-		webServer.send(404, "text/html", "wrong pin mode: " + webServer.arg(1));
+		webServer->send(404, "text/html", "wrong pin mode: " + webServer->arg(1));
 		return;
 	}
 	pinMode(pin, mode);
-	webServer.send(200, "text/html", "1");
+	webServer->send(200, "text/html", "1");
 	return;
 }
 //----------------------------------------------------------------------------------------------
 void handlereadpin()
 {
 	webServerAddCORSHeaders();
-	if (webServer.args() < 1)
+	if (webServer->args() < 1)
 	{
 		handleNotFound();
 		return;
 	}
-	if (!webServer.argName(0).equals("pin"))
+	if (!webServer->argName(0).equals("pin"))
 	{
 		handleNotFound();
 		return;
 	}
-	int pin = driversPinNameToValue(webServer.arg(0));
+	int pin = driversPinNameToValue(webServer->arg(0));
 	if (pin == -1)
 	{
-		webServer.send(404, "text/html", "wrong pin: " + webServer.arg(0));
+		webServer->send(404, "text/html", "wrong pin: " + webServer->arg(0));
 		return;
 	}
 	if (checkPinBusy(pin))
 	{
-		webServer.send(404, "text/html", "busy pin: " + webServer.arg(0));
+		webServer->send(404, "text/html", "busy pin: " + webServer->arg(0));
 		return;
 	}
 	int result = -1;
 	if (pin = A0) result = analogRead(pin);
 	else result = digitalRead(pin);
-	webServer.send(200, "text/html", String(result));
+	webServer->send(200, "text/html", String(result));
 	return;
 }
 //----------------------------------------------------------------------------------------------
 void handlewritepin()
 {
 	webServerAddCORSHeaders();
-	if (webServer.args() < 2)
+	if (webServer->args() < 2)
 	{
 		handleNotFound();
 		return;
 	}
-	if (!(webServer.argName(0).equals("pin")) || !(webServer.argName(1).equals("value")))
+	if (!(webServer->argName(0).equals("pin")) || !(webServer->argName(1).equals("value")))
 	{
 		handleNotFound();
 		return;
 	}
 	int pin = -1;
-	if (webServer.arg(0).equals("BUILTIN_LED")) pin = BUILTIN_LED;
-	else pin = driversPinNameToValue(webServer.arg(0));
+	if (webServer->arg(0).equals("BUILTIN_LED")) pin = BUILTIN_LED;
+	else pin = driversPinNameToValue(webServer->arg(0));
 	if (pin == -1)
 	{
-		webServer.send(404, "text/html", "wrong pin: " + webServer.arg(0));
+		webServer->send(404, "text/html", "wrong pin: " + webServer->arg(0));
 		return;
 	}
 	if (checkPinBusy(pin))
 	{
-		webServer.send(404, "text/html", "busy pin: " + webServer.arg(0));
+		webServer->send(404, "text/html", "busy pin: " + webServer->arg(0));
 		return;
 	}
-	String _value = webServer.arg(1);
+	String _value = webServer->arg(1);
 	_value.toUpperCase();
 	int value = 0;
 	if (_value.equals("LOW")) value = LOW;
 	else if (_value.equals("HIGH")) value = HIGH;
-	else value = std::atoi(webServer.arg(1).c_str());
+	else value = std::atoi(webServer->arg(1).c_str());
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	if (pin == A0) analogWrite(pin, value);
 	else digitalWrite(pin, value);
-	webServer.send(200, "text/html", "1");
+#endif
+	webServer->send(200, "text/html", "1");
 	return;
 }
 //Update UI ------------------------------------------------------------------------------------
 void handleUpdateLog()
 {
 	webServerAddCORSHeaders();
-	webServer.send(200, "text/plain", updateGetUpdateLog());
+	webServer->send(200, "text/plain", updateGetUpdateLog());
 }
 
 void handleUpdateUI()
@@ -889,16 +932,16 @@ void handleUpdateUI()
 	webServerAddCORSHeaders();
 	if (updateGetUpdatePossible() < 1)
 	{
-		webServer.send(503, "text/plain", "0");
+		webServer->send(503, "text/plain", "0");
 	}
 	else
 		if (updateGetUpdateUIStatus() < 2)
 		{
-			webServer.send(504, "text/plain", "0");
+			webServer->send(504, "text/plain", "0");
 		}
 		else
 		{
-			webServer.send(200, "text/plain", "1");
+			webServer->send(200, "text/plain", "1");
 			updateUI();
 		}
 }
@@ -908,16 +951,16 @@ void handleUpdateFirmware()
 	webServerAddCORSHeaders();
 	if (updateGetUpdatePossible() < 2)
 	{
-		webServer.send(503, "text/plain", "0");
+		webServer->send(503, "text/plain", "0");
 	}
 	else
 		if (updateGetUpdateFirmwareStatus() < 2)
 		{
-			webServer.send(504, "text/plain", "0");
+			webServer->send(504, "text/plain", "0");
 		}
 		else
 		{
-			webServer.send(200, "text/plain", "1");
+			webServer->send(200, "text/plain", "1");
 			updateFirmware();
 		}
 }
@@ -926,19 +969,19 @@ void handleUpdateFirmware()
 void handleCreateScript()
 {	
 	webServerAddCORSHeaders();
-	if (webServer.args() > 1)
+	if (webServer->args() > 1)
 	{
-		if (webServer.argName(1).equals("name"))
+		if (webServer->argName(1).equals("name"))
 		{
-			String result = String(scriptsCreate(decode(webServer.arg(1)), decode(webServer.arg(0))));
+			String result = String(scriptsCreate(decode(webServer->arg(1)), decode(webServer->arg(0))));
 			if (result.length() != 0)
 			{				
-				webServer.send(503, "text/html", result);
+				webServer->send(503, "text/html", result);
 				return;
 			}
 			else
 			{
-				webServer.send(200, "text/plain", result);
+				webServer->send(200, "text/plain", result);
 				return;
 			}
 
@@ -949,17 +992,17 @@ void handleCreateScript()
 
 void handleGetAllScripts() {
 	webServerAddCORSHeaders();
-	webServer.send(200, "text/plain", scriptsGetAll());
+	webServer->send(200, "text/plain", scriptsGetAll());
 }
 
 void handleDeleteScript()
 {
 	webServerAddCORSHeaders();
-	if (webServer.args() > 0)
+	if (webServer->args() > 0)
 	{
-		if (webServer.argName(0).equals("name"))
+		if (webServer->argName(0).equals("name"))
 		{
-			webServer.send(200, "text/plain", String(scriptsDelete(webServer.arg(0))));
+			webServer->send(200, "text/plain", String(scriptsDelete(webServer->arg(0))));
 			return;
 		}
 	}
@@ -969,11 +1012,11 @@ void handleDeleteScript()
 void handleStartDebugScript()
 {
 	webServerAddCORSHeaders();
-	if (webServer.args() > 0)
+	if (webServer->args() > 0)
 	{		
-		if (webServer.argName(0).equals("name"))
+		if (webServer->argName(0).equals("name"))
 		{	
-			webServer.send(200, "text/plain", String(scriptsStartDebug(webServer.arg(0))));
+			webServer->send(200, "text/plain", String(scriptsStartDebug(webServer->arg(0))));
 			return;
 		}
 	}
@@ -983,11 +1026,11 @@ void handleStartDebugScript()
 void handleDebugNextScript()
 {
 	webServerAddCORSHeaders();
-	if (webServer.args() > 0)
+	if (webServer->args() > 0)
 	{		
-		if (webServer.argName(0).equals("name"))
+		if (webServer->argName(0).equals("name"))
 		{
-			webServer.send(200, "text/plain", String(scriptsDebugNext(webServer.arg(0))));
+			webServer->send(200, "text/plain", String(scriptsDebugNext(webServer->arg(0))));
 			return;
 		}
 	}
@@ -1003,64 +1046,79 @@ bool webServerBegin()
 #ifdef DetailedDebug
 	debugOut(WebServerId, "RESTful start by configuration flag");
 #endif
-	/* Time disable for Access Point no Internet mode
-	configTime(3 * 3600, 0, "pool.ntp.org", "time.nist.gov");
 
-	debugOut(WebServerId,"Waiting for NTP time sync: ");
-	time_t now = time(nullptr);
-	while (now < 8 * 3600 * 2) {
-	  delay(500);
-	  debugOut(WebServerId,".");
-	  now = time(nullptr);
-	}
 
-	struct tm timeinfo;
-	gmtime_r(&now, &timeinfo);
-	*/
+#ifdef USESSL
+
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0	
+	webServer = new BearSSL::ESP8266WebServerSecure(unitGetRESTfulServerPort());
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4	
+	 webServer = new BearSSL::WebServerSecure(unitGetRESTfulServerPort());
+#endif
+
+#endif
+
+#ifdef NOTUSESSL
+
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0	
+	webServer = new ESP8266WebServer(unitGetRESTfulServerPort());
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+	
+	webServer = new WebServer(unitGetRESTfulServerPort());
+#endif
+
+#endif
+
+
+
 
 #ifdef USESSL
 	if (MDNS.begin("OWLOS.local"))
 	{
 		debugOut(WebServerId, "MDNS responder started OWLOS.local");
 	}
-	webServer.setBufferSizes(1024, 1024);
-	webServer.setRSACert(new BearSSL::X509List(serverCert), new BearSSL::PrivateKey(serverKey));
+	webServer->setBufferSizes(1024, 1024);
+	webServer->setRSACert(new BearSSL::X509List(serverCert), new BearSSL::PrivateKey(serverKey));
 #endif
 
-	webServer.on("/", HTTP_OPTIONS, handleCORS);
-	webServer.onNotFound(handleNotFound);
-	webServer.on("/getlog", handleGetLog);
-	webServer.on("/getfilelist", handleGetFileList);
-	webServer.on("/deletefile", handleDeleteFile);
-	webServer.on("/downloadfile", handleDownloadFile);
-	webServer.on("/upload", handleUpload);
-	webServer.on("/uploadfile", HTTP_POST, []() { webServer.send(200);}, handleUploadFile);
-	webServer.on("/getunitproperty", handleGetUnitProperty);
-	webServer.on("/setunitproperty", handleSetUnitProperty);
-	webServer.on("/getallunitproperties", handleGetAllUnitProperties);
-	webServer.on("/adddriver", handleAddDriver);
-	webServer.on("/getdriversid", handleGetDriversId);
-	webServer.on("/getdriverproperty", handleGetDriverProperty);
-	webServer.on("/setdriverproperty", handleSetDriverProperty);
-	webServer.on("/getdriverproperties", handleGetDriverProperties);
-	webServer.on("/getalldriversproperties", handleGetAllDriversProperties);
-	webServer.on("/getwebproperty", handleGetWebProperty);
-	webServer.on("/setwebproperty", HTTP_POST, handleSetWebProperty);
-	webServer.on("/reset", handleReset);
+	webServer->on("/", HTTP_OPTIONS, handleCORS);
+	webServer->onNotFound(handleNotFound);
+	webServer->on("/getlog", handleGetLog);
+	webServer->on("/getfilelist", handleGetFileList);
+	webServer->on("/deletefile", handleDeleteFile);
+	webServer->on("/downloadfile", handleDownloadFile);
+	webServer->on("/upload", handleUpload);
+	webServer->on("/uploadfile", HTTP_POST, []() { webServer->send(200);}, handleUploadFile);
+	webServer->on("/getunitproperty", handleGetUnitProperty);
+	webServer->on("/setunitproperty", handleSetUnitProperty);
+	webServer->on("/getallunitproperties", handleGetAllUnitProperties);
+	webServer->on("/adddriver", handleAddDriver);
+	webServer->on("/getdriversid", handleGetDriversId);
+	webServer->on("/getdriverproperty", handleGetDriverProperty);
+	webServer->on("/setdriverproperty", handleSetDriverProperty);
+	webServer->on("/getdriverproperties", handleGetDriverProperties);
+	webServer->on("/getalldriversproperties", handleGetAllDriversProperties);
+	webServer->on("/getwebproperty", handleGetWebProperty);
+	webServer->on("/setwebproperty", HTTP_POST, handleSetWebProperty);
+	webServer->on("/reset", handleReset);
 	//work with pins
-	webServer.on("/setpinmode", handlesetpinmode);
-	webServer.on("/readpin", handlereadpin);
-	webServer.on("/writepin", handlewritepin);
+	webServer->on("/setpinmode", handlesetpinmode);
+	webServer->on("/readpin", handlereadpin);
+	webServer->on("/writepin", handlewritepin);
 	//update
-	webServer.on("/updatelog", handleUpdateLog);
-	webServer.on("/updateui", handleUpdateUI);
-	webServer.on("/updatefirmware", handleUpdateFirmware);
-	webServer.on("/createscript", HTTP_POST, handleCreateScript);
-	webServer.on("/getallscripts", handleGetAllScripts);
-	webServer.on("/startdebugscript", handleStartDebugScript);
-	webServer.on("/debugnextscript", handleDebugNextScript);
+	webServer->on("/updatelog", handleUpdateLog);
+	webServer->on("/updateui", handleUpdateUI);
+	webServer->on("/updatefirmware", handleUpdateFirmware);
+	webServer->on("/createscript", HTTP_POST, handleCreateScript);
+	webServer->on("/getallscripts", handleGetAllScripts);
+	webServer->on("/startdebugscript", handleStartDebugScript);
+	webServer->on("/debugnextscript", handleDebugNextScript);
 		
-	webServer.begin();
+	webServer->begin();
 
 	debugOut(WebServerId, "started at access point as: " + unitGetWiFiAccessPointIP() + ":" + String(unitGetRESTfulServerPort()) + " at local network as: " + unitGetWiFiIP() + ":" + String(unitGetRESTfulServerPort()));
 
@@ -1069,8 +1127,8 @@ bool webServerBegin()
 }
 
 bool webServerLoop()
-{
-	webServer.handleClient();
+{	
+	webServer->handleClient();
 #ifdef USESSL
 	MDNS.update();
 #endif
