@@ -44,7 +44,7 @@ OWLOS распространяется в надежде, что она буде
 #define NOTUSESSL
 
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
-#include <ESP826WiFi.h>
+#include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
 #include <FS.h>
 #endif
@@ -95,11 +95,11 @@ OWLOS распространяется в надежде, что она буде
 #ifdef USESSL
 
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
-BearSSL::ESP8266WebServerSecure webServer(unitGetRESTfulServerPort());
+BearSSL::ESP8266WebServerSecure * webServer;
 #endif
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
-BearSSL::WebServerSecure webServer(unitGetRESTfulServerPort());
+BearSSL::WebServerSecure * webServer;
 #endif
 
 #endif
@@ -107,7 +107,7 @@ BearSSL::WebServerSecure webServer(unitGetRESTfulServerPort());
 #ifdef NOTUSESSL
 
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
-ESP8266WebServer webServer(unitGetRESTfulServerPort());
+ESP8266WebServer * webServer;
 #endif
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4

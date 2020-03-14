@@ -74,7 +74,7 @@ MQTTClient* getMQTTClient() {
 	return _MQTTClient;
 }
 
-
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
 void WiFiEvent(WiFiEvent_t event)
 {
 	switch (event) {
@@ -156,13 +156,12 @@ void WiFiEvent(WiFiEvent_t event)
 	default: break;
 	}
 }
-
+#endif
 
 bool transportBegin()
 {
 #ifdef DetailedDebug 
-	debugOut(TransportID, "begin");
-	WiFi.onEvent(WiFiEvent);
+	debugOut(TransportID, "begin");	
 #endif
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
@@ -170,6 +169,9 @@ bool transportBegin()
 	debugOut(TransportID, "ESP32 Power Mode UP");
 	esp_wifi_set_ps(WIFI_PS_NONE);
 	WiFi.setSleep(false);
+#ifdef DetailedDebug 
+	WiFi.onEvent(WiFiEvent);
+#endif
 #endif
 
 	if (_MQTTClient == nullptr)

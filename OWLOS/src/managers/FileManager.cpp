@@ -51,16 +51,28 @@ OWLOS распространяется в надежде, что она буде
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
 #include <FS.h>
 #include <SPIFFS.h>
+#define FORMAT_SPIFFS_IF_FAILED true
 #endif
 
-#define FORMAT_SPIFFS_IF_FAILED true
 
 //NOTE: DON'T forget "Tools/Flash Size" set to 1M-2M, it is desable by default
 //http://wikihandbk.com/wiki/ESP8266:%D0%9F%D1%80%D0%BE%D1%88%D0%B8%D0%B2%D0%BA%D0%B8/Arduino/%D0%A0%D0%B0%D0%B1%D0%BE%D1%82%D0%B0_%D1%81_%D1%84%D0%B0%D0%B9%D0%BB%D0%BE%D0%B2%D0%BE%D0%B9_%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%BE%D0%B9_%D0%B2_%D0%B0%D0%B4%D0%B4%D0%BE%D0%BD%D0%B5_ESP8266_%D0%B4%D0%BB%D1%8F_IDE_Arduino
 //https://github.com/esp8266/arduino-esp8266fs-plugin/releases/download/0.3.0/ESP8266FS-0.3.0.zip
+
+bool _SPIFFSBegin()
+{
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
+	return SPIFFS.begin();
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+	return SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED);
+#endif
+}
+
 bool filesBegin()
 {
-	if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED))
+	if (!_SPIFFSBegin())
 	{
 #ifdef DetailedDebug 
 		debugOut(FileSystem, "File system not available before, try MOUNT new FLASH drive, please wait...");
@@ -68,7 +80,7 @@ bool filesBegin()
 		SPIFFS.format();
 	}
 
-	bool result = SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED);
+	bool result = _SPIFFSBegin();
 
 	if (result)
 	{
@@ -93,7 +105,7 @@ bool filesExists(String fileName)
 
 int filesGetSize(String fileName)
 {
-	if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED))
+	if (!_SPIFFSBegin())
 	{
 #ifdef DetailedDebug 
 		debugOut(FileSystem, "An Error has occurred while mounting file system");
@@ -101,7 +113,7 @@ int filesGetSize(String fileName)
 		return -1;
 	}
 
-	if (!filesExists( fileName)) return -2;
+	if (!filesExists(fileName)) return -2;
 
 	// open file for reading
 	File file = SPIFFS.open("/" + fileName, "r");
@@ -120,7 +132,7 @@ int filesGetSize(String fileName)
 
 bool filesDelete(String fileName)
 {
-	if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED))
+	if (!_SPIFFSBegin())
 	{
 #ifdef DetailedDebug 
 		debugOut(FileSystem, "An Error has occurred while mounting file system");
@@ -137,7 +149,7 @@ bool filesDelete(String fileName)
 
 bool filesRename(String source, String dest)
 {
-	if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED))
+	if (!_SPIFFSBegin())
 	{
 #ifdef DetailedDebug 
 		debugOut(FileSystem, "An Error has occurred while mounting file system");
@@ -160,7 +172,7 @@ bool filesRename(String source, String dest)
 String filesReadString(String fileName)
 {
 	String result = String();
-	if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED))
+	if (!_SPIFFSBegin())
 	{
 #ifdef DetailedDebug 
 		debugOut(FileSystem, "An Error has occurred while mounting file system");
@@ -187,7 +199,7 @@ String filesReadString(String fileName)
 bool filesWriteString(String fileName, String value)
 {
 
-	if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED))
+	if (!_SPIFFSBegin())
 	{
 #ifdef DetailedDebug 
 		debugOut(FileSystem, "An Error has occurred while mounting file system");
@@ -218,7 +230,7 @@ bool filesWriteString(String fileName, String value)
 bool filesAppendString(String fileName, String value)
 {
 
-	if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED))
+	if (!_SPIFFSBegin())
 	{
 #ifdef DetailedDebug 
 		debugOut(FileSystem, "An Error has occurred while mounting file system");
@@ -247,7 +259,7 @@ bool filesAppendString(String fileName, String value)
 bool filesAddString(String fileName, String value)
 {
 
-	if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED))
+	if (!_SPIFFSBegin())
 	{
 #ifdef DetailedDebug 
 		debugOut(FileSystem, "An Error has occurred while mounting file system");
@@ -307,7 +319,7 @@ bool filesWriteFloat(String fileName, float value)
 
 String filesGetList(String path)
 {
-	if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED))
+	if (!_SPIFFSBegin())
 	{
 #ifdef DetailedDebug 
 		debugOut(FileSystem, "An Error has occurred while mounting file system");
@@ -339,7 +351,7 @@ String filesGetList(String path)
 
 bool filesWriteStructure(String fileName, void *value)
 {
-	if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED))
+	if (!_SPIFFSBegin())
 	{
 #ifdef DetailedDebug debugOut(FileSystem, "An Error has occurred while mounting file system");
 		return false;
