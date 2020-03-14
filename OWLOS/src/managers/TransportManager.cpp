@@ -46,13 +46,13 @@ OWLOS распространяется в надежде, что она буде
 #include "..\Utils\Utils.h"
 
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
-	ESP8266WiFiMulti _WiFiMulti;
+ESP8266WiFiMulti _WiFiMulti;
 #endif
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
-    #include <esp_wifi.h>
-	#include <WiFiAP.h>
-	WiFiMulti _WiFiMulti;
+#include <esp_wifi.h>
+#include <WiFiAP.h>
+WiFiMulti _WiFiMulti;
 #endif
 
 WiFiClient wifiClient;
@@ -66,6 +66,7 @@ long lastTryMQTTReconnect(-ONEMINUTE);
 int storedWiFiAPState(-1);
 int storedWiFiSTState(-1);
 
+bool wifiStatus = false;
 bool wifiAPResult = false;
 bool wifiResult = false;
 
@@ -79,79 +80,79 @@ void WiFiEvent(WiFiEvent_t event)
 {
 	switch (event) {
 	case SYSTEM_EVENT_WIFI_READY:
-		debugOut(TransportID,"WiFi interface ready");
+		debugOut(TransportID, "WiFi interface ready");
 		break;
 	case SYSTEM_EVENT_SCAN_DONE:
-		debugOut(TransportID,"Completed scan for access points");
+		debugOut(TransportID, "Completed scan for access points");
 		break;
 	case SYSTEM_EVENT_STA_START:
-		debugOut(TransportID,"WiFi client started");
+		debugOut(TransportID, "WiFi client started");
 		break;
 	case SYSTEM_EVENT_STA_STOP:
-		debugOut(TransportID,"WiFi clients stopped");
+		debugOut(TransportID, "WiFi clients stopped");
 		break;
 	case SYSTEM_EVENT_STA_CONNECTED:
-		debugOut(TransportID,"Connected to access point");
+		debugOut(TransportID, "Connected to access point");
 		break;
 	case SYSTEM_EVENT_STA_DISCONNECTED:
-		debugOut(TransportID,"Disconnected from WiFi access point");
+		debugOut(TransportID, "Disconnected from WiFi access point");
 		break;
 	case SYSTEM_EVENT_STA_AUTHMODE_CHANGE:
-		debugOut(TransportID,"Authentication mode of access point has changed");
+		debugOut(TransportID, "Authentication mode of access point has changed");
 		break;
 	case SYSTEM_EVENT_STA_GOT_IP:
 		//TODO: setIP
 		break;
 	case SYSTEM_EVENT_STA_LOST_IP:
-		debugOut(TransportID,"Lost IP address and IP address is reset to 0");
+		debugOut(TransportID, "Lost IP address and IP address is reset to 0");
 		break;
 	case SYSTEM_EVENT_STA_WPS_ER_SUCCESS:
-		debugOut(TransportID,"WiFi Protected Setup (WPS): succeeded in enrollee mode");
+		debugOut(TransportID, "WiFi Protected Setup (WPS): succeeded in enrollee mode");
 		break;
 	case SYSTEM_EVENT_STA_WPS_ER_FAILED:
-		debugOut(TransportID,"WiFi Protected Setup (WPS): failed in enrollee mode");
+		debugOut(TransportID, "WiFi Protected Setup (WPS): failed in enrollee mode");
 		break;
 	case SYSTEM_EVENT_STA_WPS_ER_TIMEOUT:
-		debugOut(TransportID,"WiFi Protected Setup (WPS): timeout in enrollee mode");
+		debugOut(TransportID, "WiFi Protected Setup (WPS): timeout in enrollee mode");
 		break;
 	case SYSTEM_EVENT_STA_WPS_ER_PIN:
-		debugOut(TransportID,"WiFi Protected Setup (WPS): pin code in enrollee mode");
+		debugOut(TransportID, "WiFi Protected Setup (WPS): pin code in enrollee mode");
 		break;
 	case SYSTEM_EVENT_AP_START:
-		debugOut(TransportID,"WiFi access point started");
+		debugOut(TransportID, "WiFi access point started");
 		break;
 	case SYSTEM_EVENT_AP_STOP:
-		debugOut(TransportID,"WiFi access point  stopped");
+		debugOut(TransportID, "WiFi access point  stopped");
 		break;
 	case SYSTEM_EVENT_AP_STACONNECTED:
-		debugOut(TransportID,"Client connected");
+		debugOut(TransportID, "Client connected");
 		break;
 	case SYSTEM_EVENT_AP_STADISCONNECTED:
-		debugOut(TransportID,"Client disconnected");
+		debugOut(TransportID, "Client disconnected");
 		break;
 	case SYSTEM_EVENT_AP_STAIPASSIGNED:
-		debugOut(TransportID,"Assigned IP address to client");
+		debugOut(TransportID, "Assigned IP address to client");
 		break;
 	case SYSTEM_EVENT_AP_PROBEREQRECVED:
-		debugOut(TransportID,"Received probe request");
+		debugOut(TransportID, "Received probe request");
 		break;
 	case SYSTEM_EVENT_GOT_IP6:
-		debugOut(TransportID,"IPv6 is preferred");
+		debugOut(TransportID, "IPv6 is preferred");
 		break;
 	case SYSTEM_EVENT_ETH_START:
-		debugOut(TransportID,"Ethernet started");
+		debugOut(TransportID, "Ethernet started");
 		break;
 	case SYSTEM_EVENT_ETH_STOP:
-		debugOut(TransportID,"Ethernet stopped");
+		debugOut(TransportID, "Ethernet stopped");
 		break;
 	case SYSTEM_EVENT_ETH_CONNECTED:
-		debugOut(TransportID,"Ethernet connected");
+		debugOut(TransportID, "Ethernet connected");
 		break;
 	case SYSTEM_EVENT_ETH_DISCONNECTED:
-		debugOut(TransportID,"Ethernet disconnected");
+		debugOut(TransportID, "Ethernet disconnected");
 		break;
 	case SYSTEM_EVENT_ETH_GOT_IP:
-		debugOut(TransportID,"Obtained IP address");
+		debugOut(TransportID, "Obtained IP address");
 		break;
 	default: break;
 	}
@@ -161,16 +162,14 @@ void WiFiEvent(WiFiEvent_t event)
 bool transportBegin()
 {
 #ifdef DetailedDebug 
-	debugOut(TransportID, "begin");	
+	debugOut(TransportID, "begin");
 #endif
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
-	//disable ESP32 Power Save
-	debugOut(TransportID, "ESP32 Power Mode UP");
-	esp_wifi_set_ps(WIFI_PS_NONE);
-	WiFi.setSleep(false);
 #ifdef DetailedDebug 
 	WiFi.onEvent(WiFiEvent);
+	//esp_wifi_set_ps(WIFI_PS_NONE);
+	//esp_wifi_set_ps(WIFI_PS_MAX_MODEM);
 #endif
 #endif
 
@@ -193,7 +192,7 @@ bool transportBegin()
 				esp_wifi_disconnect();
 				esp_wifi_stop();
 				esp_wifi_deinit();
-		}
+			}
 #endif
 
 			unitSetWiFiMode(WIFI_AP);
@@ -228,17 +227,22 @@ bool transportBegin()
 				debugOut(TransportID, "no WiFi mode select, WiFi not accessable");
 				return false;
 			}
+
+
+
+
 	return true;
 }
 
 bool transportAvailable()
 {
-
-	if (lastTryCheck + ONESECOND > millis())
+	
+	if (lastTryCheck + TENSECOND > millis())
 	{
-		return true;
+		return wifiStatus;
 	}
 	lastTryCheck = millis();
+	
 
 	//  if ((storedWiFiAPState != unitGetWiFiAccessPointAvailable()) || (storedWiFiSTState != unitGetWiFiAvailable()))
 	//  {
@@ -261,7 +265,7 @@ bool transportAvailable()
 		if (unitGetWiFiAccessPointAvailable() == 0)  wifiAPResult = true;
 	}
 
-	if ((unitGetWiFiAvailable() == 1) && (_WiFiMulti.run() == WL_CONNECTED))
+	if ((unitGetWiFiAvailable() == 1) && (WiFi.status() == WL_CONNECTED))
 	{
 		wifiResult = true;
 	}
@@ -272,9 +276,12 @@ bool transportAvailable()
 
 #ifdef DetailedDebug 
 	debugOut(TransportID, "WiFi AP=" + String(unitGetWiFiAccessPointAvailable()) + ":" + String(wifiAPResult) + "|" + "WiFi ST=" + String(unitGetWiFiAvailable()) + ":" + String(wifiResult));
+
 #endif
 
-	return wifiAPResult & wifiResult;
+	wifiStatus = wifiAPResult & wifiResult;
+
+	return wifiStatus;
 }
 
 //--------------------------------------------------------------------------------------------------------------
@@ -296,6 +303,65 @@ bool WiFiAccessPointReconnect()
 
 		if (softAPResult)
 		{
+
+#ifdef DetailedDebug 
+			esp_wifi_set_ps(WIFI_PS_MAX_MODEM);
+
+
+
+
+			wifi_country_t wifi_country;
+			int res = esp_wifi_get_country(&wifi_country);
+			debugOut("WiFi AP Get Country", String(res));
+			debugOut("cc", String(wifi_country.cc));
+			debugOut("schan", String(wifi_country.schan));
+			debugOut("nchan", String(wifi_country.nchan));
+			debugOut("power", String(wifi_country.max_tx_power));
+			debugOut("policy", String(wifi_country.policy));
+
+
+			wifi_country.cc[0] = 'E';
+			wifi_country.cc[1] = 'U';
+
+			wifi_country.schan = 1;
+			wifi_country.nchan = 5;
+
+			debugOut("cc", String(wifi_country.cc));
+			wifi_country.max_tx_power = 78; // WIFI_POWER_19_5dBm ;
+			wifi_country.policy = WIFI_COUNTRY_POLICY_MANUAL;
+			//wifi_country.policy = WIFI_COUNTRY_POLICY_AUTO;
+
+			res = esp_wifi_get_country(&wifi_country);
+			debugOut("WiFi AP Get Country", String(res));
+			debugOut("cc", String(wifi_country.cc));
+			debugOut("schan", String(wifi_country.schan));
+			debugOut("nchan", String(wifi_country.nchan));
+			debugOut("power", String(wifi_country.max_tx_power));
+			debugOut("policy", String(wifi_country.policy));
+
+
+			ESP_ERROR_CHECK(esp_wifi_set_country(&wifi_country));
+			debugOut("WiFi AP Set Country", String(res));
+
+			int8_t power;
+			esp_wifi_get_max_tx_power(&power);
+			debugOut("esp_wifi_get_max_tx_power", String(power));
+
+			res = esp_wifi_set_max_tx_power(78);
+			debugOut("esp_wifi_set_max_tx_power", String(res));
+			esp_wifi_get_max_tx_power(&power);
+			debugOut("esp_wifi_get_max_tx_power", String(power));
+
+			debugOut("-------------", "------------");
+
+			debugOut("WiFi AP Power", String(WiFi.getTxPower()));
+			//debugOut("WiFi set API Power", String(WiFi.setTxPower(100)));
+			//debugOut("WiFi AP Power", String(WiFi.getTxPower()));
+
+
+
+#endif
+
 			WiFiAccessPointConnected = true;
 			debugOut(TransportID, "Started as WiFi Access Point: " + unitGetWiFiAccessPointSSID() + " IP: " + accessPointIP);
 
@@ -318,7 +384,7 @@ bool WiFiAccessPointReconnect()
 //--------------------------------------------------------------------------------------------------------------
 bool WiFiReconnect()
 {
-	if (_WiFiMulti.run() == WL_CONNECTED) return true;
+	if (WiFi.status() == WL_CONNECTED) return true;
 
 	if (unitGetWiFiAvailable() == 1)
 	{
@@ -331,9 +397,12 @@ bool WiFiReconnect()
 			return false;
 		}
 
-		if (_WiFiMulti.run() != WL_CONNECTED)
+		if (WiFi.status() != WL_CONNECTED)
 		{
-			debugOut(TransportID, "try to connect to - " + WiFiSSID + ":" + WiFiPassword  + " wait ");
+			debugOut(TransportID, "try to connect to - " + WiFiSSID + ":" + WiFiPassword + " wait ");
+			unitGetScanWiFiNetworks();
+			debugOut(TransportID, unitGetWiFiNetworksParameters());
+
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 			if (!_WiFiMulti.existsAP(WiFiSSID.c_str(), WiFiPassword.c_str()))
 			{
@@ -346,7 +415,7 @@ bool WiFiReconnect()
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4			
 			_WiFiMulti.addAP(WiFiSSID.c_str(), WiFiPassword.c_str());
 #endif
-			
+
 			int wait = 0;
 			while (_WiFiMulti.run() != WL_CONNECTED)
 			{
@@ -361,7 +430,7 @@ bool WiFiReconnect()
 			}
 
 
-			if (_WiFiMulti.run() == WL_CONNECTED)
+			if (WiFi.status() == WL_CONNECTED)
 			{
 				debugOut(TransportID, "WiFi connected as Client success, local IP: " + unitGetWiFiIP());
 				return true;
@@ -407,6 +476,7 @@ bool transportReconnect()
 
 	debugOut(TransportID, "reconnect result, WiFi AP=" + String(wifiAPResult) + " WiFi ST=" + String(wifiResult));
 
+	wifiStatus = wifiAPResult | wifiResult;
 	result = wifiAPResult | wifiResult;
 
 	if (result)
@@ -494,24 +564,24 @@ void transportSubscribe(String _topic)
 
 void transportLoop()
 {
-	if ((wifiAPResult) || (wifiResult)) 
+	if ((wifiAPResult) || (wifiResult))
 	{
-		
-	if (MQTTReconnect())
-	{
-		MQTTReconnect();
-		_MQTTClient->loop();
-	}
 
-	if (unitGetRESTfulAvailable() == 1)
-	{
-		webServerLoop();
-	}
+		if (MQTTReconnect())
+		{
+			MQTTReconnect();
+			_MQTTClient->loop();
+		}
 
-	if (unitGetOTAAvailable() == 1)
-	{
-		OTALoop();
-	}
+		if (unitGetRESTfulAvailable() == 1)
+		{
+			webServerLoop();
+		}
+
+		if (unitGetOTAAvailable() == 1)
+		{
+			OTALoop();
+		}
 	}
 }
 

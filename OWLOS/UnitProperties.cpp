@@ -674,9 +674,9 @@ bool onInsideChange(String _property, String _value)
 
 	filesWriteString(String(DefaultId) + "." + _property, _value);
 	
-	if (transportAvailable())
+	//if (transportAvailable())
 	{
-		return transportPublish(topic + "/" + _property, _value);
+	//	return transportPublish(topic + "/" + _property, _value);
 	}
 	
 

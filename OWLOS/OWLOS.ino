@@ -95,12 +95,6 @@ void loop() {
       //driversSubscribe();  //subscribe() all AVAILABLE drivers to here topics (see: driverID), the topic -> UnitTopic+ESPChipID/DriverId
       
     }
-    else //if can't connect to transport
-    {
-      #ifdef DetailedDebug 
-	  debugOut(unitGetUnitId(), "Transport NOT available, check network connection, WiFi and URLs at Unit properties");
-	  #endif
-    }
   }
 //  else //if network (Transport) to be available
   {

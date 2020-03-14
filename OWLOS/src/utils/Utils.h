@@ -50,6 +50,7 @@ OWLOS распространяется в надежде, что она буде
 #define PORTSPEED 115200
 #define ONETENTHOFSECOND 100
 #define ONESECOND 1000
+#define TENSECOND 10000
 #define ONEMINUTE 60000 
 
 #define PayloadBufferSize 255
