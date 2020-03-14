@@ -264,11 +264,11 @@ var LCDWidget =
             this.SVGWidgetText3.y = this.SVGWidgetText2.y + this.SVGWidgetText2.height;
             this.SVGWidgetText4.x = this.widgetLeft;
             this.SVGWidgetText4.y = this.SVGWidgetText3.y + this.SVGWidgetText4.height;
-            /*
+            
             this.SVGHeaderText.text = this.label;
             this.SVGHeaderText.x = this.width / 2 - this.SVGHeaderText.width / 2;
             this.SVGHeaderText.y = this.SVGHeaderText.height - this.panding;
-             switch (this.networkStatus) {
+           /*  switch (this.networkStatus) {
                 case NET_ONLINE: this.SVGHeaderText.color = theme.light; break;
                 case NET_ERROR: this.SVGHeaderText.color = theme.danger; break;
                 case NET_RECONNECT: this.SVGHeaderText.color = theme.info; break;

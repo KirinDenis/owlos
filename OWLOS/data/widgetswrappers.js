@@ -466,13 +466,14 @@ var LightWidgetWrapper =
             if (this.driverProperty.networkStatus == NET_ONLINE) {
                 var percent = Math.round(this.driverProperty.value / (1024.0 / 100.0));
 
-                if (this.driverProperty.value < 50) {
+                if (percent < 35) {
                     this.widget.refresh(percent, getLang("low"), this.driver._id, this.driver.historydata.value);
-                } else if (this.driverProperty.value < configProperties.widgetssize) {
+                } else if (percent < 70) {
                     this.widget.refresh(percent, getLang("norm"), this.driver._id, this.driver.historydata.value);
                 } else {
                     this.widget.refresh(percent, getLang("high"), this.driver._id, this.driver.historydata.value);
                 }
+
             } else {
                 this.widget.refresh(0, "--", this.driver._id);
             }

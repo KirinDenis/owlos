@@ -134,7 +134,7 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "badcredentials=Невірні облікові дані\n"+
     "unauthorized=Не дозволено\n"+
     "connectionstatus=Статус підключення: \n" +
-    "detect=Виявлено\n" +
+    "detect=Є рух\n" +
     "notdetect=Немає\n" +
     "getconfig=Завантаження налаштувань UI\n" +
     "getconfigfailsparse=Помилка завантаження налаштувань UI\n" +
@@ -264,8 +264,8 @@ var langen = "prepareUnit=prepare UI, please wait...\n" +
     "files=Files\n" +
     "uploadfiles=Upload files\n" +
     "selectfiles=Select files\n" +
-    "rid_online=Online\n" +
-    "rid_error=Error\n" +
+    "rid_online=Online \n" +
+    "rid_error=Error \n" +
     "rid_connect=Connecting...\n" +
     "rid_offline=Offline\n" +
     "connected=Connected\n" +
@@ -385,7 +385,7 @@ var langen = "prepareUnit=prepare UI, please wait...\n" +
     "send=Send\n" +
     "clear=Clear\n" +
     "detect=Detected\n" +
-    "notdetect=Not detected\n" +
+    "notdetect=No motion\n" +
     "downdateuipossible=Old data\n" +
     "dashboard=Drivers panel\n" +
     "dashboardview=View mode\n" +
@@ -463,11 +463,11 @@ var langru = "prepareUnit=Подготовка интерфейса пользо
     "relay=Реле\n" +
     "motion=Датчик движения\n" +
     "dark=Темно\n" +
-    "norm=Средне\n" +
+    "norm=Среднее\n" +
     "high=Высокое\n" +
     "low=Низкое\n" +
     "smokelow=Низкое\n" +
-    "smokenorm=Средне\n" +
+    "smokenorm=Среднее\n" +
     "smokehigh=Высокое\n" +
     "yesmotion=Движение\n" +
     "nomotion=Нет\n" +
@@ -494,7 +494,7 @@ var langru = "prepareUnit=Подготовка интерфейса пользо
     "badcredentials=Неверные учетные данные\n" +
     "unauthorized=Не разрешено\n" +
     "connectionstatus=Статус подключения: \n" +
-    "detect=Обнаружено\n" +
+    "detect=Движение\n" +
     "notdetect=Нет\n" +
     "getconfig=Загрузка настроек UI\n" +
     "getconfigfailsparse=Ошибка загрузки настроек UI\n" +
@@ -620,11 +620,11 @@ function getLang(key) {
             }
         }
         else {
-            currentLang = "en";
+            currentLang = "en"; 
         }
 
         if (currentLang == "") {
-            if (configProperties.language.indexOf("ua") == 0) {
+            if (configProperties.language.indexOf("ua") == 0) { //ua
                 currentLang = langua.split("\n");
             }
             else
@@ -643,7 +643,7 @@ function getLang(key) {
             }
         }
         
-    } catch (exceptio) {
+    } catch (exception) {
         //return "key" if exception or not found
     }
     return key;
