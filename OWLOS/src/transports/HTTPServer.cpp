@@ -138,7 +138,8 @@ void sendResponseHeader(int HTTPResponseCode, String contentType, String Content
 
 void send(int HTTPResponseCode, String contentType, String content, WiFiClient client)
 {
-	content = createResponseHeader(HTTPResponseCode, contentType, "") + content + "/n/r/n/r";
+	//content = createResponseHeader(HTTPResponseCode, contentType, "") + content + "/n/r/n/r";
+	sendResponseHeader(HTTPResponseCode, contentType, "", client);
 	client.write(content.c_str(), content.length());
 }
 

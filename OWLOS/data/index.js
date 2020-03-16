@@ -66,6 +66,11 @@ $(document).ready(function () {
     addToLogNL("OK loading scripts");
     addToLogNL("[START]", 1);
 
+    while (true)
+	{
+          httpGet(boardhost + "getalldriversproperties");
+	}
+
     //Check languages DEBUG
     //langCompare(langua, langru, document.getElementById("bootLog"));
 
