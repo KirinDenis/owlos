@@ -68,8 +68,12 @@ extern "C" int rom_phy_get_vdd33();
 // office
 // Dennis home
 #define DefaultWiFiAvailable 1
+//#define DefaultWiFiSSID "owlnode6366394"
+//#define DefaultWiFiPassword "1122334455"
+
 #define DefaultWiFiSSID "Palata#13"
 #define DefaultWiFiPassword "qweasdzxc1234"
+
 // test for office
 
 
@@ -672,7 +676,7 @@ bool onInsideChange(String _property, String _value)
 	debugOut(unitid, "|<- inside change " + _property + " = " + _value);
 #endif
 
-	filesWriteString(String(DefaultId) + "." + _property, _value);
+	//filesWriteString(String(DefaultId) + "." + _property, _value);
 	
 	//if (transportAvailable())
 	{

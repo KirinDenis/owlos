@@ -43,6 +43,7 @@ OWLOS распространяется в надежде, что она буде
 #include "..\..\UnitProperties.h"
 #include "..\Managers\OTAManager.h"
 #include "..\Transports\WebServer.h"
+#include "..\Transports\HTTPServer.h"
 #include "..\Utils\Utils.h"
 
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
@@ -305,11 +306,8 @@ bool WiFiAccessPointReconnect()
 		{
 
 #ifdef DetailedDebug 
+			/*
 			esp_wifi_set_ps(WIFI_PS_MAX_MODEM);
-
-
-
-
 			wifi_country_t wifi_country;
 			int res = esp_wifi_get_country(&wifi_country);
 			debugOut("WiFi AP Get Country", String(res));
@@ -357,7 +355,7 @@ bool WiFiAccessPointReconnect()
 			debugOut("WiFi AP Power", String(WiFi.getTxPower()));
 			//debugOut("WiFi set API Power", String(WiFi.setTxPower(100)));
 			//debugOut("WiFi AP Power", String(WiFi.getTxPower()));
-
+*/
 
 
 #endif
@@ -485,6 +483,7 @@ bool transportReconnect()
 		{
 			//TODO: check webserver ON   
 			webServerBegin();
+			HTTPServerBegin(80);
 		}
 
 		if (unitGetOTAAvailable() == 1)
@@ -576,6 +575,7 @@ void transportLoop()
 		if (unitGetRESTfulAvailable() == 1)
 		{
 			webServerLoop();
+			HTTPServerLoop();
 		}
 
 		if (unitGetOTAAvailable() == 1)
