@@ -454,7 +454,7 @@ void handleUploadFile()
 #ifdef DetailedDebug
 		debugOut(WebServerId, "upload start: " + http_uploadFile.filename);
 #endif
-		String filename = http_uploadFile.filename;
+		String filename = "/" + http_uploadFile.filename;
 		//if (!filename.startsWith("/")) filename = "/"+filename;
 		//Serial.print("Upload File Name: "); Serial.println(filename);
 		filesDelete(filename);

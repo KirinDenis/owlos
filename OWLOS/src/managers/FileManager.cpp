@@ -100,7 +100,11 @@ bool filesBegin()
 
 bool filesExists(String fileName)
 {
-	return SPIFFS.exists("/" + fileName);
+	if (fileName.indexOf("/") != 0)
+	{
+		fileName = "/" + fileName;
+	}
+	return SPIFFS.exists(fileName);
 }
 
 int filesGetSize(String fileName)

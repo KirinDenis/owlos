@@ -92,7 +92,7 @@ String arg[22];
 String argName[22];
 
 void HTTPServerBegin(uint16_t port)
-{	
+{
 	server = new WiFiServer(port);
 	server->begin();
 }
@@ -107,61 +107,76 @@ String _getContentType(String fileName)
 	return "text/plain";
 }
 
-void sendCORSHeaders(WiFiClient client)
+
+String createResponseHeader(int HTTPResponseCode, String contentType, String ContentEncoding)
 {
+	return "HTTP/1.1 " + String(HTTPResponseCode) + " OK\n\r" +
+		"Content-type: " + contentType + "\n\r" +
+		"Content-Encoding: " + ContentEncoding + "\n\r" +
+		"Access-Control-Max-Age: 10000"
+		"Access-Control-Allow-Methods: GET, OPTIONS, PUT, POST\n\r" +
+		"Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept\n\r" +
+		"Access-Control-Allow-Origin: *\n\r" +
+		"Server: OWLOS\n\r\n\r";
+
+}
+
+void sendResponseHeader(int HTTPResponseCode, String contentType, String ContentEncoding, WiFiClient client)
+{
+	client.println("HTTP/1.1 " + String(HTTPResponseCode) + " OK");
+	client.println("Content-type: " + contentType);
+	client.println("Content-Encoding: " + ContentEncoding);
 	client.println("Access-Control-Max-Age: 10000");
-	client.println("Access-Control-Allow-Methods: GET, OPTIONS, PUT, POST"); //only GET allowed at this version
+	client.println("Access-Control-Allow-Methods: GET, OPTIONS, PUT, POST");
 	client.println("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
 	client.println("Access-Control-Allow-Origin: *");
 	client.println("Server: OWLOS");
-}
-
-void sendHeader(int HTTPResponseCode, String contentType, WiFiClient client)
-{	
-	client.println("HTTP/1.1 " + String(HTTPResponseCode) + " OK");
-	client.println("Content-type:" + contentType);
-	sendCORSHeaders(client);
-	client.println();
+	client.println("");
 
 }
+
 
 void send(int HTTPResponseCode, String contentType, String content, WiFiClient client)
 {
-	sendHeader(HTTPResponseCode, contentType, client);
-	content += "/n/r/n/r";
+	content = createResponseHeader(HTTPResponseCode, contentType, "") + content + "/n/r/n/r";
 	client.write(content.c_str(), content.length());
-	//client.print(content);
-	//client.println();
 }
 
 void handleNotFound(WiFiClient client)
 {
-	String acip = unitGetWiFiAccessPointIP() + ":" + String(unitGetRESTfulServerPort());
-	String ip = unitGetWiFiIP() + ":" + String(unitGetRESTfulServerPort());
-
-
-	String contentType = _getContentType(uri);
-
-	if (filesExists(uri + ".gz")) uri = uri + ".gz";
-
-	if (filesExists(uri))
+	if ((filesExists(uri)) || (filesExists(uri + ".gz")))
 	{
-		sendHeader(200, contentType, client);
+
+		String contentType = _getContentType(uri);
+		String responseHeader = "";
+		if (filesExists(uri + ".gz"))
+		{
+			uri = uri + ".gz";
+			sendResponseHeader(200, contentType, "gzip", client);
+
+		}
+		else
+		{			
+			sendResponseHeader(200, contentType, "", client);
+		}
+
 		File download = SPIFFS.open(uri, "r");
 		if (download)
 		{
-			//webServer->streamFile(download, contentType);
 			client.write(download);
 			download.close();
 			return;
 		}
 	}
 
-	sendHeader(404, "text/html", client);
+	String acip = unitGetWiFiAccessPointIP() + ":" + String(unitGetRESTfulServerPort());
+	String ip = unitGetWiFiIP() + ":" + String(unitGetRESTfulServerPort());
+
 
 	//404 section --------------
 	String helloString = unitGetUnitId() + "::Ready IoT Solution::OWLOS";
-	String message = "<html><header><title>" + helloString + "</title>";
+	String message = createResponseHeader(404, "text/html", "");
+	message += "<html><header><title>" + helloString + "</title>";
 	message += "<style>a{color: #00DC00;text-decoration: none;} a:hover {text-decoration: underline;} a:active {text-decoration: underline;}}</style></header>";
 	message += "<body  bgcolor='#4D4D4D'><font color='#A5A5A5'>" + _GetLogoHTML() + "<h3>" + helloString + "</h3>";
 	message += "<b>URI not found http://" + ip + uri + " or http://" + acip + uri + "</b><br>";
@@ -224,12 +239,12 @@ void handleNotFound(WiFiClient client)
 }
 
 void handleGetDriverProperties(WiFiClient client)
-{	
+{
 	if (argsCount > 0)
 	{
 		if (argName[0].equals("id"))
 		{
-			String driverProp = driversGetDriverProperties(arg[0]);			
+			String driverProp = driversGetDriverProperties(arg[0]);
 			if (driverProp.length() == 0)
 			{
 				driverProp = "wrong driver id: " + arg[0] + " use GetDriversId API to get all drivers list";
@@ -258,8 +273,9 @@ void HTTPServerLoop()
 
 	if (client)
 	{
-		
+
 		String currentLine = "";
+
 		String firstLine = "";
 		while (client.connected())
 		{
@@ -284,11 +300,14 @@ void HTTPServerLoop()
 					}
 					else // currentLine.length() == 0 END OF HEADER RECIEVE
 					{
-					
+						debugOut("---", firstLine);
 						uri = firstLine.substring(firstLine.indexOf(" ") + 1);
 						uri = uri.substring(0, uri.indexOf(" "));
-						if (uri.length() == 0) uri = "/index.html";
-						
+						if ((uri.length() == 0) || (uri.equals("/"))) uri = "/index.html";
+
+						debugOut("-->", uri);
+
+
 						argsCount = 0;
 						int hasArgs = firstLine.indexOf('?');
 						if (hasArgs != -1)
@@ -305,7 +324,7 @@ void HTTPServerLoop()
 								Serial.println(currentArg);
 								argName[argsCount] = currentArg.substring(0, currentArg.indexOf("="));
 								arg[argsCount] = currentArg.substring(currentArg.indexOf("=") + 1);
-								
+
 								Serial.println(argName[argsCount]);
 								Serial.println(arg[argsCount]);
 								Serial.println(String(argsCount).c_str());
@@ -319,16 +338,16 @@ void HTTPServerLoop()
 						{
 							handleGetDriverProperties(client);
 						}
-						else 
-						if (firstLine.indexOf("/getalldriversproperties ") != -1)
-						{
-							handleGetAllDriversProperties(client);
-						}						
 						else
-						{
-							Serial.println("Not found");						
-							handleNotFound(client);
-						}
+							if (firstLine.indexOf("/getalldriversproperties ") != -1)
+							{
+								handleGetAllDriversProperties(client);
+							}
+							else
+							{
+								Serial.println("Not found");
+								handleNotFound(client);
+							}
 
 						break;
 					}
