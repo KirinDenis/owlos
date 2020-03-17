@@ -55,9 +55,9 @@ OWLOS распространяется в надежде, что она буде
 #include <SPIFFS.h>
 #endif
 
-
 #include <Arduino.h>
 #include <WiFiClient.h>
+#include <MD5Builder.h>
 
 #include "..\..\UnitProperties.h"
 #include "..\..\WebProperties.h"
@@ -68,6 +68,8 @@ OWLOS распространяется в надежде, что она буде
 #include "..\Managers\FileManager.h"
 #include "..\Utils\Utils.h"
 
+
+#define HTTP_METHODS " GET, POST"
 
 
 String _GetLogoHTML()
@@ -99,15 +101,98 @@ String _GetLogoHTML()
 WiFiServer  * server;
 
 String uri = "";
+String method = "";
 int argsCount = 0;
 String arg[22];
 String argName[22];
 
+//если вы определили NOT_SECURE_TOKEN то токен будет генерироватся каждый раз при старте из username, password и chipid
+//если вы их измените - изменится токен, все кто был со "старым" токеном не смогут соединиться. Но узнал логин и пароль это станет возможно
+
+//более безопасный способ, не определяйте NOT_SECURE_TOKEN, сгенерируте токен один раз и разместите его в переменной token
+//после этого username, password и chipid не будут иметь никакого значения при авторизации. 
+
+#define NOT_SECURE_TOKEN
+
+#ifdef NOT_SECURE_TOKEN
+String token = "";
+#else
+String token = ""; //type your secure token here
+#endif // DEBUG
+
+void calculateToken()
+{
+#ifdef NOT_SECURE_TOKEN
+	MD5Builder md5;
+	md5.begin();
+	md5.add(unitGetRESTfulServerUsername() + unitGetRESTfulServerPassword() + unitGetESPFlashChipId());
+	md5.calculate();
+	token = md5.toString();
+#endif
+}
+
+
+bool checkToken(String _token)
+{
+#ifndef NOT_SECURE_TOKEN
+	if (token.length() == 0) return false;
+#endif // !NOT_SECURE_TOKEN
+
+	return token.equals(_token);
+}
+
+bool auth(String username, String password)
+{
+#ifndef NOT_SECURE_TOKEN
+	if (token.length() == 0) return false;
+#endif // !NOT_SECURE_TOKEN
+
+	MD5Builder md5;
+	md5.begin();
+	md5.add(username + password + unitGetESPFlashChipId());
+	md5.calculate();
+	return token.equals(md5.toString());
+}
+
+
+
 void HTTPServerBegin(uint16_t port)
 {
+	calculateToken();
 	server = new WiFiServer(port);
-	server->begin();
+	server->begin();	
 }
+
+String _decode(String param)
+{
+	param.replace("+", " ");
+	param.replace("%20", " ");
+	param.replace("%21", "!");
+	param.replace("%23", "#");
+	param.replace("%24", "$");
+	param.replace("%26", "&");
+	param.replace("%27", "'");
+	param.replace("%28", "(");
+	param.replace("%29", ")");
+	param.replace("%2A", "*");
+	param.replace("%2B", "+");
+	param.replace("%2C", ",");
+	param.replace("%2F", "/");
+	param.replace("%3A", ":");
+	param.replace("%3B", ";");
+	param.replace("%3D", "=");
+	param.replace("%3F", "?");
+	param.replace("%40", "@");
+	param.replace("%5B", "[");
+	param.replace("%5D", "]");
+	param.replace("%3E", ">");
+	param.replace("%3C", "<");
+	param.replace("%0A", "\n");
+	param.replace("%0D", "\n");
+	param.replace("%09", "\t");
+	return param;
+}
+
 
 String _getContentType(String fileName)
 {
@@ -119,39 +204,24 @@ String _getContentType(String fileName)
 	return "text/plain";
 }
 
-
-String createResponseHeader(int HTTPResponseCode, String contentType, String ContentEncoding)
-{
-	return "HTTP/1.1 " + String(HTTPResponseCode) + " OK\n\r" +
-		"Content-type: " + contentType + "\n\r" +
-		"Content-Encoding: " + ContentEncoding + "\n\r" +
-		"Access-Control-Max-Age: 10000"
-		"Access-Control-Allow-Methods: GET, OPTIONS, PUT, POST\n\r" +
-		"Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept\n\r" +
-		"Access-Control-Allow-Origin: *\n\r" +
-		"Server: OWLOS\n\r\n\r";
-
-}
-
 void sendResponseHeader(int HTTPResponseCode, String contentType, String ContentEncoding, WiFiClient client)
 {
 	client.println("HTTP/1.1 " + String(HTTPResponseCode) + " OK");
 	client.println("Content-type: " + contentType);
 	client.println("Content-Encoding: " + ContentEncoding);
 	client.println("Access-Control-Max-Age: 10000");
-	client.println("Access-Control-Allow-Methods: GET, OPTIONS, PUT, POST");
+	client.println("Access-Control-Allow-Methods: " + String(HTTP_METHODS));
 	client.println("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
 	client.println("Access-Control-Allow-Origin: *");
 	client.println("Server: OWLOS");
 	client.println("");
-
 }
 
 
 void send(int HTTPResponseCode, String contentType, String content, WiFiClient client)
-{
-	//content = createResponseHeader(HTTPResponseCode, contentType, "") + content + "/n/r/n/r";
+{	
 	sendResponseHeader(HTTPResponseCode, contentType, "", client);
+	content += "/n/r";
 	client.write(content.c_str(), content.length());
 }
 
@@ -187,9 +257,10 @@ void handleNotFound(WiFiClient client)
 
 
 	//404 section --------------
-	String helloString = unitGetUnitId() + "::Ready IoT Solution::OWLOS";
-	String message = createResponseHeader(404, "text/html", "");
-	message += "<html><header><title>" + helloString + "</title>";
+	sendResponseHeader(404, "text/html", "", client);
+
+	String helloString = unitGetUnitId() + "::Ready IoT Solution::OWLOS";	
+	String message = "<html><header><title>" + helloString + "</title>";
 	message += "<style>a{color: #00DC00;text-decoration: none;} a:hover {text-decoration: underline;} a:active {text-decoration: underline;}}</style></header>";
 	message += "<body  bgcolor='#4D4D4D'><font color='#A5A5A5'>" + _GetLogoHTML() + "<h3>" + helloString + "</h3>";
 	message += "<b>URI not found http://" + ip + uri + " or http://" + acip + uri + "</b><br>";
@@ -251,6 +322,28 @@ void handleNotFound(WiFiClient client)
 	client.println();
 }
 
+
+//RESTful API -----------------------------------------------
+void handleAuth(WiFiClient client) {
+	if (argsCount > 1)
+	{
+		if ((argName[0].equals("username")) && (argName[1].equals("password")))
+		{
+			if (auth(arg[0], arg[1]))
+			{
+				send(200, "text/plain", token, client);
+			}
+			else
+			{
+				send(401, "text/plain", "bad username or password, use /auth?username=YOUR_USER_NAME&password=YOUR_PASSWORD ", client);
+			}
+			return;
+		}
+	}
+	handleNotFound(client);
+}
+
+
 void handleGetDriverProperties(WiFiClient client)
 {
 	if (argsCount > 0)
@@ -275,6 +368,82 @@ void handleGetDriverProperties(WiFiClient client)
 
 void handleGetAllDriversProperties(WiFiClient client) {
 	send(200, "text/plain", driversGetAllDriversProperties(), client);
+}
+
+String parsePostBody(WiFiClient client) {
+	String data = "";
+	String sectionSign = "";
+	String body = "";
+	while (client.connected())
+	{
+		if (client.available())
+		{
+			char c = client.read();
+			Serial.write(c);
+
+			if (c == '\n')
+			{
+
+				if (sectionSign.length() == 0) //first entry
+				{
+					sectionSign = data;
+				}
+				else
+				{
+					if (data.indexOf(sectionSign) != -1)//endof section parsing
+					{
+						//TODO somthing with body
+						debugOut("BODY", body);						
+						break;
+					}
+					else
+					{
+						if (data.indexOf("Content-Disposition:") != -1) //section header
+						{
+							//
+						}
+						else
+							if (data.length() != 0)
+						{
+								body += data;
+						}
+					}
+				}
+
+				data = "";
+			}
+			else
+				if (c != '\r')
+				{
+					data += c;
+				}
+		}
+	}	
+	return body;
+}
+
+//POST
+void handleSetWebProperty(WiFiClient client)
+{	
+	if (argsCount > 0)
+	{
+		if (argName[0].equals("property"))
+		{
+			String result = webOnMessage(unitGetTopic() + "/set" + _decode(arg[0]), _decode(parsePostBody(client)));
+			if ((result.length() == 0) || (result.equals("0")))
+			{
+
+				send(404, "text/html", "wrong unit property set: " + arg[0], client);
+				return;
+			}
+			else
+			{
+				send(200, "text/plain", result, client);
+				return;
+			}
+		}
+	}
+	handleNotFound(client);
 }
 
 
@@ -314,53 +483,93 @@ void HTTPServerLoop()
 					else // currentLine.length() == 0 END OF HEADER RECIEVE
 					{
 						debugOut("---", firstLine);
-						uri = firstLine.substring(firstLine.indexOf(" ") + 1);
-						uri = uri.substring(0, uri.indexOf(" "));
-						if ((uri.length() == 0) || (uri.equals("/"))) uri = "/index.html";
 
-						debugOut("-->", uri);
+						method = firstLine.substring(0, firstLine.indexOf(" "));
 
-
-						argsCount = 0;
-						int hasArgs = firstLine.indexOf('?');
-						if (hasArgs != -1)
+						if (String(HTTP_METHODS).indexOf(" " + method) != -1)
 						{
-							int argPos = 0;
-							String argsStr = firstLine.substring(hasArgs + 1);
-							argsStr = argsStr.substring(0, argsStr.indexOf(" "));
-							Serial.println("-------");
-							Serial.println(argsStr);
-							argsStr += "&";
-							while ((argPos = argsStr.indexOf("&")) != -1)
+
+							uri = firstLine.substring(firstLine.indexOf(" ") + 1);
+							uri = uri.substring(0, uri.indexOf(" "));
+							if ((uri.length() == 0) || (uri.equals("/"))) uri = "/index.html";
+
+							debugOut("-->", uri);
+
+
+							argsCount = 0;
+							int hasArgs = firstLine.indexOf('?');
+							if (hasArgs != -1)
 							{
-								String currentArg = argsStr.substring(0, argPos);
-								Serial.println(currentArg);
-								argName[argsCount] = currentArg.substring(0, currentArg.indexOf("="));
-								arg[argsCount] = currentArg.substring(currentArg.indexOf("=") + 1);
+								int argPos = 0;
+								String argsStr = firstLine.substring(hasArgs + 1);
+								argsStr = argsStr.substring(0, argsStr.indexOf(" "));
+								Serial.println("-------");
+								Serial.println(argsStr);
+								argsStr += "&";
+								while ((argPos = argsStr.indexOf("&")) != -1)
+								{
+									String currentArg = argsStr.substring(0, argPos);
+									Serial.println(currentArg);
+									argName[argsCount] = currentArg.substring(0, currentArg.indexOf("="));
+									arg[argsCount] = currentArg.substring(currentArg.indexOf("=") + 1);
 
-								Serial.println(argName[argsCount]);
-								Serial.println(arg[argsCount]);
-								Serial.println(String(argsCount).c_str());
-								argsCount++;
+									Serial.println(argName[argsCount]);
+									Serial.println(arg[argsCount]);
+									Serial.println(String(argsCount).c_str());
+									argsCount++;
 
-								argsStr.remove(0, argPos + 1);
+									argsStr.remove(0, argPos + 1);
+								}
 							}
-						}
-						Serial.println("Get");
-						if (firstLine.indexOf("/getdriverproperties?") != -1)
-						{
-							handleGetDriverProperties(client);
-						}
-						else
-							if (firstLine.indexOf("/getalldriversproperties ") != -1)
+
+							if (firstLine.indexOf("/auth?") != -1)
 							{
-								handleGetAllDriversProperties(client);
+								handleAuth(client);
+							}
+
+							if (firstLine.indexOf("token=" + token) == -1)
+							{
+								//GET section 
+								debugOut("METHOD", method);
+								if (method.equals("GET"))
+								{
+									if (firstLine.indexOf("/getdriverproperties?") != -1)
+									{
+										handleGetDriverProperties(client);
+									}
+									else
+										if (firstLine.indexOf("/getalldriversproperties?") != -1)
+										{
+											handleGetAllDriversProperties(client);
+										}
+										else
+										{										
+											handleNotFound(client);
+										}
+								}
+								else 
+								//POST Section 
+								if (method.equals("POST"))
+								{
+									if (firstLine.indexOf("/setwebproperty?") != -1)
+									{
+										handleSetWebProperty(client);
+									}
+									else
+									{
+										handleNotFound(client);
+									}
+								}
 							}
 							else
 							{
-								Serial.println("Not found");
-								handleNotFound(client);
+								send(401, "text/plain", "bad username or password, use /auth?username=YOUR_USER_NAME&password=YOUR_PASSWORD", client);
 							}
+						}
+						else
+						{
+							send(405, "text/plain", "method not allowed", client);
+						}
 
 						break;
 					}

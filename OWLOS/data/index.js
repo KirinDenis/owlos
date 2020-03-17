@@ -66,12 +66,16 @@ $(document).ready(function () {
     addToLogNL("OK loading scripts");
     addToLogNL("[START]", 1);
 
-/*
-    while (true)
-	{
-          httpGet(boardhost + "getalldriversproperties");
-	}
-*/
+
+//    while (true)
+////	{
+    //      httpGet(boardhost + "getalldriversproperties?token=0ee616eac9bedf8c89124a805810c1b0");
+//	}
+
+//addToLogNL(httpPostWithErrorReson(boardhost + "setconfig?section=begin&token=0ee616eac9bedf8c89124a805810c1b0", "this is data for post and form this is data for post and form this is data for post and form this is data for post and form this is data for post and form this is data for post and form this is data for post and form this is data for post and form this is data for post and form ", 2));
+
+//return
+
     //Check languages DEBUG
     //langCompare(langua, langru, document.getElementById("bootLog"));
 
