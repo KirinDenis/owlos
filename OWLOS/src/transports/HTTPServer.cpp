@@ -40,12 +40,24 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 #define WebServerId "WebServer"
 
-#include <ESP8266WiFi.h>
+#include <core_version.h>
 
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 #include <ESP.h>
+#include <ESP8266WiFi.h>
+#include <ESP8266mDNS.h>
+#include <FS.h>
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+#include <WiFi.h>
+#include <ESPmDNS.h>
+#include <SPIFFS.h>
+#endif
+
+
 #include <Arduino.h>
 #include <WiFiClient.h>
-#include <FS.h>
 
 #include "..\..\UnitProperties.h"
 #include "..\..\WebProperties.h"

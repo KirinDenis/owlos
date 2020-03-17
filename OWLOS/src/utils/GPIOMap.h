@@ -4,7 +4,7 @@
 
 #include <core_version.h>
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
-//#define LED_BUILTIN 2
+#define LED_BUILTIN 2
 #define BUILTIN_LED 2
 #define D0 1
 #define D1 2
