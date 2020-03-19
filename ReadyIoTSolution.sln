@@ -133,8 +133,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "transports", "transports", 
 		OWLOS\src\transports\MQTTClient.h = OWLOS\src\transports\MQTTClient.h
 		OWLOS\src\transports\WebClient.cpp = OWLOS\src\transports\WebClient.cpp
 		OWLOS\src\transports\WebClient.h = OWLOS\src\transports\WebClient.h
-		OWLOS\src\transports\WebServer.cpp = OWLOS\src\transports\WebServer.cpp
-		OWLOS\src\transports\WebServer.h = OWLOS\src\transports\WebServer.h
+		OWLOS\src\transports\HTTPServer.cpp = OWLOS\src\transports\HTTPServer.cpp
+		OWLOS\src\transports\HTTPServer.h = OWLOS\src\transports\HTTPServer.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "utils", "utils", "{9C6397B1-FCB3-4718-A913-F52E5BE372EE}"

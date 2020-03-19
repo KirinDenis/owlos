@@ -66,16 +66,6 @@ $(document).ready(function () {
     addToLogNL("OK loading scripts");
     addToLogNL("[START]", 1);
 
-
-//    while (true)
-////	{
-    //      httpGet(boardhost + "getalldriversproperties?token=0ee616eac9bedf8c89124a805810c1b0");
-//	}
-
-//addToLogNL(httpPostWithErrorReson(boardhost + "setconfig?section=begin&token=0ee616eac9bedf8c89124a805810c1b0", "this is data for post and form this is data for post and form this is data for post and form this is data for post and form this is data for post and form this is data for post and form this is data for post and form this is data for post and form this is data for post and form ", 2));
-
-//return
-
     //Check languages DEBUG
     //langCompare(langua, langru, document.getElementById("bootLog"));
 
@@ -110,7 +100,7 @@ $(document).ready(function () {
     }
 
     addToLogNL("get UI configuration...");
-    // try {
+   try {
 
  
     config.onLoad = onConfigLoad;
@@ -131,8 +121,6 @@ $(document).ready(function () {
         document.getElementById("consolePanel").appendChild(boot);
 
         nodesRefreshHandle = setInterval(nodesRefresh, 10000);
-
-
         
 
         /*
@@ -149,17 +137,15 @@ $(document).ready(function () {
         speak("ERROR with host: " + boardhost);
         addToLogNL("ERROR with host: " + boardhost, 2);
     }
+    }
 
 
-}
-
-
-    //    catch (exception) {
-    //      status_online = NET_OFFLINE;
-    //addToLogNL("ERROR starting exception: " + exception, 2);
-    //addToLogNL("ERROR delete configurations files can help fix it: [your host]/deletefile?name=web.config", 2);
-    //}
-    //}
+        catch (exception) {
+          status_online = NET_OFFLINE;
+    addToLogNL("ERROR starting exception: " + exception, 2);
+    addToLogNL("ERROR delete configurations files can help fix it: [your host]/deletefile?name=web.config", 2);
+    }
+   }
 );
 
 

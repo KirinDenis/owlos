@@ -42,7 +42,6 @@ OWLOS распространяется в надежде, что она буде
 #include "TransportManager.h"
 #include "..\..\UnitProperties.h"
 #include "..\Managers\OTAManager.h"
-#include "..\Transports\WebServer.h"
 #include "..\Transports\HTTPServer.h"
 #include "..\Utils\Utils.h"
 
@@ -481,9 +480,7 @@ bool transportReconnect()
 	{
 		if (unitGetRESTfulAvailable() == 1)
 		{
-			//TODO: check webserver ON   
-			webServerBegin();
-			HTTPServerBegin(80);
+			HTTPServerBegin(unitGetRESTfulServerPort());
 		}
 
 		if (unitGetOTAAvailable() == 1)
@@ -574,7 +571,7 @@ void transportLoop()
 
 		if (unitGetRESTfulAvailable() == 1)
 		{
-			webServerLoop();
+			
 			HTTPServerLoop();
 		}
 

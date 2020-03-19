@@ -55,7 +55,7 @@ OWLOS распространяется в надежде, что она буде
 
 #define PayloadBufferSize 255
 
-#define WebServerDefaultPort 8080
+#define HTTPServerDefaultPort 8080
 
 #define TestDriverType 0 
 #define DHTDriverType  1
