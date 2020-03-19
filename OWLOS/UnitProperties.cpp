@@ -271,6 +271,7 @@ String unitGetAllProperties()
 	result += "wifiisconnected=" + String(unitGetWiFiIsConnected()) + "//bs\n";
 	result += "connectedwifissid=" + unitGetConnectedWiFiSSID() + "//s\n";
 	result += "wifirssi=" + String(unitGetWiFiRSSI()) + "//r\n";
+	
 	result += "wifimode=" + String(unitGetWiFiMode()) + "//r\n";
 	result += unitGetAllWiFiModes() + "//r\n";
 	result += "wifistatus=" + String(unitGetWiFiStatus()) + "//r\n";
@@ -278,8 +279,8 @@ String unitGetAllProperties()
 	result += unitGetAllWiFiStatuses() + "//r\n";
 	result += unitGetWiFiNetworksParameters() + "//r\n";
 	result += unitGetAllWiFiEncryptionTypes() + "//r\n";
-
-
+	
+	/*
 	result += "properties for:network\n";
 	result += "id=network//r\n";
 	result += "type=" + String(NetworkType) + "//r\n";
@@ -301,6 +302,7 @@ String unitGetAllProperties()
 	result += "mqttpassword=" + unitGetMQTTPassword() + "//p\n";
 	result += "mqttclientconnected=" + String(unitGetMQTTClientConnected()) + "//bs\n";
 	result += "mqttclientstate=" + String(unitGetMQTTClientState()) + "//i\n";
+	
 	result += "otaavailable=" + String(unitGetOTAAvailable()) + "//bs\n";
 	result += "otaport=" + String(unitGetOTAPort()) + "//i\n";
 	result += "otaid=" + unitGetOTAID() + "//\n";
@@ -311,8 +313,9 @@ String unitGetAllProperties()
 	result += "updateuistatus=" + String(updateGetUpdateUIStatus()) + "//ir\n";
 	result += "updatefirmwarestatus=" + String(updateGetUpdateFirmwareStatus()) + "//ir\n";
 	result += "updatehost=" + unitGetUpdateHost() + "//s\n";
+	*/
 
-	/**/
+	
 	result += "properties for:esp\n";
 	result += "id=esp//r\n";
 	result += "type=" + String(ESPType) + "//r\n";
@@ -669,26 +672,40 @@ String unitOnMessage(String _topic, String _payload, int transportMask)
 																																																																																																																																													return result;
 }
 
+bool lock = false;
+
 bool onInsideChange(String _property, String _value)
 {
-	///return true;
-#ifdef DetailedDebug 
-	debugOut(unitid, "|<- inside change " + _property + " = " + _value);
-#endif
 
-	//filesWriteString(String(DefaultId) + "." + _property, _value);
-	
-	//if (transportAvailable())
+	if (!lock)
 	{
-	//	return transportPublish(topic + "/" + _property, _value);
-	}
 	
-
 #ifdef DetailedDebug 
-	debugOut(unitid, "|-> inside change ");
+		debugOut(unitid, "|<- inside change " + _property + " = " + _value);
 #endif
 
-	return true;
+		lock = true; 
+		filesWriteString(String(DefaultId) + "." + _property, _value);
+
+		if (transportAvailable())
+		{
+			return transportPublish(topic + "/" + _property, _value);
+		}
+
+
+#ifdef DetailedDebug 
+		debugOut(unitid, "|-> inside change ");
+#endif
+		lock = false;
+		return true;
+	}
+
+	
+#ifdef DetailedDebug 
+	debugOut(unitid, "|LOCKED inside change " + _property + " = " + _value);
+#endif
+
+	return false;
 }
 //-------------------------------------------------------------------------------------------
 //Internal - get any unit property value by name
