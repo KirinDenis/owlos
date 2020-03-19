@@ -570,8 +570,7 @@ void transportLoop()
 		}
 
 		if (unitGetRESTfulAvailable() == 1)
-		{
-			
+		{			
 			HTTPServerLoop();
 		}
 

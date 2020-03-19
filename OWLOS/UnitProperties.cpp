@@ -271,37 +271,35 @@ String unitGetAllProperties()
 	result += "wifiisconnected=" + String(unitGetWiFiIsConnected()) + "//bs\n";
 	result += "connectedwifissid=" + unitGetConnectedWiFiSSID() + "//s\n";
 	result += "wifirssi=" + String(unitGetWiFiRSSI()) + "//r\n";
-	
 	result += "wifimode=" + String(unitGetWiFiMode()) + "//r\n";
 	result += unitGetAllWiFiModes() + "//r\n";
-	result += "wifistatus=" + String(unitGetWiFiStatus()) + "//r\n";
-	result += "wifistatustostring=" + String(unitGetWiFiStatusToString()) + "//\n";
-	result += unitGetAllWiFiStatuses() + "//r\n";
-	result += unitGetWiFiNetworksParameters() + "//r\n";
+	result += "wifistatus=" + String(unitGetWiFiStatus()) + "//r\n";	
+	result += "wifistatustostring=" + String(unitGetWiFiStatusToString()) + "//\n";	
+	result += unitGetAllWiFiStatuses() + "//r\n";	
+	result += unitGetWiFiNetworksParameters() + "//r\n";	
 	result += unitGetAllWiFiEncryptionTypes() + "//r\n";
 	
-	/*
 	result += "properties for:network\n";
-	result += "id=network//r\n";
-	result += "type=" + String(NetworkType) + "//r\n";
-	result += "firmwareversion=" + unitGetFirmwareVersion() + "//r\n";
-	result += "firmwarebuildnumber=" + String(unitGetFirmwareBuildNumber()) + "//ri\n";
+	result += "id=network//r\n";	
+	result += "type=" + String(NetworkType) + "//r\n";	
+	result += "firmwareversion=" + unitGetFirmwareVersion() + "//r\n";	
+	result += "firmwarebuildnumber=" + String(unitGetFirmwareBuildNumber()) + "//ri\n";	
 	result += "unitid=" + unitGetUnitId() + "//\n";
 	result += "topic=" + unitGetTopic() + "//\n";
-	result += "restfulavailable=" + String(unitGetRESTfulAvailable()) + "//bs\n";
-	result += "webserverlogin=" + unitGetRESTfulServerUsername() + "//\n";
-	result += "webserverpwd=" + unitGetRESTfulServerPassword() + "//sp\n";
-	result += "restfulserverport=" + String(unitGetRESTfulServerPort()) + "//i\n";
-	result += "restfulclientport=" + String(unitGetRESTfulClientPort()) + "//i\n";
-	result += "restfulclienturl=" + unitGetRESTfulClientURL() + "//\n";
-	result += "mqttavailable=" + String(unitGetMQTTAvailable()) + "//bs\n";
-	result += "mqttport=" + String(unitGetMQTTPort()) + "//i\n";
-	result += "mqtturl=" + unitGetMQTTURL() + "//\n";
-	result += "mqttid=" + unitGetMQTTID() + "//\n";
-	result += "mqttlogin=" + unitGetMQTTLogin() + "//\n";
-	result += "mqttpassword=" + unitGetMQTTPassword() + "//p\n";
-	result += "mqttclientconnected=" + String(unitGetMQTTClientConnected()) + "//bs\n";
-	result += "mqttclientstate=" + String(unitGetMQTTClientState()) + "//i\n";
+	result += "restfulavailable=" + String(unitGetRESTfulAvailable()) + "//bs\n";	
+	result += "webserverlogin=" + unitGetRESTfulServerUsername() + "//\n";	
+	result += "webserverpwd=" + unitGetRESTfulServerPassword() + "//sp\n";	
+	result += "restfulserverport=" + String(unitGetRESTfulServerPort()) + "//i\n";	
+	result += "restfulclientport=" + String(unitGetRESTfulClientPort()) + "//i\n";	
+	result += "restfulclienturl=" + unitGetRESTfulClientURL() + "//\n";	
+	result += "mqttavailable=" + String(unitGetMQTTAvailable()) + "//bs\n";	
+	result += "mqttport=" + String(unitGetMQTTPort()) + "//i\n";	
+	result += "mqtturl=" + unitGetMQTTURL() + "//\n";	
+	result += "mqttid=" + unitGetMQTTID() + "//\n";	
+	result += "mqttlogin=" + unitGetMQTTLogin() + "//\n";	
+	result += "mqttpassword=" + unitGetMQTTPassword() + "//p\n";	
+	result += "mqttclientconnected=" + String(unitGetMQTTClientConnected()) + "//bs\n";	
+	result += "mqttclientstate=" + String(unitGetMQTTClientState()) + "//i\n";	
 	
 	result += "otaavailable=" + String(unitGetOTAAvailable()) + "//bs\n";
 	result += "otaport=" + String(unitGetOTAPort()) + "//i\n";
@@ -313,7 +311,7 @@ String unitGetAllProperties()
 	result += "updateuistatus=" + String(updateGetUpdateUIStatus()) + "//ir\n";
 	result += "updatefirmwarestatus=" + String(updateGetUpdateFirmwareStatus()) + "//ir\n";
 	result += "updatehost=" + unitGetUpdateHost() + "//s\n";
-	*/
+	
 
 	
 	result += "properties for:esp\n";
@@ -676,36 +674,27 @@ bool lock = false;
 
 bool onInsideChange(String _property, String _value)
 {
-
-	if (!lock)
-	{
-	
 #ifdef DetailedDebug 
-		debugOut(unitid, "|<- inside change " + _property + " = " + _value);
+	debugOut(unitid, "|<- inside change " + _property + " = " + _value);
 #endif
 
+	bool result = false;
+	if (!lock)
+	{
 		lock = true; 
-		filesWriteString(String(DefaultId) + "." + _property, _value);
-
+		result = filesWriteString(String(DefaultId) + "." + _property, _value);
 		if (transportAvailable())
 		{
-			return transportPublish(topic + "/" + _property, _value);
+			result = transportPublish(topic + "/" + _property, _value);
 		}
-
 
 #ifdef DetailedDebug 
 		debugOut(unitid, "|-> inside change ");
 #endif
 		lock = false;
-		return true;
 	}
 
-	
-#ifdef DetailedDebug 
-	debugOut(unitid, "|LOCKED inside change " + _property + " = " + _value);
-#endif
-
-	return false;
+	return result;
 }
 //-------------------------------------------------------------------------------------------
 //Internal - get any unit property value by name
@@ -719,7 +708,9 @@ String _getStringPropertyValue(String _property, String _defaultvalue)
 	}
 	else
 	{
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 		unitOnMessage(topic + "/set" + _property, result, NoTransportMask);
+#endif
 	}
 	propertyFileReaded += _property + ";";
 #ifdef DetailedDebug 
@@ -729,21 +720,22 @@ String _getStringPropertyValue(String _property, String _defaultvalue)
 }
 //Integer property
 int _getIntPropertyValue(String _property, int _defaultvalue)
-{
-	int result = _defaultvalue;
+{	
+	int result = _defaultvalue;	
 	if (filesExists(String(DefaultId) + "." + _property))
-	{
+	{		
 		result = filesReadInt(String(DefaultId) + "." + _property);
 	}
 	else
 	{
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 		unitOnMessage(topic + "/set" + _property, String(result), NoTransportMask);
-	}
-	propertyFileReaded += _property + ";";
-#ifdef DetailedDebug 
-	debugOut(unitid, _property + "=" + String(result));
 #endif
-
+	}	
+	propertyFileReaded += _property + ";";
+#ifdef DetailedDebug 	
+	debugOut(unitid, _property + "=" + String(result));
+#endif	
 	return result;
 }
 
@@ -1003,8 +995,7 @@ int unitGetRESTfulServerPort()
 {
 	if (propertyFileReaded.indexOf("restfulserverport;") < 0)
 	{
-		restfulserverport = _getIntPropertyValue("restfulserverport", DefaultRESTfulServerPort);
-		return restfulserverport;
+		return restfulserverport = _getIntPropertyValue("restfulserverport", DefaultRESTfulServerPort);		
 	}
 	else
 	{
@@ -1014,7 +1005,7 @@ int unitGetRESTfulServerPort()
 bool unitSetRESTfulServerPort(int _restfulserverport)
 {
 	restfulserverport = _restfulserverport;
-	return  onInsideChange("restfulserverport", String(restfulserverport));
+	return  onInsideChange("restfulserverport", String(restfulserverport));						    
 }
 
 //RESTfulClientPort()  
@@ -1024,8 +1015,8 @@ int unitGetRESTfulClientPort()
 	else return restfulclientport;
 }
 bool unitSetRESTfulClientPort(int _restfulclientport)
-{
-	restfulclientport = _restfulclientport;
+{	
+	restfulclientport = _restfulclientport;	
 	return  onInsideChange("restfulclientport", String(restfulclientport));
 }
 
