@@ -86,7 +86,7 @@ String updateLog("[not started, check update possible]");
 byte updateUIStatus = UpdateStatusUndefined;
 byte updateFirmwareStatus = UpdateStatusUndefined;
 
-#define UPDATE_SKIP_COUNT 20
+#define UPDATE_SKIP_COUNT 200
 
 byte skipLoopCount = 0;
 

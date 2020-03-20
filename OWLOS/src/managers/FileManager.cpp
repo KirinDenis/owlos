@@ -52,6 +52,7 @@ OWLOS распространяется в надежде, что она буде
 #include <FS.h>
 #include <SPIFFS.h>
 #define FORMAT_SPIFFS_IF_FAILED true
+bool readyBegin = false;
 #endif
 
 
@@ -66,7 +67,11 @@ bool _SPIFFSBegin()
 #endif
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
-	return SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED);
+	if (!readyBegin)
+	{
+		readyBegin = SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED);		
+    }
+	return readyBegin;
 #endif
 }
 
@@ -130,7 +135,9 @@ int filesGetSize(String fileName)
 	}
 
 	int result = file.size();
-	file.close();
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0 
+	file.close(); 
+#endif
 	return result;
 }
 
@@ -196,7 +203,9 @@ String filesReadString(String fileName)
 	}
 
 	result = file.readString();
-	file.close();
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0 
+	file.close(); 
+#endif
 	return result;
 }
 
@@ -210,11 +219,14 @@ bool filesWriteString(String fileName, String value)
 #endif
 		return false;
 	}
-	File file;
 
-	file = SPIFFS.open("/" + fileName, "w");
+	return true;
+	//File file;
 
-	if (!file) {
+	File file = SPIFFS.open("/" + fileName, "w");
+	//File file = SPIFFS.open("/" + fileName, FILE_WRITE);
+
+if (!file) {
 #ifdef DetailedDebug 
 		debugOut(FileSystem, "There was an error opening the file for writing: " + fileName);
 #endif
@@ -227,7 +239,9 @@ bool filesWriteString(String fileName, String value)
 		debugOut(FileSystem, "File write failed");
 #endif
 	}
-	file.close();
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0 
+	file.close(); 
+#endif 
 	return true;
 }
 
@@ -256,7 +270,9 @@ bool filesAppendString(String fileName, String value)
 		debugOut(FileSystem, "File write failed");
 #endif
 	}
-	file.close();
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0 
+	file.close(); 
+#endif
 	return true;
 }
 
@@ -285,7 +301,9 @@ bool filesAddString(String fileName, String value)
 		debugOut(FileSystem, "File write failed");
 #endif
 	}
-	file.close();
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0 
+	file.close(); 
+#endif
 	return true;
 }
 
@@ -378,6 +396,8 @@ bool filesWriteStructure(String fileName, void *value)
 #endif
 		return false;
 	}
-	file.close();
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0 
+	file.close(); 
+#endif
 	return true;
 }

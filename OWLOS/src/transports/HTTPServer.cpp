@@ -174,7 +174,9 @@ String parsePostBody(WiFiClient client) {
 					if (data.indexOf(sectionSign) != -1)//endof section parsing
 					{
 						//TODO somthing with body
+#ifdef DetailedDebug 
 						debugOut("BODY", body);
+#endif
 						break;
 					}
 					else
@@ -835,21 +837,15 @@ void HTTPServerLoop()
 
 	if (client)
 	{
-
 		String currentLine = "";
-
 		String firstLine = "";
 		while (client.connected())
 		{
-
 			if (client.available())
 			{
-
-				char c = client.read();
-
-				//Serial.write(c);
-
-				if (c == '\n')
+				char receiveChar = client.read();
+				
+				if (receiveChar == '\n')
 				{
 
 					if (currentLine.length() != 0)
@@ -862,8 +858,9 @@ void HTTPServerLoop()
 					}
 					else // currentLine.length() == 0 END OF HEADER RECIEVE
 					{
+#ifdef DetailedDebug 
 						debugOut("---", firstLine);
-
+#endif
 						method = firstLine.substring(0, firstLine.indexOf(" "));
 
 						if (String(HTTP_METHODS).indexOf(" " + method) != -1)
@@ -872,10 +869,9 @@ void HTTPServerLoop()
 							uri = firstLine.substring(firstLine.indexOf(" ") + 1);
 							uri = uri.substring(0, uri.indexOf(" "));
 							if ((uri.length() == 0) || (uri.equals("/"))) uri = "/index.html";
-
+#ifdef DetailedDebug 
 							debugOut("-->", uri);
-
-
+#endif
 							argsCount = 0;
 							int hasArgs = firstLine.indexOf('?');
 							if (hasArgs != -1)
@@ -889,15 +885,9 @@ void HTTPServerLoop()
 								while ((argPos = argsStr.indexOf("&")) != -1)
 								{
 									String currentArg = argsStr.substring(0, argPos);
-									Serial.println(currentArg);
 									argName[argsCount] = currentArg.substring(0, currentArg.indexOf("="));
 									arg[argsCount] = currentArg.substring(currentArg.indexOf("=") + 1);
-
-									Serial.println(argName[argsCount]);
-									Serial.println(arg[argsCount]);
-									Serial.println(String(argsCount).c_str());
 									argsCount++;
-
 									argsStr.remove(0, argPos + 1);
 								}
 							}
@@ -910,7 +900,9 @@ void HTTPServerLoop()
 							if (firstLine.indexOf("token=" + token) == -1)
 							{
 								//GET section 
+#ifdef DetailedDebug 
 								debugOut("METHOD", method);
+#endif
 								if (method.equals("OPTIONS"))
 								{
 									sendResponseHeader(200, "text/plain", "", client);
@@ -993,13 +985,12 @@ void HTTPServerLoop()
 					}
 				}
 				else
-					if (c != '\r')
+					if (receiveChar != '\r')
 					{
-						currentLine += c;
+						currentLine += receiveChar;
 					}
 			}
 		}
-	}
-	// close the connection		
+	}	
 	client.stop();
 }

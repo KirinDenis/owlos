@@ -683,6 +683,7 @@ bool onInsideChange(String _property, String _value)
 	{
 		lock = true; 
 		result = filesWriteString(String(DefaultId) + "." + _property, _value);
+
 		if (transportAvailable())
 		{
 			result = transportPublish(topic + "/" + _property, _value);
