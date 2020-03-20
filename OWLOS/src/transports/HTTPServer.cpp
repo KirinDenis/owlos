@@ -59,44 +59,17 @@ OWLOS распространяется в надежде, что она буде
 #include <WiFiClient.h>
 #include <MD5Builder.h>
 
-#include "..\..\UnitProperties.h"
-#include "..\..\WebProperties.h"
-
+#include "HTTPServerThings.h"
 #include "..\Managers\DriverManager.h"
 #include "..\Managers\ScriptManager.h"
 #include "..\Managers\UpdateManager.h"
 #include "..\Managers\FileManager.h"
 #include "..\Utils\Utils.h"
+#include "..\..\UnitProperties.h"
+#include "..\..\WebProperties.h"
 
 
 #define HTTP_METHODS " GET, POST, OPTIONS"
-
-
-String _GetLogoHTML()
-{
-	String result = "<font size='1'><pre><code><span>";
-	result += "                                         \n";
-	result += "@@@@@@@@#                       #@@@@@@@@\n";
-	result += "@@@@@@@@@@@@@/             ,@@@@@@@@@@@@@\n";
-	result += "@@@@@@@@@&(@@@@@@@.   .@@@@@@@(%@@@@@@@@@\n";
-	result += "@@@@@  .@@@/  ,@@@@@@@@@@@*  .@@@,  %@@@@\n";
-	result += "&@@@@@@,   .@@&    *@#    %@@*   ,@@@@@@@\n";
-	result += "%@@ @@@@@&     %@@     @@%     %@@@@@ @@&\n";
-	result += "(@@  @@%.@@@       @@@.      @@@,#@@% @@#\n";
-	result += ",@@, @@@ &@@@@             (@@@@ &@@  @@*\n";
-	result += " @@(  @@  @@@@@           @@@@@  @@#  @@.\n";
-	result += " @@&  @@(   @@@@@       @@@@@,  /@@  .@@ \n";
-	result += " @@@    &@@@. @@@@@,  @@@@@. &@@@    @@@ \n";
-	result += " ,@@@@@*  .@@@@@@@@@@@@@@@@@@@/  .@@@@@/ \n";
-	result += "     &@@@@@, #@@@@@@.@@@@@@@  @@@@@@     \n";
-	result += "        #@@@@@@@&       %@@@@@@@%        \n";
-	result += "          ,@@@@@@@   @@@@@@@(            \n";
-	result += "             .@@@@@@@@@@@.               \n";
-	result += "                 /@@@/                   \n";
-	result += "                                         \n";
-	result += "</code></pre></span></font><br>";
-	return result;
-}
 
 WiFiServer  * server;
 
@@ -106,10 +79,10 @@ int argsCount = 0;
 String arg[22];
 String argName[22];
 
-//если вы определили NOT_SECURE_TOKEN то токен будет генерироватся каждый раз при старте из username, password и chipid
+//если вы определили NOT_SECURE_TOKEN то токен будет генерироваться каждый раз при старте из username, password и chipid
 //если вы их измените - изменится токен, все кто был со "старым" токеном не смогут соединиться. Но узнал логин и пароль это станет возможно
 
-//более безопасный способ, не определяйте NOT_SECURE_TOKEN, сгенерируте токен один раз и разместите его в переменной token
+//более безопасный способ, не определяйте NOT_SECURE_TOKEN, генерируется токен один раз и разместите его в переменной token
 //после этого username, password и chipid не будут иметь никакого значения при авторизации. 
 
 #define NOT_SECURE_TOKEN
@@ -119,6 +92,7 @@ String token = "";
 #else
 String token = ""; //type your secure token here
 #endif // DEBUG
+
 
 void calculateToken()
 {
@@ -130,7 +104,6 @@ void calculateToken()
 	token = md5.toString();
 #endif
 }
-
 
 bool checkToken(String _token)
 {
@@ -154,42 +127,31 @@ bool auth(String username, String password)
 	return token.equals(md5.toString());
 }
 
-
 void HTTPServerBegin(uint16_t port)
 {
 	calculateToken();
 	server = new WiFiServer(port);
-	server->begin();	
+	server->begin();
 }
 
-String _decode(String param)
+void sendResponseHeader(int HTTPResponseCode, String contentType, String ContentEncoding, WiFiClient client)
 {
-	param.replace("+", " ");
-	param.replace("%20", " ");
-	param.replace("%21", "!");
-	param.replace("%23", "#");
-	param.replace("%24", "$");
-	param.replace("%26", "&");
-	param.replace("%27", "'");
-	param.replace("%28", "(");
-	param.replace("%29", ")");
-	param.replace("%2A", "*");
-	param.replace("%2B", "+");
-	param.replace("%2C", ",");
-	param.replace("%2F", "/");
-	param.replace("%3A", ":");
-	param.replace("%3B", ";");
-	param.replace("%3D", "=");
-	param.replace("%3F", "?");
-	param.replace("%40", "@");
-	param.replace("%5B", "[");
-	param.replace("%5D", "]");
-	param.replace("%3E", ">");
-	param.replace("%3C", "<");
-	param.replace("%0A", "\n");
-	param.replace("%0D", "\n");
-	param.replace("%09", "\t");
-	return param;
+	client.println("HTTP/1.1 " + String(HTTPResponseCode) + " OK");
+	client.println("Content-type: " + contentType);
+	client.println("Content-Encoding: " + ContentEncoding);
+	client.println("Access-Control-Max-Age: 10000");
+	client.println("Access-Control-Allow-Methods: " + String(HTTP_METHODS));
+	client.println("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
+	client.println("Access-Control-Allow-Origin: *");
+	client.println("Server: OWLOS");
+	client.println("");
+}
+
+void send(int HTTPResponseCode, String contentType, String content, WiFiClient client)
+{
+	sendResponseHeader(HTTPResponseCode, contentType, "", client);
+	content += "\n\r";
+	client.write(content.c_str(), content.length());
 }
 
 String parsePostBody(WiFiClient client) {
@@ -201,11 +163,8 @@ String parsePostBody(WiFiClient client) {
 		if (client.available())
 		{
 			char c = client.read();
-			Serial.write(c);
-
 			if (c == '\n')
 			{
-
 				if (sectionSign.length() == 0) //first entry
 				{
 					sectionSign = data;
@@ -245,55 +204,19 @@ String parsePostBody(WiFiClient client) {
 }
 
 
-
-String _getContentType(String fileName)
-{
-	if (fileName.endsWith(".html") || fileName.endsWith(".htm")) return "text/html";
-	if (fileName.endsWith(".css")) return "text/css";
-	if (fileName.endsWith(".js")) return "application/javascript";
-	if (fileName.endsWith(".ico")) return "image/x-icon";
-	if (fileName.endsWith(".gz")) return "application/x-gzip";
-	return "text/plain";
-}
-
-void sendResponseHeader(int HTTPResponseCode, String contentType, String ContentEncoding, WiFiClient client)
-{
-	client.println("HTTP/1.1 " + String(HTTPResponseCode) + " OK");
-	client.println("Content-type: " + contentType);
-	client.println("Content-Encoding: " + ContentEncoding);
-	client.println("Access-Control-Max-Age: 10000");
-	client.println("Access-Control-Allow-Methods: " + String(HTTP_METHODS));
-	client.println("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
-	client.println("Access-Control-Allow-Origin: *");
-	client.println("Server: OWLOS");
-	client.println("");
-}
-
-
-void send(int HTTPResponseCode, String contentType, String content, WiFiClient client)
-{	
-	sendResponseHeader(HTTPResponseCode, contentType, "", client);
-	content += "\n\r";
-	client.write(content.c_str(), content.length());
-}
-
-
-
 void handleNotFound(WiFiClient client)
 {
 	if ((filesExists(uri)) || (filesExists(uri + ".gz")))
 	{
-
-		String contentType = _getContentType(uri);
+		String contentType = getContentType(uri);
 		String responseHeader = "";
 		if (filesExists(uri + ".gz"))
 		{
 			uri = uri + ".gz";
 			sendResponseHeader(200, contentType, "gzip", client);
-
 		}
 		else
-		{			
+		{
 			sendResponseHeader(200, contentType, "", client);
 		}
 
@@ -306,74 +229,7 @@ void handleNotFound(WiFiClient client)
 		}
 	}
 
-	String acip = unitGetWiFiAccessPointIP() + ":" + String(unitGetRESTfulServerPort());
-	String ip = unitGetWiFiIP() + ":" + String(unitGetRESTfulServerPort());
-
-
-	//404 section --------------
-	sendResponseHeader(404, "text/html", "", client);
-
-	String helloString = unitGetUnitId() + "::Ready IoT Solution::OWLOS";	
-	String message = "<html><header><title>" + helloString + "</title>";
-	message += "<style>a{color: #00DC00;text-decoration: none;} a:hover {text-decoration: underline;} a:active {text-decoration: underline;}}</style></header>";
-	message += "<body  bgcolor='#4D4D4D'><font color='#A5A5A5'>" + _GetLogoHTML() + "<h3>" + helloString + "</h3>";
-	message += "<b>URI not found http://" + ip + uri + " or http://" + acip + uri + "</b><br>";
-	message += "Method: ";
-	//message += (webServer->method() == HTTP_GET) ? "GET" : "POST";
-	message += "<br>Arguments: ";
-	//message += argsCount;
-	message += "<br>";
-	message += "<font color='#208ECD'><h3>Available RESTful APIs for local network " + unitGetWiFiSSID() + ":</h3></font>";
-	message += "<b>Log's API:</b><br>";
-	message += "<a href='http://" + ip + "/getlog?number=1' target='_blank'>http://" + ip + "/getlog?number=1</a> get first log file<br>";
-	message += "<a href='http://" + ip + "/getlog?number=2' target='_blank'>http://" + ip + "/getlog?number=2</a> get second log file<br>";
-	message += "<br><b>File's API:</b><br>";
-	message += "<a href='http://" + ip + "/getfilelist?path=' target='_blank'>http://" + ip + "/getfilelist?path=</a> get list of unit files<br>";
-	message += "<a href='http://" + ip + "/deletefile?name=' target='_blank'>http://" + ip + "/deletefile?path=</a> delete file<br>";
-	
-	message += "<a href='http://" + ip + "/upload' target='_blank'>http://" + ip + "/upload</a> upload file WebForm (not API, use uploadfile POST request to upload file)<br>";
-	message += "<br><b>Unit's API:</b><br>";
-	message += "<a href='http://" + ip + "/getunitproperty?property=id' target='_blank'>http://" + ip + "/getproperty?property=id</a> get unit property<br>";
-	message += "<a href='http://" + ip + "/getallunitproperties' target='_blank'>http://" + ip + "/getallunitproperties</a> get all unit's properties<br>";
-	message += "<a href='http://" + ip + "/setunitproperty?property=foo&value=bar' target='_blank'>http://" + ip + "/setproperty?property=foo&value=bar</a> set unit property<br>";
-	message += "<font color='red'><b>Be careful, changing the unit's properties can do its unmanagement</b></font><br>";
-	message += "The unit must be rebooted after changing the property value<br>";
-	message += "<br><b>Driver's API:</b><br>";
-	message += "<a href='http://" + ip + "/adddriver?type=foo&id=bar&pin1=foo&pin2=foo&pin3=foo&pin4=foo' target='_blank'>http://" + ip + "/adddriver?type=foo&id=bar&pin1=foo&pin2=foo&pin3=foo&pin4=foo</a> add new driver<br>";
-	message += "<a href='http://" + ip + "/getdriversid' target='_blank'>http://" + ip + "/getdriversid</a> get all drivers IDs<br>";
-	message += "<a href='http://" + ip + "/getdriverproperty?id=foo&property=bar' target='_blank'>http://" + ip + "/getdriverproperty?id=foo&property=bar</a> get driver property<br>";
-	message += "<a href='http://" + ip + "/setdriverproperty?id=foo&property=bar&value=bar' target='_blank'>http://" + ip + "/setdriverproperty?id=foo&property=bar&value=bar</a> set driver property<br>";
-	message += "<a href='http://" + ip + "/getdriverproperties?id=foo' target='_blank'>http://" + ip + "/getdriverproperties?id=foo</a> get driver's all properties<br>";
-	message += "<a href='http://" + ip + "/getalldriversproperties' target='_blank'>http://" + ip + "/getalldriversproperties</a> get all drivers all properties<br>";
-	message += "<a href='http://" + ip + "/reset' target='_blank'>http://" + ip + "/reset</a> reset unit<br>";
-
-	message += "<font color='#208ECD'><h3>Available RESTful APIs for access point " + unitGetWiFiAccessPointSSID() + ":</h3></font>";
-	message += "<b>Log's API:</b><br>";
-	message += "<a href='http://" + acip + "/getlog?number=1' target='_blank'>http://" + acip + "/getlog?number=1</a> get first log file<br>";
-	message += "<a href='http://" + acip + "/getlog?number=2' target='_blank'>http://" + acip + "/getlog?number=2</a> get second log file<br>";
-	message += "<br><b>Unit's API:</b><br>";
-	message += "<a href='http://" + acip + "/getunitproperty?property=id' target='_blank'>http://" + acip + "/getproperty?property=id</a> get unit property<br>";
-	message += "<a href='http://" + acip + "/getallunitproperties' target='_blank'>http://" + acip + "/getallunitproperties</a> get all unit's properties<br>";
-	message += "<a href='http://" + acip + "/setunitproperty?property=foo&value=bar' target='_blank'>http://" + acip + "/setproperty?property=foo&value=bar</a> set unit property<br>";
-	message += "<font color='red'><b>Be careful, changing the unit's properties can do its unmanagement</b></font><br>";
-	message += "The unit must be rebooted after changing the property value<br>";
-	message += "<br><b>Driver's API:</b><br>";
-	message += "<a href='http://" + acip + "/getdriversid' target='_blank'>http://" + acip + "/getdriversid</a> get all drivers IDs<br>";
-	message += "<a href='http://" + acip + "/getdriverproperty?id=foo&property=bar' target='_blank'>http://" + acip + "/getdriverproperty?id=foo&property=bar</a> get driver property<br>";
-	message += "<a href='http://" + acip + "/setdriverproperty?id=foo&property=bar&value=bar' target='_blank'>http://" + acip + "/setdriverproperty?id=foo&property=bar&value=bar</a> set driver property<br>";
-	message += "<a href='http://" + acip + "/getdriverproperties?id=foo' target='_blank'>http://" + acip + "/getdriverproperties?id=foo</a> get driver's all properties<br>";
-	message += "<a href='http://" + acip + "/getalldriversproperties' target='_blank'>http://" + acip + "/getalldriversproperties</a> get all drivers all properties<br>";
-
-
-	message += "</font></body></html>";
-
-	//for (uint8_t i = 0; i < argsCount; i++) {
-//		message += " " + argName[i) + ": " + arg[i) + "\n";
-//	}
-
-	debugOut(HTTPServerId, "404: URI not found http://" + ip + uri + "or http://" + acip + uri);
-	client.print(message);
-	client.println();
+	send(404, "text/html", GetNotFoundHTML(), client);
 }
 
 
@@ -381,7 +237,7 @@ void handleNotFound(WiFiClient client)
 
 void handleGetLog(WiFiClient client)
 {
-	
+
 	if (argsCount > 0)
 	{
 		if (argName[0].equals("number"))
@@ -405,7 +261,7 @@ void handleGetLog(WiFiClient client)
 //----------------------------------------------------------------------------------------------
 void handleGetFileList(WiFiClient client)
 {
-	
+
 	if (argsCount > 0)
 	{
 		if (argName[0].equals("path"))
@@ -420,7 +276,7 @@ void handleGetFileList(WiFiClient client)
 //----------------------------------------------------------------------------------------------
 void handleDeleteFile(WiFiClient client)
 {
-	
+
 	if (argsCount > 0)
 	{
 		if (argName[0].equals("name"))
@@ -436,7 +292,7 @@ void handleDeleteFile(WiFiClient client)
 /*
 void handleDownloadFile(WiFiClient client)
 {
-	
+
 	if (argsCount > 0)
 	{
 		if (argName[0].equals("name"))
@@ -469,9 +325,9 @@ void handleDownloadFile(WiFiClient client)
 */
 //----------------------------------------------------------------------------------------------
 //It is not API - it web page for send select file form, to make POST request at UI level  
-void handleUpload(WiFiClient client) 
+void handleUpload(WiFiClient client)
 {
-	
+
 	String html = "<h3>Select file to upload</h3>";
 	html += "<FORM action='/uploadfile' method='post' enctype='multipart/form-data'>";
 	html += "<input class='buttons' style='width:50%' type='file' name='fileupload' id = 'fileupload' value=''><br>";
@@ -482,98 +338,98 @@ void handleUpload(WiFiClient client)
 File fs_uploadFile;
 void handleUploadFile(WiFiClient client)
 {
-/*
-	HTTPUpload& http_uploadFile = webServer->upload();
-#ifdef DetailedDebug
-	debugOut(HTTPServerId, "upload: " + http_uploadFile.filename + " status: " + String(http_uploadFile.status));
-#endif
-	if (http_uploadFile.status == UPLOAD_FILE_START)
-	{
-#ifdef DetailedDebug
-		debugOut(HTTPServerId, "upload start: " + http_uploadFile.filename);
-#endif
-		String filename = "/" + http_uploadFile.filename;
-		//if (!filename.startsWith("/")) filename = "/"+filename;
-		//Serial.print("Upload File Name: "); Serial.println(filename);
-		filesDelete(filename);
-		fs_uploadFile = SPIFFS.open(filename, "w");
-		filename = String();
-	}
-	else
-		if (http_uploadFile.status == UPLOAD_FILE_WRITE)
+	/*
+		HTTPUpload& http_uploadFile = webServer->upload();
+	#ifdef DetailedDebug
+		debugOut(HTTPServerId, "upload: " + http_uploadFile.filename + " status: " + String(http_uploadFile.status));
+	#endif
+		if (http_uploadFile.status == UPLOAD_FILE_START)
 		{
-			if (fs_uploadFile)
-			{
-				if (http_uploadFile.currentSize * 2 > ESP.getFreeHeap()) //HEAP is end
-				{
-#ifdef DetailedDebug
-					debugOut(HTTPServerId, "upload aborted, reson: end of unit heap");
-#endif
-					send(504, "text/plain", "upload aborted, reson: end of unit heap", client);
-				}
-				else
-				{
-					fs_uploadFile.write(http_uploadFile.buf, http_uploadFile.currentSize);
-#ifdef DetailedDebug
-					debugOut(HTTPServerId, "upload write: " + String(http_uploadFile.currentSize));
-#endif
-				}
-
-			}
-			else
-			{
-#ifdef DetailedDebug
-				debugOut(HTTPServerId, "upload write error");
-#endif
-			}
+	#ifdef DetailedDebug
+			debugOut(HTTPServerId, "upload start: " + http_uploadFile.filename);
+	#endif
+			String filename = "/" + http_uploadFile.filename;
+			//if (!filename.startsWith("/")) filename = "/"+filename;
+			//Serial.print("Upload File Name: "); Serial.println(filename);
+			filesDelete(filename);
+			fs_uploadFile = SPIFFS.open(filename, "w");
+			filename = String();
 		}
 		else
-			if (http_uploadFile.status == UPLOAD_FILE_END)
+			if (http_uploadFile.status == UPLOAD_FILE_WRITE)
 			{
 				if (fs_uploadFile)
 				{
-					fs_uploadFile.close();
-					String html = http_uploadFile.filename;
-#ifdef DetailedDebug
-					debugOut(HTTPServerId, "uploaded success: " + html);
-#endif
-					send(200, "text/plain", html, client);
+					if (http_uploadFile.currentSize * 2 > ESP.getFreeHeap()) //HEAP is end
+					{
+	#ifdef DetailedDebug
+						debugOut(HTTPServerId, "upload aborted, reson: end of unit heap");
+	#endif
+						send(504, "text/plain", "upload aborted, reson: end of unit heap", client);
+					}
+					else
+					{
+						fs_uploadFile.write(http_uploadFile.buf, http_uploadFile.currentSize);
+	#ifdef DetailedDebug
+						debugOut(HTTPServerId, "upload write: " + String(http_uploadFile.currentSize));
+	#endif
+					}
+
 				}
 				else
 				{
-#ifdef DetailedDebug
-					debugOut(HTTPServerId, "upload can't create file");
-#endif
-					send(503, "text/plain", http_uploadFile.filename, client);
+	#ifdef DetailedDebug
+					debugOut(HTTPServerId, "upload write error");
+	#endif
 				}
 			}
 			else
-				if (http_uploadFile.status == UPLOAD_FILE_ABORTED)
+				if (http_uploadFile.status == UPLOAD_FILE_END)
 				{
-#ifdef DetailedDebug
-					debugOut(HTTPServerId, "upload aborted");
-#endif
-					send(504, "text/plain", http_uploadFile.filename, client);
+					if (fs_uploadFile)
+					{
+						fs_uploadFile.close();
+						String html = http_uploadFile.filename;
+	#ifdef DetailedDebug
+						debugOut(HTTPServerId, "uploaded success: " + html);
+	#endif
+						send(200, "text/plain", html, client);
+					}
+					else
+					{
+	#ifdef DetailedDebug
+						debugOut(HTTPServerId, "upload can't create file");
+	#endif
+						send(503, "text/plain", http_uploadFile.filename, client);
+					}
 				}
 				else
-				{
-#ifdef DetailedDebug
-					debugOut(HTTPServerId, "upload bad file name, size or content for ESP FlashFileSystem");
-#endif
-					send(505, "text/plain", "upload bad file name, size or content for ESP FlashFileSystem", client);
-				}
-*/
+					if (http_uploadFile.status == UPLOAD_FILE_ABORTED)
+					{
+	#ifdef DetailedDebug
+						debugOut(HTTPServerId, "upload aborted");
+	#endif
+						send(504, "text/plain", http_uploadFile.filename, client);
+					}
+					else
+					{
+	#ifdef DetailedDebug
+						debugOut(HTTPServerId, "upload bad file name, size or content for ESP FlashFileSystem");
+	#endif
+						send(505, "text/plain", "upload bad file name, size or content for ESP FlashFileSystem", client);
+					}
+	*/
 }
 
 //----------------------------------------------------------------------------------------------
 void handleGetUnitProperty(WiFiClient client)
 {
-	
+
 	if (argsCount > 0)
 	{
 		if (argName[0].equals("property"))
 		{
-			String unitProp = unitOnMessage(unitGetTopic() + "/get" + _decode(arg[0]), "", NoTransportMask);
+			String unitProp = unitOnMessage(unitGetTopic() + "/get" + decode(arg[0]), "", NoTransportMask);
 			if ((unitProp.length() == 0) || (unitProp.equals(WrongPropertyName)))
 			{
 				unitProp = "wrong unit property: " + arg[0];
@@ -585,7 +441,6 @@ void handleGetUnitProperty(WiFiClient client)
 				send(200, "text/plain", unitProp, client);
 				return;
 			}
-
 		}
 	}
 	handleNotFound(client);
@@ -593,12 +448,11 @@ void handleGetUnitProperty(WiFiClient client)
 //----------------------------------------------------------------------------------------------
 void handleSetUnitProperty(WiFiClient client)
 {
-	
 	if (argsCount > 1)
 	{
 		if ((argName[0].equals("property")) && (argName[1].equals("value")))
 		{
-			String result = unitOnMessage(unitGetTopic() + "/set" + _decode(arg[0]), _decode(arg[1]), NoTransportMask);
+			String result = unitOnMessage(unitGetTopic() + "/set" + decode(arg[0]), decode(arg[1]), NoTransportMask);
 			if ((result.length() == 0) || (result.equals("0")))
 			{
 				result = "wrong unit property set: " + arg[0] + "=" + arg[1];
@@ -610,23 +464,20 @@ void handleSetUnitProperty(WiFiClient client)
 				send(200, "text/plain", result, client);
 				return;
 			}
-
 		}
 	}
 	handleNotFound(client);
 }
-//----------------------------------------------------------------------------------------------
+
 void handleGetAllUnitProperties(WiFiClient client)
 {
-	
 	send(200, "text/plain", unitGetAllProperties(), client);
 	return;
 }
 
-//----------------------------------------------------------------------------------------------
+
 void handleAddDriver(WiFiClient client)
 {
-	
 	if (argsCount > 5)
 	{
 		if ((argName[0].equals("type")) && (argName[1].equals("id")) && (argName[2].equals("pin1"))
@@ -660,25 +511,22 @@ void handleAddDriver(WiFiClient client)
 	}
 	handleNotFound(client);
 }
-//----------------------------------------------------------------------------------------------
+
 void handleGetDriversId(WiFiClient client)
 {
-	
 	send(200, "text/plain", driversGetDriversId(), client);
 }
 
-//----------------------------------------------------------------------------------------------
 void handleSetDriverProperty(WiFiClient client)
 {
-	
 	if (argsCount > 2)
 	{
 		if ((argName[0].equals("id")) && (argName[1].equals("property")) && (argName[2].equals("value")))
 		{
-			String result = driversSetDriverProperty(arg[0], _decode(arg[1]), _decode(arg[2]));
+			String result = driversSetDriverProperty(arg[0], decode(arg[1]), decode(arg[2]));
 			if (result.length() == 0) //try set unit property
 			{
-				result = unitOnMessage(unitGetTopic() + "/set" + _decode(arg[1]), _decode(arg[2]), NoTransportMask);
+				result = unitOnMessage(unitGetTopic() + "/set" + decode(arg[1]), decode(arg[2]), NoTransportMask);
 			}
 
 			if (result.length() == 0)
@@ -711,22 +559,20 @@ void handleSetDriverProperty(WiFiClient client)
 	handleNotFound(client);
 }
 
-//----------------------------------------------------------------------------------------------
 void handleGetWebProperty(WiFiClient client)
 {
-	
 	if (argsCount > 0)
 	{
 		if (argName[0].equals("property"))
 		{
-			//String configProperties = webOnMessage(unitGetTopic() + "/get" + _decode(arg[0)), "");
+			//String configProperties = webOnMessage(unitGetTopic() + "/get" + decode(arg[0)), "");
 
 			File download = SPIFFS.open("/web.config", "r");
 			if (download)
 			{
 				sendResponseHeader(200, "text/html", "", client);
 				client.write(download);
-				
+
 				download.close();
 				return;
 			}
@@ -748,11 +594,9 @@ void handleGetWebProperty(WiFiClient client)
 	handleNotFound(client);
 }
 
-
-//----------------------------------------------------------------------------------------------
-void handleReset(WiFiClient client) 
+void handleReset(WiFiClient client)
 {
-	
+
 	send(200, "text/plain", "1", client);
 	unitSetESPReset(1);
 }
@@ -761,13 +605,13 @@ void handleReset(WiFiClient client)
 //Update UI ------------------------------------------------------------------------------------
 void handleUpdateLog(WiFiClient client)
 {
-	
+
 	send(200, "text/plain", updateGetUpdateLog(), client);
 }
 
 void handleUpdateUI(WiFiClient client)
 {
-	
+
 	if (updateGetUpdatePossible() < 1)
 	{
 		send(503, "text/plain", "0", client);
@@ -786,7 +630,7 @@ void handleUpdateUI(WiFiClient client)
 
 void handleUpdateFirmware(WiFiClient client)
 {
-	
+
 	if (updateGetUpdatePossible() < 2)
 	{
 		send(503, "text/plain", "0", client);
@@ -827,15 +671,15 @@ void handleAuth(WiFiClient client) {
 }
 
 void handleGetDriverProperty(WiFiClient client)
-{	
+{
 	if (argsCount > 1)
 	{
 		if ((argName[0].equals("id")) && (argName[1].equals("property")))
 		{
-			String driverProp = driversGetDriverProperty(arg[0], _decode(arg[1]));
+			String driverProp = driversGetDriverProperty(arg[0], decode(arg[1]));
 			if (driverProp.length() == 0) //then try get this property from unit 
 			{
-				driverProp = unitOnMessage(unitGetTopic() + "/get" + _decode(arg[1]), "", NoTransportMask);
+				driverProp = unitOnMessage(unitGetTopic() + "/get" + decode(arg[1]), "", NoTransportMask);
 			}
 
 			if (driverProp.length() == 0)
@@ -891,13 +735,13 @@ void handleGetAllDriversProperties(WiFiClient client) {
 }
 
 void handleGetAllScripts(WiFiClient client) {
-	
+
 	send(200, "text/plain", scriptsGetAll(), client);
 }
 
 void handleDeleteScript(WiFiClient client)
 {
-	
+
 	if (argsCount > 0)
 	{
 		if (argName[0].equals("name"))
@@ -911,7 +755,7 @@ void handleDeleteScript(WiFiClient client)
 
 void handleStartDebugScript(WiFiClient client)
 {
-	
+
 	if (argsCount > 0)
 	{
 		if (argName[0].equals("name"))
@@ -925,7 +769,6 @@ void handleStartDebugScript(WiFiClient client)
 
 void handleDebugNextScript(WiFiClient client)
 {
-	
 	if (argsCount > 0)
 	{
 		if (argName[0].equals("name"))
@@ -937,16 +780,36 @@ void handleDebugNextScript(WiFiClient client)
 	handleNotFound(client);
 }
 
-
-
 //POST
+void handleCreateScript(WiFiClient client)
+{
+	if (argsCount > 0)
+	{
+		if (argName[0].equals("name"))
+		{
+			String result = String(scriptsCreate(decode(arg[0]), decode(parsePostBody(client))));
+			if (result.length() != 0)
+			{
+				send(503, "text/html", result, client);
+				return;
+			}
+			else
+			{
+				send(200, "text/plain", result, client);
+				return;
+			}
+		}
+	}
+	handleNotFound(client);
+}
+
 void handleSetWebProperty(WiFiClient client)
-{	
+{
 	if (argsCount > 0)
 	{
 		if (argName[0].equals("property"))
 		{
-			String result = webOnMessage(unitGetTopic() + "/set" + _decode(arg[0]), _decode(parsePostBody(client)));
+			String result = webOnMessage(unitGetTopic() + "/set" + decode(arg[0]), decode(parsePostBody(client)));
 			if ((result.length() == 0) || (result.equals("0")))
 			{
 
@@ -1052,51 +915,69 @@ void HTTPServerLoop()
 								{
 									sendResponseHeader(200, "text/plain", "", client);
 								}
-								else 
-								if (method.equals("GET"))
-								{
-									if (firstLine.indexOf("/getlog") != -1) {handleGetLog(client);} else
-									if (firstLine.indexOf("/getfilelist") != -1) {handleGetFileList(client);} else
-									if (firstLine.indexOf("/deletefile") != -1) {handleDeleteFile(client);} else
-									if (firstLine.indexOf("/getunitproperty") != -1) {handleGetUnitProperty(client);} else
-									if (firstLine.indexOf("/setunitproperty") != -1) {handleSetUnitProperty(client);} else
-									if (firstLine.indexOf("/getallunitproperties") != -1) {handleGetAllUnitProperties(client);} else
-									if (firstLine.indexOf("/adddriver") != -1) {handleAddDriver(client);} else
-									if (firstLine.indexOf("/getdriversid") != -1) {handleGetDriversId(client);} else
-									if (firstLine.indexOf("/getdriverproperty") != -1) {handleGetDriverProperty(client);} else
-									if (firstLine.indexOf("/setdriverproperty") != -1) {handleSetDriverProperty(client);} else
-									if (firstLine.indexOf("/getdriverproperties") != -1) {handleGetDriverProperties(client);} else
-									if (firstLine.indexOf("/getalldriversproperties") != -1) {handleGetAllDriversProperties(client);} else
-									if (firstLine.indexOf("/getwebproperty") != -1) {handleGetWebProperty(client);} else									
-									if (firstLine.indexOf("/reset") != -1) {handleReset(client);} else
-									if (firstLine.indexOf("/updatelog") != -1) {handleUpdateLog(client);} else
-									if (firstLine.indexOf("/updateui") != -1) {handleUpdateUI(client);} else
-									if (firstLine.indexOf("/updatefirmware") != -1) {handleUpdateFirmware(client);} else									
-									if (firstLine.indexOf("/getallscripts") != -1) {handleGetAllScripts(client);} else
-									if (firstLine.indexOf("/startdebugscript") != -1) {handleStartDebugScript(client);} else
-									if (firstLine.indexOf("/debugnextscript") != -1) {handleDebugNextScript(client);} else
-									if (firstLine.indexOf("/getdriverproperties") != -1){handleGetDriverProperties(client);} else 
-									if (firstLine.indexOf("/getalldriversproperties") != -1){handleGetAllDriversProperties(client);}
+								else
+									if (method.equals("GET"))
+									{
+										if (firstLine.indexOf("/getlog") != -1) { handleGetLog(client); }
+										else
+											if (firstLine.indexOf("/getfilelist") != -1) { handleGetFileList(client); }
+											else
+												if (firstLine.indexOf("/deletefile") != -1) { handleDeleteFile(client); }
+												else
+													if (firstLine.indexOf("/getunitproperty") != -1) { handleGetUnitProperty(client); }
+													else
+														if (firstLine.indexOf("/setunitproperty") != -1) { handleSetUnitProperty(client); }
+														else
+															if (firstLine.indexOf("/getallunitproperties") != -1) { handleGetAllUnitProperties(client); }
+															else
+																if (firstLine.indexOf("/adddriver") != -1) { handleAddDriver(client); }
+																else
+																	if (firstLine.indexOf("/getdriversid") != -1) { handleGetDriversId(client); }
+																	else
+																		if (firstLine.indexOf("/getdriverproperty") != -1) { handleGetDriverProperty(client); }
+																		else
+																			if (firstLine.indexOf("/setdriverproperty") != -1) { handleSetDriverProperty(client); }
+																			else
+																				if (firstLine.indexOf("/getdriverproperties") != -1) { handleGetDriverProperties(client); }
+																				else
+																					if (firstLine.indexOf("/getalldriversproperties") != -1) { handleGetAllDriversProperties(client); }
+																					else
+																						if (firstLine.indexOf("/getwebproperty") != -1) { handleGetWebProperty(client); }
+																						else
+																							if (firstLine.indexOf("/reset") != -1) { handleReset(client); }
+																							else
+																								if (firstLine.indexOf("/updatelog") != -1) { handleUpdateLog(client); }
+																								else
+																									if (firstLine.indexOf("/updateui") != -1) { handleUpdateUI(client); }
+																									else
+																										if (firstLine.indexOf("/updatefirmware") != -1) { handleUpdateFirmware(client); }
+																										else
+																											if (firstLine.indexOf("/getallscripts") != -1) { handleGetAllScripts(client); }
+																											else
+																												if (firstLine.indexOf("/startdebugscript") != -1) { handleStartDebugScript(client); }
+																												else
+																													if (firstLine.indexOf("/debugnextscript") != -1) { handleDebugNextScript(client); }
+																													else
+																														if (firstLine.indexOf("/getdriverproperties") != -1) { handleGetDriverProperties(client); }
+																														else
+																															if (firstLine.indexOf("/getalldriversproperties") != -1) { handleGetAllDriversProperties(client); }
+																															else
+																															{
+																																handleNotFound(client);
+																															}
+									}
 									else
-										{										
-											handleNotFound(client);
+										//POST Section 
+										if (method.equals("POST"))
+										{
+											if (firstLine.indexOf("/createscript") != -1) { handleCreateScript(client); }
+											else
+												if (firstLine.indexOf("/setwebproperty") != -1) { handleSetWebProperty(client); }
+												else
+												{
+													handleNotFound(client);
+												}
 										}
-								}
-								else 
-								//POST Section 
-								if (method.equals("POST"))
-								{
-									//if (firstLine.indexOf("/createscript") != -1) {
-								//		HTTP_POST") != -1) {handleCreateScript(client);} else
-									if (firstLine.indexOf("/setwebproperty?") != -1)
-									{
-										handleSetWebProperty(client);
-									}
-									else
-									{
-										handleNotFound(client);
-									}
-								}
 							}
 							else
 							{
