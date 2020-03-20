@@ -2,7 +2,7 @@
 
 # OWLOS 
 ### open source network operating system for managing IoT devices.
-
+### ESP32&ESP8266
 - doesn't require internet access or additional servers
 - ready to connect with sensors, actuators, LCD, DHT, Stepper and other drivers
 - doesn't require programming skills
