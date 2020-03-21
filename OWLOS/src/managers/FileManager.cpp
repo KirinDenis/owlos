@@ -53,6 +53,16 @@ OWLOS распространяется в надежде, что она буде
 #include <SPIFFS.h>
 #define FORMAT_SPIFFS_IF_FAILED true
 bool readyBegin = false;
+
+typedef struct fileWriteItem
+{
+	String fileName;
+	String value;
+};
+
+#define filesWriteCacheSize 40
+
+fileWriteItem filesWriteCache[filesWriteCacheSize];
 #endif
 
 
@@ -69,10 +79,20 @@ bool _SPIFFSBegin()
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
 	if (!readyBegin)
 	{
-		readyBegin = SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED);		
-    }
+		readyBegin = SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED);
+	}
 	return readyBegin;
 #endif
+}
+
+String normalizeFileName(String fileName)
+{
+	if (fileName.indexOf("/") != 0)
+	{
+		fileName = "/" + fileName;
+	}
+
+	return fileName;
 }
 
 bool filesBegin()
@@ -103,17 +123,87 @@ bool filesBegin()
 	return result;
 }
 
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+bool filesLoop()
+{
+#ifdef DetailedDebug 
+	debugOut(FileSystem, "filesLoop");
+#endif
+	if (!_SPIFFSBegin())
+	{
+#ifdef DetailedDebug 
+		debugOut(FileSystem, "An Error has occurred while mounting file system");
+#endif
+		return false;
+	}
+
+	for (int i = 0; i < filesWriteCacheSize; i++)
+	{
+		if (filesWriteCache[i].fileName.length() != 0)
+		{
+#ifdef DetailedDebug 
+			debugOut(FileSystem, "filesLoop->filesWriteString: " + filesWriteCache[i].fileName);
+#endif
+
+			File file = SPIFFS.open(filesWriteCache[i].fileName, FILE_WRITE);
+			filesWriteCache[i].fileName = "";
+			if (!file) {
+#ifdef DetailedDebug 
+				debugOut(FileSystem, "There was an error opening the file for writing");
+#endif
+				return false;
+			}
+
+			if (!file.print(filesWriteCache[i].value))
+			{
+#ifdef DetailedDebug 
+				debugOut(FileSystem, "fileWriteString failed");
+#endif
+			}
+			filesWriteCache[i].value = "";
+			file.close();
+		}
+	}
+	return true;
+}
+
+bool appendFileToWriteCache(String fileName, String value)
+{
+	fileName = normalizeFileName(fileName);
+#ifdef DetailedDebug 
+	debugOut(FileSystem, "|-> appendFileToWriteCache: " + fileName);
+#endif
+	for (int i = 0; i < filesWriteCacheSize; i++)
+	{
+		if (filesWriteCache[i].fileName.length() == 0)
+		{
+			filesWriteCache[i].fileName = fileName;
+			filesWriteCache[i].value = value;
+			return true;
+		}
+	}
+	return false;
+}
+#endif
+
 bool filesExists(String fileName)
 {
-	if (fileName.indexOf("/") != 0)
-	{
-		fileName = "/" + fileName;
-	}
+	fileName = normalizeFileName(fileName);
+#ifdef DetailedDebug 
+	debugOut(FileSystem, "|-> filesExists: " + fileName);
+#endif
+
 	return SPIFFS.exists(fileName);
 }
 
 int filesGetSize(String fileName)
 {
+
+	fileName = normalizeFileName(fileName);
+#ifdef DetailedDebug 
+	debugOut(FileSystem, "|-> filesGetSize: " + fileName);
+#endif
+
 	if (!_SPIFFSBegin())
 	{
 #ifdef DetailedDebug 
@@ -125,7 +215,7 @@ int filesGetSize(String fileName)
 	if (!filesExists(fileName)) return -2;
 
 	// open file for reading
-	File file = SPIFFS.open("/" + fileName, "r");
+	File file = SPIFFS.open(fileName, "r");
 
 	if (!file) {
 #ifdef DetailedDebug 
@@ -135,14 +225,19 @@ int filesGetSize(String fileName)
 	}
 
 	int result = file.size();
-#ifdef ARDUINO_ESP8266_RELEASE_2_5_0 
-	file.close(); 
-#endif
+
+	file.close();
+
 	return result;
 }
 
 bool filesDelete(String fileName)
 {
+	fileName = normalizeFileName(fileName);
+#ifdef DetailedDebug 
+	debugOut(FileSystem, "|-> filesDelete: " + fileName);
+#endif
+
 	if (!_SPIFFSBegin())
 	{
 #ifdef DetailedDebug 
@@ -153,13 +248,19 @@ bool filesDelete(String fileName)
 
 	if (!filesExists(fileName)) return false;
 
-	SPIFFS.remove("/" + fileName);
+	SPIFFS.remove(fileName);
 
 	return true;
 }
 
 bool filesRename(String source, String dest)
 {
+	source = normalizeFileName(source);
+	dest = normalizeFileName(dest);
+#ifdef DetailedDebug 
+	debugOut(FileSystem, "|-> filesRename source: " + source + " dest: " + dest);
+#endif
+
 	if (!_SPIFFSBegin())
 	{
 #ifdef DetailedDebug 
@@ -172,16 +273,21 @@ bool filesRename(String source, String dest)
 
 	if (filesExists(dest))
 	{
-		SPIFFS.remove("/" + dest);
+		SPIFFS.remove(dest);
 	}
 
-	SPIFFS.rename("/" + source, "/" + dest);
+	SPIFFS.rename(source, dest);
 
 	return true;
 }
 
 String filesReadString(String fileName)
 {
+	fileName = normalizeFileName(fileName);
+#ifdef DetailedDebug 
+	debugOut(FileSystem, "|-> filesReadString: " + fileName);
+#endif
+
 	String result = String();
 	if (!_SPIFFSBegin())
 	{
@@ -192,7 +298,7 @@ String filesReadString(String fileName)
 	}
 
 	// open file for reading
-	File file = SPIFFS.open("/" + fileName, "r");
+	File file = SPIFFS.open(fileName, "r");
 
 	if (!file) {
 #ifdef DetailedDebug 
@@ -203,14 +309,20 @@ String filesReadString(String fileName)
 	}
 
 	result = file.readString();
-#ifdef ARDUINO_ESP8266_RELEASE_2_5_0 
-	file.close(); 
-#endif
+
+	file.close();
+
 	return result;
 }
 
 bool filesWriteString(String fileName, String value)
 {
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
+	fileName = normalizeFileName(fileName);
+#ifdef DetailedDebug 
+	debugOut(FileSystem, "|-> filesWriteString: " + fileName);
+#endif
+
 
 	if (!_SPIFFSBegin())
 	{
@@ -219,14 +331,9 @@ bool filesWriteString(String fileName, String value)
 #endif
 		return false;
 	}
+	File file = SPIFFS.open(fileName, FILE_WRITE);
 
-	return true;
-	//File file;
-
-	File file = SPIFFS.open("/" + fileName, "w");
-	//File file = SPIFFS.open("/" + fileName, FILE_WRITE);
-
-if (!file) {
+	if (!file) {
 #ifdef DetailedDebug 
 		debugOut(FileSystem, "There was an error opening the file for writing: " + fileName);
 #endif
@@ -236,17 +343,27 @@ if (!file) {
 	if (!file.print(value))
 	{
 #ifdef DetailedDebug 
-		debugOut(FileSystem, "File write failed");
+		debugOut(FileSystem, "fileWriteString failed: " + fileName);
 #endif
 	}
-#ifdef ARDUINO_ESP8266_RELEASE_2_5_0 
-	file.close(); 
-#endif 
+
+	file.close();
+
 	return true;
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+	return appendFileToWriteCache(fileName, value);
+#endif
+
 }
 
 bool filesAppendString(String fileName, String value)
 {
+	fileName = normalizeFileName(fileName);
+#ifdef DetailedDebug 
+	debugOut(FileSystem, "|-> filesAppendString: " + fileName);
+#endif
 
 	if (!_SPIFFSBegin())
 	{
@@ -256,7 +373,7 @@ bool filesAppendString(String fileName, String value)
 		return false;
 	}
 
-	File file = SPIFFS.open("/" + fileName, "a");
+	File file = SPIFFS.open(fileName, "a");
 	if (!file) {
 #ifdef DetailedDebug 
 		debugOut(FileSystem, "There was an error opening the file for writing: " + fileName);
@@ -267,17 +384,21 @@ bool filesAppendString(String fileName, String value)
 	if (!file.println(value))
 	{
 #ifdef DetailedDebug 
-		debugOut(FileSystem, "File write failed");
+		debugOut(FileSystem, "fileAppendString failed: " + fileName);
 #endif
 	}
-#ifdef ARDUINO_ESP8266_RELEASE_2_5_0 
-	file.close(); 
-#endif
+
+	file.close();
+
 	return true;
 }
 
 bool filesAddString(String fileName, String value)
 {
+	fileName = normalizeFileName(fileName);
+#ifdef DetailedDebug 
+	debugOut(FileSystem, "|-> filesAddString: " + fileName);
+#endif
 
 	if (!_SPIFFSBegin())
 	{
@@ -287,7 +408,12 @@ bool filesAddString(String fileName, String value)
 		return false;
 	}
 
-	File file = SPIFFS.open("/" + fileName, "a");
+	if (value.length() == 0)
+	{
+		return true;
+	}
+
+	File file = SPIFFS.open(fileName, "a");
 	if (!file) {
 #ifdef DetailedDebug 
 		debugOut(FileSystem, "There was an error opening the file for writing: " + fileName);
@@ -298,12 +424,12 @@ bool filesAddString(String fileName, String value)
 	if (!file.print(value))
 	{
 #ifdef DetailedDebug 
-		debugOut(FileSystem, "File write failed");
+		debugOut(FileSystem, "fileAddString failed: " + fileName);
 #endif
 	}
-#ifdef ARDUINO_ESP8266_RELEASE_2_5_0 
-	file.close(); 
-#endif
+
+	file.close();
+
 	return true;
 }
 
@@ -341,6 +467,11 @@ bool filesWriteFloat(String fileName, float value)
 
 String filesGetList(String path)
 {
+	path = normalizeFileName(path);
+#ifdef DetailedDebug 
+	debugOut(FileSystem, "|-> filesGetList: " + path);
+#endif
+
 	if (!_SPIFFSBegin())
 	{
 #ifdef DetailedDebug 
@@ -359,7 +490,7 @@ String filesGetList(String path)
 #endif
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
-	File root = SPIFFS.open("/");
+	File root = SPIFFS.open(path);
 
 	File file = root.openNextFile();
 
@@ -396,8 +527,8 @@ bool filesWriteStructure(String fileName, void *value)
 #endif
 		return false;
 	}
-#ifdef ARDUINO_ESP8266_RELEASE_2_5_0 
-	file.close(); 
-#endif
+
+	file.close();
+
 	return true;
 }

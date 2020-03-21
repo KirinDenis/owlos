@@ -120,7 +120,7 @@ $(document).ready(function () {
         boot.parentElement.removeChild(boot);
         document.getElementById("consolePanel").appendChild(boot);
 
-        nodesRefreshHandle = setInterval(nodesRefresh, 10000);
+        nodesRefreshHandle = setInterval(nodesRefresh, 60000);
         
 
         /*

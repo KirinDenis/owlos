@@ -42,6 +42,7 @@ OWLOS распространяется в надежде, что она буде
 #include <Arduino.h>
 
 bool filesBegin();
+bool filesLoop();
 bool filesExists(String fileName);
 int filesGetSize(String fileName);
 bool filesDelete(String fileName);

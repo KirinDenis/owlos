@@ -83,8 +83,10 @@ bool webSetTail(String _webConfig)
 	debugOut(id, "|<- inside change config=" + _webConfig);
 #endif
 	filesRename("web.config", "oldweb.config");
-	filesAddString("web.temp", _webConfig);
-	filesRename("web.temp", "web.config");
+	if (filesAddString("web.temp", _webConfig))
+	{
+		filesRename("web.temp", "web.config");
+	}
 	return true;
 }
 

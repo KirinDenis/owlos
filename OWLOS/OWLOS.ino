@@ -79,6 +79,9 @@ void setup() {
   Main Loop
   -------------------------------------------------------------------------------------------------------------------------*/
 void loop() {  
+
+   filesLoop();
+
   //check WiFi and MQTT stack are available
   //first time Main::loop() calling the transport is not available
   
