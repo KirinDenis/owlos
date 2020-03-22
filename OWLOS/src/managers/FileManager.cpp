@@ -126,9 +126,6 @@ bool filesBegin()
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
 bool filesLoop()
 {
-#ifdef DetailedDebug 
-	debugOut(FileSystem, "filesLoop");
-#endif
 	if (!_SPIFFSBegin())
 	{
 #ifdef DetailedDebug 
@@ -331,7 +328,7 @@ bool filesWriteString(String fileName, String value)
 #endif
 		return false;
 	}
-	File file = SPIFFS.open(fileName, FILE_WRITE);
+	File file = SPIFFS.open(fileName, "w");
 
 	if (!file) {
 #ifdef DetailedDebug 

@@ -79,8 +79,9 @@ void setup() {
   Main Loop
   -------------------------------------------------------------------------------------------------------------------------*/
 void loop() {  
-
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
    filesLoop();
+#endif
 
   //check WiFi and MQTT stack are available
   //first time Main::loop() calling the transport is not available
