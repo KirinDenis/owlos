@@ -150,7 +150,7 @@ void sendResponseHeader(int HTTPResponseCode, String contentType, String Content
 void send(int HTTPResponseCode, String contentType, String content, WiFiClient client)
 {
 	sendResponseHeader(HTTPResponseCode, contentType, "", client);
-	content += "\n\r";
+	//content += "\n\r";
 	client.write(content.c_str(), content.length());
 }
 
