@@ -42,11 +42,32 @@ OWLOS распространяется в надежде, что она буде
 #include <Arduino.h>
 #include "BaseDriver.h"
 
+#define DRIVER_TYPE "ActuatorDriver"
 #define DriverID "actuator1"
 #define ActuatorLoopInterval 200
 
+#define PIN0_INDEX 0
+
 class ActuatorDriver : public BaseDriver {
   public:
+	  
+
+	  static int getPinsCount()
+	  {
+		  return 1;
+	  }
+	  static int getPinType(int pinIndex)
+	  {
+		  if (pinIndex == PIN0_INDEX)
+		  {
+			  return DIGITAL_TYPE;
+		  }
+		  else
+		  {
+			  return NO_TYPE;
+		  }
+	  }
+
     bool init();
     bool begin(String _topic);
     bool query();
@@ -54,14 +75,12 @@ class ActuatorDriver : public BaseDriver {
     bool publish();
     String onMessage(String _topic, String _payload, int transportMask);
 
-    int getPin();
-    bool setPin(int _pin);
+	String setPin(String pinName, int pinIndex);
+	String getPin(int pinIndex);
+
     int getData();
     bool setData(int _toPosition,  bool doEvent);
 
-
   private:
-    int pin = ACTUATORPIN;
-
     int data = 0;
 };

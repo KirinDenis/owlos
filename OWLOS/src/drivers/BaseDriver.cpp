@@ -281,6 +281,7 @@ bool BaseDriver::setAvailable(int _available)
 	return onInsideChange("available", String(available));
 }
 
+
 int BaseDriver::getType()
 {
 #ifdef DetailedDebug

@@ -14,23 +14,28 @@
 #define I2C_FAMILY  2
 #define VCC_FAMILY  3
 
+#define ROLE_COUNT 5
 
-typedef struct PinRole
+typedef struct PinType
 {
 	int family = NO_FAMILY;
-	int type = NO_TYPE;
+	int role = NO_TYPE;
 	int neighbor = -1;
 };
 
 typedef struct Pin
 {
-	PinRole pinRoles[5];	
+	PinType pinTypes[ROLE_COUNT];
 	int GPIONumber = -1;
-	int ChipNumber = -1;
+	int chipNumber = -1;
 	bool io = true;
 	String name = "";
 	String location = "";
+	String driverId = "";
+	int driverPinIndex = -1;
 };
 
 void initPins();
+Pin * getDriverPin(String driverId, int driverPinIndex);
+String setDriverPin(String pinName, String driverId, int driverPinIndex, int pinType);
 Pin getPin();

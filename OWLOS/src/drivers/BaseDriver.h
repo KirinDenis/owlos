@@ -43,6 +43,7 @@ OWLOS распространяется в надежде, что она буде
 #include <Arduino.h>
 #include "..\Utils\Utils.h"
 #include "..\Utils\GPIOMap.h"
+#include "..\Managers\PinManager.h"
 #include "..\Managers\TransportManager.h"
 #include "..\Managers\FileManager.h"
 
@@ -55,9 +56,24 @@ OWLOS распространяется в надежде, что она буде
   as well as implements basic properties and methods.
   Please NOTE: The class itself is never used as a driver class.
                                                                             (...One morning thick snow fell in Babylon...) */
+
+#define DRIVER_TYPE "BaseDriver"
+
 class BaseDriver
 {
   public:
+
+	  static int getPinsCount()
+	  { 
+		  return 0;
+	  }
+
+	  static int getPinType(int pinIndex)
+	  {
+		  return NO_TYPE;
+	  }
+
+
     //Driver id property, used with topic and identify driver inside system
     String id = "";
 
@@ -71,6 +87,12 @@ class BaseDriver
 
     //Method begin(..) calls after(IF) transport is available and Unit "know" self and drivers ID's and Topic's (see: Main::Loop()->DriversBegin())
     virtual bool begin(String _topic);
+
+	//Driver pins managment 
+
+	virtual String setPin(String pinName, int pinIndex);
+	virtual String getPin(int pinIndex);
+
 
     //The query() method calls from Main::Loop()->DriversLoop()->... and give the driver time quantum to check here physical part (get physical light power from LRS like sample)
     //the method work both with publish() method, but must call here "core section" more often as publish()
@@ -101,6 +123,7 @@ class BaseDriver
     int getType();
     bool setType(int _type);
 
+	//Trap settings
     float getTrap();
     bool setTrap(float _trap);
 

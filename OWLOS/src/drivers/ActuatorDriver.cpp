@@ -46,11 +46,15 @@ bool ActuatorDriver::init()
 	if (id.length() == 0) id = DriverID;
 	BaseDriver::init(id);
 	//init properies 
-	getPin();
-	pinMode(pin, OUTPUT);
-
-	getData();
-	setData(data, false);
+	Pin * pin = getDriverPin(id, 0);
+	if (pin != nullptr)
+	{
+		pinMode(pin->GPIONumber, OUTPUT);
+		getData();
+		setData(data, false);
+		return true;
+	}
+	return false;
 }
 
 bool ActuatorDriver::begin(String _topic)
@@ -103,12 +107,12 @@ String ActuatorDriver::onMessage(String _topic, String _payload, int transportMa
 	//Actuator GPIO 1-pin (D4 by default)
 	if (String(topic + "/getpin").equals(_topic))
 	{
-		result = onGetProperty("pin", String(getPin()), transportMask);
+		result = onGetProperty("pin0", String(getPin()), transportMask);
 	}
 	else
-		if (String(topic + "/setpin").equals(_topic))
+		if (String(topic + "/setpin0").equals(_topic))
 		{
-			result = String(setPin(std::atoi(_payload.c_str())));
+			result = String(setPin0(_payload, PIN0_INDEX));
 		}
 		else
 			//Position -----------------------------------------------------------------
@@ -125,29 +129,27 @@ String ActuatorDriver::onMessage(String _topic, String _payload, int transportMa
 }
 
 //Actuator GPIO 1-pin (D4 by default) ----------------------------------------------------
-int ActuatorDriver::getPin()
-{
-	if (filesExists(id + ".pin"))
-	{
-		pin = filesReadInt(id + ".pin");
-	}
-#ifdef DetailedDebug
-	debugOut(id, "pin=" + String(pin));
-#endif
 
-	return pin;
+String ActuatorDriver::setPin(String pinName, int pinIndex)
+{
+	int pinType = ActuatorDriver::getPinType(pinIndex);
+	if (pinType == NO_TYPE)
+	{
+		return "driver pin number not exists";
+	}
+
+	return setDriverPin(pinName, id, pinIndex, pinType);
 }
 
-bool ActuatorDriver::setPin(int _pin)
+String ActuatorDriver::getPin(int pinIndex)
 {
-	pin = _pin;
-	pinMode(pin, OUTPUT);
-	filesWriteInt(id + ".pin", pin);
-	if (available)
+	Pin * pin = getDriverPin(id, pinIndex);
+	if (pin != nullptr)
 	{
-		return onInsideChange("pin", String(pin));
+		return pin->name;
 	}
-	return true;
+
+	return "[NOT_SET]";
 }
 
 //Data -------------------------------------------
@@ -167,11 +169,17 @@ int ActuatorDriver::getData()
 bool ActuatorDriver::setData(int _data, bool doEvent)
 {
 	data = _data;
-	digitalWrite(pin, data);
-	if (doEvent)
+	Pin * pin = getDriverPin(id, PIN1_INDEX);
+	if (pin != nullptr)
 	{
-		filesWriteInt(id + ".data", data);
-		return onInsideChange("data", String(data));
+		digitalWrite(pin->GPIONumber, data);
+
+		if (doEvent)
+		{
+			filesWriteInt(id + ".data", data);
+			return onInsideChange("data", String(data));
+		}
+		return true;
 	}
-	return true;
+	return false;
 };
