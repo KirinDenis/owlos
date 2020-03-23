@@ -42,6 +42,7 @@ OWLOS распространяется в надежде, что она буде
 #include "../utils/GPIOMap.h"
 
 //ALL DEVICES constructors must be called here, current unit topic must be puted as parameter
+#include "PinManager.h"
 #include "DriverManager.h"
 #include "..\..\UnitProperties.h"
 
@@ -56,7 +57,7 @@ BaseDriver * driversList[DriversLimit];
 void driversInit(String _topic)
 {
 	__topic = _topic;
-	
+	initPins();
 #ifdef DetailedDebug
 	debugOut("driverconfig", driversLoadFromConfig());
 #else
