@@ -84,7 +84,7 @@ String ActuatorDriver::getAllProperties()
 {
 	String result = BaseDriver::getAllProperties();
 	result += "data=" + String(data) + "//b\n";
-	result += "pin=" + String(pin) + "//i\n";
+//	result += "pin=" + String(pin) + "//i\n";
 	return result;
 }
 
@@ -129,7 +129,7 @@ String ActuatorDriver::onMessage(String _topic, String _payload, int transportMa
 }
 
 //Actuator GPIO 1-pin (D4 by default) ----------------------------------------------------
-
+/*
 String ActuatorDriver::setPin(String pinName, int pinIndex)
 {
 	int pinType = ActuatorDriver::getPinType(pinIndex);
@@ -151,7 +151,7 @@ String ActuatorDriver::getPin(int pinIndex)
 
 	return "[NOT_SET]";
 }
-
+*/
 //Data -------------------------------------------
 int ActuatorDriver::getData()
 {

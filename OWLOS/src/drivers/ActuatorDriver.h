@@ -75,8 +75,8 @@ class ActuatorDriver : public BaseDriver {
     bool publish();
     String onMessage(String _topic, String _payload, int transportMask);
 
-	String setPin(String pinName, int pinIndex);
-	String getPin(int pinIndex);
+	//String setPin(String pinName, int pinIndex);
+	//String getPin(int pinIndex);
 
     int getData();
     bool setData(int _toPosition,  bool doEvent);

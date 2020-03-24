@@ -95,6 +95,18 @@ bool BaseDriver::query()
 //propNameNNN=propNNNValue
 String BaseDriver::getAllProperties()
 {
+
+	String pins = "";
+	int count = getDriverPinsCount(id);
+	for (int i = 0; i < count; i++)
+	{
+		Pin * pin = getDriverPin(id, i);
+		if (pin != nullptr)
+		{
+			pins += "pin" + String(i) + pin.name + "=" + topic + "\n";			
+			pins += "pintype" + String(i) + pin.driverPinType + "=" + topic + "\n";
+		}
+	}
 	//flags started with "//" chars at end of the string:
 	//r - read only
 	//s - selected
@@ -106,6 +118,7 @@ String BaseDriver::getAllProperties()
 	//if not read only - write accessable
 	//this flags needed to UI and SDK builder - determinate API parameters types and SET API available
 	String result = "id=" + id + "//r\n";
+	result += pins;
 	result += "topic=" + topic + "//r\n";
 	result += "available=" + String(available) + "//bs\n";
 	result += "type=" + String(type) + "//r\n";
@@ -115,7 +128,7 @@ String BaseDriver::getAllProperties()
 	result += "queryinterval=" + String(queryInterval) + "//i\n";
 	result += "publishinterval=" + String(publishInterval) + "//i\n";
 	result += "historydata=" + getHistoryData() + "//r\n";
-	result += "historyfile=//r\n";
+	result += "historyfile=//r\n";	
 	return result;
 }
 
@@ -139,6 +152,39 @@ void BaseDriver::subscribe()
 
 String BaseDriver::onMessage(String _topic, String _payload, int transportMask)
 {
+	if (_topic.indexOf(topic + "/getpintype") == 0)
+	{
+		int pinNumber = std::atoi(_topic.indexOf(String(topic + "/getpintype").length()).c_str());
+		Pin * pin = getDriverPin(pinNumber);
+		if (pin != nullptr)
+		{
+			return String(pin->driverPinType);
+		}
+		else
+		{
+			return NO_TYPE;
+		}
+	}
+	else	
+		if (_topic.indexOf(topic + "/getpin") == 0)
+		{
+			int pinNumber = std::atoi(_topic.indexOf(String(topic + "/getpin").length()).c_str());
+			Pin * pin = getDriverPin(id, pinNumber);
+			if (pin != nullptr)
+			{
+				return String(pin->name);
+			}
+			else
+			{
+				return -1;
+			}
+		}
+		else
+			if (_topic.indexOf(topic + "/setpin") == 0)
+			{
+				int pinNumber = std::atoi(_topic.indexOf(String(topic + "/setpin").length()).c_str());
+				return setDriverPin(_payload, id, pinNumber, NO_TYPE);
+			}
 	//ID --------------------------------------------------------------------
 	if (String(topic + "/getid").equals(_topic))
 	{

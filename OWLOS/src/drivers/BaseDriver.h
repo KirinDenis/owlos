@@ -63,10 +63,7 @@ class BaseDriver
 {
   public:
 
-	  static int getPinsCount()
-	  { 
-		  return 0;
-	  }
+	  static int pinsCount = 0;
 
 	  static int getPinType(int pinIndex)
 	  {
@@ -87,12 +84,6 @@ class BaseDriver
 
     //Method begin(..) calls after(IF) transport is available and Unit "know" self and drivers ID's and Topic's (see: Main::Loop()->DriversBegin())
     virtual bool begin(String _topic);
-
-	//Driver pins managment 
-
-	virtual String setPin(String pinName, int pinIndex);
-	virtual String getPin(int pinIndex);
-
 
     //The query() method calls from Main::Loop()->DriversLoop()->... and give the driver time quantum to check here physical part (get physical light power from LRS like sample)
     //the method work both with publish() method, but must call here "core section" more often as publish()

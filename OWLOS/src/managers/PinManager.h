@@ -19,7 +19,7 @@
 typedef struct PinType
 {
 	int family = NO_FAMILY;
-	int role = NO_TYPE;
+	int type = NO_TYPE;
 	int neighbor = -1;
 };
 
@@ -32,10 +32,13 @@ typedef struct Pin
 	String name = "";
 	String location = "";
 	String driverId = "";
+	int driverPinType = -1;
 	int driverPinIndex = -1;
+	int driveI2CAddr = -1;
 };
 
 void initPins();
+int getDriverPinsCount(String driverId);
 Pin * getDriverPin(String driverId, int driverPinIndex);
 String setDriverPin(String pinName, String driverId, int driverPinIndex, int pinType);
 Pin getPin();

@@ -321,7 +321,7 @@ String driversLoadFromConfig()
 }
 
 //External driver manager API -------------------------------------------------
-String driversAdd(int type, String id, int pin1, int pin2, int pin3, int pin4)
+String driversAdd(int type, String id, String pinName1, int pin2, int pin3, int pin4)
 {
 #ifdef DetailedDebug
 	debugOut("driversadd", id);
@@ -448,9 +448,13 @@ String driversAdd(int type, String id, int pin1, int pin2, int pin3, int pin4)
 									if (type == Actuator)
 									{
 										if (pin1 < 0) return "bad, pin1 wrong value";
+										 setDriverPin(pinName1, id, 0, ActuatorDriver.getPinType(0)); // == ""
+
 										ActuatorDriver * actuatorDriver = new ActuatorDriver;
 										actuatorDriver->id = id;
+
 										actuatorDriver->init();
+										
 										actuatorDriver->setPin(pin1);
 										addBusyPin(type, id, pin1);
 										driversCount++;

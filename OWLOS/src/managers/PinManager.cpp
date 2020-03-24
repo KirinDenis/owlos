@@ -7,12 +7,25 @@ bool pinTypeSupported(Pin pin, int pinType)
 {
 	for (int i = 0; i < ROLE_COUNT; i++)
 	{
-		if (pin.pinTypes[i] == pinType)
+		if (pin.pinTypes[i].type == pinType)
 		{
 			return true;
 		}
 	}
 	return false;
+}
+
+int getDriverPinsCount(String driverId)
+{
+	int count = 0;
+	for (int i = 0; i < pinCount; i++)
+	{
+		if (pins[i].driverId.equals(driverId)) 
+		{
+			count++;
+		}
+	}
+	return count;
 }
 
 Pin * getDriverPin(String driverId, int driverPinIndex)
@@ -29,6 +42,9 @@ Pin * getDriverPin(String driverId, int driverPinIndex)
 
 String setDriverPin(String pinName, String driverId, int driverPinIndex, int pinType)
 {
+	//if exists 
+	Pin * existsPin = getDriverPin(driverId, driverPinIndex)
+
 	for (int i = 0; i < pinCount; i++)
 	{
 		if (pins[i].name.equals(pinName)) 
@@ -37,6 +53,16 @@ String setDriverPin(String pinName, String driverId, int driverPinIndex, int pin
 			{
 				if (pinTypeSupported(pinType))
 				{
+					if (existsPin != nullptr)
+					{
+						existsPin.driverId = "";
+						existsPin.driverPinIndex = -1;
+						pins[i].driverPinType = existsPin.driverPinType;
+					}
+					else
+					{
+						pins[i].driverPinType = existsPin.pinType;
+					}
 					pins[i].driverId = driverId;
 					pins[i].driverPinIndex = driverPinIndex;
 					return "";
