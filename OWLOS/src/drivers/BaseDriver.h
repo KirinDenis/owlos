@@ -59,11 +59,20 @@ OWLOS распространяется в надежде, что она буде
 
 #define DRIVER_TYPE "BaseDriver"
 
+#define PIN0_INDEX 0
+#define PIN1_INDEX 1
+#define PIN2_INDEX 2
+#define PIN3_INDEX 3
+
+
 class BaseDriver
 {
   public:
 
-	  static int pinsCount = 0;
+	  static int getPinsCount()
+	  {
+		 return 0;
+	  }
 
 	  static int getPinType(int pinIndex)
 	  {

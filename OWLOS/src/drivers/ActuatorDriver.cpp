@@ -46,7 +46,7 @@ bool ActuatorDriver::init()
 	if (id.length() == 0) id = DriverID;
 	BaseDriver::init(id);
 	//init properies 
-	Pin * pin = getDriverPin(id, 0);
+	Pin * pin = getDriverPin(id, PIN0_INDEX);
 	if (pin != nullptr)
 	{
 		pinMode(pin->GPIONumber, OUTPUT);
@@ -84,7 +84,7 @@ String ActuatorDriver::getAllProperties()
 {
 	String result = BaseDriver::getAllProperties();
 	result += "data=" + String(data) + "//b\n";
-//	result += "pin=" + String(pin) + "//i\n";
+	//	result += "pin=" + String(pin) + "//i\n";
 	return result;
 }
 
@@ -103,28 +103,15 @@ String ActuatorDriver::onMessage(String _topic, String _payload, int transportMa
 	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
 
 	if (!available) return result;
-
-	//Actuator GPIO 1-pin (D4 by default)
-	if (String(topic + "/getpin").equals(_topic))
+	if (String(topic + "/getdata").equals(_topic))
 	{
-		result = onGetProperty("pin0", String(getPin()), transportMask);
+		result = onGetProperty("data", String(getData()), transportMask);
 	}
 	else
-		if (String(topic + "/setpin0").equals(_topic))
+		if (String(topic + "/setdata").equals(_topic))
 		{
-			result = String(setPin0(_payload, PIN0_INDEX));
+			result = String(setData(std::atoi(_payload.c_str()), true));
 		}
-		else
-			//Position -----------------------------------------------------------------
-			if (String(topic + "/getdata").equals(_topic))
-			{
-				result = onGetProperty("data", String(getData()), transportMask);
-			}
-			else
-				if (String(topic + "/setdata").equals(_topic))
-				{
-					result = String(setData(std::atoi(_payload.c_str()), true));
-				}
 	return result;
 }
 
@@ -169,7 +156,7 @@ int ActuatorDriver::getData()
 bool ActuatorDriver::setData(int _data, bool doEvent)
 {
 	data = _data;
-	Pin * pin = getDriverPin(id, PIN1_INDEX);
+	Pin * pin = getDriverPin(id, PIN0_INDEX);
 	if (pin != nullptr)
 	{
 		digitalWrite(pin->GPIONumber, data);

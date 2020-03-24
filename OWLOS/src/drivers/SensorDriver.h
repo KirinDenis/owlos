@@ -46,6 +46,23 @@ OWLOS распространяется в надежде, что она буде
 
 class SensorDriver : public BaseDriver {
   public:
+
+	  static int getPinsCount()
+	  {
+		  return 2;
+	  }
+
+	  static int getPinType(int pinIndex)
+	  {
+		  switch (pinIndex)
+		  {
+		  case PIN0_INDEX: return DIGITALI_TYPE;
+		  case PIN1_INDEX: return GND_TYPE;
+		  default:
+			  return NO_TYPE;
+		  }
+	  }
+
     bool init();
     bool begin(String _Topic);
     bool query();

@@ -58,6 +58,7 @@ OWLOS распространяется в надежде, что она буде
 void driversInit(String _topic);
 void driversBegin(String unitTopic);
 void driversLoop();
+String driversGetAvailable();
 void driversSubscribe();
 void driversCallback(String _topic, String _payload);
 String driversGetDriversId();

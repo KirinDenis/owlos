@@ -46,8 +46,34 @@ OWLOS распространяется в надежде, что она буде
 #define DriverID "lcd"
 #define LCDLoopInterval 200
 
+#define SCL_INDEX 0
+#define SDA_INDEX 1
+#define I2CADDR_INDEX 2
+#define VCC5_INDEX 3
+#define GND_INDEX 4
+
 class LCDDriver : public BaseDriver {
   public:
+
+	  static int getPinsCount()
+	  {
+		  return 5;
+	  }
+
+	  static int getPinType(int pinIndex)
+	  {
+		  switch (pinIndex)
+		  {
+		  case SCL_INDEX: return SCL_TYPE;
+		  case SDA_INDEX: return SDA_TYPE;
+		  case I2CADDR_INDEX: return I2CADDR_TYPE;
+		  case VCC5_INDEX: return VCC5_TYPE;
+		  case GND_INDEX: return GND_TYPE;
+		  default:
+			  return NO_TYPE;
+		  }
+	  }
+
     bool init();
     
 	bool begin(String _topic);

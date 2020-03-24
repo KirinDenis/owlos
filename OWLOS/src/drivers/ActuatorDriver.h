@@ -46,7 +46,6 @@ OWLOS распространяется в надежде, что она буде
 #define DriverID "actuator1"
 #define ActuatorLoopInterval 200
 
-#define PIN0_INDEX 0
 
 class ActuatorDriver : public BaseDriver {
   public:
@@ -54,16 +53,16 @@ class ActuatorDriver : public BaseDriver {
 
 	  static int getPinsCount()
 	  {
-		  return 1;
+		  return 2;
 	  }
+
 	  static int getPinType(int pinIndex)
 	  {
-		  if (pinIndex == PIN0_INDEX)
+		  switch (pinIndex)
 		  {
-			  return DIGITAL_TYPE;
-		  }
-		  else
-		  {
+		  case PIN0_INDEX: return DIGITALO_TYPE;
+		  case PIN1_INDEX: return GND_TYPE;
+		  default:
 			  return NO_TYPE;
 		  }
 	  }

@@ -65,7 +65,7 @@ void driversInit(String _topic)
 #else
 	driversLoadFromConfig();
 #endif
-
+	driversGetAvailable();
 }
 
 void driversBegin(String unitTopic)
@@ -84,6 +84,37 @@ void driversLoop()
 		driversList[i]->query();
 		driversList[i]->publish();
 	}
+}
+
+String driversGetAvailable()
+{
+	String result = "";
+
+	result += "name:ActuatorDriver\n";
+	for (int i = 0; i < ActuatorDriver::getPinsCount(); i++)
+	{
+		result += "pintype" + String(i) +  "=" + ActuatorDriver::getPinType(i) + "\n";
+		result += "pintypedecoded" + String(i) + "=" + pinDecodeType(ActuatorDriver::getPinType(i)) + "\n";
+	}
+
+	result += "name:SensorDriver\n";
+	for (int i = 0; i < SensorDriver::getPinsCount(); i++)
+	{
+		result += "pintype" + String(i) + "=" + SensorDriver::getPinType(i) + "\n";
+		result += "pintypedecoded" + String(i) + "=" + pinDecodeType(SensorDriver::getPinType(i)) + "\n";
+	}
+
+	result += "name:LCDDriver\n";
+	for (int i = 0; i < LCDDriver::getPinsCount(); i++)
+	{
+		result += "pintype" + String(i) + "=" + LCDDriver::getPinType(i) + "\n";
+		result += "pintypedecoded" + String(i) + "=" + pinDecodeType(LCDDriver::getPinType(i)) + "\n";
+	}
+
+
+	debugOut("PINS", result);
+	return result;
+
 }
 
 void driversSubscribe()
@@ -321,7 +352,7 @@ String driversLoadFromConfig()
 }
 
 //External driver manager API -------------------------------------------------
-String driversAdd(int type, String id, String pinName1, int pin2, int pin3, int pin4)
+String driversAdd(int type, String id, int pin1, int pin2, int pin3, int pin4)
 {
 #ifdef DetailedDebug
 	debugOut("driversadd", id);
@@ -448,14 +479,14 @@ String driversAdd(int type, String id, String pinName1, int pin2, int pin3, int 
 									if (type == Actuator)
 									{
 										if (pin1 < 0) return "bad, pin1 wrong value";
-										 setDriverPin(pinName1, id, 0, ActuatorDriver.getPinType(0)); // == ""
+										 //setDriverPin(pinName1, id, 0, ActuatorDriver.getPinType(0)); // == ""
 
 										ActuatorDriver * actuatorDriver = new ActuatorDriver;
 										actuatorDriver->id = id;
 
 										actuatorDriver->init();
 										
-										actuatorDriver->setPin(pin1);
+										//actuatorDriver->setPin(pin1);
 										addBusyPin(type, id, pin1);
 										driversCount++;
 										driversList[driversCount - 1] = actuatorDriver;
