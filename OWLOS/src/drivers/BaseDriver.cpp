@@ -100,11 +100,18 @@ String BaseDriver::getAllProperties()
 	int count = getDriverPinsCount(id);
 	for (int i = 0; i < count; i++)
 	{
-		Pin * pin = getDriverPin(id, i);
-		if (pin != nullptr)
+		PinDriverInfo pinDriverInfo;
+		if (getDriverPinInfo(id, i, &pinDriverInfo))
 		{
-			pins += "pin" + String(i) + pin->name + "=" + topic + "\n";			
-			pins += "pintype" + String(i) + pin->driverPinType + "=" + topic + "\n";
+			debugOut("PIN", "NOT NULL");
+			pins += "pin" + String(i) + "=" + pinDriverInfo.name + "\n";
+			pins += "pintype" + String(i) + "=" + pinDriverInfo.driverPinType  + "\n";
+			pins += "pintypedecoded" + String(i) + "=" + pinDecodeType(pinDriverInfo.driverPinType) + "\n";
+			
+		}
+		else
+		{
+			debugOut("PIN", "NULL");
 		}
 	}
 	//flags started with "//" chars at end of the string:
@@ -155,10 +162,10 @@ String BaseDriver::onMessage(String _topic, String _payload, int transportMask)
 	if (_topic.indexOf(topic + "/getpintype") == 0)
 	{
 		int pinNumber = std::atoi(_topic.substring(_topic.indexOf(String(topic + "/getpintype").length())).c_str());
-		Pin * pin = getDriverPin(id, pinNumber);
-		if (pin != nullptr)
+		PinDriverInfo pinDriverInfo;
+		if (getDriverPinInfo(id, pinNumber, &pinDriverInfo))		
 		{
-			return String(pin->driverPinType);
+			return String(pinDriverInfo.driverPinType);
 		}
 		else
 		{
@@ -169,10 +176,11 @@ String BaseDriver::onMessage(String _topic, String _payload, int transportMask)
 		if (_topic.indexOf(topic + "/getpin") == 0)
 		{
 			int pinNumber = std::atoi(_topic.substring(_topic.indexOf(String(topic + "/getpin").length())).c_str());
-			Pin * pin = getDriverPin(id, pinNumber);
-			if (pin != nullptr)
+			
+			PinDriverInfo pinDriverInfo;
+			if (getDriverPinInfo(id, pinNumber, &pinDriverInfo))
 			{
-				return String(pin->name);
+				return String(pinDriverInfo.name);
 			}
 			else
 			{

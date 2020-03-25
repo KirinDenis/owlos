@@ -46,10 +46,11 @@ bool ActuatorDriver::init()
 	if (id.length() == 0) id = DriverID;
 	BaseDriver::init(id);
 	//init properies 
-	Pin * pin = getDriverPin(id, PIN0_INDEX);
-	if (pin != nullptr)
+	//Pin * pin = getDriverPin(id, PIN0_INDEX);
+	PinDriverInfo pinDriverInfo;
+	if (getDriverPinInfo(id, PIN0_INDEX, &pinDriverInfo))
 	{
-		pinMode(pin->GPIONumber, OUTPUT);
+		pinMode(pinDriverInfo.GPIONumber, OUTPUT);
 		getData();
 		setData(data, false);
 		return true;
@@ -156,10 +157,10 @@ int ActuatorDriver::getData()
 bool ActuatorDriver::setData(int _data, bool doEvent)
 {
 	data = _data;
-	Pin * pin = getDriverPin(id, PIN0_INDEX);
-	if (pin != nullptr)
+	PinDriverInfo pinDriverInfo;
+	if (getDriverPinInfo(id, PIN0_INDEX, &pinDriverInfo))
 	{
-		digitalWrite(pin->GPIONumber, data);
+		digitalWrite(pinDriverInfo.GPIONumber, data);
 
 		if (doEvent)
 		{

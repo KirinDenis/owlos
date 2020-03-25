@@ -480,26 +480,21 @@ void handleGetAllUnitProperties(WiFiClient client)
 
 void handleAddDriver(WiFiClient client)
 {
-	if (argsCount > 5)
+	if (argsCount > 2)
 	{
-		if ((argName[0].equals("type")) && (argName[1].equals("id")) && (argName[2].equals("pin1"))
-			&& (argName[3].equals("pin2")) && (argName[4].equals("pin3")) && (argName[5].equals("pin4")))
+		if ((argName[0].equals("type")) && (argName[1].equals("id")) && (argName[2].equals("pins")))			
 		{
 			int _type = std::atoi(arg[0].c_str());
-			String _id = arg[1];
-			int _pin1 = driversPinNameToValue(arg[2]);
-			int _pin2 = driversPinNameToValue(arg[3]);
-			int _pin3 = driversPinNameToValue(arg[4]);
-			int _pin4 = driversPinNameToValue(arg[5]);
-
-			String result = driversAdd(_type, _id, _pin1, _pin2, _pin3, _pin4);
+			String _id = decode(arg[1]);
+			String _pins = decode(arg[2]);
+			String result = driversAdd(_type, _id, _pins);
 			if (!result.equals("1"))
 			{
 				send(503, "text/html", result, client);
 			}
 			else
 			{
-				if (!driversSaveToConfig(_type, _id, _pin1, _pin2, _pin3, _pin4))
+				if (!driversSaveToConfig(_type, _id, _pins))
 				{
 					send(503, "text/html", "bad, driver added but not stored to configuration file", client);
 				}

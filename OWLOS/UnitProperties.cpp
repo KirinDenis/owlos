@@ -229,8 +229,8 @@ FlashMode_t espmagicflashchipmode((FlashMode_t)DefaultESPMagicFlashChipMode);
 
 //Pins routins 
 //busyPins variable is original declarated at DriversManager, this flag only control changes of state
-String _busyPins(DefaultBusyPins);
-String pinsMap(DefaultPinsMap);
+//String _busyPins(DefaultBusyPins);
+//String pinsMap(DefaultPinsMap);
 
 //Update 
 int updateavailable(DefaultUpdateAvailable);
@@ -345,8 +345,8 @@ String unitGetAllProperties()
 	result += "espmagicflashchipspeed=" + String(espmagicflashchipspeed) + "//r\n";
 	result += "espmagicflashchipmode=" + String(espmagicflashchipmode) + "//r\n";
 	//Pins 
-	result += "busypins=" + unitGetBusyPins() + "//rs\n";
-	result += "pinsmap=" + unitGetPinsMap() + "//r\n";
+	//result += "busypins=" + unitGetBusyPins() + "//rs\n";
+	//result += "pinsmap=" + unitGetPinsMap() + "//r\n";
 
 	return result;
 }
@@ -646,10 +646,10 @@ String unitOnMessage(String _topic, String _payload, int transportMask)
 																																																																																																																																		if (String(topic + "/setespmagicflashchipmode").equals(_topic)) return String(unitSetESPMagicFlashChipMode(std::atoi(_payload.c_str())));
 	//Pins
 																																																																																																																																		else
-																																																																																																																																			if (String(topic + "/getbusypins").equals(_topic)) return unitGetBusyPins();
-																																																																																																																																			else
-																																																																																																																																				if (String(topic + "/getpinsmap").equals(_topic)) return unitGetPinsMap();
-																																																																																																																																				else
+																																																																																																																																			//if (String(topic + "/getbusypins").equals(_topic)) return unitGetBusyPins();
+																																																																																																																																			//else
+																																																																																																																																				//if (String(topic + "/getpinsmap").equals(_topic)) return unitGetPinsMap();
+																																																																																																																																				//else
 																																																																																																																																					if (String(topic + "/getupdateavailable").equals(_topic)) return onGetProperty("updateavailable", String(unitGetUpdateAvailable()), transportMask);
 																																																																																																																																					else
 																																																																																																																																						if (String(topic + "/setupdateavailable").equals(_topic)) return String(unitSetUpdateAvailable(std::atoi(_payload.c_str())));
@@ -1817,17 +1817,21 @@ bool unitSetESPMagicFlashChipMode(int _espmagicflashchipmode)
 //Pins 
 String unitGetBusyPins()
 {
+	/*
 	String __busyPins = driversGetBusyPins();
 	if (!String(__busyPins).equals(_busyPins)) onInsideChange("busypins", String(__busyPins));
 	if (__busyPins.length() == 0) return " ";
 	else return _busyPins = __busyPins;
+	*/
 }
 
 String unitGetPinsMap()
 {
+	/*
 	String _pinsMap = driversGetPinsMap();
 	if (!String(_pinsMap).equals(pinsMap)) onInsideChange("pinsmap", String(_pinsMap));
 	return pinsMap = _pinsMap;
+	*/
 }
 
 //UpdateAvailable()  

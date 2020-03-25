@@ -1,4 +1,4 @@
-#include <Arduino.h>
+﻿#include <Arduino.h>
 
 #define NO_TYPE  0
 #define GPIO_TYPE  1
@@ -24,6 +24,7 @@
 
 						   
 #define PIN_TYPE_COUNT 5	   
+#define PIN_DRIVER_COUNT 10	   
 						   
 typedef struct PinType	   
 {
@@ -39,15 +40,25 @@ typedef struct Pin
 	int GPIONumber = -1;
 	int chipNumber = -1;
 	String location = "";
-	String driverId = "";
-	int driverPinType = NO_TYPE;
-	int driverPinIndex = -1;
-	int driveI2CAddr = -1;
+	String driverId[PIN_DRIVER_COUNT];
+	int driverPinType[PIN_DRIVER_COUNT];
+	int driverPinIndex[PIN_DRIVER_COUNT];
+	int driveI2CAddr[PIN_DRIVER_COUNT];
+};
+
+//структура для передачи данных о пине в драйвер, так как на одном пине может быть много драйверов
+typedef struct PinDriverInfo
+{
+	String name = "";	
+	int GPIONumber = -1;	
+	int driverPinType;
+	int driverPinIndex;
+	int driveI2CAddr;
 };
 
 void initPins();
 String pinDecodeType(int typeCode);
 int getDriverPinsCount(String driverId);
-Pin * getDriverPin(String driverId, int driverPinIndex);
+bool getDriverPinInfo(String driverId, int driverPinIndex, PinDriverInfo * pinDriverInfo);
 String setDriverPin(String pinName, String driverId, int driverPinIndex, int pinType);
 Pin getPin();

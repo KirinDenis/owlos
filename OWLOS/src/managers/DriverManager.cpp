@@ -49,9 +49,12 @@ OWLOS распространяется в надежде, что она буде
 String __topic;
 String busyPins;
 
-#define DriversLimit 20
+#define DriversLimit 50
 int driversCount = 0;
 BaseDriver * driversList[DriversLimit];
+
+#define lineDelimiter  "\n"
+#define valueDelimiter  ";"
 
 
 void driversInit(String _topic)
@@ -191,6 +194,7 @@ String driversGetAllDriversProperties()
 	return result;
 }
 
+/*
 bool checkPinBusy(int pin)
 {
 	if (pin < 0) return false;
@@ -287,10 +291,11 @@ String driversValueToPinName(int pinValue)
 	if (pinValue == A0) return "A0";
 	return String();
 }
+*/
 
-bool driversSaveToConfig(int type, String id, int pin1, int pin2, int pin3, int pin4)
+bool driversSaveToConfig(int type, String id, String pins)
 {
-	String driver = String(type) + ";" + id + ";" + String(pin1) + ";" + String(pin2) + ";" + String(pin3) + ";" + String(pin4) + ";\n";
+	String driver = String(type) + ";" + id + ";" + pins + ";\n";
 	return filesAppendString("driverslist", driver);
 }
 
@@ -304,8 +309,6 @@ String driversLoadFromConfig()
 
 	String result = String();
 
-	String lineDelimiter = "\n";
-	String valueDelimiter = ";";
 
 	int linePos = 0;
 	String line;
@@ -322,10 +325,7 @@ String driversLoadFromConfig()
 		String value;
 		String type;
 		String id;
-		String pin1;
-		String pin2;
-		String pin3;
-		String pin4;
+		String pins;
 		while ((valuePos = line.indexOf(valueDelimiter)) != -1)
 		{
 			value = line.substring(0, valuePos);
@@ -333,35 +333,53 @@ String driversLoadFromConfig()
 			{
 			case 0: type = value; break;
 			case 1: id = value; break;
-			case 2: pin1 = value; break;
-			case 3: pin2 = value; break;
-			case 4: pin3 = value; break;
-			case 5: pin4 = value; break;
+			case 2: pins = value; break;
 			}
 			valueCount++;
-			line.remove(0, valuePos + valueDelimiter.length());
+			line.remove(0, valuePos + 1);
 		}
 		if (id.length() != 0)
 		{
-			result += "{" + driversAdd(std::atoi(type.c_str()), id, std::atoi(pin1.c_str()), std::atoi(pin2.c_str()), std::atoi(pin3.c_str()), std::atoi(pin4.c_str())) + "}";
+			result += "{" + driversAdd(std::atoi(type.c_str()), id, pins) + "}";
 		}
 
-		driverList.remove(0, linePos + lineDelimiter.length());
+		driverList.remove(0, linePos + 2);
 	}
 	return result;
 }
 
 //External driver manager API -------------------------------------------------
-String driversAdd(int type, String id, int pin1, int pin2, int pin3, int pin4)
+String driversAdd(int type, String id, String pins) //String D1;D3;GND;....
 {
 #ifdef DetailedDebug
 	debugOut("driversadd", id);
-	debugOut("driversadd", busyPins);
+	debugOut("driversadd", pins);
 #endif
 	if (driversCount >= DriversLimit) return "bad, drivers count out of limit range";
 	if (id.length() == 0) return "bad, id is zero length string";
 	if (type < 0) return "bad, driver type";
 
+	String result = "";
+
+#define DRIVER_PIN_LIMIT 10
+
+	String _pins[DRIVER_PIN_LIMIT];
+	int pinCount = 0;
+	int pinPos = 0;
+	pins += ";";
+	while ((pinPos = pins.indexOf(valueDelimiter)) != -1)
+	{
+		_pins[pinCount] = pins.substring(0, pinPos);
+		if (_pins[pinCount].length() == 0) break;
+		debugOut("pin", _pins[pinCount]);
+		pinCount++;
+		pins.remove(0, pinPos + 1);
+	}
+
+	
+
+
+	/*
 	if (checkPinBusy(pin1)) return "bad, pin1:" + String(pin1) + " busy " + busyPins;
 	if (checkPinBusy(pin2)) return "bad, pin2:" + String(pin2) + " busy " + busyPins;
 	if (checkPinBusy(pin3)) return "bad, pin3:" + String(pin3) + " busy " + busyPins;
@@ -375,6 +393,7 @@ String driversAdd(int type, String id, int pin1, int pin2, int pin3, int pin4)
 	if (pinMaping.length() != 0) return "bad, pin3:" + String(pin3) + " " + pinMaping;
 	pinMaping = checkPinMaping(pin4);
 	if (pinMaping.length() != 0) return "bad, pin4:" + String(pin4) + " " + pinMaping;
+	*/
 
 	id.toLowerCase();
 
@@ -383,6 +402,34 @@ String driversAdd(int type, String id, int pin1, int pin2, int pin3, int pin4)
 		if (driversList[i]->id.equals(id)) return "bad, id: " + id + " exists";
 	}
 
+	if (type == Actuator)
+	{
+		debugOut("pin", String(pinCount));
+		if (pinCount != ActuatorDriver::getPinsCount())
+		{
+			return "ActuatorDriver's pins quantity does not match, must be " + String(ActuatorDriver::getPinsCount());
+		}
+
+		result  = setDriverPin(_pins[PIN0_INDEX], id, PIN0_INDEX, ActuatorDriver::getPinType(PIN0_INDEX));
+		if (result.length() != 0) return result;
+
+		result = setDriverPin(_pins[PIN1_INDEX], id, PIN1_INDEX, ActuatorDriver::getPinType(PIN1_INDEX));
+		if (result.length() != 0) return result;
+
+
+		ActuatorDriver * actuatorDriver = new ActuatorDriver;
+		actuatorDriver->id = id;
+		actuatorDriver->init();
+		driversCount++;
+		driversList[driversCount - 1] = actuatorDriver;
+	}
+	else
+	{
+		return "not supported";
+	}
+
+
+	/*
 	if (type == DHTDriverType)
 	{
 
@@ -530,6 +577,7 @@ String driversAdd(int type, String id, int pin1, int pin2, int pin3, int pin4)
 											{
 												return "bad, driver type";
 											}
+*/
 	//if driver added at RUNTIME
 	if (transportAvailable()) driversList[driversCount - 1]->begin(unitGetTopic());
 #ifdef DetailedDebug
