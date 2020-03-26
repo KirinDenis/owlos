@@ -55,6 +55,8 @@ BaseDriver * driversList[DriversLimit];
 
 #define lineDelimiter  "\n"
 #define valueDelimiter  ";"
+#define pinDelimiter  ","
+
 
 
 void driversInit(String _topic)
@@ -314,12 +316,14 @@ String driversLoadFromConfig()
 	String line;
 
 #ifdef DetailedDebug
-	debugOut("driverconfig", "doparse");
+	debugOut("driverconfig", "do parse");
 #endif
 
 	while ((linePos = driverList.indexOf(lineDelimiter)) != -1)
 	{
+
 		line = driverList.substring(0, linePos);
+		debugOut("driverconfig_load line_", line);
 		int valuePos = 0;
 		int valueCount = 0;
 		String value;
@@ -352,8 +356,8 @@ String driversLoadFromConfig()
 String driversAdd(int type, String id, String pins) //String D1;D3;GND;....
 {
 #ifdef DetailedDebug
-	debugOut("driversadd", id);
-	debugOut("driversadd", pins);
+	debugOut("driversadd_id", id);
+	debugOut("driversadd_pins", pins);
 #endif
 	if (driversCount >= DriversLimit) return "bad, drivers count out of limit range";
 	if (id.length() == 0) return "bad, id is zero length string";
@@ -366,8 +370,8 @@ String driversAdd(int type, String id, String pins) //String D1;D3;GND;....
 	String _pins[DRIVER_PIN_LIMIT];
 	int pinCount = 0;
 	int pinPos = 0;
-	pins += ";";
-	while ((pinPos = pins.indexOf(valueDelimiter)) != -1)
+	pins += pinDelimiter;
+	while ((pinPos = pins.indexOf(pinDelimiter)) != -1)
 	{
 		_pins[pinCount] = pins.substring(0, pinPos);
 		if (_pins[pinCount].length() == 0) break;
