@@ -58,6 +58,17 @@ bool ActuatorDriver::init()
 	return false;
 }
 
+void ActuatorDriver::del()
+{
+	PinDriverInfo pinDriverInfo;
+	if (getDriverPinInfo(id, PIN0_INDEX, &pinDriverInfo))
+	{
+		pinMode(pinDriverInfo.GPIONumber, INPUT);
+	}
+	BaseDriver::del();
+	return;
+}
+
 bool ActuatorDriver::begin(String _topic)
 {
 	BaseDriver::begin(_topic);

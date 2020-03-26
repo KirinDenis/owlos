@@ -68,6 +68,7 @@ class ActuatorDriver : public BaseDriver {
 	  }
 
     bool init();
+	void del();
     bool begin(String _topic);
     bool query();
     String getAllProperties();

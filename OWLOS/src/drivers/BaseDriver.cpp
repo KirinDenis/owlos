@@ -63,6 +63,17 @@ bool BaseDriver::init(String _id)
 	return true;
 }
 
+void BaseDriver::del()
+{
+	int count = getDriverPinsCount(id);
+	for (int i = 0; i < count; i++)
+	{
+		freeDriverPin(id, i);
+	}
+	available = false;
+	return;
+}
+
 //begin(..) is called after transport accessable when Unit knows its and drivers' IDs and Topics
 bool BaseDriver::begin(String _topic)
 {

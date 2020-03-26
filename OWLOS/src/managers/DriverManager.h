@@ -58,7 +58,7 @@ OWLOS распространяется в надежде, что она буде
 void driversInit(String _topic);
 void driversBegin(String unitTopic);
 void driversLoop();
-String driversGetAvailable();
+String driversGetAccessable();
 void driversSubscribe();
 void driversCallback(String _topic, String _payload);
 String driversGetDriversId();
@@ -77,3 +77,4 @@ bool driversSaveToConfig(int type, String id, String pins);
 String driversLoadFromConfig();
 
 String driversAdd(int type, String id, String pins);
+String driversDelete(String id);

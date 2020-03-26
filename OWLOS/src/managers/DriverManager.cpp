@@ -49,9 +49,9 @@ OWLOS распространяется в надежде, что она буде
 String __topic;
 String busyPins;
 
-#define DriversLimit 50
-int driversCount = 0;
-BaseDriver * driversList[DriversLimit];
+#define DRIVERS_LIMIT 50
+int _driversCount = 0;
+BaseDriver * driversList[DRIVERS_LIMIT];
 
 #define lineDelimiter  "\n"
 #define valueDelimiter  ";"
@@ -70,28 +70,47 @@ void driversInit(String _topic)
 #else
 	driversLoadFromConfig();
 #endif
-	driversGetAvailable();
 }
 
 void driversBegin(String unitTopic)
 {
-	for (int i = 0; i < driversCount; i++)
+	for (int i = 0; i < DRIVERS_LIMIT; i++)
 	{
-		driversList[i]->begin(unitTopic);
+		if (driversList[i] != nullptr)
+		{
+			driversList[i]->begin(unitTopic);
+		}
 	}
 }
 
 void driversLoop()
 {
 	//ALL DEVICES must be call .publish() method from this main loop procedure
-	for (int i = 0; i < driversCount; i++)
+	for (int i = 0; i < DRIVERS_LIMIT; i++)
 	{
-		driversList[i]->query();
-		driversList[i]->publish();
+		if (driversList[i] != nullptr)
+		{
+			driversList[i]->query();
+			driversList[i]->publish();
+		}
 	}
 }
 
-String driversGetAvailable()
+int driversGetCount()
+{
+	int driversCount = 0;
+	for (int i = 0; i < DRIVERS_LIMIT; i++)
+	{
+		if (driversList[i] != nullptr)
+		{
+			driversCount++;
+		}
+	}
+	return driversCount;
+}
+
+
+String driversGetAccessable()
 {
 	String result = "";
 
@@ -125,38 +144,51 @@ String driversGetAvailable()
 void driversSubscribe()
 {
 	//ALL DEVICES method .subscribe() must be called here with current _topic and _payload values
-	for (int i = 0; i < driversCount; i++)
+	for (int i = 0; i < DRIVERS_LIMIT; i++)
 	{
-		driversList[i]->subscribe();
+		if (driversList[i] != nullptr)
+		{
+			driversList[i]->subscribe();
+
+		}
 	}
 }
 
 void driversCallback(String _topic, String _payload)
 {
 	//ALL DEVICES method .onMessage() must be called here with current _topic and _payload values
-	for (int i = 0; i < driversCount; i++)
+	for (int i = 0; i < DRIVERS_LIMIT; i++)
 	{
-		driversList[i]->onMessage(_topic, _payload, MQTTMask);
+		if (driversList[i] != nullptr)
+		{
+			driversList[i]->onMessage(_topic, _payload, MQTTMask);
+		}
 	}
 }
 
 String driversGetDriversId()
 {
 	String result = "driverid;type;available\n";
-	for (int i = 0; i < driversCount; i++)
+	for (int i = 0; i < DRIVERS_LIMIT; i++)
 	{
-		result += driversList[i]->id + ";" + String(driversList[i]->getType()) + ";" + String(driversList[i]->getAvailable()) + "\n";
+		if (driversList[i] != nullptr)
+		{
+			result += driversList[i]->id + ";" + String(driversList[i]->getType()) + ";" + String(driversList[i]->getAvailable()) + "\n";
+		}
 	}
 	return result;
 };
 
 BaseDriver* driversGetDriver(String id)
 {
-	for (int i = 0; i < driversCount; i++)
+	for (int i = 0; i < DRIVERS_LIMIT; i++)
 	{
-		if (driversList[i]->id.equals(id))
+		if (driversList[i] != nullptr)
 		{
-			return driversList[i];
+			if (driversList[i]->id.equals(id))
+			{
+				return driversList[i];
+			}
 		}
 	}
 	return NULL;
@@ -188,10 +220,13 @@ String driversGetDriverProperties(String id)
 String driversGetAllDriversProperties()
 {
 	String result = unitGetAllProperties();
-	for (int i = 0; i < driversCount; i++)
+	for (int i = 0; i < DRIVERS_LIMIT; i++)
 	{
-		result += "properties for:" + driversList[i]->id + "\n";
-		result += driversList[i]->getAllProperties();
+		if (driversList[i] != nullptr)
+		{
+			result += "properties for:" + driversList[i]->id + "\n";
+			result += driversList[i]->getAllProperties();
+		}
 	}
 	return result;
 }
@@ -311,7 +346,6 @@ String driversLoadFromConfig()
 
 	String result = String();
 
-
 	int linePos = 0;
 	String line;
 
@@ -347,7 +381,7 @@ String driversLoadFromConfig()
 			result += "{" + driversAdd(std::atoi(type.c_str()), id, pins) + "}";
 		}
 
-		driverList.remove(0, linePos + 2);
+		driverList.remove(0, linePos + 1);
 	}
 	return result;
 }
@@ -359,7 +393,8 @@ String driversAdd(int type, String id, String pins) //String D1;D3;GND;....
 	debugOut("driversadd_id", id);
 	debugOut("driversadd_pins", pins);
 #endif
-	if (driversCount >= DriversLimit) return "bad, drivers count out of limit range";
+	int driversCount = driversGetCount();
+	if (driversCount >= DRIVERS_LIMIT) return "bad, drivers count out of limit range";
 	if (id.length() == 0) return "bad, id is zero length string";
 	if (type < 0) return "bad, driver type";
 
@@ -401,10 +436,30 @@ String driversAdd(int type, String id, String pins) //String D1;D3;GND;....
 
 	id.toLowerCase();
 
-	for (int i = 0; i < driversCount; i++)
+	for (int i = 0; i < DRIVERS_LIMIT; i++)
 	{
-		if (driversList[i]->id.equals(id)) return "bad, id: " + id + " exists";
+		if (driversList[i] != nullptr)
+		{
+			if (driversList[i]->id.equals(id)) return "bad, id: " + id + " exists";
+		}
 	}
+
+	int freeIndex = -1;
+	for (int i = 0; i < DRIVERS_LIMIT; i++)
+	{
+		if (driversList[i] == nullptr)
+		{
+			freeIndex = i;
+			break;
+		}
+	}
+
+	if (freeIndex == -1)
+	{
+		return "no space for locate new driver";
+	}
+
+
 
 	if (type == Actuator)
 	{
@@ -424,8 +479,7 @@ String driversAdd(int type, String id, String pins) //String D1;D3;GND;....
 		ActuatorDriver * actuatorDriver = new ActuatorDriver;
 		actuatorDriver->id = id;
 		actuatorDriver->init();
-		driversCount++;
-		driversList[driversCount - 1] = actuatorDriver;
+		driversList[freeIndex] = actuatorDriver;
 	}
 	else
 	{
@@ -589,4 +643,49 @@ String driversAdd(int type, String id, String pins) //String D1;D3;GND;....
 #endif
 
 	return "1";
+}
+
+
+String driversDelete(String id)
+{	
+	debugOut("driversdelete", id);
+	bool found = false;
+	String driverlist = "";
+	for (int i = 0; i < DRIVERS_LIMIT; i++)
+	{		
+		if (driversList[i] != nullptr)
+		{
+			if (driversList[i]->id.equals(id))
+			{
+				driversList[i]->del();
+				driversList[i] = nullptr;
+				found = true;
+			}
+			else
+			{
+				driverlist += String(driversList[i]->getType()) + ";" + driversList[i]->id + ";";
+				int pinCount = getDriverPinsCount(driversList[i]->id);
+				for (int j = 0; j < pinCount; j++)
+				{
+					PinDriverInfo pinDriverInfo;
+					if (getDriverPinInfo(driversList[i]->id, j, &pinDriverInfo))
+					{						
+						driverlist += pinDriverInfo.name;
+						if (j < pinCount - 1)
+						{
+							driverlist += pinDelimiter;
+						}
+					}
+				}
+				driverlist += ";\n";				
+			}
+		}
+	}
+
+	if (found)
+	{
+		filesWriteString("driverslist", driverlist);
+		return "";
+	}
+	return "driver id=" + id + " not found, can't be deleted";	
 }

@@ -191,6 +191,19 @@ String setDriverPin(String pinName, String driverId, int driverPinIndex, int pin
 	return "pin " + pinName + " is not exists";
 }
 
+void freeDriverPin(String driverId, int driverPinIndex)
+{
+	for (int i = 0; i < pinCount; i++)
+	{
+		if ((pins[i].driverId[0].indexOf(driverId + ";") >= 0) && (pins[i].driverPinIndex[0] == driverPinIndex))
+		{
+			pins[i].driverId[0] = "";
+			pins[i].driverPinIndex[0] = -1;
+		}
+	}
+	return;
+}
+
 
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 int pinNameToValue(String pinName)

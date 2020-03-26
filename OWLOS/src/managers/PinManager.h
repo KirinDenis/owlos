@@ -61,4 +61,5 @@ String pinDecodeType(int typeCode);
 int getDriverPinsCount(String driverId);
 bool getDriverPinInfo(String driverId, int driverPinIndex, PinDriverInfo * pinDriverInfo);
 String setDriverPin(String pinName, String driverId, int driverPinIndex, int pinType);
+void freeDriverPin(String driverId, int driverPinIndex);
 Pin getPin();

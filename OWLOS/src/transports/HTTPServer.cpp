@@ -482,7 +482,7 @@ void handleAddDriver(WiFiClient client)
 {
 	if (argsCount > 2)
 	{
-		if ((argName[0].equals("type")) && (argName[1].equals("id")) && (argName[2].equals("pins")))			
+		if ((argName[0].equals("type")) && (argName[1].equals("id")) && (argName[2].equals("pins")))
 		{
 			int _type = std::atoi(arg[0].c_str());
 			String _id = decode(arg[1]);
@@ -508,6 +508,28 @@ void handleAddDriver(WiFiClient client)
 	}
 	handleNotFound(client);
 }
+
+void handleDeleteDriver(WiFiClient client)
+{
+	if (argsCount > 0)
+	{
+		if (argName[0].equals("id"))
+		{
+			String result = driversDelete(arg[0].c_str());
+			if (result.length() == 0)
+			{
+				send(200, "text/html", "1", client);
+			}
+			else
+			{
+				send(503, "text/html", result, client);
+			}
+			return;
+		}
+	}
+	handleNotFound(client);
+}
+
 
 void handleGetDriversId(WiFiClient client)
 {
@@ -839,7 +861,7 @@ void HTTPServerLoop()
 			if (client.available())
 			{
 				char receiveChar = client.read();
-				
+
 				if (receiveChar == '\n')
 				{
 
@@ -919,39 +941,41 @@ void HTTPServerLoop()
 															else
 																if (firstLine.indexOf("/adddriver") != -1) { handleAddDriver(client); }
 																else
-																	if (firstLine.indexOf("/getdriversid") != -1) { handleGetDriversId(client); }
+																	if (firstLine.indexOf("/deletedriver") != -1) { handleDeleteDriver(client); }
 																	else
-																		if (firstLine.indexOf("/getdriverproperty") != -1) { handleGetDriverProperty(client); }
+																		if (firstLine.indexOf("/getdriversid") != -1) { handleGetDriversId(client); }
 																		else
-																			if (firstLine.indexOf("/setdriverproperty") != -1) { handleSetDriverProperty(client); }
+																			if (firstLine.indexOf("/getdriverproperty") != -1) { handleGetDriverProperty(client); }
 																			else
-																				if (firstLine.indexOf("/getdriverproperties") != -1) { handleGetDriverProperties(client); }
+																				if (firstLine.indexOf("/setdriverproperty") != -1) { handleSetDriverProperty(client); }
 																				else
-																					if (firstLine.indexOf("/getalldriversproperties") != -1) { handleGetAllDriversProperties(client); }
+																					if (firstLine.indexOf("/getdriverproperties") != -1) { handleGetDriverProperties(client); }
 																					else
-																						if (firstLine.indexOf("/getwebproperty") != -1) { handleGetWebProperty(client); }
+																						if (firstLine.indexOf("/getalldriversproperties") != -1) { handleGetAllDriversProperties(client); }
 																						else
-																							if (firstLine.indexOf("/reset") != -1) { handleReset(client); }
+																							if (firstLine.indexOf("/getwebproperty") != -1) { handleGetWebProperty(client); }
 																							else
-																								if (firstLine.indexOf("/updatelog") != -1) { handleUpdateLog(client); }
+																								if (firstLine.indexOf("/reset") != -1) { handleReset(client); }
 																								else
-																									if (firstLine.indexOf("/updateui") != -1) { handleUpdateUI(client); }
+																									if (firstLine.indexOf("/updatelog") != -1) { handleUpdateLog(client); }
 																									else
-																										if (firstLine.indexOf("/updatefirmware") != -1) { handleUpdateFirmware(client); }
+																										if (firstLine.indexOf("/updateui") != -1) { handleUpdateUI(client); }
 																										else
-																											if (firstLine.indexOf("/getallscripts") != -1) { handleGetAllScripts(client); }
+																											if (firstLine.indexOf("/updatefirmware") != -1) { handleUpdateFirmware(client); }
 																											else
-																												if (firstLine.indexOf("/startdebugscript") != -1) { handleStartDebugScript(client); }
+																												if (firstLine.indexOf("/getallscripts") != -1) { handleGetAllScripts(client); }
 																												else
-																													if (firstLine.indexOf("/debugnextscript") != -1) { handleDebugNextScript(client); }
+																													if (firstLine.indexOf("/startdebugscript") != -1) { handleStartDebugScript(client); }
 																													else
-																														if (firstLine.indexOf("/getdriverproperties") != -1) { handleGetDriverProperties(client); }
+																														if (firstLine.indexOf("/debugnextscript") != -1) { handleDebugNextScript(client); }
 																														else
-																															if (firstLine.indexOf("/getalldriversproperties") != -1) { handleGetAllDriversProperties(client); }
+																															if (firstLine.indexOf("/getdriverproperties") != -1) { handleGetDriverProperties(client); }
 																															else
-																															{
-																																handleNotFound(client);
-																															}
+																																if (firstLine.indexOf("/getalldriversproperties") != -1) { handleGetAllDriversProperties(client); }
+																																else
+																																{
+																																	handleNotFound(client);
+																																}
 									}
 									else
 										//POST Section 
@@ -986,6 +1010,6 @@ void HTTPServerLoop()
 					}
 			}
 		}
-	}	
+	}
 	client.stop();
 }
