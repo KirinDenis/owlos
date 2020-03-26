@@ -40,6 +40,7 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 #include "BaseDriver.h"
+#include "..\Managers\DriverManager.h"
 
   //init() is called before transport accessable, when ESP is Setupping()
   //Drivers load default GPIO and other property values from Flash file system thanks to Init()
@@ -202,7 +203,7 @@ String BaseDriver::onMessage(String _topic, String _payload, int transportMask)
 			if (_topic.indexOf(topic + "/setpin") == 0)
 			{
 				int pinNumber = std::atoi(_topic.substring(_topic.indexOf(String(topic + "/setpintype").length())).c_str());
-				return setDriverPin(_payload, id, pinNumber, NO_TYPE);
+				return  driversChangePin(_payload, id, pinNumber);
 			}
 	//ID --------------------------------------------------------------------
 	if (String(topic + "/getid").equals(_topic))

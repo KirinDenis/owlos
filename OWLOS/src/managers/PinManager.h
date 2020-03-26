@@ -24,7 +24,7 @@
 
 						   
 #define PIN_TYPE_COUNT 5	   
-#define PIN_DRIVER_COUNT 10	   
+#define PIN_DRIVER_COUNT 20	   
 						   
 typedef struct PinType	   
 {
@@ -36,30 +36,30 @@ typedef struct PinType
 typedef struct Pin
 {
 	String name = "";
-	PinType pinTypes[PIN_TYPE_COUNT];
-	int GPIONumber = -1;
-	int chipNumber = -1;
+	PinType pinTypes[PIN_TYPE_COUNT];	
+	int8_t GPIONumber = -1;
+	int8_t chipNumber = -1;
 	String location = "";
 	String driverId[PIN_DRIVER_COUNT];
-	int driverPinType[PIN_DRIVER_COUNT];
-	int driverPinIndex[PIN_DRIVER_COUNT];
-	int driveI2CAddr[PIN_DRIVER_COUNT];
+	int8_t driverPinType[PIN_DRIVER_COUNT];
+	int8_t driverPinIndex[PIN_DRIVER_COUNT];
+	int8_t driveI2CAddr[PIN_DRIVER_COUNT];
 };
 
 //структура для передачи данных о пине в драйвер, так как на одном пине может быть много драйверов
 typedef struct PinDriverInfo
 {
 	String name = "";	
-	int GPIONumber = -1;	
-	int driverPinType;
-	int driverPinIndex;
-	int driveI2CAddr;
+	int8_t GPIONumber = -1;
+	int8_t driverPinType;
+	int8_t driverPinIndex;
+	int8_t driveI2CAddr;
 };
 
 void initPins();
 String pinDecodeType(int typeCode);
 int getDriverPinsCount(String driverId);
 bool getDriverPinInfo(String driverId, int driverPinIndex, PinDriverInfo * pinDriverInfo);
-String setDriverPin(String pinName, String driverId, int driverPinIndex, int pinType);
+String setDriverPin(bool checkOnly, String pinName, String driverId, int driverPinIndex, int pinType);
 void freeDriverPin(String driverId, int driverPinIndex);
 Pin getPin();

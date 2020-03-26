@@ -494,7 +494,7 @@ void handleAddDriver(WiFiClient client)
 			}
 			else
 			{
-				if (!driversSaveToConfig(_type, _id, _pins))
+				if (!driversSaveList())
 				{
 					send(503, "text/html", "bad, driver added but not stored to configuration file", client);
 				}

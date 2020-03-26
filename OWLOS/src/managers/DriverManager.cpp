@@ -117,7 +117,7 @@ String driversGetAccessable()
 	result += "name:ActuatorDriver\n";
 	for (int i = 0; i < ActuatorDriver::getPinsCount(); i++)
 	{
-		result += "pintype" + String(i) +  "=" + ActuatorDriver::getPinType(i) + "\n";
+		result += "pintype" + String(i) + "=" + ActuatorDriver::getPinType(i) + "\n";
 		result += "pintypedecoded" + String(i) + "=" + pinDecodeType(ActuatorDriver::getPinType(i)) + "\n";
 	}
 
@@ -328,13 +328,48 @@ String driversValueToPinName(int pinValue)
 	if (pinValue == A0) return "A0";
 	return String();
 }
-*/
+
 
 bool driversSaveToConfig(int type, String id, String pins)
 {
 	String driver = String(type) + ";" + id + ";" + pins + ";\n";
 	return filesAppendString("driverslist", driver);
 }
+*/
+
+bool driversSaveList()
+{
+	String driverlist = "";
+	for (int i = 0; i < DRIVERS_LIMIT; i++)
+	{
+		if (driversList[i] != nullptr)
+		{
+			driverlist += String(driversList[i]->getType()) + ";" + driversList[i]->id + ";";
+			int pinCount = getDriverPinsCount(driversList[i]->id);
+			for (int j = 0; j < pinCount; j++)
+			{
+				debugOut("PIN_SAVE", driversList[i]->id);
+				debugOut("PIN_COUNT", String(pinCount));
+				PinDriverInfo pinDriverInfo;
+				if (getDriverPinInfo(driversList[i]->id, j, &pinDriverInfo))
+				{
+					debugOut("D_INFO", pinDriverInfo.name);
+					driverlist += pinDriverInfo.name;
+					if (j < pinCount - 1)
+					{
+						driverlist += pinDelimiter;
+					}
+				}
+				debugOut("D_INFO_NEXT", "");
+			}
+			driverlist += ";\n";
+		}
+
+	}
+
+	return filesWriteString("driverslist", driverlist);
+}
+
 
 String driversLoadFromConfig()
 {
@@ -415,7 +450,7 @@ String driversAdd(int type, String id, String pins) //String D1;D3;GND;....
 		pins.remove(0, pinPos + 1);
 	}
 
-	
+
 
 
 	/*
@@ -468,18 +503,24 @@ String driversAdd(int type, String id, String pins) //String D1;D3;GND;....
 		{
 			return "ActuatorDriver's pins quantity does not match, must be " + String(ActuatorDriver::getPinsCount());
 		}
-
-		result  = setDriverPin(_pins[PIN0_INDEX], id, PIN0_INDEX, ActuatorDriver::getPinType(PIN0_INDEX));
-		if (result.length() != 0) return result;
-
-		result = setDriverPin(_pins[PIN1_INDEX], id, PIN1_INDEX, ActuatorDriver::getPinType(PIN1_INDEX));
-		if (result.length() != 0) return result;
+		
+		result = setDriverPin(true, _pins[PIN0_INDEX], id, PIN0_INDEX, ActuatorDriver::getPinType(PIN0_INDEX)) + "\n"
+			+ setDriverPin(true, _pins[PIN1_INDEX], id, PIN1_INDEX, ActuatorDriver::getPinType(PIN1_INDEX));
+		
+		if (result.length() > 1) return result;
+		
+		result = setDriverPin(false, _pins[PIN0_INDEX], id, PIN0_INDEX, ActuatorDriver::getPinType(PIN0_INDEX)) + "\n"
+			+ setDriverPin(false, _pins[PIN1_INDEX], id, PIN1_INDEX, ActuatorDriver::getPinType(PIN1_INDEX));
+		
+		if (result.length() > 1) return result;
 
 
 		ActuatorDriver * actuatorDriver = new ActuatorDriver;
 		actuatorDriver->id = id;
 		actuatorDriver->init();
+		debugOut("ADD_DRIVER 1", "");
 		driversList[freeIndex] = actuatorDriver;
+		debugOut("ADD_DRIVER 2", "");
 	}
 	else
 	{
@@ -590,7 +631,7 @@ String driversAdd(int type, String id, String pins) //String D1;D3;GND;....
 										actuatorDriver->id = id;
 
 										actuatorDriver->init();
-										
+
 										//actuatorDriver->setPin(pin1);
 										addBusyPin(type, id, pin1);
 										driversCount++;
@@ -636,8 +677,8 @@ String driversAdd(int type, String id, String pins) //String D1;D3;GND;....
 												return "bad, driver type";
 											}
 */
-	//if driver added at RUNTIME
-	if (transportAvailable()) driversList[driversCount - 1]->begin(unitGetTopic());
+//if driver added at RUNTIME
+	if (transportAvailable()) driversList[freeIndex]->begin(unitGetTopic());
 #ifdef DetailedDebug
 	debugOut("driversadd", "OK");
 #endif
@@ -646,13 +687,35 @@ String driversAdd(int type, String id, String pins) //String D1;D3;GND;....
 }
 
 
+String driversChangePin(String pinName, String driverId, int driverPinIndex)
+{
+	String result = setDriverPin(true, pinName, driverId, driverPinIndex, NO_TYPE);
+	if (result.length() != 0)
+	{
+		return result;
+	}
+
+	result = setDriverPin(false, pinName, driverId, driverPinIndex, NO_TYPE);
+	if (result.length() != 0)
+	{
+		return result;
+	}
+	
+	if (driversSaveList())
+	{
+		return "1";
+	}
+
+	return "can't save driverslist";
+}
+
 String driversDelete(String id)
-{	
+{
 	debugOut("driversdelete", id);
 	bool found = false;
 	String driverlist = "";
 	for (int i = 0; i < DRIVERS_LIMIT; i++)
-	{		
+	{
 		if (driversList[i] != nullptr)
 		{
 			if (driversList[i]->id.equals(id))
@@ -660,32 +723,22 @@ String driversDelete(String id)
 				driversList[i]->del();
 				driversList[i] = nullptr;
 				found = true;
-			}
-			else
-			{
-				driverlist += String(driversList[i]->getType()) + ";" + driversList[i]->id + ";";
-				int pinCount = getDriverPinsCount(driversList[i]->id);
-				for (int j = 0; j < pinCount; j++)
-				{
-					PinDriverInfo pinDriverInfo;
-					if (getDriverPinInfo(driversList[i]->id, j, &pinDriverInfo))
-					{						
-						driverlist += pinDriverInfo.name;
-						if (j < pinCount - 1)
-						{
-							driverlist += pinDelimiter;
-						}
-					}
-				}
-				driverlist += ";\n";				
+				break;
 			}
 		}
 	}
 
 	if (found)
 	{
-		filesWriteString("driverslist", driverlist);
-		return "";
+		if (driversSaveList())
+		{
+			return "";
+		}
+		else
+		{
+			return "can't save driverslist";
+		}
 	}
-	return "driver id=" + id + " not found, can't be deleted";	
+	return "driver id=" + id + " not found, can't be deleted";
 }
+

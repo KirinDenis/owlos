@@ -73,8 +73,12 @@ String driversGetBusyPins();
 String driversGetPinsMap();
 int driversPinNameToValue(String pinName);
 String driversValueToPinName(int pinValue);
-bool driversSaveToConfig(int type, String id, String pins);
+
+bool driversSaveList();
 String driversLoadFromConfig();
 
 String driversAdd(int type, String id, String pins);
+
+
+String driversChangePin(String pinName, String driverId, int driverPinIndex);
 String driversDelete(String id);
