@@ -47,28 +47,35 @@ bool LCDDriver::init()
 {
 	if (id.length() == 0) id = DriverID;
 	BaseDriver::init(id);
-
-	getAddr();
+	
 	getCols();
 	getRows();
 
 	delete lcd;
 	lcd = NULL;
-	lcd = new LiquidCrystal_I2C(addr, cols, rows); //port = 0x27 for PCF8574T and PCF8574AT for 0x3F, 16 cols, 2 raws
-	lcd->init();  //init properies
 
-	getBacklight();
-	setBacklight(backlight, false);
+	PinDriverInfo pinDriverInfo;
+	if (getDriverPinInfo(id, I2CADDR_INDEX, &pinDriverInfo))
+	{
+		debugOut("LCD", String(pinDriverInfo.driverI2CAddr));
+		lcd = new LiquidCrystal_I2C(pinDriverInfo.driverI2CAddr, cols, rows); //port = 0x27 for PCF8574T and PCF8574AT for 0x3F, 16 cols, 2 raws
+		lcd->init();  //init properies
 
-	getX();
-	setX(x, false);
+		getBacklight();
+		setBacklight(backlight, false);
 
-	getY();
-	setY(y, false);
+		getX();
+		setX(x, false);
 
-	getText();
-	setText(text, false);
+		getY();
+		setY(y, false);
 
+		getText();
+		setText(text, false);
+
+		return true;
+	}
+	return false;
 }
 
 bool LCDDriver::begin(String _topic)
@@ -86,8 +93,7 @@ String LCDDriver::getAllProperties()
 	result += "backlight=" + String(backlight) + "//b\n";
 	result += "clear=" + String(clear) + "//b\n";
 	result += "x=" + String(x) + "//i\n";
-	result += "y=" + String(y) + "//i\n";
-	result += "addr=" + String(addr) + "//i\n";
+	result += "y=" + String(y) + "//i\n";	
 	result += "cols=" + String(cols) + "//i\n";
 	result += "rows=" + String(rows) + "//i\n";
 	return result;
@@ -141,15 +147,6 @@ String LCDDriver::onMessage(String _topic, String _payload, int transportMask)
 	else if (String(topic + "/sety").equals(_topic))
 	{
 		result = String(setY(std::atoi(_payload.c_str()), true));
-	}
-	//Addr
-	else if (String(topic + "/getaddr").equals(_topic))
-	{
-		result = onGetProperty("addr", String(getAddr()), transportMask);
-	}
-	else if (String(topic + "/setaddr").equals(_topic))
-	{
-		result = String(setAddr(std::atoi(_payload.c_str()), true));
 	}
 	//Cols
 	else if (String(topic + "/getcols").equals(_topic))
@@ -219,31 +216,6 @@ bool LCDDriver::setText(String _text, bool doEvent)
 	{
 
 		return onInsideChange("text", String(text));
-	}
-	return true;
-}
-
-//Addr --------------------------------------------------------------
-int LCDDriver::getAddr()
-{
-	if (filesExists(id + ".addr"))
-	{
-		addr = filesReadInt(id + ".addr");
-	}
-#ifdef DetailedDebug
-	debugOut(id, "addr=" + String(addr));
-#endif
-	return addr;
-}
-
-bool LCDDriver::setAddr(int _addr, bool doEvent)
-{
-	addr = _addr;
-	filesWriteInt(id + ".addr", addr);
-	init();
-	if (doEvent)
-	{
-		return onInsideChange("addr", String(addr));
 	}
 	return true;
 }

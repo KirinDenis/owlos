@@ -69,6 +69,7 @@ void setup() {
   //Ther is not connected at begin(), see Main::Loop() transportReconnect() function using
   //The begin() just setup connection properties
   transportBegin();
+  //The OWLOS harvester started up and went quietly...
   #ifdef DetailedDebug 
   debugOut("setup", "complete");//if Utils.h "Debug=true" start writing log to Serial
   #endif

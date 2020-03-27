@@ -354,7 +354,15 @@ bool driversSaveList()
 				if (getDriverPinInfo(driversList[i]->id, j, &pinDriverInfo))
 				{
 					debugOut("D_INFO", pinDriverInfo.name);
-					driverlist += pinDriverInfo.name;
+					if (pinDriverInfo.driverPinType != I2CADDR_TYPE)
+					{
+						driverlist += pinDriverInfo.name;
+					}
+					else
+					{
+						driverlist += "ADDR0x" + String(pinDriverInfo.driverI2CAddr, HEX);
+					}
+
 					if (j < pinCount - 1)
 					{
 						driverlist += pinDelimiter;
@@ -520,6 +528,39 @@ String driversAdd(int type, String id, String pins) //String D1;D3;GND;....
 		actuatorDriver->init();
 		debugOut("ADD_DRIVER 1", "");
 		driversList[freeIndex] = actuatorDriver;
+		debugOut("ADD_DRIVER 2", "");
+	}
+	if (type == LCD)
+	{
+		debugOut("pin", String(pinCount));
+		if (pinCount != LCDDriver::getPinsCount())
+		{
+			return "LCDDriver's pins quantity does not match, must be " + String(LCDDriver::getPinsCount());
+		}
+
+		result = setDriverPin(true, _pins[SDA_INDEX], id, SDA_INDEX, LCDDriver::getPinType(SDA_INDEX)) + "\n"
+			+ setDriverPin(true, _pins[SCL_INDEX], id, SCL_INDEX, LCDDriver::getPinType(SCL_INDEX)) + "\n"
+			+ setDriverPin(true, _pins[I2CADDR_INDEX], id, I2CADDR_INDEX, LCDDriver::getPinType(I2CADDR_INDEX)) + "\n"
+			+ setDriverPin(true, _pins[VCC5_INDEX], id, VCC5_INDEX, LCDDriver::getPinType(VCC5_INDEX)) + "\n"
+			+ setDriverPin(true, _pins[GND_INDEX], id, GND_INDEX, LCDDriver::getPinType(GND_INDEX));
+			
+
+		if (result.length() > 4) return result;
+
+		result = setDriverPin(false, _pins[SDA_INDEX], id, SDA_INDEX, LCDDriver::getPinType(SDA_INDEX)) + "\n"
+			+ setDriverPin(false, _pins[SCL_INDEX], id, SCL_INDEX, LCDDriver::getPinType(SCL_INDEX)) + "\n"
+			+ setDriverPin(false, _pins[I2CADDR_INDEX], id, I2CADDR_INDEX, LCDDriver::getPinType(I2CADDR_INDEX)) + "\n"
+			+ setDriverPin(false, _pins[VCC5_INDEX], id, VCC5_INDEX, LCDDriver::getPinType(VCC5_INDEX)) + "\n"
+			+ setDriverPin(false, _pins[GND_INDEX], id, GND_INDEX, LCDDriver::getPinType(GND_INDEX));
+
+		if (result.length() > 4) return result;
+
+
+		LCDDriver * lcdDriver = new LCDDriver;
+		lcdDriver->id = id;
+		lcdDriver->init();
+		debugOut("ADD_DRIVER 1", "");
+		driversList[freeIndex] = lcdDriver;
 		debugOut("ADD_DRIVER 2", "");
 	}
 	else

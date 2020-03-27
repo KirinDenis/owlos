@@ -30,7 +30,7 @@ String getPinMap()
 				result += "driverpintype=" + String(pins[i].driverPinType[j]) + "\n";
 				result += "driverpintypedecoded=" + decodePinType[pins[i].driverPinType[j]] + "\n";
 				result += "driverpinindex=" + String(pins[i].driverPinIndex[j]) + "\n";
-				result += "drivei2caddr=" + String(pins[i].driveI2CAddr[j]) + "\n";
+				result += "drivei2caddr=" + String(pins[i].driverI2CAddr[j]) + "\n";
 			}
 		}
 
@@ -87,6 +87,11 @@ int getDriverPinsCount(String driverId)
 				if (pins[i].driverId[j].equals(driverId))
 				{					
 					count++;
+					if (pins[i].driverPinType[j] == SDA_TYPE)
+					{
+						count++;
+					}
+
 					break;
 				}
 		}
@@ -104,17 +109,33 @@ bool getDriverPinInfo(String driverId, int driverPinIndex, PinDriverInfo * pinDr
 		{
 			if ((pins[i].driverId[j].equals(driverId)) && (pins[i].driverPinIndex[j] == driverPinIndex))
 			{
-				Serial.println("FOUND " + pins[i].driverId[j]);
-
 				pinDriverInfo->name = pins[i].name;
 				pinDriverInfo->GPIONumber = pins[i].GPIONumber;
 				pinDriverInfo->driverPinType = pins[i].driverPinType[j];
 				pinDriverInfo->driverPinIndex = pins[i].driverPinIndex[j];
-				pinDriverInfo->driveI2CAddr = pins[i].driveI2CAddr[j];
+				pinDriverInfo->driverI2CAddr = pins[i].driverI2CAddr[j];
 
 				return true;
 			}
+
+			for (int e=0; e < PIN_TYPE_COUNT; e++)
+			{
+				if (pins[i].pinTypes[e].type == SDA_TYPE)
+				{
+					if ((pins[i].driverId[j].equals(driverId)) && (pins[i].driverI2CAddrPinIndex[j] == driverPinIndex))
+					{
+						pinDriverInfo->name = "ADDR0x" + String(pins[i].driverI2CAddr[j], HEX);
+						pinDriverInfo->GPIONumber = -1;
+						pinDriverInfo->driverPinType = I2CADDR_TYPE;
+						pinDriverInfo->driverPinIndex = pins[i].driverI2CAddrPinIndex[j];
+						pinDriverInfo->driverI2CAddr = pins[i].driverI2CAddr[j];
+
+						return true;
+					}
+				}
+			}
 		}
+		
 	}
 	return false;
 }
@@ -135,6 +156,99 @@ Pin * getDriverPin(String driverId, int driverPinIndex)
 	return nullptr;
 }
 
+String setDriverI2CAddr(bool checkOnly, String pinName, String driverId, int driverPinIndex)
+{
+	Serial.println(pinName);
+	if (pinName.indexOf("ADDR0x") < 0)
+	{
+		return "bad I2C address format for " + driverId + " driver (mustbe ADDR0x00..ADDR0xFF)";
+	}
+
+	pinName = pinName.substring(String("ADDR").length());
+	Serial.println(pinName);
+	int i2cAddr = (int)strtol(&pinName[0], NULL, 16); 
+	Serial.println(String(i2cAddr));
+
+	//сначала надо узнать назначены ли SDA и SCL для этого драйвера 
+	PinDriverInfo SDA_PinDriverInfo;
+	SDA_PinDriverInfo.driverPinType = NO_TYPE;
+	PinDriverInfo SCL_PinDriverInfo;
+	SCL_PinDriverInfo.driverPinType = NO_TYPE;
+
+	int count = getDriverPinsCount(driverId);
+	for (int i = 0; i < count; i++)
+	{
+		PinDriverInfo pinDriverInfo;
+		if (getDriverPinInfo(driverId, i, &pinDriverInfo))
+		{
+			if (pinDriverInfo.driverPinType == SDA_TYPE)
+			{
+				SDA_PinDriverInfo = pinDriverInfo;
+			}
+
+			if (pinDriverInfo.driverPinType == SCL_TYPE)
+			{
+				SCL_PinDriverInfo = pinDriverInfo;
+			}
+		}
+	}
+	Serial.println(SDA_PinDriverInfo.name);
+	Serial.println(SCL_PinDriverInfo.name);
+	if (!checkOnly)
+	{
+		if (SDA_PinDriverInfo.driverPinType != SDA_TYPE)
+		{
+			return "SDA pin not set for " + driverId + " driver, set SDA pin first (before set I2C address)";
+		}
+
+		if (SCL_PinDriverInfo.driverPinType != SCL_TYPE)
+		{
+			return "SCL pin not set for " + driverId + " driver, set SCL pin first (before set I2C address)";
+		}
+	}
+
+	//проверяем не занять ли I2C адрес другим драйвером
+	for (int i = 0; i < pinCount; i++)
+	{
+		if (pins[i].name.equals(SDA_PinDriverInfo.name) || pins[i].name.equals(SCL_PinDriverInfo.name))
+		{
+			for (int j = 0; j < PIN_DRIVER_COUNT; j++)
+			{
+				if ((pins[i].driverPinType[j] == SDA_TYPE) || (pins[i].driverPinType[j] == SCL_TYPE))
+				{
+					if (pins[i].driverI2CAddr[j] == i2cAddr)
+					{
+
+						return "address " + pinName + " is busy by " + pins[i].driverId[j] + " and can't be use for " + driverId + " driver";
+					}
+				}
+			}
+		}
+	}
+
+	if (!checkOnly)
+	{
+		for (int i = 0; i < pinCount; i++)
+		{
+			if (pins[i].name.equals(SDA_PinDriverInfo.name) || pins[i].name.equals(SCL_PinDriverInfo.name))
+			{
+				for (int j = 0; j < PIN_DRIVER_COUNT; j++)
+				{
+					if ((pins[i].driverPinType[j] == SDA_TYPE) || (pins[i].driverPinType[j] == SCL_TYPE))
+					{
+
+						pins[i].driverI2CAddr[j] = i2cAddr;
+						pins[i].driverI2CAddrPinIndex[j] = driverPinIndex;
+						
+					}
+				}
+			}
+		}
+	}
+
+	return "";
+}
+
 
 String setDriverPin(bool checkOnly, String pinName, String driverId, int driverPinIndex, int pinType)
 {
@@ -145,20 +259,98 @@ String setDriverPin(bool checkOnly, String pinName, String driverId, int driverP
 		pinType = existsPin->driverPinType[0];
 	}
 
-	for (int i = 0; i < pinCount; i++)
+	if (pinType == I2CADDR_TYPE)
 	{
-		if (pins[i].name.equals(pinName))
+		return setDriverI2CAddr(checkOnly, pinName, driverId, driverPinIndex);
+	}
+	else
+	{
+		for (int i = 0; i < pinCount; i++)
 		{
-			if (pinTypeSupported(pins[i], pinType))
+			if (pins[i].name.equals(pinName))
 			{
-
-				//на цифровом пине может быть только один драйвер
-				if ((pinType == DIGITALIO_TYPE) || (pinType == DIGITALI_TYPE) || (pinType == DIGITALO_TYPE))
+				if (pinTypeSupported(pins[i], pinType))
 				{
-					if ((pins[i].driverId[0].length() == 0)) //one digital on one pin
+
+					if ((pinType == SDA_TYPE) || (pinType == SCL_TYPE))
 					{
+						int freeDriverIdIndex = -1;
+						for (int j = 0; j < PIN_DRIVER_COUNT; j++)
+						{
+							if (pins[i].driverId[j].length() == 0)
+							{
+								if (freeDriverIdIndex == -1)
+								{
+									freeDriverIdIndex = j;
+								}								
+							}
+							if ((pins[i].driverPinType[j] != pinType) && (pins[i].driverPinType[j] != NO_TYPE))
+							{
+								return "pin " + pinName + " is busy by driver " + pins[i].driverId[j] + " as non I2C pin (SDA or SCL)";
+							}
+						}
+						if (freeDriverIdIndex == -1)
+						{
+							return "to many devices to one pin, limit: " + String(PIN_DRIVER_COUNT);
+						}
+						//TODO: проверить соседей 
 						if (!checkOnly)
 						{
+							pins[i].driverId[freeDriverIdIndex] = driverId;
+							pins[i].driverPinType[freeDriverIdIndex] = pinType;
+							pins[i].driverPinIndex[freeDriverIdIndex] = driverPinIndex;
+						}
+						return "";
+					}
+					else 
+					//на цифровом пине может быть только один драйвер
+					if ((pinType == DIGITALIO_TYPE) || (pinType == DIGITALI_TYPE) || (pinType == DIGITALO_TYPE))
+					{
+						if ((pins[i].driverId[0].length() == 0)) //one digital on one pin
+						{
+							if (!checkOnly)
+							{
+								if (existsPin != nullptr)
+								{
+									existsPin->driverId[0] = "";
+									existsPin->driverPinIndex[0] = -1;
+									pins[i].driverPinType[0] = existsPin->driverPinType[0];
+								}
+								else
+								{
+									pins[i].driverPinType[0] = pinType;
+								}
+
+								pins[i].driverId[0] = driverId;
+								pins[i].driverPinType[0] = pinType;
+								pins[i].driverPinIndex[0] = driverPinIndex;
+							}
+							return "";
+						}
+						else
+						{
+							return "pin " + pinName + " is busy by " + pins[i].driverId[0] + " driver, as pin number " + String(pins[i].driverPinIndex[0]) + " (one digital device can use one digital pin)";
+						}
+					}
+					else
+
+
+						if ((pinType == GND_TYPE) || (pinType == VCC33_TYPE) || (pinType == VCC5_TYPE))
+						{
+							int freeDriverIdIndex = -1;
+							for (int j = 0; j < PIN_DRIVER_COUNT; j++)
+							{
+								if (pins[i].driverId[j].length() == 0)
+								{
+									freeDriverIdIndex = j;
+									break;
+								}
+							}
+							if (freeDriverIdIndex == -1)
+							{
+								return "to many devices to one pin, limit: " + String(PIN_DRIVER_COUNT);
+							}
+							/* TODO change GND and VCC pins
 							if (existsPin != nullptr)
 							{
 								existsPin->driverId[0] = "";
@@ -169,59 +361,21 @@ String setDriverPin(bool checkOnly, String pinName, String driverId, int driverP
 							{
 								pins[i].driverPinType[0] = pinType;
 							}
-
-							pins[i].driverId[0] = driverId;
-							pins[i].driverPinIndex[0] = driverPinIndex;
+							*/
+							if (!checkOnly)
+							{
+								pins[i].driverId[freeDriverIdIndex] = driverId;
+								pins[i].driverPinType[freeDriverIdIndex] = pinType;
+								pins[i].driverPinIndex[freeDriverIdIndex] = driverPinIndex;
+							}
+							return "";
 						}
-						return "";
-					}
-					else
-					{
-						return "pin " + pinName + " is busy by " + pins[i].driverId[0] + " driver, as pin number " + String(pins[i].driverPinIndex[0]) + " (one digital device can use one digital pin)";
-					}
+
 				}
 				else
-				
-
-					if ((pinType == GND_TYPE) || (pinType == VCC33_TYPE) || (pinType == VCC5_TYPE))
-					{
-						int freeDriverIdIndex = -1;
-						for (int j = 0; j < PIN_DRIVER_COUNT; j++)
-						{
-							if (pins[i].driverId[j].length() == 0)
-							{
-								freeDriverIdIndex = j;
-								break;
-							}
-						}
-						if (freeDriverIdIndex == -1)
-						{
-							return "to many devices to one pin, limit: " + String(PIN_DRIVER_COUNT);
-						}
-						/* TODO change GND and VCC pins
-						if (existsPin != nullptr)
-						{
-							existsPin->driverId[0] = "";
-							existsPin->driverPinIndex[0] = -1;
-							pins[i].driverPinType[0] = existsPin->driverPinType[0];
-						}
-						else
-						{
-							pins[i].driverPinType[0] = pinType;
-						}
-						*/
-						if (!checkOnly)
-						{
-							pins[i].driverId[freeDriverIdIndex] = driverId;
-							pins[i].driverPinIndex[freeDriverIdIndex] = driverPinIndex;
-						}
-						return "";
-					}
-				
-			}
-			else
-			{
-				return "pin " + pinName + " not compatable with " + driverId + " driver, as pin number " + String(driverPinIndex) + " type " + decodePinType[pinType];
+				{
+					return "pin " + pinName + " not compatable with " + driverId + " driver, as pin number " + String(driverPinIndex) + " type " + decodePinType[pinType];
+				}
 			}
 		}
 	}

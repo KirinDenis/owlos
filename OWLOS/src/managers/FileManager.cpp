@@ -186,10 +186,6 @@ bool appendFileToWriteCache(String fileName, String value)
 bool filesExists(String fileName)
 {
 	fileName = normalizeFileName(fileName);
-#ifdef DetailedDebug 
-	debugOut(FileSystem, "|-> filesExists: " + fileName);
-#endif
-
 	return SPIFFS.exists(fileName);
 }
 

@@ -43,7 +43,8 @@ typedef struct Pin
 	String driverId[PIN_DRIVER_COUNT];
 	int8_t driverPinType[PIN_DRIVER_COUNT];
 	int8_t driverPinIndex[PIN_DRIVER_COUNT];
-	int8_t driveI2CAddr[PIN_DRIVER_COUNT];
+	int driverI2CAddr[PIN_DRIVER_COUNT];
+	int8_t driverI2CAddrPinIndex[PIN_DRIVER_COUNT];
 };
 
 //структура для передачи данных о пине в драйвер, так как на одном пине может быть много драйверов
@@ -53,7 +54,7 @@ typedef struct PinDriverInfo
 	int8_t GPIONumber = -1;
 	int8_t driverPinType;
 	int8_t driverPinIndex;
-	int8_t driveI2CAddr;
+	int driverI2CAddr;
 };
 
 void initPins();
