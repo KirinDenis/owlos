@@ -1,4 +1,5 @@
 ﻿#include <core_version.h>
+#include "Arduino.h"
 #include "PinManager.h"
 
 
@@ -19,6 +20,7 @@ String getPinMap()
 	for (int i = 0; i < pinCount; i++)
 	{
 		result += "name:" + pins[i].name + "\n";
+		result += "mode=" + String(pins[i].mode) + "\n";
 		result += "gpio=" + String(pins[i].GPIONumber) + "\n";
 		result += "chipnumber=" + String(pins[i].chipNumber) + "\n";
 		result += "location=" + pins[i].location + "\n";
@@ -466,6 +468,20 @@ int pinNameToValue(String pinName)
 }
 #endif
 
+//https://github.com/arduino/Arduino/issues/4606
+int getPinMode(uint32_t pin)
+{
+	if (pin >= NUM_DIGITAL_PINS) return (-1);
+
+	uint32_t bit = digitalPinToBitMask(pin);
+	uint32_t port = digitalPinToPort(pin);
+	volatile uint32_t *reg = portModeRegister(port);
+	if (*reg & bit) return (OUTPUT);
+
+	volatile uint32_t *out = portOutputRegister(port);
+	return ((*out & bit) ? INPUT_PULLUP : INPUT);
+}
+
 void initPins()
 {
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
@@ -547,12 +563,14 @@ void initPins()
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
 	pinCount = 0;
 	pins[pinCount].GPIONumber = 23;
+	pins[pinCount].mode = getPinMode(pins[pinCount].GPIONumber);
 	pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
 	pins[pinCount].name = "D23";
 	pins[pinCount].location = "l1";
 
 	pinCount++;
 	pins[pinCount].GPIONumber = 22;
+	pins[pinCount].mode = getPinMode(pins[pinCount].GPIONumber);
 	pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
 	pins[pinCount].pinTypes[1].family = I2C_FAMILY;
 	pins[pinCount].pinTypes[1].type = SCL_TYPE;
@@ -562,18 +580,21 @@ void initPins()
 
 	pinCount++;
 	pins[pinCount].GPIONumber = 1;
+	pins[pinCount].mode = getPinMode(pins[pinCount].GPIONumber);
 	pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
 	pins[pinCount].name = "D1";
 	pins[pinCount].location = "l3";
 
 	pinCount++;
 	pins[pinCount].GPIONumber = 3;
+	pins[pinCount].mode = getPinMode(pins[pinCount].GPIONumber);
 	pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
 	pins[pinCount].name = "D3";
 	pins[pinCount].location = "l4";
 
 	pinCount++;
 	pins[pinCount].GPIONumber = 21;
+	pins[pinCount].mode = getPinMode(pins[pinCount].GPIONumber);
 	pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
 	pins[pinCount].pinTypes[1].family = I2C_FAMILY;
 	pins[pinCount].pinTypes[1].type = SDA_TYPE;

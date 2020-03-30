@@ -36,6 +36,7 @@ typedef struct PinType
 typedef struct Pin
 {
 	String name = "";
+	int mode = -1;
 	PinType pinTypes[PIN_TYPE_COUNT];	
 	int8_t GPIONumber = -1;
 	int8_t chipNumber = -1;

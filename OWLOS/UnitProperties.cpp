@@ -67,7 +67,7 @@ extern "C" int rom_phy_get_vdd33();
 //->TODO:Clear WiFi settings before release
 // office
 // Dennis home
-#define DefaultWiFiAvailable 0
+#define DefaultWiFiAvailable 1
 //#define DefaultWiFiSSID "owlnode6366394"
 //#define DefaultWiFiPassword "1122334455"
 
