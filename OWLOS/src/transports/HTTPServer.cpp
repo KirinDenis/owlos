@@ -758,6 +758,12 @@ void handleGetAllScripts(WiFiClient client) {
 	send(200, "text/plain", scriptsGetAll(), client);
 }
 
+
+void handleGetPinMap(WiFiClient client) {
+	send(200, "text/plain", getPinMap(), client);
+}
+
+
 void handleDeleteScript(WiFiClient client)
 {
 
@@ -953,6 +959,8 @@ void HTTPServerLoop()
 																					else
 																						if (firstLine.indexOf("/getalldriversproperties") != -1) { handleGetAllDriversProperties(client); }
 																						else
+																						  if (firstLine.indexOf("/getpinmap") != -1) { handleGetPinMap(client); }
+																							else
 																							if (firstLine.indexOf("/getwebproperty") != -1) { handleGetWebProperty(client); }
 																							else
 																								if (firstLine.indexOf("/reset") != -1) { handleReset(client); }

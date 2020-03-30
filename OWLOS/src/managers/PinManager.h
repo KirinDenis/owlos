@@ -58,6 +58,7 @@ typedef struct PinDriverInfo
 	int driverI2CAddr;
 };
 
+String getPinMap();
 void initPins();
 String pinDecodeType(int typeCode);
 int getDriverPinsCount(String driverId);
