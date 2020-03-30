@@ -27,7 +27,7 @@ String getPinMap()
 		for (int j = 0; j < PIN_DRIVER_COUNT; j++)
 		{
 			if (pins[i].driverId[j].length() != 0)
-			{				
+			{
 				result += "driverid:" + pins[i].driverId[j] + "\n";
 				result += "driverpintype=" + String(pins[i].driverPinType[j]) + "\n";
 				result += "driverpintypedecoded=" + decodePinType[pins[i].driverPinType[j]] + "\n";
@@ -86,16 +86,16 @@ int getDriverPinsCount(String driverId)
 	{
 		for (int j = 0; j < PIN_DRIVER_COUNT; j++)
 		{
-				if (pins[i].driverId[j].equals(driverId))
-				{					
+			if (pins[i].driverId[j].equals(driverId))
+			{
+				count++;
+				if (pins[i].driverPinType[j] == SDA_TYPE)
+				{
 					count++;
-					if (pins[i].driverPinType[j] == SDA_TYPE)
-					{
-						count++;
-					}
-
-					break;
 				}
+
+				break;
+			}
 		}
 	}
 	return count;
@@ -120,7 +120,7 @@ bool getDriverPinInfo(String driverId, int driverPinIndex, PinDriverInfo * pinDr
 				return true;
 			}
 
-			for (int e=0; e < PIN_TYPE_COUNT; e++)
+			for (int e = 0; e < PIN_TYPE_COUNT; e++)
 			{
 				if (pins[i].pinTypes[e].type == SDA_TYPE)
 				{
@@ -137,7 +137,7 @@ bool getDriverPinInfo(String driverId, int driverPinIndex, PinDriverInfo * pinDr
 				}
 			}
 		}
-		
+
 	}
 	return false;
 }
@@ -149,7 +149,7 @@ Pin * getDriverPin(String driverId, int driverPinIndex)
 		for (int j = 0; j < PIN_DRIVER_COUNT; j++)
 		{
 			if ((pins[i].driverId[j].equals(driverId)) && (pins[i].driverPinIndex[j] == driverPinIndex))
-			{				
+			{
 				return &pins[i];
 			}
 
@@ -159,7 +159,7 @@ Pin * getDriverPin(String driverId, int driverPinIndex)
 				if (pins[i].pinTypes[e].type == SDA_TYPE)
 				{
 					if ((pins[i].driverId[j].equals(driverId)) && (pins[i].driverI2CAddrPinIndex[j] == driverPinIndex))
-					{ 
+					{
 						return &pins[i];
 					}
 				}
@@ -180,7 +180,7 @@ String setDriverI2CAddr(bool checkOnly, String pinName, String driverId, int dri
 
 	pinName = pinName.substring(String("ADDR").length());
 	Serial.println(pinName);
-	int i2cAddr = (int)strtol(&pinName[0], NULL, 16); 
+	int i2cAddr = (int)strtol(&pinName[0], NULL, 16);
 	Serial.println(String(i2cAddr));
 
 	//сначала надо узнать назначены ли SDA и SCL для этого драйвера 
@@ -253,7 +253,7 @@ String setDriverI2CAddr(bool checkOnly, String pinName, String driverId, int dri
 
 						pins[i].driverI2CAddr[j] = i2cAddr;
 						pins[i].driverI2CAddrPinIndex[j] = driverPinIndex;
-						
+
 					}
 				}
 			}
@@ -281,7 +281,7 @@ String setDriverPin(bool checkOnly, String pinName, String driverId, int driverP
 			{
 				existsDriverIndex = j;
 				pinType = existsPin->driverPinType[j];
-				break;				
+				break;
 			}
 
 			for (int e = 0; e < PIN_TYPE_COUNT; e++)
@@ -289,7 +289,7 @@ String setDriverPin(bool checkOnly, String pinName, String driverId, int driverP
 
 				if (existsPin->pinTypes[e].type == SDA_TYPE)
 				{
-					if ((existsPin->driverId[j].equals(driverId)) && (existsPin->driverI2CAddrPinIndex[j] == driverPinIndex))					
+					if ((existsPin->driverId[j].equals(driverId)) && (existsPin->driverI2CAddrPinIndex[j] == driverPinIndex))
 					{
 						existsDriverIndex = j;
 						pinType = I2CADDR_TYPE;
@@ -297,14 +297,14 @@ String setDriverPin(bool checkOnly, String pinName, String driverId, int driverP
 					}
 				}
 			}
-		}		
+		}
 		if (existsDriverIndex == -1)
 		{
 			return "bad exists driver info, at pin " + existsPin->name;
 		}
 	}
 
-	
+
 	Serial.println(String(pinType));
 	if (pinType == I2CADDR_TYPE)
 	{
@@ -329,7 +329,7 @@ String setDriverPin(bool checkOnly, String pinName, String driverId, int driverP
 								if (freeDriverIdIndex == -1)
 								{
 									freeDriverIdIndex = j;
-								}								
+								}
 							}
 							if ((pins[i].driverPinType[j] != pinType) && (pins[i].driverPinType[j] != NO_TYPE))
 							{
@@ -349,74 +349,74 @@ String setDriverPin(bool checkOnly, String pinName, String driverId, int driverP
 						}
 						return "";
 					}
-					else 
-					//на цифровом пине может быть только один драйвер
-					if ((pinType == DIGITALIO_TYPE) || (pinType == DIGITALI_TYPE) || (pinType == DIGITALO_TYPE))
-					{
-						if ((pins[i].driverId[0].length() == 0)) //one digital on one pin
+					else
+						//на цифровом пине может быть только один драйвер
+						if ((pinType == DIGITALIO_TYPE) || (pinType == DIGITALI_TYPE) || (pinType == DIGITALO_TYPE))
 						{
-							if (!checkOnly)
+							if ((pins[i].driverId[0].length() == 0)) //one digital on one pin
 							{
+								if (!checkOnly)
+								{
+									if (existsPin != nullptr)
+									{
+										existsPin->driverId[existsDriverIndex] = "";
+										existsPin->driverPinIndex[existsDriverIndex] = -1;
+										pins[i].driverPinType[0] = existsPin->driverPinType[0];
+									}
+									else
+									{
+										pins[i].driverPinType[0] = pinType;
+									}
+
+									pins[i].driverId[0] = driverId;
+									pins[i].driverPinType[0] = pinType;
+									pins[i].driverPinIndex[0] = driverPinIndex;
+								}
+								return "";
+							}
+							else
+							{
+								return "pin " + pinName + " is busy by " + pins[i].driverId[0] + " driver, as pin number " + String(pins[i].driverPinIndex[0]) + " (one digital device can use one digital pin)";
+							}
+						}
+						else
+
+
+							if ((pinType == GND_TYPE) || (pinType == VCC33_TYPE) || (pinType == VCC5_TYPE))
+							{
+								int freeDriverIdIndex = -1;
+								for (int j = 0; j < PIN_DRIVER_COUNT; j++)
+								{
+									if (pins[i].driverId[j].length() == 0)
+									{
+										freeDriverIdIndex = j;
+										break;
+									}
+								}
+								if (freeDriverIdIndex == -1)
+								{
+									return "to many devices to one pin, limit: " + String(PIN_DRIVER_COUNT);
+								}
+								/* TODO change GND and VCC pins
 								if (existsPin != nullptr)
 								{
-									existsPin->driverId[existsDriverIndex] = "";
-									existsPin->driverPinIndex[existsDriverIndex] = -1;
+									existsPin->driverId[0] = "";
+									existsPin->driverPinIndex[0] = -1;
 									pins[i].driverPinType[0] = existsPin->driverPinType[0];
 								}
 								else
 								{
 									pins[i].driverPinType[0] = pinType;
 								}
-
-								pins[i].driverId[0] = driverId;
-								pins[i].driverPinType[0] = pinType;
-								pins[i].driverPinIndex[0] = driverPinIndex;
-							}
-							return "";
-						}
-						else
-						{
-							return "pin " + pinName + " is busy by " + pins[i].driverId[0] + " driver, as pin number " + String(pins[i].driverPinIndex[0]) + " (one digital device can use one digital pin)";
-						}
-					}
-					else
-
-
-						if ((pinType == GND_TYPE) || (pinType == VCC33_TYPE) || (pinType == VCC5_TYPE))
-						{
-							int freeDriverIdIndex = -1;
-							for (int j = 0; j < PIN_DRIVER_COUNT; j++)
-							{
-								if (pins[i].driverId[j].length() == 0)
+								*/
+								if (!checkOnly)
 								{
-									freeDriverIdIndex = j;
-									break;
+									pins[i].driverId[freeDriverIdIndex] = driverId;
+									pins[i].driverPinType[freeDriverIdIndex] = pinType;
+									pins[i].driverPinIndex[freeDriverIdIndex] = driverPinIndex;
 								}
+								return "";
 							}
-							if (freeDriverIdIndex == -1)
-							{
-								return "to many devices to one pin, limit: " + String(PIN_DRIVER_COUNT);
-							}
-							/* TODO change GND and VCC pins
-							if (existsPin != nullptr)
-							{
-								existsPin->driverId[0] = "";
-								existsPin->driverPinIndex[0] = -1;
-								pins[i].driverPinType[0] = existsPin->driverPinType[0];
-							}
-							else
-							{
-								pins[i].driverPinType[0] = pinType;
-							}
-							*/
-							if (!checkOnly)
-							{
-								pins[i].driverId[freeDriverIdIndex] = driverId;
-								pins[i].driverPinType[freeDriverIdIndex] = pinType;
-								pins[i].driverPinIndex[freeDriverIdIndex] = driverPinIndex;
-							}
-							return "";
-						}
 
 				}
 				else
@@ -471,7 +471,8 @@ int pinNameToValue(String pinName)
 //https://github.com/arduino/Arduino/issues/4606
 int getPinMode(uint32_t pin)
 {
-	if (pin >= NUM_DIGITAL_PINS) return (-1);
+
+	if ((pin >= NUM_DIGITAL_PINS) || (pin < 0)) return (-1);
 
 	uint32_t bit = digitalPinToBitMask(pin);
 	uint32_t port = digitalPinToPort(pin);
@@ -480,6 +481,63 @@ int getPinMode(uint32_t pin)
 
 	volatile uint32_t *out = portOutputRegister(port);
 	return ((*out & bit) ? INPUT_PULLUP : INPUT);
+}
+
+String setPinMode(String driverId, int driverPin, int mode)
+{
+	for (int i = 0; i < pinCount; i++)
+	{				
+			for (int j = 0; j < PIN_DRIVER_COUNT; j++)
+			{
+				if ((pins[i].driverId[j].equals(driverId)) && (pins[i].driverPinIndex[j] == driverPin))
+				{
+					pinMode(pins[i].GPIONumber, mode);
+					pins[i].mode = getPinMode(pins[i].GPIONumber);
+					if (pins[i].mode == mode)
+					{
+						return "";
+					}
+					else
+					{
+						return "can't switch pin mode for:" + driverId + " pin:" + String(driverPin) + " to mode=:" + String(mode);
+					}
+				}
+			}
+		
+	}
+	return "pin not found";
+}
+
+String pinDigitalWrite(String driverId, int driverPin, int data)
+{
+	for (int i = 0; i < pinCount; i++)
+	{
+		for (int j = 0; j < PIN_DRIVER_COUNT; j++)
+		{
+			if ((pins[i].driverId[j].equals(driverId)) && (pins[i].driverPinIndex[j] == driverPin))
+			{
+				
+				pins[i].mode = getPinMode(pins[i].GPIONumber);
+				if (pins[i].mode == OUTPUT)
+				{
+					if (data == 0)
+					{
+						digitalWrite(pins[i].GPIONumber, LOW);
+					}
+					else
+					{
+						digitalWrite(pins[i].GPIONumber, HIGH);
+					}
+					return "";
+				}
+				else
+				{
+					return "can't write pin mode for:" + driverId + " pin:" + String(driverPin) + " to data=:" + String(data);
+				}
+			}
+		}
+	}
+	return "pin not found";
 }
 
 void initPins()
@@ -563,14 +621,12 @@ void initPins()
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
 	pinCount = 0;
 	pins[pinCount].GPIONumber = 23;
-	pins[pinCount].mode = getPinMode(pins[pinCount].GPIONumber);
 	pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
 	pins[pinCount].name = "D23";
 	pins[pinCount].location = "l1";
 
 	pinCount++;
 	pins[pinCount].GPIONumber = 22;
-	pins[pinCount].mode = getPinMode(pins[pinCount].GPIONumber);
 	pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
 	pins[pinCount].pinTypes[1].family = I2C_FAMILY;
 	pins[pinCount].pinTypes[1].type = SCL_TYPE;
@@ -580,21 +636,18 @@ void initPins()
 
 	pinCount++;
 	pins[pinCount].GPIONumber = 1;
-	pins[pinCount].mode = getPinMode(pins[pinCount].GPIONumber);
 	pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
 	pins[pinCount].name = "D1";
 	pins[pinCount].location = "l3";
 
 	pinCount++;
 	pins[pinCount].GPIONumber = 3;
-	pins[pinCount].mode = getPinMode(pins[pinCount].GPIONumber);
 	pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
 	pins[pinCount].name = "D3";
 	pins[pinCount].location = "l4";
 
 	pinCount++;
 	pins[pinCount].GPIONumber = 21;
-	pins[pinCount].mode = getPinMode(pins[pinCount].GPIONumber);
 	pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
 	pins[pinCount].pinTypes[1].family = I2C_FAMILY;
 	pins[pinCount].pinTypes[1].type = SDA_TYPE;
@@ -675,7 +728,12 @@ void initPins()
 
 
 	pinCount++;
+
+	for (int i = 0; i < pinCount; i++)
+	{
+		pins[i].mode = getPinMode(pins[i].GPIONumber);
 	}
+}
 
 Pin getPin()
 {
