@@ -166,10 +166,17 @@ String LCDDriver::onMessage(String _topic, String _payload, int transportMask)
 	{
 		result = String(setRows(std::atoi(_payload.c_str()), true));
 	}
+	else if (String(topic + "/setpin" + String(I2CADDR_INDEX)).equals(_topic))
+	{
+		//base is put the new address to to PinManager
+		result = init(); //init() get Address from PinManger	
+	}
 
 
 	return result;
 }
+
+
 
 //Text -------------------------------------------
 String LCDDriver::getText()

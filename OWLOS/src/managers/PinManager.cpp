@@ -246,7 +246,7 @@ String setDriverI2CAddr(bool checkOnly, String pinName, String driverId, int dri
 			{
 				for (int j = 0; j < PIN_DRIVER_COUNT; j++)
 				{
-					if ((pins[i].driverPinType[j] == SDA_TYPE) || (pins[i].driverPinType[j] == SCL_TYPE))
+					if ((pins[i].driverId[j].equals(driverId)) && ((pins[i].driverPinType[j] == SDA_TYPE) || (pins[i].driverPinType[j] == SCL_TYPE)))
 					{
 
 						pins[i].driverI2CAddr[j] = i2cAddr;
