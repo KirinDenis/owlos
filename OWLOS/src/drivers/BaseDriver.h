@@ -146,6 +146,7 @@ class BaseDriver
 	bool writeHistoryFile(float _historydata);
 
   protected:
+	  int parsePinNumber(String _topic, String getPinStr);
     //TRUE(1)
     //FALSE(0) 
     //FALSE by default

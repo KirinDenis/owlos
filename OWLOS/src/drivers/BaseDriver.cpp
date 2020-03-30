@@ -169,11 +169,16 @@ void BaseDriver::subscribe()
 	//transportSubscribe(topic + "/#");
 }
 
+int BaseDriver::parsePinNumber(String _topic, String getPinStr)
+{
+	return std::atoi(_topic.substring(_topic.indexOf(topic +  getPinStr) + String(topic + getPinStr).length()).c_str());
+}
+
 String BaseDriver::onMessage(String _topic, String _payload, int transportMask)
 {
 	if (_topic.indexOf(topic + "/getpintype") == 0)
 	{
-		int pinNumber = std::atoi(_topic.substring(_topic.indexOf(String(topic + "/getpintype").length())).c_str());
+		int pinNumber = parsePinNumber(_topic, "/getpintype");
 		PinDriverInfo pinDriverInfo;
 		if (getDriverPinInfo(id, pinNumber, &pinDriverInfo))		
 		{
@@ -187,7 +192,7 @@ String BaseDriver::onMessage(String _topic, String _payload, int transportMask)
 	else	
 		if (_topic.indexOf(topic + "/getpin") == 0)
 		{
-			int pinNumber = std::atoi(_topic.substring(_topic.indexOf(String(topic + "/getpin").length())).c_str());
+			int pinNumber = parsePinNumber(_topic, "/getpin");
 			
 			PinDriverInfo pinDriverInfo;
 			if (getDriverPinInfo(id, pinNumber, &pinDriverInfo))
@@ -202,7 +207,7 @@ String BaseDriver::onMessage(String _topic, String _payload, int transportMask)
 		else
 			if (_topic.indexOf(topic + "/setpin") == 0)
 			{
-				int pinNumber = std::atoi(_topic.substring(_topic.indexOf(String(topic + "/setpintype").length())).c_str());
+				int pinNumber = parsePinNumber(_topic, "/setpin");
 				return  driversChangePin(_payload, id, pinNumber);
 			}
 	//ID --------------------------------------------------------------------

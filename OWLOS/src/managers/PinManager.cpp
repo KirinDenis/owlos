@@ -147,10 +147,22 @@ Pin * getDriverPin(String driverId, int driverPinIndex)
 		for (int j = 0; j < PIN_DRIVER_COUNT; j++)
 		{
 			if ((pins[i].driverId[j].equals(driverId)) && (pins[i].driverPinIndex[j] == driverPinIndex))
-			{
-
+			{				
 				return &pins[i];
 			}
+
+			for (int e = 0; e < PIN_TYPE_COUNT; e++)
+			{
+
+				if (pins[i].pinTypes[e].type == SDA_TYPE)
+				{
+					if ((pins[i].driverId[j].equals(driverId)) && (pins[i].driverI2CAddrPinIndex[j] == driverPinIndex))
+					{ 
+						return &pins[i];
+					}
+				}
+			}
+
 		}
 	}
 	return nullptr;
@@ -253,12 +265,45 @@ String setDriverI2CAddr(bool checkOnly, String pinName, String driverId, int dri
 String setDriverPin(bool checkOnly, String pinName, String driverId, int driverPinIndex, int pinType)
 {
 	//if exists 
+	Serial.println("---");
+	Serial.println(String(driverPinIndex));
+	Serial.println(String(pinType));
 	Pin * existsPin = getDriverPin(driverId, driverPinIndex);
+	int existsDriverIndex = -1;
 	if (existsPin != nullptr)
 	{
-		pinType = existsPin->driverPinType[0];
+		Serial.println("Exists");
+		for (int j = 0; j < PIN_DRIVER_COUNT; j++)
+		{
+			if ((existsPin->driverId[j].equals(driverId)) && (existsPin->driverPinIndex[j] == driverPinIndex))
+			{
+				existsDriverIndex = j;
+				pinType = existsPin->driverPinType[j];
+				break;				
+			}
+
+			for (int e = 0; e < PIN_TYPE_COUNT; e++)
+			{
+
+				if (existsPin->pinTypes[e].type == SDA_TYPE)
+				{
+					if ((existsPin->driverId[j].equals(driverId)) && (existsPin->driverI2CAddrPinIndex[j] == driverPinIndex))					
+					{
+						existsDriverIndex = j;
+						pinType = I2CADDR_TYPE;
+						break;
+					}
+				}
+			}
+		}		
+		if (existsDriverIndex == -1)
+		{
+			return "bad exists driver info, at pin " + existsPin->name;
+		}
 	}
 
+	
+	Serial.println(String(pinType));
 	if (pinType == I2CADDR_TYPE)
 	{
 		return setDriverI2CAddr(checkOnly, pinName, driverId, driverPinIndex);
@@ -312,8 +357,8 @@ String setDriverPin(bool checkOnly, String pinName, String driverId, int driverP
 							{
 								if (existsPin != nullptr)
 								{
-									existsPin->driverId[0] = "";
-									existsPin->driverPinIndex[0] = -1;
+									existsPin->driverId[existsDriverIndex] = "";
+									existsPin->driverPinIndex[existsDriverIndex] = -1;
 									pins[i].driverPinType[0] = existsPin->driverPinType[0];
 								}
 								else
@@ -616,3 +661,4 @@ Pin getPin()
 	Pin pin;
 	return pin;
 }
+

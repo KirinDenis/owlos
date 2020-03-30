@@ -530,6 +530,7 @@ String driversAdd(int type, String id, String pins) //String D1;D3;GND;....
 		driversList[freeIndex] = actuatorDriver;
 		debugOut("ADD_DRIVER 2", "");
 	}
+	else 
 	if (type == LCD)
 	{
 		debugOut("pin", String(pinCount));
