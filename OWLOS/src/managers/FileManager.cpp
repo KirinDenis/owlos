@@ -138,9 +138,6 @@ bool filesLoop()
 	{
 		if (filesWriteCache[i].fileName.length() != 0)
 		{
-#ifdef DetailedDebug 
-			debugOut(FileSystem, "filesLoop->filesWriteString: " + filesWriteCache[i].fileName);
-#endif
 
 			File file = SPIFFS.open(filesWriteCache[i].fileName, FILE_WRITE);
 			filesWriteCache[i].fileName = "";
@@ -167,9 +164,6 @@ bool filesLoop()
 bool appendFileToWriteCache(String fileName, String value)
 {
 	fileName = normalizeFileName(fileName);
-#ifdef DetailedDebug 
-	debugOut(FileSystem, "|-> appendFileToWriteCache: " + fileName);
-#endif
 	for (int i = 0; i < filesWriteCacheSize; i++)
 	{
 		if (filesWriteCache[i].fileName.length() == 0)
@@ -193,9 +187,6 @@ int filesGetSize(String fileName)
 {
 
 	fileName = normalizeFileName(fileName);
-#ifdef DetailedDebug 
-	debugOut(FileSystem, "|-> filesGetSize: " + fileName);
-#endif
 
 	if (!_SPIFFSBegin())
 	{
@@ -250,9 +241,6 @@ bool filesRename(String source, String dest)
 {
 	source = normalizeFileName(source);
 	dest = normalizeFileName(dest);
-#ifdef DetailedDebug 
-	debugOut(FileSystem, "|-> filesRename source: " + source + " dest: " + dest);
-#endif
 
 	if (!_SPIFFSBegin())
 	{
@@ -277,9 +265,6 @@ bool filesRename(String source, String dest)
 String filesReadString(String fileName)
 {
 	fileName = normalizeFileName(fileName);
-#ifdef DetailedDebug 
-	debugOut(FileSystem, "|-> filesReadString: " + fileName);
-#endif
 
 	String result = String();
 	if (!_SPIFFSBegin())
@@ -312,9 +297,6 @@ bool filesWriteString(String fileName, String value)
 {
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	fileName = normalizeFileName(fileName);
-#ifdef DetailedDebug 
-	debugOut(FileSystem, "|-> filesWriteString: " + fileName);
-#endif
 
 
 	if (!_SPIFFSBegin())
@@ -354,9 +336,6 @@ bool filesWriteString(String fileName, String value)
 bool filesAppendString(String fileName, String value)
 {
 	fileName = normalizeFileName(fileName);
-#ifdef DetailedDebug 
-	debugOut(FileSystem, "|-> filesAppendString: " + fileName);
-#endif
 
 	if (!_SPIFFSBegin())
 	{

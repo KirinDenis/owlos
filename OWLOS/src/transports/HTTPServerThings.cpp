@@ -68,6 +68,33 @@ String decode(String param)
 	param.replace("%0A", "\n");
 	param.replace("%0D", "\n");
 	param.replace("%09", "\t");
+
+	param.replace("%25+", " ");
+	param.replace("%2520", " ");
+	param.replace("%2521", "!");
+	param.replace("%2523", "#");
+	param.replace("%2524", "$");
+	param.replace("%2526", "&");
+	param.replace("%2527", "'");
+	param.replace("%2528", "(");
+	param.replace("%2529", ")");
+	param.replace("%252A", "*");
+	param.replace("%252B", "+");
+	param.replace("%252C", ",");
+	param.replace("%252F", "/");
+	param.replace("%253A", ":");
+	param.replace("%253B", ";");
+	param.replace("%253D", "=");
+	param.replace("%253F", "?");
+	param.replace("%2540", "@");
+	param.replace("%255B", "[");
+	param.replace("%255D", "]");
+	param.replace("%253E", ">");
+	param.replace("%253C", "<");
+	param.replace("%250A", "\n");
+	param.replace("%250D", "\n");
+	param.replace("%2509", "\t");
+
 	return param;
 }
 

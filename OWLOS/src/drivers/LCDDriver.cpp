@@ -41,18 +41,16 @@ OWLOS распространяется в надежде, что она буде
 
 #include "LCDDriver.h"
 
-LiquidCrystal_I2C * lcd;
+
+
 
 bool LCDDriver::init()
 {
 	if (id.length() == 0) id = DriverID;
 	BaseDriver::init(id);
-	
+
 	getCols();
 	getRows();
-
-	delete lcd;
-	lcd = NULL;
 
 	PinDriverInfo pinDriverInfo;
 	if (getDriverPinInfo(id, I2CADDR_INDEX, &pinDriverInfo))
@@ -61,8 +59,20 @@ bool LCDDriver::init()
 		lcd = new LiquidCrystal_I2C(pinDriverInfo.driverI2CAddr, cols, rows); //port = 0x27 for PCF8574T and PCF8574AT for 0x3F, 16 cols, 2 raws
 		lcd->init();  //init properies
 
+		getDisplay();
+		setDisplay(display, false);
+
 		getBacklight();
 		setBacklight(backlight, false);
+
+		getCursor();
+		setCursor(cursor, false);
+
+		getBlink();
+		setBlink(blink, false);
+
+		getAutoscroll();
+		setAutoscroll(autoscroll, false);
 
 		getX();
 		setX(x, false);
@@ -90,10 +100,15 @@ String LCDDriver::getAllProperties()
 {
 	String result = BaseDriver::getAllProperties();
 	result += "text=" + text + "//s\n";
+	result += "textbyrows=" + text + "//s\n"; //the same text 
+	result += "display=" + String(display) + "//b\n";
 	result += "backlight=" + String(backlight) + "//b\n";
+	result += "cursor=" + String(cursor) + "//b\n";
+	result += "blink=" + String(blink) + "//b\n";
+	result += "autoscroll=" + String(autoscroll) + "//b\n";
 	result += "clear=" + String(clear) + "//b\n";
 	result += "x=" + String(x) + "//i\n";
-	result += "y=" + String(y) + "//i\n";	
+	result += "y=" + String(y) + "//i\n";
 	result += "cols=" + String(cols) + "//i\n";
 	result += "rows=" + String(rows) + "//i\n";
 	return result;
@@ -112,6 +127,23 @@ String LCDDriver::onMessage(String _topic, String _payload, int transportMask)
 	{
 		result = String(setText(_payload, true));
 	}
+	else if (String(topic + "/gettextbyrows").equals(_topic)) //just getText call - the text same for both API
+	{
+		result = onGetProperty("text", String(getText()), transportMask);
+	}
+	else if (String(topic + "/settextbyrows").equals(_topic))
+	{
+		result = String(setTextByRows(_payload, true));
+	}
+	//Display
+	else if (String(topic + "/getdisplay").equals(_topic))
+	{
+		result = onGetProperty("display", String(getDisplay()), transportMask);
+	}
+	else if (String(topic + "/setdisplay").equals(_topic))
+	{
+		result = String(setDisplay(std::atoi(_payload.c_str()), true));
+	}
 	//Backlight
 	else if (String(topic + "/getbacklight").equals(_topic))
 	{
@@ -120,6 +152,33 @@ String LCDDriver::onMessage(String _topic, String _payload, int transportMask)
 	else if (String(topic + "/setbacklight").equals(_topic))
 	{
 		result = String(setBacklight(std::atoi(_payload.c_str()), true));
+	}
+	//Blink
+	else if (String(topic + "/getblink").equals(_topic))
+	{
+		result = onGetProperty("blink", String(getBlink()), transportMask);
+	}
+	else if (String(topic + "/setblink").equals(_topic))
+	{
+		result = String(setBlink(std::atoi(_payload.c_str()), true));
+	}
+	//Cursor
+	else if (String(topic + "/getcursor").equals(_topic))
+	{
+		result = onGetProperty("cursor", String(getCursor()), transportMask);
+	}
+	else if (String(topic + "/setcursor").equals(_topic))
+	{
+		result = String(setCursor(std::atoi(_payload.c_str()), true));
+	}
+	//Autoscroll
+	else if (String(topic + "/getautoscroll").equals(_topic))
+	{
+		result = onGetProperty("autoscroll", String(getAutoscroll()), transportMask);
+	}
+	else if (String(topic + "/setautoscroll").equals(_topic))
+	{
+		result = String(setAutoscroll(std::atoi(_payload.c_str()), true));
 	}
 	//Clear
 	else if (String(topic + "/getclear").equals(_topic))
@@ -176,8 +235,6 @@ String LCDDriver::onMessage(String _topic, String _payload, int transportMask)
 	return result;
 }
 
-
-
 //Text -------------------------------------------
 String LCDDriver::getText()
 {
@@ -194,29 +251,59 @@ String LCDDriver::getText()
 bool LCDDriver::setText(String _text, bool doEvent)
 {
 	text = _text;
-	if ((x == 0) && (y == 0))
+	lcd->print(text);
+	filesWriteString(id + ".text", text);
+	if (doEvent)
 	{
-		//TODO Array related to LCD driver rows count
-		setClear(1, false);
-		String r1 = text.substring(0, cols);
-		String r2 = text.substring(cols + 1, cols * 2);
-		String r3 = text.substring(cols * 2 + 1, cols * 3);
-		String r4 = text.substring(cols * 3 + 1, cols * 4);
 
-		lcd->setCursor(0, 0);
-		lcd->print(r1);
-		lcd->setCursor(0, 1);
-		lcd->print(r2);
-		lcd->setCursor(0, 2);
-		lcd->print(r3);
-		lcd->setCursor(0, 3);
-		lcd->print(r4);
-
+		return onInsideChange("text", String(text));
 	}
-	else
+	return true;
+}
+
+
+bool LCDDriver::setTextByRows(String _text, bool doEvent)
+{
+	text = _text;
+
+	//TODO Array related to LCD driver rows count
+	setClear(1, false);
+	String textRows[rows];
+	for (int i = 0; i < rows; i++)
 	{
-		lcd->print(text);
+		if (i == 0)
+		{
+			textRows[i] = text.substring(cols * i + 1, cols + cols * i);
+		}
+		else
+		{
+			textRows[i] = text.substring(cols * i, cols + cols * i);
+		}
+
+		if (textRows[i].length() != 0)
+		{
+			lcd->setCursor(0, i);
+			lcd->print(textRows[i]);
+		}
+		else
+		{
+			break;
+		}
 	}
+
+	//String r1 = text.substring(0, cols);
+	//String r2 = text.substring(cols + 1, cols * 2);
+	//String r3 = text.substring(cols * 2 + 1, cols * 3);
+	//String r4 = text.substring(cols * 3 + 1, cols * 4);
+
+	//lcd->setCursor(0, 0);
+	//lcd->print(r1);
+	//lcd->setCursor(0, 1);
+	//lcd->print(r2);
+	//lcd->setCursor(0, 2);
+	//lcd->print(r3);
+	//lcd->setCursor(0, 3);
+	//lcd->print(r4);
 
 	filesWriteString(id + ".text", text);
 	if (doEvent)
@@ -226,6 +313,8 @@ bool LCDDriver::setText(String _text, bool doEvent)
 	}
 	return true;
 }
+
+
 
 //Cols --------------------------------------------------------------
 int LCDDriver::getCols()
@@ -277,6 +366,39 @@ bool LCDDriver::setRows(int _rows, bool doEvent)
 	return true;
 }
 
+//Display
+int LCDDriver::getDisplay()
+{
+	if (filesExists(id + ".display"))
+	{
+		display = filesReadInt(id + ".display");
+	}
+#ifdef DetailedDebug
+	debugOut(id, "display=" + String(display));
+#endif
+	return display;
+}
+
+bool LCDDriver::setDisplay(int _display, bool doEvent)
+{
+	display = _display;
+	if (display)
+	{
+		lcd->display();
+	}
+	else
+	{
+		lcd->noDisplay();
+	}
+
+	filesWriteInt(id + ".display", display);
+	if (doEvent)
+	{
+		return onInsideChange("display", String(display));
+	}
+	return true;
+}
+
 
 //Backlight
 int LCDDriver::getBacklight()
@@ -310,6 +432,107 @@ bool LCDDriver::setBacklight(int _backlight, bool doEvent)
 	}
 	return true;
 }
+
+//Blink
+int LCDDriver::getBlink()
+{
+	if (filesExists(id + ".blink"))
+	{
+		blink = filesReadInt(id + ".blink");
+	}
+#ifdef DetailedDebug
+	debugOut(id, "blink=" + String(blink));
+#endif
+	return blink;
+}
+
+bool LCDDriver::setBlink(int _blink, bool doEvent)
+{
+	blink = _blink;
+	if (blink)
+	{
+		lcd->blink();
+	}
+	else
+	{
+		lcd->noBlink();
+	}
+
+	filesWriteInt(id + ".blink", blink);
+	if (doEvent)
+	{
+		return onInsideChange("blink", String(blink));
+	}
+	return true;
+}
+
+//Cursor
+int LCDDriver::getCursor()
+{
+	if (filesExists(id + ".cursor"))
+	{
+		cursor = filesReadInt(id + ".cursor");
+	}
+#ifdef DetailedDebug
+	debugOut(id, "cursor=" + String(cursor));
+#endif
+	return cursor;
+}
+
+bool LCDDriver::setCursor(int _cursor, bool doEvent)
+{
+	cursor = _cursor;
+	if (cursor)
+	{
+		lcd->cursor();
+	}
+	else
+	{
+		lcd->noCursor();
+	}
+
+	filesWriteInt(id + ".cursor", cursor);
+	if (doEvent)
+	{
+		return onInsideChange("cursor", String(cursor));
+	}
+	return true;
+}
+
+//Autoscroll
+int LCDDriver::getAutoscroll()
+{
+	if (filesExists(id + ".autoscroll"))
+	{
+		autoscroll = filesReadInt(id + ".autoscroll");
+	}
+#ifdef DetailedDebug
+	debugOut(id, "autoscroll=" + String(autoscroll));
+#endif
+	return autoscroll;
+}
+
+bool LCDDriver::setAutoscroll(int _autoscroll, bool doEvent)
+{
+	autoscroll = _autoscroll;
+	if (autoscroll)
+	{
+		lcd->autoscroll();
+	}
+	else
+	{
+		lcd->noAutoscroll();
+	}
+
+	filesWriteInt(id + ".autoscroll", autoscroll);
+	if (doEvent)
+	{
+		return onInsideChange("autoscroll", String(autoscroll));
+	}
+	return true;
+}
+
+
 //Clear
 int LCDDriver::getClear()
 {
