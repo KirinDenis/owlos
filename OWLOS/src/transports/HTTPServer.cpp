@@ -778,6 +778,30 @@ void handleDeleteScript(WiFiClient client)
 	handleNotFound(client);
 }
 
+void handleGetPinMode(WiFiClient client)
+{
+
+	if (argsCount > 0)
+	{
+		if (argName[0].equals("pin"))
+		{
+			uint32_t pinInt = std::atoi(arg[0].c_str());
+			int result = getPinMode(pinInt);
+
+			if (result != -1) {
+				send(200, "text/plain", String(result), client);
+			}
+			else {
+				send(200, "text/plain", "wrong pin value", client);
+			}
+			
+			return;
+		}
+	}
+	handleNotFound(client);
+}
+
+
 void handleStartDebugScript(WiFiClient client)
 {
 
@@ -961,8 +985,10 @@ void HTTPServerLoop()
 																						else
 																						  if (firstLine.indexOf("/getpinmap") != -1) { handleGetPinMap(client); }
 																							else
-																							if (firstLine.indexOf("/getwebproperty") != -1) { handleGetWebProperty(client); }
-																							else
+																					        if (firstLine.indexOf("/getpinmode") != -1) { handleGetPinMode(client); }
+																							  else
+																							   if (firstLine.indexOf("/getwebproperty") != -1) { handleGetWebProperty(client); }
+																							   else
 																								if (firstLine.indexOf("/reset") != -1) { handleReset(client); }
 																								else
 																									if (firstLine.indexOf("/updatelog") != -1) { handleUpdateLog(client); }

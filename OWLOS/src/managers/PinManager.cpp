@@ -526,7 +526,7 @@ String pinDigitalWrite(String driverId, int driverPin, int data)
 					}
 					else
 					{
-						digitalWrite(pins[i].GPIONumber, HIGH);
+						digitalWrite(pins[i].GPIONumber, HIGH); 
 					}
 					return "";
 				}

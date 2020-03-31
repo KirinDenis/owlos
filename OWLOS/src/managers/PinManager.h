@@ -66,3 +66,4 @@ bool getDriverPinInfo(String driverId, int driverPinIndex, PinDriverInfo * pinDr
 String setDriverPin(bool checkOnly, String pinName, String driverId, int driverPinIndex, int pinType);
 void freeDriverPin(String driverId, int driverPinIndex);
 Pin getPin();
+int getPinMode(uint32_t pin);
