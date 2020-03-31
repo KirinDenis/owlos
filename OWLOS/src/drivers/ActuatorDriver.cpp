@@ -50,10 +50,13 @@ bool ActuatorDriver::init()
 	PinDriverInfo pinDriverInfo;
 	if (getDriverPinInfo(id, PIN0_INDEX, &pinDriverInfo))
 	{
-		pinMode(pinDriverInfo.GPIONumber, OUTPUT);
-		getData();
-		setData(data, false);
-		return true;
+		if (setDriverPinMode(id, PIN0_INDEX, OUTPUT).length() == 0)
+		{
+			//на случай перезагрузки, в файле сохранено последнее состояние актуатора
+			getData(); //прочесть последнее состояние 
+			setData(data, false); //вернуть последнее запомненное состояние 
+			return true;
+		}
 	}
 	return false;
 }
@@ -171,14 +174,15 @@ bool ActuatorDriver::setData(int _data, bool doEvent)
 	PinDriverInfo pinDriverInfo;
 	if (getDriverPinInfo(id, PIN0_INDEX, &pinDriverInfo))
 	{
-		digitalWrite(pinDriverInfo.GPIONumber, data);
-
-		if (doEvent)
+		if (driverPinWrite(id, PIN0_INDEX, data).length() == 0)
 		{
-			filesWriteInt(id + ".data", data);
-			return onInsideChange("data", String(data));
+			if (doEvent)
+			{
+				filesWriteInt(id + ".data", data);
+				return onInsideChange("data", String(data));
+			}
+			return true;
 		}
-		return true;
 	}
 	return false;
 };

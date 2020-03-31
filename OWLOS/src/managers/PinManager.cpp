@@ -446,28 +446,6 @@ void freeDriverPin(String driverId, int driverPinIndex)
 	return;
 }
 
-
-#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
-int pinNameToValue(String pinName)
-{
-	if (pinName.equals("D0")) return D0;
-	if (pinName.equals("D1")) return D1;
-	if (pinName.equals("D2")) return D2;
-	if (pinName.equals("D3")) return D3;
-	if (pinName.equals("D4")) return D4;
-	if (pinName.equals("D5")) return D5;
-	if (pinName.equals("D6")) return D6;
-	if (pinName.equals("D7")) return D7;
-	if (pinName.equals("D8")) return D8;
-#ifdef ARDUINO_ESP8266_NODEMCU
-	if (pinName.equals("D9")) return D9;
-	if (pinName.equals("D10")) return D10;
-#endif
-	if (pinName.equals("A0")) return A0;
-	return -1;
-}
-#endif
-
 //https://github.com/arduino/Arduino/issues/4606
 int getPinMode(uint32_t pin)
 {
@@ -483,7 +461,7 @@ int getPinMode(uint32_t pin)
 	return ((*out & bit) ? INPUT_PULLUP : INPUT);
 }
 
-String setPinMode(String driverId, int driverPin, int mode)
+String setDriverPinMode(String driverId, int driverPin, int mode)
 {
 	for (int i = 0; i < pinCount; i++)
 	{				
@@ -508,7 +486,7 @@ String setPinMode(String driverId, int driverPin, int mode)
 	return "pin not found";
 }
 
-String pinDigitalWrite(String driverId, int driverPin, int data)
+String driverPinWrite(String driverId, int driverPin, int data)
 {
 	for (int i = 0; i < pinCount; i++)
 	{
@@ -539,6 +517,73 @@ String pinDigitalWrite(String driverId, int driverPin, int data)
 	}
 	return "pin not found";
 }
+
+int driverPinRead(String driverId, int driverPin)
+{
+	for (int i = 0; i < pinCount; i++)
+	{
+		for (int j = 0; j < PIN_DRIVER_COUNT; j++)
+		{
+			if ((pins[i].driverId[j].equals(driverId)) && (pins[i].driverPinIndex[j] == driverPin))
+			{
+
+				pins[i].mode = getPinMode(pins[i].GPIONumber);
+				if (pins[i].mode == INPUT)
+				{
+					return digitalRead(pins[i].GPIONumber);
+				}
+			}
+		}
+	}
+	return 0;
+}
+
+String setPinMode(String pinName, int mode)
+{
+	//перевести пин в режим, проверить режим, если перешел - пустая строка
+	//проверить не занят ли пин драйвером, если занят ошибка
+
+//	pinMode(pins[i].GPIONumber, mode);
+//	pins[i].mode = getPinMode(pins[i].GPIONumber);
+
+}
+
+String setPinWrite(String pinName, int data)
+{
+	//проверить не занят ли пин драйвером, если занят ошибка
+	//записать данные - аналоговые или цифровые вызывающая сторона не знает, либо в 0 или 1 или int 0..1024 тоже проверить
+}
+
+int setPinRead(String pinName, int data)
+{
+
+	//проверить не занят ли пин драйвером, если занят ошибка
+	//прочитать данные - аналоговые или цифровые вызывающая сторона не знает, либо в 0 или 1 или int 0..1024 тоже проверить
+
+}
+
+
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
+int pinNameToValue(String pinName)
+{
+	if (pinName.equals("D0")) return D0;
+	if (pinName.equals("D1")) return D1;
+	if (pinName.equals("D2")) return D2;
+	if (pinName.equals("D3")) return D3;
+	if (pinName.equals("D4")) return D4;
+	if (pinName.equals("D5")) return D5;
+	if (pinName.equals("D6")) return D6;
+	if (pinName.equals("D7")) return D7;
+	if (pinName.equals("D8")) return D8;
+#ifdef ARDUINO_ESP8266_NODEMCU
+	if (pinName.equals("D9")) return D9;
+	if (pinName.equals("D10")) return D10;
+#endif
+	if (pinName.equals("A0")) return A0;
+	return -1;
+}
+#endif
+
 
 void initPins()
 {

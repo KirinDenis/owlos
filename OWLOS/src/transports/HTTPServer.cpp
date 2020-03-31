@@ -763,21 +763,6 @@ void handleGetPinMap(WiFiClient client) {
 	send(200, "text/plain", getPinMap(), client);
 }
 
-
-void handleDeleteScript(WiFiClient client)
-{
-
-	if (argsCount > 0)
-	{
-		if (argName[0].equals("name"))
-		{
-			send(200, "text/plain", String(scriptsDelete(arg[0])), client);
-			return;
-		}
-	}
-	handleNotFound(client);
-}
-
 void handleGetPinMode(WiFiClient client)
 {
 
@@ -792,15 +777,79 @@ void handleGetPinMode(WiFiClient client)
 				send(200, "text/plain", String(result), client);
 			}
 			else {
-				send(200, "text/plain", "wrong pin value", client);
+				send(503, "text/plain", "wrong pin value", client);
 			}
-			
+
 			return;
 		}
 	}
 	handleNotFound(client);
 }
 
+//String setDriverPinMode(String driverId, int driverPin, int mode);
+void handleSetDriverPinMode(WiFiClient client)
+{
+	if (argsCount > 2)
+	{
+		if ((argName[0].equals("driverid")) && (argName[1].equals("driverpin")) && (argName[2].equals("mode")))
+		{
+			int driverPin = std::atoi(arg[1].c_str());
+			int mode = std::atoi(arg[2].c_str());
+			String result = setDriverPinMode(arg[0], driverPin, mode);
+
+			if (result.length() == 0) {
+				send(200, "text/plain", String(result), client);
+			}
+			else {
+				send(503, "text/plain", result, client);
+			}
+
+			return;
+		}
+	}
+	handleNotFound(client);
+}
+
+//String drivePinWrite(String driverId, int driverPin, int data);
+//if (firstLine.indexOf("/driverpinwrite") != -1) { handleDriverPinWrite(client); }
+void handleDriverPinWrite(WiFiClient client)
+{
+	if (argsCount > 2)
+	{
+		if ((argName[0].equals("driverid")) && (argName[1].equals("driverpin")) && (argName[2].equals("data")))
+		{
+			int driverPin = std::atoi(arg[1].c_str());
+			int data = std::atoi(arg[2].c_str());
+			String result = driverPinWrite(arg[0], driverPin, data);
+
+			if (result.length() == 0) {
+				send(200, "text/plain", String(result), client);
+			}
+			else {
+				send(503, "text/plain", result, client);
+			}
+
+			return;
+		}
+	}
+	handleNotFound(client);
+}
+
+void handleDriverPinRead(WiFiClient client)
+{
+	if (argsCount > 1)
+	{
+		if ((argName[0].equals("driverid")) && (argName[1].equals("driverpin")))
+		{
+			int driverPin = std::atoi(arg[1].c_str());
+
+			send(200, "text/plain", String(driverPinRead(arg[0], driverPin)), client);
+
+			return;
+		}
+	}
+	handleNotFound(client);
+}
 
 void handleStartDebugScript(WiFiClient client)
 {
@@ -828,6 +877,21 @@ void handleDebugNextScript(WiFiClient client)
 	}
 	handleNotFound(client);
 }
+
+void handleDeleteScript(WiFiClient client)
+{
+
+	if (argsCount > 0)
+	{
+		if (argName[0].equals("name"))
+		{
+			send(200, "text/plain", String(scriptsDelete(arg[0])), client);
+			return;
+		}
+	}
+	handleNotFound(client);
+}
+
 
 //POST
 void handleCreateScript(WiFiClient client)
@@ -983,33 +1047,43 @@ void HTTPServerLoop()
 																					else
 																						if (firstLine.indexOf("/getalldriversproperties") != -1) { handleGetAllDriversProperties(client); }
 																						else
-																						  if (firstLine.indexOf("/getpinmap") != -1) { handleGetPinMap(client); }
+																							if (firstLine.indexOf("/getpinmap") != -1) { handleGetPinMap(client); }
 																							else
-																					        if (firstLine.indexOf("/getpinmode") != -1) { handleGetPinMode(client); }
-																							  else
-																							   if (firstLine.indexOf("/getwebproperty") != -1) { handleGetWebProperty(client); }
-																							   else
-																								if (firstLine.indexOf("/reset") != -1) { handleReset(client); }
+																								if (firstLine.indexOf("/getpinmode") != -1) { handleGetPinMode(client); }
 																								else
-																									if (firstLine.indexOf("/updatelog") != -1) { handleUpdateLog(client); }
+																									if (firstLine.indexOf("/setdriverpinmode") != -1) { handleSetDriverPinMode(client); }
 																									else
-																										if (firstLine.indexOf("/updateui") != -1) { handleUpdateUI(client); }
+																										if (firstLine.indexOf("/driverpinwrite") != -1) { handleDriverPinWrite(client); }
 																										else
-																											if (firstLine.indexOf("/updatefirmware") != -1) { handleUpdateFirmware(client); }
+																											if (firstLine.indexOf("/driverpinread") != -1) { handleDriverPinRead(client); }
 																											else
-																												if (firstLine.indexOf("/getallscripts") != -1) { handleGetAllScripts(client); }
+
+
+
+
+																												if (firstLine.indexOf("/getwebproperty") != -1) { handleGetWebProperty(client); }
 																												else
-																													if (firstLine.indexOf("/startdebugscript") != -1) { handleStartDebugScript(client); }
+																													if (firstLine.indexOf("/reset") != -1) { handleReset(client); }
 																													else
-																														if (firstLine.indexOf("/debugnextscript") != -1) { handleDebugNextScript(client); }
+																														if (firstLine.indexOf("/updatelog") != -1) { handleUpdateLog(client); }
 																														else
-																															if (firstLine.indexOf("/getdriverproperties") != -1) { handleGetDriverProperties(client); }
+																															if (firstLine.indexOf("/updateui") != -1) { handleUpdateUI(client); }
 																															else
-																																if (firstLine.indexOf("/getalldriversproperties") != -1) { handleGetAllDriversProperties(client); }
+																																if (firstLine.indexOf("/updatefirmware") != -1) { handleUpdateFirmware(client); }
 																																else
-																																{
-																																	handleNotFound(client);
-																																}
+																																	if (firstLine.indexOf("/getallscripts") != -1) { handleGetAllScripts(client); }
+																																	else
+																																		if (firstLine.indexOf("/startdebugscript") != -1) { handleStartDebugScript(client); }
+																																		else
+																																			if (firstLine.indexOf("/debugnextscript") != -1) { handleDebugNextScript(client); }
+																																			else
+																																				if (firstLine.indexOf("/getdriverproperties") != -1) { handleGetDriverProperties(client); }
+																																				else
+																																					if (firstLine.indexOf("/getalldriversproperties") != -1) { handleGetAllDriversProperties(client); }
+																																					else
+																																					{
+																																						handleNotFound(client);
+																																					}
 									}
 									else
 										//POST Section 

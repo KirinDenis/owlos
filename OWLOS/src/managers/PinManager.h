@@ -60,10 +60,17 @@ typedef struct PinDriverInfo
 
 String getPinMap();
 void initPins();
+
 String pinDecodeType(int typeCode);
 int getDriverPinsCount(String driverId);
 bool getDriverPinInfo(String driverId, int driverPinIndex, PinDriverInfo * pinDriverInfo);
 String setDriverPin(bool checkOnly, String pinName, String driverId, int driverPinIndex, int pinType);
+
 void freeDriverPin(String driverId, int driverPinIndex);
 Pin getPin();
 int getPinMode(uint32_t pin);
+
+String setDriverPinMode(String driverId, int driverPin, int mode);
+String driverPinWrite(String driverId, int driverPin, int data);
+int driverPinRead(String driverId, int driverPin);
+
