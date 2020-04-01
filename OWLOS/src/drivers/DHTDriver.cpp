@@ -43,44 +43,54 @@ OWLOS распространяется в надежде, что она буде
 
 /*-------------------------------------------------------------------------------------------------------------------------
   Setup DHT sensor
+  Based on \OWLOS\src\libraries\DHT_sensor_library\DHT.cpp -> by Adafruit Industries
   -------------------------------------------------------------------------------------------------------------------------*/
+//параметр dhttype - тип DHT сенсора от Adafruit
+// DHT11 11
+// DHT12 12
+// DHT22 22
+// DHT21 21
+// AM2301 21
+//вернет TRUE если DHT сенсор доступен
 bool DHTDriver::DHTsetup(int dhttype)
 {
 #ifdef DetailedDebug 
 	debugOut(id, "setup");
 #endif
-
+	//если DHT уже был настроен выходим
 	if (DHTSetuped) return DHTSetupResult;
-	DHTSetuped = true;
+	//устанавливаем этот флажок - мы попытались настроить DHT - возможно не удачно
+	DHTSetuped = true; 
+	//запрашиваем PIN назначенный DHT
 	PinDriverInfo pinDriverInfo;
 	if (getDriverPinInfo(id, PIN0_INDEX, &pinDriverInfo))
 	{
-
+		//если PIN выделен и закреплен за DHT инкапсулируем класс обслуживавший DHT от Adafruit Industries
 		dht = new DHT(pinDriverInfo.GPIONumber, dhttype);
-
+		//стартуем DHT сенсор
 		dht->begin();
-
+		//пробуем прочесть значение температуры 
 		float _temperature = dht->readTemperature();
 #ifdef DetailedDebug 
 		debugOut(id, "DHT temperature " + String(_temperature));
 #endif
+		//если DHT сломан, не присоединен, ошиблись с PIN _temperature = NAN, ниже проверка на NAN (неопределенное состояние float переменной )
 		if (_temperature == _temperature) DHTSetupResult = true; //float NAN at C/C++ check as float == float
 		else
-			DHTSetupResult = false;
-
+			DHTSetupResult = false; //сенсор не доступен 
+			//сообщаем на верх о результате 
 		return DHTSetupResult;
 	}
 	return false;
 }
-
 /*-------------------------------------------------------------------------------------------------------------------------
   DHT sensor get temperature value
   -------------------------------------------------------------------------------------------------------------------------*/
+//получить температуру - если сенсор недоступен вернет NAN (сенсор может "отвалиться" на ходу)
 float DHTDriver::DHTgetTemperature()
 {
 	if (dht == nullptr)
 	{
-
 		return 0;
 	}
 	else
@@ -88,10 +98,10 @@ float DHTDriver::DHTgetTemperature()
 		return dht->readTemperature();
 	}
 }
-
 /*-------------------------------------------------------------------------------------------------------------------------
   DHT sensor get humidity value
   -------------------------------------------------------------------------------------------------------------------------*/
+//получаем влажность, если DHT недоступно вернет NAN
 float DHTDriver::DHTgetHumidity()
 {
 	if (dht == nullptr)
@@ -104,29 +114,25 @@ float DHTDriver::DHTgetHumidity()
 	}
 }
 
-
+//В каждом драйвере вызывают метод begin когда транспорт готов к работе 
 bool DHTDriver::begin(String _topic)
 {
-
 	if (id.length() == 0) id = DriverID;
 	BaseDriver::init(id);
 
 	if (BaseDriver::begin(_topic))
 	{
-
-		
-		getDHTType();
-
-		if (DHTsetup(dhttype))
+		getDHTType(); //забираем из файла или константы тип DHT сенсора
+		if (DHTsetup(dhttype)) //пробуем подключится к DHT
 		{
-			available = true;
+			available = true; //сенсор доступен
 #ifdef DetailedDebug
 			debugOut(id, "Physical DHT sensor available");
 #endif
 		}
 		else
 		{
-			available = false;
+			available = false; //сенсор не доступен
 #ifdef DetailedDebug
 			debugOut(id, "Physical DHT sensor NOT available");
 #endif
@@ -135,27 +141,29 @@ bool DHTDriver::begin(String _topic)
 
 	trap = 0.1f;
 	setType(DHTDriverType);
-	setAvailable(available);
+	setAvailable(available); //сообщаем наверх о доступности сенсора 
 	return available;
 }
 
+/*
+регулярный опрос показаний сенсора, в частности для срабатывания ловушки Trap
+таким образом клиенты могут опрашивать этот сенсор в достаточно длительные интервалы времени, 
+но если за время queryInterval значение перейдет значение Trap в положительную или отрицательную сторону, 
+сработает ловушка. Например если температуры резко возросла на 5 градусов. 
+Так же собираем показания температуры и влажности в файлы и массивы с историями изменения показаний
+*/
 bool DHTDriver::query()
 {
-
 	if (BaseDriver::query())
 	{
-
 		float _temperature = std::atof(temperature.c_str());
-
 		getTemperature();
-
+		//проверка ловушки
 		float different = std::atof(temperature.c_str()) - _temperature;
 		if ((different > trap) || (different < -trap))
 		{
 			onInsideChange("temperature", temperature);
 		}
-
-
 		//Write history data to file
 		if (millis() >= lastHistoryFileWriteMillis + historyFileWriteInterval)
 		{
@@ -167,13 +175,12 @@ bool DHTDriver::query()
 		float _humidity = std::atof(humidity.c_str());
 
 		getHumidity();
-
+		//проверка ловушки влажности
 		different = std::atof(humidity.c_str()) - _humidity;
 		if ((different > trap) || (different < -trap))
 		{
 			onInsideChange("humidity", humidity);
 		}
-
 		//Fill array of history data
 		if (millis() >= lastHistoryMillis + historyInterval)
 		{
@@ -181,27 +188,25 @@ bool DHTDriver::query()
 			setTemperatureHistoryData(std::atof(temperature.c_str()));
 			setHumidityHistoryData(std::atof(humidity.c_str()));
 		}
-
-
 		return true;
 	}
 	return false;
 }
 
+//сборщик свойств драйвера, по этим свойствам строится карта RESTful API и MQTT подписки 
 String DHTDriver::getAllProperties()
 {
-
 	String result = BaseDriver::getAllProperties();
 	result += "temperature=" + getTemperature() + "//rf\n";
 	result += "temperaturehistorydata=" + getTemperatureHistoryData() + "//r\n";
 	result += "temperaturehistoryfile=//r\n";
 	result += "humidity=" + getHumidity() + "//rf\n";
-	result += "humidityhistorydata=" + getHumidityHistoryData() + "//r\n";	
+	result += "humidityhistorydata=" + getHumidityHistoryData() + "//r\n";
 	result += "dhttype=" + String(dhttype) + "//i\n";
 	return result;
 }
 
-
+//драйвер отправляет свои показания подписантам раз в pulishInterval
 bool DHTDriver::publish()
 {
 	if (BaseDriver::publish())
@@ -212,12 +217,10 @@ bool DHTDriver::publish()
 	}
 	return false;
 }
-
+//опрос свойств драйвера для чтения записи от RESTful или MQTT 
 String DHTDriver::onMessage(String _topic, String _payload, int transportMask)
 {
-
 	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
-	
 
 	if (String(topic + "/getdhttype").equals(_topic))
 	{
@@ -230,7 +233,7 @@ String DHTDriver::onMessage(String _topic, String _payload, int transportMask)
 
 	if (!available) return result;
 
-    if ((String(topic + "/gettemperature").equals(_topic)) || (String(topic + "/settemperature").equals(_topic)))
+	if ((String(topic + "/gettemperature").equals(_topic)) || (String(topic + "/settemperature").equals(_topic)))
 	{
 		result = onGetProperty("temperature", getTemperature(), transportMask);
 	}
@@ -253,11 +256,9 @@ String DHTDriver::onMessage(String _topic, String _payload, int transportMask)
 	{
 		return onGetProperty("humidityhistorydata", String(getHumidityHistoryData()), transportMask);
 	}
-
-
 	return result;
 }
-
+//получить значение свойства драйвера определяющее тип сенсора 
 int DHTDriver::getDHTType()
 {
 	if (filesExists(id + ".dhttype"))
@@ -269,10 +270,10 @@ int DHTDriver::getDHTType()
 #endif
 	return dhttype;
 }
-
+//установить тип сенсора (типы сенсоров можно менять "на лету", по умолчанию DHT22, если у вас другой сенсор, подключитесь к OWLOS и 
+//измените значение этого свойства
 bool DHTDriver::setDHTType(int _dhttype)
 {
-
 	dhttype = _dhttype;
 	filesWriteInt(id + ".dhttype", dhttype);
 	DHTSetuped = false;
@@ -290,9 +291,10 @@ bool DHTDriver::setDHTType(int _dhttype)
 		return false;
 	}
 }
-
+//опрос температуры 
 String DHTDriver::getTemperature()
 {
+	//если нет обслуживающего класса 
 	if (dht == nullptr)
 	{
 		setAvailable(false);
@@ -302,10 +304,11 @@ String DHTDriver::getTemperature()
 #endif
 		return temperature;
 	}
-
+	//пробуем получить значение от сенсора 
 	float _temperature = DHTgetTemperature();
 	if (_temperature != _temperature)  //float NAN check
 	{
+		//если сенсор не доступем 
 		setAvailable(false);
 		temperature = "nan";
 #ifdef DetailedDebug
@@ -321,7 +324,7 @@ String DHTDriver::getTemperature()
 #endif
 	return temperature;
 }
-
+//смотрите getTemperature
 String DHTDriver::getHumidity()
 {
 
@@ -353,7 +356,7 @@ String DHTDriver::getHumidity()
 #endif
 	return humidity;
 }
-
+//получение накопленных данных о показаниях сенсора температуры
 String DHTDriver::getTemperatureHistoryData()
 {
 	String	dataHistory = String(temperatureHistoryCount) + ";";
@@ -365,7 +368,7 @@ String DHTDriver::getTemperatureHistoryData()
 
 	return dataHistory;
 }
-
+//добавление очередного значения температуры в историю
 bool DHTDriver::setTemperatureHistoryData(float _historydata)
 {
 	if (isnan(_historydata)) return false;
@@ -385,7 +388,7 @@ bool DHTDriver::setTemperatureHistoryData(float _historydata)
 
 	return true;
 }
-
+//так же как и для температуры
 String DHTDriver::getHumidityHistoryData()
 {
 	String	dataHistory = String(humidityHistoryCount) + ";";
@@ -397,7 +400,7 @@ String DHTDriver::getHumidityHistoryData()
 
 	return dataHistory;
 }
-
+//так же как и для температуры
 bool DHTDriver::setHumidityHistoryData(float _historydata)
 {
 	if (isnan(_historydata)) return false;
@@ -416,7 +419,6 @@ bool DHTDriver::setHumidityHistoryData(float _historydata)
 
 	return true;
 }
-
 //TemperatureHistoryFile property Read<->Write wrappers
 String DHTDriver::readTemperatureHistoryFile()
 {
@@ -432,15 +434,10 @@ String DHTDriver::readTemperatureHistoryFile()
 	return result;
 }
 
-
 bool DHTDriver::writeTemperatureHistoryFile(float _historydata)
 {
-
 	bool result = false;
-
 	String _historyfilename;
-
-
 	if (historyTemperatureFileCount < historyFileWriteTime)
 	{
 		historyTemperatureFileCount++;
@@ -448,7 +445,6 @@ bool DHTDriver::writeTemperatureHistoryFile(float _historydata)
 	else
 	{
 		historyTemperatureFileCount = 1;
-
 		if (currentTemperatureFileIndex < filesIndexesSize)
 		{
 			//Write to history file at the begining
@@ -457,21 +453,16 @@ bool DHTDriver::writeTemperatureHistoryFile(float _historydata)
 		}
 		else
 		{
-
 			currentTemperatureFileIndex = filesIndexesSize;
-
 			//Take value from historyFilesIndexes[0]
 			currentFile = historyFilesIndexes[0];
-
 			//Shift array element one step to left
 			for (int i = 1; i < filesIndexesSize; i++)
 			{
 				temperatureHistoryFilesIndexes[i - 1] = temperatureHistoryFilesIndexes[i];
 			}
-
 			//Put the current file to the end of array
 			temperatureHistoryFilesIndexes[filesIndexesSize - 1] = currentTemperatureFile;
-
 		}
 
 		//delete file with oldest history
@@ -488,6 +479,5 @@ bool DHTDriver::writeTemperatureHistoryFile(float _historydata)
 	{
 		result = filesAddString(_historyfilename, String(_historydata) + ";");
 	}
-
 	return result;
 }
