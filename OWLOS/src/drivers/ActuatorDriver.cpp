@@ -45,8 +45,7 @@ bool ActuatorDriver::init()
 {
 	if (id.length() == 0) id = DriverID;
 	BaseDriver::init(id);
-	//init properies 
-	//Pin * pin = getDriverPin(id, PIN0_INDEX);
+
 	PinDriverInfo pinDriverInfo;
 	if (getDriverPinInfo(id, PIN0_INDEX, &pinDriverInfo))
 	{

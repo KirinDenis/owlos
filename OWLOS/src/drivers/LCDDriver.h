@@ -116,7 +116,6 @@ public:
 	int getY();
 	bool setY(int _y, bool doEvent);
 
-
 private:
 	LiquidCrystal_I2C * lcd;
 	int cols = 20;

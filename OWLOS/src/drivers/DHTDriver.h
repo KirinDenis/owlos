@@ -49,7 +49,25 @@ OWLOS распространяется в надежде, что она буде
 
 class DHTDriver : public BaseDriver {
 public:
-	bool DHTsetup(int pin, int dhttype);
+	static int getPinsCount()
+	{
+		return 3;
+	}
+
+	static int getPinType(int pinIndex)
+	{
+		switch (pinIndex)
+		{
+		case PIN0_INDEX: return DIGITALIO_TYPE;
+		case PIN1_INDEX: return VCC5_TYPE;
+		case PIN2_INDEX: return GND_TYPE;
+		default:
+			return NO_TYPE;
+		}
+	}
+
+
+	bool DHTsetup(int dhttype);
 	float DHTgetTemperature();
 	float DHTgetHumidity();
 
@@ -58,8 +76,6 @@ public:
 	String getAllProperties();
 	bool publish();
 	String onMessage(String _topic, String _payload, int transportMask);
-	int getPin();
-	bool setPin(int _pin);
 	int getDHTType();
 	bool setDHTType(int _dhttype);
 	String getTemperature();

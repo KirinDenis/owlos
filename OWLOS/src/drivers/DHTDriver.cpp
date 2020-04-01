@@ -44,7 +44,7 @@ OWLOS распространяется в надежде, что она буде
 /*-------------------------------------------------------------------------------------------------------------------------
   Setup DHT sensor
   -------------------------------------------------------------------------------------------------------------------------*/
-bool DHTDriver::DHTsetup(int pin, int dhttype)
+bool DHTDriver::DHTsetup(int dhttype)
 {
 #ifdef DetailedDebug 
 	debugOut(id, "setup");
@@ -52,21 +52,25 @@ bool DHTDriver::DHTsetup(int pin, int dhttype)
 
 	if (DHTSetuped) return DHTSetupResult;
 	DHTSetuped = true;
-	//pinMode(pin, INPUT);
+	PinDriverInfo pinDriverInfo;
+	if (getDriverPinInfo(id, PIN0_INDEX, &pinDriverInfo))
+	{
 
-	dht = new DHT(pin, dhttype);
+		dht = new DHT(pinDriverInfo.GPIONumber, dhttype);
 
-	dht->begin();
+		dht->begin();
 
-	float _temperature = dht->readTemperature();
+		float _temperature = dht->readTemperature();
 #ifdef DetailedDebug 
-	debugOut(id, "DHT temperature " + String(_temperature));
+		debugOut(id, "DHT temperature " + String(_temperature));
 #endif
-	if (_temperature == _temperature) DHTSetupResult = true; //float NAN at C/C++ check as float == float
-	else
-		DHTSetupResult = false;
+		if (_temperature == _temperature) DHTSetupResult = true; //float NAN at C/C++ check as float == float
+		else
+			DHTSetupResult = false;
 
-	return DHTSetupResult;
+		return DHTSetupResult;
+	}
+	return false;
 }
 
 /*-------------------------------------------------------------------------------------------------------------------------
@@ -110,10 +114,10 @@ bool DHTDriver::begin(String _topic)
 	if (BaseDriver::begin(_topic))
 	{
 
-		getPin();
+		
 		getDHTType();
 
-		if (DHTsetup(pin, dhttype))
+		if (DHTsetup(dhttype))
 		{
 			available = true;
 #ifdef DetailedDebug
@@ -192,8 +196,7 @@ String DHTDriver::getAllProperties()
 	result += "temperaturehistorydata=" + getTemperatureHistoryData() + "//r\n";
 	result += "temperaturehistoryfile=//r\n";
 	result += "humidity=" + getHumidity() + "//rf\n";
-	result += "humidityhistorydata=" + getHumidityHistoryData() + "//r\n";
-	result += "pin=" + String(pin) + "//i\n";
+	result += "humidityhistorydata=" + getHumidityHistoryData() + "//r\n";	
 	result += "dhttype=" + String(dhttype) + "//i\n";
 	return result;
 }
@@ -214,12 +217,20 @@ String DHTDriver::onMessage(String _topic, String _payload, int transportMask)
 {
 
 	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
-	if (!available) return result;
-	if (String(topic + "/getpin").equals(_topic))
+	
+
+	if (String(topic + "/getdhttype").equals(_topic))
 	{
-		result = onGetProperty("pin", String(getPin()), transportMask);
+		result = onGetProperty("dhttype", String(getDHTType()), transportMask);
 	}
-	else if ((String(topic + "/gettemperature").equals(_topic)) || (String(topic + "/settemperature").equals(_topic)))
+	else if (String(topic + "/setdhttype").equals(_topic))
+	{
+		result = String(setDHTType(std::atoi(_payload.c_str())));
+	}
+
+	if (!available) return result;
+
+    if ((String(topic + "/gettemperature").equals(_topic)) || (String(topic + "/settemperature").equals(_topic)))
 	{
 		result = onGetProperty("temperature", getTemperature(), transportMask);
 	}
@@ -247,31 +258,6 @@ String DHTDriver::onMessage(String _topic, String _payload, int transportMask)
 	return result;
 }
 
-int DHTDriver::getPin()
-{
-	if (filesExists(id + ".pin"))
-	{
-		pin = filesReadInt(id + ".pin");
-	}
-#ifdef DetailedDebug
-	debugOut(id, "pin=" + String(pin));
-#endif
-	return pin;
-}
-
-bool DHTDriver::setPin(int _pin)
-{
-	pin = _pin;
-	DHTSetuped = false;
-	//pinMode(pin, INPUT);
-	filesWriteInt(id + ".pin", pin);
-	if (available)
-	{
-		return onInsideChange("pin", String(pin));
-	}
-	return true;
-}
-
 int DHTDriver::getDHTType()
 {
 	if (filesExists(id + ".dhttype"))
@@ -286,16 +272,24 @@ int DHTDriver::getDHTType()
 
 bool DHTDriver::setDHTType(int _dhttype)
 {
-	dhttype = _dhttype;
-	DHTSetuped = false;
-	filesWriteInt(id + ".dhttype", dhttype);
-	if (available)
-	{
-		return onInsideChange("dhttype", String(dhttype));
-	}
-	return true;
-}
 
+	dhttype = _dhttype;
+	filesWriteInt(id + ".dhttype", dhttype);
+	DHTSetuped = false;
+	if (DHTsetup(_dhttype))
+	{
+		if (available)
+		{
+			return onInsideChange("dhttype", String(dhttype));
+		}
+		return true;
+	}
+	else
+	{
+		DHTSetuped = false;
+		return false;
+	}
+}
 
 String DHTDriver::getTemperature()
 {
