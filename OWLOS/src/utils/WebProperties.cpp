@@ -1,4 +1,4 @@
-﻿/* ----------------------------------------------------------------------------
+/* ----------------------------------------------------------------------------
 Ready IoT Solution - OWLOS
 Copyright 2019, 2020 by:
 - Konstantin Brul (konstabrul@gmail.com)
@@ -39,7 +39,75 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-#include "src\Utils\Utils.h"
+//#include "config.h" ???
+#include "../Kernel.h"
+#include "../Managers/FileManager.h"
 
-String webGetAllProperties();
-String webOnMessage(String _topic, String _payload);
+#define id "webproperties"
+
+String webGetWebConfig()
+{
+	String result = "";
+	if (filesExists("web.config"))
+	{
+		result = filesReadString("web.config");
+	}
+
+#ifdef DetailedDebug 
+	debugOut(id, "config=" + result);
+#endif
+	return result;
+}
+
+bool webSetHead(String _webConfig)
+{
+#ifdef DetailedDebug 
+	debugOut(id, "|<- inside change config=" + _webConfig);
+#endif
+	filesWriteString("web.temp", _webConfig);
+	return true;
+}
+
+bool webSetBody(String _webConfig)
+{
+#ifdef DetailedDebug 
+	debugOut(id, "|<- inside change config=" + _webConfig);
+#endif
+	filesAddString("web.temp", _webConfig);
+	return true;
+}
+
+bool webSetTail(String _webConfig)
+{
+#ifdef DetailedDebug 
+	debugOut(id, "|<- inside change config=" + _webConfig);
+#endif
+	filesRename("web.config", "oldweb.config");
+	if (filesAddString("web.temp", _webConfig))
+	{
+		filesRename("web.temp", "web.config");
+	}
+	return true;
+}
+
+String webGetAllProperties()
+{
+	String result = "config=" + webGetWebConfig() + "//\n";
+	return result;
+}
+
+String webOnMessage(String _topic, String _payload)
+{
+	String result = WrongPropertyName;
+	if (String(nodeGetTopic() + "/getconfig").equals(_topic)) return webGetWebConfig();
+	else
+		if (String(nodeGetTopic() + "/sethead").equals(_topic)) return String(webSetHead(_payload));
+		else
+			if (String(nodeGetTopic() + "/setbody").equals(_topic)) return String(webSetBody(_payload));
+			else
+				if (String(nodeGetTopic() + "/settail").equals(_topic)) return String(webSetTail(_payload));
+
+	return result;
+}
+
+

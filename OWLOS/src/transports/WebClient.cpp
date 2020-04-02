@@ -58,8 +58,8 @@ OWLOS распространяется в надежде, что она буде
 #include <Arduino.h>
 #include <FS.h>
 
-#include "..\utils\Utils.h"
-#include "..\managers\FileManager.h"
+#include "../utils\Utils.h"
+#include "../managers\FileManager.h"
 
 #define webclientid "WebClient"
 HTTPClient http;

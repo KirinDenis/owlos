@@ -40,7 +40,7 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 #include "BaseDriver.h"
-#include "..\Managers\DriverManager.h"
+#include "../Managers\DriverManager.h"
 
   //init() is called before transport accessable, when ESP is Setupping()
   //Drivers load default GPIO and other property values from Flash file system thanks to Init()

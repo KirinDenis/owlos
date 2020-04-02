@@ -41,7 +41,7 @@ OWLOS распространяется в надежде, что она буде
 
 #pragma once
 #include <Arduino.h>
-#include "..\libraries\DHT_sensor_library\DHT.h"
+#include "../libraries\DHT_sensor_library\DHT.h"
 #include "BaseDriver.h"
 
 #define ESP8266;

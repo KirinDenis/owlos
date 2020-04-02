@@ -60,13 +60,13 @@ OWLOS распространяется в надежде, что она буде
 #include <MD5Builder.h>
 
 #include "HTTPServerThings.h"
-#include "..\Managers\DriverManager.h"
-#include "..\Managers\ScriptManager.h"
-#include "..\Managers\UpdateManager.h"
-#include "..\Managers\FileManager.h"
-#include "..\Utils\Utils.h"
-#include "..\..\Kernel.h"
-#include "..\..\WebProperties.h"
+#include "../Kernel.h"
+#include "../Managers/DriverManager.h"
+#include "../Managers/ScriptManager.h"
+#include "../Managers/UpdateManager.h"
+#include "../Managers/FileManager.h"
+#include "../Utils/Utils.h"
+#include "../Utils/WebProperties.h"
 
 
 #define HTTP_METHODS " GET, POST, OPTIONS"

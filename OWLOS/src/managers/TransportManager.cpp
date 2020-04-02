@@ -40,11 +40,11 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 #include <core_version.h>
 #include "TransportManager.h"
-#include "..\..\Kernel.h"
-#include "..\Managers\OTAManager.h"
-#include "..\Managers\DriverManager.h"
-#include "..\Transports\HTTPServer.h"
-#include "..\Utils\Utils.h"
+#include "../Kernel.h"
+#include "../Managers\OTAManager.h"
+#include "../Managers\DriverManager.h"
+#include "../Transports\HTTPServer.h"
+#include "../Utils\Utils.h"
 
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 ESP8266WiFiMulti _WiFiMulti;

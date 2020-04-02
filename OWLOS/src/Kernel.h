@@ -52,9 +52,7 @@ OWLOS распространяется в надежде, что она буде
 #include <rom/rtc.h>
 #endif
 
-
-
-#include "src\Utils\Utils.h"
+#include "Utils\Utils.h"
 
 bool kernelSetup();
 bool kernelLoop();

@@ -112,7 +112,7 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "nomotion=Немає\n" +
     "rid_online=В мережі\n" +
     "rid_error=Помилка\n" +
-    "rid_connect=З'єднання...\n" +
+    "rid_connect=З'єднання.../n" +
     "rid_offline=Не в мережі\n" +
     "lcd=Екран\n" +
     "send=Відпр.\n" +
@@ -229,7 +229,7 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "savingchanges=Збереження змін\n" +
     "language=ukraine\n";
 
-var langen = "prepareUnit=prepare UI, please wait...\n" +
+var langen = "prepareUnit=prepare UI, please wait.../n" +
     "nodeTab=Node\n" +
     "settingsTab=Nodes\n" +
     "filesTab=Files\n" +
@@ -266,7 +266,7 @@ var langen = "prepareUnit=prepare UI, please wait...\n" +
     "selectfiles=Select files\n" +
     "rid_online=Online \n" +
     "rid_error=Error \n" +
-    "rid_connect=Connecting...\n" +
+    "rid_connect=Connecting.../n" +
     "rid_offline=Offline\n" +
     "connected=Connected\n" +
     "disconnected=Disconnected\n" +
@@ -473,7 +473,7 @@ var langru = "prepareUnit=Подготовка интерфейса пользо
     "nomotion=Нет\n" +
     "rid_online=В сети\n" +
     "rid_error=Ошибка\n" +
-    "rid_connect=Соединение...\n" +
+    "rid_connect=Соединение.../n" +
     "rid_offline=Не в сети\n" +
     "lcd=Жидкокристаллический экран\n" +
     "send=Отпр.\n" +

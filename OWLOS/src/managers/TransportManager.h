@@ -54,7 +54,7 @@ OWLOS распространяется в надежде, что она буде
 #endif
 
 
-#include "..\Transports\MQTTClient.h"
+#include "../Transports\MQTTClient.h"
 
 #define TransportID "Transport"
 MQTTClient* getMQTTClient();

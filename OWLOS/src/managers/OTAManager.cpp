@@ -4,8 +4,8 @@
 
 
 #include "OTAManager.h"
-#include "..\..\Kernel.h"
-#include "..\Utils\Utils.h"
+#include "../Kernel.h"
+#include "../Utils\Utils.h"
 
 #define OTAID "OTA"
 

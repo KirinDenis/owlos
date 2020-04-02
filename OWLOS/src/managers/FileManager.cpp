@@ -40,7 +40,7 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 #include <core_version.h>
-#include "..\Utils\Utils.h"
+#include "../Utils\Utils.h"
 
 #define FileSystem "File System"
 

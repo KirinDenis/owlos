@@ -41,11 +41,11 @@ OWLOS распространяется в надежде, что она буде
 #include <core_version.h>
 
 #include "Kernel.h"
-#include "src\Managers\DriverManager.h"
-#include "src\Managers\FileManager.h"
-#include "src\Managers\TransportManager.h"
-#include "src\Managers\UpdateManager.h"
-#include "src\Managers\ScriptManager.h"
+#include "Managers/DriverManager.h"
+#include "Managers/FileManager.h"
+#include "Managers/TransportManager.h"
+#include "Managers/UpdateManager.h"
+#include "Managers/ScriptManager.h"
 
 #define FIRMWARE_VERSION "OWLOS version 1.7 (beta)"
 #define FIRMWARE_BUILD_NUMBER 60
