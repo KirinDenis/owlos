@@ -41,9 +41,8 @@ OWLOS распространяется в надежде, что она буде
 
 #include <Arduino.h>
 
-#include "..\Utils\Utils.h"
-
-#include "..\Drivers\BaseDriver.h"
+//#include "..\Utils\Utils.h"
+//#include "..\Drivers\BaseDriver.h"
 #include "..\Drivers\DHTDriver.h"
 #include "..\Drivers\StepperDriver.h"
 #include "..\Drivers\LightDriver.h"
@@ -56,7 +55,7 @@ OWLOS распространяется в надежде, что она буде
 #include "..\Drivers\ValveDriver.h"
 
 void driversInit(String _topic);
-void driversBegin(String unitTopic);
+void driversBegin(String nodeTopic);
 void driversLoop();
 String driversGetAccessable();
 void driversSubscribe();

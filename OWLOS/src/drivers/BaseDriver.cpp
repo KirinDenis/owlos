@@ -174,7 +174,7 @@ int BaseDriver::parsePinNumber(String _topic, String getPinStr)
 	return std::atoi(_topic.substring(_topic.indexOf(topic +  getPinStr) + String(topic + getPinStr).length()).c_str());
 }
 
-String BaseDriver::onMessage(String _topic, String _payload, int transportMask)
+String BaseDriver::onMessage(String _topic, String _payload, int8_t transportMask)
 {
 	if (_topic.indexOf(topic + "/getpintype") == 0)
 	{
@@ -299,7 +299,7 @@ String BaseDriver::onMessage(String _topic, String _payload, int transportMask)
 }
 
 //Called when client gets a property from network
-String BaseDriver::onGetProperty(String _property, String _payload, int transportMask)
+String BaseDriver::onGetProperty(String _property, String _payload, int8_t transportMask)
 {
 #ifdef DetailedDebug
 	debugOut(id, "|-> get property " + _property + " = " + _payload);
@@ -311,7 +311,7 @@ String BaseDriver::onGetProperty(String _property, String _payload, int transpor
 	return _payload;
 }
 
-bool BaseDriver::onInsideChange(String _property, String _payload/*, int transportMask*/)
+bool BaseDriver::onInsideChange(String _property, String _payload/*, int8_t transportMask*/)
 {
 #ifdef DetailedDebug
 	debugOut(id, "|<- inside change " + _property + " = " + _payload);

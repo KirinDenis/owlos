@@ -105,7 +105,7 @@ bool SensorDriver::publish()
 	return false;
 };
 
-String SensorDriver::onMessage(String _topic, String _payload, int transportMask)
+String SensorDriver::onMessage(String _topic, String _payload, int8_t transportMask)
 {
 	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
 	if (!available) return result;

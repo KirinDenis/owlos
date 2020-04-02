@@ -20,7 +20,7 @@ on a pull request (it will clutter the discussion of the request).
 
 Also don't be worried if the request is closed or not integrated--sometimes the
 priorities of Adafruit's GitHub code (education, ease of use) might not match the
-priorities of the pull request.  Don't fret, the open source community thrives on
+priorities of the pull request.  Don't fret, the open source commnodey thrives on
 forks and GitHub makes it easy to keep your changes in a forked repo.
 
 After reviewing the guidelines above you can delete this text from the pull request.

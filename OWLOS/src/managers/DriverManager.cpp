@@ -41,7 +41,7 @@ OWLOS распространяется в надежде, что она буде
 #include <core_version.h>
 #include "../utils/GPIOMap.h"
 
-//ALL DEVICES constructors must be called here, current unit topic must be puted as parameter
+//ALL DEVICES constructors must be called here, current node topic must be puted as parameter
 //#include "PinManager.h"
 #include "DriverManager.h"
 #include "..\..\Kernel.h"
@@ -57,8 +57,6 @@ BaseDriver * driversList[DRIVERS_LIMIT];
 #define valueDelimiter  ";"
 #define pinDelimiter  ","
 
-
-
 void driversInit(String _topic)
 {
 	debugOut("---------------", String(ActuatorDriver::getPinsCount()));
@@ -72,13 +70,13 @@ void driversInit(String _topic)
 #endif
 }
 
-void driversBegin(String unitTopic)
+void driversBegin(String nodeTopic)
 {
 	for (int i = 0; i < DRIVERS_LIMIT; i++)
 	{
 		if (driversList[i] != nullptr)
 		{
-			driversList[i]->begin(unitTopic);
+			driversList[i]->begin(nodeTopic);
 		}
 	}
 }
@@ -219,7 +217,7 @@ String driversGetDriverProperties(String id)
 
 String driversGetAllDriversProperties()
 {
-	String result = unitGetAllProperties();
+	String result = nodeGetAllProperties();
 	for (int i = 0; i < DRIVERS_LIMIT; i++)
 	{
 		if (driversList[i] != nullptr)
@@ -747,7 +745,7 @@ String driversAdd(int type, String id, String pins) //String D1;D3;GND;....
 											}
 */
 //if driver added at RUNTIME
-	if (transportAvailable()) driversList[freeIndex]->begin(unitGetTopic());
+	if (transportAvailable()) driversList[freeIndex]->begin(nodeGetTopic());
 #ifdef DetailedDebug
 	debugOut("driversadd", "OK");
 #endif

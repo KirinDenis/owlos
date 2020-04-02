@@ -43,7 +43,7 @@ OWLOS распространяется в надежде, что она буде
 // Этот класс реализует объектную модель драйвер подключенных к микроконтроллеру.
 // 
 // Перед началом изучения этого класса - вызовите API getalldriversproperties и изучите формат передачи
-// свойств драйвер: http://youruniturl:yourunitport/getalldriversproperties (например http://192.168.1.10:8084/getalldriversproperties)
+// свойств драйвер: http://yournodeurl:yournodeport/getalldriversproperties (например http://192.168.1.10:8084/getalldriversproperties)
 
 // Примечания:
 // "парсинг" - синтаксический анализ https://ru.wikipedia.org/wiki/%D0%A1%D0%B8%D0%BD%D1%82%D0%B0%D0%BA%D1%81%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9_%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7

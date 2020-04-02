@@ -112,7 +112,7 @@ bool ActuatorDriver::publish()
 	return false;
 };
 
-String ActuatorDriver::onMessage(String _topic, String _payload, int transportMask)
+String ActuatorDriver::onMessage(String _topic, String _payload, int8_t transportMask)
 {
 	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
 

@@ -75,7 +75,7 @@ public:
 	bool query();
 	String getAllProperties();
 	bool publish();
-	String onMessage(String _topic, String _payload, int transportMask);
+	String onMessage(String _topic, String _payload, int8_t transportMask);
 	int getDHTType();
 	bool setDHTType(int _dhttype);
 	String getTemperature();

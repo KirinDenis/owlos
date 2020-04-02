@@ -106,7 +106,7 @@ String updateGetUpdateInfo()
 
 int updateGetUpdatePossible()
 {
-	if (unitGetUpdateAvailable() != 1)
+	if (nodeGetUpdateAvailable() != 1)
 	{
 		updatePossible = UpdateNotAvailable;
 	}
@@ -116,7 +116,7 @@ int updateGetUpdatePossible()
 		if (skipLoopCount > UPDATE_SKIP_COUNT)
 		{
 			skipLoopCount = 0;
-			if (!downloadFile(UpdateInfoFile, unitGetUpdateHost() + UpdateInfoFile))
+			if (!downloadFile(UpdateInfoFile, nodeGetUpdateHost() + UpdateInfoFile))
 			{
 				updatePossible = UpdateServerNotAvailable;
 			}
@@ -124,7 +124,7 @@ int updateGetUpdatePossible()
 			{
 				//update info downloaded OK
 				updateInfo = filesReadString(UpdateInfoFile);
-				if (unitGetESPBootMode() > 0) //booting with hardware reset
+				if (nodeGetESPBootMode() > 0) //booting with hardware reset
 				{
 					updatePossible = UpdateBoth;
 				}
@@ -149,7 +149,7 @@ int updateGetUpdateUIStatus()
 
 String downloadFileWithLog(String fileName)
 {
-	String host = unitGetUpdateHost();
+	String host = nodeGetUpdateHost();
 	int result = downloadFile(fileName, host + fileName);
 	if (result == 1)
 	{
@@ -245,7 +245,7 @@ int updateFirmware()
 #ifdef DetailedDebug 
 		debugOut(updateid, "Update firmware started\n");
 #endif
-		String host = unitGetUpdateHost();
+		String host = nodeGetUpdateHost();
 		WiFiClient client;
 		ESPhttpUpdate.setLedPin(LED_BUILTIN, LOW);
 		t_httpUpdate_return ret = HTTP_UPDATE_NO_UPDATES;

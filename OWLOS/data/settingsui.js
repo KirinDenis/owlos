@@ -924,7 +924,7 @@ var settingsUI = {
                 }
                 else
                     if (driver.type.value == NetworkDriverType) {
-                        // document.title = driver.unitid.value + " :: OWLOS"; //ToDo detect "local" node
+                        // document.title = driver.nodeid.value + " :: OWLOS"; //ToDo detect "local" node
 
                         var RESTfulPanel = settingsUI.getStatusWidget(node.nodenickname + "restfulStatus", "RESTful");
                         driver.restfulavailable.addValueListner(settingsUI.onRESTfulStatusChange, RESTfulPanel);
@@ -1164,7 +1164,7 @@ var settingsUI = {
 
         var driverHost = event.currentTarget.driverHost;
 
-        makeModalDialog("resetPanel", "reset", getLang("resetunit"), getLang("areYouSure"));
+        makeModalDialog("resetPanel", "reset", getLang("resetnode"), getLang("areYouSure"));
         var modalFooter = document.getElementById("resetModalFooter");
 
         var resetButton = modalFooter.appendChild(document.createElement("button"));
@@ -1185,7 +1185,7 @@ var settingsUI = {
         var updateuiButton = event.currentTarget;
         var node = updateuiButton.node;
 
-        makeModalDialog("resetPanel", "update", getLang("updateunit"), getLang("areYouSure"));
+        makeModalDialog("resetPanel", "update", getLang("updatenode"), getLang("areYouSure"));
         var modalFooter = document.getElementById("updateModalFooter");
 
         var updateButton = modalFooter.appendChild(document.createElement("button"));

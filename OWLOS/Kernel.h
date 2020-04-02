@@ -59,229 +59,229 @@ OWLOS распространяется в надежде, что она буде
 bool kernelSetup();
 bool kernelLoop();
 
-bool unitInit();
+bool nodeInit();
 
-String unitGetAllProperties();
+String nodeGetAllProperties();
 
-void unitSubscribe();
+void nodeSubscribe();
 
-String unitOnMessage(String _topic, String _payload, int transportMask);
+String nodeOnMessage(String _topic, String _payload, int8_t transportMask);
 
-String unitGetUnitId();
-bool unitSetUnitId(String _unitid);
+String nodeGetUnitId();
+bool nodeSetUnitId(String _nodeid);
 
-String unitGetTopic();
-bool unitSetTopic(String _topic);
+String nodeGetTopic();
+bool nodeSetTopic(String _topic);
 
-String unitGetFirmwareVersion();
-bool unitSetFirmwareVersion(String _firmwareversion);
+String nodeGetFirmwareVersion();
+bool nodeSetFirmwareVersion(String _firmwareversion);
 
-int unitGetFirmwareBuildNumber();
-bool unitSetFirmwareBuildNumber(int _firmwarebuildnumber);
+int nodeGetFirmwareBuildNumber();
+bool nodeSetFirmwareBuildNumber(int _firmwarebuildnumber);
 
-int unitGetWiFiAccessPointAvailable();
-bool unitSetWiFiAccessPointAvailable(int _wifiaccesspointavailable);
+int nodeGetWiFiAccessPointAvailable();
+bool nodeSetWiFiAccessPointAvailable(int _wifiaccesspointavailable);
 
-String unitGetWiFiAccessPointSSID();
-bool unitSetWiFiAccessPointSSID(String _wifissid);
+String nodeGetWiFiAccessPointSSID();
+bool nodeSetWiFiAccessPointSSID(String _wifissid);
 
-String unitGetWiFiAccessPointPassword();
-bool unitSetWiFiAccessPointPassword(String _wifipassword);
+String nodeGetWiFiAccessPointPassword();
+bool nodeSetWiFiAccessPointPassword(String _wifipassword);
 
-String unitGetWiFiAccessPointIP();
-bool unitSetWiFiAccessPointIP(String _wifiaccesspointip);
+String nodeGetWiFiAccessPointIP();
+bool nodeSetWiFiAccessPointIP(String _wifiaccesspointip);
 
-int unitGetWiFiAvailable();
-bool unitSetWiFiAvailable(int _wifiavailable);
+int nodeGetWiFiAvailable();
+bool nodeSetWiFiAvailable(int _wifiavailable);
 
-String unitGetWiFiSSID();
-bool unitSetWiFiSSID(String _wifissid);
+String nodeGetWiFiSSID();
+bool nodeSetWiFiSSID(String _wifissid);
 
-String unitGetWiFiPassword();
-bool unitSetWiFiPassword(String _wifipassword);
+String nodeGetWiFiPassword();
+bool nodeSetWiFiPassword(String _wifipassword);
 
-String unitGetWiFiIP();
-bool unitSetWiFiIP(String _wifiip);
+String nodeGetWiFiIP();
+bool nodeSetWiFiIP(String _wifiip);
 
-int unitGetRESTfulAvailable();
-bool unitSetRESTfulAvailable(int _restfulavailable);
+int nodeGetRESTfulAvailable();
+bool nodeSetRESTfulAvailable(int _restfulavailable);
 
-String unitGetRESTfulServerUsername();
-bool unitSetRESTfulServerUsername(String _webserverlogin);
+String nodeGetRESTfulServerUsername();
+bool nodeSetRESTfulServerUsername(String _webserverlogin);
 
-String unitGetRESTfulServerPassword();
-bool unitSetRESTfulServerPassword(String _webserverpwd);
+String nodeGetRESTfulServerPassword();
+bool nodeSetRESTfulServerPassword(String _webserverpwd);
 
-int unitGetRESTfulServerPort();
-bool unitSetRESTfulServerPort(int _restfulserverport);
+int nodeGetRESTfulServerPort();
+bool nodeSetRESTfulServerPort(int _restfulserverport);
 
-int unitGetRESTfulClientPort();
-bool unitSetRESTfulClientPort(int _restfulclientport);
+int nodeGetRESTfulClientPort();
+bool nodeSetRESTfulClientPort(int _restfulclientport);
 
-String unitGetRESTfulClientURL();
-bool unitSetRESTfulClientURL(String _restfulclienturl);
+String nodeGetRESTfulClientURL();
+bool nodeSetRESTfulClientURL(String _restfulclienturl);
 
-int unitGetMQTTAvailable();
-bool unitSetMQTTAvailable(int _mqttavailable);
+int nodeGetMQTTAvailable();
+bool nodeSetMQTTAvailable(int _mqttavailable);
 
-int unitGetMQTTPort();
-bool unitSetMQTTPort(int _mqttport);
+int nodeGetMQTTPort();
+bool nodeSetMQTTPort(int _mqttport);
 
-String unitGetMQTTURL();
-bool unitSetMQTTURL(String _mqtturl);
+String nodeGetMQTTURL();
+bool nodeSetMQTTURL(String _mqtturl);
 
-String unitGetMQTTID();
-bool unitSetMQTTID(String _mqttid);
+String nodeGetMQTTID();
+bool nodeSetMQTTID(String _mqttid);
 
-String unitGetMQTTLogin();
-bool unitSetMQTTLogin(String _mqttlogin);
+String nodeGetMQTTLogin();
+bool nodeSetMQTTLogin(String _mqttlogin);
 
-String unitGetMQTTPassword();
-bool unitSetMQTTPassword(String _mqttpassword);
+String nodeGetMQTTPassword();
+bool nodeSetMQTTPassword(String _mqttpassword);
 
-int unitGetMQTTClientConnected();
-int unitGetMQTTClientState();
+int nodeGetMQTTClientConnected();
+int nodeGetMQTTClientState();
 
-int unitGetOTAAvailable();
-bool unitSetOTAAvailable(int _otaavailable);
+int nodeGetOTAAvailable();
+bool nodeSetOTAAvailable(int _otaavailable);
 
-int unitGetOTAPort();
-bool unitSetOTAPort(int _otaport);
+int nodeGetOTAPort();
+bool nodeSetOTAPort(int _otaport);
 
-String unitGetOTAID();
-bool unitSetOTAID(String _otaid);
+String nodeGetOTAID();
+bool nodeSetOTAID(String _otaid);
 
-String unitGetOTAPassword();
-bool unitSetOTAPassword(String _otapassword);
+String nodeGetOTAPassword();
+bool nodeSetOTAPassword(String _otapassword);
 
 // WiFi parameters
-int32_t unitGetWiFiRSSI();
-bool unitSetWiFiRSSI(int _currentwifirssi);
+int32_t nodeGetWiFiRSSI();
+bool nodeSetWiFiRSSI(int _currentwifirssi);
 
 
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
-WiFiMode_t unitGetWiFiMode();
-bool unitSetWiFiMode(WiFiMode_t _wifimode);
+WiFiMode_t nodeGetWiFiMode();
+bool nodeSetWiFiMode(WiFiMode_t _wifimode);
 #endif
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
-wifi_mode_t unitGetWiFiMode();
-bool unitSetWiFiMode(wifi_mode_t _wifimode);
+wifi_mode_t nodeGetWiFiMode();
+bool nodeSetWiFiMode(wifi_mode_t _wifimode);
 #endif
 
 
-String unitGetAllWiFiModes();
+String nodeGetAllWiFiModes();
 
-wl_status_t unitGetWiFiStatus();
-bool unitSetWiFiStatus(int _wifistatus);
-String unitGetAllWiFiStatuses();
-String unitGetWiFiStatusToString();
+wl_status_t nodeGetWiFiStatus();
+bool nodeSetWiFiStatus(int _wifistatus);
+String nodeGetAllWiFiStatuses();
+String nodeGetWiFiStatusToString();
 
-int8_t unitGetScanWiFiNetworks();
-bool unitSetScanWiFiNetworks(int _scanwifinetworks);
+int8_t nodeGetScanWiFiNetworks();
+bool nodeSetScanWiFiNetworks(int _scanwifinetworks);
 
-int8_t unitGetWiFiNetworksCount();
-bool unitSetWiFiNetworksCount(int _wifinetworkscount);
+int8_t nodeGetWiFiNetworksCount();
+bool nodeSetWiFiNetworksCount(int _wifinetworkscount);
 
-String unitGetWiFiNetworksParameters();
-//bool unitSetWiFiNetworksParameters(String _wifinetworksparameters);
-String unitGetAllWiFiEncryptionTypes();
+String nodeGetWiFiNetworksParameters();
+//bool nodeSetWiFiNetworksParameters(String _wifinetworksparameters);
+String nodeGetAllWiFiEncryptionTypes();
 
-int unitGetWiFiIsConnected();
-bool unitSetWiFiIsConnected(int _wifiisconnected);
+int nodeGetWiFiIsConnected();
+bool nodeSetWiFiIsConnected(int _wifiisconnected);
 
-int unitGetWiFiIsDisconnected();
-int unitSetWiFiIsDisconnected();
+int nodeGetWiFiIsDisconnected();
+int nodeSetWiFiIsDisconnected();
 
-String unitGetConnectedWiFiSSID();
+String nodeGetConnectedWiFiSSID();
 
 /**/
-String unitGetESPResetInfo();
-bool unitSetESPResetInfo(String _espresetinfo);
+String nodeGetESPResetInfo();
+bool nodeSetESPResetInfo(String _espresetinfo);
 
-int unitGetESPReset();
-bool unitSetESPReset(int _espreset);
+int nodeGetESPReset();
+bool nodeSetESPReset(int _espreset);
 
-int unitGetESPRestart();
-bool unitSetESPRestart(int _esprestart);
+int nodeGetESPRestart();
+bool nodeSetESPRestart(int _esprestart);
 
-uint16_t unitGetESPVcc();
-bool unitSetESPVcc(int _espvcc);
+uint16_t nodeGetESPVcc();
+bool nodeSetESPVcc(int _espvcc);
 
-uint32_t unitGetESPChipId();
-bool unitSetESPChipId(int _espchipid);
+uint32_t nodeGetESPChipId();
+bool nodeSetESPChipId(int _espchipid);
 
-uint32_t unitGetESPFreeHeap();
-bool unitSetESPFreeHeap(int _espfreeheap);
+uint32_t nodeGetESPFreeHeap();
+bool nodeSetESPFreeHeap(int _espfreeheap);
 
-uint16_t unitGetESPMaxFreeBlockSize();
-bool unitSetESPMaxFreeBlockSize(int _espmaxfreeblocksize);
+uint16_t nodeGetESPMaxFreeBlockSize();
+bool nodeSetESPMaxFreeBlockSize(int _espmaxfreeblocksize);
 
-uint8_t unitGetESPHeapFragmentation();
-bool unitSetESPHeapFragmentation(int _espheapfragmentation);
+uint8_t nodeGetESPHeapFragmentation();
+bool nodeSetESPHeapFragmentation(int _espheapfragmentation);
 
-const char * unitGetESPSdkVersion();
-bool unitSetESPSdkVersion(String _espsdkversion);
+const char * nodeGetESPSdkVersion();
+bool nodeSetESPSdkVersion(String _espsdkversion);
 
-String unitGetESPCoreVersion();
-bool unitSetESPCoreVersion(String _espcoreversion);
+String nodeGetESPCoreVersion();
+bool nodeSetESPCoreVersion(String _espcoreversion);
 
-String unitGetESPFullVersion();
-bool unitSetESPFullVersion(String _espfullversion);
+String nodeGetESPFullVersion();
+bool nodeSetESPFullVersion(String _espfullversion);
 
-uint8_t unitGetESPBootVersion();
-bool unitSetESPBootVersion(int _espbootversion);
+uint8_t nodeGetESPBootVersion();
+bool nodeSetESPBootVersion(int _espbootversion);
 
-uint8_t unitGetESPBootMode();
-bool unitSetESPBootMode(int _espbootmode);
+uint8_t nodeGetESPBootMode();
+bool nodeSetESPBootMode(int _espbootmode);
 
-uint8_t unitGetESPCpuFreqMHz();
-bool unitSetESPCpuFreqMHz(int _espcpufreqmhz);
+uint8_t nodeGetESPCpuFreqMHz();
+bool nodeSetESPCpuFreqMHz(int _espcpufreqmhz);
 
-uint32_t unitGetESPFlashChipId();
-bool unitSetESPFlashChipId(int _espflashchipid);
+uint32_t nodeGetESPFlashChipId();
+bool nodeSetESPFlashChipId(int _espflashchipid);
 
-uint8_t unitGetESPFlashChipVendorId();
-bool unitSetESPFlashChipVendorId(int _espflashchipvendorid);
+uint8_t nodeGetESPFlashChipVendorId();
+bool nodeSetESPFlashChipVendorId(int _espflashchipvendorid);
 
-uint32_t unitGetESPFlashChipRealSize();
-bool unitSetESPFlashChipRealSize(int _espflashchiprealsize);
+uint32_t nodeGetESPFlashChipRealSize();
+bool nodeSetESPFlashChipRealSize(int _espflashchiprealsize);
 
-uint32_t unitGetESPFlashChipSize();
-bool unitSetESPFlashChipSize(int _espflashchipsize);
+uint32_t nodeGetESPFlashChipSize();
+bool nodeSetESPFlashChipSize(int _espflashchipsize);
 
-uint32_t unitGetESPFlashChipSpeed();
-bool unitSetESPFlashChipSpeed(int _espflashchipspeed);
+uint32_t nodeGetESPFlashChipSpeed();
+bool nodeSetESPFlashChipSpeed(int _espflashchipspeed);
 
-uint32_t unitGetESPSketchSize();
-bool unitSetESPSketchSize(int _espsketchsize);
+uint32_t nodeGetESPSketchSize();
+bool nodeSetESPSketchSize(int _espsketchsize);
 
-uint32_t unitGetESPFreeSketchSpace();
-bool unitSetESPFreeSketchSpace(int _espfreesketchspace);
+uint32_t nodeGetESPFreeSketchSpace();
+bool nodeSetESPFreeSketchSpace(int _espfreesketchspace);
 
-FlashMode_t unitGetESPFlashChipMode();
-bool unitSetESPFlashChipMode(int _espflashchipmode);
+FlashMode_t nodeGetESPFlashChipMode();
+bool nodeSetESPFlashChipMode(int _espflashchipmode);
 
-String unitGetESPSketchMD5();
-bool unitSetESPSketchMD5(String _espsketchmd5);
+String nodeGetESPSketchMD5();
+bool nodeSetESPSketchMD5(String _espsketchmd5);
 
-String unitGetESPResetReason();
-bool unitSetESPResetReason(String _espresetreason);
+String nodeGetESPResetReason();
+bool nodeSetESPResetReason(String _espresetreason);
 
-uint32_t unitGetESPMagicFlashChipSize(uint8_t byte);
-bool unitSetESPMagicFlashChipSize(int _espmagicflashchipsize);
+uint32_t nodeGetESPMagicFlashChipSize(uint8_t byte);
+bool nodeSetESPMagicFlashChipSize(int _espmagicflashchipsize);
 
-uint32_t unitGetESPMagicFlashChipSpeed(uint8_t byte);
-bool unitSetESPMagicFlashChipSpeed(int _espmagicflashchipspeed);
+uint32_t nodeGetESPMagicFlashChipSpeed(uint8_t byte);
+bool nodeSetESPMagicFlashChipSpeed(int _espmagicflashchipspeed);
 
-FlashMode_t unitGetESPMagicFlashChipMode(uint8_t byte);
-bool unitSetESPMagicFlashChipMode(int _espmagicflashchipmode);
+FlashMode_t nodeGetESPMagicFlashChipMode(uint8_t byte);
+bool nodeSetESPMagicFlashChipMode(int _espmagicflashchipmode);
 
-String unitGetBusyPins();
-String unitGetPinsMap();
+String nodeGetBusyPins();
+String nodeGetPinsMap();
 
-int unitGetUpdateAvailable();
-bool unitSetUpdateAvailable(int _updateavailable);
+int nodeGetUpdateAvailable();
+bool nodeSetUpdateAvailable(int _updateavailable);
 
-String unitGetUpdateHost();
-bool unitSetUpdateHost(String _updatehost);
+String nodeGetUpdateHost();
+bool nodeSetUpdateHost(String _updatehost);

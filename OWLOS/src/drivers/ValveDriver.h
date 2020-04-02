@@ -51,7 +51,7 @@ class ValveDriver : public BaseDriver {
     bool query();
     String getAllProperties();
     bool publish();
-    String onMessage(String _topic, String _payload, int transportMask);
+    String onMessage(String _topic, String _payload, int8_t transportMask);
 
     int getPin1();
     bool setPin1(int _pin1);

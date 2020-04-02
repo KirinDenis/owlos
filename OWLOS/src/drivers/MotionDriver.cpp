@@ -114,7 +114,7 @@ bool MotionDriver::publish()
 	return false;
 };
 
-String MotionDriver::onMessage(String _topic, String _payload, int transportMask)
+String MotionDriver::onMessage(String _topic, String _payload, int8_t transportMask)
 {
 	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
 	if (!available) return result;

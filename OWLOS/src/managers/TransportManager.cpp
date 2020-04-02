@@ -42,6 +42,7 @@ OWLOS распространяется в надежде, что она буде
 #include "TransportManager.h"
 #include "..\..\Kernel.h"
 #include "..\Managers\OTAManager.h"
+#include "..\Managers\DriverManager.h"
 #include "..\Transports\HTTPServer.h"
 #include "..\Utils\Utils.h"
 
@@ -178,13 +179,13 @@ bool transportBegin()
 		_MQTTClient = new MQTTClient(wifiClient);
 	}
 
-	if ((unitGetWiFiAccessPointAvailable() == 1) && (unitGetWiFiAvailable() == 1))
+	if ((nodeGetWiFiAccessPointAvailable() == 1) && (nodeGetWiFiAvailable() == 1))
 	{
-		unitSetWiFiMode(WIFI_AP_STA);
+		nodeSetWiFiMode(WIFI_AP_STA);
 		debugOut(TransportID, "WiFi mode Access Point and Station (both)");
 	}
 	else
-		if (unitGetWiFiAccessPointAvailable() == 1)
+		if (nodeGetWiFiAccessPointAvailable() == 1)
 		{
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
 			if (_WiFiMulti.run() == WL_CONNECTED)
@@ -195,7 +196,7 @@ bool transportBegin()
 			}
 #endif
 
-			unitSetWiFiMode(WIFI_AP);
+			nodeSetWiFiMode(WIFI_AP);
 
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 			wifi_station_disconnect();
@@ -204,15 +205,15 @@ bool transportBegin()
 			debugOut(TransportID, "WiFi mode Access Point");
 		}
 		else
-			if (unitGetWiFiAvailable() == 1)
+			if (nodeGetWiFiAvailable() == 1)
 			{
-				unitSetWiFiMode(WIFI_STA);
+				nodeSetWiFiMode(WIFI_STA);
 				WiFi.softAPdisconnect(true);
 				debugOut(TransportID, "WiFi mode Station");
 			}
 			else
 			{
-				unitSetWiFiMode(WIFI_OFF);
+				nodeSetWiFiMode(WIFI_OFF);
 				WiFi.softAPdisconnect(true);
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 				wifi_station_disconnect();
@@ -244,38 +245,38 @@ bool transportAvailable()
 	lastTryCheck = millis();
 	
 
-	//  if ((storedWiFiAPState != unitGetWiFiAccessPointAvailable()) || (storedWiFiSTState != unitGetWiFiAvailable()))
+	//  if ((storedWiFiAPState != nodeGetWiFiAccessPointAvailable()) || (storedWiFiSTState != nodeGetWiFiAvailable()))
 	//  {
 	//     transportBegin();
 	//  }
-	//  storedWiFiAPState = unitGetWiFiAccessPointAvailable();
-	//  storedWiFiSTState = unitGetWiFiAvailable();
+	//  storedWiFiAPState = nodeGetWiFiAccessPointAvailable();
+	//  storedWiFiSTState = nodeGetWiFiAvailable();
 
 	bool result = false;
 	bool wifiAPResult = false;
 	bool wifiResult = false;
 
 
-	if ((unitGetWiFiAccessPointAvailable() == 1) && (WiFiAccessPointConnected == true))
+	if ((nodeGetWiFiAccessPointAvailable() == 1) && (WiFiAccessPointConnected == true))
 	{
 		wifiAPResult = true;
 	}
 	else
 	{
-		if (unitGetWiFiAccessPointAvailable() == 0)  wifiAPResult = true;
+		if (nodeGetWiFiAccessPointAvailable() == 0)  wifiAPResult = true;
 	}
 
-	if ((unitGetWiFiAvailable() == 1) && (WiFi.status() == WL_CONNECTED))
+	if ((nodeGetWiFiAvailable() == 1) && (WiFi.status() == WL_CONNECTED))
 	{
 		wifiResult = true;
 	}
 	else
 	{
-		if (unitGetWiFiAvailable() == 0)  wifiResult = true;
+		if (nodeGetWiFiAvailable() == 0)  wifiResult = true;
 	}
 
 #ifdef DetailedDebug 
-	debugOut(TransportID, "WiFi AP=" + String(unitGetWiFiAccessPointAvailable()) + ":" + String(wifiAPResult) + "|" + "WiFi ST=" + String(unitGetWiFiAvailable()) + ":" + String(wifiResult));
+	debugOut(TransportID, "WiFi AP=" + String(nodeGetWiFiAccessPointAvailable()) + ":" + String(wifiAPResult) + "|" + "WiFi ST=" + String(nodeGetWiFiAvailable()) + ":" + String(wifiResult));
 
 #endif
 
@@ -288,17 +289,17 @@ bool transportAvailable()
 bool WiFiAccessPointReconnect()
 {
 
-	if (unitGetWiFiAccessPointAvailable() == 1)
+	if (nodeGetWiFiAccessPointAvailable() == 1)
 	{
 		if (WiFiAccessPointConnected) return true;
-		String accessPointIP = unitGetWiFiAccessPointIP(); //this API set Access Point IP from Unit Property OR set this Property as default IP OR return Utils.NaN
+		String accessPointIP = nodeGetWiFiAccessPointIP(); //this API set Access Point IP from Unit Property OR set this Property as default IP OR return Utils.NaN
 		bool softAPResult = false;
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
-		softAPResult = WiFi.softAP(unitGetWiFiAccessPointSSID(), unitGetWiFiAccessPointPassword());
+		softAPResult = WiFi.softAP(nodeGetWiFiAccessPointSSID(), nodeGetWiFiAccessPointPassword());
 #endif
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
-		softAPResult = WiFi.softAP(unitGetWiFiAccessPointSSID().c_str(), unitGetWiFiAccessPointPassword().c_str());
+		softAPResult = WiFi.softAP(nodeGetWiFiAccessPointSSID().c_str(), nodeGetWiFiAccessPointPassword().c_str());
 #endif
 
 		if (softAPResult)
@@ -360,14 +361,14 @@ bool WiFiAccessPointReconnect()
 #endif
 
 			WiFiAccessPointConnected = true;
-			debugOut(TransportID, "Started as WiFi Access Point: " + unitGetWiFiAccessPointSSID() + " IP: " + accessPointIP);
+			debugOut(TransportID, "Started as WiFi Access Point: " + nodeGetWiFiAccessPointSSID() + " IP: " + accessPointIP);
 
 			return true;
 		}
 		else
 		{
 			WiFiAccessPointConnected = false;
-			debugOut(TransportID, "WiFi Access Point not started as " + unitGetWiFiAccessPointSSID());
+			debugOut(TransportID, "WiFi Access Point not started as " + nodeGetWiFiAccessPointSSID());
 		}
 	}
 	else
@@ -383,11 +384,11 @@ bool WiFiReconnect()
 {
 	if (WiFi.status() == WL_CONNECTED) return true;
 
-	if (unitGetWiFiAvailable() == 1)
+	if (nodeGetWiFiAvailable() == 1)
 	{
 
-		String WiFiSSID = unitGetWiFiSSID();
-		String WiFiPassword = unitGetWiFiPassword();
+		String WiFiSSID = nodeGetWiFiSSID();
+		String WiFiPassword = nodeGetWiFiPassword();
 		if (WiFiSSID.length() == 0)
 		{
 			debugOut(TransportID, "WiFi SSID not defined");
@@ -397,8 +398,8 @@ bool WiFiReconnect()
 		if (WiFi.status() != WL_CONNECTED)
 		{
 			debugOut(TransportID, "try to connect to - " + WiFiSSID + ":" + WiFiPassword + " wait ");
-			unitGetScanWiFiNetworks();
-			debugOut(TransportID, unitGetWiFiNetworksParameters());
+			nodeGetScanWiFiNetworks();
+			debugOut(TransportID, nodeGetWiFiNetworksParameters());
 
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 			if (!_WiFiMulti.existsAP(WiFiSSID.c_str(), WiFiPassword.c_str()))
@@ -429,7 +430,7 @@ bool WiFiReconnect()
 
 			if (WiFi.status() == WL_CONNECTED)
 			{
-				debugOut(TransportID, "WiFi connected as Client success, local IP: " + unitGetWiFiIP());
+				debugOut(TransportID, "WiFi connected as Client success, local IP: " + nodeGetWiFiIP());
 				return true;
 			}
 		}
@@ -437,6 +438,39 @@ bool WiFiReconnect()
 
 	return false;
 }
+
+/*-------------------------------------------------------------------------------------------------------------------------
+  Main Callback
+  If MQTT Client recieve published packet with subscrabed topic - this procedure is called ASYNC
+  -------------------------------------------------------------------------------------------------------------------------*/
+void Callback(char* _topic, byte* _payload, unsigned int length) {
+
+	if (nodeGetMQTTAvailable() == 1)
+	{
+#ifdef DetailedDebug 
+		debugOut(TransportID, "onMessage topic - " + String(_topic));
+#endif
+
+		char payload_buff[PayloadBufferSize]; // create character buffer with ending by null terminator (zero string format)
+		int i;
+		//copy byte values to char array (buffer) char by char
+		for (i = 0; i < length; i++)
+		{
+			payload_buff[i] = _payload[i];
+		}
+		payload_buff[i] = '\0'; //terminate string with zero
+
+		//first check is Unit property?
+		if (nodeOnMessage(String(_topic), String(payload_buff), MQTTMask).equals(WrongPropertyName))
+		{
+			//if not UNIT property
+			//Put recieved message to all drivers, each driver can process any topic recieved by Unit
+			driversCallback(String(_topic), String(payload_buff));
+		}
+	}
+}
+
+
 //-----------------------------------------------------------------------------------------------------------------------------------------
 bool transportReconnect()
 {
@@ -449,26 +483,26 @@ bool transportReconnect()
 
 	lastTryReconnect = millis();
 
-	debugOut(TransportID, "begin reconnect, WiFi AP=" + String(unitGetWiFiAccessPointAvailable()) + " WiFi ST=" + String(unitGetWiFiAvailable()));
+	debugOut(TransportID, "begin reconnect, WiFi AP=" + String(nodeGetWiFiAccessPointAvailable()) + " WiFi ST=" + String(nodeGetWiFiAvailable()));
 
 	bool result = false;
 
-	if ((unitGetWiFiAccessPointAvailable() == 1) && (!WiFiAccessPointConnected))
+	if ((nodeGetWiFiAccessPointAvailable() == 1) && (!WiFiAccessPointConnected))
 	{
 		wifiAPResult = WiFiAccessPointReconnect();
 	}
 	else
 	{
-		if (unitGetWiFiAccessPointAvailable() == 1) wifiAPResult = true;
+		if (nodeGetWiFiAccessPointAvailable() == 1) wifiAPResult = true;
 	}
 
-	if ((unitGetWiFiAvailable() == 1) && (_WiFiMulti.run() != WL_CONNECTED))
+	if ((nodeGetWiFiAvailable() == 1) && (_WiFiMulti.run() != WL_CONNECTED))
 	{
 		wifiResult = WiFiReconnect();
 	}
 	else
 	{
-		if (unitGetWiFiAvailable() == 1) wifiAPResult = true;
+		if (nodeGetWiFiAvailable() == 1) wifiAPResult = true;
 	}
 
 	debugOut(TransportID, "reconnect result, WiFi AP=" + String(wifiAPResult) + " WiFi ST=" + String(wifiResult));
@@ -478,19 +512,20 @@ bool transportReconnect()
 
 	if (result)
 	{
-		if (unitGetRESTfulAvailable() == 1)
+		if (nodeGetRESTfulAvailable() == 1)
 		{
-			HTTPServerBegin(unitGetRESTfulServerPort());
+			HTTPServerBegin(nodeGetRESTfulServerPort());
 		}
 
-		if (unitGetOTAAvailable() == 1)
+		if (nodeGetOTAAvailable() == 1)
 		{
 			OTABegin();
 		}
 
-		if (unitGetMQTTAvailable() == 1)
+		if (nodeGetMQTTAvailable() == 1)
 		{
 			MQTTReconnect();
+			transportSetCallBack(Callback); //Regist Callback function for loopback subscribed messages (from MQTT Publishers)
 		}
 	}
 
@@ -499,7 +534,7 @@ bool transportReconnect()
 
 bool MQTTReconnect()
 {
-	if (unitGetMQTTAvailable() == 1)
+	if (nodeGetMQTTAvailable() == 1)
 	{
 		if (!_MQTTClient->connected())
 		{
@@ -509,15 +544,15 @@ bool MQTTReconnect()
 				return false;
 			}
 
-			debugOut(TransportID, "try connect to Brokker - " + String(unitGetMQTTURL()) + ":" + String(unitGetMQTTPort()));
+			debugOut(TransportID, "try connect to Brokker - " + String(nodeGetMQTTURL()) + ":" + String(nodeGetMQTTPort()));
 			lastTryMQTTReconnect = millis();
 
 
 #ifdef DetailedDebug 
 			debugOut(TransportID, "Connecting to MQTT broker ...");
 #endif
-			_MQTTClient->setServer(stringToChar(unitGetMQTTURL()), unitGetMQTTPort());    // Configure MQTT connexion
-			if (_MQTTClient->connect(unitGetMQTTID().c_str(), unitGetMQTTLogin().c_str(), unitGetMQTTPassword().c_str()))
+			_MQTTClient->setServer(stringToChar(nodeGetMQTTURL()), nodeGetMQTTPort());    // Configure MQTT connexion
+			if (_MQTTClient->connect(nodeGetMQTTID().c_str(), nodeGetMQTTLogin().c_str(), nodeGetMQTTPassword().c_str()))
 			{
 				debugOut(TransportID, "OK");
 				return true;
@@ -569,12 +604,12 @@ void transportLoop()
 			_MQTTClient->loop();
 		}
 
-		if (unitGetRESTfulAvailable() == 1)
+		if (nodeGetRESTfulAvailable() == 1)
 		{			
 			HTTPServerLoop();
 		}
 
-		if (unitGetOTAAvailable() == 1)
+		if (nodeGetOTAAvailable() == 1)
 		{
 			OTALoop();
 		}

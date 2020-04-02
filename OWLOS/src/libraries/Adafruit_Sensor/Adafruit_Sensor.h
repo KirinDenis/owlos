@@ -115,7 +115,7 @@ typedef struct
         sensors_vec_t   gyro;                 /**< gyroscope values are in rad/s */
         float           temperature;          /**< temperature is in degrees centigrade (Celsius) */
         float           distance;             /**< distance in centimeters */
-        float           light;                /**< light in SI lux units */
+        float           light;                /**< light in SI lux nodes */
         float           pressure;             /**< pressure in hectopascal (hPa) */
         float           relative_humidity;    /**< relative humidity in percent */
         float           current;              /**< current in milliamps (mA) */
@@ -132,8 +132,8 @@ typedef struct
     int32_t  version;                         /**< version of the hardware + driver */
     int32_t  sensor_id;                       /**< unique sensor identifier */
     int32_t  type;                            /**< this sensor's type (ex. SENSOR_TYPE_LIGHT) */
-    float    max_value;                       /**< maximum value of this sensor's value in SI units */
-    float    min_value;                       /**< minimum value of this sensor's value in SI units */
+    float    max_value;                       /**< maximum value of this sensor's value in SI nodes */
+    float    min_value;                       /**< minimum value of this sensor's value in SI nodes */
     float    resolution;                      /**< smallest difference between two values reported by this sensor */
     int32_t  min_delay;                       /**< min delay in microseconds between events. zero = not a constant rate */
 } sensor_t;

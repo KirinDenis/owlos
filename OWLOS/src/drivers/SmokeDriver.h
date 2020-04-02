@@ -50,7 +50,7 @@ class SmokeDriver : public BaseDriver {
     bool query();
     String getAllProperties();
     bool publish();
-    String onMessage(String _topic, String _payload, int transportMask);
+    String onMessage(String _topic, String _payload, int8_t transportMask);
 
     int getPin();
     bool setPin(int _pin);

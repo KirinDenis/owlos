@@ -103,8 +103,7 @@ bool downloadFile(String fileName, String  url) {
 					dotCount++;
 					if (dotCount > 40)
 					{
-						dotCount = 0;
-						Serial.println();
+						dotCount = 0;						
 					}
 					int c = stream->readBytes(buff, ((size > sizeof(buff)) ? sizeof(buff) : size));
 					file.write(buff, c);
@@ -133,7 +132,6 @@ bool downloadFile(String fileName, String  url) {
 #ifdef DetailedDebug 
 		debugOut(webclientid, "download=fail");
 #endif
-		Serial.println("fail " + url + "[" + String(httpCode) + "]");
 	}
 	http.end();
 	return result;

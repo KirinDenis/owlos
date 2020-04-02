@@ -39,7 +39,7 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-#pragma once //<- the BaseDriver unit must INCLUDE ONCE TO THE PROJECT, else we have REDEFINITION error 
+#pragma once //<- the BaseDriver node must INCLUDE ONCE TO THE PROJECT, else we have REDEFINITION error 
 #include <Arduino.h>
 #include "..\Utils\Utils.h"
 #include "..\Utils\GPIOMap.h"
@@ -115,7 +115,7 @@ class BaseDriver
     void subscribe();
 
     //This method works both with subscribe() method and receive all messages pushed to this driver subscribed topics
-    virtual String onMessage(String _topic, String _payload, int transportMask);
+    virtual String onMessage(String _topic, String _payload, int8_t transportMask);
 
     //Available property GET<->SET wrappers
     int getAvailable();
@@ -206,10 +206,10 @@ class BaseDriver
 	unsigned long historyFileWriteInterval = ONESECOND * 60; // ONESECOND * 60;
 
     //Calls when client get property from network
-    String onGetProperty(String _property, String _payload, int transportMask);
+    String onGetProperty(String _property, String _payload, int8_t transportMask);
 
     //This method calls from properties SET wrappers methods (setNNN()) and publish to transport message (event) on any wrapped property values is changed
     //The sended message topic is Driver compiled topic (Unit/DriverId)/PropertyName
-    //Sample: if available propery is changed at "stepper1" driver on unit "unit2544" the SET wrapper calls onInsideChange(), and the topic to be somthing like "world0/area1/front1/room1/unit2544/stepper1/available"
+    //Sample: if available propery is changed at "stepper1" driver on node "node2544" the SET wrapper calls onInsideChange(), and the topic to be somthing like "world0/area1/front1/room1/node2544/stepper1/available"
     bool onInsideChange(String _property, String _payload);
 };

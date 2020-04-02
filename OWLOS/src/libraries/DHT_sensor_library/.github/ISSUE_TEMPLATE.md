@@ -5,7 +5,7 @@ common troubleshooting steps below before creating the issue:
 - **Do not use GitHub issues for troubleshooting projects and issues.**  Instead use
   the forums at http://forums.adafruit.com to ask questions and troubleshoot why
   something isn't working as expected.  In many cases the problem is a common issue
-  that you will more quickly receive help from the forum community.  GitHub issues
+  that you will more quickly receive help from the forum commnodey.  GitHub issues
   are meant for known defects in the code.  If you don't know if there is a defect
   in the code then start with troubleshooting on the forum first.
 

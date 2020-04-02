@@ -130,7 +130,7 @@ String LCDDriver::getAllProperties()
 	return result;
 }
 //управление свойствами LCD драйвера
-String LCDDriver::onMessage(String _topic, String _payload, int transportMask)
+String LCDDriver::onMessage(String _topic, String _payload, int8_t transportMask)
 {
 	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
 	if (!available) return result;

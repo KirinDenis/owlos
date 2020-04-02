@@ -110,7 +110,7 @@ bool ValveDriver::publish()
 	return false;
 };
 
-String ValveDriver::onMessage(String _topic, String _payload, int transportMask)
+String ValveDriver::onMessage(String _topic, String _payload, int8_t transportMask)
 {
 	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
 	if (!available) return result;

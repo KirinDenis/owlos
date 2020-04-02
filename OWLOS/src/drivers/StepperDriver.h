@@ -50,7 +50,7 @@ class StepperDriver : public BaseDriver {
     bool init();
     bool begin(String _topic);
     String getAllProperties();
-    String onMessage(String _topic, String _payload, int transportMask);
+    String onMessage(String _topic, String _payload, int8_t transportMask);
 
     int getPin1();
     bool setPin1(int _pin1);

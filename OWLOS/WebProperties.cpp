@@ -99,13 +99,13 @@ String webGetAllProperties()
 String webOnMessage(String _topic, String _payload)
 {
 	String result = WrongPropertyName;
-	if (String(unitGetTopic() + "/getconfig").equals(_topic)) return webGetWebConfig();
+	if (String(nodeGetTopic() + "/getconfig").equals(_topic)) return webGetWebConfig();
 	else
-		if (String(unitGetTopic() + "/sethead").equals(_topic)) return String(webSetHead(_payload));
+		if (String(nodeGetTopic() + "/sethead").equals(_topic)) return String(webSetHead(_payload));
 		else
-			if (String(unitGetTopic() + "/setbody").equals(_topic)) return String(webSetBody(_payload));
+			if (String(nodeGetTopic() + "/setbody").equals(_topic)) return String(webSetBody(_payload));
 			else
-				if (String(unitGetTopic() + "/settail").equals(_topic)) return String(webSetTail(_payload));
+				if (String(nodeGetTopic() + "/settail").equals(_topic)) return String(webSetTail(_payload));
 
 	return result;
 }
