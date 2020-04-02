@@ -44,7 +44,7 @@ OWLOS распространяется в надежде, что она буде
 //ALL DEVICES constructors must be called here, current unit topic must be puted as parameter
 //#include "PinManager.h"
 #include "DriverManager.h"
-#include "..\..\UnitProperties.h"
+#include "..\..\Kernel.h"
 
 String __topic;
 String busyPins;

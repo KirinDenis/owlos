@@ -40,7 +40,7 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 #include "config.h"
-#include "UnitProperties.h"
+#include "Kernel.h"
 #include "src\Managers\FileManager.h"
 
 #define id "webproperties"

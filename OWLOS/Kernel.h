@@ -56,6 +56,9 @@ OWLOS распространяется в надежде, что она буде
 
 #include "src\Utils\Utils.h"
 
+bool kernelSetup();
+bool kernelLoop();
+
 bool unitInit();
 
 String unitGetAllProperties();

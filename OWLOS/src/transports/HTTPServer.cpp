@@ -65,7 +65,7 @@ OWLOS распространяется в надежде, что она буде
 #include "..\Managers\UpdateManager.h"
 #include "..\Managers\FileManager.h"
 #include "..\Utils\Utils.h"
-#include "..\..\UnitProperties.h"
+#include "..\..\Kernel.h"
 #include "..\..\WebProperties.h"
 
 
@@ -471,7 +471,7 @@ void handleSetUnitProperty(WiFiClient client)
 	handleNotFound(client);
 }
 
-void handleGetAllUnitProperties(WiFiClient client)
+void handleGetAllKernel(WiFiClient client)
 {
 	send(200, "text/plain", unitGetAllProperties(), client);
 	return;
@@ -1031,7 +1031,7 @@ void HTTPServerLoop()
 													else
 														if (firstLine.indexOf("/setunitproperty") != -1) { handleSetUnitProperty(client); }
 														else
-															if (firstLine.indexOf("/getallunitproperties") != -1) { handleGetAllUnitProperties(client); }
+															if (firstLine.indexOf("/getallunitproperties") != -1) { handleGetAllKernel(client); }
 															else
 																if (firstLine.indexOf("/adddriver") != -1) { handleAddDriver(client); }
 																else

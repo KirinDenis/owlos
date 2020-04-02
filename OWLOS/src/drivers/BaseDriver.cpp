@@ -165,7 +165,7 @@ bool BaseDriver::publish()
 
 void BaseDriver::subscribe()
 {
-	//now UnitProperties.cpp subscribes to all
+	//now Kernel.cpp subscribes to all
 	//transportSubscribe(topic + "/#");
 }
 

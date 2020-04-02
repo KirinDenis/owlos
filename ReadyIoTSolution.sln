@@ -8,8 +8,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OWLOS", "OWLOS", "{CEAB6A89
 		OWLOS\compileUIonly.bat = OWLOS\compileUIonly.bat
 		OWLOS\compileupdate.bat = OWLOS\compileupdate.bat
 		OWLOS\OWLOS.ino = OWLOS\OWLOS.ino
-		OWLOS\UnitProperties.cpp = OWLOS\UnitProperties.cpp
-		OWLOS\UnitProperties.h = OWLOS\UnitProperties.h
+		OWLOS\Kernel.cpp = OWLOS\Kernel.cpp
+		OWLOS\Kernel.h = OWLOS\Kernel.h
 		OWLOS\WebProperties.cpp = OWLOS\WebProperties.cpp
 		OWLOS\WebProperties.h = OWLOS\WebProperties.h
 	EndProjectSection

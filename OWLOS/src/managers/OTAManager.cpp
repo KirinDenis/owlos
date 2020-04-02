@@ -4,7 +4,7 @@
 
 
 #include "OTAManager.h"
-#include "..\..\UnitProperties.h"
+#include "..\..\Kernel.h"
 #include "..\Utils\Utils.h"
 
 #define OTAID "OTA"

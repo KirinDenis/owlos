@@ -57,7 +57,7 @@ HTTPUpdate ESPhttpUpdate;
 #include "../transports/WebClient.h"
 #include "../managers/FileManager.h"
 #include "../utils/GPIOMap.h"
-#include "../../UnitProperties.h"
+#include "../../Kernel.h"
 
 #define updateid "update"
 
