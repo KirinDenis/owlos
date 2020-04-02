@@ -44,8 +44,36 @@ OWLOS распространяется в надежде, что она буде
 
 #define DRIVER_ID "valve"
 
+#define CLOSE_PIN_INDEX 0
+#define OPEN_PIN_INDEX 1
+#define POSITION_PIN_INDEX 2
+#define VCC5_INDEX 3
+#define GND_INDEX 4
+
+#define MOTOR_STOP_COMMAND HIGH
+#define MOTOR_START_COMMAND LOW
+
 class ValveDriver : public BaseDriver {
   public:
+	  static int getPinsCount()
+	  {
+		  return 5;
+	  }
+
+	  static uint16_t getPinType(int pinIndex)
+	  {
+		  switch (pinIndex)
+		  {
+		  case CLOSE_PIN_INDEX: return DIGITAL_O_MASK;
+		  case OPEN_PIN_INDEX: return DIGITAL_O_MASK;
+		  case POSITION_PIN_INDEX: return ANALOG_I_MASK;
+		  case VCC5_INDEX: return VCC5_MASK;
+		  case GND_INDEX: return GND_MASK;
+		  default:
+			  return NO_MASK;
+		  }
+	  }
+
     bool init();
     bool begin(String _topic);
     bool query();
@@ -53,12 +81,6 @@ class ValveDriver : public BaseDriver {
     bool publish();
     String onMessage(String _topic, String _payload, int8_t transportMask);
 
-    int getPin1();
-    bool setPin1(int _pin1);
-    int getPin2();
-    bool setPin2(int _pin2);
-    int getPin3();
-    bool setPin3(int _pin3);
     int getPosition();
     bool setPosition(int _position);
     int getMinimumphysicalposition();
@@ -67,9 +89,6 @@ class ValveDriver : public BaseDriver {
 
   private:
   void toMinMaxPosition(int _pin);
-    int pin1 = 1; //Digital 
-    int pin2 = 1; //Digital
-    int pin3 = 1; //Analog
     int position=0; // 0 - close, 100 - open
     int minimumphysicalposition = 0; // valve is close
     int maximumphysicalposition = 1023; // valve is open
