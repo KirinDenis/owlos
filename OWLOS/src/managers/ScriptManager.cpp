@@ -120,7 +120,7 @@ Battle Hamster Script
 
 #include <Arduino.h>
 #include "DriverManager.h"
-#include "../Kernel.h"
+#include "../drivers/ESPDriver.h"
 
 #define SCRIPT_ID "script" 
 //Уберите комментарий этот флаг что бы включить трасерт (Tracert)

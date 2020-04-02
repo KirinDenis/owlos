@@ -51,7 +51,7 @@ HTTPUpdate ESPhttpUpdate;
 #endif
 
 #include <Arduino.h>
-#include "../Kernel.h"
+#include "../drivers/ESPDriver.h"
 #include "../transports/HTTPServer.h"
 #include "../transports/WebClient.h"
 #include "../managers/FileManager.h"

@@ -40,7 +40,7 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 //#include "config.h" ???
-#include "../Kernel.h"
+#include "../drivers/ESPDriver.h"
 #include "../Managers/FileManager.h"
 
 #define id "webproperties"

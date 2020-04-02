@@ -40,7 +40,7 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 #include <core_version.h>
 #include "TransportManager.h"
-#include "../Kernel.h"
+#include "../drivers/ESPDriver.h"
 #include "../Managers\OTAManager.h"
 #include "../Managers\DriverManager.h"
 #include "../Transports\HTTPServer.h"

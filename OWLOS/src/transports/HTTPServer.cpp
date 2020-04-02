@@ -60,7 +60,7 @@ OWLOS распространяется в надежде, что она буде
 #include <MD5Builder.h>
 
 #include "HTTPServerThings.h"
-#include "../Kernel.h"
+#include "../drivers/ESPDriver.h"
 #include "../Managers/DriverManager.h"
 #include "../Managers/ScriptManager.h"
 #include "../Managers/UpdateManager.h"

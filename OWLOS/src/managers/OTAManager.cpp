@@ -4,7 +4,7 @@
 
 
 #include "OTAManager.h"
-#include "../Kernel.h"
+#include "../drivers/ESPDriver.h"
 #include "../Utils\Utils.h"
 
 #define OTAID "OTA"
