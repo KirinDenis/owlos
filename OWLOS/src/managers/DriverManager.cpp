@@ -39,7 +39,6 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 #include <core_version.h>
-#include "../utils/GPIOMap.h"
 
 //ALL DEVICES constructors must be called here, current node topic must be puted as parameter
 //#include "PinManager.h"

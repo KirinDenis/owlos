@@ -42,7 +42,6 @@ OWLOS распространяется в надежде, что она буде
 #pragma once //<- the BaseDriver node must INCLUDE ONCE TO THE PROJECT, else we have REDEFINITION error 
 #include <Arduino.h>
 #include "..\Utils\Utils.h"
-#include "..\Utils\GPIOMap.h"
 #include "..\Managers\PinManager.h"
 #include "..\Managers\TransportManager.h"
 #include "..\Managers\FileManager.h"

@@ -80,7 +80,6 @@ public:
 	bool setDHTType(int _dhttype);
 	String getTemperature();
 	String getHumidity();
-
 	
 	String getTemperatureHistoryData();
 	bool setTemperatureHistoryData(float _historydata);
@@ -96,7 +95,6 @@ private:
 	bool DHTSetuped = false;
 	bool DHTSetupResult = false;
 	DHT * dht = nullptr;
-	int pin = DHTPIN;
 	int dhttype = DHT22;
 	String temperature = "nan";
 	String humidity = "nan";

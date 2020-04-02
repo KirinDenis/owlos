@@ -75,7 +75,7 @@ class SensorDriver : public BaseDriver {
 
     String getData();
   private:
-    int pin = SENSORPIN;
+    int pin = 1;
     String data = "nan";
 	float sensorTriger = 0;
 };

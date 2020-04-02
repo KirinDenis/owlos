@@ -60,8 +60,8 @@ class OptoDriver : public BaseDriver {
     String getData();
 
   private:
-    int pin1 = OPTOSENSORPIN1;
-    int pin2 = OPTOSENSORPIN2;
+    int pin1 = 1;
+    int pin2 = 2;
     String data = "nan";
 
     unsigned long queryInterval = ONETENTHOFSECOND;

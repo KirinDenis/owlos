@@ -50,14 +50,12 @@ OWLOS распространяется в надежде, что она буде
 HTTPUpdate ESPhttpUpdate;
 #endif
 
-
 #include <Arduino.h>
-
+#include "../../Kernel.h"
 #include "../transports/HTTPServer.h"
 #include "../transports/WebClient.h"
 #include "../managers/FileManager.h"
-#include "../utils/GPIOMap.h"
-#include "../../Kernel.h"
+
 
 #define updateid "update"
 
@@ -247,7 +245,10 @@ int updateFirmware()
 #endif
 		String host = nodeGetUpdateHost();
 		WiFiClient client;
+
+#ifdef LED_BUILTIN
 		ESPhttpUpdate.setLedPin(LED_BUILTIN, LOW);
+#endif
 		t_httpUpdate_return ret = HTTP_UPDATE_NO_UPDATES;
 		updateFirmwareStatus = UpdateStatusAtProcess;
 

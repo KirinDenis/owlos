@@ -67,9 +67,9 @@ class ValveDriver : public BaseDriver {
 
   private:
   void toMinMaxPosition(int _pin);
-    int pin1 = D1;
-    int pin2 = D2;
-    int pin3 = A0;
+    int pin1 = 1; //Digital 
+    int pin2 = 1; //Digital
+    int pin3 = 1; //Analog
     int position=0; // 0 - close, 100 - open
     int minimumphysicalposition = 0; // valve is close
     int maximumphysicalposition = 1023; // valve is open

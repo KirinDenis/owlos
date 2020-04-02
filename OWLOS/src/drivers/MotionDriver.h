@@ -58,7 +58,7 @@ class MotionDriver : public BaseDriver {
 
     int getMotion();
   private:
-    int pin = MOTIONPIN;
+    int pin = 1;
     int motion = 0;
     float motionTriger = 0.0;
 	float motionHistoryFileTriger = 0.0;

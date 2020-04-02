@@ -57,6 +57,6 @@ class SmokeDriver : public BaseDriver {
 
     String getSmoke();
   private:
-    int pin = SMOKEPIN;
+    int pin = 1;
     String smoke = "nan";
 };

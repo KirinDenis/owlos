@@ -57,6 +57,6 @@ class LightDriver : public BaseDriver {
 
     String getLight();
   private:
-    int pin = LIGHTPIN;
+    int pin = 1; 
     String light = "nan";
 };

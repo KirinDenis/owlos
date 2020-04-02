@@ -75,10 +75,11 @@ class StepperDriver : public BaseDriver {
 
 
   private:
-    int pin1 = STEPPERPIN1;
-    int pin2 = STEPPERPIN2;
-    int pin3 = STEPPERPIN3;
-    int pin4 = STEPPERPIN4;
+	  //TODO Refactoring escpe this
+    int pin1 = 1;
+    int pin2 = 1;
+    int pin3 = 1;
+    int pin4 = 1;
 
     int toPosition = 5000;
     int busy = 0;
