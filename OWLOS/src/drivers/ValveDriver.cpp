@@ -43,7 +43,7 @@ OWLOS распространяется в надежде, что она буде
 
 bool ValveDriver::init()
 {
-	if (id.length() == 0) id = DriverID;
+	if (id.length() == 0) id = DRIVER_ID;
 	BaseDriver::init(id);
 	//init properies
 	getPin1();
@@ -110,7 +110,7 @@ bool ValveDriver::publish()
 	return false;
 };
 
-String ValveDriver::onMessage(String _topic, String _payload, int transportMask)
+String ValveDriver::onMessage(String _topic, String _payload, int8_t transportMask)
 {
 	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
 	if (!available) return result;

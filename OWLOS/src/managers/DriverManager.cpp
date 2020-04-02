@@ -39,12 +39,11 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 #include <core_version.h>
-#include "../utils/GPIOMap.h"
 
-//ALL DEVICES constructors must be called here, current unit topic must be puted as parameter
+//ALL DEVICES constructors must be called here, current node topic must be puted as parameter
 //#include "PinManager.h"
 #include "DriverManager.h"
-#include "..\..\UnitProperties.h"
+#include "../drivers/ESPDriver.h"
 
 String __topic;
 String busyPins;
@@ -56,8 +55,6 @@ BaseDriver * driversList[DRIVERS_LIMIT];
 #define lineDelimiter  "\n"
 #define valueDelimiter  ";"
 #define pinDelimiter  ","
-
-
 
 void driversInit(String _topic)
 {
@@ -72,13 +69,13 @@ void driversInit(String _topic)
 #endif
 }
 
-void driversBegin(String unitTopic)
+void driversBegin(String nodeTopic)
 {
 	for (int i = 0; i < DRIVERS_LIMIT; i++)
 	{
 		if (driversList[i] != nullptr)
 		{
-			driversList[i]->begin(unitTopic);
+			driversList[i]->begin(nodeTopic);
 		}
 	}
 }
@@ -219,7 +216,7 @@ String driversGetDriverProperties(String id)
 
 String driversGetAllDriversProperties()
 {
-	String result = unitGetAllProperties();
+	String result = nodeGetAllProperties();
 	for (int i = 0; i < DRIVERS_LIMIT; i++)
 	{
 		if (driversList[i] != nullptr)
@@ -511,15 +508,15 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 		{
 			return "ActuatorDriver's pins quantity does not match, must be " + String(ActuatorDriver::getPinsCount());
 		}
-		
+
 		result = setDriverPin(true, _pins[PIN0_INDEX], id, PIN0_INDEX, ActuatorDriver::getPinType(PIN0_INDEX)) + "\n"
 			+ setDriverPin(true, _pins[PIN1_INDEX], id, PIN1_INDEX, ActuatorDriver::getPinType(PIN1_INDEX));
-		
+
 		if (result.length() > 1) return result;
-		
+
 		result = setDriverPin(false, _pins[PIN0_INDEX], id, PIN0_INDEX, ActuatorDriver::getPinType(PIN0_INDEX)) + "\n"
 			+ setDriverPin(false, _pins[PIN1_INDEX], id, PIN1_INDEX, ActuatorDriver::getPinType(PIN1_INDEX));
-		
+
 		if (result.length() > 1) return result;
 
 
@@ -530,44 +527,71 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 		driversList[freeIndex] = actuatorDriver;
 		debugOut("ADD_DRIVER 2", "");
 	}
-	else 
-	if (type == LCD)
-	{
-		debugOut("pin", String(pinCount));
-		if (pinCount != LCDDriver::getPinsCount())
-		{
-			return "LCDDriver's pins quantity does not match, must be " + String(LCDDriver::getPinsCount());
-		}
-
-		result = setDriverPin(true, _pins[SDA_INDEX], id, SDA_INDEX, LCDDriver::getPinType(SDA_INDEX)) + "\n"
-			+ setDriverPin(true, _pins[SCL_INDEX], id, SCL_INDEX, LCDDriver::getPinType(SCL_INDEX)) + "\n"
-			+ setDriverPin(true, _pins[I2CADDR_INDEX], id, I2CADDR_INDEX, LCDDriver::getPinType(I2CADDR_INDEX)) + "\n"
-			+ setDriverPin(true, _pins[VCC5_INDEX], id, VCC5_INDEX, LCDDriver::getPinType(VCC5_INDEX)) + "\n"
-			+ setDriverPin(true, _pins[GND_INDEX], id, GND_INDEX, LCDDriver::getPinType(GND_INDEX));
-			
-
-		if (result.length() > 4) return result;
-
-		result = setDriverPin(false, _pins[SDA_INDEX], id, SDA_INDEX, LCDDriver::getPinType(SDA_INDEX)) + "\n"
-			+ setDriverPin(false, _pins[SCL_INDEX], id, SCL_INDEX, LCDDriver::getPinType(SCL_INDEX)) + "\n"
-			+ setDriverPin(false, _pins[I2CADDR_INDEX], id, I2CADDR_INDEX, LCDDriver::getPinType(I2CADDR_INDEX)) + "\n"
-			+ setDriverPin(false, _pins[VCC5_INDEX], id, VCC5_INDEX, LCDDriver::getPinType(VCC5_INDEX)) + "\n"
-			+ setDriverPin(false, _pins[GND_INDEX], id, GND_INDEX, LCDDriver::getPinType(GND_INDEX));
-
-		if (result.length() > 4) return result;
-
-
-		LCDDriver * lcdDriver = new LCDDriver;
-		lcdDriver->id = id;
-		lcdDriver->init();
-		debugOut("ADD_DRIVER 1", "");
-		driversList[freeIndex] = lcdDriver;
-		debugOut("ADD_DRIVER 2", "");
-	}
 	else
-	{
-		return "not supported";
-	}
+		if (type == LCD)
+		{
+			debugOut("pin", String(pinCount));
+			if (pinCount != LCDDriver::getPinsCount())
+			{
+				return "LCDDriver's pins quantity does not match, must be " + String(LCDDriver::getPinsCount());
+			}
+
+			result = setDriverPin(true, _pins[SDA_INDEX], id, SDA_INDEX, LCDDriver::getPinType(SDA_INDEX)) + "\n"
+				+ setDriverPin(true, _pins[SCL_INDEX], id, SCL_INDEX, LCDDriver::getPinType(SCL_INDEX)) + "\n"
+				+ setDriverPin(true, _pins[I2CADDR_INDEX], id, I2CADDR_INDEX, LCDDriver::getPinType(I2CADDR_INDEX)) + "\n"
+				+ setDriverPin(true, _pins[VCC5_INDEX], id, VCC5_INDEX, LCDDriver::getPinType(VCC5_INDEX)) + "\n"
+				+ setDriverPin(true, _pins[GND_INDEX], id, GND_INDEX, LCDDriver::getPinType(GND_INDEX));
+
+
+			if (result.length() > 4) return result;
+
+			result = setDriverPin(false, _pins[SDA_INDEX], id, SDA_INDEX, LCDDriver::getPinType(SDA_INDEX)) + "\n"
+				+ setDriverPin(false, _pins[SCL_INDEX], id, SCL_INDEX, LCDDriver::getPinType(SCL_INDEX)) + "\n"
+				+ setDriverPin(false, _pins[I2CADDR_INDEX], id, I2CADDR_INDEX, LCDDriver::getPinType(I2CADDR_INDEX)) + "\n"
+				+ setDriverPin(false, _pins[VCC5_INDEX], id, VCC5_INDEX, LCDDriver::getPinType(VCC5_INDEX)) + "\n"
+				+ setDriverPin(false, _pins[GND_INDEX], id, GND_INDEX, LCDDriver::getPinType(GND_INDEX));
+
+			if (result.length() > 4) return result;
+
+
+			LCDDriver * lcdDriver = new LCDDriver;
+			lcdDriver->id = id;
+			lcdDriver->init();
+			debugOut("ADD_DRIVER 1", "");
+			driversList[freeIndex] = lcdDriver;
+			debugOut("ADD_DRIVER 2", "");
+		}
+		else
+			if (type == DHTDriverType)
+			{
+				debugOut("pin", String(pinCount));
+				if (pinCount != DHTDriver::getPinsCount())
+				{
+					return "DHTDriver's pins quantity does not match, must be " + String(DHTDriver::getPinsCount());
+				}
+
+				result = setDriverPin(true, _pins[PIN0_INDEX], id, PIN0_INDEX, DHTDriver::getPinType(PIN0_INDEX)) + "\n"
+					+ setDriverPin(true, _pins[PIN1_INDEX], id, PIN1_INDEX, DHTDriver::getPinType(PIN1_INDEX)) + "\n"
+					+ setDriverPin(true, _pins[PIN2_INDEX], id, PIN2_INDEX, DHTDriver::getPinType(PIN2_INDEX));
+
+				if (result.length() > 2) return result;
+
+				result = setDriverPin(false, _pins[PIN0_INDEX], id, PIN0_INDEX, DHTDriver::getPinType(PIN0_INDEX)) + "\n"
+					+ setDriverPin(false, _pins[PIN1_INDEX], id, PIN1_INDEX, DHTDriver::getPinType(PIN1_INDEX)) + "\n"
+					+ setDriverPin(false, _pins[PIN2_INDEX], id, PIN2_INDEX, DHTDriver::getPinType(PIN2_INDEX));
+
+				if (result.length() > 2) return result;
+
+				DHTDriver * dhtDriver = new DHTDriver;
+				dhtDriver->init(id);
+				dhtDriver->id = id;
+				driversList[freeIndex] = dhtDriver;
+			}
+
+			else
+			{
+				return "not supported";
+			}
 
 
 	/*
@@ -720,7 +744,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 											}
 */
 //if driver added at RUNTIME
-	if (transportAvailable()) driversList[freeIndex]->begin(unitGetTopic());
+	if (transportAvailable()) driversList[freeIndex]->begin(nodeGetTopic());
 #ifdef DetailedDebug
 	debugOut("driversadd", "OK");
 #endif
@@ -743,7 +767,7 @@ String driversChangePin(String pinName, String driverId, int driverPinIndex)
 	{
 		return result;
 	}
-	
+
 	if (driversSaveList())
 	{
 		return "1";

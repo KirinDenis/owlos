@@ -43,10 +43,9 @@ OWLOS распространяется в надежде, что она буде
 
 bool ActuatorDriver::init()
 {
-	if (id.length() == 0) id = DriverID;
+	if (id.length() == 0) id = DRIVER_ID;
 	BaseDriver::init(id);
-	//init properies 
-	//Pin * pin = getDriverPin(id, PIN0_INDEX);
+
 	PinDriverInfo pinDriverInfo;
 	if (getDriverPinInfo(id, PIN0_INDEX, &pinDriverInfo))
 	{
@@ -113,7 +112,7 @@ bool ActuatorDriver::publish()
 	return false;
 };
 
-String ActuatorDriver::onMessage(String _topic, String _payload, int transportMask)
+String ActuatorDriver::onMessage(String _topic, String _payload, int8_t transportMask)
 {
 	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
 

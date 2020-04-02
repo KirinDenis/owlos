@@ -39,7 +39,7 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-#include "src\Utils\Utils.h"
 
-String webGetAllProperties();
-String webOnMessage(String _topic, String _payload);
+bool kernelSetup();
+bool kernelLoop();
+

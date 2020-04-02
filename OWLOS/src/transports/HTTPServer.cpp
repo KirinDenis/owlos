@@ -60,13 +60,13 @@ OWLOS распространяется в надежде, что она буде
 #include <MD5Builder.h>
 
 #include "HTTPServerThings.h"
-#include "..\Managers\DriverManager.h"
-#include "..\Managers\ScriptManager.h"
-#include "..\Managers\UpdateManager.h"
-#include "..\Managers\FileManager.h"
-#include "..\Utils\Utils.h"
-#include "..\..\UnitProperties.h"
-#include "..\..\WebProperties.h"
+#include "../drivers/ESPDriver.h"
+#include "../Managers/DriverManager.h"
+#include "../Managers/ScriptManager.h"
+#include "../Managers/UpdateManager.h"
+#include "../Managers/FileManager.h"
+#include "../Utils/Utils.h"
+#include "../Utils/WebProperties.h"
 
 
 #define HTTP_METHODS " GET, POST, OPTIONS"
@@ -99,7 +99,7 @@ void calculateToken()
 #ifdef NOT_SECURE_TOKEN
 	MD5Builder md5;
 	md5.begin();
-	md5.add(unitGetRESTfulServerUsername() + unitGetRESTfulServerPassword() + unitGetESPFlashChipId());
+	md5.add(nodeGetRESTfulServerUsername() + nodeGetRESTfulServerPassword() + nodeGetESPFlashChipId());
 	md5.calculate();
 	token = md5.toString();
 #endif
@@ -122,7 +122,7 @@ bool auth(String username, String password)
 
 	MD5Builder md5;
 	md5.begin();
-	md5.add(username + password + unitGetESPFlashChipId());
+	md5.add(username + password + nodeGetESPFlashChipId());
 	md5.calculate();
 	return token.equals(md5.toString());
 }
@@ -365,9 +365,9 @@ void handleUploadFile(WiFiClient client)
 					if (http_uploadFile.currentSize * 2 > ESP.getFreeHeap()) //HEAP is end
 					{
 	#ifdef DetailedDebug
-						debugOut(HTTPServerId, "upload aborted, reson: end of unit heap");
+						debugOut(HTTPServerId, "upload aborted, reson: end of node heap");
 	#endif
-						send(504, "text/plain", "upload aborted, reson: end of unit heap", client);
+						send(504, "text/plain", "upload aborted, reson: end of node heap", client);
 					}
 					else
 					{
@@ -431,16 +431,16 @@ void handleGetUnitProperty(WiFiClient client)
 	{
 		if (argName[0].equals("property"))
 		{
-			String unitProp = unitOnMessage(unitGetTopic() + "/get" + decode(arg[0]), "", NoTransportMask);
-			if ((unitProp.length() == 0) || (unitProp.equals(WrongPropertyName)))
+			String nodeProp = nodeOnMessage(nodeGetTopic() + "/get" + decode(arg[0]), "", NoTransportMask);
+			if ((nodeProp.length() == 0) || (nodeProp.equals(WrongPropertyName)))
 			{
-				unitProp = "wrong unit property: " + arg[0];
-				send(404, "text/html", unitProp, client);
+				nodeProp = "wrong node property: " + arg[0];
+				send(404, "text/html", nodeProp, client);
 				return;
 			}
 			else
 			{
-				send(200, "text/plain", unitProp, client);
+				send(200, "text/plain", nodeProp, client);
 				return;
 			}
 		}
@@ -454,10 +454,10 @@ void handleSetUnitProperty(WiFiClient client)
 	{
 		if ((argName[0].equals("property")) && (argName[1].equals("value")))
 		{
-			String result = unitOnMessage(unitGetTopic() + "/set" + decode(arg[0]), decode(arg[1]), NoTransportMask);
+			String result = nodeOnMessage(nodeGetTopic() + "/set" + decode(arg[0]), decode(arg[1]), NoTransportMask);
 			if ((result.length() == 0) || (result.equals("0")))
 			{
-				result = "wrong unit property set: " + arg[0] + "=" + arg[1];
+				result = "wrong node property set: " + arg[0] + "=" + arg[1];
 				send(404, "text/html", result, client);
 				return;
 			}
@@ -471,9 +471,9 @@ void handleSetUnitProperty(WiFiClient client)
 	handleNotFound(client);
 }
 
-void handleGetAllUnitProperties(WiFiClient client)
+void handleGetAllKernel(WiFiClient client)
 {
-	send(200, "text/plain", unitGetAllProperties(), client);
+	send(200, "text/plain", nodeGetAllProperties(), client);
 	return;
 }
 
@@ -543,9 +543,9 @@ void handleSetDriverProperty(WiFiClient client)
 		if ((argName[0].equals("id")) && (argName[1].equals("property")) && (argName[2].equals("value")))
 		{
 			String result = driversSetDriverProperty(arg[0], decode(arg[1]), decode(arg[2]));
-			if (result.length() == 0) //try set unit property
+			if (result.length() == 0) //try set node property
 			{
-				result = unitOnMessage(unitGetTopic() + "/set" + decode(arg[1]), decode(arg[2]), NoTransportMask);
+				result = nodeOnMessage(nodeGetTopic() + "/set" + decode(arg[1]), decode(arg[2]), NoTransportMask);
 			}
 
 			if (result.length() == 0)
@@ -584,7 +584,7 @@ void handleGetWebProperty(WiFiClient client)
 	{
 		if (argName[0].equals("property"))
 		{
-			//String configProperties = webOnMessage(unitGetTopic() + "/get" + decode(arg[0)), "");
+			//String configProperties = webOnMessage(nodeGetTopic() + "/get" + decode(arg[0)), "");
 
 			File download = SPIFFS.open("/web.config", "r");
 			if (download)
@@ -617,7 +617,7 @@ void handleReset(WiFiClient client)
 {
 
 	send(200, "text/plain", "1", client);
-	unitSetESPReset(1);
+	nodeSetESPReset(1);
 }
 
 //----------------------------------------------------------------------------------------------
@@ -696,9 +696,9 @@ void handleGetDriverProperty(WiFiClient client)
 		if ((argName[0].equals("id")) && (argName[1].equals("property")))
 		{
 			String driverProp = driversGetDriverProperty(arg[0], decode(arg[1]));
-			if (driverProp.length() == 0) //then try get this property from unit 
+			if (driverProp.length() == 0) //then try get this property from node 
 			{
-				driverProp = unitOnMessage(unitGetTopic() + "/get" + decode(arg[1]), "", NoTransportMask);
+				driverProp = nodeOnMessage(nodeGetTopic() + "/get" + decode(arg[1]), "", NoTransportMask);
 			}
 
 			if (driverProp.length() == 0)
@@ -922,11 +922,11 @@ void handleSetWebProperty(WiFiClient client)
 	{
 		if (argName[0].equals("property"))
 		{
-			String result = webOnMessage(unitGetTopic() + "/set" + decode(arg[0]), decode(parsePostBody(client)));
+			String result = webOnMessage(nodeGetTopic() + "/set" + decode(arg[0]), decode(parsePostBody(client)));
 			if ((result.length() == 0) || (result.equals("0")))
 			{
 
-				send(404, "text/html", "wrong unit property set: " + arg[0], client);
+				send(404, "text/html", "wrong node property set: " + arg[0], client);
 				return;
 			}
 			else
@@ -990,8 +990,6 @@ void HTTPServerLoop()
 								int argPos = 0;
 								String argsStr = firstLine.substring(hasArgs + 1);
 								argsStr = argsStr.substring(0, argsStr.indexOf(" "));
-								Serial.println("-------");
-								Serial.println(argsStr);
 								argsStr += "&";
 								while ((argPos = argsStr.indexOf("&")) != -1)
 								{
@@ -1027,11 +1025,11 @@ void HTTPServerLoop()
 											else
 												if (firstLine.indexOf("/deletefile") != -1) { handleDeleteFile(client); }
 												else
-													if (firstLine.indexOf("/getunitproperty") != -1) { handleGetUnitProperty(client); }
+													if (firstLine.indexOf("/getnodeproperty") != -1) { handleGetUnitProperty(client); }
 													else
-														if (firstLine.indexOf("/setunitproperty") != -1) { handleSetUnitProperty(client); }
+														if (firstLine.indexOf("/setnodeproperty") != -1) { handleSetUnitProperty(client); }
 														else
-															if (firstLine.indexOf("/getallunitproperties") != -1) { handleGetAllUnitProperties(client); }
+															if (firstLine.indexOf("/getallnodeproperties") != -1) { handleGetAllKernel(client); }
 															else
 																if (firstLine.indexOf("/adddriver") != -1) { handleAddDriver(client); }
 																else

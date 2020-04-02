@@ -43,7 +43,7 @@ OWLOS распространяется в надежде, что она буде
 
 bool SensorDriver::init()
 {
-	if (id.length() == 0) id = DriverID;
+	if (id.length() == 0) id = DRIVER_ID;
 	BaseDriver::init(id);
 
 	getPin();
@@ -105,7 +105,7 @@ bool SensorDriver::publish()
 	return false;
 };
 
-String SensorDriver::onMessage(String _topic, String _payload, int transportMask)
+String SensorDriver::onMessage(String _topic, String _payload, int8_t transportMask)
 {
 	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
 	if (!available) return result;

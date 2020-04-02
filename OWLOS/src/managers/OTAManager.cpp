@@ -4,18 +4,18 @@
 
 
 #include "OTAManager.h"
-#include "..\..\UnitProperties.h"
-#include "..\Utils\Utils.h"
+#include "../drivers/ESPDriver.h"
+#include "../Utils\Utils.h"
 
 #define OTAID "OTA"
 
 void OTABegin()
 {
-	ArduinoOTA.setPort(unitGetOTAPort());
+	ArduinoOTA.setPort(nodeGetOTAPort());
 
-	ArduinoOTA.setHostname(unitGetOTAID().c_str());
+	ArduinoOTA.setHostname(nodeGetOTAID().c_str());
 
-	ArduinoOTA.setPassword(unitGetOTAPassword().c_str());
+	ArduinoOTA.setPassword(nodeGetOTAPassword().c_str());
 
 	ArduinoOTA.onStart([]()
 	{

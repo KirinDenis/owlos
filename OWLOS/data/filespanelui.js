@@ -39,7 +39,7 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-const units = ['bytes', 'kb', 'mb', 'gb', 'tb', 'pb', 'eb', 'zb', 'yb']; 
+const nodes = ['bytes', 'kb', 'mb', 'gb', 'tb', 'pb', 'eb', 'zb', 'yb']; 
 
 var FilesList =
     
@@ -265,7 +265,7 @@ var FilesList =
                 n = n / 1024;
             }
 
-            return n.toFixed(n < 10 && l > 0 ? 1 : 0) + ' ' + units[l];
+            return n.toFixed(n < 10 && l > 0 ? 1 : 0) + ' ' + nodes[l];
         };
 
         _proto.inputGroupChange = function inputGroupChange(event) {

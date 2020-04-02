@@ -91,7 +91,7 @@ void setup() {
 	Serial.println("------------------------------------------------------------------------");
 	Serial.println("");
 	Serial.println("After updating: ");
-	Serial.println(" - Connect to WiFi access point 'owlunit" + String(ESP.getChipId()) + "' PWD: 1122334455");
+	Serial.println(" - Connect to WiFi access point 'owlnode" + String(ESP.getChipId()) + "' PWD: 1122334455");
 	Serial.println(" - Browse http://192.168.4.1:8084 LGN: admin PWD: admin");
 	Serial.println("");
 	Serial.println("------------------------------------------------------------------------");

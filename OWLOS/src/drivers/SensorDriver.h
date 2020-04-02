@@ -42,7 +42,7 @@ OWLOS распространяется в надежде, что она буде
 #include <Arduino.h>
 #include "BaseDriver.h"
 
-#define DriverID "sensor"
+#define DRIVER_ID "sensor"
 
 class SensorDriver : public BaseDriver {
   public:
@@ -68,14 +68,14 @@ class SensorDriver : public BaseDriver {
     bool query();
     String getAllProperties();
     bool publish();
-    String onMessage(String _topic, String _payload, int transportMask);
+    String onMessage(String _topic, String _payload, int8_t transportMask);
 
     int getPin();
     bool setPin(int _pin);
 
     String getData();
   private:
-    int pin = SENSORPIN;
+    int pin = 1;
     String data = "nan";
 	float sensorTriger = 0;
 };

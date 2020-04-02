@@ -41,17 +41,17 @@ OWLOS распространяется в надежде, что она буде
 
 var langua = "prepareUnit=Підготовка інтерфейсу користувача\n" +
     "dashboardTab=Панель пристроїв\n" +
-    "unitTab=Модуль\n" +
+    "nodeTab=Модуль\n" +
     "settingsTab=Вузли\n" +
     "filesTab=Файли\n" +
     "consoleTab=Консоль\n" +
     "network=Мережа\n" +
-    "unit=Модуль\n" +
+    "node=Модуль\n" +
     "esp=Esp\n" +
     "reset=Скидання\n"+
     "cancel=Скасувати\n"+
     "areYouSure=Ви впевнені?\n"+
-    "resetunit=Перезавантажити модуль\n"+
+    "resetnode=Перезавантажити модуль\n"+
     "autorefreshoff=Автооновлення: вимкн.\n"+
     "autorefreshon=Автообновление: вкл.\n"+
     "name=Ім'я\n"+
@@ -112,7 +112,7 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "nomotion=Немає\n" +
     "rid_online=В мережі\n" +
     "rid_error=Помилка\n" +
-    "rid_connect=З'єднання...\n" +
+    "rid_connect=З'єднання.../n" +
     "rid_offline=Не в мережі\n" +
     "lcd=Екран\n" +
     "send=Відпр.\n" +
@@ -157,7 +157,7 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "firmwarebuildnumber=Збірка\n" +
     "updateuibutton=Оновити UI\n" +
     "updatefirmwarebutton=Оновити прошивку\n" +
-    "updateunit=Оновлення\n" +
+    "updatenode=Оновлення\n" +
     "updateuibutton=Почати оновлення UI\n" +
     "firmwarebutton=Почати оновлення прошивки\n" +
     "updatefirmware=Після закінчення оновлення прошивки, модуль перезавантажиться автоматично. UI перезавантажиться через 30 секунд. Використовуйте монітор порту для більшої інформації\n" +
@@ -229,18 +229,18 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "savingchanges=Збереження змін\n" +
     "language=ukraine\n";
 
-var langen = "prepareUnit=prepare UI, please wait...\n" +
-    "unitTab=Node\n" +
+var langen = "prepareUnit=prepare UI, please wait.../n" +
+    "nodeTab=Node\n" +
     "settingsTab=Nodes\n" +
     "filesTab=Files\n" +
     "consoleTab=Console\n" +
     "network=Network\n" +
-    "unit=Node\n" +
+    "node=Node\n" +
     "esp=ESP\n" +
     "reset=Reset\n" +
     "cancel=Сancel\n" +
     "areYouSure=Are you sure?\n" +
-    "resetunit=Reset unit\n" +
+    "resetnode=Reset node\n" +
     "autorefreshoff=Auto refresh: OFF\n" +
     "autorefreshon=Auto refresh: ON\n" +
     "name=Name\n" +
@@ -266,7 +266,7 @@ var langen = "prepareUnit=prepare UI, please wait...\n" +
     "selectfiles=Select files\n" +
     "rid_online=Online \n" +
     "rid_error=Error \n" +
-    "rid_connect=Connecting...\n" +
+    "rid_connect=Connecting.../n" +
     "rid_offline=Offline\n" +
     "connected=Connected\n" +
     "disconnected=Disconnected\n" +
@@ -305,10 +305,10 @@ var langen = "prepareUnit=prepare UI, please wait...\n" +
     "firmwarebuildnumber=Build\n" +
     "updateuibutton=Update UI\n" +
     "updatefirmwarebutton=Update Firmware\n" +
-    "updateunit=Update\n" +
+    "updatenode=Update\n" +
     "updateuibutton=Starting update UI\n" +
     "firmwarebutton=Starting update Firmware\n" +
-    "updatefirmware=After firmware is updating, the unit self restarting. Please wait 30 sec, before the page after reloading. See Serial Monitor for more information.\n" +
+    "updatefirmware=After firmware is updating, the node self restarting. Please wait 30 sec, before the page after reloading. See Serial Monitor for more information.\n" +
     "networknodeprop=Node network properties\n" +
     "restfulavailable=Enable Web(RESTful) supporting\n" +
     "webserverlogin=Web server login\n" +
@@ -419,17 +419,17 @@ var langen = "prepareUnit=prepare UI, please wait...\n" +
     "language=english\n";
 
 var langru = "prepareUnit=Подготовка интерфейса пользователя\n" +
-    "unitTab=Нода\n" +
+    "nodeTab=Нода\n" +
     "settingsTab=Узлы\n" +
     "filesTab=Файлы\n" +
     "consoleTab=Консоль\n" +
     "network=Сетъ\n" +
-    "unit=Нода\n" +
+    "node=Нода\n" +
     "esp=ESP\n" +
     "reset=Сброс\n" +
     "cancel=Отмена\n" +
     "areYouSure=Вы уверены?\n" +
-    "resetunit=Перезагрузить ноду\n" +
+    "resetnode=Перезагрузить ноду\n" +
     "autorefreshoff=Автообновление: выкл.\n" +
     "autorefreshon=Автообновление: вкл\n" +
     "name=Имя\n" +
@@ -473,7 +473,7 @@ var langru = "prepareUnit=Подготовка интерфейса пользо
     "nomotion=Нет\n" +
     "rid_online=В сети\n" +
     "rid_error=Ошибка\n" +
-    "rid_connect=Соединение...\n" +
+    "rid_connect=Соединение.../n" +
     "rid_offline=Не в сети\n" +
     "lcd=Жидкокристаллический экран\n" +
     "send=Отпр.\n" +
@@ -516,7 +516,7 @@ var langru = "prepareUnit=Подготовка интерфейса пользо
     "firmwarebuildnumber=Сборка\n" +
     "updateuibutton=Обновить UI\n" +
     "updatefirmwarebutton=Обновить прошивку\n" +
-    "updateunit=Обновление\n" +
+    "updatenode=Обновление\n" +
     "updateuibutton=Начать обновление UI\n" +
     "firmwarebutton=Начать обновление прошивки\n" +
     "updatefirmware=После окончания обновления прошивки, модуть перезапустится автоматически. UI перезагрузится через 30 секунд. Используйте монитор порта для большей информации\n" +

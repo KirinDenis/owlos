@@ -42,7 +42,7 @@ OWLOS распространяется в надежде, что она буде
 #include <Arduino.h>
 #include "BaseDriver.h"
 
-#define DriverID "opto"
+#define DRIVER_ID "opto"
 
 class OptoDriver : public BaseDriver {
   public:
@@ -51,7 +51,7 @@ class OptoDriver : public BaseDriver {
     bool query();
     String getAllProperties();
     bool publish();
-    String onMessage(String _topic, String _payload, int transportMask);
+    String onMessage(String _topic, String _payload, int8_t transportMask);
 
     int getPin1();
     bool setPin1(int _pin1);
@@ -60,8 +60,8 @@ class OptoDriver : public BaseDriver {
     String getData();
 
   private:
-    int pin1 = OPTOSENSORPIN1;
-    int pin2 = OPTOSENSORPIN2;
+    int pin1 = 1;
+    int pin2 = 2;
     String data = "nan";
 
     unsigned long queryInterval = ONETENTHOFSECOND;

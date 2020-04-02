@@ -41,15 +41,33 @@ OWLOS распространяется в надежде, что она буде
 
 #pragma once
 #include <Arduino.h>
-#include <DHT.h>
+#include "../libraries\DHT_sensor_library\DHT.h"
 #include "BaseDriver.h"
 
 #define ESP8266;
-#define DriverID "DHT"
+#define DRIVER_ID "DHT"
 
 class DHTDriver : public BaseDriver {
 public:
-	bool DHTsetup(int pin, int dhttype);
+	static int getPinsCount()
+	{
+		return 3;
+	}
+
+	static int getPinType(int pinIndex)
+	{
+		switch (pinIndex)
+		{
+		case PIN0_INDEX: return DIGITALIO_TYPE;
+		case PIN1_INDEX: return VCC5_TYPE;
+		case PIN2_INDEX: return GND_TYPE;
+		default:
+			return NO_TYPE;
+		}
+	}
+
+
+	bool DHTsetup(int dhttype);
 	float DHTgetTemperature();
 	float DHTgetHumidity();
 
@@ -57,14 +75,11 @@ public:
 	bool query();
 	String getAllProperties();
 	bool publish();
-	String onMessage(String _topic, String _payload, int transportMask);
-	int getPin();
-	bool setPin(int _pin);
+	String onMessage(String _topic, String _payload, int8_t transportMask);
 	int getDHTType();
 	bool setDHTType(int _dhttype);
 	String getTemperature();
 	String getHumidity();
-
 	
 	String getTemperatureHistoryData();
 	bool setTemperatureHistoryData(float _historydata);
@@ -80,7 +95,6 @@ private:
 	bool DHTSetuped = false;
 	bool DHTSetupResult = false;
 	DHT * dht = nullptr;
-	int pin = DHTPIN;
 	int dhttype = DHT22;
 	String temperature = "nan";
 	String humidity = "nan";

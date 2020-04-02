@@ -41,28 +41,54 @@ OWLOS распространяется в надежде, что она буде
 
 #include "LCDDriver.h"
 
-LiquidCrystal_I2C * lcd;
+//I2C LCD driver based on OWLOS\src\libraries\LiquidCrystal_I2C\LiquidCrystal_I2C.cpp by https://gitlab.com/tandembyte/liquidcrystal_i2c
+//
+//Известные I2C адрес для разных типов PCF8574хх чипов (если перемычки не соединенны) 
+//порт 0x27 для PCF8574T 
+//порт 0x3F для PCF8574AT 
+//если вам известны адреса для других типов - передайте их нам
+//
+//Хорошая лекция по I2C шине:
+//https://www.youtube.com/watch?v=_4KD29qnhNM
+//WiKi:
+//https://ru.wikipedia.org/wiki/I%C2%B2C
+//https://ru.wikipedia.org/wiki/%D0%96%D0%B8%D0%B4%D0%BA%D0%BE%D0%BA%D1%80%D0%B8%D1%81%D1%82%D0%B0%D0%BB%D0%BB%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9_%D0%B4%D0%B8%D1%81%D0%BF%D0%BB%D0%B5%D0%B9
+//контроллер LCD 
+//https://ru.wikipedia.org/wiki/HD44780
+
+//примечание: драйвер LCD требует I2C адрес подчиненного устройства на шине. Для совместимости с общей архитектурой драйверов - I2C адрес представлен внешне в роли 
+//пина. Что делает возможность управления адресом из PinManager. 
 
 bool LCDDriver::init()
 {
-	if (id.length() == 0) id = DriverID;
+	if (id.length() == 0) id = DRIVER_ID;
 	BaseDriver::init(id);
-	
+	//считываем количество колонок и строк дисплея из файла или из константы (по умолчанию 20x4)
 	getCols();
 	getRows();
-
-	delete lcd;
-	lcd = NULL;
-
+	//получаем I2C Slave адрес для обращения к текущему LCD на I2C шине
 	PinDriverInfo pinDriverInfo;
 	if (getDriverPinInfo(id, I2CADDR_INDEX, &pinDriverInfo))
 	{
+		//если пользователь задал адрес, инкапсулируем класс обслуживающий LCD и пробуем работать с дисплеем через указанный порт
 		debugOut("LCD", String(pinDriverInfo.driverI2CAddr));
 		lcd = new LiquidCrystal_I2C(pinDriverInfo.driverI2CAddr, cols, rows); //port = 0x27 for PCF8574T and PCF8574AT for 0x3F, 16 cols, 2 raws
 		lcd->init();  //init properies
+		//мы не проверяем удалось ли подключить дисплей, пробуем применить настройки, пользователь визуально определит - прошло ли действие успешно   
+		getDisplay();
+		setDisplay(display, false);
 
 		getBacklight();
 		setBacklight(backlight, false);
+
+		getCursor();
+		setCursor(cursor, false);
+
+		getBlink();
+		setBlink(blink, false);
+
+		getAutoscroll();
+		setAutoscroll(autoscroll, false);
 
 		getX();
 		setX(x, false);
@@ -77,7 +103,7 @@ bool LCDDriver::init()
 	}
 	return false;
 }
-
+//когда сеть доступна
 bool LCDDriver::begin(String _topic)
 {
 	BaseDriver::begin(_topic);
@@ -85,21 +111,26 @@ bool LCDDriver::begin(String _topic)
 	setAvailable(available);
 	return available;
 }
-
+//возвращает свойства драйвера LCD
 String LCDDriver::getAllProperties()
 {
 	String result = BaseDriver::getAllProperties();
 	result += "text=" + text + "//s\n";
+	result += "textbyrows=" + text + "//s\n"; //the same text 
+	result += "display=" + String(display) + "//b\n";
 	result += "backlight=" + String(backlight) + "//b\n";
+	result += "cursor=" + String(cursor) + "//b\n";
+	result += "blink=" + String(blink) + "//b\n";
+	result += "autoscroll=" + String(autoscroll) + "//b\n";
 	result += "clear=" + String(clear) + "//b\n";
 	result += "x=" + String(x) + "//i\n";
-	result += "y=" + String(y) + "//i\n";	
+	result += "y=" + String(y) + "//i\n";
 	result += "cols=" + String(cols) + "//i\n";
 	result += "rows=" + String(rows) + "//i\n";
 	return result;
 }
-
-String LCDDriver::onMessage(String _topic, String _payload, int transportMask)
+//управление свойствами LCD драйвера
+String LCDDriver::onMessage(String _topic, String _payload, int8_t transportMask)
 {
 	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
 	if (!available) return result;
@@ -112,6 +143,23 @@ String LCDDriver::onMessage(String _topic, String _payload, int transportMask)
 	{
 		result = String(setText(_payload, true));
 	}
+	else if (String(topic + "/gettextbyrows").equals(_topic)) //just getText call - the text same for both API
+	{
+		result = onGetProperty("text", String(getText()), transportMask);
+	}
+	else if (String(topic + "/settextbyrows").equals(_topic))
+	{
+		result = String(setTextByRows(_payload, true));
+	}
+	//Display
+	else if (String(topic + "/getdisplay").equals(_topic))
+	{
+		result = onGetProperty("display", String(getDisplay()), transportMask);
+	}
+	else if (String(topic + "/setdisplay").equals(_topic))
+	{
+		result = String(setDisplay(std::atoi(_payload.c_str()), true));
+	}
 	//Backlight
 	else if (String(topic + "/getbacklight").equals(_topic))
 	{
@@ -120,6 +168,33 @@ String LCDDriver::onMessage(String _topic, String _payload, int transportMask)
 	else if (String(topic + "/setbacklight").equals(_topic))
 	{
 		result = String(setBacklight(std::atoi(_payload.c_str()), true));
+	}
+	//Blink
+	else if (String(topic + "/getblink").equals(_topic))
+	{
+		result = onGetProperty("blink", String(getBlink()), transportMask);
+	}
+	else if (String(topic + "/setblink").equals(_topic))
+	{
+		result = String(setBlink(std::atoi(_payload.c_str()), true));
+	}
+	//Cursor
+	else if (String(topic + "/getcursor").equals(_topic))
+	{
+		result = onGetProperty("cursor", String(getCursor()), transportMask);
+	}
+	else if (String(topic + "/setcursor").equals(_topic))
+	{
+		result = String(setCursor(std::atoi(_payload.c_str()), true));
+	}
+	//Autoscroll
+	else if (String(topic + "/getautoscroll").equals(_topic))
+	{
+		result = onGetProperty("autoscroll", String(getAutoscroll()), transportMask);
+	}
+	else if (String(topic + "/setautoscroll").equals(_topic))
+	{
+		result = String(setAutoscroll(std::atoi(_payload.c_str()), true));
 	}
 	//Clear
 	else if (String(topic + "/getclear").equals(_topic))
@@ -166,19 +241,17 @@ String LCDDriver::onMessage(String _topic, String _payload, int transportMask)
 	{
 		result = String(setRows(std::atoi(_payload.c_str()), true));
 	}
+	//обычно драйвер не управляет свойствами пинов, но в данном драйвере адрес I2C порта использован в роли Pin - для совместимости 
+	//с архитектурой, по этой причине необходим отдельный обработчик I2CADDR пина
 	else if (String(topic + "/setpin" + String(I2CADDR_INDEX)).equals(_topic))
 	{
 		//base is put the new address to to PinManager
 		result = init(); //init() get Address from PinManger	
 	}
 
-
 	return result;
 }
-
-
-
-//Text -------------------------------------------
+//Возвращает последний напечатанный текст (Внимание - не весь текст на дисплеи, а только последний переданный через setТехт() или SetTextByRows
 String LCDDriver::getText()
 {
 	if (filesExists(id + ".text"))
@@ -190,34 +263,11 @@ String LCDDriver::getText()
 #endif
 	return text;
 }
-
+//Печатает текст в позицию курсора
 bool LCDDriver::setText(String _text, bool doEvent)
 {
 	text = _text;
-	if ((x == 0) && (y == 0))
-	{
-		//TODO Array related to LCD driver rows count
-		setClear(1, false);
-		String r1 = text.substring(0, cols);
-		String r2 = text.substring(cols + 1, cols * 2);
-		String r3 = text.substring(cols * 2 + 1, cols * 3);
-		String r4 = text.substring(cols * 3 + 1, cols * 4);
-
-		lcd->setCursor(0, 0);
-		lcd->print(r1);
-		lcd->setCursor(0, 1);
-		lcd->print(r2);
-		lcd->setCursor(0, 2);
-		lcd->print(r3);
-		lcd->setCursor(0, 3);
-		lcd->print(r4);
-
-	}
-	else
-	{
-		lcd->print(text);
-	}
-
+	lcd->print(text);
 	filesWriteString(id + ".text", text);
 	if (doEvent)
 	{
@@ -226,8 +276,45 @@ bool LCDDriver::setText(String _text, bool doEvent)
 	}
 	return true;
 }
+//Печатает текст от левого верхнего угла дисплея, слева на право, сверху вниз. Учитывает размер дисплея. 
+//Если используется дисплей 20x4 и передан _text длиной 48 символов - то он будет размещен в трех верхних строках 
+//дисплея, при этом в последней строке будет всего 8 символов. 
+//Позиция курсора изменяется. 
+bool LCDDriver::setTextByRows(String _text, bool doEvent)
+{
+	text = _text;
+	setClear(1, false);
+	String textRows[rows]; //массив соответствует указанному количеству строк дисплея 
+	for (int i = 0; i < rows; i++) //"нарезаем" _text на указанное количество колонок (длине строки дисплея)
+	{
+		if (i == 0)
+		{
+			textRows[i] = text.substring(cols * i + 1, cols + cols * i);
+		}
+		else
+		{
+			textRows[i] = text.substring(cols * i, cols + cols * i);
+		}
 
-//Cols --------------------------------------------------------------
+		if (textRows[i].length() != 0)
+		{
+			lcd->setCursor(0, i);
+			lcd->print(textRows[i]);
+		}
+		else
+		{
+			break;
+		}
+	}
+	filesWriteString(id + ".text", text);
+	if (doEvent)
+	{
+
+		return onInsideChange("text", String(text));
+	}
+	return true;
+}
+//Возвращает указанное количество колонок (длина строки) дисплея. По умолчанию 20.
 int LCDDriver::getCols()
 {
 	if (filesExists(id + ".cols"))
@@ -239,7 +326,7 @@ int LCDDriver::getCols()
 #endif
 	return cols;
 }
-
+//Устанавливает длину строки дисплея (количество колонок)
 bool LCDDriver::setCols(int _cols, bool doEvent)
 {
 	cols = _cols;
@@ -251,8 +338,7 @@ bool LCDDriver::setCols(int _cols, bool doEvent)
 	}
 	return true;
 }
-
-//Rows --------------------------------------------------------------
+//Возвращает указанное количество строк
 int LCDDriver::getRows()
 {
 	if (filesExists(id + ".rows"))
@@ -264,7 +350,7 @@ int LCDDriver::getRows()
 #endif
 	return rows;
 }
-
+//Устанавливает количество строк
 bool LCDDriver::setRows(int _rows, bool doEvent)
 {
 	rows = _rows;
@@ -276,9 +362,42 @@ bool LCDDriver::setRows(int _rows, bool doEvent)
 	}
 	return true;
 }
+//Возвращает состояние жидкокристаллической матрицы дисплея (не путать с подсветкой)
+int LCDDriver::getDisplay()
+{
+	if (filesExists(id + ".display"))
+	{
+		display = filesReadInt(id + ".display");
+	}
+#ifdef DetailedDebug
+	debugOut(id, "display=" + String(display));
+#endif
+	return display;
+}
+//Включает или выключает жидкокристаллическую матрицу
+bool LCDDriver::setDisplay(int _display, bool doEvent)
+{
+	display = _display;
+	if (display)
+	{
+		lcd->display();
+	}
+	else
+	{
+		lcd->noDisplay();
+	}
 
+	filesWriteInt(id + ".display", display);
+	if (doEvent)
+	{
+		return onInsideChange("display", String(display));
+	}
+	return true;
+}
+//!Важно: большинство I2C блоков управления дисплеем обладают физическим переключателем (джампером) - включающим и выключающим подсветку. 
+//Если это переключатель выключен - подсветка дисплея программно доступна не будет. 
 
-//Backlight
+//Возвращает состояние подсветки - не физическое состояние, а последнее установленное. 
 int LCDDriver::getBacklight()
 {
 	if (filesExists(id + ".backlight"))
@@ -290,7 +409,7 @@ int LCDDriver::getBacklight()
 #endif
 	return backlight;
 }
-
+//Устанавливает состояние подстветки
 bool LCDDriver::setBacklight(int _backlight, bool doEvent)
 {
 	backlight = _backlight;
@@ -310,7 +429,102 @@ bool LCDDriver::setBacklight(int _backlight, bool doEvent)
 	}
 	return true;
 }
-//Clear
+//Возвращает режим мерцания курсора
+int LCDDriver::getBlink()
+{
+	if (filesExists(id + ".blink"))
+	{
+		blink = filesReadInt(id + ".blink");
+	}
+#ifdef DetailedDebug
+	debugOut(id, "blink=" + String(blink));
+#endif
+	return blink;
+}
+//Устанавливает режим мерцания курсора
+bool LCDDriver::setBlink(int _blink, bool doEvent)
+{
+	blink = _blink;
+	if (blink)
+	{
+		lcd->blink();
+	}
+	else
+	{
+		lcd->noBlink();
+	}
+
+	filesWriteInt(id + ".blink", blink);
+	if (doEvent)
+	{
+		return onInsideChange("blink", String(blink));
+	}
+	return true;
+}
+//Состояние курсора - виден, невиден
+int LCDDriver::getCursor()
+{
+	if (filesExists(id + ".cursor"))
+	{
+		cursor = filesReadInt(id + ".cursor");
+	}
+#ifdef DetailedDebug
+	debugOut(id, "cursor=" + String(cursor));
+#endif
+	return cursor;
+}
+//Устанавливает состояние курсора (видимость)
+bool LCDDriver::setCursor(int _cursor, bool doEvent)
+{
+	cursor = _cursor;
+	if (cursor)
+	{
+		lcd->cursor();
+	}
+	else
+	{
+		lcd->noCursor();
+	}
+
+	filesWriteInt(id + ".cursor", cursor);
+	if (doEvent)
+	{
+		return onInsideChange("cursor", String(cursor));
+	}
+	return true;
+}
+//Возвращает режим авто прокрутки содержимого дисплея (если включен, новый текст добавляется в нижний часть дисплея, предыдущий текст сдвигается вверх)
+int LCDDriver::getAutoscroll()
+{
+	if (filesExists(id + ".autoscroll"))
+	{
+		autoscroll = filesReadInt(id + ".autoscroll");
+	}
+#ifdef DetailedDebug
+	debugOut(id, "autoscroll=" + String(autoscroll));
+#endif
+	return autoscroll;
+}
+//Устанавливает режим авто прокрутки
+bool LCDDriver::setAutoscroll(int _autoscroll, bool doEvent)
+{
+	autoscroll = _autoscroll;
+	if (autoscroll)
+	{
+		lcd->autoscroll();
+	}
+	else
+	{
+		lcd->noAutoscroll();
+	}
+	filesWriteInt(id + ".autoscroll", autoscroll);
+	if (doEvent)
+	{
+		return onInsideChange("autoscroll", String(autoscroll));
+	}
+	return true;
+}
+//Формально возвращает состояние очистки дисплея
 int LCDDriver::getClear()
 {
 	clear = 0; //clear is function, 0 is not executed now
@@ -319,7 +533,7 @@ int LCDDriver::getClear()
 #endif
 	return clear;
 }
-
+//Очищает содержимое дисплея если передать _clear = TRUE
 bool LCDDriver::setClear(int _clear, bool doEvent)
 {
 	clear = _clear;
@@ -335,7 +549,7 @@ bool LCDDriver::setClear(int _clear, bool doEvent)
 	clear = 0; //Clear is doit
 	return true;
 }
-//X
+//Позиция курсора по X (колонки)
 int LCDDriver::getX()
 {
 	if (filesExists(id + ".x"))
@@ -347,7 +561,7 @@ int LCDDriver::getX()
 #endif
 	return x;
 }
-
+//Установить курсор в указанную колонку (x координата)
 bool LCDDriver::setX(int _x, bool doEvent)
 {
 	if (_x < 0) _x = 0;
@@ -361,8 +575,7 @@ bool LCDDriver::setX(int _x, bool doEvent)
 	}
 	return true;
 }
-
-//Y
+//Позиция курсора по Y (строки)
 int LCDDriver::getY()
 {
 	if (filesExists(id + ".y"))
@@ -374,7 +587,7 @@ int LCDDriver::getY()
 #endif
 	return y;
 }
-
+//Установить курсор в указанную строку (Y координата)
 bool LCDDriver::setY(int _y, bool doEvent)
 {
 	if (_y < 0) _y = 0;
@@ -388,5 +601,4 @@ bool LCDDriver::setY(int _y, bool doEvent)
 	}
 	return true;
 }
-
 ;

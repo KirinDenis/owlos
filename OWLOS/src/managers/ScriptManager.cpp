@@ -120,7 +120,7 @@ Battle Hamster Script
 
 #include <Arduino.h>
 #include "DriverManager.h"
-#include "..\..\UnitProperties.h"
+#include "../drivers/ESPDriver.h"
 
 #define SCRIPT_ID "script" 
 //Уберите комментарий этот флаг что бы включить трасерт (Tracert)
@@ -795,9 +795,9 @@ int runGetProp(int index) {
 
 	String value = driversGetDriverProperty(driverId, driverProp);
 
-	if ((value.length() == 0) || (value == WrongPropertyName)) //then try get this property from unit
+	if ((value.length() == 0) || (value == WrongPropertyName)) //then try get this property from node
 	{
-		value = unitOnMessage(unitGetTopic() + "/get" + driverProp, "", NoTransportMask);
+		value = nodeOnMessage(nodeGetTopic() + "/get" + driverProp, "", NoTransportMask);
 	}
 
 	if (((value.length() == 0) || (value == WrongPropertyName)) && (getDataAddr(index, STOP_IF_DEVICE_NOTREADY) != -1))
@@ -828,9 +828,9 @@ int runSetProp(int index) {
 
 	String result = driversSetDriverProperty(driverId, driverProp, value);
 
-	if ((result.length() == 0) || (result == WrongPropertyName)) //try set unit property
+	if ((result.length() == 0) || (result == WrongPropertyName)) //try set node property
 	{
-		result = unitOnMessage(unitGetTopic() + "/set" + driverProp, value, NoTransportMask);
+		result = nodeOnMessage(nodeGetTopic() + "/set" + driverProp, value, NoTransportMask);
 	}
 
 	if (((value.length() == 0) || (value == WrongPropertyName)) && (getDataAddr(index, STOP_IF_DEVICE_NOTREADY) != -1))

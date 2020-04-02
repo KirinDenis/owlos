@@ -39,12 +39,14 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-#include <LiquidCrystal_I2C.h> //https://www.dfrobot.com/wiki/index.php/I2C/TWI_LCD1602_Module_(Gadgeteer_Compatible)_(SKU:_DFR0063)   http://www.dfrobot.com/wiki/index.php?title=I2C/TWI_LCD1602_Module_(SKU:_DFR0063) Download: http://www.dfrobot.com/image/data/DFR0154/LiquidCrystal_I2Cv1-1.rar
+
 #include <Arduino.h>
+#include "../libraries\LiquidCrystal_I2C\LiquidCrystal_I2C.h" //https://www.dfrobot.com/wiki/index.php/I2C/TWI_LCD1602_Module_(Gadgeteer_Compatible)_(SKU:_DFR0063)   http://www.dfrobot.com/wiki/index.php?title=I2C/TWI_LCD1602_Module_(SKU:_DFR0063) Download: http://www.dfrobot.com/image/data/DFR0154/LiquidCrystal_I2Cv1-1.rar
 #include "BaseDriver.h"
 
-#define DriverID "lcd"
-#define LCDLoopInterval 200
+#define DRIVER_ID "lcd"
+
+#define LCD_LOOP_INTERVAL 200
 
 #define SDA_INDEX 0
 #define SCL_INDEX 1
@@ -78,7 +80,7 @@ public:
 
 	bool begin(String _topic);
 	String getAllProperties();
-	String onMessage(String _topic, String _payload, int transportMask);
+	String onMessage(String _topic, String _payload, int8_t transportMask);
 
 	int getCols();
 	bool setCols(int _cols, bool doEvent);
@@ -88,9 +90,22 @@ public:
 
 	String getText();
 	bool setText(String _text, bool doEvent);
+	bool setTextByRows(String _text, bool doEvent);
+
+	int getDisplay();
+	bool setDisplay(int _display, bool doEvent);
 
 	int getBacklight();
 	bool setBacklight(int _backlight, bool doEvent);
+
+	int getBlink();
+	bool setBlink(int _blink, bool doEvent);
+
+	int getCursor();
+	bool setCursor(int _cursor, bool doEvent);
+
+	int getAutoscroll();
+	bool setAutoscroll(int _autoscroll, bool doEvent);
 
 	int getClear();
 	bool setClear(int _clear, bool doEvent);
@@ -101,11 +116,15 @@ public:
 	int getY();
 	bool setY(int _y, bool doEvent);
 
-
 private:
+	LiquidCrystal_I2C * lcd;
 	int cols = 20;
 	int rows = 4;
+	int display = 1;
 	int backlight = 1;
+	int cursor = 0;
+	int blink = 0;
+	int autoscroll = 0;
 	int clear = 0;
 	int x = 0;
 	int y = 0;

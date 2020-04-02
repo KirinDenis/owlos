@@ -40,7 +40,7 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 #include "Utils.h"
-#include "..\Managers\FileManager.h"
+#include "../Managers\FileManager.h"
 
 
 bool filesAtRecurse = false;

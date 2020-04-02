@@ -8,10 +8,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OWLOS", "OWLOS", "{CEAB6A89
 		OWLOS\compileUIonly.bat = OWLOS\compileUIonly.bat
 		OWLOS\compileupdate.bat = OWLOS\compileupdate.bat
 		OWLOS\OWLOS.ino = OWLOS\OWLOS.ino
-		OWLOS\UnitProperties.cpp = OWLOS\UnitProperties.cpp
-		OWLOS\UnitProperties.h = OWLOS\UnitProperties.h
-		OWLOS\WebProperties.cpp = OWLOS\WebProperties.cpp
-		OWLOS\WebProperties.h = OWLOS\WebProperties.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OWLStarter", "OWLStarter", "{2B56B938-D996-4E6C-B185-5A36A9EA515B}"
@@ -76,6 +72,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "openssl", "openssl", "{5025
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6C1C1756-D7E4-4399-AF22-7D43AAE2F9E7}"
+	ProjectSection(SolutionItems) = preProject
+		OWLOS\src\Kernel.cpp = OWLOS\src\Kernel.cpp
+		OWLOS\src\Kernel.h = OWLOS\src\Kernel.h
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "poligon", "poligon", "{E41163AD-4A6A-4628-9CA9-558A5CA10032}"
 	ProjectSection(SolutionItems) = preProject
@@ -91,6 +91,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "drivers", "drivers", "{E4AC
 		OWLOS\src\drivers\BaseDriver.h = OWLOS\src\drivers\BaseDriver.h
 		OWLOS\src\drivers\DHTDriver.cpp = OWLOS\src\drivers\DHTDriver.cpp
 		OWLOS\src\drivers\DHTDriver.h = OWLOS\src\drivers\DHTDriver.h
+		OWLOS\src\drivers\ESPDriver.cpp = OWLOS\src\drivers\ESPDriver.cpp
+		OWLOS\src\drivers\ESPDriver.h = OWLOS\src\drivers\ESPDriver.h
 		OWLOS\src\drivers\LCDDriver.cpp = OWLOS\src\drivers\LCDDriver.cpp
 		OWLOS\src\drivers\LCDDriver.h = OWLOS\src\drivers\LCDDriver.h
 		OWLOS\src\drivers\LightDriver.cpp = OWLOS\src\drivers\LightDriver.cpp
@@ -141,9 +143,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "transports", "transports", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "utils", "utils", "{9C6397B1-FCB3-4718-A913-F52E5BE372EE}"
 	ProjectSection(SolutionItems) = preProject
-		OWLOS\src\utils\GPIOMap.h = OWLOS\src\utils\GPIOMap.h
 		OWLOS\src\utils\Utils.cpp = OWLOS\src\utils\Utils.cpp
 		OWLOS\src\utils\Utils.h = OWLOS\src\utils\Utils.h
+		OWLOS\src\utils\WebProperties.cpp = OWLOS\src\utils\WebProperties.cpp
+		OWLOS\src\utils\WebProperties.h = OWLOS\src\utils\WebProperties.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OWLOSResources", "OWLOSResources", "{0DE788A3-BBF4-4E4D-81BB-58F1A2AEC80F}"

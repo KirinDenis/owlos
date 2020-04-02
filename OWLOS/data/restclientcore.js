@@ -45,11 +45,11 @@ var boardhost = "http://192.168.1.9:8084/"; //DEBUG
 
 
 function getUnitProperty(host, property) {
-    return httpGetWithErrorReson(host + "getunitproperty?property=" + escape(property));
+    return httpGetWithErrorReson(host + "getnodeproperty?property=" + escape(property));
 }
 
 function setUnitProperty(host, property, value) {
-    return httpGetWithErrorReson(host + "setunitproperty?property=" + escape(property) + "&value=" + escape(value));
+    return httpGetWithErrorReson(host + "setnodeproperty?property=" + escape(property) + "&value=" + escape(value));
 }
 
 function setDriverProperty(host, id, property, value) {

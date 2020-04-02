@@ -42,7 +42,7 @@ OWLOS распространяется в надежде, что она буде
 #include <Arduino.h>
 #include "BaseDriver.h"
 
-#define DriverID "stepper1"
+#define DRIVER_ID "stepper1"
 #define StepperLoopInterval 200
 
 class StepperDriver : public BaseDriver {
@@ -50,7 +50,7 @@ class StepperDriver : public BaseDriver {
     bool init();
     bool begin(String _topic);
     String getAllProperties();
-    String onMessage(String _topic, String _payload, int transportMask);
+    String onMessage(String _topic, String _payload, int8_t transportMask);
 
     int getPin1();
     bool setPin1(int _pin1);
@@ -75,10 +75,11 @@ class StepperDriver : public BaseDriver {
 
 
   private:
-    int pin1 = STEPPERPIN1;
-    int pin2 = STEPPERPIN2;
-    int pin3 = STEPPERPIN3;
-    int pin4 = STEPPERPIN4;
+	  //TODO Refactoring escpe this
+    int pin1 = 1;
+    int pin2 = 1;
+    int pin3 = 1;
+    int pin4 = 1;
 
     int toPosition = 5000;
     int busy = 0;

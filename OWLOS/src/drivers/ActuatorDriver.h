@@ -43,7 +43,7 @@ OWLOS распространяется в надежде, что она буде
 #include "BaseDriver.h"
 
 #define DRIVER_TYPE "ActuatorDriver"
-#define DriverID "actuator1"
+#define DRIVER_ID "actuator1"
 #define ActuatorLoopInterval 200
 
 
@@ -73,7 +73,7 @@ class ActuatorDriver : public BaseDriver {
     bool query();
     String getAllProperties();
     bool publish();
-    String onMessage(String _topic, String _payload, int transportMask);
+    String onMessage(String _topic, String _payload, int8_t transportMask);
 
 	//String setPin(String pinName, int pinIndex);
 	//String getPin(int pinIndex);

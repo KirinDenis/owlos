@@ -42,7 +42,7 @@ OWLOS распространяется в надежде, что она буде
 #include <Arduino.h>
 #include "BaseDriver.h"
 
-#define DriverID "valve"
+#define DRIVER_ID "valve"
 
 class ValveDriver : public BaseDriver {
   public:
@@ -51,7 +51,7 @@ class ValveDriver : public BaseDriver {
     bool query();
     String getAllProperties();
     bool publish();
-    String onMessage(String _topic, String _payload, int transportMask);
+    String onMessage(String _topic, String _payload, int8_t transportMask);
 
     int getPin1();
     bool setPin1(int _pin1);
@@ -67,9 +67,9 @@ class ValveDriver : public BaseDriver {
 
   private:
   void toMinMaxPosition(int _pin);
-    int pin1 = D1;
-    int pin2 = D2;
-    int pin3 = A0;
+    int pin1 = 1; //Digital 
+    int pin2 = 1; //Digital
+    int pin3 = 1; //Analog
     int position=0; // 0 - close, 100 - open
     int minimumphysicalposition = 0; // valve is close
     int maximumphysicalposition = 1023; // valve is open

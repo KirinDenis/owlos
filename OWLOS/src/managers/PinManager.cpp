@@ -821,6 +821,20 @@ void initPins()
 	pins[pinCount].name = "D15";
 	pins[pinCount].location = "l13";
 
+	pinCount++;
+	pins[pinCount].GPIONumber = 16;
+	pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;	
+	pins[pinCount].name = "D16";
+	pins[pinCount].location = "l14";
+
+	pinCount++;
+	pins[pinCount].GPIONumber = 26;
+	pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
+	pins[pinCount].pinTypes[1].type = ANALOGIO_TYPE;
+	pins[pinCount].name = "D26";
+	pins[pinCount].location = "l15";
+
+
 #endif
 
 	pinCount++;
