@@ -43,7 +43,7 @@ OWLOS распространяется в надежде, что она буде
 
 bool StepperDriver::init()
 {
-	if (id.length() == 0) id = DriverID;
+	if (id.length() == 0) id = DRIVER_ID;
 	BaseDriver::init(id);
 
 	//init properies

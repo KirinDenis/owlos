@@ -42,7 +42,7 @@ OWLOS распространяется в надежде, что она буде
 #include <Arduino.h>
 #include "BaseDriver.h"
 
-#define DriverID "stepper1"
+#define DRIVER_ID "stepper1"
 #define StepperLoopInterval 200
 
 class StepperDriver : public BaseDriver {

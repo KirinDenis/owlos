@@ -45,7 +45,7 @@ OWLOS распространяется в надежде, что она буде
 #include "BaseDriver.h"
 
 #define ESP8266;
-#define DriverID "DHT"
+#define DRIVER_ID "DHT"
 
 class DHTDriver : public BaseDriver {
 public:

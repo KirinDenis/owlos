@@ -43,7 +43,7 @@ OWLOS распространяется в надежде, что она буде
 #include "BaseDriver.h"
 
 #define DRIVER_TYPE "ActuatorDriver"
-#define DriverID "actuator1"
+#define DRIVER_ID "actuator1"
 #define ActuatorLoopInterval 200
 
 

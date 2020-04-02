@@ -42,7 +42,7 @@ OWLOS распространяется в надежде, что она буде
 #include <Arduino.h>
 #include "BaseDriver.h"
 
-#define DriverID "motion"
+#define DRIVER_ID "motion"
 
 class MotionDriver : public BaseDriver {
   public:

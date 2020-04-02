@@ -117,7 +117,7 @@ float DHTDriver::DHTgetHumidity()
 //В каждом драйвере вызывают метод begin когда транспорт готов к работе 
 bool DHTDriver::begin(String _topic)
 {
-	if (id.length() == 0) id = DriverID;
+	if (id.length() == 0) id = DRIVER_ID;
 	BaseDriver::init(id);
 
 	if (BaseDriver::begin(_topic))
