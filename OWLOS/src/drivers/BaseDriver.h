@@ -74,9 +74,9 @@ class BaseDriver
 		 return 0;
 	  }
 
-	  static int getPinType(int pinIndex)
+	  static uint16_t getPinType(int pinIndex)
 	  {
-		  return NO_TYPE;
+		  return NO_MASK;
 	  }
 
 

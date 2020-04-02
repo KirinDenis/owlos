@@ -60,17 +60,17 @@ public:
 		return 5;
 	}
 
-	static int getPinType(int pinIndex)
+	static uint16_t getPinType(int pinIndex)
 	{
 		switch (pinIndex)
 		{
-		case SDA_INDEX: return SDA_TYPE;
-		case SCL_INDEX: return SCL_TYPE;
-		case I2CADDR_INDEX: return I2CADDR_TYPE;
-		case VCC5_INDEX: return VCC5_TYPE;
-		case GND_INDEX: return GND_TYPE;
+		case SDA_INDEX: return SDA_MASK;
+		case SCL_INDEX: return SCL_MASK;
+		case I2CADDR_INDEX: return I2CADDR_MASK;
+		case VCC5_INDEX: return VCC5_MASK;
+		case GND_INDEX: return GND_MASK;
 		default:
-			return NO_TYPE;
+			return NO_MASK;
 		}
 	}
 

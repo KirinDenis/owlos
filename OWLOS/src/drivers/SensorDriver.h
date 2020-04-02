@@ -56,10 +56,10 @@ class SensorDriver : public BaseDriver {
 	  {
 		  switch (pinIndex)
 		  {
-		  case PIN0_INDEX: return DIGITALI_TYPE;
-		  case PIN1_INDEX: return GND_TYPE;
+		  case PIN0_INDEX: return DIGITAL_I_MASK;
+		  case PIN1_INDEX: return GND_MASK;
 		  default:
-			  return NO_TYPE;
+			  return NO_MASK;
 		  }
 	  }
 

@@ -50,20 +50,20 @@ OWLOS распространяется в надежде, что она буде
 class ActuatorDriver : public BaseDriver {
   public:
 	  
-
 	  static int getPinsCount()
 	  {
 		  return 2;
 	  }
 
-	  static int getPinType(int pinIndex)
+	  static uint16_t getPinType(int pinIndex)
 	  {
 		  switch (pinIndex)
 		  {
-		  case PIN0_INDEX: return DIGITALO_TYPE;
-		  case PIN1_INDEX: return GND_TYPE;
+		  case PIN0_INDEX: return DIGITAL_O_MASK | ANALOG_O_MASK;
+		  case PIN1_INDEX: return GND_MASK;
+
 		  default:
-			  return NO_TYPE;
+			  return NO_MASK;
 		  }
 	  }
 

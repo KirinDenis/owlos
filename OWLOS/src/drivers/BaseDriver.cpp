@@ -42,6 +42,7 @@ OWLOS распространяется в надежде, что она буде
 #include "BaseDriver.h"
 #include "..\Managers\DriverManager.h"
 
+
   //init() is called before transport accessable, when ESP is Setupping()
   //Drivers load default GPIO and other property values from Flash file system thanks to Init()
 bool BaseDriver::init(String _id)
@@ -118,7 +119,7 @@ String BaseDriver::getAllProperties()
 			debugOut("PIN", "NOT NULL");
 			pins += "pin" + String(i) + "=" + pinDriverInfo.name + "\n";
 			pins += "pintype" + String(i) + "=" + pinDriverInfo.driverPinType  + "\n";
-			pins += "pintypedecoded" + String(i) + "=" + pinDecodeType(pinDriverInfo.driverPinType) + "\n";
+		    //pins += "pintypedecoded" + String(i) + "=" + String(pinDriverInfo.driverPinType) + "\n";
 			
 		}
 		else
@@ -186,7 +187,7 @@ String BaseDriver::onMessage(String _topic, String _payload, int transportMask)
 		}
 		else
 		{
-			return String(NO_TYPE);
+			return String(NO_MASK);
 		}
 	}
 	else	
@@ -532,4 +533,4 @@ bool BaseDriver::writeHistoryFile(float _historydata)
 	return result;
 }
 
-;
+

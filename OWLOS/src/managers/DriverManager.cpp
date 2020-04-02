@@ -354,7 +354,7 @@ bool driversSaveList()
 				if (getDriverPinInfo(driversList[i]->id, j, &pinDriverInfo))
 				{
 					debugOut("D_INFO", pinDriverInfo.name);
-					if (pinDriverInfo.driverPinType != I2CADDR_TYPE)
+					if (pinDriverInfo.driverPinType != I2CADDR_MASK)
 					{
 						driverlist += pinDriverInfo.name;
 					}
@@ -430,7 +430,7 @@ String driversLoadFromConfig()
 }
 
 //External driver manager API -------------------------------------------------
-String driversAdd(int type, String id, String pins) //String D1;D3;GND;....
+String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 {
 #ifdef DetailedDebug
 	debugOut("driversadd_id", id);
@@ -731,13 +731,14 @@ String driversAdd(int type, String id, String pins) //String D1;D3;GND;....
 
 String driversChangePin(String pinName, String driverId, int driverPinIndex)
 {
-	String result = setDriverPin(true, pinName, driverId, driverPinIndex, NO_TYPE);
+	String result = setDriverPin(true, pinName, driverId, driverPinIndex, NO_MASK);
+	
 	if (result.length() != 0)
 	{
 		return result;
 	}
 
-	result = setDriverPin(false, pinName, driverId, driverPinIndex, NO_TYPE);
+	result = setDriverPin(false, pinName, driverId, driverPinIndex, NO_MASK);
 	if (result.length() != 0)
 	{
 		return result;
