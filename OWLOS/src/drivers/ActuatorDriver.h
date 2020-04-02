@@ -42,7 +42,7 @@ OWLOS распространяется в надежде, что она буде
 #include <Arduino.h>
 #include "BaseDriver.h"
 
-#define DRIVER_TYPE "ActuatorDriver"
+#define DRIVER_MASK "ActuatorDriver"
 #define DRIVER_ID "actuator1"
 #define ActuatorLoopInterval 200
 

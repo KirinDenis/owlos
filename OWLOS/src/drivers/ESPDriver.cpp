@@ -1294,11 +1294,11 @@ String nodeGetWiFiNetworksParameters()
 String nodeGetAllWiFiEncryptionTypes()
 {
 	String result = "allwifiencryptiontypes=";
-	result += "5:ENC_TYPE_WEP;";
-	result += "2:ENC_TYPE_TKIP;";
-	result += "4:ENC_TYPE_CCMP;";
-	result += "7:ENC_TYPE_NONE;";
-	result += "8:ENC_TYPE_AUTO;";
+	result += "5:ENC_MASK_WEP;";
+	result += "2:ENC_MASK_TKIP;";
+	result += "4:ENC_MASK_CCMP;";
+	result += "7:ENC_MASK_NONE;";
+	result += "8:ENC_MASK_AUTO;";
 	return result;
 }
 

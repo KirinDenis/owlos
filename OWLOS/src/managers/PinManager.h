@@ -12,6 +12,8 @@
 #define VCC33_MASK      0x0100
 #define GND_MASK        0x0200  
 
+#define DIGITAL_IO_MASK DIGITAL_I_MASK | DIGITAL_O_MASK
+
 
 
 #define NO_FAMILY   0	   
@@ -20,13 +22,13 @@
 
 
 						   
-#define PIN_TYPE_COUNT 5	   
+#define PIN_MASK_COUNT 5	   
 #define PIN_DRIVER_COUNT 20	   
 						   
 //typedef struct PinType	   
 //{
 //	int family = NO_FAMILY;
-//	int type = NO_TYPE;
+//	int type = NO_MASK;
 //	int neighbor = -1;
 //};
 
@@ -35,7 +37,7 @@ typedef struct Pin
 	//Информация о пине, которую он получает в зависимости от типа контроллера
 	String name = "";
 	int mode = -1;
-	//PinType pinTypes[PIN_TYPE_COUNT];	
+	//PinType pinTypes[PIN_MASK_COUNT];	
 	uint16_t pinTypes = NO_MASK;
 	int8_t GPIONumber = -1;
 	int8_t chipNumber = -1;
@@ -66,7 +68,7 @@ void initPins();
 String pinDecodeType(int typeCode);
 int getDriverPinsCount(String driverId);
 bool getDriverPinInfo(String driverId, int driverPinIndex, PinDriverInfo * pinDriverInfo);
-String setDriverPin(bool checkOnly, String pinName, String driverId, int driverPinIndex, int pinType);
+String setDriverPin(bool checkOnly, String pinName, String driverId, uint16_t driverPinIndex, uint16_t pinType);
 
 void freeDriverPin(String driverId, int driverPinIndex);
 Pin getPin();

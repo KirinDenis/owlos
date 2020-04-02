@@ -3,7 +3,7 @@
 #include "PinManager.h"
 
 
-//String decodePinType[14] = { "NO_TYPE", "GPIO_TYPE", "DIGITALIO_TYPE", "DIGITALI_TYPE", "DIGITALO_TYPE", "ANALOGIO_TYPE", "ANALOGI_TYPE", "ANALOGO_TYPE", "SDA_TYPE",  "SCL_TYPE", "I2CADDR_TYPE", "VCC5_TYPE",  "VCC33_TYPE",  "GND_TYPE" };
+//String decodePinType[14] = { "NO_MASK", "GP_IO_MASK", "DIGITAL_IO_MASK", "DIGITALI_MASK", "DIGITALO_MASK", "ANALOG_IO_MASK", "ANALOGI_MASK", "ANALOGO_MASK", "SDA_MASK",  "SCL_MASK", "I2CADDR_MASK", "VCC5_MASK",  "VCC33_MASK",  "GND_MASK" };
 //String decodePinFamily[3] = { "NO_FAMILY", "I2C_FAMILY", "VCC_FAMILY" };
 
 int pinCount = 0;
@@ -13,34 +13,34 @@ String decodePinTypes(uint16_t pinType) {
 	
 	String decodedPinTypes;
 
-	if (pinType & DIGITAL_I_MASK) { decodedPinTypes += "DIGITAL_I_TYPE,"; }
+	if (pinType & DIGITAL_I_MASK) { decodedPinTypes += "DIGITAL_I_MASK,"; }
 
-	if (pinType & DIGITAL_O_MASK) { decodedPinTypes += " DIGITAL_O_TYPE,"; }
+	if (pinType & DIGITAL_O_MASK) { decodedPinTypes += " DIGITAL_O_MASK,"; }
 
-	if (pinType & ANALOG_I_MASK) { decodedPinTypes += " ANALOG_I_TYPE,"; }
+	if (pinType & ANALOG_I_MASK) { decodedPinTypes += " ANALOG_I_MASK,"; }
 
-	if (pinType & ANALOG_O_MASK) { decodedPinTypes += " ANALOG_O_TYPE,"; }
+	if (pinType & ANALOG_O_MASK) { decodedPinTypes += " ANALOG_O_MASK,"; }
 
-	if (pinType & SDA_MASK) { decodedPinTypes += " SDA_TYPE,"; }
+	if (pinType & SDA_MASK) { decodedPinTypes += " SDA_MASK,"; }
 
-	if (pinType & SCL_MASK) { decodedPinTypes += " SCL_TYPE,"; }
+	if (pinType & SCL_MASK) { decodedPinTypes += " SCL_MASK,"; }
 
-	if (pinType & I2CADDR_MASK) { decodedPinTypes += " SDA_TYPE,"; }
+	if (pinType & I2CADDR_MASK) { decodedPinTypes += " SDA_MASK,"; }
 
-	if (pinType & VCC5_MASK) { decodedPinTypes += " VCC5_TYPE,"; }
+	if (pinType & VCC5_MASK) { decodedPinTypes += " VCC5_MASK,"; }
 
-	if (pinType & VCC33_MASK) { decodedPinTypes += " VCC33_TYPE,"; }
+	if (pinType & VCC33_MASK) { decodedPinTypes += " VCC33_MASK,"; }
 
-	if (pinType & GND_MASK) { decodedPinTypes += " GND_TYPE,"; }
+	if (pinType & GND_MASK) { decodedPinTypes += " GND_MASK,"; }
 
-	if (!(pinType | NO_MASK)) { decodedPinTypes += " NO_TYPE,"; }
+	if (!(pinType | NO_MASK)) { decodedPinTypes += " NO_MASK,"; }
 
 	if (decodedPinTypes.length() > 0) {
 
 		decodedPinTypes = decodedPinTypes.substring(0, decodedPinTypes.length() - 1);
 	}
 	else {
-		decodedPinTypes += "NO_TYPE";
+		decodedPinTypes += "NO_MASK";
 	}
 
 	
@@ -79,9 +79,9 @@ String getPinMap()
 			}
 		}
 
-		//for (int j = 0; j < PIN_TYPE_COUNT; j++)
+		//for (int j = 0; j < PIN_MASK_COUNT; j++)
 		//{
-		//	if (pins[i].pinTypes[j].type == NO_TYPE)
+		//	if (pins[i].pinTypes[j].type == NO_MASK)
 		//	{
 		//		break;
 		//	}
@@ -107,7 +107,7 @@ bool pinTypeSupported(Pin pin, uint16_t pinType)
 	//		return true;
 	//	}
 	//	else //если тип пина I/O или O и требуемый драйвером тип I/O или O
-	//		if (((pin.pinTypes & (DIGITAL_I_MASK | DIGITAL_O_MASK) || (pin.pinTypes & DIGITAL_O_MASK)) && ((pinType == DIGITALIO_TYPE) || (pinType == DIGITALO_TYPE)))
+	//		if (((pin.pinTypes & (DIGITAL_I_MASK | DIGITAL_O_MASK) || (pin.pinTypes & DIGITAL_O_MASK)) && ((pinType == DIGITAL_IO_MASK) || (pinType == DIGITALO_MASK)))
 	//		{
 	//			return true;
 	//		}
@@ -307,7 +307,7 @@ String setDriverI2CAddr(bool checkOnly, String pinName, String driverId, int dri
 }
 
 
-String setDriverPin(bool checkOnly, String pinName, String driverId, int driverPinIndex, uint16_t pinType)
+String setDriverPin(bool checkOnly, String pinName, String driverId, uint16_t driverPinIndex, uint16_t pinType)
 {
 	//if exists 
 	Serial.println("---");
@@ -634,77 +634,77 @@ void initPins()
 	pins[pinCount].name = "D0";
 	pins[pinCount].GPIONumber = pinNameToValue(pins[pinCount].name);
 	pins[pinCount].pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
-	//pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
+	//pins[pinCount].pinTypes[0].type = DIGITAL_IO_MASK;
 	pins[pinCount].location = "l1";
 
 	pinCount++;
 	pins[pinCount].name = "D1";
 	pins[pinCount].GPIONumber = pinNameToValue(pins[pinCount].name);
 	pins[pinCount].pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
-	//pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
+	//pins[pinCount].pinTypes[0].type = DIGITAL_IO_MASK;
 	pins[pinCount].location = "l2";
 
 	pinCount++;
 	pins[pinCount].name = "D2";
 	pins[pinCount].GPIONumber = pinNameToValue(pins[pinCount].name);
 	pins[pinCount].pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
-	//	pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
+	//	pins[pinCount].pinTypes[0].type = DIGITAL_IO_MASK;
 	pins[pinCount].location = "l3";
 
 	pinCount++;
 	pins[pinCount].name = "D3";
 	pins[pinCount].GPIONumber = pinNameToValue(pins[pinCount].name);
 	pins[pinCount].pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
-	//pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
+	//pins[pinCount].pinTypes[0].type = DIGITAL_IO_MASK;
 	pins[pinCount].location = "l4";
 
 	pinCount++;
 	pins[pinCount].name = "D4";
 	pins[pinCount].pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
 	//pins[pinCount].GPIONumber = pinNameToValue(pins[pinCount].name);
-	pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
+	pins[pinCount].pinTypes[0].type = DIGITAL_IO_MASK;
 	pins[pinCount].location = "l5";
 
 	pinCount++;
 	pins[pinCount].name = "D5";
 	pins[pinCount].GPIONumber = pinNameToValue(pins[pinCount].name);
 	pins[pinCount].pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
-	//pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
+	//pins[pinCount].pinTypes[0].type = DIGITAL_IO_MASK;
 	pins[pinCount].location = "l6";
 
 	pinCount++;
 	pins[pinCount].name = "D6";
 	pins[pinCount].GPIONumber = pinNameToValue(pins[pinCount].name);
 	pins[pinCount].pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
-	//pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
+	//pins[pinCount].pinTypes[0].type = DIGITAL_IO_MASK;
 	pins[pinCount].location = "l7";
 
 	pinCount++;
 	pins[pinCount].name = "D7";
 	pins[pinCount].GPIONumber = pinNameToValue(pins[pinCount].name);
 	pins[pinCount].pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
-	//pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
+	//pins[pinCount].pinTypes[0].type = DIGITAL_IO_MASK;
 	pins[pinCount].location = "l8";
 
 	pinCount++;
 	pins[pinCount].name = "D8";
 	pins[pinCount].GPIONumber = pinNameToValue(pins[pinCount].name);
 	pins[pinCount].pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
-	//pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
+	//pins[pinCount].pinTypes[0].type = DIGITAL_IO_MASK;
 	pins[pinCount].location = "l9";
 #ifdef ARDUINO_ESP8266_NODEMCU
 	pinCount++;
 	pins[pinCount].name = "D9";
 	pins[pinCount].GPIONumber = pinNameToValue(pins[pinCount].name);
 	pins[pinCount].pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
-	//pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
+	//pins[pinCount].pinTypes[0].type = DIGITAL_IO_MASK;
 	pins[pinCount].location = "l10";
 
 	pinCount++;
 	pins[pinCount].name = "D10";
 	pins[pinCount].GPIONumber = pinNameToValue(pins[pinCount].name);
 	pins[pinCount].pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
-	//pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
+	//pins[pinCount].pinTypes[0].type = DIGITAL_IO_MASK;
 	pins[pinCount].location = "l11";
 #endif
 
@@ -712,7 +712,7 @@ void initPins()
 	pins[pinCount].name = "A0";
 	pins[pinCount].GPIONumber = pinNameToValue(pins[pinCount].name);
 	pins[pinCount].pinTypes = ANALOG_I_MASK | ANALOG_O_MASK;
-	//pins[pinCount].pinTypes[0].type = ANALOGIO_TYPE;
+	//pins[pinCount].pinTypes[0].type = ANALOG_IO_MASK;
 	pins[pinCount].location = "r1";
 #endif
 
@@ -721,16 +721,16 @@ void initPins()
 	pinCount = 0;
 	pins[pinCount].GPIONumber = 23;
 	pins[pinCount].pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
-	//pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
+	//pins[pinCount].pinTypes[0].type = DIGITAL_IO_MASK;
 	pins[pinCount].name = "D23";
 	pins[pinCount].location = "l1";
 
 	pinCount++;
 	pins[pinCount].GPIONumber = 22;
 	pins[pinCount].pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK | SCL_MASK;
-	/*pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
+	/*pins[pinCount].pinTypes[0].type = DIGITAL_IO_MASK;
 	//pins[pinCount].pinTypes[1].family = I2C_FAMILY;
-	//pins[pinCount].pinTypes[1].type = SCL_TYPE;
+	//pins[pinCount].pinTypes[1].type = SCL_MASK;
 	pins[pinCount].pinTypes[1].neighbor = 4; */
 	pins[pinCount].neighbourPin = 4;
 	pins[pinCount].name = "D22";
@@ -739,23 +739,23 @@ void initPins()
 	pinCount++;
 	pins[pinCount].GPIONumber = 1;
 	pins[pinCount].pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
-	//pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
+	//pins[pinCount].pinTypes[0].type = DIGITAL_IO_MASK;
 	pins[pinCount].name = "D1";
 	pins[pinCount].location = "l3";
 
 	pinCount++;
 	pins[pinCount].GPIONumber = 3;
 	pins[pinCount].pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
-	//pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
+	//pins[pinCount].pinTypes[0].type = DIGITAL_IO_MASK;
 	pins[pinCount].name = "D3";
 	pins[pinCount].location = "l4";
 
 	pinCount++;
 	pins[pinCount].GPIONumber = 21;
 	pins[pinCount].pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK | SDA_MASK;
-	/*pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
+	/*pins[pinCount].pinTypes[0].type = DIGITAL_IO_MASK;
 	pins[pinCount].pinTypes[1].family = I2C_FAMILY;
-	pins[pinCount].pinTypes[1].type = SDA_TYPE;
+	pins[pinCount].pinTypes[1].type = SDA_MASK;
 	pins[pinCount].pinTypes[1].neighbor = 1;
 	*/
 	pins[pinCount].neighbourPin = 1; 
@@ -765,72 +765,71 @@ void initPins()
 	pinCount++;
 	pins[pinCount].GPIONumber = 19;
 	pins[pinCount].pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
-	//pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
+	//pins[pinCount].pinTypes[0].type = DIGITAL_IO_MASK;
 	pins[pinCount].name = "D19";
 	pins[pinCount].location = "l6";
 
 	pinCount++;
 	pins[pinCount].GPIONumber = 18;
 	pins[pinCount].pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
-	//pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
+	//pins[pinCount].pinTypes[0].type = DIGITAL_IO_MASK;
 	pins[pinCount].name = "D18";
 	pins[pinCount].location = "l7";
 
 	pinCount++;
 	pins[pinCount].GPIONumber = 5;
 	pins[pinCount].pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
-	//pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
+	//pins[pinCount].pinTypes[0].type = DIGITAL_IO_MASK;
 	pins[pinCount].name = "D5";
 	pins[pinCount].location = "l8";
 
 	pinCount++;
 	pins[pinCount].GPIONumber = 17;
 	pins[pinCount].pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
-	//pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
+	//pins[pinCount].pinTypes[0].type = DIGITAL_IO_MASK;
 	pins[pinCount].name = "D17";
 	pins[pinCount].location = "l9";
 
 	pinCount++;
 	pins[pinCount].GPIONumber = 16;
 	pins[pinCount].pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
-	//pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
+	//pins[pinCount].pinTypes[0].type = DIGITAL_IO_MASK;
 	pins[pinCount].name = "D16";
 	pins[pinCount].location = "l10";
 
 	pinCount++;
 	pins[pinCount].GPIONumber = 4;
 	pins[pinCount].pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK | ANALOG_I_MASK |ANALOG_O_MASK;
-	/*pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
-	pins[pinCount].pinTypes[1].type = ANALOGIO_TYPE;*/
+	/*pins[pinCount].pinTypes[0].type = DIGITAL_IO_MASK;
+	pins[pinCount].pinTypes[1].type = ANALOG_IO_MASK;*/
 	pins[pinCount].name = "D4";
 	pins[pinCount].location = "l11";
 
 	pinCount++;
 	pins[pinCount].GPIONumber = 2;
 	pins[pinCount].pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK | ANALOG_I_MASK | ANALOG_O_MASK;
-	/*pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
-	pins[pinCount].pinTypes[1].type = ANALOGIO_TYPE;*/
+	/*pins[pinCount].pinTypes[0].type = DIGITAL_IO_MASK;
+	pins[pinCount].pinTypes[1].type = ANALOG_IO_MASK;*/
 	pins[pinCount].name = "D2";
 	pins[pinCount].location = "l12";
 
 	pinCount++;
 	pins[pinCount].GPIONumber = 15;
 	pins[pinCount].pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK | ANALOG_I_MASK | ANALOG_O_MASK;
-	/*pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
-	pins[pinCount].pinTypes[1].type = ANALOGIO_TYPE;*/
+	/*pins[pinCount].pinTypes[0].type = DIGITAL_IO_MASK;
+	pins[pinCount].pinTypes[1].type = ANALOG_IO_MASK;*/
 	pins[pinCount].name = "D15";
 	pins[pinCount].location = "l13";
 
 	pinCount++;
 	pins[pinCount].GPIONumber = 16;
-	pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;	
+	pins[pinCount].pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK | ANALOG_I_MASK | ANALOG_O_MASK;
 	pins[pinCount].name = "D16";
 	pins[pinCount].location = "l14";
 
 	pinCount++;
 	pins[pinCount].GPIONumber = 26;
-	pins[pinCount].pinTypes[0].type = DIGITALIO_TYPE;
-	pins[pinCount].pinTypes[1].type = ANALOGIO_TYPE;
+	pins[pinCount].pinTypes = DIGITAL_I_MASK | ANALOG_I_MASK;	
 	pins[pinCount].name = "D26";
 	pins[pinCount].location = "l15";
 
@@ -840,21 +839,21 @@ void initPins()
 	pinCount++;
 	pins[pinCount].GPIONumber = -1;
 	pins[pinCount].pinTypes = GND_MASK ;
-	//pins[pinCount].pinTypes[0].type = GND_TYPE;
+	//pins[pinCount].pinTypes[0].type = GND_MASK;
 	pins[pinCount].name = "GND";
 	pins[pinCount].location = "l14";
 
 	pinCount++;
 	pins[pinCount].GPIONumber = -1;
 	pins[pinCount].pinTypes = VCC33_MASK;
-	//pins[pinCount].pinTypes[0].type = VCC33_TYPE;
+	//pins[pinCount].pinTypes[0].type = VCC33_MASK;
 	pins[pinCount].name = "VCC33";
 	pins[pinCount].location = "l15";
 
 	pinCount++;
 	pins[pinCount].GPIONumber = -1;
 	pins[pinCount].pinTypes = VCC5_MASK;
-	//pins[pinCount].pinTypes[0].type = VCC5_TYPE;
+	//pins[pinCount].pinTypes[0].type = VCC5_MASK;
 	pins[pinCount].name = "VCC5";
 	pins[pinCount].location = "l16";
 

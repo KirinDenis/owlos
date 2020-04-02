@@ -134,7 +134,7 @@ String ActuatorDriver::onMessage(String _topic, String _payload, int8_t transpor
 String ActuatorDriver::setPin(String pinName, int pinIndex)
 {
 	int pinType = ActuatorDriver::getPinType(pinIndex);
-	if (pinType == NO_TYPE)
+	if (pinType == NO_MASK)
 	{
 		return "driver pin number not exists";
 	}

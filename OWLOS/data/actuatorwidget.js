@@ -40,8 +40,8 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 
-var DEFAULT_TYPE = 0;
-var ICONS_TYPE = 1;
+var DEFAULT_MASK = 0;
+var ICONS_MASK = 1;
 
 var ActuatorWidget =
 
@@ -63,14 +63,14 @@ var ActuatorWidget =
             var widget = rPanel.widget;
 
             if (widget.iconOn == undefined && widget.iconOff == undefined) {
-                widget.widgetType = DEFAULT_TYPE;
+                widget.widgetType = DEFAULT_MASK;
                 widget.SVGArcBack = new SVGArc(widget.SVGViewBox, widget.id + "arcback", widget.centreX, widget.centreY + widget.topMargin, widget.radius + widget.size / 20, widget.size / 100);
                 widget.SVGArcBack.color = theme.secondary;
                 widget.SVGArcWidget = new SVGArc(widget.SVGViewBox, widget.id + "arcwidget", widget.centreX, widget.centreY + widget.topMargin, widget.radius, widget.size / 14);
                 widget.SVGArcWidget.color = theme.secondary;
                 widget.SVGArcWidget.fill = theme.secondary;
             } else {
-                widget.widgetType = ICONS_TYPE;
+                widget.widgetType = ICONS_MASK;
                 widget.rowSize = widget.size / 2.5;
                 widget.SVGIconOn = new SVGIcon(widget.SVGViewBox, widget.iconOn, widget.width / 2 - widget.rowSize / 2, widget.height / 2 - widget.rowSize / 2, widget.rowSize, widget.rowSize);
                 widget.SVGIconOn.fill = theme.success;
@@ -106,7 +106,7 @@ var ActuatorWidget =
 
             if (this.SVGArcBack == undefined) return;
 
-            if (this.widgetType == DEFAULT_TYPE) {
+            if (this.widgetType == DEFAULT_MASK) {
                 //back radial widget
                 this.SVGArcBack.draw(0, 359.99); //radial widget
 

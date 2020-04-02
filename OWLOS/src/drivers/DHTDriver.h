@@ -58,11 +58,11 @@ public:
 	{
 		switch (pinIndex)
 		{
-		case PIN0_INDEX: return DIGITALIO_TYPE;
-		case PIN1_INDEX: return VCC5_TYPE;
-		case PIN2_INDEX: return GND_TYPE;
+		case PIN0_INDEX: return DIGITAL_IO_MASK;
+		case PIN1_INDEX: return VCC5_MASK;
+		case PIN2_INDEX: return GND_MASK;
 		default:
-			return NO_TYPE;
+			return NO_MASK;
 		}
 	}
 
