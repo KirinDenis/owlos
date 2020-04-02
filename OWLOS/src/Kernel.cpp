@@ -41,7 +41,7 @@ OWLOS распространяется в надежде, что она буде
 #include <core_version.h>
 
 #include "Kernel.h"
-#include  "drivers/ESPDriver.h"
+#include "drivers/ESPDriver.h"
 #include "Managers/DriverManager.h"
 #include "Managers/FileManager.h"
 #include "Managers/TransportManager.h"
@@ -79,11 +79,12 @@ bool kernelSetup()
 #ifdef DetailedDebug 
 	debugOut("kernel setup", "complete");//if Utils.h "Debug=true" start writing log to Serial
 #endif
-#endif
+#else
 	debugOut("OWLOS kernel", "building problem");
 	debugOut("OWLOS kernel", "can's start, please install ESP32 RELEASE 1.0.4 or ESP8266 RELEASE 2.5.0 for building");
 	debugOut("ESP32 RELEASE 1.0.4", "https://github.com/espressif/arduino-esp32/releases/tag/1.0.4");
 	debugOut("ESP8266 RELEASE 2.5.0", "https://github.com/esp8266/Arduino/releases/tag/2.5.0");
+#endif
 }
 
 

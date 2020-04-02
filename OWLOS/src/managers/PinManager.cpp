@@ -99,8 +99,7 @@ String getPinMap()
 
 bool pinTypeSupported(Pin pin, uint16_t pinType)
 {
-	return ((pin.pinTypes & pinType) == pinType);
-	
+	return (pin.pinTypes & pinType);
 	//	//если тип пина I/O или I и требуемый драйвером тип I/O или I
 	//	if (((pin.pinTypes & pinType (DIGITAL_I_MASK | DIGITAL_O_MASK) || (pin.pinTypes & DIGITAL_I_MASK)) && (pinType & (DIGITAL_I_MASK | DIGITAL_O_MASK) || (pinType & DIGITAL_I_MASK)))
 	//	{
@@ -373,7 +372,8 @@ String setDriverPin(bool checkOnly, String pinName, String driverId, uint16_t dr
 									freeDriverIdIndex = j;
 								}
 							}
-							if ( ( !(pins[i].driverPinType[j] & pinType) ) && ( !(pins[i].driverPinType[j] & NO_MASK) ) )
+							//if ( ( !(pins[i].driverPinType[j] & pinType) ) && ( !(pins[i].driverPinType[j] & NO_MASK) ) )
+							if ((pins[i].driverPinType[j] & pinType) == 0)
 							{
 								return "pin " + pinName + " is busy by driver " + pins[i].driverId[j] + " as non I2C pin (SDA or SCL)";
 							}
