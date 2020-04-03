@@ -49,26 +49,25 @@ bool SensorDriver::init()
 	PinDriverInfo pinDriverInfo;
 	if (getDriverPinInfo(id, PIN0_INDEX, &pinDriverInfo))
 	{
-		//TODO: INPUT-PULLUP
+		//TODO: INPUT_PULLUP/INPUT_PULLDOWN
 		if (setDriverPinMode(id, PIN0_INDEX, INPUT).length() == 0)
 		{
-			//если используемый пин поддерживает ЦАП, то драйвер актуратора переходит в аналоговый режим
+			//если используемый пин поддерживает АЦП, то драйвер сенсора переходит в аналоговый режим
 			//свойство дата 0..1023 (где 1023 уровень логической единицы)
-			setAnalog(pinDriverInfo.driverPinType & ANALOG_O_MASK, false);
-			//на случай перезагрузки, в файле сохранено последнее состояние актуатора
-			getData(); //прочесть последнее состояние 
-			setData(data, false); //вернуть последнее запомненное состояние 
-			return true;
+			setAnalog(pinDriverInfo.driverPinType & ANALOG_I_MASK, false);
+			
+			if (getData() != -1) 
+			{
+			   return true;
+			}
 		}
 	}
 	return false;
 
-
-	//getPin();
-	//pinMode(pin, INPUT);
+	
 }
 
-void ActuatorDriver::del()
+void SensorDriver::del()
 {
 	BaseDriver::del();
 	return;
@@ -90,10 +89,10 @@ bool SensorDriver::query()
 	if (BaseDriver::query())
 	{
 		//for sensor publish data() as it changed 
-		String _data = data;
-		if (!_data.equals(getData()))
+		int _data = data;
+		if (_data != getData())
 		{
-			onInsideChange("data", data);
+			onInsideChange("data", String(data));
 			//TODO getData return int, check if getData == 0
 			sensorTriger++;
 		}
@@ -105,6 +104,7 @@ bool SensorDriver::query()
 			setHistoryData(sensorTriger);
 		}
 
+
 		return true;
 	}
 	return false;
@@ -114,8 +114,9 @@ bool SensorDriver::query()
 String SensorDriver::getAllProperties()
 {
 	String result = BaseDriver::getAllProperties();
-	result += "data=" + data + "//rb\n";
-	result += "pin=" + String(pin) + "//i\n";
+	result += "analog=" + String(analog) + "//br\n";
+	result += "data=" + String(data) + "//ri\n";
+
 	return result;
 }
 
@@ -124,7 +125,7 @@ bool SensorDriver::publish()
 {
 	if (BaseDriver::publish())
 	{
-		onInsideChange("data", data);
+		onInsideChange("data", String(data));
 		return true;
 	}
 	return false;
@@ -133,22 +134,64 @@ bool SensorDriver::publish()
 String SensorDriver::onMessage(String _topic, String _payload, int8_t transportMask)
 {
 	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
+
 	if (!available) return result;
-	//Sensor sensor GPIO 1-pin (A0 by default)
-   if ((String(topic + "/getdata").equals(_topic)) || (String(topic + "/setdata").equals(_topic)))
+
+	if (String(topic + "/getanalog").equals(_topic))
 	{
-		result = onGetProperty("data", getData(), transportMask);
+		result = onGetProperty("analog", String(getAnalog()), transportMask);
 	}
+	else
+	
+	if (String(topic + "/getdata").equals(_topic)) 
+	{
+		result = onGetProperty("data", String(getData()), transportMask);
+	}
+	
+	
 	return result;
 }
 
 
-String SensorDriver::getData()
+
+//Analog ------------------------------------------
+bool SensorDriver::getAnalog()
 {
-	int _data = digitalRead(pin);
-	data = String(_data);
+	if (filesExists(id + ".analog"))
+	{
+		data = filesReadInt(id + ".analog");
+	}
 #ifdef DetailedDebug
-	debugOut(id, "data=" + data);
+	debugOut(id, "analog=" + String(data));
 #endif
+
 	return data;
 }
+
+bool SensorDriver::setAnalog(bool _analog, bool doEvent)
+{
+	analog = _analog;
+	filesWriteInt(id + ".analog", analog);
+	if (doEvent)
+	{
+		return onInsideChange("analog", String(analog));
+	}
+	return true;
+}
+
+//Data -------------------------------------------
+
+int SensorDriver::getData()
+{
+	data = -1;
+	
+	PinDriverInfo pinDriverInfo;
+	if (getDriverPinInfo(id, PIN0_INDEX, &pinDriverInfo))
+	{
+		data = driverPinRead(id, pinDriverInfo.GPIONumber);
+	  
+	}   
+
+	return data;
+}
+
