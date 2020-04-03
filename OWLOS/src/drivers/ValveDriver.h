@@ -54,45 +54,45 @@ OWLOS распространяется в надежде, что она буде
 #define MOTOR_START_COMMAND LOW
 
 class ValveDriver : public BaseDriver {
-  public:
-	  static int getPinsCount()
-	  {
-		  return 5;
-	  }
+public:
+	static int getPinsCount()
+	{
+		return 5;
+	}
 
-	  static uint16_t getPinType(int pinIndex)
-	  {
-		  switch (pinIndex)
-		  {
-		  case CLOSE_PIN_INDEX: return DIGITAL_O_MASK;
-		  case OPEN_PIN_INDEX: return DIGITAL_O_MASK;
-		  case POSITION_PIN_INDEX: return ANALOG_I_MASK;
-		  case VCC5_INDEX: return VCC5_MASK;
-		  case GND_INDEX: return GND_MASK;
-		  default:
-			  return NO_MASK;
-		  }
-	  }
+	static uint16_t getPinType(int pinIndex)
+	{
+		switch (pinIndex)
+		{
+		case CLOSE_PIN_INDEX: return DIGITAL_O_MASK;
+		case OPEN_PIN_INDEX: return DIGITAL_O_MASK;
+		case POSITION_PIN_INDEX: return ANALOG_I_MASK;
+		case VCC5_INDEX: return VCC5_MASK;
+		case GND_INDEX: return GND_MASK;
+		default:
+			return NO_MASK;
+		}
+	}
 
-    bool init();
-    bool begin(String _topic);
-    bool query();
-    String getAllProperties();
-    bool publish();
-    String onMessage(String _topic, String _payload, int8_t transportMask);
+	bool init();
+	bool begin(String _topic);
+	bool query();
+	String getAllProperties();
+	bool publish();
+	String onMessage(String _topic, String _payload, int8_t transportMask);
 
-    int getPosition();
-    bool setPosition(int _position);
-    int getMinimumphysicalposition();
-    int getMaximumphysicalposition();
-    int getphysicalposition();
+	int getPosition();
+	bool setPosition(int _position);
+	int getMinimumphysicalposition();
+	int getMaximumphysicalposition();
+	int getphysicalposition();
 
-  private:
-  void toMinMaxPosition(int _pin);
-    int position=0; // 0 - close, 100 - open
-    int minimumphysicalposition = 0; // valve is close
-    int maximumphysicalposition = 1023; // valve is open
-    int physicalposition = 0; // valve first is close
-    int newphysicalposition=0;
+private:
+	void toMinMaxPosition(int _pin);
+	int position = 0; // 0 - close, 100 - open
+	int minimumphysicalposition = 0; // valve is close
+	int maximumphysicalposition = 1023; // valve is open
+	int physicalposition = 0; // valve first is close
+	int newphysicalposition = 0;
 
 };
