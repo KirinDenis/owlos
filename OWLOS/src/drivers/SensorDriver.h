@@ -56,7 +56,7 @@ class SensorDriver : public BaseDriver {
 	  {
 		  switch (pinIndex)
 		  {
-		  case PIN0_INDEX: return DIGITAL_I_MASK;
+		  case PIN0_INDEX: return DIGITAL_I_MASK| ANALOG_I_MASK;
 		  case PIN1_INDEX: return GND_MASK;
 		  default:
 			  return NO_MASK;
@@ -74,9 +74,9 @@ class SensorDriver : public BaseDriver {
 	bool getAnalog();
 	bool setAnalog(bool _analog, bool doEvent);
 
-    String getData();
+    int getData();
   private:
 	bool analog = false;
-    String data = "nan";
+    int data = -1;
 	float sensorTriger = 0;
 };
