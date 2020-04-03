@@ -64,18 +64,19 @@ class SensorDriver : public BaseDriver {
 	  }
 
     bool init();
+	void del();
     bool begin(String _Topic);
     bool query();
     String getAllProperties();
     bool publish();
     String onMessage(String _topic, String _payload, int8_t transportMask);
 
-    int getPin();
-    bool setPin(int _pin);
+	bool getAnalog();
+	bool setAnalog(bool _analog, bool doEvent);
 
     String getData();
   private:
-    int pin = 1;
+	bool analog = false;
     String data = "nan";
 	float sensorTriger = 0;
 };

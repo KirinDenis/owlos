@@ -50,7 +50,9 @@ bool ActuatorDriver::init()
 	if (getDriverPinInfo(id, PIN0_INDEX, &pinDriverInfo))
 	{
 		if (setDriverPinMode(id, PIN0_INDEX, OUTPUT).length() == 0)
-		{			
+		{	
+			//если используемый пин поддерживает ЦАП, то драйвер актуратора переходит в аналоговый режим
+			//свойство дата 0..1023 (где 1023 уровень логической единицы)
 			setAnalog(pinDriverInfo.driverPinType & ANALOG_O_MASK, false);
 			//на случай перезагрузки, в файле сохранено последнее состояние актуатора
 			getData(); //прочесть последнее состояние 
@@ -160,8 +162,6 @@ bool ActuatorDriver::setAnalog(bool _analog, bool doEvent)
 	}
 	return true;
 }
-
-
 
 //Data -------------------------------------------
 int ActuatorDriver::getData()

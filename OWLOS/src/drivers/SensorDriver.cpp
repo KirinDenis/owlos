@@ -46,9 +46,34 @@ bool SensorDriver::init()
 	if (id.length() == 0) id = DRIVER_ID;
 	BaseDriver::init(id);
 
-	getPin();
-	pinMode(pin, INPUT);
+	PinDriverInfo pinDriverInfo;
+	if (getDriverPinInfo(id, PIN0_INDEX, &pinDriverInfo))
+	{
+		//TODO: INPUT-PULLUP
+		if (setDriverPinMode(id, PIN0_INDEX, INPUT).length() == 0)
+		{
+			//если используемый пин поддерживает ЦАП, то драйвер актуратора переходит в аналоговый режим
+			//свойство дата 0..1023 (где 1023 уровень логической единицы)
+			setAnalog(pinDriverInfo.driverPinType & ANALOG_O_MASK, false);
+			//на случай перезагрузки, в файле сохранено последнее состояние актуатора
+			getData(); //прочесть последнее состояние 
+			setData(data, false); //вернуть последнее запомненное состояние 
+			return true;
+		}
+	}
+	return false;
+
+
+	//getPin();
+	//pinMode(pin, INPUT);
 }
+
+void ActuatorDriver::del()
+{
+	BaseDriver::del();
+	return;
+}
+
 
 
 bool SensorDriver::begin(String _topic)
@@ -110,44 +135,11 @@ String SensorDriver::onMessage(String _topic, String _payload, int8_t transportM
 	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
 	if (!available) return result;
 	//Sensor sensor GPIO 1-pin (A0 by default)
-	if (String(topic + "/getpin").equals(_topic))
-	{
-		result = onGetProperty("pin", String(getPin()), transportMask);
-	}
-	else if (String(topic + "/setpin").equals(_topic))
-	{
-		result = String(setPin(std::atoi(_payload.c_str())));
-	}
-	else if ((String(topic + "/getdata").equals(_topic)) || (String(topic + "/setdata").equals(_topic)))
+   if ((String(topic + "/getdata").equals(_topic)) || (String(topic + "/setdata").equals(_topic)))
 	{
 		result = onGetProperty("data", getData(), transportMask);
 	}
 	return result;
-}
-
-//Sensor Sensor 1-pin (A0 by default) ----------------------------------------------------
-int SensorDriver::getPin()
-{
-	if (filesExists(id + ".pin"))
-	{
-		pin = filesReadInt(id + ".pin");
-	}
-#ifdef DetailedDebug
-	debugOut(id, "pin=" + String(pin));
-#endif
-	return pin;
-}
-
-bool SensorDriver::setPin(int _pin)
-{
-	pin = _pin;
-	pinMode(pin, INPUT);
-	filesWriteInt(id + ".pin", pin);
-	if (available)
-	{
-		return onInsideChange("pin", String(pin));
-	}
-	return true;
 }
 
 
