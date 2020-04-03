@@ -41,35 +41,111 @@ OWLOS распространяется в надежде, что она буде
 
 #include "StepperDriver.h"
 
+//Драйвер шагового электродвигателя (HALF-STEP DRIVE)
+//WiKi:
+//https://en.wikipedia.org/wiki/Stepper_motor
+//https://ru.wikipedia.org/wiki/%D0%A8%D0%B0%D0%B3%D0%BE%D0%B2%D1%8B%D0%B9_%D1%8D%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D0%B4%D0%B2%D0%B8%D0%B3%D0%B0%D1%82%D0%B5%D0%BB%D1%8C
+
+//Данный драйвер реализует следующею модель управления шаговым электродвигателем:
+//- свойство position хранит текущею позицию 
+//- свойство range задает границы - количество шагов от "начала" до "конца" (0..range) - position обязана находится в рамках означенных range.
+//- свойство toPosition указывает желаемую позицию, таким образом пока toPosition != position драйвер начинает циклично переключать обмотки шагового электродвигателя
+//используя маски включения обмоток из массива stepMask (маски задают half-step метод управления обмотками - смотрите WiKi, вы можете изменить эти маски и использовать другие 
+//методы).
+//- position подсчитывает количество переключения обмоток, таким образом когда toPosition == position, драйвер прекратит переключать обмотки, до следующего изменения toPosition.
+
+//После сборки физической части - вам потребуется калибровка:
+//- установите ваше устройство в начальную позицию. 
+//- в драйвере указжите position = 0
+//- укажите range=1000 (первая калибровочная метка)
+//- укажите toPosition=1000
+//- шаговый двигатель начнет движение от postion-0 в сторону position-1000
+//- когда физически будет достигнута позиция 1000 - вы сможете оценить сколько шагов в вашем range, например 2250. Физически верните устройство в позицию 0, измените 
+//  свойства драйвера position=0, повторите с toPosition=2250 - если устройство достигнет нужной отметки - калибровка закончена. 
+
+//Внимание - шаговые электродвигатели склоны к проскальзыванию, например если сильно нагрузить вал, при этом погрешность может быть в обе стороны. 
+//Внимание - откалибруйте свойство speed - скорость переключения обмоток, для достижения оптимальной скорости работы шагового электродвигателя - у каждого двигателя интервал 
+//переключения обмоток индивидуален. 
+
+//Вы можете расширить возможности этого драйвера и избежать калибровки - если используете схему с двумя концевыми выключателями, например герконами. Подключите их к микроконтроллеру, установите 
+//для них два SensorDriver, после чего используйте Battle Humster script - когда устройство будет достигать очередного выключателя - отправляйте команду stop в StepperDriver.
+//https://ru.wikipedia.org/wiki/%D0%9A%D0%BE%D0%BD%D1%86%D0%B5%D0%B2%D0%BE%D0%B9_%D0%B2%D1%8B%D0%BA%D0%BB%D1%8E%D1%87%D0%B0%D1%82%D0%B5%D0%BB%D1%8C
+
+//Основной метод драйвера setToPostion() - начните изучение драйвера с него. 
+
+
 bool StepperDriver::init()
 {
 	if (id.length() == 0) id = DRIVER_ID;
 	BaseDriver::init(id);
-
-	//init properies
-	getPin1();
-	getPin2();
-	getPin3();
-	getPin4();
-	getToPosition();
-	getBusy();
-	getStop();
-	getPosition();
-	getRange();
-	getSpeed();
-
-	pinMode(pin1, OUTPUT);
-	pinMode(pin2, OUTPUT);
-	pinMode(pin3, OUTPUT);
-	pinMode(pin4, OUTPUT);
-
-	doStop();
-
-	if (toPosition != position)
+	//все указанные пользователем пины должны быть доступны и переключаться в режим OUTPUT
+	PinDriverInfo pin0DriverInfo;
+	PinDriverInfo pin1DriverInfo;
+	PinDriverInfo pin2DriverInfo;
+	PinDriverInfo pin3DriverInfo;
+	if ((getDriverPinInfo(id, PIN0_INDEX, &pin0DriverInfo))
+		&&
+		(getDriverPinInfo(id, PIN1_INDEX, &pin1DriverInfo))
+		&&
+		(getDriverPinInfo(id, PIN2_INDEX, &pin2DriverInfo))
+		&&
+		(getDriverPinInfo(id, PIN3_INDEX, &pin3DriverInfo)))
 	{
-		setBusy(0);
-		setToPosition(position);
+		if ((setDriverPinMode(id, PIN0_INDEX, OUTPUT).length() == 0)
+			&&
+			(setDriverPinMode(id, PIN1_INDEX, OUTPUT).length() == 0)
+			&&
+			(setDriverPinMode(id, PIN2_INDEX, OUTPUT).length() == 0)
+			&&
+			(setDriverPinMode(id, PIN3_INDEX, OUTPUT).length() == 0))
+		{
+			getToPosition();
+			getBusy();
+			getStop();
+			getPosition();
+			getRange();
+			getSpeed();
+			doStop();
+
+			if (toPosition != position)
+			{
+				setBusy(0);
+				setToPosition(position);
+			}
+
+			return true;
+		}
 	}
+	return false;
+}
+
+void StepperDriver::del()
+{
+	PinDriverInfo pinDriverInfo;
+	//переключаем все использованные пины режим INPUT
+	if (getDriverPinInfo(id, PIN0_INDEX, &pinDriverInfo))
+	{
+		pinMode(pinDriverInfo.GPIONumber, INPUT);
+	}
+
+	if (getDriverPinInfo(id, PIN1_INDEX, &pinDriverInfo))
+	{
+		pinMode(pinDriverInfo.GPIONumber, INPUT);
+	}
+
+	if (getDriverPinInfo(id, PIN2_INDEX, &pinDriverInfo))
+	{
+		pinMode(pinDriverInfo.GPIONumber, INPUT);
+	}
+
+	if (getDriverPinInfo(id, PIN3_INDEX, &pinDriverInfo))
+	{
+		pinMode(pinDriverInfo.GPIONumber, INPUT);
+	}
+
+	BaseDriver::del();
+	return;
+
 }
 
 bool StepperDriver::begin(String _topic)
@@ -86,10 +162,6 @@ String StepperDriver::getAllProperties()
 {
 	String result = BaseDriver::getAllProperties();
 	result += "position=" + String(position) + "//is\n";
-	result += "pin1=" + String(pin1) + "//i\n";
-	result += "pin2=" + String(pin2) + "//i\n";
-	result += "pin3=" + String(pin3) + "//i\n";
-	result += "pin4=" + String(pin4) + "//i\n";
 	result += "toposition=" + String(toPosition) + "//is\n";
 	result += "busy=" + String(busy) + "//rb\n";
 	result += "stop=" + String(stop) + "//b\n";
@@ -102,190 +174,67 @@ String StepperDriver::onMessage(String _topic, String _payload, int8_t transport
 {
 	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
 	if (!available) return result;
-	//Stepper GPIO 1-pin (D4 by default)
-	if (String(topic + "/getpin1").equals(_topic))
+	//Stepper driver to position step counter -----------------------------------
+	if (String(topic + "/gettoposition").equals(_topic))
 	{
-		result = onGetProperty("pin1", String(getPin1()), transportMask);
+		result = onGetProperty("toposition", String(getToPosition()), transportMask);
 	}
-	else if (String(topic + "/setpin1").equals(_topic))
+	else if (String(topic + "/settoposition").equals(_topic))
 	{
-		result = String(setPin1(std::atoi(_payload.c_str())));
+		result = String(setToPosition(std::atoi(_payload.c_str())));
 	}
 	else
-		//Stepper GPIO 2-pin (D5 by default)
-		if (String(topic + "/getpin2").equals(_topic))
+		//Busy ----------------------------------------------------------------------
+		if (String(topic + "/getbusy").equals(_topic))
 		{
-			result = onGetProperty("pin2", String(getPin2()), transportMask);
+			result = onGetProperty("busy", String(getBusy()), transportMask);
 		}
-		else if (String(topic + "/setpin2").equals(_topic))
+		else if (String(topic + "/setbusy").equals(_topic))
 		{
-			result = String(setPin2(std::atoi(_payload.c_str())));
+			result = String(setBusy(std::atoi(_payload.c_str())));
 		}
 		else
-			//Stepper GPIO 3-pin (D6 by default)
-			if (String(topic + "/getpin3").equals(_topic))
+			//Stop ----------------------------------------------------------------------
+			if (String(topic + "/getstop").equals(_topic))
 			{
-				result = onGetProperty("pin3", String(getPin3()), transportMask);
+				result = onGetProperty("stop", String(getStop()), transportMask);
 			}
-			else if (String(topic + "/setpin3").equals(_topic))
+			else if (String(topic + "/setstop").equals(_topic))
 			{
-				result = String(setPin3(std::atoi(_payload.c_str())));
+				result = String(setStop(std::atoi(_payload.c_str())));
 			}
 			else
-				//Stepper GPIO 4-pin (D7 by default) -----------------------------------------
-				if (String(topic + "/getpin4").equals(_topic))
+				//Position -----------------------------------------------------------------
+				if (String(topic + "/getposition").equals(_topic))
 				{
-					result = onGetProperty("pin4", String(getPin4()), transportMask);
+					result = onGetProperty("position", String(getPosition()), transportMask);
 				}
-				else if (String(topic + "/setpin4").equals(_topic))
+				else if (String(topic + "/setposition").equals(_topic))
 				{
-					result = String(setPin4(std::atoi(_payload.c_str())));
+					result = String(setPosition(std::atoi(_payload.c_str()), true));
 				}
 				else
-					//Stepper driver to position step counter -----------------------------------
-					if (String(topic + "/gettoposition").equals(_topic))
+					//Range -----------------------------------------------------------------
+					if (String(topic + "/getrange").equals(_topic))
 					{
-						result = onGetProperty("toposition", String(getToPosition()), transportMask);
+						result = onGetProperty("range", String(getRange()), transportMask);
 					}
-					else if (String(topic + "/settoposition").equals(_topic))
+					else if (String(topic + "/setrange").equals(_topic))
 					{
-						result = String(setToPosition(std::atoi(_payload.c_str())));
+						result = String(setRange(std::atoi(_payload.c_str())));
 					}
 					else
-						//Busy ----------------------------------------------------------------------
-						if (String(topic + "/getbusy").equals(_topic))
+						//Speed ----------------------------------------------------------------
+						if (String(topic + "/getspeed").equals(_topic))
 						{
-							result = onGetProperty("busy", String(getBusy()), transportMask);
+							result = onGetProperty("speed", String(getSpeed()), transportMask);
 						}
-						else if (String(topic + "/setbusy").equals(_topic))
+						else if (String(topic + "/setspeed").equals(_topic))
 						{
-							result = String(setBusy(std::atoi(_payload.c_str())));
+							result = String(setSpeed(std::atoi(_payload.c_str())));
 						}
-						else
-							//Stop ----------------------------------------------------------------------
-							if (String(topic + "/getstop").equals(_topic))
-							{
-								result = onGetProperty("stop", String(getStop()), transportMask);
-							}
-							else if (String(topic + "/setstop").equals(_topic))
-							{
-								result = String(setStop(std::atoi(_payload.c_str())));
-							}
-							else
-								//Position -----------------------------------------------------------------
-								if (String(topic + "/getposition").equals(_topic))
-								{
-									result = onGetProperty("position", String(getPosition()), transportMask);
-								}
-								else if (String(topic + "/setposition").equals(_topic))
-								{
-									result = String(setPosition(std::atoi(_payload.c_str()), true));
-								}
-								else
-									//Range -----------------------------------------------------------------
-									if (String(topic + "/getrange").equals(_topic))
-									{
-										result = onGetProperty("range", String(getRange()), transportMask);
-									}
-									else if (String(topic + "/setrange").equals(_topic))
-									{
-										result = String(setRange(std::atoi(_payload.c_str())));
-									}
-	//Speed ----------------------------------------------------------------
-	if (String(topic + "/getspeed").equals(_topic))
-	{
-		result = onGetProperty("speed", String(getSpeed()), transportMask);
-	}
-	else if (String(topic + "/setspeed").equals(_topic))
-	{
-		result = String(setSpeed(std::atoi(_payload.c_str())));
-	}
 	return result;
 
-}
-
-//Stepper GPIO 1-pin (D4 by default) ----------------------------------------------------
-int StepperDriver::getPin1()
-{
-	if (filesExists(id + ".pin1"))
-	{
-		pin1 = filesReadInt(id + ".pin1");
-	}
-#ifdef DetailedDebug
-	debugOut(id, "pin1=" + String(pin1));
-#endif
-	return pin1;
-}
-
-bool StepperDriver::setPin1(int _pin1)
-{
-	pin1 = _pin1;
-	pinMode(pin1, OUTPUT);
-	filesWriteInt(id + ".pin1", pin1);
-	return onInsideChange("pin1", String(pin1));
-}
-
-//Stepper GPIO 2-pin (D5 by default) ----------------------------------------------------
-int StepperDriver::getPin2()
-{
-	if (filesExists(id + ".pin2"))
-	{
-		pin2 = filesReadInt(id + ".pin2");
-	}
-#ifdef DetailedDebug
-	debugOut(id, "pin2=" + String(pin2));
-#endif
-	return pin2;
-}
-
-bool StepperDriver::setPin2(int _pin2)
-{
-	pin2 = _pin2;
-	pinMode(pin2, OUTPUT);
-	filesWriteInt(id + ".pin2", pin2);
-	return onInsideChange("pin2", String(pin2));
-}
-
-//Stepper GPIO 3-pin (D6 by default) ----------------------------------------------------
-int StepperDriver::getPin3()
-{
-	if (filesExists(id + ".pin3"))
-	{
-		pin3 = filesReadInt(id + ".pin3");
-	}
-#ifdef DetailedDebug
-	debugOut(id, "pin3=" + String(pin3));
-#endif
-	return pin3;
-}
-
-bool StepperDriver::setPin3(int _pin3)
-{
-	pin3 = _pin3;
-	pinMode(pin3, OUTPUT);
-	filesWriteInt(id + ".pin3", pin3);
-	return onInsideChange("pin3", String(pin3));
-}
-
-//Stepper GPIO 4-pin (D7 by default) ----------------------------------------------------
-int StepperDriver::getPin4()
-{
-	if (filesExists(id + ".pin4"))
-	{
-		pin4 = filesReadInt(id + ".pin4");
-	}
-#ifdef DetailedDebug
-	debugOut(id, "pin4=" + String(pin4));
-#endif
-	return pin4;
-}
-
-bool StepperDriver::setPin4(int _pin4)
-{
-	pin4 = _pin4;
-	pinMode(pin4, OUTPUT);
-	filesWriteInt(id + ".pin4", pin4);
-	return onInsideChange("pin4", String(pin4));
 }
 
 // TO POSITION -----------------------------------------------------------------------------------------------------------
@@ -303,8 +252,14 @@ int StepperDriver::getToPosition()
 	return toPosition;
 }
 
+//Основной метод управления шаговым электродвигателем (связан со свойством toPosition)
+//Этот метод переключает обмотки шагового электродвигателя до тех пор пока свойство toPosition не будет равно 
+//значению свойства position.
+//Метод усложняется требованиями накладываемыми IoT - узел должен оставаться в сети и обрабатывать сетевые запросы. 
+//Например если понадобится немедленно остановить двигатель. 
 bool StepperDriver::setToPosition(int _toPosition)
 {
+	//если двигатель уже находится в движении, сообщаем об этом "наверх", ничего не делаем
 	if (busy == 1)
 	{
 		onInsideChange("busy", String(busy));
@@ -313,12 +268,13 @@ bool StepperDriver::setToPosition(int _toPosition)
 #endif
 		return false;
 	}
+	//занимаем двигатель
 	setBusy(1);
+	//выключаем обмотки (возможно в предыдущий раз произошел сбой и физический драйвер двигателя держит некоторые обмотки включенными)
 	setStop(0);
-
-
+	//сохраняем (применяем) новое значение для toPosition 
 	toPosition = _toPosition;
-
+	//если новое значение toPosition вышла за рамки range - выровняем toPosition по range
 	if (toPosition > range)
 	{
 		toPosition = range;
@@ -331,34 +287,38 @@ bool StepperDriver::setToPosition(int _toPosition)
 #ifdef DetailedDebug
 	debugOut(id, "setToPosition: " + String(_toPosition) + "->" + String(toPosition));
 #endif
+	//запоминаем новую toPostion 
+	//в этой реализации драйвера, если в момент движение произойдет сбой, после восстановления - движение продолжится
 	filesWriteInt(id + ".toposition", toPosition);
 	onInsideChange("toposition", String(toPosition));
-
+	//вычисляем количество шагов необходимое для достижения position (может иметь отрицательное значение при обратном движении)
 	int count = toPosition - position;
-
+	//начинаем движение "вперед" если count положительный (последовательно переключаем обмотки двигателя)
 	while (count > 0) {
-		if (stop == 1) break;
-		for (int i = 0; i < 8; i++)
+		if (stop == 1) break; //если никто не вызвал stop продолжаем движение
+		for (int i = 0; i < STEPS_COUNT; i++) //выполняем один цикл переключения обмоток
 		{
-			doOutput(i);
-			delayMicroseconds(speed);
+			doOutput(i); //ВАЖНО: посмотрите на содержимое массива stepMask и прочитайте в WiKi о методах включения обмоток (этот драйвер рассчитан на 4-х обмоточные двигатели, и использует half-step метод переключения обмоток)
+						 //doOutput() делает одну(очередную "i") выборку из массива stepMask  
+			delayMicroseconds(speed); //задержка между переключениями обмоток - очень важно! Если задержка слишком коротка, обмотки не успеют притянуть якорь, если слишком велика - двигатель перегреется
+			                          //подбирается для каждого двигателя индивидуально. 
 		}
-		count--;
-		setPosition(++position, false);
+		count--; //считаем что сделали один шаг после цикла переключения обмоток
+		setPosition(++position, false); //сохраняем новую "физическую" позицию 
 
-		if (position % 5 == 0)
+		if (position % 5 == 0) //если шагов много, через определенный интервал - даем возможность отработать сети (возможно срабатывание WDT https://ru.wikipedia.org/wiki/%D0%A1%D1%82%D0%BE%D1%80%D0%BE%D0%B6%D0%B5%D0%B2%D0%BE%D0%B9_%D1%82%D0%B0%D0%B9%D0%BC%D0%B5%D1%80)
 		{
 			transportLoop();
 		}
-		if (position % StepperLoopInterval == 0)
+		if (position % STEPPER_LOOP_INTERVAL == 0)//так же, через определенный интервал отправляем "наверх" информацию о текущем физическом положении двигателя
 		{
 			setPosition(position, true);
 		}
 	}
-
+    //движение "назад", так же как вперед, но с обратным перебором включения обмоток двигателя
 	while (count < 0) {
 		if (stop == 1) break;
-		for (int i = 7; i >= 0; i--)
+		for (int i = STEPS_COUNT-1; i >= 0; i--)//обратный перебор обмоток
 		{
 			doOutput(i);
 			delayMicroseconds(speed);
@@ -370,13 +330,16 @@ bool StepperDriver::setToPosition(int _toPosition)
 		{
 			transportLoop();
 		}
-		if (position % StepperLoopInterval == 0)
+		if (position % STEPPER_LOOP_INTERVAL == 0)
 		{
 			setPosition(position, true);
 		}
 	}
+	//сохраняем точную позицию, и сообщаем о ней "наверх" (потому как "if (position % 5 == 0)" сообщала позиции кратные интервалу и в конечном итоге нарастет погрешность 
 	setPosition(position, true);
+	//выключаем все обмотки
 	setStop(1);
+	//говорим что двигатель свободен для следующей команды
 	setBusy(0);
 	return true;
 }
@@ -491,20 +454,53 @@ bool StepperDriver::setSpeed(int _speed)
 }
 
 
-//------------------------------------------------------------------------------------------------
-//DO ---------------------------------------------------------------------------------------------
 //DO Stop ----------------------------------------------------------------------------------------
+//ВНИМАНИЕ:
+//выключаем все обмотки электродвигателя - если вы не будете вызывать этот метод - после остановки
+//физический драйвер "не поймет" что обмотками никто не управляет, последние включенные обмотки останутся 
+//включены, двигатель начнет греться. 
 void StepperDriver::doStop()
 {
-	digitalWrite(pin1, B00000);
-	digitalWrite(pin2, B00000);
-	digitalWrite(pin3, B00000);
-	digitalWrite(pin4, B00000);
+	PinDriverInfo pin0DriverInfo;
+	PinDriverInfo pin1DriverInfo;
+	PinDriverInfo pin2DriverInfo;
+	PinDriverInfo pin3DriverInfo;
+	if ((getDriverPinInfo(id, PIN0_INDEX, &pin0DriverInfo))
+		&&
+		(getDriverPinInfo(id, PIN1_INDEX, &pin1DriverInfo))
+		&&
+		(getDriverPinInfo(id, PIN2_INDEX, &pin2DriverInfo))
+		&&
+		(getDriverPinInfo(id, PIN3_INDEX, &pin3DriverInfo)))
+	{
+		driverPinWrite(id, PIN0_INDEX, B00000);
+		driverPinWrite(id, PIN1_INDEX, B00000);
+		driverPinWrite(id, PIN2_INDEX, B00000);
+		driverPinWrite(id, PIN3_INDEX, B00000);
+	}
 }
 
-void StepperDriver::doOutput(int out) {
-	digitalWrite(pin1, bitRead(lookup[out], 0));
-	digitalWrite(pin2, bitRead(lookup[out], 1));
-	digitalWrite(pin3, bitRead(lookup[out], 2));
-	digitalWrite(pin4, bitRead(lookup[out], 3));
+//Do Move ------------------------------------------------------------------------------------------
+//выполняет одну выборку из массива масок управления обмотками и включает обмотки в определенной последовательности
+//один вызов этого метода не приведет к движению - необходимо последовательно вызывать этот метод с определенным интервалом
+//speed и последовательной сменой параметра out
+void StepperDriver::doOutput(int out)
+{
+	PinDriverInfo pin0DriverInfo;
+	PinDriverInfo pin1DriverInfo;
+	PinDriverInfo pin2DriverInfo;
+	PinDriverInfo pin3DriverInfo;
+	if ((getDriverPinInfo(id, PIN0_INDEX, &pin0DriverInfo))
+		&&
+		(getDriverPinInfo(id, PIN1_INDEX, &pin1DriverInfo))
+		&&
+		(getDriverPinInfo(id, PIN2_INDEX, &pin2DriverInfo))
+		&&
+		(getDriverPinInfo(id, PIN3_INDEX, &pin3DriverInfo)))
+	{
+		driverPinWrite(id, PIN0_INDEX, bitRead(stepMask[out], 0));
+		driverPinWrite(id, PIN1_INDEX, bitRead(stepMask[out], 1));
+		driverPinWrite(id, PIN2_INDEX, bitRead(stepMask[out], 2));
+		driverPinWrite(id, PIN3_INDEX, bitRead(stepMask[out], 3));
+	}
 };

@@ -57,7 +57,7 @@ bool SensorDriver::init()
 			setAnalog(pinDriverInfo.driverPinType & ANALOG_O_MASK, false);
 			//на случай перезагрузки, в файле сохранено последнее состояние актуатора
 			getData(); //прочесть последнее состояние 
-			setData(data, false); //вернуть последнее запомненное состояние 
+		//	setData(data, false); //вернуть последнее запомненное состояние 
 			return true;
 		}
 	}
@@ -68,7 +68,7 @@ bool SensorDriver::init()
 	//pinMode(pin, INPUT);
 }
 
-void ActuatorDriver::del()
+void SensorDriver::del()
 {
 	BaseDriver::del();
 	return;
@@ -114,8 +114,7 @@ bool SensorDriver::query()
 String SensorDriver::getAllProperties()
 {
 	String result = BaseDriver::getAllProperties();
-	result += "data=" + data + "//rb\n";
-	result += "pin=" + String(pin) + "//i\n";
+	result += "data=" + data + "//rb\n";	
 	return result;
 }
 
@@ -145,8 +144,8 @@ String SensorDriver::onMessage(String _topic, String _payload, int8_t transportM
 
 String SensorDriver::getData()
 {
-	int _data = digitalRead(pin);
-	data = String(_data);
+	//int _data = digitalRead(pin);
+	//data = String(_data);
 #ifdef DetailedDebug
 	debugOut(id, "data=" + data);
 #endif
