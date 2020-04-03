@@ -42,55 +42,73 @@ OWLOS распространяется в надежде, что она буде
 #include <Arduino.h>
 #include "BaseDriver.h"
 
-#define DRIVER_ID "stepper1"
-#define StepperLoopInterval 200
+#define DRIVER_ID "StepperDriver"
+
+#define VCC5_INDEX 4
+#define GND_INDEX 5
+
+#define STEPPER_LOOP_INTERVAL 200
+
+#define STEPS_COUNT 8 //количество комбинаций включение 4-x обмоток
+#define DEFAULT_TO_POSITION 5000
+#define DEFAULT_BUSY 0
+#define DEFAULT_STOP 1
+#define DEFAULT_POSITION 5000
+#define DEFAULT_RANGE 10000
+#define DEFAULT_SPEED 2000
+#define DEFAULT_COUNTS_PER_REVOLUTION 512
 
 class StepperDriver : public BaseDriver {
-  public:
-    bool init();
-    bool begin(String _topic);
-    String getAllProperties();
-    String onMessage(String _topic, String _payload, int8_t transportMask);
+public:
+	static int getPinsCount()
+	{
+		return 5;
+	}
 
-    int getPin1();
-    bool setPin1(int _pin1);
-    int getPin2();
-    bool setPin2(int _pin2);
-    int getPin3();
-    bool setPin3(int _pin3);
-    int getPin4();
-    bool setPin4(int _pin4);
-    int getToPosition();
-    bool setToPosition(int _toPosition);
-    int getBusy();
-    bool setBusy(int _busy);
-    int getStop();
-    bool setStop(int _stop);
-    int getPosition();
-    bool setPosition(int _toPosition,  bool doEvent);
-    int getRange();
-    bool setRange(int _range);
-    int getSpeed();
-    bool setSpeed(int _speed);
+	static uint16_t getPinType(int pinIndex)
+	{
+		switch (pinIndex)
+		{
+		case PIN0_INDEX: return DIGITAL_O_MASK;
+		case PIN1_INDEX: return DIGITAL_O_MASK;
+		case PIN2_INDEX: return DIGITAL_O_MASK;
+		case PIN3_INDEX: return DIGITAL_O_MASK;
+		case VCC5_INDEX: return VCC5_MASK;
+		case GND_INDEX: return GND_MASK;
+		default:
+			return NO_MASK;
+		}
+	}
 
+	bool init();
+	void del();
+	bool begin(String _topic);
+	String getAllProperties();
+	String onMessage(String _topic, String _payload, int8_t transportMask);
 
-  private:
-	  //TODO Refactoring escpe this
-    int pin1 = 1;
-    int pin2 = 1;
-    int pin3 = 1;
-    int pin4 = 1;
+	int getToPosition();
+	bool setToPosition(int _toPosition);
+	int getBusy();
+	bool setBusy(int _busy);
+	int getStop();
+	bool setStop(int _stop);
+	int getPosition();
+	bool setPosition(int _toPosition, bool doEvent);
+	int getRange();
+	bool setRange(int _range);
+	int getSpeed();
+	bool setSpeed(int _speed);
 
-    int toPosition = 5000;
-    int busy = 0;
-    int stop = 1;
-    int position = 5000;
-    int range = 10000;
-    int speed = 2000;
-
-    int lookup[8] = {B01000, B01100, B00100, B00110, B00010, B00011, B00001, B01001};
-    int countsperrev = 512; // number of steps per full revolution
-
-    void doStop();
-    void doOutput(int out);
+private:
+	//HALF-STEP drive bit masks	
+	int stepMask[STEPS_COUNT] = { 0b1000, 0b1100, 0b0100, 0b0110, 0b0010, 0b0011, 0b0001, 0b1001 }; //0bABCD если 1 обмотка включена		
+	int toPosition = DEFAULT_TO_POSITION; //заданная позиция к которой мотор отсчитывает "шаги" относительно текущей позиции position
+	int busy = DEFAULT_BUSY; //флажок, если драйвер занят перебором шагов (1)
+	int stop = DEFAULT_STOP; //если мотор остановлен (1)
+	int position = DEFAULT_POSITION; //текущая позиция (оценочная - шаговые моторы склоны к проскальзыванию при перегрузке вала, требует калибровки) 
+	int range = DEFAULT_RANGE; //количество шагов от 0..range в пределе которых мотор может "шагать"
+	int speed = DEFAULT_SPEED; //скорость переключения обмоток - индивидуальная для каждого мотора - слишком маленькое значение - обмотки не успеют притянуть якорь, слишком большое обмотки начнут сильно греться а скорость вращения будет медленной
+	
+	void doStop();
+	void doOutput(int out);
 };
