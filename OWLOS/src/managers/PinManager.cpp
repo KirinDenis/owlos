@@ -165,7 +165,7 @@ bool getDriverPinInfo(String driverId, int driverPinIndex, PinDriverInfo * pinDr
 
 		
 			///если пин поддерживает тип SDA  
-			if ((pins[i].pinTypes & SDA_MASK))
+			if (pins[i].pinTypes & SDA_MASK)
 			{
 				if ((pins[i].driverId[j].equals(driverId)) && (pins[i].driverI2CAddrPinIndex[j] == driverPinIndex))
 				{
@@ -252,18 +252,18 @@ String setDriverI2CAddr(bool checkOnly, String pinName, String driverId, int dri
 	Serial.println(SCL_PinDriverInfo.name);
 	if (!checkOnly)
 	{
-		if (!(SDA_PinDriverInfo.driverPinType & SDA_MASK))
+		if ((SDA_PinDriverInfo.driverPinType & SDA_MASK)!= SDA_MASK)
 		{
 			return "SDA pin not set for " + driverId + " driver, set SDA pin first (before set I2C address)";
 		}
 
-		if (!(SCL_PinDriverInfo.driverPinType & SCL_MASK))
+		if ((SCL_PinDriverInfo.driverPinType & SCL_MASK)!= SCL_MASK)
 		{
 			return "SCL pin not set for " + driverId + " driver, set SCL pin first (before set I2C address)";
 		}
 	}
 
-	//проверяем не занять ли I2C адрес другим драйвером
+	//проверяем не занят ли I2C адрес другим драйвером
 	for (int i = 0; i < pinCount; i++)
 	{
 		if (pins[i].name.equals(SDA_PinDriverInfo.name) || pins[i].name.equals(SCL_PinDriverInfo.name))
@@ -372,8 +372,10 @@ String setDriverPin(bool checkOnly, String pinName, String driverId, uint16_t dr
 									freeDriverIdIndex = j;
 								}
 							}
-							//if ( ( !(pins[i].driverPinType[j] & pinType) ) && ( !(pins[i].driverPinType[j] & NO_MASK) ) )
-							if ((pins[i].driverPinType[j] & pinType) == 0)
+							
+							//прjверка занят ли пин другим типом драйвера (отличного от совместимого с I2C)
+							
+							if ( ((pins[i].driverPinType[j] & pinType) == 0)  &&  (pins[i].driverPinType[j] != 0) )
 							{
 								return "pin " + pinName + " is busy by driver " + pins[i].driverId[j] + " as non I2C pin (SDA or SCL)";
 							}
@@ -392,7 +394,9 @@ String setDriverPin(bool checkOnly, String pinName, String driverId, uint16_t dr
 						return "";
 					} 
 					else
-						//на цифровом пине может быть только один драйвер
+
+
+						//на цифровом или аналоговом пине может быть только один драйвер
 						if ((pinType & DIGITAL_O_MASK) || (pinType & DIGITAL_I_MASK))
 						{
 							if ((pins[i].driverId[0].length() == 0)) //one digital on one pin
@@ -823,7 +827,7 @@ void initPins()
 
 	pinCount++;
 	pins[pinCount].GPIONumber = 16;
-	pins[pinCount].pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK | ANALOG_I_MASK | ANALOG_O_MASK;
+	pins[pinCount].pinTypes = DIGITAL_I_MASK | ANALOG_O_MASK;
 	pins[pinCount].name = "D16";
 	pins[pinCount].location = "l14";
 
