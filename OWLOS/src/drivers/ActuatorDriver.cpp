@@ -166,6 +166,7 @@ bool ActuatorDriver::setAnalog(bool _analog, bool doEvent)
 //Data -------------------------------------------
 int ActuatorDriver::getData()
 {
+	data = -1;
 	if (filesExists(id + ".data"))
 	{
 		data = filesReadInt(id + ".data");
