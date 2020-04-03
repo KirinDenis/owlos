@@ -1,5 +1,4 @@
 ﻿#include <core_version.h>
-#include "Arduino.h"
 #include "PinManager.h"
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
@@ -671,7 +670,7 @@ void initPins()
 	pins[pinCount].pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
 	//pins[pinCount].pinTypes[0].type = DIGITAL_IO_MASK;
 	pins[pinCount].location = "l2";
-
+/*
 	pinCount++;
 	pins[pinCount].name = "D2";
 	pins[pinCount].GPIONumber = pinNameToValue(pins[pinCount].name);
@@ -690,7 +689,7 @@ void initPins()
 	pins[pinCount].name = "D4";
 	pins[pinCount].pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
 	//pins[pinCount].GPIONumber = pinNameToValue(pins[pinCount].name);
-	pins[pinCount].pinTypes[0].type = DIGITAL_IO_MASK;
+	//pins[pinCount].pinTypes[0].type = DIGITAL_IO_MASK;
 	pins[pinCount].location = "l5";
 
 	pinCount++;
@@ -742,6 +741,7 @@ void initPins()
 	pins[pinCount].pinTypes = ANALOG_I_MASK | ANALOG_O_MASK;
 	//pins[pinCount].pinTypes[0].type = ANALOG_IO_MASK;
 	pins[pinCount].location = "r1";
+*/
 #endif
 
 

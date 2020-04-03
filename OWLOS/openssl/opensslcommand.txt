@@ -1,4 +1,4 @@
-genrsa -out key.txt 1024
+genrsa -out key.txt 512
 rsa -in key.txt -out key.txt
 req -sha256 -new -nodes -key key.txt -out cert.csr -subj '/C=UA/ST=K/L=Kiev/O=yourcompanyname [RO]/OU=OWLOS/CN=OWLOS.local' -addext subjectAltName=DNS:OWLOS.local,IP:192.168.4.1
 x509 -req -sha256 -days 365 -in cert.csr -signkey key.txt -out cert.txt

@@ -21,9 +21,13 @@
 #define VCC_FAMILY  2	   
 
 
-						   
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4						   
 #define PIN_MASK_COUNT 5	   
 #define PIN_DRIVER_COUNT 20	   
+#else 
+#define PIN_MASK_COUNT 2	   
+#define PIN_DRIVER_COUNT 2	   
+#endif
 						   
 //typedef struct PinType	   
 //{

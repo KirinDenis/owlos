@@ -1,3 +1,5 @@
+#include <core_version.h>
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4 //OWLOS need this for hide from ESP8266
 #ifndef _ESP32_ANALOG_WRITE_
 #define _ESP32_ANALOG_WRITE_
 
@@ -20,4 +22,5 @@ void analogWriteResolution(uint8_t pin, uint8_t resolution);
 
 void analogWrite(uint8_t pin, uint32_t value, uint32_t valueMax = 255);
 
+#endif
 #endif

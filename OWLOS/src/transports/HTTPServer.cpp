@@ -40,11 +40,19 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 #define HTTPServerId "HTTPServer"
 
+//#define USESSL
+
+
 #include <core_version.h>
 
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 #include <ESP.h>
+#ifdef USESSL
+#include <BearSSLHelpers.h>
+#include <WiFiServerSecureBearSSL.h>
+#else 
 #include <ESP8266WiFi.h>
+#endif
 #include <ESP8266mDNS.h>
 #include <FS.h>
 #endif
@@ -59,6 +67,7 @@ OWLOS распространяется в надежде, что она буде
 #include <WiFiClient.h>
 #include <MD5Builder.h>
 
+
 #include "HTTPServerThings.h"
 #include "../drivers/ESPDriver.h"
 #include "../Managers/DriverManager.h"
@@ -71,7 +80,18 @@ OWLOS распространяется в надежде, что она буде
 
 #define HTTP_METHODS " GET, POST, OPTIONS"
 
-WiFiServer  * server;
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0 
+#ifdef USESSL
+WiFiServerSecure * server;
+#else
+WiFiServer * server;
+#endif
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+WiFiServer * server;
+#endif
+
 
 String uri = "";
 String method = "";
@@ -92,6 +112,37 @@ String token = "";
 #else
 String token = ""; //type your secure token here
 #endif // DEBUG
+
+
+#ifdef USESSL
+static const char serverCert[] PROGMEM = R"EOF(
+-----BEGIN CERTIFICATE-----
+MIIB1jCCAYACEyE/NQ2eFWYAetidG/ckGeQP3S4wDQYJKoZIhvcNAQELBQAwbTEL
+MAkGA1UEBhMCVUExCjAIBgNVBAgMAUsxDTALBgNVBAcMBEtpZXYxHTAbBgNVBAoM
+FHlvdXJjb21wYW55bmFtZSBbUk9dMQ4wDAYDVQQLDAVPV0xPUzEUMBIGA1UEAwwL
+T1dMT1MubG9jYWwwHhcNMjAwNDAzMjI1MTIxWhcNMjEwNDAzMjI1MTIxWjBtMQsw
+CQYDVQQGEwJVQTEKMAgGA1UECAwBSzENMAsGA1UEBwwES2lldjEdMBsGA1UECgwU
+eW91cmNvbXBhbnluYW1lIFtST10xDjAMBgNVBAsMBU9XTE9TMRQwEgYDVQQDDAtP
+V0xPUy5sb2NhbDBcMA0GCSqGSIb3DQEBAQUAA0sAMEgCQQDOnlX/u8+hppPYUXUA
+6F9D4OtOZpPPLWwx3DOpGgqVovzTGip899gUAk9gwgLd+gENkuZPMo8MdDU5j28F
+MaeVAgMBAAEwDQYJKoZIhvcNAQELBQADQQAkxDO5o1Jlj79pF9pjiBIEcAmSevbW
+UXyZcQv5Gm/PuOC5QrG6wi18yadCifHCvpS0WbmrGLnUVxy454Pa7k8e
+-----END CERTIFICATE-----
+)EOF";
+
+static const char serverKey[] PROGMEM = R"EOF(
+-----BEGIN RSA PRIVATE KEY-----
+MIIBPAIBAAJBAM6eVf+7z6Gmk9hRdQDoX0Pg605mk88tbDHcM6kaCpWi/NMaKnz3
+2BQCT2DCAt36AQ2S5k8yjwx0NTmPbwUxp5UCAwEAAQJAC8tUA2YYIxUcKWP09tlM
+3tYO+Im4dEIWg/4a4NNAuWvbGqnfH/8/Jt2Rs5GxNHALooYt3JYNRVX9XIbGTJ8i
+HQIhAOhFp+qz73yQvDgG59o8jnuk7L0x/sjPz1WTwgctVzD3AiEA47nKihw4HK9/
+zt+KCqYf5meipOvwGyITNHd3IE5HFNMCIQCIB/N1w3foriNtdK3o5DpWM5rqmxMq
+rHozFlw2M9mytQIhAL0VNycV50FqNyT+VxAgf7w/sLxfay4cTPXze+ZHGJ4hAiEA
+5eaYQ5UwRHjh1AASRkNB74XO/WqcxChmwWtuBuXe7Io=
+-----END RSA PRIVATE KEY-----
+)EOF";
+#endif
+
 
 
 void calculateToken()
@@ -130,8 +181,29 @@ bool auth(String username, String password)
 void HTTPServerBegin(uint16_t port)
 {
 	calculateToken();
+
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0 
+#ifdef USESSL
+	server = new WiFiServerSecure(port);
+
+	if (MDNS.begin("OWLSmartHouseUnit.local"))
+	{
+		debugOut("MDNS", "MDNS responder started OWLSmartHouseUnit.local");
+    }
+	server->setBufferSizes(256, 256);
+	server->setRSACert(new BearSSL::X509List(serverCert), new BearSSL::PrivateKey(serverKey));
+
+	server->begin();
+#else 
 	server = new WiFiServer(port);
 	server->begin();
+#endif
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+	server = new WiFiServer(port);
+	server->begin();
+#endif
 }
 
 void sendResponseHeader(int HTTPResponseCode, String contentType, String ContentEncoding, WiFiClient client)
@@ -943,8 +1015,19 @@ void handleSetWebProperty(WiFiClient client)
 
 void HTTPServerLoop()
 {
-
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0 
+#ifdef USESSL
+	WiFiClientSecure client = server->available();
+#else
 	WiFiClient client = server->available();
+#endif
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+	WiFiClient client = server->available();
+#endif
+
+
 
 	if (client)
 	{

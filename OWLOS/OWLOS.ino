@@ -52,4 +52,3 @@ void loop()
 	//OWLOS Kernel Loop
 	kernelLoop();
 }
-

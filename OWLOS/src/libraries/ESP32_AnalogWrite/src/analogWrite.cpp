@@ -1,5 +1,6 @@
+#include <core_version.h>
 #include "analogWrite.h"
-
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4 //OWLOS need this for hide from ESP8266
 analog_write_channel_t _analog_write_channels[16] = {
     {-1, 5000, 13},
     {-1, 5000, 13},
@@ -104,3 +105,4 @@ void analogWrite(uint8_t pin, uint32_t value, uint32_t valueMax)
     ledcWrite(channel, duty);
   }
 }
+#endif
