@@ -72,8 +72,8 @@ bool ValveDriver::init()
 			&& (setDriverPinMode(id, POSITION_PIN_INDEX, INPUT).length() == 0))
 		{
 			//PinManager разрешил использования всех необходимых Valve пинов, отправляем две команды стоп
-			digitalWrite(closePinDriverInfo.GPIONumber, MOTOR_STOP_COMMAND);
-			digitalWrite(openPinDriverInfo.GPIONumber, MOTOR_STOP_COMMAND);
+			driverPinWrite(id, CLOSE_PIN_INDEX, MOTOR_STOP_COMMAND);
+			driverPinWrite(id, OPEN_PIN_INDEX, MOTOR_STOP_COMMAND);
 			//Valve готова
 			return true;
 		}
@@ -225,13 +225,13 @@ bool ValveDriver::setPosition(int _position)
 			&& (setDriverPinMode(id, OPEN_PIN_INDEX, OUTPUT).length() == 0))
 
 		{
-			//команда стоп
-			digitalWrite(closePinDriverInfo.GPIONumber, MOTOR_STOP_COMMAND);
-			digitalWrite(openPinDriverInfo.GPIONumber, MOTOR_STOP_COMMAND);
+			//команда стоп			
+			driverPinWrite(id, CLOSE_PIN_INDEX, MOTOR_STOP_COMMAND);
+			driverPinWrite(id, OPEN_PIN_INDEX, MOTOR_STOP_COMMAND);
 			//закрыть заслонку
 			if (_position == 0)
 			{ // closing valve
-				toMinMaxPosition(closePinDriverInfo.GPIONumber);
+				toMinMaxPosition(CLOSE_PIN_INDEX);
 				minimumphysicalposition = physicalposition;
 				filesWriteInt(id + ".minimumphysicalposition", minimumphysicalposition);
 				result = onInsideChange("minimumphysicalposition", String(minimumphysicalposition));
@@ -240,7 +240,7 @@ bool ValveDriver::setPosition(int _position)
 			//открыть заслонку
 			if (_position == 100)
 			{ // opening valve
-				toMinMaxPosition(openPinDriverInfo.GPIONumber);
+				toMinMaxPosition(OPEN_PIN_INDEX);
 				maximumphysicalposition = physicalposition;
 				filesWriteInt(id + ".maximumphysicalposition", maximumphysicalposition);
 				result = onInsideChange("maximumphysicalposition", String(maximumphysicalposition));
@@ -264,12 +264,12 @@ void ValveDriver::toMinMaxPosition(int _pin)
 	{
 		if (setDriverPinMode(id, POSITION_PIN_INDEX, INPUT).length() == 0)
 		{
-			physicalposition = analogRead(positionPinDriverInfo.GPIONumber);
-			digitalWrite(_pin, MOTOR_START_COMMAND); //move command
+			physicalposition = driverPinRead(id, POSITION_PIN_INDEX);
+			driverPinWrite(id, _pin, MOTOR_START_COMMAND);
 			for (int i = 0; i < 100; i++)
 			{
 				delay(500); // mooving
-				newphysicalposition = analogRead(positionPinDriverInfo.GPIONumber);
+				newphysicalposition = driverPinRead(id, POSITION_PIN_INDEX);
 				if (newphysicalposition == physicalposition) break; // valve is stoped
 				physicalposition = newphysicalposition;
 			} // for

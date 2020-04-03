@@ -75,12 +75,13 @@ class ActuatorDriver : public BaseDriver {
     bool publish();
     String onMessage(String _topic, String _payload, int8_t transportMask);
 
-	//String setPin(String pinName, int pinIndex);
-	//String getPin(int pinIndex);
+	bool getAnalog();
+	bool setAnalog(bool _analog, bool doEvent);
 
     int getData();
     bool setData(int _toPosition,  bool doEvent);
 
   private:
-    int data = 0;
+	  bool analog = false;
+      int data = 0;
 };

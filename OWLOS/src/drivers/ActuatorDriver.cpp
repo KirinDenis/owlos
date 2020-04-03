@@ -50,7 +50,8 @@ bool ActuatorDriver::init()
 	if (getDriverPinInfo(id, PIN0_INDEX, &pinDriverInfo))
 	{
 		if (setDriverPinMode(id, PIN0_INDEX, OUTPUT).length() == 0)
-		{
+		{			
+			setAnalog(pinDriverInfo.driverPinType & ANALOG_O_MASK, false);
 			//на случай перезагрузки, в файле сохранено последнее состояние актуатора
 			getData(); //прочесть последнее состояние 
 			setData(data, false); //вернуть последнее запомненное состояние 
@@ -97,8 +98,8 @@ bool ActuatorDriver::query()
 String ActuatorDriver::getAllProperties()
 {
 	String result = BaseDriver::getAllProperties();
-	result += "data=" + String(data) + "//b\n";
-	//	result += "pin=" + String(pin) + "//i\n";
+	result += "analog=" + String(analog) + "//br\n";
+	result += "data=" + String(data) + "//i\n";	
 	return result;
 }
 
@@ -117,6 +118,12 @@ String ActuatorDriver::onMessage(String _topic, String _payload, int8_t transpor
 	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
 
 	if (!available) return result;
+
+	if (String(topic + "/getanalog").equals(_topic))
+	{
+		result = onGetProperty("analog", String(getAnalog()), transportMask);
+	}
+	else
 	if (String(topic + "/getdata").equals(_topic))
 	{
 		result = onGetProperty("data", String(getData()), transportMask);
@@ -129,30 +136,33 @@ String ActuatorDriver::onMessage(String _topic, String _payload, int8_t transpor
 	return result;
 }
 
-//Actuator GPIO 1-pin (D4 by default) ----------------------------------------------------
-/*
-String ActuatorDriver::setPin(String pinName, int pinIndex)
+//Analog ------------------------------------------
+bool ActuatorDriver::getAnalog()
 {
-	int pinType = ActuatorDriver::getPinType(pinIndex);
-	if (pinType == NO_MASK)
+	if (filesExists(id + ".analog"))
 	{
-		return "driver pin number not exists";
+		data = filesReadInt(id + ".analog");
 	}
+#ifdef DetailedDebug
+	debugOut(id, "analog=" + String(data));
+#endif
 
-	return setDriverPin(pinName, id, pinIndex, pinType);
+	return data;
 }
 
-String ActuatorDriver::getPin(int pinIndex)
+bool ActuatorDriver::setAnalog(bool _analog, bool doEvent)
 {
-	Pin * pin = getDriverPin(id, pinIndex);
-	if (pin != nullptr)
+	analog = _analog;
+	filesWriteInt(id + ".analog", analog);
+	if (doEvent)
 	{
-		return pin->name;
+		return onInsideChange("analog", String(analog));
 	}
-
-	return "[NOT_SET]";
+	return true;
 }
-*/
+
+
+
 //Data -------------------------------------------
 int ActuatorDriver::getData()
 {
@@ -172,12 +182,12 @@ bool ActuatorDriver::setData(int _data, bool doEvent)
 	data = _data;
 	PinDriverInfo pinDriverInfo;
 	if (getDriverPinInfo(id, PIN0_INDEX, &pinDriverInfo))
-	{
+	{			
 		if (driverPinWrite(id, PIN0_INDEX, data).length() == 0)
 		{
+			filesWriteInt(id + ".data", data);
 			if (doEvent)
 			{
-				filesWriteInt(id + ".data", data);
 				return onInsideChange("data", String(data));
 			}
 			return true;

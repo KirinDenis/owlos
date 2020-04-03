@@ -2,6 +2,10 @@
 #include "Arduino.h"
 #include "PinManager.h"
 
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+#include "../libraries/ESP32_AnalogWrite/src/analogWrite.h"
+#endif
+
 
 //String decodePinType[14] = { "NO_MASK", "GP_IO_MASK", "DIGITAL_IO_MASK", "DIGITALI_MASK", "DIGITALO_MASK", "ANALOG_IO_MASK", "ANALOGI_MASK", "ANALOGO_MASK", "SDA_MASK",  "SCL_MASK", "I2CADDR_MASK", "VCC5_MASK",  "VCC33_MASK",  "GND_MASK" };
 //String decodePinFamily[3] = { "NO_FAMILY", "I2C_FAMILY", "VCC_FAMILY" };
@@ -397,7 +401,7 @@ String setDriverPin(bool checkOnly, String pinName, String driverId, uint16_t dr
 
 
 						//на цифровом или аналоговом пине может быть только один драйвер
-						if ((pinType & DIGITAL_O_MASK) || (pinType & DIGITAL_I_MASK))
+						if ((pinType & DIGITAL_O_MASK) || (pinType & DIGITAL_I_MASK) || (pinType & ANALOG_O_MASK) || (pinType & ANALOG_I_MASK))
 						{
 							if ((pins[i].driverId[0].length() == 0)) //one digital on one pin
 							{
@@ -544,13 +548,24 @@ String driverPinWrite(String driverId, int driverPin, int data)
 				pins[i].mode = getPinMode(pins[i].GPIONumber);
 				if (pins[i].mode == OUTPUT)
 				{
-					if (data == 0)
+					if (pins[i].pinTypes & ANALOG_O_MASK)
 					{
-						digitalWrite(pins[i].GPIONumber, LOW);
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+						analogWrite(pins[i].GPIONumber, 1024); //TODO Define here 1024
+#else	
+						analogWrite(pins[i].GPIONumber, data);
+#endif
 					}
 					else
 					{
-						digitalWrite(pins[i].GPIONumber, HIGH); 
+						if (data == 0)
+						{
+							digitalWrite(pins[i].GPIONumber, LOW);
+						}
+						else
+						{
+							digitalWrite(pins[i].GPIONumber, HIGH);
+						}					
 					}
 					return "";
 				}
@@ -576,13 +591,22 @@ int driverPinRead(String driverId, int driverPin)
 				pins[i].mode = getPinMode(pins[i].GPIONumber);
 				if (pins[i].mode == INPUT)
 				{
-					return digitalRead(pins[i].GPIONumber);
+					if (pins[i].pinTypes & ANALOG_I_MASK)
+					{
+						return analogRead(pins[i].GPIONumber);
+					}
+					else
+					{
+						return digitalRead(pins[i].GPIONumber);
+					}
 				}
 			}
 		}
 	}
 	return 0;
 }
+
+
 
 String setPinMode(String pinName, int mode)
 {
