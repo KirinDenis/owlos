@@ -49,6 +49,7 @@ bool filesDelete(String fileName);
 bool filesRename(String source, String dest);
 
 String filesReadString(String fileName);
+bool filesWriteStringDirect(String fileName, String value);
 bool filesWriteString(String fileName, String value);
 bool filesAppendString(String fileName, String value);
 bool filesAddString(String fileName, String value);

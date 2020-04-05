@@ -293,12 +293,10 @@ String filesReadString(String fileName)
 	return result;
 }
 
-bool filesWriteString(String fileName, String value)
+bool filesWriteStringDirect(String fileName, String value)
 {
-#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
+
 	fileName = normalizeFileName(fileName);
-
-
 	if (!_SPIFFSBegin())
 	{
 #ifdef DetailedDebug 
@@ -306,6 +304,9 @@ bool filesWriteString(String fileName, String value)
 #endif
 		return false;
 	}
+
+
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	File file = SPIFFS.open(fileName, "w");
 
 	if (!file) {
@@ -325,6 +326,34 @@ bool filesWriteString(String fileName, String value)
 	file.close();
 
 	return true;
+#endif
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+	File file = SPIFFS.open(fileName, FILE_WRITE);
+	
+	if (!file) {
+#ifdef DetailedDebug 
+		debugOut(FileSystem, "There was an error opening the file for writing");
+#endif
+		return false;
+	}
+
+	if (!file.print(value))
+	{
+#ifdef DetailedDebug 
+		debugOut(FileSystem, "fileWriteString failed");
+#endif
+	}	
+	file.close();
+	return true;
+#endif
+
+}
+
+bool filesWriteString(String fileName, String value)
+{
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
+	return filesWriteStringDirect(fileName, value);
 #endif
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4

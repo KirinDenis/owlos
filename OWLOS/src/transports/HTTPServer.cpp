@@ -42,7 +42,6 @@ OWLOS распространяется в надежде, что она буде
 
 //#define USESSL
 
-
 #include <core_version.h>
 
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
@@ -50,8 +49,10 @@ OWLOS распространяется в надежде, что она буде
 #ifdef USESSL
 #include <BearSSLHelpers.h>
 #include <WiFiServerSecureBearSSL.h>
+#include <WiFiClientSecure.h>
 #else 
 #include <ESP8266WiFi.h>
+#include <WiFiClient.h>
 #endif
 #include <ESP8266mDNS.h>
 #include <FS.h>
@@ -61,10 +62,15 @@ OWLOS распространяется в надежде, что она буде
 #include <WiFi.h>
 #include <ESPmDNS.h>
 #include <SPIFFS.h>
+#ifdef USESSL
+#include <WiFiClientSecure.h>
+#else 
+#include <WiFiClient.h>
+#endif
 #endif
 
 #include <Arduino.h>
-#include <WiFiClient.h>
+
 #include <MD5Builder.h>
 
 
@@ -91,6 +97,7 @@ WiFiServer * server;
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
 WiFiServer * server;
 #endif
+
 
 
 String uri = "";
@@ -189,7 +196,7 @@ void HTTPServerBegin(uint16_t port)
 	if (MDNS.begin("OWLSmartHouseUnit.local"))
 	{
 		debugOut("MDNS", "MDNS responder started OWLSmartHouseUnit.local");
-    }
+	}
 	server->setBufferSizes(256, 256);
 	server->setRSACert(new BearSSL::X509List(serverCert), new BearSSL::PrivateKey(serverKey));
 
@@ -235,6 +242,7 @@ String parsePostBody(WiFiClient client) {
 		if (client.available())
 		{
 			char c = client.read();
+
 			if (c == '\n')
 			{
 				if (sectionSign.length() == 0) //first entry
@@ -246,6 +254,7 @@ String parsePostBody(WiFiClient client) {
 					if (data.indexOf(sectionSign) != -1)//endof section parsing
 					{
 						//TODO somthing with body
+						debugOut("d_body", body);
 #ifdef DetailedDebug 
 						debugOut("BODY", body);
 #endif
@@ -261,6 +270,7 @@ String parsePostBody(WiFiClient client) {
 							if (data.length() != 0)
 							{
 								body += data;
+								debugOut("c_body", data);
 							}
 					}
 				}
@@ -363,45 +373,9 @@ void handleDeleteFile(WiFiClient client)
 }
 
 //----------------------------------------------------------------------------------------------
-/*
-void handleDownloadFile(WiFiClient client)
-{
-
-	if (argsCount > 0)
-	{
-		if (argName[0].equals("name"))
-		{
-			String filename = arg[0];
-			if (filesExists(filename))
-			{
-				File download = SPIFFS.open(filename, "r");
-				if (download)
-				{
-					sendHeader("Content-Type", "text/text");
-					sendHeader("Content-Disposition", "attachment; filename=" + filename);
-					sendHeader("Connection", "close");
-					webServer->streamFile(download, "application/octet-stream");
-					download.close();
-					return;
-				}
-				else
-				{
-					send(403, "text/plain", "file '" + filename + "' can't be open");
-					return;
-				}
-			}
-			send(403, "text/plain", "file '" + filename + "' not exist");
-			return;
-		}
-	}
-	handleNotFound(client);
-}
-*/
-//----------------------------------------------------------------------------------------------
 //It is not API - it web page for send select file form, to make POST request at UI level  
 void handleUpload(WiFiClient client)
 {
-
 	String html = "<h3>Select file to upload</h3>";
 	html += "<FORM action='/uploadfile' method='post' enctype='multipart/form-data'>";
 	html += "<input class='buttons' style='width:50%' type='file' name='fileupload' id = 'fileupload' value=''><br>";
@@ -409,91 +383,6 @@ void handleUpload(WiFiClient client)
 	send(200, "text/html", html, client);
 }
 //----------------------------------------------------------------------------------------------
-File fs_uploadFile;
-void handleUploadFile(WiFiClient client)
-{
-	/*
-		HTTPUpload& http_uploadFile = webServer->upload();
-	#ifdef DetailedDebug
-		debugOut(HTTPServerId, "upload: " + http_uploadFile.filename + " status: " + String(http_uploadFile.status));
-	#endif
-		if (http_uploadFile.status == UPLOAD_FILE_START)
-		{
-	#ifdef DetailedDebug
-			debugOut(HTTPServerId, "upload start: " + http_uploadFile.filename);
-	#endif
-			String filename = "/" + http_uploadFile.filename;
-			//if (!filename.startsWith("/")) filename = "/"+filename;
-			//Serial.print("Upload File Name: "); Serial.println(filename);
-			filesDelete(filename);
-			fs_uploadFile = SPIFFS.open(filename, "w");
-			filename = String();
-		}
-		else
-			if (http_uploadFile.status == UPLOAD_FILE_WRITE)
-			{
-				if (fs_uploadFile)
-				{
-					if (http_uploadFile.currentSize * 2 > ESP.getFreeHeap()) //HEAP is end
-					{
-	#ifdef DetailedDebug
-						debugOut(HTTPServerId, "upload aborted, reson: end of node heap");
-	#endif
-						send(504, "text/plain", "upload aborted, reson: end of node heap", client);
-					}
-					else
-					{
-						fs_uploadFile.write(http_uploadFile.buf, http_uploadFile.currentSize);
-	#ifdef DetailedDebug
-						debugOut(HTTPServerId, "upload write: " + String(http_uploadFile.currentSize));
-	#endif
-					}
-
-				}
-				else
-				{
-	#ifdef DetailedDebug
-					debugOut(HTTPServerId, "upload write error");
-	#endif
-				}
-			}
-			else
-				if (http_uploadFile.status == UPLOAD_FILE_END)
-				{
-					if (fs_uploadFile)
-					{
-						fs_uploadFile.close();
-						String html = http_uploadFile.filename;
-	#ifdef DetailedDebug
-						debugOut(HTTPServerId, "uploaded success: " + html);
-	#endif
-						send(200, "text/plain", html, client);
-					}
-					else
-					{
-	#ifdef DetailedDebug
-						debugOut(HTTPServerId, "upload can't create file");
-	#endif
-						send(503, "text/plain", http_uploadFile.filename, client);
-					}
-				}
-				else
-					if (http_uploadFile.status == UPLOAD_FILE_ABORTED)
-					{
-	#ifdef DetailedDebug
-						debugOut(HTTPServerId, "upload aborted");
-	#endif
-						send(504, "text/plain", http_uploadFile.filename, client);
-					}
-					else
-					{
-	#ifdef DetailedDebug
-						debugOut(HTTPServerId, "upload bad file name, size or content for ESP FlashFileSystem");
-	#endif
-						send(505, "text/plain", "upload bad file name, size or content for ESP FlashFileSystem", client);
-					}
-	*/
-}
 
 //----------------------------------------------------------------------------------------------
 void handleGetUnitProperty(WiFiClient client)
@@ -1011,21 +900,209 @@ void handleSetWebProperty(WiFiClient client)
 	handleNotFound(client);
 }
 
+File fs_uploadFile;
+void handleUploadFile(WiFiClient client)
+{
+	if (argsCount > 0)
+	{
+		debugOut("upload param", arg[0]);
+	}
+	//debugOut("upload", decode(parsePostBody(client)));
+
+	String data = "";
+	String sectionSign = "";
+	//String body = "";
+	String fileName = "";
+	bool append = false;
+	while (client.connected())
+	{
+		if (client.available())
+		{
+			char c = client.read();
+
+			if (c == '\n')
+			{
+				if (sectionSign.length() == 0) //first entry
+				{
+					sectionSign = data;
+					debugOut("section", sectionSign);
+				}
+				else
+				{
+					if ((data.length() != 0) && (data.indexOf(sectionSign) != -1)) //endof section parsing
+					{
+						//TODO somthing with body
+						//debugOut("d_body", body);
+						debugOut("d_body", sectionSign);
+#ifdef DetailedDebug 
+						//debugOut("BODY", body);
+#endif
+						break;
+					}
+					else
+					{
+						debugOut("l_body", data);
+						if (data.indexOf("Content-Type:") != -1)
+						{
+
+						}
+						else
+							if (data.indexOf("Content-Disposition:") != -1) //section header
+							{
+								if (data.indexOf("filename=\"") == -1)
+								{
+									send(501, "text/html", "wrong file name", client);
+									return;
+								}
+								fileName = data.substring(data.indexOf("filename=\"") + String("filename=\"").length());
+								fileName = fileName.substring(0, fileName.indexOf("\""));
+								debugOut("file_name", fileName);
+								filesDelete(fileName);
+								//fs_uploadFile = SPIFFS.open(filename, "w");
+
+							}
+							else
+								if (data.length() != 0)
+								{
+									if (fileName.length() == 0)
+									{
+										send(503, "text/html", "somthing wrong", client);
+										return;
+									}
+									if (!append)
+									{
+										if (!filesWriteStringDirect(fileName, data))
+										{
+											send(503, "text/html", "bad SPIFF file name: " + fileName, client);
+											return;
+										}
+										append = true;
+									}
+									else
+									{
+										if (!filesAddString(fileName, data))
+										{
+											send(503, "text/html", "SPIFF problem", client);
+											return;
+										}
+									}
+									//body += data;
+									//debugOut("c_body", data);
+								}
+					}
+				}
+
+				data = "";
+			}
+			else
+				if (c != '\r')
+				{
+					data += c;
+				}
+		}
+	}
+	send(200, "text/html", "", client);
+}
+
+/*
+	HTTPUpload& http_uploadFile = webServer->upload();
+#ifdef DetailedDebug
+	debugOut(HTTPServerId, "upload: " + http_uploadFile.filename + " status: " + String(http_uploadFile.status));
+#endif
+	if (http_uploadFile.status == UPLOAD_FILE_START)
+	{
+#ifdef DetailedDebug
+		debugOut(HTTPServerId, "upload start: " + http_uploadFile.filename);
+#endif
+		String filename = "/" + http_uploadFile.filename;
+		//if (!filename.startsWith("/")) filename = "/"+filename;
+		//Serial.print("Upload File Name: "); Serial.println(filename);
+		filesDelete(filename);
+		fs_uploadFile = SPIFFS.open(filename, "w");
+		filename = String();
+	}
+	else
+		if (http_uploadFile.status == UPLOAD_FILE_WRITE)
+		{
+			if (fs_uploadFile)
+			{
+				if (http_uploadFile.currentSize * 2 > ESP.getFreeHeap()) //HEAP is end
+				{
+#ifdef DetailedDebug
+					debugOut(HTTPServerId, "upload aborted, reson: end of node heap");
+#endif
+					send(504, "text/plain", "upload aborted, reson: end of node heap", client);
+				}
+				else
+				{
+					fs_uploadFile.write(http_uploadFile.buf, http_uploadFile.currentSize);
+#ifdef DetailedDebug
+					debugOut(HTTPServerId, "upload write: " + String(http_uploadFile.currentSize));
+#endif
+				}
+
+			}
+			else
+			{
+#ifdef DetailedDebug
+				debugOut(HTTPServerId, "upload write error");
+#endif
+			}
+		}
+		else
+			if (http_uploadFile.status == UPLOAD_FILE_END)
+			{
+				if (fs_uploadFile)
+				{
+					fs_uploadFile.close();
+					String html = http_uploadFile.filename;
+#ifdef DetailedDebug
+					debugOut(HTTPServerId, "uploaded success: " + html);
+#endif
+					send(200, "text/plain", html, client);
+				}
+				else
+				{
+#ifdef DetailedDebug
+					debugOut(HTTPServerId, "upload can't create file");
+#endif
+					send(503, "text/plain", http_uploadFile.filename, client);
+				}
+			}
+			else
+				if (http_uploadFile.status == UPLOAD_FILE_ABORTED)
+				{
+#ifdef DetailedDebug
+					debugOut(HTTPServerId, "upload aborted");
+#endif
+					send(504, "text/plain", http_uploadFile.filename, client);
+				}
+				else
+				{
+#ifdef DetailedDebug
+					debugOut(HTTPServerId, "upload bad file name, size or content for ESP FlashFileSystem");
+#endif
+					send(505, "text/plain", "upload bad file name, size or content for ESP FlashFileSystem", client);
+				}
+*/
+
+
+
 
 
 void HTTPServerLoop()
 {
-#ifdef ARDUINO_ESP8266_RELEASE_2_5_0 
+	//#ifdef ARDUINO_ESP8266_RELEASE_2_5_0 
 #ifdef USESSL
 	WiFiClientSecure client = server->available();
 #else
 	WiFiClient client = server->available();
 #endif
-#endif
+	//#endif
 
-#ifdef ARDUINO_ESP32_RELEASE_1_0_4
-	WiFiClient client = server->available();
-#endif
+	//#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+	//	WiFiClient client = server->available();
+	//#endif
 
 
 
@@ -1138,10 +1215,6 @@ void HTTPServerLoop()
 																										else
 																											if (firstLine.indexOf("/driverpinread") != -1) { handleDriverPinRead(client); }
 																											else
-
-
-
-
 																												if (firstLine.indexOf("/getwebproperty") != -1) { handleGetWebProperty(client); }
 																												else
 																													if (firstLine.indexOf("/reset") != -1) { handleReset(client); }
@@ -1174,9 +1247,11 @@ void HTTPServerLoop()
 											else
 												if (firstLine.indexOf("/setwebproperty") != -1) { handleSetWebProperty(client); }
 												else
-												{
-													handleNotFound(client);
-												}
+													if (firstLine.indexOf("/uploadfile") != -1) { handleUploadFile(client); }
+													else
+													{
+														handleNotFound(client);
+													}
 										}
 							}
 							else
