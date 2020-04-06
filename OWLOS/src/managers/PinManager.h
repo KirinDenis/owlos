@@ -25,6 +25,31 @@
 //	int neighbor = -1;
 //};
 
+typedef struct Pin
+{
+	//Информация о пине, которую он получает в зависимости от типа контроллера
+	String name = "";
+	int mode = -1;
+	uint16_t pinTypes = NO_MASK;
+	int8_t GPIONumber = -1;
+	int8_t chipNumber = -1;
+	int8_t neighbourPin = -1;
+	String location = "";
+
+};
+
+typedef struct DriverPin
+{
+	//Информация о подключенных на данный момент к пину драйверах (в зависимости от поддерживаемых типов к пину можно подключить несколько драйверов)
+	int GPIONumber = -1;
+	String driverId; // хранит id подключенных к данному пину драйверов 
+	uint16_t driverPinType; // хранит типы подключенных к данному пину драйверов 
+	int8_t driverPinIndex; //  хранит индекс пина подключенных к данному пину драйверов 
+	int driverI2CAddr;    //    хранит порядковый I2CAddr  каждого подключенного  к данному пину драйвера
+	int8_t driverI2CAddrPinIndex; // хранит порядковый номер I2CAddr для каждого подключенного  к данному пину драйвера
+};
+
+
 //структура для передачи данных о пине в драйвер, так как на одном пине может быть много драйверов
 typedef struct PinDriverInfo
 {
@@ -39,7 +64,8 @@ String getPinMap();
 void initPins();
 
 String pinDecodeType(int typeCode);
-int getDriverPinsCount(String driverId);
+
+
 bool getDriverPinInfo(String driverId, int driverPinIndex, PinDriverInfo * pinDriverInfo);
 String setDriverPin(bool checkOnly, String pinName, String driverId, uint16_t driverPinIndex, uint16_t pinType);
 String decodePinTypes(uint16_t pinType);
@@ -47,6 +73,10 @@ String decodePinTypes(uint16_t pinType);
 void freeDriverPin(String driverId, int driverPinIndex);
 Pin getPin();
 int getPinMode(uint32_t pin);
+
+int getDriverPinsCount(String driverId);
+int getDriverPinsByGPIONumber(int GPIONumber, DriverPin * _driverPins);
+DriverPin * getDriverPinByDriverId(String  driverId, int driverPinIndex);
 
 String setDriverPinMode(String driverId, int driverPin, int mode);
 String driverPinWrite(String driverId, int driverPin, int data);
