@@ -63,8 +63,6 @@ bool SensorDriver::init()
 		}
 	}
 	return false;
-
-	
 }
 
 void SensorDriver::del()
@@ -72,8 +70,6 @@ void SensorDriver::del()
 	BaseDriver::del();
 	return;
 }
-
-
 
 bool SensorDriver::begin(String _topic)
 {

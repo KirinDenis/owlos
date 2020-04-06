@@ -9,8 +9,35 @@
 //String decodePinType[14] = { "NO_MASK", "GP_IO_MASK", "DIGITAL_IO_MASK", "DIGITALI_MASK", "DIGITALO_MASK", "ANALOG_IO_MASK", "ANALOGI_MASK", "ANALOGO_MASK", "SDA_MASK",  "SCL_MASK", "I2CADDR_MASK", "VCC5_MASK",  "VCC33_MASK",  "GND_MASK" };
 //String decodePinFamily[3] = { "NO_FAMILY", "I2C_FAMILY", "VCC_FAMILY" };
 
+typedef struct Pin
+{
+	//Информация о пине, которую он получает в зависимости от типа контроллера
+	String name = "";
+	int mode = -1;
+	//PinType pinTypes[PIN_MASK_COUNT];	
+	uint16_t pinTypes = NO_MASK;
+	int8_t GPIONumber = -1;
+	int8_t chipNumber = -1;
+	int8_t neighbourPin = -1;
+	String location = "";
+
+};
+
+typedef struct DriverPin
+{
+	//Информация о подключенных на данный момент к пину драйверах (в зависимости от поддерживаемых типов к пину можно подключить несколько драйверов)
+	int GPIONumber = -1;
+	String driverId; // хранит id подключенных к данному пину драйверов 
+	uint16_t driverPinType; // хранит типы подключенных к данному пину драйверов 
+	int8_t driverPinIndex; //  хранит индекс пина подключенных к данному пину драйверов 
+	int driverI2CAddr;    //    хранит порядковый I2CAddr  каждого подключенного  к данному пину драйвера
+	int8_t driverI2CAddrPinIndex; // хранит порядковый номер I2CAddr для каждого подключенного  к данному пину драйвера
+}
+
 int pinCount = 0;
-Pin pins[40];
+int driverPinCount = 0;
+Pin * pins[] = nullptr;
+DriverPin * driverPins[] = nullptr;
 
 String decodePinTypes(uint16_t pinType) {
 	
@@ -653,9 +680,37 @@ int pinNameToValue(String pinName)
 }
 #endif
 
+int addPin(Pin pin)
+{
+	 	
+	pinCount++;
+	Pin * newPins[] = new int[pinCount];
+	if (pins != nullptr)
+	{
+		int* tempPins = pins;
+		pins = newPins;
+		for (int i = 0; i < pinCount--; i++)
+		{
+			pins[i] = tempPins[i];
+		}
+
+		pins[pinCount--] = new Pin;
+		pins[pinCount--]->name = pin.name;
+		pins[pinCount--]->mode = pin.mode;
+		pins[pinCount--]->pinTypes = pin.pinTypes;
+		pins[pinCount--]->GPIONumber = pin.GPIONumber;
+		pins[pinCount--]->chipNumber = pin.chipNumber;
+		pins[pinCount--]->neighbourPin = pin.neighbourPin;
+		pins[pinCount--]->location = pin.location;
+		pins[pinCount--]->mode = getPinMode(pins[pinCount--]->GPIONumber);
+
+		delete[] tempPins;
+	}
+}
 
 void initPins()
 {
+	/*
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	pinCount = 0;
 	pins[pinCount].name = "D0";
@@ -670,7 +725,7 @@ void initPins()
 	pins[pinCount].pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
 	//pins[pinCount].pinTypes[0].type = DIGITAL_IO_MASK;
 	pins[pinCount].location = "l2";
-/*
+
 	pinCount++;
 	pins[pinCount].name = "D2";
 	pins[pinCount].GPIONumber = pinNameToValue(pins[pinCount].name);
@@ -741,12 +796,13 @@ void initPins()
 	pins[pinCount].pinTypes = ANALOG_I_MASK | ANALOG_O_MASK;
 	//pins[pinCount].pinTypes[0].type = ANALOG_IO_MASK;
 	pins[pinCount].location = "r1";
-*/
+
 #endif
 
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
 	pinCount = 0;
+
 	pins[pinCount].GPIONumber = 23;
 	pins[pinCount].pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
 	//pins[pinCount].pinTypes[0].type = DIGITAL_IO_MASK;
@@ -756,10 +812,10 @@ void initPins()
 	pinCount++;
 	pins[pinCount].GPIONumber = 22;
 	pins[pinCount].pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK | SCL_MASK;
-	/*pins[pinCount].pinTypes[0].type = DIGITAL_IO_MASK;
+	//pins[pinCount].pinTypes[0].type = DIGITAL_IO_MASK;
 	//pins[pinCount].pinTypes[1].family = I2C_FAMILY;
 	//pins[pinCount].pinTypes[1].type = SCL_MASK;
-	pins[pinCount].pinTypes[1].neighbor = 4; */
+	//pins[pinCount].pinTypes[1].neighbor = 4; 
 	pins[pinCount].neighbourPin = 4;
 	pins[pinCount].name = "D22";
 	pins[pinCount].location = "l2";
@@ -781,11 +837,6 @@ void initPins()
 	pinCount++;
 	pins[pinCount].GPIONumber = 21;
 	pins[pinCount].pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK | SDA_MASK;
-	/*pins[pinCount].pinTypes[0].type = DIGITAL_IO_MASK;
-	pins[pinCount].pinTypes[1].family = I2C_FAMILY;
-	pins[pinCount].pinTypes[1].type = SDA_MASK;
-	pins[pinCount].pinTypes[1].neighbor = 1;
-	*/
 	pins[pinCount].neighbourPin = 1; 
 	pins[pinCount].name = "D21";
 	pins[pinCount].location = "l5";
@@ -828,24 +879,22 @@ void initPins()
 	pinCount++;
 	pins[pinCount].GPIONumber = 4;
 	pins[pinCount].pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK | ANALOG_I_MASK |ANALOG_O_MASK;
-	/*pins[pinCount].pinTypes[0].type = DIGITAL_IO_MASK;
-	pins[pinCount].pinTypes[1].type = ANALOG_IO_MASK;*/
 	pins[pinCount].name = "D4";
 	pins[pinCount].location = "l11";
 
 	pinCount++;
 	pins[pinCount].GPIONumber = 2;
 	pins[pinCount].pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK | ANALOG_I_MASK | ANALOG_O_MASK;
-	/*pins[pinCount].pinTypes[0].type = DIGITAL_IO_MASK;
-	pins[pinCount].pinTypes[1].type = ANALOG_IO_MASK;*/
+
+
 	pins[pinCount].name = "D2";
 	pins[pinCount].location = "l12";
 
 	pinCount++;
 	pins[pinCount].GPIONumber = 15;
 	pins[pinCount].pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK | ANALOG_I_MASK | ANALOG_O_MASK;
-	/*pins[pinCount].pinTypes[0].type = DIGITAL_IO_MASK;
-	pins[pinCount].pinTypes[1].type = ANALOG_IO_MASK;*/
+
+
 	pins[pinCount].name = "D15";
 	pins[pinCount].location = "l13";
 
@@ -863,35 +912,36 @@ void initPins()
 
 
 #endif
+	*/
 
-	pinCount++;
-	pins[pinCount].GPIONumber = -1;
-	pins[pinCount].pinTypes = GND_MASK ;
-	//pins[pinCount].pinTypes[0].type = GND_MASK;
-	pins[pinCount].name = "GND";
-	pins[pinCount].location = "l14";
+Pin pin;
+pin.GPIONumber = -1;
+pin.pinTypes = GND_MASK ;
+pin.name = "GND";
+pin.location = "l14";
+addPin(pin)
 
-	pinCount++;
-	pins[pinCount].GPIONumber = -1;
-	pins[pinCount].pinTypes = VCC33_MASK;
-	//pins[pinCount].pinTypes[0].type = VCC33_MASK;
-	pins[pinCount].name = "VCC33";
-	pins[pinCount].location = "l15";
+pin.GPIONumber = -1;
+pin.pinTypes = VCC33_MASK;
+pin.name = "VCC33";
+pin.location = "l15";
 
+/*
 	pinCount++;
 	pins[pinCount].GPIONumber = -1;
 	pins[pinCount].pinTypes = VCC5_MASK;
 	//pins[pinCount].pinTypes[0].type = VCC5_MASK;
 	pins[pinCount].name = "VCC5";
 	pins[pinCount].location = "l16";
+*/
 
 
-	pinCount++;
-
+/*
 	for (int i = 0; i < pinCount; i++)
 	{
-		pins[i].mode = getPinMode(pins[i].GPIONumber);
+		pins[i]->mode = getPinMode(pins[i]->GPIONumber);
 	}
+*/
 }
 
 Pin getPin()

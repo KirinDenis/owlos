@@ -38,6 +38,8 @@ OWLOS распространяется в надежде, что она буде
 Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
+#ifndef UTILS_H
+#define UTILS_H
 
 #include <Arduino.h>
 
@@ -88,3 +90,5 @@ OWLOS распространяется в надежде, что она буде
 char* stringToChar(String src);
 void  debugOut(String tag, String text);
 void writeDebugLogFile(String fileName, int fileSize, String tag, String text);
+
+#endif

@@ -99,7 +99,6 @@ WiFiServer * server;
 #endif
 
 
-
 String uri = "";
 String method = "";
 int argsCount = 0;
@@ -963,12 +962,18 @@ void handleUploadFile(WiFiClient client)
 							}
 							else
 								if (data.length() != 0)
-								{
+								{				
+									if (data.indexOf(sectionSign) != -1)
+									{
+										send(200, "text/html", "", client);
+										return;
+									}
 									if (fileName.length() == 0)
 									{
 										send(503, "text/html", "somthing wrong", client);
 										return;
 									}
+									data += c;
 									if (!append)
 									{
 										if (!filesWriteStringDirect(fileName, data))
@@ -990,15 +995,16 @@ void handleUploadFile(WiFiClient client)
 									//debugOut("c_body", data);
 								}
 					}
+					
 				}
 
 				data = "";
 			}
-			else
-				if (c != '\r')
-				{
+			//else
+				//if (c != '\r')
+				//{
 					data += c;
-				}
+				//}
 		}
 	}
 	send(200, "text/html", "", client);

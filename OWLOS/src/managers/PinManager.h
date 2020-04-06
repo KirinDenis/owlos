@@ -14,20 +14,9 @@
 
 #define DIGITAL_IO_MASK DIGITAL_I_MASK | DIGITAL_O_MASK
 
-
-
 #define NO_FAMILY   0	   
 #define I2C_FAMILY  1	   
 #define VCC_FAMILY  2	   
-
-
-#ifdef ARDUINO_ESP32_RELEASE_1_0_4						   
-#define PIN_MASK_COUNT 5	   
-#define PIN_DRIVER_COUNT 20	   
-#else 
-#define PIN_MASK_COUNT 2	   
-#define PIN_DRIVER_COUNT 2	   
-#endif
 						   
 //typedef struct PinType	   
 //{
@@ -35,26 +24,6 @@
 //	int type = NO_MASK;
 //	int neighbor = -1;
 //};
-
-typedef struct Pin
-{
-	//Информация о пине, которую он получает в зависимости от типа контроллера
-	String name = "";
-	int mode = -1;
-	//PinType pinTypes[PIN_MASK_COUNT];	
-	uint16_t pinTypes = NO_MASK;
-	int8_t GPIONumber = -1;
-	int8_t chipNumber = -1;
-	int8_t neighbourPin = -1;
-	String location = "";
-
-	//Информация о подключенных на данный момент к пину драйверах (в зависимости от поддерживаемых типов к пину можно подключить несколько драйверов)
-	String driverId[PIN_DRIVER_COUNT]; // хранит id подключенных к данному пину драйверов 
-	uint16_t driverPinType[PIN_DRIVER_COUNT]; // хранит типы подключенных к данному пину драйверов 
-	int8_t driverPinIndex[PIN_DRIVER_COUNT]; //  хранит индекс пина подключенных к данному пину драйверов 
-	int driverI2CAddr[PIN_DRIVER_COUNT];    //    хранит порядковый I2CAddr  каждого подключенного  к данному пину драйвера
-	int8_t driverI2CAddrPinIndex[PIN_DRIVER_COUNT]; // хранит порядковый номер I2CAddr для каждого подключенного  к данному пину драйвера
-};
 
 //структура для передачи данных о пине в драйвер, так как на одном пине может быть много драйверов
 typedef struct PinDriverInfo

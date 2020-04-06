@@ -125,6 +125,27 @@ String driversGetAccessable()
 		result += "pintypedecoded" + String(i) + "=" + pinDecodeType(SensorDriver::getPinType(i)) + "\n";
 	}
 
+	result += "name:LightDriver\n";
+	for (int i = 0; i < SensorDriver::getPinsCount(); i++)
+	{
+		result += "pintype" + String(i) + "=" + SensorDriver::getPinType(i) + "\n";
+		result += "pintypedecoded" + String(i) + "=" + pinDecodeType(SensorDriver::getPinType(i)) + "\n";
+	}
+
+	result += "name:SmokeDriver\n";
+	for (int i = 0; i < SensorDriver::getPinsCount(); i++)
+	{
+		result += "pintype" + String(i) + "=" + SensorDriver::getPinType(i) + "\n";
+		result += "pintypedecoded" + String(i) + "=" + pinDecodeType(SensorDriver::getPinType(i)) + "\n";
+	}
+
+	result += "name:MotionDriver\n";
+	for (int i = 0; i < SensorDriver::getPinsCount(); i++)
+	{
+		result += "pintype" + String(i) + "=" + SensorDriver::getPinType(i) + "\n";
+		result += "pintypedecoded" + String(i) + "=" + pinDecodeType(SensorDriver::getPinType(i)) + "\n";
+	}
+
 	result += "name:LCDDriver\n";
 	for (int i = 0; i < LCDDriver::getPinsCount(); i++)
 	{
@@ -132,6 +153,26 @@ String driversGetAccessable()
 		result += "pintypedecoded" + String(i) + "=" + pinDecodeType(LCDDriver::getPinType(i)) + "\n";
 	}
 
+	result += "name:DHTDriver\n";
+	for (int i = 0; i < DHTDriver::getPinsCount(); i++)
+	{
+		result += "pintype" + String(i) + "=" + DHTDriver::getPinType(i) + "\n";
+		result += "pintypedecoded" + String(i) + "=" + pinDecodeType(DHTDriver::getPinType(i)) + "\n";
+	}
+
+	result += "name:StepperDriver\n";
+	for (int i = 0; i < DHTDriver::getPinsCount(); i++)
+	{
+		result += "pintype" + String(i) + "=" + StepperDriver::getPinType(i) + "\n";
+		result += "pintypedecoded" + String(i) + "=" + pinDecodeType(StepperDriver::getPinType(i)) + "\n";
+	}
+
+	result += "name:ValveDriver\n";
+	for (int i = 0; i < ValveDriver::getPinsCount(); i++)
+	{
+		result += "pintype" + String(i) + "=" + ValveDriver::getPinType(i) + "\n";
+		result += "pintypedecoded" + String(i) + "=" + pinDecodeType(ValveDriver::getPinType(i)) + "\n";
+	}
 
 	debugOut("PINS", result);
 	return result;
@@ -522,11 +563,33 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 
 		ActuatorDriver * actuatorDriver = new ActuatorDriver;
 		actuatorDriver->id = id;
-		actuatorDriver->init();
-		debugOut("ADD_DRIVER 1", "");
-		driversList[freeIndex] = actuatorDriver;
-		debugOut("ADD_DRIVER 2", "");
+		actuatorDriver->init();		
+		driversList[freeIndex] = actuatorDriver;		
 	}
+	else
+	if ((type == Sensor) || (type == Light) || (type == Smoke) || (type == Motion))
+	{
+		debugOut("pin", String(pinCount));
+		if (pinCount != SensorDriver::getPinsCount())
+		{
+			return "SensorDriver's pins quantity does not match, must be " + String(SensorDriver::getPinsCount());
+		}
+
+		result = setDriverPin(true, _pins[PIN0_INDEX], id, PIN0_INDEX, SensorDriver::getPinType(PIN0_INDEX)) + "\n"
+			+ setDriverPin(true, _pins[PIN1_INDEX], id, PIN1_INDEX, SensorDriver::getPinType(PIN1_INDEX));
+
+		if (result.length() > 1) return result;
+
+		result = setDriverPin(false, _pins[PIN0_INDEX], id, PIN0_INDEX, SensorDriver::getPinType(PIN0_INDEX)) + "\n"
+			+ setDriverPin(false, _pins[PIN1_INDEX], id, PIN1_INDEX, SensorDriver::getPinType(PIN1_INDEX));
+
+		if (result.length() > 1) return result;
+
+		SensorDriver * sensorDriver = new SensorDriver;
+		sensorDriver->id = id;
+		sensorDriver->init();
+		driversList[freeIndex] = sensorDriver;		
+	}	
 	else
 		if (type == LCD)
 		{
