@@ -17,7 +17,7 @@ DriverPin * driverPins = nullptr;
 
 
 String decodePinTypes(uint16_t pinType) {
-
+	/*
 	String decodedPinTypes;
 
 	if (pinType & DIGITAL_I_MASK) { decodedPinTypes += "DIGITAL_I,"; }
@@ -52,17 +52,19 @@ String decodePinTypes(uint16_t pinType) {
 
 
 	return decodedPinTypes;
-
+	*/
 }
 
 
 String pinDecodeType(uint16_t typeCode)
 {
-	return decodePinTypes(typeCode);
+	//return decodePinTypes(typeCode);
 }
 
 String getPinMap()
 {
+	
+	/*
 	String result = "";
 	DriverPin * _driverPins = nullptr;
 	int _count = 0;
@@ -107,10 +109,12 @@ String getPinMap()
 
 	}
 	return result;
+	*/
 }
 
 Pin * getPin(int GPIONumber)
 {
+	/*
 	for (int i = 0; i < pinCount; i++)
 	{
 		if (pins[i].GPIONumber == GPIONumber)
@@ -119,12 +123,13 @@ Pin * getPin(int GPIONumber)
 		}
 	}
 	return nullptr;
+	*/
 }
 
 
 bool pinTypeSupported(Pin pin, uint16_t pinType)
 {
-	return (pin.pinTypes & pinType);
+	//return (pin.pinTypes & pinType);
 	//	//если тип пина I/O или I и требуемый драйвером тип I/O или I
 	//	if (((pin.pinTypes & pinType (DIGITAL_I_MASK | DIGITAL_O_MASK) || (pin.pinTypes & DIGITAL_I_MASK)) && (pinType & (DIGITAL_I_MASK | DIGITAL_O_MASK) || (pinType & DIGITAL_I_MASK)))
 	//	{
@@ -176,6 +181,7 @@ Pin * getDriverPin(String driverId, int driverPinIndex)
 
 String setDriverI2CAddr(bool checkOnly, String pinName, String driverId, int driverPinIndex)
 {
+	/*
 	Serial.println(pinName);
 	if (pinName.indexOf("ADDR0x") < 0)
 	{
@@ -265,11 +271,13 @@ String setDriverI2CAddr(bool checkOnly, String pinName, String driverId, int dri
 	}
 
 	return "";
+	*/
 }
 
 
 String setDriverPin(bool checkOnly, String pinName, String driverId, uint16_t driverPinIndex, uint16_t pinType)
 {
+	/*
 	//if exists 
 	Serial.println("---");
 	Serial.println(String(driverPinIndex));
@@ -405,6 +413,7 @@ String setDriverPin(bool checkOnly, String pinName, String driverId, uint16_t dr
 								{
 									return "to many devices to one pin, limit: " + String(PIN_DRIVER_COUNT);
 								}
+								*/
 								/* TODO change GND and VCC pins
 								if (existsPin != nullptr)
 								{
@@ -417,6 +426,7 @@ String setDriverPin(bool checkOnly, String pinName, String driverId, uint16_t dr
 									pins[i].driverPinType[0] = pinType;
 								}
 								*/
+/*
 								if (!checkOnly)
 								{
 									pins[i].driverId[freeDriverIdIndex] = driverId;
@@ -435,10 +445,12 @@ String setDriverPin(bool checkOnly, String pinName, String driverId, uint16_t dr
 		}
 	}
 	return "pin " + pinName + " is not exists";
+	*/
 }
 
 void freeDriverPin(String driverId, int driverPinIndex)
 {
+	/*
 	for (int i = 0; i < pinCount; i++)
 	{
 		for (int j = 0; j < PIN_DRIVER_COUNT; j++)
@@ -452,12 +464,13 @@ void freeDriverPin(String driverId, int driverPinIndex)
 		}
 	}
 	return;
+	*/
 }
 
 //https://github.com/arduino/Arduino/issues/4606
 int getPinMode(uint32_t pin)
 {
-
+	/*
 	if ((pin >= NUM_DIGITAL_PINS) || (pin < 0)) return (-1);
 
 	uint32_t bit = digitalPinToBitMask(pin);
@@ -467,10 +480,12 @@ int getPinMode(uint32_t pin)
 
 	volatile uint32_t *out = portOutputRegister(port);
 	return ((*out & bit) ? INPUT_PULLUP : INPUT);
+	*/
 }
 
 String setDriverPinMode(String driverId, int driverPin, int mode)
 {
+	/*
 	for (int i = 0; i < pinCount; i++)
 	{
 		for (int j = 0; j < PIN_DRIVER_COUNT; j++)
@@ -492,10 +507,12 @@ String setDriverPinMode(String driverId, int driverPin, int mode)
 
 	}
 	return "pin not found";
+	*/
 }
 
 String driverPinWrite(String driverId, int driverPin, int data)
 {
+	/*
 	for (int i = 0; i < pinCount; i++)
 	{
 		for (int j = 0; j < PIN_DRIVER_COUNT; j++)
@@ -535,12 +552,14 @@ String driverPinWrite(String driverId, int driverPin, int data)
 		}
 	}
 	return "pin not found";
+	*/
 }
 
 
 //Digital or A nalog read - write 
 int driverPinRead(String driverId, int driverPinIndex)
 {
+	/*
 	DriverPin * driverPin = getDriverPinByDriverId(driverId, driverPinIndex);
 	if (driverPin != nullptr)
 	{
@@ -557,6 +576,7 @@ int driverPinRead(String driverId, int driverPinIndex)
 		}
 	}
 	return -1;
+	*/
 }
 
 
@@ -611,6 +631,7 @@ int pinNameToValue(String pinName)
 
 int addPin(Pin pin)
 {
+	
 	pinCount++;
 
 	Pin * newPinsPtr = new Pin[pinCount];

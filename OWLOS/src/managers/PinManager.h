@@ -66,6 +66,7 @@ void initPins();
 String pinDecodeType(int typeCode);
 
 
+
 bool getDriverPinInfo(String driverId, int driverPinIndex, PinDriverInfo * pinDriverInfo);
 String setDriverPin(bool checkOnly, String pinName, String driverId, uint16_t driverPinIndex, uint16_t pinType);
 String decodePinTypes(uint16_t pinType);
