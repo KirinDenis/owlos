@@ -67,6 +67,7 @@ String getPinMap()
 	String result = "";
 	DriverPin * _driverPins = nullptr;
 	int _count = 0;
+
 	for (int i = 0; i < pinCount; i++)
 	{
 		result += "name:" + pins[i].name + "\n";
@@ -77,7 +78,6 @@ String getPinMap()
 		result += "chipnumber=" + String(pins[i].chipNumber) + "\n";
 		result += "neighbourpin=" + String(pins[i].neighbourPin) + "\n";
 		result += "location=" + pins[i].location + "\n";
-
 		_count = getDriverPinsByGPIONumber(pins[i].GPIONumber, _driverPins);
 		if (_count > 0)
 		{
@@ -91,7 +91,7 @@ String getPinMap()
 			}
 			delete[] _driverPins;
 		}
-
+		
 		//for (int j = 0; j < PIN_MASK_COUNT; j++)
 		//{
 		//	if (pins[i].pinTypes[j].type == NO_MASK)
@@ -826,7 +826,7 @@ int getDriverPinsByPinType(int pinType, DriverPin * _driverPins)
 //все драйвера которые используют этот пин
 int getDriverPinsByGPIONumber(int GPIONumber, DriverPin * _driverPins)
 {
-	int _count;
+	int _count = 0;
 	for (int i = 0; i < driverPinCount; i++)
 	{
 		if (driverPins[i].GPIONumber == GPIONumber)

@@ -1178,6 +1178,7 @@ void HTTPServerLoop()
 #ifdef DetailedDebug 
 								debugOut("METHOD", method);
 #endif
+								yield();
 								if (method.equals("OPTIONS"))
 								{
 									sendResponseHeader(200, "text/plain", "", client);
