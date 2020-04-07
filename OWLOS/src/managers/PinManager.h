@@ -46,7 +46,7 @@ typedef struct DriverPin
 	uint16_t driverPinType; // хранит типы подключенных к данному пину драйверов 
 	int8_t driverPinIndex; //  хранит индекс пина подключенных к данному пину драйверов 
 	int driverI2CAddr;    //    хранит порядковый I2CAddr  каждого подключенного  к данному пину драйвера
-	int8_t driverI2CAddrPinIndex; // хранит порядковый номер I2CAddr для каждого подключенного  к данному пину драйвера
+	int8_t SDAPinName; 
 };
 
 
@@ -68,6 +68,7 @@ String pinDecodeType(int typeCode);
 
 
 bool getDriverPinInfo(String driverId, int driverPinIndex, PinDriverInfo * pinDriverInfo);
+String checkDriverPin(String pinName, uint16_t pinType, String SDAPinName = "");
 String setDriverPin(bool checkOnly, String pinName, String driverId, uint16_t driverPinIndex, uint16_t pinType);
 String decodePinTypes(uint16_t pinType);
 
@@ -76,10 +77,14 @@ Pin getPin();
 int getPinMode(uint32_t pin);
 
 int getDriverPinsCount(String driverId);
+
+int getDriversByPinType(int pinType, DriverPin * _driverPins);
 int getDriverPinsByGPIONumber(int GPIONumber, DriverPin * _driverPins);
 DriverPin * getDriverPinByDriverId(String  driverId, int driverPinIndex);
 
 String setDriverPinMode(String driverId, int driverPin, int mode);
 String driverPinWrite(String driverId, int driverPin, int data);
 int driverPinRead(String driverId, int driverPin);
+
+int parseI2CAddr(String addrStr);
 
