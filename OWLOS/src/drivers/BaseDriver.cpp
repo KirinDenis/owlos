@@ -70,7 +70,7 @@ void BaseDriver::del()
 	int count = getDriverPinsCount(id);
 	for (int i = 0; i < count; i++)
 	{
-		freeDriverPin(id, i);
+		deleteDriverPin(id, i);
 	}
 	available = false;
 	return;

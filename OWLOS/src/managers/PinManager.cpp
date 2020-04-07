@@ -111,41 +111,10 @@ String getPinMap()
 
 }
 
-Pin * getPin(int GPIONumber)
+
+bool pinTypeSupported(uint16_t pinTypes, uint16_t pinType)
 {
-
-	for (int i = 0; i < pinCount; i++)
-	{
-		if (pins[i].GPIONumber == GPIONumber)
-		{
-			return &pins[i];
-		}
-	}
-	return nullptr;
-
-}
-
-
-bool pinTypeSupported(Pin pin, uint16_t pinType)
-{
-	return (pin.pinTypes & pinType);
-	//	//если тип пина I/O или I и требуемый драйвером тип I/O или I
-	//	if (((pin.pinTypes & pinType (DIGITAL_I_MASK | DIGITAL_O_MASK) || (pin.pinTypes & DIGITAL_I_MASK)) && (pinType & (DIGITAL_I_MASK | DIGITAL_O_MASK) || (pinType & DIGITAL_I_MASK)))
-	//	{
-	//		return true;
-	//	}
-	//	else //если тип пина I/O или O и требуемый драйвером тип I/O или O
-	//		if (((pin.pinTypes & (DIGITAL_I_MASK | DIGITAL_O_MASK) || (pin.pinTypes & DIGITAL_O_MASK)) && ((pinType == DIGITAL_IO_MASK) || (pinType == DIGITALO_MASK)))
-	//		{
-	//			return true;
-	//		}
-	//		else
-	//			if (pin.pinTypes[i].type == pinType)
-	//			{
-	//				return true;
-	//			}
-
-	//return false;
+	return (pinTypes & pinType);
 }
 
 
@@ -166,7 +135,7 @@ String setDriverI2CAddr(bool checkOnly, String pinName, String driverId, int dri
 	int i2cAddr = (int)strtol(&pinName[0], NULL, 16);
 	Serial.println(String(i2cAddr));
 
-	//сначала надо узнать назначены ли SDA и SCL для этого драйвера 
+	//сначала надо узнать назначены ли SDA и SCL для этого драйвера
 	PinDriverInfo SDA_PinDriverInfo;
 	SDA_PinDriverInfo.driverPinType = NO_MASK;
 	PinDriverInfo SCL_PinDriverInfo;
@@ -208,7 +177,7 @@ String setDriverI2CAddr(bool checkOnly, String pinName, String driverId, int dri
 
 
 
-    for (int i = 0; i < pinCount; i++)
+	for (int i = 0; i < pinCount; i++)
 	{
 		if (pins[i].name.equals(SDA_PinDriverInfo.name) || pins[i].name.equals(SCL_PinDriverInfo.name))
 		{
@@ -261,7 +230,30 @@ Pin * getPinByName(String pinName)
 	return nullptr;
 }
 
-String checkDriverPin(String pinName, uint16_t pinType, String SDAPinName = "")
+Pin * getPinByGPIONumber(int GPIONumber)
+{
+
+	for (int i = 0; i < pinCount; i++)
+	{
+		if (pins[i].GPIONumber == GPIONumber)
+		{
+			return &pins[i];
+		}
+	}
+	return nullptr;
+
+}
+
+Pin * getPinByDriverId(String  driverId, int driverPinIndex)
+{
+	DriverPin * _driverPin = getDriverPinByDriverId(driverId, driverPinIndex);
+	if (_driverPin == nullptr) return nullptr;
+	return getPinByGPIONumber(_driverPin->GPIONumber);
+
+}
+
+
+String _checkDriverPin(String pinName, uint16_t pinType, String SDAPinName)
 {
 	DriverPin * _driverPins = nullptr;
 	int _count = 0;
@@ -272,58 +264,121 @@ String checkDriverPin(String pinName, uint16_t pinType, String SDAPinName = "")
 		//check it is I2C address pinName = ADDR0xNN
 		if (pinType & I2CADDR_MASK)
 		{
-			if (SDAPinName.length() == 0)
+			if (!SDAPinName.length())
 			{
-				return "I2C address can't be select before SDA pin";
+				return "I2C address can't be select before SDA pin\n";
 			}
 			int _addr = parseI2CAddr(pinName);
 			if (_addr <= 0)
 			{
-				return "bad I2C address " + pinName;
+				return "bad I2C address " + pinName + "\n";
 			}
 
-			_count = getDriversByPinType(pinType, _driverPins);
+			_count = getDriverPinsByPinType(pinType, _driverPins);
 			if (_count > 0) //уже есть I2C адерса 
 			{
 				for (int i = 0; i < _count; i++)
 				{
-					if ((_driverPins->driverI2CAddr == _addr) && (_driverPins->SDAPinName.equals(SDAPinName))
+					if ((_driverPins[i].driverI2CAddr == _addr) && (_driverPins[i].SDAPinName.equals(SDAPinName)))
 					{
-						return "I2C address " + pinName + " is busy of " + _driverPins->driverId + " driver on " + SDAPinName + " SDA channel";
+						return "I2C address " + pinName + " is busy of " + _driverPins->driverId + " driver on " + SDAPinName + " SDA channel\n";
 					}
 				}
 			}
 		}
 		else
 		{
-			return "pin " + pinName + " doesn't exists";
+			return "pin " + pinName + " doesn't exists\n";
 		}
 	}
 
-	
-	_count = getDriversByGPIONumber(pin->GPIONumber, _driverPins);
+	_count = getDriverPinsByGPIONumber(pin->GPIONumber, _driverPins);
 	if (_count > 0) //если пин кем то занят
 	{
-		if (((pinType & SDA_MASK) || (pinType & SCL_MASK) || (pinType & VCC5_MASK) || (pinType & VC33_MASK) || (pinType & GND_MASK)) == 0))
-		{
-		return "pin " + pinName + " busy by " + _driverPins[0]->driverId + " as pin index " + String(_driverPins[0]->driverPinIndex);
-		}
+		if (((pinType & SDA_MASK) || (pinType & SCL_MASK) || (pinType & VCC5_MASK) || (pinType & VCC33_MASK) || (pinType & GND_MASK)) == 0)
+					{
+						return "pin " + pinName + " busy by " + _driverPins[0].driverId + " as pin index " + String(_driverPins[0].driverPinIndex) + "\n";
+					}
+	}
+
+	if (!pinTypeSupported(pin->pinTypes, pinType))
+	{
+		return "pin " + pinName + " not compatable with type " + decodePinTypes(pinType) +"\n";
 	}
 
 	return "";
 }
 
-
-String setDriverPin(String pinName, String driverId, uint16_t driverPinIndex, uint16_t pinType, String SDAPinName = "")
+String checkDriverPin(String pinName, uint16_t pinType)
 {
-	
-	String result = checkDriverPin(pinName, pinType, SDAPinName);
+	return _checkDriverPin(pinName, pinType, "");
+}
+
+String _setDriverPin(String pinName, String driverId, uint16_t driverPinIndex, uint16_t pinType, String SDAPinName)
+{
+
+	String result = _checkDriverPin(pinName, pinType, SDAPinName);
 	if (result.length() != 0)
 	{
 		return result;
 	}
 
-	DriverPin * _driverPin = getDriverByDriverId(driverId, driverPinIndex);
+	Pin * pin = getPinByName(pinName);
+	DriverPin * _driverPin = getDriverPinByDriverId(driverId, driverPinIndex);
+
+	if (_driverPin != nullptr)
+	{
+		if (pin != nullptr) //driver pin exists and new pin exists //D, A, VCCx or GND
+		{
+			//set drive to other pin
+			_driverPin->GPIONumber = pin->GPIONumber;
+			return "";
+		}
+		else //I2C change address 
+		{
+			if ((pinType & I2CADDR_MASK) == NO_MASK)
+			{
+				return "the pin not exists and pin type not address\n";
+			}
+			//change I2C address or channel 
+			_driverPin->driverI2CAddr = parseI2CAddr(pinName);
+			_driverPin->SDAPinName = SDAPinName;
+			return "";
+		}
+	}
+	else //new driver pin 
+	{
+		if (pin != nullptr) //driver pin not exists create new 
+		{
+			_driverPin = new DriverPin;
+			_driverPin->GPIONumber = pin->GPIONumber;
+			_driverPin->driverId = driverId;
+			_driverPin->driverPinType = pinType;
+			_driverPin->driverPinIndex = driverPinIndex;
+			addDriverPin(*_driverPin);
+			return "";
+		}
+		else //new I2C address 
+		{
+			if ((pinType & I2CADDR_MASK) == NO_MASK)
+			{
+				return "the pin not exists and pin type not address\n";
+			}
+
+			_driverPin = new DriverPin;
+			_driverPin->GPIONumber = pin->GPIONumber;
+			_driverPin->driverId = driverId;
+			_driverPin->driverPinType = pinType;
+			_driverPin->driverPinIndex = driverPinIndex;
+			_driverPin->driverI2CAddr = parseI2CAddr(pinName);
+			_driverPin->SDAPinName = SDAPinName;
+			addDriverPin(*_driverPin);
+			return "";
+		}
+	}
+
+	return "bad pinName, type or driverId\n";
+
 	/*
 	Pin * existsPin = getDriverPin(driverId, driverPinIndex);
 	int existsDriverIndex = -1;
@@ -357,7 +412,7 @@ String setDriverPin(String pinName, String driverId, uint16_t driverPinIndex, ui
 			return "bad exists driver info, at pin " + existsPin->name;
 		}
 	}
-	*/
+
 
 	Serial.println(String(pinType));
 	if (pinType & I2CADDR_MASK)
@@ -397,7 +452,7 @@ String setDriverPin(String pinName, String driverId, uint16_t driverPinIndex, ui
 						{
 							return "to many devices to one pin, limit: " + String(PIN_DRIVER_COUNT);
 						}
-						//TODO: проверить соседей 
+						//TODO: проверить соседей
 						if (!checkOnly)
 						{
 							pins[i].driverId[freeDriverIdIndex] = driverId;
@@ -467,7 +522,7 @@ String setDriverPin(String pinName, String driverId, uint16_t driverPinIndex, ui
 								{
 									pins[i].driverPinType[0] = pinType;
 								}
-								*/
+
 								if (!checkOnly)
 								{
 									pins[i].driverId[freeDriverIdIndex] = driverId;
@@ -486,24 +541,14 @@ String setDriverPin(String pinName, String driverId, uint16_t driverPinIndex, ui
 		}
 	}
 	return "pin " + pinName + " is not exists";
+								*/
 }
 
-void freeDriverPin(String driverId, int driverPinIndex)
+String setDriverPin(String pinName, String driverId, uint16_t driverPinIndex, uint16_t pinType)
 {
-	for (int i = 0; i < pinCount; i++)
-	{
-		for (int j = 0; j < PIN_DRIVER_COUNT; j++)
-		{
-			if ((pins[i].driverId[j].indexOf(driverId) >= 0) && (pins[i].driverPinIndex[j] == driverPinIndex))
-			{
-				pins[i].driverId[j] = "";
-				pins[i].driverPinIndex[j] = -1;
-				return;
-			}
-		}
-	}
-	return;
+	return _setDriverPin(pinName, driverId, driverPinIndex, pinType, "");
 }
+
 
 //https://github.com/arduino/Arduino/issues/4606
 int getPinMode(uint32_t pin)
@@ -520,78 +565,66 @@ int getPinMode(uint32_t pin)
 	return ((*out & bit) ? INPUT_PULLUP : INPUT);
 }
 
-String setDriverPinMode(String driverId, int driverPin, int mode)
+String setDriverPinMode(String driverId, int driverPinIndex, int mode)
 {
-	for (int i = 0; i < pinCount; i++)
+	Pin * pin = getPinByDriverId(driverId, driverPinIndex);
+	if (pin == nullptr)
 	{
-		for (int j = 0; j < PIN_DRIVER_COUNT; j++)
-		{
-			if ((pins[i].driverId[j].equals(driverId)) && (pins[i].driverPinIndex[j] == driverPin))
-			{
-				pinMode(pins[i].GPIONumber, mode);
-				pins[i].mode = getPinMode(pins[i].GPIONumber);
-				if (pins[i].mode == mode)
-				{
-					return "";
-				}
-				else
-				{
-					return "can't switch pin mode for:" + driverId + " pin:" + String(driverPin) + " to mode=:" + String(mode);
-				}
-			}
-		}
-
+		return "driverId " + driverId + " or pin index " + String(driverPinIndex) + " doesn't exists";
 	}
-	return "pin not found";
+
+	pinMode(pin->GPIONumber, mode);
+	pin->mode = getPinMode(pin->GPIONumber);
+	if (pin->mode == mode)
+	{
+		return "";
+	}
+
+	return "can't switch pin mode for:" + driverId + " pin:" + String(driverPinIndex) + " to mode=:" + String(mode);
 }
 
-String driverPinWrite(String driverId, int driverPin, int data)
+String driverPinWrite(String driverId, int driverPinIndex, int data)
 {
-	for (int i = 0; i < pinCount; i++)
-	{
-		for (int j = 0; j < PIN_DRIVER_COUNT; j++)
-		{
-			if ((pins[i].driverId[j].equals(driverId)) && (pins[i].driverPinIndex[j] == driverPin))
-			{
 
-				pins[i].mode = getPinMode(pins[i].GPIONumber);
-				if (pins[i].mode == OUTPUT)
-				{
-					if (pins[i].pinTypes & ANALOG_O_MASK)
-					{
+	DriverPin * _driverPin = getDriverPinByDriverId(driverId, driverPinIndex);
+	if (_driverPin != nullptr)
+		
+	{
+		int mode = getPinMode(_driverPin->GPIONumber);
+		if (mode == OUTPUT)
+		{
+			if (_driverPin->GPIONumber & ANALOG_O_MASK)
+			{
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
-						analogWrite(pins[i].GPIONumber, 1024); //TODO Define here 1024
+				analogWrite(_driverPin->GPIONumber, 1024); //TODO Define here 1024
 #else	
-						analogWrite(pins[i].GPIONumber, data);
+				analogWrite(_driverPin->GPIONumber, data);
 #endif
-					}
-					else
-					{
-						if (data == 0)
-						{
-							digitalWrite(pins[i].GPIONumber, LOW);
-						}
-						else
-						{
-							digitalWrite(pins[i].GPIONumber, HIGH);
-						}
-					}
-					return "";
+			}
+			else
+			{
+				if (data == 0)
+				{
+					digitalWrite(_driverPin->GPIONumber, LOW);
 				}
 				else
 				{
-					return "can't write pin mode for:" + driverId + " pin:" + String(driverPin) + " to data=:" + String(data);
+					digitalWrite(_driverPin->GPIONumber, HIGH);
 				}
 			}
+			return "";
 		}
+
+		return "can't write pin mode for:" + driverId + " pin:" + String(_driverPin->driverPinIndex) + " to data=:" + String(data);
 	}
-	return "pin not found";
+	return "driverId " + driverId + " or pin index " + String(driverPinIndex) + " doesn't exists";
 }
 
 
 //Digital or A nalog read - write 
 int driverPinRead(String driverId, int driverPinIndex)
 {
+
 	DriverPin * driverPin = getDriverPinByDriverId(driverId, driverPinIndex);
 	if (driverPin != nullptr)
 	{
@@ -608,32 +641,6 @@ int driverPinRead(String driverId, int driverPinIndex)
 		}
 	}
 	return -1;
-}
-
-
-
-String setPinMode(String pinName, int mode)
-{
-	//перевести пин в режим, проверить режим, если перешел - пустая строка
-	//проверить не занят ли пин драйвером, если занят ошибка
-
-//	pinMode(pins[i].GPIONumber, mode);
-//	pins[i].mode = getPinMode(pins[i].GPIONumber);
-
-}
-
-String setPinWrite(String pinName, int data)
-{
-	//проверить не занят ли пин драйвером, если занят ошибка
-	//записать данные - аналоговые или цифровые вызывающая сторона не знает, либо в 0 или 1 или int 0..1024 тоже проверить
-}
-
-int setPinRead(String pinName, int data)
-{
-
-	//проверить не занят ли пин драйвером, если занят ошибка
-	//прочитать данные - аналоговые или цифровые вызывающая сторона не знает, либо в 0 или 1 или int 0..1024 тоже проверить
-
 }
 
 
@@ -708,6 +715,36 @@ int addDriverPin(DriverPin driverPin)
 	return driverPinCount;
 }
 
+void deleteDriverPin(String driverId, int driverPinIndex)
+{
+	DriverPin * _driverPin = getDriverPinByDriverId(driverId, driverPinIndex);
+
+	if (_driverPin == nullptr) return;
+
+	driverPinCount--;
+
+	DriverPin * newDriverPins = new DriverPin[driverPinCount];
+	DriverPin * tempDriverPins = driverPins;
+	driverPins = newDriverPins;
+
+	for (int j = 0; j < driverPinCount; j++)
+	{
+		if (&tempDriverPins[j] != _driverPin)
+		{
+			driverPins[j] = tempDriverPins[j];
+		}
+	}
+
+
+	if (tempDriverPins != nullptr)
+	{
+		delete[] tempDriverPins;
+	}
+
+	return;
+}
+
+
 //заполнить структуру PinDriverInfo для драйвера driverId пина driverPinIndex
 bool getDriverPinInfo(String driverId, int driverPinIndex, PinDriverInfo * pinDriverInfo)
 {
@@ -717,7 +754,7 @@ bool getDriverPinInfo(String driverId, int driverPinIndex, PinDriverInfo * pinDr
 
 	if (driverPin == nullptr)  return false;
 
-	Pin * pin = getPin(driverPin->GPIONumber);
+	Pin * pin = getPinByGPIONumber(driverPin->GPIONumber);
 
 	if (pin == nullptr)  return false;
 
@@ -745,7 +782,7 @@ int getDriverPinsCount(String driverId)
 	return _count;
 }
 
-DriverPin * getDriverByDriverId(String driverId, int driverPinIndex)
+DriverPin * getDriverPinByDriverId(String driverId, int driverPinIndex)
 {
 	for (int i = 0; i < driverPinCount; i++)
 	{
@@ -760,7 +797,7 @@ DriverPin * getDriverByDriverId(String driverId, int driverPinIndex)
 
 
 //все драйвера у которых есть пины указанного типа
-int getDriversByPinType(int pinType, DriverPin * _driverPins)
+int getDriverPinsByPinType(int pinType, DriverPin * _driverPins)
 {
 	int _count;
 	for (int i = 0; i < driverPinCount; i++)
@@ -787,7 +824,7 @@ int getDriversByPinType(int pinType, DriverPin * _driverPins)
 
 
 //все драйвера которые используют этот пин
-int getDriversByGPIONumber(int GPIONumber, DriverPin * _driverPins)
+int getDriverPinsByGPIONumber(int GPIONumber, DriverPin * _driverPins)
 {
 	int _count;
 	for (int i = 0; i < driverPinCount; i++)
@@ -821,8 +858,8 @@ int parseI2CAddr(String addrStr)
 	}
 
 	addrStr = addrStr.substring(String("ADDR").length());
-	int _addr = (int)strtol(&addr[0], NULL, 16);
-	if ((_addr <= 0x00) || (_addr > 0xF0) //I2C 7-bit addresses supported and can't be zero
+	int _addr = (int)strtol(&addrStr[0], NULL, 16);
+	if ((_addr <= 0x00) || (_addr > 0xF0)) //I2C 7-bit addresses supported and can't be zero
 	{
 		return -1;
 	}

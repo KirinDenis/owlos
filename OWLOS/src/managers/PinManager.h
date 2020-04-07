@@ -46,7 +46,7 @@ typedef struct DriverPin
 	uint16_t driverPinType; // хранит типы подключенных к данному пину драйверов 
 	int8_t driverPinIndex; //  хранит индекс пина подключенных к данному пину драйверов 
 	int driverI2CAddr;    //    хранит порядковый I2CAddr  каждого подключенного  к данному пину драйвера
-	int8_t SDAPinName; 
+	String SDAPinName; 
 };
 
 
@@ -64,27 +64,43 @@ String getPinMap();
 void initPins();
 
 String pinDecodeType(int typeCode);
-
+String decodePinTypes(uint16_t pinType);
 
 
 bool getDriverPinInfo(String driverId, int driverPinIndex, PinDriverInfo * pinDriverInfo);
-String checkDriverPin(String pinName, uint16_t pinType, String SDAPinName = "");
-String setDriverPin(bool checkOnly, String pinName, String driverId, uint16_t driverPinIndex, uint16_t pinType);
-String decodePinTypes(uint16_t pinType);
 
-void freeDriverPin(String driverId, int driverPinIndex);
-Pin getPin();
+String _checkDriverPin(String pinName, uint16_t pinType, String SDAPinName);
+String _setDriverPin(String pinName, String driverId, uint16_t driverPinIndex, uint16_t pinType, String SDAPinName);
+
+String checkDriverPin(String pinName, uint16_t pinType);
+String setDriverPin(String pinName, String driverId, uint16_t driverPinIndex, uint16_t pinType);
+
+
+
+
+
+Pin * getPinByGPIONumber(int GPIONumber);
+Pin * getPinByName(String pinName);
+Pin * getPinByDriverId(String  driverId, int driverPinIndex);
+
 int getPinMode(uint32_t pin);
 
 int getDriverPinsCount(String driverId);
 
-int getDriversByPinType(int pinType, DriverPin * _driverPins);
+
+
+int getDriverPinsByPinType(int pinType, DriverPin * _driverPins);
 int getDriverPinsByGPIONumber(int GPIONumber, DriverPin * _driverPins);
+
 DriverPin * getDriverPinByDriverId(String  driverId, int driverPinIndex);
 
-String setDriverPinMode(String driverId, int driverPin, int mode);
-String driverPinWrite(String driverId, int driverPin, int data);
-int driverPinRead(String driverId, int driverPin);
+
+String setDriverPinMode(String driverId, int driverPinIndex, int mode);
+String driverPinWrite(String driverId, int driverPinIndex, int data);
+int driverPinRead(String driverId, int driverPinIndex);
+
+int addDriverPin(DriverPin driverPin);
+void deleteDriverPin(String driverId, int driverPinIndex);
 
 int parseI2CAddr(String addrStr);
 
