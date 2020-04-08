@@ -386,24 +386,29 @@ bool driversSaveList()
 		{
 			driverlist += String(driversList[i]->getType()) + ";" + driversList[i]->id + ";";
 
-			count = getDriverPinsByDriverId(driversList[i]->id, driverPins);
-			for (int j = 0; j < count; j++)
+			count = getDriverPinsByDriverId(driversList[i]->id, &driverPins);
+			if (count > 0)
 			{
+				for (int j = 0; j < count; j++)
+				{
 
-				if (driverPins[j].driverPinType != I2CADDR_MASK)
-				{
-					driverlist += driverPins[j].name;
-				}
-				else
-				{
-					driverlist += "ADDR0x" + String(driverPins[j].driverI2CAddr, HEX);
-				}
+					if (driverPins[j].driverPinType != I2CADDR_MASK)
+					{
+						driverlist += driverPins[j].name;
+					}
+					else
+					{
+						driverlist += "ADDR0x" + String(driverPins[j].driverI2CAddr, HEX);
+					}
 
-				if (j < count - 1)
-				{
-					driverlist += pinDelimiter;
+					if (j < count - 1)
+					{
+						driverlist += pinDelimiter;
+					}
 				}
+				delete[] driverPins;
 			}
+			
 			debugOut("D_INFO_NEXT", "");
 			driverlist += ";\n";
 		}
@@ -817,14 +822,14 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 
 String driversChangePin(String pinName, String driverId, int driverPinIndex)
 {
-	String result = checkDriverPin(pinName, NO_MASK);
+	//String result = checkDriverPin(pinName, NO_MASK);
 
-	if (result.length() != 0)
-	{
-		return result;
-	}
+	//if (result.length() != 0)
+	//{
+	//	return result;
+	//}
 
-	result = setDriverPin(pinName, driverId, driverPinIndex, NO_MASK);
+	String result = setDriverPin(pinName, driverId, driverPinIndex, NO_MASK);
 	if (result.length() != 0)
 	{
 		return result;

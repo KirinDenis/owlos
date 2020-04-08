@@ -61,6 +61,8 @@ String getPinMap()
 
 	String result = "";
 	DriverPin * _driverPins = nullptr;
+
+
 	int _count = 0;
 
 	for (int i = 0; i < pinCount; i++)
@@ -73,7 +75,9 @@ String getPinMap()
 		result += "chipnumber=" + String(pins[i].chipNumber) + "\n";
 		result += "neighbourpin=" + String(pins[i].neighbourPin) + "\n";
 		result += "location=" + pins[i].location + "\n";
-		_count = getDriverPinsByGPIONumber(pins[i].GPIONumber, _driverPins);
+		_count = getDriverPinsByGPIONumber(pins[i].GPIONumber, &_driverPins);
+
+
 		if (_count > 0)
 		{
 			for (int j = 0; j < _count; j++)
@@ -86,7 +90,7 @@ String getPinMap()
 			}
 			delete[] _driverPins;
 		}
-		
+
 		//for (int j = 0; j < PIN_MASK_COUNT; j++)
 		//{
 		//	if (pins[i].pinTypes[j].type == NO_MASK)
@@ -271,20 +275,28 @@ String _checkDriverPin(String pinName, uint16_t pinType, String SDAPinName)
 				return "bad I2C address " + pinName + "\n";
 			}
 			Serial.println("check 4");
-			_count = getDriverPinsByPinType(pinType, _driverPins);
+			
+			_count = getDriverPinsByPinType(pinType, &_driverPins);
 			Serial.println("check 41");
 			if (_count > 0) //уже есть I2C адерса 
 			{
+				Serial.println(_driverPins[0].driverI2CAddr);
 				Serial.println("check 42");
 				for (int i = 0; i < _count; i++)
 				{
 					Serial.println("check 43");
+					Serial.println(_driverPins[i].driverI2CAddr);
+					Serial.println(_driverPins[i].SDAPinName);
+					Serial.println("---------------check 43");
 					if ((_driverPins[i].driverI2CAddr == _addr) && (_driverPins[i].SDAPinName.equals(SDAPinName)))
 					{
 						Serial.println("check 44");
-						return "I2C address " + pinName + " is busy of " + _driverPins->driverId + " driver on " + SDAPinName + " SDA channel\n";
+						String result = "I2C address " + pinName + " is busy of " + _driverPins->driverId + " driver on " + SDAPinName + " SDA channel\n";
+						delete[] _driverPins;
+						return result;
 					}
 				}
+				delete[] _driverPins;
 			}
 			Serial.println("check 45");
 			return "";
@@ -295,19 +307,24 @@ String _checkDriverPin(String pinName, uint16_t pinType, String SDAPinName)
 		}
 	}
 	Serial.println("check 5");
-	_count = getDriverPinsByGPIONumber(pin->GPIONumber, _driverPins);
+	_count = getDriverPinsByGPIONumber(pin->GPIONumber, &_driverPins);
 	Serial.println("check 6");
 	if (_count > 0) //если пин кем то занят
 	{
 		if (((pinType & SDA_MASK) || (pinType & SCL_MASK) || (pinType & VCC5_MASK) || (pinType & VCC33_MASK) || (pinType & GND_MASK)) == 0)
-					{
-						return "pin " + pinName + " busy by " + _driverPins[0].driverId + " as pin index " + String(_driverPins[0].driverPinIndex) + "\n";
-					}
+		{
+			String result = "pin " + pinName + " busy by " + _driverPins[0].driverId + " as pin index " + String(_driverPins[0].driverPinIndex) + "\n";
+			delete[] _driverPins;
+			return result;
+		}
+		delete[] _driverPins;
 	}
 	Serial.println("check 7");
+	Serial.println("check 7 " + String(pin->pinTypes));
+	Serial.println("check 7 " + String(pinType));
 	if (!pinTypeSupported(pin->pinTypes, pinType))
 	{
-		return "pin " + pinName + " not compatable with type " + decodePinTypes(pinType) +"\n";
+		return "pin " + pinName + " not compatable with type " + decodePinTypes(pinType) + "\n";
 	}
 	Serial.println("check 8");
 	return "";
@@ -321,6 +338,13 @@ String checkDriverPin(String pinName, uint16_t pinType)
 String _setDriverPin(String pinName, String driverId, uint16_t driverPinIndex, uint16_t pinType, String SDAPinName)
 {
 	Serial.println("set driver pin 1");
+	DriverPin * _driverPin = getDriverPinByDriverId(driverId, driverPinIndex);
+	if (_driverPin != nullptr)
+	{		
+		pinType = _driverPin->driverPinType;
+		SDAPinName = _driverPin->SDAPinName;
+		Serial.println("set re type " + String(pinType));
+	}
 	String result = _checkDriverPin(pinName, pinType, SDAPinName);
 	Serial.println("set driver pin 2");
 	if (result.length() != 0)
@@ -330,7 +354,7 @@ String _setDriverPin(String pinName, String driverId, uint16_t driverPinIndex, u
 	Serial.println("set driver pin 3");
 	Pin * pin = getPinByName(pinName);
 	Serial.println("set driver pin 4");
-	DriverPin * _driverPin = getDriverPinByDriverId(driverId, driverPinIndex);
+	
 	Serial.println("set driver pin 5");
 
 	if (_driverPin != nullptr)
@@ -339,6 +363,7 @@ String _setDriverPin(String pinName, String driverId, uint16_t driverPinIndex, u
 		if (pin != nullptr) //driver pin exists and new pin exists //D, A, VCCx or GND
 		{
 			//set drive to other pin
+			_driverPin->name = pinName;
 			_driverPin->GPIONumber = pin->GPIONumber;
 			return "";
 		}
@@ -349,6 +374,7 @@ String _setDriverPin(String pinName, String driverId, uint16_t driverPinIndex, u
 				return "the pin not exists and pin type not address\n";
 			}
 			//change I2C address or channel 
+			_driverPin->name = pinName;
 			_driverPin->driverI2CAddr = parseI2CAddr(pinName);
 			_driverPin->SDAPinName = SDAPinName;
 			return "";
@@ -360,13 +386,13 @@ String _setDriverPin(String pinName, String driverId, uint16_t driverPinIndex, u
 		if (pin != nullptr) //driver pin not exists create new 
 		{
 			Serial.println("set driver pin 71");
-			_driverPin = new DriverPin;
-			_driverPin->name = pin->name;
-			_driverPin->GPIONumber = pin->GPIONumber;
-			_driverPin->driverId = driverId;
-			_driverPin->driverPinType = pinType;
-			_driverPin->driverPinIndex = driverPinIndex;
-			addDriverPin(*_driverPin);
+			DriverPin driverPin;
+			driverPin.name = pin->name;
+			driverPin.GPIONumber = pin->GPIONumber;
+			driverPin.driverId = driverId;
+			driverPin.driverPinType = pinType;
+			driverPin.driverPinIndex = driverPinIndex;
+			addDriverPin(driverPin);
 			return "";
 		}
 		else //new I2C address 
@@ -376,185 +402,23 @@ String _setDriverPin(String pinName, String driverId, uint16_t driverPinIndex, u
 				return "the pin not exists and pin type not address\n";
 			}
 			Serial.println("set driver pin 72");
-			_driverPin = new DriverPin;
-			_driverPin->name = pinName;
-			_driverPin->GPIONumber = -1;
-			_driverPin->driverId = driverId;
-			_driverPin->driverPinType = pinType;
-			_driverPin->driverPinIndex = driverPinIndex;
+			DriverPin driverPin;
+			driverPin.name = pinName;
+			driverPin.GPIONumber = -1;
+			driverPin.driverId = driverId;
+			driverPin.driverPinType = pinType;
+			driverPin.driverPinIndex = driverPinIndex;
 			Serial.println("set driver pin 73");
-			_driverPin->driverI2CAddr = parseI2CAddr(pinName);
-			_driverPin->SDAPinName = SDAPinName;
-			addDriverPin(*_driverPin);
+			driverPin.driverI2CAddr = parseI2CAddr(pinName);
+			driverPin.SDAPinName = SDAPinName;
+			addDriverPin(driverPin);
 			return "";
 		}
 	}
 	Serial.println("set driver pin 8");
 	return "bad pinName, type or driverId\n";
 
-	/*
-	Pin * existsPin = getDriverPin(driverId, driverPinIndex);
-	int existsDriverIndex = -1;
-	if (existsPin != nullptr)
-	{
-		Serial.println("Exists");
-		for (int j = 0; j < PIN_DRIVER_COUNT; j++)
-		{
-			if ((existsPin->driverId[j].equals(driverId)) && (existsPin->driverPinIndex[j] == driverPinIndex))
-			{
-				existsDriverIndex = j;
-				pinType = existsPin->driverPinType[j];
-				break;
-			}
 
-
-			if ((existsPin->pinTypes) & SDA_MASK)
-			{
-				if ((existsPin->driverId[j].equals(driverId)) && (existsPin->driverI2CAddrPinIndex[j] == driverPinIndex))
-				{
-					existsDriverIndex = j;
-					pinType = I2CADDR_MASK;
-					break;
-				}
-			}
-
-
-		}
-		if (existsDriverIndex == -1)
-		{
-			return "bad exists driver info, at pin " + existsPin->name;
-		}
-	}
-
-
-	Serial.println(String(pinType));
-	if (pinType & I2CADDR_MASK)
-	{
-		return setDriverI2CAddr(checkOnly, pinName, driverId, driverPinIndex);
-	}
-	else
-	{
-		for (int i = 0; i < pinCount; i++)
-		{
-			if (pins[i].name.equals(pinName))
-			{
-				if (pinTypeSupported(pins[i], pinType))
-				{
-
-					if ((pinType & SDA_MASK) || (pinType & SCL_MASK))
-					{
-						int freeDriverIdIndex = -1;
-						for (int j = 0; j < PIN_DRIVER_COUNT; j++)
-						{
-							if (pins[i].driverId[j].length() == 0)
-							{
-								if (freeDriverIdIndex == -1)
-								{
-									freeDriverIdIndex = j;
-								}
-							}
-
-							//прjверка занят ли пин другим типом драйвера (отличного от совместимого с I2C)
-
-							if (((pins[i].driverPinType[j] & pinType) == 0) && (pins[i].driverPinType[j] != 0))
-							{
-								return "pin " + pinName + " is busy by driver " + pins[i].driverId[j] + " as non I2C pin (SDA or SCL)";
-							}
-						}
-						if (freeDriverIdIndex == -1)
-						{
-							return "to many devices to one pin, limit: " + String(PIN_DRIVER_COUNT);
-						}
-						//TODO: проверить соседей
-						if (!checkOnly)
-						{
-							pins[i].driverId[freeDriverIdIndex] = driverId;
-							pins[i].driverPinType[freeDriverIdIndex] = pinType;
-							pins[i].driverPinIndex[freeDriverIdIndex] = driverPinIndex;
-						}
-						return "";
-					}
-					else
-
-
-						//на цифровом или аналоговом пине может быть только один драйвер
-						if ((pinType & DIGITAL_O_MASK) || (pinType & DIGITAL_I_MASK) || (pinType & ANALOG_O_MASK) || (pinType & ANALOG_I_MASK))
-						{
-							if ((pins[i].driverId[0].length() == 0)) //one digital on one pin
-							{
-								if (!checkOnly)
-								{
-									if (existsPin != nullptr)
-									{
-										existsPin->driverId[existsDriverIndex] = "";
-										existsPin->driverPinIndex[existsDriverIndex] = -1;
-										pins[i].driverPinType[0] = existsPin->driverPinType[0];
-									}
-									else
-									{
-										pins[i].driverPinType[0] = pinType;
-									}
-
-									pins[i].driverId[0] = driverId;
-									pins[i].driverPinType[0] = pinType;
-									pins[i].driverPinIndex[0] = driverPinIndex;
-								}
-								return "";
-							}
-							else
-							{
-								return "pin " + pinName + " is busy by " + pins[i].driverId[0] + " driver, as pin number " + String(pins[i].driverPinIndex[0]) + " (one digital device can use one digital pin)";
-							}
-						}
-						else
-
-
-							if ((pinType & GND_MASK) || (pinType & VCC33_MASK) || (pinType & VCC5_MASK))
-							{
-								int freeDriverIdIndex = -1;
-								for (int j = 0; j < PIN_DRIVER_COUNT; j++)
-								{
-									if (pins[i].driverId[j].length() == 0)
-									{
-										freeDriverIdIndex = j;
-										break;
-									}
-								}
-								if (freeDriverIdIndex == -1)
-								{
-									return "to many devices to one pin, limit: " + String(PIN_DRIVER_COUNT);
-								}
-								/* TODO change GND and VCC pins
-								if (existsPin != nullptr)
-								{
-									existsPin->driverId[0] = "";
-									existsPin->driverPinIndex[0] = -1;
-									pins[i].driverPinType[0] = existsPin->driverPinType[0];
-								}
-								else
-								{
-									pins[i].driverPinType[0] = pinType;
-								}
-
-								if (!checkOnly)
-								{
-									pins[i].driverId[freeDriverIdIndex] = driverId;
-									pins[i].driverPinType[freeDriverIdIndex] = pinType;
-									pins[i].driverPinIndex[freeDriverIdIndex] = driverPinIndex;
-								}
-								return "";
-							}
-
-				}
-				else
-				{
-					return "pin " + pinName + " not compatable with " + driverId + " driver, as pin number " + String(driverPinIndex) + " type " + decodePinTypes(pinType);
-				}
-			}
-		}
-	}
-	return "pin " + pinName + " is not exists";
-								*/
 }
 
 String setDriverPin(String pinName, String driverId, uint16_t driverPinIndex, uint16_t pinType)
@@ -601,7 +465,7 @@ String driverPinWrite(String driverId, int driverPinIndex, int data)
 
 	DriverPin * _driverPin = getDriverPinByDriverId(driverId, driverPinIndex);
 	if (_driverPin != nullptr)
-		
+
 	{
 		int mode = getPinMode(_driverPin->GPIONumber);
 		if (mode == OUTPUT)
@@ -626,10 +490,10 @@ String driverPinWrite(String driverId, int driverPinIndex, int data)
 				}
 			}
 			return "";
-		}
+	}
 
 		return "can't write pin mode for:" + driverId + " pin:" + String(_driverPin->driverPinIndex) + " to data=:" + String(data);
-	}
+}
 	return "driverId " + driverId + " or pin index " + String(driverPinIndex) + " doesn't exists";
 }
 
@@ -737,11 +601,13 @@ void deleteDriverPin(String driverId, int driverPinIndex)
 	DriverPin * tempDriverPins = driverPins;
 	driverPins = newDriverPins;
 
+	int count = 0;
 	for (int j = 0; j < driverPinCount; j++)
 	{
 		if (&tempDriverPins[j] != _driverPin)
 		{
-			driverPins[j] = tempDriverPins[j];
+			driverPins[count] = tempDriverPins[j];
+			count++;
 		}
 	}
 
@@ -782,43 +648,73 @@ DriverPin * getDriverPinByDriverId(String driverId, int driverPinIndex)
 	return nullptr;
 }
 
+bool copyDriverPins(DriverPin dest, DriverPin source)
+{
+
+	dest.name = source.name;
+	dest.GPIONumber = source.GPIONumber;
+	dest.driverId = source.driverId;
+	dest.driverPinType = source.driverPinType;
+	dest.driverPinIndex = source.driverPinIndex;
+	dest.driverI2CAddr = source.driverI2CAddr;
+	dest.SDAPinName = source.SDAPinName;
+
+	return true;
+}
+
 
 //все драйвера у которых есть пины указанного типа
-int getDriverPinsByPinType(int pinType, DriverPin * _driverPins)
+int getDriverPinsByPinType(int pinType, DriverPin ** _driverPins)
 {
 	int _count = 0;
 	for (int i = 0; i < driverPinCount; i++)
 	{
-		if (driverPins[i].driverPinType == pinType)
+		if (driverPins[i].driverPinType & pinType)
 		{
 			_count++;
 		}
 	}
-
 	if (_count > 0)
-	{		
-		_driverPins = new DriverPin[_count];
+	{
+
+		DriverPin * __driverPins = new DriverPin[_count];
 		_count = 0;
 		for (int i = 0; i < driverPinCount; i++)
 		{
-			if (driverPins[i].driverPinType == pinType)
+			if (driverPins[i].driverPinType & pinType)
 			{
-				_driverPins[_count] = driverPins[i];
+				__driverPins[_count] = driverPins[i];
 				_count++;
 			}
 		}
+		*_driverPins = __driverPins;
 	}
 	return _count;
 }
 
+/*
+ Serial.println("g1");
+
+   Pin * __pin = new Pin[pinCount];
+  //* _pin = new Pin[pinCount];
+	Serial.println("g2");
+	for (int i = 0; i < pinCount; i++)
+	{
+	  Serial.println("g3");
+		 __pin[i] = pinsPtr[i];
+	}
+	* _pin = __pin;
+	Serial.println("g4");
+}
+
+*/
 
 //все драйвера которые используют этот пин
-int getDriverPinsByGPIONumber(int GPIONumber, DriverPin * _driverPins)
+int getDriverPinsByGPIONumber(int GPIONumber, DriverPin  **_driverPins)
 {
 	int _count = 0;
 	for (int i = 0; i < driverPinCount; i++)
 	{
-		//Serial.println("getDriverPinsByGPIONumber 2");
 		if (driverPins[i].GPIONumber == GPIONumber)
 		{
 			_count++;
@@ -826,27 +722,27 @@ int getDriverPinsByGPIONumber(int GPIONumber, DriverPin * _driverPins)
 	}
 	if (_count > 0)
 	{
-		
-		_driverPins = new DriverPin[_count];
+
+		DriverPin * __driverPins = new DriverPin[_count];
 		_count = 0;
 		for (int i = 0; i < driverPinCount; i++)
 		{
 			if (driverPins[i].GPIONumber == GPIONumber)
 			{
-				_driverPins[_count] = driverPins[i];
+				__driverPins[_count] = driverPins[i];
 				_count++;
 			}
 		}
+		*_driverPins = __driverPins;
 	}
 	return _count;
 }
 
-int getDriverPinsByDriverId(String driverId, DriverPin * _driverPins)
+int getDriverPinsByDriverId(String driverId, DriverPin ** _driverPins)
 {
 	int _count = 0;
 	for (int i = 0; i < driverPinCount; i++)
 	{
-		//Serial.println("getDriverPinsByGPIONumber 2");
 		if (driverPins[i].driverId == driverId)
 		{
 			_count++;
@@ -855,16 +751,17 @@ int getDriverPinsByDriverId(String driverId, DriverPin * _driverPins)
 	if (_count > 0)
 	{
 
-		_driverPins = new DriverPin[_count];
+		DriverPin * __driverPins = new DriverPin[_count];
 		_count = 0;
 		for (int i = 0; i < driverPinCount; i++)
 		{
 			if (driverPins[i].driverId == driverId)
 			{
-				_driverPins[_count] = driverPins[i];
+				__driverPins[_count] = driverPins[i];
 				_count++;
 			}
 		}
+		*_driverPins = __driverPins;
 	}
 	return _count;
 }

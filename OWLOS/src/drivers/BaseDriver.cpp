@@ -117,9 +117,9 @@ String BaseDriver::getAllProperties()
 		if (driverPin != nullptr)
 		{
 			debugOut("PIN", "NOT NULL");
-			pins += "pin" + String(i) + "=" + driverPin->name + "\n";
-			pins += "pintype" + String(i) + "=" + driverPin->driverPinType  + "\n";
-		    pins += "pintypedecoded" + String(i) + "=" + decodePinTypes(driverPin->driverPinType) + "\n";
+			pins += "pin" + String(i) + "=" + driverPin->name + "//s\n";
+			//pins += "pintype" + String(i) + "=" + driverPin->driverPinType  + "\n";
+		    pins += "pintype" + String(i) + "=" + decodePinTypes(driverPin->driverPinType) + "//r\n";
 		}
 		else
 		{

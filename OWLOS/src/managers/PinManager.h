@@ -77,9 +77,9 @@ int getDriverPinsCount(String driverId);
 
 
 
-int getDriverPinsByPinType(int pinType, DriverPin * _driverPins);
-int getDriverPinsByGPIONumber(int GPIONumber, DriverPin * _driverPins);
-int getDriverPinsByDriverId(String GPIONumber, DriverPin * _driverPins);
+int getDriverPinsByPinType(int pinType, DriverPin **_driverPins);
+int getDriverPinsByGPIONumber(int GPIONumber, DriverPin **_driverPins);
+int getDriverPinsByDriverId(String GPIONumber, DriverPin **_driverPins);
 
 DriverPin * getDriverPinByDriverId(String  driverId, int driverPinIndex);
 
