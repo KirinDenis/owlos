@@ -112,14 +112,14 @@ String BaseDriver::getAllProperties()
 	String pins = "";
 	int count = getDriverPinsCount(id);
 	for (int i = 0; i < count; i++)
-	{
-		PinDriverInfo pinDriverInfo;
-		if (getDriverPinInfo(id, i, &pinDriverInfo))
+	{		
+		DriverPin * driverPin = getDriverPinByDriverId(id, i);
+		if (driverPin != nullptr)
 		{
 			debugOut("PIN", "NOT NULL");
-			pins += "pin" + String(i) + "=" + pinDriverInfo.name + "\n";
-			pins += "pintype" + String(i) + "=" + pinDriverInfo.driverPinType  + "\n";
-		    pins += "pintypedecoded" + String(i) + "=" + decodePinTypes(pinDriverInfo.driverPinType) + "\n";		 
+			pins += "pin" + String(i) + "=" + driverPin->name + "\n";
+			pins += "pintype" + String(i) + "=" + driverPin->driverPinType  + "\n";
+		    pins += "pintypedecoded" + String(i) + "=" + decodePinTypes(driverPin->driverPinType) + "\n";
 		}
 		else
 		{
@@ -178,11 +178,11 @@ String BaseDriver::onMessage(String _topic, String _payload, int8_t transportMas
 {
 	if (_topic.indexOf(topic + "/getpintype") == 0)
 	{
-		int pinNumber = parsePinNumber(_topic, "/getpintype");
-		PinDriverInfo pinDriverInfo;
-		if (getDriverPinInfo(id, pinNumber, &pinDriverInfo))		
+		int pinIndex = parsePinNumber(_topic, "/getpintype");
+		DriverPin * driverPin = getDriverPinByDriverId(id, pinIndex);
+		if (driverPin != nullptr)				
 		{
-			return String(pinDriverInfo.driverPinType);
+			return String(driverPin->driverPinType);
 		}
 		else
 		{
@@ -192,12 +192,11 @@ String BaseDriver::onMessage(String _topic, String _payload, int8_t transportMas
 	else	
 		if (_topic.indexOf(topic + "/getpin") == 0)
 		{
-			int pinNumber = parsePinNumber(_topic, "/getpin");
-			
-			PinDriverInfo pinDriverInfo;
-			if (getDriverPinInfo(id, pinNumber, &pinDriverInfo))
+			int pinIndex = parsePinNumber(_topic, "/getpin");
+			DriverPin * driverPin = getDriverPinByDriverId(id, pinIndex);
+			if (driverPin != nullptr)
 			{
-				return String(pinDriverInfo.name);
+				return String(driverPin->name);
 			}
 			else
 			{
@@ -207,8 +206,8 @@ String BaseDriver::onMessage(String _topic, String _payload, int8_t transportMas
 		else
 			if (_topic.indexOf(topic + "/setpin") == 0)
 			{
-				int pinNumber = parsePinNumber(_topic, "/setpin");
-				return  driversChangePin(_payload, id, pinNumber);
+				int pinIndex = parsePinNumber(_topic, "/setpin");
+				return  driversChangePin(_payload, id, pinIndex);
 			}
 	//ID --------------------------------------------------------------------
 	if (String(topic + "/getid").equals(_topic))

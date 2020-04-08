@@ -60,24 +60,26 @@ bool ValveDriver::init()
 	if (id.length() == 0) id = DRIVER_ID;
 	BaseDriver::init(id);
 
-	PinDriverInfo closePinDriverInfo;    //командный пин "закрыть"
-	PinDriverInfo openPinDriverInfo;     //командный пин "открыть"
-	PinDriverInfo positionPinDriverInfo; //пин сенсора положения 
-	if ((getDriverPinInfo(id, CLOSE_PIN_INDEX, &closePinDriverInfo))
-		&& (getDriverPinInfo(id, OPEN_PIN_INDEX, &openPinDriverInfo))
-		&& (getDriverPinInfo(id, POSITION_PIN_INDEX, &positionPinDriverInfo)))
+	/*
+	DriverPin * closePinDriverInfo = getDriverPinByDriverId(id, CLOSE_PIN_INDEX);    //командный пин "закрыть"
+	DriverPin * openPinDriverInfo = getDriverPinByDriverId(id, OPEN_PIN_INDEX);     //командный пин "открыть"
+	DriverPin * positionPinDriverInfo = getDriverPinByDriverId(id, POSITION_PIN_INDEX); //пин сенсора положения
+	if ((closePinDriverInfo != nullptr)
+		&& (openPinDriverInfo != nullptr)
+		&& (positionPinDriverInfo != nullptr))
 	{
-		if ((setDriverPinMode(id, CLOSE_PIN_INDEX, OUTPUT).length() == 0)
-			&& (setDriverPinMode(id, OPEN_PIN_INDEX, OUTPUT).length() == 0)
-			&& (setDriverPinMode(id, POSITION_PIN_INDEX, INPUT).length() == 0))
-		{
-			//PinManager разрешил использования всех необходимых Valve пинов, отправляем две команды стоп
-			driverPinWrite(id, CLOSE_PIN_INDEX, MOTOR_STOP_COMMAND);
-			driverPinWrite(id, OPEN_PIN_INDEX, MOTOR_STOP_COMMAND);
-			//Valve готова
-			return true;
-		}
+	*/
+	if ((setDriverPinMode(id, CLOSE_PIN_INDEX, OUTPUT).length() == 0)
+		&& (setDriverPinMode(id, OPEN_PIN_INDEX, OUTPUT).length() == 0)
+		&& (setDriverPinMode(id, POSITION_PIN_INDEX, INPUT).length() == 0))
+	{
+		//PinManager разрешил использования всех необходимых Valve пинов, отправляем две команды стоп
+		driverPinWrite(id, CLOSE_PIN_INDEX, MOTOR_STOP_COMMAND);
+		driverPinWrite(id, OPEN_PIN_INDEX, MOTOR_STOP_COMMAND);
+		//Valve готова
+		return true;
 	}
+	//}
 	//Valve не может быть использована
 	return false;
 }
@@ -214,29 +216,19 @@ bool ValveDriver::setPosition(int _position)
 {
 	// valve stop commands, valve has veto for all output pins LOW level
 	bool result = false;
-	PinDriverInfo closePinDriverInfo;    //командный пин "закрыть"
-	PinDriverInfo openPinDriverInfo;     //командный пин "открыть"
-
-	if ((getDriverPinInfo(id, CLOSE_PIN_INDEX, &closePinDriverInfo))
-		&& (getDriverPinInfo(id, OPEN_PIN_INDEX, &openPinDriverInfo)))
-
+	//команда стоп			
+	if ((driverPinWrite(id, CLOSE_PIN_INDEX, MOTOR_STOP_COMMAND).length() == 0) && (driverPinWrite(id, OPEN_PIN_INDEX, MOTOR_STOP_COMMAND).length() == 0))
 	{
-		if ((setDriverPinMode(id, CLOSE_PIN_INDEX, OUTPUT).length() == 0)
-			&& (setDriverPinMode(id, OPEN_PIN_INDEX, OUTPUT).length() == 0))
 
-		{
-			//команда стоп			
-			driverPinWrite(id, CLOSE_PIN_INDEX, MOTOR_STOP_COMMAND);
-			driverPinWrite(id, OPEN_PIN_INDEX, MOTOR_STOP_COMMAND);
-			//закрыть заслонку
-			if (_position == 0)
-			{ // closing valve
-				toMinMaxPosition(CLOSE_PIN_INDEX);
-				minimumphysicalposition = physicalposition;
-				filesWriteInt(id + ".minimumphysicalposition", minimumphysicalposition);
-				result = onInsideChange("minimumphysicalposition", String(minimumphysicalposition));
-			}
-			else 
+		//закрыть заслонку
+		if (_position == 0)
+		{ // closing valve
+			toMinMaxPosition(CLOSE_PIN_INDEX);
+			minimumphysicalposition = physicalposition;
+			filesWriteInt(id + ".minimumphysicalposition", minimumphysicalposition);
+			result = onInsideChange("minimumphysicalposition", String(minimumphysicalposition));
+		}
+		else
 			//открыть заслонку
 			if (_position == 100)
 			{ // opening valve
@@ -247,34 +239,29 @@ bool ValveDriver::setPosition(int _position)
 			}
 			else return result; // _position must be equal 0 or 100
 			// after mooving
-			position = _position;
-			filesWriteInt(id + ".position", position);
-			onInsideChange("position", String(position));
-			filesWriteInt(id + ".physicalposition", physicalposition);
-			return onInsideChange("physicalposition", String(physicalposition));
-		}
+		position = _position;
+		filesWriteInt(id + ".position", position);
+		onInsideChange("position", String(position));
+		filesWriteInt(id + ".physicalposition", physicalposition);
+		return onInsideChange("physicalposition", String(physicalposition));
+
 	}
 	return false;
 }
 
 void ValveDriver::toMinMaxPosition(int _pin)
 {
-	PinDriverInfo positionPinDriverInfo; //пин сенсора положения 
-	if (getDriverPinInfo(id, POSITION_PIN_INDEX, &positionPinDriverInfo))
+	physicalposition = driverPinRead(id, POSITION_PIN_INDEX);
+	if (driverPinWrite(id, _pin, MOTOR_START_COMMAND).length() == 0)
 	{
-		if (setDriverPinMode(id, POSITION_PIN_INDEX, INPUT).length() == 0)
+		for (int i = 0; i < 100; i++)
 		{
-			physicalposition = driverPinRead(id, POSITION_PIN_INDEX);
-			driverPinWrite(id, _pin, MOTOR_START_COMMAND);
-			for (int i = 0; i < 100; i++)
-			{
-				delay(500); // mooving
-				newphysicalposition = driverPinRead(id, POSITION_PIN_INDEX);
-				if (newphysicalposition == physicalposition) break; // valve is stoped
-				physicalposition = newphysicalposition;
-			} // for
-			digitalWrite(_pin, MOTOR_STOP_COMMAND); // stop command
-		}
+			delay(500); // mooving
+			newphysicalposition = driverPinRead(id, POSITION_PIN_INDEX);
+			if (newphysicalposition == physicalposition) break; // valve is stoped
+			if (newphysicalposition == -1) break;
+			physicalposition = newphysicalposition;
+		} // for
+		digitalWrite(_pin, MOTOR_STOP_COMMAND); // stop command
 	}
-}
-;
+};

@@ -92,7 +92,7 @@ class BaseDriver
     //The driver must check here physical state and preload property values stored by Flash file system (if exists)
     virtual bool init(String _id);
 
-	virtual void del();
+	void del();
 
     //Method begin(..) calls after(IF) transport is available and Unit "know" self and drivers ID's and Topic's (see: Main::Loop()->DriversBegin())
     virtual bool begin(String _topic);

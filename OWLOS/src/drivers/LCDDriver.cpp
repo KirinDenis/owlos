@@ -67,12 +67,12 @@ bool LCDDriver::init()
 	getCols();
 	getRows();
 	//получаем I2C Slave адрес для обращения к текущему LCD на I2C шине
-	PinDriverInfo pinDriverInfo;
-	if (getDriverPinInfo(id, I2CADDR_INDEX, &pinDriverInfo))
+	DriverPin * pinDriverInfo = getDriverPinByDriverId(id, I2CADDR_INDEX);
+	if (pinDriverInfo == nullptr)
 	{
 		//если пользователь задал адрес, инкапсулируем класс обслуживающий LCD и пробуем работать с дисплеем через указанный порт
-		debugOut("LCD", String(pinDriverInfo.driverI2CAddr));
-		lcd = new LiquidCrystal_I2C(pinDriverInfo.driverI2CAddr, cols, rows); //port = 0x27 for PCF8574T and PCF8574AT for 0x3F, 16 cols, 2 raws
+		debugOut("LCD", String(pinDriverInfo->driverI2CAddr));
+		lcd = new LiquidCrystal_I2C(pinDriverInfo->driverI2CAddr, cols, rows); //port = 0x27 for PCF8574T and PCF8574AT for 0x3F, 16 cols, 2 raws
 		lcd->init();  //init properies
 		//мы не проверяем удалось ли подключить дисплей, пробуем применить настройки, пользователь визуально определит - прошло ли действие успешно   
 		getDisplay();

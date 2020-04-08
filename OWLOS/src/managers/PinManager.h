@@ -41,6 +41,7 @@ typedef struct Pin
 typedef struct DriverPin
 {
 	//Информация о подключенных на данный момент к пину драйверах (в зависимости от поддерживаемых типов к пину можно подключить несколько драйверов)
+	String name = "";
 	int GPIONumber = -1;
 	String driverId; // хранит id подключенных к данному пину драйверов 
 	uint16_t driverPinType; // хранит типы подключенных к данному пину драйверов 
@@ -50,24 +51,11 @@ typedef struct DriverPin
 };
 
 
-//структура для передачи данных о пине в драйвер, так как на одном пине может быть много драйверов
-typedef struct PinDriverInfo
-{
-	String name = "";	
-	int8_t GPIONumber = -1;
-	uint16_t driverPinType;
-	int8_t driverPinIndex;
-	int driverI2CAddr;
-};
-
 String getPinMap();
 void initPins();
 
-String pinDecodeType(int typeCode);
 String decodePinTypes(uint16_t pinType);
 
-
-bool getDriverPinInfo(String driverId, int driverPinIndex, PinDriverInfo * pinDriverInfo);
 
 String _checkDriverPin(String pinName, uint16_t pinType, String SDAPinName);
 String _setDriverPin(String pinName, String driverId, uint16_t driverPinIndex, uint16_t pinType, String SDAPinName);
@@ -91,6 +79,7 @@ int getDriverPinsCount(String driverId);
 
 int getDriverPinsByPinType(int pinType, DriverPin * _driverPins);
 int getDriverPinsByGPIONumber(int GPIONumber, DriverPin * _driverPins);
+int getDriverPinsByDriverId(String GPIONumber, DriverPin * _driverPins);
 
 DriverPin * getDriverPinByDriverId(String  driverId, int driverPinIndex);
 

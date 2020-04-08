@@ -46,14 +46,15 @@ bool ActuatorDriver::init()
 	if (id.length() == 0) id = DRIVER_ID;
 	BaseDriver::init(id);
 
-	PinDriverInfo pinDriverInfo;
-	if (getDriverPinInfo(id, PIN0_INDEX, &pinDriverInfo))
+
+	DriverPin * driverPin = getDriverPinByDriverId(id, PIN0_INDEX);    //командный пин "закрыть"
+	if (driverPin != nullptr)
 	{
 		if (setDriverPinMode(id, PIN0_INDEX, OUTPUT).length() == 0)
-		{	
+		{
 			//если используемый пин поддерживает ЦАП, то драйвер актуратора переходит в аналоговый режим
 			//свойство дата 0..1023 (где 1023 уровень логической единицы)
-			setAnalog(pinDriverInfo.driverPinType & ANALOG_O_MASK, false);
+			setAnalog(driverPin->driverPinType & ANALOG_O_MASK, false);
 			//на случай перезагрузки, в файле сохранено последнее состояние актуатора
 			getData(); //прочесть последнее состояние 
 			setData(data, false); //вернуть последнее запомненное состояние 
@@ -63,16 +64,6 @@ bool ActuatorDriver::init()
 	return false;
 }
 
-void ActuatorDriver::del()
-{
-	PinDriverInfo pinDriverInfo;
-	if (getDriverPinInfo(id, PIN0_INDEX, &pinDriverInfo))
-	{
-		pinMode(pinDriverInfo.GPIONumber, INPUT);
-	}
-	BaseDriver::del();
-	return;
-}
 
 bool ActuatorDriver::begin(String _topic)
 {
@@ -101,7 +92,7 @@ String ActuatorDriver::getAllProperties()
 {
 	String result = BaseDriver::getAllProperties();
 	result += "analog=" + String(analog) + "//br\n";
-	result += "data=" + String(data) + "//i\n";	
+	result += "data=" + String(data) + "//i\n";
 	return result;
 }
 
@@ -126,15 +117,15 @@ String ActuatorDriver::onMessage(String _topic, String _payload, int8_t transpor
 		result = onGetProperty("analog", String(getAnalog()), transportMask);
 	}
 	else
-	if (String(topic + "/getdata").equals(_topic))
-	{
-		result = onGetProperty("data", String(getData()), transportMask);
-	}
-	else
-		if (String(topic + "/setdata").equals(_topic))
+		if (String(topic + "/getdata").equals(_topic))
 		{
-			result = String(setData(std::atoi(_payload.c_str()), true));
+			result = onGetProperty("data", String(getData()), transportMask);
 		}
+		else
+			if (String(topic + "/setdata").equals(_topic))
+			{
+				result = String(setData(std::atoi(_payload.c_str()), true));
+			}
 	return result;
 }
 
@@ -181,18 +172,15 @@ int ActuatorDriver::getData()
 bool ActuatorDriver::setData(int _data, bool doEvent)
 {
 	data = _data;
-	PinDriverInfo pinDriverInfo;
-	if (getDriverPinInfo(id, PIN0_INDEX, &pinDriverInfo))
-	{			
-		if (driverPinWrite(id, PIN0_INDEX, data).length() == 0)
+	if (driverPinWrite(id, PIN0_INDEX, data).length() == 0)
+	{
+		filesWriteInt(id + ".data", data);
+		if (doEvent)
 		{
-			filesWriteInt(id + ".data", data);
-			if (doEvent)
-			{
-				return onInsideChange("data", String(data));
-			}
-			return true;
+			return onInsideChange("data", String(data));
 		}
+		return true;
 	}
+
 	return false;
 };

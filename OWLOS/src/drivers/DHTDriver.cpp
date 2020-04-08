@@ -62,11 +62,11 @@ bool DHTDriver::DHTsetup(int dhttype)
 	//устанавливаем этот флажок - мы попытались настроить DHT - возможно не удачно
 	DHTSetuped = true; 
 	//запрашиваем PIN назначенный DHT
-	PinDriverInfo pinDriverInfo;
-	if (getDriverPinInfo(id, PIN0_INDEX, &pinDriverInfo))
+	DriverPin * pinDriverInfo = getDriverPinByDriverId(id, PIN0_INDEX);
+	if (pinDriverInfo != nullptr)
 	{
 		//если PIN выделен и закреплен за DHT инкапсулируем класс обслуживавший DHT от Adafruit Industries
-		dht = new DHT(pinDriverInfo.GPIONumber, dhttype);
+		dht = new DHT(pinDriverInfo->GPIONumber, dhttype);
 		//стартуем DHT сенсор
 		dht->begin();
 		//пробуем прочесть значение температуры 
