@@ -117,7 +117,7 @@ public:
 	bool setY(int _y, bool doEvent);
 
 private:
-	LiquidCrystal_I2C * lcd;
+	LiquidCrystal_I2C * lcd = nullptr;
 	int cols = 20;
 	int rows = 4;
 	int display = 1;

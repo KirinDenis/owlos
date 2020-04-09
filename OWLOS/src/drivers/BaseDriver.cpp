@@ -205,8 +205,8 @@ String BaseDriver::onMessage(String _topic, String _payload, int8_t transportMas
 		}
 		else
 			if (_topic.indexOf(topic + "/setpin") == 0)
-			{
-				int pinIndex = parsePinNumber(_topic, "/setpin");
+			{				
+				int pinIndex = parsePinNumber(_topic, "/setpin");				
 				return  driversChangePin(_payload, id, pinIndex);
 			}
 	//ID --------------------------------------------------------------------

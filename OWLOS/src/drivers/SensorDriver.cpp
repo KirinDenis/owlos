@@ -124,8 +124,7 @@ bool SensorDriver::publish()
 String SensorDriver::onMessage(String _topic, String _payload, int8_t transportMask)
 {
 	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
-
-	if (!available) return result;
+	if (!result.equals(WrongPropertyName)) return result;
 
 	if (String(topic + "/getanalog").equals(_topic))
 	{

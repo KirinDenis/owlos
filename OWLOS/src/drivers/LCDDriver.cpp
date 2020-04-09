@@ -67,9 +67,12 @@ bool LCDDriver::init()
 	getCols();
 	getRows();
 	//получаем I2C Slave адрес для обращения к текущему LCD на I2C шине
+	debugOut("LCD", "--------------");
+	debugOut("LCD", id);
 	DriverPin * pinDriverInfo = getDriverPinByDriverId(id, I2CADDR_INDEX);
-	if (pinDriverInfo == nullptr)
+	if (pinDriverInfo != nullptr)
 	{
+		debugOut("LCD", "NOT NULL");
 		//если пользователь задал адрес, инкапсулируем класс обслуживающий LCD и пробуем работать с дисплеем через указанный порт
 		debugOut("LCD", String(pinDriverInfo->driverI2CAddr));
 		lcd = new LiquidCrystal_I2C(pinDriverInfo->driverI2CAddr, cols, rows); //port = 0x27 for PCF8574T and PCF8574AT for 0x3F, 16 cols, 2 raws
@@ -101,6 +104,7 @@ bool LCDDriver::init()
 
 		return true;
 	}
+	debugOut("LCD", "NUL NUL NUL");
 	return false;
 }
 //когда сеть доступна
@@ -133,7 +137,16 @@ String LCDDriver::getAllProperties()
 String LCDDriver::onMessage(String _topic, String _payload, int8_t transportMask)
 {
 	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
-	if (!available) return result;
+
+	//обычно драйвер не управляет свойствами пинов, но в данном драйвере адрес I2C порта использован в роли Pin - для совместимости 
+	//с архитектурой, по этой причине необходим отдельный обработчик I2CADDR пина
+	if (String(topic + "/setpin" + String(I2CADDR_INDEX)).equals(_topic))
+	{
+		//base is put the new address to to PinManager
+		result = init(); //init() get Address from PinManger	
+	}
+
+	if (!result.equals(WrongPropertyName)) return result;
 
 	if (String(topic + "/gettext").equals(_topic))
 	{
@@ -240,13 +253,6 @@ String LCDDriver::onMessage(String _topic, String _payload, int8_t transportMask
 	else if (String(topic + "/setrows").equals(_topic))
 	{
 		result = String(setRows(std::atoi(_payload.c_str()), true));
-	}
-	//обычно драйвер не управляет свойствами пинов, но в данном драйвере адрес I2C порта использован в роли Pin - для совместимости 
-	//с архитектурой, по этой причине необходим отдельный обработчик I2CADDR пина
-	else if (String(topic + "/setpin" + String(I2CADDR_INDEX)).equals(_topic))
-	{
-		//base is put the new address to to PinManager
-		result = init(); //init() get Address from PinManger	
 	}
 
 	return result;
@@ -564,9 +570,13 @@ int LCDDriver::getX()
 //Установить курсор в указанную колонку (x координата)
 bool LCDDriver::setX(int _x, bool doEvent)
 {
+	if (lcd == nullptr)
+	{
+		return false;
+	}
 	if (_x < 0) _x = 0;
 	if (_x > cols) _x = cols;
-	x = _x;
+	x = _x;	
 	lcd->setCursor(x, y);
 	filesWriteInt(id + ".x", x);
 	if (doEvent)

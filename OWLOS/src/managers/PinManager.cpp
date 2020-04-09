@@ -265,13 +265,16 @@ String _checkDriverPin(String pinName, uint16_t pinType, String SDAPinName)
 		//check it is I2C address pinName = ADDR0xNN
 		if (pinType & I2CADDR_MASK)
 		{
+			Serial.println("check 3A");
 			if (!SDAPinName.length())
 			{
+				Serial.println("check 3B");
 				return "I2C address can't be select before SDA pin\n";
 			}
 			int _addr = parseI2CAddr(pinName);
 			if (_addr <= 0)
 			{
+				Serial.println("check 3C");
 				return "bad I2C address " + pinName + "\n";
 			}
 			Serial.println("check 4");
@@ -362,6 +365,7 @@ String _setDriverPin(String pinName, String driverId, uint16_t driverPinIndex, u
 		Serial.println("set driver pin 6");
 		if (pin != nullptr) //driver pin exists and new pin exists //D, A, VCCx or GND
 		{
+			Serial.println("set driver pin 61");
 			//set drive to other pin
 			_driverPin->name = pinName;
 			_driverPin->GPIONumber = pin->GPIONumber;
@@ -369,14 +373,19 @@ String _setDriverPin(String pinName, String driverId, uint16_t driverPinIndex, u
 		}
 		else //I2C change address 
 		{
+			Serial.println("set driver pin 62");
+			Serial.println(String(pinType));
 			if ((pinType & I2CADDR_MASK) == NO_MASK)
 			{
+				Serial.println("set driver pin 63");
 				return "the pin not exists and pin type not address\n";
 			}
+			Serial.println("set driver pin 64");
 			//change I2C address or channel 
 			_driverPin->name = pinName;
 			_driverPin->driverI2CAddr = parseI2CAddr(pinName);
 			_driverPin->SDAPinName = SDAPinName;
+			Serial.println("set driver pin 65");
 			return "";
 		}
 	}
@@ -637,8 +646,15 @@ int getDriverPinsCount(String driverId)
 
 DriverPin * getDriverPinByDriverId(String driverId, int driverPinIndex)
 {
+	Serial.println("getDriverPinByDriverId");
+	Serial.println(driverId);
+	Serial.println(String(driverPinIndex));
 	for (int i = 0; i < driverPinCount; i++)
 	{
+		Serial.println("-----------------");
+		Serial.println(driverPins[i].driverId);
+		Serial.println(driverPins[i].driverPinIndex);
+
 		if ((driverPins[i].driverId.equals(driverId)) && (driverPins[i].driverPinIndex == driverPinIndex))
 		{
 			return &driverPins[i];

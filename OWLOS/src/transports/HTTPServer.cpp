@@ -502,35 +502,46 @@ void handleSetDriverProperty(WiFiClient client)
 	{
 		if ((argName[0].equals("id")) && (argName[1].equals("property")) && (argName[2].equals("value")))
 		{
-			String result = driversSetDriverProperty(arg[0], decode(arg[1]), decode(arg[2]));
-			if (result.length() == 0) //try set node property
+			String driverResult = driversSetDriverProperty(arg[0], decode(arg[1]), decode(arg[2]));
+			if (driverResult.equals("1"))
 			{
-				result = nodeOnMessage(nodeGetTopic() + "/set" + decode(arg[1]), decode(arg[2]), NoTransportMask);
+				driverResult = "";
+			}			
+			else
+			if (driverResult.equals("0"))
+			{
+				driverResult = "bad set property";
 			}
 
-			if (result.length() == 0)
+			String nodeResult = "";
+			if (driverResult.equals(WrongPropertyName)) //try set node property
 			{
-				result = "wrong driver id: " + arg[0] + " use GetDriversId API to get all drivers list";
-				send(404, "text/html", result, client);
+				driverResult = "";
+				nodeResult = nodeOnMessage(nodeGetTopic() + "/set" + decode(arg[1]), decode(arg[2]), NoTransportMask);
+				if (nodeResult.equals("1"))
+				{
+					nodeResult = "";
+				}
+				else
+				if (nodeResult.equals("0"))
+				{
+					nodeResult = "Wrong set ESP propertry ";
+				}
+
 			}
-			else if (result.equals(NotAvailable))
+
+			if (driverResult.length() != 0)
 			{
-				result = "driver property: " + arg[1] + " set as NOT Available";
-				send(404, "text/html", result, client);
+				send(502, "text/html", "wrong driver set property " + arg[0] + "\n" + driverResult, client);
 			}
-			else if (result.equals(WrongPropertyName))
-			{
-				result = "driver property: " + arg[1] + " not exists";
-				send(404, "text/html", result, client);
-			}
-			else if (result.equals("0"))
-			{
-				result = "driver property: " + arg[1] + " can't be modify";
-				send(404, "text/html", result, client);
+			else 
+			if (nodeResult.length() != 0)
+			{				
+				send(502, "text/html", "wrong ESP drivers set property " + arg[0] + "\n" + nodeResult, client);
 			}
 			else
 			{
-				send(200, "text/plain", result, client);
+				send(200, "text/plain", "1", client);
 			}
 			return;
 		}

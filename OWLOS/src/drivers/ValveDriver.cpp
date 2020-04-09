@@ -136,7 +136,7 @@ bool ValveDriver::publish()
 String ValveDriver::onMessage(String _topic, String _payload, int8_t transportMask)
 {
 	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
-	if (!available) return result;
+	if (!result.equals(WrongPropertyName)) return result;
 
 	else if (String(topic + "/getposition").equals(_topic))
 	{

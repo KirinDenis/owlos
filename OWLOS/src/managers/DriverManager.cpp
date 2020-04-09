@@ -244,8 +244,9 @@ String driversSetDriverProperty(String id, String property, String value)
 {
 	BaseDriver* baseDriver = driversGetDriver(id);
 	if (baseDriver == NULL) return "";
-
-	return baseDriver->onMessage(__topic + "/" + id + "/set" + property, value, MQTTMask);
+	String result = baseDriver->onMessage(__topic + "/" + id + "/set" + property, value, MQTTMask);
+	debugOut("setDriverProperty", result);
+	return result;
 }
 
 String driversGetDriverProperties(String id)
@@ -830,6 +831,7 @@ String driversChangePin(String pinName, String driverId, int driverPinIndex)
 	//}
 
 	String result = setDriverPin(pinName, driverId, driverPinIndex, NO_MASK);
+
 	if (result.length() != 0)
 	{
 		return result;
@@ -837,7 +839,7 @@ String driversChangePin(String pinName, String driverId, int driverPinIndex)
 
 	if (driversSaveList())
 	{
-		return "1";
+		return "";
 	}
 
 	return "can't save driverslist";
