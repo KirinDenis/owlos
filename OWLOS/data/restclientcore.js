@@ -87,7 +87,33 @@ function reset(host) {
 }
 
 function addDriver(host, type, id, pin1, pin2, pin3, pin4, pin5) {
-    return httpGetWithErrorReson(host + "adddriver?type=" + type + "&id=" + id + "&pin1=" + pin1 + "&pin2=" + pin2 + "&pin3=" + pin3 + "&pin4=" + pin4);
+    var pins = "pins=";
+
+    if (type === 1) {
+        pins += pin1; 
+        pins += ",VCC5,GND";
+    }
+
+    if ((type === 2) || (type === 3) || (type === 4) || (type === 5))
+    {
+        pins += pin1;
+        pins += ",VCC5,GND";
+    }
+
+    if (type === 7) {
+        pins += pin1;
+        pins += "," + pin2;
+        pins += ",ADDR0x3F";
+        pins += ",VCC5,GND";
+    }
+
+    if (type === 8) {
+        pins += pin1;
+        pins += ",GND";
+    }
+
+
+    return httpGetWithErrorReson(host + "adddriver?type=" + type + "&id=" + id + "&" + pins);
 }
 
 function updateUIAsync(host) {

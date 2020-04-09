@@ -11,8 +11,19 @@
 #define VCC5_MASK       0x0080
 #define VCC33_MASK      0x0100
 #define GND_MASK        0x0200  
+#define RESET_MASK      0x0400  
 
 #define DIGITAL_IO_MASK DIGITAL_I_MASK | DIGITAL_O_MASK
+#define ANALOG_IO_MASK ANALOG_I_MASK | ANALOG_O_MASK
+
+#define SPI_MOSI_EXTEND_MASK     0x0001
+#define SPI_MISO_EXTEND_MASK     0x0002
+#define SPI_SCK_EXTEND_MASK      0x0004
+#define SPI_SS_EXTEND_MASK       0x0008
+#define RST_EXTEND_MASK       0x0010
+#define TXD_EXTEND_MASK       0x0020
+#define RXD_EXTEND_MASK       0x0040
+#define TOUCH_EXTEND_MASK       0x0080
 
 #define NO_FAMILY   0	   
 #define I2C_FAMILY  1	   
@@ -31,6 +42,7 @@ typedef struct Pin
 	String name = "";
 	int mode = -1;
 	uint16_t pinTypes = NO_MASK;
+	uint16_t extendPinTypes = NO_MASK;
 	int8_t GPIONumber = -1;
 	int8_t chipNumber = -1;
 	int8_t neighbourPin = -1;

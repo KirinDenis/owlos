@@ -803,87 +803,118 @@ int parseI2CAddr(String addrStr)
 
 void initPins()
 {
-
-
 	Pin pin;
 
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 
 	pin.name = "D0";
 	pin.GPIONumber = pinNameToValue(pin.name);
-	pin.pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
+	pin.pinTypes = DIGITAL_IO_MASK;
+	pin.chipNumber = 4;
 	pin.location = "l1";
 	addPin(pin);
 
 	pin.name = "D1";
 	pin.GPIONumber = pinNameToValue(pin.name);
-	pin.pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
+	pin.pinTypes = DIGITAL_IO_MASK | SCL_MASK;
+	pin.chipNumber = 20;
 	pin.location = "l2";
 	addPin(pin);
 
 	pin.name = "D2";
 	pin.GPIONumber = pinNameToValue(pin.name);
-	pin.pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
+	pin.pinTypes = DIGITAL_IO_MASK | SDA_MASK;
+	pin.chipNumber = 19;
 	pin.location = "l3";
 	addPin(pin);
 
 	pin.name = "D3";
 	pin.GPIONumber = pinNameToValue(pin.name);
-	pin.pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
+	pin.pinTypes = DIGITAL_IO_MASK;
+	pin.chipNumber = 18;
 	pin.location = "l4";
 	addPin(pin);
 
 	pin.name = "D4";
-	pin.pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
+	pin.pinTypes = DIGITAL_IO_MASK;
 	pin.GPIONumber = pinNameToValue(pin.name);
+	pin.chipNumber = 17;
 	pin.location = "l5";
 	addPin(pin);
 
+	pin.name = "VCC33";
+	pin.pinTypes = VCC33_MASK;
+	pin.GPIONumber = -1;
+	pin.location = "l6";
+	addPin(pin);
+
+	pin.name = "GND";
+	pin.pinTypes = GND;
+	pin.GPIONumber = -1;
+	pin.location = "l7";
+	addPin(pin);
 
 	pin.name = "D5";
 	pin.GPIONumber = pinNameToValue(pin.name);
-	pin.pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
-	pin.location = "l6";
+	pin.pinTypes = DIGITAL_IO_MASK;
+	pin.chipNumber = 5;
+	pin.location = "l8";
 	addPin(pin);
 
 	pin.name = "D6";
 	pin.GPIONumber = pinNameToValue(pin.name);
-	pin.pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
-	pin.location = "l7";
+	pin.pinTypes = DIGITAL_IO_MASK;
+	pin.chipNumber = 6;
+	pin.location = "l9";
 	addPin(pin);
-
 
 	pin.name = "D7";
 	pin.GPIONumber = pinNameToValue(pin.name);
-	pin.pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
-	pin.location = "l8";
+	pin.pinTypes = DIGITAL_IO_MASK;
+	pin.chipNumber = 7;
+	pin.location = "l10";
 	addPin(pin);
 
 	pin.name = "D8";
 	pin.GPIONumber = pinNameToValue(pin.name);
-	pin.pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
-	pin.location = "l9";
-	addPin(pin);
-
-#ifdef ARDUINO_ESP8266_NODEMCU
-
-	pin.name = "D9";
-	pin.GPIONumber = pinNameToValue(pin.name);
-	pin.pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
-	pin.location = "l10";
-	addPin(pin);
-
-	pinCount++;
-	pin.name = "D10";
-	pin.GPIONumber = pinNameToValue(pin.name);
-	pin.pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
+	pin.pinTypes = DIGITAL_IO_MASK;
+	pin.chipNumber = 16;
 	pin.location = "l11";
 	addPin(pin);
-#endif
+
+	pin.name = "RX";
+	pin.GPIONumber = -1;
+	pin.pinTypes = NO_MASK;
+	pin.extendPinType = RXD_EXTEND_MASK;
+	pin.chipNumber = 21;
+	pin.location = "l12";
+	addPin(pin);
+
+	pin.name = "TX";
+	pin.GPIONumber = -1;
+	pin.pinTypes = NO_MASK;
+	pin.extendPinType = TXD_EXTEND_MASK;
+	pin.chipNumber = 22;
+	pin.location = "l13";
+	addPin(pin);
+
+	pin.name = "GND";
+	pin.pinTypes = GND;
+	pin.GPIONumber = -1;
+	pin.location = "l14";
+	addPin(pin);
+
+	pin.name = "VCC33";
+	pin.pinTypes = VCC33_MASK;
+	pin.GPIONumber = -1;
+	pin.location = "l15";
+	addPin(pin);
 
 	pin.name = "A0";
 	pin.GPIONumber = pinNameToValue(pin.name);
-	pin.pinTypes = ANALOG_I_MASK | ANALOG_O_MASK;
+	pin.pinTypes = ANALOG_I_MASK;
+	pin.extendedPinTypes = TOUCH_EXTEND_MASK;
+	pin.chipNumber = 2;
 	pin.location = "r1";
 	addPin(pin);
 
@@ -893,132 +924,290 @@ void initPins()
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
 
 
-	pin.GPIONumber = 23;
-	pin.pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
-	pin.name = "D23";
-	pin.location = "l1";
+	pin.GPIONumber = -1;
+	pin.pinTypes = GND_MASK;	
+	pin.name = "GND";
+	pin.chipNumber = -1;
+	pin.location = "r1";
+	addPin(pin);
+
+	pin.GPIONumber = 23;	
+	pin.pinTypes = DIGITAL_IO_MASK;
+	pin.extendPinTypes = SPI_MOSI_EXTEND_MASK;
+	pin.name = "IO23";
+	pin.chipNumber = 36;
+	pin.location = "r2";
 	addPin(pin);
 
 	pin.GPIONumber = 22;
-	pin.pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK | SCL_MASK;
+	pin.pinTypes = DIGITAL_IO_MASK | SCL_MASK;
+	pin.extendPinTypes = RST_EXTEND_MASK;
 	pin.neighbourPin = 4;
-	pin.name = "D22";
-	pin.location = "l2";
+	pin.name = "IO22";
+	pin.chipNumber = 39;
+	pin.location = "r3";
 	addPin(pin);
 
 	pin.GPIONumber = 1;
-	pin.pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
-	pin.name = "D1";
-	pin.location = "l3";
+	pin.pinTypes = DIGITAL_IO_MASK;
+	pin.extendPinTypes = TXD_EXTEND_MASK;
+	pin.neighbourPin = 2;
+	pin.name = "TXD0";
+	pin.chipNumber = 41;
+	pin.location = "r4";
 	addPin(pin);
-
 
 	pin.GPIONumber = 3;
-	pin.pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
-	pin.name = "D3";
-	pin.location = "l4";
+	pin.pinTypes = DIGITAL_IO_MASK;
+	pin.extendPinTypes = RXD_EXTEND_MASK;
+	pin.neighbourPin = 2;
+	pin.name = "RXD0";
+	pin.chipNumber = 40;
+	pin.location = "r5";
 	addPin(pin);
-
 
 	pin.GPIONumber = 21;
-	pin.pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK | SDA_MASK;
+	pin.pinTypes = DIGITAL_IO_MASK | SDA_MASK;
 	pin.neighbourPin = 1;
-	pin.name = "D21";
-	pin.location = "l5";
+	pin.name = "IO21";
+	pin.chipNumber = 42;
+	pin.location = "r6";
 	addPin(pin);
-
-
-	pin.GPIONumber = 19;
-	pin.pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
-	pin.name = "D19";
-	pin.location = "l6";
-	addPin(pin);
-
-
-	pin.GPIONumber = 18;
-	pin.pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
-	pin.name = "D18";
-	pin.location = "l7";
-	addPin(pin);
-
-
-	pin.GPIONumber = 5;
-	pin.pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
-	pin.name = "D5";
-	pin.location = "l8";
-	addPin(pin);
-
-
-	pin.GPIONumber = 17;
-	pin.pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
-	pin.name = "D17";
-	pin.location = "l9";
-	addPin(pin);
-
-
-	pin.GPIONumber = 16;
-	pin.pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK;
-	pin.name = "D16";
-	pin.location = "l10";
-	addPin(pin);
-
-
-	pin.GPIONumber = 4;
-	pin.pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK | ANALOG_I_MASK | ANALOG_O_MASK;
-	pin.name = "D4";
-	pin.location = "l11";
-	addPin(pin);
-
-
-	pin.GPIONumber = 2;
-	pin.pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK | ANALOG_I_MASK | ANALOG_O_MASK;
-	pin.name = "D2";
-	pin.location = "l12";
-	addPin(pin);
-
-
-	pin.GPIONumber = 15;
-	pin.pinTypes = DIGITAL_I_MASK | DIGITAL_O_MASK | ANALOG_I_MASK | ANALOG_O_MASK;
-	pin.name = "D15";
-	pin.location = "l13";
-	addPin(pin);
-
-
-	pin.GPIONumber = 16;
-	pin.pinTypes = DIGITAL_I_MASK | ANALOG_O_MASK;
-	pin.name = "D16";
-	pin.location = "l14";
-	addPin(pin);
-
-
-	pin.GPIONumber = 26;
-	pin.pinTypes = DIGITAL_I_MASK | ANALOG_I_MASK;
-	pin.name = "D26";
-	pin.location = "l15";
-
-
-#endif
-
-
 
 	pin.GPIONumber = -1;
-	pin.pinTypes = GND_MASK;
+	pin.pinTypes =GND_MASK;
 	pin.name = "GND";
-	pin.location = "l14";
+	pin.location = "r7";
+	addPin(pin);
+
+	pin.GPIONumber = 19;
+	pin.pinTypes = DIGITAL_IO_MASK;
+	pin.extendPinTypes = SPI_MISO_EXTEND_MASK;
+	pin.name = "IO19";
+	pin.chipNumber = 38;
+	pin.location = "r8";
+	addPin(pin);
+
+	pin.GPIONumber = 18;
+	pin.pinTypes = DIGITAL_IO_MASK;
+	pin.extendPinTypes = SPI_SCK_EXTEND_MASK;
+	pin.name = "IO18";
+	pin.chipNumber = 35;
+	pin.location = "r9";
+	addPin(pin);
+
+	pin.GPIONumber = 5;
+	pin.pinTypes = DIGITAL_IO_MASK;
+	pin.extendPinTypes = SPI_SS_EXTEND_MASK;
+	pin.name = "IO5";
+	pin.chipNumber = 34;
+	pin.location = "r10";
+	addPin(pin);
+
+	pin.GPIONumber = 17;
+	pin.pinTypes = DIGITAL_IO_MASK;
+	pin.extendPinTypes = TXD_EXTEND_MASK;
+	pin.name = "IO17";
+	pin.chipNumber = 27;
+	pin.location = "r11";
+	addPin(pin);
+
+	pin.GPIONumber = 4;
+	pin.pinTypes = ANALOG_I_MASK | DIGITAL_IO_MASK;
+	pin.extendPinTypes = TOUCH_EXTEND_MASK;
+	pin.name = "IO4";
+	pin.chipNumber = 24;
+	pin.location = "r12";
+	addPin(pin);
+
+	pin.GPIONumber = 0;
+	pin.pinTypes = ANALOG_I_MASK | DIGITAL_IO_MASK;
+	pin.extendPinTypes = TOUCH_EXTEND_MASK;
+	pin.name = "IO0";
+	pin.chipNumber = 23;
+	pin.location = "r13";
+	addPin(pin);
+
+	pin.GPIONumber = 2;
+	pin.pinTypes = ANALOG_I_MASK | DIGITAL_IO_MASK;
+	pin.extendPinTypes = TOUCH_EXTEND_MASK;
+	pin.name = "IO2";
+	pin.chipNumber = 22;
+	pin.location = "r14";
+	addPin(pin);
+
+	pin.GPIONumber = 15;
+	pin.pinTypes = ANALOG_I_MASK | DIGITAL_IO_MASK;
+	pin.extendPinTypes = TOUCH_EXTEND_MASK;
+	pin.name = "IO15";
+	pin.chipNumber = 21;
+	pin.location = "r15";
+	addPin(pin);
+
+	pin.GPIONumber = 8;
+	pin.pinTypes = NO_MASK;
+	pin.name = "SD1";
+	pin.chipNumber = 33;
+	pin.location = "r16";
+	addPin(pin);
+
+	pin.GPIONumber = 7;
+	pin.pinTypes = NO_MASK;
+	pin.name = "SD0";
+	pin.chipNumber = 32;
+	pin.location = "r17";
+	addPin(pin);
+
+	pin.GPIONumber = 6;
+	pin.pinTypes = NO_MASK;
+	pin.name = "CLK";
+	pin.chipNumber = 31;
+	pin.location = "r18";
 	addPin(pin);
 
 	pin.GPIONumber = -1;
 	pin.pinTypes = VCC33_MASK;
 	pin.name = "VCC33";
+	pin.chipNumber = -1;
+	pin.location = "l0";
+	addPin(pin);
+
+	pin.GPIONumber = -1;
+	pin.pinTypes = RESET_MASK;
+	pin.name = "RESET";
+	pin.chipNumber = 9;
+	pin.location = "l1";
+	addPin(pin);
+
+	pin.GPIONumber = 36;
+	pin.pinTypes = ANALOG_I_MASK | DIGITAL_I_MASK;
+	pin.name = "SVP";
+	pin.chipNumber = 5;
+	pin.location = "l2";
+	addPin(pin);
+
+	pin.GPIONumber = 39;
+	pin.pinTypes = ANALOG_I_MASK | DIGITAL_I_MASK;
+	pin.name = "SVN";
+	pin.chipNumber = 8;
+	pin.location = "l3";
+	addPin(pin);
+
+	pin.GPIONumber = 34;
+	pin.pinTypes = ANALOG_I_MASK | DIGITAL_I_MASK;
+	pin.name = "IO34";
+	pin.chipNumber = 10;
+	pin.location = "l4";
+	addPin(pin);
+
+	pin.GPIONumber = 35;
+	pin.pinTypes = ANALOG_I_MASK | DIGITAL_I_MASK;
+	pin.name = "IO35";
+	pin.chipNumber = 11;
+	pin.location = "l5";
+	addPin(pin);
+
+	pin.GPIONumber = 32;
+	pin.pinTypes = ANALOG_I_MASK | DIGITAL_IO_MASK;
+	pin.extendPinTypes = TOUCH_EXTEND_MASK;
+	pin.name = "IO32";
+	pin.chipNumber = 12;
+	pin.location = "l6";
+	addPin(pin);
+
+	pin.GPIONumber = 33;
+	pin.pinTypes = ANALOG_I_MASK | DIGITAL_IO_MASK;
+	pin.extendPinTypes = TOUCH_EXTEND_MASK;
+	pin.name = "IO33";
+	pin.chipNumber = 13;
+	pin.location = "l7";
+	addPin(pin);
+
+	pin.GPIONumber = 25;
+	pin.pinTypes = ANALOG_IO_MASK | DIGITAL_IO_MASK;	
+	pin.name = "IO25";
+	pin.chipNumber = 14;
+	pin.location = "l8";
+	addPin(pin);
+
+	pin.GPIONumber = 26;
+	pin.pinTypes = ANALOG_IO_MASK | DIGITAL_IO_MASK;
+	pin.name = "IO26";
+	pin.chipNumber = 15;
+	pin.location = "l9";
+	addPin(pin);
+
+	pin.GPIONumber = 27;
+	pin.pinTypes = ANALOG_I_MASK | DIGITAL_IO_MASK;
+	pin.extendPinTypes = TOUCH_EXTEND_MASK;
+	pin.name = "IO27";
+	pin.chipNumber = 16;
+	pin.location = "l10";
+	addPin(pin);
+
+	pin.GPIONumber = 14;
+	pin.pinTypes = ANALOG_I_MASK | DIGITAL_IO_MASK;
+	pin.extendPinTypes = TOUCH_EXTEND_MASK;
+	pin.name = "IO14";
+	pin.chipNumber = 17;
+	pin.location = "l11";
+	addPin(pin);
+
+	pin.GPIONumber = 18;
+	pin.pinTypes = ANALOG_I_MASK | DIGITAL_IO_MASK;
+	pin.extendPinTypes = TOUCH_EXTEND_MASK;
+	pin.name = "IO18";
+	pin.chipNumber = 18;
+	pin.location = "l12";
+	addPin(pin);
+
+	pin.GPIONumber = -1;
+	pin.pinTypes = GND_MASK;	
+	pin.name = "GND";
+	pin.chipNumber = -1;
+	pin.location = "l13";
+	addPin(pin);
+
+	pin.GPIONumber = 13;
+	pin.pinTypes = ANALOG_I_MASK | DIGITAL_IO_MASK;
+	pin.extendPinTypes = TOUCH_EXTEND_MASK;
+	pin.name = "IO13";
+	pin.chipNumber = 20;
+	pin.location = "l14";
+	addPin(pin);
+
+	pin.GPIONumber = 9;
+	pin.pinTypes = NO_MASK;	
+	pin.name = "SD2";
+	pin.chipNumber = 28;
 	pin.location = "l15";
 	addPin(pin);
 
+	pin.GPIONumber = 10;
+	pin.pinTypes = NO_MASK;
+	pin.name = "SD3";
+	pin.chipNumber = 29;
+	pin.location = "l16";
+	addPin(pin);
+
+	pin.GPIONumber = 11;
+	pin.pinTypes = NO_MASK;
+	pin.name = "CMD";
+	pin.chipNumber = 30;
+	pin.location = "l17";
+	addPin(pin);
 
 	pin.GPIONumber = -1;
 	pin.pinTypes = VCC5_MASK;
 	pin.name = "VCC5";
-	pin.location = "l16";
+	pin.chipNumber = -1;
+	pin.location = "l18";
 	addPin(pin);
+
+#endif
+
+
+
 
 
 

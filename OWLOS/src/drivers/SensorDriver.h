@@ -49,7 +49,7 @@ class SensorDriver : public BaseDriver {
 
 	  static int getPinsCount()
 	  {
-		  return 2;
+		  return 3;
 	  }
 
 	  static int getPinType(int pinIndex)
@@ -57,7 +57,8 @@ class SensorDriver : public BaseDriver {
 		  switch (pinIndex)
 		  {
 		  case PIN0_INDEX: return DIGITAL_I_MASK| ANALOG_I_MASK;
-		  case PIN1_INDEX: return GND_MASK;
+		  case PIN1_INDEX: return VCC5_MASK | VCC33_MASK;
+		  case PIN2_INDEX: return GND_MASK;
 		  default:
 			  return NO_MASK;
 		  }
