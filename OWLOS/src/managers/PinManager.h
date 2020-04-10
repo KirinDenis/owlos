@@ -11,8 +11,19 @@
 #define VCC5_MASK       0x0080
 #define VCC33_MASK      0x0100
 #define GND_MASK        0x0200  
+#define RESET_MASK      0x0400  
 
 #define DIGITAL_IO_MASK DIGITAL_I_MASK | DIGITAL_O_MASK
+#define ANALOG_IO_MASK ANALOG_I_MASK | ANALOG_O_MASK
+
+#define SPI_MOSI_EXTEND_MASK     0x0001
+#define SPI_MISO_EXTEND_MASK     0x0002
+#define SPI_SCK_EXTEND_MASK      0x0004
+#define SPI_SS_EXTEND_MASK       0x0008
+#define RST_EXTEND_MASK       0x0010
+#define TXD_EXTEND_MASK       0x0020
+#define RXD_EXTEND_MASK       0x0040
+#define TOUCH_EXTEND_MASK       0x0080
 
 #define NO_FAMILY   0	   
 #define I2C_FAMILY  1	   
@@ -31,6 +42,7 @@ typedef struct Pin
 	String name = "";
 	int mode = -1;
 	uint16_t pinTypes = NO_MASK;
+	uint16_t extendPinTypes = NO_MASK;
 	int8_t GPIONumber = -1;
 	int8_t chipNumber = -1;
 	int8_t neighbourPin = -1;
@@ -41,45 +53,55 @@ typedef struct Pin
 typedef struct DriverPin
 {
 	//Информация о подключенных на данный момент к пину драйверах (в зависимости от поддерживаемых типов к пину можно подключить несколько драйверов)
+	String name = "";
 	int GPIONumber = -1;
 	String driverId; // хранит id подключенных к данному пину драйверов 
 	uint16_t driverPinType; // хранит типы подключенных к данному пину драйверов 
 	int8_t driverPinIndex; //  хранит индекс пина подключенных к данному пину драйверов 
 	int driverI2CAddr;    //    хранит порядковый I2CAddr  каждого подключенного  к данному пину драйвера
-	int8_t driverI2CAddrPinIndex; // хранит порядковый номер I2CAddr для каждого подключенного  к данному пину драйвера
+	String SDAPinName; 
 };
 
-
-//структура для передачи данных о пине в драйвер, так как на одном пине может быть много драйверов
-typedef struct PinDriverInfo
-{
-	String name = "";	
-	int8_t GPIONumber = -1;
-	uint16_t driverPinType;
-	int8_t driverPinIndex;
-	int driverI2CAddr;
-};
 
 String getPinMap();
 void initPins();
 
-String pinDecodeType(int typeCode);
-
-
-
-bool getDriverPinInfo(String driverId, int driverPinIndex, PinDriverInfo * pinDriverInfo);
-String setDriverPin(bool checkOnly, String pinName, String driverId, uint16_t driverPinIndex, uint16_t pinType);
 String decodePinTypes(uint16_t pinType);
 
-void freeDriverPin(String driverId, int driverPinIndex);
-Pin getPin();
+
+String _checkDriverPin(String pinName, uint16_t pinType, String SDAPinName);
+String _setDriverPin(String pinName, String driverId, uint16_t driverPinIndex, uint16_t pinType, String SDAPinName);
+
+String checkDriverPin(String pinName, uint16_t pinType);
+String setDriverPin(String pinName, String driverId, uint16_t driverPinIndex, uint16_t pinType);
+
+
+
+
+
+Pin * getPinByGPIONumber(int GPIONumber);
+Pin * getPinByName(String pinName);
+Pin * getPinByDriverId(String  driverId, int driverPinIndex);
+
 int getPinMode(uint32_t pin);
 
 int getDriverPinsCount(String driverId);
-int getDriverPinsByGPIONumber(int GPIONumber, DriverPin * _driverPins);
+
+
+
+int getDriverPinsByPinType(int pinType, DriverPin **_driverPins);
+int getDriverPinsByGPIONumber(int GPIONumber, DriverPin **_driverPins);
+int getDriverPinsByDriverId(String GPIONumber, DriverPin **_driverPins);
+
 DriverPin * getDriverPinByDriverId(String  driverId, int driverPinIndex);
 
-String setDriverPinMode(String driverId, int driverPin, int mode);
-String driverPinWrite(String driverId, int driverPin, int data);
-int driverPinRead(String driverId, int driverPin);
+
+String setDriverPinMode(String driverId, int driverPinIndex, int mode);
+String driverPinWrite(String driverId, int driverPinIndex, int data);
+int driverPinRead(String driverId, int driverPinIndex);
+
+int addDriverPin(DriverPin driverPin);
+void deleteDriverPin(String driverId, int driverPinIndex);
+
+int parseI2CAddr(String addrStr);
 

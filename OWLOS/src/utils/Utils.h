@@ -85,7 +85,7 @@ OWLOS распространяется в надежде, что она буде
 
 //Not available selector
 #define NotAvailable "nan"
-#define WrongPropertyName "!NOT"
+#define WrongPropertyName "Drivers: wrong property name"
 
 char* stringToChar(String src);
 void  debugOut(String tag, String text);

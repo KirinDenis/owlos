@@ -46,15 +46,15 @@ bool SensorDriver::init()
 	if (id.length() == 0) id = DRIVER_ID;
 	BaseDriver::init(id);
 
-	PinDriverInfo pinDriverInfo;
-	if (getDriverPinInfo(id, PIN0_INDEX, &pinDriverInfo))
-	{
+	DriverPin * driverPin = getDriverPinByDriverId(id, PIN0_INDEX);    //командный пин "закрыть"
+	if (driverPin != nullptr)
+	{		
 		//TODO: INPUT_PULLUP/INPUT_PULLDOWN
 		if (setDriverPinMode(id, PIN0_INDEX, INPUT).length() == 0)
 		{
 			//если используемый пин поддерживает АЦП, то драйвер сенсора переходит в аналоговый режим
 			//свойство дата 0..1023 (где 1023 уровень логической единицы)
-			setAnalog(pinDriverInfo.driverPinType & ANALOG_I_MASK, false);
+			setAnalog(driverPin->driverPinType & ANALOG_I_MASK, false);
 			
 			if (getData() != -1) 
 			{
@@ -63,12 +63,6 @@ bool SensorDriver::init()
 		}
 	}
 	return false;
-}
-
-void SensorDriver::del()
-{
-	BaseDriver::del();
-	return;
 }
 
 bool SensorDriver::begin(String _topic)
@@ -130,8 +124,7 @@ bool SensorDriver::publish()
 String SensorDriver::onMessage(String _topic, String _payload, int8_t transportMask)
 {
 	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
-
-	if (!available) return result;
+	if (!result.equals(WrongPropertyName)) return result;
 
 	if (String(topic + "/getanalog").equals(_topic))
 	{
@@ -178,16 +171,8 @@ bool SensorDriver::setAnalog(bool _analog, bool doEvent)
 //Data -------------------------------------------
 
 int SensorDriver::getData()
-{
-	data = -1;
-	
-	PinDriverInfo pinDriverInfo;
-	if (getDriverPinInfo(id, PIN0_INDEX, &pinDriverInfo))
-	{
-		data = driverPinRead(id, pinDriverInfo.GPIONumber);
-	  
-	}   
-
+{		
+    data = driverPinRead(id, PIN0_INDEX);
 	return data;
 }
 

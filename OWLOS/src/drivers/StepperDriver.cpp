@@ -79,17 +79,13 @@ bool StepperDriver::init()
 	if (id.length() == 0) id = DRIVER_ID;
 	BaseDriver::init(id);
 	//все указанные пользователем пины должны быть доступны и переключаться в режим OUTPUT
-	PinDriverInfo pin0DriverInfo;
-	PinDriverInfo pin1DriverInfo;
-	PinDriverInfo pin2DriverInfo;
-	PinDriverInfo pin3DriverInfo;
-	if ((getDriverPinInfo(id, PIN0_INDEX, &pin0DriverInfo))
+	if ((getDriverPinByDriverId(id, PIN0_INDEX) != nullptr)
 		&&
-		(getDriverPinInfo(id, PIN1_INDEX, &pin1DriverInfo))
+		(getDriverPinByDriverId(id, PIN1_INDEX) != nullptr)
+		&
+		(getDriverPinByDriverId(id, PIN2_INDEX) != nullptr)
 		&&
-		(getDriverPinInfo(id, PIN2_INDEX, &pin2DriverInfo))
-		&&
-		(getDriverPinInfo(id, PIN3_INDEX, &pin3DriverInfo)))
+		(getDriverPinByDriverId(id, PIN3_INDEX) != nullptr))
 	{
 		if ((setDriverPinMode(id, PIN0_INDEX, OUTPUT).length() == 0)
 			&&
@@ -119,35 +115,6 @@ bool StepperDriver::init()
 	return false;
 }
 
-void StepperDriver::del()
-{
-	PinDriverInfo pinDriverInfo;
-	//переключаем все использованные пины режим INPUT
-	if (getDriverPinInfo(id, PIN0_INDEX, &pinDriverInfo))
-	{
-		pinMode(pinDriverInfo.GPIONumber, INPUT);
-	}
-
-	if (getDriverPinInfo(id, PIN1_INDEX, &pinDriverInfo))
-	{
-		pinMode(pinDriverInfo.GPIONumber, INPUT);
-	}
-
-	if (getDriverPinInfo(id, PIN2_INDEX, &pinDriverInfo))
-	{
-		pinMode(pinDriverInfo.GPIONumber, INPUT);
-	}
-
-	if (getDriverPinInfo(id, PIN3_INDEX, &pinDriverInfo))
-	{
-		pinMode(pinDriverInfo.GPIONumber, INPUT);
-	}
-
-	BaseDriver::del();
-	return;
-
-}
-
 bool StepperDriver::begin(String _topic)
 {
 	setBusy(0);
@@ -173,7 +140,7 @@ String StepperDriver::getAllProperties()
 String StepperDriver::onMessage(String _topic, String _payload, int8_t transportMask)
 {
 	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
-	if (!available) return result;
+	if (!result.equals(WrongPropertyName)) return result;
 	//Stepper driver to position step counter -----------------------------------
 	if (String(topic + "/gettoposition").equals(_topic))
 	{
@@ -461,23 +428,11 @@ bool StepperDriver::setSpeed(int _speed)
 //включены, двигатель начнет греться. 
 void StepperDriver::doStop()
 {
-	PinDriverInfo pin0DriverInfo;
-	PinDriverInfo pin1DriverInfo;
-	PinDriverInfo pin2DriverInfo;
-	PinDriverInfo pin3DriverInfo;
-	if ((getDriverPinInfo(id, PIN0_INDEX, &pin0DriverInfo))
-		&&
-		(getDriverPinInfo(id, PIN1_INDEX, &pin1DriverInfo))
-		&&
-		(getDriverPinInfo(id, PIN2_INDEX, &pin2DriverInfo))
-		&&
-		(getDriverPinInfo(id, PIN3_INDEX, &pin3DriverInfo)))
-	{
 		driverPinWrite(id, PIN0_INDEX, B00000);
 		driverPinWrite(id, PIN1_INDEX, B00000);
 		driverPinWrite(id, PIN2_INDEX, B00000);
 		driverPinWrite(id, PIN3_INDEX, B00000);
-	}
+
 }
 
 //Do Move ------------------------------------------------------------------------------------------
@@ -486,21 +441,8 @@ void StepperDriver::doStop()
 //speed и последовательной сменой параметра out
 void StepperDriver::doOutput(int out)
 {
-	PinDriverInfo pin0DriverInfo;
-	PinDriverInfo pin1DriverInfo;
-	PinDriverInfo pin2DriverInfo;
-	PinDriverInfo pin3DriverInfo;
-	if ((getDriverPinInfo(id, PIN0_INDEX, &pin0DriverInfo))
-		&&
-		(getDriverPinInfo(id, PIN1_INDEX, &pin1DriverInfo))
-		&&
-		(getDriverPinInfo(id, PIN2_INDEX, &pin2DriverInfo))
-		&&
-		(getDriverPinInfo(id, PIN3_INDEX, &pin3DriverInfo)))
-	{
 		driverPinWrite(id, PIN0_INDEX, bitRead(stepMask[out], 0));
 		driverPinWrite(id, PIN1_INDEX, bitRead(stepMask[out], 1));
 		driverPinWrite(id, PIN2_INDEX, bitRead(stepMask[out], 2));
 		driverPinWrite(id, PIN3_INDEX, bitRead(stepMask[out], 3));
-	}
 };
