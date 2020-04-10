@@ -3,6 +3,7 @@ Ready IoT Solution - OWLOS
 Copyright 2019, 2020 by:
 - Konstantin Brul (konstabrul@gmail.com)
 - Vitalii Glushchenko (cehoweek@gmail.com)
+- Vladimir Kovalevich (covalevich@gmail.com)
 - Denys Melnychuk (meldenvar@gmail.com)
 - Denis Kirin (deniskirinacs@gmail.com)
 
@@ -912,27 +913,35 @@ void handleUploadFile(WiFiClient client)
 	String sectionSign = "";
 	//String body = "";
 	String fileName = "";
+	
 	bool append = false;
 	while (client.connected())
 	{
 		if (client.available())
 		{
 			char c = client.read();
-
+			
 			if (c == '\n')
 			{
+				
 				if (sectionSign.length() == 0) //first entry
 				{
+					
+					int length = data.length();
+					data.remove(length - 1, 1);
 					sectionSign = data;
 					debugOut("section", sectionSign);
+					
 				}
 				else
 				{
+					
 					if ((data.length() != 0) && (data.indexOf(sectionSign) != -1)) //endof section parsing
 					{
 						//TODO somthing with body
 						//debugOut("d_body", body);
 						debugOut("d_body", sectionSign);
+						
 #ifdef DetailedDebug 
 						//debugOut("BODY", body);
 #endif
@@ -943,11 +952,12 @@ void handleUploadFile(WiFiClient client)
 						debugOut("l_body", data);
 						if (data.indexOf("Content-Type:") != -1)
 						{
-
+							
 						}
 						else
 							if (data.indexOf("Content-Disposition:") != -1) //section header
 							{
+								
 								if (data.indexOf("filename=\"") == -1)
 								{
 									send(501, "text/html", "wrong file name", client);
@@ -962,7 +972,7 @@ void handleUploadFile(WiFiClient client)
 							}
 							else
 								if (data.length() != 0)
-								{				
+								{
 									if (data.indexOf(sectionSign) != -1)
 									{
 										send(200, "text/html", "", client);
@@ -976,6 +986,7 @@ void handleUploadFile(WiFiClient client)
 									data += c;
 									if (!append)
 									{
+										
 										if (!filesWriteStringDirect(fileName, data))
 										{
 											send(503, "text/html", "bad SPIFF file name: " + fileName, client);
@@ -984,18 +995,47 @@ void handleUploadFile(WiFiClient client)
 										append = true;
 									}
 									else
-									{
+									{							 
+
+										for (char charItem : sectionSign)
+										{
+
+											Serial.print(charItem);
+											int buff;
+											buff = charItem;
+											Serial.print(buff);
+
+										}
+
+
+										for (char charItem : data)
+										{
+
+											Serial.print(charItem);
+											int buff;
+											buff = charItem;
+											Serial.print(buff);
+
+										}
+
+
+
+										//	if(result != 0 )
+										//	{
+
 										if (!filesAddString(fileName, data))
 										{
 											send(503, "text/html", "SPIFF problem", client);
 											return;
 										}
+
+										//	}
 									}
 									//body += data;
 									//debugOut("c_body", data);
 								}
 					}
-					
+
 				}
 
 				data = "";
@@ -1003,8 +1043,10 @@ void handleUploadFile(WiFiClient client)
 			//else
 				//if (c != '\r')
 				//{
-					data += c;
-				//}
+			data += c;
+
+			//debugOut("data+=c", data)
+		//}
 		}
 	}
 	send(200, "text/html", "", client);
