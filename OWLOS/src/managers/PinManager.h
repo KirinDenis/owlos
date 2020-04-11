@@ -49,45 +49,40 @@ OWLOS распространяется в надежде, что она буде
 
 #include <Arduino.h>
 
-#define NO_MASK         0x0000
-#define DIGITAL_I_MASK  0x0001  
-#define DIGITAL_O_MASK  0x0002
-#define ANALOG_I_MASK   0x0004
-#define ANALOG_O_MASK   0x0008
-#define SDA_MASK        0x0010
-#define SCL_MASK        0x0020
-#define I2CADDR_MASK    0x0040
-#define VCC5_MASK       0x0080
-#define VCC33_MASK      0x0100
-#define GND_MASK        0x0200  
-#define RESET_MASK      0x0400  
+//Маски типов пинов 
+#define NO_MASK         0x0000    //без маски
+#define DIGITAL_I_MASK  0x0001    //цифровой пин только чтение 
+#define DIGITAL_O_MASK  0x0002    //цифровой пин только запись
+#define ANALOG_I_MASK   0x0004    //аналоговый пин только чтение 
+#define ANALOG_O_MASK   0x0008    //аналоговый пин только запись
+#define SDA_MASK        0x0010    //пин SDA канала I2C шины
+#define SCL_MASK        0x0020    //пин SCL канала I2C шины
+#define I2CADDR_MASK    0x0040    //используется для привязки I2C адреса подчинённого устройства на шине I2C
+#define VCC5_MASK       0x0080    //5 Вольт пин питания
+#define VCC33_MASK      0x0100    //3.3 Вольта пин питания
+#define GND_MASK        0x0200    //узел цепи, потенциал которого условно принимается за ноль :)
+#define RESET_MASK      0x0400    //пин hardware reset 
 
-#define DIGITAL_IO_MASK DIGITAL_I_MASK | DIGITAL_O_MASK
-#define ANALOG_IO_MASK ANALOG_I_MASK | ANALOG_O_MASK
+#define DIGITAL_IO_MASK DIGITAL_I_MASK | DIGITAL_O_MASK //цифровой пин чтения/записи
+#define ANALOG_IO_MASK ANALOG_I_MASK | ANALOG_O_MASK    //аналоговый пин чтения/записи
 
-#define SPI_MOSI_EXTEND_MASK     0x0001
-#define SPI_MISO_EXTEND_MASK     0x0002
-#define SPI_SCK_EXTEND_MASK      0x0004
-#define SPI_SS_EXTEND_MASK       0x0008
-#define RST_EXTEND_MASK          0x0010
-#define TXD_EXTEND_MASK          0x0020
-#define RXD_EXTEND_MASK          0x0040
-#define TOUCH_EXTEND_MASK        0x0080
+//Расширенные (дополнительные) маски пинов (не хватило 16 бит для описания всех типов пинов)
+#define SPI_MOSI_EXTEND_MASK     0x0001    //SPI_MasterOutputSlaveInput пин 
+#define SPI_MISO_EXTEND_MASK     0x0002    //SPI_MasterInputSlaveOutput пин 
+#define SPI_SCK_EXTEND_MASK      0x0004    //SPI_Clock пин
+#define SPI_SS_EXTEND_MASK       0x0008    //SPI_SlaveSelect пин 
+#define RST_EXTEND_MASK          0x0010    //UART_RST пин 
+#define TXD_EXTEND_MASK          0x0020    //UART_TX пин 
+#define RXD_EXTEND_MASK          0x0040    //UART_RX пин 
+#define TOUCH_EXTEND_MASK        0x0080    //резистивный пин 
 
-#define NO_FAMILY   0	   
-#define I2C_FAMILY  1	   
-#define VCC_FAMILY  2	   
+#define NO_FAMILY   0    //пин не имеет семейства 
+#define I2C_FAMILY  1    //пин входит в семейство I2C
+#define VCC_FAMILY  2    //пин входит в семейство пинов питания 	   
 						   
-//typedef struct PinType	   
-//{
-//	int family = NO_FAMILY;
-//	int type = NO_MASK;
-//	int neighbor = -1;
-//};
-
+//смотрите PinManager.cpp для пояснения полей этой записи
 typedef struct Pin
-{
-	//Информация о пине, которую он получает в зависимости от типа контроллера
+{	
 	String name = "";
 	int mode = -1;
 	uint16_t pinTypes = NO_MASK;
@@ -99,58 +94,38 @@ typedef struct Pin
 
 };
 
+//смотрите PinManager.cpp для пояснения полей этой записи
 typedef struct DriverPin
-{
-	//Информация о подключенных на данный момент к пину драйверах (в зависимости от поддерживаемых типов к пину можно подключить несколько драйверов)
+{	
 	String name = "";
 	int GPIONumber = -1;
-	String driverId; // хранит id подключенных к данному пину драйверов 
-	uint16_t driverPinType; // хранит типы подключенных к данному пину драйверов 
-	int8_t driverPinIndex; //  хранит индекс пина подключенных к данному пину драйверов 
-	int driverI2CAddr;    //    хранит порядковый I2CAddr  каждого подключенного  к данному пину драйвера
+	String driverId; 
+	uint16_t driverPinType; 
+	int8_t driverPinIndex; 
+	int driverI2CAddr;    
 	String SDAPinName; 
 };
 
-
+//описание функций смотрите в PinManager.cpp
 String getPinMap();
-void initPins();
-
 String decodePinTypes(uint16_t pinType);
-
-
 String _checkDriverPin(String pinName, uint16_t pinType, String SDAPinName);
 String _setDriverPin(String pinName, String driverId, uint16_t driverPinIndex, uint16_t pinType, String SDAPinName);
-
 String checkDriverPin(String pinName, uint16_t pinType);
 String setDriverPin(String pinName, String driverId, uint16_t driverPinIndex, uint16_t pinType);
-
-
-
-
-
 Pin * getPinByGPIONumber(int GPIONumber);
 Pin * getPinByName(String pinName);
 Pin * getPinByDriverId(String  driverId, int driverPinIndex);
-
 int getPinMode(uint32_t pin);
-
 int getDriverPinsCount(String driverId);
-
-
-
 int getDriverPinsByPinType(int pinType, DriverPin **_driverPins);
 int getDriverPinsByGPIONumber(int GPIONumber, DriverPin **_driverPins);
 int getDriverPinsByDriverId(String GPIONumber, DriverPin **_driverPins);
-
 DriverPin * getDriverPinByDriverId(String  driverId, int driverPinIndex);
-
-
 String setDriverPinMode(String driverId, int driverPinIndex, int mode);
 String driverPinWrite(String driverId, int driverPinIndex, int data);
 int driverPinRead(String driverId, int driverPinIndex);
-
 int addDriverPin(DriverPin driverPin);
 void deleteDriverPin(String driverId, int driverPinIndex);
-
 int parseI2CAddr(String addrStr);
-
+void initPins();
