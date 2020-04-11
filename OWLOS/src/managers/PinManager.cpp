@@ -1,21 +1,106 @@
-﻿#include <core_version.h>
+﻿/* ----------------------------------------------------------------------------
+Ready IoT Solution - OWLOS
+Copyright 2019, 2020 by:
+- Konstantin Brul (konstabrul@gmail.com)
+- Vitalii Glushchenko (cehoweek@gmail.com)
+- Denys Melnychuk (meldenvar@gmail.com)
+- Denis Kirin (deniskirinacs@gmail.com)
+
+This file is part of Ready IoT Solution - OWLOS
+
+OWLOS is free software : you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+OWLOS is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with OWLOS. If not, see < https://www.gnu.org/licenses/>.
+
+GitHub: https://github.com/KirinDenis/owlos
+
+(Этот файл — часть Ready IoT Solution - OWLOS.
+
+OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
+ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
+была опубликована Фондом свободного программного обеспечения; версии 3
+лицензии, любой более поздней версии.
+
+OWLOS распространяется в надежде, что она будет полезной, но БЕЗО ВСЯКИХ
+ГАРАНТИЙ; даже без неявной гарантии ТОВАРНОГО ВИДА или ПРИГОДНОСТИ ДЛЯ
+ОПРЕДЕЛЕННЫХ ЦЕЛЕЙ.
+Подробнее см.в Стандартной общественной лицензии GNU.
+
+Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
+этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
+--------------------------------------------------------------------------------------*/
+
+/*
+PinManager - реализует программный интерфейс между функциями доступа к физическим контактным разъемам (Pins) предоставляемыми "Arduino" библиотеками и драйверами OWLOS.
+Задачи PinManager:
+- управление назначением, режимами работы и доступом к Pin со стороны драйверов.
+- предоставление данных о количестве доступных Pin на микроконтроллере на котором запущена OWLOS, а так же данных о типах и режимах работы Pin.
+
+//---------------------------------------------------------------------------------------------------------------------------------------
+//ВНИМАНИЕ!
+//Важно:
+//МЫ НЕ ПРОПАГАНДИРУЕМ ГОРЯЧУЮ ЗАМЕНУ УСТРОЙСТВ НА МИКРОКОНТРОЛЛЕРЕ! МЫ ПРОТИВ ЭТОГО!
+//ЕСЛИ ВЫ ОШИБЛИС С ИМЕНЕМ ПИНА - выключите ваш микроконтроллер, отключите устройство, включите заново, укажите правильный пин, выключите
+//микроконтроллер - подключите устройство. В противном случае вы рискуете "сжечь" пин или микроконтроллер целиком. Особенно это важно для
+//пинов работающих в режиме OUTPUT.
+//---------------------------------------------------------------------------------------------------------------------------------------
+
+Указатель Pin * pins содержит ссылку на динамический массив с данными о пинах. Так как на разных типах микроконтроллеров разное количество пинов, 
+массив с данными создается динамически, при вызове DriverManager.Init() - до загрузки драйверов. 
+Данные пина:
+	String name = ""             - название пина, обычно используется то что напечатано на плате микроконтроллера
+	int mode = -1;               - режим работы пина Output, Input, Input-Pull Up
+	uint16_t pinTypes = NO_MASK; - маски типа пина - определяют назначение (возможности) конкретного пина 
+	                             - например DIGITAL_IO OR SDA - пин может быть использован для цифрового ввода-вывода, а также как канел SDA шины I2C
+	uint16_t extendPinTypes = NO_MASK; - расширенные маски пина - pinTypes всего 16bit (16 типов) на практики типов горазда больше, маску пришлось расширить. 
+	int8_t GPIONumber = -1;   - программный номер пина, для использования с "Arduino".digital/analog-read/write функцией
+	int8_t chipNumber = -1;   - номер пина на физическом чипе ESPxxxx
+	int8_t neighbourPin = -1; - пин-сосед используется для шин, таких как I2C или SPI - так как некоторые контроллеры поддерживают несколько шин, например две шины I2C - 
+	                          - то SDA/SCL пины ссылаются на парные(соседские) им пины. 
+	String location = "";     - физическое положение пина на конкретном типе платы микроконтроллера, например r10 - десятый пин справа, l4 - четвертый пин слева, используется для прорисовки в UI. 
+
+Данные драйвера о пине"
+	String name = "";       - название пина. 
+	int GPIONumber = -1;    - программный номер пина
+	String driverId;        -  id подключенного драйвера
+	uint16_t driverPinType; -  хранит тип пина драйвера, у самого пина может быть множество типов (назначений) - драйвер выбирает один. 
+	int8_t driverPinIndex;  -  индекс пина подключенного к нему драйвера, например ActuatorDriver.PIN_INDEX0 - первый пин драйвера актуатора
+	int driverI2CAddr;      -  адрес I2C для подчинённого устройства (если это I2C шина)
+	String SDAPinName;      - I2C SDA пин, если текущий пин это I2C адрес - тут указывается пин SDA канала к которому применим этот адрес
+
+Примечания:
+- Один пин может быть использован множеством драйверов, так например пины VCC33 или GND - по этой причине, данные о пинах хранятся в отдельной структуре. (это ускоряет вычисления)
+- Адреса устройств на шинах (интерфейсах) таких как I2C программно рассматриваются как разновидность пинов. Так например I2C адрес принадлежит пину с GPIONumber=-1 и на одном таком пине 
+  может быть множество I2C адресов, с условием что они уникальны и соответствуют размерности I2C адреса. 
+*/
+
+#include <core_version.h>
 #include "PinManager.h"
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
+//Сторонняя библиотека реализующая analogWrite() функцию для ESP32
 #include "../libraries/ESP32_AnalogWrite/src/analogWrite.h"
 #endif
 
-
-//String decodePinType[14] = { "NO_MASK", "GP_IO_MASK", "DIGITAL_IO_MASK", "DIGITALI_MASK", "DIGITALO_MASK", "ANALOG_IO_MASK", "ANALOGI_MASK", "ANALOGO_MASK", "SDA_MASK",  "SCL_MASK", "I2CADDR_MASK", "VCC5_MASK",  "VCC33_MASK",  "GND_MASK" };
-//String decodePinFamily[3] = { "NO_FAMILY", "I2C_FAMILY", "VCC_FAMILY" };
-
-
+//Количество доступных пинов
 int pinCount = 0;
+//Количество пинов занятых драйверами
 int driverPinCount = 0;
+//Указатель на динамический массив с данными о пинах. Функция void initPins() - инициализирует этот массив один раз, при старте OWLOS - считается что пины не могут изменится в микроконтроллере "на лету"
 Pin * pins = nullptr;
+//Указатель на динамический массив с данными о драйверах использующих пины
 DriverPin * driverPins = nullptr;
 
-
+//Декодирование масок типов пина в строку. Очень полезно для UI, человеку неудобно работать с битовыми масками. 
 String decodePinTypes(uint16_t pinType) {
 
 	String decodedPinTypes;
@@ -49,22 +134,17 @@ String decodePinTypes(uint16_t pinType) {
 	else {
 		decodedPinTypes += "UNKNOWN_PIN_TYPE";
 	}
-
-
 	return decodedPinTypes;
-
 }
 
-
+//Возвращает данные о количестве и состояние всех пинов и драйверов в текстовом виде. Используется RESTful API и для отладки. 
 String getPinMap()
 {
-
 	String result = "";
-	DriverPin * _driverPins = nullptr;
-
-
+	DriverPin * _driverPins = nullptr; //сюда будут помещены драйвера занимающие конкретный пин
 	int _count = 0;
 
+	//перебор всех пинов
 	for (int i = 0; i < pinCount; i++)
 	{
 		result += "name:" + pins[i].name + "\n";
@@ -75,9 +155,9 @@ String getPinMap()
 		result += "chipnumber=" + String(pins[i].chipNumber) + "\n";
 		result += "neighbourpin=" + String(pins[i].neighbourPin) + "\n";
 		result += "location=" + pins[i].location + "\n";
+		//получить все драйвера занявшие пин pins[i].GPIONumber
 		_count = getDriverPinsByGPIONumber(pins[i].GPIONumber, &_driverPins);
-
-
+		//если есть драйвера занявшие пин - добавить данные о них в результат функции
 		if (_count > 0)
 		{
 			for (int j = 0; j < _count; j++)
@@ -88,135 +168,20 @@ String getPinMap()
 				result += "driverpinindex=" + String(_driverPins[j].driverPinIndex) + "\n";
 				result += "drivei2caddr=" + String(_driverPins[j].driverI2CAddr) + "\n";
 			}
+			//удаляем полученные данные о драйверах 
 			delete[] _driverPins;
 		}
-
-		//for (int j = 0; j < PIN_MASK_COUNT; j++)
-		//{
-		//	if (pins[i].pinTypes[j].type == NO_MASK)
-		//	{
-		//		break;
-		//	}
-		//	result += "role:" + String(j) + "\n";
-		//	result += "family=" + String(pins[i].pinTypes[j].family) + "\n";
-		//	result += "familydecode=" + decodePinFamily[pins[i].pinTypes[j].family] + "\n";
-		//	result += "type=" + String(pins[i].pinTypes[j].type) + "\n";
-		//	result += "typedecode=" + decodePinType[pins[i].pinTypes[j].type] + "\n";
-		//	result += "neighbor=" + String(pins[i].pinTypes[j].neighbor) + "\n";
-		//}
-
 	}
 	return result;
-
 }
 
-
+//функция возвращает TRUE если тип пина pinType может быть использован с пином с масками pinTypes
 bool pinTypeSupported(uint16_t pinTypes, uint16_t pinType)
 {
 	return (pinTypes & pinType);
 }
 
-
-/*
-*/
-
-String setDriverI2CAddr(bool checkOnly, String pinName, String driverId, int driverPinIndex)
-{
-	/*
-	Serial.println(pinName);
-	if (pinName.indexOf("ADDR0x") < 0)
-	{
-		return "bad I2C address format for " + driverId + " driver (mustbe ADDR0x00..ADDR0xFF)";
-	}
-
-	pinName = pinName.substring(String("ADDR").length());
-	Serial.println(pinName);
-	int i2cAddr = (int)strtol(&pinName[0], NULL, 16);
-	Serial.println(String(i2cAddr));
-
-	//сначала надо узнать назначены ли SDA и SCL для этого драйвера
-	PinDriverInfo SDA_PinDriverInfo;
-	SDA_PinDriverInfo.driverPinType = NO_MASK;
-	PinDriverInfo SCL_PinDriverInfo;
-	SCL_PinDriverInfo.driverPinType = NO_MASK;
-
-	int count = getDriverPinsCount(driverId);
-	for (int i = 0; i < count; i++)
-	{
-		PinDriverInfo pinDriverInfo;
-		if (getDriverPinInfo(driverId, i, &pinDriverInfo))
-		{
-			if (pinDriverInfo.driverPinType & SDA_MASK)
-			{
-				SDA_PinDriverInfo = pinDriverInfo;
-			}
-
-			if (pinDriverInfo.driverPinType & SCL_MASK)
-			{
-				SCL_PinDriverInfo = pinDriverInfo;
-			}
-		}
-	}
-	Serial.println(SDA_PinDriverInfo.name);
-	Serial.println(SCL_PinDriverInfo.name);
-	if (!checkOnly)
-	{
-		if ((SDA_PinDriverInfo.driverPinType & SDA_MASK) != SDA_MASK)
-		{
-			return "SDA pin not set for " + driverId + " driver, set SDA pin first (before set I2C address)";
-		}
-
-		if ((SCL_PinDriverInfo.driverPinType & SCL_MASK) != SCL_MASK)
-		{
-			return "SCL pin not set for " + driverId + " driver, set SCL pin first (before set I2C address)";
-		}
-	}
-
-	//проверяем не занят ли I2C адрес другим драйвером
-
-
-
-	for (int i = 0; i < pinCount; i++)
-	{
-		if (pins[i].name.equals(SDA_PinDriverInfo.name) || pins[i].name.equals(SCL_PinDriverInfo.name))
-		{
-			for (int j = 0; j < PIN_DRIVER_COUNT; j++)
-			{
-				if ((pins[i].driverPinType[j] & SDA_MASK) || (pins[i].driverPinType[j] & SCL_MASK))
-				{
-					if (pins[i].driverI2CAddr[j] == i2cAddr)
-					{
-
-						return "address " + pinName + " is busy by " + pins[i].driverId[j] + " and can't be use for " + driverId + " driver";
-					}
-				}
-			}
-		}
-	}
-
-	if (!checkOnly)
-	{
-		for (int i = 0; i < pinCount; i++)
-		{
-			if (pins[i].name.equals(SDA_PinDriverInfo.name) || pins[i].name.equals(SCL_PinDriverInfo.name))
-			{
-				for (int j = 0; j < PIN_DRIVER_COUNT; j++)
-				{
-					if ((pins[i].driverId[j].equals(driverId)) && ((pins[i].driverPinType[j] & SDA_MASK) || (pins[i].driverPinType[j] & SCL_MASK)))
-					{
-
-						pins[i].driverI2CAddr[j] = i2cAddr;
-						pins[i].driverI2CAddrPinIndex[j] = driverPinIndex;
-
-					}
-				}
-			}
-		}
-	}
-	*/
-	return "";
-}
-
+//функция возвращает ссылку на структуру с данными пина с именем pinName если пин с таким именем существует, иначе nullptr
 Pin * getPinByName(String pinName)
 {
 	for (int i = 0; i < pinCount; i++)
@@ -229,9 +194,9 @@ Pin * getPinByName(String pinName)
 	return nullptr;
 }
 
+//функция возвращает ссылку на структуру с данными пина с номером GPIONumber если пин с таким именем существует, иначе nullptr
 Pin * getPinByGPIONumber(int GPIONumber)
 {
-
 	for (int i = 0; i < pinCount; i++)
 	{
 		if (pins[i].GPIONumber == GPIONumber)
@@ -243,93 +208,120 @@ Pin * getPinByGPIONumber(int GPIONumber)
 
 }
 
+//функция возвращает ссылку на структуру с данными пина занятого драйвером с идентификатором driverId и внутренним номером пина driverPinIndex, иначе nullptr
+//ВНИМАНИЕ - ссылку на структуру Pin, а не на структуру DriverPin! Данные пина, а не драйвера. 
 Pin * getPinByDriverId(String  driverId, int driverPinIndex)
 {
 	DriverPin * _driverPin = getDriverPinByDriverId(driverId, driverPinIndex);
 	if (_driverPin == nullptr) return nullptr;
 	return getPinByGPIONumber(_driverPin->GPIONumber);
-
 }
 
-
+//функция проверяет может ли драйвер с типом пина pinType, занять пин с именем pinName
+//аргумент SDAPinName используется для I2C адресов, во всех остальных случаях - пустая строка. 
+//
+//Если драйверу можно занять пин, функция вернет пустую строку, если нет - сообщение о том почему 
+//пин не может быть занят. 
+//
+//Эта функция используется при создании драйвера, а так же в том случае если драйвер "хочет" поменять пин динамически, 
+//без перезагрузки микроконтроллера. Последнее, чаще всего происходит в том случае когда пользователь собрал схему, "прописал" драйвера, 
+//и позже заметил что ошибся с указанием имени пина в драйвере. 
+//---------------------------------------------------------------------------------------------------------------------------------------
+//ВНИМАНИЕ!
+//Важно:
+//МЫ НЕ ПРОПАГАНДИРУЕМ ГОРЯЧУЮ ЗАМЕНУ УСТРОЙСТВ НА МИКРОКОНТРОЛЛЕРЕ! МЫ ПРОТИВ ЭТОГО!
+//ЕСЛИ ВЫ ОШИБЛИС С ИМЕНЕМ ПИНА - выключите ваш микроконтроллер, отключите устройство, включите заново, укажите правильный пин, выключите 
+//микроконтроллер - подключите устройство. В противном случае вы рискуете "сжечь" пин или микроконтроллер целиком. Особенно это важно для 
+//пинов работающих в режиме OUTPUT.
+//---------------------------------------------------------------------------------------------------------------------------------------
+//
+//Примечания:
+//Основная задача этой функции оценить занят ли пин другим драйвером и если да - может ли текущий драйвер работать параллельно с 
+//существующим. При этом функция должна оценить подходит ли тип пина драйвера pinType для использования с указанным пином. 
 String _checkDriverPin(String pinName, uint16_t pinType, String SDAPinName)
 {
-	Serial.println("check 1");
-	DriverPin * _driverPins = nullptr;
-	int _count = 0;
-	Serial.println("check 2");
-	Pin * pin = getPinByName(pinName);
-	if (pin == nullptr)
-	{
-		Serial.println("check 3");
+	
+	DriverPin * _driverPins = nullptr; //указатель на драйвера занявшие пин, будет использован ниже. 
+	int _count = 0; //количество драйверов занявших пин
+	
+	Pin * pin = getPinByName(pinName); //узнаем существует ли физически пин с таким именем 
+	if (pin == nullptr) //если пин не существует
+	{		
 		//check it is I2C address pinName = ADDR0xNN
-		if (pinType & I2CADDR_MASK)
-		{
-			Serial.println("check 3A");
-			if (!SDAPinName.length())
-			{
-				Serial.println("check 3B");
-				return "I2C address can't be select before SDA pin\n";
+		//возможно это I2C адрес подчинённого устройства, в данной реализации для драйвера адрес программно представлен пином с маской типа I2CADDR_MASK
+		if (pinType & I2CADDR_MASK) //если физического пина нет, а требуемый пин должен содержать маску I2CADDR_MASK то это I2C адрес
+		{			
+			if (!SDAPinName.length()) //если не указан пин SDA канала для этого I2C адреса
+			{				
+				return "I2C address can't be select before SDA pin\n"; //возвращаем ошибку
 			}
-			int _addr = parseI2CAddr(pinName);
-			if (_addr <= 0)
-			{
-				Serial.println("check 3C");
-				return "bad I2C address " + pinName + "\n";
+			//пробуем выпарсить численное значение адреса из строки I2C адреса (формат ADDR0xNN - где NN шестнадцатеричное значение адреса)
+			//при этом учитываем размерность значения адреса I2C, в данной реализации не более 7 бит. При этом неприемлем адрес 0х00. 
+			int _addr = parseI2CAddr(pinName);		
+			if (_addr <= 0)//если не удалось получить значение адреса или это значение не приемлемо для 7 бит I2C адреса. 
+			{				
+				return "bad I2C address " + pinName + "\n"; //возвращаем ошибку
 			}
-			Serial.println("check 4");
-			
+			//Узнаем существуют ли еще I2C адреса используемые другими драйверами			
 			_count = getDriverPinsByPinType(pinType, &_driverPins);
-			Serial.println("check 41");
-			if (_count > 0) //уже есть I2C адерса 
+			
+			if (_count > 0) //да, уже есть I2C адреса 
 			{
-				Serial.println(_driverPins[0].driverI2CAddr);
-				Serial.println("check 42");
+				//перебираем все существующие адреса, на одной I2C шине они не должны повторятся
 				for (int i = 0; i < _count; i++)
 				{
-					Serial.println("check 43");
-					Serial.println(_driverPins[i].driverI2CAddr);
-					Serial.println(_driverPins[i].SDAPinName);
-					Serial.println("---------------check 43");
 					if ((_driverPins[i].driverI2CAddr == _addr) && (_driverPins[i].SDAPinName.equals(SDAPinName)))
 					{
-						Serial.println("check 44");
+						//если адрес уже занят другим драйвером для указанного SDA канала
+						//подготавливаем сообщение об ошибке
 						String result = "I2C address " + pinName + " is busy of " + _driverPins->driverId + " driver on " + SDAPinName + " SDA channel\n";
+						//удаляем массив драйверов
 						delete[] _driverPins;
+						//выходим, возвращаем ошибку
 						return result;
 					}
 				}
+				//удаляем массив драйверов
 				delete[] _driverPins;
 			}
-			Serial.println("check 45");
+			//I2C адрес соответствует требованию 7 бит I2C адреса и не занят для шины с указанным SDA каналом. 
+			//возвращаем пустую строку (ОК), выходим
 			return "";
 		}
-		else
+		else //пин не существует и не является I2C адресом - возвращаем ошибку, выходим. 
 		{
 			return "pin " + pinName + " doesn't exists\n";
 		}
 	}
-	Serial.println("check 5");
-	_count = getDriverPinsByGPIONumber(pin->GPIONumber, &_driverPins);
-	Serial.println("check 6");
-	if (_count > 0) //если пин кем то занят
+	else //Пин с именем pinName существует 
 	{
-		if (((pinType & SDA_MASK) || (pinType & SCL_MASK) || (pinType & VCC5_MASK) || (pinType & VCC33_MASK) || (pinType & GND_MASK)) == 0)
+		//проверяем сколько драйверов уже заняли этот пин и что это за драйвера
+		_count = getDriverPinsByGPIONumber(pin->GPIONumber, &_driverPins);
+
+		if (_count > 0) //если пин кем то занят
 		{
-			String result = "pin " + pinName + " busy by " + _driverPins[0].driverId + " as pin index " + String(_driverPins[0].driverPinIndex) + "\n";
+			//Если пин занят и текущий пин драйвера это не I2C пин и не питание 
+			if (((pinType & SDA_MASK) || (pinType & SCL_MASK) || (pinType & VCC5_MASK) || (pinType & VCC33_MASK) || (pinType & GND_MASK)) == 0)
+			{
+				//формируем сообщение об ошибке
+				String result = "pin " + pinName + " busy by " + _driverPins[0].driverId + " as pin index " + String(_driverPins[0].driverPinIndex) + "\n";
+				//удаляем массив
+				delete[] _driverPins;
+				//возвращаем ошибку
+				return result;
+			}
+			//удаляем массив 
 			delete[] _driverPins;
-			return result;
+//TODO: Сделать проверку если пин I2C но физический пин занят как цифровой пин другим драйвером
 		}
-		delete[] _driverPins;
+		//проверяем - соответствует ли выбранный тип пина - поддерживаемым выбранным пином
+		if (!pinTypeSupported(pin->pinTypes, pinType))
+		{
+			return "pin " + pinName + " not compatable with type " + decodePinTypes(pinType) + "\n"; //если нет - возвращаем ошибку
+		}
+		Serial.println("check 8");
 	}
-	Serial.println("check 7");
-	Serial.println("check 7 " + String(pin->pinTypes));
-	Serial.println("check 7 " + String(pinType));
-	if (!pinTypeSupported(pin->pinTypes, pinType))
-	{
-		return "pin " + pinName + " not compatable with type " + decodePinTypes(pinType) + "\n";
-	}
-	Serial.println("check 8");
+	//драйвер может использовать этот пин, возвращаем пустую строчку
 	return "";
 }
 

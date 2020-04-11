@@ -1050,6 +1050,7 @@ void handleUploadFile(WiFiClient client)
 				}
 
 				data = "";
+				continue;
 			}
 			//else
 				//if (c != '\r')
