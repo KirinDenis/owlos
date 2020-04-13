@@ -842,7 +842,7 @@ void initPins()
 	addPin(pin);
 
 	pin.name = "GND";
-	pin.pinTypes = GND;
+	pin.pinTypes = GND_MASK;
 	pin.GPIONumber = -1;
 	pin.location = "l7";
 	addPin(pin);
@@ -878,7 +878,7 @@ void initPins()
 	pin.name = "RX";
 	pin.GPIONumber = -1;
 	pin.pinTypes = NO_MASK;
-	pin.extendPinType = RXD_EXTEND_MASK;
+	pin.extendPinTypes = RXD_EXTEND_MASK;
 	pin.chipNumber = 21;
 	pin.location = "l12";
 	addPin(pin);
@@ -886,13 +886,13 @@ void initPins()
 	pin.name = "TX";
 	pin.GPIONumber = -1;
 	pin.pinTypes = NO_MASK;
-	pin.extendPinType = TXD_EXTEND_MASK;
+	pin.extendPinTypes = TXD_EXTEND_MASK;
 	pin.chipNumber = 22;
 	pin.location = "l13";
 	addPin(pin);
 
 	pin.name = "GND";
-	pin.pinTypes = GND;
+	pin.pinTypes = GND_MASK;
 	pin.GPIONumber = -1;
 	pin.location = "l14";
 	addPin(pin);
@@ -906,7 +906,7 @@ void initPins()
 	pin.name = "A0";
 	pin.GPIONumber = pinNameToValue(pin.name);
 	pin.pinTypes = ANALOG_I_MASK;
-	pin.extendedPinTypes = TOUCH_EXTEND_MASK;
+	pin.extendPinTypes = TOUCH_EXTEND_MASK;
 	pin.chipNumber = 2;
 	pin.location = "r1";
 	addPin(pin);

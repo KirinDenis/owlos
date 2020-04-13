@@ -38,11 +38,11 @@ OWLOS распространяется в надежде, что она буде
 Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
+#ifndef noPlatformIO
 
-#include "src/src/Kernel.h"
+#include <Arduino.h>
+#include "src/Kernel.h"
 
-/*
-#define noPlatformIO
 void setup() 
 {  
 	//OWLOS Kernel Setup  
@@ -54,4 +54,4 @@ void loop()
 	//OWLOS Kernel Loop
 	kernelLoop();
 }
-*/
+#endif

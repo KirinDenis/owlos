@@ -81,21 +81,20 @@ OWLOS распространяется в надежде, что она буде
 #define VCC_FAMILY  2    //пин входит в семейство пинов питания 	   
 						   
 //смотрите PinManager.cpp для пояснения полей этой записи
-typedef struct Pin
+struct Pin
 {	
 	String name = "";
 	int mode = -1;
 	uint16_t pinTypes = NO_MASK;
-	uint16_t extendPinTypes = NO_MASK;
+	uint16_t extendPinTypes = NO_MASK;	         
 	int8_t GPIONumber = -1;
 	int8_t chipNumber = -1;
 	int8_t neighbourPin = -1;
 	String location = "";
-
 };
 
 //смотрите PinManager.cpp для пояснения полей этой записи
-typedef struct DriverPin
+struct DriverPin
 {	
 	String name = "";
 	int GPIONumber = -1;
