@@ -41,17 +41,3 @@ OWLOS распространяется в надежде, что она буде
 
 #include "src/src/Kernel.h"
 
-/*
-#define noPlatformIO
-void setup() 
-{  
-	//OWLOS Kernel Setup  
-	kernelSetup();  
-}
-
-void loop() 
-{  
-	//OWLOS Kernel Loop
-	kernelLoop();
-}
-*/
