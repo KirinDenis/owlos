@@ -51,7 +51,7 @@ OWLOS распространяется в надежде, что она буде
 #include <BearSSLHelpers.h>
 #include <WiFiServerSecureBearSSL.h>
 #include <WiFiClientSecure.h>
-#else 
+#else
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #endif
@@ -65,7 +65,7 @@ OWLOS распространяется в надежде, что она буде
 #include <SPIFFS.h>
 #ifdef USESSL
 #include <WiFiClientSecure.h>
-#else 
+#else
 #include <WiFiClient.h>
 #endif
 #endif
@@ -73,7 +73,6 @@ OWLOS распространяется в надежде, что она буде
 #include <Arduino.h>
 
 #include <MD5Builder.h>
-
 
 #include "HTTPServerThings.h"
 #include "../drivers/ESPDriver.h"
@@ -84,21 +83,19 @@ OWLOS распространяется в надежде, что она буде
 #include "../Utils/Utils.h"
 #include "../Utils/WebProperties.h"
 
-
 #define HTTP_METHODS " GET, POST, OPTIONS"
 
-#ifdef ARDUINO_ESP8266_RELEASE_2_5_0 
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 #ifdef USESSL
-WiFiServerSecure * server;
+WiFiServerSecure *server;
 #else
-WiFiServer * server;
+WiFiServer *server;
 #endif
 #endif
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
-WiFiServer * server;
+WiFiServer *server;
 #endif
-
 
 String uri = "";
 String method = "";
@@ -110,7 +107,7 @@ String argName[22];
 //если вы их измените - изменится токен, все кто был со "старым" токеном не смогут соединиться. Но узнал логин и пароль это станет возможно
 
 //более безопасный способ, не определяйте NOT_SECURE_TOKEN, генерируется токен один раз и разместите его в переменной token
-//после этого username, password и chipid не будут иметь никакого значения при авторизации. 
+//после этого username, password и chipid не будут иметь никакого значения при авторизации.
 
 #define NOT_SECURE_TOKEN
 
@@ -119,7 +116,6 @@ String token = "";
 #else
 String token = ""; //type your secure token here
 #endif // DEBUG
-
 
 #ifdef USESSL
 static const char serverCert[] PROGMEM = R"EOF(
@@ -150,8 +146,6 @@ rHozFlw2M9mytQIhAL0VNycV50FqNyT+VxAgf7w/sLxfay4cTPXze+ZHGJ4hAiEA
 )EOF";
 #endif
 
-
-
 void calculateToken()
 {
 #ifdef NOT_SECURE_TOKEN
@@ -166,7 +160,8 @@ void calculateToken()
 bool checkToken(String _token)
 {
 #ifndef NOT_SECURE_TOKEN
-	if (token.length() == 0) return false;
+	if (token.length() == 0)
+		return false;
 #endif // !NOT_SECURE_TOKEN
 
 	return token.equals(_token);
@@ -175,7 +170,8 @@ bool checkToken(String _token)
 bool auth(String username, String password)
 {
 #ifndef NOT_SECURE_TOKEN
-	if (token.length() == 0) return false;
+	if (token.length() == 0)
+		return false;
 #endif // !NOT_SECURE_TOKEN
 
 	MD5Builder md5;
@@ -189,7 +185,7 @@ void HTTPServerBegin(uint16_t port)
 {
 	calculateToken();
 
-#ifdef ARDUINO_ESP8266_RELEASE_2_5_0 
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 #ifdef USESSL
 	server = new WiFiServerSecure(port);
 
@@ -201,7 +197,7 @@ void HTTPServerBegin(uint16_t port)
 	server->setRSACert(new BearSSL::X509List(serverCert), new BearSSL::PrivateKey(serverKey));
 
 	server->begin();
-#else 
+#else
 	server = new WiFiServer(port);
 	server->begin();
 #endif
@@ -233,7 +229,8 @@ void send(int HTTPResponseCode, String contentType, String content, WiFiClient c
 	client.write(content.c_str(), content.length());
 }
 
-String parsePostBody(WiFiClient client) {
+String parsePostBody(WiFiClient client)
+{
 	String data = "";
 	String sectionSign = "";
 	String body = "";
@@ -251,11 +248,11 @@ String parsePostBody(WiFiClient client) {
 				}
 				else
 				{
-					if (data.indexOf(sectionSign) != -1)//endof section parsing
+					if (data.indexOf(sectionSign) != -1) //endof section parsing
 					{
 						//TODO somthing with body
 						debugOut("d_body", body);
-#ifdef DetailedDebug 
+#ifdef DetailedDebug
 						debugOut("BODY", body);
 #endif
 						break;
@@ -266,27 +263,24 @@ String parsePostBody(WiFiClient client) {
 						{
 							//
 						}
-						else
-							if (data.length() != 0)
-							{
-								body += data;
-								debugOut("c_body", data);
-							}
+						else if (data.length() != 0)
+						{
+							body += data;
+							debugOut("c_body", data);
+						}
 					}
 				}
 
 				data = "";
 			}
-			else
-				if (c != '\r')
-				{
-					data += c;
-				}
+			else if (c != '\r')
+			{
+				data += c;
+			}
 		}
 	}
 	return body;
 }
-
 
 void handleNotFound(WiFiClient client)
 {
@@ -315,7 +309,6 @@ void handleNotFound(WiFiClient client)
 
 	send(404, "text/html", GetNotFoundHTML(), client);
 }
-
 
 //RESTful API -----------------------------------------------
 
@@ -373,7 +366,7 @@ void handleDeleteFile(WiFiClient client)
 }
 
 //----------------------------------------------------------------------------------------------
-//It is not API - it web page for send select file form, to make POST request at UI level  
+//It is not API - it web page for send select file form, to make POST request at UI level
 void handleUpload(WiFiClient client)
 {
 	String html = "<h3>Select file to upload</h3>";
@@ -438,7 +431,6 @@ void handleGetAllKernel(WiFiClient client)
 	return;
 }
 
-
 void handleAddDriver(WiFiClient client)
 {
 	if (argsCount > 2)
@@ -491,7 +483,6 @@ void handleDeleteDriver(WiFiClient client)
 	handleNotFound(client);
 }
 
-
 void handleGetDriversId(WiFiClient client)
 {
 	send(200, "text/plain", driversGetDriversId(), client);
@@ -507,9 +498,8 @@ void handleSetDriverProperty(WiFiClient client)
 			if (driverResult.equals("1"))
 			{
 				driverResult = "";
-			}			
-			else
-			if (driverResult.equals("0"))
+			}
+			else if (driverResult.equals("0"))
 			{
 				driverResult = "bad set property";
 			}
@@ -523,21 +513,18 @@ void handleSetDriverProperty(WiFiClient client)
 				{
 					nodeResult = "";
 				}
-				else
-				if (nodeResult.equals("0"))
+				else if (nodeResult.equals("0"))
 				{
 					nodeResult = "Wrong set ESP propertry ";
 				}
-
 			}
 
 			if (driverResult.length() != 0)
 			{
 				send(502, "text/html", "wrong driver set property " + arg[0] + "\n" + driverResult, client);
 			}
-			else 
-			if (nodeResult.length() != 0)
-			{				
+			else if (nodeResult.length() != 0)
+			{
 				send(502, "text/html", "wrong ESP drivers set property " + arg[0] + "\n" + nodeResult, client);
 			}
 			else
@@ -607,16 +594,15 @@ void handleUpdateUI(WiFiClient client)
 	{
 		send(503, "text/plain", "0", client);
 	}
+	else if (updateGetUpdateUIStatus() < 2)
+	{
+		send(504, "text/plain", "0", client);
+	}
 	else
-		if (updateGetUpdateUIStatus() < 2)
-		{
-			send(504, "text/plain", "0", client);
-		}
-		else
-		{
-			send(200, "text/plain", "1", client);
-			updateUI();
-		}
+	{
+		send(200, "text/plain", "1", client);
+		updateUI();
+	}
 }
 
 void handleUpdateFirmware(WiFiClient client)
@@ -626,23 +612,23 @@ void handleUpdateFirmware(WiFiClient client)
 	{
 		send(503, "text/plain", "0", client);
 	}
+	else if (updateGetUpdateFirmwareStatus() < 2)
+	{
+		send(504, "text/plain", "0", client);
+	}
 	else
-		if (updateGetUpdateFirmwareStatus() < 2)
-		{
-			send(504, "text/plain", "0", client);
-		}
-		else
-		{
-			send(200, "text/plain", "1", client);
-			updateFirmware();
-		}
+	{
+		send(200, "text/plain", "1", client);
+		updateFirmware();
+	}
 }
 
 //-----------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------
-void handleAuth(WiFiClient client) {
+void handleAuth(WiFiClient client)
+{
 	if (argsCount > 1)
 	{
 		if ((argName[0].equals("username")) && (argName[1].equals("password")))
@@ -668,7 +654,7 @@ void handleGetDriverProperty(WiFiClient client)
 		if ((argName[0].equals("id")) && (argName[1].equals("property")))
 		{
 			String driverProp = driversGetDriverProperty(arg[0], decode(arg[1]));
-			if (driverProp.length() == 0) //then try get this property from node 
+			if (driverProp.length() == 0) //then try get this property from node
 			{
 				driverProp = nodeOnMessage(nodeGetTopic() + "/get" + decode(arg[1]), "", NoTransportMask);
 			}
@@ -698,7 +684,6 @@ void handleGetDriverProperty(WiFiClient client)
 	handleNotFound(client);
 }
 
-
 void handleGetDriverProperties(WiFiClient client)
 {
 	if (argsCount > 0)
@@ -721,17 +706,19 @@ void handleGetDriverProperties(WiFiClient client)
 	handleNotFound(client);
 }
 
-void handleGetAllDriversProperties(WiFiClient client) {
+void handleGetAllDriversProperties(WiFiClient client)
+{
 	send(200, "text/plain", driversGetAllDriversProperties(), client);
 }
 
-void handleGetAllScripts(WiFiClient client) {
+void handleGetAllScripts(WiFiClient client)
+{
 
 	send(200, "text/plain", scriptsGetAll(), client);
 }
 
-
-void handleGetPinMap(WiFiClient client) {
+void handleGetPinMap(WiFiClient client)
+{
 	send(200, "text/plain", getPinMap(), client);
 }
 
@@ -745,10 +732,12 @@ void handleGetPinMode(WiFiClient client)
 			uint32_t pinInt = std::atoi(arg[0].c_str());
 			int result = getPinMode(pinInt);
 
-			if (result != -1) {
+			if (result != -1)
+			{
 				send(200, "text/plain", String(result), client);
 			}
-			else {
+			else
+			{
 				send(503, "text/plain", "wrong pin value", client);
 			}
 
@@ -769,10 +758,12 @@ void handleSetDriverPinMode(WiFiClient client)
 			int mode = std::atoi(arg[2].c_str());
 			String result = setDriverPinMode(arg[0], driverPin, mode);
 
-			if (result.length() == 0) {
+			if (result.length() == 0)
+			{
 				send(200, "text/plain", String(result), client);
 			}
-			else {
+			else
+			{
 				send(503, "text/plain", result, client);
 			}
 
@@ -794,10 +785,12 @@ void handleDriverPinWrite(WiFiClient client)
 			int data = std::atoi(arg[2].c_str());
 			String result = driverPinWrite(arg[0], driverPin, data);
 
-			if (result.length() == 0) {
+			if (result.length() == 0)
+			{
 				send(200, "text/plain", String(result), client);
 			}
-			else {
+			else
+			{
 				send(503, "text/plain", result, client);
 			}
 
@@ -864,7 +857,6 @@ void handleDeleteScript(WiFiClient client)
 	handleNotFound(client);
 }
 
-
 //POST
 void handleCreateScript(WiFiClient client)
 {
@@ -924,235 +916,156 @@ void handleUploadFile(WiFiClient client)
 	String sectionSign = "";
 	//String body = "";
 	String fileName = "";
-	
+	File fs_uploadFile;
+
+#define UPLOAD_BUFFER_SIZE 500
+	uint8_t *buf1 = nullptr;
+	uint8_t *buf2 = nullptr;
+	int buf1Count = 0;
+	int buf2Count = 0;
+
 	bool append = false;
 	while (client.connected())
 	{
 		if (client.available())
 		{
+			yield();
 			char c = client.read();
-			
-			if (c == '\n')
+
+			if (append)
 			{
-				
-				if (sectionSign.length() == 0) //first entry
+				if (buf1 == nullptr)
 				{
-					
-					int length = data.length();
-					data.remove(length - 1, 1);
-					sectionSign = data;
-					debugOut("section", sectionSign);
-					
+					buf1 = new uint8_t[UPLOAD_BUFFER_SIZE];
+				}
+
+				if (buf2 == nullptr)
+				{
+					buf2 = new uint8_t[UPLOAD_BUFFER_SIZE];
+				}
+
+				if (buf1Count < UPLOAD_BUFFER_SIZE)
+				{
+					buf1[buf1Count] = c;
+					buf1Count++;
 				}
 				else
 				{
-					
-					if ((data.length() != 0) && (data.indexOf(sectionSign) != -1)) //endof section parsing
+					if (buf2Count < UPLOAD_BUFFER_SIZE - 1)
 					{
-						//TODO somthing with body
-						//debugOut("d_body", body);
-						debugOut("d_body", sectionSign);
-						
-#ifdef DetailedDebug 
-						//debugOut("BODY", body);
-#endif
-						break;
+						buf2[buf2Count] = c;
+						buf2Count++;
 					}
 					else
 					{
-						debugOut("l_body", data);
+						fs_uploadFile.write(buf1, buf1Count);
+						buf1Count = 0;
+
+						buf2[buf2Count] = c;
+						fs_uploadFile.write(buf2, buf2Count + 1);
+						buf2Count = 0;
+					}
+				}
+			}
+
+			if (c == '\n')
+			{
+				if (sectionSign.length() == 0) //first entry
+				{
+					int length = data.length();
+					data.remove(length - 1, 1);
+					sectionSign = data;
+				}
+				else
+				{
+					{
 						if (data.indexOf("Content-Type:") != -1)
 						{
-							
-						}
-						else
-							if (data.indexOf("Content-Disposition:") != -1) //section header
+							while (client.connected())
 							{
-								
-								if (data.indexOf("filename=\"") == -1)
+								yield();
+								if ((!client.available()) || (client.read() == '\n'))
 								{
-									send(501, "text/html", "wrong file name", client);
-									return;
+									break;
 								}
-								fileName = data.substring(data.indexOf("filename=\"") + String("filename=\"").length());
-								fileName = fileName.substring(0, fileName.indexOf("\""));
-								debugOut("file_name", fileName);
-								filesDelete(fileName);
-								//fs_uploadFile = SPIFFS.open(filename, "w");
-
 							}
-							else
-								if (data.length() != 0)
+
+							debugOut("file_name", fileName);
+							if (!append)
+							{
+								//filesDelete(fileName);
+								fs_uploadFile = SPIFFS.open(fileName, "w");
+								append = true;
+							}
+						}
+						else if (data.indexOf("Content-Disposition:") != -1) //section header
+						{
+							if (data.indexOf("filename=\"") == -1)
+							{
+								send(501, "text/html", "wrong file name", client);
+								debugOut("Upload", "501");
+								return;
+							}
+							fileName = data.substring(data.indexOf("filename=\"") + String("filename=\"").length());
+							fileName = "/" + fileName.substring(0, fileName.indexOf("\""));
+						}
+						else if (data.length() != 0)
+						{
+
+							if (data.indexOf(sectionSign) != -1)
+							{
+								if (append)
 								{
-									if (data.indexOf(sectionSign) != -1)
+									debugOut("buffer1", String(buf1Count));
+									debugOut("buffer2", String(buf2Count));
+									if (buf1Count < UPLOAD_BUFFER_SIZE)
 									{
-										send(200, "text/html", "", client);
-										return;
-									}
-									if (fileName.length() == 0)
-									{
-										send(503, "text/html", "somthing wrong", client);
-										return;
-									}
-									data += c;
-									if (!append)
-									{
-										
-										if (!filesWriteStringDirect(fileName, data))
+
+										buf1Count -= (sectionSign.length() + 6);
+										debugOut("buffer1", String(buf1Count));
+										if (buf1Count > 0)
 										{
-											send(503, "text/html", "bad SPIFF file name: " + fileName, client);
-											return;
+											fs_uploadFile.write(buf1, buf1Count);
 										}
-										append = true;
 									}
 									else
-									{							 
-
-										for (char charItem : sectionSign)
+									{
+										fs_uploadFile.write(buf1, buf1Count);
+										debugOut("buffer2", String(buf1Count));
+										buf2Count -= (sectionSign.length() + 6);
+										if (buf2Count > 0)
 										{
-
-											Serial.print(charItem);
-											int buff;
-											buff = charItem;
-											Serial.print(buff);
-
+											fs_uploadFile.write(buf2, buf2Count);
 										}
-
-
-										for (char charItem : data)
-										{
-
-											Serial.print(charItem);
-											int buff;
-											buff = charItem;
-											Serial.print(buff);
-
-										}
-
-
-
-										//	if(result != 0 )
-										//	{
-
-										if (!filesAddString(fileName, data))
-										{
-											send(503, "text/html", "SPIFF problem", client);
-											return;
-										}
-
-										//	}
 									}
-									//body += data;
-									//debugOut("c_body", data);
 								}
+								break;
+							}
+						}
 					}
-
 				}
-
 				data = "";
-				continue;
 			}
-			//else
-				//if (c != '\r')
-				//{
 			data += c;
-
-			//debugOut("data+=c", data)
-		//}
 		}
 	}
+
+	fs_uploadFile.close();
+	if (buf1 != nullptr)
+	{
+		delete[] buf1;
+	}
+	if (buf2 != nullptr)
+	{
+		delete[] buf2;
+	}
+
 	send(200, "text/html", "", client);
 }
 
-/*
-	HTTPUpload& http_uploadFile = webServer->upload();
-#ifdef DetailedDebug
-	debugOut(HTTPServerId, "upload: " + http_uploadFile.filename + " status: " + String(http_uploadFile.status));
-#endif
-	if (http_uploadFile.status == UPLOAD_FILE_START)
-	{
-#ifdef DetailedDebug
-		debugOut(HTTPServerId, "upload start: " + http_uploadFile.filename);
-#endif
-		String filename = "/" + http_uploadFile.filename;
-		//if (!filename.startsWith("/")) filename = "/"+filename;
-		//Serial.print("Upload File Name: "); Serial.println(filename);
-		filesDelete(filename);
-		fs_uploadFile = SPIFFS.open(filename, "w");
-		filename = String();
-	}
-	else
-		if (http_uploadFile.status == UPLOAD_FILE_WRITE)
-		{
-			if (fs_uploadFile)
-			{
-				if (http_uploadFile.currentSize * 2 > ESP.getFreeHeap()) //HEAP is end
-				{
-#ifdef DetailedDebug
-					debugOut(HTTPServerId, "upload aborted, reson: end of node heap");
-#endif
-					send(504, "text/plain", "upload aborted, reson: end of node heap", client);
-				}
-				else
-				{
-					fs_uploadFile.write(http_uploadFile.buf, http_uploadFile.currentSize);
-#ifdef DetailedDebug
-					debugOut(HTTPServerId, "upload write: " + String(http_uploadFile.currentSize));
-#endif
-				}
-
-			}
-			else
-			{
-#ifdef DetailedDebug
-				debugOut(HTTPServerId, "upload write error");
-#endif
-			}
-		}
-		else
-			if (http_uploadFile.status == UPLOAD_FILE_END)
-			{
-				if (fs_uploadFile)
-				{
-					fs_uploadFile.close();
-					String html = http_uploadFile.filename;
-#ifdef DetailedDebug
-					debugOut(HTTPServerId, "uploaded success: " + html);
-#endif
-					send(200, "text/plain", html, client);
-				}
-				else
-				{
-#ifdef DetailedDebug
-					debugOut(HTTPServerId, "upload can't create file");
-#endif
-					send(503, "text/plain", http_uploadFile.filename, client);
-				}
-			}
-			else
-				if (http_uploadFile.status == UPLOAD_FILE_ABORTED)
-				{
-#ifdef DetailedDebug
-					debugOut(HTTPServerId, "upload aborted");
-#endif
-					send(504, "text/plain", http_uploadFile.filename, client);
-				}
-				else
-				{
-#ifdef DetailedDebug
-					debugOut(HTTPServerId, "upload bad file name, size or content for ESP FlashFileSystem");
-#endif
-					send(505, "text/plain", "upload bad file name, size or content for ESP FlashFileSystem", client);
-				}
-*/
-
-
-
-
-
 void HTTPServerLoop()
 {
-	//#ifdef ARDUINO_ESP8266_RELEASE_2_5_0 
+	//#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 #ifdef USESSL
 	WiFiClientSecure client = server->available();
 #else
@@ -1163,8 +1076,6 @@ void HTTPServerLoop()
 	//#ifdef ARDUINO_ESP32_RELEASE_1_0_4
 	//	WiFiClient client = server->available();
 	//#endif
-
-
 
 	if (client)
 	{
@@ -1183,13 +1094,13 @@ void HTTPServerLoop()
 					{
 						if (firstLine.length() == 0)
 						{
-							firstLine = currentLine; //store first line 							
+							firstLine = currentLine; //store first line
 						}
-						currentLine = ""; //next header line 
+						currentLine = ""; //next header line
 					}
 					else // currentLine.length() == 0 END OF HEADER RECIEVE
 					{
-#ifdef DetailedDebug 
+#ifdef DetailedDebug
 						debugOut("---", firstLine);
 #endif
 						method = firstLine.substring(0, firstLine.indexOf(" "));
@@ -1199,8 +1110,9 @@ void HTTPServerLoop()
 
 							uri = firstLine.substring(firstLine.indexOf(" ") + 1);
 							uri = uri.substring(0, uri.indexOf(" "));
-							if ((uri.length() == 0) || (uri.equals("/"))) uri = "/index.html";
-#ifdef DetailedDebug 
+							if ((uri.length() == 0) || (uri.equals("/")))
+								uri = "/index.html";
+#ifdef DetailedDebug
 							debugOut("-->", uri);
 #endif
 							argsCount = 0;
@@ -1228,8 +1140,8 @@ void HTTPServerLoop()
 
 							if (firstLine.indexOf("token=" + token) == -1)
 							{
-								//GET section 
-#ifdef DetailedDebug 
+								//GET section
+#ifdef DetailedDebug
 								debugOut("METHOD", method);
 #endif
 								yield();
@@ -1237,83 +1149,146 @@ void HTTPServerLoop()
 								{
 									sendResponseHeader(200, "text/plain", "", client);
 								}
-								else
-									if (method.equals("GET"))
+								else if (method.equals("GET"))
+								{
+									if (firstLine.indexOf("/getlog") != -1)
 									{
-										if (firstLine.indexOf("/getlog") != -1) { handleGetLog(client); }
-										else
-											if (firstLine.indexOf("/getfilelist") != -1) { handleGetFileList(client); }
-											else
-												if (firstLine.indexOf("/deletefile") != -1) { handleDeleteFile(client); }
-												else
-													if (firstLine.indexOf("/getnodeproperty") != -1) { handleGetUnitProperty(client); }
-													else
-														if (firstLine.indexOf("/setnodeproperty") != -1) { handleSetUnitProperty(client); }
-														else
-															if (firstLine.indexOf("/getallnodeproperties") != -1) { handleGetAllKernel(client); }
-															else
-																if (firstLine.indexOf("/adddriver") != -1) { handleAddDriver(client); }
-																else
-																	if (firstLine.indexOf("/deletedriver") != -1) { handleDeleteDriver(client); }
-																	else
-																		if (firstLine.indexOf("/getdriversid") != -1) { handleGetDriversId(client); }
-																		else
-																			if (firstLine.indexOf("/getdriverproperty") != -1) { handleGetDriverProperty(client); }
-																			else
-																				if (firstLine.indexOf("/setdriverproperty") != -1) { handleSetDriverProperty(client); }
-																				else
-																					if (firstLine.indexOf("/getdriverproperties") != -1) { handleGetDriverProperties(client); }
-																					else
-																						if (firstLine.indexOf("/getalldriversproperties") != -1) { handleGetAllDriversProperties(client); }
-																						else
-																							if (firstLine.indexOf("/getpinmap") != -1) { handleGetPinMap(client); }
-																							else
-																								if (firstLine.indexOf("/getpinmode") != -1) { handleGetPinMode(client); }
-																								else
-																									if (firstLine.indexOf("/setdriverpinmode") != -1) { handleSetDriverPinMode(client); }
-																									else
-																										if (firstLine.indexOf("/driverpinwrite") != -1) { handleDriverPinWrite(client); }
-																										else
-																											if (firstLine.indexOf("/driverpinread") != -1) { handleDriverPinRead(client); }
-																											else
-																												if (firstLine.indexOf("/getwebproperty") != -1) { handleGetWebProperty(client); }
-																												else
-																													if (firstLine.indexOf("/reset") != -1) { handleReset(client); }
-																													else
-																														if (firstLine.indexOf("/updatelog") != -1) { handleUpdateLog(client); }
-																														else
-																															if (firstLine.indexOf("/updateui") != -1) { handleUpdateUI(client); }
-																															else
-																																if (firstLine.indexOf("/updatefirmware") != -1) { handleUpdateFirmware(client); }
-																																else
-																																	if (firstLine.indexOf("/getallscripts") != -1) { handleGetAllScripts(client); }
-																																	else
-																																		if (firstLine.indexOf("/startdebugscript") != -1) { handleStartDebugScript(client); }
-																																		else
-																																			if (firstLine.indexOf("/debugnextscript") != -1) { handleDebugNextScript(client); }
-																																			else
-																																				if (firstLine.indexOf("/getdriverproperties") != -1) { handleGetDriverProperties(client); }
-																																				else
-																																					if (firstLine.indexOf("/getalldriversproperties") != -1) { handleGetAllDriversProperties(client); }
-																																					else
-																																					{
-																																						handleNotFound(client);
-																																					}
+										handleGetLog(client);
+									}
+									else if (firstLine.indexOf("/getfilelist") != -1)
+									{
+										handleGetFileList(client);
+									}
+									else if (firstLine.indexOf("/deletefile") != -1)
+									{
+										handleDeleteFile(client);
+									}
+									else if (firstLine.indexOf("/getnodeproperty") != -1)
+									{
+										handleGetUnitProperty(client);
+									}
+									else if (firstLine.indexOf("/setnodeproperty") != -1)
+									{
+										handleSetUnitProperty(client);
+									}
+									else if (firstLine.indexOf("/getallnodeproperties") != -1)
+									{
+										handleGetAllKernel(client);
+									}
+									else if (firstLine.indexOf("/adddriver") != -1)
+									{
+										handleAddDriver(client);
+									}
+									else if (firstLine.indexOf("/deletedriver") != -1)
+									{
+										handleDeleteDriver(client);
+									}
+									else if (firstLine.indexOf("/getdriversid") != -1)
+									{
+										handleGetDriversId(client);
+									}
+									else if (firstLine.indexOf("/getdriverproperty") != -1)
+									{
+										handleGetDriverProperty(client);
+									}
+									else if (firstLine.indexOf("/setdriverproperty") != -1)
+									{
+										handleSetDriverProperty(client);
+									}
+									else if (firstLine.indexOf("/getdriverproperties") != -1)
+									{
+										handleGetDriverProperties(client);
+									}
+									else if (firstLine.indexOf("/getalldriversproperties") != -1)
+									{
+										handleGetAllDriversProperties(client);
+									}
+									else if (firstLine.indexOf("/getpinmap") != -1)
+									{
+										handleGetPinMap(client);
+									}
+									else if (firstLine.indexOf("/getpinmode") != -1)
+									{
+										handleGetPinMode(client);
+									}
+									else if (firstLine.indexOf("/setdriverpinmode") != -1)
+									{
+										handleSetDriverPinMode(client);
+									}
+									else if (firstLine.indexOf("/driverpinwrite") != -1)
+									{
+										handleDriverPinWrite(client);
+									}
+									else if (firstLine.indexOf("/driverpinread") != -1)
+									{
+										handleDriverPinRead(client);
+									}
+									else if (firstLine.indexOf("/getwebproperty") != -1)
+									{
+										handleGetWebProperty(client);
+									}
+									else if (firstLine.indexOf("/reset") != -1)
+									{
+										handleReset(client);
+									}
+									else if (firstLine.indexOf("/updatelog") != -1)
+									{
+										handleUpdateLog(client);
+									}
+									else if (firstLine.indexOf("/updateui") != -1)
+									{
+										handleUpdateUI(client);
+									}
+									else if (firstLine.indexOf("/updatefirmware") != -1)
+									{
+										handleUpdateFirmware(client);
+									}
+									else if (firstLine.indexOf("/getallscripts") != -1)
+									{
+										handleGetAllScripts(client);
+									}
+									else if (firstLine.indexOf("/startdebugscript") != -1)
+									{
+										handleStartDebugScript(client);
+									}
+									else if (firstLine.indexOf("/debugnextscript") != -1)
+									{
+										handleDebugNextScript(client);
+									}
+									else if (firstLine.indexOf("/getdriverproperties") != -1)
+									{
+										handleGetDriverProperties(client);
+									}
+									else if (firstLine.indexOf("/getalldriversproperties") != -1)
+									{
+										handleGetAllDriversProperties(client);
 									}
 									else
-										//POST Section 
-										if (method.equals("POST"))
-										{
-											if (firstLine.indexOf("/createscript") != -1) { handleCreateScript(client); }
-											else
-												if (firstLine.indexOf("/setwebproperty") != -1) { handleSetWebProperty(client); }
-												else
-													if (firstLine.indexOf("/uploadfile") != -1) { handleUploadFile(client); }
-													else
-													{
-														handleNotFound(client);
-													}
-										}
+									{
+										handleNotFound(client);
+									}
+								}
+								else
+									//POST Section
+									if (method.equals("POST"))
+								{
+									if (firstLine.indexOf("/createscript") != -1)
+									{
+										handleCreateScript(client);
+									}
+									else if (firstLine.indexOf("/setwebproperty") != -1)
+									{
+										handleSetWebProperty(client);
+									}
+									else if (firstLine.indexOf("/uploadfile") != -1)
+									{
+										handleUploadFile(client);
+									}
+									else
+									{
+										handleNotFound(client);
+									}
+								}
 							}
 							else
 							{
@@ -1328,11 +1303,10 @@ void HTTPServerLoop()
 						break;
 					}
 				}
-				else
-					if (receiveChar != '\r')
-					{
-						currentLine += receiveChar;
-					}
+				else if (receiveChar != '\r')
+				{
+					currentLine += receiveChar;
+				}
 			}
 		}
 	}
