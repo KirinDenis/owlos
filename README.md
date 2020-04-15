@@ -30,6 +30,7 @@
 # Copyright 2019, 2020 by:
 - Konstantin Brul (konstabrul@gmail.com)
 - Vitalii Glushchenko (cehoweek@gmail.com)
+- Stanislav Kvashchuk (skat@ukr.net)
 - Vladimir Kovalevich (covalevich@gmail.com)
 - Denys Melnychuk (meldenvar@gmail.com)
 - Denis Kirin (deniskirinacs@gmail.com)
