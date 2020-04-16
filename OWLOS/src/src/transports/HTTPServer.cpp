@@ -918,12 +918,11 @@ void handleUploadFile(WiFiClient client)
 	String fileName = "";
 	File fs_uploadFile;
 
+#define UPLOAD_DATA_LENGTH 200
 #define UPLOAD_BUFFER_SIZE 500
-	uint8_t *buf1 = nullptr;
-	uint8_t *buf2 = nullptr;
-	int buf1Count = 0;
-	int buf2Count = 0;
-
+	uint8_t *buf = nullptr;	
+	int bufCount = 0;
+	
 	bool append = false;
 	while (client.connected())
 	{
@@ -934,37 +933,21 @@ void handleUploadFile(WiFiClient client)
 
 			if (append)
 			{
-				if (buf1 == nullptr)
+				if (buf == nullptr)
 				{
-					buf1 = new uint8_t[UPLOAD_BUFFER_SIZE];
+					buf = new uint8_t[UPLOAD_BUFFER_SIZE];
 				}
 
-				if (buf2 == nullptr)
+				if (bufCount < UPLOAD_BUFFER_SIZE-1)
 				{
-					buf2 = new uint8_t[UPLOAD_BUFFER_SIZE];
-				}
-
-				if (buf1Count < UPLOAD_BUFFER_SIZE)
-				{
-					buf1[buf1Count] = c;
-					buf1Count++;
+					buf[bufCount] = c;
+					bufCount++;
 				}
 				else
 				{
-					if (buf2Count < UPLOAD_BUFFER_SIZE - 1)
-					{
-						buf2[buf2Count] = c;
-						buf2Count++;
-					}
-					else
-					{
-						fs_uploadFile.write(buf1, buf1Count);
-						buf1Count = 0;
-
-						buf2[buf2Count] = c;
-						fs_uploadFile.write(buf2, buf2Count + 1);
-						buf2Count = 0;
-					}
+						buf[bufCount] = c;
+						fs_uploadFile.write(buf, bufCount + 1);
+						bufCount = 0;					
 				}
 			}
 
@@ -1016,28 +999,15 @@ void handleUploadFile(WiFiClient client)
 							{
 								if (append)
 								{
-									debugOut("buffer1", String(buf1Count));
-									debugOut("buffer2", String(buf2Count));
-									if (buf1Count < UPLOAD_BUFFER_SIZE)
-									{
-
-										buf1Count -= (sectionSign.length() + 6);
-										debugOut("buffer1", String(buf1Count));
-										if (buf1Count > 0)
+									debugOut("buffer1", String(bufCount));
+									
+										bufCount -= (sectionSign.length() + 6);
+										debugOut("buffer1", String(bufCount));
+										if (bufCount > 0)
 										{
-											fs_uploadFile.write(buf1, buf1Count);
+											fs_uploadFile.write(buf, bufCount);
 										}
-									}
-									else
-									{
-										fs_uploadFile.write(buf1, buf1Count);
-										debugOut("buffer2", String(buf1Count));
-										buf2Count -= (sectionSign.length() + 6);
-										if (buf2Count > 0)
-										{
-											fs_uploadFile.write(buf2, buf2Count);
-										}
-									}
+									
 								}
 								break;
 							}
@@ -1046,18 +1016,17 @@ void handleUploadFile(WiFiClient client)
 				}
 				data = "";
 			}
-			data += c;
+			if (data.length() < UPLOAD_DATA_LENGTH)
+			{
+			 data += c;
+			}
 		}
 	}
 
 	fs_uploadFile.close();
-	if (buf1 != nullptr)
+	if (buf != nullptr)
 	{
-		delete[] buf1;
-	}
-	if (buf2 != nullptr)
-	{
-		delete[] buf2;
+		delete[] buf;
 	}
 
 	send(200, "text/html", "", client);

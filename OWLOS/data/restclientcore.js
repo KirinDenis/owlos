@@ -40,7 +40,7 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 var boardhost = "http://192.168.1.9:8084/"; //DEBUG
-//var boardhost = "http://192.168.4.1:8084/"; //DEBUG as WiFi Access Point
+//var boardhost = "http://192.168.1.9:8084/"; //DEBUG as WiFi Access Point
 //var boardhost = "";
 
 
