@@ -101,8 +101,6 @@ D:\7Zip\7z.exe a -mx9 motionwidget.js.gz motionwidget.js
 REM copy  "motionwidget.js.gz" "motionwidget.js.gz"
 D:\7Zip\7z.exe a -mx9 settingsui.js.gz settingsui.js
 REM copy  "settingsui.gz" "settingsui.gz"
-D:\7Zip\7z.exe a -mx9 popper.min.js.gz popper.min.js
-REM copy  "popper.min.js.gz" "popper.min.js.gz"
 D:\7Zip\7z.exe a -mx9 radialwidget.js.gz radialwidget.js
 REM copy  "radialwidget.js.gz" "radialwidget.js.gz"
 D:\7Zip\7z.exe a -mx9 smokewidget.js.gz smokewidget.js
@@ -121,8 +119,8 @@ D:\7Zip\7z.exe a -mx9 tablewidget.js.gz tablewidget.js
 REM copy  "tablewidget.js.gz" "tablewidget.js.gz"
 D:\7Zip\7z.exe a -mx9 valuewidget.js.gz valuewidget.js
 REM copy  "valuewidget.js.gz" "valuewidget.js.gz"
-D:\7Zip\7z.exe a -mx9 scriptcore.js.gz scriptcore.js
-REM copy  "scriptcore.js.gz" "scriptcore.js.gz"
+D:\7Zip\7z.exe a -mx9 scriptscore.js.gz scriptscore.js
+REM copy  "scriptscore.js.gz" "scriptscore.js.gz"
 
 
 REM copy "updateinfo.html" "updateinfo.html"

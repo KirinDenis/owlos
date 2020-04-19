@@ -1011,6 +1011,12 @@ void handleUploadFile(WiFiClient client)
 								}
 								break;
 							}
+							else 
+							{
+							   fs_uploadFile.write(buf, bufCount);
+						       bufCount = 0;					
+							}
+
 						}
 					}
 				}
