@@ -735,6 +735,10 @@ void handleGetPinMap(WiFiClient client) {
 	send(200, "text/plain", getPinMap(), client);
 }
 
+void handleGetDriverPin(WiFiClient client) {
+	send(200, "text/plain", getDriverPin(), client);
+}
+
 void handleGetPinMode(WiFiClient client)
 {
 
@@ -1268,6 +1272,8 @@ void HTTPServerLoop()
 																						else
 																							if (firstLine.indexOf("/getpinmap") != -1) { handleGetPinMap(client); }
 																							else
+																							   if (firstLine.indexOf("/getdriverpin") != -1) { handleGetDriverPin(client); }
+																							  else
 																								if (firstLine.indexOf("/getpinmode") != -1) { handleGetPinMode(client); }
 																								else
 																									if (firstLine.indexOf("/setdriverpinmode") != -1) { handleSetDriverPinMode(client); }

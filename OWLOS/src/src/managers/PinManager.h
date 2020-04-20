@@ -107,6 +107,7 @@ struct DriverPin
 
 //описание функций смотрите в PinManager.cpp
 String getPinMap();
+String getDriverPin();
 String decodePinTypes(uint16_t pinType);
 String _checkDriverPin(String pinName, uint16_t pinType, String SDAPinName);
 String _setDriverPin(String pinName, String driverId, uint16_t driverPinIndex, uint16_t pinType, String SDAPinName);

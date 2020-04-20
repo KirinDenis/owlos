@@ -162,6 +162,7 @@ function loadingScripts(withInternet) {
                         loadingScript("restclientcore.js");
                         loadingScript("driverscore.js");
                         loadingScript("scriptscore.js");
+                        loadingScript("pinscore.js");
 
                         var baseWidgetScript = document.createElement('script');
                         baseWidgetScript.onload = function () {
