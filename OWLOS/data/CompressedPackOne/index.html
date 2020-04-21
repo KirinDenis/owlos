@@ -3,51 +3,14 @@
 <head>
     <title>OWLOS</title>
     <meta charset="utf-8" />
-
     <meta name="viewport" content="width=driver-width, initial-scale=1, shrink-to-fit=no">
-
-    <link rel="stylesheet" href="bootstrap.min.css">
-    <link rel="stylesheet" href="ui.css">
-
-    <script src='jquery.min.js'></script>
-    <script src='bootstrap.min.js'></script>
-    <script src='jquery.dataTables.min.js'></script>
-    <script src='dataTables.min.js'></script>
-
-    <script src='bootcore.js'></script>
-    <script src='configcore.js'></script>
-    <script src='restclientcore.js'></script>
-    <script src='languagescore.js'></script>
-
-    <script src='driverscore.js'></script>
-
-    <script src='speechcore.js'></script>
-    <script src='drawcore.js'></script>
-
-    <script src='basewidget.js'></script>
-    <script src='actuatorwidget.js'></script>
+    <script src='owlos.js'></script>
+    <link rel="stylesheet" href="owlos.css"></link>
 
 
-    <script src='graphwidget.js'></script>
-    <script src='lcdwidget.js'></script>
-    <script src='lightwidget.js'></script>
-    <script src='motionwidget.js'></script>
-    <script src='radialwidget.js'></script>
-    <script src='smokewidget.js'></script>
-    <script src='stepperwidget.js'></script>
-    <script src='tablewidget.js'></script>
-    <script src='temperaturewidget.js'></script>
-    <script src='widgetswrappers.js'></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+          integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
 
-
-    <script src='filespanelui.js'></script>
-    <script src='dashboardui.js'></script>
-    <script src='settingsui.js'></script>
-    <script src='driversui.js'></script>
-
-
-
-    <script src='index.js'></script>
 </head>
 <body  onbeforeunload="return BeforeUnloadEvent()">
     
@@ -58,13 +21,13 @@
             <div id="overlay" class="overlay"></div>
             <nav class="navbar">
                 <form class="form-inline my-2 my-lg-0">
-                    <span type="button" id="toggle-sidebar" class="badge badge-warning fa fa-bars">
+                    <span type="button" id="toggle-sidebar" class="badge badge-warning fa fa-bars" style="display:none">
                     </span>
-                    <span type="button" id="pin-sidebar" class="badge badge-success fa fa-anchor">
+                    <span type="button" id="pin-sidebar" class="badge badge-success fa fa-anchor" style="display:none">
                     </span>
-                    <span type="button" id="nodeStatusPanelText" class="badge badge-default">
+                    <span type="button" id="nodeStatusPanelText" class="badge badge-default" style="display:none">
                     </span>
-                    <span type="button" id="sidebarText" class="badge badge-default">
+                    <span type="button" id="sidebarText" class="badge badge-default" style="display:none">
                     </span>
 
                 </form>
@@ -82,7 +45,7 @@
 
                     <div class="tab-content col-sm-12" id="nodesPropsPanel">
                         <div class="tab-pane fade active show" id="dashboard">
-                            <div class="row" id="driversWidgetsPanel">
+                            <div class="gutterSlim row" id="driversWidgetsPanel">
                             </div>
                             <div class="col-sm-12" id="basicPanel">
                             </div>
@@ -121,11 +84,12 @@
     </div>
     <footer class="footer">
         <div class="container col-md-12" id="footerContainer">
+            <!-- Place this tag where you want the button to render. -->            
             OWLOS
         </div>
     </footer>
     <script>
-        boot();
+       // boot();
 
         function BeforeUnloadEvent() {
             return "Are you sure?";

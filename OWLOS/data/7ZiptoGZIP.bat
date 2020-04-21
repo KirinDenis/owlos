@@ -50,7 +50,6 @@ D:\7Zip\7z.exe a -mx9 lcdwidget.js.gz lcdwidget.js
 D:\7Zip\7z.exe a -mx9 lightwidget.js.gz lightwidget.js
 D:\7Zip\7z.exe a -mx9 motionwidget.js.gz motionwidget.js
 D:\7Zip\7z.exe a -mx9 settingsui.js.gz settingsui.js
-D:\7Zip\7z.exe a -mx9 popper.min.js.gz popper.min.js
 D:\7Zip\7z.exe a -mx9 radialwidget.js.gz radialwidget.js
 D:\7Zip\7z.exe a -mx9 smokewidget.js.gz smokewidget.js
 D:\7Zip\7z.exe a -mx9 speechcore.js.gz speechcore.js

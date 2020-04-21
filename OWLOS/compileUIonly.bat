@@ -22,7 +22,7 @@ REM You should have received a copy of the GNU General Public License along
 REM with OWLOS. If not, see < https://www.gnu.org/licenses/>.
 
 REM GitHub: https://github.com/KirinDenis/owlos
-
+REM :: UTF-8 CodePage 
 REM (Этот файл — часть Ready IoT Solution - OWLOS.
 
 REM OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
@@ -42,81 +42,168 @@ REM этой программой. Если это не так, см. <https://w
 REM unREM copy and put destination path, to copy content to different path
 @ECHO GZ and REM copy  JavaScript sources
 CD data
+MKDIR "CompressedFull"
+del /Q "CompressedFull\*.*"
+
+MKDIR "CompressedPackOne"
+del /Q "CompressedPackOne\*.*"
+
+
+D:\7Zip\7z.exe a -mx9 index.html.gz index.html 
+move  "index.html.gz" "CompressedFull\index.html.gz"
+
+D:\7Zip\7z.exe a -mx9 indexpack.html.gz indexpack.html
+move  "indexpack.html.gz" "CompressedPackOne\index.html.gz"
+copy "indexpack.html" "CompressedPackOne\index.html"
+
+D:\7Zip\7z.exe a -mx9 jquery.min.js.gz jquery.min.js
+move  "jquery.min.js.gz" "CompressedFull\jquery.min.js.gz"
+type  "jquery.min.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 jquery.dataTables.min.js.gz jquery.dataTables.min.js
+move  "jquery.dataTables.min.js.gz" "CompressedFull\jquery.dataTables.min.js.gz"
+type  "jquery.dataTables.min.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 dataTables.min.css.gz dataTables.min.css 
+move  "dataTables.min.css.gz" "CompressedFull\dataTables.min.css.gz"
+type  "dataTables.min.css" >> "CompressedPackOne\owlos.css"
+
+D:\7Zip\7z.exe a -mx9 popper.min.js.gz popper.min.js 
+move  "popper.min.js.gz" "CompressedFull\popper.min.js.gz"
+type  "popper.min.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 bootstrap.min.css.gz bootstrap.min.css
+move  "bootstrap.min.css.gz" "CompressedFull\bootstrap.min.css.gz"
+type  "bootstrap.min.css" >> "CompressedPackOne\owlos.css"
+
+D:\7Zip\7z.exe a -mx9 bootstrap.min.js.gz bootstrap.min.js 
+move  "bootstrap.min.js.gz" "CompressedFull\bootstrap.min.js.gz"
+type  "bootstrap.min.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 ui.css.gz ui.css 
+move  "ui.css.gz" "CompressedFull\ui.css.gz"
+type  "ui.css" >> "CompressedPackOne\owlos.css"
+
+D:\7Zip\7z.exe a -mx9 dashboardui.js.gz dashboardui.js 
+move  "dashboardui.js.gz" "CompressedFull\dashboardui.js.gz"
+type  "dashboardui.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 filespanelui.js.gz filespanelui.js 
+move  "filespanelui.js.gz" "CompressedFull\filespanelui.js.gz"
+type  "filespanelui.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 basewidget.js.gz basewidget.js 
+move  "basewidget.js.gz" "CompressedFull\basewidget.js.gz"
+type  "basewidget.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 lcdwidget.js.gz lcdwidget.js
+move  "lcdwidget.js.gz" "CompressedFull\lcdwidget.js.gz"
+type  "lcdwidget.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 lightwidget.js.gz lightwidget.js
+move  "lightwidget.js.gz" "CompressedFull\lightwidget.js.gz"
+type  "lightwidget.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 lcdwidget.js.gz lcdwidget.js
+move  "lcdwidget.js.gz" "CompressedFull\lcdwidget.js.gz"
+type  "lcdwidget.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 lightwidget.js.gz lightwidget.js
+move  "lightwidget.js.gz" "CompressedFull\lightwidget.js.gz"
+type  "lightwidget.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 motionwidget.js.gz motionwidget.js
+move  "motionwidget.js.gz" "CompressedFull\motionwidget.js.gz"
+type  "motionwidget.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 settingsui.js.gz settingsui.js
+move  "settingsui.js.gz" "CompressedFull\settingsui.js.gz"
+type  "settingsui.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 radialwidget.js.gz radialwidget.js
+move  "radialwidget.js.gz" "CompressedFull\radialwidget.js.gz"
+type  "radialwidget.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 smokewidget.js.gz smokewidget.js
+move  "smokewidget.js.gz" "CompressedFull\smokewidget.js.gz"
+type  "smokewidget.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 stepperwidget.js.gz stepperwidget.js
+move  "stepperwidget.js.gz" "CompressedFull\stepperwidget.js.gz"
+type  "stepperwidget.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 temperaturewidget.js.gz temperaturewidget.js
+move  "temperaturewidget.js.gz" "CompressedFull\temperaturewidget.js.gz"
+type  "temperaturewidget.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 graphwidget.js.gz graphwidget.js
+move  "graphwidget.js.gz" "CompressedFull\graphwidget.js.gz"
+type  "graphwidget.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 tablewidget.js.gz tablewidget.js
+move  "tablewidget.js.gz" "CompressedFull\tablewidget.js.gz"
+type  "tablewidget.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 valuewidget.js.gz valuewidget.js
+move  "valuewidget.js.gz" "CompressedFull\valuewidget.js.gz"
+type  "valuewidget.js" >> "CompressedPackOne\owlos.js"
 
 D:\7Zip\7z.exe a -mx9 actuatorwidget.js.gz actuatorwidget.js
-REM copy  "actuatorwidget.js.gz" "actuatorwidget.js.gz"
-D:\7Zip\7z.exe a -mx9 basewidget.js.gz basewidget.js 
-REM copy  "basewidget.js.gz" "basewidget.js.gz"
-D:\7Zip\7z.exe a -mx9 bootcore.js.gz bootcore.js 
-REM copy  "bootcore.js.gz" "bootcore.js.gz"
-D:\7Zip\7z.exe a -mx9 bootstrap.min.css.gz bootstrap.min.css
-REM copy  "bootstrap.min.css.gz" "bootstrap.min.css.gz"
-D:\7Zip\7z.exe a -mx9 bootstrap.min.js.gz bootstrap.min.js 
-REM copy  "bootstrap.min.js.gz" "bootstrap.min.js.gz"
+move  "actuatorwidget.js.gz" "CompressedFull\actuatorwidget.js.gz"
+type "actuatorwidget.js" >> "CompressedPackOne\owlos.js"
+
+
 D:\7Zip\7z.exe a -mx9 restclientcore.js.gz restclientcore.js 
-REM copy  "restclientcore.js.gz" "restclientcore.js.gz"
-D:\7Zip\7z.exe a -mx9 ui.css.gz ui.css 
-REM copy  "ui.css.gz" "ui.css.gz"
-D:\7Zip\7z.exe a -mx9 dataTables.min.css.gz dataTables.min.css 
-REM copy  "dataTables.min.css.gz" "dataTables.min.css.gz"
-D:\7Zip\7z.exe a -mx9 dataTables.min.js.gz dataTables.min.js 
-REM copy  "dataTables.min.js.gz" "dataTables.min.js.gz"
-D:\7Zip\7z.exe a -mx9 widgetswrappers.js.gz widgetswrappers.js 
-REM copy  "widgetswrappers.js.gz" "widgetswrappers.js.gz"
-D:\7Zip\7z.exe a -mx9 driverscore.js.gz driverscore.js 
-REM copy  "driverscore.js.gz" "driverscore.js.gz"
-D:\7Zip\7z.exe a -mx9 driversui.js.gz driversui.js 
-REM copy  "driversui.js.gz" "driversui.js.gz"
-D:\7Zip\7z.exe a -mx9 drawcore.js.gz drawcore.js 
-REM copy  "drawcore.js.gz" "drawcore.js.gz"
-D:\7Zip\7z.exe a -mx9 dashboardui.js.gz dashboardui.js 
-REM copy  "dashboardui.js.gz" "dashboardui.js.gz"
-D:\7Zip\7z.exe a -mx9 filespanelui.js.gz filespanelui.js 
-REM copy  "filespanelui.js.gz" "filespanelui.js.gz"
-D:\7Zip\7z.exe a -mx9 index.html.gz index.html 
-REM copy  "index.html.gz" "index.html.gz"
-D:\7Zip\7z.exe a -mx9 index.js.gz index.js 
-REM copy  "index.js.gz" "index.js.gz"
-D:\7Zip\7z.exe a -mx9 jquery.dataTables.min.js.gz jquery.dataTables.min.js
-REM copy  "jquery.dataTables.min.js.gz" "jquery.dataTables.min.js.gz"
-D:\7Zip\7z.exe a -mx9 jquery.min.js.gz jquery.min.js
-REM copy  "jquery.min.js.gz" "jquery.min.js.gz"
-D:\7Zip\7z.exe a -mx9 languagescore.js.gz languagescore.js
-REM copy  "languagescore.js.gz" "languagescore.js.gz"
-D:\7Zip\7z.exe a -mx9 lcdwidget.js.gz lcdwidget.js
-REM copy  "lcdwidget.js.gz" "lcdwidget.js.gz"
-D:\7Zip\7z.exe a -mx9 lightwidget.js.gz lightwidget.js
-REM copy  "lightwidget.js.gz" "lightwidget.js.gz"
-D:\7Zip\7z.exe a -mx9 lcdwidget.js.gz lcdwidget.js
-REM copy  "lcdwidget.js.gz" "lcdwidget.js.gz"
-D:\7Zip\7z.exe a -mx9 lightwidget.js.gz lightwidget.js
-REM copy  "lightwidget.js.gz" "lightwidget.js.gz"
-D:\7Zip\7z.exe a -mx9 motionwidget.js.gz motionwidget.js
-REM copy  "motionwidget.js.gz" "motionwidget.js.gz"
-D:\7Zip\7z.exe a -mx9 settingsui.js.gz settingsui.js
-REM copy  "settingsui.gz" "settingsui.gz"
-D:\7Zip\7z.exe a -mx9 popper.min.js.gz popper.min.js
-REM copy  "popper.min.js.gz" "popper.min.js.gz"
-D:\7Zip\7z.exe a -mx9 radialwidget.js.gz radialwidget.js
-REM copy  "radialwidget.js.gz" "radialwidget.js.gz"
-D:\7Zip\7z.exe a -mx9 smokewidget.js.gz smokewidget.js
-REM copy  "smokewidget.js.gz" "smokewidget.js.gz"
-D:\7Zip\7z.exe a -mx9 speechcore.js.gz speechcore.js
-REM copy  "speechcore.js.gz" "speechcore.js.gz"
-D:\7Zip\7z.exe a -mx9 stepperwidget.js.gz stepperwidget.js
-REM copy  "stepperwidget.js.gz" "stepperwidget.js.gz"
-D:\7Zip\7z.exe a -mx9 temperaturewidget.js.gz temperaturewidget.js
-REM copy  "temperaturewidget.js.gz" "temperaturewidget.js.gz"
-D:\7Zip\7z.exe a -mx9 graphwidget.js.gz graphwidget.js
-REM copy  "graphwidget.js.gz" "graphwidget.js.gz"
+move  "restclientcore.js.gz" "CompressedFull\restclientcore.js.gz"
+type  "restclientcore.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 scriptscore.js.gz scriptscore.js
+move  "scriptscore.js.gz" "CompressedFull\scriptscore.js.gz"
+type  "scriptscore.js" >> "CompressedPackOne\owlos.js"
+
 D:\7Zip\7z.exe a -mx9 configcore.js.gz configcore.js
-REM copy  "configcore.js.gz" "configcore.js.gz"
-D:\7Zip\7z.exe a -mx9 tablewidget.js.gz tablewidget.js
-REM copy  "tablewidget.js.gz" "tablewidget.js.gz"
-D:\7Zip\7z.exe a -mx9 valuewidget.js.gz valuewidget.js
-REM copy  "valuewidget.js.gz" "valuewidget.js.gz"
-D:\7Zip\7z.exe a -mx9 scriptcore.js.gz scriptcore.js
-REM copy  "scriptcore.js.gz" "scriptcore.js.gz"
+move  "configcore.js.gz" "CompressedFull\configcore.js.gz"
+type  "configcore.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 speechcore.js.gz speechcore.js
+move  "speechcore.js.gz" "CompressedFull\speechcore.js.gz"
+type  "speechcore.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 driverscore.js.gz driverscore.js 
+move  "driverscore.js.gz" "CompressedFull\driverscore.js.gz"
+type  "driverscore.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 driversui.js.gz driversui.js 
+move  "driversui.js.gz" "CompressedFull\driversui.js.gz"
+type  "driversui.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 drawcore.js.gz drawcore.js 
+move  "drawcore.js.gz" "CompressedFull\drawcore.js.gz"
+type  "drawcore.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 languagescore.js.gz languagescore.js
+move  "languagescore.js.gz" "CompressedFull\languagescore.js.gz"
+type  "languagescore.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 widgetswrappers.js.gz widgetswrappers.js 
+move  "widgetswrappers.js.gz" "CompressedFull\widgetswrappers.js.gz"
+type  "widgetswrappers.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 bootcore.js.gz bootcore.js 
+move  "bootcore.js.gz" "CompressedFull\bootcore.js.gz"
+type  "bootcore.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 index.js.gz index.js 
+move  "index.js.gz" "CompressedFull\index.js.gz"
+type  "index.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 index.js.gz index.js 
+move  "index.js.gz" "CompressedFull\index.js.gz"
+type  "index.js" >> "CompressedPackOne\owlos.js"
+
+CD "CompressedPackOne"
+D:\7Zip\7z.exe a -mx9 owlos.js.gz owlos.js 
+D:\7Zip\7z.exe a -mx9 owlos.css.gz owlos.css 
 
 
 REM copy  "updateinfo.html" "updateinfo.html"
