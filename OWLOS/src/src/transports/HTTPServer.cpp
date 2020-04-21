@@ -903,6 +903,11 @@ void handleSetWebProperty(WiFiClient client)
 	handleNotFound(client);
 }
 
+void handleGetDriverPin(WiFiClient client) {
+	send(200, "text/plain", getDriverPin(), client);
+}
+
+
 File fs_uploadFile;
 void handleUploadFile(WiFiClient client)
 {
@@ -1185,6 +1190,10 @@ void HTTPServerLoop()
 									else if (firstLine.indexOf("/getpinmode") != -1)
 									{
 										handleGetPinMode(client);
+									}
+									else if (firstLine.indexOf("/getdriverpin") != -1)
+									{ 
+										handleGetDriverPin(client); 
 									}
 									else if (firstLine.indexOf("/setdriverpinmode") != -1)
 									{
