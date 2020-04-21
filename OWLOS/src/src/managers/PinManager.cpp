@@ -128,39 +128,48 @@ String decodePinTypes(uint16_t pinType) {
 String getPinMap()
 {
 	String result = "";
-	DriverPin * _driverPins = nullptr; //сюда будут помещены драйвера занимающие конкретный пин
-	int _count = 0;
 
-	//перебор всех пинов
-	for (int i = 0; i < pinCount; i++)
-	{
+
+   if(pins != nullptr){
+ 	  //перебор всех пинов
+	   for (int i = 0; i < pinCount; i++)
+	   {
 		result += "name:" + pins[i].name + "\n";
 		result += "mode=" + String(pins[i].mode) + "\n";
 		result += "pintypes=" + String(pins[i].pinTypes) + "\n";
 		result += "decodedpintypes=" + decodePinTypes(pins[i].pinTypes) + "\n";
+		result += "extenedpintypes=" + String(pins[i].extendPinTypes) + "\n";
 		result += "gpio=" + String(pins[i].GPIONumber) + "\n";
 		result += "chipnumber=" + String(pins[i].chipNumber) + "\n";
 		result += "neighbourpin=" + String(pins[i].neighbourPin) + "\n";
 		result += "location=" + pins[i].location + "\n";
-		//получить все драйвера занявшие пин pins[i].GPIONumber
-		_count = getDriverPinsByGPIONumber(pins[i].GPIONumber, &_driverPins);
-		//если есть драйвера занявшие пин - добавить данные о них в результат функции
-		if (_count > 0)
-		{
-			for (int j = 0; j < _count; j++)
-			{
-				result += "driverid:" + _driverPins[j].driverId + "\n";
-				result += "driverpintype=" + String(_driverPins[j].driverPinType) + "\n";
-				result += "driverpintypedecoded=" + decodePinTypes(_driverPins[j].driverPinType) + "\n";
-				result += "driverpinindex=" + String(_driverPins[j].driverPinIndex) + "\n";
-				result += "drivei2caddr=" + String(_driverPins[j].driverI2CAddr) + "\n";
-			}
-			//удаляем полученные данные о драйверах 
-			delete[] _driverPins;
-		}
-	}
+	   }
+    }
+
 	return result;
 }
+
+//Возвращает данные о занятых драйверами пинах в текстовом виде. Используется RESTful API и для отладки. 
+String getDriverPin()
+{
+	String result = "";
+    	
+		if(driverPins != nullptr){		   
+		   for (int j = 0; j < driverPinCount; j++)
+		   {
+				result += "driverid:" + driverPins[j].driverId + "\n";
+				result += "name=" + driverPins[j].name + "\n";
+				result += "driverpintype=" + String(driverPins[j].driverPinType) + "\n";
+				result += "driverpintypedecoded=" + decodePinTypes(driverPins[j].driverPinType) + "\n";
+				result += "driverpinindex=" + String(driverPins[j].driverPinIndex) + "\n";
+				result += "driveri2caddr=" + String(driverPins[j].driverI2CAddr) + "\n";
+				result += "driversdapinname=" + String(driverPins[j].SDAPinName) + "\n";
+		   }
+		}
+
+    return result;
+}	
+
 
 //функция возвращает TRUE если тип пина pinType может быть использован с пином с масками pinTypes
 bool pinTypeSupported(uint16_t pinTypes, uint16_t pinType)
@@ -454,7 +463,7 @@ String driverPinWrite(String driverId, int driverPinIndex, int data)
 			if (_driverPin->driverPinType & ANALOG_O_MASK) //если драйвер установил этому пину маску аналогового выхода 
 			{
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4 
-				analogWrite(_driverPin->GPIONumber, data);  //мы не нашли "официального" способа делать ESP32 analogWrite() - вызываем библиотеку ESP32_AnalogWrite
+				analogWrite(_driverPin->GPIONumber, data, 1024);  //мы не нашли "официального" способа делать ESP32 analogWrite() - вызываем библиотеку ESP32_AnalogWrite
 #else	
 				analogWrite(_driverPin->GPIONumber, data);  //запись для ESP8266
 #endif

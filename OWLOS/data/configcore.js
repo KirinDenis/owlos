@@ -153,7 +153,6 @@ var config = {
         var node = {
             host: _host,
             nodenickname: _nodenickname,
-            recievedDriversProperties: "",
             //-------------------------------------------------------------------------------------------------------------
             //сетевое состояние модуля - онлайн, офлайн, переподсоединение ("в работе"), ошибка --> по умолчанию онлайн
             //NOTE: у каждого свойства есть свое сетевое состояние и связанные события - это глобальный флаг для всех драйвер и элементов UI
@@ -179,8 +178,12 @@ var config = {
                 this.networkStatusListners.push(event = { event: _event, sender: _sender });
             },
 
-            drivers: []
+            drivers: [],
+            pins: [],
+            driversPins: [],
+     
         }
+
         configProperties.nodes.push(node);
         config.doOnChange();
         return true;
@@ -215,9 +218,10 @@ var config = {
                             id: configProperties.nodes[nodeKey].id,
                             host: configProperties.nodes[nodeKey].host,
                             nodenickname: configProperties.nodes[nodeKey].nodenickname,
-                            recievedDriversProperties: "",
                             _networkStatus: NET_OFFLINE,
                             drivers: [],
+                            pins: [],
+                            driversPins: [],
                             networkStatusListners: [], //подписчики на изменение сетевого состояния                         
                             set networkStatus(networkStatus) { //для контроля изменения _networkStatus, для оповещения подписчиков
                                 this._networkStatus = networkStatus; //сохранить новое сетевое состояние
@@ -310,9 +314,11 @@ var config = {
                 id: configProperties.nodes[node].id,
                 host: configProperties.nodes[node].host,
                 nodenickname: configProperties.nodes[node].nodenickname,
-                recievedDriversProperties: "",
                 _networkStatus: NET_OFFLINE,
-                drivers: []
+                drivers: [],
+                pins: [],
+                driversPins: [],
+        
 
             }
 

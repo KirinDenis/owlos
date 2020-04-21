@@ -64,17 +64,22 @@ function createScript(_node) {
 
 var scriptsManager = {
     scripts: [],
-
+    
+    //подписчики (функции) на onNew событие скрипта 
     _onnew: [],
+
+    //вызов события onNew скриптом
     doOnNew: function (script) {
         for (var key in scriptsManager._onnew) {
             scriptsManager._onnew[key](script);
         }
     },
 
+    //Добавление обработчиков события onNew
     set onNew(onnew) {
         scriptsManager._onnew.push(onnew);
     },
+
 
     _onchange: [],
     doOnChange: function (script) {

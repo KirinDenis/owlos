@@ -129,8 +129,9 @@ $(document).ready(function () {
             httpPostAsyncWithErrorReson(boardhost + "createscript", "?name=main1", escape(textArea.value));
         });
         */
-
+        
         speak("OWLOS is ready");
+       
     }
     else {
         status_online = NET_OFFLINE;
@@ -393,6 +394,9 @@ function createProSidebar() {
 function nodesRefresh() {
     for (var node in configProperties.nodes) {
         drivers.refresh(configProperties.nodes[node]);
+     
+       // pins.refresh(configProperties.nodes[node]);
+       // driverPins.refresh(configProperties.nodes[node]);
         scriptsManager.refresh(configProperties.nodes[node]);
     }
 }
