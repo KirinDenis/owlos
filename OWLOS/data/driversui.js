@@ -287,7 +287,20 @@ var driversUI = {
             formGroup.appendChild(pinSelect);
             //driverSelect.onchange = driversUI.onDriverSelectChange;
 
-            
+
+            //Фильтры:
+            //- на вход маска типа пина
+                //- выход:
+            //-проверяет какие пины свободны и соответстуют маски.
+              //  - пункт селект по умолчанию не назначен
+//                - если не вернуло свободных пинов - селект блокируется и пишет - нет доступных свободных пинов данного типа(нет БОЛЬШЕ - проверте драйвера)
+  //              - в фильтр скармливается массив пинов выбранный из остальных селектов - они не к чему не привязаны но влияют на выбор.
+
+            //
+    //        var pinSelectOption = pinSelect.appendChild(document.createElement('option'));
+            //pinSelectOption.innerText = "- pin not selecter"
+            //a потом цикл
+
             for (var j = 0; j < driversUI.node.pins.length; j++) {
                 var pinSelectOption = pinSelect.appendChild(document.createElement('option'));
                 pinSelectOption.innerText = driversUI.node.pins[j].name;
