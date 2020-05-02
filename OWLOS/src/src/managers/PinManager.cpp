@@ -104,16 +104,16 @@ DriverPin * driverPins = nullptr;
 String decodePinTypes(uint16_t pinType) {
 	String decodedPinTypes;
 	if (pinType & DIGITAL_I_MASK) { decodedPinTypes += "DIGITAL_I,"; }
-	if (pinType & DIGITAL_O_MASK) { decodedPinTypes += " DIGITAL_O,"; }
-	if (pinType & ANALOG_I_MASK) { decodedPinTypes += " ANALOG_I,"; }
-	if (pinType & ANALOG_O_MASK) { decodedPinTypes += " ANALOG_O,"; }
-	if (pinType & SDA_MASK) { decodedPinTypes += " SDA,"; }
-	if (pinType & SCL_MASK) { decodedPinTypes += " SCL,"; }
-	if (pinType & I2CADDR_MASK) { decodedPinTypes += " I2C_ADDR,"; }
-	if (pinType & VCC5_MASK) { decodedPinTypes += " VCC5,"; }
-	if (pinType & VCC33_MASK) { decodedPinTypes += " VCC33,"; }
-	if (pinType & GND_MASK) { decodedPinTypes += " GND,"; }
-	if (!(pinType | NO_MASK)) { decodedPinTypes += " UNKNOWN_PIN_TYPE,"; }
+	if (pinType & DIGITAL_O_MASK) { decodedPinTypes += "DIGITAL_O,"; }
+	if (pinType & ANALOG_I_MASK) { decodedPinTypes += "ANALOG_I,"; }
+	if (pinType & ANALOG_O_MASK) { decodedPinTypes += "ANALOG_O,"; }
+	if (pinType & SDA_MASK) { decodedPinTypes += "SDA,"; }
+	if (pinType & SCL_MASK) { decodedPinTypes += "SCL,"; }
+	if (pinType & I2CADDR_MASK) { decodedPinTypes += "I2C_ADDR,"; }
+	if (pinType & VCC5_MASK) { decodedPinTypes += "VCC5,"; }
+	if (pinType & VCC33_MASK) { decodedPinTypes += "VCC33,"; }
+	if (pinType & GND_MASK) { decodedPinTypes += "GND,"; }
+	if (!(pinType | NO_MASK)) { decodedPinTypes += "UNKNOWN_PIN_TYPE,"; }
 	if (decodedPinTypes.length() > 0) {
 
 		decodedPinTypes = decodedPinTypes.substring(0, decodedPinTypes.length() - 1);

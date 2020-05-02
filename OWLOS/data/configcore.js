@@ -181,6 +181,7 @@ var config = {
             drivers: [],
             pins: [],
             driversPins: [],
+            accessableDrivers: [],
      
         }
 
@@ -222,6 +223,7 @@ var config = {
                             drivers: [],
                             pins: [],
                             driversPins: [],
+                            accessableDrivers: [],
                             networkStatusListners: [], //подписчики на изменение сетевого состояния                         
                             set networkStatus(networkStatus) { //для контроля изменения _networkStatus, для оповещения подписчиков
                                 this._networkStatus = networkStatus; //сохранить новое сетевое состояние
@@ -318,7 +320,7 @@ var config = {
                 drivers: [],
                 pins: [],
                 driversPins: [],
-        
+                accessableDrivers: []
 
             }
 

@@ -180,7 +180,7 @@ var settingsUI = {
                 driverHRef.parentLi = nodeLi;
                 //driverHRef.style.color = theme.success;
                 driverHRef.setAttribute("data-toggle", "tab");
-                driverHRef.onclick = driversUI.addDriverClick;
+                driverHRef.onclick = settingsUI.addDriverClick;
                 driverHRef.innerHTML = getLang("adddriver");
                 driverHRef.href = "#home";
                 driverHRef.node = node;
@@ -1931,6 +1931,13 @@ var settingsUI = {
         else {
             sender.className = "badge badge-secondary";
         }
+    },
+
+    addDriverClick: function (event) {        
+            event.stopPropagation();
+            settingsUI.driverAnchorClick(event);
+            var addDriverAhref = event.currentTarget;
+            driversUI.addDriver(addDriverAhref.node);
     }
 
 }

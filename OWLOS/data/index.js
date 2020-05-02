@@ -399,8 +399,9 @@ function nodesRefresh() {
     for (var node in configProperties.nodes) {
         drivers.refresh(configProperties.nodes[node]);
      
-       // pins.refresh(configProperties.nodes[node]);
-       // driverPins.refresh(configProperties.nodes[node]);
+        pins.refresh(configProperties.nodes[node]);
+        driverPins.refresh(configProperties.nodes[node]);
+        accessableDrivers.refresh(configProperties.nodes[node]);
         scriptsManager.refresh(configProperties.nodes[node]);
     }
 }
