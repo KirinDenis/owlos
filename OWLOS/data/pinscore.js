@@ -264,10 +264,13 @@ var pins = {
             deleted: false,
         }; //новый объект для драйвера сформирован        
         return pin;
-    },
+    }
  
 }
 
+//----------------------------------------------------------------------------------------------------------------------------------
+//GetDriverPins 
+//----------------------------------------------------------------------------------------------------------------------------------
 var driverPins = {
 
   
@@ -419,4 +422,145 @@ var driverPins = {
     },
 
 }
+
+//----------------------------------------------------------------------------------------------------------------------------------
+//Get Accessable Drivers 
+//Так же как и DriverPins - смотрите коментарии к этому классу там
+//----------------------------------------------------------------------------------------------------------------------------------
+var accessableDrivers = {
+
+    
+    _onnew: [],
+
+    doOnNew: function (driverPin) {
+        for (var key in accessableDrivers._onnew) {
+            accessableDrivers._onnew[key](driverPin);
+        }
+    },
+
+
+    set onNew(onnew) {
+        accessableDrivers._onnew.push(onnew);
+    },
+
+
+    _ondelete: [],
+
+    doOnDelete: function (driverPin) {
+        for (var key in accessableDrivers._ondelete) {
+            accessableDrivers._ondelete[key](driverPin);
+        }
+    },
+
+
+    set onDelete(ondelete) {
+        accessableDrivers._ondelete.push(ondelete);
+    },
+
+    refresh: function (node) {
+        node.networkStatus = NET_REFRESH;
+        httpGetAsyncWithReciever(node.host + "getdriversaccessable", this.refreshResult, node);
+    },
+
+    refreshResult: function (httpResult, node) {
+        //HTTPClient добавляет строку "%error" в начало Response если запрос не был завешен HTTPCode=200 или произошел TimeOut
+        if (!httpResult.indexOf("%error") == 0) {
+            node.networkStatus = NET_ONLINE;
+            accessableDrivers.parseAccessableDrivers(httpResult, node);
+
+        }
+        else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
+            if (httpResult.indexOf("reponse") != -1) {
+                node.networkStatus = NET_ERROR;
+            }
+            else {
+                node.networkStatus = NET_OFFLINE;
+            }
+            node.driversPins = "";
+        }
+    },
+
+    parseAccessableDrivers: function (httpResult, node) {
+
+        if (node.driversPins.length > 0) {
+            for (var DriverPinIndex in node.driversPins) {
+                node.driversPins[DriverPinIndex].deleted = true; //все удалены перед началом парсинга      
+            }
+        }
+
+        var recievedDriverPins = httpResult.split("\n");
+
+
+        if (recievedDriverPins !== "") {//если первичный парсинг удался
+
+            var driverName = undefined;
+            
+            for (var i = 0; i < recievedDriverPins.length; i++) {//перечисляем все строки в HTTPResult 
+
+                if (recievedDriverPins[i] === "") continue; //если строка пуста, берем следующею
+
+                if (recievedDriverPins[i].indexOf("driverid:") == 0) { //если заголовок драйвера найден                    
+                    //Добавляем собранный пин драйвера 
+                    if (driverPin != undefined) {
+                        node.driversPins.push(driverPin);
+                        this.doOnNew(driverPin); //вызов обработчика события OnNew
+                    }
+
+                    driverId = recievedDriverPins[i].split(":")[1];
+                    driverPin = this.addDriverPin(driverId, node);
+
+                }
+                else {
+                    if (driverPin == undefined) continue;
+                    var splitterPos = recievedDriverPins[i].indexOf("=");
+                    if (splitterPos != -1) {
+                        var key = recievedDriverPins[i].slice(0, splitterPos);
+                        var value = recievedDriverPins[i].slice(splitterPos + 1, recievedDriverPins[i].lenght);
+                        if (driverPin[key] != undefined) {
+                            driverPin[key] = value;
+                        }
+                    }
+                }
+            }
+
+            if (driverPin != undefined) {
+                node.driversPins.push(driverPin);
+                this.doOnNew(driverPin); //вызов обработчика события OnNew
+            }
+        }
+
+        var deleted = false;
+        while (!deleted) {
+            deleted = true;
+            for (var accessableDriversIndex in node.driversPins) { //удаляем удаленные на стороне ноды 
+
+                if (node.driversPins[accessableDriversIndex].deleted === true) {
+                    this.doOnDelete(node.driversPins[accessableDriversIndex]); //вызов обработчика события OnDelete
+                    node.driversPins.splice(accessableDriversIndex, 1);
+                    deleted = false;
+                    break;
+                }
+            }
+        }
+
+    },
+
+    addDriverPin: function (_driverId, _node) {
+        driverPin = {
+            driverId: _driverId,
+            name: "",
+            node: _node,
+            driverpintype: 0,
+            driverpintypedecoded: "",
+            driverpinindex: -1,
+            driveri2caddr: -1,
+            driversdapinname: "",
+            deleted: false,
+        };
+
+        return driverPin;
+    },
+
+}
+
 

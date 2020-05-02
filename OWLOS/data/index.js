@@ -60,8 +60,12 @@ var mqttState = getLang("disconnected");
 var wifiSTconection = getLang("disconnected");
 
 var firstTime = true;
+var runOnce = true;
 
 $(document).ready(function () {
+
+    if (!runOnce) return; 
+    runOnce = false;
 
     addToLogNL("OK loading scripts");
     addToLogNL("[START]", 1);

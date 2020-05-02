@@ -284,6 +284,13 @@ String parsePostBody(WiFiClient client)
 
 void handleNotFound(WiFiClient client)
 {
+	if (uri.indexOf("/favicon.ico") != -1)
+	{
+		sendResponseHeader(405, "text/html", "", client);
+		return;
+	}
+
+
 	if ((filesExists(uri)) || (filesExists(uri + ".gz")))
 	{
 		String contentType = getContentType(uri);
@@ -710,6 +717,12 @@ void handleGetAllDriversProperties(WiFiClient client)
 {
 	send(200, "text/plain", driversGetAllDriversProperties(), client);
 }
+
+void handleGetDriversAccessable(WiFiClient client)
+{
+	send(200, "text/plain", driversGetAccessable(), client);
+}
+
 
 void handleGetAllScripts(WiFiClient client)
 {
@@ -1182,6 +1195,10 @@ void HTTPServerLoop()
 									else if (firstLine.indexOf("/getalldriversproperties") != -1)
 									{
 										handleGetAllDriversProperties(client);
+									}
+									else if (firstLine.indexOf("/getdriversaccessable") != -1)
+									{
+										handleGetDriversAccessable(client);
 									}
 									else if (firstLine.indexOf("/getpinmap") != -1)
 									{

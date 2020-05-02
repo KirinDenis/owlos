@@ -7578,7 +7578,7 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-var boardhost = "http://192.168.1.9:8084/"; //DEBUG
+var boardhost = "http://192.168.1.13:8084/"; //DEBUG
 //var boardhost = "http://192.168.1.9:8084/"; //DEBUG as WiFi Access Point
 //var boardhost = ""; //UI loading from ESPxxxx
 
@@ -7953,17 +7953,22 @@ function createScript(_node) {
 
 var scriptsManager = {
     scripts: [],
-
+    
+    //подписчики (функции) на onNew событие скрипта 
     _onnew: [],
+
+    //вызов события onNew скриптом
     doOnNew: function (script) {
         for (var key in scriptsManager._onnew) {
             scriptsManager._onnew[key](script);
         }
     },
 
+    //Добавление обработчиков события onNew
     set onNew(onnew) {
         scriptsManager._onnew.push(onnew);
     },
+
 
     _onchange: [],
     doOnChange: function (script) {
@@ -8292,7 +8297,6 @@ var config = {
         var node = {
             host: _host,
             nodenickname: _nodenickname,
-            recievedDriversProperties: "",
             //-------------------------------------------------------------------------------------------------------------
             //сетевое состояние модуля - онлайн, офлайн, переподсоединение ("в работе"), ошибка --> по умолчанию онлайн
             //NOTE: у каждого свойства есть свое сетевое состояние и связанные события - это глобальный флаг для всех драйвер и элементов UI
@@ -8318,8 +8322,12 @@ var config = {
                 this.networkStatusListners.push(event = { event: _event, sender: _sender });
             },
 
-            drivers: []
+            drivers: [],
+            pins: [],
+            driversPins: [],
+     
         }
+
         configProperties.nodes.push(node);
         config.doOnChange();
         return true;
@@ -8354,9 +8362,10 @@ var config = {
                             id: configProperties.nodes[nodeKey].id,
                             host: configProperties.nodes[nodeKey].host,
                             nodenickname: configProperties.nodes[nodeKey].nodenickname,
-                            recievedDriversProperties: "",
                             _networkStatus: NET_OFFLINE,
                             drivers: [],
+                            pins: [],
+                            driversPins: [],
                             networkStatusListners: [], //подписчики на изменение сетевого состояния                         
                             set networkStatus(networkStatus) { //для контроля изменения _networkStatus, для оповещения подписчиков
                                 this._networkStatus = networkStatus; //сохранить новое сетевое состояние
@@ -8449,9 +8458,11 @@ var config = {
                 id: configProperties.nodes[node].id,
                 host: configProperties.nodes[node].host,
                 nodenickname: configProperties.nodes[node].nodenickname,
-                recievedDriversProperties: "",
                 _networkStatus: NET_OFFLINE,
-                drivers: []
+                drivers: [],
+                pins: [],
+                driversPins: [],
+        
 
             }
 
@@ -12441,6 +12452,7 @@ function loadingScripts(withInternet) {
                         loadingScript("restclientcore.js");
                         loadingScript("driverscore.js");
                         loadingScript("scriptscore.js");
+                        loadingScript("pinscore.js");
 
                         var baseWidgetScript = document.createElement('script');
                         baseWidgetScript.onload = function () {
@@ -12684,8 +12696,12 @@ var mqttState = getLang("disconnected");
 var wifiSTconection = getLang("disconnected");
 
 var firstTime = true;
+var runOnce = true;
 
 $(document).ready(function () {
+
+    if (!runOnce) return; 
+    runOnce = false;
 
     addToLogNL("OK loading scripts");
     addToLogNL("[START]", 1);
@@ -12753,8 +12769,9 @@ $(document).ready(function () {
             httpPostAsyncWithErrorReson(boardhost + "createscript", "?name=main1", escape(textArea.value));
         });
         */
-
+        
         speak("OWLOS is ready");
+       
     }
     else {
         status_online = NET_OFFLINE;
@@ -13017,6 +13034,9 @@ function createProSidebar() {
 function nodesRefresh() {
     for (var node in configProperties.nodes) {
         drivers.refresh(configProperties.nodes[node]);
+     
+       // pins.refresh(configProperties.nodes[node]);
+       // driverPins.refresh(configProperties.nodes[node]);
         scriptsManager.refresh(configProperties.nodes[node]);
     }
 }
@@ -13267,8 +13287,12 @@ var mqttState = getLang("disconnected");
 var wifiSTconection = getLang("disconnected");
 
 var firstTime = true;
+var runOnce = true;
 
 $(document).ready(function () {
+
+    if (!runOnce) return; 
+    runOnce = false;
 
     addToLogNL("OK loading scripts");
     addToLogNL("[START]", 1);
@@ -13336,8 +13360,9 @@ $(document).ready(function () {
             httpPostAsyncWithErrorReson(boardhost + "createscript", "?name=main1", escape(textArea.value));
         });
         */
-
+        
         speak("OWLOS is ready");
+       
     }
     else {
         status_online = NET_OFFLINE;
@@ -13600,6 +13625,9 @@ function createProSidebar() {
 function nodesRefresh() {
     for (var node in configProperties.nodes) {
         drivers.refresh(configProperties.nodes[node]);
+     
+       // pins.refresh(configProperties.nodes[node]);
+       // driverPins.refresh(configProperties.nodes[node]);
         scriptsManager.refresh(configProperties.nodes[node]);
     }
 }
