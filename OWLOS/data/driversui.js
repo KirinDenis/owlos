@@ -45,9 +45,9 @@ var driversUI = {
     modalBody: undefined,
 
 
-    
+
     formGroupDriverProperties: undefined,
-    
+
 
     addDriver(node) {
         driversUI.node = node;
@@ -62,6 +62,17 @@ var driversUI = {
         //titleDriverText.className = "text-center";
 
         driversUI.createDriverSelect();
+
+        alertDiv = modalFooter.appendChild(document.createElement('div'));
+        alertDiv.id = "alertDiv;"
+
+        var addButton = modalFooter.appendChild(document.createElement("button"));
+        addButton.type = "button";
+        addButton.className = "btn btn-success btn-sm";
+        addButton.id = "addDriverModalButton";
+        addButton.innerText = getLang("adddriverbutton");
+        addButton.alertDiv = alertDiv;
+        addButton.onclick = driversUI.doAddDriverClick;
 
 
 
@@ -213,7 +224,7 @@ var driversUI = {
         var formGroup = driversUI.modalBody.appendChild(document.createElement("div"));
         formGroup.className = "form-group";
         formGroup.id = "driverSelectFormGroup";
-        
+
         var label = formGroup.appendChild(document.createElement("label"));
         label.setAttribute("for", "driverTypeSelect");
         label.innerText = getLang("drivertype");
@@ -227,7 +238,7 @@ var driversUI = {
 
         formGroup.appendChild(driverSelect);
         driverSelect.onchange = driversUI.onDriverSelectChange;
-        
+
 
         for (var i = 0; i < driversUI.node.accessableDrivers.length; i++) {
             var driverSelectOption = driverSelect.appendChild(document.createElement('option'));
@@ -272,44 +283,137 @@ var driversUI = {
         //Pin selects
         for (var i = 0; i < driver.pinscount; i++) {
 
-            var formGroup = driversUI.modalBody.appendChild(document.createElement("div"));
-            formGroup.className = "form-group";
-            formGroup.id = "driverPinForm" + i;
 
-            var label = formGroup.appendChild(document.createElement("label"));
-            label.setAttribute("for", "driverPinSelect" + i);
-            label.innerText = "pin " + String(i + 1) + driver["pintypedecoded" + i];
-            
-            pinSelect = document.createElement('select');
-            pinSelect.className = "form-control form-control-sm";
-            pinSelect.id = "driverPinSelect" + i;
+            if ((driver["pintype" + i] & I2CADDR_MASK) == 0) { //not I2C ADDR
 
-            formGroup.appendChild(pinSelect);
-            //driverSelect.onchange = driversUI.onDriverSelectChange;
+                var formGroup = driversUI.modalBody.appendChild(document.createElement("div"));
+                formGroup.className = "form-group";
+                formGroup.id = "driverPinForm" + i;
 
+                var label = formGroup.appendChild(document.createElement("label"));
+                label.setAttribute("for", "driverPinSelect" + i);
+                label.innerText = "pin " + String(i + 1) + driver["pintypedecoded" + i];
 
-            //Фильтры:
-            //- на вход маска типа пина
-                //- выход:
-            //-проверяет какие пины свободны и соответстуют маски.
-              //  - пункт селект по умолчанию не назначен
-//                - если не вернуло свободных пинов - селект блокируется и пишет - нет доступных свободных пинов данного типа(нет БОЛЬШЕ - проверте драйвера)
-  //              - в фильтр скармливается массив пинов выбранный из остальных селектов - они не к чему не привязаны но влияют на выбор.
+                pinSelect = document.createElement('select');
+                pinSelect.className = "form-control form-control-sm";
+                pinSelect.id = "driverPinSelect" + i;
 
-            //
-    //        var pinSelectOption = pinSelect.appendChild(document.createElement('option'));
-            //pinSelectOption.innerText = "- pin not selecter"
-            //a потом цикл
+                formGroup.appendChild(pinSelect);
+                //driverSelect.onchange = driversUI.onDriverSelectChange;
 
-            for (var j = 0; j < driversUI.node.pins.length; j++) {
-                var pinSelectOption = pinSelect.appendChild(document.createElement('option'));
-                pinSelectOption.innerText = driversUI.node.pins[j].name;
-                pinSelectOption.pin = driversUI.node.pins[j];
-                
+                var pins = getFreePins(driversUI.node, driver["pintype" + i]);
+                if (pins.length > 0) {
+                    var pinSelectOption = pinSelect.appendChild(document.createElement('option'));
+                    pinSelectOption.innerText = getLang("PleaseSelectPin");
+                    for (var j = 0; j < pins.length; j++) {
+                        var pinSelectOption = pinSelect.appendChild(document.createElement('option'));
+                        pinSelectOption.innerText = pins[j].name;
+                        pinSelectOption.pin = pins[j];
+                        pinSelectOption.driverPinNumber = i;
+                    }
+                }
+                else {
+                    pinSelect.enable = false;
+                    var pinSelectOption = pinSelect.appendChild(document.createElement('option'));
+                    pinSelectOption.innerText = getLang("NoFreePinsOfThisType");
+                }
             }
-            
+            else { //I2C Addr 
+                formGroup = driversUI.modalBody.appendChild(document.createElement("div"));
+                formGroup.className = "form-group";
+                label = formGroup.appendChild(document.createElement("label"));
+                label.setAttribute("for", "idEdit");
+                label.innerText = "I2C Address at 'ADDR0xNN' format";
+                var I2CAdddrEdit = formGroup.appendChild(document.createElement('input'));
+                I2CAdddrEdit.className = "form-control form-control-sm";
+                I2CAdddrEdit.id = "driverPort" + i;
+                I2CAdddrEdit.value = "ADDR0x..";
+                I2CAdddrEdit.placeholder = getLang("driveridplaceholder");
+                I2CAdddrEdit.driverPinNumber = i;
+            }
+
         }
-    }
+    },
+
+    doAddDriverClick: function (event) {
+        event.stopPropagation();
+        var addButton = event.currentTarget;
+        var driverSelect = document.getElementById("driverTypeSelect");
+        var driverSelectOption = driverSelect.options[driverSelect.selectedIndex];
+        var driver = driverSelectOption.driver;
+        var pinsString = "";
+        for (var i = 0; i < driver.pinscount; i++) {
+            var pinSelect = document.getElementById("driverPinSelect" + i);
+            if (pinSelect != undefined) {
+                pinsString += pinSelect.options[pinSelect.selectedIndex].innerText + ",";
+            }
+            else {
+                var I2CAdddrEdit = document.getElementById("driverPort" + i);
+                if (I2CAdddrEdit != undefined) {
+                    pinsString += I2CAdddrEdit.value + ",";
+                }
+            }
+        }
+        //http://192.168.1.9:8084/adddriver?type=7&id=lcd1&pins=D21,D22,ADDR0x3F,VCC5,GND
+        pinsString = "type=" + driver.type + "&id=" + document.getElementById("idInput").value + "&pins=" + pinsString;
+
+        addButton.className = "btn btn-warning btn-sm";
+        addButton.value = 'do...';
+        addButton.disable = true;
+
+        //TODO: decode Type from name 
+        var httpResult = addDriver(driversUI.node.host, pinsString);
+
+        if (httpResult == 1) {
+
+            var autoAddWidgetCheckBox = document.getElementById("autoAddWidget");
+            if (autoAddWidgetCheckBox !== null) {
+
+                if (autoAddWidgetCheckBox.checked == true) {
+
+                    var driversWidgetsPanel = document.getElementById("driversWidgetsPanel");
+
+                    var defaultWidgets = [];
+                    var widgetLayer = "";
+                    var widgetWrapper = "";
+                }
+            }
+
+
+
+
+            $("#addDriverModal").modal('hide');
+            // renderDriversProperties(); TODO model refresh
+        }
+        else {
+            addButton.alertDiv.innerHTML = "";
+            var addDriverAlert = addButton.alertDiv.appendChild(document.createElement('div'));
+            addDriverAlert.className = "alert alert-danger";
+            addDriverAlert.role = "alert";
+            addDriverAlert.innerText = httpResult;
+
+            addButton.className = "btn btn-success btn-sm";
+            addButton.value = 'add';
+        }
+        addButton.disable = false;
+        return false;
+
+    },
+
+
+    //Фильтры:
+    //- на вход маска типа пина
+    //- выход:
+    //-проверяет какие пины свободны и соответстуют маски.
+    //  - пункт селект по умолчанию не назначен
+    //                - если не вернуло свободных пинов - селект блокируется и пишет - нет доступных свободных пинов данного типа(нет БОЛЬШЕ - проверте драйвера)
+    //              - в фильтр скармливается массив пинов выбранный из остальных селектов - они не к чему не привязаны но влияют на выбор.
+
+    //
+    //        var pinSelectOption = pinSelect.appendChild(document.createElement('option'));
+    //pinSelectOption.innerText = "- pin not selecter"
+    //a потом цикл
+
 
     /*
     appendDriverPins: function (valueSelect) {

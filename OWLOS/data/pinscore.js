@@ -81,6 +81,18 @@ const NO_FAMILY = 0;    //пин не имеет семейства
 const I2C_FAMILY = 1;    //пин входит в семейство I2C
 const VCC_FAMILY = 2;    //пин входит в семейство пинов питания 	   
 
+function getFreePins(node, pinMask) {
+    var pins = [];
+
+    for (var i = 0; i < node.pins.length; i++) {
+        var valid = (node.pins[i].pintypes & pinMask); // | (node.pins[i].extenedpintypes & pinMask);
+        if (valid > 0) {
+            pins.push(node.pins[i]);
+        }
+    }
+
+    return pins;
+}
 
 
 var pins = {
@@ -286,7 +298,7 @@ var pins = {
             host: node.host,
             mode: -1,
             pintypes: 0,
-            extendPinTypes: 0,
+            extenedpintypes: 0,
             gpio: -1,
             chipnumber: -1,
             neighbourPin: -1,

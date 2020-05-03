@@ -86,7 +86,7 @@ struct Pin
 	String name = "";
 	int mode = -1;
 	uint16_t pinTypes = NO_MASK;
-	uint16_t extendPinTypes = NO_MASK;	         
+	uint16_t extenedpintypes = NO_MASK;	         
 	int8_t GPIONumber = -1;
 	int8_t chipNumber = -1;
 	int8_t neighbourPin = -1;

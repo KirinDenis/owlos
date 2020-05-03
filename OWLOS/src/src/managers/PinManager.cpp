@@ -61,7 +61,7 @@ PinManager - реализует программный интерфейс меж
 	int mode = -1;               - режим работы пина Output, Input, Input-Pull Up
 	uint16_t pinTypes = NO_MASK; - маски типа пина - определяют назначение (возможности) конкретного пина
 								 - например DIGITAL_IO OR SDA - пин может быть использован для цифрового ввода-вывода, а также как канел SDA шины I2C
-	uint16_t extendPinTypes = NO_MASK; - расширенные маски пина - pinTypes всего 16bit (16 типов) на практики типов горазда больше, маску пришлось расширить.
+	uint16_t extenedpintypes = NO_MASK; - расширенные маски пина - pinTypes всего 16bit (16 типов) на практики типов горазда больше, маску пришлось расширить.
 	int8_t GPIONumber = -1;   - программный номер пина, для использования с "Arduino".digital/analog-read/write функцией
 	int8_t chipNumber = -1;   - номер пина на физическом чипе ESPxxxx
 	int8_t neighbourPin = -1; - пин-сосед используется для шин, таких как I2C или SPI - так как некоторые контроллеры поддерживают несколько шин, например две шины I2C -
@@ -138,7 +138,7 @@ String getPinMap()
 		result += "mode=" + String(pins[i].mode) + "\n";
 		result += "pintypes=" + String(pins[i].pinTypes) + "\n";
 		result += "decodedpintypes=" + decodePinTypes(pins[i].pinTypes) + "\n";
-		result += "extenedpintypes=" + String(pins[i].extendPinTypes) + "\n";
+		result += "extenedpintypes=" + String(pins[i].extenedpintypes) + "\n";
 		result += "gpio=" + String(pins[i].GPIONumber) + "\n";
 		result += "chipnumber=" + String(pins[i].chipNumber) + "\n";
 		result += "neighbourpin=" + String(pins[i].neighbourPin) + "\n";
@@ -887,7 +887,7 @@ void initPins()
 	pin.name = "RX";
 	pin.GPIONumber = -1;
 	pin.pinTypes = NO_MASK;
-	pin.extendPinTypes = RXD_EXTEND_MASK;
+	pin.extenedpintypes = RXD_EXTEND_MASK;
 	pin.chipNumber = 21;
 	pin.location = "l12";
 	addPin(pin);
@@ -895,7 +895,7 @@ void initPins()
 	pin.name = "TX";
 	pin.GPIONumber = -1;
 	pin.pinTypes = NO_MASK;
-	pin.extendPinTypes = TXD_EXTEND_MASK;
+	pin.extenedpintypes = TXD_EXTEND_MASK;
 	pin.chipNumber = 22;
 	pin.location = "l13";
 	addPin(pin);
@@ -915,7 +915,7 @@ void initPins()
 	pin.name = "A0";
 	pin.GPIONumber = pinNameToValue(pin.name);
 	pin.pinTypes = ANALOG_I_MASK;
-	pin.extendPinTypes = TOUCH_EXTEND_MASK;
+	pin.extenedpintypes = TOUCH_EXTEND_MASK;
 	pin.chipNumber = 2;
 	pin.location = "r1";
 	addPin(pin);
@@ -935,7 +935,7 @@ void initPins()
 
 	pin.GPIONumber = 23;
 	pin.pinTypes = DIGITAL_IO_MASK;
-	pin.extendPinTypes = SPI_MOSI_EXTEND_MASK;
+	pin.extenedpintypes = SPI_MOSI_EXTEND_MASK;
 	pin.name = "IO23";
 	pin.chipNumber = 36;
 	pin.location = "r2";
@@ -943,7 +943,7 @@ void initPins()
 
 	pin.GPIONumber = 22;
 	pin.pinTypes = DIGITAL_IO_MASK | SCL_MASK;
-	pin.extendPinTypes = RST_EXTEND_MASK;
+	pin.extenedpintypes = RST_EXTEND_MASK;
 	pin.neighbourPin = 4;
 	pin.name = "IO22";
 	pin.chipNumber = 39;
@@ -952,7 +952,7 @@ void initPins()
 
 	pin.GPIONumber = 1;
 	pin.pinTypes = DIGITAL_IO_MASK;
-	pin.extendPinTypes = TXD_EXTEND_MASK;
+	pin.extenedpintypes = TXD_EXTEND_MASK;
 	pin.neighbourPin = 2;
 	pin.name = "TXD0";
 	pin.chipNumber = 41;
@@ -961,7 +961,7 @@ void initPins()
 
 	pin.GPIONumber = 3;
 	pin.pinTypes = DIGITAL_IO_MASK;
-	pin.extendPinTypes = RXD_EXTEND_MASK;
+	pin.extenedpintypes = RXD_EXTEND_MASK;
 	pin.neighbourPin = 2;
 	pin.name = "RXD0";
 	pin.chipNumber = 40;
@@ -984,7 +984,7 @@ void initPins()
 
 	pin.GPIONumber = 19;
 	pin.pinTypes = DIGITAL_IO_MASK;
-	pin.extendPinTypes = SPI_MISO_EXTEND_MASK;
+	pin.extenedpintypes = SPI_MISO_EXTEND_MASK;
 	pin.name = "IO19";
 	pin.chipNumber = 38;
 	pin.location = "r8";
@@ -992,7 +992,7 @@ void initPins()
 
 	pin.GPIONumber = 18;
 	pin.pinTypes = DIGITAL_IO_MASK;
-	pin.extendPinTypes = SPI_SCK_EXTEND_MASK;
+	pin.extenedpintypes = SPI_SCK_EXTEND_MASK;
 	pin.name = "IO18";
 	pin.chipNumber = 35;
 	pin.location = "r9";
@@ -1000,7 +1000,7 @@ void initPins()
 
 	pin.GPIONumber = 5;
 	pin.pinTypes = DIGITAL_IO_MASK;
-	pin.extendPinTypes = SPI_SS_EXTEND_MASK;
+	pin.extenedpintypes = SPI_SS_EXTEND_MASK;
 	pin.name = "IO5";
 	pin.chipNumber = 34;
 	pin.location = "r10";
@@ -1008,7 +1008,7 @@ void initPins()
 
 	pin.GPIONumber = 17;
 	pin.pinTypes = DIGITAL_IO_MASK;
-	pin.extendPinTypes = TXD_EXTEND_MASK;
+	pin.extenedpintypes = TXD_EXTEND_MASK;
 	pin.name = "IO17";
 	pin.chipNumber = 27;
 	pin.location = "r11";
@@ -1016,7 +1016,7 @@ void initPins()
 
 	pin.GPIONumber = 4;
 	pin.pinTypes = ANALOG_I_MASK | DIGITAL_IO_MASK;
-	pin.extendPinTypes = TOUCH_EXTEND_MASK;
+	pin.extenedpintypes = TOUCH_EXTEND_MASK;
 	pin.name = "IO4";
 	pin.chipNumber = 24;
 	pin.location = "r12";
@@ -1024,7 +1024,7 @@ void initPins()
 
 	pin.GPIONumber = 0;
 	pin.pinTypes = ANALOG_I_MASK | DIGITAL_IO_MASK;
-	pin.extendPinTypes = TOUCH_EXTEND_MASK;
+	pin.extenedpintypes = TOUCH_EXTEND_MASK;
 	pin.name = "IO0";
 	pin.chipNumber = 23;
 	pin.location = "r13";
@@ -1032,7 +1032,7 @@ void initPins()
 
 	pin.GPIONumber = 2;
 	pin.pinTypes = ANALOG_I_MASK | DIGITAL_IO_MASK;
-	pin.extendPinTypes = TOUCH_EXTEND_MASK;
+	pin.extenedpintypes = TOUCH_EXTEND_MASK;
 	pin.name = "IO2";
 	pin.chipNumber = 22;
 	pin.location = "r14";
@@ -1040,7 +1040,7 @@ void initPins()
 
 	pin.GPIONumber = 15;
 	pin.pinTypes = ANALOG_I_MASK | DIGITAL_IO_MASK;
-	pin.extendPinTypes = TOUCH_EXTEND_MASK;
+	pin.extenedpintypes = TOUCH_EXTEND_MASK;
 	pin.name = "IO15";
 	pin.chipNumber = 21;
 	pin.location = "r15";
@@ -1111,7 +1111,7 @@ void initPins()
 
 	pin.GPIONumber = 32;
 	pin.pinTypes = ANALOG_I_MASK | DIGITAL_IO_MASK;
-	pin.extendPinTypes = TOUCH_EXTEND_MASK;
+	pin.extenedpintypes = TOUCH_EXTEND_MASK;
 	pin.name = "IO32";
 	pin.chipNumber = 12;
 	pin.location = "l6";
@@ -1119,7 +1119,7 @@ void initPins()
 
 	pin.GPIONumber = 33;
 	pin.pinTypes = ANALOG_I_MASK | DIGITAL_IO_MASK;
-	pin.extendPinTypes = TOUCH_EXTEND_MASK;
+	pin.extenedpintypes = TOUCH_EXTEND_MASK;
 	pin.name = "IO33";
 	pin.chipNumber = 13;
 	pin.location = "l7";
@@ -1141,7 +1141,7 @@ void initPins()
 
 	pin.GPIONumber = 27;
 	pin.pinTypes = ANALOG_I_MASK | DIGITAL_IO_MASK;
-	pin.extendPinTypes = TOUCH_EXTEND_MASK;
+	pin.extenedpintypes = TOUCH_EXTEND_MASK;
 	pin.name = "IO27";
 	pin.chipNumber = 16;
 	pin.location = "l10";
@@ -1149,7 +1149,7 @@ void initPins()
 
 	pin.GPIONumber = 14;
 	pin.pinTypes = ANALOG_I_MASK | DIGITAL_IO_MASK;
-	pin.extendPinTypes = TOUCH_EXTEND_MASK;
+	pin.extenedpintypes = TOUCH_EXTEND_MASK;
 	pin.name = "IO14";
 	pin.chipNumber = 17;
 	pin.location = "l11";
@@ -1157,7 +1157,7 @@ void initPins()
 
 	pin.GPIONumber = 18;
 	pin.pinTypes = ANALOG_I_MASK | DIGITAL_IO_MASK;
-	pin.extendPinTypes = TOUCH_EXTEND_MASK;
+	pin.extenedpintypes = TOUCH_EXTEND_MASK;
 	pin.name = "IO18";
 	pin.chipNumber = 18;
 	pin.location = "l12";
@@ -1172,7 +1172,7 @@ void initPins()
 
 	pin.GPIONumber = 13;
 	pin.pinTypes = ANALOG_I_MASK | DIGITAL_IO_MASK;
-	pin.extendPinTypes = TOUCH_EXTEND_MASK;
+	pin.extenedpintypes = TOUCH_EXTEND_MASK;
 	pin.name = "IO13";
 	pin.chipNumber = 20;
 	pin.location = "l14";

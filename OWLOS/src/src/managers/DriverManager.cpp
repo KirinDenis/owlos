@@ -112,6 +112,7 @@ String driversGetAccessable()
 	String result = "";
 
 	result += "name:ActuatorDriver\n";
+	result += "type=" + String(Actuator) + "\n";
 	result += "pinscount=" + String(ActuatorDriver::getPinsCount()) + "\n";
 	for (int i = 0; i < ActuatorDriver::getPinsCount(); i++)
 	{
@@ -120,6 +121,7 @@ String driversGetAccessable()
 	}
 
 	result += "name:SensorDriver\n";
+	result += "type=" + String(Sensor) + "\n";
 	result += "pinscount=" + String(SensorDriver::getPinsCount()) + "\n";
 	for (int i = 0; i < SensorDriver::getPinsCount(); i++)
 	{
@@ -128,6 +130,7 @@ String driversGetAccessable()
 	}
 
 	result += "name:LightDriver\n";
+	result += "type=" + String(Sensor) + "\n";
 	result += "pinscount=" + String(SensorDriver::getPinsCount()) + "\n";
 	for (int i = 0; i < SensorDriver::getPinsCount(); i++)
 	{
@@ -136,6 +139,7 @@ String driversGetAccessable()
 	}
 
 	result += "name:SmokeDriver\n";
+	result += "type=" + String(Sensor) + "\n";
 	result += "pinscount=" + String(SensorDriver::getPinsCount()) + "\n";
 	for (int i = 0; i < SensorDriver::getPinsCount(); i++)
 	{
@@ -144,6 +148,7 @@ String driversGetAccessable()
 	}
 
 	result += "name:MotionDriver\n";
+	result += "type=" + String(Sensor) + "\n";
 	result += "pinscount=" + String(SensorDriver::getPinsCount()) + "\n";
 	for (int i = 0; i < SensorDriver::getPinsCount(); i++)
 	{
@@ -152,6 +157,7 @@ String driversGetAccessable()
 	}
 
 	result += "name:LCDDriver\n";
+	result += "type=" + String(LCD) + "\n";
 	result += "pinscount=" + String(LCDDriver::getPinsCount()) + "\n";
 	for (int i = 0; i < LCDDriver::getPinsCount(); i++)
 	{
@@ -160,6 +166,7 @@ String driversGetAccessable()
 	}
 
 	result += "name:DHTDriver\n";
+	result += "type=" + String(DHTDriverType) + "\n";
 	result += "pinscount=" + String(DHTDriver::getPinsCount()) + "\n";
 	for (int i = 0; i < DHTDriver::getPinsCount(); i++)
 	{
@@ -168,6 +175,7 @@ String driversGetAccessable()
 	}
 
 	result += "name:StepperDriver\n";
+	result += "type=" + String(Stepper) + "\n";
 	result += "pinscount=" + String(StepperDriver::getPinsCount()) + "\n";
 	for (int i = 0; i < StepperDriver::getPinsCount(); i++)
 	{
@@ -176,6 +184,7 @@ String driversGetAccessable()
 	}
 
 	result += "name:ValveDriver\n";
+	result += "type=" + String(Valve) + "\n";
 	result += "pinscount=" + String(ValveDriver::getPinsCount()) + "\n";
 	for (int i = 0; i < ValveDriver::getPinsCount(); i++)
 	{
@@ -490,7 +499,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 	if (type < 0) return "bad, driver type";
 
 	String result = "";
-
+//http://192.168.1.9:8084/adddriver?type=7&id=lcd1&pins=D21,D22,ADDR0x3F,VCC5,GND
 #define DRIVER_PIN_LIMIT 10
 
 	String _pins[DRIVER_PIN_LIMIT];
