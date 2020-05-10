@@ -118,6 +118,15 @@ function boot() {
 //так как мы используем асинхронный метод загрузки - некоторые модули должне "дождатъся" загрузки тех от кого они зависят)
 //...и да - нет никакого списка загрузки, как не странно здесь удобен хардкод
 function loadingScripts(withInternet) {
+
+    jQuery.readyException = function (error) {
+        addToLogNL("jQuery error: " + error, 2);
+    };
+
+    $(document).ajaxError(function (event, request, settings) {
+        addToLogNL("Ajax error: " + settings.url, 2);
+    });
+
     //bottstrap css
     new Promise(function (resolve, reject) {//первым грузим bootstrap.css и ожидаем окончание
         var link = document.createElement('link');

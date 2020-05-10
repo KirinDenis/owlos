@@ -64,7 +64,7 @@ var runOnce = true;
 
 $(document).ready(function () {
 
-    if (!runOnce) return; 
+    if (!runOnce) return;
     runOnce = false;
 
     addToLogNL("OK loading scripts");
@@ -73,13 +73,6 @@ $(document).ready(function () {
     //Check languages DEBUG
     //langCompare(langua, langru, document.getElementById("bootLog"));
 
-    jQuery.readyException = function (error) {
-        addToLogNL("jQuery error: " + error, 2);
-    };
-
-    $(document).ajaxError(function (event, request, settings) {
-        addToLogNL("Ajax error: " + settings.url, 2);
-    });
 
     var style = window.getComputedStyle(document.body, null);
     theme.primary = style.getPropertyValue('--primary');
@@ -103,65 +96,159 @@ $(document).ready(function () {
         theme.dark = '#272B30';
     }
 
-    addToLogNL("get UI configuration...");
-   try {
 
- 
-    config.onLoad = onConfigLoad;
-    config.onLoad = settingsUI.onConfigLoad;
-    config.onLoad = dashboardUI.onConfigLoad;
-    if (config.load()) {
-        
-        status_online = NET_ONLINE;
-        speak("OWLOS is started");
+    addToLogNL("Connection to master node " + boardhost + "...");
+    //use it as ping
+    httpGetAsyncWithReciever(boardhost + "getalldriversproperties", onNodeAnswer, null, null, null, 5000);
 
-        addToLogNL(getLang("prepareUnit"));
+}
+);
 
-        drivers.addDriverLoadedListner(settingsUI.onDriverLoaded, settingsUI);
-        nodesRefresh();
+function onNodeAnswer(httpResult) {
+    if (!httpResult.indexOf("%error") == 0) {
+        addToLogNL("get UI configuration...");
+        config.load(onLoadConfig);
 
-        var boot = document.getElementById("boot");
-        boot.parentElement.removeChild(boot);
-        document.getElementById("consolePanel").appendChild(boot);
-
-        nodesRefreshHandle = setInterval(nodesRefresh, 60000);
-        
-
-        /*
-        $("#createScript").click(function (event) {
-            var textArea = document.getElementById("scriptText");
-            httpPostAsyncWithErrorReson(boardhost + "createscript", "?name=main1", escape(textArea.value));
-        });
-        */
-        
-        speak("OWLOS is ready");
-       
     }
     else {
         status_online = NET_OFFLINE;
         speak("ERROR with host: " + boardhost);
         addToLogNL("ERROR with host: " + boardhost, 2);
+
+        makeModalDialog("resetPanel", "addnode", getLang("addnodeheader"), "");
+        var modalFooter = document.getElementById("addnodeModalFooter");
+        var modalBody = document.getElementById("addnodeModalBody");
+
+        formGroup = modalBody.appendChild(document.createElement("div"));
+        formGroup.className = "form-group";
+        label = formGroup.appendChild(document.createElement("label"));
+        label.setAttribute("for", "hostEdit");
+        label.innerText = getLang("addnodehost");
+        var hostEdit = formGroup.appendChild(document.createElement('input'));
+        hostEdit.className = "form-control form-control-sm";
+        hostEdit.placeholder = "http://host:port/ or https://host:port/";
+        hostEdit.id = "hostInput";
+
+        var addNodeButton = modalFooter.appendChild(document.createElement("button"));
+        addNodeButton.type = "button";
+        addNodeButton.className = "btn btn-sm btn-success";
+        addNodeButton.id = "addnodeModalButton";
+        addNodeButton.onclick = addNodeUIClick;
+        addNodeButton.innerText = getLang("addnodebutton");
+
+        var addNodeError = formGroup.appendChild(document.createElement("label"));
+        addNodeError.className = "text-danger";
+
+        addNodeButton.hostEdit = hostEdit;      
+        addNodeButton.addNodeError = addNodeError;
+
+        $("#addnodeModal").modal('show');
+
     }
+}
+
+function addNodeUIClick(event) {
+    event.stopPropagation();
+
+    var addNodeButton = event.currentTarget;
+    var hostEdit = addNodeButton.hostEdit;
+    var addNodeError = addNodeButton.addNodeError;
+
+    if (hostEdit.value.length == 0) {
+        addNodeError.innerText = getLang("addnodeerror_hostempty");
+        return false;
+    }
+
+    var regexp = RegExp("(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})");
+
+    if (!hostEdit.value.match(regexp)) {
+        addNodeError.innerText = getLang("addnodeerror_hostnoturl");
+        return false;
+    }
+
+    if (hostEdit.value.slice(-1) !== '/') {
+        hostEdit.value += '/';
+    }
+
+    boardhost = hostEdit.value;
+    addToLogNL("Connection to master node " + boardhost + "...");
+    //use it as ping
+    httpGetAsyncWithReciever(boardhost + "getalldriversproperties", onNodeAnswer, null, null, null, 5000);
+
+    $("#addnodeModal").modal('hide');
+
+    return false;
+
+}
+
+
+function onLoadConfig(result) {
+    try {
+        if (result) {
+
+            // config.onLoad = onConfigLoad;
+            //config.onLoad = 
+            // config.onLoad = 
+
+            createProSidebar();
+            $(".page-wrapper").toggleClass("toggled");
+
+            document.getElementById("toggle-sidebar").style.display = "block";
+            document.getElementById("pin-sidebar").style.display = "block";
+            document.getElementById("nodeStatusPanelText").style.display = "block";
+            document.getElementById("sidebarText").style.display = "block";
+
+
+            settingsUI.onConfigLoad(configProperties);
+            dashboardUI.onConfigLoad(configProperties);
+
+
+
+
+            status_online = NET_ONLINE;
+            speak("OWLOS is started");
+
+            addToLogNL(getLang("prepareUnit"));
+
+            drivers.addDriverLoadedListner(settingsUI.onDriverLoaded, settingsUI);
+            nodesRefresh();
+
+            var boot = document.getElementById("boot");
+            boot.parentElement.removeChild(boot);
+            document.getElementById("consolePanel").appendChild(boot);
+
+            nodesRefreshHandle = setInterval(nodesRefresh, 60000);
+
+
+            /*
+            $("#createScript").click(function (event) {
+                var textArea = document.getElementById("scriptText");
+                httpPostAsyncWithErrorReson(boardhost + "createscript", "?name=main1", escape(textArea.value));
+            });
+            */
+
+            speak("OWLOS is ready");
+
+        }
+        else {
+            status_online = NET_OFFLINE;
+            speak("ERROR with host: " + boardhost);
+            addToLogNL("ERROR with host: " + boardhost, 2);
+        }
     }
 
 
-        catch (exception) {
-          status_online = NET_OFFLINE;
-    addToLogNL("ERROR starting exception: " + exception, 2);
-    addToLogNL("ERROR delete configurations files can help fix it: [your host]/deletefile?name=web.config", 2);
+    catch (exception) {
+        status_online = NET_OFFLINE;
+        addToLogNL("ERROR starting exception: " + exception, 2);
+        addToLogNL("ERROR delete configurations files can help fix it: [your host]/deletefile?name=web.config", 2);
     }
-   }
-);
+
+
+}
 
 
 function onConfigLoad(configProperties) {
-    createProSidebar();
-    $(".page-wrapper").toggleClass("toggled");
-
-    document.getElementById("toggle-sidebar").style.display = "block";
-    document.getElementById("pin-sidebar").style.display = "block";
-    document.getElementById("nodeStatusPanelText").style.display = "block";
-    document.getElementById("sidebarText").style.display = "block";
 
 }
 
@@ -170,14 +257,14 @@ function proSideBarMenuClick(event) {
     if (nodeStatusPanel != undefined) {
         if (nodeStatusPanel.currentStatusPanel != undefined) {
             nodeStatusPanel.currentStatusPanel.style.display = "none";
-            nodeStatusPanel.currentStatusPanel.nodeStatusPanelText.style.display = "none";                
-        } 
+            nodeStatusPanel.currentStatusPanel.nodeStatusPanelText.style.display = "none";
+        }
     }
     return false;
 }
 
 function proSideBarDashboardMenuClick(event) {
-    $(this).removeClass('active'); 
+    $(this).removeClass('active');
     document.getElementById("sidebarText").style.display = "block";
     document.getElementById("sidebarText").innerText = event.currentTarget.addressText;
     document.getElementById("dashboardButtonsPanel").style.display = "block";
@@ -185,7 +272,7 @@ function proSideBarDashboardMenuClick(event) {
 }
 
 function proSideBarConsoleMenuClick(event) {
-    $(this).removeClass('active'); 
+    $(this).removeClass('active');
     document.getElementById("sidebarText").style.display = "none";
     document.getElementById("sidebarText").innerText = "";
     document.getElementById("dashboardButtonsPanel").style.display = "none";
@@ -194,7 +281,7 @@ function proSideBarConsoleMenuClick(event) {
 
 
 function createProSidebar() {
-    
+
 
     var pageWrapper = document.getElementById("pagewrapper");
     var sideBar = pageWrapper.appendChild(document.createElement("nav"));
@@ -206,7 +293,7 @@ function createProSidebar() {
     mainSideBar.id = "mainSideBar";
     mainSideBar.className = "sidebar-item sidebar-menu";
 
-//    var mainSideBar = document.getElementById("mainSideBar");
+    //    var mainSideBar = document.getElementById("mainSideBar");
     var sideBarOWLOS = mainSideBar.appendChild(document.createElement("div"));
     sideBarOWLOS.className = "sidebar-item sidebar-brand";
     var hRef = sideBarOWLOS.appendChild(document.createElement("a"));
@@ -226,7 +313,7 @@ function createProSidebar() {
     var sideBarHeaderInfoStatus = sideBarHeaderInfo.appendChild(document.createElement("span"));
     sideBarHeaderInfoStatus.className = "user-status";
     sideBarHeaderInfoStatus.appendChild(document.createElement("i")).className = "fa fa-circle";
-    
+
     var sideBarHeaderInfoRoleSpan = sideBarHeaderInfoStatus.appendChild(document.createElement("span"));
     sideBarHeaderInfoRoleSpan.innerHTML = "Online";
 
@@ -239,23 +326,23 @@ function createProSidebar() {
     var sideBarDashboardAhref = sideBarDashboardLi.appendChild(document.createElement("a"));
     sideBarDashboardAhref.id = "sideBarDashboardAhref";
     sideBarDashboardAhref.className = "nav-link";
-    
+
     sideBarDashboardAhref.href = "#dashboard";
     sideBarDashboardAhref.setAttribute("data-toggle", "tab");
-    sideBarDashboardAhref.onclick = proSideBarDashboardMenuClick; 
+    sideBarDashboardAhref.onclick = proSideBarDashboardMenuClick;
     sideBarDashboardAhref.addressText = getLang("dashboardTab");
 
 
     sideBarDashboardAhref.appendChild(document.createElement("i")).className = "fa fa-tachometer-alt";
     var sideBarDashboardAhrefSpan = sideBarDashboardAhref.appendChild(document.createElement("span"));
-    sideBarDashboardAhrefSpan.className = "menu-text";    
+    sideBarDashboardAhrefSpan.className = "menu-text";
     sideBarDashboardAhrefSpan.innerText = sideBarDashboardAhref.addressText;
     document.getElementById("sidebarText").innerText = sideBarDashboardAhref.addressText;
 
     sideBarDashboardAhrefSpan = sideBarDashboardAhref.appendChild(document.createElement("span"));
     sideBarDashboardAhrefSpan.className = "badge badge-pill badge-success";
     sideBarDashboardAhrefSpan.id = "sideBarDashboardAhrefSpan";
-    
+
 
     config.onLoad = function (configProperties) {
         sideBarDashboardAhrefSpan.innerHTML = configProperties.dashboards[0].widgets.length;
@@ -398,7 +485,7 @@ function createProSidebar() {
 function nodesRefresh() {
     for (var node in configProperties.nodes) {
         drivers.refresh(configProperties.nodes[node]);
-     
+
         pins.refresh(configProperties.nodes[node]);
         driverPins.refresh(configProperties.nodes[node]);
         accessableDrivers.refresh(configProperties.nodes[node]);

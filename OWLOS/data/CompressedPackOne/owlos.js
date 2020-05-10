@@ -3590,7 +3590,7 @@ var settingsUI = {
                 driverHRef.parentLi = nodeLi;
                 //driverHRef.style.color = theme.success;
                 driverHRef.setAttribute("data-toggle", "tab");
-                driverHRef.onclick = driversUI.addDriverClick;
+                driverHRef.onclick = settingsUI.addDriverClick;
                 driverHRef.innerHTML = getLang("adddriver");
                 driverHRef.href = "#home";
                 driverHRef.node = node;
@@ -5341,6 +5341,13 @@ var settingsUI = {
         else {
             sender.className = "badge badge-secondary";
         }
+    },
+
+    addDriverClick: function (event) {        
+            event.stopPropagation();
+            settingsUI.driverAnchorClick(event);
+            var addDriverAhref = event.currentTarget;
+            driversUI.addDriver(addDriverAhref.node);
     }
 
 }
@@ -7578,7 +7585,7 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-var boardhost = "http://192.168.1.13:8084/"; //DEBUG
+var boardhost = "http://81.95.178.177:8084/"; //DEBUG
 //var boardhost = "http://192.168.1.9:8084/"; //DEBUG as WiFi Access Point
 //var boardhost = ""; //UI loading from ESPxxxx
 
@@ -7625,34 +7632,10 @@ function reset(host) {
     return httpGetAsync(host + "reset");
 }
 
-function addDriver(host, type, id, pin1, pin2, pin3, pin4, pin5) {
-    var pins = "pins=";
+function addDriver(host, apiParams) {
 
-    if (type === 1) {
-        pins += pin1; 
-        pins += ",VCC5,GND";
-    }
-
-    if ((type === 2) || (type === 3) || (type === 4) || (type === 5))
-    {
-        pins += pin1;
-        pins += ",VCC5,GND";
-    }
-
-    if (type === 7) {
-        pins += pin1;
-        pins += "," + pin2;
-        pins += ",ADDR0x3F";
-        pins += ",VCC5,GND";
-    }
-
-    if (type === 8) {
-        pins += pin1;
-        pins += ",GND";
-    }
-
-
-    return httpGetWithErrorReson(host + "adddriver?type=" + type + "&id=" + id + "&" + pins);
+    
+    return httpGetWithErrorReson(host + "adddriver?" + apiParams);
 }
 
 function updateUIAsync(host) {
@@ -8325,6 +8308,7 @@ var config = {
             drivers: [],
             pins: [],
             driversPins: [],
+            accessableDrivers: [],
      
         }
 
@@ -8366,6 +8350,7 @@ var config = {
                             drivers: [],
                             pins: [],
                             driversPins: [],
+                            accessableDrivers: [],
                             networkStatusListners: [], //подписчики на изменение сетевого состояния                         
                             set networkStatus(networkStatus) { //для контроля изменения _networkStatus, для оповещения подписчиков
                                 this._networkStatus = networkStatus; //сохранить новое сетевое состояние
@@ -8462,7 +8447,7 @@ var config = {
                 drivers: [],
                 pins: [],
                 driversPins: [],
-        
+                accessableDrivers: []
 
             }
 
@@ -9258,7 +9243,381 @@ OWLOS распространяется в надежде, что она буде
 
 var driversUI = {
 
+    node: undefined,
+    modalBody: undefined,
 
+
+
+    formGroupDriverProperties: undefined,
+
+
+    addDriver(node) {
+        driversUI.node = node;
+
+        makeModalDialog("resetPanel", "addDriver", getLang("adddriverdigalog") + " " + node.nodenickname, "");
+
+        var modalFooter = document.getElementById("addDriverModalFooter");
+        driversUI.modalBody = document.getElementById("addDriverModalBody");
+
+        //var titleDriverText = driversUI.modalBody.appendChild(document.createElement("p"));
+        //titleDriverText.innerHTML = getLang("driver");
+        //titleDriverText.className = "text-center";
+
+        driversUI.createDriverSelect();
+
+        alertDiv = modalFooter.appendChild(document.createElement('div'));
+        alertDiv.id = "alertDiv;"
+
+        var addButton = modalFooter.appendChild(document.createElement("button"));
+        addButton.type = "button";
+        addButton.className = "btn btn-success btn-sm";
+        addButton.id = "addDriverModalButton";
+        addButton.innerText = getLang("adddriverbutton");
+        addButton.alertDiv = alertDiv;
+        addButton.onclick = driversUI.doAddDriverClick;
+
+
+
+        $('#addDriverModal').on('hidden.bs.modal', function (event) { // назначаем обработчик события закрытия диалога 
+            driversUI.modalBody.innerHTML = "";
+        });
+
+        $("#addDriverModal").modal('show');
+
+        return false;
+
+        /*
+        driversUI.formGroup = modalBody.appendChild(document.createElement("div"));
+        driversUI.formGroup.className = "form-group";
+        label = driversUI.formGroup.appendChild(document.createElement("label"));
+        label.setAttribute("for", "idEdit");
+        label.innerText = getLang("driverid");
+        var idEdit = driversUI.formGroup.appendChild(document.createElement('input'));
+        idEdit.className = "form-control form-control-sm";
+        idEdit.id = "idInput";
+        idEdit.placeholder = getLang("driveridplaceholder");
+
+
+        driversUI.formGroup = modalBody.appendChild(document.createElement("div"));
+        driversUI.formGroup.className = "form-group";
+        driversUI.formGroup.id = "pin1Div";
+        driversUI.formGroup.style.display = "none";
+        label = driversUI.formGroup.appendChild(document.createElement("label"));
+        label.setAttribute("for", "pin1Select");
+        label.innerText = getLang("pin") + " 1";
+        var pin1Select = driversUI.formGroup.appendChild(document.createElement('select'));
+        pin1Select.className = "form-control form-control-sm";
+        pin1Select.id = "pin1Select";
+        driversUI.appendDriverNotUsedPins(pin1Select);
+
+        driversUI.formGroup = modalBody.appendChild(document.createElement("div"));
+        driversUI.formGroup.className = "form-group";
+        driversUI.formGroup.id = "pin2Div";
+        driversUI.formGroup.style.display = 'none';
+        label = driversUI.formGroup.appendChild(document.createElement("label"));
+        label.setAttribute("for", "pin2Select");
+        label.innerText = getLang("pin") + " 2";
+        var pin2Select = driversUI.formGroup.appendChild(document.createElement('select'));
+        pin2Select.className = "form-control form-control-sm";
+        pin2Select.id = "pin2Select";
+        driversUI.appendDriverNotUsedPins(pin2Select);
+
+        driversUI.formGroup = modalBody.appendChild(document.createElement("div"));
+        driversUI.formGroup.className = "form-group";
+        driversUI.formGroup.id = "pin3Div";
+        driversUI.formGroup.style.display = 'none';
+        label = driversUI.formGroup.appendChild(document.createElement("label"));
+        label.setAttribute("for", "pin3Select");
+        label.innerText = getLang("pin") + " 3";
+        var pin3Select = driversUI.formGroup.appendChild(document.createElement('select'));
+        pin3Select.className = "form-control form-control-sm";
+        pin3Select.id = "pin3Select";
+        driversUI.appendDriverNotUsedPins(pin3Select);
+
+        driversUI.formGroup = modalBody.appendChild(document.createElement("div"));
+        driversUI.formGroup.className = "form-group";
+        driversUI.formGroup.id = "pin4Div";
+        driversUI.formGroup.style.display = 'none';
+        label = driversUI.formGroup.appendChild(document.createElement("label"));
+        label.setAttribute("for", "pin4Select");
+        label.innerText = getLang("pin") + " 4";
+        var pin4Select = driversUI.formGroup.appendChild(document.createElement('select'));
+        pin4Select.className = "form-control form-control-sm";
+        pin4Select.id = "pin4Select";
+        driversUI.appendDriverNotUsedPins(pin4Select);
+
+        //Checkbox for auto widget adding
+        var checkBoxDiv = modalBody.appendChild(document.createElement("div"));
+        checkBoxDiv.className = "custom-control custom-checkbox";
+
+
+        var checkBoxInput = checkBoxDiv.appendChild(document.createElement("input"));
+        checkBoxInput.type = "checkbox";
+        checkBoxInput.className = "custom-control-input";
+        checkBoxInput.id = "autoAddWidget";
+        checkBoxInput.checked = true;
+        checkBoxInput.onchange = driversUI.checkBoxClick;
+
+        var checkBoxLabel = checkBoxDiv.appendChild(document.createElement("label"));
+        checkBoxLabel.className = "custom-control-label";
+        checkBoxLabel.setAttribute("for", "autoAddWidget");
+        checkBoxLabel.innerHTML = getLang("autoaddwidget");
+
+        var addWidgetGroup = modalBody.appendChild(document.createElement("div"));
+        addWidgetGroup.style.display = "none"; //"block"
+        addWidgetGroup.id = "addWidgetGroup";
+
+        var titleWidgetText = addWidgetGroup.appendChild(document.createElement("p"));
+        titleWidgetText.innerHTML = getLang("widget");
+        titleWidgetText.className = "text-center";
+
+        //driver properties select
+        driversUI.formGroupDriverProperties = addWidgetGroup.appendChild(document.createElement("div"));
+        var driverPropLabel = driversUI.formGroupDriverProperties.appendChild(document.createElement("label"));
+        driverPropLabel.setAttribute("for", "driverPropSelect");
+        driverPropLabel.innerText = getLang("driversporplist");
+        var driverPropSelect = driversUI.formGroupDriverProperties.appendChild(document.createElement('select'));
+        driverPropSelect.className = "form-control form-control-sm";
+        driverPropSelect.id = "driverPropertySelected";
+
+        //widgets select 
+        var driversUI.formGroupWidgetSelect = addWidgetGroup.appendChild(document.createElement("div"));
+        var widgetLabel = driversUI.formGroupWidgetSelect.appendChild(document.createElement("label"));
+        widgetLabel.setAttribute("for", "widgetSelect");
+        widgetLabel.innerText = getLang("widgetslist");
+        var widgetSelect = driversUI.formGroupWidgetSelect.appendChild(document.createElement('select'));
+        widgetSelect.className = "form-control form-control-sm";
+        widgetSelect.id = "widgetTypeSelected";
+
+
+
+        var alertDiv = modalBody.appendChild(document.createElement('div'));
+
+        // var modalFooter = modalContent.appendChild(document.createElement("div"));
+        // modalFooter.className = "modal-footer";
+
+        event = { currentTarget: typeSelect };
+        driversUI.pinsAndWidget(event);
+
+        var addButton = modalFooter.appendChild(document.createElement("button"));
+        addButton.type = "button";
+        addButton.className = "btn btn-success btn-sm";
+        addButton.id = "addDriverModalButton";
+        addButton.node = node;
+        //   addButton.setAttribute("data-dismiss", "modal");
+        addButton.typeSelect = typeSelect;
+        addButton.idEdit = idEdit;
+        addButton.pin1Select = pin1Select;
+        addButton.pin2Select = pin2Select;
+        addButton.pin3Select = pin3Select;
+        addButton.pin4Select = pin4Select;
+        addButton.alertDiv = alertDiv;
+        addButton.onclick = driversUI.doAddDriverClick;
+        addButton.innerText = getLang("adddriverbutton");
+        */
+
+
+
+    },
+
+
+    createDriverSelect: function () {
+
+        var formGroup = driversUI.modalBody.appendChild(document.createElement("div"));
+        formGroup.className = "form-group";
+        formGroup.id = "driverSelectFormGroup";
+
+        var label = formGroup.appendChild(document.createElement("label"));
+        label.setAttribute("for", "driverTypeSelect");
+        label.innerText = getLang("drivertype");
+        //var inputDiv = driversUI.formGroup.appendChild(document.createElement("div"));
+
+        //new
+
+        driverSelect = document.createElement('select');
+        driverSelect.className = "form-control form-control-sm";
+        driverSelect.id = "driverTypeSelect";
+
+        formGroup.appendChild(driverSelect);
+        driverSelect.onchange = driversUI.onDriverSelectChange;
+
+
+        for (var i = 0; i < driversUI.node.accessableDrivers.length; i++) {
+            var driverSelectOption = driverSelect.appendChild(document.createElement('option'));
+            driverSelectOption.innerText = driversUI.node.accessableDrivers[i].name;
+            driverSelectOption.driver = driversUI.node.accessableDrivers[i];
+        }
+
+    },
+
+    onDriverSelectChange: function (event) {
+        var driverSelect = event.currentTarget;
+        var driverSelectOption = driverSelect.options[driverSelect.selectedIndex];
+        var driver = driverSelectOption.driver;
+        while (driversUI.modalBody.childNodes.length > 1) {
+
+            for (var i = 0; i < driversUI.modalBody.childNodes.length; i++) {
+                {
+                    var element = driversUI.modalBody.childNodes[i];
+                    if (element.id == undefined) continue;
+                    if (element.id.indexOf("driverSelectFormGroup") == -1) {
+
+                        driversUI.modalBody.removeChild(element);
+                        element.innerHTML = "";
+                        break;
+                    }
+                }
+            }
+        }
+
+        //ID Input          
+        formGroup = driversUI.modalBody.appendChild(document.createElement("div"));
+        formGroup.className = "form-group";
+        label = formGroup.appendChild(document.createElement("label"));
+        label.setAttribute("for", "idEdit");
+        label.innerText = getLang("driverid");
+        var idEdit = formGroup.appendChild(document.createElement('input'));
+        idEdit.className = "form-control form-control-sm";
+        idEdit.id = "idInput";
+        idEdit.value = driver.name;
+        idEdit.placeholder = getLang("driveridplaceholder");
+
+        //Pin selects
+        for (var i = 0; i < driver.pinscount; i++) {
+
+
+            if ((driver["pintype" + i] & I2CADDR_MASK) == 0) { //not I2C ADDR
+
+                var formGroup = driversUI.modalBody.appendChild(document.createElement("div"));
+                formGroup.className = "form-group";
+                formGroup.id = "driverPinForm" + i;
+
+                var label = formGroup.appendChild(document.createElement("label"));
+                label.setAttribute("for", "driverPinSelect" + i);
+                label.innerText = "pin " + String(i + 1) + driver["pintypedecoded" + i];
+
+                pinSelect = document.createElement('select');
+                pinSelect.className = "form-control form-control-sm";
+                pinSelect.id = "driverPinSelect" + i;
+
+                formGroup.appendChild(pinSelect);
+                //driverSelect.onchange = driversUI.onDriverSelectChange;
+
+                var pins = getFreePins(driversUI.node, driver["pintype" + i]);
+                if (pins.length > 0) {
+                    var pinSelectOption = pinSelect.appendChild(document.createElement('option'));
+                    pinSelectOption.innerText = getLang("PleaseSelectPin");
+                    for (var j = 0; j < pins.length; j++) {
+                        var pinSelectOption = pinSelect.appendChild(document.createElement('option'));
+                        pinSelectOption.innerText = pins[j].name;
+                        pinSelectOption.pin = pins[j];
+                        pinSelectOption.driverPinNumber = i;
+                    }
+                }
+                else {
+                    pinSelect.enable = false;
+                    var pinSelectOption = pinSelect.appendChild(document.createElement('option'));
+                    pinSelectOption.innerText = getLang("NoFreePinsOfThisType");
+                }
+            }
+            else { //I2C Addr 
+                formGroup = driversUI.modalBody.appendChild(document.createElement("div"));
+                formGroup.className = "form-group";
+                label = formGroup.appendChild(document.createElement("label"));
+                label.setAttribute("for", "idEdit");
+                label.innerText = "I2C Address at 'ADDR0xNN' format";
+                var I2CAdddrEdit = formGroup.appendChild(document.createElement('input'));
+                I2CAdddrEdit.className = "form-control form-control-sm";
+                I2CAdddrEdit.id = "driverPort" + i;
+                I2CAdddrEdit.value = "ADDR0x..";
+                I2CAdddrEdit.placeholder = getLang("driveridplaceholder");
+                I2CAdddrEdit.driverPinNumber = i;
+            }
+
+        }
+    },
+
+    doAddDriverClick: function (event) {
+        event.stopPropagation();
+        var addButton = event.currentTarget;
+        var driverSelect = document.getElementById("driverTypeSelect");
+        var driverSelectOption = driverSelect.options[driverSelect.selectedIndex];
+        var driver = driverSelectOption.driver;
+        var pinsString = "";
+        for (var i = 0; i < driver.pinscount; i++) {
+            var pinSelect = document.getElementById("driverPinSelect" + i);
+            if (pinSelect != undefined) {
+                pinsString += pinSelect.options[pinSelect.selectedIndex].innerText + ",";
+            }
+            else {
+                var I2CAdddrEdit = document.getElementById("driverPort" + i);
+                if (I2CAdddrEdit != undefined) {
+                    pinsString += I2CAdddrEdit.value + ",";
+                }
+            }
+        }
+        //http://192.168.1.9:8084/adddriver?type=7&id=lcd1&pins=D21,D22,ADDR0x3F,VCC5,GND
+        pinsString = "type=" + driver.type + "&id=" + document.getElementById("idInput").value + "&pins=" + pinsString;
+
+        addButton.className = "btn btn-warning btn-sm";
+        addButton.value = 'do...';
+        addButton.disable = true;
+
+        //TODO: decode Type from name 
+        var httpResult = addDriver(driversUI.node.host, pinsString);
+
+        if (httpResult == 1) {
+
+            var autoAddWidgetCheckBox = document.getElementById("autoAddWidget");
+            if (autoAddWidgetCheckBox !== null) {
+
+                if (autoAddWidgetCheckBox.checked == true) {
+
+                    var driversWidgetsPanel = document.getElementById("driversWidgetsPanel");
+
+                    var defaultWidgets = [];
+                    var widgetLayer = "";
+                    var widgetWrapper = "";
+                }
+            }
+
+
+
+
+            $("#addDriverModal").modal('hide');
+            // renderDriversProperties(); TODO model refresh
+        }
+        else {
+            addButton.alertDiv.innerHTML = "";
+            var addDriverAlert = addButton.alertDiv.appendChild(document.createElement('div'));
+            addDriverAlert.className = "alert alert-danger";
+            addDriverAlert.role = "alert";
+            addDriverAlert.innerText = httpResult;
+
+            addButton.className = "btn btn-success btn-sm";
+            addButton.value = 'add';
+        }
+        addButton.disable = false;
+        return false;
+
+    },
+
+
+    //Фильтры:
+    //- на вход маска типа пина
+    //- выход:
+    //-проверяет какие пины свободны и соответстуют маски.
+    //  - пункт селект по умолчанию не назначен
+    //                - если не вернуло свободных пинов - селект блокируется и пишет - нет доступных свободных пинов данного типа(нет БОЛЬШЕ - проверте драйвера)
+    //              - в фильтр скармливается массив пинов выбранный из остальных селектов - они не к чему не привязаны но влияют на выбор.
+
+    //
+    //        var pinSelectOption = pinSelect.appendChild(document.createElement('option'));
+    //pinSelectOption.innerText = "- pin not selecter"
+    //a потом цикл
+
+
+    /*
     appendDriverPins: function (valueSelect) {
         var valueSelectOption = valueSelect.appendChild(document.createElement('option'));
         valueSelectOption.innerText = getLang("notused");
@@ -9321,190 +9680,6 @@ var driversUI = {
         valueSelectOption.innerText = getLang("notused");
     },
 
-    addDriverClick: function (event) {
-        event.stopPropagation();
-        settingsUI.driverAnchorClick(event);
-
-        var addDriverAhref = event.currentTarget;
-        var node = addDriverAhref.node;
-
-        makeModalDialog("resetPanel", "addDriver", getLang("adddriverdigalog") + " " + node.nodenickname, "");
-        var modalFooter = document.getElementById("addDriverModalFooter");
-        var modalBody = document.getElementById("addDriverModalBody");
-
-        var titleDriverText = modalBody.appendChild(document.createElement("p"));
-        titleDriverText.innerHTML = getLang("driver");
-        titleDriverText.className = "text-center";
-
-        var formGroup = modalBody.appendChild(document.createElement("div"));
-        formGroup.className = "form-group";
-
-        var label = formGroup.appendChild(document.createElement("label"));
-        label.setAttribute("for", "typeSelect");
-        label.innerText = getLang("drivertype");
-        var inputDiv = formGroup.appendChild(document.createElement("div"));
-
-        var typeSelect = formGroup.appendChild(document.createElement('select'));
-        typeSelect.className = "form-control form-control-sm";
-        typeSelect.id = "typeSelect";
-        typeSelect.onchange = driversUI.pinsAndWidget;
-
-
-        var valueSelectOption = typeSelect.appendChild(document.createElement('option'));
-        valueSelectOption.innerText = getLang("dht");
-        valueSelectOption = typeSelect.appendChild(document.createElement('option'));
-        valueSelectOption.innerText = getLang("light");
-        valueSelectOption = typeSelect.appendChild(document.createElement('option'));
-        valueSelectOption.innerText = getLang("smoke");
-        valueSelectOption = typeSelect.appendChild(document.createElement('option'));
-        valueSelectOption.innerText = getLang("motion");
-        valueSelectOption = typeSelect.appendChild(document.createElement('option'));
-        valueSelectOption.innerText = getLang("sensor");
-        valueSelectOption = typeSelect.appendChild(document.createElement('option'));
-        valueSelectOption.innerText = getLang("stepper");
-        valueSelectOption = typeSelect.appendChild(document.createElement('option'));
-        valueSelectOption.innerText = getLang("lcd");
-        valueSelectOption = typeSelect.appendChild(document.createElement('option'));
-        valueSelectOption.innerText = getLang("actuator");
-        valueSelectOption = typeSelect.appendChild(document.createElement('option'));
-        valueSelectOption.innerText = getLang("opto");
-        valueSelectOption = typeSelect.appendChild(document.createElement('option'));
-        valueSelectOption.innerText = getLang("valve");
-
-
-        formGroup = modalBody.appendChild(document.createElement("div"));
-        formGroup.className = "form-group";
-        label = formGroup.appendChild(document.createElement("label"));
-        label.setAttribute("for", "idEdit");
-        label.innerText = getLang("driverid");
-        var idEdit = formGroup.appendChild(document.createElement('input'));
-        idEdit.className = "form-control form-control-sm";
-        idEdit.id = "idInput";
-        idEdit.placeholder = getLang("driveridplaceholder");
-
-
-        formGroup = modalBody.appendChild(document.createElement("div"));
-        formGroup.className = "form-group";
-        formGroup.id = "pin1Div";
-        formGroup.style.display = "none";
-        label = formGroup.appendChild(document.createElement("label"));
-        label.setAttribute("for", "pin1Select");
-        label.innerText = getLang("pin") + " 1";
-        var pin1Select = formGroup.appendChild(document.createElement('select'));
-        pin1Select.className = "form-control form-control-sm";
-        pin1Select.id = "pin1Select";
-        driversUI.appendDriverNotUsedPins(pin1Select);
-
-        formGroup = modalBody.appendChild(document.createElement("div"));
-        formGroup.className = "form-group";
-        formGroup.id = "pin2Div";
-        formGroup.style.display = 'none';
-        label = formGroup.appendChild(document.createElement("label"));
-        label.setAttribute("for", "pin2Select");
-        label.innerText = getLang("pin") + " 2";
-        var pin2Select = formGroup.appendChild(document.createElement('select'));
-        pin2Select.className = "form-control form-control-sm";
-        pin2Select.id = "pin2Select";
-        driversUI.appendDriverNotUsedPins(pin2Select);
-
-        formGroup = modalBody.appendChild(document.createElement("div"));
-        formGroup.className = "form-group";
-        formGroup.id = "pin3Div";
-        formGroup.style.display = 'none';
-        label = formGroup.appendChild(document.createElement("label"));
-        label.setAttribute("for", "pin3Select"); 
-        label.innerText = getLang("pin") + " 3";
-        var pin3Select = formGroup.appendChild(document.createElement('select'));
-        pin3Select.className = "form-control form-control-sm";
-        pin3Select.id = "pin3Select";
-        driversUI.appendDriverNotUsedPins(pin3Select);
-
-        formGroup = modalBody.appendChild(document.createElement("div"));
-        formGroup.className = "form-group";
-        formGroup.id = "pin4Div";
-        formGroup.style.display = 'none';
-        label = formGroup.appendChild(document.createElement("label"));
-        label.setAttribute("for", "pin4Select");
-        label.innerText = getLang("pin") + " 4";
-        var pin4Select = formGroup.appendChild(document.createElement('select'));
-        pin4Select.className = "form-control form-control-sm";
-        pin4Select.id = "pin4Select";
-        driversUI.appendDriverNotUsedPins(pin4Select);
-
-        //Checkbox for auto widget adding
-        var checkBoxDiv = modalBody.appendChild(document.createElement("div"));
-        checkBoxDiv.className = "custom-control custom-checkbox";
-
-
-        var checkBoxInput = checkBoxDiv.appendChild(document.createElement("input"));
-        checkBoxInput.type = "checkbox";
-        checkBoxInput.className = "custom-control-input";
-        checkBoxInput.id = "autoAddWidget";
-        checkBoxInput.checked = true;
-        checkBoxInput.onchange = driversUI.checkBoxClick;
-
-        var checkBoxLabel = checkBoxDiv.appendChild(document.createElement("label"));
-        checkBoxLabel.className = "custom-control-label";
-        checkBoxLabel.setAttribute("for", "autoAddWidget");
-        checkBoxLabel.innerHTML = getLang("autoaddwidget");
-
-        var addWidgetGroup = modalBody.appendChild(document.createElement("div"));
-        addWidgetGroup.style.display = "none"; //"block"
-        addWidgetGroup.id = "addWidgetGroup";
-
-        var titleWidgetText = addWidgetGroup.appendChild(document.createElement("p"));
-        titleWidgetText.innerHTML = getLang("widget");
-        titleWidgetText.className = "text-center";
-        
-        //driver properties select
-        var formGroupDriverProperties = addWidgetGroup.appendChild(document.createElement("div"));
-        var driverPropLabel = formGroupDriverProperties.appendChild(document.createElement("label"));
-        driverPropLabel.setAttribute("for", "driverPropSelect");
-        driverPropLabel.innerText = getLang("driversporplist");
-        var driverPropSelect = formGroupDriverProperties.appendChild(document.createElement('select'));
-        driverPropSelect.className = "form-control form-control-sm";
-        driverPropSelect.id = "driverPropertySelected";
-
-        //widgets select 
-        var formGroupWidgetSelect = addWidgetGroup.appendChild(document.createElement("div"));
-        var widgetLabel = formGroupWidgetSelect.appendChild(document.createElement("label"));
-        widgetLabel.setAttribute("for", "widgetSelect");
-        widgetLabel.innerText = getLang("widgetslist");
-        var widgetSelect = formGroupWidgetSelect.appendChild(document.createElement('select'));
-        widgetSelect.className = "form-control form-control-sm";
-        widgetSelect.id = "widgetTypeSelected";
-
-
-
-        var alertDiv = modalBody.appendChild(document.createElement('div'));
-
-       // var modalFooter = modalContent.appendChild(document.createElement("div"));
-       // modalFooter.className = "modal-footer";
-
-        event = { currentTarget: typeSelect };
-        driversUI.pinsAndWidget(event);
-
-        var addButton = modalFooter.appendChild(document.createElement("button"));
-        addButton.type = "button";
-        addButton.className = "btn btn-success btn-sm";
-        addButton.id = "addDriverModalButton";
-        addButton.node = node;
-        //   addButton.setAttribute("data-dismiss", "modal");
-        addButton.typeSelect = typeSelect;
-        addButton.idEdit = idEdit;
-        addButton.pin1Select = pin1Select;
-        addButton.pin2Select = pin2Select;
-        addButton.pin3Select = pin3Select;
-        addButton.pin4Select = pin4Select;
-        addButton.alertDiv = alertDiv;
-        addButton.onclick =  driversUI.doAddDriverClick;
-        addButton.innerText = getLang("adddriverbutton");
-
-
-        $("#addDriverModal").modal('show');
-
-        return false;
-    },
 
     pinsAndWidget: function (event) {
         var driverSelected = event.currentTarget;
@@ -9512,13 +9687,13 @@ var driversUI = {
         var currentDiv = "";
         var currentOptions = "";
         var pinsInfo = [];
-        
-        switch (driverSelected.selectedIndex+1) {
+
+        switch (driverSelected.selectedIndex + 1) {
             case 1:
                 pinsInfo.push("digital");
                 console.log("dht");
-                break; 
-            case 2: 
+                break;
+            case 2:
                 pinsInfo.push("analog");
                 console.log("light sensor");
                 break;
@@ -9561,7 +9736,7 @@ var driversUI = {
                 console.log('default');
         }
 
-        for (var pinsIndex = 0; pinsIndex < maxPinsAmount; pinsIndex++){
+        for (var pinsIndex = 0; pinsIndex < maxPinsAmount; pinsIndex++) {
 
             var divId = pinsIndex + 1;
 
@@ -9652,9 +9827,9 @@ var driversUI = {
                             }, {
                                 widgetType: "historydatagraph",
                                 driverPropertyName: "humidityhistorydata"
-                            },{
-                                    widgetType: "historydatagraph",
-                                    driverPropertyName: "temperaturehistorydata"
+                            }, {
+                                widgetType: "historydatagraph",
+                                driverPropertyName: "temperaturehistorydata"
                             });
 
 
@@ -9724,7 +9899,7 @@ var driversUI = {
                                 widgetType: "lcd",
                                 driverPropertyName: "text"
                             });
-                            
+
                             console.log("LCD");
                             break;
                         case 8:
@@ -9785,7 +9960,7 @@ var driversUI = {
                     }
 
                     defaultWidgets.length = 0;
-  
+
                 }
             }
 
@@ -9820,7 +9995,7 @@ var driversUI = {
         var divGroup = document.getElementById("addWidgetGroup");
 
         if (checkBox.checked == true) {
- //TODO ñìåíèòü íà "block" äàâàÿ âîçìîæíîñòü âûáðàòü ñâîéñòâî è âèäæåò 
+            //TODO ñìåíèòü íà "block" äàâàÿ âîçìîæíîñòü âûáðàòü ñâîéñòâî è âèäæåò 
             divGroup.style.display = "none";
         }
         else {
@@ -9830,6 +10005,7 @@ var driversUI = {
 
         return true;
     }
+    */
 }
 ﻿var xmlns = "http://www.w3.org/2000/svg";
 
@@ -13035,8 +13211,9 @@ function nodesRefresh() {
     for (var node in configProperties.nodes) {
         drivers.refresh(configProperties.nodes[node]);
      
-       // pins.refresh(configProperties.nodes[node]);
-       // driverPins.refresh(configProperties.nodes[node]);
+        pins.refresh(configProperties.nodes[node]);
+        driverPins.refresh(configProperties.nodes[node]);
+        accessableDrivers.refresh(configProperties.nodes[node]);
         scriptsManager.refresh(configProperties.nodes[node]);
     }
 }
@@ -13626,8 +13803,9 @@ function nodesRefresh() {
     for (var node in configProperties.nodes) {
         drivers.refresh(configProperties.nodes[node]);
      
-       // pins.refresh(configProperties.nodes[node]);
-       // driverPins.refresh(configProperties.nodes[node]);
+        pins.refresh(configProperties.nodes[node]);
+        driverPins.refresh(configProperties.nodes[node]);
+        accessableDrivers.refresh(configProperties.nodes[node]);
         scriptsManager.refresh(configProperties.nodes[node]);
     }
 }

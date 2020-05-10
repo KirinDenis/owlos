@@ -39,8 +39,8 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-var boardhost = "http://192.168.1.7:8084/"; //DEBUG
-//var boardhost = "http://192.168.1.9:8084/"; //DEBUG as WiFi Access Point
+//var boardhost = "http://81.95.178.177:8084/"; //DEBUG
+var boardhost = "http://192.168.1.7:8084/"; //DEBUG as WiFi Access Point
 //var boardhost = ""; //UI loading from ESPxxxx
 
 
@@ -248,7 +248,7 @@ function httpPostAsyncWithErrorReson(_url, arg, _postdata, asyncReciever, counte
 }
 
 
-function httpGetAsync(_url, asyncReciever, upperAsyncReciever, sender, upperSender) {
+function httpGetAsync(_url, asyncReciever, upperAsyncReciever, sender, upperSender, _timeout = 30000) {
     var _data = null;
     $.ajax({
         url: encodeURI(_url),
@@ -261,6 +261,7 @@ function httpGetAsync(_url, asyncReciever, upperAsyncReciever, sender, upperSend
         type: "GET",
         contentType: "text/plain charset=utf-8",
         dataType: "text",
+        timeout: _timeout,
 
         success: function (_data) {
             addToLogNL("call RESTful async: " + _url + " result OK", 1);
@@ -285,7 +286,7 @@ function httpGetAsync(_url, asyncReciever, upperAsyncReciever, sender, upperSend
     return _data;
 }
 
-function httpGetAsyncWithReciever(_url, asyncReciever, upperAsyncReciever, sender, upperSender) {
+function httpGetAsyncWithReciever(_url, asyncReciever, upperAsyncReciever, sender, upperSender, _timeout = 30000) {
     var _data = null;
     $.ajax({
         url: encodeURI(_url),
@@ -298,6 +299,7 @@ function httpGetAsyncWithReciever(_url, asyncReciever, upperAsyncReciever, sende
         type: "GET",
         contentType: "text/plain charset=utf-8",
         dataType: "text",
+        timeout: _timeout,
 
         success: function (data) {
             addToLogNL("call RESTful async: " + _url + " result OK", 1);

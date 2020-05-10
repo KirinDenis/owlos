@@ -102,7 +102,7 @@ var config = {
         return undefined;
     },
 
-    addWidget: function (_dashboardId, _daviceId, _driverProperty, _widgetWrapperId,  _widgetId, _widgetProperties) {
+    addWidget: function (_dashboardId, _daviceId, _driverProperty, _widgetWrapperId, _widgetId, _widgetProperties) {
         var dashboard = this.getDashboardById(_dashboardId);
         if (dashboard != undefined) {
             var widget = {
@@ -114,7 +114,7 @@ var config = {
                 widgetProperties: _widgetProperties
             };
             dashboard.widgets.push(widget);
-            config.doOnChange();            
+            config.doOnChange();
             return widget;
         }
         return undefined;
@@ -182,7 +182,7 @@ var config = {
             pins: [],
             driversPins: [],
             accessableDrivers: [],
-     
+
         }
 
         configProperties.nodes.push(node);
@@ -201,16 +201,21 @@ var config = {
 
 
 
-    load: function () {
+    load: function (onLoadConfig) {
+
+        httpGetAsync(boardhost + "getwebproperty?property=config", this.onLoadConfig, onLoadConfig, this, null, 10000); //boardhost host контроллера с которого идет первичная загрузка
+    },
+
+    onLoadConfig: function (_data, upperAsyncReciever, sender, upperSender) {
+
         var result = false;
 
-
-        var stringifyConfig = httpGetWithErrorReson(boardhost + "getwebproperty?property=config"); //boardhost host контроллера с которого идет первичная загрузка
+        var stringifyConfig = _data;
         if (!stringifyConfig.indexOf("%error") == 0) {
             try {
                 configProperties = JSON.parse(unescape(stringifyConfig));
                 //check 
-                if (this.getDashboardById("main") != undefined) {
+                if (sender.getDashboardById("main") != undefined) {
 
                     var tempNodes = [];
                     for (var nodeKey in configProperties.nodes) {
@@ -233,10 +238,10 @@ var config = {
                             },
 
                             get networkStatus() {//получить текущее сетевое состояние
-                                return this._networkStatus;
+                                return sender._networkStatus;
                             },
 
-                            addNetworkStatusListner: function(_event, _sender) { //для добавления нового подписчика(так же как и addValueListner)                                
+                            addNetworkStatusListner: function (_event, _sender) { //для добавления нового подписчика(так же как и addValueListner)                                
                                 //check event listner and setup current network status 
                                 try {
                                     _event(_sender, this);
@@ -256,8 +261,8 @@ var config = {
                     configProperties.nodes[0].host = boardhost;
                     result = true;
 
-                    this.doOnLoad();
-                    
+                    sender.doOnLoad();
+
                 }
                 else {
                     configProperties = "";
@@ -269,29 +274,28 @@ var config = {
             }
         }
 
-
-        if (!result) { //пробуем создать свойства по умолчанию, если их еще нет
-            //parse problem, reset properties
-            configProperties = defaultWebProp();
-
-
-            addToLogNL(getLang("restoredefault"), 1);
-            this.addDashboard("main");
-            this.addNode(boardhost, "local");
-            /*
-            this.addNode("http://176.100.2.105:8085/", "solomon_1");
-            this.addNode("http://176.100.2.105:8086/", "solomon_2");
-            this.addNode("http://81.95.178.177:8084/", "home_1");
-            this.addNode("http://192.168.1.11:8084/", "home_2");
-            */
-
-            result = this.save();
-
-        }
-
-
+        upperAsyncReciever(result);
         return result;
     },
+
+    restoreDefault: function () {
+
+        //parse problem, reset properties
+        configProperties = defaultWebProp();
+        addToLogNL(getLang("restoredefault"), 1);
+        sender.addDashboard("main");
+        sender.addNode(boardhost, "local");
+        /*
+        sender.addNode("http://176.100.2.105:8085/", "solomon_1");
+        sender.addNode("http://176.100.2.105:8086/", "solomon_2");
+        sender.addNode("http://81.95.178.177:8084/", "home_1");
+        sender.addNode("http://192.168.1.11:8084/", "home_2");
+        */
+
+        return sender.save();
+
+    },
+
 
     // асинхронный метод сохранения внесенных изменений в настройки (передача строки разбитой на небольшие части в ноду) 
     save: function () {
@@ -300,9 +304,9 @@ var config = {
         var tempProp = defaultWebProp();
         //кнопка сохранения виджета
         var saveButton = document.getElementById("saveWidgetsButton");
-        if (saveButton !== undefined && saveButton !== null) { 
+        if (saveButton !== undefined && saveButton !== null) {
             saveButton.hidden = true;
-        } 
+        }
 
 
         for (var key in configProperties) {
@@ -354,7 +358,7 @@ var config = {
         var sendingAmount = "0";
 
         // текущий статус передачи строки отображающийся в модельном окне
-        var savingCurrentStatus = getLang("savingchanges"); 
+        var savingCurrentStatus = getLang("savingchanges");
 
         // элементы модального окна отобрающего процесс передачи строки
         var saveProgressBar = document.getElementById("saveProgressBar");
@@ -428,16 +432,16 @@ var config = {
                                 saveProgressBar.setAttribute("style", "width:" + sendingAmount + "%");
                                 saveProgressBar.innerHTML = sendingAmount + "%";
 
-                               // saveButton.hidden = true;
+                                // saveButton.hidden = true;
                                 saveTextStatus.innerHTML = getLang("сhangessaved");
                                 savingCloseButton.hidden = true;
                                 closeButton.hidden = false;
                                 config.cancel = true;
-                            } 
-                           
+                            }
+
 
                             addToLogNL("Sending long config string. FINISHED. Result = OK!");
-                            
+
                             return true;
 
 
@@ -465,15 +469,15 @@ var config = {
                                     saveProgressBar.setAttribute("style", "width:" + sendingAmount + "%");
                                     saveProgressBar.innerHTML = sendingAmount + "%";
 
-                                 //   saveButton.hidden = true;
+                                    //   saveButton.hidden = true;
                                     saveTextStatus.innerHTML = getLang("сhangessaved");
                                     savingCloseButton.hidden = true;
                                     closeButton.hidden = false;
                                     config.cancel = true;
                                 }
-                             
+
                                 addToLogNL("Sending short config string. FINISHED. Result = OK!");
-                                
+
                                 return true;
 
                             }
@@ -491,14 +495,14 @@ var config = {
                     saveProgressBar.innerHTML = sendingAmount + "%";
                     saveTextStatus.innerHTML = savingCurrentStatus;
                 }
-                
+
 
                 addToLogNL("Sending config string. Still sending! " + filePartName);
                 //вызов функции асинхронного выполнения RESTfull POST запроса 
                 httpPostAsyncWithErrorReson(url, filePartName, subString, config.configSendAsync, counter, dataString, lengthDataSubString);
 
             }
-            else { 
+            else {
 
                 //если HTTPClient вернул ошибку, сообщаем об ошибке в модальном окне если оно открыто, возвращаем false
                 if (saveTextStatus !== undefined && saveTextStatus !== null) {
@@ -510,9 +514,9 @@ var config = {
                 //возвращаем кнопку сохранить изменения
                 if (saveButton !== undefined && saveButton !== null) {
                     saveButton.hidden = false;
-                } 
+                }
 
-               addToLogNL("Sending config string ERROR!" + httpResult);
+                addToLogNL("Sending config string ERROR!" + httpResult);
                 return false;
 
             }
@@ -526,7 +530,7 @@ var config = {
                     $("#saveConfigModal").modal('hide');
                 });
             }
- 
+
             return false;
         }
 
