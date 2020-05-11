@@ -39,7 +39,6 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-
 function defaultWebProp() {
     return {
         language: "ua",
@@ -51,8 +50,6 @@ function defaultWebProp() {
     };
 
 }
-
-
 
 var configProperties = defaultWebProp();
 

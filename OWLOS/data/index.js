@@ -115,20 +115,20 @@ function onNodeAnswer(httpResult) {
         speak("ERROR with host: " + boardhost);
         addToLogNL("ERROR with host: " + boardhost, 2);
 
-        makeModalDialog("resetPanel", "addnode", getLang("addnodeheader"), "");
-        var modalFooter = document.getElementById("addnodeModalFooter");
-        var modalBody = document.getElementById("addnodeModalBody");
+        var masterNodeDialog = createModalDialog(getLang("addnodeheader"), "");
+        masterNodeDialog.appendDialogInputToForm(createDialogInput("masterhost", getLang("addnodehost"), "http://host:port/ or https://host:port/"));
+        
+        var button = createButton("changeMasterNodeButton", "btn-success", getLang("addnodebutton"));
+        button.button.onclick = addNodeUIClick;
+        masterNodeDialog.appendChildToFooter(button.button);
 
-        formGroup = modalBody.appendChild(document.createElement("div"));
-        formGroup.className = "form-group";
-        label = formGroup.appendChild(document.createElement("label"));
-        label.setAttribute("for", "hostEdit");
-        label.innerText = getLang("addnodehost");
-        var hostEdit = formGroup.appendChild(document.createElement('input'));
-        hostEdit.className = "form-control form-control-sm";
-        hostEdit.placeholder = "http://host:port/ or https://host:port/";
-        hostEdit.id = "hostInput";
+        var addNodeError = document.createElement("label");
+        addNodeError.className = "text-danger";
+        masterNodeDialog.appendChildToForm(addNodeError);
 
+        masterNodeDialog.show();
+
+        /*
         var addNodeButton = modalFooter.appendChild(document.createElement("button"));
         addNodeButton.type = "button";
         addNodeButton.className = "btn btn-sm btn-success";
@@ -141,8 +141,9 @@ function onNodeAnswer(httpResult) {
 
         addNodeButton.hostEdit = hostEdit;      
         addNodeButton.addNodeError = addNodeError;
+        */
 
-        $("#addnodeModal").modal('show');
+        
 
     }
 }
@@ -501,71 +502,6 @@ function sleep(time) {
     /*
     return new Promise((resolve) => setTimeout(resolve, time));
     */
-}
-
-
-
-
-
-//--------------------------------------------------------------------------------------------------------------------
-function makeModalDialog(parentId, id, titleText, bodyText) {
-    document.getElementById("addDriverPanel").innerHTML = ""; //TODO: remake this modal to
-
-    var parentPanel = document.getElementById(parentId);
-    parentPanel.innerHTML = "";
-    var modalFade = parentPanel.appendChild(document.createElement("div"));
-
-    modalFade.className = "modal fade";
-    modalFade.id = id + "Modal";
-    modalFade.tabindex = "-1";
-    modalFade.setAttribute("role", "dialog");
-    modalFade.setAttribute("aria-labelledby", id + "ModalLabel");
-    modalFade.setAttribute("aria-hidden", "true");
-
-    var modalDialog = modalFade.appendChild(document.createElement("div"));
-    modalDialog.className = "modal-dialog";
-    modalDialog.role = "document";
-
-    var modalContent = modalDialog.appendChild(document.createElement("div"));
-    modalContent.className = "modal-content";
-
-    var modalHeader = modalContent.appendChild(document.createElement("div"));
-    modalHeader.className = "modal-header";
-
-    var modalTitle = modalHeader.appendChild(document.createElement("h5"));
-
-    modalTitle.className = "modal-title";
-    modalTitle.id = id + "ModalLabel";
-    modalTitle.innerText = titleText;
-
-    var closeHeaderButton = modalHeader.appendChild(document.createElement("button"));
-
-    closeHeaderButton.type = "button"
-    closeHeaderButton.className = "close"
-    closeHeaderButton.id = id + "closeHeaderButton";
-    closeHeaderButton.setAttribute("data-dismiss", "modal");
-    closeHeaderButton.setAttribute("aria-label", "Close");
-
-    var closeSpan = closeHeaderButton.appendChild(document.createElement("span"));
-    closeSpan.setAttribute("aria-hidden", "true");
-    closeSpan.innerText = "x"
-
-    var modalBody = modalContent.appendChild(document.createElement("div"));
-    modalBody.id = id + "ModalBody"
-    modalBody.className = "modal-body";
-    modalBody.innerText = bodyText;
-
-    var modalFooter = modalContent.appendChild(document.createElement("div"));
-    modalFooter.id = id + "ModalFooter";
-    modalFooter.className = "modal-footer";
-
-    var closeButton = modalFooter.appendChild(document.createElement("button"));
-    closeButton.type = "button";
-    closeButton.className = "btn btn-sm btn-info";
-    closeButton.setAttribute("data-dismiss", "modal");
-    closeButton.setAttribute("aria-label", "Close");
-    closeButton.innerText = getLang("cancel");
-    closeButton.id = id + "closeButton";
 }
 
 

@@ -193,6 +193,10 @@ D:\7Zip\7z.exe a -mx9 bootcore.js.gz bootcore.js
 move  "bootcore.js.gz" "CompressedFull\bootcore.js.gz"
 type  "bootcore.js" >> "CompressedPackOne\owlos.js"
 
+D:\7Zip\7z.exe a -mx9 pinscore.js.gz pinscore.js 
+move  "pinscore.js.gz" "CompressedFull\pinscore.js.gz"
+type  "pinscore.js" >> "CompressedPackOne\owlos.js"
+
 D:\7Zip\7z.exe a -mx9 index.js.gz index.js 
 move  "index.js.gz" "CompressedFull\index.js.gz"
 type  "index.js" >> "CompressedPackOne\owlos.js"

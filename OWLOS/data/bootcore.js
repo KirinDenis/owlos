@@ -173,6 +173,10 @@ function loadingScripts(withInternet) {
                         loadingScript("scriptscore.js");
                         loadingScript("pinscore.js");
 
+                        loadingScript("dialogelement.js");
+                        loadingScript("dialoginputelement.js");
+                        loadingScript("buttonelement.js");
+
                         var baseWidgetScript = document.createElement('script');
                         baseWidgetScript.onload = function () {
                             //  loadingScript("basewidget.js");

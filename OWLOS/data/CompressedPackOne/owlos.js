@@ -7585,8 +7585,8 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-var boardhost = "http://81.95.178.177:8084/"; //DEBUG
-//var boardhost = "http://192.168.1.9:8084/"; //DEBUG as WiFi Access Point
+//var boardhost = "http://81.95.178.177:8084/"; //DEBUG
+var boardhost = "http://192.168.1.7:8084/"; //DEBUG as WiFi Access Point
 //var boardhost = ""; //UI loading from ESPxxxx
 
 
@@ -7794,7 +7794,7 @@ function httpPostAsyncWithErrorReson(_url, arg, _postdata, asyncReciever, counte
 }
 
 
-function httpGetAsync(_url, asyncReciever, upperAsyncReciever, sender, upperSender) {
+function httpGetAsync(_url, asyncReciever, upperAsyncReciever, sender, upperSender, _timeout = 30000) {
     var _data = null;
     $.ajax({
         url: encodeURI(_url),
@@ -7807,6 +7807,7 @@ function httpGetAsync(_url, asyncReciever, upperAsyncReciever, sender, upperSend
         type: "GET",
         contentType: "text/plain charset=utf-8",
         dataType: "text",
+        timeout: _timeout,
 
         success: function (_data) {
             addToLogNL("call RESTful async: " + _url + " result OK", 1);
@@ -7831,7 +7832,7 @@ function httpGetAsync(_url, asyncReciever, upperAsyncReciever, sender, upperSend
     return _data;
 }
 
-function httpGetAsyncWithReciever(_url, asyncReciever, upperAsyncReciever, sender, upperSender) {
+function httpGetAsyncWithReciever(_url, asyncReciever, upperAsyncReciever, sender, upperSender, _timeout = 30000) {
     var _data = null;
     $.ajax({
         url: encodeURI(_url),
@@ -7844,6 +7845,7 @@ function httpGetAsyncWithReciever(_url, asyncReciever, upperAsyncReciever, sende
         type: "GET",
         contentType: "text/plain charset=utf-8",
         dataType: "text",
+        timeout: _timeout,
 
         success: function (data) {
             addToLogNL("call RESTful async: " + _url + " result OK", 1);
@@ -8229,7 +8231,7 @@ var config = {
         return undefined;
     },
 
-    addWidget: function (_dashboardId, _daviceId, _driverProperty, _widgetWrapperId,  _widgetId, _widgetProperties) {
+    addWidget: function (_dashboardId, _daviceId, _driverProperty, _widgetWrapperId, _widgetId, _widgetProperties) {
         var dashboard = this.getDashboardById(_dashboardId);
         if (dashboard != undefined) {
             var widget = {
@@ -8241,7 +8243,7 @@ var config = {
                 widgetProperties: _widgetProperties
             };
             dashboard.widgets.push(widget);
-            config.doOnChange();            
+            config.doOnChange();
             return widget;
         }
         return undefined;
@@ -8309,7 +8311,7 @@ var config = {
             pins: [],
             driversPins: [],
             accessableDrivers: [],
-     
+
         }
 
         configProperties.nodes.push(node);
@@ -8328,16 +8330,21 @@ var config = {
 
 
 
-    load: function () {
+    load: function (onLoadConfig) {
+
+        httpGetAsync(boardhost + "getwebproperty?property=config", this.onLoadConfig, onLoadConfig, this, null, 10000); //boardhost host контроллера с которого идет первичная загрузка
+    },
+
+    onLoadConfig: function (_data, upperAsyncReciever, sender, upperSender) {
+
         var result = false;
 
-
-        var stringifyConfig = httpGetWithErrorReson(boardhost + "getwebproperty?property=config"); //boardhost host контроллера с которого идет первичная загрузка
+        var stringifyConfig = _data;
         if (!stringifyConfig.indexOf("%error") == 0) {
             try {
                 configProperties = JSON.parse(unescape(stringifyConfig));
                 //check 
-                if (this.getDashboardById("main") != undefined) {
+                if (sender.getDashboardById("main") != undefined) {
 
                     var tempNodes = [];
                     for (var nodeKey in configProperties.nodes) {
@@ -8360,10 +8367,10 @@ var config = {
                             },
 
                             get networkStatus() {//получить текущее сетевое состояние
-                                return this._networkStatus;
+                                return sender._networkStatus;
                             },
 
-                            addNetworkStatusListner: function(_event, _sender) { //для добавления нового подписчика(так же как и addValueListner)                                
+                            addNetworkStatusListner: function (_event, _sender) { //для добавления нового подписчика(так же как и addValueListner)                                
                                 //check event listner and setup current network status 
                                 try {
                                     _event(_sender, this);
@@ -8383,8 +8390,8 @@ var config = {
                     configProperties.nodes[0].host = boardhost;
                     result = true;
 
-                    this.doOnLoad();
-                    
+                    sender.doOnLoad();
+
                 }
                 else {
                     configProperties = "";
@@ -8396,29 +8403,28 @@ var config = {
             }
         }
 
-
-        if (!result) { //пробуем создать свойства по умолчанию, если их еще нет
-            //parse problem, reset properties
-            configProperties = defaultWebProp();
-
-
-            addToLogNL(getLang("restoredefault"), 1);
-            this.addDashboard("main");
-            this.addNode(boardhost, "local");
-            /*
-            this.addNode("http://176.100.2.105:8085/", "solomon_1");
-            this.addNode("http://176.100.2.105:8086/", "solomon_2");
-            this.addNode("http://81.95.178.177:8084/", "home_1");
-            this.addNode("http://192.168.1.11:8084/", "home_2");
-            */
-
-            result = this.save();
-
-        }
-
-
+        upperAsyncReciever(result);
         return result;
     },
+
+    restoreDefault: function () {
+
+        //parse problem, reset properties
+        configProperties = defaultWebProp();
+        addToLogNL(getLang("restoredefault"), 1);
+        sender.addDashboard("main");
+        sender.addNode(boardhost, "local");
+        /*
+        sender.addNode("http://176.100.2.105:8085/", "solomon_1");
+        sender.addNode("http://176.100.2.105:8086/", "solomon_2");
+        sender.addNode("http://81.95.178.177:8084/", "home_1");
+        sender.addNode("http://192.168.1.11:8084/", "home_2");
+        */
+
+        return sender.save();
+
+    },
+
 
     // асинхронный метод сохранения внесенных изменений в настройки (передача строки разбитой на небольшие части в ноду) 
     save: function () {
@@ -8427,9 +8433,9 @@ var config = {
         var tempProp = defaultWebProp();
         //кнопка сохранения виджета
         var saveButton = document.getElementById("saveWidgetsButton");
-        if (saveButton !== undefined && saveButton !== null) { 
+        if (saveButton !== undefined && saveButton !== null) {
             saveButton.hidden = true;
-        } 
+        }
 
 
         for (var key in configProperties) {
@@ -8481,7 +8487,7 @@ var config = {
         var sendingAmount = "0";
 
         // текущий статус передачи строки отображающийся в модельном окне
-        var savingCurrentStatus = getLang("savingchanges"); 
+        var savingCurrentStatus = getLang("savingchanges");
 
         // элементы модального окна отобрающего процесс передачи строки
         var saveProgressBar = document.getElementById("saveProgressBar");
@@ -8555,16 +8561,16 @@ var config = {
                                 saveProgressBar.setAttribute("style", "width:" + sendingAmount + "%");
                                 saveProgressBar.innerHTML = sendingAmount + "%";
 
-                               // saveButton.hidden = true;
+                                // saveButton.hidden = true;
                                 saveTextStatus.innerHTML = getLang("сhangessaved");
                                 savingCloseButton.hidden = true;
                                 closeButton.hidden = false;
                                 config.cancel = true;
-                            } 
-                           
+                            }
+
 
                             addToLogNL("Sending long config string. FINISHED. Result = OK!");
-                            
+
                             return true;
 
 
@@ -8592,15 +8598,15 @@ var config = {
                                     saveProgressBar.setAttribute("style", "width:" + sendingAmount + "%");
                                     saveProgressBar.innerHTML = sendingAmount + "%";
 
-                                 //   saveButton.hidden = true;
+                                    //   saveButton.hidden = true;
                                     saveTextStatus.innerHTML = getLang("сhangessaved");
                                     savingCloseButton.hidden = true;
                                     closeButton.hidden = false;
                                     config.cancel = true;
                                 }
-                             
+
                                 addToLogNL("Sending short config string. FINISHED. Result = OK!");
-                                
+
                                 return true;
 
                             }
@@ -8618,14 +8624,14 @@ var config = {
                     saveProgressBar.innerHTML = sendingAmount + "%";
                     saveTextStatus.innerHTML = savingCurrentStatus;
                 }
-                
+
 
                 addToLogNL("Sending config string. Still sending! " + filePartName);
                 //вызов функции асинхронного выполнения RESTfull POST запроса 
                 httpPostAsyncWithErrorReson(url, filePartName, subString, config.configSendAsync, counter, dataString, lengthDataSubString);
 
             }
-            else { 
+            else {
 
                 //если HTTPClient вернул ошибку, сообщаем об ошибке в модальном окне если оно открыто, возвращаем false
                 if (saveTextStatus !== undefined && saveTextStatus !== null) {
@@ -8637,9 +8643,9 @@ var config = {
                 //возвращаем кнопку сохранить изменения
                 if (saveButton !== undefined && saveButton !== null) {
                     saveButton.hidden = false;
-                } 
+                }
 
-               addToLogNL("Sending config string ERROR!" + httpResult);
+                addToLogNL("Sending config string ERROR!" + httpResult);
                 return false;
 
             }
@@ -8653,7 +8659,7 @@ var config = {
                     $("#saveConfigModal").modal('hide');
                 });
             }
- 
+
             return false;
         }
 
@@ -12584,6 +12590,15 @@ function boot() {
 //так как мы используем асинхронный метод загрузки - некоторые модули должне "дождатъся" загрузки тех от кого они зависят)
 //...и да - нет никакого списка загрузки, как не странно здесь удобен хардкод
 function loadingScripts(withInternet) {
+
+    jQuery.readyException = function (error) {
+        addToLogNL("jQuery error: " + error, 2);
+    };
+
+    $(document).ajaxError(function (event, request, settings) {
+        addToLogNL("Ajax error: " + settings.url, 2);
+    });
+
     //bottstrap css
     new Promise(function (resolve, reject) {//первым грузим bootstrap.css и ожидаем окончание
         var link = document.createElement('link');
@@ -12851,6 +12866,564 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
+//--------------------------------------------------------------------------------------------------------------------------------------------------
+// Этот класс реализует объектную модель понов микроконтроллера.
+// 
+// Перед началом изучения этого класса - вызовите API getpinmap и изучите формат передачи
+// свойств драйвер: http://yournodeurl:yournodeport/getapinmap (например http://192.168.1.10:8084/getapinmap)
+
+// Примечания:
+// "парсинг" - синтаксический анализ https://ru.wikipedia.org/wiki/%D0%A1%D0%B8%D0%BD%D1%82%D0%B0%D0%BA%D1%81%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9_%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7
+// "распарсить" - подвергнуть синтаксическому анализу
+// "event" - событие
+// "pin" - контакт микроконтроллера (ножка)
+
+const NO_MASK = 0x0000;    //без маски
+const DIGITAL_I_MASK = 0x0001;    //цифровой пин только чтение 
+const DIGITAL_O_MASK = 0x0002;    //цифровой пин только запись
+const ANALOG_I_MASK = 0x0004;    //аналоговый пин только чтение 
+const ANALOG_O_MASK = 0x0008;    //аналоговый пин только запись
+const SDA_MASK = 0x0010;    //пин SDA канала I2C шины
+const SCL_MASK = 0x0020;    //пин SCL канала I2C шины
+const I2CADDR_MASK = 0x0040;    //используется для привязки I2C адреса подчинённого устройства на шине I2C
+const VCC5_MASK = 0x0080;    //5 Вольт пин питания
+const VCC33_MASK = 0x0100;    //3.3 Вольта пин питания
+const GND_MASK = 0x0200;    //узел цепи, потенциал которого условно принимается за ноль :)
+const RESET_MASK = 0x0400;    //пин hardware reset 
+
+const DIGITAL_IO_MASK = DIGITAL_I_MASK | DIGITAL_O_MASK; //цифровой пин чтения/записи
+const ANALOG_IO_MASK = ANALOG_I_MASK | ANALOG_O_MASK;    //аналоговый пин чтения/записи
+
+//Расширенные (дополнительные) маски пинов (не хватило 16 бит для описания всех типов пинов)
+const SPI_MOSI_EXTEND_MASK = 0x0001;    //SPI_MasterOutputSlaveInput пин 
+const SPI_MISO_EXTEND_MASK = 0x0002;    //SPI_MasterInputSlaveOutput пин 
+const SPI_SCK_EXTEND_MASK = 0x0004;    //SPI_Clock пин
+const SPI_SS_EXTEND_MASK = 0x0008;    //SPI_SlaveSelect пин 
+const RST_EXTEND_MASK = 0x0010;    //UART_RST пин 
+const TXD_EXTEND_MASK = 0x0020;    //UART_TX пин 
+const RXD_EXTEND_MASK = 0x0040;    //UART_RX пин 
+const TOUCH_EXTEND_MASK = 0x0080;    //резистивный пин 
+
+const NO_FAMILY = 0;    //пин не имеет семейства 
+const I2C_FAMILY = 1;    //пин входит в семейство I2C
+const VCC_FAMILY = 2;    //пин входит в семейство пинов питания 	   
+
+function getFreePins(node, pinMask) {
+    var pins = [];
+
+    for (var i = 0; i < node.pins.length; i++) {
+        var valid = (node.pins[i].pintypes & pinMask); // | (node.pins[i].extenedpintypes & pinMask);
+        if (valid > 0) {
+            pins.push(node.pins[i]);
+        }
+    }
+
+    return pins;
+}
+
+
+var pins = {
+
+    //Массив подписчиков на событие onNew  пина контроллера
+    _onnew: [],
+    doOnNew: function (pin) {
+        for (var key in pins._onnew) {
+            pins._onnew[key](pin);
+        }
+    },
+
+    //Добавление подсписчиков события onNew
+    set onNew(onnew) {
+        pins._onnew.push(onnew);
+    },
+
+    //Массив подписчиков на событие onDelete пина контроллера 
+    _ondelete: [],
+    doOnDelete: function (pin) {
+        for (var key in pins._ondelete) {
+            pins._ondelete[key](pin);
+        }
+    },
+
+    //Добавление подсписчиков события onDelete
+    set onDelete(ondelete) {
+        pins._ondelete.push(ondelete);
+    },
+
+
+    //вызывается внешним кодом (смотрите index.js)
+    refresh: function (node) {
+        node.networkStatus = NET_REFRESH;
+        // асинхронный HTTP запрос
+        // this.refreshResult - метод который будет вызван HTTPClient-ом по окончанию асинхронного запроса
+        // this - ссылка на экземпляр этого объекта        
+        httpGetAsyncWithReciever(node.host + "getpinmap", this.refreshResult, node);
+    },
+
+    //вызывается асинхронным HTTPClient по окончанию запроса, указан как параметр в httpGetAsyncWithReciever, смотрите this.refresh()
+    //httpResult - результат запроса
+    //asyncReciever - ссылка на объект сделавший запрос (этот метод будет вызван в контексте другого потока, для него this. это другой объект - занимательный мир JS)
+    //мы не можем использовать this, для обращения к методам этого объекта, поэтому заведомо передали себе ссылку на себя "asyncReciever"
+    refreshResult: function (httpResult, node) {
+        //HTTPClient добавляет строку "%error" в начало Response если запрос не был завешен HTTPCode=200 или произошел TimeOut
+        if (!httpResult.indexOf("%error") == 0) {
+            node.networkStatus = NET_ONLINE;
+            //если запрос был выполнен удачно, парсим новые данные об драйверах, изменяем свойства drivers[] и добавляем новые driver если они появились
+            //перед изучением парсинга, посмотрите результат API getalldriversproperties как текст
+            //!-> asyncReciever это этот же класс drivers!
+            pins.parsePins(httpResult, node);
+
+        }
+        else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
+            if (httpResult.indexOf("reponse") != -1) {
+                node.networkStatus = NET_ERROR;
+            }
+            else {
+                node.networkStatus = NET_OFFLINE;
+            }
+            node.pins = "";
+        }
+    },
+
+    //-------------------------------------------------------------------------------------------------------------
+
+    ////получить объект Pin по его GPIO номеру
+    getPinByGPIONumber: function (GPIONumber, host) {
+        var node = config.getNodeByHost(host);
+        if (node == undefined) return undefined;
+        for (var i = 0; i < node.pins.length; i++) {
+            if (node.pins[i].gpio === GPIONumber) {
+                return node.pins[i];
+            }
+        }
+        return undefined;
+    },
+
+    //-------------------------------------------------------------------------------------------------------------
+    //парсинг (синтаксический разбор) свойств пина и информации о подключенных драйверах контактам микроконтроллера - смотрите refresh()
+    //этот метод будет вызываться множество раз, по этой причине он не только создает драйвера и их свойства
+    //а так же проверяет было ли драйвер создано и как изменились его свойства после предыдущего парсинга
+    parsePins: function (httpResult, node) {
+        //первичный парсинг, помещаем строку пришедшую от HTTPClient в массив строк, разделяя по "\n"
+
+        if (node.pins != undefined) {
+            for (var pinIndex in node.pins) {
+                node.pins[pinIndex].deleted = true; //все удалены перед началом парсинга      
+            }
+        }
+
+        var recievedPinsProperties = httpResult.split("\n");
+
+        if (recievedPinsProperties !== "") {//если первичный парсинг удался
+
+            var pin = undefined; //сбрасываем будущий объект со свойствами пина 
+
+            for (var i = 0; i < recievedPinsProperties.length; i++) {//перечисляем все строки в HTTPResult 
+
+                if (recievedPinsProperties[i] === "") continue; //если строка пуста, берем следующею
+                //--> разбор pin
+
+                if (recievedPinsProperties[i].indexOf("name:") == 0) { //если заголовок драйвера найден                    
+
+                    //сохраняем собранный pin
+                    if (pin != undefined) {
+                        this.addPin(pin, node);
+                        this.doOnNew(pin); //вызов обработчика события OnNew
+                        pin = undefined;
+                    }
+
+                    //извлекаем Name очередного пина
+                    var name = recievedPinsProperties[i].split(":")[1];
+
+                    pin = this.createPin(name, node);
+
+                }
+                //--> разбор свойств pin
+                else {//если текущая строка не является объявлением очередного пина, значит эта строка со свойством и значением свойства от последнего найденного драйвера
+                    //свойства драйвер должны быть в формате [PropertyName]=[PropertyValue]
+                    //где:
+                    //PropertyName - название свойства(уникальное в рамках одного пина)
+                    //PropertyValue - значение этого свойства
+
+                    //вторичный парсинг, помещаем строку в массив, разделяя по "=", первый элемент название, второй значение 
+
+                    var propertyName = recievedPinsProperties[i].split("=")[0];
+
+                    var propertyValue = recievedPinsProperties[i].split("=")[1];
+
+                    if (pin[propertyName] != undefined) {//если такое свойство уже существует                        
+                        pin[propertyName] = propertyValue; //меняем значение свойства на новое
+                    }
+                }
+            }
+
+            //сохраняем собранный pin
+            if (pin != undefined) {
+                this.addPin(pin, node);
+                this.doOnNew(pin); //вызов обработчика события OnNew
+                pin = undefined;
+            }
+
+            var deleted = false;
+            while (!deleted) {
+                deleted = true;
+                for (var pinsIndex in node.pins) { //удаляем удаленные на стороне ноды 
+
+                    if (node.pins[pinsIndex].deleted === true) {
+                        this.doOnDelete(node.pins[pinsIndex]); //вызов обработчика события OnDelete
+                        node.pins.splice(pinsIndex, 1);
+                        deleted = false;
+                        break;
+                    }
+                }
+            }
+        }
+    }, //ENDOF parse pins
+
+    addPin: function (_pin, node) {
+
+        var addOrNot = true;
+
+        if (node.pins.length > 0) {
+
+            for (var pinIndex in node.pins) {
+
+                if ((node.pins[pinIndex].name == _pin.name) && (node.pins[pinIndex].deleted === false)) {
+
+                    addOrNot = false;
+
+                    if (node.pins[pinIndex].location != _pin.location) {
+
+                        addOrNot = true;
+
+                        for (var newPinIndex in node.pins) {
+
+                            if ((node.pins[newPinIndex].location == _pin.location) && (node.pins[newPinIndex].deleted === false)) {
+                                addOrNot = false;
+                            }
+
+                        }
+
+                    }
+                }
+
+            }
+        }
+
+        if (addOrNot) {
+            node.pins.push(_pin);
+        }
+
+    },
+
+
+    createPin: function (_name, node) {
+
+        pin = { //создаем новый объект представляющий драйвер
+            name: _name, //навастриваем уникальный ID драйвера, для идентификации объекта с драйверм в будущем
+            nodenickname: node.nodenickname,
+            host: node.host,
+            mode: -1,
+            pintypes: 0,
+            extenedpintypes: 0,
+            gpio: -1,
+            chipnumber: -1,
+            neighbourPin: -1,
+            location: '',
+            deleted: false,
+        }; //новый объект для драйвера сформирован        
+        return pin;
+    }
+
+}
+
+//----------------------------------------------------------------------------------------------------------------------------------
+//GetDriverPins 
+//----------------------------------------------------------------------------------------------------------------------------------
+var driverPins = {
+
+
+    //Массив подписчиков на событие onNew у пина драйвера 
+    _onnew: [],
+
+    doOnNew: function (driverPin) {
+        for (var key in driverPins._onnew) {
+            driverPins._onnew[key](driverPin);
+        }
+    },
+
+    //Добавление слушателей события onNew
+    set onNew(onnew) {
+        driverPins._onnew.push(onnew);
+    },
+
+    //Массив подписчиков на событие onDelete у пина драйвера 
+    _ondelete: [],
+
+    doOnDelete: function (driverPin) {
+        for (var key in driverPins._ondelete) {
+            driverPins._ondelete[key](driverPin);
+        }
+    },
+
+    //Добавление слушателей события onDelete
+    set onDelete(ondelete) {
+        driverPins._ondelete.push(ondelete);
+    },
+
+
+
+
+    refresh: function (node) {
+        node.networkStatus = NET_REFRESH;
+        // асинхронный HTTP запрос
+        // this.refreshResult - метод который будет вызван HTTPClient-ом по окончанию асинхронного запроса
+        // this - ссылка на экземпляр этого объекта        
+        httpGetAsyncWithReciever(node.host + "getdriverpin", this.refreshResult, node);
+    },
+
+    //вызывается асинхронным HTTPClient по окончанию запроса, указан как параметр в httpGetAsyncWithReciever, смотрите this.refresh()
+    //httpResult - результат запроса
+    //asyncReciever - ссылка на объект сделавший запрос (этот метод будет вызван в контексте другого потока, для него this. это другой объект - занимательный мир JS)
+    //мы не можем использовать this, для обращения к методам этого объекта, поэтому заведомо передали себе ссылку на себя "asyncReciever"
+    refreshResult: function (httpResult, node) {
+        //HTTPClient добавляет строку "%error" в начало Response если запрос не был завешен HTTPCode=200 или произошел TimeOut
+        if (!httpResult.indexOf("%error") == 0) {
+            node.networkStatus = NET_ONLINE;
+            //если запрос был выполнен удачно, парсим новые данные об драйверах, изменяем свойства drivers[] и добавляем новые driver если они появились
+            //перед изучением парсинга, посмотрите результат API getalldriversproperties как текст
+            //!-> asyncReciever это этот же класс drivers!
+            driverPins.parseDriverPin(httpResult, node);
+
+        }
+        else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
+            if (httpResult.indexOf("reponse") != -1) {
+                node.networkStatus = NET_ERROR;
+            }
+            else {
+                node.networkStatus = NET_OFFLINE;
+            }
+            node.driversPins = "";
+        }
+    },
+
+    parseDriverPin: function (httpResult, node) {
+
+        if (node.driversPins.length > 0) {
+            for (var DriverPinIndex in node.driversPins) {
+                node.driversPins[DriverPinIndex].deleted = true; //все удалены перед началом парсинга      
+            }
+        }
+
+        var recievedDriverPins = httpResult.split("\n");
+
+
+        if (recievedDriverPins !== "") {//если первичный парсинг удался
+
+            var driverPin = undefined;
+            var driverId = undefined;
+
+            for (var i = 0; i < recievedDriverPins.length; i++) {//перечисляем все строки в HTTPResult 
+
+                if (recievedDriverPins[i] === "") continue; //если строка пуста, берем следующею
+
+                if (recievedDriverPins[i].indexOf("driverid:") == 0) { //если заголовок драйвера найден                    
+                    //Добавляем собранный пин драйвера 
+                    if (driverPin != undefined) {
+                        node.driversPins.push(driverPin);
+                        this.doOnNew(driverPin); //вызов обработчика события OnNew
+                    }
+
+                    driverId = recievedDriverPins[i].split(":")[1];
+                    driverPin = this.addDriverPin(driverId, node);
+
+                }
+                else {
+                    if (driverPin == undefined) continue;
+                    var splitterPos = recievedDriverPins[i].indexOf("=");
+                    if (splitterPos != -1) {
+                        var key = recievedDriverPins[i].slice(0, splitterPos);
+                        var value = recievedDriverPins[i].slice(splitterPos + 1, recievedDriverPins[i].lenght);
+                        if (driverPin[key] != undefined) {
+                            driverPin[key] = value;
+                        }
+                    }
+                }
+            }
+
+            if (driverPin != undefined) {
+                node.driversPins.push(driverPin);
+                this.doOnNew(driverPin); //вызов обработчика события OnNew
+            }
+        }
+
+        var deleted = false;
+        while (!deleted) {
+            deleted = true;
+            for (var driverPinsIndex in node.driversPins) { //удаляем удаленные на стороне ноды 
+
+                if (node.driversPins[driverPinsIndex].deleted === true) {
+                    this.doOnDelete(node.driversPins[driverPinsIndex]); //вызов обработчика события OnDelete
+                    node.driversPins.splice(driverPinsIndex, 1);
+                    deleted = false;
+                    break;
+                }
+            }
+        }
+
+    },
+
+    addDriverPin: function (_driverId, _node) {
+        driverPin = {
+            driverId: _driverId,
+            name: "",
+            node: _node,
+            driverpintype: 0,
+            driverpintypedecoded: "",
+            driverpinindex: -1,
+            driveri2caddr: -1,
+            driversdapinname: "",
+            deleted: false,
+        };
+
+        return driverPin;
+    },
+
+}
+
+//----------------------------------------------------------------------------------------------------------------------------------
+//Get Accessable Drivers 
+//Так же как и DriverPins - смотрите коментарии к этому классу там
+//----------------------------------------------------------------------------------------------------------------------------------
+var accessableDrivers = {
+
+
+    refresh: function (node) {
+        node.networkStatus = NET_REFRESH;
+        httpGetAsyncWithReciever(node.host + "getdriversaccessable", this.refreshResult, node);
+    },
+
+    refreshResult: function (httpResult, node) {
+        //HTTPClient добавляет строку "%error" в начало Response если запрос не был завешен HTTPCode=200 или произошел TimeOut
+        if (!httpResult.indexOf("%error") == 0) {
+            node.networkStatus = NET_ONLINE;
+            accessableDrivers.parseAccessableDrivers(httpResult, node);
+
+        }
+        else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
+            if (httpResult.indexOf("reponse") != -1) {
+                node.networkStatus = NET_ERROR;
+            }
+            else {
+                node.networkStatus = NET_OFFLINE;
+            }
+            node.driversPins = "";
+        }
+    },
+
+    parseAccessableDrivers: function (httpResult, node) {
+
+        var recievedAccessablePins = httpResult.split("\n");
+
+        if (recievedAccessablePins !== "") {
+
+            var _driver = undefined;
+
+            for (var i = 0; i < recievedAccessablePins.length; i++) {
+
+                if (recievedAccessablePins[i] === "") continue; 
+
+                if (recievedAccessablePins[i].indexOf("name:") == 0) { 
+                    
+                    if (_driver != undefined) {
+                        node.accessableDrivers.push(_driver);
+                    }
+
+                    driverName = recievedAccessablePins[i].split(":")[1];
+                    _driver = { name: driverName };
+                        
+                    // _driver = this.addDriver(driverName, node);
+                }
+                else {
+                    if (_driver == undefined) continue;
+                    var splitterPos = recievedAccessablePins[i].indexOf("=");
+                    if (splitterPos != -1) {
+                        var key = recievedAccessablePins[i].slice(0, splitterPos);
+                        var value = recievedAccessablePins[i].slice(splitterPos + 1, recievedAccessablePins[i].lenght);
+                        _driver[key] = value;
+                    }
+                }
+            }
+        }
+
+        if (_driver != undefined) {
+            node.accessableDrivers.push(_driver);
+        }
+    }
+}
+
+    /*
+    addDrivern: function (_driverName, _node) {
+        driverPin = {
+            driverName: _driverName,
+            name: "",
+            node: _node,
+            driverpintype: 0,
+            driverpintypedecoded: "",
+            driverpinindex: -1,
+            driveri2caddr: -1,
+            driversdapinname: "",
+            deleted: false,
+        };
+
+return driverPin;
+    },
+    */
+
+//}
+
+
+﻿/* ----------------------------------------------------------------------------
+Ready IoT Solution - OWLOS
+Copyright 2019, 2020 by:
+- Konstantin Brul (konstabrul@gmail.com)
+- Vitalii Glushchenko (cehoweek@gmail.com)
+- Denys Melnychuk (meldenvar@gmail.com)
+- Denis Kirin (deniskirinacs@gmail.com)
+
+This file is part of Ready IoT Solution - OWLOS
+
+OWLOS is free software : you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+OWLOS is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with OWLOS. If not, see < https://www.gnu.org/licenses/>.
+
+GitHub: https://github.com/KirinDenis/owlos
+
+(Этот файл — часть Ready IoT Solution - OWLOS.
+
+OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
+ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
+была опубликована Фондом свободного программного обеспечения; версии 3
+лицензии, любой более поздней версии.
+
+OWLOS распространяется в надежде, что она будет полезной, но БЕЗО ВСЯКИХ
+ГАРАНТИЙ; даже без неявной гарантии ТОВАРНОГО ВИДА или ПРИГОДНОСТИ ДЛЯ
+ОПРЕДЕЛЕННЫХ ЦЕЛЕЙ.
+Подробнее см.в Стандартной общественной лицензии GNU.
+
+Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
+этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
+--------------------------------------------------------------------------------------*/
+
 var nodeId;
 var nodesRefreshHandle;
 var autorefreshbutton;
@@ -12876,7 +13449,7 @@ var runOnce = true;
 
 $(document).ready(function () {
 
-    if (!runOnce) return; 
+    if (!runOnce) return;
     runOnce = false;
 
     addToLogNL("OK loading scripts");
@@ -12885,13 +13458,6 @@ $(document).ready(function () {
     //Check languages DEBUG
     //langCompare(langua, langru, document.getElementById("bootLog"));
 
-    jQuery.readyException = function (error) {
-        addToLogNL("jQuery error: " + error, 2);
-    };
-
-    $(document).ajaxError(function (event, request, settings) {
-        addToLogNL("Ajax error: " + settings.url, 2);
-    });
 
     var style = window.getComputedStyle(document.body, null);
     theme.primary = style.getPropertyValue('--primary');
@@ -12915,65 +13481,159 @@ $(document).ready(function () {
         theme.dark = '#272B30';
     }
 
-    addToLogNL("get UI configuration...");
-   try {
 
- 
-    config.onLoad = onConfigLoad;
-    config.onLoad = settingsUI.onConfigLoad;
-    config.onLoad = dashboardUI.onConfigLoad;
-    if (config.load()) {
-        
-        status_online = NET_ONLINE;
-        speak("OWLOS is started");
+    addToLogNL("Connection to master node " + boardhost + "...");
+    //use it as ping
+    httpGetAsyncWithReciever(boardhost + "getalldriversproperties", onNodeAnswer, null, null, null, 5000);
 
-        addToLogNL(getLang("prepareUnit"));
+}
+);
 
-        drivers.addDriverLoadedListner(settingsUI.onDriverLoaded, settingsUI);
-        nodesRefresh();
+function onNodeAnswer(httpResult) {
+    if (!httpResult.indexOf("%error") == 0) {
+        addToLogNL("get UI configuration...");
+        config.load(onLoadConfig);
 
-        var boot = document.getElementById("boot");
-        boot.parentElement.removeChild(boot);
-        document.getElementById("consolePanel").appendChild(boot);
-
-        nodesRefreshHandle = setInterval(nodesRefresh, 60000);
-        
-
-        /*
-        $("#createScript").click(function (event) {
-            var textArea = document.getElementById("scriptText");
-            httpPostAsyncWithErrorReson(boardhost + "createscript", "?name=main1", escape(textArea.value));
-        });
-        */
-        
-        speak("OWLOS is ready");
-       
     }
     else {
         status_online = NET_OFFLINE;
         speak("ERROR with host: " + boardhost);
         addToLogNL("ERROR with host: " + boardhost, 2);
+
+        makeModalDialog("resetPanel", "addnode", getLang("addnodeheader"), "");
+        var modalFooter = document.getElementById("addnodeModalFooter");
+        var modalBody = document.getElementById("addnodeModalBody");
+
+        formGroup = modalBody.appendChild(document.createElement("div"));
+        formGroup.className = "form-group";
+        label = formGroup.appendChild(document.createElement("label"));
+        label.setAttribute("for", "hostEdit");
+        label.innerText = getLang("addnodehost");
+        var hostEdit = formGroup.appendChild(document.createElement('input'));
+        hostEdit.className = "form-control form-control-sm";
+        hostEdit.placeholder = "http://host:port/ or https://host:port/";
+        hostEdit.id = "hostInput";
+
+        var addNodeButton = modalFooter.appendChild(document.createElement("button"));
+        addNodeButton.type = "button";
+        addNodeButton.className = "btn btn-sm btn-success";
+        addNodeButton.id = "addnodeModalButton";
+        addNodeButton.onclick = addNodeUIClick;
+        addNodeButton.innerText = getLang("addnodebutton");
+
+        var addNodeError = formGroup.appendChild(document.createElement("label"));
+        addNodeError.className = "text-danger";
+
+        addNodeButton.hostEdit = hostEdit;      
+        addNodeButton.addNodeError = addNodeError;
+
+        $("#addnodeModal").modal('show');
+
     }
+}
+
+function addNodeUIClick(event) {
+    event.stopPropagation();
+
+    var addNodeButton = event.currentTarget;
+    var hostEdit = addNodeButton.hostEdit;
+    var addNodeError = addNodeButton.addNodeError;
+
+    if (hostEdit.value.length == 0) {
+        addNodeError.innerText = getLang("addnodeerror_hostempty");
+        return false;
+    }
+
+    var regexp = RegExp("(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})");
+
+    if (!hostEdit.value.match(regexp)) {
+        addNodeError.innerText = getLang("addnodeerror_hostnoturl");
+        return false;
+    }
+
+    if (hostEdit.value.slice(-1) !== '/') {
+        hostEdit.value += '/';
+    }
+
+    boardhost = hostEdit.value;
+    addToLogNL("Connection to master node " + boardhost + "...");
+    //use it as ping
+    httpGetAsyncWithReciever(boardhost + "getalldriversproperties", onNodeAnswer, null, null, null, 5000);
+
+    $("#addnodeModal").modal('hide');
+
+    return false;
+
+}
+
+
+function onLoadConfig(result) {
+    try {
+        if (result) {
+
+            // config.onLoad = onConfigLoad;
+            //config.onLoad = 
+            // config.onLoad = 
+
+            createProSidebar();
+            $(".page-wrapper").toggleClass("toggled");
+
+            document.getElementById("toggle-sidebar").style.display = "block";
+            document.getElementById("pin-sidebar").style.display = "block";
+            document.getElementById("nodeStatusPanelText").style.display = "block";
+            document.getElementById("sidebarText").style.display = "block";
+
+
+            settingsUI.onConfigLoad(configProperties);
+            dashboardUI.onConfigLoad(configProperties);
+
+
+
+
+            status_online = NET_ONLINE;
+            speak("OWLOS is started");
+
+            addToLogNL(getLang("prepareUnit"));
+
+            drivers.addDriverLoadedListner(settingsUI.onDriverLoaded, settingsUI);
+            nodesRefresh();
+
+            var boot = document.getElementById("boot");
+            boot.parentElement.removeChild(boot);
+            document.getElementById("consolePanel").appendChild(boot);
+
+            nodesRefreshHandle = setInterval(nodesRefresh, 60000);
+
+
+            /*
+            $("#createScript").click(function (event) {
+                var textArea = document.getElementById("scriptText");
+                httpPostAsyncWithErrorReson(boardhost + "createscript", "?name=main1", escape(textArea.value));
+            });
+            */
+
+            speak("OWLOS is ready");
+
+        }
+        else {
+            status_online = NET_OFFLINE;
+            speak("ERROR with host: " + boardhost);
+            addToLogNL("ERROR with host: " + boardhost, 2);
+        }
     }
 
 
-        catch (exception) {
-          status_online = NET_OFFLINE;
-    addToLogNL("ERROR starting exception: " + exception, 2);
-    addToLogNL("ERROR delete configurations files can help fix it: [your host]/deletefile?name=web.config", 2);
+    catch (exception) {
+        status_online = NET_OFFLINE;
+        addToLogNL("ERROR starting exception: " + exception, 2);
+        addToLogNL("ERROR delete configurations files can help fix it: [your host]/deletefile?name=web.config", 2);
     }
-   }
-);
+
+
+}
 
 
 function onConfigLoad(configProperties) {
-    createProSidebar();
-    $(".page-wrapper").toggleClass("toggled");
-
-    document.getElementById("toggle-sidebar").style.display = "block";
-    document.getElementById("pin-sidebar").style.display = "block";
-    document.getElementById("nodeStatusPanelText").style.display = "block";
-    document.getElementById("sidebarText").style.display = "block";
 
 }
 
@@ -12982,14 +13642,14 @@ function proSideBarMenuClick(event) {
     if (nodeStatusPanel != undefined) {
         if (nodeStatusPanel.currentStatusPanel != undefined) {
             nodeStatusPanel.currentStatusPanel.style.display = "none";
-            nodeStatusPanel.currentStatusPanel.nodeStatusPanelText.style.display = "none";                
-        } 
+            nodeStatusPanel.currentStatusPanel.nodeStatusPanelText.style.display = "none";
+        }
     }
     return false;
 }
 
 function proSideBarDashboardMenuClick(event) {
-    $(this).removeClass('active'); 
+    $(this).removeClass('active');
     document.getElementById("sidebarText").style.display = "block";
     document.getElementById("sidebarText").innerText = event.currentTarget.addressText;
     document.getElementById("dashboardButtonsPanel").style.display = "block";
@@ -12997,7 +13657,7 @@ function proSideBarDashboardMenuClick(event) {
 }
 
 function proSideBarConsoleMenuClick(event) {
-    $(this).removeClass('active'); 
+    $(this).removeClass('active');
     document.getElementById("sidebarText").style.display = "none";
     document.getElementById("sidebarText").innerText = "";
     document.getElementById("dashboardButtonsPanel").style.display = "none";
@@ -13006,7 +13666,7 @@ function proSideBarConsoleMenuClick(event) {
 
 
 function createProSidebar() {
-    
+
 
     var pageWrapper = document.getElementById("pagewrapper");
     var sideBar = pageWrapper.appendChild(document.createElement("nav"));
@@ -13018,7 +13678,7 @@ function createProSidebar() {
     mainSideBar.id = "mainSideBar";
     mainSideBar.className = "sidebar-item sidebar-menu";
 
-//    var mainSideBar = document.getElementById("mainSideBar");
+    //    var mainSideBar = document.getElementById("mainSideBar");
     var sideBarOWLOS = mainSideBar.appendChild(document.createElement("div"));
     sideBarOWLOS.className = "sidebar-item sidebar-brand";
     var hRef = sideBarOWLOS.appendChild(document.createElement("a"));
@@ -13038,7 +13698,7 @@ function createProSidebar() {
     var sideBarHeaderInfoStatus = sideBarHeaderInfo.appendChild(document.createElement("span"));
     sideBarHeaderInfoStatus.className = "user-status";
     sideBarHeaderInfoStatus.appendChild(document.createElement("i")).className = "fa fa-circle";
-    
+
     var sideBarHeaderInfoRoleSpan = sideBarHeaderInfoStatus.appendChild(document.createElement("span"));
     sideBarHeaderInfoRoleSpan.innerHTML = "Online";
 
@@ -13051,23 +13711,23 @@ function createProSidebar() {
     var sideBarDashboardAhref = sideBarDashboardLi.appendChild(document.createElement("a"));
     sideBarDashboardAhref.id = "sideBarDashboardAhref";
     sideBarDashboardAhref.className = "nav-link";
-    
+
     sideBarDashboardAhref.href = "#dashboard";
     sideBarDashboardAhref.setAttribute("data-toggle", "tab");
-    sideBarDashboardAhref.onclick = proSideBarDashboardMenuClick; 
+    sideBarDashboardAhref.onclick = proSideBarDashboardMenuClick;
     sideBarDashboardAhref.addressText = getLang("dashboardTab");
 
 
     sideBarDashboardAhref.appendChild(document.createElement("i")).className = "fa fa-tachometer-alt";
     var sideBarDashboardAhrefSpan = sideBarDashboardAhref.appendChild(document.createElement("span"));
-    sideBarDashboardAhrefSpan.className = "menu-text";    
+    sideBarDashboardAhrefSpan.className = "menu-text";
     sideBarDashboardAhrefSpan.innerText = sideBarDashboardAhref.addressText;
     document.getElementById("sidebarText").innerText = sideBarDashboardAhref.addressText;
 
     sideBarDashboardAhrefSpan = sideBarDashboardAhref.appendChild(document.createElement("span"));
     sideBarDashboardAhrefSpan.className = "badge badge-pill badge-success";
     sideBarDashboardAhrefSpan.id = "sideBarDashboardAhrefSpan";
-    
+
 
     config.onLoad = function (configProperties) {
         sideBarDashboardAhrefSpan.innerHTML = configProperties.dashboards[0].widgets.length;
@@ -13210,7 +13870,7 @@ function createProSidebar() {
 function nodesRefresh() {
     for (var node in configProperties.nodes) {
         drivers.refresh(configProperties.nodes[node]);
-     
+
         pins.refresh(configProperties.nodes[node]);
         driverPins.refresh(configProperties.nodes[node]);
         accessableDrivers.refresh(configProperties.nodes[node]);
@@ -13468,7 +14128,7 @@ var runOnce = true;
 
 $(document).ready(function () {
 
-    if (!runOnce) return; 
+    if (!runOnce) return;
     runOnce = false;
 
     addToLogNL("OK loading scripts");
@@ -13477,13 +14137,6 @@ $(document).ready(function () {
     //Check languages DEBUG
     //langCompare(langua, langru, document.getElementById("bootLog"));
 
-    jQuery.readyException = function (error) {
-        addToLogNL("jQuery error: " + error, 2);
-    };
-
-    $(document).ajaxError(function (event, request, settings) {
-        addToLogNL("Ajax error: " + settings.url, 2);
-    });
 
     var style = window.getComputedStyle(document.body, null);
     theme.primary = style.getPropertyValue('--primary');
@@ -13507,65 +14160,159 @@ $(document).ready(function () {
         theme.dark = '#272B30';
     }
 
-    addToLogNL("get UI configuration...");
-   try {
 
- 
-    config.onLoad = onConfigLoad;
-    config.onLoad = settingsUI.onConfigLoad;
-    config.onLoad = dashboardUI.onConfigLoad;
-    if (config.load()) {
-        
-        status_online = NET_ONLINE;
-        speak("OWLOS is started");
+    addToLogNL("Connection to master node " + boardhost + "...");
+    //use it as ping
+    httpGetAsyncWithReciever(boardhost + "getalldriversproperties", onNodeAnswer, null, null, null, 5000);
 
-        addToLogNL(getLang("prepareUnit"));
+}
+);
 
-        drivers.addDriverLoadedListner(settingsUI.onDriverLoaded, settingsUI);
-        nodesRefresh();
+function onNodeAnswer(httpResult) {
+    if (!httpResult.indexOf("%error") == 0) {
+        addToLogNL("get UI configuration...");
+        config.load(onLoadConfig);
 
-        var boot = document.getElementById("boot");
-        boot.parentElement.removeChild(boot);
-        document.getElementById("consolePanel").appendChild(boot);
-
-        nodesRefreshHandle = setInterval(nodesRefresh, 60000);
-        
-
-        /*
-        $("#createScript").click(function (event) {
-            var textArea = document.getElementById("scriptText");
-            httpPostAsyncWithErrorReson(boardhost + "createscript", "?name=main1", escape(textArea.value));
-        });
-        */
-        
-        speak("OWLOS is ready");
-       
     }
     else {
         status_online = NET_OFFLINE;
         speak("ERROR with host: " + boardhost);
         addToLogNL("ERROR with host: " + boardhost, 2);
+
+        makeModalDialog("resetPanel", "addnode", getLang("addnodeheader"), "");
+        var modalFooter = document.getElementById("addnodeModalFooter");
+        var modalBody = document.getElementById("addnodeModalBody");
+
+        formGroup = modalBody.appendChild(document.createElement("div"));
+        formGroup.className = "form-group";
+        label = formGroup.appendChild(document.createElement("label"));
+        label.setAttribute("for", "hostEdit");
+        label.innerText = getLang("addnodehost");
+        var hostEdit = formGroup.appendChild(document.createElement('input'));
+        hostEdit.className = "form-control form-control-sm";
+        hostEdit.placeholder = "http://host:port/ or https://host:port/";
+        hostEdit.id = "hostInput";
+
+        var addNodeButton = modalFooter.appendChild(document.createElement("button"));
+        addNodeButton.type = "button";
+        addNodeButton.className = "btn btn-sm btn-success";
+        addNodeButton.id = "addnodeModalButton";
+        addNodeButton.onclick = addNodeUIClick;
+        addNodeButton.innerText = getLang("addnodebutton");
+
+        var addNodeError = formGroup.appendChild(document.createElement("label"));
+        addNodeError.className = "text-danger";
+
+        addNodeButton.hostEdit = hostEdit;      
+        addNodeButton.addNodeError = addNodeError;
+
+        $("#addnodeModal").modal('show');
+
     }
+}
+
+function addNodeUIClick(event) {
+    event.stopPropagation();
+
+    var addNodeButton = event.currentTarget;
+    var hostEdit = addNodeButton.hostEdit;
+    var addNodeError = addNodeButton.addNodeError;
+
+    if (hostEdit.value.length == 0) {
+        addNodeError.innerText = getLang("addnodeerror_hostempty");
+        return false;
+    }
+
+    var regexp = RegExp("(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})");
+
+    if (!hostEdit.value.match(regexp)) {
+        addNodeError.innerText = getLang("addnodeerror_hostnoturl");
+        return false;
+    }
+
+    if (hostEdit.value.slice(-1) !== '/') {
+        hostEdit.value += '/';
+    }
+
+    boardhost = hostEdit.value;
+    addToLogNL("Connection to master node " + boardhost + "...");
+    //use it as ping
+    httpGetAsyncWithReciever(boardhost + "getalldriversproperties", onNodeAnswer, null, null, null, 5000);
+
+    $("#addnodeModal").modal('hide');
+
+    return false;
+
+}
+
+
+function onLoadConfig(result) {
+    try {
+        if (result) {
+
+            // config.onLoad = onConfigLoad;
+            //config.onLoad = 
+            // config.onLoad = 
+
+            createProSidebar();
+            $(".page-wrapper").toggleClass("toggled");
+
+            document.getElementById("toggle-sidebar").style.display = "block";
+            document.getElementById("pin-sidebar").style.display = "block";
+            document.getElementById("nodeStatusPanelText").style.display = "block";
+            document.getElementById("sidebarText").style.display = "block";
+
+
+            settingsUI.onConfigLoad(configProperties);
+            dashboardUI.onConfigLoad(configProperties);
+
+
+
+
+            status_online = NET_ONLINE;
+            speak("OWLOS is started");
+
+            addToLogNL(getLang("prepareUnit"));
+
+            drivers.addDriverLoadedListner(settingsUI.onDriverLoaded, settingsUI);
+            nodesRefresh();
+
+            var boot = document.getElementById("boot");
+            boot.parentElement.removeChild(boot);
+            document.getElementById("consolePanel").appendChild(boot);
+
+            nodesRefreshHandle = setInterval(nodesRefresh, 60000);
+
+
+            /*
+            $("#createScript").click(function (event) {
+                var textArea = document.getElementById("scriptText");
+                httpPostAsyncWithErrorReson(boardhost + "createscript", "?name=main1", escape(textArea.value));
+            });
+            */
+
+            speak("OWLOS is ready");
+
+        }
+        else {
+            status_online = NET_OFFLINE;
+            speak("ERROR with host: " + boardhost);
+            addToLogNL("ERROR with host: " + boardhost, 2);
+        }
     }
 
 
-        catch (exception) {
-          status_online = NET_OFFLINE;
-    addToLogNL("ERROR starting exception: " + exception, 2);
-    addToLogNL("ERROR delete configurations files can help fix it: [your host]/deletefile?name=web.config", 2);
+    catch (exception) {
+        status_online = NET_OFFLINE;
+        addToLogNL("ERROR starting exception: " + exception, 2);
+        addToLogNL("ERROR delete configurations files can help fix it: [your host]/deletefile?name=web.config", 2);
     }
-   }
-);
+
+
+}
 
 
 function onConfigLoad(configProperties) {
-    createProSidebar();
-    $(".page-wrapper").toggleClass("toggled");
-
-    document.getElementById("toggle-sidebar").style.display = "block";
-    document.getElementById("pin-sidebar").style.display = "block";
-    document.getElementById("nodeStatusPanelText").style.display = "block";
-    document.getElementById("sidebarText").style.display = "block";
 
 }
 
@@ -13574,14 +14321,14 @@ function proSideBarMenuClick(event) {
     if (nodeStatusPanel != undefined) {
         if (nodeStatusPanel.currentStatusPanel != undefined) {
             nodeStatusPanel.currentStatusPanel.style.display = "none";
-            nodeStatusPanel.currentStatusPanel.nodeStatusPanelText.style.display = "none";                
-        } 
+            nodeStatusPanel.currentStatusPanel.nodeStatusPanelText.style.display = "none";
+        }
     }
     return false;
 }
 
 function proSideBarDashboardMenuClick(event) {
-    $(this).removeClass('active'); 
+    $(this).removeClass('active');
     document.getElementById("sidebarText").style.display = "block";
     document.getElementById("sidebarText").innerText = event.currentTarget.addressText;
     document.getElementById("dashboardButtonsPanel").style.display = "block";
@@ -13589,7 +14336,7 @@ function proSideBarDashboardMenuClick(event) {
 }
 
 function proSideBarConsoleMenuClick(event) {
-    $(this).removeClass('active'); 
+    $(this).removeClass('active');
     document.getElementById("sidebarText").style.display = "none";
     document.getElementById("sidebarText").innerText = "";
     document.getElementById("dashboardButtonsPanel").style.display = "none";
@@ -13598,7 +14345,7 @@ function proSideBarConsoleMenuClick(event) {
 
 
 function createProSidebar() {
-    
+
 
     var pageWrapper = document.getElementById("pagewrapper");
     var sideBar = pageWrapper.appendChild(document.createElement("nav"));
@@ -13610,7 +14357,7 @@ function createProSidebar() {
     mainSideBar.id = "mainSideBar";
     mainSideBar.className = "sidebar-item sidebar-menu";
 
-//    var mainSideBar = document.getElementById("mainSideBar");
+    //    var mainSideBar = document.getElementById("mainSideBar");
     var sideBarOWLOS = mainSideBar.appendChild(document.createElement("div"));
     sideBarOWLOS.className = "sidebar-item sidebar-brand";
     var hRef = sideBarOWLOS.appendChild(document.createElement("a"));
@@ -13630,7 +14377,7 @@ function createProSidebar() {
     var sideBarHeaderInfoStatus = sideBarHeaderInfo.appendChild(document.createElement("span"));
     sideBarHeaderInfoStatus.className = "user-status";
     sideBarHeaderInfoStatus.appendChild(document.createElement("i")).className = "fa fa-circle";
-    
+
     var sideBarHeaderInfoRoleSpan = sideBarHeaderInfoStatus.appendChild(document.createElement("span"));
     sideBarHeaderInfoRoleSpan.innerHTML = "Online";
 
@@ -13643,23 +14390,23 @@ function createProSidebar() {
     var sideBarDashboardAhref = sideBarDashboardLi.appendChild(document.createElement("a"));
     sideBarDashboardAhref.id = "sideBarDashboardAhref";
     sideBarDashboardAhref.className = "nav-link";
-    
+
     sideBarDashboardAhref.href = "#dashboard";
     sideBarDashboardAhref.setAttribute("data-toggle", "tab");
-    sideBarDashboardAhref.onclick = proSideBarDashboardMenuClick; 
+    sideBarDashboardAhref.onclick = proSideBarDashboardMenuClick;
     sideBarDashboardAhref.addressText = getLang("dashboardTab");
 
 
     sideBarDashboardAhref.appendChild(document.createElement("i")).className = "fa fa-tachometer-alt";
     var sideBarDashboardAhrefSpan = sideBarDashboardAhref.appendChild(document.createElement("span"));
-    sideBarDashboardAhrefSpan.className = "menu-text";    
+    sideBarDashboardAhrefSpan.className = "menu-text";
     sideBarDashboardAhrefSpan.innerText = sideBarDashboardAhref.addressText;
     document.getElementById("sidebarText").innerText = sideBarDashboardAhref.addressText;
 
     sideBarDashboardAhrefSpan = sideBarDashboardAhref.appendChild(document.createElement("span"));
     sideBarDashboardAhrefSpan.className = "badge badge-pill badge-success";
     sideBarDashboardAhrefSpan.id = "sideBarDashboardAhrefSpan";
-    
+
 
     config.onLoad = function (configProperties) {
         sideBarDashboardAhrefSpan.innerHTML = configProperties.dashboards[0].widgets.length;
@@ -13802,7 +14549,7 @@ function createProSidebar() {
 function nodesRefresh() {
     for (var node in configProperties.nodes) {
         drivers.refresh(configProperties.nodes[node]);
-     
+
         pins.refresh(configProperties.nodes[node]);
         driverPins.refresh(configProperties.nodes[node]);
         accessableDrivers.refresh(configProperties.nodes[node]);
