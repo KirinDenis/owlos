@@ -6,7 +6,7 @@ function createModalDialog(_titleText, _bodyText) {
         //var modalBody = document.getElementById("addnodeModalBody");
 
     var modalDialog = {
-        id: undefined,       
+        id: undefined,
         titleText: _titleText,
         bodyText: _bodyText,
 
@@ -21,7 +21,11 @@ function createModalDialog(_titleText, _bodyText) {
 
         closeHeaderButton: undefined,
         closeButton: undefined,
-        
+        OKButton: undefined,
+        errorLabel: undefined,
+
+        onOK: undefined,
+
         create: function () {
             document.getElementById("addDriverPanel").innerHTML = ""; //TODO: remake this modal to
 
@@ -32,16 +36,17 @@ function createModalDialog(_titleText, _bodyText) {
             }
             $("#showDialogPanel").empty();
 
-            id = "showDialogPanelDialog";
+            this.id = "showDialogPanelDialog";
             $("#showDialogPanelDialog").remove();
-            
+
             this.fade = parentPanel.appendChild(document.createElement("div"));
             this.fade.className = "modal fade";
-            this.fade.id = id + "Modal";
+            this.fade.id = this.id + "Modal";
             this.fade.tabindex = "-1";
             this.fade.setAttribute("role", "dialog");
-            this.fade.setAttribute("aria-labelledby", id + "ModalLabel");
+            this.fade.setAttribute("aria-labelledby", this.id + "ModalLabel");
             this.fade.setAttribute("aria-hidden", "true");
+            this.fade.ModalDialog = this;
 
             this.dialog = this.fade.appendChild(document.createElement("div"));
             this.dialog.className = "modal-dialog";
@@ -56,11 +61,11 @@ function createModalDialog(_titleText, _bodyText) {
             this.title = this.header.appendChild(document.createElement("h5"));
 
             this.title.className = "modal-title";
-            this.title.id = id + "ModalLabel";
+            this.title.id = this.id + "ModalLabel";
             this.title.innerText = this.titleText;
 
             this.body = this.content.appendChild(document.createElement("div"));
-            this.body.id = id + "ModalBody"
+            this.body.id = this.id + "ModalBody"
             this.body.className = "modal-body";
             this.body.innerText = this.bodyText;
 
@@ -68,13 +73,13 @@ function createModalDialog(_titleText, _bodyText) {
             this.formGroup.className = "form-group";
 
             this.footer = this.content.appendChild(document.createElement("div"));
-            this.footer.id = id + "ModalFooter";
+            this.footer.id = this.id + "ModalFooter";
             this.footer.className = "modal-footer";
 
             var closeHeaderButton = this.header.appendChild(document.createElement("button"));
             closeHeaderButton.type = "button"
             closeHeaderButton.className = "close"
-            closeHeaderButton.id = id + "closeHeaderButton";
+            closeHeaderButton.id = this.id + "closeHeaderButton";
             closeHeaderButton.setAttribute("data-dismiss", "modal");
             closeHeaderButton.setAttribute("aria-label", "Close");
 
@@ -88,25 +93,67 @@ function createModalDialog(_titleText, _bodyText) {
             this.closeButton.setAttribute("data-dismiss", "modal");
             this.closeButton.setAttribute("aria-label", "Close");
             this.closeButton.innerText = getLang("cancel");
-            this.closeButton.id = id + "closeButton";
+            this.closeButton.id = this.id + "closeButton";
+
+            this.OKButton = this.footer.appendChild(document.createElement("button"));
+            this.OKButton.type = "button";
+            this.OKButton.className = "btn btn-sm btn-success";
+            this.OKButton.setAttribute("data-dismiss", "modal");
+            this.OKButton.setAttribute("aria-label", "Close");
+            this.OKButton.id = this.id + "OKButton";
+            this.OKButton.innerText = getLang("OK");
+            this.OKButton.onclick = this.OKButtonClick;
+
+            this.errorLabel = this.body.appendChild(document.createElement("label"));
+            this.errorLabel.className = "text-danger";
+
+            $('#' + this.id + "Modal").on('hide.bs.modal', function (event) {
+                var modalDialog = event.currentTarget.ModalDialog;
+                if (modalDialog != undefined) {
+                    if (modalDialog.OKButton.clicked != undefined) {
+                        if (modalDialog.onOK != undefined) {
+                            if (!modalDialog.onOK(modalDialog)) {
+                                event.preventDefault();
+                                event.stopImmediatePropagation();
+                                return false;
+                            }
+                        }
+                    }
+                }
+                //TODO: Clear innerHTML
+                return true;
+
+            });
         },
 
-        appendChildToForm: function(element) {
+        OKButtonClick: function (event) {
+            event.currentTarget.clicked = true;
+        },
+
+        appendChildToForm: function (element) {
             this.formGroup.appendChild(element);
-        }, 
+        },
+
+        getChild: function (childId) {
+            for (var child in this.formGroup.childNodes) {
+                if (childId === this.formGroup.childNodes[child].id) {
+                    return this.formGroup.childNodes[child];
+                }
+            }
+        },
 
         appendChildToFooter: function (element) {
             this.footer.appendChild(element);
         }, 
 
-        appendDialogInputToForm: function (dialogInput) {
+        appendInput: function (dialogInput) {
             this.appendChildToForm(dialogInput.label);
             this.appendChildToForm(dialogInput.input);
         }, 
 
 
         show: function () {
-            $("#" + id + "Modal").modal('show');
+            $("#" + this.id + "Modal").modal('show');
         }
     };
 

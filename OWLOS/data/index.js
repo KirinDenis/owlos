@@ -96,7 +96,6 @@ $(document).ready(function () {
         theme.dark = '#272B30';
     }
 
-
     addToLogNL("Connection to master node " + boardhost + "...");
     //use it as ping
     httpGetAsyncWithReciever(boardhost + "getalldriversproperties", onNodeAnswer, null, null, null, 5000);
@@ -108,78 +107,48 @@ function onNodeAnswer(httpResult) {
     if (!httpResult.indexOf("%error") == 0) {
         addToLogNL("get UI configuration...");
         config.load(onLoadConfig);
-
     }
     else {
         status_online = NET_OFFLINE;
         speak("ERROR with host: " + boardhost);
         addToLogNL("ERROR with host: " + boardhost, 2);
-
         var masterNodeDialog = createModalDialog(getLang("addnodeheader"), "");
-        masterNodeDialog.appendDialogInputToForm(createDialogInput("masterhost", getLang("addnodehost"), "http://host:port/ or https://host:port/"));
-        
-        var button = createButton("changeMasterNodeButton", "btn-success", getLang("addnodebutton"));
-        button.button.onclick = addNodeUIClick;
-        masterNodeDialog.appendChildToFooter(button.button);
-
-        var addNodeError = document.createElement("label");
-        addNodeError.className = "text-danger";
-        masterNodeDialog.appendChildToForm(addNodeError);
-
+        masterNodeDialog.appendInput(createDialogInput("masterhost", getLang("addnodehost"), "http://host:port/ or https://host:port/"));
+        masterNodeDialog.getChild("masterhost").value = boardhost;
+        masterNodeDialog.onOK = masterNodeDialogOKClick;
         masterNodeDialog.show();
-
-        /*
-        var addNodeButton = modalFooter.appendChild(document.createElement("button"));
-        addNodeButton.type = "button";
-        addNodeButton.className = "btn btn-sm btn-success";
-        addNodeButton.id = "addnodeModalButton";
-        addNodeButton.onclick = addNodeUIClick;
-        addNodeButton.innerText = getLang("addnodebutton");
-
-        var addNodeError = formGroup.appendChild(document.createElement("label"));
-        addNodeError.className = "text-danger";
-
-        addNodeButton.hostEdit = hostEdit;      
-        addNodeButton.addNodeError = addNodeError;
-        */
-
-        
-
     }
 }
 
-function addNodeUIClick(event) {
-    event.stopPropagation();
+function masterNodeDialogOKClick(masterNodeDialog) {
 
-    var addNodeButton = event.currentTarget;
-    var hostEdit = addNodeButton.hostEdit;
-    var addNodeError = addNodeButton.addNodeError;
+    var input = masterNodeDialog.getChild("masterhost");
 
-    if (hostEdit.value.length == 0) {
-        addNodeError.innerText = getLang("addnodeerror_hostempty");
+    if (input.value.length == 0) {
+        masterNodeDialog.errorLabel.innerText = getLang("addnodeerror_hostempty");
         return false;
+    }
+
+    if (input.value.indexOf("http" != 0)) {
+        input.value = "http://" + input.value;
     }
 
     var regexp = RegExp("(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})");
 
-    if (!hostEdit.value.match(regexp)) {
-        addNodeError.innerText = getLang("addnodeerror_hostnoturl");
+    if (!input.value.match(regexp)) {
+        masterNodeDialog.errorLabel.innerText = getLang("addnodeerror_hostnoturl");
         return false;
     }
 
-    if (hostEdit.value.slice(-1) !== '/') {
-        hostEdit.value += '/';
+    if (input.value.slice(-1) !== '/') {
+        input.value += '/';
     }
 
-    boardhost = hostEdit.value;
+    boardhost = input.value;
     addToLogNL("Connection to master node " + boardhost + "...");
     //use it as ping
     httpGetAsyncWithReciever(boardhost + "getalldriversproperties", onNodeAnswer, null, null, null, 5000);
-
-    $("#addnodeModal").modal('hide');
-
-    return false;
-
+    return true;
 }
 
 

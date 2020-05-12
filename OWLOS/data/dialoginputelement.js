@@ -11,12 +11,12 @@ function createDialogInput(_id, _labelText, _editPlaceholder) {
 
         create: function () {
             this.label = document.createElement("label");
-            this.label.setAttribute("for", this.id + "input");
+            this.label.setAttribute("for", this.id);
             this.label.innerText = this.labelText;            
             this.input = document.createElement('input');
             this.input.className = "form-control form-control-sm";
             this.input.placeholder = this.editPlaceholder;
-            this.input.id = this.id + "input";
+            this.input.id = this.id;
         },
     };
 

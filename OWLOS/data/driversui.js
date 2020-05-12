@@ -65,7 +65,7 @@ var driversUI = {
 
         alertDiv = modalFooter.appendChild(document.createElement('div'));
         alertDiv.id = "alertDiv;"
-
+        
         var addButton = modalFooter.appendChild(document.createElement("button"));
         addButton.type = "button";
         addButton.className = "btn btn-success btn-sm";
