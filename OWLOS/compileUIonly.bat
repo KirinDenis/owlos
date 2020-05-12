@@ -84,6 +84,18 @@ D:\7Zip\7z.exe a -mx9 ui.css.gz ui.css
 move  "ui.css.gz" "CompressedFull\ui.css.gz"
 type  "ui.css" >> "CompressedPackOne\owlos.css"
 
+D:\7Zip\7z.exe a -mx9 dialoginputelement.js.gz dialoginputelement.js 
+move  "dialoginputelement.js.gz" "CompressedFull\dialoginputelement.js.gz"
+type  "dialoginputelement.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 buttonelement.js.gz buttonelement.js 
+move  "buttonelement.js.gz" "CompressedFull\buttonelement.js.gz"
+type  "buttonelement.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 dialogelement.js.gz dialogelement.js 
+move  "dialogelement.js.gz" "CompressedFull\dialogelement.js.gz"
+type  "dialogelement.js" >> "CompressedPackOne\owlos.js"
+
 D:\7Zip\7z.exe a -mx9 dashboardui.js.gz dashboardui.js 
 move  "dashboardui.js.gz" "CompressedFull\dashboardui.js.gz"
 type  "dashboardui.js" >> "CompressedPackOne\owlos.js"

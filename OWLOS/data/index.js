@@ -129,7 +129,7 @@ function masterNodeDialogOKClick(masterNodeDialog) {
         return false;
     }
 
-    if (input.value.indexOf("http" != 0)) {
+    if (input.value.indexOf("http") != 0) {
         input.value = "http://" + input.value;
     }
 
