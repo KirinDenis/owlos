@@ -13,6 +13,7 @@ function createDialogInput(_id, _labelText, _editPlaceholder) {
             this.label = document.createElement("label");
             this.label.setAttribute("for", this.id);
             this.label.innerText = this.labelText;            
+            this.label.id = this.id + "label";
             this.input = document.createElement('input');
             this.input.className = "form-control form-control-sm";
             this.input.placeholder = this.editPlaceholder;

@@ -142,15 +142,39 @@ function createModalDialog(_titleText, _bodyText) {
             }
         },
 
+        getChildCount: function () {
+            return this.formGroup.childNodes.length;
+        },
+
+        getChildId: function (index) {
+            return this.formGroup.childNodes[index].id;
+        },
+
+        deleteChild: function (childId) {
+            for (var child in this.formGroup.childNodes) {
+                if (childId === this.formGroup.childNodes[child].id) {
+                    var element = this.formGroup.childNodes[child];
+                    this.formGroup.removeChild(element);
+                    element.innerHTML = "";
+                    return;
+                }
+            }
+        },
+
+
         appendChildToFooter: function (element) {
             this.footer.appendChild(element);
         }, 
 
         appendInput: function (dialogInput) {
             this.appendChildToForm(dialogInput.label);
-            this.appendChildToForm(dialogInput.input);
+            this.appendChildToForm(dialogInput.input);            
         }, 
 
+        appendSelect: function (dialogSelect) {
+            this.appendChildToForm(dialogSelect.label);
+            this.appendChildToForm(dialogSelect.select);
+        }, 
 
         show: function () {
             $("#" + this.id + "Modal").modal('show');

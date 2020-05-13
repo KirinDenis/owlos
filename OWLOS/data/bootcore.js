@@ -176,6 +176,7 @@ function loadingScripts(withInternet) {
                         loadingScript("dialogelement.js");
                         loadingScript("dialoginputelement.js");
                         loadingScript("buttonelement.js");
+                        loadingScript("dialogselectelement.js");
 
                         var baseWidgetScript = document.createElement('script');
                         baseWidgetScript.onload = function () {
