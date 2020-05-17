@@ -71,7 +71,6 @@ const NET_REFRESH = 4; //используется объектом drivers то�
 //var UIWatch = 'light';
 var UIWatch = '';
 
-
 function boot() {
     try { //first jQuery and chech internet access (if not internet - loading library from local)                
         addToLogNL("[BOOT]", 1);
@@ -110,7 +109,7 @@ function boot() {
         addToLog("loading jQuery from " + jQueryScript.src);
         document.getElementsByTagName('head')[0].appendChild(jQueryScript);
     } catch (error) { //если что то пошло совсем не так
-        console.error(exception);
+        console.error(error);
         addToLogNL("loading scripts exception: " + error, 2);
     }
 }
@@ -142,7 +141,6 @@ function loadingScripts(withInternet) {
 
         }
         
-
         addToLog("loading bootstrap.css from " + link.href); //намерения загрузить в консоль
 
         document.getElementsByTagName("head")[0].appendChild(link);
@@ -177,6 +175,8 @@ function loadingScripts(withInternet) {
                         loadingScript("dialoginputelement.js");
                         loadingScript("buttonelement.js");
                         loadingScript("dialogselectelement.js");
+                        loadingScript("sidebarelement.js");
+                        loadingScript("valueeditorelement.js");
 
                         var baseWidgetScript = document.createElement('script');
                         baseWidgetScript.onload = function () {
@@ -304,8 +304,6 @@ function waitForElement(element, callBack) {
     }, 500)
 }
 
-
-
 //--------------------------------------------------------------------------------------------------------------------------------------------------
 //работа с консолью реализована в bootcore.js - здесь этот код используется и не надо грузить лишние модули из index.html
 //даже если что то совсем пойдет не так - у нас есть возможность информировать пользователя, так как мы загрузили Log скрипты при помощи браузера
@@ -316,7 +314,7 @@ function addToLog(text) {
 }
 //добавить строку с кодом цвета (кодом события)
 //NOTE: для указания цвета используется bootstrap - одна в начале загрузки его не будет, консоль "окрасится" если получится загрузить bootstrap
-function addToLog(text, code) {
+function addToLog(text, code) {    
     var bootLog = document.getElementById("bootLog");
     if (code == 1) { //success
         bootLog.innerHTML += "<text class='text-warning'>" + new Date().toLocaleString() + "</text><text class='text-success'> " + text + "</text>";
