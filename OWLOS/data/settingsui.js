@@ -46,43 +46,34 @@ var settingsUI = {
 
         if (configProperties.nodes.length == 0) return;
 
-        var nodesSideBar = document.getElementById("settingsSideBarUl");
-        //  nodesSideBar.style.background = theme.primary;
-
-        //add addNodeNavItem first --------------------------------------------------
-        if (document.getElementById("addNodeNavItem") == undefined) {
-
-            var nodeNavItem = nodesSideBar.appendChild(document.createElement("li"));
-            nodeNavItem.className = "nav-item";
-            nodeNavItem.id = "addNodeNavItem";
-            var nodeHRef = nodeNavItem.appendChild(document.createElement("a"));
-            nodeHRef.className = "nav-link";
-            nodeHRef.style.color = theme.warning;
-            nodeHRef.parentLi = nodeLi;
-            //nodeHRef.style.color = theme.success;
-            nodeHRef.setAttribute("data-toggle", "tab");
-            nodeHRef.onclick = settingsUI.addNodeClick;
-            nodeHRef.innerHTML = getLang("addnode");
-            nodeHRef.href = "#home";
-
-            //панель не видна, она существует для организии SideBar, сами панели со свойствами драйвер сделаны на основе navBar - так сложилось исторически, SideBar только переключает их
-            var nodePropAnchors = document.getElementById("nodePropAnchors");
-            //NavTabs панель для панелей со свойствами нод
-            var nodePropNavBar = nodePropAnchors.appendChild(document.createElement("ul"));
-            nodePropNavBar.style.height = "0px";
-            nodePropNavBar.id = "nodePropNavBar";
-            nodePropNavBar.className = "nav nav-tabs";
-        }
-
         for (var nodeKey in configProperties.nodes) {
             var node = configProperties.nodes[nodeKey];
             if (document.getElementById("nodeNavItem" + node.nodenickname) == undefined) {
-                var nodeLi = nodesSideBar.appendChild(document.createElement("li"));
-                nodeLi.id = "nodeNavItem" + node.nodenickname;
+                var nodeNavItem = sideBar.createItem(sideBar.nodeSubItem, "nodeNavItem" + node.nodenickname, "#" + node.nodenickname + "submenu", node.nodenickname, undefined, "fa fa-microchip", undefined);
+               // nodeNavItem.className = "";
+               // nodeNavItem.href.setAttribute("data-toggle", "collapse");                
+              //  nodeNavItem.href.setAttribute("aria-expanded", "false");
+               // nodeNavItem.href.className = "collapsed";
+
+                var nodeNavSubItem = sideBar.createDeepItem(nodeNavItem, node.nodenickname + "submenu");
+               // nodeNavSubItem.className = "collapse";
+                
+
+                //node properties subItem 
+                sideBar.createItem(nodeNavSubItem, "nodeitem22", "#" + node.nodenickname + "nodePropsPanel", getLang("nodeproperties"), settingsUI.driverAnchorClick, undefined, undefined);
+
+                sideBar.createItem(nodeNavSubItem, "addnodeitem22", "#hom22e", "<b>" + getLang("RESTful") + "</b>", settingsUI.driverAnchorClick, undefined, undefined);
+                sideBar.createItem(nodeNavSubItem, "addnodeitem222", "#ho2222e", getLang("files"), settingsUI.driverAnchorClick, undefined, undefined);
+    
+
+/*
+
+                var nodeLi = sideBar.nodeSubItem.appendChild(document.createElement("li"));
+                nodeLi.id = "nodeNavItem2" + node.nodenickname;
                 nodeLi.node = node;
 
                 var nodeAhref = nodeLi.appendChild(document.createElement("a"));
-                nodeAhref.href = "#" + node.nodenickname + "submenu";
+                nodeAhref.href = "#" + node.nodenickname + "submenu2";
                 nodeAhref.setAttribute("data-toggle", "collapse");
                 nodeAhref.setAttribute("aria-expanded", "false");
                 nodeAhref.innerHTML = node.nodenickname;
@@ -97,9 +88,9 @@ var settingsUI = {
 
                 nodeLi.nodeSubmenuUl = nodeSubmenuUl;
                 nodeSubmenuUl.className = "collapse list-unstyled";
-                nodeSubmenuUl.id = node.nodenickname + "submenu";
+                nodeSubmenuUl.id = node.nodenickname + "submenu2";
 
-
+/*
 
                 //Node Tab panel ----------------------
                 var nodePanelNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
@@ -282,8 +273,11 @@ var settingsUI = {
                 nodeStatusPanel.nodeStatusPanelText = nodeStatusPanelText;
                 nodeStatusPanel.style.display = "none";
                 nodeStatusPanelText.style.display = "none";
+                */
             }
+                  
         }
+  
     },
 
     onScriptNew: function (script) {

@@ -62,6 +62,8 @@ var wifiSTconection = getLang("disconnected");
 var firstTime = true;
 var runOnce = true;
 
+var sideBar = undefined;
+
 $(document).ready(function () {
 
     if (!runOnce) return;
@@ -152,6 +154,7 @@ function masterNodeDialogOKClick(masterNodeDialog) {
 }
 
 
+
 function onLoadConfig(result) {
  //   try {
         if (result) {
@@ -160,7 +163,7 @@ function onLoadConfig(result) {
             //config.onLoad = 
             // config.onLoad = 
 
-            createSidebar();
+            sideBar =createSidebar();
 
 
             settingsUI.onConfigLoad(configProperties);
