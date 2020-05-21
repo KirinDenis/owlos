@@ -147,8 +147,9 @@ function loadingScripts(withInternet) {
         link.onload = function () {//если получится загрузить bootstap.css
             addToLogEnd("..OK", 1);//отметим в консоле об успехе 
             resolve();//говорим наверх что все хорошо -> https://learn.javascript.ru/promise
-            if (withInternet) loadCSS("https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.css"); //следующий CSS с интернет
-            else loadCSS("dataTables.min.css");//без 
+            //if (withInternet) loadCSS("https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.css"); //следующий CSS с интернет
+            //else 
+            loadCSS("dataTables.min.css");//без 
             loadCSS("ui.css"); //это OWLOS UI CSS - его грузим из модуля
             //first jQuery Tables
             var jQueryTablesScript = document.createElement('script'); //многие зависят от jQueryTables, например datatables.js - по этому будем ожидать его загрузки что бы продолжить

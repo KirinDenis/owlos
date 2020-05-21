@@ -50,69 +50,41 @@ var settingsUI = {
             var node = configProperties.nodes[nodeKey];
             if (document.getElementById("nodeNavItem" + node.nodenickname) == undefined) {
                 var nodeNavItem = sideBar.createItem(sideBar.nodeSubItem, "nodeNavItem" + node.nodenickname, "#" + node.nodenickname + "submenu", node.nodenickname, undefined, "fa fa-microchip", undefined);
-               // nodeNavItem.className = "";
-               // nodeNavItem.href.setAttribute("data-toggle", "collapse");                
-              //  nodeNavItem.href.setAttribute("aria-expanded", "false");
-               // nodeNavItem.href.className = "collapsed";
+                // nodeNavItem.className = "";
+                // nodeNavItem.href.setAttribute("data-toggle", "collapse");                
+                //  nodeNavItem.href.setAttribute("aria-expanded", "false");
+                // nodeNavItem.href.className = "collapsed";
 
                 var nodeNavSubItem = sideBar.createDeepItem(nodeNavItem, node.nodenickname + "submenu");
-               // nodeNavSubItem.className = "collapse";
-                
+                // nodeNavSubItem.className = "collapse";
+
 
                 //node properties subItem 
-                sideBar.createItem(nodeNavSubItem, "nodeitem22", "#" + node.nodenickname + "nodePropsPanel", getLang("nodeproperties"), settingsUI.driverAnchorClick, undefined, undefined);
+                var nodePropItem = sideBar.createItem(nodeNavSubItem, "nodepropitem", "#" + node.nodenickname + "nodePropsPanel", getLang("nodeproperties"), settingsUI.driverAnchorClick, undefined, undefined);
+                //node drivers                 
+                var driversItem = sideBar.createItem(nodeNavSubItem, node.nodenickname + "driversitem", "#" + node.nodenickname + "driverssubmenu", getLang("drivers"), settingsUI.driverAnchorClick, undefined, "0");
+                var driversSubItem = sideBar.createDeepItem(driversItem, node.nodenickname + "driverssubmenu");
+                var addDriverItem = sideBar.createItem(driversSubItem, "adddriveritem", "#adddriveritem", getLang("adddriver"), settingsUI.addDriverClick, undefined, undefined);
+                addDriverItem.href.node = node;
+                
+                //node scripts
+                var scriptsItem = sideBar.createItem(nodeNavSubItem, "scriptsitem", "#" + node.nodenickname + "scriptssubmenu", getLang("scripts"), settingsUI.scriptAnchorClick, undefined, undefined);
+                var scriptsSubItem = sideBar.createDeepItem(scriptsItem, node.nodenickname + "scriptssubmenu");
+                sideBar.createItem(scriptsSubItem, "addscriptitem", "#addscriptitem", getLang("addscript"), settingsUI.driverAnchorClick, undefined, undefined);
+                //node files 
+                sideBar.createItem(nodeNavSubItem, "filesitem", "#" + node.nodenickname + "nodeFilesItem", getLang("files"), settingsUI.driverAnchorClick, undefined, undefined);
 
-                sideBar.createItem(nodeNavSubItem, "addnodeitem22", "#hom22e", "<b>" + getLang("RESTful") + "</b>", settingsUI.driverAnchorClick, undefined, undefined);
-                sideBar.createItem(nodeNavSubItem, "addnodeitem222", "#ho2222e", getLang("files"), settingsUI.driverAnchorClick, undefined, undefined);
-    
+                //--- nodePropsPanel ---------------------------------------------------------------------------
+                //панель для панелей с быстрым доступам к основным свойствам ноды
 
-/*
-
-                var nodeLi = sideBar.nodeSubItem.appendChild(document.createElement("li"));
-                nodeLi.id = "nodeNavItem2" + node.nodenickname;
-                nodeLi.node = node;
-
-                var nodeAhref = nodeLi.appendChild(document.createElement("a"));
-                nodeAhref.href = "#" + node.nodenickname + "submenu2";
-                nodeAhref.setAttribute("data-toggle", "collapse");
-                nodeAhref.setAttribute("aria-expanded", "false");
-                nodeAhref.innerHTML = node.nodenickname;
-                nodeAhref.id = node.nodenickname + "ahref";
-
-
-                //nodeAhref.onclick = settingsUI.driverAnchorClick;
-                nodeAhref.parentLi = nodeLi;
-                nodeAhref.node = node;
-                node.addNetworkStatusListner(settingsUI.onNetworkChange, nodeAhref);
-                var nodeSubmenuUl = nodeLi.appendChild(document.createElement("ul"));
-
-                nodeLi.nodeSubmenuUl = nodeSubmenuUl;
-                nodeSubmenuUl.className = "collapse list-unstyled";
-                nodeSubmenuUl.id = node.nodenickname + "submenu2";
-
-/*
-
-                //Node Tab panel ----------------------
-                var nodePanelNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
-                nodePanelNavItem.className = "nav-item";
-                var nodePanelHRef = nodePanelNavItem.appendChild(document.createElement("a"));
-                nodePanelHRef.id = node.nodenickname + "nodePropsHref";
-                nodePanelHRef.className = "nav-link";
-                nodePanelHRef.parentLi = nodeLi;
-                //nodePanelHRef.style.color = theme.warning;
-                nodePanelHRef.setAttribute("data-toggle", "tab");
-                nodePanelHRef.onclick = settingsUI.driverAnchorClick;
-                nodePanelHRef.innerText = getLang("nodeproperties");
-                nodePanelHRef.href = "#" + node.nodenickname + "nodePropsPanel";
-                nodePanelHRef.node = node;
                 var nodesPropsPanel = document.getElementById("nodesPropsPanel");
-
+                
                 //--- nodePropsPanel ---------------------------------------------------------------------------
                 //панель для панелей с быстрым доступам к основным свойствам ноды
                 var nodePropsPanel = nodesPropsPanel.appendChild(document.createElement('div'));
                 nodePropsPanel.className = "tab-pane fade";
                 nodePropsPanel.id = node.nodenickname + "nodePropsPanel";
-                nodeAhref.nodefadepanel = nodePropsPanel;
+                nodePropItem.href.nodefadepanel = nodePropsPanel;
 
                 var nodePropHolderPanel = nodePropsPanel.appendChild(document.createElement('div'));
                 nodePropHolderPanel.id = node.nodenickname + "bodePropHoder";
@@ -129,140 +101,22 @@ var settingsUI = {
                 settingsUI.addCard(nodePropHolderPanel, node.nodenickname + "WifiNodeProp", getLang("wifinodeprop"), 4); //WifiNodePropPanel - свойства WiFi                
                 settingsUI.addCard(nodePropHolderPanel, node.nodenickname + "SystemNodeProp", getLang("systemnodeprop"), 4);
                 settingsUI.addCard(nodePropHolderPanel, node.nodenickname + "UpdateNodeProp", getLang("updatenodeprop"), 4);
-
-
                 //--- EndOf nodePropsPanel ---------------------------------------------------------------------------
 
-
-
-                //restful items main menu ----------------------
-                var RESTfulNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
-                RESTfulNavItem.className = "nav-item";
-                RESTfulNavItem.id = node.nodenickname + "restfulsubmenu2";
-
-                var RESTfulAhref = RESTfulNavItem.appendChild(document.createElement("a"));
-                RESTfulAhref.setAttribute("data-toggle", "collapse");
-                RESTfulAhref.parentLi = RESTfulNavItem;
-                RESTfulAhref.href = "#" + node.nodenickname + "restfulsubmenu";
-                RESTfulAhref.node = node;
-
-                RESTfulAhref.appendChild(document.createElement("i")).className = "fa fa-cog";
-                var RESTfulAhrefSpan = RESTfulAhref.appendChild(document.createElement("span"));
-                RESTfulAhrefSpan.className = "menu-text";
-                RESTfulAhrefSpan.innerHTML = "<b>" + getLang("RESTful") + "</b>";
-
-                RESTfulAhrefSpan = RESTfulAhref.appendChild(document.createElement("span"));
-                RESTfulAhrefSpan.className = "badge badge-pill badge-warning";
-                RESTfulAhrefSpan.id = node.nodenickname + "RESTfulAhrefDriverCountSpan";
-                RESTfulAhrefSpan.innerHTML = "0";
-                RESTfulAhrefSpan.driversCount = 0;
-
-
-                var RESTfulSubmenuUl = RESTfulNavItem.appendChild(document.createElement("ul"));
-                RESTfulSubmenuUl.className = "collapse list-unstyled";
-                RESTfulSubmenuUl.id = node.nodenickname + "restfulsubmenu";
-
-                //Add driver submenuitem ----------------
-                var driverNavItem = RESTfulSubmenuUl.appendChild(document.createElement("li"));
-                driverNavItem.className = "nav-item";
-                var driverHRef = driverNavItem.appendChild(document.createElement("a"));
-                driverHRef.className = "nav-link";
-                driverHRef.style.color = theme.warning;
-                driverHRef.parentLi = nodeLi;
-                //driverHRef.style.color = theme.success;
-                driverHRef.setAttribute("data-toggle", "tab");
-                driverHRef.onclick = settingsUI.addDriverClick;
-                driverHRef.innerHTML = getLang("adddriver");
-                driverHRef.href = "#home";
-                driverHRef.node = node;
-
-
-                //аdd script submenuitem ------------------
-                var scriptsNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
-                scriptsNavItem.className = "nav-item";
-                var scriptsAhref = scriptsNavItem.appendChild(document.createElement("a"));
-                scriptsAhref.className = "nav-link";
-                scriptsAhref.parentLi = nodeLi;
-                //filesHRef.style.color = theme.warning;
-                scriptsAhref.setAttribute("data-toggle", "collapse");
-                scriptsAhref.onclick = settingsUI.driverAnchorClick;
-                scriptsAhref.href = "#" + node.nodenickname + "scriptssubmenu";
-                scriptsAhref.node = node;
-
-                scriptsAhref.appendChild(document.createElement("i")).className = "fa fa-bolt";
-
-                var scriptsAhrefSpan = scriptsAhref.appendChild(document.createElement("span"));
-                scriptsAhrefSpan.className = "menu-text";
-                scriptsAhrefSpan.innerHTML = "<b>" + getLang("scripts") + "</b>";
-
-                scriptsAhrefSpan = scriptsAhref.appendChild(document.createElement("span"));
-                scriptsAhrefSpan.className = "badge badge-pill badge-warning";
-                scriptsAhrefSpan.id = node.nodenickname + "scriptsAhrefDriverCountSpan";
-                scriptsAhrefSpan.innerHTML = "0";
-                scriptsAhrefSpan.driversCount = 0;
-
-
-                var scriptsSubmenuUl = scriptsNavItem.appendChild(document.createElement("ul"));
-                scriptsSubmenuUl.className = "collapse list-unstyled";
-                scriptsSubmenuUl.id = node.nodenickname + "scriptssubmenu";
-
-                //+add script submenu item 
-                var scriptsAddLi = scriptsSubmenuUl.appendChild(document.createElement("li"));
-                scriptsAddLi.className = "nav-item";
-
-                var scriptsAddAhref = scriptsAddLi.appendChild(document.createElement("a"));
-                scriptsAddAhref.id = node.nodenickname + "scriptaddahref";
-                scriptsAddAhref.className = "nav-link";
-                scriptsAddAhref.style.color = theme.warning;
-                scriptsAddAhref.setAttribute("data-toggle", "tab");
-                scriptsAddAhref.href = "#";
-                scriptsAddAhref.node = node; //привязываем пункт меню к ноде 
-                scriptsAddAhref.innerHTML = getLang("createscript");
-                scriptsAddAhref.onclick = settingsUI.createScriptClick;
-                scriptsAddAhref.parentLi = scriptsAddLi; //сохраняем родительский driverId
-
-                scriptsManager.onNew = settingsUI.onScriptNew;
-                scriptsManager.onChange = settingsUI.onScriptChange;
-                scriptsManager.onDelete = settingsUI.onScriptDelete;
-
-
-
-                //Add files submenuitem ------------------
-                var filesNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
-                filesNavItem.className = "nav-item";
-                var filesHRef = filesNavItem.appendChild(document.createElement("a"));
-                filesHRef.className = "nav-link";
-                filesHRef.parentLi = nodeLi;
-                //filesHRef.style.color = theme.warning;
-                filesHRef.setAttribute("data-toggle", "tab");
-                filesHRef.onclick = settingsUI.driverAnchorClick;
-                filesHRef.innerText = getLang("files");
-                filesHRef.href = "#" + node.nodenickname + "filesfadepanel";
-                filesHRef.node = node;
-
-                //new files tab ----------------
-                var nodesPropsPanel = document.getElementById("nodesPropsPanel");
-                var filesDiv = nodesPropsPanel.appendChild(document.createElement('div'));
-                filesDiv.className = "tab-pane fade";
-                filesDiv.id = node.nodenickname + "filesfadepanel";
-                filesHRef.filesList = new FilesList(filesDiv, node);
-
-
-
-                // add Node Status Panel ---------------------------------------------
+                // Add Node Status Panel -----------------------------------------------------------------------------
                 var nodeStatusPanel = document.createElement("div");
                 nodeStatusPanel.id = node.nodenickname + "nodestatuspanel";
-                nodeAhref.nodeStatusPanel = nodeStatusPanel;
+                nodeNavItem.href.nodeStatusPanel = nodeStatusPanel;
 
-                nodeAhref.onlinePanel = settingsUI.getStatusWidget(node.nodenickname + "onlineStatus", "Online", nodeStatusPanel);
+                nodeNavItem.href.onlinePanel = settingsUI.getStatusWidget(node.nodenickname + "onlineStatus", "Online", nodeStatusPanel);
 
-                node.addNetworkStatusListner(settingsUI.onOnlineStatusChange, nodeAhref.onlinePanel);
-                nodeAhref.WiFiAPPanel = settingsUI.getStatusWidget(node.nodenickname + "wifiapStatus", "WiFi AP", nodeStatusPanel);
+                node.addNetworkStatusListner(settingsUI.onOnlineStatusChange, nodeNavItem.href.onlinePanel);
+                nodeNavItem.href.WiFiAPPanel = settingsUI.getStatusWidget(node.nodenickname + "wifiapStatus", "WiFi AP", nodeStatusPanel);
 
-                nodeAhref.WiFiSTPanel = settingsUI.getStatusWidget(node.nodenickname + "wifistStatus", "WiFi ST", nodeStatusPanel);
-                nodeAhref.RESTfulPanel = settingsUI.getStatusWidget(node.nodenickname + "restfulStatus", "RESTful", nodeStatusPanel);
-                nodeAhref.MQTTPanel = settingsUI.getStatusWidget(node.nodenickname + "mqttStatus", "MQTT", nodeStatusPanel);
-                nodeAhref.OTAPanel = settingsUI.getStatusWidget(node.nodenickname + "otaStatus", "OTA", nodeStatusPanel);
+                nodeNavItem.href.WiFiSTPanel = settingsUI.getStatusWidget(node.nodenickname + "wifistStatus", "WiFi ST", nodeStatusPanel);
+                nodeNavItem.href.RESTfulPanel = settingsUI.getStatusWidget(node.nodenickname + "restfulStatus", "RESTful", nodeStatusPanel);
+                nodeNavItem.href.MQTTPanel = settingsUI.getStatusWidget(node.nodenickname + "mqttStatus", "MQTT", nodeStatusPanel);
+                nodeNavItem.href.OTAPanel = settingsUI.getStatusWidget(node.nodenickname + "otaStatus", "OTA", nodeStatusPanel);
 
                 document.getElementById("nodeStatusPanel").appendChild(nodeStatusPanel);
 
@@ -273,11 +127,223 @@ var settingsUI = {
                 nodeStatusPanel.nodeStatusPanelText = nodeStatusPanelText;
                 nodeStatusPanel.style.display = "none";
                 nodeStatusPanelText.style.display = "none";
-                */
+                //--- EndOf Node Status Panel ------------------------------------------------------------------------
+
+
+
+
+                /*
+                
+                                var nodeLi = sideBar.nodeSubItem.appendChild(document.createElement("li"));
+                                nodeLi.id = "nodeNavItem2" + node.nodenickname;
+                                nodeLi.node = node;
+                
+                                var nodeAhref = nodeLi.appendChild(document.createElement("a"));
+                                nodeAhref.href = "#" + node.nodenickname + "submenu2";
+                                nodeAhref.setAttribute("data-toggle", "collapse");
+                                nodeAhref.setAttribute("aria-expanded", "false");
+                                nodeAhref.innerHTML = node.nodenickname;
+                                nodeAhref.id = node.nodenickname + "ahref";
+                
+                
+                                //nodeAhref.onclick = settingsUI.driverAnchorClick;
+                                nodeAhref.parentLi = nodeLi;
+                                nodeAhref.node = node;
+                                node.addNetworkStatusListner(settingsUI.onNetworkChange, nodeAhref);
+                                var nodeSubmenuUl = nodeLi.appendChild(document.createElement("ul"));
+                
+                                nodeLi.nodeSubmenuUl = nodeSubmenuUl;
+                                nodeSubmenuUl.className = "collapse list-unstyled";
+                                nodeSubmenuUl.id = node.nodenickname + "submenu2";
+                
+                /*
+                
+                                //Node Tab panel ----------------------
+                                var nodePanelNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
+                                nodePanelNavItem.className = "nav-item";
+                                var nodePanelHRef = nodePanelNavItem.appendChild(document.createElement("a"));
+                                nodePanelHRef.id = node.nodenickname + "nodePropsHref";
+                                nodePanelHRef.className = "nav-link";
+                                nodePanelHRef.parentLi = nodeLi;
+                                //nodePanelHRef.style.color = theme.warning;
+                                nodePanelHRef.setAttribute("data-toggle", "tab");
+                                nodePanelHRef.onclick = settingsUI.driverAnchorClick;
+                                nodePanelHRef.innerText = getLang("nodeproperties");
+                                nodePanelHRef.href = "#" + node.nodenickname + "nodePropsPanel";
+                                nodePanelHRef.node = node;
+                                var nodesPropsPanel = document.getElementById("nodesPropsPanel");
+                
+                                //--- nodePropsPanel ---------------------------------------------------------------------------
+                                //панель для панелей с быстрым доступам к основным свойствам ноды
+                                var nodePropsPanel = nodesPropsPanel.appendChild(document.createElement('div'));
+                                nodePropsPanel.className = "tab-pane fade";
+                                nodePropsPanel.id = node.nodenickname + "nodePropsPanel";
+                                nodeAhref.nodefadepanel = nodePropsPanel;
+                
+                                var nodePropHolderPanel = nodePropsPanel.appendChild(document.createElement('div'));
+                                nodePropHolderPanel.id = node.nodenickname + "bodePropHoder";
+                                nodePropHolderPanel.className = "row";
+                
+                                //подготавливаем панели со свойствами ноды (для каждой ноды своя панель id = node.nodenickname + "nodePropPanel")
+                                //смотрите обработчик события onDriverLoaded() - он запоняет эту панель
+                                settingsUI.addCard(nodePropHolderPanel, node.nodenickname + "NetworkNodeProp", getLang("networknodeprop"), 12);
+                                var networkNodePropBody = document.getElementById(node.nodenickname + "NetworkNodePropBody");
+                                settingsUI.addDiv(networkNodePropBody, node.nodenickname + "NetworkNodePropBody1", 4);
+                                settingsUI.addDiv(networkNodePropBody, node.nodenickname + "NetworkNodePropBody2", 4);
+                                settingsUI.addDiv(networkNodePropBody, node.nodenickname + "NetworkNodePropBody3", 4);
+                
+                                settingsUI.addCard(nodePropHolderPanel, node.nodenickname + "WifiNodeProp", getLang("wifinodeprop"), 4); //WifiNodePropPanel - свойства WiFi                
+                                settingsUI.addCard(nodePropHolderPanel, node.nodenickname + "SystemNodeProp", getLang("systemnodeprop"), 4);
+                                settingsUI.addCard(nodePropHolderPanel, node.nodenickname + "UpdateNodeProp", getLang("updatenodeprop"), 4);
+                
+                
+                                //--- EndOf nodePropsPanel ---------------------------------------------------------------------------
+                
+                
+                
+                                //restful items main menu ----------------------
+                                var RESTfulNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
+                                RESTfulNavItem.className = "nav-item";
+                                RESTfulNavItem.id = node.nodenickname + "restfulsubmenu2";
+                
+                                var RESTfulAhref = RESTfulNavItem.appendChild(document.createElement("a"));
+                                RESTfulAhref.setAttribute("data-toggle", "collapse");
+                                RESTfulAhref.parentLi = RESTfulNavItem;
+                                RESTfulAhref.href = "#" + node.nodenickname + "restfulsubmenu";
+                                RESTfulAhref.node = node;
+                
+                                RESTfulAhref.appendChild(document.createElement("i")).className = "fa fa-cog";
+                                var RESTfulAhrefSpan = RESTfulAhref.appendChild(document.createElement("span"));
+                                RESTfulAhrefSpan.className = "menu-text";
+                                RESTfulAhrefSpan.innerHTML = "<b>" + getLang("RESTful") + "</b>";
+                
+                                RESTfulAhrefSpan = RESTfulAhref.appendChild(document.createElement("span"));
+                                RESTfulAhrefSpan.className = "badge badge-pill badge-warning";
+                                RESTfulAhrefSpan.id = node.nodenickname + "RESTfulAhrefDriverCountSpan";
+                                RESTfulAhrefSpan.innerHTML = "0";
+                                RESTfulAhrefSpan.driversCount = 0;
+                
+                
+                                var RESTfulSubmenuUl = RESTfulNavItem.appendChild(document.createElement("ul"));
+                                RESTfulSubmenuUl.className = "collapse list-unstyled";
+                                RESTfulSubmenuUl.id = node.nodenickname + "restfulsubmenu";
+                
+                                //Add driver submenuitem ----------------
+                                var driverNavItem = RESTfulSubmenuUl.appendChild(document.createElement("li"));
+                                driverNavItem.className = "nav-item";
+                                var driverHRef = driverNavItem.appendChild(document.createElement("a"));
+                                driverHRef.className = "nav-link";
+                                driverHRef.style.color = theme.warning;
+                                driverHRef.parentLi = nodeLi;
+                                //driverHRef.style.color = theme.success;
+                                driverHRef.setAttribute("data-toggle", "tab");
+                                driverHRef.onclick = settingsUI.addDriverClick;
+                                driverHRef.innerHTML = getLang("adddriver");
+                                driverHRef.href = "#home";
+                                driverHRef.node = node;
+                
+                
+                                //аdd script submenuitem ------------------
+                                var scriptsNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
+                                scriptsNavItem.className = "nav-item";
+                                var scriptsAhref = scriptsNavItem.appendChild(document.createElement("a"));
+                                scriptsAhref.className = "nav-link";
+                                scriptsAhref.parentLi = nodeLi;
+                                //filesHRef.style.color = theme.warning;
+                                scriptsAhref.setAttribute("data-toggle", "collapse");
+                                scriptsAhref.onclick = settingsUI.driverAnchorClick;
+                                scriptsAhref.href = "#" + node.nodenickname + "scriptssubmenu";
+                                scriptsAhref.node = node;
+                
+                                scriptsAhref.appendChild(document.createElement("i")).className = "fa fa-bolt";
+                
+                                var scriptsAhrefSpan = scriptsAhref.appendChild(document.createElement("span"));
+                                scriptsAhrefSpan.className = "menu-text";
+                                scriptsAhrefSpan.innerHTML = "<b>" + getLang("scripts") + "</b>";
+                
+                                scriptsAhrefSpan = scriptsAhref.appendChild(document.createElement("span"));
+                                scriptsAhrefSpan.className = "badge badge-pill badge-warning";
+                                scriptsAhrefSpan.id = node.nodenickname + "scriptsAhrefDriverCountSpan";
+                                scriptsAhrefSpan.innerHTML = "0";
+                                scriptsAhrefSpan.driversCount = 0;
+                
+                
+                                var scriptsSubmenuUl = scriptsNavItem.appendChild(document.createElement("ul"));
+                                scriptsSubmenuUl.className = "collapse list-unstyled";
+                                scriptsSubmenuUl.id = node.nodenickname + "scriptssubmenu";
+                
+                                //+add script submenu item 
+                                var scriptsAddLi = scriptsSubmenuUl.appendChild(document.createElement("li"));
+                                scriptsAddLi.className = "nav-item";
+                
+                                var scriptsAddAhref = scriptsAddLi.appendChild(document.createElement("a"));
+                                scriptsAddAhref.id = node.nodenickname + "scriptaddahref";
+                                scriptsAddAhref.className = "nav-link";
+                                scriptsAddAhref.style.color = theme.warning;
+                                scriptsAddAhref.setAttribute("data-toggle", "tab");
+                                scriptsAddAhref.href = "#";
+                                scriptsAddAhref.node = node; //привязываем пункт меню к ноде 
+                                scriptsAddAhref.innerHTML = getLang("createscript");
+                                scriptsAddAhref.onclick = settingsUI.createScriptClick;
+                                scriptsAddAhref.parentLi = scriptsAddLi; //сохраняем родительский driverId
+                
+                                scriptsManager.onNew = settingsUI.onScriptNew;
+                                scriptsManager.onChange = settingsUI.onScriptChange;
+                                scriptsManager.onDelete = settingsUI.onScriptDelete;
+                
+                
+                
+                                //Add files submenuitem ------------------
+                                var filesNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
+                                filesNavItem.className = "nav-item";
+                                var filesHRef = filesNavItem.appendChild(document.createElement("a"));
+                                filesHRef.className = "nav-link";
+                                filesHRef.parentLi = nodeLi;
+                                //filesHRef.style.color = theme.warning;
+                                filesHRef.setAttribute("data-toggle", "tab");
+                                filesHRef.onclick = settingsUI.driverAnchorClick;
+                                filesHRef.innerText = getLang("files");
+                                filesHRef.href = "#" + node.nodenickname + "filesfadepanel";
+                                filesHRef.node = node;
+                
+                                //new files tab ----------------
+                                var nodesPropsPanel = document.getElementById("nodesPropsPanel");
+                                var filesDiv = nodesPropsPanel.appendChild(document.createElement('div'));
+                                filesDiv.className = "tab-pane fade";
+                                filesDiv.id = node.nodenickname + "filesfadepanel";
+                                filesHRef.filesList = new FilesList(filesDiv, node);
+                
+                
+                
+                                // add Node Status Panel ---------------------------------------------
+                                var nodeStatusPanel = document.createElement("div");
+                                nodeStatusPanel.id = node.nodenickname + "nodestatuspanel";
+                                nodeAhref.nodeStatusPanel = nodeStatusPanel;
+                
+                                nodeAhref.onlinePanel = settingsUI.getStatusWidget(node.nodenickname + "onlineStatus", "Online", nodeStatusPanel);
+                
+                                node.addNetworkStatusListner(settingsUI.onOnlineStatusChange, nodeAhref.onlinePanel);
+                                nodeAhref.WiFiAPPanel = settingsUI.getStatusWidget(node.nodenickname + "wifiapStatus", "WiFi AP", nodeStatusPanel);
+                
+                                nodeAhref.WiFiSTPanel = settingsUI.getStatusWidget(node.nodenickname + "wifistStatus", "WiFi ST", nodeStatusPanel);
+                                nodeAhref.RESTfulPanel = settingsUI.getStatusWidget(node.nodenickname + "restfulStatus", "RESTful", nodeStatusPanel);
+                                nodeAhref.MQTTPanel = settingsUI.getStatusWidget(node.nodenickname + "mqttStatus", "MQTT", nodeStatusPanel);
+                                nodeAhref.OTAPanel = settingsUI.getStatusWidget(node.nodenickname + "otaStatus", "OTA", nodeStatusPanel);
+                
+                                document.getElementById("nodeStatusPanel").appendChild(nodeStatusPanel);
+                
+                                var nodeStatusPanelText = document.createElement("div");
+                                nodeStatusPanelText.innerHTML = " <strong>" + node.nodenickname + "</strong> at <a href='" + node.host + "' target='_blank'>" + node.host + "</a>";
+                                document.getElementById("nodeStatusPanelText").appendChild(nodeStatusPanelText);
+                
+                                nodeStatusPanel.nodeStatusPanelText = nodeStatusPanelText;
+                                nodeStatusPanel.style.display = "none";
+                                nodeStatusPanelText.style.display = "none";
+                                */
             }
-                  
+
         }
-  
+
     },
 
     onScriptNew: function (script) {
@@ -504,7 +570,7 @@ var settingsUI = {
         }
         else {
             scriptsManager.debugNext(scriptDebugButton.script);
-            
+
         }
     },
 
@@ -781,9 +847,10 @@ var settingsUI = {
     //и подготавлием панель управления нодой (с кнопками Update, Reset и основными свойствами ноды) - смотрите onConfigChange такая панель создается для каждой
     //ноды id = node.nodenickname + "nodePropPanel"    
     onDriverLoaded: function (sender, driver) {
+        
         if (driver._new) { //если это драйвер загружено впервые (вновь созданные драйвера так же вызовут этот метод)
 
-            var nodeSubmenuUl = document.getElementById(driver._nodenickname + "restfulsubmenu"); //ищем пункт sideBar соответствующий ноде которой принадлежит драйвер
+            var nodeSubmenuUl = document.getElementById(driver._nodenickname + "driverssubmenu"); //ищем пункт sideBar соответствующий ноде которой принадлежит драйвер
             if (nodeSubmenuUl == undefined) return; //если такого пункта нет - выходим
 
             var node = config.getNodeByHost(driver._host); //узнаем какой ноде принадлежит драйвер
@@ -794,9 +861,12 @@ var settingsUI = {
 
             //submenu drivers count 
 
-            var RESTfulAhrefSpan = document.getElementById(driver._nodenickname + "RESTfulAhrefDriverCountSpan");
-            RESTfulAhrefSpan.driversCount++;
-            RESTfulAhrefSpan.innerHTML = parseInt(RESTfulAhrefSpan.driversCount);
+            var driverSpan = document.getElementById(driver._nodenickname + "driversitemspan");
+            if (driverSpan.driversCount == undefined) {
+                driverSpan.driversCount = 0;
+            }
+            driverSpan.driversCount++;
+            driverSpan.innerHTML = parseInt(driverSpan.driversCount);
 
             var driverAhref = driverLi.appendChild(document.createElement("a")); //отображаемая часть меню - гиперссылка
             driverAhref.className = "nav-link";
@@ -807,6 +877,7 @@ var settingsUI = {
             driverAhref.onclick = settingsUI.driverAnchorClick; //обработчик клика на пунк меню (переключение панелей)
             driverAhref.parentLi = driverLi; //сохраняем родительский driverId
 
+            
             var nodePropAnchors = document.getElementById("nodePropNavBar"); //старая навигационная панель для отображения панелей свойств
             var nodesPropsPanel = document.getElementById("nodesPropsPanel");
             var wifiPropPanel = document.getElementById(node.nodenickname + "WifiNodePropBody"); //панель для cвойств            
@@ -815,9 +886,10 @@ var settingsUI = {
             var networkPropPanel1 = document.getElementById(node.nodenickname + "NetworkNodePropBody1");
             var networkPropPanel2 = document.getElementById(node.nodenickname + "NetworkNodePropBody2");
             var networkPropPanel3 = document.getElementById(node.nodenickname + "NetworkNodePropBody3");
+            
             //добавляем панель с таблицей со свойствами нового "driver" драйвера в панель nodesPropsPanel, якорим навигацию на nodePropAnchors, bootstrap cell size -> 12             
             new TableWidget(nodePropAnchors, nodesPropsPanel, driver, 12);
-
+            
             //если очередное загруженое драйвер WiFi
             if (driver.type.value == WiFiDriverType) {
                 //индикатор(widget) в верхней панеле для WiFi AP и Wifi ST - подключаем их к событиям WiFi текущей node.WifiDriver - теперь WifiDriver будет отправлять событие 
@@ -1028,7 +1100,7 @@ var settingsUI = {
         if (node != undefined) {
 
             if (aHref.nodeStatusPanel == undefined) {
-                aHref = document.getElementById(node.nodenickname + "ahref");
+                aHref = document.getElementById("nodeNavItem" + node.nodenickname + "href");
             }
             if (aHref.nodeStatusPanel != undefined) {
                 var nodeStatusPanel = document.getElementById("nodeStatusPanel");
@@ -1391,6 +1463,7 @@ var settingsUI = {
 
             var propEdit = createValueEdit(inputGroup, driverProperty.name, driverProperty.value, driverProperty.type)
             //var propEdit = inputGroup.appendChild(document.createElement('input'));
+            propEdit.style.width = "";
             propEdit.className = "form-control";
             propEdit.id = propElementId + "edit";
 
@@ -1927,11 +2000,11 @@ var settingsUI = {
         }
     },
 
-    addDriverClick: function (event) {        
-            event.stopPropagation();
-            settingsUI.driverAnchorClick(event);
-            var addDriverAhref = event.currentTarget;
-            driversUI.addDriver(addDriverAhref.node);
+    addDriverClick: function (event) {
+        event.stopPropagation();
+        settingsUI.driverAnchorClick(event);
+        var addDriverAhref = event.currentTarget;
+        driversUI.addDriver(addDriverAhref.node);
     }
 
 }

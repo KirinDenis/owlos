@@ -162,8 +162,8 @@ function createSidebar() {
             itemHref.onclick = _onclick;
 
             itemHref.appendChild(document.createElement("i")).className = _icon; // "fa fa-tachometer-alt";
-
             item.href = itemHref;
+            
 
             var itemTextSpan = itemHref.appendChild(document.createElement("span"));
             itemTextSpan.className = "menu-text";
@@ -173,10 +173,15 @@ function createSidebar() {
             if (_span != undefined) {
             var itemSpan = itemHref.appendChild(document.createElement("span"));
             itemSpan.className = "badge badge-pill badge-success";
-            itemSpan.id = "sideBarDashboardAhrefSpan";
+            itemSpan.id = _id + "span";
             itemSpan.innerHTML = _span;
+            item.span = itemSpan;
             }
+
             
+            
+
+
             return item;
 
         },
@@ -255,6 +260,15 @@ function createSidebar() {
             nodePropNavBar.id = "nodePropNavBar";
             nodePropNavBar.className = "nav nav-tabs";
 */
+
+            //панель не видна, она существует для организии SideBar, сами панели со свойствами драйвер сделаны на основе navBar - так сложилось исторически, SideBar только переключает их
+            var nodePropAnchors = document.getElementById("nodePropAnchors");
+            //NavTabs панель для панелей со свойствами нод
+            var nodePropNavBar = nodePropAnchors.appendChild(document.createElement("ul"));
+            nodePropNavBar.style.height = "0px";
+            nodePropNavBar.id = "nodePropNavBar";
+            nodePropNavBar.className = "nav nav-tabs";
+
 
             //----------------
 

@@ -198,7 +198,7 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "updatehost=URL сервера оновлень\n" +
     "updatenodeprop=Панель оновлень прошивки\n" +
     "nodeproperties=Властивості вузла\n" +
-    "RESTful=Драйвери\n" +  
+    "drivers=Драйвери\n" +  
     "adddriverdigalog=Додати драйвер до вузлу\n" +
     "drivertype=Тип драйвера\n" +
     "driverid=ID драйвера\n" +
@@ -396,7 +396,7 @@ var langen = "prepareUnit=prepare UI, please wait...\n" +
     "driversporplist=Drivers properties\n" +
     "widgetslist=List of compatible widgets\n" +
     "autoaddwidget=Add widget\n" +
-    "RESTful=Drivers\n" +
+    "drivers=Drivers\n" +
     "adddriverdigalog=Adding driver to node\n" +
     "showproperties=Widget properties\n" +
     "setallwidgetspropbutton=Apply to all\n" +
@@ -581,7 +581,7 @@ var langru = "prepareUnit=Подготовка интерфейса пользо
     "widgetslist=Список виджетов для выбранного свойства\n" +
     "networknodeprop=Сетевые настройки узла\n" +
     "nodeproperties=Свойства узла\n" +
-    "RESTful=Драйвера\n" +
+    "drivers=Драйвера\n" +
     "adddriverdigalog=Добавить драйвер к узлу\n" +
     "notused=Не используется\n" +
     "checkchangedialog=Принять изменения\n" +

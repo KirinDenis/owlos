@@ -99,7 +99,7 @@
 
 .table-striped > tbody > tr:nth-child(even) > td,
 .table-striped > tbody > tr:nth-child(even) > th {
-    background-color: #515960;
+    background-color: #3c3e41;
 }
 
 .driverdiv {
@@ -838,8 +838,8 @@ body {
     border-bottom-right-radius: 4px;
 }
 
-.default-theme .sidebar-wrapper {
-    background-color: #272B30;
+.sidebar-wrapper {
+    background-color: #3C3E41;
 }
 
     .default-theme .sidebar-wrapper .sidebar-item {
@@ -940,7 +940,7 @@ body {
     }
 
 .default-theme.sidebar-bg .sidebar-wrapper .sidebar-item {
-    border-color: #454545;
+    border-color: #df4d4d;
 }
 
 .default-theme.sidebar-bg .sidebar-wrapper .sidebar-search input.search-menu,
