@@ -41,6 +41,7 @@ OWLOS распространяется в надежде, что она буде
 
 var langua = "prepareUnit=Підготовка інтерфейсу користувача\n" +
     "dashboardTab=Панель пристроїв\n" +
+    "OK=Застосувати\n" +
     "nodeTab=Модуль\n" +
     "settingsTab=Вузли\n" +
     "filesTab=Файли\n" +
@@ -620,7 +621,7 @@ function getLang(key) {
             }
         }
         else {
-            currentLang = "en"; 
+            currentLang = "ua"; 
         }
 
         if (currentLang == "") {

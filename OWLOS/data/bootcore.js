@@ -194,10 +194,12 @@ function loadingScripts(withInternet) {
                             loadingScript("tablewidget.js");
                             loadingScript("valuewidget.js");
                             loadingScript("widgetswrappers.js");
+                            loadingScript("scriptsui.js");
                             loadingScript("filespanelui.js");
                             loadingScript("driversui.js");
                             loadingScript("dashboardui.js");
                             loadingScript("settingsui.js");
+
 
                             //var nodePropertiesScript = document.createElement('script'); //с ожиданием
                             //nodePropertiesScript.onload = function () { //when node properties is loading we can start index script

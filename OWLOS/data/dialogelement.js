@@ -153,6 +153,7 @@ function createModalDialog(_titleText, _bodyText) {
                 if (modalDialog != undefined) {
                     if (modalDialog.OKButton.clicked != undefined) {
                         if (modalDialog.onOK != undefined) {
+                            modalDialog.OKButton.clicked = undefined;            
                             if (!modalDialog.onOK(modalDialog)) {
                                 event.preventDefault();
                                 event.stopImmediatePropagation();
@@ -162,6 +163,7 @@ function createModalDialog(_titleText, _bodyText) {
                     }
                 }
                 //TODO: Clear innerHTML
+                
                 return true;
 
             });
