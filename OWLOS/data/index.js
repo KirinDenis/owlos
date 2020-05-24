@@ -174,6 +174,10 @@ function onLoadConfig(result) {
 
             addToLogNL(getLang("prepareUnit"));
 
+            scriptsManager.onNew = scriptsUI.onScriptNew;
+            scriptsManager.onChange = scriptsUI.onScriptChange;
+            scriptsManager.onDelete = scriptsUI.onScriptDelete;
+
             drivers.addDriverLoadedListner(settingsUI.onDriverLoaded, settingsUI);
             nodesRefresh();
 

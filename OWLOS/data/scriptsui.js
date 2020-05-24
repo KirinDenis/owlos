@@ -3,13 +3,14 @@ onScriptNew: function (script) {
     var scriptsSubmenuUl = document.getElementById(script.node.nodenickname + "scriptssubmenu");
     if (scriptsSubmenuUl == undefined) return;
 
+    /*
     var scriptsLi = scriptsSubmenuUl.appendChild(document.createElement("li"));
     scriptsLi.id = script.node.nodenickname + "_" + script.name + "li";
     scriptsLi.className = "nav-item";
 
     var scriptsAhref = scriptsLi.appendChild(document.createElement("a"));
     scriptsAhref.id = script.node.nodenickname + "_" + script.name + "scriptahref";
-    scriptsAhref.className = "nav-link";
+    scriptsAhref.className = "";
     scriptsAhref.setAttribute("data-toggle", "tab");
     scriptsAhref.href = "#" + script.node.nodenickname + "_" + script.name + "panel"; //якорь на панель 
     scriptsAhref.node = script.node; //привязываем пункт меню к ноде 
@@ -17,13 +18,16 @@ onScriptNew: function (script) {
     scriptsAhref.onclick = settingsUI.driverAnchorClick; //обработчик клика на пунк меню (переключение панелей)
     scriptsAhref.parentLi = scriptsLi; //сохраняем родительский driverId
     scriptsLi.scriptsAhref = scriptsAhref;
+    */
+   var scriptsLi = sideBar.createItem(scriptsSubmenuUl, script.node.nodenickname + "_" + script.name, "#" + script.node.nodenickname + "_" + script.name + "panel", script.name, settingsUI.driverAnchorClick, "fa fa-bolt", undefined);
+   
 
     switch (parseInt(script.status)) {
-        case stopScriptStatus: scriptsAhref.style.color = ""; break;
-        case runScriptStatus: scriptsAhref.style.color = theme.success; break;
-        case compilerScriptErrorStatus: scriptsAhref.style.color = theme.warning; break;
+        case stopScriptStatus: scriptsLi.href.style.color = ""; break;
+        case runScriptStatus: scriptsLi.href.style.color = theme.success; break;
+        case compilerScriptErrorStatus: scriptsLi.href.style.color = theme.warning; break;
         default:
-            scriptsAhref.style.color = theme.danger; break;
+            scriptsLi.href.style.color = theme.danger; break;
     }
 
 
@@ -54,7 +58,7 @@ onScriptNew: function (script) {
     textArea.cols = 80;
     textArea.rows = 20;
     textArea.value = script.bytecode;
-    textArea.onkeydown = settingsUI.textAreaOnKeyDown;
+    textArea.onkeydown = scriptsUI.textAreaOnKeyDown;
 
     var scriptExecuteButton = byteCodeCardDiv.appendChild(document.createElement('button'));
     scriptExecuteButton.type = "button";
@@ -63,7 +67,7 @@ onScriptNew: function (script) {
     scriptExecuteButton.script = script;
     scriptExecuteButton.textArea = textArea;
     scriptExecuteButton.labels = label;
-    scriptExecuteButton.onclick = settingsUI.scriptExecuteClick;
+    scriptExecuteButton.onclick = scriptsUI.scriptExecuteClick;
     scriptExecuteButton.appendChild(document.createElement("i")).className = "fa fa-bolt";
     var scriptExecuteButtonSpan = scriptExecuteButton.appendChild(document.createElement("span"));
     scriptExecuteButtonSpan.innerHTML = " " + getLang("scriptexecute");
@@ -79,7 +83,7 @@ onScriptNew: function (script) {
     scriptPauseButton.scriptExecuteButton = scriptExecuteButton;
     scriptPauseButton.textArea = textArea;
     scriptPauseButton.labels = label;
-    scriptPauseButton.onclick = settingsUI.scriptPauseClick;
+    scriptPauseButton.onclick = scriptsUI.scriptPauseClick;
     scriptPauseButton.appendChild(document.createElement("i")).className = "fa fa-pause";
     var scriptPauseButtonSpan = scriptPauseButton.appendChild(document.createElement("span"));
     scriptPauseButtonSpan.innerHTML = " " + getLang("scriptpause");
@@ -95,7 +99,7 @@ onScriptNew: function (script) {
     scriptDebugButton.scriptExecuteButton = scriptExecuteButton;
     scriptDebugButton.textArea = textArea;
     scriptDebugButton.labels = label;
-    scriptDebugButton.onclick = settingsUI.scriptDebugClick;
+    scriptDebugButton.onclick = scriptsUI.scriptDebugClick;
     scriptDebugButton.appendChild(document.createElement("i")).className = "fa fa-bug";
     scriptDebugButton.debugNext = false;
     var scriptDebugButtonSpan = scriptDebugButton.appendChild(document.createElement("span"));
@@ -111,7 +115,7 @@ onScriptNew: function (script) {
     scriptDeleteButton.scriptPauseButton = scriptPauseButton;
     scriptDeleteButton.textArea = textArea;
     scriptDeleteButton.labels = label;
-    scriptDeleteButton.onclick = settingsUI.scriptDeleteClick;
+    scriptDeleteButton.onclick = scriptsUI.scriptDeleteClick;
     scriptDeleteButton.appendChild(document.createElement("i")).className = "fa fa-trash";
     var scriptDeleteButtonSpan = scriptDeleteButton.appendChild(document.createElement("span"));
     scriptDeleteButtonSpan.innerHTML = " " + getLang("scriptdelete");
@@ -136,14 +140,14 @@ onScriptNew: function (script) {
     var scriptStatusPre = scriptStatusCardBody.appendChild(document.createElement('pre'));
     var statusLabel = scriptStatusPre.appendChild(document.createElement('label'));
     statusLabel.id = script.node.nodenickname + "_" + script.name + "statuslabel";
-    settingsUI.buildScriptStatus(script);
+    scriptsUI.buildScriptStatus(script);
 
 },
 
 onScriptChange: function (script) {
-    var scriptsAhref = document.getElementById(script.node.nodenickname + "_" + script.name + "scriptahref");
+    var scriptsAhref = document.getElementById(script.node.nodenickname + "_" + script.name + "href");
     if (scriptsAhref == undefined) return;
-    scriptsAhref.innerText = script.name;
+    scriptsAhref.textSpan.innerHTML = script.name;
 
     switch (parseInt(script.status)) {
         case stopScriptStatus: scriptsAhref.style.color = ""; break;
@@ -167,9 +171,9 @@ onScriptChange: function (script) {
             textArea.value = script.bytecode;
         }
     }
-    settingsUI.buildScriptStatus(script);
+    scriptsUI.buildScriptStatus(script);
     if (script.status == debugScriptStatus) {
-        settingsUI.selectCodeLine(textArea, script.debuglinenumber);
+        scriptsUI.selectCodeLine(textArea, script.debuglinenumber);
     }
 },
 
@@ -254,7 +258,7 @@ onScriptDelete: function (script) {
             var event = {
                 currentTarget: scriptsLi.scriptsAhref
             }
-            settingsUI.driverAnchorClick(event);
+            scriptsUI.driverAnchorClick(event);
             $(scriptsLi.scriptsAhref).toggleClass("active");
             $(scriptsLi.panel).toggleClass("active show");
             return;
@@ -266,7 +270,7 @@ onScriptDelete: function (script) {
     var event = {
         currentTarget: nodePanelHRef
     }
-    settingsUI.driverAnchorClick(event);
+    scriptsUI.driverAnchorClick(event);
     $(nodePanelHRef).toggleClass("active");
     $(nodePropsPanel).toggleClass("active show");
 },
@@ -294,7 +298,7 @@ textAreaOnKeyDown: function (event) {
             event = {
                 currentTarget: textArea.scriptExecuteButton
             }
-            settingsUI.scriptExecuteClick(event);
+            scriptsUI.scriptExecuteClick(event);
         }
 
 },
@@ -315,7 +319,7 @@ scriptExecuteClick: function (event) {
     textArea.disabled = true;
 
 
-    scriptsManager.createOrReplace(script, settingsUI.executeScriptAsyncReciever, scriptExecuteButton);
+    scriptsManager.createOrReplace(script, scriptsUI.executeScriptAsyncReciever, scriptExecuteButton);
     return false;
 },
 
@@ -368,7 +372,7 @@ scriptDeleteClick: function (event) {
     scriptModalDeleteButton.id = event.currentTarget.id + "modal";
     scriptModalDeleteButton.className = "btn btn-sm btn-danger";
     scriptModalDeleteButton.scriptDeleteButton = event.currentTarget;
-    scriptModalDeleteButton.onclick = settingsUI.scriptModalDeleteClick;
+    scriptModalDeleteButton.onclick = scriptsUI.scriptModalDeleteClick;
     scriptModalDeleteButton.appendChild(document.createElement("i")).className = "fa fa-trash";
     var scriptModalDeleteButtonSpan = scriptModalDeleteButton.appendChild(document.createElement("span"));
     scriptModalDeleteButtonSpan.innerHTML = " " + getLang("scriptdelete");
@@ -395,7 +399,7 @@ scriptModalDeleteClick: function (event) {
     textArea.style.backgroundColor = theme.secondary;
     textArea.disabled = true;
 
-    scriptsManager.delete(script, settingsUI.scriptDeleteAsyncReciever, scriptDeleteButton);
+    scriptsManager.delete(script, scriptsUI.scriptDeleteAsyncReciever, scriptDeleteButton);
     return false;
 },
 
@@ -429,70 +433,39 @@ createScriptClick: function (event) {
     var scriptsAddAhref = event.currentTarget;
     event.stopPropagation();
 
-    var newScriptDialog = createModalDialog(getLang("addscript"), "");
-    newScriptDialog.appendInput(createDialogInput("addscript", getLang("scriptname"), ""));
-    
+    var newScriptDialog = createModalDialog(getLang("addscriptheader"), "");
+    newScriptDialog.node = scriptsAddAhref.node;
+    newScriptDialog.appendInput(createDialogInput("addscriptInput", getLang("addscriptname"), ""));
     
     newScriptDialog.onOK = scriptsUI.createScriptUIClick;
     newScriptDialog.show();
 
-
-
-
-    /*
-    makeModalDialog("resetPanel", "addscript", getLang("addscriptheader"), "");
-    var modalFooter = document.getElementById("addscriptModalFooter");
-    var modalBody = document.getElementById("addscriptModalBody");
-
-    formGroup = modalBody.appendChild(document.createElement("div"));
-    formGroup.className = "form-group";
-    label = formGroup.appendChild(document.createElement("label"));
-    label.setAttribute("for", "hostEdit");
-    label.innerText = getLang("addscriptname");
-    var addScriptEdit = formGroup.appendChild(document.createElement('input'));
-    addScriptEdit.className = "form-control form-control-sm";
-    addScriptEdit.placeholder = "";
-    addScriptEdit.id = "addscriptInput";
-
-    var addScriptButton = modalFooter.appendChild(document.createElement("button"));
-    addScriptButton.type = "button";
-    addScriptButton.id = "addscriptModalButton";
-    addScriptButton.className = "btn btn-sm btn-success";
-    addScriptButton.node = scriptsAddAhref.node;
-    addScriptButton.onclick = settingsUI.createScriptUIClick;
-    addScriptButton.innerText = getLang("addscriptbutton");
-
-    var addScriptError = formGroup.appendChild(document.createElement("label"));
-    addScriptError.className = "text-danger";
-
-    addScriptButton.addScriptEdit = addScriptEdit;
-    addScriptButton.addScriptError = addScriptError;
-
-    $("#addscriptModal").modal('show');
-*/
     return false;
 },
 
-createScriptUIClick: function (event) {
-    var addScriptButton = event.currentTarget;
-    var addScriptEdit = addScriptButton.addScriptEdit;
-    var node = addScriptButton.node;
-    if (addScriptButton.script == undefined) {
-        addScriptButton.script = createScript(node);
+createScriptUIClick: function (newScriptDialog) {
+
+    var node = newScriptDialog.node;
+    var addscriptInput = newScriptDialog.getChild("addscriptInput");
+    if (addscriptInput.value === "") {
+        newScriptDialog.errorLabel.innerText = getLang("scriptnameempty");
+        return;
     }
-    addScriptButton.script.name = addScriptEdit.value;
-    scriptsManager.createOrReplace(addScriptButton.script, settingsUI.createScriptAsynReciever, addScriptButton);
+
+    var script = createScript(node);
+    script.name = addscriptInput.value;
+    scriptsManager.createOrReplace(script, scriptsUI.createScriptAsynReciever, newScriptDialog);
+
     return false;
+
 },
 
-createScriptAsynReciever: function (HTTPResult, sender) {
-    var addScriptButton = sender;
-    var addScriptError = addScriptButton.addScriptError;
-    var node = addScriptButton.node;
+createScriptAsynReciever: function (HTTPResult, newScriptDialog) {
+    var node = newScriptDialog.node;
 
     if (!HTTPResult.indexOf("%error") == 0) {
         node.networkStatus = NET_ONLINE;
-        $("#addscriptModal").modal('hide');
+        newScriptDialog.hide();
         scriptsManager.refresh(node);
     }
     else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
@@ -502,7 +475,7 @@ createScriptAsynReciever: function (HTTPResult, sender) {
         else {
             node.networkStatus = NET_OFFLINE;
         }
-        addScriptError.innerText = HTTPResult;
+        newScriptDialog.errorLabel.innerText = HTTPResult;
     }
 }
 }

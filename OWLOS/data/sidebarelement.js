@@ -66,7 +66,7 @@ function proSideBarMenuClick(event) {
 }
 
 function proSideBarDashboardMenuClick(event) {
-    $(this).removeClass('active');
+    //$(this).removeClass('active');
     document.getElementById("sidebarText").style.display = "block";
     document.getElementById("sidebarText").innerText = event.currentTarget.addressText;
     document.getElementById("dashboardButtonsPanel").style.display = "block";
@@ -74,7 +74,7 @@ function proSideBarDashboardMenuClick(event) {
 }
 
 function proSideBarConsoleMenuClick(event) {
-    $(this).removeClass('active');
+    //$(this).toClass('active');
     document.getElementById("sidebarText").style.display = "none";
     document.getElementById("sidebarText").innerText = "";
     document.getElementById("dashboardButtonsPanel").style.display = "none";
@@ -85,20 +85,20 @@ function proSideBarConsoleMenuClick(event) {
 function createSidebar() {
     var sideBar = {
         sideBarWrapper: undefined,
-        sideBar: undefined, 
-        sideBarHeader: undefined, 
+        sideBar: undefined,
+        sideBarHeader: undefined,
 
-        sideBarHeaderInfo: undefined, 
-        sideBarHeaderInfoVersion: undefined, 
-        sideBarHeaderInfoRole: undefined, 
-        sideBarHeaderInfoStatus: undefined, 
-        sideBarHeaderInfoRoleSpan: undefined, 
+        sideBarHeaderInfo: undefined,
+        sideBarHeaderInfoVersion: undefined,
+        sideBarHeaderInfoRole: undefined,
+        sideBarHeaderInfoStatus: undefined,
+        sideBarHeaderInfoRoleSpan: undefined,
 
-        dashboardItem: undefined, 
-        nodeItem: undefined, 
-        nodeSubItem: undefined, 
-        addNodeItem: undefined, 
-        consoleItem: undefined, 
+        dashboardItem: undefined,
+        nodeItem: undefined,
+        nodeSubItem: undefined,
+        addNodeItem: undefined,
+        consoleItem: undefined,
 
         createBrand: function (_version) {
             var sideBarBrand = this.sideBar.appendChild(document.createElement("div"));
@@ -108,10 +108,10 @@ function createSidebar() {
             hRef.innerText = "OWLOS";
 
             this.sideBarHeader = this.sideBar.appendChild(document.createElement("div"));
-            this.sideBarHeader.className = "sidebar-item sidebar-header d-flex flex-nowrap";            
+            this.sideBarHeader.className = "sidebar-item sidebar-header d-flex flex-nowrap";
         },
 
-        createUserInfo: function(_name, _role, _networkStatus) {
+        createUserInfo: function (_name, _role, _networkStatus) {
 
             this.sideBarHeaderInfo = this.sideBarHeader.appendChild(document.createElement("div"));
             this.sideBarHeaderInfo.className = "user-info";
@@ -130,84 +130,76 @@ function createSidebar() {
             this.setUserInfo(_name, _role, _networkStatus);
         },
 
-        setUserInfo: function(_name, _role, _networkStatus) {
+        setUserInfo: function (_name, _role, _networkStatus) {
             this.sideBarHeaderInfoVersion.innerHTML = _name;
             this.sideBarHeaderInfoRole.innerHTML = _role;
-            switch(_networkStatus ) 
-            {
-                case NET_ONLINE: 
-                    
+            switch (_networkStatus) {
+                case NET_ONLINE:
+
                     this.sideBarHeaderInfoRoleSpan.innerHTML = "online";
                     break;
                 default: //NET_OFFLINE    
-            
+
                     this.sideBarHeaderInfoRoleSpan.innerHTML = "offline";
-                break;
+                    break;
             }
         },
 
-        createItem: function(_parent, _id, _href, _text, _onclick, _icon, _span) {
+        createItem: function (_parent, _id, _href, _text, _onclick, _icon, _span) {
             var item = _parent.appendChild(document.createElement("li"));
             item.id = _id;
             item.className = "nav-item";
-           // item.className = "sidebar-dropdown";
+            // item.className = "sidebar-dropdown";
             var itemHref = item.appendChild(document.createElement("a"));
             itemHref.id = _id + "href";
-            itemHref.className = "nav-link";
+            itemHref.className = "";
 
             itemHref.href = _href; //"#dashboard";
             itemHref.setAttribute("data-toggle", "tab");
-             // proSideBarDashboardMenuClick;
-            //itemHref.addressText = _text; // getLang("dashboardTab");
             itemHref.onclick = _onclick;
-
             itemHref.appendChild(document.createElement("i")).className = _icon; // "fa fa-tachometer-alt";
             item.href = itemHref;
-            
 
             var itemTextSpan = itemHref.appendChild(document.createElement("span"));
             itemTextSpan.className = "menu-text";
             itemTextSpan.innerHTML = _text;
+            itemHref.textSpan = itemTextSpan;
             //document.getElementById("sidebarText").innerText = sideBarDashboardAhref.addressText;
 
             if (_span != undefined) {
-            var itemSpan = itemHref.appendChild(document.createElement("span"));
-            itemSpan.className = "badge badge-pill badge-success";
-            itemSpan.id = _id + "span";
-            itemSpan.innerHTML = _span;
-            item.span = itemSpan;
+                var itemSpan = itemHref.appendChild(document.createElement("span"));
+                itemSpan.className = "badge badge-pill badge-success";
+                itemSpan.id = _id + "span";
+                itemSpan.innerHTML = _span;
+                item.span = itemSpan;
+                
             }
-
-            
-            
-
-
             return item;
 
         },
 
-        createSubItem: function(_parent, _id) {            
+        createSubItem: function (_parent, _id) {
             _parent.className = "sidebar-dropdown active";
             var itemSubmenu = _parent.appendChild(document.createElement("div"));
             itemSubmenu.className = "sidebar-submenu";
             itemSubmenu.style.display = "block";
-            var itemSubmenuUl = itemSubmenu.appendChild(document.createElement("ul"));            
-            itemSubmenuUl.id =  _id;            
+            var itemSubmenuUl = itemSubmenu.appendChild(document.createElement("ul"));
+            itemSubmenuUl.id = _id;
             return itemSubmenuUl;
-        }, 
+        },
 
-        createDeepItem: function(_parent, _id) {    
-            
+        createDeepItem: function (_parent, _id) {
+
             _parent.className = "";
-            _parent.href.setAttribute("data-toggle", "collapse");                
+            _parent.href.setAttribute("data-toggle", "collapse");
             _parent.href.setAttribute("aria-expanded", "false");
-            _parent.href.className = "collapsed";
-        
-            var itemSubmenuUl = _parent.appendChild(document.createElement("ul"));     
-            itemSubmenuUl.className = "collapse";       
-            itemSubmenuUl.id =  _id;            
+            _parent.href.className = "nav-link collapsed";
+
+            var itemSubmenuUl = _parent.appendChild(document.createElement("ul"));
+            itemSubmenuUl.className = "collapse";
+            itemSubmenuUl.id = _id;
             return itemSubmenuUl;
-        }, 
+        },
 
         //Конструктор    
         create: function () {
@@ -287,14 +279,16 @@ function createSidebar() {
                 // Dropdown menu
                 $(".sidebar-dropdown > a").click(function () {
                     $(".sidebar-submenu").slideUp(200);
+
                     if ($(this).parent().hasClass("active")) {
-                        $(".sidebar-dropdown").removeClass("active");
+                        // $(".sidebar-dropdown").removeClass("active");
                         $(this).parent().removeClass("active");
                     } else {
                         $(".sidebar-dropdown").removeClass("active");
                         $(this).next(".sidebar-submenu").slideDown(200);
                         $(this).parent().addClass("active");
                     }
+
 
                 });
 
@@ -374,7 +368,7 @@ function createSidebar() {
                 */
             });
         }
-        
+
     }
     sideBar.create();
     return sideBar;

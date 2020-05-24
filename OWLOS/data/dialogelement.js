@@ -169,6 +169,15 @@ function createModalDialog(_titleText, _bodyText) {
             });
         },
 
+        show: function () {
+            $("#" + this.id + "Modal").modal('show');
+        },
+
+        hide: function() {
+            this.OKButton.clicked = undefined;
+            $("#" + this.id + "Modal").modal('hide');
+        },
+
         OKButtonClick: function (event) {
             event.currentTarget.clicked = true;
         },
@@ -217,11 +226,8 @@ function createModalDialog(_titleText, _bodyText) {
         appendSelect: function (dialogSelect) {
             this.appendChildToForm(dialogSelect.label);
             this.appendChildToForm(dialogSelect.select);
-        }, 
-
-        show: function () {
-            $("#" + this.id + "Modal").modal('show');
         }
+
     };
 
     modalDialog.create();

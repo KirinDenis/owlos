@@ -60,17 +60,22 @@ var settingsUI = {
 
 
                 //node properties subItem 
-                var nodePropItem = sideBar.createItem(nodeNavSubItem, "nodepropitem", "#" + node.nodenickname + "nodePropsPanel", getLang("nodeproperties"), settingsUI.driverAnchorClick, undefined, undefined);
+                var nodePropItem = sideBar.createItem(nodeNavSubItem, "nodepropitem", "#" + node.nodenickname + "nodePropsPanel", getLang("nodeproperties"), settingsUI.driverAnchorClick, "fa fa-cog", undefined);
                 //node drivers                 
                 var driversItem = sideBar.createItem(nodeNavSubItem, node.nodenickname + "driversitem", "#" + node.nodenickname + "driverssubmenu", getLang("drivers"), settingsUI.driverAnchorClick, undefined, "0");
                 var driversSubItem = sideBar.createDeepItem(driversItem, node.nodenickname + "driverssubmenu");
-                var addDriverItem = sideBar.createItem(driversSubItem, "adddriveritem", "#adddriveritem", getLang("adddriver"), settingsUI.addDriverClick, undefined, undefined);
+                var addDriverItem = sideBar.createItem(driversSubItem, "adddriveritem", "#adddriveritem", getLang("adddriver"), settingsUI.addDriverClick, "fa fa-plus", undefined);
                 addDriverItem.href.node = node;
+                addDriverItem.href.style.color = theme.warning;
 
                 //node scripts
-                var scriptsItem = sideBar.createItem(nodeNavSubItem, "scriptsitem", "#" + node.nodenickname + "scriptssubmenu", getLang("scripts"), settingsUI.scriptAnchorClick, undefined, undefined);
+                var scriptsItem = sideBar.createItem(nodeNavSubItem, "scriptsitem", "#" + node.nodenickname + "scriptssubmenu", getLang("scripts"), settingsUI.scriptAnchorClick, undefined, undefined);                
                 var scriptsSubItem = sideBar.createDeepItem(scriptsItem, node.nodenickname + "scriptssubmenu");
-                sideBar.createItem(scriptsSubItem, "addscriptitem", "#addscriptitem", getLang("addscript"), scriptsUI.createScriptClick, undefined, undefined);
+                var addScriptItem = sideBar.createItem(scriptsSubItem, "addscriptitem", "#addscriptitem", getLang("createscript"), scriptsUI.createScriptClick, "fa fa-plus", undefined);
+                addScriptItem.href.node = node;
+                addScriptItem.href.style.color = theme.warning;
+
+
                 //node files 
                 sideBar.createItem(nodeNavSubItem, "filesitem", "#" + node.nodenickname + "nodeFilesItem", getLang("files"), settingsUI.driverAnchorClick, undefined, undefined);
 
@@ -358,8 +363,8 @@ var settingsUI = {
             var node = config.getNodeByHost(driver._host); //узнаем какой ноде принадлежит драйвер
             if (node == undefined) return; //выходим если нода не найдена
 
-            var driverLi = nodeSubmenuUl.appendChild(document.createElement("li")); //добавляем дочерний пукт в меню ноды в sideBar
-            driverLi.className = "nav-item";
+            //var driverLi = nodeSubmenuUl.appendChild(document.createElement("li")); //добавляем дочерний пукт в меню ноды в sideBar
+            //driverLi.className = "nav-item";
 
             //submenu drivers count 
 
@@ -370,15 +375,19 @@ var settingsUI = {
             driverSpan.driversCount++;
             driverSpan.innerHTML = parseInt(driverSpan.driversCount);
 
+            //sideBar.createDeepItem(nodeSubmenuUl, )
+            var driverAhref = sideBar.createItem(nodeSubmenuUl, driver._nodenickname + "_" + driver._id, "#" + driver._nodenickname + "_" + driver._id, driver._id, settingsUI.driverAnchorClick, "fa fa-sliders-h", undefined);
+
+            /*
             var driverAhref = driverLi.appendChild(document.createElement("a")); //отображаемая часть меню - гиперссылка
-            driverAhref.className = "nav-link";
+            driverAhref.className = "";
             driverAhref.setAttribute("data-toggle", "tab");
             driverAhref.href = "#" + driver._nodenickname + "_" + driver._id; //якорь на панель с таблицей со свойствами выбранного драйвера (создается один раз)
             driverAhref.node = config.getNodeByHost(driver._host); //привязываем пункт меню к ноде которой принадлежит драйвера (используется для быстрого поска ноды в будущем)
             driverAhref.innerText = driver._id; //пункт меню отображает ID нового драйвера
             driverAhref.onclick = settingsUI.driverAnchorClick; //обработчик клика на пунк меню (переключение панелей)
             driverAhref.parentLi = driverLi; //сохраняем родительский driverId
-
+*/
 
             var nodePropAnchors = document.getElementById("nodePropNavBar"); //старая навигационная панель для отображения панелей свойств
             var nodesPropsPanel = document.getElementById("nodesPropsPanel");

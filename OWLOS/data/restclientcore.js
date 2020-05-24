@@ -39,8 +39,8 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-var boardhost = "http://81.95.178.177:8084/"; //DEBUG
-//var boardhost = "http://192.168.1.28:8084/"; //DEBUG as WiFi Access Point
+//var boardhost = "http://81.95.178.177:8084/"; //DEBUG
+var boardhost = "http://192.168.1.8:8084/"; //DEBUG as WiFi Access Point
 //var boardhost = ""; //UI loading from ESPxxxx
 
 

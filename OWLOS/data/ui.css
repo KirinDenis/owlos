@@ -273,6 +273,56 @@ textarea {
     }
 }
 
+
+.nav-link[data-toggle].collapsed:after {
+         font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+        content: "\f105";
+        display: inline-block;
+        font-style: normal;
+        font-variant: normal;
+        text-rendering: auto;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-align: center;
+        background: 0 0;
+        position: absolute;
+        right: 15px;
+        top: 10px;
+        -webkit-transition: -webkit-transform .3s ease;
+        transition: -webkit-transform .3s ease;
+        transition: transform .3s ease;
+        transition: transform .3s ease, -webkit-transform .3s ease;
+    
+
+}
+.nav-link[data-toggle]:not(.collapsed):after {
+    
+         font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+        content: "\f105";
+        display: inline-block;
+        font-style: normal;
+        font-variant: normal;
+        text-rendering: auto;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-align: center;
+        background: 0 0;
+        position: absolute;
+        right: 15px;
+        top: 10px;
+        -webkit-transition: -webkit-transform .3s ease;
+        transition: -webkit-transform .3s ease;
+        transition: transform .3s ease;
+        transition: transform .3s ease, -webkit-transform .3s ease;
+    
+        -webkit-transform: rotate(90deg);
+        transform: rotate(90deg);
+        right: 15px;
+
+}
+
 .sidebar-wrapper {
     width: 280px;
     height: 100%;
@@ -450,10 +500,10 @@ textarea {
 
         .sidebar-wrapper .sidebar-menu ul li a i {
             margin-right: 10px;
-            font-size: 12px;
-            width: 35px;
-            height: 35px;
-            line-height: 35px;
+            font-size: 14px;
+            width: 25px;
+            height: 25px;
+            line-height: 28px;
             text-align: center;
             -ms-flex-negative: 0;
             flex-shrink: 0;
@@ -501,7 +551,7 @@ textarea {
 
         .sidebar-wrapper .sidebar-menu .sidebar-dropdown .sidebar-submenu li {
             padding-left: 25px;
-            font-size: 13px;
+            /*! font-size: 13px; */
         }
 
             .sidebar-wrapper .sidebar-menu .sidebar-dropdown .sidebar-submenu li a {
@@ -510,19 +560,6 @@ textarea {
                 text-overflow: ellipsis;
             }
 
-                .sidebar-wrapper .sidebar-menu .sidebar-dropdown .sidebar-submenu li a:before {
-                    content: "\f111";
-                    font-family: "Font Awesome 5 Free";
-                    font-weight: 400;
-                    font-style: normal;
-                    display: inline-block;
-                    text-align: center;
-                    text-decoration: none;
-                    -webkit-font-smoothing: antialiased;
-                    -moz-osx-font-smoothing: grayscale;
-                    margin-right: 10px;
-                    font-size: 8px;
-                }
 
                 .sidebar-wrapper .sidebar-menu .sidebar-dropdown .sidebar-submenu li a .badge,
                 .sidebar-wrapper .sidebar-menu .sidebar-dropdown .sidebar-submenu li a .label {
@@ -874,7 +911,7 @@ body {
     .default-theme .sidebar-wrapper .sidebar-menu a:hover i,
     .default-theme .sidebar-wrapper .sidebar-menu a:hover:before,
     .default-theme .sidebar-wrapper .sidebar-menu li.active a i {
-        color: #22ff16;
+        color: #5cb55d;
     }
 
     .default-theme .sidebar-wrapper .sidebar-menu ul li a i {
@@ -953,7 +990,7 @@ body {
 }
 
 .default-theme.sidebar-bg .sidebar-wrapper .sidebar-menu ul li a i {
-    background-color: rgba(81, 81, 81, 0.5);
+    background-color: rgba(81, 81, 81, 0);
 }
 
 .default-theme.sidebar-bg .sidebar-wrapper .sidebar-footer {
