@@ -8,7 +8,19 @@
     padding-left: 1px;
 }
 
-`
+.header-panel {
+    background-color: #313438;
+    padding: 1rem 1.2rem;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    height: 42px;    
+    border-bottom: 1px solid #2b2b2b;
+    border-color: #df4d4d;    
+}
 
 .navbar, .tab-pane, .row {
     border: 0px;
@@ -390,7 +402,7 @@ textarea {
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
-    height: 55px;
+    height: 40px;
 }
 
     .sidebar-wrapper .sidebar-brand > a {
@@ -911,7 +923,7 @@ body {
     .default-theme .sidebar-wrapper .sidebar-menu a:hover i,
     .default-theme .sidebar-wrapper .sidebar-menu a:hover:before,
     .default-theme .sidebar-wrapper .sidebar-menu li.active a i {
-        color: #5cb55d;
+        color: #56b1cd;
     }
 
     .default-theme .sidebar-wrapper .sidebar-menu ul li a i {

@@ -136,8 +136,10 @@ function loadingScripts(withInternet) {
             else link.href = "bootstrap.spacelab.min.css"; //если мы без интернет
         }
         else {//default 
-            if (withInternet) link.href = "https://bootswatch.com/4/slate/bootstrap.min.css"; //если мы с интернет //link.href = "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css";
-            else link.href = "bootstrap.min.css"; //если мы без интернет
+            //if (withInternet) link.href = "https://bootswatch.com/4/slate/bootstrap.min.css"; //если мы с интернет //link.href = "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css";
+            //else 
+            //all time local copy loading
+            link.href = "bootstrap.min.css"; //если мы без интернет
 
         }
         

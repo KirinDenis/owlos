@@ -143,7 +143,7 @@ Battle Hamster Script
 
 //byteCode коды инструкций (смотрите структуру Instruction поле type)
 #define STOP_INSTRUCTION		0b00000000
-#define IF_UPPER_INSTRUCTION	0b00000001
+#define IF_UPPER_INSTRUCTION		0b00000001
 #define IF_LOWER_INSTUCTION		0b00000010
 #define IF_EQUAL_INSTUCTION		0b00000011
 #define GOTO_INSTRUCTION		0b00000100
@@ -154,7 +154,7 @@ Battle Hamster Script
 #define DEV_INSTRUCTION			0b00001001
 #define GET_DRIVER_PROPERTY_INSTRUCTION	0b00001011
 #define SET_DRIVER_PROPERTY_INSTRUCTION	0b00001100
-#define SERIAL_OUT_INSTRUCTION	0b00001101
+#define SERIAL_OUT_INSTRUCTION		0b00001101
 
 //определения управляющих переменных и переменных опций компиляции
 #define STOP_IF_DEVICE_NOTREADY "STOP_IF_DEVICE_NOTREADY" //если в скрипте будет определена переменная с таким именем и драйвер не готово - программа остановится
