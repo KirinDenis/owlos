@@ -132,83 +132,111 @@ var dashboardUI = {
 
     addWidgetMode: function () {
 
-        makeModalDialog("resetPanel", "widget", getLang("dashboardaddwidget"), getLang("areYouSure"));
-        var modalBody = document.getElementById("widgetModalBody");
-        modalBody.innerHTML = "";
-        var modalFooter = document.getElementById("widgetModalFooter");
-        //Body form -----------------
-        var formGroup = modalBody.appendChild(document.createElement("div"));
-        formGroup.className = "form-group";
+        var  addWidgetDialog = createModalDialog(getLang("dashboardaddwidget"), "");
+        addWidgetDialog.appendSelect(createDialogSelect("nodeselect", getLang("nodeselect")));
 
-        //driver select 
-        var driverLabel = formGroup.appendChild(document.createElement("label"));
-        driverLabel.setAttribute("for", "driverSelect");
-        driverLabel.innerText = getLang("nodeslist");
-        var driverSelect = formGroup.appendChild(document.createElement('select'));
-        driverSelect.className = "form-control form-control-sm";
-        driverSelect.id = "typeSelect";
+        var nodeSelect = addWidgetDialog.getChild("nodeselect");
+        nodeSelect.onchange = dashboardUI.onNodeSelectChange;
 
         for (var node in configProperties.nodes) {
-
-            for (var i = 0; i < configProperties.nodes[node].drivers.length; i++) {
-                var valueSelectOption = driverSelect.appendChild(document.createElement('option'));
-                valueSelectOption.innerText = getLang(configProperties.nodes[node].drivers[i]._nodenickname + "/" + configProperties.nodes[node].drivers[i]._id);
-                valueSelectOption.driver = configProperties.nodes[node].drivers[i];
-            }
+            var nodeSelectOption = nodeSelect.dialogSelect.appendOption( configProperties.nodes[node].nodenickname);
+            nodeSelectOption.node = configProperties.nodes[node];            
         }
 
-        driverSelect.onchange = dashboardUI.onDriverSelect;
-        //driver property select 
+        addWidgetDialog.appendSelect(createDialogSelect("driverselect", getLang("driverselect")));
+        var driverSelect = addWidgetDialog.getChild("driverselect");
+        nodeSelect.driverSelect = driverSelect;
+        driverSelect.onchange = dashboardUI.onDriverSelectChange;
 
-        var driverPropLabel = formGroup.appendChild(document.createElement("label"));
-        driverPropLabel.setAttribute("for", "driverPropSelect");
-        driverPropLabel.innerText = getLang("driversporplist");
-        var driverPropSelect = formGroup.appendChild(document.createElement('select'));
-        driverPropSelect.className = "form-control form-control-sm";
-        driverPropSelect.id = "typeSelect";
+        addWidgetDialog.appendSelect(createDialogSelect("propselect", getLang("propselect")));
+        var propSelect = addWidgetDialog.getChild("propselect");
+        driverSelect.propSelect = propSelect;
+        propSelect.onchange = dashboardUI.onPropSelectChange;
 
-        driverPropSelect.onchange = dashboardUI.onDriverPropSelect;
+        addWidgetDialog.appendSelect(createDialogSelect("widgetselect", getLang("widgetselect")));
+        var widgetSelect = addWidgetDialog.getChild("widgetselect");
+        propSelect.widgetSelect = widgetSelect;
 
-        //widgets 
-        //driver select 
-        var widgetLabel = formGroup.appendChild(document.createElement("label"));
-        widgetLabel.setAttribute("for", "widgetSelect");
-        widgetLabel.innerText = getLang("widgetslist");
-        var widgetSelect = formGroup.appendChild(document.createElement('select'));
-        widgetSelect.className = "form-control form-control-sm";
-        widgetSelect.id = "typeSelect";
+        var event = { currentTarget: nodeSelect }
+        dashboardUI.onNodeSelectChange(event);
 
-
-
-        driverSelect.driverPropSelect = driverPropSelect;
-        driverPropSelect.driverSelect = driverSelect;
-        driverSelect.widgetSelect = widgetSelect;
-
-        var event = { currentTarget: driverSelect };
-        dashboardUI.onDriverSelect(event);
-
-
-        //end of Body form ----------
-        var widgetButton = modalFooter.appendChild(document.createElement("button"));
-        widgetButton.type = "button";
-        widgetButton.className = "btn btn-sm btn-success";
-        widgetButton.id = "widgetModalButton";
-        widgetButton.driverSelect = driverSelect;
-        widgetButton.onclick = dashboardUI.addWidgetClick;
-        widgetButton.innerText = getLang("dashboardaddwidgetbutton");
-
-        $("#widgetModal").modal('show');
-
+        addWidgetDialog.onOK = dashboardUI.doAddWidget;
+        addWidgetDialog.show();
 
     },
 
+    doAddWidget: function (addWidgetDialog) {
+        var driver =  addWidgetDialog.getChild("driverselect").driver;
+        var driverProp = addWidgetDialog.getChild("propselect").prop;
+        var widgetLayer = addWidgetDialog.getChild("widgetselect").widget;
+
+        new widgetLayer.widget(driversWidgetsPanel, driver, driverProp).onload = function (widgetWrapper) {
+
+            var configPropertiesWidget = config.addWidget("main", driver._id, driverProp.name, widgetLayer.id, widgetWrapper.widget.id, widgetWrapper.widget.properties);
+            widgetWrapper.widget.onchange = config.onWidgetChange;
+            widgetWrapper.widget.ondelete = config.onWidgetDelete;
+
+        };
+         
+        return true;
+
+    },
+
+    onNodeSelectChange: function(event) {
+        var nodeSelect = event.currentTarget;
+        var nodeSelectOption = nodeSelect.options[nodeSelect.selectedIndex];
+        var node = nodeSelectOption.node;
+        var driverSelect = nodeSelect.driverSelect;
+
+        driverSelect.options.length = 0;
+        for (var i = 0; i < node.drivers.length; i++) {
+            var driverSelectOption = driverSelect.dialogSelect.appendOption(node.drivers[i]._id);
+            driverSelectOption.driver = node.drivers[i];
+        }
+    },
+
+    onDriverSelectChange: function(event) {
+        var driverSelect = event.currentTarget;
+        var driverSelectOption = driverSelect.options[driverSelect.selectedIndex];
+        var driver = driverSelectOption.driver;
+        var propSelect = driverSelect.propSelect;
+
+        propSelect.options.length = 0;
+        for (var driverProp in driver) {
+            if ((driver[driverProp].name == undefined) || (driver[driverProp].type == undefined)) continue;
+            var propSelectOption = propSelect.dialogSelect.appendOption(driver[driverProp].name);
+            propSelectOption.prop = driver[driverProp];
+            propSelectOption.driver = driver;
+        }
+    },
+
+    onPropSelectChange: function(event) {
+        var propSelect = event.currentTarget;
+        var propSelectOption = propSelect.options[propSelect.selectedIndex];
+        var prop = propSelectOption.prop;
+        var driver = propSelectOption.driver;
+        var widgetSelect = propSelect.widgetSelect;
+
+        widgetSelect.options.length = 0;
+
+        for (var widget in WidgetsLayer) {
+            if (WidgetsLayer[widget].widget == undefined) continue;
+            if ((WidgetsLayer[widget].driversTypes.indexOf(";" + driver.type.value + ";") != -1) || (WidgetsLayer[widget].driversTypes == "any")) {
+                if ((WidgetsLayer[widget].driversProperties.indexOf(";" + prop.name + ";") != -1) || (WidgetsLayer[widget].driversProperties == "any")) {
+                    var widgetSelectOption = widgetSelect.dialogSelect.appendOption(WidgetsLayer[widget].name);
+                    widgetSelectOption.widget = WidgetsLayer[widget];        
+                }
+            }
+        }
+    },
+
+
+    //OLD ----------------------------------------
     onDriverSelect: function (event) {
         var driverSelect = event.currentTarget;
         var driverPropSelect = driverSelect.driverPropSelect;
         var widgetSelect = driverSelect.widgetSelect;
         var valueSelectOption = driverSelect.options[driverSelect.selectedIndex];
-
-
         var driver = valueSelectOption.driver;
 
         driverPropSelect.options.length = 0;

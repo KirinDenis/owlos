@@ -67,6 +67,9 @@ var driversUI = {
 
     onDriverSelectChange: function (event) {
         var driverSelect = event.currentTarget;
+        if (driverSelect.selectedIndex == -1) {
+            return true;
+        }
         var driverSelectOption = driverSelect.options[driverSelect.selectedIndex];
         var driver = driverSelectOption.driver;
 

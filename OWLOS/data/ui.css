@@ -344,7 +344,7 @@ textarea {
     left: -280px;
     z-index: 999;
     -webkit-transition: left .3s ease, width .3s ease;
-    transition: left .3s ease, width .3s ease;
+    transition: left 1s cubic-bezier(.95,.05,.8,.04), width 1s cubic-bezier(.79,.14,.15,.86);
 }
 
     .sidebar-wrapper ul {
@@ -772,7 +772,7 @@ body {
         display: inline-block;
         width: 100%;
         -webkit-transition: padding-left .3s ease;
-        transition: padding-left .3s ease;
+        transition: padding-left .3s cubic-bezier(.03,-0.06,.25,1);
         overflow-x: hidden;
     }
 
