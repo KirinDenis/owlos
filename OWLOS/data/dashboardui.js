@@ -39,11 +39,13 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-//Dashboard --------------------------------------------------------------------------------------------------------
+//Dashboard UI
 var dashboardUI = {
 
     dashboardModeListners: [],
     dashboardViewMode: true,
+    mainProperties: ",data,historydata,historyfile,temperature,humidity,temperaturehistoryfile,temperaturehistorydata,humidityhistoryfile,humidityhistorydata,text",
+    secondaryDrivers: ",wifi,esp,network",
 
     addDashboardModeListner: function (_event, _sender) { //для добавления нового подписчика(так же как и addValueListner)                                
         //check event listner and setup current network status 
@@ -67,34 +69,34 @@ var dashboardUI = {
         saveWidgetsButton.value = getLang("saveaddedwidget");
         saveWidgetsButton.hidden = true;
         saveWidgetsButton.id = "saveWidgetsButton";
-        saveWidgetsButton.onclick = dashboardUI.saveAddedWidget;  
+        saveWidgetsButton.onclick = dashboardUI.saveAddedWidget;
         config.onChange = dashboardUI.onConfigChange;
 
 
         var dashboardButtonsPanel = document.getElementById("dashboardButtonsPanel");
         var headerModeButton = dashboardButtonsPanel.appendChild(document.createElement('input'));
-        headerModeButton.className = "btn btn-secondary btn-sm";
+        headerModeButton.className = "btn btn-sm";
         headerModeButton.type = "button";
         headerModeButton.value = getLang("dashboardedit");
-        headerModeButton.onclick = dashboardUI.changeDashboadMode;        
+        headerModeButton.onclick = dashboardUI.changeDashboadMode;
 
         var addWidgetButton = dashboardButtonsPanel.appendChild(document.createElement('input'));
-        addWidgetButton.className = "btn btn-success btn-sm";
+        addWidgetButton.className = "btn btn-sm";
         addWidgetButton.type = "button";
         addWidgetButton.value = getLang("dashboardaddwidget");
-        addWidgetButton.onclick = dashboardUI.addWidgetMode;
+        addWidgetButton.onclick = dashboardUI.onAddWidgetClick;
 
         var driversWidgetsPanel = document.getElementById("driversWidgetsPanel");
-        
+
         for (var i = 0; i < configProperties.dashboards[0].widgets.length; i++) {
             try {
                 var widgetProp = configProperties.dashboards[0].widgets[i];
                 var widgetLayer = WidgetsLayer.getWidgetById(widgetProp.widgetWrapperId);
                 if (widgetLayer != undefined) {
                     var widgetWrapper = new widgetLayer.widget(driversWidgetsPanel, undefined, undefined, configProperties.dashboards[0].widgets[i], widgetProp.widgetProperties);
-                                                          
 
-                    widgetWrapper.offlineStarter(driversWidgetsPanel, widgetProp.driverId, widgetProp.driverProperty);                    
+
+                    widgetWrapper.offlineStarter(driversWidgetsPanel, widgetProp.driverId, widgetProp.driverProperty);
                     widgetWrapper.widget.onchange = config.onWidgetChange;
                     widgetWrapper.widget.ondelete = config.onWidgetDelete;
                     widgetWrapper.widget.properties = widgetProp.widgetProperties;
@@ -130,17 +132,19 @@ var dashboardUI = {
         return false;
     },
 
-    addWidgetMode: function () {
+    //Widgets panel -----------------------------------------------------------------------------------------------
+    onAddWidgetClick: function () {
 
-        var  addWidgetDialog = createModalDialog(getLang("dashboardaddwidget"), "");
-        addWidgetDialog.appendSelect(createDialogSelect("nodeselect", getLang("nodeselect")));
+        var addWidgetDialog = createModalDialog(getLang("dashboardaddwidget"), "");
+        addWidgetDialog.appendSelect(createDialogSelect("nodeselect", "<strong>" + getLang("nodeselect") + "</strong>"));
 
         var nodeSelect = addWidgetDialog.getChild("nodeselect");
         nodeSelect.onchange = dashboardUI.onNodeSelectChange;
+        nodeSelect.addWidgetDialog = addWidgetDialog;
 
         for (var node in configProperties.nodes) {
-            var nodeSelectOption = nodeSelect.dialogSelect.appendOption( configProperties.nodes[node].nodenickname);
-            nodeSelectOption.node = configProperties.nodes[node];            
+            var nodeSelectOption = nodeSelect.dialogSelect.appendOption(configProperties.nodes[node].nodenickname);
+            nodeSelectOption.node = configProperties.nodes[node];
         }
 
         addWidgetDialog.appendSelect(createDialogSelect("driverselect", getLang("driverselect")));
@@ -156,33 +160,32 @@ var dashboardUI = {
         addWidgetDialog.appendSelect(createDialogSelect("widgetselect", getLang("widgetselect")));
         var widgetSelect = addWidgetDialog.getChild("widgetselect");
         propSelect.widgetSelect = widgetSelect;
-
-        var event = { currentTarget: nodeSelect }
-        dashboardUI.onNodeSelectChange(event);
+        
+        dashboardUI.onNodeSelectChange(event = { currentTarget: nodeSelect });
 
         addWidgetDialog.onOK = dashboardUI.doAddWidget;
         addWidgetDialog.show();
-
     },
 
     doAddWidget: function (addWidgetDialog) {
-        var driver =  addWidgetDialog.getChild("driverselect").driver;
-        var driverProp = addWidgetDialog.getChild("propselect").prop;
-        var widgetLayer = addWidgetDialog.getChild("widgetselect").widget;
+        var driverSelect = addWidgetDialog.getChild("driverselect");
+        var driver = driverSelect.options[driverSelect.selectedIndex].driver;
+        var propSelect = addWidgetDialog.getChild("propselect");
+        var driverProp = propSelect.options[propSelect.selectedIndex].prop;
+        var widgetSelect = addWidgetDialog.getChild("widgetselect");
+        var widgetLayer = widgetSelect.options[widgetSelect.selectedIndex].widgetLayer;
+
+        var driversWidgetsPanel = document.getElementById("driversWidgetsPanel");
 
         new widgetLayer.widget(driversWidgetsPanel, driver, driverProp).onload = function (widgetWrapper) {
-
             var configPropertiesWidget = config.addWidget("main", driver._id, driverProp.name, widgetLayer.id, widgetWrapper.widget.id, widgetWrapper.widget.properties);
             widgetWrapper.widget.onchange = config.onWidgetChange;
             widgetWrapper.widget.ondelete = config.onWidgetDelete;
-
         };
-         
         return true;
-
     },
 
-    onNodeSelectChange: function(event) {
+    onNodeSelectChange: function (event) {
         var nodeSelect = event.currentTarget;
         var nodeSelectOption = nodeSelect.options[nodeSelect.selectedIndex];
         var node = nodeSelectOption.node;
@@ -190,131 +193,78 @@ var dashboardUI = {
 
         driverSelect.options.length = 0;
         for (var i = 0; i < node.drivers.length; i++) {
-            var driverSelectOption = driverSelect.dialogSelect.appendOption(node.drivers[i]._id);
+            if (dashboardUI.secondaryDrivers.indexOf("," + node.drivers[i]._id) == -1) {
+                var driverSelectOption = driverSelect.dialogSelect.appendOption(node.drivers[i]._id, 0);
+                driverSelectOption.className = "bold-option";
+            }
+            else {
+                var driverSelectOption = driverSelect.dialogSelect.appendOption(node.drivers[i]._id, 0);
+            }
             driverSelectOption.driver = node.drivers[i];
         }
+        if (node.drivers.length == 0) {
+            driverSelect.disabled = true;
+            nodeSelect.addWidgetDialog.errorLabel.innerHTML = getLang("nodeoffline");
+        }
+        else {
+            driverSelect.disabled = false;
+            driverSelect.selectedIndex = 0;
+            nodeSelect.addWidgetDialog.errorLabel.innerHTML = "";
+        }
+        dashboardUI.onDriverSelectChange(event = { currentTarget: driverSelect });
+        return false;
     },
 
-    onDriverSelectChange: function(event) {
+    onDriverSelectChange: function (event) {
         var driverSelect = event.currentTarget;
-        var driverSelectOption = driverSelect.options[driverSelect.selectedIndex];
-        var driver = driverSelectOption.driver;
         var propSelect = driverSelect.propSelect;
-
         propSelect.options.length = 0;
-        for (var driverProp in driver) {
-            if ((driver[driverProp].name == undefined) || (driver[driverProp].type == undefined)) continue;
-            var propSelectOption = propSelect.dialogSelect.appendOption(driver[driverProp].name);
-            propSelectOption.prop = driver[driverProp];
-            propSelectOption.driver = driver;
+        propSelect.disabled = driverSelect.disabled;
+        if (!driverSelect.disabled) {
+            var driverSelectOption = driverSelect.options[driverSelect.selectedIndex];
+            var driver = driverSelectOption.driver;
+            for (var driverProp in driver) {
+                if ((driver[driverProp].name == undefined) || (driver[driverProp].type == undefined)) continue;
+                if (dashboardUI.mainProperties.indexOf("," + driver[driverProp].name) != -1) {
+                    var propSelectOption = propSelect.dialogSelect.appendOption(driver[driverProp].name, 0);
+                    propSelectOption.className = "bold-option";
+                }
+                else {
+                    var propSelectOption = propSelect.dialogSelect.appendOption(driver[driverProp].name);
+                }
+                propSelectOption.prop = driver[driverProp];
+                propSelectOption.driver = driver;
+            }
+            //три драйвера есть всегда, если нода online у этих драйверов точно есть свойства
+            propSelect.selectedIndex = 0;
         }
+        dashboardUI.onPropSelectChange(event = { currentTarget: propSelect });
+        return false;
     },
 
-    onPropSelectChange: function(event) {
+    onPropSelectChange: function (event) {
         var propSelect = event.currentTarget;
-        var propSelectOption = propSelect.options[propSelect.selectedIndex];
-        var prop = propSelectOption.prop;
-        var driver = propSelectOption.driver;
         var widgetSelect = propSelect.widgetSelect;
-
         widgetSelect.options.length = 0;
-
-        for (var widget in WidgetsLayer) {
-            if (WidgetsLayer[widget].widget == undefined) continue;
-            if ((WidgetsLayer[widget].driversTypes.indexOf(";" + driver.type.value + ";") != -1) || (WidgetsLayer[widget].driversTypes == "any")) {
-                if ((WidgetsLayer[widget].driversProperties.indexOf(";" + prop.name + ";") != -1) || (WidgetsLayer[widget].driversProperties == "any")) {
-                    var widgetSelectOption = widgetSelect.dialogSelect.appendOption(WidgetsLayer[widget].name);
-                    widgetSelectOption.widget = WidgetsLayer[widget];        
+        widgetSelect.disabled = propSelect.disabled;
+        if (!widgetSelect.disabled) {
+            var propSelectOption = propSelect.options[propSelect.selectedIndex];
+            var prop = propSelectOption.prop;
+            var driver = propSelectOption.driver;
+            for (var widget in WidgetsLayer) {
+                if (WidgetsLayer[widget].widget == undefined) continue;
+                if ((WidgetsLayer[widget].driversTypes.indexOf(";" + driver.type.value + ";") != -1) || (WidgetsLayer[widget].driversTypes == "any")) {
+                    if ((WidgetsLayer[widget].driversProperties.indexOf(";" + prop.name + ";") != -1) || (WidgetsLayer[widget].driversProperties == "any")) {
+                        var widgetSelectOption = widgetSelect.dialogSelect.appendOption(WidgetsLayer[widget].name);
+                        widgetSelectOption.widgetLayer = WidgetsLayer[widget];
+                    }
                 }
             }
         }
+        return false;
     },
 
-
-    //OLD ----------------------------------------
-    onDriverSelect: function (event) {
-        var driverSelect = event.currentTarget;
-        var driverPropSelect = driverSelect.driverPropSelect;
-        var widgetSelect = driverSelect.widgetSelect;
-        var valueSelectOption = driverSelect.options[driverSelect.selectedIndex];
-        var driver = valueSelectOption.driver;
-
-        driverPropSelect.options.length = 0;
-        for (var driverProp in driver) {
-            if ((driver[driverProp].name == undefined) || (driver[driverProp].type == undefined)) continue;
-            var propSelectOption = driverPropSelect.appendChild(document.createElement('option'));
-            propSelectOption.innerText = driver[driverProp].name;
-            propSelectOption.driverProp = driver[driverProp];
-        }
-
-        var driverPropSelectOption = driverPropSelect.options[driverPropSelect.selectedIndex];
-        var driverProp = driverPropSelectOption.driverProp;
-        dashboardUI.refreshWidgetsSelect(widgetSelect, driver, driverProp);
-    },
-
-    onDriverPropSelect: function (event) {
-        var driverPropSelect = event.currentTarget;
-        var driverSelect = driverPropSelect.driverSelect;
-        var widgetSelect = driverSelect.widgetSelect;
-
-        var driverSelectOption = driverSelect.options[driverSelect.selectedIndex];
-        var driver = driverSelectOption.driver;
-        var driverPropSelectOption = driverPropSelect.options[driverPropSelect.selectedIndex];
-        var driverProp = driverPropSelectOption.driverProp;
-        dashboardUI.refreshWidgetsSelect(widgetSelect, driver, driverProp);
-    },
-
-    refreshWidgetsSelect: function (widgetSelect, driver, driverProp) {
-        widgetSelect.options.length = 0;
-        for (var widget in WidgetsLayer) {
-            if (WidgetsLayer[widget].widget == undefined) continue;
-            if ((WidgetsLayer[widget].driversTypes.indexOf(";" + driver.type.value + ";") != -1) || (WidgetsLayer[widget].driversTypes == "any")) {
-                if ((WidgetsLayer[widget].driversProperties.indexOf(";" + driverProp.name + ";") != -1) || (WidgetsLayer[widget].driversProperties == "any")) {
-                    var widgetSelectOption = widgetSelect.appendChild(document.createElement('option'));
-                    widgetSelectOption.innerText = WidgetsLayer[widget].name;
-                    widgetSelectOption.widgetLayer = WidgetsLayer[widget];
-                }
-            }
-        }
-
-    },
-
-    addWidgetClick: function (event) {
-        var driversWidgetsPanel = document.getElementById("driversWidgetsPanel");
-        var button = event.currentTarget;
-        var driverSelect = button.driverSelect;
-        var driverPropSelect = driverSelect.driverPropSelect;
-        var widgetSelect = driverSelect.widgetSelect;
-
-        var valueSelectOption = driverSelect.options[driverSelect.selectedIndex];
-        var driver = valueSelectOption.driver;
-        var driverProp = driverPropSelect.options[driverPropSelect.selectedIndex].driverProp;
-        var widgetLayer = widgetSelect.options[widgetSelect.selectedIndex].widgetLayer;
-
-        new widgetLayer.widget(driversWidgetsPanel, driver, driverProp).onload = function (widgetWrapper) {
-
-            var configPropertiesWidget = config.addWidget("main", driver._id, driverProp.name, widgetLayer.id, widgetWrapper.widget.id, widgetWrapper.widget.properties);
-
-            widgetWrapper.widget.onchange = config.onWidgetChange;
-            widgetWrapper.widget.ondelete = config.onWidgetDelete;
-
-
-            $("#widgetModal").modal('hide');
-        };
-
-        /*
-            var driversWidgetsPanel = document.getElementById("widgetsPanelDataDiv");
-            var driver = drivers.getDriverById("temperature");    
-            new TemperatureWidgetWrapper(driversWidgetsPanel, driver, driver.temperature);
-            new TemperatureWidgetWrapper(driversWidgetsPanel, driver, driver.temperature, 1);
-        
-            var driver = drivers.getDriverById("humidiry");
-            new HumidityDriver(driversWidgetsPanel, driver, driver.humidity);
-            new HumidityDriver(driversWidgetsPanel, driver, driver.humidity, 1);
-    
-        */
-
-    },
+    //OLD Save Widgets ---------------------------------------------------------------------------------
 
     saveAddedWidget: function (event) {
         var buttonSave = event.currentTarget;
@@ -360,7 +310,7 @@ var dashboardUI = {
             saveCloseButton.innerText = getLang("closebutton");
             saveCloseButton.id = "saveConfigsaveCloseButton";
             saveCloseButton.hidden = true;
-      
+
 
             //Button cancel interrapt function
             var savingCloseButton = document.getElementById("saveConfigcloseButton");
@@ -375,12 +325,12 @@ var dashboardUI = {
                 return true;
             }
             else {
-  
-                    event.preventDefault();
-                    event.stopImmediatePropagation();
-                    return false;
+
+                event.preventDefault();
+                event.stopImmediatePropagation();
+                return false;
             }
-            
+
         });
 
 

@@ -22,6 +22,10 @@
     border-color: #df4d4d;    
 }
 
+.bold-option {
+    font-weight: bolder;
+}
+
 .navbar, .tab-pane, .row {
     border: 0px;
 }

@@ -105,19 +105,21 @@ function createSidebar() {
             sideBarBrand.className = "sidebar-item sidebar-brand";
             var hRef = sideBarBrand.appendChild(document.createElement("a"));
             hRef.href = "https://github.com/KirinDenis/owlos";
+            hRef.target = "_blank";
             hRef.innerText = "OWLOS";
+            sideBarBrand.appendChild(document.createElement("div")).innerHTML = "version <strong>" + _version + "</strong>";
 
             this.sideBarHeader = this.sideBar.appendChild(document.createElement("div"));
             this.sideBarHeader.className = "sidebar-item sidebar-header d-flex flex-nowrap";
         },
 
-        createUserInfo: function (_name, _role, _networkStatus) {
+        createUserInfo: function (_role, _name , _networkStatus) {
 
             this.sideBarHeaderInfo = this.sideBarHeader.appendChild(document.createElement("div"));
             this.sideBarHeaderInfo.className = "user-info";
 
-            this.sideBarHeaderInfoVersion = this.sideBarHeaderInfo.appendChild(document.createElement("span"));
-            this.sideBarHeaderInfoVersion.className = "user-name";
+            //this.sideBarHeaderInfoVersion = this.sideBarHeaderInfo.appendChild(document.createElement("span"));
+            //this.sideBarHeaderInfoVersion.className = "user-name";
 
             this.sideBarHeaderInfoRole = this.sideBarHeaderInfo.appendChild(document.createElement("span"));
             this.sideBarHeaderInfoRole.className = "user-role";
@@ -127,12 +129,12 @@ function createSidebar() {
             this.sideBarHeaderInfoStatus.className = "user-status";
             this.sideBarHeaderInfoRoleSpan = this.sideBarHeaderInfoStatus.appendChild(document.createElement("span"));
 
-            this.setUserInfo(_name, _role, _networkStatus);
+            this.setUserInfo(_role, _name, _networkStatus);
         },
 
-        setUserInfo: function (_name, _role, _networkStatus) {
-            this.sideBarHeaderInfoVersion.innerHTML = _name;
-            this.sideBarHeaderInfoRole.innerHTML = _role;
+        setUserInfo: function (_role, _name, _networkStatus) {
+            //this.sideBarHeaderInfoVersion.innerHTML = _name;
+            this.sideBarHeaderInfoRole.innerHTML = _role + " " + _name;
             switch (_networkStatus) {
                 case NET_ONLINE:
 
@@ -217,7 +219,7 @@ function createSidebar() {
             this.sideBar.className = "sidebar-item sidebar-menu";
             //TODO: read version from node
             this.createBrand("1.7");
-            this.createUserInfo("version: 1.7", "Administrator", NET_ONLINE);
+            this.createUserInfo("Role", "administrator", NET_ONLINE);
 
             //Main menu 
             var sideBarUl = this.sideBar.appendChild(document.createElement("ul"));

@@ -32,7 +32,7 @@
  --success: #5bc0de;
  --info: #62c462;
 
- --warning: #f89406;
+ --warning: #f7ce94;
  --danger: #ee5f5b;
  --light: #e9ecef;
  --dark: #272B30;
@@ -74,7 +74,7 @@ body {
  font-size:0.9375rem;
  font-weight:400;
  /*! line-height:1.5; */
- color:#91cadb;
+ color:#a3c4ce;
  text-align:left;
  background-color:#272B30;
 }
@@ -212,7 +212,8 @@ th {
 }
 label {
  display:inline-block;
- margin-bottom:0.5rem
+ margin-bottom:0.2rem;
+ margin-top: 0.5rem
 }
 button {
  border-radius:0

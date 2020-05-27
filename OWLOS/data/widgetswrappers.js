@@ -1166,6 +1166,8 @@ var WidgetsLayer = {
             if (WidgetsLayer[widgetProp].id == undefined) continue;
 
             if (WidgetsLayer[widgetProp].id == id) {
+                //динамический перевод name (виджеты могут появится ранее словаря языков)
+                WidgetsLayer[widgetProp].name = getLang(WidgetsLayer[widgetProp].id);
                 return WidgetsLayer[widgetProp];
             }
         }

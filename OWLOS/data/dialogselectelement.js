@@ -51,7 +51,7 @@ function createDialogSelect(_id, _labelText) {
         create: function () {
             this.label = document.createElement("label");
             this.label.setAttribute("for", this.id);
-            this.label.innerText = this.labelText;   
+            this.label.innerHTML = this.labelText;   
             this.label.id = this.id + "label";
             this.select = document.createElement('select');
             this.select.className = "form-control form-control-sm";
@@ -59,8 +59,9 @@ function createDialogSelect(_id, _labelText) {
             this.select.id = this.id;
         },
 
-        appendOption: function (_text) {
-            var selectOption = this.select.appendChild(document.createElement('option'));
+        appendOption: function (_text, index) {
+            var selectOption = document.createElement('option');
+            this.select.add(selectOption, index);
             selectOption.innerText = _text;
             return selectOption;
         }

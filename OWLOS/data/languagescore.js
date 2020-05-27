@@ -228,9 +228,15 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "сhangessaved=Зміни збережені \n" +
     "savechangeserror=Помилка. Зміни не збережені. Спробуйте ще раз \n" +
     "savingchanges=Збереження змін\n" +
+    "radialwidget=Radial\n" +
     "language=ukraine\n";
 
 var langen = "prepareUnit=prepare UI, please wait...\n" +
+    "OK=Confirm\n" +
+    "nodeselect=1) Please select node\n" +    
+    "driverselect=2) Select driver on selected node\n" +        
+    "propselect=3) Select property of selected driver\n" +        
+    "widgetselect=4) Select widget to visualize selected driver property\n" +        
     "nodeTab=Node\n" +
     "settingsTab=Nodes\n" +
     "filesTab=Files\n" +
@@ -417,6 +423,7 @@ var langen = "prepareUnit=prepare UI, please wait...\n" +
     "сhangessaved=Changes saved\n" +
     "savechangeserror=Saving changes error. Close this window and try again later! \n" +
     "savingchanges=Saving changes\n" +
+    "radialwidget=Radial\n" +
     "language=english\n";
 
 var langru = "prepareUnit=Подготовка интерфейса пользователя\n" +
@@ -606,6 +613,7 @@ var langru = "prepareUnit=Подготовка интерфейса пользо
     "сhangessaved=Изменения внесены\n" +
     "savechangeserror=Ошибка сохранения изменений. Поробуйте еще раз\n" +
     "savingchanges=Сохранение изменений\n" +
+    "radialwidget=Radial\n" +
     "language=russian\n";
 
 

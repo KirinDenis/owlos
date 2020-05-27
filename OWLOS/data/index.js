@@ -162,8 +162,11 @@ function onLoadConfig(result) {
             // config.onLoad = onConfigLoad;
             //config.onLoad = 
             // config.onLoad = 
+            document.getElementById("header-panel").style.display = "block";
 
             sideBar =createSidebar();
+
+            
 
 
             settingsUI.onConfigLoad(configProperties);
