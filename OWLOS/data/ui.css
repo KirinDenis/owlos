@@ -913,6 +913,7 @@ body {
         .default-theme .sidebar-wrapper a:not(.dropdown-item):hover,
         .default-theme .sidebar-wrapper .sidebar-menu li.active > a {
             color: #f8f8f8;
+            
         }
 
         .default-theme .sidebar-wrapper .sidebar-search input.search-menu,

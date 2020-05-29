@@ -485,7 +485,9 @@ pre {
   padding-right: 15px;
   padding-left: 15px;
   margin-right: auto;
-  margin-left: auto; }
+  margin-left: auto; 
+  margin-top: 15px;   
+}
 
 .row {
   display: flex;
@@ -2842,7 +2844,7 @@ input[type="button"].btn-block {
     cursor: default; }
 
 .nav-tabs {
-  border-bottom: 1px solid #89c2dc; }
+  /*! border-bottom: 1px solid #89c2dc; */ }
   .nav-tabs .nav-item {
     margin-bottom: -1px; }
   .nav-tabs .nav-link {

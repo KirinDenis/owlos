@@ -154,7 +154,7 @@ function createSidebar() {
             // item.className = "sidebar-dropdown";
             var itemHref = item.appendChild(document.createElement("a"));
             itemHref.id = _id + "href";
-            itemHref.className = "";
+            itemHref.className = "menu-href";
 
             itemHref.href = _href; //"#dashboard";
             itemHref.setAttribute("data-toggle", "tab");
@@ -195,7 +195,7 @@ function createSidebar() {
             _parent.className = "";
             _parent.href.setAttribute("data-toggle", "collapse");
             _parent.href.setAttribute("aria-expanded", "false");
-            _parent.href.className = "nav-link collapsed";
+            _parent.href.className = "nav-link collapsed menu-href";
 
             var itemSubmenuUl = _parent.appendChild(document.createElement("ul"));
             itemSubmenuUl.className = "collapse";

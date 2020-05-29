@@ -322,14 +322,14 @@ function addToLog(text) {
 function addToLog(text, code) {    
     var bootLog = document.getElementById("bootLog");
     if (code == 1) { //success
-        bootLog.innerHTML += "<text class='text-warning'>" + new Date().toLocaleString() + "</text><text class='text-success'> " + text + "</text>";
+        bootLog.innerHTML += "<text class='text-secondary'>" + new Date().toLocaleString() + "</text><text class='text-primary'> " + text + "</text>";
     }
     else
         if (code == 2) { //error    
-            bootLog.innerHTML += "<text class='text-warning'>" + new Date().toLocaleString() + "</text><text class='text-danger'> " + text + "</text>";
+            bootLog.innerHTML += "<text class='text-secondary'>" + new Date().toLocaleString() + "</text><text class='text-danger'> " + text + "</text>";
         }
         else {
-            bootLog.innerHTML += "<text class='text-warning'>" + new Date().toLocaleString() + "</text> " + text;
+            bootLog.innerHTML += "<text class='text-secondary'>" + new Date().toLocaleString() + "</text><text class='text-info'> " + text + "</text>";
         }
 }
 //добавить строку обычным цветом и перевести карретку
