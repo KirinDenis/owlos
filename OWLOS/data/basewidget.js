@@ -555,7 +555,132 @@ var BaseWidget =
             // переключаем виджет в режим "работа" - мы будем отображать виджет в диалоге свойств в этом режиме (без кнопок)
             widget.mode = WORK_MODE;
 
+
             // подготавливаем  модальный диалог (смотрите функцию makeModalDialog() - она создает универсальные модальные диалоги, где "showProperties" префикс для ID)
+            var propDialog = createModalDialog(getLang("showproperties"), "");
+            
+
+            // заполняем modalBody и modalFooter элементами отображающими свойства данного виджета
+            // создаем панель в верхней части диалога в которой будем отображать виджет - пользователь сможет видеть результаты изменения свойств виджета
+            
+            var widgetDiv = propDialog.formGroup.appendChild(document.createElement("div"));
+            widgetDiv.className = "driversWidgetsPanel d-flex justify-content-center";
+            widgetDiv.appendChild(widget.widgetHolder);
+
+            // свойств очень много - модальный диалог может получится слишком длииным и не влазить в окно браузера, что не очень удобно для пользователя
+            // по этому свойства виджета будут размещены в закладках внутри диалога 
+            // создаем панель закладок 
+            var propUl = propDialog.formGroup.appendChild(document.createElement("ul"));
+            propUl.className = "nav nav-tabs";
+
+            var tabContent = propDialog.formGroup.appendChild(document.createElement("div"));
+            tabContent.className = "tab-content";
+
+            // размещаем редакторы свойств виджета в закладках диалога 
+            var isFirstTab = true; // простой способ определить первое свойство при использование for в режиме энумератора 
+            for (var key in widget.properties) { // перебираем все свойства виджета 
+                // сохраняем значения текущего свойства (если позже пользователь откажется от изменений (кнопка отмена или закрытие диалога без подтверждения сохранения))
+                widget.storedProperties[key] = {
+                    tab: widget.properties[key].tab,
+                    value: widget.properties[key].value,
+                    type: widget.properties[key].type
+                }
+                // узнаем закладку текущего свойства (смотрите метод defaultWidgetProperties() что бы понять как устроен объект свойств)
+                var tabName = widget.properties[key].tab; // можно указать свое название закладки, если не использовать 'G', 'C', 'O'
+                if (tabName === 'G') { tabName = "General"; } // дешифруем имя закладки 
+                else
+                    if (tabName === 'C') { tabName = "Color"; }
+                    else
+                        if (tabName === 'O') { tabName = "Opacity"; }
+
+                // используем название закладки как часть ее DOM.element.id и узнаем создана ли эта закладка ранее 
+                var tabPane = document.getElementById(tabName + "PropTab");
+                var formGroup = document.getElementById(tabName + "PropForm");
+                if (formGroup == null) { // если закладка еще не создана - создадим ее 
+                    // создаем новую кнопку (TAG "li" - не кнопку конечно, но bootstrap представит ее в виде кнопки) с ссылкой в панеле закладок 
+                    var propLi = propUl.appendChild(document.createElement("li"));
+                    propLi.className = "nav-item";
+                    var aHref = propLi.appendChild(document.createElement("a")); // ссылка для закладки
+                    aHref.setAttribute("data-toggle", "tab");
+                    aHref.href = "#" + tabName + "PropTab"; // id панели для закладки связываем с ссылкой из самой закладки 
+                    aHref.innerText = tabName; // название закладки 
+                    // создаем панель связанную с закладкой 
+                    tabPane = tabContent.appendChild(document.createElement("div"));
+                    tabPane.id = tabName + "PropTab";
+                    formGroup = tabPane.appendChild(document.createElement("div"));
+                    formGroup.className = "form-group";
+                    formGroup.id = tabName + "PropForm"; // связываем панель с ссылкой 
+                    // если мы создаем первую закладку в панеле 
+                    if (isFirstTab) { // сделаем ее активной по умолчанию 
+                        aHref.className = "nav-link active";
+                        tabPane.className = "tab-pane fade show active";
+                        isFirstTab = false; // все остальные закладки не первые 
+                    }
+                    else { // не первые закладки не активны 
+                        aHref.className = "nav-link";
+                        tabPane.className = "tab-pane fade";
+                    }
+                }                
+                // редакторы свойств реализованы с использованием bootstrap input-group - для более "удобного" внешнего вида
+                // создаем редактор очередного свойства виджета 
+                var inputGroup = formGroup.appendChild(document.createElement("div"));
+                inputGroup.className = "input-group input-group-sm mb-3";
+
+                var prependDiv = inputGroup.appendChild(document.createElement("div"));
+                prependDiv.className = "input-group-prepend";
+                // название свойства 
+                var label = prependDiv.appendChild(document.createElement("label"));
+                label.className = "input-group-text smlabel";
+                label.setAttribute("for", "hostEdit");
+                label.innerText = key;
+                // редактор свойства
+                // свойство виджета представлено классом, свойство type которого определяет тип свойства - целое число, число со знаком, цвет и так далее 
+                // функция createValueEdit реагирует на type и создает соответствующий редактор (например comboBox с палитрой цветов если type = 'c' [color])
+                var propEdit = createValueEdit(inputGroup, widget.properties[key].name, widget.properties[key].value, widget.properties[key].type);
+                propEdit.style.width = "";
+                propEdit.className = "form-control"; // form-control-sm
+                propEdit.placeholder = "type value here";
+                propEdit.id = "widgetproperty" + key;
+                // связываем редактор со свойством виджета - когда пользователь будет изменять в редакторе значения свойств - виджет будет тут же отображать полученный результат
+                propEdit.widgetProperty = widget.properties[key];
+                // связываем редактор с виджетом
+                propEdit.widget = widget;
+                // события редактора propEdit.onchange может быть использовано createValueEdit() и другими, ниже мы переопределим этот обработчик - сейчас сохраним в propEdit адрес старого обработчика
+                propEdit.originalOnChange = propEdit.onchange;
+                // виджет привязывается к событиям редактора и если пользователь что то изменит, виджет среагирует на это
+                propEdit.onchange = widget.onPropertyChange;
+                propEdit.onkeyup = widget.onPropertyChange;
+            } // очередное свойство добавлено, возвращаемся и добавляем следующее в соответствующею закладку
+
+            // кнопка "Применить ко всем", ее придется создать с нуля и добавить в modalFooter элемент  
+            // нажатие на эту кнопку приведет к тому, что значения свойств текущего виджета, будут применены ко всем виджетам 
+            // это очень удобно если необходимо глобально изменить стиль всех виджетов
+            // но так же это опасно, потому как все виджеты изменят свои свойства по эталонну из этого виджета
+            var setAllWidgetsPropButton = createButton("allwidgetsModalButton", "btn btn-sm btn-warning", getLang("setallwidgetspropbutton")); 
+            setAllWidgetsPropButton.button.onclick = widget.setAllWidgetsProperties;
+            setAllWidgetsPropButton.button.widget = widget;
+            setAllWidgetsPropButton.button.propDialog = propDialog;
+            propDialog.footer.appendChild(setAllWidgetsPropButton.button);
+            /*
+            setAllWidgetsPropButton.type = "button";
+            setAllWidgetsPropButton.className = "btn btn-sm btn-warning";
+            setAllWidgetsPropButton.id = "allwidgetsModalButton";
+            setAllWidgetsPropButton.widget = widget; // привязываемся к текущему виджет 
+            setAllWidgetsPropButton.onclick = widget.setAllWidgetsProperties; // назначаем обработчик клика (сохраним свойства)
+            setAllWidgetsPropButton.innerText = getLang("setallwidgetspropbutton"); // надпись для кнопки из словаря (languagescore.js)            
+            */
+           // setAllWidgetsPropButton.setPropError = setPropError; // элемент (надпись) для отображения пользователю сообщений об ошибках
+
+            //propDialog.appendSelect(createDialogSelect("drivertype", getLang("drivertype")));
+
+            //Show dialog 
+            propDialog.widget = widget;
+            propDialog.onOK = widget.setProperties;
+            propDialog.show();
+
+                 
+            //OLD ------------------
+            /*
             makeModalDialog("resetPanel", "showProperties", getLang("showproperties"), "");
             // после того как функция создала диaлог и все его элементы, изымаем modalBody элемент и modalFooter по их ID
             var modalBody = document.getElementById("showPropertiesModalBody");
@@ -712,17 +837,18 @@ var BaseWidget =
 
             // отображаем созданный диалог 
             $("#showPropertiesModal").modal('show');
+            */
         };
 
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         // обработчик клика на кнопку "Применить" для диалога редактирования свойств виджета 
-        BaseWidget.prototype.setProperties = function setProperties(event) {
+        BaseWidget.prototype.setProperties = function setProperties(propDialog) {
             // запрещаем все последующие обработчики
-            event.stopPropagation();
+            //event.stopPropagation();
             // получаем ссылку на нажатую кнопку из события
-            var button = event.currentTarget;
+            //var button = event.currentTarget;
             // получаем ссылку на виджет из свойства кнопки (свойство добавлено при создании кнопки)
-            var widget = button.widget;
+            var widget = propDialog.widget;
             // изымаем виджет из диалога
             widget.widgetHolder.parentElement.removeChild(widget.widgetHolder);
             // возвращаем виджет в панель виджетов
@@ -735,19 +861,19 @@ var BaseWidget =
             widget.doOnChange();
             // смотрите showProperties()-$('#showPropertiesModal').on('hidden.bs.modal', function (event) 
             // сообщаем обработчику закрытия диалога о том что мы обработали закрытие
-            document.getElementById("showPropertiesModal").setProp = true;
+            //document.getElementById("showPropertiesModal").setProp = true;
             // закрываем диалог
-            $("#showPropertiesModal").modal('hide');
+            //$("#showPropertiesModal").modal('hide');
 
-            return false;
+            return true;
         };
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         // обработчик клика на кнопку "Применить ко всем" для диалога редактирования свойств виджета 
         BaseWidget.prototype.setAllWidgetsProperties = function setProperties(event) {
             // так же как для setProperties() - получаем ссылку на виджет, переносим его в панель виджетов
             event.stopPropagation();
-            var button = event.currentTarget;
-            var widget = button.widget;
+            var setAllWidgetsPropButton = event.currentTarget;
+            var widget = setAllWidgetsPropButton.widget;
             widget.widgetHolder.parentElement.removeChild(widget.widgetHolder);
             widget.parentPanel.insertBefore(widget.widgetHolder, widget.parentPanel.childNodes[widget.inParentIndex]);
             widget.widgetHolder.className = widget.inParentClass;
@@ -780,8 +906,9 @@ var BaseWidget =
             
             widget.doOnChange();
             // так же как для setProperties(), взводим setProp, закрываем диалог
-            document.getElementById("showPropertiesModal").setProp = true;
-            $("#showPropertiesModal").modal('hide');            
+            setAllWidgetsPropButton.propDialog.hide();
+            //document.getElementById("showPropertiesModal").setProp = true;
+            //$("#showPropertiesModal").modal('hide');            
             return false;
         };
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

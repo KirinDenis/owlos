@@ -135,6 +135,7 @@ var driversUI = {
                 }
             }
         }
+        //Example:
         //http://192.168.1.9:8084/adddriver?type=7&id=lcd1&pins=D21,D22,ADDR0x3F,VCC5,GND
         pinsString = "type=" + driver.type + "&id=" + document.getElementById("driverid").value + "&pins=" + pinsString;
 

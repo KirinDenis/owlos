@@ -72,6 +72,8 @@ $(document).ready(function () {
     addToLogNL("OK loading scripts");
     addToLogNL("[START]", 1);
 
+    
+
     //Check languages DEBUG
     //langCompare(langua, langru, document.getElementById("bootLog"));
 
@@ -86,6 +88,8 @@ $(document).ready(function () {
     theme.light = style.getPropertyValue('--light');
     theme.dark = style.getPropertyValue('--dark');
     theme.fontFamily = style.fontFamily;
+
+    
 
     if (theme.primary === '') { //default dark
         theme.primary = '#3A3F44';
@@ -165,10 +169,7 @@ function onLoadConfig(result) {
             document.getElementById("header-panel").style.display = "block";
 
             sideBar =createSidebar();
-
             
-
-
             settingsUI.onConfigLoad(configProperties);
             dashboardUI.onConfigLoad(configProperties);
 
@@ -199,6 +200,9 @@ function onLoadConfig(result) {
             */
 
             speak("OWLOS is ready");
+            
+            
+            
 
         }
         else {

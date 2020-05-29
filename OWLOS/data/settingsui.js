@@ -1013,7 +1013,7 @@ var settingsUI = {
             prependDiv.className = "input-group-prepend";
 
             propText = prependDiv.appendChild(document.createElement("label"));
-            propText.className = "input-group-text";
+            propText.className = "input-group-text smlabel";
             propText.setAttribute("for", propElementId + "edit");
             propTextDiv.propText = propText;
 
