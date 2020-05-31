@@ -94,7 +94,7 @@ function createModalDialog(_titleText, _bodyText) {
             this.dialog.role = "document";
 
             this.content = this.dialog.appendChild(document.createElement("div"));
-            this.content.className = "modal-content";
+            this.content.className = "modal-content bg-dark border-info";
 
             this.header = this.content.appendChild(document.createElement("div"));
             this.header.className = "modal-header";

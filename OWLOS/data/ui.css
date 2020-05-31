@@ -115,7 +115,7 @@
 
 .table-striped > tbody > tr:nth-child(even) > td,
 .table-striped > tbody > tr:nth-child(even) > th {
-    background-color: #3c3e41;
+    background-color: #122e3b;
 }
 
 .driverdiv {
@@ -162,8 +162,8 @@ textarea {
 
 
 .dataTables_filter, .dataTables_filter input, .dataTables_info, .dataTables_length, .dataTables_wrapper, .dataTables_paginate, .paginate_button {
-    color: white !important;
-    font-size: 14px;
+    color: #89c2dc !important;
+    /*! font-size: 14px; */
 }
 
     .dataTables_filter input {

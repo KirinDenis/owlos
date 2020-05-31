@@ -1053,15 +1053,15 @@ pre {
 .table {
   width: 100%;
   margin-bottom: 1rem;
-  color: #89c2dc; }
+  color: #4b98bb; }
   .table th,
   .table td {
     padding: 0.75rem;
     vertical-align: top;
-    border-top: 1px solid #89c2dc; }
+    border-top: 1px solid #1d4c62; }
   .table thead th {
     vertical-align: bottom;
-    border-bottom: 2px solid #89c2dc; }
+    border-bottom: 1px solid #89c2dc; }
   .table tbody + tbody {
     border-top: 2px solid #89c2dc; }
 
@@ -3928,7 +3928,7 @@ a.close.disabled {
   align-items: flex-start;
   justify-content: space-between;
   padding: 1rem 1rem;
-  border-bottom: 1px solid #89c2dc; }
+  border-bottom: 1px solid #122e3b; }
   .modal-header .close {
     padding: 1rem 1rem;
     margin: -1rem -1rem -1rem auto; }
@@ -3947,7 +3947,7 @@ a.close.disabled {
   align-items: center;
   justify-content: flex-end;
   padding: 1rem;
-  border-top: 1px solid #89c2dc; }
+  border-top: 1px solid #122e3b; }
   .modal-footer > :not(:first-child) {
     margin-left: .25rem; }
   .modal-footer > :not(:last-child) {
