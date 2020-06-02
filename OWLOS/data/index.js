@@ -89,8 +89,6 @@ $(document).ready(function () {
     theme.dark = style.getPropertyValue('--dark');
     theme.fontFamily = style.fontFamily;
 
-    
-
     if (theme.primary === '') { //default dark
         theme.primary = '#3A3F44';
         theme.secondary = '#7A8288';
@@ -166,9 +164,13 @@ function onLoadConfig(result) {
             // config.onLoad = onConfigLoad;
             //config.onLoad = 
             // config.onLoad = 
-            document.getElementById("header-panel").style.display = "block";
+            //document.getElementById("header-panel").style.display = "block";
 
-            sideBar =createSidebar();
+            
+            
+
+
+            sideBar = createSidebar();
             
             settingsUI.onConfigLoad(configProperties);
             dashboardUI.onConfigLoad(configProperties);

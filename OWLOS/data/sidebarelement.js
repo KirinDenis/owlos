@@ -205,6 +205,10 @@ function createSidebar() {
 
         //Конструктор    
         create: function () {
+
+            headerPanelUI.addButton("toggle-sidebar", "fa fa-bars", "toogle side bar");
+            headerPanelUI.addButton("pin-sidebar", "fa fa-anchor", "pin side bar");
+
             var pageWrapper = document.getElementById("pagewrapper");
 
             this.sideBarWrapper = pageWrapper.appendChild(document.createElement("nav"));
@@ -270,10 +274,10 @@ function createSidebar() {
 
             $(".page-wrapper").toggleClass("toggled"); //открыть по умолчанию панель меню
 
-            document.getElementById("toggle-sidebar").style.display = "block";
-            document.getElementById("pin-sidebar").style.display = "block";
-            document.getElementById("nodeStatusPanelText").style.display = "block";
-            document.getElementById("sidebarText").style.display = "block";
+            //document.getElementById("toggle-sidebar").style.display = "block";
+            //document.getElementById("pin-sidebar").style.display = "block";
+            //document.getElementById("nodeStatusPanelText").style.display = "block";
+            //document.getElementById("sidebarText").style.display = "block";
 
 
             jQuery(function ($) {

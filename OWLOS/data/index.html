@@ -1,5 +1,6 @@
 ﻿<!doctype html>
 <html lang="en">
+
 <head>
     <title>OWLOS</title>
     <meta charset="utf-8" />
@@ -7,32 +8,51 @@
     <script src='bootcore.js'></script>
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
-          integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+        integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
 
 </head>
-<body  onbeforeunload="return BeforeUnloadEvent()">
-    
-    <pre id="boot" style="font-size: 11px;"><code id="bootLog" style="white-space: pre-wrap; overflow-y:scroll;"></code></pre>
+
+<body onbeforeunload="return BeforeUnloadEvent()">
+
+    <pre id="boot"
+        style="font-size: 11px;"><code id="bootLog" style="white-space: pre-wrap; overflow-y:scroll;"></code></pre>
 
     <div id="pagewrapper" class="page-wrapper default-theme sidebar-bg bg1">
         <main class="page-content">
             <div id="overlay" class="overlay"></div>
-            <div id="header-panel" class="header-panel" style="display: none;">
-                <form class="form-inline my-2 my-lg-0">
-                    <span type="button" id="toggle-sidebar" class="badge fa fa-bars" style="display:none">
-                    </span>
-                    <span type="button" id="pin-sidebar" class="badge fa fa-anchor" style="display:none">
-                    </span>
-                    <span type="button" id="nodeStatusPanelText" class="badge badge-default" style="display:none">
-                    </span>
-                    <span type="button" id="sidebarText" class="badge badge-default" style="display:none">
-                    </span>
-                
-                    <div class="nodestatuspanel" id="saveButtonPanel"></div>
-                    <div id="dashboardButtonsPanel"></div>
-                    <div class="nodestatuspanel" id="nodeStatusPanel"></div>
-                    |online|WiFi ST|WiFi AP|
-                </form>
+
+            <div class="header-panel">
+                <div class="container-fluid">
+                    <div id="header-panel" class="row">
+                        <div class="col-sm-6">
+                            <form id="heade-panel-form" class="form-inline my-2 my-lg-0">
+
+                            </form>
+                        </div>
+                        <div class="col-sm-6 small-text">
+                            
+                            <text id="nodeStatusPanelText" class="text-success"></text>
+                            <text id="sidebarText" class="text-success">online</text>
+                            <text class="text-secondary"><strong>|</strong></text>
+                            <text id="onlinetext" class="text-success">online</text>
+                            <text class="text-secondary"><strong>|</strong></text>
+
+                            <text id="wifiAPtext" class="text-success">WiFi AP</text>
+                            <text class="text-secondary"><strong>|</strong></text>
+
+                            <text id="wifiSTtext" class="text-success">WiFi ST</text>
+                            <text class="text-secondary"><strong>|</strong></text>
+
+                            <text id="RESTfultext" class="text-success">RESTful</text>
+                            <text class="text-secondary"><strong>|</strong></text>
+
+                            <text id="MQTTtext" class="text-warning">MQTT</text>
+                            <text class="text-secondary"><strong>|</strong></text>
+
+
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="container-fluid">
@@ -75,9 +95,9 @@
 
 
         </main>
-        
+
     </div>
-   <!--
+    <!--
     <footer class="footer">
         <div class="container col-md-12" id="footerContainer">
             OWLOS
@@ -95,4 +115,5 @@
 
     </script>
 </body>
+
 </html>

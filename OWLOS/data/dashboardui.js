@@ -60,6 +60,8 @@ var dashboardUI = {
 
     onConfigLoad: function (configProperties) {
 
+        /*
+        headerPanelUI.addButton("dashboardButtonsPanel", "fa fa-pan", "toogle widgets mode");
 
         var saveButtonPanel = document.getElementById("saveButtonPanel");
 
@@ -71,20 +73,32 @@ var dashboardUI = {
         saveWidgetsButton.id = "saveWidgetsButton";
         saveWidgetsButton.onclick = dashboardUI.saveAddedWidget;
         config.onChange = dashboardUI.onConfigChange;
+        */
+       var saveWidgetsButton = headerPanelUI.addButton("saveaddedwidget", "fa fa-save", "save configuration");
+       saveWidgetsButton.onclick = dashboardUI.saveAddedWidget;
 
 
+       /*
         var dashboardButtonsPanel = document.getElementById("dashboardButtonsPanel");
         var headerModeButton = dashboardButtonsPanel.appendChild(document.createElement('input'));
         headerModeButton.className = "btn btn-sm";
         headerModeButton.type = "button";
         headerModeButton.value = getLang("dashboardedit");
         headerModeButton.onclick = dashboardUI.changeDashboadMode;
+        */
+        var headerModeButton = headerPanelUI.addButton("dashboardaddwidget", "fa fa-edit", "toogle widgets mode");
+        headerModeButton.onclick = dashboardUI.changeDashboadMode;
 
+        var addWidgetButton = headerPanelUI.addButton("dashboardaddwidget", "fa fa-plus", "add widget");
+        addWidgetButton.onclick = dashboardUI.onAddWidgetClick;
+
+        /*
         var addWidgetButton = dashboardButtonsPanel.appendChild(document.createElement('input'));
         addWidgetButton.className = "btn btn-sm";
         addWidgetButton.type = "button";
         addWidgetButton.value = getLang("dashboardaddwidget");
         addWidgetButton.onclick = dashboardUI.onAddWidgetClick;
+        */
 
         var driversWidgetsPanel = document.getElementById("driversWidgetsPanel");
 

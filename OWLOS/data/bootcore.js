@@ -196,6 +196,7 @@ function loadingScripts(withInternet) {
                             loadingScript("tablewidget.js");
                             loadingScript("valuewidget.js");
                             loadingScript("widgetswrappers.js");
+                            loadingScript("headerpanelui.js");
                             loadingScript("scriptsui.js");
                             loadingScript("filespanelui.js");
                             loadingScript("driversui.js");

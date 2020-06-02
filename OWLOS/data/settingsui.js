@@ -123,13 +123,17 @@ var settingsUI = {
                 nodeNavItem.href.MQTTPanel = settingsUI.getStatusWidget(node.nodenickname + "mqttStatus", "MQTT", nodeStatusPanel);
                 nodeNavItem.href.OTAPanel = settingsUI.getStatusWidget(node.nodenickname + "otaStatus", "OTA", nodeStatusPanel);
 
-                document.getElementById("nodeStatusPanel").appendChild(nodeStatusPanel);
+              //  document.getElementById("nodeStatusPanel").appendChild(nodeStatusPanel);
 
+                
                 var nodeStatusPanelText = document.createElement("div");
                 nodeStatusPanelText.innerHTML = " <strong>" + node.nodenickname + "</strong> at <a href='" + node.host + "' target='_blank'>" + node.host + "</a>";
                 document.getElementById("nodeStatusPanelText").appendChild(nodeStatusPanelText);
 
-                nodeStatusPanel.nodeStatusPanelText = nodeStatusPanelText;
+              //  nodeStatusPanel.nodeStatusPanelText = nodeStatusPanelText;
+                
+                //var nodeStatusPanelText =document.getElementById("nodeStatusPanelText");
+                //nodeStatusPanelText.innerHTML = " <strong>" + node.nodenickname + "</strong> at <a href='" + node.host + "' target='_blank'>" + node.host + "</a>";
                 nodeStatusPanel.style.display = "none";
                 nodeStatusPanelText.style.display = "none";
                 //--- EndOf Node Status Panel ------------------------------------------------------------------------
