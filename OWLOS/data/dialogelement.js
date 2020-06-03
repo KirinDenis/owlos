@@ -61,6 +61,7 @@ function createModalDialog(_titleText, _bodyText) {
         footer: undefined,
 
         closeHeaderButton: undefined,
+        useCloseButton: false,
         closeButton: undefined,
         OKButton: undefined,
         errorLabel: undefined,
@@ -128,17 +129,19 @@ function createModalDialog(_titleText, _bodyText) {
             closeSpan.setAttribute("aria-hidden", "true");
             closeSpan.innerText = "x"
 
+            if (this.useCloseButton) {
             this.closeButton = this.footer.appendChild(document.createElement("button"));
             this.closeButton.type = "button";
-            this.closeButton.className = "btn btn-sm btn-info";
+            this.closeButton.className = "btn btn-sm btn-success";
             this.closeButton.setAttribute("data-dismiss", "modal");
             this.closeButton.setAttribute("aria-label", "Close");
             this.closeButton.innerText = getLang("cancel");
             this.closeButton.id = this.id + "closeButton";
+            }
 
             this.OKButton = this.footer.appendChild(document.createElement("button"));
             this.OKButton.type = "button";
-            this.OKButton.className = "btn btn-sm btn-success";
+            this.OKButton.className = "btn btn-sm btn-info";
             this.OKButton.setAttribute("data-dismiss", "modal");
             this.OKButton.setAttribute("aria-label", "Close");
             this.OKButton.id = this.id + "OKButton";

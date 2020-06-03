@@ -44,7 +44,7 @@ onScriptNew: function (script) {
     var byteCodeCardDiv = scriptHolder.appendChild(document.createElement('div'));
     byteCodeCardDiv.className = "col-md-8";
     var byteCodeCard = byteCodeCardDiv.appendChild(document.createElement('div'));
-    byteCodeCard.className = "card text-white bg-primary mb-3";
+    byteCodeCard.className = "card bg-dark border-info mb-3";
     var byteCodeCardHeader = byteCodeCard.appendChild(document.createElement('div'));
     byteCodeCardHeader.className = "card-header";
     byteCodeCardHeader.innerText = script.name + " script bytecode";
@@ -53,7 +53,7 @@ onScriptNew: function (script) {
     var pre = byteCodeCardBody.appendChild(document.createElement('pre'));
     var textArea = pre.appendChild(document.createElement('textarea'));
     textArea.id = script.node.nodenickname + "_" + script.name + "textarea";
-    textArea.className = "md-textarea form-control";
+    textArea.className = "md-textarea text-primary form-control bg-dark";
     textArea.placeholder = getLang("inputcodehere");
     textArea.cols = 80;
     textArea.rows = 20;
@@ -131,7 +131,7 @@ onScriptNew: function (script) {
     var scriptStatusCardDiv = scriptHolder.appendChild(document.createElement('div'));
     scriptStatusCardDiv.className = "col-md-4";
     var scriptStatusCard = scriptStatusCardDiv.appendChild(document.createElement('div'));
-    scriptStatusCard.className = "card text-white bg-primary mb-3";
+    scriptStatusCard.className = "card bg-dark border-info mb-3";
     var scriptStatusCardHeader = scriptStatusCard.appendChild(document.createElement('div'));
     scriptStatusCardHeader.className = "card-header";
     scriptStatusCardHeader.innerText = script.name + " status";

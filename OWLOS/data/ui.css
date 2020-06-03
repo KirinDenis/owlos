@@ -33,6 +33,21 @@
     
 }
 
+.node-prop-col {    
+    padding-left: 0.1rem;
+    padding-right: 2.1rem;
+}
+
+.node-prop-col1 {    
+    padding-left: 1.2rem;
+    padding-right: 1.1rem;
+}
+
+.node-prop-col2 {    
+    padding-left: 3.0rem;
+    
+}
+
 .bold-option {
     font-weight: bolder;
 }
@@ -42,7 +57,7 @@
 }
 
 .tab-pane {
-    margin-right: 30px;
+    margin-top: 2rem; 
 }
 
 .driverPanelDiv {
@@ -55,6 +70,16 @@
     cursor: Default;
     display: inline-block;
 }
+
+.widget-editor-panel {
+    padding-bottom: 2rem;
+}
+
+
+.widget-editor-nav-tabs {
+  border-bottom: 1px solid #89c2dc;
+}
+
 
 
 .middleContainer {
@@ -172,10 +197,27 @@ textarea {
 }
 
 
-.dataTables_filter, .dataTables_filter input, .dataTables_info, .dataTables_length, .dataTables_wrapper, .dataTables_paginate, .paginate_button {
-    color: #89c2dc !important;
+.paginate_button, .dataTables_filter, .dataTables_filter input, .dataTables_info, .dataTables_length, .dataTables_wrapper, .dataTables_paginate   {
+    color: #89c2dc !important;        
     /*! font-size: 14px; */
 }
+
+ .dataTables_wrapper  {
+background-color: rgba(137, 194, 220, 0.1);
+}
+
+.dataTables_filter input, .dataTables_length select {      
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #1d4c62;
+  background-color: #d8ebf3;
+  background-clip: padding-box;
+  border: 1px solid #62add0;
+  border-radius: 0;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; 
+}    
+
 
     .dataTables_filter input {
         color: black !important;

@@ -451,7 +451,7 @@ kbd {
 pre {
   display: block;
   font-size: 87.5%;
-  color: #060f14; }
+  /*! color: #060f14; */ }
   pre code {
     font-size: inherit;
     color: inherit;
@@ -1318,9 +1318,9 @@ pre {
   color: #1d4c62;
   background-color: #d8ebf3;
   background-clip: padding-box;
-  border: 1px solid #62add0;
+  border: 0.1rem solid #1b485d;
   border-radius: 0;
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; }
+  transition: border-color 0.15s cubic-bezier(.21,.03,.58,1), box-shadow 0.15s ease-in-out; }
   @media (prefers-reduced-motion: reduce) {
     .form-control {
       transition: none; } }
@@ -2858,7 +2858,7 @@ input[type="button"].btn-block {
   .nav-tabs .nav-link.active,
   .nav-tabs .nav-item.show .nav-link {
     color: #1d4c62;
-    background-color: #122e3b;
+    background-color: #62add0;
     border-color: #89c2dc #89c2dc #122e3b; }
   .nav-tabs .dropdown-menu {
     margin-top: -1px; }
@@ -3148,7 +3148,10 @@ input[type="button"].btn-block {
   word-wrap: break-word;
   background-color: #ffffff;
   background-clip: border-box;
-  border: 1px solid rgba(0, 0, 0, 0.125); }
+  border: 1px solid rgba(0, 0, 0, 0.125); 
+  margin-top: 0.6rem;
+  margin-right: 0.6rem;
+}
   .card > hr {
     margin-right: 0;
     margin-left: 0; }
@@ -3783,18 +3786,21 @@ input[type="button"].btn-block {
 
 .close {
   float: right;
+  color: #89c2dc;
   font-size: 1.5rem;
   font-weight: 700;
   line-height: 1;
-  color: #000;
-  text-shadow: 0 1px 0 #ffffff;
-  opacity: .5; }
+  color: #d8ebf3;
+  /*! text-shadow: 0 1px 0 #ffffff; */
+ opacity: .5;
+}
   @media (max-width: 1200px) {
     .close {
       font-size: calc(1.275rem + 0.3vw) ; } }
   .close:hover {
-    color: #000;
-    text-decoration: none; }
+    
+    text-decoration: none; 
+}
   .close:not(:disabled):not(.disabled):hover, .close:not(:disabled):not(.disabled):focus {
     opacity: .75; }
 
@@ -3940,13 +3946,17 @@ a.close.disabled {
 .modal-body {
   position: relative;
   flex: 1 1 auto;
-  padding: 1rem; }
+  padding-left: 1rem; 
+  padding-right: 1rem; 
+}
 
 .modal-footer {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  padding: 1rem;
+  justify-content: center;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-bottom: 1rem;
   border-top: 1px solid #122e3b; }
   .modal-footer > :not(:first-child) {
     margin-left: .25rem; }

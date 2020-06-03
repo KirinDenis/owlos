@@ -329,8 +329,7 @@ table.dataTable td {
  text-align:center;
  text-decoration:none !important;
  cursor:pointer;
- *cursor:hand;
- color:#333 !important;
+ *cursor:hand; 
  border:1px solid transparent;
  border-radius:2px
 }
@@ -350,7 +349,6 @@ table.dataTable td {
 .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover,
 .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {
  cursor:default;
- color:#666 !important;
  border:1px solid transparent;
  background:transparent;
  box-shadow:none

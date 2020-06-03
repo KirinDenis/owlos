@@ -564,14 +564,14 @@ var BaseWidget =
             // создаем панель в верхней части диалога в которой будем отображать виджет - пользователь сможет видеть результаты изменения свойств виджета
             
             var widgetDiv = propDialog.formGroup.appendChild(document.createElement("div"));
-            widgetDiv.className = "driversWidgetsPanel d-flex justify-content-center";
+            widgetDiv.className = "driversWidgetsPanel d-flex justify-content-center widget-editor-panel";
             widgetDiv.appendChild(widget.widgetHolder);
 
             // свойств очень много - модальный диалог может получится слишком длииным и не влазить в окно браузера, что не очень удобно для пользователя
             // по этому свойства виджета будут размещены в закладках внутри диалога 
             // создаем панель закладок 
             var propUl = propDialog.formGroup.appendChild(document.createElement("ul"));
-            propUl.className = "nav nav-tabs";
+            propUl.className = "nav nav-tabs widget-editor-nav-tabs";
 
             var tabContent = propDialog.formGroup.appendChild(document.createElement("div"));
             tabContent.className = "tab-content";

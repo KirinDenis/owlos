@@ -100,8 +100,11 @@ var settingsUI = {
                 settingsUI.addCard(nodePropHolderPanel, node.nodenickname + "NetworkNodeProp", getLang("networknodeprop"), 12);
                 var networkNodePropBody = document.getElementById(node.nodenickname + "NetworkNodePropBody");
                 settingsUI.addDiv(networkNodePropBody, node.nodenickname + "NetworkNodePropBody1", 4);
+                $("#" + node.nodenickname + "NetworkNodePropBody1").toggleClass("node-prop-col");
                 settingsUI.addDiv(networkNodePropBody, node.nodenickname + "NetworkNodePropBody2", 4);
+                $("#" + node.nodenickname + "NetworkNodePropBody2").toggleClass("node-prop-col1");
                 settingsUI.addDiv(networkNodePropBody, node.nodenickname + "NetworkNodePropBody3", 4);
+                $("#" + node.nodenickname + "NetworkNodePropBody3").toggleClass("node-prop-col2");
 
                 settingsUI.addCard(nodePropHolderPanel, node.nodenickname + "WifiNodeProp", getLang("wifinodeprop"), 4); //WifiNodePropPanel - свойства WiFi                
                 settingsUI.addCard(nodePropHolderPanel, node.nodenickname + "SystemNodeProp", getLang("systemnodeprop"), 4);
@@ -980,7 +983,7 @@ var settingsUI = {
         if (propTextDiv == null) {
             propTextDiv = panelDiv.appendChild(document.createElement('div'));
             propTextDiv.id = propElementId;
-            propTextDiv.className = "text-light";
+            //propTextDiv.className = "text-light";
             propTextDiv.propertyText = text;
             if (sufix == undefined) sufix = "";
             propTextDiv.propertySufix = sufix;
