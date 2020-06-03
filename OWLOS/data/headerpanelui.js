@@ -42,15 +42,15 @@ OWLOS распространяется в надежде, что она буде
 var headerPanelUI = {
 
     addButton: function (id, faIcon, title) {
-        var headerPanel = document.getElementById("heade-panel-form");
+        var headerPanel = document.getElementById("header-panel-form");
         if (headerPanel == undefined) {
             return undefined;
-        }        
+        }
         var button = document.createElement("button");
         button.className = "btn btn-sm btn-secondary header-button";
         button.id = id;
-        button.setAttribute("data-toggle","tooltip");
-        button.setAttribute("data-placement","right");
+        button.setAttribute("data-toggle", "tooltip");
+        button.setAttribute("data-placement", "right");
 
         button.title = title;
         var span = document.createElement("span");

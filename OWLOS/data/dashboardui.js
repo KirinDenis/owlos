@@ -283,8 +283,31 @@ var dashboardUI = {
     saveAddedWidget: function (event) {
         var buttonSave = event.currentTarget;
         config.cancel = false;
-        // buttonSave.hidden = true;
 
+        var saveDialog = createModalDialog(getLang("saveaddedwidget"), getLang("saveprepare"));
+
+        var divProgressClass = saveDialog.body.appendChild(document.createElement("div"));
+        divProgressClass.className = "progress";
+        divProgressClass.id = "divProgressClass";
+
+        var progressBar = divProgressClass.appendChild(document.createElement("div"));
+        progressBar.className = "progress-bar progress-bar-striped bg-info";
+        progressBar.id = "saveProgressBar";
+        progressBar.setAttribute("role", "progressbar");
+        progressBar.setAttribute("aria-valuenow", "0");
+        progressBar.setAttribute("aria-valuemin", "0");
+        progressBar.setAttribute("aria-valuemax", "100");
+        progressBar.setAttribute("style", "width: 0%");
+        progressBar.innerHTML = "0%";
+
+
+        saveDialog.onOK = dashboardUI.addWidgetCancel;
+        saveDialog.show();
+        config.save();
+
+        // buttonSave.hidden = true;
+        
+        /*
         var modalBody = document.getElementById("saveConfigModalBody");
 
         if (modalBody == null || modalBody == undefined) {
@@ -349,8 +372,9 @@ var dashboardUI = {
 
 
         $("#saveConfigModal").modal('show');
+        */
 
-        config.save();
+        
     },
 
     addWidgetCancel: function (event) {

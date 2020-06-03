@@ -359,10 +359,10 @@ var config = {
 
         // элементы модального окна отобрающего процесс передачи строки
         var saveProgressBar = document.getElementById("saveProgressBar");
-        var saveTextStatus = document.getElementById("savingTextStatus");
-        var savingCloseButton = document.getElementById("saveConfigcloseButton");
-        var saveButton = document.getElementById("saveWidgetsButton");
-        var closeButton = document.getElementById("saveConfigsaveCloseButton");
+        var saveTextStatus = document.getElementById("showDialogPanelDialogModalBody");
+        var savingCloseButton = document.getElementById("showDialogPanelDialogOKButton");
+        var saveButton = document.getElementById("saveaddedwidget");
+        var closeButton = document.getElementById("showDialogPanelDialogcloseHeaderButton");
 
         //Проверка была ли отменена передача строки
         if (config.cancel == false) {

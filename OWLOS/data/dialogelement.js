@@ -77,7 +77,7 @@ function createModalDialog(_titleText, _bodyText) {
                 return;
             }
             $("#showDialogPanel").empty();
-
+            
             this.id = "showDialogPanelDialog";
             $("#showDialogPanelDialog").remove();
 
@@ -104,12 +104,12 @@ function createModalDialog(_titleText, _bodyText) {
 
             this.title.className = "modal-title";
             this.title.id = this.id + "ModalLabel";
-            this.title.innerText = this.titleText;
+            this.title.innerHTML = this.titleText;
 
             this.body = this.content.appendChild(document.createElement("div"));
             this.body.id = this.id + "ModalBody"
             this.body.className = "modal-body";
-            this.body.innerText = this.bodyText;
+            this.body.innerHTML = this.bodyText;
 
             this.formGroup = this.body.appendChild(document.createElement("div"));
             this.formGroup.className = "form-group";

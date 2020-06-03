@@ -77,7 +77,7 @@ function proSideBarConsoleMenuClick(event) {
     //$(this).toClass('active');
     document.getElementById("sidebarText").style.display = "none";
     document.getElementById("sidebarText").innerText = "";
-    document.getElementById("dashboardButtonsPanel").style.display = "none";
+   // document.getElementById("dashboardButtonsPanel").style.display = "none";
     return proSideBarMenuClick(event);
 }
 

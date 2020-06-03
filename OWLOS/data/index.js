@@ -155,8 +155,6 @@ function masterNodeDialogOKClick(masterNodeDialog) {
     return true;
 }
 
-
-
 function onLoadConfig(result) {
  //   try {
         if (result) {
@@ -165,9 +163,6 @@ function onLoadConfig(result) {
             //config.onLoad = 
             // config.onLoad = 
             //document.getElementById("header-panel").style.display = "block";
-
-            
-            
 
 
             sideBar = createSidebar();
