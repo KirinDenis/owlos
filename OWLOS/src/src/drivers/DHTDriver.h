@@ -59,7 +59,7 @@ public:
 		switch (pinIndex)
 		{
 		case PIN0_INDEX: return DIGITAL_IO_MASK;
-		case PIN1_INDEX: return VCC5_MASK;
+		case PIN1_INDEX: return VCC5_MASK | VCC33_MASK;
 		case PIN2_INDEX: return GND_MASK;
 		default:
 			return NO_MASK;

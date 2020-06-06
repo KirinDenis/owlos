@@ -84,6 +84,11 @@ const VCC_FAMILY = 2;    //пин входит в семейство пинов 
 function getFreePins(node, pinMask) {
     var pins = [];
 
+    //TEMP: ESP8266 VCC5 patch
+    if (pinMask == VCC5_MASK) {
+        pinMask = pinMask | VCC33_MASK;
+    }
+
     for (var i = 0; i < node.pins.length; i++) {
         var valid = (node.pins[i].pintypes & pinMask); // | (node.pins[i].extenedpintypes & pinMask);
         if (valid > 0) {

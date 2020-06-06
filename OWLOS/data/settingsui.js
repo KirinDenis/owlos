@@ -606,7 +606,7 @@ var settingsUI = {
 
         document.getElementById("sidebarText").style.display = "none";
         document.getElementById("sidebarText").innerText = "";
-        document.getElementById("dashboardButtonsPanel").style.display = "none";
+       // document.getElementById("dashboardButtonsPanel").style.display = "none";
 
         //$(aHref).toggleClass("active");
 
@@ -622,6 +622,7 @@ var settingsUI = {
             }
             if (aHref.nodeStatusPanel != undefined) {
                 var nodeStatusPanel = document.getElementById("nodeStatusPanel");
+                if (nodeStatusPanel != null) {
                 if (nodeStatusPanel.currentStatusPanel != undefined) {
                     nodeStatusPanel.currentStatusPanel.style.display = "none";
                     nodeStatusPanel.currentStatusPanel.nodeStatusPanelText.style.display = "none";
@@ -629,6 +630,7 @@ var settingsUI = {
                 nodeStatusPanel.currentStatusPanel = aHref.nodeStatusPanel;
                 nodeStatusPanel.currentStatusPanel.style.display = "block";
                 nodeStatusPanel.currentStatusPanel.nodeStatusPanelText.style.display = "block";
+            }
             }
 
         }

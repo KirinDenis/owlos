@@ -108,7 +108,7 @@ var driversUI = {
                 }
                 else {
                     pinSelect.enable = false;
-                    pinSelect.dialogSelect.appendOption(getLang("NoFreePinsOfThisType"));
+                    pinSelect.dialogSelect.appendOption(getLang("NoFreePinsOfThisType"));                   
                 }
             }
             else { //I2C Addr 
