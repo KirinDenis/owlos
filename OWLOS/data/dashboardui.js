@@ -284,7 +284,10 @@ var dashboardUI = {
         var buttonSave = event.currentTarget;
         config.cancel = false;
 
-        var saveDialog = createModalDialog(getLang("saveaddedwidget"), getLang("saveprepare"));
+        var saveDialog = createModalDialog(getLang("saveaddedwidget"), "");
+
+        var divTextClass = saveDialog.body.appendChild(document.createElement("div"));
+        divTextClass.id = "savetext"
 
         var divProgressClass = saveDialog.body.appendChild(document.createElement("div"));
         divProgressClass.className = "progress";
@@ -300,6 +303,8 @@ var dashboardUI = {
         progressBar.setAttribute("style", "width: 0%");
         progressBar.innerHTML = "0%";
 
+
+        saveDialog.OKButton.innerText = getLang("closebutton");
 
         saveDialog.onOK = dashboardUI.addWidgetCancel;
         saveDialog.show();
@@ -379,14 +384,17 @@ var dashboardUI = {
 
     addWidgetCancel: function (event) {
 
+        config.cancel = true;
+        /*
         var buttonCancel = event.currentTarget;
         var saveButtonAtPanel = document.getElementById("saveWidgetsButton");
 
         if (saveButtonAtPanel !== null && saveButtonAtPanel !== undefined) {
             saveButtonAtPanel.hidden = true;
         }
+        */
 
-        config.cancel = true;
+       
     },
 
     onConfigChange: function (configProperties) {

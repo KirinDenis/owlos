@@ -202,7 +202,7 @@ var BaseWidget =
             widget.SVGWidgetText.color = theme.secondary;
             // текст для заголовка виджета, находится над SVGHeaderPanel панелью
             widget.SVGHeaderText = new SVGText(widget.SVGViewBox, widget.id + "headertext", widget.size / 150);
-            widget.SVGHeaderText.color = theme.secondary;
+            widget.SVGHeaderText.color = theme.success;
             // подпись внизу виджета, обычно информация о сетевом состоянии виджета (находится над SVGBackdownpanel)
             widget.SVGHint = new SVGText(widget.SVGViewBox, widget.id + "hint", widget.size / 150);
             widget.SVGHint.color = theme.secondary;
@@ -356,7 +356,7 @@ var BaseWidget =
                     // toColor() - метод реализующий плавную смену градиентов цвета (анимация)
                     // this._properties.valuetextcolor.value свойства виджета определяющее цвет главного текста в онлайн режиме (пользователь может назначить свой цвет)
                     this.toColor(this.SVGWidgetText, this._properties.valuetextcolor.value);
-                    this.toColor(this.SVGHeaderText, theme.light);
+                    this.toColor(this.SVGHeaderText, theme.info);
                     this.SVGHint.text = getLang("rid_online"); // назначаем текст для нижней подписи виджета (сетевой статус) в этом кейсе
                     this.toColor(this.SVGHint, theme.success);
                     break;
@@ -1174,20 +1174,26 @@ var BaseWidget =
         };
 
 
+        //Изменение яркости видждета при наведения мыши, учитывает два варианта - при наведение становится ярче, либо угосает. 
         BaseWidget.prototype.drawMouseEnter = function drawMouseEnter() {
             if (this._mode != WORK_MODE) return;
             var _this = this;
 
+            var lamda = 0.05; //становится ярче
+            if (this._properties.backgroundselectopacity.value > this._properties.backgroundopacity.value) {
+                lamda = -0.05; //угасает
+            }
+            
             if (this.mouseEnter) {
-                if (this.SVGBackgroundPanel.opacity > this._properties.backgroundselectopacity.value) {
-                    this.SVGBackgroundPanel.opacity -= 0.05;
+                if (this.SVGBackgroundPanel.opacity * lamda > this._properties.backgroundselectopacity.value* lamda) {
+                    this.SVGBackgroundPanel.opacity -= lamda;
                     requestAnimationFrame(function () {
                         return _this.drawMouseEnter();
                     });
                 }
             } else {
-                if (this.SVGBackgroundPanel.opacity < this._properties.backgroundopacity.value) {
-                    this.SVGBackgroundPanel.opacity += 0.005;
+                if (this.SVGBackgroundPanel.opacity * lamda < this._properties.backgroundopacity.value * lamda) {
+                    this.SVGBackgroundPanel.opacity += lamda;
                     requestAnimationFrame(function () {
                         return _this.drawMouseEnter();
                     });
@@ -1246,7 +1252,7 @@ var BaseWidget =
 
                 backgroundopacity: { // прозрачность фона          
                     tab: "O",
-                    value: 1.0,
+                    value: 0.4,
                     type: "f"
                 },
 
@@ -1258,13 +1264,13 @@ var BaseWidget =
 
                 backgroundselectopacity: { // прозрачность фона виджета когда пользователь указал на него мышью           
                     tab: "O",
-                    value: 0.2,
+                    value: 0.9,
                     type: "f"
                 },
 
                 valuetextcolor: { // цвет основного текста виджета (обычно этот текст отображает данные переданные через метод refresh())            
                     tab: "C",
-                    value: theme.light,
+                    value: theme.info,
                     type: "c"
                 },
 

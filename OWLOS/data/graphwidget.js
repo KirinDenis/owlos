@@ -231,7 +231,7 @@ var GraphWidget =
                         this.toColor(this.SVGTopLabel, theme.secondary);
                         this.toColor(this.SVGMiddleLabel, theme.secondary);
                         this.toColor(this.SVGDownLabel, theme.secondary);
-                        this.SVGIcon.fill = this._properties.backOpacity.value;
+                        this.SVGIcon.fill = theme.info;
                         break;
 
                     case NET_ERROR:

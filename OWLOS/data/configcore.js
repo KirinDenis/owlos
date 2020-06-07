@@ -359,7 +359,7 @@ var config = {
 
         // элементы модального окна отобрающего процесс передачи строки
         var saveProgressBar = document.getElementById("saveProgressBar");
-        var saveTextStatus = document.getElementById("showDialogPanelDialogModalBody");
+        var saveTextStatus = document.getElementById("savetext");
         var savingCloseButton = document.getElementById("showDialogPanelDialogOKButton");
         var saveButton = document.getElementById("saveaddedwidget");
         var closeButton = document.getElementById("showDialogPanelDialogcloseHeaderButton");
@@ -369,60 +369,32 @@ var config = {
 
             //HTTPClient добавляет строку "%error" в начало Response если запрос не был завешен HTTPCode=200 или произашел TimeOut
             if (!httpResult.indexOf("%error") == 0) {
-
                 if (counter < countedSections) {
-
                     subString = dataString.slice(counter * lengthDataSubString, (counter + 1) * lengthDataSubString);
-
-
                     if (counter == 0) {
-
                         filePartName = "setwebproperty?property=head";
-
                     }
                     else {
-
                         filePartName = "setwebproperty?property=body";
-
                     }
-
                     sendingAmount = Math.floor((lengthDataSubString * counter / dataString.length) * 100).toString();
-
-
                 }
                 else {
-
                     if (counter == countedSections) {
-
                         subString = dataString.slice(counter * lengthDataSubString);
-
-
                         if (counter == 0) {
-
                             filePartName = "setwebproperty?property=head";
-
                         }
-
                         else {
-
                             filePartName = "setwebproperty?property=tail";
                             sendingAmount = "100";
-
                             if (savingCloseButton !== undefined && savingCloseButton !== null) {
                                 savingCloseButton.disabled = true;
                             }
-
                         }
-
                     }
-
                     else {
-
-
-
                         if (countedSections !== 0) {
-
-
                             sendingAmount = "100";
                             if (saveProgressBar !== undefined && saveProgressBar !== null) {
                                 saveProgressBar.setAttribute("aria-valuenow", sendingAmount);
@@ -435,16 +407,10 @@ var config = {
                                 closeButton.hidden = false;
                                 config.cancel = true;
                             }
-
-
                             addToLogNL("Sending long config string. FINISHED. Result = OK!");
-
                             return true;
-
-
                         }
                         else {
-
                             if (counter == 1) {
 
                                 filePartName = "setwebproperty?property=tail";
@@ -454,12 +420,8 @@ var config = {
                                 if (savingCloseButton !== undefined && savingCloseButton !== null) {
                                     savingCloseButton.disabled = true;
                                 }
-
-
                             }
                             else {
-
-
                                 sendingAmount = "100";
                                 if (saveProgressBar !== undefined && saveProgressBar !== null) {
                                     saveProgressBar.setAttribute("aria-valuenow", sendingAmount);
@@ -472,19 +434,13 @@ var config = {
                                     closeButton.hidden = false;
                                     config.cancel = true;
                                 }
-
                                 addToLogNL("Sending short config string. FINISHED. Result = OK!");
-
                                 return true;
-
                             }
                         }
                     }
-
                 }
-
                 counter++;
-
 
                 if (saveProgressBar !== undefined && saveProgressBar !== null) {
                     saveProgressBar.setAttribute("aria-valuenow", sendingAmount);
@@ -492,15 +448,11 @@ var config = {
                     saveProgressBar.innerHTML = sendingAmount + "%";
                     saveTextStatus.innerHTML = savingCurrentStatus;
                 }
-
-
                 addToLogNL("Sending config string. Still sending! " + filePartName);
                 //вызов функции асинхронного выполнения RESTfull POST запроса 
                 httpPostAsyncWithErrorReson(url, filePartName, subString, config.configSendAsync, counter, dataString, lengthDataSubString);
-
             }
             else {
-
                 //если HTTPClient вернул ошибку, сообщаем об ошибке в модальном окне если оно открыто, возвращаем false
                 if (saveTextStatus !== undefined && saveTextStatus !== null) {
                     saveTextStatus.innerHTML = getLang("savechangeserror");
@@ -520,17 +472,14 @@ var config = {
         }
         else {
             // если была отменена передача строки (нажатие кнопки "отменить" в модельном окне), закрываем модельное окно и возвращаем false
-
             var modalWindowBody = document.getElementById("saveConfigModalBody");
             if (modalWindowBody !== null && modalWindowBody !== undefined) {
                 $('#saveConfigModal').on('shown.bs.modal', function (e) {
                     $("#saveConfigModal").modal('hide');
                 });
             }
-
             return false;
         }
-
 
     }
 
