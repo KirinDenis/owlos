@@ -341,7 +341,7 @@ var config = {
 
     },
 
-    //функция асинхронной передачи строки через RESTfull POST запрос с/без отображением(я) состояния передачи строки в модельном окне
+    //функция асинхронной передачи строки через RESTfull POST запрос с/без отображением(я) состояния передачи строки в модaльном окне
     //эта функция является одновременно и функцией обратного вызова для выполняемого RESTfull POST запроса 
     //аргументы функции: httpResult - результат выполнения RESTfull POST запроса, counter - счетчик, dataString - вся передаваемая строка, lengthDataSubString - длина подстроки, url - адрес для отправки RESTfull POST запроса
     configSendAsync: function (httpResult, counter, dataString, lengthDataSubString, url) {
@@ -358,7 +358,7 @@ var config = {
         var savingCurrentStatus = getLang("savingchanges");
 
         // элементы модального окна отобрающего процесс передачи строки
-        var saveProgressBar = document.getElementById("saveProgressBar");
+        var saveProgressBar = document.getElementById("saveProgressBarprogressbar");
         var saveTextStatus = document.getElementById("savetext");
         var savingCloseButton = document.getElementById("showDialogPanelDialogOKButton");
         var saveButton = document.getElementById("saveaddedwidget");
@@ -406,6 +406,7 @@ var config = {
                                 savingCloseButton.hidden = true;
                                 closeButton.hidden = false;
                                 config.cancel = true;
+                                $("#showDialogPanelDialogModal").modal('hide');
                             }
                             addToLogNL("Sending long config string. FINISHED. Result = OK!");
                             return true;
@@ -432,7 +433,7 @@ var config = {
                                     saveTextStatus.innerHTML = getLang("сhangessaved");
                                     savingCloseButton.hidden = true;
                                     closeButton.hidden = false;
-                                    config.cancel = true;
+                                    config.cancel = true;                                    
                                 }
                                 addToLogNL("Sending short config string. FINISHED. Result = OK!");
                                 return true;

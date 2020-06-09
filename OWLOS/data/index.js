@@ -102,7 +102,7 @@ $(document).ready(function () {
 
     addToLogNL("Connection to master node " + boardhost + "...");
     //use it as ping
-    httpGetAsyncWithReciever(boardhost + "getalldriversproperties", onNodeAnswer, null, null, null, 5000);
+    httpGetAsyncWithReciever(boardhost + "getalldriversproperties", onNodeAnswer, null, null, null, 20000);
 
 }
 );

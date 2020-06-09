@@ -180,6 +180,8 @@ function loadingScripts(withInternet) {
                         loadingScript("dialogselectelement.js");
                         loadingScript("sidebarelement.js");
                         loadingScript("valueeditorelement.js");
+                        loadingScript("dialoglabelelement.js");
+                        loadingScript("dialogprogressbarelement.js");
 
                         var baseWidgetScript = document.createElement('script');
                         baseWidgetScript.onload = function () {

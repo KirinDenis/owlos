@@ -283,29 +283,10 @@ var dashboardUI = {
     saveAddedWidget: function (event) {
         var buttonSave = event.currentTarget;
         config.cancel = false;
-
-        var saveDialog = createModalDialog(getLang("saveaddedwidget"), "");
-
-        var divTextClass = saveDialog.body.appendChild(document.createElement("div"));
-        divTextClass.id = "savetext"
-
-        var divProgressClass = saveDialog.body.appendChild(document.createElement("div"));
-        divProgressClass.className = "progress";
-        divProgressClass.id = "divProgressClass";
-
-        var progressBar = divProgressClass.appendChild(document.createElement("div"));
-        progressBar.className = "progress-bar progress-bar-striped bg-info";
-        progressBar.id = "saveProgressBar";
-        progressBar.setAttribute("role", "progressbar");
-        progressBar.setAttribute("aria-valuenow", "0");
-        progressBar.setAttribute("aria-valuemin", "0");
-        progressBar.setAttribute("aria-valuemax", "100");
-        progressBar.setAttribute("style", "width: 0%");
-        progressBar.innerHTML = "0%";
-
-
-        saveDialog.OKButton.innerText = getLang("closebutton");
-
+        var saveDialog = createModalDialog(getLang("saveaddedwidget"), "");    
+        saveDialog.appendChildToForm(createDialogLabel("savetext", "").label);
+        saveDialog.appendChildToForm(createDialogProgressbar("saveProgressBar").progressbarDiv);
+        saveDialog.OKButton.innerText = getLang("cancelbutton");
         saveDialog.onOK = dashboardUI.addWidgetCancel;
         saveDialog.show();
         config.save();
@@ -382,9 +363,10 @@ var dashboardUI = {
         
     },
 
-    addWidgetCancel: function (event) {
+    addWidgetCancel: function () {
 
         config.cancel = true;
+        $("#showDialogPanelDialogModal").modal('hide');
         /*
         var buttonCancel = event.currentTarget;
         var saveButtonAtPanel = document.getElementById("saveWidgetsButton");

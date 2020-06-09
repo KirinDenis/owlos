@@ -186,7 +186,7 @@ function createModalDialog(_titleText, _bodyText) {
         },
 
         appendChildToForm: function (element) {
-            this.formGroup.appendChild(element);
+            return this.formGroup.appendChild(element);
         },
 
         getChild: function (childId) {
