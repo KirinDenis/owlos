@@ -280,8 +280,8 @@ var config = {
         //parse problem, reset properties
         configProperties = defaultWebProp();
         addToLogNL(getLang("restoredefault"), 1);
-        sender.addDashboard("main");
-        sender.addNode(boardhost, "local");
+        config.addDashboard("main");
+        config.addNode(boardhost, "local");
         /*
         sender.addNode("http://176.100.2.105:8085/", "solomon_1");
         sender.addNode("http://176.100.2.105:8086/", "solomon_2");
@@ -289,7 +289,7 @@ var config = {
         sender.addNode("http://192.168.1.11:8084/", "home_2");
         */
 
-        return sender.save();
+        return config.save();
 
     },
 

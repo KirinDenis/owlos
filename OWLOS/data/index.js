@@ -206,6 +206,7 @@ function onLoadConfig(result) {
             status_online = NET_OFFLINE;
             speak("ERROR with host: " + boardhost);
             addToLogNL("ERROR with host: " + boardhost, 2);
+            config.restoreDefault();
         }
  //   }
 
