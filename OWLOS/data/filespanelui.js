@@ -185,8 +185,51 @@ var FilesList =
         };
 
         _proto.uploadClick = function uploadClick(event) {
-            var filesListObject = event.currentTarget.filesList; //event.stopPropagation();
+            event.stopPropagation();
+            
+        
+            var uploadFilesDialog = createModalDialog(getLang("uploadfiles"), "");
+            uploadFilesDialog.filesListObject = event.currentTarget.filesList; 
+            //newScriptDialog.appendInput(createDialogInput("addscriptInput", getLang("addscriptname"), ""));
+            
+            //newScriptDialog.onOK = FilesList.up
+            
 
+            var inputGroup = uploadFilesDialog.body.appendChild(document.createElement("form"));
+            inputGroup.className = "form-group";
+            inputGroup.id = "inputGroup";
+            inputGroup.addEventListener('submit', uploadFilesDialog.filesListObject.inputGroupSubmit);
+            inputGroup.filesListObject = uploadFilesDialog.filesListObject;
+            var inputgroupprepend = inputGroup.appendChild(document.createElement("div"));
+            inputgroupprepend.className = "input-group-prepend";
+            var customFile = inputGroup.appendChild(document.createElement("div"));
+            customFile.className = "custom-file  form-control-sm";
+            var label = customFile.appendChild(document.createElement("label"));
+            label.className = "custom-file-label";
+            label.setAttribute("for", "inputGroupFile01");
+            label.innerText = getLang("selectfiles");
+            var fileInput = customFile.appendChild(document.createElement("input"));
+            fileInput.className = "custom-file-input";
+            fileInput.id = "inputGroupFile01";
+            fileInput.setAttribute("type", "file");
+            fileInput.setAttribute("aria-describedby", "inputGroupFileAddon01");
+            fileInput.multiple = true;
+            fileInput.onchange = uploadFilesDialog.filesListObject.inputGroupChange;
+            fileInput.filesListObject = uploadFilesDialog.filesListObject;
+            var filesList = customFile.appendChild(document.createElement("div"));
+            filesList.id = "filesList";
+            fileInput.filesList = filesList;
+            fileInput.label = label;
+            fileInput.customFile = customFile;
+
+
+            uploadFilesDialog.OKButton.style.display = "none";
+            uploadFilesDialog.show();
+        
+            return false;
+        
+
+            /*
             document.getElementById("addDriverPanel").innerHTML = "";
             document.getElementById("resetPanel").innerHTML = "";
             var uploadPanel = document.getElementById("uploadPanel");
@@ -255,6 +298,7 @@ var FilesList =
             closeButton.innerText = getLang("cancel");
             $("#uploadtModal").modal('show');
             return false;
+            */
         };
 
         _proto.formatBytes = function formatBytes(x) {
@@ -289,7 +333,7 @@ var FilesList =
             filesListObject.uploadFileButton.className = "btn btn-success btn-sm";
             filesListObject.uploadFileButton.id = "doUploadButton";
             filesListObject.uploadFileButton.setAttribute("type", "submit");
-            filesListObject.uploadFileButton.innerText = "upload";
+            filesListObject.uploadFileButton.innerText = getLang("upload");
             filesListObject.uploadFileButton.used = false;
             label.innerText = files.length + " file(s) selected, size " + filesListObject.formatBytes(totalSize);
         };

@@ -76,8 +76,8 @@ var settingsUI = {
                 addScriptItem.href.style.color = theme.warning;
 
 
-                //node files 
-                sideBar.createItem(nodeNavSubItem, "filesitem", "#" + node.nodenickname + "nodeFilesItem", getLang("files"), settingsUI.driverAnchorClick, undefined, undefined);
+                //node files                 
+                var filesItem =    sideBar.createItem(nodeNavSubItem, "filesitem", "#" + node.nodenickname + "_filesfadepanel", getLang("files"), settingsUI.driverAnchorClick , undefined, undefined);
 
                 //--- nodePropsPanel ---------------------------------------------------------------------------
                 //панель для панелей с быстрым доступам к основным свойствам ноды
@@ -140,6 +140,21 @@ var settingsUI = {
                 nodeStatusPanel.style.display = "none";
                 nodeStatusPanelText.style.display = "none";
                 //--- EndOf Node Status Panel ------------------------------------------------------------------------
+
+                //Node files panel -------------------------------------------------------
+             //   var nodesPropsPanel = document.getElementById("nodesPropsPanel");
+
+
+             
+
+
+                var filesDiv = nodesPropsPanel.appendChild(document.createElement('div'));
+                filesDiv.className = "tab-pane fade";
+                filesDiv.id = node.nodenickname + "_filesfadepanel";
+                filesItem.href.filesList = new FilesList(filesDiv, node);
+                //--- EndOf Node files panel --------------------------------------------
+
+
 
                 /*
                 

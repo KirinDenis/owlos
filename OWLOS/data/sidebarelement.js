@@ -69,7 +69,7 @@ function proSideBarDashboardMenuClick(event) {
     //$(this).removeClass('active');
     document.getElementById("sidebarText").style.display = "block";
     document.getElementById("sidebarText").innerText = event.currentTarget.addressText;
-    document.getElementById("dashboardButtonsPanel").style.display = "block";
+   // document.getElementById("dashboardButtonsPanel").style.display = "block";
     return proSideBarMenuClick(event);
 }
 
