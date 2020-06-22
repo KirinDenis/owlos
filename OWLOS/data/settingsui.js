@@ -42,6 +42,13 @@ OWLOS распространяется в надежде, что она буде
 
 var settingsUI = {
 
+    //добавляет новый пунк в сайдбар (раздел Узлы(Ноды))
+    addNodeSidebarItem: function (node, _parent, _id, _href, _text, _onclick, _icon, _span) {
+        var newSidebarItem = sideBar.createItem(_parent, _id + node.nodenickname, "#" + node.nodenickname + _href, _text, _onclick, "fa fa-microchip", _span);
+        newSidebarItem.href.node = node;
+        return newSidebarItem;
+    },
+
     onConfigLoad: function (configProperties) {
 
         if (configProperties.nodes.length == 0) return;
@@ -49,35 +56,38 @@ var settingsUI = {
         for (var nodeKey in configProperties.nodes) {
             var node = configProperties.nodes[nodeKey];
             if (document.getElementById("nodeNavItem" + node.nodenickname) == undefined) {
-                var nodeNavItem = sideBar.createItem(sideBar.nodeSubItem, "nodeNavItem" + node.nodenickname, "#" + node.nodenickname + "submenu", node.nodenickname, undefined, "fa fa-microchip", undefined);
-                // nodeNavItem.className = "";
-                // nodeNavItem.href.setAttribute("data-toggle", "collapse");                
-                //  nodeNavItem.href.setAttribute("aria-expanded", "false");
-                // nodeNavItem.href.className = "collapsed";
+                //var nodeNavItem = this.addNodeSidebarItem() sideBar.createItem(sideBar.nodeSubItem, "nodeNavItem" + node.nodenickname, "#" + node.nodenickname + "submenu", node.nodenickname, undefined, "fa fa-microchip", undefined);
+                var nodeNavItem = this.addNodeSidebarItem(node, sideBar.nodeSubItem, "nodeNavItem", "submenu", node.nodenickname, settingsUI.driverAnchorClick, "fa fa-microchip", undefined);
 
                 var nodeNavSubItem = sideBar.createDeepItem(nodeNavItem, node.nodenickname + "submenu");
-                // nodeNavSubItem.className = "collapse";
-
 
                 //node properties subItem 
-                var nodePropItem = sideBar.createItem(nodeNavSubItem, "nodepropitem", "#" + node.nodenickname + "nodePropsPanel", getLang("nodeproperties"), settingsUI.driverAnchorClick, "fa fa-cog", undefined);
+                //var nodePropItem = sideBar.createItem(nodeNavSubItem, "nodepropitem", "#" + node.nodenickname + "nodePropsPanel", getLang("nodeproperties"), settingsUI.driverAnchorClick, "fa fa-cog", undefined);
+                //nodePropItem.href.node = node;
+                var nodePropItem = this.addNodeSidebarItem(node, nodeNavSubItem, "nodepropitem", "nodePropsPanel", getLang("nodeproperties"), settingsUI.driverAnchorClick, "fa fa-cog", undefined);
                 //node drivers                 
-                var driversItem = sideBar.createItem(nodeNavSubItem, node.nodenickname + "driversitem", "#" + node.nodenickname + "driverssubmenu", getLang("drivers"), settingsUI.driverAnchorClick, undefined, "0");
+                //var driversItem = sideBar.createItem(nodeNavSubItem, node.nodenickname + "driversitem", "#" + node.nodenickname + "driverssubmenu", getLang("drivers"), settingsUI.driverAnchorClick, undefined, "0");
+                var driversItem = this.addNodeSidebarItem(node, nodeNavSubItem, "driversitem", "driverssubmenu", getLang("drivers"), settingsUI.driverAnchorClick, undefined, "0");
                 var driversSubItem = sideBar.createDeepItem(driversItem, node.nodenickname + "driverssubmenu");
-                var addDriverItem = sideBar.createItem(driversSubItem, "adddriveritem", "#adddriveritem", getLang("adddriver"), settingsUI.addDriverClick, "fa fa-plus", undefined);
-                addDriverItem.href.node = node;
+                //var addDriverItem = sideBar.createItem(driversSubItem, "adddriveritem", "#adddriveritem", getLang("adddriver"), settingsUI.addDriverClick, "fa fa-plus", undefined);
+                var addDriverItem = this.addNodeSidebarItem(node, driversSubItem, "adddriveritem", "adddriveritem", getLang("adddriver"), settingsUI.addDriverClick, "fa fa-plus", undefined);
+                //addDriverItem.href.node = node;
                 addDriverItem.href.style.color = theme.warning;
 
                 //node scripts
-                var scriptsItem = sideBar.createItem(nodeNavSubItem, "scriptsitem", "#" + node.nodenickname + "scriptssubmenu", getLang("scripts"), settingsUI.scriptAnchorClick, undefined, undefined);                
+                //var scriptsItem = sideBar.createItem(nodeNavSubItem, "scriptsitem", "#" + node.nodenickname + "scriptssubmenu", getLang("scripts"), settingsUI.scriptAnchorClick, undefined, undefined);                
+                var scriptsItem = this.addNodeSidebarItem(node, nodeNavSubItem, "scriptsitem", "scriptssubmenu", getLang("scripts"), settingsUI.scriptAnchorClick, undefined, undefined);
+                //scriptsItem.href.node = node;
                 var scriptsSubItem = sideBar.createDeepItem(scriptsItem, node.nodenickname + "scriptssubmenu");
-                var addScriptItem = sideBar.createItem(scriptsSubItem, "addscriptitem", "#addscriptitem", getLang("createscript"), scriptsUI.createScriptClick, "fa fa-plus", undefined);
-                addScriptItem.href.node = node;
+                //var addScriptItem = sideBar.createItem(scriptsSubItem, "addscriptitem", "#addscriptitem", getLang("createscript"), scriptsUI.createScriptClick, "fa fa-plus", undefined);
+                var addScriptItem = this.addNodeSidebarItem(node, scriptsSubItem, "addscriptitem", "addscriptitem", getLang("createscript"), scriptsUI.createScriptClick, "fa fa-plus", undefined);
+                //addScriptItem.href.node = node;
                 addScriptItem.href.style.color = theme.warning;
 
 
                 //node files                 
-                var filesItem =    sideBar.createItem(nodeNavSubItem, "filesitem", "#" + node.nodenickname + "_filesfadepanel", getLang("files"), settingsUI.driverAnchorClick , undefined, undefined);
+                //var filesItem =  sideBar.createItem(nodeNavSubItem, "filesitem", "#" + node.nodenickname + "_filesfadepanel", getLang("files"), settingsUI.driverAnchorClick , undefined, undefined);
+                var filesItem = this.addNodeSidebarItem(node, nodeNavSubItem, "filesitem", "_filesfadepanel", getLang("files"), settingsUI.driverAnchorClick, undefined, undefined);
 
                 //--- nodePropsPanel ---------------------------------------------------------------------------
                 //панель для панелей с быстрым доступам к основным свойствам ноды
@@ -126,15 +136,15 @@ var settingsUI = {
                 nodeNavItem.href.MQTTPanel = settingsUI.getStatusWidget(node.nodenickname + "mqttStatus", "MQTT", nodeStatusPanel);
                 nodeNavItem.href.OTAPanel = settingsUI.getStatusWidget(node.nodenickname + "otaStatus", "OTA", nodeStatusPanel);
 
-              //  document.getElementById("nodeStatusPanel").appendChild(nodeStatusPanel);
+                //  document.getElementById("nodeStatusPanel").appendChild(nodeStatusPanel);
 
-                
+
                 var nodeStatusPanelText = document.createElement("div");
                 nodeStatusPanelText.innerHTML = " <strong>" + node.nodenickname + "</strong> at <a href='" + node.host + "' target='_blank'>" + node.host + "</a>";
                 document.getElementById("nodeStatusPanelText").appendChild(nodeStatusPanelText);
 
-              //  nodeStatusPanel.nodeStatusPanelText = nodeStatusPanelText;
-                
+                //  nodeStatusPanel.nodeStatusPanelText = nodeStatusPanelText;
+
                 //var nodeStatusPanelText =document.getElementById("nodeStatusPanelText");
                 //nodeStatusPanelText.innerHTML = " <strong>" + node.nodenickname + "</strong> at <a href='" + node.host + "' target='_blank'>" + node.host + "</a>";
                 nodeStatusPanel.style.display = "none";
@@ -142,10 +152,10 @@ var settingsUI = {
                 //--- EndOf Node Status Panel ------------------------------------------------------------------------
 
                 //Node files panel -------------------------------------------------------
-             //   var nodesPropsPanel = document.getElementById("nodesPropsPanel");
+                //   var nodesPropsPanel = document.getElementById("nodesPropsPanel");
 
 
-             
+
 
 
                 var filesDiv = nodesPropsPanel.appendChild(document.createElement('div'));
@@ -389,13 +399,15 @@ var settingsUI = {
             //driverLi.className = "nav-item";
 
             //submenu drivers count 
-
-            var driverSpan = document.getElementById(driver._nodenickname + "driversitemspan");
-            if (driverSpan.driversCount == undefined) {
-                driverSpan.driversCount = 0;
+            driversitemlocalspan
+            var driverSpan = document.getElementById("driversitem" + driver._nodenickname + "span");
+            if (driverSpan != null) {
+                if (driverSpan.driversCount == undefined) {
+                    driverSpan.driversCount = 0;
+                }
+                driverSpan.driversCount++;
+                driverSpan.innerHTML = parseInt(driverSpan.driversCount);
             }
-            driverSpan.driversCount++;
-            driverSpan.innerHTML = parseInt(driverSpan.driversCount);
 
             //sideBar.createDeepItem(nodeSubmenuUl, )
             var driverAhref = sideBar.createItem(nodeSubmenuUl, driver._nodenickname + "_" + driver._id, "#" + driver._nodenickname + "_" + driver._id, driver._id, settingsUI.driverAnchorClick, "fa fa-sliders-h", undefined);
@@ -428,14 +440,23 @@ var settingsUI = {
                 //индикатор(widget) в верхней панеле для WiFi AP и Wifi ST - подключаем их к событиям WiFi текущей node.WifiDriver - теперь WifiDriver будет отправлять событие 
                 //о своем состоянии непосредственно индикаторам 
                 //сколько будет node столько будет индикаторов для их WiFi driver - мы отображаем только индикаторы выбранной в SideBar (текущей) node и ее драйвер
-                //смотрите getStatusWidget() метод - если индикатора нет его создадут и подпишут id как node.nodenickname + "wifiapStatus"
-                var WiFiAPPanel = settingsUI.getStatusWidget(node.nodenickname + "wifiapStatus", "WiFi AP", undefined);
+                //смотрите headerPanelUI.addStatus() метод - если индикатора нет его создадут и подпишут id как node.nodenickname + "wifiapStatus"
+
+                //#ST_PANEL
+                //WiFi Access Point header status indicator ----------------------------
+                //var WiFiAPPanel = settingsUI.getStatusWidget(node.nodenickname + "wifiapStatus", "WiFi AP", undefined);
+                var WiFiAPPanel = headerPanelUI.addStatus(node, node.nodenickname + "wifiapStatus", "WiFi AP");
+                //TEMP to do buttom
+                // headerPanelUI.showStatusPanel(node);
+
                 //подписываем свойство драйвера WiFi.wifiaccesspointavailable на обработчик settingsUI.onWiFiAPStatusChange
                 //если WiFi.wifiaccesspointavailable изменит значение, будет вызван settingsUI.onWiFiAPStatusChange
                 driver.wifiaccesspointavailable.addValueListner(settingsUI.onWiFiAPStatusChange, WiFiAPPanel);
+                //EndOf WiFi Access Point header status indicator ----------------------
 
                 //так же как и WiFi AP
-                var WiFiSTPanel = settingsUI.getStatusWidget(node.nodenickname + "wifistStatus", "WiFi ST", undefined); //
+                //var WiFiSTPanel = settingsUI.getStatusWidget(node.nodenickname + "wifistStatus", "WiFi ST", undefined); //
+                var WiFiSTPanel = headerPanelUI.addStatus(node, node.nodenickname + "wifistStatus", "WiFi ST"); //
                 driver.wifistatus.addValueListner(settingsUI.onWiFiSTStatusChange, WiFiSTPanel);
 
                 //панель со свойствами node - добавляем отображени уровня WiFi сигнала (так же подписываем на событие изменения значения WiFi.wifirssi)
@@ -525,15 +546,16 @@ var settingsUI = {
                     if (driver.type.value == NetworkDriverType) {
                         // document.title = driver.nodeid.value + " :: OWLOS"; //ToDo detect "local" node
 
-                        var RESTfulPanel = settingsUI.getStatusWidget(node.nodenickname + "restfulStatus", "RESTful");
+                        var RESTfulPanel = headerPanelUI.addStatus(node, node.nodenickname + "restfulStatus", "RESTful");
                         driver.restfulavailable.addValueListner(settingsUI.onRESTfulStatusChange, RESTfulPanel);
+
                         var node = config.getNodeByHost(driver._host);
                         node.addNetworkStatusListner(settingsUI.onRESTfulOnlineStatusChange, RESTfulPanel);
 
-                        var MQTTPanel = settingsUI.getStatusWidget(node.nodenickname + "mqttStatus", "MQTT");
+                        var MQTTPanel = headerPanelUI.addStatus(node, node.nodenickname + "mqttStatus", "MQTT");
                         driver.mqttclientstate.addValueListner(settingsUI.onMQTTStatusChange, MQTTPanel);
 
-                        var OTAPanel = settingsUI.getStatusWidget(node.nodenickname + "otaStatus", "OTA");
+                        var OTAPanel = headerPanelUI.addStatus(node, node.nodenickname + "otaStatus", "OTA");
                         driver.otaavailable.addValueListner(settingsUI.onOTAStatusChange, OTAPanel);
 
                         var RESTfulCheckbox = settingsUI.addPropertyCheckbox(networkPropPanel1, driver.restfulavailable, getLang("restfulavailable"), "");
@@ -619,9 +641,9 @@ var settingsUI = {
 
         $(aHref).removeClass('active');
 
-        document.getElementById("sidebarText").style.display = "none";
-        document.getElementById("sidebarText").innerText = "";
-       // document.getElementById("dashboardButtonsPanel").style.display = "none";
+        //document.getElementById("sidebarText").style.display = "none";
+        //document.getElementById("sidebarText").innerText = "";
+        // document.getElementById("dashboardButtonsPanel").style.display = "none";
 
         //$(aHref).toggleClass("active");
 
@@ -632,6 +654,8 @@ var settingsUI = {
         var node = aHref.node;
         if (node != undefined) {
 
+            headerPanelUI.showStatusPanel(node);
+            /*
             if (aHref.nodeStatusPanel == undefined) {
                 aHref = document.getElementById("nodeNavItem" + node.nodenickname + "href");
             }
@@ -647,6 +671,7 @@ var settingsUI = {
                 nodeStatusPanel.currentStatusPanel.nodeStatusPanelText.style.display = "block";
             }
             }
+            */
 
         }
 
@@ -665,7 +690,7 @@ var settingsUI = {
         var newNodeDialog = createModalDialog(getLang("addnodeheader"), "");
         newNodeDialog.appendInput(createDialogInput("newnodename", getLang("addnodename"), ""));
         newNodeDialog.appendInput(createDialogInput("newnodehost", getLang("addnodehost"), "http://host:port/ or https://host:port/"));
-        
+
         newNodeDialog.onOK = settingsUI.addNodeUIClick;
         newNodeDialog.show();
 
@@ -1425,46 +1450,46 @@ var settingsUI = {
 
     onWiFiAPStatusChange: function (sender, driverProperty) {
         if (driverProperty.value == 1) {
-            sender.className = "badge badge-success";
+            sender.className = "text-success"
 
         }
         else {
-            sender.className = "badge badge-secondary";
+            sender.className = "text-secondary";
         }
     },
 
     onWiFiSTStatusChange: function (sender, driverProperty) {
         var wifiSTconection = getLang("nostate");
-        sender.className = "badge badge-secondary";
+        sender.className = "text-secondary";
 
         switch (parseInt(driverProperty.value)) {
             case 0:
                 wifiSTconection = getLang("idlestatus");
-                sender.className = "badge badge-warning";
+                sender.className = "text-warning";
                 break;
             case 1:
                 wifiSTconection = getLang("nossidavailable");
-                sender.className = "badge badge-danger";
+                sender.className = "text-danger";
                 break;
             case 2:
                 wifiSTconection = getLang("scancompleted");
-                sender.className = "badge badge-warning";
+                sender.className = "text-warning";
                 break;
             case 3:
                 wifiSTconection = getLang("connected");
-                sender.className = "badge badge-success";
+                sender.className = "text-success";
                 break;
             case 4:
                 wifiSTconection = getLang("connectfailed");
-                sender.className = "badge badge-danger";
+                sender.className = "text-danger";
                 break;
             case 5:
                 wifiSTconection = getLang("connectionlost");
-                sender.className = "badge badge-danger";
+                sender.className = "text-danger";
                 break;
             case 6:
                 wifiSTconection = getLang("disconnected");
-                sender.className = "badge badge-secondary";
+                sender.className = "text-secondary";
                 break;
             default:
                 break;
@@ -1477,88 +1502,88 @@ var settingsUI = {
 
     onRESTfulStatusChange: function (sender, driverProperty) {
         if (driverProperty.value == 1) {
-            sender.className = "badge badge-success";
+            sender.className = "text-success";
 
         }
         else {
-            sender.className = "badge badge-secondary";
+            sender.className = "text-secondary";
         }
     },
 
     onRESTfulOnlineStatusChange: function (sender, drivers) {
         var onlineStatus = getLang("netonline");
         if (drivers.networkStatus == NET_ONLINE) {
-            sender.className = "badge badge-success";
+            sender.className = "text-success";
         }
         else
             if (drivers.networkStatus == NET_ERROR) {
-                sender.className = "badge badge-danger";
+                sender.className = "text-danger";
             }
             else
                 if (drivers.networkStatus == NET_OFFLINE) {
 
-                    sender.className = "badge badge-secondary";
+                    sender.className = "text-secondary";
                 }
     },
 
     onMQTTStatusChange: function (sender, driverProperty) {
 
-        sender.className = "badge badge-secondary";
+        sender.className = "text-secondary";
         mqttState = getLang("nostate");
 
         switch (parseInt(driverProperty.value)) {
             case -5:
-                sender.className = "badge badge-warning";
+                sender.className = "text-warning";
                 mqttState = getLang("debugmode");
                 break;
 
             case -4:
-                sender.className = "badge badge-danger";
+                sender.className = "text-danger";
                 mqttState = getLang("connectiontimeout");
                 break;
 
             case -3:
-                sender.className = "badge badge-danger";
+                sender.className = "text-danger";
                 mqttState = getLang("connectionlost");
                 break;
 
             case -2:
-                sender.className = "badge badge-danger";
+                sender.className = "text-danger";
                 mqttState = getLang("connectfailed");
                 break;
 
             case -1:
-                sender.className = "badge badge-secondary";
+                sender.className = "text-secondary";
                 mqttState = getLang("disconnected");
                 break;
 
             case 0:
-                sender.className = "badge badge-success";
+                sender.className = "text-success";
                 mqttState = getLang("connected");
                 break;
 
             case 1:
-                sender.className = "badge badge-danger";
+                sender.className = "text-danger";
                 mqttState = getLang("badprotocol");
                 break;
 
             case 2:
-                sender.className = "badge badge-danger";
+                sender.className = "text-danger";
                 mqttState = getLang("badclientid");
                 break;
 
             case 3:
-                sender.className = "badge badge-secondary";
+                sender.className = "text-secondary";
                 mqttState = getLang("unavailable");
                 break;
 
             case 4:
-                sender.className = "badge badge-danger";
+                sender.className = "text-danger";
                 mqttState = getLang("badcredentials");
                 break;
 
             case 5:
-                sender.className = "badge badge-danger";
+                sender.className = "text-danger";
                 mqttState = getLang("unauthorized");
                 break;
 
@@ -1573,10 +1598,10 @@ var settingsUI = {
 
     onOTAStatusChange: function (sender, driverProperty) {
         if (driverProperty.value == 1) {
-            sender.className = "badge badge-success";
+            sender.className = "text-success";
         }
         else {
-            sender.className = "badge badge-secondary";
+            sender.className = "text-secondary";
         }
     },
 

@@ -41,6 +41,8 @@ OWLOS распространяется в надежде, что она буде
 
 var headerPanelUI = {
 
+    buttons: [],
+    statusPanels: [],    
     addButton: function (id, faIcon, title) {
         var headerPanel = document.getElementById("header-panel-form");
         if (headerPanel == undefined) {
@@ -57,7 +59,111 @@ var headerPanelUI = {
         span.className = faIcon;
         button.appendChild(span);
         headerPanel.appendChild(button);
+        this.buttons.push(button);
         return button;
+    },
+
+    addStatusPanel: function(node) {
+        var headerPanelStatuses = document.getElementById("header-panel-statuses");
+        if (headerPanelStatuses == undefined) {
+            return undefined;
+        }
+
+        var statusPanel = document.createElement("div");
+        statusPanel.node = node;
+        statusPanel.statuses = [];
+        statusPanel.style.display = "none";
+        headerPanelStatuses.appendChild(statusPanel);
+
+        var nodeHref =  document.createElement("text");        
+        nodeHref.className = "text-info";
+        nodeHref.innerHTML = node.host;
+        statusPanel.appendChild(nodeHref);
+
+        var sepparator =  document.createElement("text");
+        sepparator.className = "text-secondary";
+        sepparator.innerHTML = "<strong>|</strong>";
+        statusPanel.appendChild(sepparator);
+        this.statusPanels.push(statusPanel);
+        return statusPanel;
+    },
+
+    getStatusesPanel: function(node) {
+        for(var statusPanelIndex in this.statusPanels) {
+            if (this.statusPanels[statusPanelIndex].node === node) {
+                return this.statusPanels[statusPanelIndex];
+            }
+        }
+        return undefined;
+    },
+
+    showStatusPanel: function(node) {
+        var statusPanel = this.getStatusesPanel(node);
+        if (statusPanel != undefined) {
+            statusPanel.style.display = "block";
+        }
+    },
+
+    hideStatusPanel: function(node) {
+        var statusPanel = this.getStatusesPanel(node);
+        if (statusPanel != undefined) {
+            statusPanel.style.display = "none";
+        }
+    },
+    
+    addStatus: function (node, id, text) {
+        var statusPanel = this.getStatusesPanel(node);
+        if (statusPanel == undefined) {
+            statusPanel = this.addStatusPanel(node);
+        }
+        
+        var status =  document.createElement("text");
+        status.id = node.nickname + id;
+        status.className = "text-secondary";
+        status.innerHTML = text;
+        statusPanel.appendChild(status);
+        statusPanel.statuses.push(status);
+        
+        var sepparator =  document.createElement("text");
+        sepparator.className = "text-secondary";
+        sepparator.innerHTML = "<strong>|</strong>";
+        statusPanel.appendChild(sepparator);
+        
+        return status;    
+    },
+
+    getButton: function(id) {
+        for(var buttonIndex in this.buttons) {
+            if (buttons[buttonIndex].id === id) {
+                return buttons[buttonIndex];
+            }
+        }
+        return undefined;
+    },
+
+    getStatus: function(node, id) {
+        return document.getElementById(node.nickname + id)
+    },
+
+    setStatusSuccess: function(node, id) {
+        var status = this.getStatus(node, id);
+        if (status != undefined) {
+            status.className = "text-success";
+        }
+    },
+
+    setStatusUnknown: function(node, id) {
+        var status = this.getStatus(id);
+        if (status != undefined) {
+            status.className = "text-secondary";
+        }
+    },
+
+    setStatusError: function(node, id) {
+        var status = this.getStatus(id);
+        if (status != undefined) {
+            status.className = "text-danger";
+        }
     }
 
 }
