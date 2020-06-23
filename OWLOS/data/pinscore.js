@@ -159,7 +159,7 @@ var pins = {
             else {
                 node.networkStatus = NET_OFFLINE;
             }
-            node.pins = "";
+            node.pins = [];
         }
     },
 
@@ -509,17 +509,17 @@ var accessableDrivers = {
 
             for (var i = 0; i < recievedAccessablePins.length; i++) {
 
-                if (recievedAccessablePins[i] === "") continue; 
+                if (recievedAccessablePins[i] === "") continue;
 
-                if (recievedAccessablePins[i].indexOf("name:") == 0) { 
-                    
+                if (recievedAccessablePins[i].indexOf("name:") == 0) {
+
                     if (_driver != undefined) {
                         node.accessableDrivers.push(_driver);
                     }
 
                     driverName = recievedAccessablePins[i].split(":")[1];
                     _driver = { name: driverName };
-                        
+
                     // _driver = this.addDriver(driverName, node);
                 }
                 else {
@@ -540,23 +540,23 @@ var accessableDrivers = {
     }
 }
 
-    /*
-    addDrivern: function (_driverName, _node) {
-        driverPin = {
-            driverName: _driverName,
-            name: "",
-            node: _node,
-            driverpintype: 0,
-            driverpintypedecoded: "",
-            driverpinindex: -1,
-            driveri2caddr: -1,
-            driversdapinname: "",
-            deleted: false,
-        };
+/*
+addDrivern: function (_driverName, _node) {
+    driverPin = {
+        driverName: _driverName,
+        name: "",
+        node: _node,
+        driverpintype: 0,
+        driverpintypedecoded: "",
+        driverpinindex: -1,
+        driveri2caddr: -1,
+        driversdapinname: "",
+        deleted: false,
+    };
 
 return driverPin;
-    },
-    */
+},
+*/
 
 //}
 

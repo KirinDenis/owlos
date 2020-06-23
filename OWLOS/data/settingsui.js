@@ -57,17 +57,17 @@ var settingsUI = {
             var node = configProperties.nodes[nodeKey];
             if (document.getElementById("nodeNavItem" + node.nodenickname) == undefined) {
                 //var nodeNavItem = this.addNodeSidebarItem() sideBar.createItem(sideBar.nodeSubItem, "nodeNavItem" + node.nodenickname, "#" + node.nodenickname + "submenu", node.nodenickname, undefined, "fa fa-microchip", undefined);
-                var nodeNavItem = this.addNodeSidebarItem(node, sideBar.nodeSubItem, "nodeNavItem", "submenu", node.nodenickname, settingsUI.driverAnchorClick, "fa fa-microchip", undefined);
+                var nodeNavItem = this.addNodeSidebarItem(node, sideBar.nodeSubItem, "nodeNavItem", "submenu", node.nodenickname, sidebarItemClick, "fa fa-microchip", undefined);
 
                 var nodeNavSubItem = sideBar.createDeepItem(nodeNavItem, node.nodenickname + "submenu");
 
                 //node properties subItem 
-                //var nodePropItem = sideBar.createItem(nodeNavSubItem, "nodepropitem", "#" + node.nodenickname + "nodePropsPanel", getLang("nodeproperties"), settingsUI.driverAnchorClick, "fa fa-cog", undefined);
+                //var nodePropItem = sideBar.createItem(nodeNavSubItem, "nodepropitem", "#" + node.nodenickname + "nodePropsPanel", getLang("nodeproperties"), sidebarItemClick, "fa fa-cog", undefined);
                 //nodePropItem.href.node = node;
-                var nodePropItem = this.addNodeSidebarItem(node, nodeNavSubItem, "nodepropitem", "nodePropsPanel", getLang("nodeproperties"), settingsUI.driverAnchorClick, "fa fa-cog", undefined);
+                var nodePropItem = this.addNodeSidebarItem(node, nodeNavSubItem, "nodepropitem", "nodePropsPanel", getLang("nodeproperties"), sidebarItemClick, "fa fa-cog", undefined);
                 //node drivers                 
-                //var driversItem = sideBar.createItem(nodeNavSubItem, node.nodenickname + "driversitem", "#" + node.nodenickname + "driverssubmenu", getLang("drivers"), settingsUI.driverAnchorClick, undefined, "0");
-                var driversItem = this.addNodeSidebarItem(node, nodeNavSubItem, "driversitem", "driverssubmenu", getLang("drivers"), settingsUI.driverAnchorClick, undefined, "0");
+                //var driversItem = sideBar.createItem(nodeNavSubItem, node.nodenickname + "driversitem", "#" + node.nodenickname + "driverssubmenu", getLang("drivers"), sidebarItemClick, undefined, "0");
+                var driversItem = this.addNodeSidebarItem(node, nodeNavSubItem, "driversitem", "driverssubmenu", getLang("drivers"), sidebarItemClick, undefined, "0");
                 var driversSubItem = sideBar.createDeepItem(driversItem, node.nodenickname + "driverssubmenu");
                 //var addDriverItem = sideBar.createItem(driversSubItem, "adddriveritem", "#adddriveritem", getLang("adddriver"), settingsUI.addDriverClick, "fa fa-plus", undefined);
                 var addDriverItem = this.addNodeSidebarItem(node, driversSubItem, "adddriveritem", "adddriveritem", getLang("adddriver"), settingsUI.addDriverClick, "fa fa-plus", undefined);
@@ -86,8 +86,8 @@ var settingsUI = {
 
 
                 //node files                 
-                //var filesItem =  sideBar.createItem(nodeNavSubItem, "filesitem", "#" + node.nodenickname + "_filesfadepanel", getLang("files"), settingsUI.driverAnchorClick , undefined, undefined);
-                var filesItem = this.addNodeSidebarItem(node, nodeNavSubItem, "filesitem", "_filesfadepanel", getLang("files"), settingsUI.driverAnchorClick, undefined, undefined);
+                //var filesItem =  sideBar.createItem(nodeNavSubItem, "filesitem", "#" + node.nodenickname + "_filesfadepanel", getLang("files"), sidebarItemClick , undefined, undefined);
+                var filesItem = this.addNodeSidebarItem(node, nodeNavSubItem, "filesitem", "_filesfadepanel", getLang("files"), sidebarItemClick, undefined, undefined);
 
                 //--- nodePropsPanel ---------------------------------------------------------------------------
                 //панель для панелей с быстрым доступам к основным свойствам ноды
@@ -180,7 +180,7 @@ var settingsUI = {
                                 nodeAhref.id = node.nodenickname + "ahref";
                 
                 
-                                //nodeAhref.onclick = settingsUI.driverAnchorClick;
+                                //nodeAhref.onclick = sidebarItemClick;
                                 nodeAhref.parentLi = nodeLi;
                                 nodeAhref.node = node;
                                 node.addNetworkStatusListner(settingsUI.onNetworkChange, nodeAhref);
@@ -201,7 +201,7 @@ var settingsUI = {
                                 nodePanelHRef.parentLi = nodeLi;
                                 //nodePanelHRef.style.color = theme.warning;
                                 nodePanelHRef.setAttribute("data-toggle", "tab");
-                                nodePanelHRef.onclick = settingsUI.driverAnchorClick;
+                                nodePanelHRef.onclick = sidebarItemClick;
                                 nodePanelHRef.innerText = getLang("nodeproperties");
                                 nodePanelHRef.href = "#" + node.nodenickname + "nodePropsPanel";
                                 nodePanelHRef.node = node;
@@ -285,7 +285,7 @@ var settingsUI = {
                                 scriptsAhref.parentLi = nodeLi;
                                 //filesHRef.style.color = theme.warning;
                                 scriptsAhref.setAttribute("data-toggle", "collapse");
-                                scriptsAhref.onclick = settingsUI.driverAnchorClick;
+                                scriptsAhref.onclick = sidebarItemClick;
                                 scriptsAhref.href = "#" + node.nodenickname + "scriptssubmenu";
                                 scriptsAhref.node = node;
                 
@@ -335,7 +335,7 @@ var settingsUI = {
                                 filesHRef.parentLi = nodeLi;
                                 //filesHRef.style.color = theme.warning;
                                 filesHRef.setAttribute("data-toggle", "tab");
-                                filesHRef.onclick = settingsUI.driverAnchorClick;
+                                filesHRef.onclick = sidebarItemClick;
                                 filesHRef.innerText = getLang("files");
                                 filesHRef.href = "#" + node.nodenickname + "filesfadepanel";
                                 filesHRef.node = node;
@@ -410,7 +410,7 @@ var settingsUI = {
             }
 
             //sideBar.createDeepItem(nodeSubmenuUl, )
-            var driverAhref = sideBar.createItem(nodeSubmenuUl, driver._nodenickname + "_" + driver._id, "#" + driver._nodenickname + "_" + driver._id, driver._id, settingsUI.driverAnchorClick, "fa fa-sliders-h", undefined);
+            var driverAhref = settingsUI.addNodeSidebarItem(node, nodeSubmenuUl, "_" + driver._id, "_" + driver._id, driver._id, sidebarItemClick, "fa fa-sliders-h", undefined);
 
             /*
             var driverAhref = driverLi.appendChild(document.createElement("a")); //отображаемая часть меню - гиперссылка
@@ -419,7 +419,7 @@ var settingsUI = {
             driverAhref.href = "#" + driver._nodenickname + "_" + driver._id; //якорь на панель с таблицей со свойствами выбранного драйвера (создается один раз)
             driverAhref.node = config.getNodeByHost(driver._host); //привязываем пункт меню к ноде которой принадлежит драйвера (используется для быстрого поска ноды в будущем)
             driverAhref.innerText = driver._id; //пункт меню отображает ID нового драйвера
-            driverAhref.onclick = settingsUI.driverAnchorClick; //обработчик клика на пунк меню (переключение панелей)
+            driverAhref.onclick = sidebarItemClick; //обработчик клика на пунк меню (переключение панелей)
             driverAhref.parentLi = driverLi; //сохраняем родительский driverId
 */
 
@@ -634,54 +634,7 @@ var settingsUI = {
         }
     },
 
-    driverAnchorClick: function (event) {
 
-        var aHref = event.currentTarget;
-
-
-        $(aHref).removeClass('active');
-
-        //document.getElementById("sidebarText").style.display = "none";
-        //document.getElementById("sidebarText").innerText = "";
-        // document.getElementById("dashboardButtonsPanel").style.display = "none";
-
-        //$(aHref).toggleClass("active");
-
-        document.location = aHref.href;
-
-
-
-        var node = aHref.node;
-        if (node != undefined) {
-
-            headerPanelUI.showStatusPanel(node);
-            /*
-            if (aHref.nodeStatusPanel == undefined) {
-                aHref = document.getElementById("nodeNavItem" + node.nodenickname + "href");
-            }
-            if (aHref.nodeStatusPanel != undefined) {
-                var nodeStatusPanel = document.getElementById("nodeStatusPanel");
-                if (nodeStatusPanel != null) {
-                if (nodeStatusPanel.currentStatusPanel != undefined) {
-                    nodeStatusPanel.currentStatusPanel.style.display = "none";
-                    nodeStatusPanel.currentStatusPanel.nodeStatusPanelText.style.display = "none";
-                }
-                nodeStatusPanel.currentStatusPanel = aHref.nodeStatusPanel;
-                nodeStatusPanel.currentStatusPanel.style.display = "block";
-                nodeStatusPanel.currentStatusPanel.nodeStatusPanelText.style.display = "block";
-            }
-            }
-            */
-
-        }
-
-        //     if (aHref.getAttribute("aria-expanded") == "true") {
-        //         document.documentElement.scrollTop = document.documentElement.scrollTop - event.clientY - event.currentTarget.offsetHeight;
-        //     }
-
-
-        return false;
-    },
 
 
     addNodeClick: function (event) {
@@ -1607,7 +1560,7 @@ var settingsUI = {
 
     addDriverClick: function (event) {
         event.stopPropagation();
-        settingsUI.driverAnchorClick(event);
+        sidebarItemClick(event);
         var addDriverAhref = event.currentTarget;
         driversUI.addDriver(addDriverAhref.node);
     }

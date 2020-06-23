@@ -42,7 +42,7 @@ OWLOS распространяется в надежде, что она буде
 var headerPanelUI = {
 
     buttons: [],
-    statusPanels: [],    
+    statusPanels: [],
     addButton: function (id, faIcon, title) {
         var headerPanel = document.getElementById("header-panel-form");
         if (headerPanel == undefined) {
@@ -63,7 +63,7 @@ var headerPanelUI = {
         return button;
     },
 
-    addStatusPanel: function(node) {
+    addStatusPanel: function (node) {
         var headerPanelStatuses = document.getElementById("header-panel-statuses");
         if (headerPanelStatuses == undefined) {
             return undefined;
@@ -75,12 +75,14 @@ var headerPanelUI = {
         statusPanel.style.display = "none";
         headerPanelStatuses.appendChild(statusPanel);
 
-        var nodeHref =  document.createElement("text");        
-        nodeHref.className = "text-info";
-        nodeHref.innerHTML = node.host;
+        var nodeHref = document.createElement("a");
+        //nodeHref.className = "text-info";
+        nodeHref.href = node.host;
+        nodeHref.target = "_blank";
+        nodeHref.innerText = node.nodenickname;
         statusPanel.appendChild(nodeHref);
 
-        var sepparator =  document.createElement("text");
+        var sepparator = document.createElement("text");
         sepparator.className = "text-secondary";
         sepparator.innerHTML = "<strong>|</strong>";
         statusPanel.appendChild(sepparator);
@@ -88,8 +90,8 @@ var headerPanelUI = {
         return statusPanel;
     },
 
-    getStatusesPanel: function(node) {
-        for(var statusPanelIndex in this.statusPanels) {
+    getStatusesPanel: function (node) {
+        for (var statusPanelIndex in this.statusPanels) {
             if (this.statusPanels[statusPanelIndex].node === node) {
                 return this.statusPanels[statusPanelIndex];
             }
@@ -97,43 +99,49 @@ var headerPanelUI = {
         return undefined;
     },
 
-    showStatusPanel: function(node) {
+    showStatusPanel: function (node) {
         var statusPanel = this.getStatusesPanel(node);
         if (statusPanel != undefined) {
             statusPanel.style.display = "block";
         }
     },
 
-    hideStatusPanel: function(node) {
+    hideStatusPanel: function (node) {
         var statusPanel = this.getStatusesPanel(node);
         if (statusPanel != undefined) {
             statusPanel.style.display = "none";
         }
     },
-    
+
+    hideAllStatusesPanels: function () {
+        for (var statusPanelIndex in this.statusPanels) {
+            this.statusPanels[statusPanelIndex].style.display = "none";
+        }
+    },
+
     addStatus: function (node, id, text) {
         var statusPanel = this.getStatusesPanel(node);
         if (statusPanel == undefined) {
             statusPanel = this.addStatusPanel(node);
         }
-        
-        var status =  document.createElement("text");
+
+        var status = document.createElement("text");
         status.id = node.nickname + id;
         status.className = "text-secondary";
         status.innerHTML = text;
         statusPanel.appendChild(status);
         statusPanel.statuses.push(status);
-        
-        var sepparator =  document.createElement("text");
+
+        var sepparator = document.createElement("text");
         sepparator.className = "text-secondary";
         sepparator.innerHTML = "<strong>|</strong>";
         statusPanel.appendChild(sepparator);
-        
-        return status;    
+
+        return status;
     },
 
-    getButton: function(id) {
-        for(var buttonIndex in this.buttons) {
+    getButton: function (id) {
+        for (var buttonIndex in this.buttons) {
             if (buttons[buttonIndex].id === id) {
                 return buttons[buttonIndex];
             }
@@ -141,25 +149,25 @@ var headerPanelUI = {
         return undefined;
     },
 
-    getStatus: function(node, id) {
+    getStatus: function (node, id) {
         return document.getElementById(node.nickname + id)
     },
 
-    setStatusSuccess: function(node, id) {
+    setStatusSuccess: function (node, id) {
         var status = this.getStatus(node, id);
         if (status != undefined) {
             status.className = "text-success";
         }
     },
 
-    setStatusUnknown: function(node, id) {
+    setStatusUnknown: function (node, id) {
         var status = this.getStatus(id);
         if (status != undefined) {
             status.className = "text-secondary";
         }
     },
 
-    setStatusError: function(node, id) {
+    setStatusError: function (node, id) {
         var status = this.getStatus(id);
         if (status != undefined) {
             status.className = "text-danger";

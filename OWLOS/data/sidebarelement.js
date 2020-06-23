@@ -54,6 +54,59 @@ https://github.com/azouaoui-med/pro-sidebar-template
 //влечет за собой изменение других элементов UX - кнопки вверхней части управляющие виджетами, кнопка сохранить многое другое 
 //эти обработчики ниже данный метод управляет внешний вид UX
 
+
+function sidebarItemClick(event) {
+
+    headerPanelUI.hideAllStatusesPanels();
+    
+    var aHref = event.currentTarget;
+
+
+    $(aHref).removeClass('active');
+
+    //document.getElementById("sidebarText").style.display = "none";
+    //document.getElementById("sidebarText").innerText = "";
+    // document.getElementById("dashboardButtonsPanel").style.display = "none";
+
+    //$(aHref).toggleClass("active");
+
+    document.location = aHref.href;
+
+
+
+    var node = aHref.node;
+    if (node != undefined) {
+
+        headerPanelUI.showStatusPanel(node);
+        /*
+        if (aHref.nodeStatusPanel == undefined) {
+            aHref = document.getElementById("nodeNavItem" + node.nodenickname + "href");
+        }
+        if (aHref.nodeStatusPanel != undefined) {
+            var nodeStatusPanel = document.getElementById("nodeStatusPanel");
+            if (nodeStatusPanel != null) {
+            if (nodeStatusPanel.currentStatusPanel != undefined) {
+                nodeStatusPanel.currentStatusPanel.style.display = "none";
+                nodeStatusPanel.currentStatusPanel.nodeStatusPanelText.style.display = "none";
+            }
+            nodeStatusPanel.currentStatusPanel = aHref.nodeStatusPanel;
+            nodeStatusPanel.currentStatusPanel.style.display = "block";
+            nodeStatusPanel.currentStatusPanel.nodeStatusPanelText.style.display = "block";
+        }
+        }
+        */
+
+    }
+
+    //     if (aHref.getAttribute("aria-expanded") == "true") {
+    //         document.documentElement.scrollTop = document.documentElement.scrollTop - event.clientY - event.currentTarget.offsetHeight;
+    //     }
+
+
+    return false;
+}
+
+/*
 function proSideBarMenuClick(event) {
     var nodeStatusPanel = document.getElementById("nodeStatusPanel");
     if (nodeStatusPanel != undefined) {
@@ -80,6 +133,7 @@ function proSideBarConsoleMenuClick(event) {
    // document.getElementById("dashboardButtonsPanel").style.display = "none";
     return proSideBarMenuClick(event);
 }
+*/
 
 //Объект элемента 
 function createSidebar() {
@@ -228,7 +282,7 @@ function createSidebar() {
             //Main menu 
             var sideBarUl = this.sideBar.appendChild(document.createElement("ul"));
             //Панель управления 
-            this.dashboardItem = this.createItem(sideBarUl, "dashboarditem", "#dashboard", getLang("dashboardTab"), proSideBarDashboardMenuClick, "fa fa-tachometer-alt", configProperties.dashboards[0].widgets.length);
+            this.dashboardItem = this.createItem(sideBarUl, "dashboarditem", "#dashboard", getLang("dashboardTab"), sidebarItemClick, "fa fa-tachometer-alt", configProperties.dashboards[0].widgets.length);
             //настройки  
             this.nodeItem = this.createItem(sideBarUl, "nodeItem", "#settings", getLang("settingsTab"), function (event) { $(this).removeClass('active'); }, "fa fa-cogs", undefined);
             this.nodeSubItem = this.createSubItem(this.nodeItem, "settingsSideBarUl");
@@ -270,7 +324,7 @@ function createSidebar() {
 
             //----------------
 
-            this.consoleItem = this.createItem(sideBarUl, "consoleitem", "#console", getLang("consoleTab"), proSideBarConsoleMenuClick, "fa fa-file-code", undefined);
+            this.consoleItem = this.createItem(sideBarUl, "consoleitem", "#console", getLang("consoleTab"), sidebarItemClick, "fa fa-file-code", undefined);
 
             $(".page-wrapper").toggleClass("toggled"); //открыть по умолчанию панель меню
 
