@@ -39,13 +39,7 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-
 function createModalDialog(_titleText, _bodyText) {
-
-        //makeModalDialog("resetPanel", "addnode", getLang("addnodeheader"), "");
-        //var modalFooter = document.getElementById("addnodeModalFooter");
-        //var modalBody = document.getElementById("addnodeModalBody");
-
     var modalDialog = {
         id: undefined,
         titleText: _titleText,
@@ -77,7 +71,7 @@ function createModalDialog(_titleText, _bodyText) {
                 return;
             }
             $("#showDialogPanel").empty();
-            
+
             this.id = "showDialogPanelDialog";
             $("#showDialogPanelDialog").remove();
 
@@ -130,13 +124,13 @@ function createModalDialog(_titleText, _bodyText) {
             closeSpan.innerText = "x"
 
             if (this.useCloseButton) {
-            this.closeButton = this.footer.appendChild(document.createElement("button"));
-            this.closeButton.type = "button";
-            this.closeButton.className = "btn btn-sm btn-success";
-            this.closeButton.setAttribute("data-dismiss", "modal");
-            this.closeButton.setAttribute("aria-label", "Close");
-            this.closeButton.innerText = getLang("cancel");
-            this.closeButton.id = this.id + "closeButton";
+                this.closeButton = this.footer.appendChild(document.createElement("button"));
+                this.closeButton.type = "button";
+                this.closeButton.className = "btn btn-sm btn-success";
+                this.closeButton.setAttribute("data-dismiss", "modal");
+                this.closeButton.setAttribute("aria-label", "Close");
+                this.closeButton.innerText = getLang("cancel");
+                this.closeButton.id = this.id + "closeButton";
             }
 
             this.OKButton = this.footer.appendChild(document.createElement("button"));
@@ -156,7 +150,7 @@ function createModalDialog(_titleText, _bodyText) {
                 if (modalDialog != undefined) {
                     if (modalDialog.OKButton.clicked != undefined) {
                         if (modalDialog.onOK != undefined) {
-                            modalDialog.OKButton.clicked = undefined;            
+                            modalDialog.OKButton.clicked = undefined;
                             if (!modalDialog.onOK(modalDialog)) {
                                 event.preventDefault();
                                 event.stopImmediatePropagation();
@@ -166,7 +160,7 @@ function createModalDialog(_titleText, _bodyText) {
                     }
                 }
                 //TODO: Clear innerHTML
-                
+
                 return true;
 
             });
@@ -176,7 +170,7 @@ function createModalDialog(_titleText, _bodyText) {
             $("#" + this.id + "Modal").modal('show');
         },
 
-        hide: function() {
+        hide: function () {
             this.OKButton.clicked = undefined;
             $("#" + this.id + "Modal").modal('hide');
         },
@@ -219,12 +213,12 @@ function createModalDialog(_titleText, _bodyText) {
 
         appendChildToFooter: function (element) {
             this.footer.appendChild(element);
-        }, 
+        },
 
         appendInput: function (dialogInput) {
             this.appendChildToForm(dialogInput.label);
-            this.appendChildToForm(dialogInput.input);            
-        }, 
+            this.appendChildToForm(dialogInput.input);
+        },
 
         appendSelect: function (dialogSelect) {
             this.appendChildToForm(dialogSelect.label);

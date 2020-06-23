@@ -39,20 +39,16 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-
 function createDialogProgressbar(_id) {
-
     var dialogProgressbar = {
         id: _id,
         percent: 0,
         progressbarDiv: undefined,
         progressbar: undefined,
-        
         create: function () {
             this.progressbarDiv = document.createElement("div");
             this.progressbarDiv.className = "progress";
             this.progressbarDiv.id = _id;
-    
             this.progressbar = this.progressbarDiv.appendChild(document.createElement("div"));
             this.progressbar.className = "progress-bar progress-bar-striped bg-info";
             this.progressbar.id = _id + "progressbar";
@@ -61,10 +57,9 @@ function createDialogProgressbar(_id) {
             this.progressbar.setAttribute("aria-valuemin", "0");
             this.progressbar.setAttribute("aria-valuemax", "100");
             this.progressbar.setAttribute("style", "width: 0%");
-            this.progressbar.innerText = this.percent+ "%";
-            },
+            this.progressbar.innerText = this.percent + "%";
+        },
     };
-
     dialogProgressbar.create();
     return dialogProgressbar;
 }

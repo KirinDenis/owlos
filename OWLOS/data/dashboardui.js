@@ -41,12 +41,10 @@ OWLOS распространяется в надежде, что она буде
 
 //Dashboard UI
 var dashboardUI = {
-
     dashboardModeListners: [],
     dashboardViewMode: true,
     mainProperties: ",data,historydata,historyfile,temperature,humidity,temperaturehistoryfile,temperaturehistorydata,humidityhistoryfile,humidityhistorydata,text",
     secondaryDrivers: ",wifi,esp,network",
-
     addDashboardModeListner: function (_event, _sender) { //для добавления нового подписчика(так же как и addValueListner)                                
         //check event listner and setup current network status 
         try {
@@ -57,48 +55,14 @@ var dashboardUI = {
         }
         dashboardUI.dashboardModeListners.push(event = { event: _event, sender: _sender });
     },
-
     onConfigLoad: function (configProperties) {
-
-        /*
-        headerPanelUI.addButton("dashboardButtonsPanel", "fa fa-pan", "toogle widgets mode");
-
-        var saveButtonPanel = document.getElementById("saveButtonPanel");
-
-        var saveWidgetsButton = saveButtonPanel.appendChild(document.createElement('input'));
-        saveWidgetsButton.className = "btn btn-warning btn-sm";
-        saveWidgetsButton.type = "button";
-        saveWidgetsButton.value = getLang("saveaddedwidget");
-        saveWidgetsButton.hidden = true;
-        saveWidgetsButton.id = "saveWidgetsButton";
-        saveWidgetsButton.onclick = dashboardUI.saveAddedWidget;
-        config.onChange = dashboardUI.onConfigChange;
-        */
        var saveWidgetsButton = headerPanelUI.addButton("saveaddedwidget", "fa fa-save", "save configuration");
        saveWidgetsButton.onclick = dashboardUI.saveAddedWidget;
-
-
-       /*
-        var dashboardButtonsPanel = document.getElementById("dashboardButtonsPanel");
-        var headerModeButton = dashboardButtonsPanel.appendChild(document.createElement('input'));
-        headerModeButton.className = "btn btn-sm";
-        headerModeButton.type = "button";
-        headerModeButton.value = getLang("dashboardedit");
-        headerModeButton.onclick = dashboardUI.changeDashboadMode;
-        */
         var headerModeButton = headerPanelUI.addButton("dashboardaddwidget", "fa fa-edit", "toogle widgets mode");
         headerModeButton.onclick = dashboardUI.changeDashboadMode;
 
         var addWidgetButton = headerPanelUI.addButton("dashboardaddwidget", "fa fa-plus", "add widget");
         addWidgetButton.onclick = dashboardUI.onAddWidgetClick;
-
-        /*
-        var addWidgetButton = dashboardButtonsPanel.appendChild(document.createElement('input'));
-        addWidgetButton.className = "btn btn-sm";
-        addWidgetButton.type = "button";
-        addWidgetButton.value = getLang("dashboardaddwidget");
-        addWidgetButton.onclick = dashboardUI.onAddWidgetClick;
-        */
 
         var driversWidgetsPanel = document.getElementById("driversWidgetsPanel");
 
@@ -108,8 +72,6 @@ var dashboardUI = {
                 var widgetLayer = WidgetsLayer.getWidgetById(widgetProp.widgetWrapperId);
                 if (widgetLayer != undefined) {
                     var widgetWrapper = new widgetLayer.widget(driversWidgetsPanel, undefined, undefined, configProperties.dashboards[0].widgets[i], widgetProp.widgetProperties);
-
-
                     widgetWrapper.offlineStarter(driversWidgetsPanel, widgetProp.driverId, widgetProp.driverProperty);
                     widgetWrapper.widget.onchange = config.onWidgetChange;
                     widgetWrapper.widget.ondelete = config.onWidgetDelete;
@@ -122,9 +84,7 @@ var dashboardUI = {
                 addToLogNL("ERROR at widget: " + widgetProp, 2);
             }
         }
-
     },
-
     changeDashboadMode: function (event) {
         var headerModeButton = event.currentTarget;
         dashboardUI.dashboardViewMode = !dashboardUI.dashboardViewMode;
@@ -137,15 +97,11 @@ var dashboardUI = {
             headerModeButton.value = getLang("dashboardview");
             headerModeButton.className = "btn btn-info btn-sm";
         }
-
-
         for (var k = 0; k < dashboardUI.dashboardModeListners.length; k++) {
             dashboardUI.dashboardModeListners[k].event(dashboardUI.dashboardModeListners[k].sender, dashboardUI.dashboardViewMode);
         }
-
         return false;
     },
-
     //Widgets panel -----------------------------------------------------------------------------------------------
     onAddWidgetClick: function () {
 
@@ -180,7 +136,6 @@ var dashboardUI = {
         addWidgetDialog.onOK = dashboardUI.doAddWidget;
         addWidgetDialog.show();
     },
-
     doAddWidget: function (addWidgetDialog) {
         var driverSelect = addWidgetDialog.getChild("driverselect");
         var driver = driverSelect.options[driverSelect.selectedIndex].driver;
@@ -198,7 +153,6 @@ var dashboardUI = {
         };
         return true;
     },
-
     onNodeSelectChange: function (event) {
         var nodeSelect = event.currentTarget;
         var nodeSelectOption = nodeSelect.options[nodeSelect.selectedIndex];
@@ -228,7 +182,6 @@ var dashboardUI = {
         dashboardUI.onDriverSelectChange(event = { currentTarget: driverSelect });
         return false;
     },
-
     onDriverSelectChange: function (event) {
         var driverSelect = event.currentTarget;
         var propSelect = driverSelect.propSelect;
@@ -255,7 +208,6 @@ var dashboardUI = {
         dashboardUI.onPropSelectChange(event = { currentTarget: propSelect });
         return false;
     },
-
     onPropSelectChange: function (event) {
         var propSelect = event.currentTarget;
         var widgetSelect = propSelect.widgetSelect;
@@ -276,10 +228,7 @@ var dashboardUI = {
             }
         }
         return false;
-    },
-
-    //OLD Save Widgets ---------------------------------------------------------------------------------
-
+    },    
     saveAddedWidget: function (event) {
         var buttonSave = event.currentTarget;
         config.cancel = false;
@@ -289,101 +238,17 @@ var dashboardUI = {
         saveDialog.OKButton.innerText = getLang("cancelbutton");
         saveDialog.onOK = dashboardUI.addWidgetCancel;
         saveDialog.show();
-        config.save();
-
-        // buttonSave.hidden = true;
-        
-        /*
-        var modalBody = document.getElementById("saveConfigModalBody");
-
-        if (modalBody == null || modalBody == undefined) {
-
-            makeModalDialog("resetPanel", "saveConfig", getLang("saveaddedwidget"), getLang("areYouSure"));
-            modalBody = document.getElementById("saveConfigModalBody");
-            modalBody.innerHTML = "";
-
-            //Body saving status text and progress bar
-
-            var divSavingStatus = modalBody.appendChild(document.createElement("div"));
-            var textStatus = divSavingStatus.appendChild(document.createElement("p"));
-            textStatus.className = "text-center";
-            textStatus.id = "savingTextStatus";
-
-            var divProgressClass = modalBody.appendChild(document.createElement("div"));
-            divProgressClass.className = "progress";
-            divProgressClass.id = "divProgressClass";
-
-            var progressBar = divProgressClass.appendChild(document.createElement("div"));
-            progressBar.className = "progress-bar progress-bar-striped bg-info";
-            progressBar.id = "saveProgressBar";
-            progressBar.setAttribute("role", "progressbar");
-            progressBar.setAttribute("aria-valuenow", "0");
-            progressBar.setAttribute("aria-valuemin", "0");
-            progressBar.setAttribute("aria-valuemax", "100");
-            progressBar.setAttribute("style", "width: 0%");
-            progressBar.innerHTML = "0%";
-
-            // Footer addition button "Close"
-            var modalFooter = document.getElementById("saveConfigModalFooter");
-            var saveCloseButton = modalFooter.appendChild(document.createElement("button"));
-            saveCloseButton.type = "button";
-            saveCloseButton.className = "btn btn-sm btn-success";
-            saveCloseButton.setAttribute("data-dismiss", "modal");
-            saveCloseButton.setAttribute("aria-label", "Close");
-            saveCloseButton.innerText = getLang("closebutton");
-            saveCloseButton.id = "saveConfigsaveCloseButton";
-            saveCloseButton.hidden = true;
-
-
-            //Button cancel interrapt function
-            var savingCloseButton = document.getElementById("saveConfigcloseButton");
-            savingCloseButton.onclick = dashboardUI.addWidgetCancel;
-        }
-
-
-        $('#saveConfigModal').on('hide.bs.modal', function (event) {
-
-            if (config.cancel === true) {
-                config.cancel = false;
-                return true;
-            }
-            else {
-
-                event.preventDefault();
-                event.stopImmediatePropagation();
-                return false;
-            }
-
-        });
-
-
-        $("#saveConfigModal").modal('show');
-        */
-
-        
+        config.save();        
     },
-
     addWidgetCancel: function () {
 
         config.cancel = true;
         $("#showDialogPanelDialogModal").modal('hide');
-        /*
-        var buttonCancel = event.currentTarget;
-        var saveButtonAtPanel = document.getElementById("saveWidgetsButton");
-
-        if (saveButtonAtPanel !== null && saveButtonAtPanel !== undefined) {
-            saveButtonAtPanel.hidden = true;
-        }
-        */
-
-       
     },
-
     onConfigChange: function (configProperties) {
         var saveButton = document.getElementById("saveWidgetsButton");
         saveButton.hidden = false;
     }
-
 }
 
 

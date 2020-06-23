@@ -72,12 +72,6 @@ $(document).ready(function () {
     addToLogNL("OK loading scripts");
     addToLogNL("[START]", 1);
 
-    
-
-    //Check languages DEBUG
-    //langCompare(langua, langru, document.getElementById("bootLog"));
-
-
     var style = window.getComputedStyle(document.body, null);
     theme.primary = style.getPropertyValue('--primary');
     theme.secondary = style.getPropertyValue('--secondary');
@@ -101,9 +95,8 @@ $(document).ready(function () {
     }
 
     addToLogNL("Connection to master node " + boardhost + "...");
-    //use it as ping
+    //use it as node ping
     httpGetAsyncWithReciever(boardhost + "getalldriversproperties", onNodeAnswer, null, null, null, 20000);
-
 }
 );
 
@@ -156,17 +149,10 @@ function masterNodeDialogOKClick(masterNodeDialog) {
 }
 
 function onLoadConfig(result) {
- //   try {
+    try {
         if (result) {
-
-            // config.onLoad = onConfigLoad;
-            //config.onLoad = 
-            // config.onLoad = 
-            //document.getElementById("header-panel").style.display = "block";
-
-
             sideBar = createSidebar();
-            
+
             settingsUI.onConfigLoad(configProperties);
             dashboardUI.onConfigLoad(configProperties);
 
@@ -187,20 +173,7 @@ function onLoadConfig(result) {
             document.getElementById("consolePanel").appendChild(boot);
 
             nodesRefreshHandle = setInterval(nodesRefresh, 60000);
-
-
-            /*
-            $("#createScript").click(function (event) {
-                var textArea = document.getElementById("scriptText");
-                httpPostAsyncWithErrorReson(boardhost + "createscript", "?name=main1", escape(textArea.value));
-            });
-            */
-
             speak("OWLOS is ready");
-            
-            
-            
-
         }
         else {
             status_online = NET_OFFLINE;
@@ -208,28 +181,17 @@ function onLoadConfig(result) {
             addToLogNL("ERROR with host: " + boardhost, 2);
             config.restoreDefault();
         }
- //   }
-
-
- //   catch (exception) {
-  //      status_online = NET_OFFLINE;
-   //     addToLogNL("ERROR starting exception: " + exception, 2);
- //       addToLogNL("ERROR delete configurations files can help fix it: [your host]/deletefile?name=web.config", 2);
-  //  }
-
-
+    }
+    catch (exception) {
+        status_online = NET_OFFLINE;
+        addToLogNL("ERROR starting exception: " + exception, 2);
+        addToLogNL("ERROR delete configurations files can help fix it: [your host]/deletefile?name=web.config", 2);
+    }
 }
-
-
-function onConfigLoad(configProperties) {
-
-}
-
 
 function nodesRefresh() {
     for (var node in configProperties.nodes) {
         drivers.refresh(configProperties.nodes[node]);
-
         pins.refresh(configProperties.nodes[node]);
         driverPins.refresh(configProperties.nodes[node]);
         accessableDrivers.refresh(configProperties.nodes[node]);
@@ -238,13 +200,7 @@ function nodesRefresh() {
 }
 
 function sleep(time) {
-
     return new Promise(function (resolve) {
         return setTimeout(resolve, time);
     });
-    /*
-    return new Promise((resolve) => setTimeout(resolve, time));
-    */
 }
-
-

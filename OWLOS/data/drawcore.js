@@ -84,27 +84,6 @@ function describeArc(x, y, radius, startAngle, endAngle) {
     return d;
 }
 
-/*
-// convert 0..255 R,G,B values to binary string
-RGBToBin = function (r, g, b) {
-    var bin = r << 16 | g << 8 | b;
-    return (function (h) {
-        return new Array(25 - h.length).join("0") + h
-    })(bin.toString(2))
-}
-
-
-
-// convert a hexidecimal color string to 0..255 R,G,B
-hexToRGB = function (hex) {
-    var r = hex >> 16;
-    var g = hex >> 8 & 0xFF;
-    var b = hex & 0xFF;
-    return [r, g, b];
-}
-*/
-
-// convert 0..255 R,G,B values to a hexidecimal color string
 RGBToHex = function (r, g, b) {
     var bin = r << 16 | g << 8 | b;
     return (function (h) {
@@ -120,7 +99,6 @@ binToRGB = function (bin) {
     var b = pbin & 0xFF;
     return [r, g, b];
 }
-
 colorToRGB = function (color) {
     if (color == null) {
         return [0, 0, 0];
@@ -130,7 +108,6 @@ colorToRGB = function (color) {
     return binToRGB(color);
 }
 //-------------------------------------------------------------------------------------------------------------------
-
 var SVGText =
     function () {
         "use strict";
@@ -141,7 +118,6 @@ var SVGText =
             this.SVGText.id = this.id;
             this.SVGText.setAttributeNS(null, "height", "auto");
             this.SVGText.setAttributeNS(null, "font-family", theme.fontFamily);
-           // this.SVGText.setAttributeNS(null, "font-size", this.size + "em");
             svgElement.appendChild(this.SVGText);
             this.size = size;
         }
@@ -152,8 +128,7 @@ var SVGText =
             var element = document.body.appendChild(document.createElement("div"));
             element.className = "WidgetText";
             element.innerHTML = text;
-            var width = element.getBoundingClientRect().width;
-            //element.remove();
+            var width = element.getBoundingClientRect().width;            
             document.body.removeChild(element);
             return width;
         };
@@ -162,8 +137,7 @@ var SVGText =
             var element = document.body.appendChild(document.createElement("div"));
             element.className = "WidgetText";
             element.innerHTML = text;
-            var width = element.getBoundingClientRect().height;
-            //element.remove();
+            var width = element.getBoundingClientRect().height;            
             document.body.removeChild(element);
             return width;
         };
@@ -221,14 +195,12 @@ var SVGText =
         }, {
             key: "width",
                 get: function get() {
-                    return parseFloat(this.size * this.getTextWidth(this.text));
-                //return parseFloat(this.SVGText.getBoundingClientRect().width);
+                    return parseFloat(this.size * this.getTextWidth(this.text));             
             }
         }, {
             key: "height",
                 get: function get() {                    
-                    return parseFloat(this.size * this.getTextHeight(this.text));
-                //return parseFloat(this.SVGText.getBoundingClientRect().height);
+                    return parseFloat(this.size * this.getTextHeight(this.text));             
             }
         }, {
             key: "color",
@@ -253,19 +225,10 @@ var SVGText =
 
 //-----------------------------------------------------------------------------------------------------
 var SVGRect =
-    
     function () {
         "use strict";
-
         function SVGRect(svgElement, id, x, y, width, height) {
             this.id = id;
-            /*
-            this.x = x;
-            this.y = y;
-            this.width = width;
-            this.height = height;
-            */
-
             this.SVGRect = document.createElementNS(xmlns, "rect");
             this.SVGRect.setAttributeNS(null, 'x', x);
             this.SVGRect.setAttributeNS(null, 'y', y);
@@ -346,9 +309,7 @@ var SVGRect =
         return SVGRect;
     }();
 //SVGArc ------------------------------------------------------------------------------------
-
 var SVGArc =
-    
     function () {
         "use strict";
 
@@ -391,7 +352,6 @@ var SVGArc =
                 backH = width - curve * (leftOffset / 4);
             }
 
-
             var backV = height - curve * 2.5;
 
             var ltCurve = 0;
@@ -422,10 +382,7 @@ var SVGArc =
                     ", " + curve + " h-" + backH + " a" + lbCurve + "," + lbCurve + " 0 0 1 -" + lbCurve +
                     ",-" + curve + " v-" + backV + " a" + ltCurve + "," + ltCurve + " 0 0 1  " + ltCurve +                    
                     ",-" + curve + " z");
-
             }
-
-
         };
         _proto.hide = function hide() {
             this.SVGArc.setAttributeNS(null, "d", "");
@@ -494,8 +451,8 @@ var SVGArc =
 
         return SVGArc;
     }();
+    
 //----------------------------------------------------------------------------------------------------------------------------------------------------------
-
 var SVGIcon =
     
     function () {

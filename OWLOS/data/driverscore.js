@@ -120,7 +120,7 @@ const ConfigDriverType = 14;
 
 var drivers = {
     // результат getalldriversproperties либо пустая строка
-    
+
     //массив объектов с драйверами
     //drivers: [],
 
@@ -141,7 +141,7 @@ var drivers = {
     //мы не можем использовать this, для обращения к методам этого объекта, поэтому заведомо передали себе ссылку на себя "asyncReciever"
     refreshResult: function (httpResult, node) {
         //HTTPClient добавляет строку "%error" в начало Response если запрос не был завешен HTTPCode=200 или произошел TimeOut
-        if (!httpResult.indexOf("%error")==0) {
+        if (!httpResult.indexOf("%error") == 0) {
             node.networkStatus = NET_ONLINE;
             //если запрос был выполнен удачно, парсим новые данные об драйверах, изменяем свойства drivers[] и добавляем новые driver если они появились
             //перед изучением парсинга, посмотрите результат API getalldriversproperties как текст
@@ -150,7 +150,7 @@ var drivers = {
 
         }
         else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
-            if (httpResult.indexOf("reponse")!=-1) {
+            if (httpResult.indexOf("reponse") != -1) {
                 node.networkStatus = NET_ERROR;
             }
             else {
@@ -193,8 +193,8 @@ var drivers = {
         if (node == undefined) return undefined;
         for (var i = 0; i < node.drivers.length; i++) {
             if (node.drivers[i]._id === driverId) {
-               return node.drivers[i];
-            }                
+                return node.drivers[i];
+            }
         }
         return undefined;
     },
@@ -205,15 +205,15 @@ var drivers = {
     parseDrivers: function (httpResult, node) {
         //первичный парсинг, помещаем строку пришедшую от HTTPClient в массив строк, разделяя по "\n"
         node.recievedDriversProperties = httpResult.split("\n");
-        
+
         if (node.recievedDriversProperties !== "") {//если первичный парсинг удался
-            
+
             var driver = undefined; //сбрасываем будущий объект со свойствами драйвера 
-            
+
             for (var i = 0; i < node.recievedDriversProperties.length; i++) {//перечисляем все строки в HTTPResult 
                 if (node.recievedDriversProperties[i] === "") continue; //если строка пуста, берем следующею
                 //--> разбор драйвер
-                if (node.recievedDriversProperties[i].indexOf("properties for:")==0) { //если заголовок драйвера найден                    
+                if (node.recievedDriversProperties[i].indexOf("properties for:") == 0) { //если заголовок драйвера найден                    
 
                     if (driver != undefined) {
                         this.onDriverLoaded(driver);
@@ -268,7 +268,7 @@ var drivers = {
                     else {
                         var propertyValue = parsedProp[1];
                         var propertyType = "";
-                    } 
+                    }
 
                     if (driver[propertyName] != undefined) {//если такое свойство уже существует
                         if (driver[propertyName].value != propertyValue) {//и если предыдущее значение не равно текущему                            
@@ -344,8 +344,7 @@ var drivers = {
             addValueListner: function (_event, _sender) { //регистрация подписки на изменения свойства                
                 try { //проверяем готов ли метод слушателя для обработчики этого события
                     _event(_sender, this);
-                } catch(exception)
-                {
+                } catch (exception) {
                     console.error(exception);
                     return; //неправильный метод либо не существует, либо вызовет исключение, не включаем его в число подписчиков
                 }
@@ -414,7 +413,7 @@ var drivers = {
             //асинхронный получатель будет вызван из HTTPClient после попытки изменить свойство драйвера
             //как было сказано выше - это будет другой поток и мы не имеем право использовать this
             setValueReciever: function (HTTPResult, upperReciever, sender, upperSender) {
-                if (!HTTPResult.indexOf("%error")==0) {//если не было сетевой ошибки
+                if (!HTTPResult.indexOf("%error") == 0) {//если не было сетевой ошибки
                     if (HTTPResult === "1") { //микроконтроллер  вернет "1" в качестве результата, если удалось изменить значения свойства драйвера
                         sender.networkStatus = NET_ONLINE; //разрешаем сетевой статус как "в сети" - до этого мы переходили в статус "в работе"
                         sender.value = sender.sendedValue; //ранее мы сохранили желаемое значение свойства, назначаем его в качестве нового значения свойства драйвера
@@ -425,7 +424,7 @@ var drivers = {
                     }
                 }
                 else {
-                    if (!HTTPResult.indexOf("response")!=-1) {//если HTTPClient вернул "%error" и в этой строке не было слова "response" - соединение не было установлено, статус "не в сети"
+                    if (!HTTPResult.indexOf("response") != -1) {//если HTTPClient вернул "%error" и в этой строке не было слова "response" - соединение не было установлено, статус "не в сети"
                         sender.networkStatus = NET_OFFLINE;
                     }
                     else { //если ответ был, но он не HTTPResult 200 OK - ошибка либо драйвера либо Unit 
@@ -447,12 +446,12 @@ var drivers = {
             },
             //асинхронный получатель значения свойства, отличается от "Set", там что примет от HTTPClient новое значение свойства, если не было ошибки сети
             getValueReciever: function (HTTPResult, upperReciever, sender, upperSender) {
-                if (!HTTPResult.indexOf("%error")==0) {
+                if (!HTTPResult.indexOf("%error") == 0) {
                     sender.networkStatus = NET_ONLINE; //возвращаемся в онлайн, были "в работе"
                     sender.value = HTTPResult; //новое значение свойства, все подписчики узнают об его изменении                    
                 }
                 else {
-                    if (!HTTPResult.indexOf("response")!=-1) { //уходим в оффлайн если ошибки
+                    if (!HTTPResult.indexOf("response") != -1) { //уходим в оффлайн если ошибки
                         sender.networkStatus = NET_OFFLINE;
                     }
                     else { //driver error

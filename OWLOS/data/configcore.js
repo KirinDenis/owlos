@@ -48,13 +48,9 @@ function defaultWebProp() {
         dashboards: [],
         nodes: []
     };
-
 }
 
 var configProperties = defaultWebProp();
-
-//var configPropertiesDriver;
-
 var config = {
 
     cancel: false,
@@ -80,7 +76,6 @@ var config = {
         config._onload.push(onload);
     },
 
-
     addDashboard: function (_id) {
         var dashboard = {
             id: _id,
@@ -89,7 +84,6 @@ var config = {
         configProperties.dashboards.push(dashboard);
         return dashboard;
     },
-
     getDashboardById: function (_id) {
         for (var i = 0; i < configProperties.dashboards.length; i++) {
             if (configProperties.dashboards[i].id == _id) {
@@ -98,7 +92,6 @@ var config = {
         }
         return undefined;
     },
-
     addWidget: function (_dashboardId, _daviceId, _driverProperty, _widgetWrapperId, _widgetId, _widgetProperties) {
         var dashboard = this.getDashboardById(_dashboardId);
         if (dashboard != undefined) {
@@ -116,7 +109,6 @@ var config = {
         }
         return undefined;
     },
-
     getWidgetConfigPropById: function (id) {
         for (var i = 0; i < configProperties.dashboards[0].widgets.length; i++) {
             if (configProperties.dashboards[0].widgets[i].widgetId === id) {
@@ -125,7 +117,6 @@ var config = {
         }
         return undefined;
     },
-
     onWidgetChange: function (widget) {
         var widgetConfigProp = config.getWidgetConfigPropById(widget.id);
         if (widgetConfigProp == undefined) {
@@ -134,11 +125,9 @@ var config = {
         widgetConfigProp.widgetProperties = widget.properties;
         config.doOnChange();
     },
-
     onWidgetDelete: function (widget) {
         var widgetConfigProp = config.getWidgetConfigPropById(widget.id);
         if (widgetConfigProp == undefined) return;
-
         //TODO: поправить удаление из массива
         configProperties.dashboards[0].widgets.splice(configProperties.dashboards[0].widgets.indexOf(widgetConfigProp), 1);
         config.doOnChange();
@@ -146,7 +135,6 @@ var config = {
 
     addNode: function (_host, _nodenickname) {
         if (this.getNodeByHost(_host) != undefined) return false;
-
         var node = {
             host: _host,
             nodenickname: _nodenickname,
@@ -174,19 +162,16 @@ var config = {
                 }
                 this.networkStatusListners.push(event = { event: _event, sender: _sender });
             },
-
             drivers: [],
             pins: [],
             driversPins: [],
             accessableDrivers: [],
 
         }
-
         configProperties.nodes.push(node);
         config.doOnChange();
         return true;
     },
-
     getNodeByHost: function (_host) {
         for (var node in configProperties.nodes) {
             if (configProperties.nodes[node].host == _host) {
@@ -195,25 +180,18 @@ var config = {
         }
         return undefined;
     },
-
-
-
     load: function (onLoadConfig) {
 
         httpGetAsync(boardhost + "getwebproperty?property=config", this.onLoadConfig, onLoadConfig, this, null, 10000); //boardhost host контроллера с которого идет первичная загрузка
     },
-
     onLoadConfig: function (_data, upperAsyncReciever, sender, upperSender) {
-
         var result = false;
-
         var stringifyConfig = _data;
         if (!stringifyConfig.indexOf("%error") == 0) {
             try {
                 configProperties = JSON.parse(unescape(stringifyConfig));
                 //check 
                 if (sender.getDashboardById("main") != undefined) {
-
                     var tempNodes = [];
                     for (var nodeKey in configProperties.nodes) {
 
@@ -233,11 +211,9 @@ var config = {
                                     this.networkStatusListners[k].event(this.networkStatusListners[k].sender, this);
                                 }
                             },
-
                             get networkStatus() {//получить текущее сетевое состояние
                                 return sender._networkStatus;
                             },
-
                             addNetworkStatusListner: function (_event, _sender) { //для добавления нового подписчика(так же как и addValueListner)                                
                                 //check event listner and setup current network status 
                                 try {
@@ -270,30 +246,17 @@ var config = {
                 addToLogNL(getLang("getconfigfailsparse") + exception, 2);
             }
         }
-
         upperAsyncReciever(result);
         return result;
     },
-
     restoreDefault: function () {
-
         //parse problem, reset properties
         configProperties = defaultWebProp();
         addToLogNL(getLang("restoredefault"), 1);
         config.addDashboard("main");
         config.addNode(boardhost, "local");
-        /*
-        sender.addNode("http://176.100.2.105:8085/", "solomon_1");
-        sender.addNode("http://176.100.2.105:8086/", "solomon_2");
-        sender.addNode("http://81.95.178.177:8084/", "home_1");
-        sender.addNode("http://192.168.1.11:8084/", "home_2");
-        */
-
         return config.save();
-
     },
-
-
     // асинхронный метод сохранения внесенных изменений в настройки (передача строки разбитой на небольшие части в ноду) 
     save: function () {
 
@@ -304,14 +267,11 @@ var config = {
         if (saveButton !== undefined && saveButton !== null) {
             saveButton.hidden = true;
         }
-
-
         for (var key in configProperties) {
             if (key != "nodes") {
                 tempProp[key] = configProperties[key];
             }
         }
-
         for (var node in configProperties.nodes) {
             var jsonNode = {
                 id: configProperties.nodes[node].id,
@@ -322,23 +282,16 @@ var config = {
                 pins: [],
                 driversPins: [],
                 accessableDrivers: []
-
             }
-
             tempProp.nodes.push(jsonNode);
         }
-
         //конвертирование в формат JSON
         var stringifyConfig = JSON.stringify(tempProp);
-
         //установка размера подстроки
         var subStringLength = 1024;
-
         // вызов функции сохранения
         this.configSendAsync("Start", 0, stringifyConfig, subStringLength, boardhost);
-
         return true;
-
     },
 
     //функция асинхронной передачи строки через RESTfull POST запрос с/без отображением(я) состояния передачи строки в модaльном окне
@@ -353,17 +306,14 @@ var config = {
         var countedSections = Math.floor(dataString.length / lengthDataSubString);
         // часть переданной строки в %
         var sendingAmount = "0";
-
         // текущий статус передачи строки отображающийся в модельном окне
         var savingCurrentStatus = getLang("savingchanges");
-
         // элементы модального окна отобрающего процесс передачи строки
         var saveProgressBar = document.getElementById("saveProgressBarprogressbar");
         var saveTextStatus = document.getElementById("savetext");
         var savingCloseButton = document.getElementById("showDialogPanelDialogOKButton");
         var saveButton = document.getElementById("saveaddedwidget");
         var closeButton = document.getElementById("showDialogPanelDialogcloseHeaderButton");
-
         //Проверка была ли отменена передача строки
         if (config.cancel == false) {
 
@@ -433,7 +383,7 @@ var config = {
                                     saveTextStatus.innerHTML = getLang("сhangessaved");
                                     savingCloseButton.hidden = true;
                                     closeButton.hidden = false;
-                                    config.cancel = true;                                    
+                                    config.cancel = true;
                                 }
                                 addToLogNL("Sending short config string. FINISHED. Result = OK!");
                                 return true;
@@ -465,10 +415,8 @@ var config = {
                 if (saveButton !== undefined && saveButton !== null) {
                     saveButton.hidden = false;
                 }
-
                 addToLogNL("Sending config string ERROR!" + httpResult);
                 return false;
-
             }
         }
         else {
@@ -483,16 +431,5 @@ var config = {
         }
 
     }
-
-    /*
-    configPropertiesToDriver: function () {
-        var configPropertiesDriver = drivers.addDriver("config");
-        drivers.newDriverProperty(configPropertiesDriver, "type", 14, "ri"); //14 is config driver type
-        drivers.newDriverProperty(configPropertiesDriver, "language", configProperties.language, "");
-        drivers.newDriverProperty(configPropertiesDriver, "speak", configProperties.speack, "b");
-        drivers.newDriverProperty(configPropertiesDriver, "voice", configProperties.voice, "i");
-        drivers.onDriverLoaded(configPropertiesDriver);
-    }
-    */
 }
 

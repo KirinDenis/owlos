@@ -49,28 +49,28 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "network=Мережа\n" +
     "node=Модуль\n" +
     "esp=Esp\n" +
-    "reset=Скидання\n"+
-    "cancel=Скасувати\n"+
-    "areYouSure=Ви впевнені?\n"+
-    "resetnode=Перезавантажити модуль\n"+
-    "autorefreshoff=Автооновлення: вимкн.\n"+
-    "autorefreshon=Автообновление: вкл.\n"+
-    "name=Ім'я\n"+
-    "value=Значення\n"+
-    "newvalue=Нове значення\n"+
-    "property=Властивість\n"+
-    "top=Вгору\n"+
-    "dt_display=Відображати\n"+
-    "dt_recordsperpage=записів на сторінці\n"+
-    "dt_showing=Відображається c\n"+
-    "dt_to=по\n"+
-    "dt_of=всього\n"+
-    "dt_entries=записів\n"+
-    "dt_search=Пошук:\n"+
-    "dt_first=Перша\n"+
-    "dt_last=Остання\n"+
-    "dt_next=Наступна\n"+
-    "dt_previous=Попередня\n"+
+    "reset=Скидання\n" +
+    "cancel=Скасувати\n" +
+    "areYouSure=Ви впевнені?\n" +
+    "resetnode=Перезавантажити модуль\n" +
+    "autorefreshoff=Автооновлення: вимкн.\n" +
+    "autorefreshon=Автообновление: вкл.\n" +
+    "name=Ім'я\n" +
+    "value=Значення\n" +
+    "newvalue=Нове значення\n" +
+    "property=Властивість\n" +
+    "top=Вгору\n" +
+    "dt_display=Відображати\n" +
+    "dt_recordsperpage=записів на сторінці\n" +
+    "dt_showing=Відображається c\n" +
+    "dt_to=по\n" +
+    "dt_of=всього\n" +
+    "dt_entries=записів\n" +
+    "dt_search=Пошук:\n" +
+    "dt_first=Перша\n" +
+    "dt_last=Остання\n" +
+    "dt_next=Наступна\n" +
+    "dt_previous=Попередня\n" +
     "adddriver=Додати драйвер\n" +
     "addnode=Додати вузол\n" +
     "addnodeheader=Додати вузол\n" +
@@ -82,9 +82,9 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "addnodeerror_nicknameempty=Iм'я не може бути порожнім\n" +
     "addnodeerror_cantsaveconfig=Неможливо зберегти налаштування в вузлі\n" +
     "addnodeerror_cantaddnode=Неможливо додати вузол\n" +
-    "upload=Завантажити\n"+
-    "files=Файли\n"+
-    "uploadfiles=Завантажити файли до вузла\n"+
+    "upload=Завантажити\n" +
+    "files=Файли\n" +
+    "uploadfiles=Завантажити файли до вузла\n" +
     "selectfiles=Будь ласка, виберіть файли\n" +
     "temperature=Температура\n" +
     "humidity=Вологість\n" +
@@ -108,7 +108,7 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "low=Низька\n" +
     "smokelow=Низька\n" +
     "smokenorm=Середня\n" +
-    "smokehigh=Висока\n" +    
+    "smokehigh=Висока\n" +
     "yesmotion=Рух\n" +
     "nomotion=Немає\n" +
     "rid_online=В мережі\n" +
@@ -118,22 +118,22 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "lcd=Екран\n" +
     "send=Відпр.\n" +
     "clear=Підсв.\n" +
-	//connection statuses
-	"connected=З'єднано\n"+
-	"disconnected=Роз'єднано\n" +
-	"idlestatus=Зміна статусу\n"+
-    "nossidavailable=Обрана мережа недоступна\n"+ 
-	"scancompleted=Сканування виконано\n"+
-	"connectfailed=Не вдається підключитися\n"+
-    "connectionlost=Підключення втрачено\n"+
-    "nostate=Не визначено\n"+
-    "debugmode=Режим налагодження\n"+
-    "connectiontimeout=Тайм-аут з'єднання\n"+
-	"badprotocol=Невірний протокол\n"+
-    "badclientid=Невірний ідентифікатор клієнта\n"+
-    "unavailable=Недоступно\n"+
-    "badcredentials=Невірні облікові дані\n"+
-    "unauthorized=Не дозволено\n"+
+    //connection statuses
+    "connected=З'єднано\n" +
+    "disconnected=Роз'єднано\n" +
+    "idlestatus=Зміна статусу\n" +
+    "nossidavailable=Обрана мережа недоступна\n" +
+    "scancompleted=Сканування виконано\n" +
+    "connectfailed=Не вдається підключитися\n" +
+    "connectionlost=Підключення втрачено\n" +
+    "nostate=Не визначено\n" +
+    "debugmode=Режим налагодження\n" +
+    "connectiontimeout=Тайм-аут з'єднання\n" +
+    "badprotocol=Невірний протокол\n" +
+    "badclientid=Невірний ідентифікатор клієнта\n" +
+    "unavailable=Недоступно\n" +
+    "badcredentials=Невірні облікові дані\n" +
+    "unauthorized=Не дозволено\n" +
     "connectionstatus=Статус підключення: \n" +
     "detect=Є рух\n" +
     "notdetect=Немає\n" +
@@ -199,7 +199,7 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "updatehost=URL сервера оновлень\n" +
     "updatenodeprop=Панель оновлень прошивки\n" +
     "nodeproperties=Властивості вузла\n" +
-    "drivers=Драйвери\n" +  
+    "drivers=Драйвери\n" +
     "adddriverdigalog=Додати драйвер до вузлу\n" +
     "drivertype=Тип драйвера\n" +
     "driverid=ID драйвера\n" +
@@ -208,7 +208,7 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "adddriverbutton=Додати\n" +
     "notused=Не використовується\n" +
     "checkchangedialog=Застосувати зміни\n" +
-    "applycheck=Застосувати\n" +    
+    "applycheck=Застосувати\n" +
     "showproperties=Властивості віджета\n" +
     "setallwidgetspropbutton=Застосувати до всіх\n" +
     "setpropbutton=Застосувати\n" +
@@ -218,8 +218,8 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "scripts=Скріпти\n" +
     "scriptexecute=Виконати (F8)\n" +
     "scriptpause=Пауза\n" +
-    "scriptdelete=Вилучити\n" +  
-    "scriptstartdebug=Відлагоджувати\n" + 
+    "scriptdelete=Вилучити\n" +
+    "scriptstartdebug=Відлагоджувати\n" +
     "addscriptheader=Додати скріпт\n" +
     "addscriptbutton=Додати\n" +
     "addscriptname=Iм'я скріпта\n" +
@@ -233,10 +233,10 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
 
 var langen = "prepareUnit=prepare UI, please wait...\n" +
     "OK=Confirm\n" +
-    "nodeselect=1) Please select node\n" +    
-    "driverselect=2) Select driver on selected node\n" +        
-    "propselect=3) Select property of selected driver\n" +        
-    "widgetselect=4) Select widget to visualize selected driver property\n" +        
+    "nodeselect=1) Please select node\n" +
+    "driverselect=2) Select driver on selected node\n" +
+    "propselect=3) Select property of selected driver\n" +
+    "widgetselect=4) Select widget to visualize selected driver property\n" +
     "nodeTab=Node\n" +
     "settingsTab=Nodes\n" +
     "filesTab=Files\n" +
@@ -415,7 +415,7 @@ var langen = "prepareUnit=prepare UI, please wait...\n" +
     "scriptexecute=Run (F8)\n" +
     "scriptpause=Pause\n" +
     "scriptdelete=Delete\n" +
-    "scriptstartdebug=Debug\n" + 
+    "scriptstartdebug=Debug\n" +
     "addscriptheader=Adding script\n" +
     "addscriptbutton=Add\n" +
     "addscriptname=Script name\n" +
@@ -604,7 +604,7 @@ var langru = "prepareUnit=Подготовка интерфейса пользо
     "scriptexecute=Выполнить (F8)\n" +
     "scriptpause=Пауза\n" +
     "scriptdelete=Удалить\n" +
-    "scriptstartdebug=Отладка\n" + 
+    "scriptstartdebug=Отладка\n" +
     "addscriptheader=Добавить скрипт\n" +
     "addscriptbutton=Добавить\n" +
     "addscriptname=Имя скрипта\n" +
@@ -629,7 +629,7 @@ function getLang(key) {
             }
         }
         else {
-            currentLang = "ua"; 
+            currentLang = "ua";
         }
 
         if (currentLang == "") {
@@ -651,7 +651,7 @@ function getLang(key) {
                 return currentLang[i].split("=")[1];
             }
         }
-        
+
     } catch (exception) {
         //return "key" if exception or not found
     }
@@ -666,7 +666,7 @@ function langCompare(source, dest, panel) {
 
     for (var i = 0; i < sourceLang.length; i++) {
         if (sourceLang[i] === "") continue;
-        var sourceKey = sourceLang[i].split("=")[0];    
+        var sourceKey = sourceLang[i].split("=")[0];
         var found = false;
         for (var j = 0; j < destLang.length; j++) {
             if (destLang[j].indexOf(sourceKey + "=") == 0) {
@@ -693,7 +693,5 @@ function langCompare(source, dest, panel) {
             }
         }
     }
-
     panel.innerHTML = dest;
-
 }

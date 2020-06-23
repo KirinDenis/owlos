@@ -1,48 +1,35 @@
-﻿<!doctype html>
+﻿<!doctype HTML html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html lang="en">
-
 <head>
     <title>OWLOS</title>
-    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=driver-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="OWLOS UX index">
+    <meta name="author" content="Serhii Lehkii (sergey@light.kiev.ua) Konstantin Brul (konstabrul@gmail.com) Vitalii Glushchenko (cehoweek@gmail.com)
+    Stanislav Kvashchuk (skat@ukr.net) Vladimir Kovalevich (covalevich@gmail.com) Denys Melnychuk (meldenvar@gmail.com) Denis Kirin (deniskirinacs@gmail.com)">    
     <script src='bootcore.js'></script>
-
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
         integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
-
 </head>
-
 <body onbeforeunload="return BeforeUnloadEvent()">
-
     <pre id="boot"
-        style="font-size: 11px;"><code id="bootLog" style="white-space: pre-wrap; overflow-y:scroll;"></code></pre>
-
+        style="font-size: 11px;"><code id="bootLog" style="white-space: pre-wrap; overflow-y:scroll;"></code>
+    </pre>
     <div id="pagewrapper" class="page-wrapper default-theme sidebar-bg bg1">
         <main class="page-content">
             <div id="overlay" class="overlay"></div>
-
             <div class="header-panel">
                 <div class="container-fluid">
                     <div id="header-panel" class="row">
                         <div id="header-panel-form" class="col-sm-6">
-                            <!--  <form id="header-panel-form" class="form-inline my-2 my-lg-0"> 
-
-                            </form>
-                            -->
                         </div>
-                        <div id="header-panel-statuses" class="col-sm-6 small-text">
-                            
-                            <text id="nodeStatusPanelText" class="text-success"></text>
-
-
+                        <div id="header-panel-statuses" class="col-sm-6 small-text">                            
                         </div>
                     </div>
                 </div>
             </div>
-
             <div class="container-fluid">
                 <div class="row">
-
                     <div class="tab-content col-sm-12" id="nodesPropsPanel">
                         <div class="tab-pane fade active show" id="dashboard">
                             <div class="gutterSlim row" id="driversWidgetsPanel">
@@ -50,12 +37,10 @@
                             <div class="col-sm-12" id="basicPanel">
                             </div>
                         </div>
-
                         <div class="tab-pane fade" id="console">
                             <div class="row">
                                 <div class="col-md-12 driverdiv">
                                     <div id="consolePanel" class="col-md-12 border-0 drivercard">
-
                                     </div>
                                 </div>
                             </div>
@@ -63,42 +48,17 @@
                     </div>
                 </div>
             </div>
-
-
             <div id="uploadPanel" class="row"></div>
             <div id="addDriverPanel" class="row"></div>
             <div id="showDialogPanel" class="row"></div>
-
-            <!--
-
-    <nav id="sidebar" class="bs-docs-sidebar">
-        <ul id="nodesSideBar" class="list-unstyled components"></ul>
-    </nav>
-         -->
             <div id="nodePropAnchors"> </div>
-
-
-
         </main>
-
     </div>
-    <!--
-    <footer class="footer">
-        <div class="container col-md-12" id="footerContainer">
-            OWLOS
-        </div>
-    </footer>
--->
     <script>
         boot();
-
         function BeforeUnloadEvent() {
             return "Are you sure?";
         }
-
-
-
     </script>
 </body>
-
 </html>

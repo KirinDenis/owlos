@@ -39,17 +39,14 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-
 function createDialogInput(_id, _labelText, _editPlaceholder) {
 
     var dialogInput = {
         id: _id,
         labelText: _labelText,
         editPlaceholder: _editPlaceholder,
-
         label: undefined,
         input: undefined,
-
         create: function () {
             this.label = document.createElement("label");
             this.label.setAttribute("for", this.id);
@@ -61,7 +58,6 @@ function createDialogInput(_id, _labelText, _editPlaceholder) {
             this.input.id = this.id;
         },
     };
-
     dialogInput.create();
     return dialogInput;
 }

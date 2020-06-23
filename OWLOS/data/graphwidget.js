@@ -55,44 +55,25 @@ var GraphWidget =
             _BaseWidget.prototype.onWidgetHolderLoad.call(this, event);
             var rPanel = event.currentTarget;
             var widget = rPanel.widget;
-
             widget.widgetHolder.className = "col-6 col-sm-4 col-lg-2";
-            // widget.widgetHolder.removeChild(widget.SVGViewBox);
-
-
             widget.topMargin = widget.size / 20; //this.panding = 5;
-
             widget.width = widget.size * 2;
             widget.height = widget.size;
             widget.centreX = widget.width / 2; //  this.centreY = this.height / 2;
-
-            
             widget.widgetTextSize = widget.size / 110;
             widget.graphWidth = widget.width - widget.panding;
             widget.graphHeight = widget.height - widget.size / 3.4;
             widget.graphTop = widget.size / 3.7;
-
             widget.SVGViewBox.setAttributeNS(null, "viewBox", "0 0 " + widget.width + " " + widget.height);
-
-            //  widget.SVGViewBox.setAttributeNS(null, "width", widget.width);
-            //  widget.SVGViewBox.setAttributeNS(null, "height", widget.height);
-
             widget.SVGBackgroundPanel.drawRoundedRect(widget.width - 5, widget.height - 6, 5, 10, true, true, true, true);
             widget.SVGBackdownpanel.drawRoundedRect(widget.width - 5, 10, 5, 0, false, false, true, true);
             widget.SVGHeaderPanel.drawRoundedRect(widget.width, 26, 5, 0, true, true, false, false);
-
-            //   widget.SVGBackdownpanel.y += 3;
-
-
             widget._properties.lineColor = { tab: "Graph", value: theme.success, type: "c" };
             widget._properties.lineOpacity = { tab: "Graph", value: 0.5, type: "f" };
-
             widget._properties.backOpacity = { tab: "Graph", value: 0.4, type: "f" };
-
             widget._properties.gradient1Color = { tab: "Graph", value: theme.success, type: "c" };
             widget._properties.gradient1Opacity = { tab: "Graph", value: 0.7, type: "f" };
             widget._properties.gradient1Offset = { tab: "Graph", value: 0, type: "i" };
-
             widget._properties.gradient2Color = { tab: "Graph", value: theme.success, type: "c" };
             widget._properties.gradient2Opacity = { tab: "Graph", value: 0.4, type: "f" };
             widget._properties.gradient2Offset = { tab: "Graph", value: 60, type: "i" };
@@ -100,8 +81,8 @@ var GraphWidget =
             widget._properties.gradient3Color = { tab: "Graph", value: theme.success, type: "c" };
             widget._properties.gradient3Opacity = { tab: "Graph", value: 0.2, type: "f" };
             widget._properties.gradient3Offset = { tab: "Graph", value: 80, type: "i" };
-            
-            widget.SVGBackdownpanel.width = widget.width;            
+
+            widget.SVGBackdownpanel.width = widget.width;
             widget.stop1 = document.createElementNS(xmlns, 'stop');
             widget.stop2 = document.createElementNS(xmlns, 'stop');
             widget.stop2.setAttribute('class', 'stop2');
@@ -118,12 +99,11 @@ var GraphWidget =
             widget.gradient.appendChild(widget.stop2);
             widget.gradient.appendChild(widget.stop3);
 
-
             widget.SVGViewBox.appendChild(widget.gradient);
 
             widget.SVGPath1 = new SVGArc(widget.SVGViewBox, widget.id + "path1", widget.graphTop + " " + widget.halfPanding + " " + widget.graphWidth + " " + widget.graphHeight);
             widget.SVGPath1.fill = 'url(#' + widget.id + 'GraphGradient)';
-            
+
             widget.SVGPath2 = new SVGArc(widget.SVGViewBox, widget.id + "path2", widget.graphTop + " " + widget.halfPanding + " " + widget.graphWidth + " " + widget.graphHeight);
             widget.SVGHeaderText.text = "Graph";
             widget.widgetLeft = widget.centreX - widget.textWidth / 2;
@@ -145,30 +125,14 @@ var GraphWidget =
             widget.SVGDownLine = new SVGRect(widget.SVGViewBox, widget.id + "downline", widget.width / 48, 0, widget.graphWidth, 1);
             widget.SVGDownLine.opacity = 0.1;
             widget.SVGDownLine.color = theme.secondary;
-
-
-            /*
-            if (icon != undefined) {
-                widget.SVGIcon = new SVGIcon(widget.SVGViewBox, icon, widget.width - widget.size / 6, widget.size / 24, widget.size / 8, widget.size / 8);
-            } else {
-                widget.SVGIcon = new SVGIcon(widget.SVGViewBox, addIcon, widget.width - widget.size / 6, widget.size / 24, widget.size / 8, widget.size / 8);
-            }
-            */
             widget.SVGIcon = new SVGIcon(widget.SVGViewBox, addIcon, widget.width - widget.size / 6, widget.size / 24, widget.size / 8, widget.size / 8);
-
             widget.SVGIcon.fill = theme.secondary;
-
             widget.SVGWidgetText.hide();
-
             widget.SVGArcSpinner.x = widget.centreX;
             widget.ShowEqualizer = false;
             widget.SVGRightIcon.x = widget.width - widget.rowSize; //  this.SVGPlusIcon.x = this.width / 2 - this.rowSize / 2;
             widget.SVGPropertiesIcon.x = widget.width / 2 - widget.rowSize / 2;
             widget.SVGDeleteIcon.x = widget.width - widget.rowSize + widget.size / 55;
-
-
-            //   widget.widgetHolder.appendChild(widget.SVGViewBox);
-
             widget.clickableToTop();
             widget.proprties = widget._properties;
             widget.resize(widget.width);
@@ -204,7 +168,7 @@ var GraphWidget =
             }
             if (this.historyData != undefined) {
 
-                
+
                 this.stop1.setAttribute('stop-color', this.properties.gradient1Color.value);
                 this.stop1.setAttribute('stop-opacity', this.properties.gradient1Opacity.value);
                 this.stop1.setAttribute('offset', this.properties.gradient1Offset.value + '%');
@@ -215,7 +179,7 @@ var GraphWidget =
 
                 this.stop3.setAttribute('stop-color', ' ' + this.properties.gradient3Color.value);
                 this.stop3.setAttribute('stop-opacity', this.properties.gradient3Opacity.value);
-                this.stop3.setAttribute('offset', this.properties.gradient3Offset.value + '%');                
+                this.stop3.setAttribute('offset', this.properties.gradient3Offset.value + '%');
 
                 //reset 
                 var updatedFilteredData = this.historyDataFilter(this.graphWidth, this.historyData, 1, 1); //It is important to draw Y lalues at first and curve after!!!
@@ -495,7 +459,6 @@ var GraphWidget =
                                 localMiddleValueIndex = historyDataStartPosition + filterStep * hdj + jt;
                             }
                         } //Odering local max, min and middle value by their indexes
-
 
                         if (localSmallValueIndex < localBigValueIndex) {
                             if (localSmallValueIndex < localMiddleValueIndex) {

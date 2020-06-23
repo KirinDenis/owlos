@@ -47,9 +47,7 @@ var MotionWidget =
         _inheritsLoose(MotionWidget, _BaseWidget);
 
         function MotionWidget(parentPanel, id, size) {
-
-            return _BaseWidget.call(this, parentPanel, id, size) || this;
-            
+            return _BaseWidget.call(this, parentPanel, id, size) || this;            
         }
 
         MotionWidget.prototype.onWidgetHolderLoad = function onWidgetHolderLoad(event) {
@@ -72,22 +70,14 @@ var MotionWidget =
                 var SVGRadarArc4 = new SVGArc(widget.SVGViewBox, widget.id + "arcback4" + i, widget.centreX, widget.topMargin, i * widget.radius, widget.size / 34);
                 SVGRadarArc1.index = SVGRadarArc2.index = SVGRadarArc3.index = SVGRadarArc4.index = i;
                 SVGRadarArc1.color = SVGRadarArc2.color = SVGRadarArc3.color = SVGRadarArc4.color = theme.success;
-
                 widget.radar1.push(SVGRadarArc1);
-
                 widget.radar2.push(SVGRadarArc2);
-
                 widget.radar3.push(SVGRadarArc3);
-
                 widget.radar4.push(SVGRadarArc4);
             }
-
             widget.SVGArcSpinner.y = widget.topMargin;
-
             widget.clickableToTop();
-
             widget.proprties = widget._properties;
-
             widget.doOnLoad();
         };
 

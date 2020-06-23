@@ -502,10 +502,6 @@ background-color: rgba(137, 194, 220, 0.1);
             text-overflow: ellipsis;
         }
 
-        .sidebar-wrapper .sidebar-header .user-info .user-role {
-            /*! font-size: 12px; */
-        }
-
         .sidebar-wrapper .sidebar-header .user-info .user-status {
             /*! font-size: 11px; */
             margin-top: 4px;
@@ -800,10 +796,6 @@ background-color: rgba(137, 194, 220, 0.1);
             animation: sonar 1.5s infinite;
         }
 
-body {
-    /*! font-size: .9rem; */
-}
-
 /*----------------page-wrapper----------------*/
 .page-wrapper {
     height: 100vh;
@@ -956,12 +948,6 @@ body {
             border-top: none;
         }
 
-    .default-theme .sidebar-wrapper a:not(.dropdown-item),
-    .default-theme .sidebar-wrapper .sidebar-header,
-    .default-theme .sidebar-wrapper .sidebar-search input,
-    .default-theme .sidebar-wrapper .sidebar-search i {
-        /*! color: #e9ecef; */
-    }
 
         .default-theme .sidebar-wrapper a:not(.dropdown-item):hover,
         .default-theme .sidebar-wrapper .sidebar-menu li.active > a {
@@ -986,10 +972,6 @@ body {
 
     .default-theme .sidebar-wrapper .sidebar-menu ul li a i {
         background-color: #2b2b2b;
-    }
-
-    .default-theme .sidebar-wrapper .sidebar-menu .sidebar-dropdown div {
-        /*! background-color: #2b2b2b; */
     }
 
     .default-theme .sidebar-wrapper .sidebar-menu .header-menu span {
@@ -1030,17 +1012,6 @@ body {
     background-color: transparent;
 }
 
-.default-theme.sidebar-bg .sidebar-wrapper:before {
-    /*! background-color: rgba(39, 43, 48, 0.5); */
-}
-
-.default-theme.sidebar-bg .sidebar-wrapper a:not(.dropdown-item),
-.default-theme.sidebar-bg .sidebar-wrapper .sidebar-header,
-.default-theme.sidebar-bg .sidebar-wrapper .sidebar-search input,
-.default-theme.sidebar-bg .sidebar-wrapper .sidebar-search i {
-    /*! color: #c9c9c9; */
-}
-
     .default-theme.sidebar-bg .sidebar-wrapper a:not(.dropdown-item):hover,
     .default-theme.sidebar-bg .sidebar-wrapper .sidebar-menu li.active > a {
         color: #d8ebf3;
@@ -1055,9 +1026,6 @@ body {
     background-color: rgba(81, 81, 81, 0.5);
 }
 
-.default-theme.sidebar-bg .sidebar-wrapper .sidebar-menu .sidebar-dropdown div {
-    /*! background-color: rgba(81, 81, 81, 0.5); */
-}
 
 .default-theme.sidebar-bg .sidebar-wrapper .sidebar-menu ul li a i {
     background-color: rgba(81, 81, 81, 0);

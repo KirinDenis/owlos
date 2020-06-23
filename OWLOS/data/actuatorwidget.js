@@ -39,24 +39,19 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-
 var DEFAULT_MASK = 0;
 var ICONS_MASK = 1;
 
 var ActuatorWidget =
-
     function (_BaseWidget) {
         "use strict";
-
         _inheritsLoose(ActuatorWidget, _BaseWidget);
-
         function ActuatorWidget(parentPanel, id, size, iconOn, iconOff) {
             var _baseWidget = _BaseWidget.call(this, parentPanel, id, size) || this;
             _baseWidget.iconOn = iconOn;
             _baseWidget.iconOff = iconOff;
             return _baseWidget;
         }
-
         ActuatorWidget.prototype.onWidgetHolderLoad = function onWidgetHolderLoad(event) {
             _BaseWidget.prototype.onWidgetHolderLoad.call(this, event);
             var rPanel = event.currentTarget;
@@ -77,30 +72,18 @@ var ActuatorWidget =
                 widget.SVGIconOn.SVGIcon.widget = _assertThisInitialized(widget);
                 widget.SVGIconOn.hide();
 
-
                 widget.SVGIconOff = new SVGIcon(widget.SVGViewBox, widget.iconOff, widget.width / 2 - widget.rowSize / 2, widget.height / 2 - widget.rowSize / 2, widget.rowSize, widget.rowSize);
                 widget.SVGIconOff.fill = theme.success;
                 widget.SVGIconOff.SVGIcon.widget = _assertThisInitialized(widget);
-
                 widget.SVGIconOff.hide();
-
                 widget.SVGArcSpinner.y = widget.centreY;
             }
-
             widget.SVGWidgetText.hide();
-
             widget.ShowEqualizer = false;
-
             widget.clickableToTop();
-
             widget.proprties = widget._properties;
-
             widget.doOnLoad();
-
         }
-
-
-
         ActuatorWidget.prototype.drawWidget = function drawWidget() {
             _BaseWidget.prototype.drawWidget.call(this);
 
@@ -171,6 +154,5 @@ var ActuatorWidget =
                 }
             }
         };
-
         return ActuatorWidget;
     }(BaseWidget);

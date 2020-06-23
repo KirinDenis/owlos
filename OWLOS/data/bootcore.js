@@ -62,7 +62,7 @@ OWLOS распространяется в надежде, что она буде
 //^^^---------------------------------------------------------------------------------------------------------------------------------------------------
 
 //Global flags 
-const NET_OFFLINE = 0; 
+const NET_OFFLINE = 0;
 const NET_ONLINE = 1;
 const NET_ERROR = 2;
 const NET_RECONNECT = 3;
@@ -132,7 +132,7 @@ function loadingScripts(withInternet) {
         link.rel = 'stylesheet';
 
         if (UIWatch === 'light') {
-            if (withInternet) link.href = "https://bootswatch.com/4/flatly/bootstrap.min.css"; 
+            if (withInternet) link.href = "https://bootswatch.com/4/flatly/bootstrap.min.css";
             else link.href = "bootstrap.spacelab.min.css"; //если мы без интернет
         }
         else {//default 
@@ -142,9 +142,7 @@ function loadingScripts(withInternet) {
             link.href = "bootstrap.min.css"; //если мы без интернет
 
         }
-        
         addToLog("loading bootstrap.css from " + link.href); //намерения загрузить в консоль
-
         document.getElementsByTagName("head")[0].appendChild(link);
         link.onload = function () {//если получится загрузить bootstap.css
             addToLogEnd("..OK", 1);//отметим в консоле об успехе 
@@ -204,10 +202,6 @@ function loadingScripts(withInternet) {
                             loadingScript("driversui.js");
                             loadingScript("dashboardui.js");
                             loadingScript("settingsui.js");
-
-
-                            //var nodePropertiesScript = document.createElement('script'); //с ожиданием
-                            //nodePropertiesScript.onload = function () { //when node properties is loading we can start index script
 
                             loadingScript("index.js"); //ядро OWLOS UI, грузится последним, стартует систему
                             //}
@@ -276,7 +270,6 @@ function _defineProperties(target, props) {
         Object.defineProperty(target, descriptor.key, descriptor);
     }
 }
-
 function _createClass(Constructor, protoProps, staticProps) {
     if (protoProps) {
         _defineProperties(Constructor.prototype, protoProps);
@@ -285,20 +278,17 @@ function _createClass(Constructor, protoProps, staticProps) {
         _defineProperties(Constructor, staticProps); return Constructor;
     }
 }
-
 function _assertThisInitialized(self) {
     if (self === void 0) {
         throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
     } return self;
 }
-
 //see: https://learn.javascript.ru/prototype
 function _inheritsLoose(subClass, superClass) {
-    subClass.prototype = Object.create(superClass.prototype); 
+    subClass.prototype = Object.create(superClass.prototype);
     subClass.prototype.constructor = subClass;
     subClass.__proto__ = superClass;
 }
-
 function waitForElement(element, callBack) {
     window.setTimeout(function () {
         if ($("#" + element.id).length) {
@@ -311,18 +301,16 @@ function waitForElement(element, callBack) {
         }
     }, 500)
 }
-
 //--------------------------------------------------------------------------------------------------------------------------------------------------
 //работа с консолью реализована в bootcore.js - здесь этот код используется и не надо грузить лишние модули из index.html
 //даже если что то совсем пойдет не так - у нас есть возможность информировать пользователя, так как мы загрузили Log скрипты при помощи браузера
-
 //добавить строку обычным цветом
 function addToLog(text) {
     addToLog(text, 0);
 }
 //добавить строку с кодом цвета (кодом события)
 //NOTE: для указания цвета используется bootstrap - одна в начале загрузки его не будет, консоль "окрасится" если получится загрузить bootstrap
-function addToLog(text, code) {    
+function addToLog(text, code) {
     var bootLog = document.getElementById("bootLog");
     if (code == 1) { //success
         bootLog.innerHTML += "<text class='text-secondary'>" + new Date().toLocaleString() + "</text><text class='text-primary'> " + text + "</text>";

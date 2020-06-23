@@ -56,84 +56,17 @@ https://github.com/azouaoui-med/pro-sidebar-template
 
 
 function sidebarItemClick(event) {
-
     headerPanelUI.hideAllStatusesPanels();
-    
     var aHref = event.currentTarget;
-
-
     $(aHref).removeClass('active');
-
-    //document.getElementById("sidebarText").style.display = "none";
-    //document.getElementById("sidebarText").innerText = "";
-    // document.getElementById("dashboardButtonsPanel").style.display = "none";
-
-    //$(aHref).toggleClass("active");
-
     document.location = aHref.href;
-
-
-
     var node = aHref.node;
     if (node != undefined) {
-
         headerPanelUI.showStatusPanel(node);
-        /*
-        if (aHref.nodeStatusPanel == undefined) {
-            aHref = document.getElementById("nodeNavItem" + node.nodenickname + "href");
-        }
-        if (aHref.nodeStatusPanel != undefined) {
-            var nodeStatusPanel = document.getElementById("nodeStatusPanel");
-            if (nodeStatusPanel != null) {
-            if (nodeStatusPanel.currentStatusPanel != undefined) {
-                nodeStatusPanel.currentStatusPanel.style.display = "none";
-                nodeStatusPanel.currentStatusPanel.nodeStatusPanelText.style.display = "none";
-            }
-            nodeStatusPanel.currentStatusPanel = aHref.nodeStatusPanel;
-            nodeStatusPanel.currentStatusPanel.style.display = "block";
-            nodeStatusPanel.currentStatusPanel.nodeStatusPanelText.style.display = "block";
-        }
-        }
-        */
-
     }
-
-    //     if (aHref.getAttribute("aria-expanded") == "true") {
-    //         document.documentElement.scrollTop = document.documentElement.scrollTop - event.clientY - event.currentTarget.offsetHeight;
-    //     }
-
 
     return false;
 }
-
-/*
-function proSideBarMenuClick(event) {
-    var nodeStatusPanel = document.getElementById("nodeStatusPanel");
-    if (nodeStatusPanel != undefined) {
-        if (nodeStatusPanel.currentStatusPanel != undefined) {
-            nodeStatusPanel.currentStatusPanel.style.display = "none";
-            nodeStatusPanel.currentStatusPanel.nodeStatusPanelText.style.display = "none";
-        }
-    }
-    return false;
-}
-
-function proSideBarDashboardMenuClick(event) {
-    //$(this).removeClass('active');
-    document.getElementById("sidebarText").style.display = "block";
-    document.getElementById("sidebarText").innerText = event.currentTarget.addressText;
-   // document.getElementById("dashboardButtonsPanel").style.display = "block";
-    return proSideBarMenuClick(event);
-}
-
-function proSideBarConsoleMenuClick(event) {
-    //$(this).toClass('active');
-    document.getElementById("sidebarText").style.display = "none";
-    document.getElementById("sidebarText").innerText = "";
-   // document.getElementById("dashboardButtonsPanel").style.display = "none";
-    return proSideBarMenuClick(event);
-}
-*/
 
 //Объект элемента 
 function createSidebar() {
@@ -167,14 +100,10 @@ function createSidebar() {
             this.sideBarHeader.className = "sidebar-item sidebar-header d-flex flex-nowrap";
         },
 
-        createUserInfo: function (_role, _name , _networkStatus) {
+        createUserInfo: function (_role, _name, _networkStatus) {
 
             this.sideBarHeaderInfo = this.sideBarHeader.appendChild(document.createElement("div"));
             this.sideBarHeaderInfo.className = "user-info";
-
-            //this.sideBarHeaderInfoVersion = this.sideBarHeaderInfo.appendChild(document.createElement("span"));
-            //this.sideBarHeaderInfoVersion.className = "user-name";
-
             this.sideBarHeaderInfoRole = this.sideBarHeaderInfo.appendChild(document.createElement("span"));
             this.sideBarHeaderInfoRole.className = "user-role";
 
@@ -187,7 +116,6 @@ function createSidebar() {
         },
 
         setUserInfo: function (_role, _name, _networkStatus) {
-            //this.sideBarHeaderInfoVersion.innerHTML = _name;
             this.sideBarHeaderInfoRole.innerHTML = _role + " " + _name;
             switch (_networkStatus) {
                 case NET_ONLINE:
@@ -205,7 +133,6 @@ function createSidebar() {
             var item = _parent.appendChild(document.createElement("li"));
             item.id = _id;
             item.className = "nav-item";
-            // item.className = "sidebar-dropdown";
             var itemHref = item.appendChild(document.createElement("a"));
             itemHref.id = _id + "href";
             itemHref.className = "menu-href";
@@ -228,7 +155,7 @@ function createSidebar() {
                 itemSpan.id = _id + "span";
                 itemSpan.innerHTML = _span;
                 item.span = itemSpan;
-                
+
             }
             return item;
 
@@ -289,21 +216,6 @@ function createSidebar() {
 
             this.addNodeItem = this.createItem(this.nodeSubItem, "addnodeitem", "#home", getLang("addnode"), settingsUI.addNodeClick, "fa fa-plus", undefined);
             this.addNodeItem.href.style.color = theme.warning;
-
-            /*
-            var nodeNavItem = nodesSideBar.appendChild(document.createElement("li"));
-            nodeNavItem.className = "nav-item";
-            nodeNavItem.id = "addNodeNavItem";
-            var nodeHRef = nodeNavItem.appendChild(document.createElement("a"));
-            nodeHRef.className = "nav-link";
-            nodeHRef.style.color = theme.warning;
-            nodeHRef.parentLi = nodeLi;
-            //nodeHRef.style.color = theme.success;
-            nodeHRef.setAttribute("data-toggle", "tab");
-            nodeHRef.onclick = settingsUI.addNodeClick;
-            nodeHRef.innerHTML = getLang("addnode");
-            nodeHRef.href = "#home";
-
             //панель не видна, она существует для организии SideBar, сами панели со свойствами драйвер сделаны на основе navBar - так сложилось исторически, SideBar только переключает их
             var nodePropAnchors = document.getElementById("nodePropAnchors");
             //NavTabs панель для панелей со свойствами нод
@@ -311,29 +223,10 @@ function createSidebar() {
             nodePropNavBar.style.height = "0px";
             nodePropNavBar.id = "nodePropNavBar";
             nodePropNavBar.className = "nav nav-tabs";
-*/
-
-            //панель не видна, она существует для организии SideBar, сами панели со свойствами драйвер сделаны на основе navBar - так сложилось исторически, SideBar только переключает их
-            var nodePropAnchors = document.getElementById("nodePropAnchors");
-            //NavTabs панель для панелей со свойствами нод
-            var nodePropNavBar = nodePropAnchors.appendChild(document.createElement("ul"));
-            nodePropNavBar.style.height = "0px";
-            nodePropNavBar.id = "nodePropNavBar";
-            nodePropNavBar.className = "nav nav-tabs";
-
-
-            //----------------
 
             this.consoleItem = this.createItem(sideBarUl, "consoleitem", "#console", getLang("consoleTab"), sidebarItemClick, "fa fa-file-code", undefined);
 
             $(".page-wrapper").toggleClass("toggled"); //открыть по умолчанию панель меню
-
-            //document.getElementById("toggle-sidebar").style.display = "block";
-            //document.getElementById("pin-sidebar").style.display = "block";
-            //document.getElementById("nodeStatusPanelText").style.display = "block";
-            //document.getElementById("sidebarText").style.display = "block";
-
-
             jQuery(function ($) {
 
                 // Dropdown menu
@@ -378,7 +271,6 @@ function createSidebar() {
                     }
                 });
 
-
                 //toggle sidebar overlay
                 $("#overlay").click(function () {
                     $(".page-wrapper").toggleClass("toggled");
@@ -414,23 +306,10 @@ function createSidebar() {
                     $('.page-wrapper').toggleClass("border-radius-on");
                 });
 
-                //custom scroll bar is only used on desktop
-                /*
-                if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                    $(".sidebar-content").mCustomScrollbar({
-                        axis: "y",
-                        autoHideScrollbar: true,
-                        scrollInertia: 300
-                    });
-                    $(".sidebar-content").addClass("desktop");
-        
-                }
-                */
             });
         }
 
     }
     sideBar.create();
     return sideBar;
-
 }

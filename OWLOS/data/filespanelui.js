@@ -39,10 +39,10 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-const nodes = ['bytes', 'kb', 'mb', 'gb', 'tb', 'pb', 'eb', 'zb', 'yb']; 
+const nodes = ['bytes', 'kb', 'mb', 'gb', 'tb', 'pb', 'eb', 'zb', 'yb'];
 
 var FilesList =
-    
+
     function () {
         "use strict";
 
@@ -186,15 +186,8 @@ var FilesList =
 
         _proto.uploadClick = function uploadClick(event) {
             event.stopPropagation();
-            
-        
             var uploadFilesDialog = createModalDialog(getLang("uploadfiles"), "");
-            uploadFilesDialog.filesListObject = event.currentTarget.filesList; 
-            //newScriptDialog.appendInput(createDialogInput("addscriptInput", getLang("addscriptname"), ""));
-            
-            //newScriptDialog.onOK = FilesList.up
-            
-
+            uploadFilesDialog.filesListObject = event.currentTarget.filesList;
             var inputGroup = uploadFilesDialog.body.appendChild(document.createElement("form"));
             inputGroup.className = "form-group";
             inputGroup.id = "inputGroup";
@@ -222,83 +215,10 @@ var FilesList =
             fileInput.label = label;
             fileInput.customFile = customFile;
 
-
             uploadFilesDialog.OKButton.style.display = "none";
             uploadFilesDialog.show();
-        
-            return false;
-        
 
-            /*
-            document.getElementById("addDriverPanel").innerHTML = "";
-            document.getElementById("resetPanel").innerHTML = "";
-            var uploadPanel = document.getElementById("uploadPanel");
-            uploadPanel.innerHTML = "";
-            var modalFade = uploadPanel.appendChild(document.createElement("div"));
-            modalFade.className = "modal fade";
-            modalFade.id = "uploadModal";
-            modalFade.tabindex = "-1";
-            modalFade.setAttribute("role", "dialog");
-            modalFade.setAttribute("aria-labelledby", "uploadModalLabel");
-            modalFade.setAttribute("aria-hidden", "true");
-            var modalDialog = modalFade.appendChild(document.createElement("div"));
-            modalDialog.className = "modal-dialog";
-            modalDialog.role = "document";
-            var modalContent = modalDialog.appendChild(document.createElement("div"));
-            modalContent.className = "modal-content";
-            var modalHeader = modalContent.appendChild(document.createElement("div"));
-            modalHeader.className = "modal-header";
-            var modalTitle = modalHeader.appendChild(document.createElement("h5"));
-            modalTitle.className = "modal-title";
-            modalTitle.id = "uploadModalLabel";
-            modalTitle.innerText = getLang("uploadfiles");
-            var closeHeaderButton = modalHeader.appendChild(document.createElement("button"));
-            closeHeaderButton.type = "button";
-            closeHeaderButton.className = "close";
-            closeHeaderButton.setAttribute("data-dismiss", "modal");
-            closeHeaderButton.setAttribute("aria-label", "Close");
-            var closeSpan = closeHeaderButton.appendChild(document.createElement("span"));
-            closeSpan.setAttribute("aria-hidden", "true");
-            closeSpan.innerText = "x";
-            var modalBody = modalContent.appendChild(document.createElement("div"));
-            modalBody.className = "modal-body";
-            var inputGroup = modalBody.appendChild(document.createElement("form"));
-            inputGroup.className = "form-group";
-            inputGroup.id = "inputGroup";
-            inputGroup.addEventListener('submit', filesListObject.inputGroupSubmit);
-            inputGroup.filesListObject = filesListObject;
-            var inputgroupprepend = inputGroup.appendChild(document.createElement("div"));
-            inputgroupprepend.className = "input-group-prepend";
-            var customFile = inputGroup.appendChild(document.createElement("div"));
-            customFile.className = "custom-file  form-control-sm";
-            var label = customFile.appendChild(document.createElement("label"));
-            label.className = "custom-file-label";
-            label.setAttribute("for", "inputGroupFile01");
-            label.innerText = getLang("selectfiles");
-            var fileInput = customFile.appendChild(document.createElement("input"));
-            fileInput.className = "custom-file-input";
-            fileInput.id = "inputGroupFile01";
-            fileInput.setAttribute("type", "file");
-            fileInput.setAttribute("aria-describedby", "inputGroupFileAddon01");
-            fileInput.multiple = true;
-            fileInput.onchange = filesListObject.inputGroupChange;
-            fileInput.filesListObject = filesListObject;
-            var filesList = customFile.appendChild(document.createElement("div"));
-            filesList.id = "filesList";
-            fileInput.filesList = filesList;
-            fileInput.label = label;
-            fileInput.customFile = customFile;
-            var modalFooter = modalContent.appendChild(document.createElement("div"));
-            modalFooter.className = "modal-footer";
-            var closeButton = modalFooter.appendChild(document.createElement("button"));
-            closeButton.type = "button";
-            closeButton.className = "btn btn-info btn-sm";
-            closeButton.setAttribute("data-dismiss", "modal");
-            closeButton.setAttribute("aria-label", "Close");
-            closeButton.innerText = getLang("cancel");
-            $("#uploadtModal").modal('show');
             return false;
-            */
         };
 
         _proto.formatBytes = function formatBytes(x) {
@@ -377,7 +297,6 @@ var FilesList =
                     fileItem.innerHTML += ".";
                 }
             };
-
             request.onabort = function (oEvent) {
                 if (this.status == 0) return;
                 fileItem.innerHTML += " abort";
@@ -408,11 +327,9 @@ var FilesList =
                     fileItem.innerHTML += request.status + " error";
                 }
             };
-
             request.open("POST", endPoint, true);
             request.send(formData);
         };
-
         _proto.inputGroupSubmit = function inputGroupSubmit(event) {
             var filesListObject = event.currentTarget.filesListObject;
 
@@ -427,6 +344,5 @@ var FilesList =
 
             event.preventDefault();
         };
-
         return FilesList;
     }();

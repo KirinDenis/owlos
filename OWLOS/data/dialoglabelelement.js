@@ -39,22 +39,17 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-
 function createDialogLabel(_id, _labelText) {
-
     var dialogLabel = {
         id: _id,
         labelText: _labelText,
-        label: undefined,
-        
-
+        label: undefined,    
         create: function () {
             this.label = document.createElement("div");            
             this.label.innerHTML = this.labelText;            
             this.label.id = _id;
         },
     };
-
     dialogLabel.create();
     return dialogLabel;
 }

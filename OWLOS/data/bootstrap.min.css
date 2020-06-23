@@ -2842,9 +2842,6 @@ input[type="button"].btn-block {
     color: #296b89;
     pointer-events: none;
     cursor: default; }
-
-.nav-tabs {
-  /*! border-bottom: 1px solid #89c2dc; */ }
   .nav-tabs .nav-item {
     margin-bottom: -1px; }
   .nav-tabs .nav-link {

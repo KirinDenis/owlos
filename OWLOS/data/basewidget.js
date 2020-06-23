@@ -122,7 +122,6 @@ var BaseWidget =
             this._networkStatus = NET_OFFLINE; // по умолчанию виджет "считает" что не подключен к сети
             this._event = EVENT_NO; // никаких состояний нет 
             this.mouseEnter = false; // сбрасываем индикатор нахождения мыши над виджетом
-            
 
             // подготовка основной (родительский) панели виджета (все остальные элементы будут дочерний к этой панели)
             this.widgetHolder = this.parentPanel.appendChild(document.createElement("div"));
@@ -186,7 +185,7 @@ var BaseWidget =
 
             // фоновая панель (подложка) виджета (фон и бордюр)
             widget.SVGBackgroundPanel = new SVGArc(widget.SVGViewBox, widget.id + "backgroundpanel", 0, 0, widget.width, 1);
-            widget.SVGBackgroundPanel.drawRoundedRect(widget.width, widget.height, 5, 10, true, true, true, true);            
+            widget.SVGBackgroundPanel.drawRoundedRect(widget.width, widget.height, 5, 10, true, true, true, true);
             // панель для заголовка (верхняя часть виджета с его названием)
             widget.SVGHeaderPanel = new SVGArc(widget.SVGViewBox, widget.id + "headerpanel", 0, 0, widget.width, 1);
             widget.SVGHeaderPanel.drawRoundedRect(widget.width, 25, 5, 0, true, true, false, false);
@@ -438,7 +437,6 @@ var BaseWidget =
                         // формат historyData:
                         // количество_элементов;значение_float_первого_элемента;значение_float_второго_элемента;...значение_float_последнего_элемента;
                         // номер последнего_элемента = количество_элементов
-
                         var splitHistory = this.historyData.split(";"); // парсим содержимое CSV в массив строк
                         var count = splitHistory[0]; // вынимаем количество_элементов
                         var prop = count / this.eCount; // сопоставляем количество присланных элементов с количеством столбцов эквалайзера 
@@ -483,7 +481,6 @@ var BaseWidget =
                     for (var y = 0; y < 5; y++) { equalizerY[y].opacity = 0.0; }
                 }
             }
-
             // когда сетевое состояние виджета находится в режиме - пере подключение, отображаем спиннер (анимация)           
             if (this._networkStatus == NET_RECONNECT) {
                 this.spinnerAngle += 1.5; // приращение угла вращения спиннера (влияет на скорость вращения, чем больше угол тем быстрее и на оборот)
@@ -513,7 +510,7 @@ var BaseWidget =
             if (this.SVGWidgetText == undefined) return; // если виджет "не готов" (не инкапсулированы SVG элементы) выходим
             // все SVG элементы расположенный в SVGViewBox - изменение его размеров повлияет не размеры остальных элементов
             this.SVGViewBox.setAttributeNS(null, "width", size);
-            this.SVGViewBox.setAttributeNS(null, "height", size );
+            this.SVGViewBox.setAttributeNS(null, "height", size);
         }
 
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -528,7 +525,7 @@ var BaseWidget =
                 var widget = body.widgets[widgetKey]; // изымаем очередной виджет
 
                 if (window.innerWidth < switchToMobile) {
-                   // widget.widgetHolder.className = "col-sm-2";
+                    // widget.widgetHolder.className = "col-sm-2";
                 }
                 else {
                     //widget.widgetHolder.className = "col-sm-1";
@@ -554,15 +551,10 @@ var BaseWidget =
             widget.widgetHolder.className = "col-sm-4";
             // переключаем виджет в режим "работа" - мы будем отображать виджет в диалоге свойств в этом режиме (без кнопок)
             widget.mode = WORK_MODE;
-
-
             // подготавливаем  модальный диалог (смотрите функцию makeModalDialog() - она создает универсальные модальные диалоги, где "showProperties" префикс для ID)
             var propDialog = createModalDialog(getLang("showproperties"), "");
-            
-
             // заполняем modalBody и modalFooter элементами отображающими свойства данного виджета
             // создаем панель в верхней части диалога в которой будем отображать виджет - пользователь сможет видеть результаты изменения свойств виджета
-            
             var widgetDiv = propDialog.formGroup.appendChild(document.createElement("div"));
             widgetDiv.className = "driversWidgetsPanel d-flex justify-content-center widget-editor-panel";
             widgetDiv.appendChild(widget.widgetHolder);
@@ -620,7 +612,7 @@ var BaseWidget =
                         aHref.className = "nav-link";
                         tabPane.className = "tab-pane fade";
                     }
-                }                
+                }
                 // редакторы свойств реализованы с использованием bootstrap input-group - для более "удобного" внешнего вида
                 // создаем редактор очередного свойства виджета 
                 var inputGroup = formGroup.appendChild(document.createElement("div"));
@@ -656,188 +648,16 @@ var BaseWidget =
             // нажатие на эту кнопку приведет к тому, что значения свойств текущего виджета, будут применены ко всем виджетам 
             // это очень удобно если необходимо глобально изменить стиль всех виджетов
             // но так же это опасно, потому как все виджеты изменят свои свойства по эталонну из этого виджета
-            var setAllWidgetsPropButton = createButton("allwidgetsModalButton", "btn btn-sm btn-warning", getLang("setallwidgetspropbutton")); 
+            var setAllWidgetsPropButton = createButton("allwidgetsModalButton", "btn btn-sm btn-warning", getLang("setallwidgetspropbutton"));
             setAllWidgetsPropButton.button.onclick = widget.setAllWidgetsProperties;
             setAllWidgetsPropButton.button.widget = widget;
             setAllWidgetsPropButton.button.propDialog = propDialog;
             propDialog.footer.appendChild(setAllWidgetsPropButton.button);
-            /*
-            setAllWidgetsPropButton.type = "button";
-            setAllWidgetsPropButton.className = "btn btn-sm btn-warning";
-            setAllWidgetsPropButton.id = "allwidgetsModalButton";
-            setAllWidgetsPropButton.widget = widget; // привязываемся к текущему виджет 
-            setAllWidgetsPropButton.onclick = widget.setAllWidgetsProperties; // назначаем обработчик клика (сохраним свойства)
-            setAllWidgetsPropButton.innerText = getLang("setallwidgetspropbutton"); // надпись для кнопки из словаря (languagescore.js)            
-            */
-           // setAllWidgetsPropButton.setPropError = setPropError; // элемент (надпись) для отображения пользователю сообщений об ошибках
-
-            //propDialog.appendSelect(createDialogSelect("drivertype", getLang("drivertype")));
 
             //Show dialog 
             propDialog.widget = widget;
             propDialog.onOK = widget.setProperties;
             propDialog.show();
-
-                 
-            //OLD ------------------
-            /*
-            makeModalDialog("resetPanel", "showProperties", getLang("showproperties"), "");
-            // после того как функция создала диaлог и все его элементы, изымаем modalBody элемент и modalFooter по их ID
-            var modalBody = document.getElementById("showPropertiesModalBody");
-            var modalFooter = document.getElementById("showPropertiesModalFooter");
-
-            // заполняем modalBody и modalFooter элементами отображающими свойства данного виджета
-            // создаем панель в верхней части диалога в которой будем отображать виджет - пользователь сможет видеть результаты изменения свойств виджета
-            var widgetDiv = modalBody.appendChild(document.createElement("div"));
-            widgetDiv.className = "driversWidgetsPanel d-flex justify-content-center";
-            widgetDiv.appendChild(widget.widgetHolder);
-
-            // свойств очень много - модальный диалог может получится слишком длииным и не влазить в окно браузера, что не очень удобно для пользователя
-            // по этому свойства виджета будут размещены в закладках внутри диалога 
-            // создаем панель закладок 
-            var propUl = modalBody.appendChild(document.createElement("ul"));
-            propUl.className = "nav nav-tabs";
-
-            var tabContent = modalBody.appendChild(document.createElement("div"));
-            tabContent.className = "tab-content";
-
-            // размещаем редакторы свойств виджета в закладках диалога 
-            var isFirstTab = true; // простой способ определить первое свойство при использование for в режиме энумератора 
-            for (var key in widget.properties) { // перебираем все свойства виджета 
-                // сохраняем значения текущего свойства (если позже пользователь откажется от изменений (кнопка отмена или закрытие диалога без подтверждения сохранения))
-                widget.storedProperties[key] = {
-                    tab: widget.properties[key].tab,
-                    value: widget.properties[key].value,
-                    type: widget.properties[key].type
-                }
-                // узнаем закладку текущего свойства (смотрите метод defaultWidgetProperties() что бы понять как устроен объект свойств)
-                var tabName = widget.properties[key].tab; // можно указать свое название закладки, если не использовать 'G', 'C', 'O'
-                if (tabName === 'G') { tabName = "General"; } // дешифруем имя закладки 
-                else
-                    if (tabName === 'C') { tabName = "Color"; }
-                    else
-                        if (tabName === 'O') { tabName = "Opacity"; }
-
-                // используем название закладки как часть ее DOM.element.id и узнаем создана ли эта закладка ранее 
-                var tabPane = document.getElementById(tabName + "PropTab");
-                var formGroup = document.getElementById(tabName + "PropForm");
-                if (formGroup == null) { // если закладка еще не создана - создадим ее 
-                    // создаем новую кнопку (TAG "li" - не кнопку конечно, но bootstrap представит ее в виде кнопки) с ссылкой в панеле закладок 
-                    var propLi = propUl.appendChild(document.createElement("li"));
-                    propLi.className = "nav-item";
-                    var aHref = propLi.appendChild(document.createElement("a")); // ссылка для закладки
-                    aHref.setAttribute("data-toggle", "tab");
-                    aHref.href = "#" + tabName + "PropTab"; // id панели для закладки связываем с ссылкой из самой закладки 
-                    aHref.innerText = tabName; // название закладки 
-                    // создаем панель связанную с закладкой 
-                    tabPane = tabContent.appendChild(document.createElement("div"));
-                    tabPane.id = tabName + "PropTab";
-                    formGroup = tabPane.appendChild(document.createElement("div"));
-                    formGroup.className = "form-group";
-                    formGroup.id = tabName + "PropForm"; // связываем панель с ссылкой 
-                    // если мы создаем первую закладку в панеле 
-                    if (isFirstTab) { // сделаем ее активной по умолчанию 
-                        aHref.className = "nav-link active";
-                        tabPane.className = "tab-pane fade show active";
-                        isFirstTab = false; // все остальные закладки не первые 
-                    }
-                    else { // не первые закладки не активны 
-                        aHref.className = "nav-link";
-                        tabPane.className = "tab-pane fade";
-                    }
-                }
-                // редакторы свойств реализованы с использованием bootstrap input-group - для более "удобного" внешнего вида
-                // создаем редактор очередного свойства виджета 
-                var inputGroup = formGroup.appendChild(document.createElement("div"));
-                inputGroup.className = "input-group input-group-sm mb-3";
-
-                var prependDiv = inputGroup.appendChild(document.createElement("div"));
-                prependDiv.className = "input-group-prepend";
-                // название свойства 
-                var label = prependDiv.appendChild(document.createElement("label"));
-                label.className = "input-group-text";
-                label.setAttribute("for", "hostEdit");
-                label.innerText = key;
-                // редактор свойства
-                // свойство виджета представлено классом, свойство type которого определяет тип свойства - целое число, число со знаком, цвет и так далее 
-                // функция createValueEdit реагирует на type и создает соответствующий редактор (например comboBox с палитрой цветов если type = 'c' [color])
-                var propEdit = createValueEdit(inputGroup, widget.properties[key].name, widget.properties[key].value, widget.properties[key].type);
-                propEdit.className = "form-control form-control-sm";
-                propEdit.placeholder = "type value here";
-                propEdit.id = "widgetproperty" + key;
-                // связываем редактор со свойством виджета - когда пользователь будет изменять в редакторе значения свойств - виджет будет тут же отображать полученный результат
-                propEdit.widgetProperty = widget.properties[key];
-                // связываем редактор с виджетом
-                propEdit.widget = widget;
-                // события редактора propEdit.onchange может быть использовано createValueEdit() и другими, ниже мы переопределим этот обработчик - сейчас сохраним в propEdit адрес старого обработчика
-                propEdit.originalOnChange = propEdit.onchange;
-                // виджет привязывается к событиям редактора и если пользователь что то изменит, виджет среагирует на это
-                propEdit.onchange = widget.onPropertyChange;
-                propEdit.onkeyup = widget.onPropertyChange;
-            } // очередное свойство добавлено, возвращаемся и добавляем следующее в соответствующею закладку
-
-            // в низу диалога будет элемент отображающий особым цветом ошибки, например если пользователь выбрал неверное значение свойства виджета 
-            var setPropError = formGroup.appendChild(document.createElement("label"));
-            setPropError.className = "text-danger";
-            // кнопки "Закрыть" и "Отмена" созданы функцией makeModalDialog(), находим их по ID и назначаем свои обработчики
-            // кнопка "Закрыть" в шапке диалога (справа, крестик)
-            var closeHeaderButton = document.getElementById("showPropertiescloseHeaderButton");
-            closeHeaderButton.widget = widget; // запомним к какому виджету привязана кнопка 
-            closeHeaderButton.onclick = widget.discardProperties; // обработчик в виджете, вернет сохраненные значения свойств и закроет диалог 
-            // кнопка "Отмена" внизу диалога (так же как и кнопка "Закрыть")
-            var closeButton = document.getElementById("showPropertiescloseButton");
-            closeButton.widget = widget;
-            closeButton.onclick = widget.discardProperties;
-
-            // кнопка "Применить ко всем", ее придется создать с нуля и добавить в modalFooter элемент  
-            // нажатие на эту кнопку приведет к тому, что значения свойств текущего виджета, будут применены ко всем виджетам 
-            // это очень удобно если необходимо глобально изменить стиль всех виджетов
-            // но так же это опасно, потому как все виджеты изменят свои свойства по эталонну из этого виджета
-            var setAllWidgetsPropButton = modalFooter.appendChild(document.createElement("button"));
-            setAllWidgetsPropButton.type = "button";
-            setAllWidgetsPropButton.className = "btn btn-sm btn-warning";
-            setAllWidgetsPropButton.id = "allwidgetsModalButton";
-            setAllWidgetsPropButton.widget = widget; // привязываемся к текущему виджет 
-            setAllWidgetsPropButton.onclick = widget.setAllWidgetsProperties; // назначаем обработчик клика (сохраним свойства)
-            setAllWidgetsPropButton.innerText = getLang("setallwidgetspropbutton"); // надпись для кнопки из словаря (languagescore.js)            
-            setAllWidgetsPropButton.setPropError = setPropError; // элемент (надпись) для отображения пользователю сообщений об ошибках
-            // кнопка "Применить", так же как и setAllWidgetsPropButton, но будут изменены свойства текущего виджета 
-            var setPropButton = modalFooter.appendChild(document.createElement("button"));
-            setPropButton.type = "button";
-            setPropButton.className = "btn btn-sm btn-success";
-            setPropButton.id = "addnodeModalButton";
-            setPropButton.widget = widget;
-            setPropButton.onclick = widget.setProperties;
-            setPropButton.innerText = getLang("setpropbutton");
-            setPropButton.setPropError = setPropError;
-
-            // пользователь может закрыть модальный диалог не используя кнопки "Закрыть", "Применить" или клавиши, а например просто кликнув вне этого диалога
-            // нам необходимо контролировать это событие закрытие диалога для того что бы вернуть значения свойств виджета и сам виджет в панель виджетов
-            // да - это событие равносильно нажатию кнопки "Закрыть" в диалоге 
-            // проблема - в том, что нажатие кнопок приводит к закрытию диалога, а закрытие диалога к вызову этого события. По этой причине обработчик сильно 
-            // усложняется - например пользователь нажал "Применить", обработчик клика кнопки закрыл диалог, а сам диалог в момент закрытия вызвал этот 
-            // обработчик и вернул все свойство к сохраненным.             
-            $('#showPropertiesModal').on('hidden.bs.modal', function (event) { // назначаем обработчик события закрытия диалога 
-                // идем на хитрость - все "легальные" кнопки закрытия диалога (те кнопки обработчики которых мы создали сами и нажатие которых приводит к закрытию диалога)
-                // будут создавать в объекте диалога свойство "setProp", в данном случае значение свойства не имеет значение, оно должно быть создано и не undefined 
-                if (document.getElementById("showPropertiesModal").setProp != undefined) { // если пользователь нажал "легальную" кнопку
-                    return; // просто выходим, ничего не делаем 
-                }
-                // диалог закрывается и это не контролируемое действие - вызываем наш обработчик widget.discardProperties() - вернем значения свойств виджета
-                // NOTE:
-                // такой подход может вызвать рекурсия, потом как widget.discardProperties() вызовет $("#showPropertiesModal").modal('hide');  тот в свою очередь 
-                // может повторно вызвать этот обработчик. Благо этого не происходит - ибо диалог уже закрывается. 
-                // мы "имитируем" параметры обработчика события onclick - event, через свойство currentTarget должна содержать ссылку на элемент вызвавший событие
-                var event = {
-                    currentTarget: closeHeaderButton
-                }
-                // вызываем наш обработчик клика на closeHeaderButton
-                widget.discardProperties(event);                
-            })
-
-            // отображаем созданный диалог 
-            $("#showPropertiesModal").modal('show');
-            */
         };
 
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -861,10 +681,6 @@ var BaseWidget =
             widget.doOnChange();
             // смотрите showProperties()-$('#showPropertiesModal').on('hidden.bs.modal', function (event) 
             // сообщаем обработчику закрытия диалога о том что мы обработали закрытие
-            //document.getElementById("showPropertiesModal").setProp = true;
-            // закрываем диалог
-            //$("#showPropertiesModal").modal('hide');
-
             return true;
         };
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -898,12 +714,11 @@ var BaseWidget =
                         someWidget.properties[key].value = propEdit.value; //используем его значение в качестве нового значения свойства очередного виджета
                     }
                 }
-
                 // все свойства очередного виджета перечислены и им назначены новые значения - обратимся к setter .properties для того что бы виджет перерисовал свои SVG элементы
                 someWidget.properties = someWidget.properties;
             }
             // сохраняем изменения
-            
+
             widget.doOnChange();
             // так же как для setProperties(), взводим setProp, закрываем диалог
             setAllWidgetsPropButton.propDialog.hide();
@@ -941,60 +756,46 @@ var BaseWidget =
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         // обработчик события вызывается всеми редакторами свойств виджета, когда пользователь меняет им значение 
         BaseWidget.prototype.onPropertyChange = function onPropertyChange(event) {
-
             var propEdit = event.currentTarget;
             var widget = propEdit.widget;
-
             for (var key in widget.properties) {
                 var _propEdit = document.getElementById("widgetproperty" + key);
                 widget.properties[key].value = _propEdit.value;
             }
-
             widget.properties = widget.properties;
-
             if (propEdit.originalOnChange != undefined) {
                 propEdit.originalOnChange(event);
             }
-
             return true;
-
         };
 
         BaseWidget.prototype.moveLeft = function moveLeft(event) {
             var widget = event.currentTarget.widget;
-
             if (widget.mode == MOVE_MODE) {
                 var index = Array.prototype.slice.call(widget.parentPanel.childNodes).indexOf(widget.widgetHolder);
                 widget.parentPanel.removeChild(widget.widgetHolder);
                 widget.parentPanel.insertBefore(widget.widgetHolder, widget.parentPanel.childNodes[index - 1]);
             }
-
             return true;
         };
 
         BaseWidget.prototype.moveRight = function moveRight(event) {
             var widget = event.currentTarget.widget;
-
             if (widget.mode == MOVE_MODE) {
                 var index = Array.prototype.slice.call(widget.parentPanel.childNodes).indexOf(widget.widgetHolder);
                 widget.parentPanel.removeChild(widget.widgetHolder);
                 widget.parentPanel.insertBefore(widget.widgetHolder, widget.parentPanel.childNodes[index + 1]);
             }
-
             return true;
         };
-
         BaseWidget.prototype.propertiesClick = function movepropertiesClick(event) {
             event.stopPropagation();
             var widget = event.currentTarget.widget;
             if (widget.mode == MOVE_MODE) {
                 widget.showProperties(widget);
             }
-
             return true;
         };
-
-
         BaseWidget.prototype.plusSize = function plusSize(event) {
             var widget = event.currentTarget.widget;
 
@@ -1005,14 +806,10 @@ var BaseWidget =
 
             return true;
         };
-
-
         BaseWidget.prototype.deleteWidget = function deleteWidget() {
             //this.event это setter, такое обращение приведет к оповещению всех подписантов на события виджета о текущем событии в виджете
             this.event = EVENT_DELETE;
-
             this.doOnDelete();
-
             var body = document.getElementsByTagName("BODY")[0];
             if (body.onresize == this.onPanelResize) {
                 body.onresize = null;
@@ -1026,8 +823,6 @@ var BaseWidget =
             }
 
             body.widgets.splice(body.widgets.indexOf(this), 1);
-
-
             while (this.SVGViewBox.childNodes.length != 0) {
                 this.SVGViewBox.removeChild(this.SVGViewBox.childNodes[0]);
             }
@@ -1041,7 +836,6 @@ var BaseWidget =
                     delete this[key];
                 }
             }
-
         };
 
         BaseWidget.prototype.deleteWidgetClick = function deleteWidgetClick(event) {
@@ -1061,7 +855,6 @@ var BaseWidget =
             } else {
                 widget.mode = WORK_MODE;
             }
-
             return true;
         };
 
@@ -1096,22 +889,16 @@ var BaseWidget =
             if (this._properties.headertext.value === '---') {
                 this._properties.headertext.value = label;
             }
-
-
             if (this.widgetText != widgetText) {
                 speak(this._properties.headertext + " " + widgetText);
             }
-
-
             this.historyData = historyData;
             this._data = data;
             this.widgetText = widgetText;
-
             this.spinnerAngle = 0;
             this.redrawAll();
         };
 
-        //---------------------------------------------------------------------------------------
         BaseWidget.prototype.redrawAll = function redrawAll() {
             if ((this._event == EVENT_DELETE) || (this._event == undefined)) { return; }
 
@@ -1123,10 +910,7 @@ var BaseWidget =
             this.drawText();
         };
 
-
         BaseWidget.prototype.toColor = function toColor(element, color, method) {
-
-
             if (method == undefined) method = true;
             if (element == null) return;
 
@@ -1139,14 +923,12 @@ var BaseWidget =
                 window.cancelAnimationFrame(element.animantionFrame);
                 this.animateColor(element, color, method);
             }
-
             element.animantion = true;
             this.animateColor(element, color, method);
         };
 
         BaseWidget.prototype.animateColor = function animateColor(element, color, method) {
             var _this2 = this;
-
             if (!element.animantion) return;
             var rgbSrc = element.colorRGB;
             var rgbDst = colorToRGB(color);
@@ -1172,20 +954,16 @@ var BaseWidget =
                 });
             }
         };
-
-
         //Изменение яркости видждета при наведения мыши, учитывает два варианта - при наведение становится ярче, либо угосает. 
         BaseWidget.prototype.drawMouseEnter = function drawMouseEnter() {
             if (this._mode != WORK_MODE) return;
             var _this = this;
-
             var lamda = 0.05; //становится ярче
             if (this._properties.backgroundselectopacity.value > this._properties.backgroundopacity.value) {
                 lamda = -0.05; //угасает
             }
-            
             if (this.mouseEnter) {
-                if (this.SVGBackgroundPanel.opacity * lamda > this._properties.backgroundselectopacity.value* lamda) {
+                if (this.SVGBackgroundPanel.opacity * lamda > this._properties.backgroundselectopacity.value * lamda) {
                     this.SVGBackgroundPanel.opacity -= lamda;
                     requestAnimationFrame(function () {
                         return _this.drawMouseEnter();
@@ -1200,14 +978,12 @@ var BaseWidget =
                 }
             }
         };
-
         // возвращает объект свойств виджета по умолчанию - цвета, прозрачность, основные размеры элементов, все дочерний виджеты наследуют и дополняют эти свойства
         // виджет вызывает эту функцию что бы настроить свой стиль отображения по умолчанию. Программа или пользователь могут менять эти свойства, создавая новые стили виджета
         // ConfigCore.js сохраняет новые и измененные свойства виджетов в память микроконтроллера.
         BaseWidget.prototype.defaultWidgetProperties = function defaultWidgetProperties() {
             /*
-            каждое свойство виджета представлено отдельным объектом с тремя собственными свойствами(у всех свойств эти объекты одинаковы)
-        
+            каждое свойство виджета представлено отдельным объектом с тремя собственными свойствами(у всех свойств эти объекты одинаковы)    
             название_свойства: {
                 tab: -> код или имя закладки для диалога управления свойствами виджета, допустимы коды:
                 "G" - закладка General
@@ -1281,7 +1057,6 @@ var BaseWidget =
                 }
             }
         };
-
         BaseWidget.prototype.doOnLoad = function doOnLoad() {
             if (this._onload != undefined) {
                 for (var key in this._onload) {
@@ -1290,7 +1065,6 @@ var BaseWidget =
                 }
             }
         };
-
         BaseWidget.prototype.doOnChange = function doOnChange() {
             if (this._onchange != undefined) {
                 for (var key in this._onchange) {
@@ -1298,7 +1072,6 @@ var BaseWidget =
                 }
             }
         };
-
         BaseWidget.prototype.doOnDelete = function doOnDelete() {
             if (this._ondelete != undefined) {
                 for (var key in this._ondelete) {
@@ -1308,78 +1081,76 @@ var BaseWidget =
         };
 
         _createClass(BaseWidget, [
-            {         
-            key: "mode",
-            set: function set(mode) {
-                if ((this._event == EVENT_DELETE) || (this._event == undefined)) { return; } // если виджет удаляется ничего не делаем
-                this._mode = mode;
+            {
+                key: "mode",
+                set: function set(mode) {
+                    if ((this._event == EVENT_DELETE) || (this._event == undefined)) { return; } // если виджет удаляется ничего не делаем
+                    this._mode = mode;
+                    if (mode == WORK_MODE) {
+                        this.SVGBackgroundPanel.opacity = this._properties.backgroundopacity.value;
+                        this.SVGLeftIcon.hide();
+                        this.SVGRightIcon.hide(); //  this.SVGPlusIcon.hide();
 
-                if (mode == WORK_MODE) {
-                    this.SVGBackgroundPanel.opacity = this._properties.backgroundopacity.value;
-                    this.SVGLeftIcon.hide();
-                    this.SVGRightIcon.hide(); //  this.SVGPlusIcon.hide();
+                        this.SVGDeleteIcon.hide();
+                        this.SVGPropertiesIcon.hide();
 
-                    this.SVGDeleteIcon.hide();
-                    this.SVGPropertiesIcon.hide();
+                    } else if (mode == MOVE_MODE) {
+                        this.SVGBackgroundPanel.opacity = this._properties.backgroundopacity.value / 3;
+                        this.SVGLeftIcon.draw();
+                        this.SVGRightIcon.draw(); //   this.SVGPlusIcon.draw();
 
-                } else if (mode == MOVE_MODE) {
-                    this.SVGBackgroundPanel.opacity = this._properties.backgroundopacity.value / 3;
-                    this.SVGLeftIcon.draw();
-                    this.SVGRightIcon.draw(); //   this.SVGPlusIcon.draw();
-
-                    this.SVGDeleteIcon.draw();
-                    this.SVGPropertiesIcon.draw();
+                        this.SVGDeleteIcon.draw();
+                        this.SVGPropertiesIcon.draw();
+                    }
+                },
+                get: function get() {
+                    return this._mode;
+                }
+            }, {
+                key: "networkStatus",
+                get: function get() {
+                    return this._networkStatus;
+                },
+                set: function set(networkStatus) {
+                    if ((this._event == EVENT_DELETE) || (this._event == undefined)) { return; } // если виджет удаляется ничего не делаем
+                    if (networkStatus >= NET_OFFLINE && networkStatus <= NET_RECONNECT) {
+                        this._networkStatus = networkStatus;
+                        this.redrawAll();
+                    }
                 }
             },
-            get: function get() {
-                return this._mode;
-            }
-        }, {
-            key: "networkStatus",
-            get: function get() {
-                return this._networkStatus;
+            {
+                key: "properties",
+                get: function get() {
+                    return this._properties;
+                },
+                set: function set(properties) {
+                    if ((this._event == EVENT_DELETE) || (this._event == undefined)) { return; } // если виджет удаляется ничего не делаем
+                    if (properties == undefined) return;
+                    this._properties = properties;
+                    this.drawText();
+                    this.drawWidget();
+                }
             },
-            set: function set(networkStatus) {
-                if ((this._event == EVENT_DELETE) || (this._event == undefined)) { return; } // если виджет удаляется ничего не делаем
-                if (networkStatus >= NET_OFFLINE && networkStatus <= NET_RECONNECT) {
-                    this._networkStatus = networkStatus;
+            {
+                key: "data",
+                get: function get() {
+                    return this._data;
+                },
+                set: function set(data) {
+                    if ((this._event == EVENT_DELETE) || (this._event == undefined)) { return; } // если виджет удаляется ничего не делаем
+                    this._data = data;
                     this.redrawAll();
                 }
-            }
-        },
-
-        {
-            key: "properties",
-            get: function get() {
-                return this._properties;
             },
-            set: function set(properties) {
-                if ((this._event == EVENT_DELETE) || (this._event == undefined)) { return; } // если виджет удаляется ничего не делаем
-                if (properties == undefined) return;
-                this._properties = properties;
-                this.drawText();
-                this.drawWidget();
-            }
-        },
-        {
-            key: "data",
-            get: function get() {
-                return this._data;
-            },
-            set: function set(data) {
-                if ((this._event == EVENT_DELETE) || (this._event == undefined)) { return; } // если виджет удаляется ничего не делаем
-                this._data = data;
-                this.redrawAll();
-            }
-        },
-        {
-            key: "onload",
-            set: function set(onload) {
-                if (this._onload == undefined) {
-                    this._onload = [];
+            {
+                key: "onload",
+                set: function set(onload) {
+                    if (this._onload == undefined) {
+                        this._onload = [];
+                    }
+                    this._onload.push(onload);
                 }
-                this._onload.push(onload);
-            }
             },
             {
                 key: "onchange",
@@ -1390,19 +1161,15 @@ var BaseWidget =
                     this._onchange.push(onchange);
                 }
             },
-
-        {
-            key: "ondelete",
-            set: function set(ondelete) {
-                if (this._ondelete == undefined) {
-                    this._ondelete = [];
+            {
+                key: "ondelete",
+                set: function set(ondelete) {
+                    if (this._ondelete == undefined) {
+                        this._ondelete = [];
+                    }
+                    this._ondelete.push(ondelete);
                 }
-                this._ondelete.push(ondelete);
             }
-        }
-
-
         ]);
-
         return BaseWidget;
     }();

@@ -83,25 +83,20 @@ const VCC_FAMILY = 2;    //пин входит в семейство пинов 
 
 function getFreePins(node, pinMask) {
     var pins = [];
-
     //TEMP: ESP8266 VCC5 patch
     if (pinMask == VCC5_MASK) {
         pinMask = pinMask | VCC33_MASK;
     }
-
     for (var i = 0; i < node.pins.length; i++) {
         var valid = (node.pins[i].pintypes & pinMask); // | (node.pins[i].extenedpintypes & pinMask);
         if (valid > 0) {
             pins.push(node.pins[i]);
         }
     }
-
     return pins;
 }
 
-
 var pins = {
-
     //Массив подписчиков на событие onNew  пина контроллера
     _onnew: [],
     doOnNew: function (pin) {
@@ -109,12 +104,10 @@ var pins = {
             pins._onnew[key](pin);
         }
     },
-
     //Добавление подсписчиков события onNew
     set onNew(onnew) {
         pins._onnew.push(onnew);
     },
-
     //Массив подписчиков на событие onDelete пина контроллера 
     _ondelete: [],
     doOnDelete: function (pin) {
@@ -122,13 +115,10 @@ var pins = {
             pins._ondelete[key](pin);
         }
     },
-
     //Добавление подсписчиков события onDelete
     set onDelete(ondelete) {
         pins._ondelete.push(ondelete);
     },
-
-
     //вызывается внешним кодом (смотрите index.js)
     refresh: function (node) {
         node.networkStatus = NET_REFRESH;
@@ -162,9 +152,6 @@ var pins = {
             node.pins = [];
         }
     },
-
-    //-------------------------------------------------------------------------------------------------------------
-
     ////получить объект Pin по его GPIO номеру
     getPinByGPIONumber: function (GPIONumber, host) {
         var node = config.getNodeByHost(host);
@@ -183,15 +170,12 @@ var pins = {
     //а так же проверяет было ли драйвер создано и как изменились его свойства после предыдущего парсинга
     parsePins: function (httpResult, node) {
         //первичный парсинг, помещаем строку пришедшую от HTTPClient в массив строк, разделяя по "\n"
-
         if (node.pins != undefined) {
             for (var pinIndex in node.pins) {
                 node.pins[pinIndex].deleted = true; //все удалены перед началом парсинга      
             }
         }
-
         var recievedPinsProperties = httpResult.split("\n");
-
         if (recievedPinsProperties !== "") {//если первичный парсинг удался
 
             var pin = undefined; //сбрасываем будущий объект со свойствами пина 
@@ -222,13 +206,9 @@ var pins = {
                     //где:
                     //PropertyName - название свойства(уникальное в рамках одного пина)
                     //PropertyValue - значение этого свойства
-
                     //вторичный парсинг, помещаем строку в массив, разделяя по "=", первый элемент название, второй значение 
-
                     var propertyName = recievedPinsProperties[i].split("=")[0];
-
                     var propertyValue = recievedPinsProperties[i].split("=")[1];
-
                     if (pin[propertyName] != undefined) {//если такое свойство уже существует                        
                         pin[propertyName] = propertyValue; //меняем значение свойства на новое
                     }
@@ -259,9 +239,7 @@ var pins = {
     }, //ENDOF parse pins
 
     addPin: function (_pin, node) {
-
         var addOrNot = true;
-
         if (node.pins.length > 0) {
 
             for (var pinIndex in node.pins) {
@@ -287,16 +265,12 @@ var pins = {
 
             }
         }
-
         if (addOrNot) {
             node.pins.push(_pin);
         }
-
     },
 
-
     createPin: function (_name, node) {
-
         pin = { //создаем новый объект представляющий драйвер
             name: _name, //навастриваем уникальный ID драйвера, для идентификации объекта с драйверм в будущем
             nodenickname: node.nodenickname,
@@ -312,16 +286,12 @@ var pins = {
         }; //новый объект для драйвера сформирован        
         return pin;
     }
-
 }
-
 //----------------------------------------------------------------------------------------------------------------------------------
 //GetDriverPins 
 //----------------------------------------------------------------------------------------------------------------------------------
 var driverPins = {
-
-
-    //Массив подписчиков на событие onNew у пина драйвера 
+   //Массив подписчиков на событие onNew у пина драйвера 
     _onnew: [],
 
     doOnNew: function (driverPin) {
@@ -348,9 +318,6 @@ var driverPins = {
     set onDelete(ondelete) {
         driverPins._ondelete.push(ondelete);
     },
-
-
-
 
     refresh: function (node) {
         node.networkStatus = NET_REFRESH;
@@ -381,10 +348,9 @@ var driverPins = {
             else {
                 node.networkStatus = NET_OFFLINE;
             }
-            node.driversPins = "";
+            node.driversPins = [];
         }
     },
-
     parseDriverPin: function (httpResult, node) {
 
         if (node.driversPins.length > 0) {
@@ -392,29 +358,20 @@ var driverPins = {
                 node.driversPins[DriverPinIndex].deleted = true; //все удалены перед началом парсинга      
             }
         }
-
         var recievedDriverPins = httpResult.split("\n");
-
-
         if (recievedDriverPins !== "") {//если первичный парсинг удался
-
             var driverPin = undefined;
             var driverId = undefined;
-
             for (var i = 0; i < recievedDriverPins.length; i++) {//перечисляем все строки в HTTPResult 
-
                 if (recievedDriverPins[i] === "") continue; //если строка пуста, берем следующею
-
                 if (recievedDriverPins[i].indexOf("driverid:") == 0) { //если заголовок драйвера найден                    
                     //Добавляем собранный пин драйвера 
                     if (driverPin != undefined) {
                         node.driversPins.push(driverPin);
                         this.doOnNew(driverPin); //вызов обработчика события OnNew
                     }
-
                     driverId = recievedDriverPins[i].split(":")[1];
                     driverPin = this.addDriverPin(driverId, node);
-
                 }
                 else {
                     if (driverPin == undefined) continue;
@@ -428,13 +385,11 @@ var driverPins = {
                     }
                 }
             }
-
             if (driverPin != undefined) {
                 node.driversPins.push(driverPin);
                 this.doOnNew(driverPin); //вызов обработчика события OnNew
             }
         }
-
         var deleted = false;
         while (!deleted) {
             deleted = true;
@@ -448,7 +403,6 @@ var driverPins = {
                 }
             }
         }
-
     },
 
     addDriverPin: function (_driverId, _node) {
@@ -466,7 +420,6 @@ var driverPins = {
 
         return driverPin;
     },
-
 }
 
 //----------------------------------------------------------------------------------------------------------------------------------
@@ -474,7 +427,6 @@ var driverPins = {
 //Так же как и DriverPins - смотрите коментарии к этому классу там
 //----------------------------------------------------------------------------------------------------------------------------------
 var accessableDrivers = {
-
 
     refresh: function (node) {
         node.networkStatus = NET_REFRESH;
@@ -495,24 +447,16 @@ var accessableDrivers = {
             else {
                 node.networkStatus = NET_OFFLINE;
             }
-            node.driversPins = "";
+            node.driversPins = [];
         }
     },
-
     parseAccessableDrivers: function (httpResult, node) {
-
         var recievedAccessablePins = httpResult.split("\n");
-
         if (recievedAccessablePins !== "") {
-
             var _driver = undefined;
-
             for (var i = 0; i < recievedAccessablePins.length; i++) {
-
                 if (recievedAccessablePins[i] === "") continue;
-
                 if (recievedAccessablePins[i].indexOf("name:") == 0) {
-
                     if (_driver != undefined) {
                         node.accessableDrivers.push(_driver);
                     }
@@ -539,25 +483,3 @@ var accessableDrivers = {
         }
     }
 }
-
-/*
-addDrivern: function (_driverName, _node) {
-    driverPin = {
-        driverName: _driverName,
-        name: "",
-        node: _node,
-        driverpintype: 0,
-        driverpintypedecoded: "",
-        driverpinindex: -1,
-        driveri2caddr: -1,
-        driversdapinname: "",
-        deleted: false,
-    };
-
-return driverPin;
-},
-*/
-
-//}
-
-

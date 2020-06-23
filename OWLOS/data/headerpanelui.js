@@ -75,8 +75,7 @@ var headerPanelUI = {
         statusPanel.style.display = "none";
         headerPanelStatuses.appendChild(statusPanel);
 
-        var nodeHref = document.createElement("a");
-        //nodeHref.className = "text-info";
+        var nodeHref = document.createElement("a");        
         nodeHref.href = node.host;
         nodeHref.target = "_blank";
         nodeHref.innerText = node.nodenickname;
@@ -166,12 +165,11 @@ var headerPanelUI = {
             status.className = "text-secondary";
         }
     },
-
+    
     setStatusError: function (node, id) {
         var status = this.getStatus(id);
         if (status != undefined) {
             status.className = "text-danger";
         }
     }
-
 }
