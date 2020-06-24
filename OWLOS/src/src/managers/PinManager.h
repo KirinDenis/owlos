@@ -123,6 +123,7 @@ int getDriverPinsByGPIONumber(int GPIONumber, DriverPin **_driverPins);
 int getDriverPinsByDriverId(String GPIONumber, DriverPin **_driverPins);
 DriverPin * getDriverPinByDriverId(String  driverId, int driverPinIndex);
 String setDriverPinMode(String driverId, int driverPinIndex, int mode);
+String _driverPinWrite(String driverId, int driverPinIndex, int data, bool pwm);
 String driverPinWrite(String driverId, int driverPinIndex, int data);
 int driverPinRead(String driverId, int driverPinIndex);
 int addDriverPin(DriverPin driverPin);

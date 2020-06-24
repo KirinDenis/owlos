@@ -452,7 +452,7 @@ String setDriverPinMode(String driverId, int driverPinIndex, int mode)
 //при этом передаваемые данные data могут находится в диапозоне 0..1024
 // - значение data=0 всегда рассматривается как логический 0
 // - значение data>0 в случае аналогового пина передаются без изменений, в случае цифрового считаются логической 1
-String driverPinWrite(String driverId, int driverPinIndex, int data)
+String _driverPinWrite(String driverId, int driverPinIndex, int data, bool pwm)
 {
 	DriverPin * _driverPin = getDriverPinByDriverId(driverId, driverPinIndex); //если существует такой драйвер и у него есть назначенный пин (driverPinIndex индекс пина внутри драйвера)
 	if (_driverPin != nullptr)
@@ -460,7 +460,7 @@ String driverPinWrite(String driverId, int driverPinIndex, int data)
 		int mode = getPinMode(_driverPin->GPIONumber); //получаем текущий физический режим пина
 		if (mode == OUTPUT) //если этот пин на самом деле в режиме OUTPUT
 		{
-			if (_driverPin->driverPinType & ANALOG_O_MASK) //если драйвер установил этому пину маску аналогового выхода 
+			if (getPinByName(_driverPin->name)->pinTypes & ANALOG_O_MASK) //если драйвер установил этому пину маску аналогового выхода 
 			{
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4 
 				analogWrite(_driverPin->GPIONumber, data, 1024);  //мы не нашли "официального" способа делать ESP32 analogWrite() - вызываем библиотеку ESP32_AnalogWrite
@@ -469,15 +469,22 @@ String driverPinWrite(String driverId, int driverPinIndex, int data)
 #endif
 			}
 			else
-			{
+			{				
 				//цифровая запись
 				if (data == 0)
-				{
+				{					
 					digitalWrite(_driverPin->GPIONumber, LOW);
 				}
 				else
-				{
-					digitalWrite(_driverPin->GPIONumber, HIGH);
+				{							
+					if (pwm)
+					{
+					 analogWrite(_driverPin->GPIONumber, data);  //запись для ESP8266 (ШИМ PWR)
+					}
+					else 
+					{
+					 digitalWrite(_driverPin->GPIONumber, HIGH);
+					}
 				}
 			}
 			return "";
@@ -486,6 +493,12 @@ String driverPinWrite(String driverId, int driverPinIndex, int data)
 		return "can't write pin mode for:" + driverId + " pin:" + String(_driverPin->driverPinIndex) + " to data=:" + String(data);
 	}
 	return "driverId " + driverId + " or pin index " + String(driverPinIndex) + " doesn't exists";
+}
+
+//overload 
+String driverPinWrite(String driverId, int driverPinIndex, int data)
+{
+	return _driverPinWrite(driverId, driverPinIndex, data, false);
 }
 
 //функция читает текущее значение пина, реализована так же как driverPinWrite()
@@ -636,6 +649,8 @@ DriverPin * getDriverPinByDriverId(String driverId, int driverPinIndex)
 		Serial.println("-----------------");
 		Serial.println(driverPins[i].driverId);
 		Serial.println(driverPins[i].driverPinIndex);
+		Serial.println(driverPins[i].driverPinType);
+		Serial.println(driverPins[i].GPIONumber);
 
 		if ((driverPins[i].driverId.equals(driverId)) && (driverPins[i].driverPinIndex == driverPinIndex))
 		{

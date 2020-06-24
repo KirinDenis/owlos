@@ -44,10 +44,8 @@ function createDialogSelect(_id, _labelText) {
     var dialogSelect = {
         id: _id,
         labelText: _labelText,
-
         label: undefined,
         select: undefined,
-
         create: function () {
             this.label = document.createElement("label");
             this.label.setAttribute("for", this.id);
@@ -58,7 +56,6 @@ function createDialogSelect(_id, _labelText) {
             this.select.dialogSelect = this;
             this.select.id = this.id;
         },
-
         appendOption: function (_text, index) {
             var selectOption = document.createElement('option');
             this.select.add(selectOption, index);
@@ -66,7 +63,6 @@ function createDialogSelect(_id, _labelText) {
             return selectOption;
         }
     };
-
     dialogSelect.create();
     return dialogSelect;
 }

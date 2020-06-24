@@ -97,6 +97,9 @@ OWLOS распространяется в надежде, что она буде
 
 */
 
+//палитра виджетов, настраивается при старте (смотрите index.js)
+var widgetsTheme = {};
+
 // флажки режимов виджета
 var WORK_MODE = 0; // в этом режиме виджет отображает данные
 var MOVE_MODE = 1; // в этом режиме виджет отображает элементы управления собой - переместить, изменить свойства, удалить
@@ -193,32 +196,32 @@ var BaseWidget =
             widget.SVGBackdownpanel = new SVGArc(widget.SVGViewBox, widget.id + "backdownpanel", 0, widget.height - 10, widget.width, 1);
             widget.SVGBackdownpanel.drawRoundedRect(widget.width, 10, 5, 0, false, false, true, true);
             widget.SVGBackdownpanel.opacity = 0.9;
-            widget.SVGBackdownpanel.fill = theme.secondary;
+            widget.SVGBackdownpanel.fill = widgetsTheme.secondary;
             // основной текст виджета - обычно расположен в центре. Используется многими виджетами для отображения данных 
             // widget.size / 80 - размер шрифта текст относительно текущего масштаба widgetHolder
             widget.SVGWidgetText = new SVGText(widget.SVGViewBox, widget.id + "widgettext", widget.size / 80);
             widget.SVGWidgetText.opacity = 0.7;
-            widget.SVGWidgetText.color = theme.secondary;
+            widget.SVGWidgetText.color = widgetsTheme.secondary;
             // текст для заголовка виджета, находится над SVGHeaderPanel панелью
             widget.SVGHeaderText = new SVGText(widget.SVGViewBox, widget.id + "headertext", widget.size / 150);
-            widget.SVGHeaderText.color = theme.success;
+            widget.SVGHeaderText.color = widgetsTheme.success;
             // подпись внизу виджета, обычно информация о сетевом состоянии виджета (находится над SVGBackdownpanel)
             widget.SVGHint = new SVGText(widget.SVGViewBox, widget.id + "hint", widget.size / 150);
-            widget.SVGHint.color = theme.secondary;
+            widget.SVGHint.color = widgetsTheme.secondary;
 
             // подготавливаем градиент для спиннера (спиннер будет отображаться когда виджет уходит в состояния ожидания)
             var stop1 = document.createElementNS(xmlns, 'stop'); // первый фрагмент градиента 
-            stop1.setAttribute('stop-color', theme.info);
+            stop1.setAttribute('stop-color', widgetsTheme.info);
             stop1.setAttribute('stop-opacity', "0.7");
             stop1.setAttribute('offset', "0%");
             var stop2 = document.createElementNS(xmlns, 'stop'); // второй фрагмент градиента 
             stop2.setAttribute('class', 'stop2');
-            stop2.setAttribute('stop-color', theme.info);
+            stop2.setAttribute('stop-color', widgetsTheme.info);
             stop2.setAttribute('stop-opacity', "0.4");
             stop2.setAttribute('offset', "20%");
             var stop3 = document.createElementNS(xmlns, 'stop'); // третий фрагмент градиента 
             stop3.setAttribute('class', 'stop3');
-            stop3.setAttribute('stop-color', theme.info);
+            stop3.setAttribute('stop-color', widgetsTheme.info);
             stop3.setAttribute('stop-opacity', "0.0");
             stop3.setAttribute('offset', "60%");
             var gradient = document.createElementNS(xmlns, 'linearGradient'); // создаем градиент 
@@ -249,7 +252,7 @@ var BaseWidget =
                     // инкапсулируем каждый элемент и помещаем на свое место 
                     var SVGEqualizerpanel = new SVGRect(widget.SVGViewBox, widget.id + "equalizerpanel" + parseInt(x) + "_" + parseInt(y), widget.eX + x * widget.eWidth * 2, widget.eY + y * widget.eHeight * 2, widget.eRWidth, widget.eRWidth);
                     SVGEqualizerpanel.opacity = 0.0; // по умолчанию элемент не виден
-                    SVGEqualizerpanel.fill = theme.secondary;
+                    SVGEqualizerpanel.fill = widgetsTheme.secondary;
                     // помещаем элемент в столбец
                     equalizerY.push(SVGEqualizerpanel);
                 }
@@ -262,25 +265,25 @@ var BaseWidget =
             // кнопка сдвига влево
             // данные для прорисовки иконки кнопки "leftIcon" находится в DrawCore.js 
             widget.SVGLeftIcon = new SVGIcon(widget.SVGViewBox, leftIcon, widget.panding, widget.height - widget.rowSize, widget.rowSize, widget.rowSize);
-            widget.SVGLeftIcon.fill = theme.light;
+            widget.SVGLeftIcon.fill = widgetsTheme.light;
             widget.SVGLeftIcon.SVGIcon.widget = widget;
             widget.SVGLeftIcon.SVGIcon.onclick = widget.moveLeft; // назначаем обработчик события по клику на эту кнопку (смотрите метод moveLeft())
             widget.SVGLeftIcon.hide(); // по умолчанию кнопка скрыта 
             // кнопка сдвига вправо
             widget.SVGRightIcon = new SVGIcon(widget.SVGViewBox, rightIcon, widget.width - widget.rowSize, widget.height - widget.rowSize, widget.rowSize, widget.rowSize);
-            widget.SVGRightIcon.fill = theme.light;
+            widget.SVGRightIcon.fill = widgetsTheme.light;
             widget.SVGRightIcon.SVGIcon.widget = widget;
             widget.SVGRightIcon.SVGIcon.onclick = widget.moveRight;
             widget.SVGRightIcon.hide();
             // кнопка удаления виджета 
             widget.SVGDeleteIcon = new SVGIcon(widget.SVGViewBox, deleteIcon, widget.width - widget.rowSize + widget.size / 28, 0, widget.rowSize, widget.rowSize);
-            widget.SVGDeleteIcon.fill = theme.light;
+            widget.SVGDeleteIcon.fill = widgetsTheme.light;
             widget.SVGDeleteIcon.SVGIcon.widget = widget;
             widget.SVGDeleteIcon.SVGIcon.onclick = widget.deleteWidgetClick;
             widget.SVGDeleteIcon.hide();
             // кнопка отображения диалога редактирования свойств виджета 
             widget.SVGPropertiesIcon = new SVGIcon(widget.SVGViewBox, buildIcon, widget.width / 2 - widget.rowSize / 2, widget.height - widget.rowSize, widget.rowSize, widget.rowSize);
-            widget.SVGPropertiesIcon.fill = theme.light;
+            widget.SVGPropertiesIcon.fill = widgetsTheme.light;
             widget.SVGPropertiesIcon.SVGIcon.widget = widget;
             widget.SVGPropertiesIcon.SVGIcon.onclick = widget.propertiesClick;
             widget.SVGPropertiesIcon.hide();
@@ -355,28 +358,28 @@ var BaseWidget =
                     // toColor() - метод реализующий плавную смену градиентов цвета (анимация)
                     // this._properties.valuetextcolor.value свойства виджета определяющее цвет главного текста в онлайн режиме (пользователь может назначить свой цвет)
                     this.toColor(this.SVGWidgetText, this._properties.valuetextcolor.value);
-                    this.toColor(this.SVGHeaderText, theme.info);
+                    this.toColor(this.SVGHeaderText, widgetsTheme.info);
                     this.SVGHint.text = getLang("rid_online"); // назначаем текст для нижней подписи виджета (сетевой статус) в этом кейсе
-                    this.toColor(this.SVGHint, theme.success);
+                    this.toColor(this.SVGHint, widgetsTheme.success);
                     break;
                 case NET_ERROR: // ошибка сети
-                    this.toColor(this.SVGWidgetText, theme.danger);
-                    this.toColor(this.SVGHeaderText, theme.danger);
+                    this.toColor(this.SVGWidgetText, widgetsTheme.danger);
+                    this.toColor(this.SVGHeaderText, widgetsTheme.danger);
                     this.SVGHint.text = getLang("rid_error");
-                    this.toColor(this.SVGHint, theme.danger);
+                    this.toColor(this.SVGHint, widgetsTheme.danger);
                     break;
                 case NET_RECONNECT: // пере подключение (при таком статусе виджет ожидает соединения с сетью)
-                    this.toColor(this.SVGWidgetText, theme.info);
-                    this.toColor(this.SVGHeaderText, theme.info);
+                    this.toColor(this.SVGWidgetText, widgetsTheme.info);
+                    this.toColor(this.SVGHeaderText, widgetsTheme.info);
                     this.SVGHint.text = getLang("rid_connect");
-                    this.toColor(this.SVGHint, theme.info);
+                    this.toColor(this.SVGHint, widgetsTheme.info);
                     break;
                 default:
                     //по умолчанию виджет оффлайн, не подключен к сети 
-                    this.toColor(this.SVGWidgetText, theme.secondary);
-                    this.toColor(this.SVGHeaderText, theme.secondary);
+                    this.toColor(this.SVGWidgetText, widgetsTheme.secondary);
+                    this.toColor(this.SVGHeaderText, widgetsTheme.secondary);
                     this.SVGHint.text = getLang("rid_offline");
-                    this.toColor(this.SVGHint, theme.secondary);
+                    this.toColor(this.SVGHint, widgetsTheme.secondary);
                     break;
             }
 
@@ -404,16 +407,16 @@ var BaseWidget =
             // в зависимости от состояния сети, цвет нижней панели виджета меняется 
             switch (this._networkStatus) {
                 case NET_ONLINE:
-                    this.SVGBackdownpanel.fill = theme.success;
+                    this.SVGBackdownpanel.fill = widgetsTheme.success;
                     break;
                 case NET_ERROR:
-                    this.SVGBackdownpanel.fill = theme.danger;
+                    this.SVGBackdownpanel.fill = widgetsTheme.danger;
                     break;
                 case NET_RECONNECT:
-                    this.SVGBackdownpanel.fill = theme.info;
+                    this.SVGBackdownpanel.fill = widgetsTheme.info;
                     break;
                 default:
-                    this.SVGBackdownpanel.fill = theme.light;
+                    this.SVGBackdownpanel.fill = widgetsTheme.light;
                     break;
             }
 
@@ -423,7 +426,7 @@ var BaseWidget =
                     var equalizerY = this.equalizerX[x];
                     for (var y = 0; y < 5; y++) { // обходим все элементы в столбцах 
                         if (this._networkStatus == NET_ONLINE) { // если виджет онлайн делаем элемент видимым
-                            equalizerY[y].fill = theme.secondary; // цвет каждого элемента по умолчанию "неактивен" 
+                            equalizerY[y].fill = widgetsTheme.secondary; // цвет каждого элемента по умолчанию "неактивен" 
                             equalizerY[y].opacity = (y + 1) * 0.08;
                         } else { // если виджет оффлайн скрываем все элементы эквалайзера 
                             equalizerY[y].opacity = 0.0;
@@ -469,7 +472,7 @@ var BaseWidget =
                             // value значение данных для текущего столбца, превращенное в количество видимых (окрашенных) элементов снизу-вверх
                             for (var y = 0; y < value; y++) { // изменяем цвет только для элементов согласно текущему значению historyData - относительно значения самого большого элемента из нее
                                 equalizerY[4 - y].opacity = (1.0 - parseFloat(y / 4.0)) / 2.0; // прозрачность элемента зависит от его позиции относительно по высоте (самые нижние ярче)
-                                equalizerY[4 - y].fill = theme.success;
+                                equalizerY[4 - y].fill = widgetsTheme.success;
                             }
                         }
                     }
@@ -1010,7 +1013,7 @@ var BaseWidget =
 
                 headercolor: { // цвет панели заголовка           
                     tab: "C", // закладка Colors
-                    value: theme.secondary,
+                    value: widgetsTheme.secondary,
                     type: "c" // тип редактора - редактор цветов
                 },
 
@@ -1022,19 +1025,19 @@ var BaseWidget =
 
                 backgroundcolor: { // цвет фона виджета           
                     tab: "C",
-                    value: theme.dark,
+                    value: widgetsTheme.dark,
                     type: "c"
                 },
 
                 backgroundopacity: { // прозрачность фона          
                     tab: "O",
-                    value: 0.4,
+                    value: 0.6,
                     type: "f"
                 },
 
                 bordercolor: { // цвет бордюра           
                     tab: "C",
-                    value: theme.secondary,
+                    value: widgetsTheme.secondary,
                     type: "c"
                 },
 
@@ -1046,7 +1049,7 @@ var BaseWidget =
 
                 valuetextcolor: { // цвет основного текста виджета (обычно этот текст отображает данные переданные через метод refresh())            
                     tab: "C",
-                    value: theme.info,
+                    value: widgetsTheme.info,
                     type: "c"
                 },
 

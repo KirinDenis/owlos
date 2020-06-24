@@ -71,7 +71,6 @@ var ValueWidget =
 
         };
 
-
         ValueWidget.prototype.drawText = function drawText() {
             if (this.SVGWidgetText == undefined) return;
             if (this.properties.textfontsize !== undefined) {
@@ -81,7 +80,6 @@ var ValueWidget =
             this.SVGWidgetText.color = theme.danger;
 
         };
-
 
         ValueWidget.prototype.drawWidget = function drawWidget() {
 

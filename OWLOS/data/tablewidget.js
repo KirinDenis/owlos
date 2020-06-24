@@ -214,7 +214,7 @@ var TableWidget =
             node.addNetworkStatusListner(this.onDriverPropNetworkStatusChange, getSpan); //подписка на глобальный сетевой статус
             //кнопка Set value не создается если свойство ReadOnly
 
-            if (!driverProperty.type.indexOf("r") != -1) {
+            if (driverProperty.type.indexOf("r") == -1) {
                 //так же как и Set value кнопка - асинхронно меняет значение свойства и ожидает результат
                 var span = setButtonTd.appendChild(document.createElement('a'));
                 span.className = "badge badge-secondary";

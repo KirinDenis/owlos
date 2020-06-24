@@ -72,6 +72,7 @@ $(document).ready(function () {
     addToLogNL("OK loading scripts");
     addToLogNL("[START]", 1);
 
+    //setup UX color theme 
     var style = window.getComputedStyle(document.body, null);
     theme.primary = style.getPropertyValue('--primary');
     theme.secondary = style.getPropertyValue('--secondary');
@@ -83,7 +84,7 @@ $(document).ready(function () {
     theme.dark = style.getPropertyValue('--dark');
     theme.fontFamily = style.fontFamily;
 
-    if (theme.primary === '') { //default dark
+    if (theme.primary === '') { //default dark UX theme 
         theme.primary = '#3A3F44';
         theme.secondary = '#7A8288';
         theme.success = '#62c462';
@@ -93,6 +94,16 @@ $(document).ready(function () {
         theme.light = '#e9ecef';
         theme.dark = '#272B30';
     }
+    //widget theme
+    widgetsTheme.primary = '#89c2dc';
+    widgetsTheme.secondary = '#3589b1';
+    widgetsTheme.success = '#3b99c4';
+    widgetsTheme.info = '#62add0';
+    widgetsTheme.warning = '#c43b5d';
+    widgetsTheme.danger = '#ee5f5b';
+    widgetsTheme.light = '#e9ecef';
+    widgetsTheme.dark = '#272B30';
+
 
     addToLogNL("Connection to master node " + boardhost + "...");
     //use it as node ping

@@ -47,7 +47,7 @@ var MotionWidget =
         _inheritsLoose(MotionWidget, _BaseWidget);
 
         function MotionWidget(parentPanel, id, size) {
-            return _BaseWidget.call(this, parentPanel, id, size) || this;            
+            return _BaseWidget.call(this, parentPanel, id, size) || this;
         }
 
         MotionWidget.prototype.onWidgetHolderLoad = function onWidgetHolderLoad(event) {

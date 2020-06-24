@@ -64,7 +64,7 @@ function createScript(_node) {
 
 var scriptsManager = {
     scripts: [],
-    
+
     //подписчики (функции) на onNew событие скрипта 
     _onnew: [],
 
@@ -129,7 +129,7 @@ var scriptsManager = {
             else {
                 node.networkStatus = NET_OFFLINE;
             }
-            
+
         }
     },
 
@@ -184,10 +184,10 @@ var scriptsManager = {
                 return;
             }
         }
-        
-         scriptsManager.scripts.push(script); //TODO onNew event 
-         this.doOnNew(script);            
-        
+
+        scriptsManager.scripts.push(script); //TODO onNew event 
+        this.doOnNew(script);
+
     },
 
     parseScripts: function (httpResult, node) {

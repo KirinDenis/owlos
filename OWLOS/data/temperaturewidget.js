@@ -40,14 +40,14 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 var TemperatureWidget =
-    
+
     function (_BaseWidget) {
         "use strict";
 
         _inheritsLoose(TemperatureWidget, _BaseWidget);
 
         function TemperatureWidget(parentPanel, id, size) {
-            
+
             return _BaseWidget.call(this, parentPanel, id, size) || this;
         }
 
@@ -128,15 +128,15 @@ var TemperatureWidget =
                     case NET_RECONNECT:
                         this.toColor(this.SVGWidgetExtText, theme.info);
                         break;
-                    default:                        
+                    default:
                         this.toColor(this.SVGWidgetExtText, theme.secondary);
                         break;
                 }
             }
-                else {
+            else {
                 this.SVGWidgetExtText.text = "";
             }
-          
+
         };
 
         TemperatureWidget.prototype.drawWidget = function drawWidget() {
@@ -153,7 +153,7 @@ var TemperatureWidget =
                 this.tempItem[i].opacity = 1.0 - (1.0 - i / 20);
             }
 
-           // this.svgTempIndex.x = this.panding + tempSize * this.tempWidth * 2;
+            // this.svgTempIndex.x = this.panding + tempSize * this.tempWidth * 2;
         };
 
         return TemperatureWidget;

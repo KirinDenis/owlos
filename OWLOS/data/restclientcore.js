@@ -217,14 +217,11 @@ function httpPostAsyncWithErrorReson(_url, arg, _postdata, asyncReciever, counte
     $.ajax({
         url: encodeURI(_url + arg),
         type: "POST",
-
-
         data: formData,
         contentType: false,
         processData: false,
         cache: false,
         async: true,
-
         success: function (data) {
              addToLogNL("call RESTful: " + _url + " result OK", 1);
             _data = data;
@@ -232,7 +229,6 @@ function httpPostAsyncWithErrorReson(_url, arg, _postdata, asyncReciever, counte
                 asyncReciever(_data, counter, dataString, length, _url);
             }
         },
-
         error: function (XMLHttpRequest, textStatus, errorThrown) {
              addToLogNL("call POST async: " + _url + " result ERORR [" + XMLHttpRequest.status + "]", 2);
             _data = "%error[" + XMLHttpRequest.status + "]";
@@ -244,10 +240,8 @@ function httpPostAsyncWithErrorReson(_url, arg, _postdata, asyncReciever, counte
             }
         }
     });
-
     return _data;
 }
-
 
 function httpGetAsync(_url, asyncReciever, upperAsyncReciever, sender, upperSender, _timeout = 30000) {
     var _data = null;
@@ -271,7 +265,6 @@ function httpGetAsync(_url, asyncReciever, upperAsyncReciever, sender, upperSend
             }
 
         },
-
         error: function (XMLHttpRequest, textStatus, errorThrown) {
             //addToLogNL("call RESTful async: " + _url + " result ERORR [" + XMLHttpRequest.status + "]", 2);
             _data = "%error[" + XMLHttpRequest.status + "]";
@@ -286,7 +279,6 @@ function httpGetAsync(_url, asyncReciever, upperAsyncReciever, sender, upperSend
 
     return _data;
 }
-
 function httpGetAsyncWithReciever(_url, asyncReciever, upperAsyncReciever, sender, upperSender, _timeout = 30000) {
     var _data = null;
     $.ajax({
@@ -310,20 +302,15 @@ function httpGetAsyncWithReciever(_url, asyncReciever, upperAsyncReciever, sende
             }
         },
         
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-            //addToLogNL("call RESTful async: " + _url + " result ERORR [" + XMLHttpRequest.status + "]", 2);
+        error: function (XMLHttpRequest, textStatus, errorThrown) {            
             _data = "%error[" + XMLHttpRequest.status + "]";
             if ((XMLHttpRequest.responseText !== undefined) && (XMLHttpRequest.responseText !== null)) {
                 _data += " response: " + XMLHttpRequest.responseText;
             }
             if (asyncReciever != undefined) {
                 asyncReciever(_data, upperAsyncReciever, sender, upperSender);
-            }
-
-            //XMLHttpRequest.host;
+            }            
         }
-
     });
-
     return _data;
 }

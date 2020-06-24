@@ -451,7 +451,7 @@ var drivers = {
                     sender.value = HTTPResult; //новое значение свойства, все подписчики узнают об его изменении                    
                 }
                 else {
-                    if (!HTTPResult.indexOf("response") != -1) { //уходим в оффлайн если ошибки
+                    if (!HTTPResult.indexOf("response") == -1) { //уходим в оффлайн если ошибки не вернули, значит timeout
                         sender.networkStatus = NET_OFFLINE;
                     }
                     else { //driver error

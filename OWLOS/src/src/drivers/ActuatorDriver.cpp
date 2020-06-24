@@ -43,27 +43,28 @@ OWLOS распространяется в надежде, что она буде
 
 bool ActuatorDriver::init()
 {
-	if (id.length() == 0) id = DRIVER_ID;
+	if (id.length() == 0)
+		id = DRIVER_ID;
 	BaseDriver::init(id);
 
-
-	DriverPin * driverPin = getDriverPinByDriverId(id, PIN0_INDEX);    //командный пин "закрыть"
+	DriverPin *driverPin = getDriverPinByDriverId(id, PIN0_INDEX); //командный пин "закрыть"
 	if (driverPin != nullptr)
 	{
 		if (setDriverPinMode(id, PIN0_INDEX, OUTPUT).length() == 0)
 		{
 			//если используемый пин поддерживает ЦАП, то драйвер актуратора переходит в аналоговый режим
 			//свойство дата 0..1023 (где 1023 уровень логической единицы)
-			setAnalog(driverPin->driverPinType & ANALOG_O_MASK, false);
+			//получаем тип выбранного под актуатор пина по его имени getPinByName(driverPin->name)->pinTypes
+			//с масской ANALOG_O_MASK, если флаг ANALOG_O_MASK взведен то AND с типом пина будет больше нуля
+			setAnalog(getPinByName(driverPin->name)->pinTypes & ANALOG_O_MASK, false);
 			//на случай перезагрузки, в файле сохранено последнее состояние актуатора
-			getData(); //прочесть последнее состояние 
-			setData(data, false); //вернуть последнее запомненное состояние 
+			getData();			  //прочесть последнее состояние
+			setData(data, false); //вернуть последнее запомненное состояние
 			return true;
 		}
 	}
 	return false;
 }
-
 
 bool ActuatorDriver::begin(String _topic)
 {
@@ -77,7 +78,7 @@ bool ActuatorDriver::query()
 {
 	if (BaseDriver::query())
 	{
-		//for actuator publish data() as it changed 
+		//for actuator publish data() as it changed
 		int _data = data;
 		if (_data != getData())
 		{
@@ -93,6 +94,8 @@ String ActuatorDriver::getAllProperties()
 	String result = BaseDriver::getAllProperties();
 	result += "analog=" + String(analog) + "//br\n";
 	result += "data=" + String(data) + "//i\n";
+	result += "pwm=" + String(pwm) + "//b\n";
+	result += "invert=" + String(invert) + "//b\n";
 	return result;
 }
 
@@ -110,22 +113,38 @@ String ActuatorDriver::onMessage(String _topic, String _payload, int8_t transpor
 {
 	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
 
-	if (!result.equals(WrongPropertyName)) return result;
+	if (!result.equals(WrongPropertyName))
+		return result;
 
 	if (String(topic + "/getanalog").equals(_topic))
 	{
 		result = onGetProperty("analog", String(getAnalog()), transportMask);
 	}
-	else
-		if (String(topic + "/getdata").equals(_topic))
-		{
-			result = onGetProperty("data", String(getData()), transportMask);
-		}
-		else
-			if (String(topic + "/setdata").equals(_topic))
-			{
-				result = String(setData(std::atoi(_payload.c_str()), true));
-			}
+	else if (String(topic + "/getdata").equals(_topic))
+	{
+		result = onGetProperty("data", String(getData()), transportMask);
+	}
+	else if (String(topic + "/setdata").equals(_topic))
+	{
+		result = String(setData(std::atoi(_payload.c_str()), true));
+	}
+	else if (String(topic + "/getpwm").equals(_topic))
+	{
+		result = onGetProperty("pwm", String(getPWM()), transportMask);
+	}
+	else if (String(topic + "/setpwm").equals(_topic))
+	{
+		result = String(setPWM(std::atoi(_payload.c_str()), true));
+	}
+	else if (String(topic + "/getinvert").equals(_topic))
+	{
+		result = onGetProperty("invert", String(getInvert()), transportMask);
+	}
+	else if (String(topic + "/setinvert").equals(_topic))
+	{
+		result = String(setInvert(std::atoi(_payload.c_str()), true));
+	}
+
 	return result;
 }
 
@@ -145,6 +164,7 @@ bool ActuatorDriver::getAnalog()
 
 bool ActuatorDriver::setAnalog(bool _analog, bool doEvent)
 {
+	//see init() if target pin is not analog the mask set _analog to "0" false
 	analog = _analog;
 	filesWriteInt(id + ".analog", analog);
 	if (doEvent)
@@ -157,22 +177,66 @@ bool ActuatorDriver::setAnalog(bool _analog, bool doEvent)
 //Data -------------------------------------------
 int ActuatorDriver::getData()
 {
-	data = -1;
+	data = 0; //default is false for digital and zero level for analog
 	if (filesExists(id + ".data"))
 	{
 		data = filesReadInt(id + ".data");
 	}
-#ifdef DetailedDebug
-	debugOut(id, "data=" + String(data));
-#endif
+	else
+	{ //initial set data
+		setData(data, 0);
+	}
 
 	return data;
 }
 
 bool ActuatorDriver::setData(int _data, bool doEvent)
 {
+	debugOut("WRITE PIN DATA ", String(data));
+
+	int storeData = data;
+
 	data = _data;
-	if (driverPinWrite(id, PIN0_INDEX, data).length() == 0)
+
+    if (invert)
+	{
+		if (analog || pwm)	
+		{
+			_data = 1024 - _data;
+			storeData = 1024 - storeData;
+		}	
+		else 
+		{
+			_data = 1 - _data;	
+			storeData = 1 - storeData;
+		}
+	}
+
+    if (pwm) 
+	{
+		//if ESP OPTION with  interval = 0 do not do this 
+		if (storeData > _data) 
+		{
+			for (int i=storeData; i > _data; i--) 
+			{
+				if (_driverPinWrite(id, PIN0_INDEX, i, pwm).length() != 0) break;
+				delay(1); //TODO ESP OPTION with this interval
+				yield(); //throw a bone to watch dog
+			}
+		}
+		else 
+		{
+			for (int i=storeData; i < _data; i++) 
+			{
+				if (_driverPinWrite(id, PIN0_INDEX, i, pwm).length() != 0) break;
+				delay(1); //TODO ESP OPTION with this interval
+				yield(); //throw a bone to watch dog
+			}
+		}
+
+	}
+
+	if (_driverPinWrite(id, PIN0_INDEX, _data, pwm).length() == 0)
 	{
 		filesWriteInt(id + ".data", data);
 		if (doEvent)
@@ -183,4 +247,60 @@ bool ActuatorDriver::setData(int _data, bool doEvent)
 	}
 
 	return false;
+};
+
+//PWM -------------------------------------------
+bool ActuatorDriver::getPWM()
+{
+	pwm = false; //default is false for digital and zero level for analog
+	if (filesExists(id + ".pwm"))
+	{
+		pwm = filesReadInt(id + ".pwm");
+	}
+	else
+	{ //initial set data
+		setPWM(pwm, false);
+	}
+
+	return pwm;
+}
+
+bool ActuatorDriver::setPWM(bool _pwm, bool doEvent)
+{
+	pwm = _pwm;
+
+	filesWriteInt(id + ".pwm", pwm);
+	if (doEvent)
+	{
+		return onInsideChange("pwm", String(pwm));
+	}
+	return true;	
+};
+
+//Invert -------------------------------------------
+bool ActuatorDriver::getInvert()
+{
+	invert = false; //default is false for digital and zero level for analog
+	if (filesExists(id + ".invert"))
+	{
+		invert = filesReadInt(id + ".invert");
+	}
+	else
+	{ //initial set data
+		setInvert(invert, 0);
+	}
+
+	return invert;
+}
+
+bool ActuatorDriver::setInvert(bool _invert, bool doEvent)
+{
+	invert = _invert;
+
+	filesWriteInt(id + ".invert", invert);
+	if (doEvent)
+	{
+		return onInsideChange("invert", String(invert));
+	}
+	return true;
 };

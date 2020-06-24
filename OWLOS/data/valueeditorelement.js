@@ -42,7 +42,7 @@ OWLOS распространяется в надежде, что она буде
 function createValueEdit(parentElement, propertyName, propertyValue, propertyType) {
     var edit = "";
 
-    if (!propertyType.indexOf("r") != -1) {
+    if (propertyType.indexOf("r") == -1) {
         if (propertyType.indexOf("b") != -1) //boolean
         {
             edit = parentElement.appendChild(document.createElement('select'));

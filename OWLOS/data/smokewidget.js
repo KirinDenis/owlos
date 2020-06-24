@@ -48,7 +48,7 @@ var SmokeWidget =
 
         function SmokeWidget(parentPanel, id, size) {
 
-            return _BaseWidget.call(this, parentPanel, id, size) || this;          
+            return _BaseWidget.call(this, parentPanel, id, size) || this;
         }
 
         SmokeWidget.prototype.onWidgetHolderLoad = function onWidgetHolderLoad(event) {
@@ -117,7 +117,7 @@ var SmokeWidget =
 
             widget.doOnLoad();
         };
-        
+
         SmokeWidget.prototype.refresh = function refresh(data, widgetText, label) {
             widgetText = getLang(widgetText);
 
