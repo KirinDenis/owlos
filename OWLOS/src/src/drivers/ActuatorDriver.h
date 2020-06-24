@@ -87,9 +87,13 @@ class ActuatorDriver : public BaseDriver {
     bool getInvert();
     bool setInvert(bool _invert,  bool doEvent);
 
+    int getPWMDelay();
+    bool setPWMDelay(int _pwmdelay,  bool doEvent);
+
   private:
 	  bool analog = false;
       int data = 0;
 	  bool pwm = false;	  
+	  int pwmdelay = 1;
 	  bool invert = false;
 };

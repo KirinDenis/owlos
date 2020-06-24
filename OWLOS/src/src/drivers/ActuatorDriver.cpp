@@ -95,6 +95,7 @@ String ActuatorDriver::getAllProperties()
 	result += "analog=" + String(analog) + "//br\n";
 	result += "data=" + String(data) + "//i\n";
 	result += "pwm=" + String(pwm) + "//b\n";
+	result += "pwmdelay=" + String(pwmdelay) + "//i\n";
 	result += "invert=" + String(invert) + "//b\n";
 	return result;
 }
@@ -135,6 +136,14 @@ String ActuatorDriver::onMessage(String _topic, String _payload, int8_t transpor
 	else if (String(topic + "/setpwm").equals(_topic))
 	{
 		result = String(setPWM(std::atoi(_payload.c_str()), true));
+	}
+	else if (String(topic + "/getpwmdelay").equals(_topic))
+	{
+		result = onGetProperty("pwmdelay", String(getPWMDelay()), transportMask);
+	}
+	else if (String(topic + "/setpwmdelay").equals(_topic))
+	{
+		result = String(setPWMDelay(std::atoi(_payload.c_str()), true));
 	}
 	else if (String(topic + "/getinvert").equals(_topic))
 	{
@@ -212,7 +221,7 @@ bool ActuatorDriver::setData(int _data, bool doEvent)
 		}
 	}
 
-    if (pwm) 
+    if ((pwm) && (pwmdelay > 0))
 	{
 		//if ESP OPTION with  interval = 0 do not do this 
 		if (storeData > _data) 
@@ -220,7 +229,7 @@ bool ActuatorDriver::setData(int _data, bool doEvent)
 			for (int i=storeData; i > _data; i--) 
 			{
 				if (_driverPinWrite(id, PIN0_INDEX, i, pwm).length() != 0) break;
-				delay(1); //TODO ESP OPTION with this interval
+				delay(pwmdelay); //TODO ESP OPTION with this interval
 				yield(); //throw a bone to watch dog
 			}
 		}
@@ -229,11 +238,10 @@ bool ActuatorDriver::setData(int _data, bool doEvent)
 			for (int i=storeData; i < _data; i++) 
 			{
 				if (_driverPinWrite(id, PIN0_INDEX, i, pwm).length() != 0) break;
-				delay(1); //TODO ESP OPTION with this interval
+				delay(pwmdelay); //TODO ESP OPTION with this interval
 				yield(); //throw a bone to watch dog
 			}
 		}
-
 	}
 
 	if (_driverPinWrite(id, PIN0_INDEX, _data, pwm).length() == 0)
@@ -277,10 +285,39 @@ bool ActuatorDriver::setPWM(bool _pwm, bool doEvent)
 	return true;	
 };
 
+//PWM Delay -------------------------------------------
+int ActuatorDriver::getPWMDelay()
+{
+	pwmdelay = 1; //default is 1, if zero - no delay
+	if (filesExists(id + ".pwmdelay"))
+	{
+		pwmdelay = filesReadInt(id + ".pwmdelay");
+	}
+	else
+	{ //initial set data
+		setPWMDelay(pwmdelay, 0);
+	}
+
+	return pwmdelay;
+}
+
+bool ActuatorDriver::setPWMDelay(int _pwmdelay, bool doEvent)
+{
+	pwmdelay = _pwmdelay;
+
+	filesWriteInt(id + ".pwmdelay", pwmdelay);
+	if (doEvent)
+	{
+		return onInsideChange("pwmdelayt", String(pwmdelay));
+	}
+	return true;
+};
+
+
 //Invert -------------------------------------------
 bool ActuatorDriver::getInvert()
 {
-	invert = false; //default is false for digital and zero level for analog
+	invert = false; 
 	if (filesExists(id + ".invert"))
 	{
 		invert = filesReadInt(id + ".invert");
@@ -304,3 +341,4 @@ bool ActuatorDriver::setInvert(bool _invert, bool doEvent)
 	}
 	return true;
 };
+
