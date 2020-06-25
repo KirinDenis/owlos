@@ -435,7 +435,7 @@ String setDriverPinMode(String driverId, int driverPinIndex, int mode)
 	{
 		return "driverId " + driverId + " or pin index " + String(driverPinIndex) + " doesn't exists";
 	}
-
+    
 	pinMode(pin->GPIONumber, mode);
 	pin->mode = getPinMode(pin->GPIONumber);
 	if (pin->mode == mode)
@@ -516,12 +516,14 @@ String driverPinWrite(String driverId, int driverPinIndex, int data)
 //В качестве результата функция использует тип int, если результат -1 то данные не удалось прочесть. 
 int driverPinRead(String driverId, int driverPinIndex)
 {
-	DriverPin * driverPin = getDriverPinByDriverId(driverId, driverPinIndex);
+	DriverPin * driverPin = getDriverPinByDriverId(driverId, driverPinIndex);	
 	if (driverPin != nullptr)
 	{
-		if (getPinMode(driverPin->GPIONumber) == INPUT)
-		{
-			if (driverPin->driverPinType & ANALOG_I_MASK)
+		int mode = getPinMode(driverPin->GPIONumber);		
+
+		if ((mode == INPUT) || (mode == INPUT_PULLUP) || (mode == INPUT_PULLDOWN_16)  || (mode = ANALOG_INPUT))
+		{			
+			if (getPinByName(driverPin->name)->pinTypes & ANALOG_I_MASK)
 			{
 				return analogRead(driverPin->GPIONumber);
 			}
@@ -641,16 +643,16 @@ int getDriverPinsCount(String driverId)
 //функция возвращает адрес записи драйвера пина по driverId и driverPinIndex или nullptr - если такой записи не существует
 DriverPin * getDriverPinByDriverId(String driverId, int driverPinIndex)
 {
-	Serial.println("getDriverPinByDriverId");
-	Serial.println(driverId);
-	Serial.println(String(driverPinIndex));
+//	Serial.println("getDriverPinByDriverId");
+	//Serial.println(driverId);
+	//Serial.println(String(driverPinIndex));
 	for (int i = 0; i < driverPinCount; i++)
 	{
-		Serial.println("-----------------");
-		Serial.println(driverPins[i].driverId);
-		Serial.println(driverPins[i].driverPinIndex);
-		Serial.println(driverPins[i].driverPinType);
-		Serial.println(driverPins[i].GPIONumber);
+	//	Serial.println("-----------------");
+		//Serial.println(driverPins[i].driverId);
+		//Serial.println(driverPins[i].driverPinIndex);
+		//Serial.println(driverPins[i].driverPinType);
+		//Serial.println(driverPins[i].GPIONumber);
 
 		if ((driverPins[i].driverId.equals(driverId)) && (driverPins[i].driverPinIndex == driverPinIndex))
 		{

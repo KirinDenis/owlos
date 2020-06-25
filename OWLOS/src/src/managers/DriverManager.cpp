@@ -597,14 +597,16 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 			}
 
 			result = checkDriverPin(_pins[PIN0_INDEX], SensorDriver::getPinType(PIN0_INDEX))
-				+ checkDriverPin(_pins[PIN1_INDEX], SensorDriver::getPinType(PIN1_INDEX));
+				+ checkDriverPin(_pins[PIN1_INDEX], SensorDriver::getPinType(PIN1_INDEX))
+				+ checkDriverPin(_pins[PIN2_INDEX], SensorDriver::getPinType(PIN2_INDEX));
 
 			debugOut("DCResult", result);
 
 			if (result.length() != 0) return result;
 
 			result = setDriverPin(_pins[PIN0_INDEX], id, PIN0_INDEX, SensorDriver::getPinType(PIN0_INDEX))
-				+ setDriverPin(_pins[PIN1_INDEX], id, PIN1_INDEX, SensorDriver::getPinType(PIN1_INDEX));
+				+ setDriverPin(_pins[PIN1_INDEX], id, PIN1_INDEX, SensorDriver::getPinType(PIN1_INDEX)) 
+				+ setDriverPin(_pins[PIN2_INDEX], id, PIN2_INDEX, SensorDriver::getPinType(PIN2_INDEX)) ;
 
 			if (result.length() != 0) return result;
 

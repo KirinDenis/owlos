@@ -43,22 +43,27 @@ OWLOS распространяется в надежде, что она буде
 
 bool SensorDriver::init()
 {
-	if (id.length() == 0) id = DRIVER_ID;
+	if (id.length() == 0)
+		id = DRIVER_ID;
 	BaseDriver::init(id);
 
-	DriverPin * driverPin = getDriverPinByDriverId(id, PIN0_INDEX);    //командный пин "закрыть"
+	DriverPin *driverPin = getDriverPinByDriverId(id, PIN0_INDEX); //командный пин "закрыть"
 	if (driverPin != nullptr)
-	{		
+	{
+		debugOut("PIN MODE 111", setDriverPinMode(id, PIN0_INDEX, INPUT));
+		debugOut("PIN MODE 111", setDriverPinMode(id, PIN0_INDEX, ANALOG_INPUT));
+		
 		//TODO: INPUT_PULLUP/INPUT_PULLDOWN
-		if (setDriverPinMode(id, PIN0_INDEX, INPUT).length() == 0)
-		{
-			//если используемый пин поддерживает АЦП, то драйвер сенсора переходит в аналоговый режим
-			//свойство дата 0..1023 (где 1023 уровень логической единицы)
-			setAnalog(driverPin->driverPinType & ANALOG_I_MASK, false);
-			
-			if (getData() != -1) 
+
+		setAnalog(getPinByName(driverPin->name)->pinTypes & ANALOG_I_MASK, false);
+
+
+		if ((setDriverPinMode(id, PIN0_INDEX, INPUT).length() == 0) || (analog))
+		{			
+			if (getData() != -1)
 			{
-			   return true;
+
+				return true;
 			}
 		}
 	}
@@ -78,7 +83,7 @@ bool SensorDriver::query()
 {
 	if (BaseDriver::query())
 	{
-		//for sensor publish data() as it changed 
+		//for sensor publish data() as it changed
 		int _data = data;
 		if (_data != getData())
 		{
@@ -87,29 +92,52 @@ bool SensorDriver::query()
 			sensorTriger++;
 		}
 
-		//Fill array of history data
-		if (millis() >= lastHistoryMillis + historyInterval)
+		if (analog)
 		{
-			lastHistoryMillis = millis();
-			setHistoryData(sensorTriger);
-		}
+			//Fill array of history data
+			if (millis() >= lastHistoryMillis + historyInterval)
+			{
+				lastHistoryMillis = millis();
+				setHistoryData((float)data);
+			}
 
+			//History file array of history data
+			if (millis() >= lastHistoryFileWriteMillis + historyFileWriteInterval)
+			{
+				lastHistoryFileWriteMillis = millis();
+				writeHistoryFile((float)data);
+			}
+		}
+		else
+		{
+			//Fill array of history data
+			if (millis() >= lastHistoryMillis + historyInterval)
+			{
+				lastHistoryMillis = millis();
+				setHistoryData((float)sensorTriger);
+			}
+
+			//History file array of history data
+			if (millis() >= lastHistoryFileWriteMillis + historyFileWriteInterval)
+			{
+				lastHistoryFileWriteMillis = millis();
+				writeHistoryFile((float)sensorTriger);
+			}
+		}
 
 		return true;
 	}
 	return false;
 };
 
-
 String SensorDriver::getAllProperties()
 {
 	String result = BaseDriver::getAllProperties();
 	result += "analog=" + String(analog) + "//br\n";
-	result += "data=" + String(data) + "//ri\n";
+	result += "data=" + String(data) + "//ris\n";
 
 	return result;
 }
-
 
 bool SensorDriver::publish()
 {
@@ -124,37 +152,31 @@ bool SensorDriver::publish()
 String SensorDriver::onMessage(String _topic, String _payload, int8_t transportMask)
 {
 	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
-	if (!result.equals(WrongPropertyName)) return result;
+	if (!result.equals(WrongPropertyName))
+		return result;
 
 	if (String(topic + "/getanalog").equals(_topic))
 	{
 		result = onGetProperty("analog", String(getAnalog()), transportMask);
 	}
 	else
-	
-	if (String(topic + "/getdata").equals(_topic)) 
+
+		if (String(topic + "/getdata").equals(_topic))
 	{
 		result = onGetProperty("data", String(getData()), transportMask);
 	}
-	
-	
+
 	return result;
 }
-
-
 
 //Analog ------------------------------------------
 bool SensorDriver::getAnalog()
 {
 	if (filesExists(id + ".analog"))
 	{
-		data = filesReadInt(id + ".analog");
+		analog = filesReadInt(id + ".analog");
 	}
-#ifdef DetailedDebug
-	debugOut(id, "analog=" + String(data));
-#endif
-
-	return data;
+	return analog;
 }
 
 bool SensorDriver::setAnalog(bool _analog, bool doEvent)
@@ -171,8 +193,7 @@ bool SensorDriver::setAnalog(bool _analog, bool doEvent)
 //Data -------------------------------------------
 
 int SensorDriver::getData()
-{		
-    data = driverPinRead(id, PIN0_INDEX);
+{
+	data = driverPinRead(id, PIN0_INDEX);
 	return data;
 }
-

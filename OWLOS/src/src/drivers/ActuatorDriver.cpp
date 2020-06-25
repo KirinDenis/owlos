@@ -93,7 +93,7 @@ String ActuatorDriver::getAllProperties()
 {
 	String result = BaseDriver::getAllProperties();
 	result += "analog=" + String(analog) + "//br\n";
-	result += "data=" + String(data) + "//i\n";
+	result += "data=" + String(data) + "//is\n";
 	result += "pwm=" + String(pwm) + "//b\n";
 	result += "pwmdelay=" + String(pwmdelay) + "//i\n";
 	result += "invert=" + String(invert) + "//b\n";

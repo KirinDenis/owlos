@@ -49,6 +49,9 @@ OWLOS распространяется в надежде, что она буде
 
 #include <Arduino.h>
 
+//Arduino.h GPIO FUNCTIONS fix for ESP8266 analog input
+#define ANALOG_INPUT	0x01
+
 //Маски типов пинов 
 #define NO_MASK         0x0000    //без маски
 #define DIGITAL_I_MASK  0x0001    //цифровой пин только чтение 
