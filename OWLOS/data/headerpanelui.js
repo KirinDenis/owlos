@@ -40,10 +40,17 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 var headerPanelUI = {
-
+    //роли кнопок headerPanel 
+    sideBarButtonRole: 0b00000001,
+    widgetsPanelButtonRole: 0b00000010,
+    nodePoropertiesPanelButtonRole: 0b00000100,
+    driverButtonRole: 0b00001000,
+    scriptButtonRole: 0b00010000,
+    filesButtonRole: 0b00100000,
+    consoleButtonRole: 0b01000000,
     buttons: [],
     statusPanels: [],
-    addButton: function (id, faIcon, title) {
+    addButton: function (id, faIcon, title, buttonRole) {
         var headerPanel = document.getElementById("header-panel-form");
         if (headerPanel == undefined) {
             return undefined;
@@ -53,6 +60,10 @@ var headerPanelUI = {
         button.id = id;
         button.setAttribute("data-toggle", "tooltip");
         button.setAttribute("data-placement", "right");
+        button.buttonRole = buttonRole;
+        if (buttonRole != this.sideBarButtonRole) {
+            button.style.display = "none";
+        }
 
         button.title = title;
         var span = document.createElement("span");
@@ -75,7 +86,7 @@ var headerPanelUI = {
         statusPanel.style.display = "none";
         headerPanelStatuses.appendChild(statusPanel);
 
-        var nodeHref = document.createElement("a");        
+        var nodeHref = document.createElement("a");
         nodeHref.href = node.host;
         nodeHref.target = "_blank";
         nodeHref.innerText = node.nodenickname;
@@ -88,6 +99,15 @@ var headerPanelUI = {
         this.statusPanels.push(statusPanel);
         return statusPanel;
     },
+
+    hideAllButtons: function () {
+        for (var buttonIndex in this.buttons) {
+            if (this.buttons[buttonIndex].buttonRole != this.sideBarButtonRole) {
+                this.buttons[buttonIndex].style.display = "none";
+            }
+        }
+    },
+
 
     getStatusesPanel: function (node) {
         for (var statusPanelIndex in this.statusPanels) {
@@ -165,7 +185,7 @@ var headerPanelUI = {
             status.className = "text-secondary";
         }
     },
-    
+
     setStatusError: function (node, id) {
         var status = this.getStatus(id);
         if (status != undefined) {

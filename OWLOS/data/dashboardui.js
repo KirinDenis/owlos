@@ -56,13 +56,16 @@ var dashboardUI = {
         dashboardUI.dashboardModeListners.push(event = { event: _event, sender: _sender });
     },
     onConfigLoad: function (configProperties) {
-       var saveWidgetsButton = headerPanelUI.addButton("saveaddedwidget", "fa fa-save", "save configuration");
+       var saveWidgetsButton = headerPanelUI.addButton("saveaddedwidget", "fa fa-save", "save configuration", headerPanelUI.widgetsPanelButtonRole);
        saveWidgetsButton.onclick = dashboardUI.saveAddedWidget;
-        var headerModeButton = headerPanelUI.addButton("dashboardaddwidget", "fa fa-edit", "toogle widgets mode");
+        var headerModeButton = headerPanelUI.addButton("dashboardaddwidget", "fa fa-edit", "toogle widgets mode", headerPanelUI.widgetsPanelButtonRole);
         headerModeButton.onclick = dashboardUI.changeDashboadMode;
-
-        var addWidgetButton = headerPanelUI.addButton("dashboardaddwidget", "fa fa-plus", "add widget");
+        var addWidgetButton = headerPanelUI.addButton("dashboardaddwidget", "fa fa-plus", "add widget",headerPanelUI.widgetsPanelButtonRole);
         addWidgetButton.onclick = dashboardUI.onAddWidgetClick;
+
+        sideBar.dashboardItem.href.saveWidgetsButton = saveWidgetsButton;
+        sideBar.dashboardItem.href.headerModeButton = headerModeButton;
+        sideBar.dashboardItem.href.addWidgetButton = addWidgetButton;
 
         var driversWidgetsPanel = document.getElementById("driversWidgetsPanel");
 

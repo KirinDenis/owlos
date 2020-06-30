@@ -111,9 +111,15 @@ var settingsUI = {
 
                 // Add Node Status Panel -----------------------------------------------------------------------------
                 var nodeStatusPanel = document.createElement("div");
-                nodeStatusPanel.id = node.nodenickname + "nodestatuspanel";
-                nodeNavItem.href.nodeStatusPanel = nodeStatusPanel;
+                nodeStatusPanel.id = node.nodenickname + "nodestatuspanel";                
+                nodeNavItem.href.nodeStatusPanel = nodeStatusPanel;  
 
+                var deleteNodeButton = headerPanelUI.addButton(node.nodenickname +  "DeleteNodeButton", "fa fa-minus", "delete node: " + node.nodenickname, headerPanelUI.nodePoropertiesPanelButtonRole);
+                deleteNodeButton.node = node;
+                deleteNodeButton.onclick = settingsUI.onDeleteNode;
+                nodePropItem.href.deleteNodeButton = deleteNodeButton;                              
+                nodeNavItem.href.deleteNodeButton = deleteNodeButton;
+        
                 nodeNavItem.href.onlinePanel = settingsUI.getStatusWidget(node.nodenickname + "onlineStatus", "Online", nodeStatusPanel);
 
                 node.addNetworkStatusListner(settingsUI.onOnlineStatusChange, nodeNavItem.href.onlinePanel);
@@ -159,7 +165,14 @@ var settingsUI = {
                 driverSpan.innerHTML = parseInt(driverSpan.driversCount);
             }
             
-            var driverAhref = settingsUI.addNodeSidebarItem(node, nodeSubmenuUl, "_" + driver._id, "_" + driver._id, driver._id, sidebarItemClick, "fa fa-sliders-h", undefined);
+            var driverItem = settingsUI.addNodeSidebarItem(node, nodeSubmenuUl, "_" + driver._id, "_" + driver._id, driver._id, sidebarItemClick, "fa fa-sliders-h", undefined);
+            driverItem.href.node = node;
+            var deleteDriverButton = headerPanelUI.addButton(node.nodenickname +  "DeleteDriverButton", "fa fa-minus", "delete driver: " + driver._id, headerPanelUI.driverButtonRole);
+            deleteDriverButton.node = node;
+            deleteDriverButton.driver = driver;
+            deleteDriverButton.onclick = settingsUI.onDeleteDriver;            
+            driverItem.href.deleteDriverButton = deleteDriverButton;                              
+
             var nodePropAnchors = document.getElementById("nodePropNavBar"); //старая навигационная панель для отображения панелей свойств
             var nodesPropsPanel = document.getElementById("nodesPropsPanel");
             var wifiPropPanel = document.getElementById(node.nodenickname + "WifiNodePropBody"); //панель для cвойств            
@@ -1188,5 +1201,14 @@ var settingsUI = {
         sidebarItemClick(event);
         var addDriverAhref = event.currentTarget;
         driversUI.addDriver(addDriverAhref.node);
+    },
+
+    onDeleteNode: function (event) {
+        event.stopPropagation();
+    },
+
+    onDeleteDriver: function (event) {
+        event.stopPropagation();
     }
+
 }

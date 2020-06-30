@@ -54,15 +54,38 @@ https://github.com/azouaoui-med/pro-sidebar-template
 //влечет за собой изменение других элементов UX - кнопки вверхней части управляющие виджетами, кнопка сохранить многое другое 
 //эти обработчики ниже данный метод управляет внешний вид UX
 
-
+//клик на любой пункт SideBar обязан вызвать этот обработчик.
+//этот обработчик реализует переключение флажка 'active' для пунктов, а также настраивает статусные панели и кнопки в хиадере UX
 function sidebarItemClick(event) {
     headerPanelUI.hideAllStatusesPanels();
+    headerPanelUI.hideAllButtons();
     var aHref = event.currentTarget;
     $(aHref).removeClass('active');
     document.location = aHref.href;
     var node = aHref.node;
     if (node != undefined) {
+        //любой пункт меню связаный с нодой (узлом)
         headerPanelUI.showStatusPanel(node);
+        //проверяем не является ли выбранный пункт - пунктом "свойства узла"
+        if (aHref.deleteNodeButton != undefined) {
+            aHref.deleteNodeButton.style.display = "";
+        }
+        else
+            if (aHref.deleteDriverButton != undefined) {
+                aHref.deleteDriverButton.style.display = "";
+            }
+    }
+
+    if (aHref.saveWidgetsButton != undefined) {
+        aHref.saveWidgetsButton.style.display = "";
+    }
+
+    if (aHref.headerModeButton != undefined) {
+        aHref.headerModeButton.style.display = "";
+    }
+
+    if (aHref.addWidgetButton != undefined) {
+        aHref.addWidgetButton.style.display = "";
     }
 
     return false;
@@ -187,8 +210,8 @@ function createSidebar() {
         //Конструктор    
         create: function () {
 
-            headerPanelUI.addButton("toggle-sidebar", "fa fa-bars", "toogle side bar");
-            headerPanelUI.addButton("pin-sidebar", "fa fa-anchor", "pin side bar");
+            headerPanelUI.addButton("toggle-sidebar", "fa fa-bars", "toogle side bar", headerPanelUI.sideBarButtonRole);
+            headerPanelUI.addButton("pin-sidebar", "fa fa-anchor", "pin side bar", headerPanelUI.sideBarButtonRole);
 
             var pageWrapper = document.getElementById("pagewrapper");
 
