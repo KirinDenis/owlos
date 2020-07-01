@@ -142,6 +142,7 @@ var GraphWidget =
 
         GraphWidget.prototype.resize = function resize(size) {
             this.size = size;
+            if (this.SVGViewBox == undefined) return;
             this.SVGViewBox.setAttributeNS(null, "width", size);
             this.SVGViewBox.setAttributeNS(null, "height", size / 2);
 

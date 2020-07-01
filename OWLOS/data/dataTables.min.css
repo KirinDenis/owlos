@@ -297,8 +297,7 @@ table.dataTable td {
 .dataTables_wrapper {
  position:relative;
  clear:both;
- *zoom:1;
- zoom:1
+ transform: scale(1);
 }
 .dataTables_wrapper .dataTables_length {
  float:left
@@ -408,8 +407,7 @@ table.dataTable td {
  clear:both
 }
 .dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody {
- *margin-top:-1px;
- -webkit-overflow-scrolling:touch
+ margin-top:-1px; 
 }
 .dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody>table>thead>tr>th,
 .dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody>table>thead>tr>td,

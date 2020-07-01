@@ -192,8 +192,11 @@ var TableWidget =
             driverProperty.addValueListner(this.onDriverPropValueChangeSetaHref, setPropHref); //четвертая колонка - редактор значения свойства, реализован так же как элементы для второй и третей колонки, со своим слушателем события
             //учитывает тип свойства драйвера - создает соответствующие типы редакторов createValueEdit() <-- TODO: метод старый, нуждается в рефакторинге 
 
-            var edit = createValueEdit(tr.appendChild(document.createElement('td')), driverProperty.name, driverProperty.value, driverProperty.type);
-            driverProperty.addValueListner(this.onDriverPropValueChangeEdit, edit); //пятая и шестая колонка, кнопки Set value и Get Value 
+            var propValueTD = tr.appendChild(document.createElement('td'));
+            if (driverProperty.type.indexOf("r") == -1) {
+                var edit = createValueEdit(propValueTD, driverProperty.name, driverProperty.value, driverProperty.type);
+                driverProperty.addValueListner(this.onDriverPropValueChangeEdit, edit); //пятая и шестая колонка, кнопки Set value и Get Value 
+            }
 
             var setButtonTd = tr.appendChild(document.createElement('td'));
             var getButtonTd = tr.appendChild(document.createElement('td')); //кнопка Get value 

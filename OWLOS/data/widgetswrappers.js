@@ -119,8 +119,11 @@ var BaseWidgetWrapper =
             this.node = config.getNodeByHost(driver._host); //drivers.addNetworkStatusListner(this.onNetworkStatusChange, this);
 
             this.node.addNetworkStatusListner(this.onNetworkStatusChange, this);
-            this.driverProperty.addNetworkStatusListner(this.onNetworkStatusChange, this);
-            this.driverProperty.addValueListner(this.onValueChange, this);
+            if (this.driverProperty != undefined)
+            {
+                this.driverProperty.addNetworkStatusListner(this.onNetworkStatusChange, this);
+                this.driverProperty.addValueListner(this.onValueChange, this);
+            }
         };
 
         _proto.onDriverLoaded = function onDriverLoaded(sender, driver) {

@@ -128,7 +128,7 @@ var SVGText =
             var element = document.body.appendChild(document.createElement("div"));
             element.className = "WidgetText";
             element.innerHTML = text;
-            var width = element.getBoundingClientRect().width;            
+            var width = element.getBoundingClientRect().width;
             document.body.removeChild(element);
             return width;
         };
@@ -137,7 +137,7 @@ var SVGText =
             var element = document.body.appendChild(document.createElement("div"));
             element.className = "WidgetText";
             element.innerHTML = text;
-            var width = element.getBoundingClientRect().height;            
+            var width = element.getBoundingClientRect().height;
             document.body.removeChild(element);
             return width;
         };
@@ -163,19 +163,19 @@ var SVGText =
                     var textSize = this.size * this.getTextWidth(text);
                     this.SVGText.setAttributeNS(null, "textLength", textSize);
                 }
-                },
-                get: function get() {
-                    return this.SVGText.textContent;
-                }
+            },
+            get: function get() {
+                return this.SVGText.textContent;
+            }
         }, {
-                key: "size",
-                set: function set(size) {
-                    this._size = size;
-                    this.SVGText.setAttributeNS(null, "font-size", size + "em");
-                },
-                get: function get() {
-                    return this._size; 
-                }
+            key: "size",
+            set: function set(size) {
+                this._size = size;
+                this.SVGText.setAttributeNS(null, "font-size", size + "em");
+            },
+            get: function get() {
+                return this._size;
+            }
         }, {
             key: "x",
             set: function set(x) {
@@ -194,13 +194,13 @@ var SVGText =
             }
         }, {
             key: "width",
-                get: function get() {
-                    return parseFloat(this.size * this.getTextWidth(this.text));             
+            get: function get() {
+                return parseFloat(this.size * this.getTextWidth(this.text));
             }
         }, {
             key: "height",
-                get: function get() {                    
-                    return parseFloat(this.size * this.getTextHeight(this.text));             
+            get: function get() {
+                return parseFloat(this.size * this.getTextHeight(this.text));
             }
         }, {
             key: "color",
@@ -317,11 +317,20 @@ var SVGArc =
             this.id = id;
             this.x = x;
             this.y = y;
-            this._radius = radius;            
+            this._radius = radius;
             this.SVGArc = document.createElementNS(xmlns, "path");
-            this.SVGArc.setAttributeNS(null, 'x', x);
-            this.SVGArc.setAttributeNS(null, 'y', y);
-            this.SVGArc.setAttributeNS(null, 'stroke-width', lineWidth);
+            if (x != undefined) {
+                this.SVGArc.setAttributeNS(null, 'x', x);
+            }
+            if (y != undefined) {
+                this.SVGArc.setAttributeNS(null, 'y', y);
+            }
+            if (lineWidth != undefined) {
+                var _lineWidth = parseFloat(lineWidth);
+                if (!isNaN(_lineWidth)) {
+                    this.SVGArc.setAttributeNS(null, 'stroke-width', parseFloat(lineWidth));
+                }
+            }
             this.SVGArc.setAttributeNS(null, 'stroke-linejoin', "round");
             this.SVGArc.setAttributeNS(null, 'fill', 'none');
             svgElement.appendChild(this.SVGArc);
@@ -330,13 +339,21 @@ var SVGArc =
         var _proto = SVGArc.prototype;
 
         _proto.draw = function draw(from, to) {
+
+            if ((isNaN(from)) || (isNaN(to))) return;
             this.SVGArc.setAttributeNS(null, "d", describeArc(this.x, this.y, this._radius, from, to));
         };
 
         _proto.drawPath = function drawPath(path, width, height) {
-            this.SVGArc.setAttributeNS(null, 'width', width);
-            this.SVGArc.setAttributeNS(null, 'height', height);
-            this.SVGArc.setAttributeNS(null, "d", path);
+            if (!(isNaN(width))) {
+                this.SVGArc.setAttributeNS(null, 'width', width);
+            }
+            if (!(isNaN(height))) {
+                this.SVGArc.setAttributeNS(null, 'height', height);
+            }
+            if (path.indexOf("NaN") == -1) {
+                this.SVGArc.setAttributeNS(null, "d", path);
+            }
         };
 
         _proto.drawRoundedRect = function (width, height, curve, leftOffset, leftTop, rightTop, leftBottom, rightBottom) {
@@ -376,11 +393,17 @@ var SVGArc =
             }
             else {
                 var backH = width - curve * 2.5;
+                var lastVSign = " v-" + backV;
+                //SVG last rolback "v" attribute fix for sign values
+                if (backV < 0) {
+                    lastVSign = "v" + (0 - (backV * 2));
+                }
+
                 this.SVGArc.setAttributeNS(null, "d", "M" + curve * 3.0 +
-                    ", " + parseFloat(this.y - backV*3) + " h " + backH + " a" + rtCurve + "," + rtCurve + " 0 0 1  " + rtCurve +
+                    ", " + parseFloat(this.y - backV * 3) + " h " + backH + " a" + rtCurve + "," + rtCurve + " 0 0 1  " + rtCurve +
                     ", " + curve + " v " + backV * 2 + " a" + rbCurve + "," + rbCurve + " 0 0 1 -" + rbCurve +
                     ", " + curve + " h-" + backH + " a" + lbCurve + "," + lbCurve + " 0 0 1 -" + lbCurve +
-                    ",-" + curve + " v-" + backV + " a" + ltCurve + "," + ltCurve + " 0 0 1  " + ltCurve +                    
+                    ",-" + curve + lastVSign + " a" + ltCurve + "," + ltCurve + " 0 0 1  " + ltCurve +
                     ",-" + curve + " z");
             }
         };
@@ -428,18 +451,18 @@ var SVGArc =
             get: function get() {
                 return parseFloat(this.SVGArc.getAttributeNS(null, 'opacity'));
             }
+        },
+        {
+            key: "linewidth",
+            set: function set(linewidth) {
+
+                this.SVGArc.setAttributeNS(null, 'stroke-width', parseFloat(linewidth));
             },
-            {
-                key: "linewidth",
-                set: function set(linewidth) {
-                    
-                    this.SVGArc.setAttributeNS(null, 'stroke-width', parseFloat(linewidth));
-                },
-                get: function get() {
-                    return parseFloat(this.SVGArc.getAttributeNS(null, 'stroke-width'));
-                }
-            }, 
-            {
+            get: function get() {
+                return parseFloat(this.SVGArc.getAttributeNS(null, 'stroke-width'));
+            }
+        },
+        {
             key: "radius",
             set: function set(radius) {
                 this._radius = parseFloat(radius);
@@ -451,10 +474,10 @@ var SVGArc =
 
         return SVGArc;
     }();
-    
+
 //----------------------------------------------------------------------------------------------------------------------------------------------------------
 var SVGIcon =
-    
+
     function () {
         "use strict";
 

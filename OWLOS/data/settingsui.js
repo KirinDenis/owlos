@@ -145,7 +145,7 @@ var settingsUI = {
     //и подготавлием панель управления нодой (с кнопками Update, Reset и основными свойствами ноды) - смотрите onConfigChange такая панель создается для каждой
     //ноды id = node.nodenickname + "nodePropPanel"    
     onDriverLoaded: function (sender, driver) {
-
+        if ((driver == undefined) || (driver.type == undefined)) return;
         if (driver._new) { //если это драйвер загружено впервые (вновь созданные драйвера так же вызовут этот метод)
 
             var nodeSubmenuUl = document.getElementById(driver._nodenickname + "driverssubmenu"); //ищем пункт sideBar соответствующий ноде которой принадлежит драйвер

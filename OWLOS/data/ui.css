@@ -351,17 +351,13 @@ background-color: rgba(137, 194, 220, 0.1);
         font-style: normal;
         font-variant: normal;
         text-rendering: auto;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
         text-align: center;
         background: 0 0;
         position: absolute;
         right: 15px;
         top: 10px;
-        -webkit-transition: -webkit-transform .3s ease;
-        transition: -webkit-transform .3s ease;
         transition: transform .3s ease;
-        transition: transform .3s ease, -webkit-transform .3s ease;
+        transition: transform .3s ease, 
     
 
 }
@@ -374,19 +370,13 @@ background-color: rgba(137, 194, 220, 0.1);
         font-style: normal;
         font-variant: normal;
         text-rendering: auto;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
         text-align: center;
         background: 0 0;
         position: absolute;
         right: 15px;
         top: 10px;
-        -webkit-transition: -webkit-transform .3s ease;
-        transition: -webkit-transform .3s ease;
         transition: transform .3s ease;
-        transition: transform .3s ease, -webkit-transform .3s ease;
-    
-        -webkit-transform: rotate(90deg);
+        transition: transform .3s ease, 
         transform: rotate(90deg);
         right: 15px;
 
@@ -422,8 +412,8 @@ background-color: rgba(137, 194, 220, 0.1);
     }
 
     .sidebar-wrapper .sidebar-content {
-        max-height: calc(100% -35px);
-        height: calc(100% - 35px);
+        max-height: 98%;
+        height: 98%;
         overflow-y: scroll;
         position: relative;
     }
@@ -593,17 +583,13 @@ background-color: rgba(137, 194, 220, 0.1);
         font-style: normal;
         font-variant: normal;
         text-rendering: auto;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
         text-align: center;
         background: 0 0;
         position: absolute;
         right: 15px;
         top: 14px;
-        -webkit-transition: -webkit-transform .3s ease;
-        transition: -webkit-transform .3s ease;
         transition: transform .3s ease;
-        transition: transform .3s ease, -webkit-transform .3s ease;
+        transition: transform .3s ease,
     }
 
     .sidebar-wrapper .sidebar-menu .sidebar-dropdown .sidebar-submenu {
