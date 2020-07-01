@@ -55,6 +55,7 @@ var TableWidget =
 
 
         var _proto = TableWidget.prototype;
+        
 
         _proto.newTable = function newTable() {
             //добавляет кнопку в панель быстрого выбора драйвер

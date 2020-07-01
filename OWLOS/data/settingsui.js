@@ -62,6 +62,7 @@ var settingsUI = {
 
                 //node properties subItem 
                 var nodePropItem = this.addNodeSidebarItem(node, nodeNavSubItem, "nodepropitem", "nodePropsPanel", getLang("nodeproperties"), sidebarItemClick, "fa fa-cog", undefined);
+                node.nodePropItem = nodePropItem;
                 //node drivers                                 
                 var driversItem = this.addNodeSidebarItem(node, nodeNavSubItem, "driversitem", "driverssubmenu", getLang("drivers"), sidebarItemClick, undefined, "0");
                 var driversSubItem = sideBar.createDeepItem(driversItem, node.nodenickname + "driverssubmenu");                
@@ -184,7 +185,7 @@ var settingsUI = {
             var networkPropPanel3 = document.getElementById(node.nodenickname + "NetworkNodePropBody3");
 
             //добавляем панель с таблицей со свойствами нового "driver" драйвера в панель nodesPropsPanel, якорим навигацию на nodePropAnchors, bootstrap cell size -> 12             
-            new TableWidget(nodePropAnchors, nodesPropsPanel, driver, 12);
+            driver.driverPropTable = new TableWidget(nodePropAnchors, nodesPropsPanel, driver, 12);
 
             //если очередное загруженое драйвер WiFi
             if (driver.type.value == WiFiDriverType) {
@@ -1223,7 +1224,8 @@ var settingsUI = {
     onDriverDeleteReciever: function (HTTPResult, deleteDriverDialog) {
         if (HTTPResult == "1") {
             deleteDriverDialog.hide();
-            deleteDriverDialog.driver.driverItem.style.display = "none";
+            deleteDriverDialog.driver.driverItem.style.display = "none";              
+            document.getElementById(deleteDriverDialog.driver._nodenickname + "_" + deleteDriverDialog.driver._id).innerHTML = "";                                                         
         } 
         else {
             deleteDriverDialog.errorLabel.innerHTML = HTTPResult;

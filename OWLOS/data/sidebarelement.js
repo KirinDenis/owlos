@@ -60,7 +60,7 @@ function sidebarItemClick(event) {
     headerPanelUI.hideAllStatusesPanels();
     headerPanelUI.hideAllButtons();
     var aHref = event.currentTarget;
-    $(aHref).removeClass('active');
+    $(aHref).removeClass('active');    
     document.location = aHref.href;
     var node = aHref.node;
     if (node != undefined) {
