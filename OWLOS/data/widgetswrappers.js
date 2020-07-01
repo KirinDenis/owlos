@@ -159,7 +159,9 @@ var BaseWidgetWrapper =
             var widget = widgetPanel.widget;
 
             if (widget.mode == WORK_MODE) {
+                if (widget.driverClass.driverProperty != undefined) {
                 widget.driverClass.driverProperty.getValue();
+                }
             }
 
             return true;
@@ -735,7 +737,7 @@ var ActuatorWidgetWrapper =
 
             if (widget.mode == WORK_MODE) {
                 var driverProperty = widget.driverClass.driverProperty;
-
+                if (driverProperty == undefined) return;
                 if (parseInt(driverProperty.value) == 1) {
                     driverProperty.setValue(0);
                 } else {

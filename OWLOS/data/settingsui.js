@@ -166,6 +166,7 @@ var settingsUI = {
             }
             
             var driverItem = settingsUI.addNodeSidebarItem(node, nodeSubmenuUl, "_" + driver._id, "_" + driver._id, driver._id, sidebarItemClick, "fa fa-sliders-h", undefined);
+            driver.driverItem = driverItem;
             driverItem.href.node = node;
             var deleteDriverButton = headerPanelUI.addButton(node.nodenickname +  "DeleteDriverButton", "fa fa-minus", "delete driver: " + driver._id, headerPanelUI.driverButtonRole);
             deleteDriverButton.node = node;
@@ -434,24 +435,26 @@ var settingsUI = {
     },
 
     modalResetClick: function (event) {
-
-        var driverHost = event.currentTarget.driverHost;
-
-        makeModalDialog("resetPanel", "reset", getLang("resetnode"), getLang("areYouSure"));
-        var modalFooter = document.getElementById("resetModalFooter");
-
-        var resetButton = modalFooter.appendChild(document.createElement("button"));
-        resetButton.type = "button";
-        resetButton.className = "btn btn-sm btn-danger";
-        resetButton.id = "resetModalButton";
-        resetButton.nodeHost = driverHost;
-        resetButton.onclick = settingsUI.resetClick;
-        resetButton.innerText = getLang("reset");
-
-        $("#resetModal").modal('show');
-
+        event.stopPropagation();
+        var driverHost = event.currentTarget.driverHost;    
+        var resetDialog = createModalDialog(getLang("reset"), "");
+        resetDialog.formGroup.innerHTML = getLang("areYouSure");
+        resetDialog.nodeHost = driverHost;
+        resetDialog.onOK = settingsUI.onResetOK;
+        resetDialog.show();        
         return false;
     },
+
+    onResetOK: function (resetDialog) {        
+        resetNodeOneWayTicket(resetDialog.nodeHost);
+
+        sleep(5000).then(function () {
+            location.reload();
+            return false;
+        });
+
+    },
+
 
     modalUpdateUIClick: function (event) {
 
@@ -522,16 +525,6 @@ var settingsUI = {
         else {
             sender.innerHTML += "HTTP client - " + HTTPResult;
         }
-    },
-    resetClick: function (event) {
-        var resetButton = event.currentTarget;
-        reset(resetButton.nodeHost);
-
-        sleep(5000).then(function () {
-            location.reload();
-            return false;
-        });
-
     },
     //--------------------------------------------------------------------------------------------------------------------
     modalUpdateFirmwareClick: function (event) {
@@ -1209,6 +1202,32 @@ var settingsUI = {
 
     onDeleteDriver: function (event) {
         event.stopPropagation();
+        var deleteDriverButton = event.currentTarget;
+        var node = deleteDriverButton.node;
+        var driver = deleteDriverButton.driver;
+
+        var deleteDriverDialog = createModalDialog(getLang("reset"), "");
+        deleteDriverDialog.formGroup.innerHTML = getLang("areYouSure");
+        deleteDriverDialog.node = node;
+        deleteDriverDialog.driver = driver;
+        deleteDriverDialog.onOK = settingsUI.onDeleteDriverOK;
+        deleteDriverDialog.show();        
+        return false;
+    },
+
+   onDeleteDriverOK: function (deleteDriverDialog) {        
+    deleteDriverAsync(deleteDriverDialog.node.host, deleteDriverDialog.driver._id, settingsUI.onDriverDeleteReciever, deleteDriverDialog);
+   },
+
+
+    onDriverDeleteReciever: function (HTTPResult, deleteDriverDialog) {
+        if (HTTPResult == "1") {
+            deleteDriverDialog.hide();
+            deleteDriverDialog.driver.driverItem.style.display = "none";
+        } 
+        else {
+            deleteDriverDialog.errorLabel.innerHTML = HTTPResult;
+        }
     }
 
 }

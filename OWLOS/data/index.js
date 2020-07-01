@@ -177,13 +177,13 @@ function onLoadConfig(result) {
             scriptsManager.onDelete = scriptsUI.onScriptDelete;
 
             drivers.addDriverLoadedListner(settingsUI.onDriverLoaded, settingsUI);
-            nodesRefresh();
+            //nodesRefresh();
 
             var boot = document.getElementById("boot");
             boot.parentElement.removeChild(boot);
             document.getElementById("consolePanel").appendChild(boot);
 
-            nodesRefreshHandle = setInterval(nodesRefresh, 60000);
+            //nodesRefreshHandle = setInterval(nodesRefresh, 60000);
             speak("OWLOS is ready");
         }
         else {
@@ -201,6 +201,7 @@ function onLoadConfig(result) {
 }
 
 function nodesRefresh() {
+    /*
     for (var node in configProperties.nodes) {
         drivers.refresh(configProperties.nodes[node]);
         pins.refresh(configProperties.nodes[node]);
@@ -208,6 +209,7 @@ function nodesRefresh() {
         accessableDrivers.refresh(configProperties.nodes[node]);
         scriptsManager.refresh(configProperties.nodes[node]);
     }
+    */
 }
 
 function sleep(time) {

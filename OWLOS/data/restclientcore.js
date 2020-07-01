@@ -83,7 +83,7 @@ function deleteScriptAsync(host, name, asyncReciever, sender) {
 }
 
 
-function reset(host) {
+function resetNodeOneWayTicket(host) {
     return httpGetAsync(host + "reset");
 }
 
@@ -106,6 +106,9 @@ function getUpdateLogAsyncWithReciever(host, asyncReciever, upperAsyncReciever, 
     return httpGetAsyncWithReciever(host + "updatelog", asyncReciever, upperAsyncReciever, sender, upperSender);
 }
 
+function deleteDriverAsync(host, id, asyncReciever, upperAsyncReciever, sender, upperSender) {
+    return httpGetAsyncWithReciever(host + "deletedriver?id=" + id, asyncReciever, upperAsyncReciever, sender, upperSender);
+}
 
 function httpGet(_url) {
     var _data = null;

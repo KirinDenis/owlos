@@ -138,6 +138,7 @@ var config = {
         var node = {
             host: _host,
             nodenickname: _nodenickname,
+            nodeRefreshInterval: 10000,
             //-------------------------------------------------------------------------------------------------------------
             //сетевое состояние модуля - онлайн, офлайн, переподсоединение ("в работе"), ошибка --> по умолчанию онлайн
             //NOTE: у каждого свойства есть свое сетевое состояние и связанные события - это глобальный флаг для всех драйвер и элементов UI
@@ -162,12 +163,21 @@ var config = {
                 }
                 this.networkStatusListners.push(event = { event: _event, sender: _sender });
             },
+            nodeRefresh(node) {
+                    drivers.refresh(node);
+                    pins.refresh(node);
+                    driverPins.refresh(node);
+                    accessableDrivers.refresh(node);
+                    scriptsManager.refresh(node);            
+            },
             drivers: [],
             pins: [],
             driversPins: [],
             accessableDrivers: [],
 
         }
+        node.nodeRefresh(node);
+        setInterval(node.nodeRefresh(node), node.nodeRefreshInterval, node);
         configProperties.nodes.push(node);
         config.doOnChange();
         return true;
@@ -194,10 +204,13 @@ var config = {
                 if (sender.getDashboardById("main") != undefined) {
                     var tempNodes = [];
                     for (var nodeKey in configProperties.nodes) {
-
+                        if (configProperties.nodes[nodeKey].nodeRefreshInterval == undefined)  {
+                            configProperties.nodes[nodeKey].nodeRefreshInterval = 10000;                           
+                        }  
                         var tempNode = {
                             id: configProperties.nodes[nodeKey].id,
                             host: configProperties.nodes[nodeKey].host,
+                            nodeRefreshInterval: configProperties.nodes[nodeKey].nodeRefreshInterval,
                             nodenickname: configProperties.nodes[nodeKey].nodenickname,
                             _networkStatus: NET_OFFLINE,
                             drivers: [],
@@ -224,8 +237,18 @@ var config = {
                                     return; // don't add bad listner
                                 }
                                 this.networkStatusListners.push(event = { event: _event, sender: _sender });
-                            }
+                            }, 
+                            nodeRefresh(node) {
+                                drivers.refresh(node);
+                                pins.refresh(node);
+                                driverPins.refresh(node);
+                                accessableDrivers.refresh(node);
+                                scriptsManager.refresh(node);            
                         }
+            
+                        }
+                        tempNode.nodeRefresh(tempNode);
+                        setInterval(tempNode.nodeRefresh, tempNode.nodeRefreshInterval, tempNode);
                         tempNodes.push(tempNode);
                     }
                     configProperties.nodes = tempNodes;
@@ -276,6 +299,7 @@ var config = {
             var jsonNode = {
                 id: configProperties.nodes[node].id,
                 host: configProperties.nodes[node].host,
+                nodeRefreshInterval: configProperties.nodes[node].nodeRefreshInterval,
                 nodenickname: configProperties.nodes[node].nodenickname,
                 _networkStatus: NET_OFFLINE,
                 drivers: [],
