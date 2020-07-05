@@ -160,17 +160,17 @@ function createSidebar() {
             itemHref.id = _id + "href";
             itemHref.className = "menu-href";
 
-            itemHref.href = _href; //"#dashboard";
+            itemHref.href = _href; 
             itemHref.setAttribute("data-toggle", "tab");
             itemHref.onclick = _onclick;
-            itemHref.appendChild(document.createElement("i")).className = _icon; // "fa fa-tachometer-alt";
+            itemHref.appendChild(document.createElement("i")).className = _icon; 
             item.href = itemHref;
 
             var itemTextSpan = itemHref.appendChild(document.createElement("span"));
             itemTextSpan.className = "menu-text";
             itemTextSpan.innerHTML = _text;
             itemHref.textSpan = itemTextSpan;
-            //document.getElementById("sidebarText").innerText = sideBarDashboardAhref.addressText;
+            
 
             if (_span != undefined) {
                 var itemSpan = itemHref.appendChild(document.createElement("span"));

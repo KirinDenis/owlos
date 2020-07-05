@@ -56,12 +56,20 @@ var dashboardUI = {
         dashboardUI.dashboardModeListners.push(event = { event: _event, sender: _sender });
     },
     onConfigLoad: function (configProperties) {
-       var saveWidgetsButton = headerPanelUI.addButton("saveaddedwidget", "fa fa-save", "save configuration", headerPanelUI.widgetsPanelButtonRole);
-       saveWidgetsButton.onclick = dashboardUI.saveAddedWidget;
+        var saveWidgetsButton = headerPanelUI.addButton("saveaddedwidget", "fa fa-save", "save configuration", headerPanelUI.widgetsPanelButtonRole);
+        saveWidgetsButton.onclick = dashboardUI.saveAddedWidget;
         var headerModeButton = headerPanelUI.addButton("dashboardaddwidget", "fa fa-edit", "toogle widgets mode", headerPanelUI.widgetsPanelButtonRole);
         headerModeButton.onclick = dashboardUI.changeDashboadMode;
-        var addWidgetButton = headerPanelUI.addButton("dashboardaddwidget", "fa fa-plus", "add widget",headerPanelUI.widgetsPanelButtonRole);
+        var addWidgetButton = headerPanelUI.addButton("dashboardaddwidget", "fa fa-plus", "add widget", headerPanelUI.widgetsPanelButtonRole);
         addWidgetButton.onclick = dashboardUI.onAddWidgetClick;
+
+        //эта панель появляется когда виджетов нет
+        var noWidgetsPanel = document.getElementById("noWidgetsPanel");
+        //эта кнопка описана в index.html, появляется когда виджетов нет
+        var noOneAddWidgetButton = document.getElementById("noOneAddWidgetButton");
+        if (noOneAddWidgetButton != undefined) {
+        document.getElementById("noOneAddWidgetButton").onclick = dashboardUI.onAddWidgetClick; 
+        }
 
         sideBar.dashboardItem.href.saveWidgetsButton = saveWidgetsButton;
         sideBar.dashboardItem.href.headerModeButton = headerModeButton;
@@ -69,23 +77,30 @@ var dashboardUI = {
 
         var driversWidgetsPanel = document.getElementById("driversWidgetsPanel");
 
-        for (var i = 0; i < configProperties.dashboards[0].widgets.length; i++) {
-            try {
-                var widgetProp = configProperties.dashboards[0].widgets[i];
-                var widgetLayer = WidgetsLayer.getWidgetById(widgetProp.widgetWrapperId);
-                if (widgetLayer != undefined) {
-                    var widgetWrapper = new widgetLayer.widget(driversWidgetsPanel, undefined, undefined, configProperties.dashboards[0].widgets[i], widgetProp.widgetProperties);
-                    widgetWrapper.offlineStarter(driversWidgetsPanel, widgetProp.driverId, widgetProp.driverProperty);
-                    widgetWrapper.widget.onchange = config.onWidgetChange;
-                    widgetWrapper.widget.ondelete = config.onWidgetDelete;
-                    widgetWrapper.widget.properties = widgetProp.widgetProperties;
+        //если есть хоть какие то виджеты грузим их
+        if (configProperties.dashboards[0].widgets.length > 0) {
+            noWidgetsPanel.style.display = "none";
+            for (var i = 0; i < configProperties.dashboards[0].widgets.length; i++) {
+                try {
+                    var widgetProp = configProperties.dashboards[0].widgets[i];
+                    var widgetLayer = WidgetsLayer.getWidgetById(widgetProp.widgetWrapperId);
+                    if (widgetLayer != undefined) {
+                        var widgetWrapper = new widgetLayer.widget(driversWidgetsPanel, undefined, undefined, configProperties.dashboards[0].widgets[i], widgetProp.widgetProperties);
+                        widgetWrapper.offlineStarter(driversWidgetsPanel, widgetProp.driverId, widgetProp.driverProperty);
+                        widgetWrapper.widget.onchange = config.onWidgetChange;
+                        widgetWrapper.widget.ondelete = config.onWidgetDelete;
+                        widgetWrapper.widget.properties = widgetProp.widgetProperties;
+                    }
+                }
+                catch (exception) {
+                    console.error(exception);
+                    addToLogNL("ERROR starting exception: " + exception, 2);
+                    addToLogNL("ERROR at widget: " + widgetProp, 2);
                 }
             }
-            catch (exception) {
-                console.error(exception);
-                addToLogNL("ERROR starting exception: " + exception, 2);
-                addToLogNL("ERROR at widget: " + widgetProp, 2);
-            }
+        }
+        else { //очень времено - создаем виджеты для стандартных драйверов по умолчания
+            noWidgetsPanel.style.display = "block";
         }
     },
     changeDashboadMode: function (event) {
@@ -133,7 +148,7 @@ var dashboardUI = {
         addWidgetDialog.appendSelect(createDialogSelect("widgetselect", getLang("widgetselect")));
         var widgetSelect = addWidgetDialog.getChild("widgetselect");
         propSelect.widgetSelect = widgetSelect;
-        
+
         dashboardUI.onNodeSelectChange(event = { currentTarget: nodeSelect });
 
         addWidgetDialog.onOK = dashboardUI.doAddWidget;
@@ -154,6 +169,7 @@ var dashboardUI = {
             widgetWrapper.widget.onchange = config.onWidgetChange;
             widgetWrapper.widget.ondelete = config.onWidgetDelete;
         };
+        document.getElementById("noWidgetsPanel").style.display = "none";
         return true;
     },
     onNodeSelectChange: function (event) {
@@ -231,17 +247,17 @@ var dashboardUI = {
             }
         }
         return false;
-    },    
+    },
     saveAddedWidget: function (event) {
         var buttonSave = event.currentTarget;
         config.cancel = false;
-        var saveDialog = createModalDialog(getLang("saveaddedwidget"), "");    
+        var saveDialog = createModalDialog(getLang("saveaddedwidget"), "");
         saveDialog.appendChildToForm(createDialogLabel("savetext", "").label);
         saveDialog.appendChildToForm(createDialogProgressbar("saveProgressBar").progressbarDiv);
         saveDialog.OKButton.innerText = getLang("cancelbutton");
         saveDialog.onOK = dashboardUI.addWidgetCancel;
         saveDialog.show();
-        config.save();        
+        config.save();
     },
     addWidgetCancel: function () {
 

@@ -163,6 +163,7 @@ function onLoadConfig(result) {
     try {
         if (result) {
             sideBar = createSidebar();
+            
 
             settingsUI.onConfigLoad(configProperties);
             dashboardUI.onConfigLoad(configProperties);
@@ -177,13 +178,13 @@ function onLoadConfig(result) {
             scriptsManager.onDelete = scriptsUI.onScriptDelete;
 
             drivers.addDriverLoadedListner(settingsUI.onDriverLoaded, settingsUI);
-            //nodesRefresh();
-
+            
             var boot = document.getElementById("boot");
             boot.parentElement.removeChild(boot);
             document.getElementById("consolePanel").appendChild(boot);
 
-            //nodesRefreshHandle = setInterval(nodesRefresh, 60000);
+            sidebarItemClick({currentTarget: sideBar.dashboardItem.href});
+            
             speak("OWLOS is ready");
         }
         else {
