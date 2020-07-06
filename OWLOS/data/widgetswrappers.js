@@ -1075,7 +1075,7 @@ var WidgetsLayer = {
         name: getLang("historydatagraph"),
         widget: HistoryDataGraphWidgetWrapper,
         driversTypes: "any",
-        driversProperties: ";historydata;historyfile;temperaturehistorydata;humidityhistorydata;"
+        driversProperties: ";historydata;historyfile;temperaturehistorydata;humidityhistorydata;heatindexhistorydata;"
     },
     LightWidget: {
         id: "light",

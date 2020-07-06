@@ -55,7 +55,7 @@ var GraphWidget =
             _BaseWidget.prototype.onWidgetHolderLoad.call(this, event);
             var rPanel = event.currentTarget;
             var widget = rPanel.widget;
-            widget.widgetHolder.className = "col-6 col-sm-4 col-lg-2";
+            widget.widgetHolder.className = "col-6 col-sm-4 col-lg-2 widgetHolder";
             widget.topMargin = widget.size / 20; //this.panding = 5;
             widget.width = widget.size * 2;
             widget.height = widget.size;
@@ -125,8 +125,8 @@ var GraphWidget =
             widget.SVGDownLine = new SVGRect(widget.SVGViewBox, widget.id + "downline", widget.width / 48, 0, widget.graphWidth, 1);
             widget.SVGDownLine.opacity = 0.1;
             widget.SVGDownLine.color = theme.secondary;
-            widget.SVGIcon = new SVGIcon(widget.SVGViewBox, addIcon, widget.width - widget.size / 6, widget.size / 24, widget.size / 8, widget.size / 8);
-            widget.SVGIcon.fill = theme.secondary;
+            //widget.SVGIcon = new SVGIcon(widget.SVGViewBox, addIcon, widget.width - widget.size / 6, widget.size / 24, widget.size / 8, widget.size / 8);
+            //widget.SVGIcon.fill = theme.secondary;
             widget.SVGWidgetText.hide();
             widget.SVGArcSpinner.x = widget.centreX;
             widget.ShowEqualizer = false;
@@ -196,7 +196,7 @@ var GraphWidget =
                         this.toColor(this.SVGTopLabel, theme.secondary);
                         this.toColor(this.SVGMiddleLabel, theme.secondary);
                         this.toColor(this.SVGDownLabel, theme.secondary);
-                        this.SVGIcon.fill = theme.info;
+                      //  this.SVGIcon.fill = theme.info;
                         break;
 
                     case NET_ERROR:
@@ -205,7 +205,7 @@ var GraphWidget =
                         this.toColor(this.SVGTopLabel, theme.danger);
                         this.toColor(this.SVGMiddleLabel, theme.danger);
                         this.toColor(this.SVGDownLabel, theme.danger);
-                        this.SVGIcon.fill = theme.danger;
+                     //   this.SVGIcon.fill = theme.danger;
                         break;
 
                     case NET_RECONNECT:
@@ -214,7 +214,7 @@ var GraphWidget =
                         this.toColor(this.SVGTopLabel, theme.info);
                         this.toColor(this.SVGMiddleLabel, theme.info);
                         this.toColor(this.SVGDownLabel, theme.info);
-                        this.SVGIcon.fill = theme.info;
+                     //   this.SVGIcon.fill = theme.info;
                         break;
 
                     default:
@@ -224,7 +224,7 @@ var GraphWidget =
                         this.toColor(this.SVGTopLabel, theme.secondary);
                         this.toColor(this.SVGMiddleLabel, theme.secondary);
                         this.toColor(this.SVGDownLabel, theme.secondary);
-                        this.SVGIcon.fill = theme.secondary;
+                       // this.SVGIcon.fill = theme.secondary;
                         break;
                 }
 

@@ -62,21 +62,21 @@ var TemperatureWidget =
             widget.tempItem = [];
 
             widget.SVGWidgetExtText = new SVGText(widget.SVGViewBox, widget.id + "widgetexttext", widget.size / 160);
-            widget.SVGWidgetExtText.color = theme.secondary;
+            widget.SVGWidgetExtText.color = widgetsTheme.secondary;
 
 
             for (var i = 0; i < 20; i++) {
                 var svgRect = new SVGRect(widget.SVGViewBox, widget.id + "tempItem" + i, widget.panding + widget.tempWidth * i, widget.tempTop, widget.tempWidth - 2, widget.tempHeight);
                 if (i < 7) {
-                    svgRect.fill = theme.info;
+                    svgRect.fill = widgetsTheme.info;
 
                 }
                 else {
                     if (i < 14) {
-                        svgRect.fill = theme.warning;
+                        svgRect.fill = widgetsTheme.warning;
                     }
                     else {
-                        svgRect.fill = theme.danger;
+                        svgRect.fill = widgetsTheme.danger;
                     }
                 }
 
@@ -120,16 +120,16 @@ var TemperatureWidget =
 
                 switch (this._networkStatus) {
                     case NET_ONLINE:
-                        this.toColor(this.SVGWidgetExtText, theme.light);
+                        this.toColor(this.SVGWidgetExtText, widgetsTheme.info);
                         break;
                     case NET_ERROR:
-                        this.toColor(this.SVGWidgetExtText, theme.danger);
+                        this.toColor(this.SVGWidgetExtText, widgetsTheme.danger);
                         break;
                     case NET_RECONNECT:
-                        this.toColor(this.SVGWidgetExtText, theme.info);
+                        this.toColor(this.SVGWidgetExtText, widgetsTheme.info);
                         break;
                     default:
-                        this.toColor(this.SVGWidgetExtText, theme.secondary);
+                        this.toColor(this.SVGWidgetExtText, widgetsTheme.secondary);
                         break;
                 }
             }

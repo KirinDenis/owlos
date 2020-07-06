@@ -1,3 +1,7 @@
+.widgetHolder {
+    filter: brightness(120%); 
+}
+
 .gutterSlim.row {
     margin-right: -1px;
     margin-left: -1px;

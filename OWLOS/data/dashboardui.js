@@ -43,7 +43,7 @@ OWLOS распространяется в надежде, что она буде
 var dashboardUI = {
     dashboardModeListners: [],
     dashboardViewMode: true,
-    mainProperties: ",data,historydata,historyfile,temperature,humidity,temperaturehistoryfile,temperaturehistorydata,humidityhistoryfile,humidityhistorydata,text",
+    mainProperties: ",data,historydata,historyfile,temperature,humidity,temperaturehistoryfile,temperaturehistorydata,humidityhistoryfile,humidityhistorydata,text,heatindexhistorydata",
     secondaryDrivers: ",wifi,esp,network",
     addDashboardModeListner: function (_event, _sender) { //для добавления нового подписчика(так же как и addValueListner)                                
         //check event listner and setup current network status 
@@ -100,6 +100,7 @@ var dashboardUI = {
             }
         }
         else { //очень времено - создаем виджеты для стандартных драйверов по умолчания
+            document.getElementById("noWidgetsPanel").style.display = "block";
             noWidgetsPanel.style.display = "block";
         }
     },
@@ -211,12 +212,16 @@ var dashboardUI = {
             var driver = driverSelectOption.driver;
             for (var driverProp in driver) {
                 if ((driver[driverProp].name == undefined) || (driver[driverProp].type == undefined)) continue;
+                var driverPropValue = driver[driverProp].value;
+                if (driverPropValue.length > 10) {
+                    driverPropValue = driverPropValue.substr(0,7) + "...";
+                }
                 if (dashboardUI.mainProperties.indexOf("," + driver[driverProp].name) != -1) {
-                    var propSelectOption = propSelect.dialogSelect.appendOption(driver[driverProp].name, 0);
+                    var propSelectOption = propSelect.dialogSelect.appendOption(driver[driverProp].name + " [" + driverPropValue + "]", 0);
                     propSelectOption.className = "bold-option";
                 }
                 else {
-                    var propSelectOption = propSelect.dialogSelect.appendOption(driver[driverProp].name);
+                    var propSelectOption = propSelect.dialogSelect.appendOption(driver[driverProp].name + " [" + driverPropValue + "]");
                 }
                 propSelectOption.prop = driver[driverProp];
                 propSelectOption.driver = driver;

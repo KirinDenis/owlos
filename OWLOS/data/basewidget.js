@@ -135,7 +135,7 @@ var BaseWidget =
             //container width  None (auto)  540px     720px    960px    1140px
             //Class prefix        col-     col-sm-  col-md-   col-lg-   col-xl- (1..12)
             //по умолчанию (когда длина меньше чем 540 - под два виджета на панель, когда больше 6 виджетов, более 960 - двенадцать виджетов 
-            this.widgetHolder.className = "col-3 col-sm-2 col-lg-1"; // назначаем Bootstrap класс для панели (одна ячейка из двенадцати по умолчанию) (в случае использования с Bootstrap)
+            this.widgetHolder.className = "col-3 col-sm-2 col-lg-1 widgetHolder"; // назначаем Bootstrap класс для панели (одна ячейка из двенадцати по умолчанию) (в случае использования с Bootstrap)
             this.widgetHolder.style.cursor = "pointer"; // переопределяем тип курсора
             this.widgetHolder.onmouseover = this.mouseOver; // когда пользователь наведет мышью на виджет сработает этот обработчик события 
             this.widgetHolder.onmouseout = this.mouseOut; // когда пользователь уберет мышь этот обработчик 
