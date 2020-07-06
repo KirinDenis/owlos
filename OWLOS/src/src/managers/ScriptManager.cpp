@@ -160,7 +160,7 @@ Battle Hamster Script
 #define STOP_IF_DEVICE_NOTREADY "STOP_IF_DEVICE_NOTREADY" //если в скрипте будет определена переменная с таким именем и драйвер не готово - программа остановится
 
 //байт-код одной инструкции
-typedef struct Instruction
+struct Instruction
 {
 	byte type = STOP_INSTRUCTION; //код инструкции, по умолчанию Stop - такая инструкция оставит скрипт - script[..].status = STOP_STATUS
 	int arg1Addr;        //адрес первого аргумент
@@ -170,14 +170,14 @@ typedef struct Instruction
 	int lineNumber;	     //хранит номер строки инструкции в исходном коде - нужен для UI пошаговой отладки  
 };
 //переменная для байт-кода инструкций arg1Addr..arg2Addr - адреса таких переменных в массиве script[..].data (сегмент данных)
-typedef struct Variable
+struct Variable
 {
 	byte type;   //тип переменой
 	char *name;  //имя переменой
 	char *value; //значение переменой
 };
 //структура данных для одного скрипта 
-typedef struct Script
+struct Script
 {
 	String name;           //имя (уникально)
 	String byteCode;       //исходный код (assembler)
@@ -251,7 +251,7 @@ script.code[inst1(arg1addr, arg2addr), inst2(arg1addr, arg2addr), inst3(..), ins
 	Реализуют компиляцию исходного кода в байт-кода, исполнение байт-кода, контролируют ошибки исполнения и отладку
 
 Секция функций управления исполнением скриптов ------------------------------------------------------------------------------------------------------
-/*-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 Сбрасывает (очищает) указанную запись скрипта в массиве скриптов
 Параметр int index - индекс скрипта в массиве
 Ничего не возвращает true если запись очищена, false если индекс ошибочен
@@ -933,8 +933,10 @@ bool scriptsRun() {
 #endif
 					filesWriteInt(scripts[i].name + ".rf", scripts[i].ip); //up RF flag (store last instruction)
 					bool result = executeInstruction(i);
+#ifndef SCRIPT_TRACERT 					
+					filesWriteInt(scripts[i].name + ".rf", -1); //escapre RF flag 
+#else	
 					bool fwResult = filesWriteInt(scripts[i].name + ".rf", -1); //escapre RF flag 
-#ifdef SCRIPT_TRACERT	
 					debugOut(SCRIPT_ID, "fwResult: " + String(fwResult));
 					debugOut(SCRIPT_ID, "<- addr: " + String(scripts[i].ip));
 #endif
@@ -1031,7 +1033,7 @@ String clearSpace(String str, bool atBegin)
 	bool stopClean = !atBegin;
 	char spaceChar = 0x20;
 	char tabChar = 0x09;
-	for (int i = 0; i < str.length(); i++) {
+	for (unsigned int i = 0; i < str.length(); i++) {
 		if ((atBegin && (!stopClean)) || !atBegin)
 		{
 			if (str[i] == spaceChar) continue;

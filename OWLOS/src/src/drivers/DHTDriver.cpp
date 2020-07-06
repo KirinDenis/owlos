@@ -99,7 +99,7 @@ float DHTDriver::DHTgetTemperature(bool _celsius)
 	{
 		if (_celsius)
 		{
-			return dht->readTemperature();
+			return dht->readTemperature(false, false); //dht->readTemperature(false, ...=> true Force read sensor => false read with time intervals
 		}
 		else
 		{
@@ -179,7 +179,7 @@ bool DHTDriver::begin(String _topic)
 bool DHTDriver::query()
 {
 	if (BaseDriver::query())
-	{
+	{		
 		float _temperature = std::atof(temperature.c_str());
 		getTemperature();
 		//проверка ловушки

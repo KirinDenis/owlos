@@ -150,7 +150,10 @@ var TemperatureWidget =
             }
 
             for (var i = 0; i < tempSize; i++) {
+                if (i >= this.tempItem.length) break;
+                if (this.tempItem[i].opacity != undefined) {
                 this.tempItem[i].opacity = 1.0 - (1.0 - i / 20);
+                }
             }
 
             // this.svgTempIndex.x = this.panding + tempSize * this.tempWidth * 2;

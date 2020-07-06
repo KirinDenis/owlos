@@ -57,6 +57,7 @@ bool kernelSetup()
 {
 	Serial.begin(PORTSPEED);  //setup Serial Monitor at PORTSPEED BAUD speed - see Utils.h for Constant definition
 	delay(ONETENTHOFSECOND);  //sleep 1/10 of second
+	Serial.println("");
 
 #if defined(ARDUINO_ESP8266_RELEASE_2_5_0) || defined(ARDUINO_ESP32_RELEASE_1_0_4)
 
@@ -84,7 +85,9 @@ bool kernelSetup()
 	debugOut("OWLOS kernel", "can's start, please install ESP32 RELEASE 1.0.4 or ESP8266 RELEASE 2.5.0 for building");
 	debugOut("ESP32 RELEASE 1.0.4", "https://github.com/espressif/arduino-esp32/releases/tag/1.0.4");
 	debugOut("ESP8266 RELEASE 2.5.0", "https://github.com/esp8266/Arduino/releases/tag/2.5.0");
+	return false;
 #endif
+ return true;
 }
 
 
@@ -122,5 +125,7 @@ bool kernelLoop()
 	//Scripts loop
 	scriptsRun();
 	delay(ONETENTHOFSECOND); //Main::loop() sleep interval
+	return true;
 #endif
+  return false;
 }

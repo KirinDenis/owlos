@@ -57,7 +57,7 @@ WiFiMulti _WiFiMulti;
 #endif
 
 WiFiClient wifiClient;
-MQTTClient * _MQTTClient;
+MQTTClient *_MQTTClient;
 
 bool WiFiAccessPointConnected(false);
 long lastTryCheck(-ONESECOND);
@@ -71,15 +71,16 @@ bool wifiStatus = false;
 bool wifiAPResult = false;
 bool wifiResult = false;
 
-
-MQTTClient* getMQTTClient() {
+MQTTClient *getMQTTClient()
+{
 	return _MQTTClient;
 }
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
 void WiFiEvent(WiFiEvent_t event)
 {
-	switch (event) {
+	switch (event)
+	{
 	case SYSTEM_EVENT_WIFI_READY:
 		debugOut(TransportID, "WiFi interface ready");
 		break;
@@ -155,19 +156,20 @@ void WiFiEvent(WiFiEvent_t event)
 	case SYSTEM_EVENT_ETH_GOT_IP:
 		debugOut(TransportID, "Obtained IP address");
 		break;
-	default: break;
+	default:
+		break;
 	}
 }
 #endif
 
 bool transportBegin()
 {
-#ifdef DetailedDebug 
+#ifdef DetailedDebug
 	debugOut(TransportID, "begin");
 #endif
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
-#ifdef DetailedDebug 
+#ifdef DetailedDebug
 	WiFi.onEvent(WiFiEvent);
 	//esp_wifi_set_ps(WIFI_PS_NONE);
 	//esp_wifi_set_ps(WIFI_PS_MAX_MODEM);
@@ -182,68 +184,68 @@ bool transportBegin()
 	if ((nodeGetWiFiAccessPointAvailable() == 1) && (nodeGetWiFiAvailable() == 1))
 	{
 		nodeSetWiFiMode(WIFI_AP_STA);
+#ifdef DetailedDebug
 		debugOut(TransportID, "WiFi mode Access Point and Station (both)");
+#endif
+	}
+	else if (nodeGetWiFiAccessPointAvailable() == 1)
+	{
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+		if (_WiFiMulti.run() == WL_CONNECTED)
+		{
+			esp_wifi_disconnect();
+			esp_wifi_stop();
+			esp_wifi_deinit();
+		}
+#endif
+
+		nodeSetWiFiMode(WIFI_AP);
+
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
+		wifi_station_disconnect();
+#endif
+
+#ifdef DetailedDebug
+		debugOut(TransportID, "WiFi mode Access Point");
+#endif
+	}
+	else if (nodeGetWiFiAvailable() == 1)
+	{
+		nodeSetWiFiMode(WIFI_STA);
+		WiFi.softAPdisconnect(true);
+#ifdef DetailedDebug
+		debugOut(TransportID, "WiFi mode Station");
+#endif
 	}
 	else
-		if (nodeGetWiFiAccessPointAvailable() == 1)
-		{
-#ifdef ARDUINO_ESP32_RELEASE_1_0_4
-			if (_WiFiMulti.run() == WL_CONNECTED)
-			{
-				esp_wifi_disconnect();
-				esp_wifi_stop();
-				esp_wifi_deinit();
-			}
-#endif
-
-			nodeSetWiFiMode(WIFI_AP);
-
+	{
+		nodeSetWiFiMode(WIFI_OFF);
+		WiFi.softAPdisconnect(true);
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
-			wifi_station_disconnect();
-#endif
-
-			debugOut(TransportID, "WiFi mode Access Point");
-		}
-		else
-			if (nodeGetWiFiAvailable() == 1)
-			{
-				nodeSetWiFiMode(WIFI_STA);
-				WiFi.softAPdisconnect(true);
-				debugOut(TransportID, "WiFi mode Station");
-			}
-			else
-			{
-				nodeSetWiFiMode(WIFI_OFF);
-				WiFi.softAPdisconnect(true);
-#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
-				wifi_station_disconnect();
+		wifi_station_disconnect();
 #endif
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
-				esp_wifi_disconnect();
-				esp_wifi_stop();
-				esp_wifi_deinit();
+		esp_wifi_disconnect();
+		esp_wifi_stop();
+		esp_wifi_deinit();
 #endif
 
-				debugOut(TransportID, "no WiFi mode select, WiFi not accessable");
-				return false;
-			}
-
-
-
-
+#ifdef DetailedDebug
+		debugOut(TransportID, "no WiFi mode select, WiFi not accessable");
+#endif
+		return false;
+	}
 	return true;
 }
 
 bool transportAvailable()
 {
-	
 	if (lastTryCheck + TENSECOND > millis())
 	{
 		return wifiStatus;
 	}
 	lastTryCheck = millis();
-	
 
 	//  if ((storedWiFiAPState != nodeGetWiFiAccessPointAvailable()) || (storedWiFiSTState != nodeGetWiFiAvailable()))
 	//  {
@@ -256,14 +258,14 @@ bool transportAvailable()
 	bool wifiAPResult = false;
 	bool wifiResult = false;
 
-
 	if ((nodeGetWiFiAccessPointAvailable() == 1) && (WiFiAccessPointConnected == true))
 	{
 		wifiAPResult = true;
 	}
 	else
 	{
-		if (nodeGetWiFiAccessPointAvailable() == 0)  wifiAPResult = true;
+		if (nodeGetWiFiAccessPointAvailable() == 0)
+			wifiAPResult = true;
 	}
 
 	if ((nodeGetWiFiAvailable() == 1) && (WiFi.status() == WL_CONNECTED))
@@ -272,16 +274,14 @@ bool transportAvailable()
 	}
 	else
 	{
-		if (nodeGetWiFiAvailable() == 0)  wifiResult = true;
+		if (nodeGetWiFiAvailable() == 0)
+			wifiResult = true;
 	}
 
-#ifdef DetailedDebug 
+#ifdef DetailedDebug
 	debugOut(TransportID, "WiFi AP=" + String(nodeGetWiFiAccessPointAvailable()) + ":" + String(wifiAPResult) + "|" + "WiFi ST=" + String(nodeGetWiFiAvailable()) + ":" + String(wifiResult));
-
 #endif
-
 	wifiStatus = wifiAPResult & wifiResult;
-
 	return wifiStatus;
 }
 
@@ -291,7 +291,8 @@ bool WiFiAccessPointReconnect()
 
 	if (nodeGetWiFiAccessPointAvailable() == 1)
 	{
-		if (WiFiAccessPointConnected) return true;
+		if (WiFiAccessPointConnected)
+			return true;
 		String accessPointIP = nodeGetWiFiAccessPointIP(); //this API set Access Point IP from Unit Property OR set this Property as default IP OR return Utils.NaN
 		bool softAPResult = false;
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
@@ -305,7 +306,7 @@ bool WiFiAccessPointReconnect()
 		if (softAPResult)
 		{
 
-#ifdef DetailedDebug 
+#ifdef DetailedDebug
 			/*
 			esp_wifi_set_ps(WIFI_PS_MAX_MODEM);
 			wifi_country_t wifi_country;
@@ -356,19 +357,20 @@ bool WiFiAccessPointReconnect()
 			//debugOut("WiFi set API Power", String(WiFi.setTxPower(100)));
 			//debugOut("WiFi AP Power", String(WiFi.getTxPower()));
 */
-
-
 #endif
-
 			WiFiAccessPointConnected = true;
+#ifdef DetailedDebug
 			debugOut(TransportID, "Started as WiFi Access Point: " + nodeGetWiFiAccessPointSSID() + " IP: " + accessPointIP);
+#endif
 
 			return true;
 		}
 		else
 		{
 			WiFiAccessPointConnected = false;
+#ifdef DetailedDebug
 			debugOut(TransportID, "WiFi Access Point not started as " + nodeGetWiFiAccessPointSSID());
+#endif
 		}
 	}
 	else
@@ -376,13 +378,13 @@ bool WiFiAccessPointReconnect()
 		WiFi.softAPdisconnect(true);
 	}
 
-
 	return false;
 }
 //--------------------------------------------------------------------------------------------------------------
 bool WiFiReconnect()
 {
-	if (WiFi.status() == WL_CONNECTED) return true;
+	if (WiFi.status() == WL_CONNECTED)
+		return true;
 
 	if (nodeGetWiFiAvailable() == 1)
 	{
@@ -391,26 +393,30 @@ bool WiFiReconnect()
 		String WiFiPassword = nodeGetWiFiPassword();
 		if (WiFiSSID.length() == 0)
 		{
+#ifdef DetailedDebug
 			debugOut(TransportID, "WiFi SSID not defined");
+#endif
 			return false;
 		}
 
 		if (WiFi.status() != WL_CONNECTED)
 		{
+#ifdef DetailedDebug
 			debugOut(TransportID, "try to connect to - " + WiFiSSID + ":" + WiFiPassword + " wait ");
+#endif
 			nodeGetScanWiFiNetworks();
+#ifdef DetailedDebug
 			debugOut(TransportID, nodeGetWiFiNetworksParameters());
+#endif
 
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 			if (!_WiFiMulti.existsAP(WiFiSSID.c_str(), WiFiPassword.c_str()))
 			{
 				_WiFiMulti.addAP(WiFiSSID.c_str(), WiFiPassword.c_str());
 			}
-
-
 #endif
 
-#ifdef ARDUINO_ESP32_RELEASE_1_0_4			
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
 			_WiFiMulti.addAP(WiFiSSID.c_str(), WiFiPassword.c_str());
 #endif
 
@@ -419,18 +425,23 @@ bool WiFiReconnect()
 			{
 				delay(500);
 				wait++;
+#ifdef DetailedDebug
 				debugOut(TransportID, "Wait for WiFi [" + String(wait) + "] from [10]");
+#endif
 				if (wait > 9)
 				{
+#ifdef DetailedDebug
 					debugOut(TransportID, "Wait for WiFi TimeOut...break");
+#endif
 					break;
 				}
 			}
 
-
 			if (WiFi.status() == WL_CONNECTED)
 			{
+#ifdef DetailedDebug
 				debugOut(TransportID, "WiFi connected as Client success, local IP: " + nodeGetWiFiIP());
+#endif
 				return true;
 			}
 		}
@@ -443,11 +454,12 @@ bool WiFiReconnect()
   Main Callback
   If MQTT Client recieve published packet with subscrabed topic - this procedure is called ASYNC
   -------------------------------------------------------------------------------------------------------------------------*/
-void Callback(char* _topic, byte* _payload, unsigned int length) {
+void Callback(char *_topic, byte *_payload, unsigned int length)
+{
 
 	if (nodeGetMQTTAvailable() == 1)
 	{
-#ifdef DetailedDebug 
+#ifdef DetailedDebug
 		debugOut(TransportID, "onMessage topic - " + String(_topic));
 #endif
 
@@ -470,20 +482,20 @@ void Callback(char* _topic, byte* _payload, unsigned int length) {
 	}
 }
 
-
 //-----------------------------------------------------------------------------------------------------------------------------------------
 bool transportReconnect()
 {
 
-	//reconnect once at 
+	//reconnect once at
 	if (lastTryReconnect + ONEMINUTE > millis())
 	{
 		return false;
 	}
 
 	lastTryReconnect = millis();
-
+#ifdef DetailedDebug
 	debugOut(TransportID, "begin reconnect, WiFi AP=" + String(nodeGetWiFiAccessPointAvailable()) + " WiFi ST=" + String(nodeGetWiFiAvailable()));
+#endif
 
 	bool result = false;
 
@@ -493,7 +505,8 @@ bool transportReconnect()
 	}
 	else
 	{
-		if (nodeGetWiFiAccessPointAvailable() == 1) wifiAPResult = true;
+		if (nodeGetWiFiAccessPointAvailable() == 1)
+			wifiAPResult = true;
 	}
 
 	if ((nodeGetWiFiAvailable() == 1) && (_WiFiMulti.run() != WL_CONNECTED))
@@ -502,10 +515,12 @@ bool transportReconnect()
 	}
 	else
 	{
-		if (nodeGetWiFiAvailable() == 1) wifiAPResult = true;
+		if (nodeGetWiFiAvailable() == 1)
+			wifiAPResult = true;
 	}
-
+#ifdef DetailedDebug
 	debugOut(TransportID, "reconnect result, WiFi AP=" + String(wifiAPResult) + " WiFi ST=" + String(wifiResult));
+#endif
 
 	wifiStatus = wifiAPResult | wifiResult;
 	result = wifiAPResult | wifiResult;
@@ -543,22 +558,27 @@ bool MQTTReconnect()
 			{
 				return false;
 			}
-
+#ifdef DetailedDebug
 			debugOut(TransportID, "try connect to Brokker - " + String(nodeGetMQTTURL()) + ":" + String(nodeGetMQTTPort()));
+#endif
 			lastTryMQTTReconnect = millis();
 
-
-#ifdef DetailedDebug 
+#ifdef DetailedDebug
 			debugOut(TransportID, "Connecting to MQTT broker ...");
 #endif
-			_MQTTClient->setServer(stringToChar(nodeGetMQTTURL()), nodeGetMQTTPort());    // Configure MQTT connexion
+			_MQTTClient->setServer(stringToChar(nodeGetMQTTURL()), nodeGetMQTTPort()); // Configure MQTT connexion
 			if (_MQTTClient->connect(nodeGetMQTTID().c_str(), nodeGetMQTTLogin().c_str(), nodeGetMQTTPassword().c_str()))
 			{
+#ifdef DetailedDebug
 				debugOut(TransportID, "OK");
+#endif
 				return true;
 			}
-			else {
+			else
+			{
+#ifdef DetailedDebug
 				debugOut(TransportID, "Fail - " + String(_MQTTClient->state()));
+#endif
 				return false;
 			}
 		}
@@ -585,12 +605,11 @@ void transportSubscribe(String _topic)
 {
 	if (MQTTReconnect())
 	{
-#ifdef DetailedDebug 
+#ifdef DetailedDebug
 		debugOut(TransportID, "Subscribe to - " + _topic);
 #endif
 		_MQTTClient->subscribe(_topic.c_str());
 	}
-
 }
 
 void transportLoop()
@@ -605,7 +624,7 @@ void transportLoop()
 		}
 
 		if (nodeGetRESTfulAvailable() == 1)
-		{			
+		{
 			HTTPServerLoop();
 		}
 
@@ -638,5 +657,3 @@ WiFiMulti transportGetWifiMulti()
 	return _WiFiMulti;
 }
 #endif
-
-

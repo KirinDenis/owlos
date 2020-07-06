@@ -195,7 +195,7 @@ class BaseDriver
 	unsigned long lastHistoryFileWriteMillis = 0;
 
     //Set count how often the query() method "core section" must be called  (NOTE: for stabale works queryInterval property MUST BE BIGGER THAN publishInterval property)
-    unsigned long queryInterval = ONESECOND;
+    unsigned long queryInterval = ONESECOND;    
 
     //Set count how often the publish() method "core section" must be called
     unsigned long publishInterval = ONESECOND * 600;

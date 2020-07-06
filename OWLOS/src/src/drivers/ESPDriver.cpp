@@ -1762,26 +1762,6 @@ bool nodeSetESPMagicFlashChipMode(int _espmagicflashchipmode)
 	return false;
 }
 
-//Pins 
-String nodeGetBusyPins()
-{
-	/*
-	String __busyPins = driversGetBusyPins();
-	if (!String(__busyPins).equals(_busyPins)) onInsideChange("busypins", String(__busyPins));
-	if (__busyPins.length() == 0) return " ";
-	else return _busyPins = __busyPins;
-	*/
-}
-
-String nodeGetPinsMap()
-{
-	/*
-	String _pinsMap = driversGetPinsMap();
-	if (!String(_pinsMap).equals(pinsMap)) onInsideChange("pinsmap", String(_pinsMap));
-	return pinsMap = _pinsMap;
-	*/
-}
-
 //UpdateAvailable()  
 int nodeGetUpdateAvailable()
 {
