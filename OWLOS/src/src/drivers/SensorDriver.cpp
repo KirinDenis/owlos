@@ -50,8 +50,8 @@ bool SensorDriver::init()
 	DriverPin *driverPin = getDriverPinByDriverId(id, PIN0_INDEX); //командный пин "закрыть"
 	if (driverPin != nullptr)
 	{
-		debugOut("PIN MODE 111", setDriverPinMode(id, PIN0_INDEX, INPUT));
-		debugOut("PIN MODE 111", setDriverPinMode(id, PIN0_INDEX, ANALOG_INPUT));
+		//debugOut("PIN MODE 111", setDriverPinMode(id, PIN0_INDEX, INPUT));
+		//debugOut("PIN MODE 111", setDriverPinMode(id, PIN0_INDEX, ANALOG_INPUT));
 		
 		//TODO: INPUT_PULLUP/INPUT_PULLDOWN
 

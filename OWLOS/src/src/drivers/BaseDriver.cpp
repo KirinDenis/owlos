@@ -116,7 +116,6 @@ String BaseDriver::getAllProperties()
 		DriverPin * driverPin = getDriverPinByDriverId(id, i);
 		if (driverPin != nullptr)
 		{
-			debugOut("PIN", "NOT NULL");
 			pins += "pin" + String(i) + "=" + driverPin->name + "//s\n";
 			//pins += "pintype" + String(i) + "=" + driverPin->driverPinType  + "\n";
 		    pins += "pintype" + String(i) + "=" + decodePinTypes(driverPin->driverPinType) + "//r\n";

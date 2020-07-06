@@ -313,7 +313,7 @@ String _checkDriverPin(String pinName, uint16_t pinType, String SDAPinName)
 		{
 			return "pin " + pinName + " not compatable with type " + decodePinTypes(pinType) + "\n"; //если нет - возвращаем ошибку
 		}
-		Serial.println("check 8");
+		//Serial.println("check 8");
 	}
 	//драйвер может использовать этот пин, возвращаем пустую строчку
 	return "";

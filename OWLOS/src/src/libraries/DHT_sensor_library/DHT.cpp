@@ -31,6 +31,11 @@ void DHT::begin(uint8_t usec) {
   // >= MIN_INTERVAL right away. Note that this assignment wraps around,
   // but so will the subtraction.
   _lastreadtime = millis() - MIN_INTERVAL;
+
+#if defined(ESP8266)
+ DEBUG_PRINT("ESP8266 defined. ");
+#endif
+
   DEBUG_PRINT("DHT max clock cycles: "); DEBUG_PRINTLN(_maxcycles, DEC);
   pullTime = usec;
 }

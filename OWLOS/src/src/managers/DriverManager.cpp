@@ -58,7 +58,7 @@ BaseDriver * driversList[DRIVERS_LIMIT];
 
 void driversInit(String _topic)
 {
-	debugOut("---------------", String(ActuatorDriver::getPinsCount()));
+	//debugOut("---------------", String(ActuatorDriver::getPinsCount()));
 
 	__topic = _topic;
 	initPins();
@@ -192,7 +192,7 @@ String driversGetAccessable()
 		result += "pintypedecoded" + String(i) + "=" + decodePinTypes(ValveDriver::getPinType(i)) + "\n";
 	}
 
-	debugOut("PINS", result);
+//	debugOut("PINS", result);
 	return result;
 
 }

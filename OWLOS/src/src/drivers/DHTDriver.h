@@ -44,10 +44,10 @@ OWLOS распространяется в надежде, что она буде
 #include "../libraries\DHT_sensor_library\DHT.h"
 #include "BaseDriver.h"
 
-#define ESP8266;
 #define DRIVER_ID "DHT"
 
-class DHTDriver : public BaseDriver {
+class DHTDriver : public BaseDriver
+{
 public:
 	static int getPinsCount()
 	{
@@ -58,18 +58,21 @@ public:
 	{
 		switch (pinIndex)
 		{
-		case PIN0_INDEX: return DIGITAL_IO_MASK;
-		case PIN1_INDEX: return VCC5_MASK | VCC33_MASK;
-		case PIN2_INDEX: return GND_MASK;
+		case PIN0_INDEX:
+			return DIGITAL_IO_MASK;
+		case PIN1_INDEX:
+			return VCC5_MASK | VCC33_MASK;
+		case PIN2_INDEX:
+			return GND_MASK;
 		default:
 			return NO_MASK;
 		}
 	}
 
-
 	bool DHTsetup(int dhttype);
-	float DHTgetTemperature();
+	float DHTgetTemperature(bool _celsius);
 	float DHTgetHumidity();
+	float DHTgetHeatIndex(bool _celsius);
 
 	bool begin(String _Topic);
 	bool query();
@@ -78,14 +81,20 @@ public:
 	String onMessage(String _topic, String _payload, int8_t transportMask);
 	int getDHTType();
 	bool setDHTType(int _dhttype);
+	bool getCelsius();
+	bool setCelsius(bool _celsius);
 	String getTemperature();
 	String getHumidity();
-	
+	String getHeatIndex();
+
 	String getTemperatureHistoryData();
 	bool setTemperatureHistoryData(float _historydata);
 
 	String getHumidityHistoryData();
 	bool setHumidityHistoryData(float _historydata);
+
+	String getHeatIndexHistoryData();
+	bool setHeatIndexHistoryData(float _historydata);
 
 	//History file property Read<->Write wrappers
 	String readTemperatureHistoryFile();
@@ -94,18 +103,21 @@ public:
 private:
 	bool DHTSetuped = false;
 	bool DHTSetupResult = false;
-	DHT * dht = nullptr;
-	int dhttype = DHT22;
+	DHT *dht = nullptr;
+	int dhttype = DHT22; //default DHT22
+	bool celsius = true;
 	String temperature = "nan";
 	String humidity = "nan";
+	String heatIndex = "nan";
 	int temperatureHistoryCount = 0;
 	int humidityHistoryCount = 0;
+	int heatIndexHistoryCount = 0;
 	float *temperatureHistoryData = new float[historySize]();
 	float *humidityHistoryData = new float[historySize]();
+	float *heatIndexHistoryData = new float[historySize]();
 
 	int currentTemperatureFile = 0;
 	int currentTemperatureFileIndex = 0;
 	int historyTemperatureFileCount = 0;
 	int *temperatureHistoryFilesIndexes = new int[filesIndexesSize]();
-
 };
