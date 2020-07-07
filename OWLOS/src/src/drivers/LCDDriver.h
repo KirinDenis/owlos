@@ -39,20 +39,18 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
+#ifndef LCDDRIVER_H
+#define LCDDRIVER_H
 
 #include <Arduino.h>
 #include "../libraries\LiquidCrystal_I2C\LiquidCrystal_I2C.h" //https://www.dfrobot.com/wiki/index.php/I2C/TWI_LCD1602_Module_(Gadgeteer_Compatible)_(SKU:_DFR0063)   http://www.dfrobot.com/wiki/index.php?title=I2C/TWI_LCD1602_Module_(SKU:_DFR0063) Download: http://www.dfrobot.com/image/data/DFR0154/LiquidCrystal_I2Cv1-1.rar
 #include "BaseDriver.h"
 
-#define DRIVER_ID "lcd"
-
-#define LCD_LOOP_INTERVAL 200
-
 #define SDA_INDEX 0
 #define SCL_INDEX 1
 #define I2CADDR_INDEX 2
-#define VCC5_INDEX 3
-#define GND_INDEX 4
+#define _VCC5_INDEX 3
+#define _GND_INDEX 4
 
 class LCDDriver : public BaseDriver {
 public:
@@ -69,8 +67,8 @@ public:
 		case SDA_INDEX: return SDA_MASK;
 		case SCL_INDEX: return SCL_MASK;
 		case I2CADDR_INDEX: return I2CADDR_MASK;
-		case VCC5_INDEX: return VCC5_MASK;
-		case GND_INDEX: return GND_MASK;
+		case _VCC5_INDEX: return VCC5_MASK || VCC33_MASK;
+		case _GND_INDEX: return GND_MASK;
 		default:
 			return NO_MASK;
 		}
@@ -130,3 +128,4 @@ private:
 	int y = 0;
 	String text = "";
 };
+#endif

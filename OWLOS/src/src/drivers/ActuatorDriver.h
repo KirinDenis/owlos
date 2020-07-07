@@ -38,14 +38,11 @@ OWLOS распространяется в надежде, что она буде
 Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
+#ifndef ACTUATORDRIVER_H
+#define ACTUATORDRIVER_H
 
 #include <Arduino.h>
 #include "BaseDriver.h"
-
-#define DRIVER_MASK "ActuatorDriver"
-#define DRIVER_ID "actuator1"
-#define ActuatorLoopInterval 200
-
 
 class ActuatorDriver : public BaseDriver {
   public:
@@ -97,3 +94,4 @@ class ActuatorDriver : public BaseDriver {
 	  int pwmdelay = 1;
 	  bool invert = false;
 };
+#endif

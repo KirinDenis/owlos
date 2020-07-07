@@ -12,10 +12,6 @@ written by Adafruit Industries
  #include "WProgram.h"
 #endif
 
-#if defined(ARDUINO_ESP8266_RELEASE_2_5_0)
-#define ESP8266
-#endif
-
 // Uncomment to enable printing out nice debug messages.
 //#define DHT_DEBUG
 

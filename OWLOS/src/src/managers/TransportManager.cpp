@@ -38,6 +38,9 @@ OWLOS распространяется в надежде, что она буде
 Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
+#ifndef TRANSPORTDRIVER_H
+#define TRANSPORTDRIVER_H
+
 #include <core_version.h>
 #include "TransportManager.h"
 #include "../drivers/ESPDriver.h"
@@ -60,9 +63,9 @@ WiFiClient wifiClient;
 MQTTClient *_MQTTClient;
 
 bool WiFiAccessPointConnected(false);
-long lastTryCheck(-ONESECOND);
-long lastTryReconnect(-ONEMINUTE);
-long lastTryMQTTReconnect(-ONEMINUTE);
+unsigned long lastTryCheck(-ONESECOND);
+unsigned long lastTryReconnect(-ONEMINUTE);
+unsigned long lastTryMQTTReconnect(-ONEMINUTE);
 
 int storedWiFiAPState(-1);
 int storedWiFiSTState(-1);
@@ -279,7 +282,7 @@ bool transportAvailable()
 	}
 
 #ifdef DetailedDebug
-	debugOut(TransportID, "WiFi AP=" + String(nodeGetWiFiAccessPointAvailable()) + ":" + String(wifiAPResult) + "|" + "WiFi ST=" + String(nodeGetWiFiAvailable()) + ":" + String(wifiResult));
+	debugOut(TransportID, "WiFi AP=" + String(nodeGetWiFiAccessPointAvailable()) + ":" + String(wifiAPResult) + "|" + "WiFi ST=" + String(nodeGetWiFiAvailable()) + ":" + String(wifiResult) + " (" + nodeGetWiFiIP() + ")");
 #endif
 	wifiStatus = wifiAPResult & wifiResult;
 	return wifiStatus;
@@ -388,7 +391,6 @@ bool WiFiReconnect()
 
 	if (nodeGetWiFiAvailable() == 1)
 	{
-
 		String WiFiSSID = nodeGetWiFiSSID();
 		String WiFiPassword = nodeGetWiFiPassword();
 		if (WiFiSSID.length() == 0)
@@ -656,4 +658,6 @@ WiFiMulti transportGetWifiMulti()
 {
 	return _WiFiMulti;
 }
+#endif
+
 #endif

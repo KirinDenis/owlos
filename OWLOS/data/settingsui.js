@@ -857,7 +857,14 @@ var settingsUI = {
     onPropertyCheckboxChange: function (event) {
         event.stopPropagation();
         var propCheckbox = event.currentTarget;
+        var chekboxDialog = createModalDialog(getLang("applyChanges"), "");
+        chekboxDialog.formGroup.innerHTML = getLang("areYouSure");
+        chekboxDialog.propCheckbox = propCheckbox;
+        chekboxDialog.onOK = settingsUI.applyCheckboxChangeClick;
+        chekboxDialog.show();        
 
+
+        /*
         makeModalDialog("resetPanel", "checkboxchange", getLang("checkchangedialog"), getLang("areYouSure"));
 
 
@@ -876,15 +883,14 @@ var settingsUI = {
         checkChengButton.innerText = getLang("applycheck");
 
         $("#checkboxchangeModal").modal('show');
+        */
 
         return false;
 
     },
 
-    applyCheckboxChangeClick: function (event) {
-        event.stopPropagation();
-        var checkChengButton = event.currentTarget;
-        var propCheckbox = checkChengButton.propCheckbox;
+    applyCheckboxChangeClick: function (chekboxDialog) {            
+        var propCheckbox = chekboxDialog.propCheckbox;
         var propTextDiv = propCheckbox.propTextDiv;
         var driverProperty = propTextDiv.driverProperty;
         var propTextDiv = propCheckbox.propTextDiv;
@@ -898,7 +904,8 @@ var settingsUI = {
                 driverProperty.setValue("0", undefined, undefined);
             }
         }
-        $("#checkboxchangeModal").modal('hide');
+        chekboxDialog.hide();
+        //$("#checkboxchangeModal").modal('hide');
         return false;
     },
 

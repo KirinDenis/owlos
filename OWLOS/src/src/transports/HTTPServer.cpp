@@ -498,7 +498,7 @@ void handleGetDriversId(WiFiClient client)
 void handleSetDriverProperty(WiFiClient client)
 {
 	if (argsCount > 2)
-	{
+	{		
 		if ((argName[0].equals("id")) && (argName[1].equals("property")) && (argName[2].equals("value")))
 		{
 			String driverResult = driversSetDriverProperty(arg[0], decode(arg[1]), decode(arg[2]));
@@ -509,8 +509,12 @@ void handleSetDriverProperty(WiFiClient client)
 			else if (driverResult.equals("0"))
 			{
 				driverResult = "bad set property";
+			} 
+			else 
+			{
+				driverResult = WrongPropertyName;
 			}
-
+           
 			String nodeResult = "";
 			if (driverResult.equals(WrongPropertyName)) //try set node property
 			{

@@ -73,6 +73,7 @@ OWLOS распространяется в надежде, что она буде
 
 //Основной метод драйвера setToPostion() - начните изучение драйвера с него. 
 
+#define DRIVER_ID "StepperDriver"
 
 bool StepperDriver::init()
 {

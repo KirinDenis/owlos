@@ -42,42 +42,44 @@ OWLOS распространяется в надежде, что она буде
 #include <Arduino.h>
 #include "BaseDriver.h"
 
-#define DRIVER_ID "sensor"
+class SensorDriver : public BaseDriver
+{
+public:
+	static int getPinsCount()
+	{
+		return 3;
+	}
 
-class SensorDriver : public BaseDriver {
-  public:
+	static int getPinType(int pinIndex)
+	{
+		switch (pinIndex)
+		{
+		case PIN0_INDEX:
+			return DIGITAL_I_MASK | ANALOG_I_MASK;
+		case PIN1_INDEX:
+			return VCC5_MASK | VCC33_MASK;
+		case PIN2_INDEX:
+			return GND_MASK;
+		default:
+			return NO_MASK;
+		}
+	}
 
-	  static int getPinsCount()
-	  {
-		  return 3;
-	  }
-
-	  static int getPinType(int pinIndex)
-	  {
-		  switch (pinIndex)
-		  {
-		  case PIN0_INDEX: return DIGITAL_I_MASK| ANALOG_I_MASK;
-		  case PIN1_INDEX: return VCC5_MASK | VCC33_MASK;
-		  case PIN2_INDEX: return GND_MASK;
-		  default:
-			  return NO_MASK;
-		  }
-	  }
-
-    bool init();
+	bool init();
 	void del();
-    bool begin(String _Topic);
-    bool query();
-    String getAllProperties();
-    bool publish();
-    String onMessage(String _topic, String _payload, int8_t transportMask);
+	bool begin(String _Topic);
+	bool query();
+	String getAllProperties();
+	bool publish();
+	String onMessage(String _topic, String _payload, int8_t transportMask);
 
 	bool getAnalog();
 	bool setAnalog(bool _analog, bool doEvent);
 
-    int getData();
-  private:
+	int getData();
+
+private:
 	bool analog = false;
-    int data = -1;
+	int data = -1;
 	float sensorTriger = 0;
 };

@@ -58,7 +58,7 @@ OWLOS распространяется в надежде, что она буде
   Please NOTE: The class itself is never used as a driver class.
                                                                             (...One morning thick snow fell in Babylon...) */
 
-#define DRIVER_MASK "BaseDriver"
+//#define DRIVER_MASK "BaseDriver"
 
 #define PIN0_INDEX 0
 #define PIN1_INDEX 1

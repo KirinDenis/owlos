@@ -42,8 +42,6 @@ OWLOS распространяется в надежде, что она буде
 #include <Arduino.h>
 #include "BaseDriver.h"
 
-#define DRIVER_ID "StepperDriver"
-
 #define VCC5_INDEX 4
 #define GND_INDEX 5
 

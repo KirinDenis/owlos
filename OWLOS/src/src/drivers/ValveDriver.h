@@ -42,13 +42,11 @@ OWLOS распространяется в надежде, что она буде
 #include <Arduino.h>
 #include "BaseDriver.h"
 
-#define DRIVER_ID "valve"
-
 #define CLOSE_PIN_INDEX 0
 #define OPEN_PIN_INDEX 1
 #define POSITION_PIN_INDEX 2
-#define VCC5_INDEX 3
-#define GND_INDEX 4
+#define _VCC5_INDEX 3
+#define _GND_INDEX 4
 
 #define MOTOR_STOP_COMMAND HIGH
 #define MOTOR_START_COMMAND LOW
@@ -67,8 +65,8 @@ public:
 		case CLOSE_PIN_INDEX: return DIGITAL_O_MASK;
 		case OPEN_PIN_INDEX: return DIGITAL_O_MASK;
 		case POSITION_PIN_INDEX: return ANALOG_I_MASK;
-		case VCC5_INDEX: return VCC5_MASK;
-		case GND_INDEX: return GND_MASK;
+		case _VCC5_INDEX: return VCC5_MASK || VCC33_MASK;
+		case _GND_INDEX: return GND_MASK;
 		default:
 			return NO_MASK;
 		}

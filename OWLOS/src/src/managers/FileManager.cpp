@@ -507,8 +507,9 @@ bool filesWriteStructure(String fileName, void *value)
 {
 	if (!_SPIFFSBegin())
 	{
-#ifdef DetailedDebug debugOut(FileSystem, "An Error has occurred while mounting file system");
-		return false;
+#ifdef DetailedDebug 
+       debugOut(FileSystem, "An Error has occurred while mounting file system");
+	   return false;
 #endif
 	}
 

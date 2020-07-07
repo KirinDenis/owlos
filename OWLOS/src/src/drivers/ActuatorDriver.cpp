@@ -41,6 +41,10 @@ OWLOS распространяется в надежде, что она буде
 
 #include "ActuatorDriver.h"
 
+#define DRIVER_MASK "ActuatorDriver"
+#define DRIVER_ID "actuator1"
+#define ActuatorLoopInterval 200
+
 bool ActuatorDriver::init()
 {
 	if (id.length() == 0)
@@ -201,8 +205,7 @@ int ActuatorDriver::getData()
 
 bool ActuatorDriver::setData(int _data, bool doEvent)
 {
-	debugOut("WRITE PIN DATA ", String(data));
-
+	
 	int storeData = data;
 
 	data = _data;

@@ -217,12 +217,12 @@ String nodeGetAllProperties()
 	result += "wifipassword=" + nodeGetWiFiPassword() + "//ps\n";
 	result += "wifiip=" + nodeGetWiFiIP() + "//\n";
 	result += "wifiisconnected=" + String(nodeGetWiFiIsConnected()) + "//bs\n";
-	result += "connectedwifissid=" + nodeGetConnectedWiFiSSID() + "//s\n";
+	result += "connectedwifissid=" + nodeGetConnectedWiFiSSID() + "//sr\n";
 	result += "wifirssi=" + String(nodeGetWiFiRSSI()) + "//r\n";
 	result += "wifimode=" + String(nodeGetWiFiMode()) + "//r\n";
 	result += nodeGetAllWiFiModes() + "//r\n";
 	result += "wifistatus=" + String(nodeGetWiFiStatus()) + "//r\n";
-	result += "wifistatustostring=" + String(nodeGetWiFiStatusToString()) + "//\n";
+	result += "wifistatustostring=" + String(nodeGetWiFiStatusToString()) + "//r\n";
 	result += nodeGetAllWiFiStatuses() + "//r\n";
 	result += nodeGetWiFiNetworksParameters() + "//r\n";
 	result += nodeGetAllWiFiEncryptionTypes() + "//r\n";
@@ -318,7 +318,7 @@ String onGetProperty(String _property, String _payload, int8_t transportMask)
 }
 
 String nodeOnMessage(String _topic, String _payload, int8_t transportMask)
-{
+{	
 	String result = WrongPropertyName;
 	if (String(topic + "/getnodeid").equals(_topic)) return onGetProperty("id", nodeGetUnitId(), transportMask);
 	else
@@ -1081,10 +1081,11 @@ int nodeGetMQTTClientState()
 
 //OTAAvailable()  
 int nodeGetOTAAvailable()
-{
+{	
 	if (propertyFileReaded.indexOf("otaavailable;") < 0)
 	{
-		return otaavailable = _getIntPropertyValue("otaavailable", DEFAULT_OTA_CLIENT_AVAILABLE);
+		otaavailable = _getIntPropertyValue("otaavailable", DEFAULT_OTA_CLIENT_AVAILABLE);
+		return otaavailable;
 	}
 	else
 	{
@@ -1096,7 +1097,6 @@ bool nodeSetOTAAvailable(int _otaavailable)
 	otaavailable = _otaavailable;
 	return  onInsideChange("otaavailable", String(otaavailable));
 }
-
 
 //OTAPort()  
 int nodeGetOTAPort()
