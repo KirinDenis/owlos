@@ -228,8 +228,18 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "сhangessaved=Зміни збережені \n" +
     "savechangeserror=Помилка. Зміни не збережені. Спробуйте ще раз \n" +
     "savingchanges=Збереження змін\n" +
+    "nodeselect=Виберіть вузол\n" +
+    "driverselect=Виберіть драйвер\n" +
+    "propselect=Виберіть властивість\n" +
+    "widgetselect=Виберіть віджет\n" +
+    "tooglesidebar=Переключити бічну панель\n" +
+    "pinsidebar=Закріпити бічну панель\n" +
+    "saveconfiguration=Зберегти налаштування\n" +
+    "tooglewidgetsmode=Переключити режим віджетів\n" +
+    "addwidget=Додати віджет\n" +
     "radialwidget=Radial\n" +
     "language=ukraine\n";
+
 
 var langen = "prepareUnit=prepare UI, please wait...\n" +
     "OK=Confirm\n" +

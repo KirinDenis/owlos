@@ -56,11 +56,11 @@ var dashboardUI = {
         dashboardUI.dashboardModeListners.push(event = { event: _event, sender: _sender });
     },
     onConfigLoad: function (configProperties) {
-        var saveWidgetsButton = headerPanelUI.addButton("saveaddedwidget", "fa fa-save", "save configuration", headerPanelUI.widgetsPanelButtonRole);
+        var saveWidgetsButton = headerPanelUI.addButton("saveaddedwidget", "fa fa-save", getLang("saveconfiguration"), headerPanelUI.widgetsPanelButtonRole);
         saveWidgetsButton.onclick = dashboardUI.saveAddedWidget;
-        var headerModeButton = headerPanelUI.addButton("dashboardaddwidget", "fa fa-edit", "toogle widgets mode", headerPanelUI.widgetsPanelButtonRole);
+        var headerModeButton = headerPanelUI.addButton("dashboardaddwidget", "fa fa-edit", getLang("tooglewidgetsmode"), headerPanelUI.widgetsPanelButtonRole);
         headerModeButton.onclick = dashboardUI.changeDashboadMode;
-        var addWidgetButton = headerPanelUI.addButton("dashboardaddwidget", "fa fa-plus", "add widget", headerPanelUI.widgetsPanelButtonRole);
+        var addWidgetButton = headerPanelUI.addButton("dashboardaddwidget", "fa fa-plus", getLang("addwidget"), headerPanelUI.widgetsPanelButtonRole);
         addWidgetButton.onclick = dashboardUI.onAddWidgetClick;
 
         //эта панель появляется когда виджетов нет

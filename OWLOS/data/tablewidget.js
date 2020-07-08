@@ -97,10 +97,10 @@ var TableWidget =
             th.innerText = getLang("newvalue");
             th.scope = "col";
             th = tr.appendChild(document.createElement('th'));
-            th.className = "w-5";
+            th.className = "w-2";
             th.scope = "col";
             th = tr.appendChild(document.createElement('th'));
-            th.className = "w-5";
+            th.className = "w-2";
             th.scope = "col"; //ссылка в последней колонки для перехода вверх таблицы
 
             var anchorTopHref = th.appendChild(document.createElement('a'));

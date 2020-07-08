@@ -210,8 +210,8 @@ function createSidebar() {
         //Конструктор    
         create: function () {
 
-            headerPanelUI.addButton("toggle-sidebar", "fa fa-bars", "toogle side bar", headerPanelUI.sideBarButtonRole);
-            headerPanelUI.addButton("pin-sidebar", "fa fa-anchor", "pin side bar", headerPanelUI.sideBarButtonRole);
+            headerPanelUI.addButton("toggle-sidebar", "fa fa-bars", getLang("tooglesidebar"), headerPanelUI.sideBarButtonRole);
+            headerPanelUI.addButton("pin-sidebar", "fa fa-anchor", getLang("pinsidebar"), headerPanelUI.sideBarButtonRole);
 
             var pageWrapper = document.getElementById("pagewrapper");
 

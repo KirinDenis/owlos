@@ -60,9 +60,6 @@
     border: 0px;
 }
 
-.tab-pane {
-    margin-top: 2rem; 
-}
 
 .driverPanelDiv {
     position: Relative;
@@ -379,8 +376,7 @@ background-color: rgba(137, 194, 220, 0.1);
         position: absolute;
         right: 15px;
         top: 10px;
-        transition: transform .3s ease;
-        transition: transform .3s ease, 
+        transition: transform .3s ease;        
         transform: rotate(90deg);
         right: 15px;
 

@@ -164,56 +164,62 @@ function loadingScripts(withInternet) {
                     var bootstrapScript = document.createElement('script'); //и ОН САМЫЙ, без него никак, грузим - ждем
                     bootstrapScript.onload = function () {//готово
                         loadingScript("configcore.js");
-                        loadingScript("languagescore.js"); //все модулю без URL принадлежать OWS OS и всегда грузятся с flash
-                        loadingScript("speechcore.js");
-                        loadingScript("drawcore.js");
-                        loadingScript("restclientcore.js");
-                        loadingScript("driverscore.js");
-                        loadingScript("scriptscore.js");
-                        loadingScript("pinscore.js");
+                        var languageScript = document.createElement('script');
+                        languageScript.onload = function () {
+                            //loadingScript("languagescore.js"); //все модулю без URL принадлежать OWS OS и всегда грузятся с flash
+                            loadingScript("speechcore.js");
+                            loadingScript("drawcore.js");
+                            loadingScript("restclientcore.js");
+                            loadingScript("driverscore.js");
+                            loadingScript("scriptscore.js");
+                            loadingScript("pinscore.js");
 
-                        loadingScript("dialogelement.js");
-                        loadingScript("dialoginputelement.js");
-                        loadingScript("buttonelement.js");
-                        loadingScript("dialogselectelement.js");
-                        loadingScript("sidebarelement.js");
-                        loadingScript("valueeditorelement.js");
-                        loadingScript("dialoglabelelement.js");
-                        loadingScript("dialogprogressbarelement.js");
+                            loadingScript("dialogelement.js");
+                            loadingScript("dialoginputelement.js");
+                            loadingScript("buttonelement.js");
+                            loadingScript("dialogselectelement.js");
+                            loadingScript("sidebarelement.js");
+                            loadingScript("valueeditorelement.js");
+                            loadingScript("dialoglabelelement.js");
+                            loadingScript("dialogprogressbarelement.js");
 
-                        var baseWidgetScript = document.createElement('script');
-                        baseWidgetScript.onload = function () {
-                            //  loadingScript("basewidget.js");
-                            loadingScript("radialwidget.js");
-                            loadingScript("actuatorwidget.js");
-                            loadingScript("lcdwidget.js");
-                            loadingScript("stepperwidget.js");
-                            loadingScript("motionwidget.js");
-                            loadingScript("smokewidget.js");
-                            loadingScript("lightwidget.js");
-                            loadingScript("temperaturewidget.js");
-                            loadingScript("graphwidget.js");
-                            loadingScript("tablewidget.js");
-                            loadingScript("valuewidget.js");
-                            loadingScript("widgetswrappers.js");
-                            loadingScript("headerpanelui.js");
-                            loadingScript("scriptsui.js");
-                            loadingScript("filespanelui.js");
-                            loadingScript("driversui.js");
-                            loadingScript("dashboardui.js");
-                            loadingScript("settingsui.js");
+                            var baseWidgetScript = document.createElement('script');
+                            baseWidgetScript.onload = function () {
+                                //  loadingScript("basewidget.js");
+                                loadingScript("radialwidget.js");
+                                loadingScript("actuatorwidget.js");
+                                loadingScript("lcdwidget.js");
+                                loadingScript("stepperwidget.js");
+                                loadingScript("motionwidget.js");
+                                loadingScript("smokewidget.js");
+                                loadingScript("lightwidget.js");
+                                loadingScript("temperaturewidget.js");
+                                loadingScript("graphwidget.js");
+                                loadingScript("tablewidget.js");
+                                loadingScript("valuewidget.js");
+                                loadingScript("widgetswrappers.js");
+                                loadingScript("headerpanelui.js");
+                                loadingScript("scriptsui.js");
+                                loadingScript("filespanelui.js");
+                                loadingScript("driversui.js");
+                                loadingScript("dashboardui.js");
+                                loadingScript("settingsui.js");
 
-                            loadingScript("index.js"); //ядро OWLOS UI, грузится последним, стартует систему
-                            //}
+                                loadingScript("index.js"); //ядро OWLOS UI, грузится последним, стартует систему
+                                //}
+                                //--> NOTE: код ниже - обратное сворачивание загрузчкив контента (стек загрузки)
+                                //nodePropertiesScript.src = "nodeproperties.js";
+                                //addToLogNL("loading nodeproperties from " + nodePropertiesScript.src);
+                                //document.getElementsByTagName('head')[0].appendChild(nodePropertiesScript);
+                            }
                             //--> NOTE: код ниже - обратное сворачивание загрузчкив контента (стек загрузки)
-                            //nodePropertiesScript.src = "nodeproperties.js";
-                            //addToLogNL("loading nodeproperties from " + nodePropertiesScript.src);
-                            //document.getElementsByTagName('head')[0].appendChild(nodePropertiesScript);
+                            baseWidgetScript.src = "basewidget.js";
+                            addToLogNL("loading basewidget from " + baseWidgetScript.src);
+                            document.getElementsByTagName('head')[0].appendChild(baseWidgetScript);
                         }
-                        //--> NOTE: код ниже - обратное сворачивание загрузчкив контента (стек загрузки)
-                        baseWidgetScript.src = "basewidget.js";
-                        addToLogNL("loading basewidget from " + baseWidgetScript.src);
-                        document.getElementsByTagName('head')[0].appendChild(baseWidgetScript);
+                        languageScript.src = "languagescore.js";
+                        addToLogNL("loading languagescore from " + languageScript.src);
+                        document.getElementsByTagName('head')[0].appendChild(languageScript);
                     }
                     //--> NOTE: код ниже - обратное сворачивание загрузчкив контента (стек загрузки)
                     if (withInternet) bootstrapScript.src = "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js";
@@ -312,16 +318,35 @@ function addToLog(text) {
 //NOTE: для указания цвета используется bootstrap - одна в начале загрузки его не будет, консоль "окрасится" если получится загрузить bootstrap
 function addToLog(text, code) {
     var bootLog = document.getElementById("bootLog");
+
+    while (bootLog.childNodes.length > 100) {
+        bootLog.removeChild(bootLog.lastChild);
+    }
+
+    var consoleDateText = document.createElement('text');
+    consoleDateText.className = "text-secondary";
+    consoleDateText.innerText = new Date().toLocaleString();
+
+    var consoleText = document.createElement('text');
+    //consoleText.className = "text-primary console-text";
+    consoleText.innerText = text;
+
+    bootLog.insertBefore(consoleText, bootLog.firstChild);
+    bootLog.insertBefore(consoleDateText, consoleText);
+
+
+
     if (code == 1) { //success
-        bootLog.innerHTML += "<text class='text-secondary'>" + new Date().toLocaleString() + "</text><text class='text-primary'> " + text + "</text>";
+        consoleText.className = "text-primary console-text";
     }
     else
         if (code == 2) { //error    
-            bootLog.innerHTML += "<text class='text-secondary'>" + new Date().toLocaleString() + "</text><text class='text-danger'> " + text + "</text>";
+            consoleText.className = "text-danger console-text";
         }
         else {
-            bootLog.innerHTML += "<text class='text-secondary'>" + new Date().toLocaleString() + "</text><text class='text-info'> " + text + "</text>";
+            consoleText.className = "text-info console-text";
         }
+
 }
 //добавить строку обычным цветом и перевести карретку
 function addToLogNL(text) {
@@ -340,15 +365,18 @@ function addToLogEnd(text) {
 //добавить строку в конец текущей с цветом
 //очень удобно, печатаем серым "loading poper.js..." и если удалось добавляем в конец строки зеленым "ок" или красным "error"
 function addToLogEnd(text, code) {
+    addToLogNL(text, code);
+    /*
     var bootLog = document.getElementById("bootLog");
     if (code == 1) { //success
-        bootLog.innerHTML += "<text class='text-success'> " + text + "\n</text>";
+        bootLog.innerHTML = "<text class='text-success'> " + text + "\n</text>" + bootLog.innerHTML;
     }
     else
         if (code == 2) { //error    
-            bootLog.innerHTML += "<text class='text-danger'> " + text + "\n</text>";
+            bootLog.innerHTML = "<text class='text-danger'> " + text + "\n</text>" + bootLog.innerHTML;
         }
         else {
-            bootLog.innerHTML += text + "\n";
+            bootLog.innerHTML = text + "\n" + bootLog.innerHTML;
         }
+    */
 }
