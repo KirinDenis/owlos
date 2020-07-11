@@ -88,6 +88,26 @@ function sidebarItemClick(event) {
         aHref.addWidgetButton.style.display = "";
     }
 
+    if (aHref.scriptExecuteButton != undefined) {
+        aHref.scriptExecuteButton.style.display = "";
+    }
+
+    if (aHref.scriptPauseButton != undefined) {
+        aHref.scriptPauseButton.style.display = "";
+    }
+
+    if (aHref.scriptDebugButton != undefined) {
+        aHref.scriptDebugButton.style.display = "";
+    }
+
+    if (aHref.scriptDeleteButton != undefined) {
+        aHref.scriptDeleteButton.style.display = "";
+    }
+
+    if (aHref.uploadSpan != undefined) {
+        aHref.uploadSpan.style.display = "";
+    }
+
     return false;
 }
 

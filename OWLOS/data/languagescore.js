@@ -237,6 +237,9 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "saveconfiguration=Зберегти налаштування\n" +
     "tooglewidgetsmode=Переключити режим віджетів\n" +
     "addwidget=Додати віджет\n" +
+    "createdriverdialog=Додати драйвер\n" +
+    "addnodename=Додати вузол\n" +
+    "size=розмір\n" +
     "radialwidget=Radial\n" +
     "language=ukraine\n";
 
@@ -623,6 +626,17 @@ var langru = "prepareUnit=Подготовка интерфейса пользо
     "сhangessaved=Изменения внесены\n" +
     "savechangeserror=Ошибка сохранения изменений. Поробуйте еще раз\n" +
     "savingchanges=Сохранение изменений\n" +
+    "nodeselect=Select node\n" +
+    "driverselect=Select driver\n" +
+    "propselect=Select property\n" +
+    "widgetselect=Select widget\n" +
+    "tooglesidebar=Toogle sidebar\n" +
+    "pinsidebar=Pin sidebar\n" +
+    "saveconfiguration=Save configuration\n" +
+    "tooglewidgetsmode=Toogle widgets mode\n" +
+    "addwidget=Add widget\n" +
+    "createdriverdialog=Add driver\n" +
+    "addnodename=Add node\n" +
     "radialwidget=Radial\n" +
     "language=russian\n";
 

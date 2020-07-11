@@ -43,7 +43,7 @@ var scriptsUI = {
     onScriptNew: function (script) {
         var scriptsSubmenuUl = document.getElementById(script.node.nodenickname + "scriptssubmenu");
         if (scriptsSubmenuUl == undefined) return;
-        var scriptsLi = sideBar.createItem(scriptsSubmenuUl, script.node.nodenickname + "_" + script.name, "#" + script.node.nodenickname + "_" + script.name + "panel", script.name, settingsUI.driverAnchorClick, "fa fa-bolt", undefined);
+        var scriptsLi = sideBar.createItem(scriptsSubmenuUl, script.node.nodenickname + "_" + script.name, "#" + script.node.nodenickname + "_" + script.name + "panel", script.name, sidebarItemClick, "fa fa-bolt", undefined);
         switch (parseInt(script.status)) {
             case stopScriptStatus: scriptsLi.href.style.color = ""; break;
             case runScriptStatus: scriptsLi.href.style.color = theme.success; break;
@@ -82,6 +82,51 @@ var scriptsUI = {
         textArea.value = script.bytecode;
         textArea.onkeydown = scriptsUI.textAreaOnKeyDown;
 
+        var scriptExecuteButton = headerPanelUI.addButton(script.node.nodenickname + "_" + script.name + "executionButton", "fa fa-bolt", getLang("scriptexecute"), headerPanelUI.scriptButtonRole);
+        scriptExecuteButton.script = script;
+        scriptExecuteButton.textArea = textArea;
+        scriptExecuteButton.labels = label;
+        scriptExecuteButton.onclick = scriptsUI.scriptExecuteClick;        
+        scriptsLi.href.scriptExecuteButton = scriptExecuteButton;
+
+        textArea.scriptExecuteButton = scriptExecuteButton;        
+
+        var scriptPauseButton = headerPanelUI.addButton(script.node.nodenickname + "_" + script.name + "pauseButton", "fa fa-pause", getLang("scriptpause"), headerPanelUI.scriptButtonRole);
+        scriptPauseButton.script = script;
+        scriptPauseButton.node = script.node; //когда ноду удалят и прийдет ActiveReciever - Script может уже не быть
+        scriptPauseButton.scriptExecuteButton = scriptExecuteButton;
+        scriptPauseButton.textArea = textArea;
+        scriptPauseButton.labels = label;
+        scriptPauseButton.onclick = scriptsUI.scriptPauseClick;
+        scriptsLi.href.scriptPauseButton = scriptPauseButton;
+        
+        scriptExecuteButton.scriptPauseButton = scriptPauseButton;
+
+        var scriptDebugButton = headerPanelUI.addButton(script.node.nodenickname + "_" + script.name + "debugButton", "fa fa-bug", getLang("scriptstartdebug"), headerPanelUI.scriptButtonRole);                    
+        scriptDebugButton.script = script;
+        scriptDebugButton.node = script.node;
+        scriptDebugButton.scriptExecuteButton = scriptExecuteButton;
+        scriptDebugButton.textArea = textArea;
+        scriptDebugButton.labels = label;
+        scriptDebugButton.onclick = scriptsUI.scriptDebugClick;
+        scriptDebugButton.debugNext = false;
+        
+        scriptsLi.href.scriptDebugButton = scriptDebugButton;
+        
+        var scriptDeleteButton = headerPanelUI.addButton(script.node.nodenickname + "_" + script.name + "deleteButton", "fa fa-trash", getLang("scriptdelete"), headerPanelUI.scriptButtonRole);                                            
+        scriptDeleteButton.script = script;
+        scriptDeleteButton.node = script.node; //когда ноду удалят и прийдет ActiveReciever - Script может уже не быть
+        scriptDeleteButton.scriptExecuteButton = scriptExecuteButton;
+        scriptDeleteButton.scriptPauseButton = scriptPauseButton;
+        scriptDeleteButton.textArea = textArea;
+        scriptDeleteButton.labels = label;
+        scriptDeleteButton.onclick = scriptsUI.scriptDeleteClick;
+
+        scriptExecuteButton.scriptDeleteButton = scriptDeleteButton;
+        scriptsLi.href.scriptDeleteButton = scriptDeleteButton;
+
+
+        /*
         var scriptExecuteButton = byteCodeCardDiv.appendChild(document.createElement('button'));
         scriptExecuteButton.type = "button";
         scriptExecuteButton.id = script.node.nodenickname + "_" + script.name + "executionButton";
@@ -93,9 +138,10 @@ var scriptsUI = {
         scriptExecuteButton.appendChild(document.createElement("i")).className = "fa fa-bolt";
         var scriptExecuteButtonSpan = scriptExecuteButton.appendChild(document.createElement("span"));
         scriptExecuteButtonSpan.innerHTML = " " + getLang("scriptexecute");
+        */
 
-        textArea.scriptExecuteButton = scriptExecuteButton;
-
+        
+/*
         var scriptPauseButton = byteCodeCardDiv.appendChild(document.createElement('button'));
         scriptPauseButton.type = "button";
         scriptPauseButton.id = script.node.nodenickname + "_" + script.name + "pauseButton";
@@ -109,8 +155,9 @@ var scriptsUI = {
         scriptPauseButton.appendChild(document.createElement("i")).className = "fa fa-pause";
         var scriptPauseButtonSpan = scriptPauseButton.appendChild(document.createElement("span"));
         scriptPauseButtonSpan.innerHTML = " " + getLang("scriptpause");
+        */
 
-        scriptExecuteButton.scriptPauseButton = scriptPauseButton;
+        /*
 
         var scriptDebugButton = byteCodeCardDiv.appendChild(document.createElement('button'));
         scriptDebugButton.type = "button";
@@ -126,7 +173,9 @@ var scriptsUI = {
         scriptDebugButton.debugNext = false;
         var scriptDebugButtonSpan = scriptDebugButton.appendChild(document.createElement("span"));
         scriptDebugButtonSpan.innerHTML = " " + getLang("scriptstartdebug");
+        */
 
+        /*
         var scriptDeleteButton = byteCodeCardDiv.appendChild(document.createElement('button'));
         scriptDeleteButton.type = "button";
         scriptDeleteButton.id = script.node.nodenickname + "_" + script.name + "deleteButton";
@@ -144,6 +193,7 @@ var scriptsUI = {
 
 
         scriptExecuteButton.scriptDeleteButton = scriptDeleteButton;
+        */
 
         var label = byteCodeCardDiv.appendChild(document.createElement('label'));
         label.id = script.node.nodenickname + "_" + script.name + "label";
@@ -203,6 +253,7 @@ var scriptsUI = {
     selectCodeLine: function selectTextareaLine(tarea, lineNum) {
         lineNum--; // array starts at 0
         var lines = tarea.value.split("\n");
+        
 
         // calculate start/end
         var startPos = 0, endPos = tarea.value.length;
@@ -214,6 +265,7 @@ var scriptsUI = {
 
         }
 
+        if (lineNum < 0) return;
         var endPos = lines[lineNum].length + startPos;
 
         // do selection

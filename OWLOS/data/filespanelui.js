@@ -73,14 +73,15 @@ var FilesList =
 
         _proto.drawFilesList = function drawFilesList() {
             if (this.uploadSpan == undefined) {
-                this.uploadSpan = this.filesAnchors.appendChild(document.createElement('button'));
-                this.uploadSpan.type = "button";
+                this.filesItem =  document.getElementById("filesitem" + this.node.nodenickname);
+                this.uploadSpan = headerPanelUI.addButton("uploadfilebuttoon", "fa fa-file", getLang("upload"), headerPanelUI.filesButtonRole);                                                    
                 this.uploadSpan.href = boardhost + "upload";
                 this.uploadSpan.onclick = this.uploadClick;
                 this.uploadSpan.setAttribute("data-toggle", "modal");
-                this.uploadSpan.setAttribute("data-target", "#uploadModal");
-                this.uploadSpan.innerText = getLang("upload");
+                this.uploadSpan.setAttribute("data-target", "#uploadModal");                
                 this.uploadSpan.filesList = this;
+                this.filesItem.href.uploadSpan = this.uploadSpan;
+                
             }
 
             if (this.tableDiv == undefined) {
@@ -103,11 +104,11 @@ var FilesList =
                 th.scope = "col";
                 th = tr.appendChild(document.createElement('th'));
                 th.className = "w-10";
-                th.innerText = "name";
+                th.innerText = getLang("name");
                 th.scope = "col";
                 th = tr.appendChild(document.createElement('th'));
                 th.className = "w-5";
-                th.innerText = "size";
+                th.innerText = getLang("size");
                 th.scope = "col";
                 th = tr.appendChild(document.createElement('th')); //th.className = "w-50";
 
