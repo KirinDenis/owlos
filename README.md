@@ -28,7 +28,10 @@
 	- browse http://192.168.4.1:8084 to access OWLOS UI LGN: admin PWD: admin
 	
 # Copyright 2019, 2020 by:
+- Serhii Lehkii (sergey@light.kiev.ua)
 - Konstantin Brul (konstabrul@gmail.com)
 - Vitalii Glushchenko (cehoweek@gmail.com)
+- Stanislav Kvashchuk (skat@ukr.net)
+- Vladimir Kovalevich (covalevich@gmail.com)
 - Denys Melnychuk (meldenvar@gmail.com)
 - Denis Kirin (deniskirinacs@gmail.com)
