@@ -1,4 +1,4 @@
-![OWLOS в режиме WiFi точки доступа без файлов UI](https://github.com/KirinDenis/owlos/blob/master/OWLOSResource/images/owlos_scheme_WiFIMixedUsage.jpg)
+![OWLOS в режиме WiFi точки доступа без файлов UI](https://github.com/KirinDenis/owlos/blob/master/OWLOSResource/images/owlos_core3.jpg)
 
 # OWLOS 
 ### open source network operating system for managing IoT devices.
