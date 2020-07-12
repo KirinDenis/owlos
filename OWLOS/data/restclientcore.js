@@ -39,17 +39,18 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-var boardhost = "http://192.168.1.9:8084/"; //DEBUG
-//var boardhost = "http://192.168.4.1:8084/"; //DEBUG as WiFi Access Point
-//var boardhost = "";
+//var boardhost = "http://81.95.178.177:8084/"; //DEBUG
+//var boardhost = "http://iot.light.kiev.ua:8084/";
+var boardhost = "http://192.168.1.5:8084/"; //DEBUG as WiFi Access Point
+//var boardhost = ""; //UI loading from ESPxxxx
 
 
 function getUnitProperty(host, property) {
-    return httpGetWithErrorReson(host + "getunitproperty?property=" + escape(property));
+    return httpGetWithErrorReson(host + "getnodeproperty?property=" + escape(property));
 }
 
 function setUnitProperty(host, property, value) {
-    return httpGetWithErrorReson(host + "setunitproperty?property=" + escape(property) + "&value=" + escape(value));
+    return httpGetWithErrorReson(host + "setnodeproperty?property=" + escape(property) + "&value=" + escape(value));
 }
 
 function setDriverProperty(host, id, property, value) {
@@ -82,12 +83,14 @@ function deleteScriptAsync(host, name, asyncReciever, sender) {
 }
 
 
-function reset(host) {
+function resetNodeOneWayTicket(host) {
     return httpGetAsync(host + "reset");
 }
 
-function addDriver(host, type, id, pin1, pin2, pin3, pin4, pin5) {
-    return httpGetWithErrorReson(host + "adddriver?type=" + type + "&id=" + id + "&pin1=" + pin1 + "&pin2=" + pin2 + "&pin3=" + pin3 + "&pin4=" + pin4);
+function addDriver(host, apiParams) {
+
+    
+    return httpGetWithErrorReson(host + "adddriver?" + apiParams);
 }
 
 function updateUIAsync(host) {
@@ -103,6 +106,9 @@ function getUpdateLogAsyncWithReciever(host, asyncReciever, upperAsyncReciever, 
     return httpGetAsyncWithReciever(host + "updatelog", asyncReciever, upperAsyncReciever, sender, upperSender);
 }
 
+function deleteDriverAsync(host, id, asyncReciever, upperAsyncReciever, sender, upperSender) {
+    return httpGetAsyncWithReciever(host + "deletedriver?id=" + id, asyncReciever, upperAsyncReciever, sender, upperSender);
+}
 
 function httpGet(_url) {
     var _data = null;
@@ -214,14 +220,11 @@ function httpPostAsyncWithErrorReson(_url, arg, _postdata, asyncReciever, counte
     $.ajax({
         url: encodeURI(_url + arg),
         type: "POST",
-
-
         data: formData,
         contentType: false,
         processData: false,
         cache: false,
         async: true,
-
         success: function (data) {
              addToLogNL("call RESTful: " + _url + " result OK", 1);
             _data = data;
@@ -229,7 +232,6 @@ function httpPostAsyncWithErrorReson(_url, arg, _postdata, asyncReciever, counte
                 asyncReciever(_data, counter, dataString, length, _url);
             }
         },
-
         error: function (XMLHttpRequest, textStatus, errorThrown) {
              addToLogNL("call POST async: " + _url + " result ERORR [" + XMLHttpRequest.status + "]", 2);
             _data = "%error[" + XMLHttpRequest.status + "]";
@@ -241,12 +243,10 @@ function httpPostAsyncWithErrorReson(_url, arg, _postdata, asyncReciever, counte
             }
         }
     });
-
     return _data;
 }
 
-
-function httpGetAsync(_url, asyncReciever, upperAsyncReciever, sender, upperSender) {
+function httpGetAsync(_url, asyncReciever, upperAsyncReciever, sender, upperSender, _timeout = 30000) {
     var _data = null;
     $.ajax({
         url: encodeURI(_url),
@@ -259,6 +259,7 @@ function httpGetAsync(_url, asyncReciever, upperAsyncReciever, sender, upperSend
         type: "GET",
         contentType: "text/plain charset=utf-8",
         dataType: "text",
+        timeout: _timeout,
 
         success: function (_data) {
             addToLogNL("call RESTful async: " + _url + " result OK", 1);
@@ -267,7 +268,6 @@ function httpGetAsync(_url, asyncReciever, upperAsyncReciever, sender, upperSend
             }
 
         },
-
         error: function (XMLHttpRequest, textStatus, errorThrown) {
             //addToLogNL("call RESTful async: " + _url + " result ERORR [" + XMLHttpRequest.status + "]", 2);
             _data = "%error[" + XMLHttpRequest.status + "]";
@@ -282,8 +282,7 @@ function httpGetAsync(_url, asyncReciever, upperAsyncReciever, sender, upperSend
 
     return _data;
 }
-
-function httpGetAsyncWithReciever(_url, asyncReciever, upperAsyncReciever, sender, upperSender) {
+function httpGetAsyncWithReciever(_url, asyncReciever, upperAsyncReciever, sender, upperSender, _timeout = 30000) {
     var _data = null;
     $.ajax({
         url: encodeURI(_url),
@@ -296,6 +295,7 @@ function httpGetAsyncWithReciever(_url, asyncReciever, upperAsyncReciever, sende
         type: "GET",
         contentType: "text/plain charset=utf-8",
         dataType: "text",
+        timeout: _timeout,
 
         success: function (data) {
             addToLogNL("call RESTful async: " + _url + " result OK", 1);
@@ -305,20 +305,15 @@ function httpGetAsyncWithReciever(_url, asyncReciever, upperAsyncReciever, sende
             }
         },
         
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-            //addToLogNL("call RESTful async: " + _url + " result ERORR [" + XMLHttpRequest.status + "]", 2);
+        error: function (XMLHttpRequest, textStatus, errorThrown) {            
             _data = "%error[" + XMLHttpRequest.status + "]";
             if ((XMLHttpRequest.responseText !== undefined) && (XMLHttpRequest.responseText !== null)) {
                 _data += " response: " + XMLHttpRequest.responseText;
             }
             if (asyncReciever != undefined) {
                 asyncReciever(_data, upperAsyncReciever, sender, upperSender);
-            }
-
-            //XMLHttpRequest.host;
+            }            
         }
-
     });
-
     return _data;
 }

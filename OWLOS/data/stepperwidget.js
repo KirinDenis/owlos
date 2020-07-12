@@ -44,7 +44,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 var StepperWidget =
-    
+
     function () {
         "use strict";
 
@@ -119,7 +119,7 @@ var StepperWidget =
         };
 
         _proto.refresh = function refresh(percent, toPercent, widgetText, text) {
-            text = getLang(text); //if ((this.percent == percent) && (this.toPercent == toPercent) && (this.widgetText == widgetText) && (this.text == text)) return;
+            text = getLang(text); 
 
             this.percent = Math.round(percent);
             this.toPercent = Math.round(toPercent);
@@ -146,33 +146,6 @@ var StepperWidget =
             //draw pervent text ----------
             var elementWidth = 0;
             var elementHeight = 0;
-            /*
-            if (this.widgetElement == null) {
-                this.widgetElement = this.widgetHolder.appendChild(document.createElement("h4"));            
-                this.widgetElement.firstTime = true;
-            }
-            
-            switch (this.networkStatus) {
-                case NET_ONLINE: this.widgetElement.className = "ActuatorWidgetPercent text-success"; break;
-                case NET_ERROR: this.widgetElement.className = "ActuatorWidgetPercent text-danger"; break;
-                case NET_RECONNECT: this.widgetElement.className = "ActuatorWidgetPercent text-info"; break;
-                default: //offline
-                    this.widgetElement.className = "ActuatorWidgetPercent text-secondary"; break;
-            }
-             this.widgetElement.innerHTML = this.widgetText;
-            // this.widgetElement.innerHTML = "";
-             if (this.widgetElement.firstTime) {
-                var elementWidth = this.widgetElement.getBoundingClientRect().width;
-                 if (elementWidth < this.size) {
-                    this.widgetElement.style.fontSize = (this.size / 2) / elementWidth + "rem";
-                }
-                 elementWidth = this.widgetElement.getBoundingClientRect().width;
-                this.widgetElement.style.marginLeft = this.size / 2 - elementWidth / 2 + "px";
-                 var elementHeight = this.widgetElement.getBoundingClientRect().height;
-                this.widgetElement.style.marginTop = - (elementHeight / 2.0 + this.size / 2.0) + "px";
-                 this.widgetElement.firstTime = false;
-            }
-            */
             //draw text label --------------
 
             if (this.textElement == null) {

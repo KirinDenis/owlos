@@ -40,7 +40,7 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 var ValueWidget =
-    
+
     function (_BaseWidget) {
         "use strict";
 
@@ -57,20 +57,19 @@ var ValueWidget =
 
             widget.radius = widget.size / 3;
             widget.topMargin = widget.centreY + widget.size / 10;
-            
+
             widget._properties.textfontsize =
-                {
-                    name: "Value text size",
-                    value: 1.0,
-                    type: "f"
-                };
+            {
+                name: "Value text size",
+                value: 1.0,
+                type: "f"
+            };
 
             widget.clickableToTop();
             widget.properties = widget._properties;
             widget.doOnLoad();
 
         };
-
 
         ValueWidget.prototype.drawText = function drawText() {
             if (this.SVGWidgetText == undefined) return;
@@ -79,12 +78,11 @@ var ValueWidget =
             }
             _BaseWidget.prototype.drawText.call(this);
             this.SVGWidgetText.color = theme.danger;
-            
+
         };
 
-
         ValueWidget.prototype.drawWidget = function drawWidget() {
-        
+
             _BaseWidget.prototype.drawWidget.call(this);
         };
 

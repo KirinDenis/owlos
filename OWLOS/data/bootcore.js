@@ -62,7 +62,7 @@ OWLOS распространяется в надежде, что она буде
 //^^^---------------------------------------------------------------------------------------------------------------------------------------------------
 
 //Global flags 
-const NET_OFFLINE = 0; 
+const NET_OFFLINE = 0;
 const NET_ONLINE = 1;
 const NET_ERROR = 2;
 const NET_RECONNECT = 3;
@@ -70,7 +70,6 @@ const NET_REFRESH = 4; //используется объектом drivers то�
 
 //var UIWatch = 'light';
 var UIWatch = '';
-
 
 function boot() {
     try { //first jQuery and chech internet access (if not internet - loading library from local)                
@@ -99,7 +98,7 @@ function boot() {
             };
             jQueryScriptLocal.onerror = function () {//если все совсем, совсем плохо - не интернета, не нужных файлов во flash памяти модуля
                 addToLogEnd("...ERROR", 2);
-                addToLogNL("Error booting unit, check local unit's files..."); //NOTE: мы оборвем процесс загрузки (((
+                addToLogNL("Error booting node, check local node's files..."); //NOTE: мы оборвем процесс загрузки (((
             };
 
             jQueryScriptLocal.src = "jquery.min.js";
@@ -110,7 +109,7 @@ function boot() {
         addToLog("loading jQuery from " + jQueryScript.src);
         document.getElementsByTagName('head')[0].appendChild(jQueryScript);
     } catch (error) { //если что то пошло совсем не так
-        console.error(exception);
+        console.error(error);
         addToLogNL("loading scripts exception: " + error, 2);
     }
 }
@@ -118,30 +117,39 @@ function boot() {
 //так как мы используем асинхронный метод загрузки - некоторые модули должне "дождатъся" загрузки тех от кого они зависят)
 //...и да - нет никакого списка загрузки, как не странно здесь удобен хардкод
 function loadingScripts(withInternet) {
+
+    jQuery.readyException = function (error) {
+        addToLogNL("jQuery error: " + error, 2);
+    };
+
+    $(document).ajaxError(function (event, request, settings) {
+        addToLogNL("Ajax error: " + settings.url, 2);
+    });
+
     //bottstrap css
     new Promise(function (resolve, reject) {//первым грузим bootstrap.css и ожидаем окончание
         var link = document.createElement('link');
         link.rel = 'stylesheet';
 
         if (UIWatch === 'light') {
-            if (withInternet) link.href = "https://bootswatch.com/4/flatly/bootstrap.min.css"; 
+            if (withInternet) link.href = "https://bootswatch.com/4/flatly/bootstrap.min.css";
             else link.href = "bootstrap.spacelab.min.css"; //если мы без интернет
         }
         else {//default 
-            if (withInternet) link.href = "https://bootswatch.com/4/slate/bootstrap.min.css"; //если мы с интернет //link.href = "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css";
-            else link.href = "bootstrap.min.css"; //если мы без интернет
+            //if (withInternet) link.href = "https://bootswatch.com/4/slate/bootstrap.min.css"; //если мы с интернет //link.href = "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css";
+            //else 
+            //all time local copy loading
+            link.href = "bootstrap.min.css"; //если мы без интернет
 
         }
-        
-
         addToLog("loading bootstrap.css from " + link.href); //намерения загрузить в консоль
-
         document.getElementsByTagName("head")[0].appendChild(link);
         link.onload = function () {//если получится загрузить bootstap.css
             addToLogEnd("..OK", 1);//отметим в консоле об успехе 
             resolve();//говорим наверх что все хорошо -> https://learn.javascript.ru/promise
-            if (withInternet) loadCSS("https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.css"); //следующий CSS с интернет
-            else loadCSS("dataTables.min.css");//без 
+            //if (withInternet) loadCSS("https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.css"); //следующий CSS с интернет
+            //else 
+            loadCSS("dataTables.min.css");//без 
             loadCSS("ui.css"); //это OWLOS UI CSS - его грузим из модуля
             //first jQuery Tables
             var jQueryTablesScript = document.createElement('script'); //многие зависят от jQueryTables, например datatables.js - по этому будем ожидать его загрузки что бы продолжить
@@ -156,47 +164,62 @@ function loadingScripts(withInternet) {
                     var bootstrapScript = document.createElement('script'); //и ОН САМЫЙ, без него никак, грузим - ждем
                     bootstrapScript.onload = function () {//готово
                         loadingScript("configcore.js");
-                        loadingScript("languagescore.js"); //все модулю без URL принадлежать OWS OS и всегда грузятся с flash
-                        loadingScript("speechcore.js");
-                        loadingScript("drawcore.js");
-                        loadingScript("restclientcore.js");
-                        loadingScript("driverscore.js");
-                        loadingScript("scriptscore.js");
+                        var languageScript = document.createElement('script');
+                        languageScript.onload = function () {
+                            //loadingScript("languagescore.js"); //все модулю без URL принадлежать OWS OS и всегда грузятся с flash
+                            loadingScript("speechcore.js");
+                            loadingScript("drawcore.js");
+                            loadingScript("restclientcore.js");
+                            loadingScript("driverscore.js");
+                            loadingScript("scriptscore.js");
+                            loadingScript("pinscore.js");
 
-                        var baseWidgetScript = document.createElement('script');
-                        baseWidgetScript.onload = function () {
-                            //  loadingScript("basewidget.js");
-                            loadingScript("radialwidget.js");
-                            loadingScript("actuatorwidget.js");
-                            loadingScript("lcdwidget.js");
-                            loadingScript("stepperwidget.js");
-                            loadingScript("motionwidget.js");
-                            loadingScript("smokewidget.js");
-                            loadingScript("lightwidget.js");
-                            loadingScript("temperaturewidget.js");
-                            loadingScript("graphwidget.js");
-                            loadingScript("tablewidget.js");
-                            loadingScript("valuewidget.js");
-                            loadingScript("widgetswrappers.js");
-                            loadingScript("filespanelui.js");
-                            loadingScript("driversui.js");
-                            loadingScript("dashboardui.js");
-                            loadingScript("settingsui.js");
+                            loadingScript("dialogelement.js");
+                            loadingScript("dialoginputelement.js");
+                            loadingScript("buttonelement.js");
+                            loadingScript("dialogselectelement.js");
+                            loadingScript("sidebarelement.js");
+                            loadingScript("valueeditorelement.js");
+                            loadingScript("dialoglabelelement.js");
+                            loadingScript("dialogprogressbarelement.js");
 
-                            //var unitPropertiesScript = document.createElement('script'); //с ожиданием
-                            //unitPropertiesScript.onload = function () { //when unit properties is loading we can start index script
+                            var baseWidgetScript = document.createElement('script');
+                            baseWidgetScript.onload = function () {
+                                //  loadingScript("basewidget.js");
+                                loadingScript("radialwidget.js");
+                                loadingScript("actuatorwidget.js");
+                                loadingScript("lcdwidget.js");
+                                loadingScript("stepperwidget.js");
+                                loadingScript("motionwidget.js");
+                                loadingScript("smokewidget.js");
+                                loadingScript("lightwidget.js");
+                                loadingScript("temperaturewidget.js");
+                                loadingScript("graphwidget.js");
+                                loadingScript("tablewidget.js");
+                                loadingScript("valuewidget.js");
+                                loadingScript("widgetswrappers.js");
+                                loadingScript("headerpanelui.js");
+                                loadingScript("scriptsui.js");
+                                loadingScript("filespanelui.js");
+                                loadingScript("driversui.js");
+                                loadingScript("dashboardui.js");
+                                loadingScript("settingsui.js");
 
-                            loadingScript("index.js"); //ядро OWLOS UI, грузится последним, стартует систему
-                            //}
+                                loadingScript("index.js"); //ядро OWLOS UI, грузится последним, стартует систему
+                                //}
+                                //--> NOTE: код ниже - обратное сворачивание загрузчкив контента (стек загрузки)
+                                //nodePropertiesScript.src = "nodeproperties.js";
+                                //addToLogNL("loading nodeproperties from " + nodePropertiesScript.src);
+                                //document.getElementsByTagName('head')[0].appendChild(nodePropertiesScript);
+                            }
                             //--> NOTE: код ниже - обратное сворачивание загрузчкив контента (стек загрузки)
-                            //unitPropertiesScript.src = "unitproperties.js";
-                            //addToLogNL("loading unitproperties from " + unitPropertiesScript.src);
-                            //document.getElementsByTagName('head')[0].appendChild(unitPropertiesScript);
+                            baseWidgetScript.src = "basewidget.js";
+                            addToLogNL("loading basewidget from " + baseWidgetScript.src);
+                            document.getElementsByTagName('head')[0].appendChild(baseWidgetScript);
                         }
-                        //--> NOTE: код ниже - обратное сворачивание загрузчкив контента (стек загрузки)
-                        baseWidgetScript.src = "basewidget.js";
-                        addToLogNL("loading basewidget from " + baseWidgetScript.src);
-                        document.getElementsByTagName('head')[0].appendChild(baseWidgetScript);
+                        languageScript.src = "languagescore.js";
+                        addToLogNL("loading languagescore from " + languageScript.src);
+                        document.getElementsByTagName('head')[0].appendChild(languageScript);
                     }
                     //--> NOTE: код ниже - обратное сворачивание загрузчкив контента (стек загрузки)
                     if (withInternet) bootstrapScript.src = "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js";
@@ -253,7 +276,6 @@ function _defineProperties(target, props) {
         Object.defineProperty(target, descriptor.key, descriptor);
     }
 }
-
 function _createClass(Constructor, protoProps, staticProps) {
     if (protoProps) {
         _defineProperties(Constructor.prototype, protoProps);
@@ -262,20 +284,17 @@ function _createClass(Constructor, protoProps, staticProps) {
         _defineProperties(Constructor, staticProps); return Constructor;
     }
 }
-
 function _assertThisInitialized(self) {
     if (self === void 0) {
         throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
     } return self;
 }
-
 //see: https://learn.javascript.ru/prototype
 function _inheritsLoose(subClass, superClass) {
-    subClass.prototype = Object.create(superClass.prototype); 
+    subClass.prototype = Object.create(superClass.prototype);
     subClass.prototype.constructor = subClass;
     subClass.__proto__ = superClass;
 }
-
 function waitForElement(element, callBack) {
     window.setTimeout(function () {
         if ($("#" + element.id).length) {
@@ -288,13 +307,9 @@ function waitForElement(element, callBack) {
         }
     }, 500)
 }
-
-
-
 //--------------------------------------------------------------------------------------------------------------------------------------------------
 //работа с консолью реализована в bootcore.js - здесь этот код используется и не надо грузить лишние модули из index.html
 //даже если что то совсем пойдет не так - у нас есть возможность информировать пользователя, так как мы загрузили Log скрипты при помощи браузера
-
 //добавить строку обычным цветом
 function addToLog(text) {
     addToLog(text, 0);
@@ -303,16 +318,35 @@ function addToLog(text) {
 //NOTE: для указания цвета используется bootstrap - одна в начале загрузки его не будет, консоль "окрасится" если получится загрузить bootstrap
 function addToLog(text, code) {
     var bootLog = document.getElementById("bootLog");
+
+    while (bootLog.childNodes.length > 100) {
+        bootLog.removeChild(bootLog.lastChild);
+    }
+
+    var consoleDateText = document.createElement('text');
+    consoleDateText.className = "text-secondary";
+    consoleDateText.innerText = new Date().toLocaleString();
+
+    var consoleText = document.createElement('text');
+    //consoleText.className = "text-primary console-text";
+    consoleText.innerText = text;
+
+    bootLog.insertBefore(consoleText, bootLog.firstChild);
+    bootLog.insertBefore(consoleDateText, consoleText);
+
+
+
     if (code == 1) { //success
-        bootLog.innerHTML += "<text class='text-warning'>" + new Date().toLocaleString() + "</text><text class='text-success'> " + text + "</text>";
+        consoleText.className = "text-primary console-text";
     }
     else
         if (code == 2) { //error    
-            bootLog.innerHTML += "<text class='text-warning'>" + new Date().toLocaleString() + "</text><text class='text-danger'> " + text + "</text>";
+            consoleText.className = "text-danger console-text";
         }
         else {
-            bootLog.innerHTML += "<text class='text-warning'>" + new Date().toLocaleString() + "</text> " + text;
+            consoleText.className = "text-info console-text";
         }
+
 }
 //добавить строку обычным цветом и перевести карретку
 function addToLogNL(text) {
@@ -331,15 +365,18 @@ function addToLogEnd(text) {
 //добавить строку в конец текущей с цветом
 //очень удобно, печатаем серым "loading poper.js..." и если удалось добавляем в конец строки зеленым "ок" или красным "error"
 function addToLogEnd(text, code) {
+    addToLogNL(text, code);
+    /*
     var bootLog = document.getElementById("bootLog");
     if (code == 1) { //success
-        bootLog.innerHTML += "<text class='text-success'> " + text + "\n</text>";
+        bootLog.innerHTML = "<text class='text-success'> " + text + "\n</text>" + bootLog.innerHTML;
     }
     else
         if (code == 2) { //error    
-            bootLog.innerHTML += "<text class='text-danger'> " + text + "\n</text>";
+            bootLog.innerHTML = "<text class='text-danger'> " + text + "\n</text>" + bootLog.innerHTML;
         }
         else {
-            bootLog.innerHTML += text + "\n";
+            bootLog.innerHTML = text + "\n" + bootLog.innerHTML;
         }
+    */
 }

@@ -40,78 +40,37 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 var TableWidget =
-    
+
     function () {
         "use strict";
 
         function TableWidget(nodePropAnchors, nodesPropsPanel, driver, size) {
             //панели в UI для рендеринга таблиц
             this.nodePropAnchors = nodePropAnchors; //document.getElementById("nodePropAnchors");
-
             this.nodesPropsPanel = nodesPropsPanel; // document.getElementById("nodesPropsPanel");
-
             this.driver = driver;
             this.size = size; //drivers.addNewDriverListner(this.newTable, this); //подписываемся на событие drivers о создании нового драйвера
-            //drivers.addDriverLoadedListner(this.driverLoaded, this); //подписываемся на событие drivers о создании нового драйвера
-            //if (document.getElementById(this.driver._nodenickname + "_" + this.driver._id) != undefined) return; 
-
             this.newTable(); //this.nodePropAnchors.innerHTML = "";
-            
-            //this.nodesPropsPanel.innerHTML = "";
         } //слушатель (получатель) событие создания нового драйвер (драйвер не содержит свойств на данном этапе)
 
 
         var _proto = TableWidget.prototype;
+        
 
         _proto.newTable = function newTable() {
             //добавляет кнопку в панель быстрого выбора драйвер
             if (this.nodePropAnchors != undefined) { }
-            /*
-            var driverNavItem = this.nodePropAnchors.appendChild(document.createElement("li"));
-            driverNavItem.className = "nav-item";
-            var driverHRef = driverNavItem.appendChild(document.createElement("a"));
-            driverHRef.className = "nav-link";
-            if (firstDriver) {
-                driverHRef.className += " active";
-            }
-            driverHRef.setAttribute("data-toggle", "tab");
-            driverHRef.innerText = getLang(this.driver._nodenickname + "/" + this.driver._id);
-            driverHRef.href = "#" + this.driver._nodenickname + "_" + this.driver._id;
-            */
-
-            /*
-            var anchorHref = this.nodePropAnchors.appendChild(document.createElement('button'));
-            anchorHref.type = "button";
-            anchorHref.href = "#" + this.driver._id;
-            anchorHref.onclick = this.driverAnchorClick;
-            anchorHref.innerText = this.driver._id;
-            anchorHref.className = "btn btn-default";
-            */
             //добавлет таблицу для свойств нового драйвера
-
-
             var div = this.nodesPropsPanel.appendChild(document.createElement('div'));
 
             if (this.nodePropAnchors != undefined) {
-                // div.className = "col-md-" + this.size + " driverdiv tab-pane fade";
                 div.className = "driverdiv tab-pane fade"; //if (firstDriver) {
-                //div.className += " active show";
-                //firstDriver = false;
                 //}
             } else {
                 div.className = "col-md-" + this.size + " driverdiv TableWidget";
             }
 
             div.id = this.driver._nodenickname + "_" + this.driver._id;
-            /*
-            var driverDiv = div.appendChild(document.createElement('div'));
-            driverDiv.className = "col-md-12 border-0 drivercard";
-            var driverDivHeader = driverDiv.appendChild(document.createElement('div'));
-            driverDivHeader.className = "card-header text-light";
-            driverDivHeader.innerText = this.driver._id;
-            var tableDiv = driverDiv.appendChild(document.createElement('div'));
-            tableDiv.className = "card-body"; 
-            */
             //таблица
 
             this.table = div.appendChild(document.createElement('table'));
@@ -138,10 +97,10 @@ var TableWidget =
             th.innerText = getLang("newvalue");
             th.scope = "col";
             th = tr.appendChild(document.createElement('th'));
-            th.className = "w-5";
+            th.className = "w-2";
             th.scope = "col";
             th = tr.appendChild(document.createElement('th'));
-            th.className = "w-5";
+            th.className = "w-2";
             th.scope = "col"; //ссылка в последней колонки для перехода вверх таблицы
 
             var anchorTopHref = th.appendChild(document.createElement('a'));
@@ -234,8 +193,11 @@ var TableWidget =
             driverProperty.addValueListner(this.onDriverPropValueChangeSetaHref, setPropHref); //четвертая колонка - редактор значения свойства, реализован так же как элементы для второй и третей колонки, со своим слушателем события
             //учитывает тип свойства драйвера - создает соответствующие типы редакторов createValueEdit() <-- TODO: метод старый, нуждается в рефакторинге 
 
-            var edit = createValueEdit(tr.appendChild(document.createElement('td')), driverProperty.name, driverProperty.value, driverProperty.type);
-            driverProperty.addValueListner(this.onDriverPropValueChangeEdit, edit); //пятая и шестая колонка, кнопки Set value и Get Value 
+            var propValueTD = tr.appendChild(document.createElement('td'));
+            if (driverProperty.type.indexOf("r") == -1) {
+                var edit = createValueEdit(propValueTD, driverProperty.name, driverProperty.value, driverProperty.type);
+                driverProperty.addValueListner(this.onDriverPropValueChangeEdit, edit); //пятая и шестая колонка, кнопки Set value и Get Value 
+            }
 
             var setButtonTd = tr.appendChild(document.createElement('td'));
             var getButtonTd = tr.appendChild(document.createElement('td')); //кнопка Get value 
@@ -256,7 +218,7 @@ var TableWidget =
             node.addNetworkStatusListner(this.onDriverPropNetworkStatusChange, getSpan); //подписка на глобальный сетевой статус
             //кнопка Set value не создается если свойство ReadOnly
 
-            if (!driverProperty.type.indexOf("r")!=-1) {
+            if (driverProperty.type.indexOf("r") == -1) {
                 //так же как и Set value кнопка - асинхронно меняет значение свойства и ожидает результат
                 var span = setButtonTd.appendChild(document.createElement('a'));
                 span.className = "badge badge-secondary";

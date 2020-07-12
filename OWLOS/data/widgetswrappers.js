@@ -1,4 +1,5 @@
-﻿/* ----------------------------------------------------------------------------
+﻿
+/* ----------------------------------------------------------------------------
 Ready IoT Solution - OWLOS
 Copyright 2019, 2020 by:
 - Konstantin Brul (konstabrul@gmail.com)
@@ -44,7 +45,7 @@ OWLOS распространяется в надежде, что она буде
 //Base radial class 
 //-----------------------------------------------------------------------------------
 var BaseWidgetWrapper =
-    
+
     function () {
         "use strict";
 
@@ -58,7 +59,7 @@ var BaseWidgetWrapper =
                 this.driver = driver;
                 this.driverProperty = driverProperty;
                 this.offlineStarter(parentPanel, driver._id, driverProperty.name, noWidget);
-                
+
             }
         }
 
@@ -72,7 +73,7 @@ var BaseWidgetWrapper =
             if (noWidget == undefined || !noWidget) {
                 this.widget = new RadialWidget(parentPanel, this.makeUniqueId(driverId), configProperties.widgetssize);
                 this.widget.driverClass = this;
-                this.widget.onload = this.onWidgetLoad;                
+                this.widget.onload = this.onWidgetLoad;
             }
         };
 
@@ -88,9 +89,7 @@ var BaseWidgetWrapper =
 
         _proto.onWidgetLoad = function onWidgetLoad(widget) {
             widget.widgetHolder.onclick = widget.driverClass.widgetClick;
-            
-            //widget.driverClass.draw();
-            //widget.properties = widget.driverClass.configPropertiesWidget;
+
             if (widget.driverClass.widgetProperties != undefined) {
                 widget.properties = widget.driverClass.widgetProperties;
             }
@@ -103,15 +102,12 @@ var BaseWidgetWrapper =
                 widget.driverClass._onload(widget.driverClass);
             }
         };
-
-
         _proto.getWidgetProperties = function () {
             if (this.widget != undefined) {
                 return this.widget.properties;
             }
             return undefined;
         };
-
         _proto.joinDriver = function joinDriver(driver, driverProperty) {
             this.driver = driver;
             this.driverProperty = driverProperty;
@@ -123,22 +119,17 @@ var BaseWidgetWrapper =
             this.node = config.getNodeByHost(driver._host); //drivers.addNetworkStatusListner(this.onNetworkStatusChange, this);
 
             this.node.addNetworkStatusListner(this.onNetworkStatusChange, this);
-            this.driverProperty.addNetworkStatusListner(this.onNetworkStatusChange, this);
-            this.driverProperty.addValueListner(this.onValueChange, this);
+            if (this.driverProperty != undefined)
+            {
+                this.driverProperty.addNetworkStatusListner(this.onNetworkStatusChange, this);
+                this.driverProperty.addValueListner(this.onValueChange, this);
+            }
         };
 
         _proto.onDriverLoaded = function onDriverLoaded(sender, driver) {
             if (sender.driver != undefined) return;
 
             if (sender.driverId == driver._id) {
-                /*
-                sender.driver = driver;
-                sender.driverProperty = driver[sender.driverPropertyName];
-                sender.widget.driverClass.driverProperty = sender.driverProperty;
-                drivers.addNetworkStatusListner(sender.onNetworkStatusChange, sender);
-                sender.driverProperty.addNetworkStatusListner(sender.onNetworkStatusChange, sender);
-                sender.driverProperty.addValueListner(sender.onValueChange, sender);
-                */
                 sender.joinDriver(driver, driver[sender.driverPropertyName]);
             }
         };
@@ -162,14 +153,15 @@ var BaseWidgetWrapper =
                 }
             }
         };
-
         _proto.widgetClick = function widgetClick(event) {
             event.stopPropagation();
             var widgetPanel = event.currentTarget;
             var widget = widgetPanel.widget;
 
             if (widget.mode == WORK_MODE) {
+                if (widget.driverClass.driverProperty != undefined) {
                 widget.driverClass.driverProperty.getValue();
+                }
             }
 
             return true;
@@ -177,7 +169,7 @@ var BaseWidgetWrapper =
 
         _proto.refresh = function refresh() { };
 
-        _proto.draw = function draw() {};
+        _proto.draw = function draw() { };
 
         _createClass(BaseWidgetWrapper, [{
             key: "onload",
@@ -239,7 +231,7 @@ var RadialWidgetWrapper =
 
 
 var TemperatureWidgetWrapper =
-    
+
     function (_BaseWidgetWrapper) {
         "use strict";
 
@@ -324,7 +316,7 @@ var ValueWidgetWrapper =
 
 
 var HumidityWidgetWrapper =
-    
+
     function (_BaseWidgetWrapper2) {
         "use strict";
 
@@ -354,7 +346,7 @@ var HumidityWidgetWrapper =
             if (this.driverProperty == undefined) return;
 
             if (this.driverProperty.networkStatus == NET_ONLINE) {
-                this.widget.refresh(this.driverProperty.value, Math.round(this.driverProperty.value) + "%", this.driver._id + "-"+ getLang("humidity"), this.driver.humidityhistorydata.value);
+                this.widget.refresh(this.driverProperty.value, Math.round(this.driverProperty.value) + "%", this.driver._id + "-" + getLang("humidity"), this.driver.humidityhistorydata.value);
             } else {
                 this.widget.refresh(0, "--", this.driver._id);
             }
@@ -368,7 +360,7 @@ var HumidityWidgetWrapper =
 
 
 var HistoryDataGraphWidgetWrapper =
-    
+
     function (_BaseWidgetWrapper3) {
         "use strict";
 
@@ -389,19 +381,12 @@ var HistoryDataGraphWidgetWrapper =
 
             this.widget = new GraphWidget(parentPanel, this.makeUniqueId(driverId), configProperties.widgetssize, temperatureIcon);
             this.widget.driverClass = this;
-            this.widget.onload = this.onWidgetLoad;                
-
-           // this.widget.driverClass = this;
-            //this.widget.widgetHolder.onclick = this.widgetClick;
-            //this.draw();
-
+            this.widget.onload = this.onWidgetLoad;
         };
 
         _proto4.onWidgetLoad = function onWidgetLoad(widget) {
             widget.widgetHolder.onclick = widget.driverClass.widgetClick;
 
-            //widget.driverClass.draw();
-            //widget.properties = widget.driverClass.configPropertiesWidget;
             if (widget.driverClass.widgetProperties != undefined) {
                 widget.properties = widget.driverClass.widgetProperties;
             }
@@ -434,7 +419,7 @@ var HistoryDataGraphWidgetWrapper =
     }(BaseWidgetWrapper);
 
 var LightWidgetWrapper =
-    
+
     function (_BaseWidgetWrapper4) {
         "use strict";
 
@@ -446,7 +431,7 @@ var LightWidgetWrapper =
             _BaseWidgetWrapper4.prototype.offlineStarter.call(this, parentPanel, driverId, driverPropertyName, true);
 
             this.widget = new LightWidget(parentPanel, this.makeUniqueId(driverId), configProperties.widgetssize);
-            this.widget.driverClass = this;            
+            this.widget.driverClass = this;
             this.widget.onload = this.onWidgetLoad;
         };
 
@@ -486,7 +471,7 @@ var LightWidgetWrapper =
     }(BaseWidgetWrapper);
 
 var SmokeWidgetWrapper =
-    
+
     function (_BaseWidgetWrapper5) {
         "use strict";
 
@@ -536,7 +521,7 @@ var SmokeWidgetWrapper =
     }(BaseWidgetWrapper);
 
 var MotionWidgetWrapper =
-    
+
     function (_BaseWidgetWrapper6) {
         "use strict";
 
@@ -607,7 +592,7 @@ var MotionWidgetWrapper =
     }(BaseWidgetWrapper);
 
 var SensorWidgetWrapper =
-    
+
     function (_BaseWidgetWrapper7) {
         "use strict";
 
@@ -646,7 +631,7 @@ var SensorWidgetWrapper =
 
 
 var ActuatorWidgetWrapper =
-    
+
     function () {
         "use strict";
 
@@ -705,7 +690,6 @@ var ActuatorWidgetWrapper =
 
         };
 
-
         _proto9.joinDriver = function joinDriver(driver, driverProperty) {
             this.driver = driver;
             this.driverProperty = driverProperty;
@@ -726,7 +710,7 @@ var ActuatorWidgetWrapper =
                 sender.joinDriver(driver, driver[sender.driverPropertyName]);
             }
         };
-            
+
         _proto9.onValueChange = function onValueChange(sender, driverProperty) {
             sender.draw();
         };
@@ -736,7 +720,6 @@ var ActuatorWidgetWrapper =
                 sender.widget.networkStatus = driverProperty.networkStatus;
             }
         };
-
         _proto9.onDashboardModeChange = function onDashboardModeChange(sender, mode) {
             if (sender.widget != undefined) {
                 if (mode) {
@@ -754,7 +737,7 @@ var ActuatorWidgetWrapper =
 
             if (widget.mode == WORK_MODE) {
                 var driverProperty = widget.driverClass.driverProperty;
-
+                if (driverProperty == undefined) return;
                 if (parseInt(driverProperty.value) == 1) {
                     driverProperty.setValue(0);
                 } else {
@@ -765,7 +748,6 @@ var ActuatorWidgetWrapper =
 
             return true;
         };
-
         _proto9.draw = function draw() {
             if (this.widget == undefined) return;
             if (this.driverProperty == undefined) return;
@@ -795,14 +777,12 @@ var ActuatorWidgetWrapper =
                 this._onload = onload;
             }
         }]);
-
-
         return ActuatorWidgetWrapper;
     }(); //LCD ----------------------------------------------------------------------------------
 
 
 var LCDWidgetWrapper =
-    
+
     function () {
         "use strict";
 
@@ -990,7 +970,7 @@ var LCDWidgetWrapper =
 
 
 var StepperWidgetWrapper =
-    
+
     function () {
         "use strict";
 
@@ -1022,7 +1002,7 @@ var StepperWidgetWrapper =
             if (!data.indexOf("%error") == 0) {
                 driverClass.stepperWidget.networkStatus = NET_RECONNECT;
             } else {
-                if (!data.indexOf("response")!=-1) {//offline 
+                if (!data.indexOf("response") != -1) {//offline 
                     //  driverClass.stepperWidget.networkStatus = NET_OFFLINE;
                 } else {
                     //driver error
@@ -1068,14 +1048,14 @@ var StepperWidgetWrapper =
 
 
 var WidgetsLayer = {
-    
+
     RadialWidget: {
         id: "radialwidget",
         name: getLang("radial"),
         widget: RadialWidgetWrapper,
         driversTypes: "any",
         driversProperties: "any"
-    },    
+    },
     TemperatureWidget: {
         id: "temperature",
         name: getLang("temperature"),
@@ -1095,7 +1075,7 @@ var WidgetsLayer = {
         name: getLang("historydatagraph"),
         widget: HistoryDataGraphWidgetWrapper,
         driversTypes: "any",
-        driversProperties: ";historydata;historyfile;temperaturehistorydata;humidityhistorydata;"
+        driversProperties: ";historydata;historyfile;temperaturehistorydata;humidityhistorydata;heatindexhistorydata;"
     },
     LightWidget: {
         id: "light",
@@ -1165,6 +1145,8 @@ var WidgetsLayer = {
             if (WidgetsLayer[widgetProp].id == undefined) continue;
 
             if (WidgetsLayer[widgetProp].id == id) {
+                //динамический перевод name (виджеты могут появится ранее словаря языков)
+                WidgetsLayer[widgetProp].name = getLang(WidgetsLayer[widgetProp].id);
                 return WidgetsLayer[widgetProp];
             }
         }

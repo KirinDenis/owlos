@@ -39,13 +39,10 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-var LCDWidget =
-    
+var LCDWidget =    
     function (_BaseWidget) {
         "use strict";
-
         _inheritsLoose(LCDWidget, _BaseWidget);
-
         function LCDWidget(parentPanel, id, size) {            
             return _BaseWidget.call(this, parentPanel, id, size) || this;         
         }
@@ -64,9 +61,6 @@ var LCDWidget =
             widget.widgetTextSize = widget.size / 110;
 
             widget.SVGViewBox.setAttributeNS(null, "viewBox", "0 0 " + widget.width + " " + widget.height);
-
-            //widget.SVGViewBox.setAttributeNS(null, "width", widget.width);
-
             widget.SVGBackgroundPanel.drawRoundedRect(widget.width, widget.height, 5, 10, true, true, true, true);
             widget.SVGHeaderPanel.drawRoundedRect(widget.width, 26, 5, 0, true, true, false, false);
             widget.SVGBackdownpanel.y += 3;
@@ -145,9 +139,7 @@ var LCDWidget =
             this.SVGViewBox.setAttributeNS(null, "width", size);
             this.SVGViewBox.setAttributeNS(null, "height", size / 2);
 
-        };
-        
-
+        };        
         LCDWidget.prototype.refresh = function refresh(widgetText, label, light) {
             label = getLang(label);
             this.widgetText = widgetText;
@@ -162,7 +154,6 @@ var LCDWidget =
 
             this.redrawAll();
         };
-
         LCDWidget.prototype.showEditor = function showEditor(event) {
             event.stopPropagation();
             var rPanel = event.currentTarget;
@@ -182,42 +173,7 @@ var LCDWidget =
         LCDWidget.prototype.hideEditor = function hideEditor() {
             this.pre.style.display = 'none';
             this.btnGroup.style.display = 'none';
-        }
-            /*
-                get _newtorkStatus() {
-                    return this.networkStatus;
-                }
-            
-                set _networkStatus(networkStatus) {
-                    if ((networkStatus >= NET_OFFLINE) && (networkStatus <= NET_RECONNECT)) {
-                        this.networkStatus = networkStatus;
-                        this.redrawAll();
-                    }
-                }
-            
-                get _percent() {
-                    return this.percent;
-                }
-            
-                set _percent(percent) {
-                    if ((percent >= 0) && (percent <= 100)) {
-                        this.percent = percent;
-                        this.redrawAll();
-                    }
-                }
-            
-                //---------------------------------------------------------------------------------------
-                redrawAll() {
-                    this.drawText();
-                    this.starttime = 0;
-                    requestAnimationFrame(() => this.drawWidget());
-            
-            
-                }
-                */
-            //---------------------------------------------------------------------------------------
-            //draw element text labels - percent value and text 
-            ;
+        };
 
         LCDWidget.prototype.drawText = function drawText() {
             _BaseWidget.prototype.drawText.call(this);
@@ -268,62 +224,6 @@ var LCDWidget =
             this.SVGHeaderText.text = this.label;
             this.SVGHeaderText.x = this.width / 2 - this.SVGHeaderText.width / 2;
             this.SVGHeaderText.y = this.SVGHeaderText.height - this.panding;
-           /*  switch (this.networkStatus) {
-                case NET_ONLINE: this.SVGHeaderText.color = theme.light; break;
-                case NET_ERROR: this.SVGHeaderText.color = theme.danger; break;
-                case NET_RECONNECT: this.SVGHeaderText.color = theme.info; break;
-                default: //offline
-                    this.SVGHeaderText.color = theme.secondary; break;
-            }
-               this.SVGWidgetText1.color = theme.light;
-            this.SVGWidgetText2.color = theme.light;
-            this.SVGWidgetText3.color = theme.light;
-            this.SVGWidgetText4.color = theme.light;
-             this.SVGWidgetText1.text = this.widgetText.substring(0, 20);
-            this.SVGWidgetText2.text = this.widgetText.substring(20, 40);
-            this.SVGWidgetText3.text = this.widgetText.substring(40, 60);
-            this.SVGWidgetText4.text = this.widgetText.substring(60);
-             this.SVGWidgetText1.x = this.widgetLeft;
-            this.SVGWidgetText1.y = this.widgetTop;
-             this.SVGWidgetText2.x = this.widgetLeft;
-            this.SVGWidgetText2.y = this.SVGWidgetText1.y + this.SVGWidgetText1.height;
-             this.SVGWidgetText3.x = this.widgetLeft;
-            this.SVGWidgetText3.y = this.SVGWidgetText2.y + this.SVGWidgetText2.height;
-             this.SVGWidgetText4.x = this.widgetLeft;
-            this.SVGWidgetText4.y = this.SVGWidgetText3.y + this.SVGWidgetText4.height;
-              */
-
-            /*        
-            //var newValue = getParsedDriverProperty(this.id, "text");
-            if (this.percent !== this.textarea.storedValue) {
-                this.textarea.value = this.percent;
-                this.textarea.storedValue = this.percent;
-            }
-             this.textElement.innerHTML = this.text;
-            
-            switch (this.networkStatus) {
-                case NET_ONLINE:
-                     this.textElement.className = "text-white text-center";
-                    this.hintElement.innerHTML = getLang("rid_online");
-                    this.hintElement.className = "LCDWidgetHint text-secondary text-center";
-                    break;
-                case NET_ERROR:
-                    this.textElement.className = "text-danger text-center";
-                    this.hintElement.innerHTML = getLang("rid_error");
-                    this.hintElement.className = "LCDWidgetHint text-danger text-center";
-                    break;
-                case NET_RECONNECT:
-                    this.textElement.className = "text-info text-center";
-                    this.hintElement.innerHTML = getLang("rid_connect");
-                    this.hintElement.className = "LCDWidgetHint text-info text-center";
-                    break;
-                default: //offline
-                    this.textElement.className = "text-secondary text-center";
-                    this.hintElement.innerHTML = getLang("rid_offline");
-                    this.hintElement.className = "LCDWidgetHint text-secondary text-center";
-                    break;
-            }
-            */
         };
 
         LCDWidget.prototype.drawWidget = function drawWidget() {
@@ -335,25 +235,6 @@ var LCDWidget =
             }
 
             _BaseWidget.prototype.drawWidget.call(this);
-            /*
-                    if (this.light == 1) {
-                        this.SVGWidgetBack.color = theme.info;
-                    }
-                    else {
-                        this.SVGWidgetBack.color = theme.secondary;
-                    }
-            
-                    //spinner 
-                    if (this.networkStatus == NET_RECONNECT) {
-                        this.spinnerAngle += 1.5;
-                        this.SVGArcSpinner.draw(this.spinnerAngle, 240 + this.spinnerAngle);
-                        requestAnimationFrame(() => this.drawWidget());
-                    }
-                    else {
-                        this.SVGArcSpinner.hide();
-                    }
-                    
-                    */
 
         };
 

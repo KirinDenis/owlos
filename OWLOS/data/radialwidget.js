@@ -56,68 +56,63 @@ var RadialWidget =
             var widget = rPanel.widget;
 
             widget._properties.linewidth =
-                {
-                    tab: "G",
-                    value: 10,
-                    type: "i"
-                };
+            {
+                tab: "G",
+                value: 10,
+                type: "i"
+            };
 
             widget._properties.rangetype =
-                {
-                    tab: "G",
-                    value: 'true',
-                    type: "b"
-                };
+            {
+                tab: "G",
+                value: 'true',
+                type: "b"
+            };
 
             widget._properties.min =
-                {
-                    tab: "G",
-                    value: 0,
-                    type: "f"
-                };
+            {
+                tab: "G",
+                value: 0,
+                type: "f"
+            };
 
             widget._properties.max =
-                {
-                    tab: "G",
-                    value: 100,
-                    type: "f"
-                };
+            {
+                tab: "G",
+                value: 100,
+                type: "f"
+            };
 
             widget._properties.percentbackgroundcolor =
-                {
-                    tab: "C",
-                    value: theme.secondary,
-                    type: "c"
-                };
+            {
+                tab: "C",
+                value: theme.secondary,
+                type: "c"
+            };
 
             widget._properties.percentbackgroundopacity =
-                {
-                    tab: "O",
-                    value: 0.5,
-                    type: "f"
-                };
+            {
+                tab: "O",
+                value: 0.5,
+                type: "f"
+            };
 
             widget._properties.percentcolor =
-                {
-                    tab: "C",
-                    value: theme.success,
-                    type: "c"
-                };
+            {
+                tab: "C",
+                value: theme.success,
+                type: "c"
+            };
 
             widget.radius = widget.size / 3;
             widget.topMargin = widget.centreY + widget.size / 10;
             widget.SVGArcBack = new SVGArc(widget.SVGViewBox, widget.id + "arcback", widget.centreX, widget.topMargin, widget.radius, widget._properties.linewidth);
             widget.SVGArcWidget = new SVGArc(widget.SVGViewBox, widget.id + "arcwidget", widget.centreX, widget.topMargin, widget.radius, widget._properties.linewidth);
             widget.SVGArcSpinner.y = widget.topMargin;
-
             widget.clickableToTop();
-
             widget.proprties = widget._properties;
-
             widget.doOnLoad();
         }
-
-
 
         RadialWidget.prototype.drawWidget = function drawWidget() {
             _BaseWidget.prototype.drawWidget.call(this);

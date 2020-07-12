@@ -65,16 +65,21 @@ function createScript(_node) {
 var scriptsManager = {
     scripts: [],
 
+    //подписчики (функции) на onNew событие скрипта 
     _onnew: [],
+
+    //вызов события onNew скриптом
     doOnNew: function (script) {
         for (var key in scriptsManager._onnew) {
             scriptsManager._onnew[key](script);
         }
     },
 
+    //Добавление обработчиков события onNew
     set onNew(onnew) {
         scriptsManager._onnew.push(onnew);
     },
+
 
     _onchange: [],
     doOnChange: function (script) {
@@ -124,7 +129,7 @@ var scriptsManager = {
             else {
                 node.networkStatus = NET_OFFLINE;
             }
-            
+
         }
     },
 
@@ -179,10 +184,10 @@ var scriptsManager = {
                 return;
             }
         }
-        
-         scriptsManager.scripts.push(script); //TODO onNew event 
-         this.doOnNew(script);            
-        
+
+        scriptsManager.scripts.push(script); //TODO onNew event 
+        this.doOnNew(script);
+
     },
 
     parseScripts: function (httpResult, node) {

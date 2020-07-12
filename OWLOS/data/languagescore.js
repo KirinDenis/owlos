@@ -41,35 +41,36 @@ OWLOS распространяется в надежде, что она буде
 
 var langua = "prepareUnit=Підготовка інтерфейсу користувача\n" +
     "dashboardTab=Панель пристроїв\n" +
-    "unitTab=Модуль\n" +
+    "OK=Застосувати\n" +
+    "nodeTab=Модуль\n" +
     "settingsTab=Вузли\n" +
     "filesTab=Файли\n" +
     "consoleTab=Консоль\n" +
     "network=Мережа\n" +
-    "unit=Модуль\n" +
+    "node=Модуль\n" +
     "esp=Esp\n" +
-    "reset=Скидання\n"+
-    "cancel=Скасувати\n"+
-    "areYouSure=Ви впевнені?\n"+
-    "resetunit=Перезавантажити модуль\n"+
-    "autorefreshoff=Автооновлення: вимкн.\n"+
-    "autorefreshon=Автообновление: вкл.\n"+
-    "name=Ім'я\n"+
-    "value=Значення\n"+
-    "newvalue=Нове значення\n"+
-    "property=Властивість\n"+
-    "top=Вгору\n"+
-    "dt_display=Відображати\n"+
-    "dt_recordsperpage=записів на сторінці\n"+
-    "dt_showing=Відображається c\n"+
-    "dt_to=по\n"+
-    "dt_of=всього\n"+
-    "dt_entries=записів\n"+
-    "dt_search=Пошук:\n"+
-    "dt_first=Перша\n"+
-    "dt_last=Остання\n"+
-    "dt_next=Наступна\n"+
-    "dt_previous=Попередня\n"+
+    "reset=Скидання\n" +
+    "cancel=Скасувати\n" +
+    "areYouSure=Ви впевнені?\n" +
+    "resetnode=Перезавантажити модуль\n" +
+    "autorefreshoff=Автооновлення: вимкн.\n" +
+    "autorefreshon=Автообновление: вкл.\n" +
+    "name=Ім'я\n" +
+    "value=Значення\n" +
+    "newvalue=Нове значення\n" +
+    "property=Властивість\n" +
+    "top=Вгору\n" +
+    "dt_display=Відображати\n" +
+    "dt_recordsperpage=записів на сторінці\n" +
+    "dt_showing=Відображається c\n" +
+    "dt_to=по\n" +
+    "dt_of=всього\n" +
+    "dt_entries=записів\n" +
+    "dt_search=Пошук:\n" +
+    "dt_first=Перша\n" +
+    "dt_last=Остання\n" +
+    "dt_next=Наступна\n" +
+    "dt_previous=Попередня\n" +
     "adddriver=Додати драйвер\n" +
     "addnode=Додати вузол\n" +
     "addnodeheader=Додати вузол\n" +
@@ -81,9 +82,9 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "addnodeerror_nicknameempty=Iм'я не може бути порожнім\n" +
     "addnodeerror_cantsaveconfig=Неможливо зберегти налаштування в вузлі\n" +
     "addnodeerror_cantaddnode=Неможливо додати вузол\n" +
-    "upload=Завантажити\n"+
-    "files=Файли\n"+
-    "uploadfiles=Завантажити файли до вузла\n"+
+    "upload=Завантажити\n" +
+    "files=Файли\n" +
+    "uploadfiles=Завантажити файли до вузла\n" +
     "selectfiles=Будь ласка, виберіть файли\n" +
     "temperature=Температура\n" +
     "humidity=Вологість\n" +
@@ -107,7 +108,7 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "low=Низька\n" +
     "smokelow=Низька\n" +
     "smokenorm=Середня\n" +
-    "smokehigh=Висока\n" +    
+    "smokehigh=Висока\n" +
     "yesmotion=Рух\n" +
     "nomotion=Немає\n" +
     "rid_online=В мережі\n" +
@@ -117,22 +118,22 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "lcd=Екран\n" +
     "send=Відпр.\n" +
     "clear=Підсв.\n" +
-	//connection statuses
-	"connected=З'єднано\n"+
-	"disconnected=Роз'єднано\n" +
-	"idlestatus=Зміна статусу\n"+
-    "nossidavailable=Обрана мережа недоступна\n"+ 
-	"scancompleted=Сканування виконано\n"+
-	"connectfailed=Не вдається підключитися\n"+
-    "connectionlost=Підключення втрачено\n"+
-    "nostate=Не визначено\n"+
-    "debugmode=Режим налагодження\n"+
-    "connectiontimeout=Тайм-аут з'єднання\n"+
-	"badprotocol=Невірний протокол\n"+
-    "badclientid=Невірний ідентифікатор клієнта\n"+
-    "unavailable=Недоступно\n"+
-    "badcredentials=Невірні облікові дані\n"+
-    "unauthorized=Не дозволено\n"+
+    //connection statuses
+    "connected=З'єднано\n" +
+    "disconnected=Роз'єднано\n" +
+    "idlestatus=Зміна статусу\n" +
+    "nossidavailable=Обрана мережа недоступна\n" +
+    "scancompleted=Сканування виконано\n" +
+    "connectfailed=Не вдається підключитися\n" +
+    "connectionlost=Підключення втрачено\n" +
+    "nostate=Не визначено\n" +
+    "debugmode=Режим налагодження\n" +
+    "connectiontimeout=Тайм-аут з'єднання\n" +
+    "badprotocol=Невірний протокол\n" +
+    "badclientid=Невірний ідентифікатор клієнта\n" +
+    "unavailable=Недоступно\n" +
+    "badcredentials=Невірні облікові дані\n" +
+    "unauthorized=Не дозволено\n" +
     "connectionstatus=Статус підключення: \n" +
     "detect=Є рух\n" +
     "notdetect=Немає\n" +
@@ -157,7 +158,7 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "firmwarebuildnumber=Збірка\n" +
     "updateuibutton=Оновити UI\n" +
     "updatefirmwarebutton=Оновити прошивку\n" +
-    "updateunit=Оновлення\n" +
+    "updatenode=Оновлення\n" +
     "updateuibutton=Почати оновлення UI\n" +
     "firmwarebutton=Почати оновлення прошивки\n" +
     "updatefirmware=Після закінчення оновлення прошивки, модуль перезавантажиться автоматично. UI перезавантажиться через 30 секунд. Використовуйте монітор порту для більшої інформації\n" +
@@ -198,7 +199,7 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "updatehost=URL сервера оновлень\n" +
     "updatenodeprop=Панель оновлень прошивки\n" +
     "nodeproperties=Властивості вузла\n" +
-    "RESTful=Драйвери\n" +  
+    "drivers=Драйвери\n" +
     "adddriverdigalog=Додати драйвер до вузлу\n" +
     "drivertype=Тип драйвера\n" +
     "driverid=ID драйвера\n" +
@@ -207,7 +208,7 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "adddriverbutton=Додати\n" +
     "notused=Не використовується\n" +
     "checkchangedialog=Застосувати зміни\n" +
-    "applycheck=Застосувати\n" +    
+    "applycheck=Застосувати\n" +
     "showproperties=Властивості віджета\n" +
     "setallwidgetspropbutton=Застосувати до всіх\n" +
     "setpropbutton=Застосувати\n" +
@@ -217,8 +218,8 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "scripts=Скріпти\n" +
     "scriptexecute=Виконати (F8)\n" +
     "scriptpause=Пауза\n" +
-    "scriptdelete=Вилучити\n" +  
-    "scriptstartdebug=Відлагоджувати\n" + 
+    "scriptdelete=Вилучити\n" +
+    "scriptstartdebug=Відлагоджувати\n" +
     "addscriptheader=Додати скріпт\n" +
     "addscriptbutton=Додати\n" +
     "addscriptname=Iм'я скріпта\n" +
@@ -227,20 +228,39 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "сhangessaved=Зміни збережені \n" +
     "savechangeserror=Помилка. Зміни не збережені. Спробуйте ще раз \n" +
     "savingchanges=Збереження змін\n" +
+    "nodeselect=Виберіть вузол\n" +
+    "driverselect=Виберіть драйвер\n" +
+    "propselect=Виберіть властивість\n" +
+    "widgetselect=Виберіть віджет\n" +
+    "tooglesidebar=Переключити бічну панель\n" +
+    "pinsidebar=Закріпити бічну панель\n" +
+    "saveconfiguration=Зберегти налаштування\n" +
+    "tooglewidgetsmode=Переключити режим віджетів\n" +
+    "addwidget=Додати віджет\n" +
+    "createdriverdialog=Додати драйвер\n" +
+    "addnodename=Додати вузол\n" +
+    "size=розмір\n" +
+    "radialwidget=Radial\n" +
     "language=ukraine\n";
 
+
 var langen = "prepareUnit=prepare UI, please wait...\n" +
-    "unitTab=Node\n" +
+    "OK=Confirm\n" +
+    "nodeselect=1) Please select node\n" +
+    "driverselect=2) Select driver on selected node\n" +
+    "propselect=3) Select property of selected driver\n" +
+    "widgetselect=4) Select widget to visualize selected driver property\n" +
+    "nodeTab=Node\n" +
     "settingsTab=Nodes\n" +
     "filesTab=Files\n" +
     "consoleTab=Console\n" +
     "network=Network\n" +
-    "unit=Node\n" +
+    "node=Node\n" +
     "esp=ESP\n" +
     "reset=Reset\n" +
     "cancel=Сancel\n" +
     "areYouSure=Are you sure?\n" +
-    "resetunit=Reset unit\n" +
+    "resetnode=Reset node\n" +
     "autorefreshoff=Auto refresh: OFF\n" +
     "autorefreshon=Auto refresh: ON\n" +
     "name=Name\n" +
@@ -305,10 +325,10 @@ var langen = "prepareUnit=prepare UI, please wait...\n" +
     "firmwarebuildnumber=Build\n" +
     "updateuibutton=Update UI\n" +
     "updatefirmwarebutton=Update Firmware\n" +
-    "updateunit=Update\n" +
+    "updatenode=Update\n" +
     "updateuibutton=Starting update UI\n" +
     "firmwarebutton=Starting update Firmware\n" +
-    "updatefirmware=After firmware is updating, the unit self restarting. Please wait 30 sec, before the page after reloading. See Serial Monitor for more information.\n" +
+    "updatefirmware=After firmware is updating, the node self restarting. Please wait 30 sec, before the page after reloading. See Serial Monitor for more information.\n" +
     "networknodeprop=Node network properties\n" +
     "restfulavailable=Enable Web(RESTful) supporting\n" +
     "webserverlogin=Web server login\n" +
@@ -396,7 +416,7 @@ var langen = "prepareUnit=prepare UI, please wait...\n" +
     "driversporplist=Drivers properties\n" +
     "widgetslist=List of compatible widgets\n" +
     "autoaddwidget=Add widget\n" +
-    "RESTful=Drivers\n" +
+    "drivers=Drivers\n" +
     "adddriverdigalog=Adding driver to node\n" +
     "showproperties=Widget properties\n" +
     "setallwidgetspropbutton=Apply to all\n" +
@@ -408,7 +428,7 @@ var langen = "prepareUnit=prepare UI, please wait...\n" +
     "scriptexecute=Run (F8)\n" +
     "scriptpause=Pause\n" +
     "scriptdelete=Delete\n" +
-    "scriptstartdebug=Debug\n" + 
+    "scriptstartdebug=Debug\n" +
     "addscriptheader=Adding script\n" +
     "addscriptbutton=Add\n" +
     "addscriptname=Script name\n" +
@@ -416,20 +436,21 @@ var langen = "prepareUnit=prepare UI, please wait...\n" +
     "сhangessaved=Changes saved\n" +
     "savechangeserror=Saving changes error. Close this window and try again later! \n" +
     "savingchanges=Saving changes\n" +
+    "radialwidget=Radial\n" +
     "language=english\n";
 
 var langru = "prepareUnit=Подготовка интерфейса пользователя\n" +
-    "unitTab=Нода\n" +
+    "nodeTab=Нода\n" +
     "settingsTab=Узлы\n" +
     "filesTab=Файлы\n" +
     "consoleTab=Консоль\n" +
     "network=Сетъ\n" +
-    "unit=Нода\n" +
+    "node=Нода\n" +
     "esp=ESP\n" +
     "reset=Сброс\n" +
     "cancel=Отмена\n" +
     "areYouSure=Вы уверены?\n" +
-    "resetunit=Перезагрузить ноду\n" +
+    "resetnode=Перезагрузить ноду\n" +
     "autorefreshoff=Автообновление: выкл.\n" +
     "autorefreshon=Автообновление: вкл\n" +
     "name=Имя\n" +
@@ -516,7 +537,7 @@ var langru = "prepareUnit=Подготовка интерфейса пользо
     "firmwarebuildnumber=Сборка\n" +
     "updateuibutton=Обновить UI\n" +
     "updatefirmwarebutton=Обновить прошивку\n" +
-    "updateunit=Обновление\n" +
+    "updatenode=Обновление\n" +
     "updateuibutton=Начать обновление UI\n" +
     "firmwarebutton=Начать обновление прошивки\n" +
     "updatefirmware=После окончания обновления прошивки, модуть перезапустится автоматически. UI перезагрузится через 30 секунд. Используйте монитор порта для большей информации\n" +
@@ -581,7 +602,7 @@ var langru = "prepareUnit=Подготовка интерфейса пользо
     "widgetslist=Список виджетов для выбранного свойства\n" +
     "networknodeprop=Сетевые настройки узла\n" +
     "nodeproperties=Свойства узла\n" +
-    "RESTful=Драйвера\n" +
+    "drivers=Драйвера\n" +
     "adddriverdigalog=Добавить драйвер к узлу\n" +
     "notused=Не используется\n" +
     "checkchangedialog=Принять изменения\n" +
@@ -596,7 +617,7 @@ var langru = "prepareUnit=Подготовка интерфейса пользо
     "scriptexecute=Выполнить (F8)\n" +
     "scriptpause=Пауза\n" +
     "scriptdelete=Удалить\n" +
-    "scriptstartdebug=Отладка\n" + 
+    "scriptstartdebug=Отладка\n" +
     "addscriptheader=Добавить скрипт\n" +
     "addscriptbutton=Добавить\n" +
     "addscriptname=Имя скрипта\n" +
@@ -605,6 +626,18 @@ var langru = "prepareUnit=Подготовка интерфейса пользо
     "сhangessaved=Изменения внесены\n" +
     "savechangeserror=Ошибка сохранения изменений. Поробуйте еще раз\n" +
     "savingchanges=Сохранение изменений\n" +
+    "nodeselect=Select node\n" +
+    "driverselect=Select driver\n" +
+    "propselect=Select property\n" +
+    "widgetselect=Select widget\n" +
+    "tooglesidebar=Toogle sidebar\n" +
+    "pinsidebar=Pin sidebar\n" +
+    "saveconfiguration=Save configuration\n" +
+    "tooglewidgetsmode=Toogle widgets mode\n" +
+    "addwidget=Add widget\n" +
+    "createdriverdialog=Add driver\n" +
+    "addnodename=Add node\n" +
+    "radialwidget=Radial\n" +
     "language=russian\n";
 
 
@@ -620,7 +653,7 @@ function getLang(key) {
             }
         }
         else {
-            currentLang = "en"; 
+            currentLang = "ua";
         }
 
         if (currentLang == "") {
@@ -642,7 +675,7 @@ function getLang(key) {
                 return currentLang[i].split("=")[1];
             }
         }
-        
+
     } catch (exception) {
         //return "key" if exception or not found
     }
@@ -657,7 +690,7 @@ function langCompare(source, dest, panel) {
 
     for (var i = 0; i < sourceLang.length; i++) {
         if (sourceLang[i] === "") continue;
-        var sourceKey = sourceLang[i].split("=")[0];    
+        var sourceKey = sourceLang[i].split("=")[0];
         var found = false;
         for (var j = 0; j < destLang.length; j++) {
             if (destLang[j].indexOf(sourceKey + "=") == 0) {
@@ -684,7 +717,5 @@ function langCompare(source, dest, panel) {
             }
         }
     }
-
     panel.innerHTML = dest;
-
 }

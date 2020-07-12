@@ -39,10 +39,10 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-const units = ['bytes', 'kb', 'mb', 'gb', 'tb', 'pb', 'eb', 'zb', 'yb']; 
+const nodes = ['bytes', 'kb', 'mb', 'gb', 'tb', 'pb', 'eb', 'zb', 'yb'];
 
 var FilesList =
-    
+
     function () {
         "use strict";
 
@@ -73,14 +73,15 @@ var FilesList =
 
         _proto.drawFilesList = function drawFilesList() {
             if (this.uploadSpan == undefined) {
-                this.uploadSpan = this.filesAnchors.appendChild(document.createElement('button'));
-                this.uploadSpan.type = "button";
+                this.filesItem =  document.getElementById("filesitem" + this.node.nodenickname);
+                this.uploadSpan = headerPanelUI.addButton("uploadfilebuttoon", "fa fa-file", getLang("upload"), headerPanelUI.filesButtonRole);                                                    
                 this.uploadSpan.href = boardhost + "upload";
                 this.uploadSpan.onclick = this.uploadClick;
                 this.uploadSpan.setAttribute("data-toggle", "modal");
-                this.uploadSpan.setAttribute("data-target", "#uploadModal");
-                this.uploadSpan.innerText = getLang("upload");
+                this.uploadSpan.setAttribute("data-target", "#uploadModal");                
                 this.uploadSpan.filesList = this;
+                this.filesItem.href.uploadSpan = this.uploadSpan;
+                
             }
 
             if (this.tableDiv == undefined) {
@@ -103,11 +104,11 @@ var FilesList =
                 th.scope = "col";
                 th = tr.appendChild(document.createElement('th'));
                 th.className = "w-10";
-                th.innerText = "name";
+                th.innerText = getLang("name");
                 th.scope = "col";
                 th = tr.appendChild(document.createElement('th'));
                 th.className = "w-5";
-                th.innerText = "size";
+                th.innerText = getLang("size");
                 th.scope = "col";
                 th = tr.appendChild(document.createElement('th')); //th.className = "w-50";
 
@@ -185,45 +186,14 @@ var FilesList =
         };
 
         _proto.uploadClick = function uploadClick(event) {
-            var filesListObject = event.currentTarget.filesList; //event.stopPropagation();
-
-            document.getElementById("addDriverPanel").innerHTML = "";
-            document.getElementById("resetPanel").innerHTML = "";
-            var uploadPanel = document.getElementById("uploadPanel");
-            uploadPanel.innerHTML = "";
-            var modalFade = uploadPanel.appendChild(document.createElement("div"));
-            modalFade.className = "modal fade";
-            modalFade.id = "uploadModal";
-            modalFade.tabindex = "-1";
-            modalFade.setAttribute("role", "dialog");
-            modalFade.setAttribute("aria-labelledby", "uploadModalLabel");
-            modalFade.setAttribute("aria-hidden", "true");
-            var modalDialog = modalFade.appendChild(document.createElement("div"));
-            modalDialog.className = "modal-dialog";
-            modalDialog.role = "document";
-            var modalContent = modalDialog.appendChild(document.createElement("div"));
-            modalContent.className = "modal-content";
-            var modalHeader = modalContent.appendChild(document.createElement("div"));
-            modalHeader.className = "modal-header";
-            var modalTitle = modalHeader.appendChild(document.createElement("h5"));
-            modalTitle.className = "modal-title";
-            modalTitle.id = "uploadModalLabel";
-            modalTitle.innerText = getLang("uploadfiles");
-            var closeHeaderButton = modalHeader.appendChild(document.createElement("button"));
-            closeHeaderButton.type = "button";
-            closeHeaderButton.className = "close";
-            closeHeaderButton.setAttribute("data-dismiss", "modal");
-            closeHeaderButton.setAttribute("aria-label", "Close");
-            var closeSpan = closeHeaderButton.appendChild(document.createElement("span"));
-            closeSpan.setAttribute("aria-hidden", "true");
-            closeSpan.innerText = "x";
-            var modalBody = modalContent.appendChild(document.createElement("div"));
-            modalBody.className = "modal-body";
-            var inputGroup = modalBody.appendChild(document.createElement("form"));
+            event.stopPropagation();
+            var uploadFilesDialog = createModalDialog(getLang("uploadfiles"), "");
+            uploadFilesDialog.filesListObject = event.currentTarget.filesList;
+            var inputGroup = uploadFilesDialog.body.appendChild(document.createElement("form"));
             inputGroup.className = "form-group";
             inputGroup.id = "inputGroup";
-            inputGroup.addEventListener('submit', filesListObject.inputGroupSubmit);
-            inputGroup.filesListObject = filesListObject;
+            inputGroup.addEventListener('submit', uploadFilesDialog.filesListObject.inputGroupSubmit);
+            inputGroup.filesListObject = uploadFilesDialog.filesListObject;
             var inputgroupprepend = inputGroup.appendChild(document.createElement("div"));
             inputgroupprepend.className = "input-group-prepend";
             var customFile = inputGroup.appendChild(document.createElement("div"));
@@ -238,22 +208,17 @@ var FilesList =
             fileInput.setAttribute("type", "file");
             fileInput.setAttribute("aria-describedby", "inputGroupFileAddon01");
             fileInput.multiple = true;
-            fileInput.onchange = filesListObject.inputGroupChange;
-            fileInput.filesListObject = filesListObject;
+            fileInput.onchange = uploadFilesDialog.filesListObject.inputGroupChange;
+            fileInput.filesListObject = uploadFilesDialog.filesListObject;
             var filesList = customFile.appendChild(document.createElement("div"));
             filesList.id = "filesList";
             fileInput.filesList = filesList;
             fileInput.label = label;
             fileInput.customFile = customFile;
-            var modalFooter = modalContent.appendChild(document.createElement("div"));
-            modalFooter.className = "modal-footer";
-            var closeButton = modalFooter.appendChild(document.createElement("button"));
-            closeButton.type = "button";
-            closeButton.className = "btn btn-info btn-sm";
-            closeButton.setAttribute("data-dismiss", "modal");
-            closeButton.setAttribute("aria-label", "Close");
-            closeButton.innerText = getLang("cancel");
-            $("#uploadtModal").modal('show');
+
+            uploadFilesDialog.OKButton.style.display = "none";
+            uploadFilesDialog.show();
+
             return false;
         };
 
@@ -265,7 +230,7 @@ var FilesList =
                 n = n / 1024;
             }
 
-            return n.toFixed(n < 10 && l > 0 ? 1 : 0) + ' ' + units[l];
+            return n.toFixed(n < 10 && l > 0 ? 1 : 0) + ' ' + nodes[l];
         };
 
         _proto.inputGroupChange = function inputGroupChange(event) {
@@ -289,7 +254,7 @@ var FilesList =
             filesListObject.uploadFileButton.className = "btn btn-success btn-sm";
             filesListObject.uploadFileButton.id = "doUploadButton";
             filesListObject.uploadFileButton.setAttribute("type", "submit");
-            filesListObject.uploadFileButton.innerText = "upload";
+            filesListObject.uploadFileButton.innerText = getLang("upload");
             filesListObject.uploadFileButton.used = false;
             label.innerText = files.length + " file(s) selected, size " + filesListObject.formatBytes(totalSize);
         };
@@ -333,7 +298,6 @@ var FilesList =
                     fileItem.innerHTML += ".";
                 }
             };
-
             request.onabort = function (oEvent) {
                 if (this.status == 0) return;
                 fileItem.innerHTML += " abort";
@@ -364,11 +328,9 @@ var FilesList =
                     fileItem.innerHTML += request.status + " error";
                 }
             };
-
             request.open("POST", endPoint, true);
             request.send(formData);
         };
-
         _proto.inputGroupSubmit = function inputGroupSubmit(event) {
             var filesListObject = event.currentTarget.filesListObject;
 
@@ -383,6 +345,5 @@ var FilesList =
 
             event.preventDefault();
         };
-
         return FilesList;
     }();

@@ -1,54 +1,105 @@
-﻿<!doctype html>
+﻿<!doctype HTML html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html lang="en">
+
 <head>
     <title>OWLOS</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=driver-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="OWLOS UX index">
+    <meta name="author"
+        content="Serhii Lehkii (sergey@light.kiev.ua) Konstantin Brul (konstabrul@gmail.com) Vitalii Glushchenko (cehoweek@gmail.com)
+    Stanislav Kvashchuk (skat@ukr.net) Vladimir Kovalevich (covalevich@gmail.com) Denys Melnychuk (meldenvar@gmail.com) Denis Kirin (deniskirinacs@gmail.com)">
     <script src='bootcore.js'></script>
-
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
-          integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+        integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+    <style>
+        .console-holder {
+            font-size: 11px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            /* https://www.colorzilla.com/gradient-editor/ */
+            -webkit-mask-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 1)), to(rgba(0, 0, 0, 0)));            
+            transition-duration: 1.3s;
+            transition-property: filter;
+        }
 
+        .console-holder:hover,
+        .console-holder:focus,
+        .console-holder:active {
+            filter: brightness(140%);
+        }
+
+        .console {
+            white-space: pre-wrap;
+            overflow-y: scroll;
+        }
+
+        .console-text {
+            margin-left: 10px;
+            animation-delay: 2.5s;
+            animation: consoleBlurFadeInOut 2.5s ease-in backwards;
+        }
+
+        /* source: https://codepen.io/superchief/pen/mJmoBz */
+        @keyframes consoleBlurFadeInOut {
+            0% {
+                opacity: 0;
+                text-shadow: 0px 0px 40px #93b9ca;
+                transform: scale(0.9);
+            }
+
+            20%,
+            75% {
+                opacity: 1;
+                text-shadow: 0px 0px 1px #93b9ca;
+                transform: scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(0);
+            }
+        }
+    </style>
 </head>
-<body  onbeforeunload="return BeforeUnloadEvent()">
-    
-    <pre id="boot" style="font-size: 11px;"><code id="bootLog" style="white-space: pre-wrap; overflow-y:scroll;"></code></pre>
 
+<body onbeforeunload="return BeforeUnloadEvent()">
+    <pre id="boot" class="console-holder"><code id="bootLog"  class="console"  ></code>
+    </pre>
     <div id="pagewrapper" class="page-wrapper default-theme sidebar-bg bg1">
-        <main class="page-content pt-2">
+        <main class="page-content">
             <div id="overlay" class="overlay"></div>
-            <nav class="navbar">
-                <form class="form-inline my-2 my-lg-0">
-                    <span type="button" id="toggle-sidebar" class="badge badge-warning fa fa-bars" style="display:none">
-                    </span>
-                    <span type="button" id="pin-sidebar" class="badge badge-success fa fa-anchor" style="display:none">
-                    </span>
-                    <span type="button" id="nodeStatusPanelText" class="badge badge-default" style="display:none">
-                    </span>
-                    <span type="button" id="sidebarText" class="badge badge-default" style="display:none">
-                    </span>
-
-                </form>
-
-                <form class="form-inline my-2 my-lg-0">
-                    <div class="nodestatuspanel" id="saveButtonPanel"></div>
-                    <div class="nodestatuspanel" id="dashboardButtonsPanel"></div>
-                    <div class="nodestatuspanel" id="nodeStatusPanel"></div>
-
-                </form>
-            </nav>
-
+            <div class="header-panel">
+                <div class="container-fluid">
+                    <div id="header-panel" class="row">
+                        <div id="header-panel-form" class="col-sm-6">
+                        </div>
+                        <div id="header-panel-statuses" class="col-sm-6 small-text">
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="container-fluid">
                 <div class="row">
-
                     <div class="tab-content col-sm-12" id="nodesPropsPanel">
                         <div class="tab-pane fade active show" id="dashboard">
                             <div class="gutterSlim row" id="driversWidgetsPanel">
+                                <div id="noWidgetsPanel" style="display: none;">
+                                    <h2 id="noWidgetsPanelHeader" class="warning">No one widget exists.</h2>
+                                    <div id="noWidgetsPanelText">This panel is used to display widgets.<br> Widgets are
+                                        visual elements that display the state of various parameters of your IoT
+                                        devices. At this stage, no one widget has been added. Use the 'add widget'
+                                        button or the link below - to add your first OWLOS widget.<br><br></div>
+                                    <button id="noOneAddWidgetButton" class="btn btn-sm btn-secondary header-button"
+                                        data-toggle="tooltip" data-placement="right"
+                                        data-original-title="add widget"><span class="fa fa-plus"></span> Add
+                                        widget</button>
+                                </div>
                             </div>
                             <div class="col-sm-12" id="basicPanel">
                             </div>
                         </div>
-
                         <div class="tab-pane fade" id="console">
                             <div class="row">
                                 <div class="col-md-12 driverdiv">
@@ -61,42 +112,18 @@
                     </div>
                 </div>
             </div>
-
-
             <div id="uploadPanel" class="row"></div>
             <div id="addDriverPanel" class="row"></div>
-            <div id="resetPanel" class="row"></div>
-
-            <!--
-
-    <nav id="sidebar" class="bs-docs-sidebar">
-        <ul id="nodesSideBar" class="list-unstyled components"></ul>
-    </nav>
-         -->
+            <div id="showDialogPanel" class="row"></div>
             <div id="nodePropAnchors"> </div>
-
-
-
         </main>
-        
     </div>
-    <footer class="footer">
-        <div class="container col-md-12" id="footerContainer">
-            <!-- Place this tag where you want the button to render. -->            
-            <a href="https://github.com/kirindenis/owlos" target="_blank" data-show-count="true" aria-label="Star kirindenis/owlos on GitHub">GitHub: Star<a class="social-count" href="https://github.com/KirinDenis/owlos/stargazers" target="_blank" rel="noopener" aria-label="1 stargazer on GitHub">1</a></a>            
-            <a href="https://sourceforge.net/projects/iotowlos/files/latest/download" target="_blank"><img alt="Download OWLOS" src="https://img.shields.io/sourceforge/dt/iotowlos.svg"></a>
-            OWLOS
-        </div>
-    </footer>
     <script>
         boot();
-
         function BeforeUnloadEvent() {
             return "Are you sure?";
         }
-
-
-
     </script>
 </body>
+
 </html>
