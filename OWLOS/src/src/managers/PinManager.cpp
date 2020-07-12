@@ -520,8 +520,11 @@ int driverPinRead(String driverId, int driverPinIndex)
 	if (driverPin != nullptr)
 	{
 		int mode = getPinMode(driverPin->GPIONumber);		
-
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 		if ((mode == INPUT) || (mode == INPUT_PULLUP) || (mode == INPUT_PULLDOWN_16)  || (mode = ANALOG_INPUT))
+#else
+		if ((mode == INPUT) || (mode == INPUT_PULLUP) || (mode = ANALOG_INPUT))
+#endif		
 		{			
 			if (getPinByName(driverPin->name)->pinTypes & ANALOG_I_MASK)
 			{

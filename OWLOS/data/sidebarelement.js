@@ -246,7 +246,7 @@ function createSidebar() {
             this.sideBar.id = "sideBar";
             this.sideBar.className = "sidebar-item sidebar-menu";
             //TODO: read version from node
-            this.createBrand("1.7");
+            this.createBrand("1.8 (RC)");
             this.createUserInfo("Role", "administrator", NET_ONLINE);
 
             //Main menu 

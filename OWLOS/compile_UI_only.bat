@@ -1,5 +1,4 @@
-﻿
-REM Ready IoT Solution - OWLOS
+﻿REM Ready IoT Solution - OWLOS
 REM Copyright 2019, 2020 by:
 REM - Konstantin Brul (konstabrul@gmail.com)
 REM - Vitalii Glushchenko (cehoweek@gmail.com)
@@ -95,6 +94,38 @@ type  "buttonelement.js" >> "CompressedPackOne\owlos.js"
 D:\7Zip\7z.exe a -mx9 dialogelement.js.gz dialogelement.js 
 move  "dialogelement.js.gz" "CompressedFull\dialogelement.js.gz"
 type  "dialogelement.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 dialoglabelelement.js.gz dialoglabelelement.js
+move  "dialoglabelelement.js.gz" "CompressedFull\dialoglabelelement.js.gz"
+type  "dialoglabelelement.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 dialoginputelement.js.gz dialoginputelement.js
+move  "dialoginputelement.js.gz" "CompressedFull\dialoginputelement.js.gz"
+type  "dialoginputelement.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 dialogprogressbarelement.js.gz dialogprogressbarelement.js
+move  "dialogprogressbarelement.js.gz" "CompressedFull\dialogprogressbarelement.js.gz"
+type  "dialogprogressbarelement.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 dialogselectelement.js.gz dialogselectelement.js
+move  "dialogselectelement.js.gz" "CompressedFull\dialogselectelement.js.gz"
+type  "dialogselectelement.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 sidebarelement.js.gz sidebarelement.js
+move  "sidebarelement.js.gz" "CompressedFull\sidebarelement.js.gz"
+type  "sidebarelement.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 valueeditorelement.js.gz valueeditorelement.js
+move  "valueeditorelement.js.gz" "CompressedFull\valueeditorelement.js.gz"
+type  "valueeditorelement.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 headerpanelui.js.gz headerpanelui.js 
+move  "headerpanelui.js.gz" "CompressedFull\headerpanelui.js.gz"
+type  "headerpanelui.js" >> "CompressedPackOne\owlos.js"
+
+D:\7Zip\7z.exe a -mx9 scriptsui.js.gz scriptsui.js
+move  "scriptsui.js.gz" "CompressedFull\scriptsui.js.gz"
+type  "scriptsui.js" >> "CompressedPackOne\owlos.js"
 
 D:\7Zip\7z.exe a -mx9 dashboardui.js.gz dashboardui.js 
 move  "dashboardui.js.gz" "CompressedFull\dashboardui.js.gz"

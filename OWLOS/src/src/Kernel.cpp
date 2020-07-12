@@ -65,7 +65,7 @@ bool kernelSetup()
 
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	ESP.wdtEnable(ONEMINUTE); //Software watch dog
-	//ESP.wdtDisable();
+	// ESP.wdtDisable(); //try it for you ESP8266 WDT
 #endif
 
 	filesBegin(); //prepare Flash file systeme (see Tools/Flash size item - use 2M Flash Size, is ZERO size by default -> switch to 2M    

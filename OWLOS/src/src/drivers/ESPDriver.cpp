@@ -46,8 +46,8 @@ OWLOS распространяется в надежде, что она буде
 #include "../Managers/TransportManager.h"
 
 
-#define FIRMWARE_VERSION "OWLOS version 1.7 (beta)"
-#define FIRMWARE_BUILD_NUMBER 60
+#define FIRMWARE_VERSION "OWLOS version 1.8 (RC)"
+#define FIRMWARE_BUILD_NUMBER 72
 
 #define DEFAULT_ZERO_VALUE 0x00
 #define DEFAULT_EMPTY_STR_VALUE ""
@@ -55,14 +55,14 @@ OWLOS распространяется в надежде, что она буде
 #define DEFAULT_ID "owlnode"
 #define DEFAULT_TOPIC "world0/area1/front1/room1/"
 
-#define DEFAULT_WIFI_ACCESS_POINT_AVAILABLE 0
+#define DEFAULT_WIFI_ACCESS_POINT_AVAILABLE 1
 #define DEFAULT_WIFI_ACCESS_POINT_SSID "owlnode"
 #define DEFAULT_WIFI_ACCESS_POINT_PASSWORD  "1122334455"
 #define DEFAULT_WIFI_ACCESS_POINT_IP  "192.168.4.1"
 
-#define DEFAULT_WIFI_STATION_AVAILABLE 1
-#define DEFAULT_WIFI_STATION_SSID "Palata#13"
-#define DEFAULT_WIFI_STATION_PASSWORD "qweasdzxc1234"
+#define DEFAULT_WIFI_STATION_AVAILABLE 0
+#define DEFAULT_WIFI_STATION_SSID ""
+#define DEFAULT_WIFI_STATION_PASSWORD ""
 
 #define DEFAULT_HTTP_SERVER_AVAILABLE true
 #define DEFAULT_HTTP_SERVER_USERNAME "admin"

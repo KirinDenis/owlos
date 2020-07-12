@@ -222,17 +222,14 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-
 function createDialogInput(_id, _labelText, _editPlaceholder) {
 
     var dialogInput = {
         id: _id,
         labelText: _labelText,
         editPlaceholder: _editPlaceholder,
-
         label: undefined,
         input: undefined,
-
         create: function () {
             this.label = document.createElement("label");
             this.label.setAttribute("for", this.id);
@@ -244,21 +241,56 @@ function createDialogInput(_id, _labelText, _editPlaceholder) {
             this.input.id = this.id;
         },
     };
-
     dialogInput.create();
     return dialogInput;
 }
 
+/* ----------------------------------------------------------------------------
+Ready IoT Solution - OWLOS
+Copyright 2019, 2020 by:
+- Konstantin Brul (konstabrul@gmail.com)
+- Vitalii Glushchenko (cehoweek@gmail.com)
+- Denys Melnychuk (meldenvar@gmail.com)
+- Denis Kirin (deniskirinacs@gmail.com)
 
+This file is part of Ready IoT Solution - OWLOS
+
+OWLOS is free software : you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+OWLOS is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with OWLOS. If not, see < https://www.gnu.org/licenses/>.
+
+GitHub: https://github.com/KirinDenis/owlos
+
+(Этот файл — часть Ready IoT Solution - OWLOS.
+
+OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
+ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
+была опубликована Фондом свободного программного обеспечения; версии 3
+лицензии, любой более поздней версии.
+
+OWLOS распространяется в надежде, что она будет полезной, но БЕЗО ВСЯКИХ
+ГАРАНТИЙ; даже без неявной гарантии ТОВАРНОГО ВИДА или ПРИГОДНОСТИ ДЛЯ
+ОПРЕДЕЛЕННЫХ ЦЕЛЕЙ.
+Подробнее см.в Стандартной общественной лицензии GNU.
+
+Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
+этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
+--------------------------------------------------------------------------------------*/
 function createButton(_id, _class, _text) {
-
     var button = {
         id: _id,
         class: _class,
         text: _text,
-
-        button: undefined,
-        
+        button: undefined,        
         create: function () {
             this.button = document.createElement("button");
             this.button.type = "button";
@@ -267,7 +299,6 @@ function createButton(_id, _class, _text) {
             this.button.innerText = this.text;
         }
     };
-
     button.create();
     return button;
 }
@@ -313,13 +344,7 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-
 function createModalDialog(_titleText, _bodyText) {
-
-        //makeModalDialog("resetPanel", "addnode", getLang("addnodeheader"), "");
-        //var modalFooter = document.getElementById("addnodeModalFooter");
-        //var modalBody = document.getElementById("addnodeModalBody");
-
     var modalDialog = {
         id: undefined,
         titleText: _titleText,
@@ -335,6 +360,7 @@ function createModalDialog(_titleText, _bodyText) {
         footer: undefined,
 
         closeHeaderButton: undefined,
+        useCloseButton: false,
         closeButton: undefined,
         OKButton: undefined,
         errorLabel: undefined,
@@ -368,7 +394,7 @@ function createModalDialog(_titleText, _bodyText) {
             this.dialog.role = "document";
 
             this.content = this.dialog.appendChild(document.createElement("div"));
-            this.content.className = "modal-content";
+            this.content.className = "modal-content bg-dark border-info";
 
             this.header = this.content.appendChild(document.createElement("div"));
             this.header.className = "modal-header";
@@ -377,12 +403,12 @@ function createModalDialog(_titleText, _bodyText) {
 
             this.title.className = "modal-title";
             this.title.id = this.id + "ModalLabel";
-            this.title.innerText = this.titleText;
+            this.title.innerHTML = this.titleText;
 
             this.body = this.content.appendChild(document.createElement("div"));
             this.body.id = this.id + "ModalBody"
             this.body.className = "modal-body";
-            this.body.innerText = this.bodyText;
+            this.body.innerHTML = this.bodyText;
 
             this.formGroup = this.body.appendChild(document.createElement("div"));
             this.formGroup.className = "form-group";
@@ -402,17 +428,19 @@ function createModalDialog(_titleText, _bodyText) {
             closeSpan.setAttribute("aria-hidden", "true");
             closeSpan.innerText = "x"
 
-            this.closeButton = this.footer.appendChild(document.createElement("button"));
-            this.closeButton.type = "button";
-            this.closeButton.className = "btn btn-sm btn-info";
-            this.closeButton.setAttribute("data-dismiss", "modal");
-            this.closeButton.setAttribute("aria-label", "Close");
-            this.closeButton.innerText = getLang("cancel");
-            this.closeButton.id = this.id + "closeButton";
+            if (this.useCloseButton) {
+                this.closeButton = this.footer.appendChild(document.createElement("button"));
+                this.closeButton.type = "button";
+                this.closeButton.className = "btn btn-sm btn-success";
+                this.closeButton.setAttribute("data-dismiss", "modal");
+                this.closeButton.setAttribute("aria-label", "Close");
+                this.closeButton.innerText = getLang("cancel");
+                this.closeButton.id = this.id + "closeButton";
+            }
 
             this.OKButton = this.footer.appendChild(document.createElement("button"));
             this.OKButton.type = "button";
-            this.OKButton.className = "btn btn-sm btn-success";
+            this.OKButton.className = "btn btn-sm btn-info";
             this.OKButton.setAttribute("data-dismiss", "modal");
             this.OKButton.setAttribute("aria-label", "Close");
             this.OKButton.id = this.id + "OKButton";
@@ -427,6 +455,7 @@ function createModalDialog(_titleText, _bodyText) {
                 if (modalDialog != undefined) {
                     if (modalDialog.OKButton.clicked != undefined) {
                         if (modalDialog.onOK != undefined) {
+                            modalDialog.OKButton.clicked = undefined;
                             if (!modalDialog.onOK(modalDialog)) {
                                 event.preventDefault();
                                 event.stopImmediatePropagation();
@@ -436,9 +465,19 @@ function createModalDialog(_titleText, _bodyText) {
                     }
                 }
                 //TODO: Clear innerHTML
+
                 return true;
 
             });
+        },
+
+        show: function () {
+            $("#" + this.id + "Modal").modal('show');
+        },
+
+        hide: function () {
+            this.OKButton.clicked = undefined;
+            $("#" + this.id + "Modal").modal('hide');
         },
 
         OKButtonClick: function (event) {
@@ -446,7 +485,7 @@ function createModalDialog(_titleText, _bodyText) {
         },
 
         appendChildToForm: function (element) {
-            this.formGroup.appendChild(element);
+            return this.formGroup.appendChild(element);
         },
 
         getChild: function (childId) {
@@ -479,21 +518,18 @@ function createModalDialog(_titleText, _bodyText) {
 
         appendChildToFooter: function (element) {
             this.footer.appendChild(element);
-        }, 
+        },
 
         appendInput: function (dialogInput) {
             this.appendChildToForm(dialogInput.label);
-            this.appendChildToForm(dialogInput.input);            
-        }, 
+            this.appendChildToForm(dialogInput.input);
+        },
 
         appendSelect: function (dialogSelect) {
             this.appendChildToForm(dialogSelect.label);
             this.appendChildToForm(dialogSelect.select);
-        }, 
-
-        show: function () {
-            $("#" + this.id + "Modal").modal('show');
         }
+
     };
 
     modalDialog.create();
@@ -542,12 +578,1523 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-//Dashboard --------------------------------------------------------------------------------------------------------
-var dashboardUI = {
+function createDialogLabel(_id, _labelText) {
+    var dialogLabel = {
+        id: _id,
+        labelText: _labelText,
+        label: undefined,    
+        create: function () {
+            this.label = document.createElement("div");            
+            this.label.innerHTML = this.labelText;            
+            this.label.id = _id;
+        },
+    };
+    dialogLabel.create();
+    return dialogLabel;
+}
 
+﻿/* ----------------------------------------------------------------------------
+Ready IoT Solution - OWLOS
+Copyright 2019, 2020 by:
+- Konstantin Brul (konstabrul@gmail.com)
+- Vitalii Glushchenko (cehoweek@gmail.com)
+- Denys Melnychuk (meldenvar@gmail.com)
+- Denis Kirin (deniskirinacs@gmail.com)
+
+This file is part of Ready IoT Solution - OWLOS
+
+OWLOS is free software : you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+OWLOS is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with OWLOS. If not, see < https://www.gnu.org/licenses/>.
+
+GitHub: https://github.com/KirinDenis/owlos
+
+(Этот файл — часть Ready IoT Solution - OWLOS.
+
+OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
+ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
+была опубликована Фондом свободного программного обеспечения; версии 3
+лицензии, любой более поздней версии.
+
+OWLOS распространяется в надежде, что она будет полезной, но БЕЗО ВСЯКИХ
+ГАРАНТИЙ; даже без неявной гарантии ТОВАРНОГО ВИДА или ПРИГОДНОСТИ ДЛЯ
+ОПРЕДЕЛЕННЫХ ЦЕЛЕЙ.
+Подробнее см.в Стандартной общественной лицензии GNU.
+
+Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
+этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
+--------------------------------------------------------------------------------------*/
+
+function createDialogInput(_id, _labelText, _editPlaceholder) {
+
+    var dialogInput = {
+        id: _id,
+        labelText: _labelText,
+        editPlaceholder: _editPlaceholder,
+        label: undefined,
+        input: undefined,
+        create: function () {
+            this.label = document.createElement("label");
+            this.label.setAttribute("for", this.id);
+            this.label.innerText = this.labelText;            
+            this.label.id = this.id + "label";
+            this.input = document.createElement('input');
+            this.input.className = "form-control form-control-sm";
+            this.input.placeholder = this.editPlaceholder;
+            this.input.id = this.id;
+        },
+    };
+    dialogInput.create();
+    return dialogInput;
+}
+
+/* ----------------------------------------------------------------------------
+Ready IoT Solution - OWLOS
+Copyright 2019, 2020 by:
+- Konstantin Brul (konstabrul@gmail.com)
+- Vitalii Glushchenko (cehoweek@gmail.com)
+- Denys Melnychuk (meldenvar@gmail.com)
+- Denis Kirin (deniskirinacs@gmail.com)
+
+This file is part of Ready IoT Solution - OWLOS
+
+OWLOS is free software : you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+OWLOS is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with OWLOS. If not, see < https://www.gnu.org/licenses/>.
+
+GitHub: https://github.com/KirinDenis/owlos
+
+(Этот файл — часть Ready IoT Solution - OWLOS.
+
+OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
+ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
+была опубликована Фондом свободного программного обеспечения; версии 3
+лицензии, любой более поздней версии.
+
+OWLOS распространяется в надежде, что она будет полезной, но БЕЗО ВСЯКИХ
+ГАРАНТИЙ; даже без неявной гарантии ТОВАРНОГО ВИДА или ПРИГОДНОСТИ ДЛЯ
+ОПРЕДЕЛЕННЫХ ЦЕЛЕЙ.
+Подробнее см.в Стандартной общественной лицензии GNU.
+
+Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
+этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
+--------------------------------------------------------------------------------------*/
+
+function createDialogProgressbar(_id) {
+    var dialogProgressbar = {
+        id: _id,
+        percent: 0,
+        progressbarDiv: undefined,
+        progressbar: undefined,
+        create: function () {
+            this.progressbarDiv = document.createElement("div");
+            this.progressbarDiv.className = "progress";
+            this.progressbarDiv.id = _id;
+            this.progressbar = this.progressbarDiv.appendChild(document.createElement("div"));
+            this.progressbar.className = "progress-bar progress-bar-striped bg-info";
+            this.progressbar.id = _id + "progressbar";
+            this.progressbar.setAttribute("role", "progressbar");
+            this.progressbar.setAttribute("aria-valuenow", "0");
+            this.progressbar.setAttribute("aria-valuemin", "0");
+            this.progressbar.setAttribute("aria-valuemax", "100");
+            this.progressbar.setAttribute("style", "width: 0%");
+            this.progressbar.innerText = this.percent + "%";
+        },
+    };
+    dialogProgressbar.create();
+    return dialogProgressbar;
+}
+
+﻿/* ----------------------------------------------------------------------------
+Ready IoT Solution - OWLOS
+Copyright 2019, 2020 by:
+- Konstantin Brul (konstabrul@gmail.com)
+- Vitalii Glushchenko (cehoweek@gmail.com)
+- Denys Melnychuk (meldenvar@gmail.com)
+- Denis Kirin (deniskirinacs@gmail.com)
+
+This file is part of Ready IoT Solution - OWLOS
+
+OWLOS is free software : you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+OWLOS is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with OWLOS. If not, see < https://www.gnu.org/licenses/>.
+
+GitHub: https://github.com/KirinDenis/owlos
+
+(Этот файл — часть Ready IoT Solution - OWLOS.
+
+OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
+ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
+была опубликована Фондом свободного программного обеспечения; версии 3
+лицензии, любой более поздней версии.
+
+OWLOS распространяется в надежде, что она будет полезной, но БЕЗО ВСЯКИХ
+ГАРАНТИЙ; даже без неявной гарантии ТОВАРНОГО ВИДА или ПРИГОДНОСТИ ДЛЯ
+ОПРЕДЕЛЕННЫХ ЦЕЛЕЙ.
+Подробнее см.в Стандартной общественной лицензии GNU.
+
+Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
+этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
+--------------------------------------------------------------------------------------*/
+
+function createDialogSelect(_id, _labelText) {
+
+    var dialogSelect = {
+        id: _id,
+        labelText: _labelText,
+        label: undefined,
+        select: undefined,
+        create: function () {
+            this.label = document.createElement("label");
+            this.label.setAttribute("for", this.id);
+            this.label.innerHTML = this.labelText;
+            this.label.id = this.id + "label";
+            this.select = document.createElement('select');
+            this.select.className = "form-control form-control-sm";
+            this.select.dialogSelect = this;
+            this.select.id = this.id;
+        },
+        appendOption: function (_text, index) {
+            var selectOption = document.createElement('option');
+            this.select.add(selectOption, index);
+            selectOption.innerText = _text;
+            return selectOption;
+        }
+    };
+    dialogSelect.create();
+    return dialogSelect;
+}
+
+/* ----------------------------------------------------------------------------
+Ready IoT Solution - OWLOS
+Copyright 2019, 2020 by:
+- Konstantin Brul (konstabrul@gmail.com)
+- Vitalii Glushchenko (cehoweek@gmail.com)
+- Denys Melnychuk (meldenvar@gmail.com)
+- Denis Kirin (deniskirinacs@gmail.com)
+
+This file is part of Ready IoT Solution - OWLOS
+
+OWLOS is free software : you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+OWLOS is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with OWLOS. If not, see < https://www.gnu.org/licenses/>.
+
+GitHub: https://github.com/KirinDenis/owlos
+
+(Этот файл — часть Ready IoT Solution - OWLOS.
+
+OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
+ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
+была опубликована Фондом свободного программного обеспечения; версии 3
+лицензии, любой более поздней версии.
+
+OWLOS распространяется в надежде, что она будет полезной, но БЕЗО ВСЯКИХ
+ГАРАНТИЙ; даже без неявной гарантии ТОВАРНОГО ВИДА или ПРИГОДНОСТИ ДЛЯ
+ОПРЕДЕЛЕННЫХ ЦЕЛЕЙ.
+Подробнее см.в Стандартной общественной лицензии GNU.
+
+Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
+этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
+--------------------------------------------------------------------------------------*/
+
+/*
+Sidebar (меню) построено на основе:
+https://github.com/azouaoui-med/pro-sidebar-template
+Спасибо автору: azouaoui.med@gmail.com
+Используется как главное меню OWLOS UX 
+Этот модуль реализует управление пунктами меню - создание, удаления, стиль, события и так далее. 
+Смотрите метод Create, он  должен быть вызван один раз в начале построения UX, так как меню существует весь жизненный цикл UX.
+*/
+
+
+//Tак как в меню всегда будeт три основных пункта  - dashboard, узлы и консоль 
+//в этом же модуле реализованы обработчики кликов на эти пункты меню, а также переключения между этими пунктами 
+//влечет за собой изменение других элементов UX - кнопки вверхней части управляющие виджетами, кнопка сохранить многое другое 
+//эти обработчики ниже данный метод управляет внешний вид UX
+
+//клик на любой пункт SideBar обязан вызвать этот обработчик.
+//этот обработчик реализует переключение флажка 'active' для пунктов, а также настраивает статусные панели и кнопки в хиадере UX
+function sidebarItemClick(event) {
+    headerPanelUI.hideAllStatusesPanels();
+    headerPanelUI.hideAllButtons();
+    var aHref = event.currentTarget;
+    $(aHref).removeClass('active');    
+    document.location = aHref.href;
+    var node = aHref.node;
+    if (node != undefined) {
+        //любой пункт меню связаный с нодой (узлом)
+        headerPanelUI.showStatusPanel(node);
+        //проверяем не является ли выбранный пункт - пунктом "свойства узла"
+        if (aHref.deleteNodeButton != undefined) {
+            aHref.deleteNodeButton.style.display = "";
+        }
+        else
+            if (aHref.deleteDriverButton != undefined) {
+                aHref.deleteDriverButton.style.display = "";
+            }
+    }
+
+    if (aHref.saveWidgetsButton != undefined) {
+        aHref.saveWidgetsButton.style.display = "";
+    }
+
+    if (aHref.headerModeButton != undefined) {
+        aHref.headerModeButton.style.display = "";
+    }
+
+    if (aHref.addWidgetButton != undefined) {
+        aHref.addWidgetButton.style.display = "";
+    }
+
+    if (aHref.scriptExecuteButton != undefined) {
+        aHref.scriptExecuteButton.style.display = "";
+    }
+
+    if (aHref.scriptPauseButton != undefined) {
+        aHref.scriptPauseButton.style.display = "";
+    }
+
+    if (aHref.scriptDebugButton != undefined) {
+        aHref.scriptDebugButton.style.display = "";
+    }
+
+    if (aHref.scriptDeleteButton != undefined) {
+        aHref.scriptDeleteButton.style.display = "";
+    }
+
+    if (aHref.uploadSpan != undefined) {
+        aHref.uploadSpan.style.display = "";
+    }
+
+    return false;
+}
+
+//Объект элемента 
+function createSidebar() {
+    var sideBar = {
+        sideBarWrapper: undefined,
+        sideBar: undefined,
+        sideBarHeader: undefined,
+
+        sideBarHeaderInfo: undefined,
+        sideBarHeaderInfoVersion: undefined,
+        sideBarHeaderInfoRole: undefined,
+        sideBarHeaderInfoStatus: undefined,
+        sideBarHeaderInfoRoleSpan: undefined,
+
+        dashboardItem: undefined,
+        nodeItem: undefined,
+        nodeSubItem: undefined,
+        addNodeItem: undefined,
+        consoleItem: undefined,
+
+        createBrand: function (_version) {
+            var sideBarBrand = this.sideBar.appendChild(document.createElement("div"));
+            sideBarBrand.className = "sidebar-item sidebar-brand";
+            var hRef = sideBarBrand.appendChild(document.createElement("a"));
+            hRef.href = "https://github.com/KirinDenis/owlos";
+            hRef.target = "_blank";
+            hRef.innerText = "OWLOS";
+            sideBarBrand.appendChild(document.createElement("div")).innerHTML = "version <strong>" + _version + "</strong>";
+
+            this.sideBarHeader = this.sideBar.appendChild(document.createElement("div"));
+            this.sideBarHeader.className = "sidebar-item sidebar-header d-flex flex-nowrap";
+        },
+
+        createUserInfo: function (_role, _name, _networkStatus) {
+
+            this.sideBarHeaderInfo = this.sideBarHeader.appendChild(document.createElement("div"));
+            this.sideBarHeaderInfo.className = "user-info";
+            this.sideBarHeaderInfoRole = this.sideBarHeaderInfo.appendChild(document.createElement("span"));
+            this.sideBarHeaderInfoRole.className = "user-role";
+
+            this.sideBarHeaderInfoStatus = this.sideBarHeaderInfo.appendChild(document.createElement("span"));
+            this.sideBarHeaderInfoStatus.appendChild(document.createElement("i")).className = "fa fa-circle";
+            this.sideBarHeaderInfoStatus.className = "user-status";
+            this.sideBarHeaderInfoRoleSpan = this.sideBarHeaderInfoStatus.appendChild(document.createElement("span"));
+
+            this.setUserInfo(_role, _name, _networkStatus);
+        },
+
+        setUserInfo: function (_role, _name, _networkStatus) {
+            this.sideBarHeaderInfoRole.innerHTML = _role + " " + _name;
+            switch (_networkStatus) {
+                case NET_ONLINE:
+
+                    this.sideBarHeaderInfoRoleSpan.innerHTML = "online";
+                    break;
+                default: //NET_OFFLINE    
+
+                    this.sideBarHeaderInfoRoleSpan.innerHTML = "offline";
+                    break;
+            }
+        },
+
+        createItem: function (_parent, _id, _href, _text, _onclick, _icon, _span) {
+            var item = _parent.appendChild(document.createElement("li"));
+            item.id = _id;
+            item.className = "nav-item";
+            var itemHref = item.appendChild(document.createElement("a"));
+            itemHref.id = _id + "href";
+            itemHref.className = "menu-href";
+
+            itemHref.href = _href; 
+            itemHref.setAttribute("data-toggle", "tab");
+            itemHref.onclick = _onclick;
+            itemHref.appendChild(document.createElement("i")).className = _icon; 
+            item.href = itemHref;
+
+            var itemTextSpan = itemHref.appendChild(document.createElement("span"));
+            itemTextSpan.className = "menu-text";
+            itemTextSpan.innerHTML = _text;
+            itemHref.textSpan = itemTextSpan;
+            
+
+            if (_span != undefined) {
+                var itemSpan = itemHref.appendChild(document.createElement("span"));
+                itemSpan.className = "badge badge-pill badge-success";
+                itemSpan.id = _id + "span";
+                itemSpan.innerHTML = _span;
+                item.span = itemSpan;
+
+            }
+            return item;
+
+        },
+
+        createSubItem: function (_parent, _id) {
+            _parent.className = "sidebar-dropdown active";
+            var itemSubmenu = _parent.appendChild(document.createElement("div"));
+            itemSubmenu.className = "sidebar-submenu";
+            itemSubmenu.style.display = "block";
+            var itemSubmenuUl = itemSubmenu.appendChild(document.createElement("ul"));
+            itemSubmenuUl.id = _id;
+            return itemSubmenuUl;
+        },
+
+        createDeepItem: function (_parent, _id) {
+
+            _parent.className = "";
+            _parent.href.setAttribute("data-toggle", "collapse");
+            _parent.href.setAttribute("aria-expanded", "false");
+            _parent.href.className = "nav-link collapsed menu-href";
+
+            var itemSubmenuUl = _parent.appendChild(document.createElement("ul"));
+            itemSubmenuUl.className = "collapse";
+            itemSubmenuUl.id = _id;
+            return itemSubmenuUl;
+        },
+
+        //Конструктор    
+        create: function () {
+
+            headerPanelUI.addButton("toggle-sidebar", "fa fa-bars", getLang("tooglesidebar"), headerPanelUI.sideBarButtonRole);
+            headerPanelUI.addButton("pin-sidebar", "fa fa-anchor", getLang("pinsidebar"), headerPanelUI.sideBarButtonRole);
+
+            var pageWrapper = document.getElementById("pagewrapper");
+
+            this.sideBarWrapper = pageWrapper.appendChild(document.createElement("nav"));
+            this.sideBarWrapper.id = "sidebarwrapper";
+            this.sideBarWrapper.className = "sidebar-wrapper";
+
+            var sideBarContent = this.sideBarWrapper.appendChild(document.createElement("div"));
+            sideBarContent.className = "sidebar-content";
+
+            this.sideBar = sideBarContent.appendChild(document.createElement("div"));
+            this.sideBar.id = "sideBar";
+            this.sideBar.className = "sidebar-item sidebar-menu";
+            //TODO: read version from node
+            this.createBrand("1.8 (RC)");
+            this.createUserInfo("Role", "administrator", NET_ONLINE);
+
+            //Main menu 
+            var sideBarUl = this.sideBar.appendChild(document.createElement("ul"));
+            //Панель управления 
+            this.dashboardItem = this.createItem(sideBarUl, "dashboarditem", "#dashboard", getLang("dashboardTab"), sidebarItemClick, "fa fa-tachometer-alt", configProperties.dashboards[0].widgets.length);
+            //настройки  
+            this.nodeItem = this.createItem(sideBarUl, "nodeItem", "#settings", getLang("settingsTab"), function (event) { $(this).removeClass('active'); }, "fa fa-cogs", undefined);
+            this.nodeSubItem = this.createSubItem(this.nodeItem, "settingsSideBarUl");
+
+            this.addNodeItem = this.createItem(this.nodeSubItem, "addnodeitem", "#home", getLang("addnode"), settingsUI.addNodeClick, "fa fa-plus", undefined);
+            this.addNodeItem.href.style.color = theme.warning;
+            //панель не видна, она существует для организии SideBar, сами панели со свойствами драйвер сделаны на основе navBar - так сложилось исторически, SideBar только переключает их
+            var nodePropAnchors = document.getElementById("nodePropAnchors");
+            //NavTabs панель для панелей со свойствами нод
+            var nodePropNavBar = nodePropAnchors.appendChild(document.createElement("ul"));
+            nodePropNavBar.style.height = "0px";
+            nodePropNavBar.id = "nodePropNavBar";
+            nodePropNavBar.className = "nav nav-tabs";
+
+            this.consoleItem = this.createItem(sideBarUl, "consoleitem", "#console", getLang("consoleTab"), sidebarItemClick, "fa fa-file-code", undefined);
+
+            $(".page-wrapper").toggleClass("toggled"); //открыть по умолчанию панель меню
+            jQuery(function ($) {
+
+                // Dropdown menu
+                $(".sidebar-dropdown > a").click(function () {
+                    $(".sidebar-submenu").slideUp(200);
+
+                    if ($(this).parent().hasClass("active")) {
+                        // $(".sidebar-dropdown").removeClass("active");
+                        $(this).parent().removeClass("active");
+                    } else {
+                        $(".sidebar-dropdown").removeClass("active");
+                        $(this).next(".sidebar-submenu").slideDown(200);
+                        $(this).parent().addClass("active");
+                    }
+
+
+                });
+
+                //toggle sidebar
+                $("#toggle-sidebar").click(function () {
+                    $(".page-wrapper").toggleClass("toggled");
+                });
+                //Pin sidebar
+                $("#pin-sidebar").click(function () {
+                    if ($(".page-wrapper").hasClass("pinned")) {
+                        // unpin sidebar when hovered
+                        $(".page-wrapper").removeClass("pinned");
+                        $("#sidebar").unbind("hover");
+                    } else {
+                        $(".page-wrapper").addClass("pinned");
+                        $("#sidebar").hover(
+                            function () {
+                                console.log("mouseenter");
+                                $(".page-wrapper").addClass("sidebar-hovered");
+                            },
+                            function () {
+                                console.log("mouseout");
+                                $(".page-wrapper").removeClass("sidebar-hovered");
+                            }
+                        )
+
+                    }
+                });
+
+                //toggle sidebar overlay
+                $("#overlay").click(function () {
+                    $(".page-wrapper").toggleClass("toggled");
+                });
+
+                //switch between themes 
+                var themes = "default-theme legacy-theme chiller-theme ice-theme cool-theme light-theme";
+                $('[data-theme]').click(function () {
+                    $('[data-theme]').removeClass("selected");
+                    $(this).addClass("selected");
+                    $('.page-wrapper').removeClass(themes);
+                    $('.page-wrapper').addClass($(this).attr('data-theme'));
+                });
+
+                // switch between background images
+                var bgs = "bg1 bg2 bg3 bg4";
+                $('[data-bg]').click(function () {
+                    $('[data-bg]').removeClass("selected");
+                    $(this).addClass("selected");
+                    $('.page-wrapper').removeClass(bgs);
+                    $('.page-wrapper').addClass($(this).attr('data-bg'));
+                });
+
+                // toggle background image
+                $("#toggle-bg").change(function (e) {
+                    e.preventDefault();
+                    $('.page-wrapper').toggleClass("sidebar-bg");
+                });
+
+                // toggle border radius
+                $("#toggle-border-radius").change(function (e) {
+                    e.preventDefault();
+                    $('.page-wrapper').toggleClass("border-radius-on");
+                });
+
+            });
+        }
+
+    }
+    sideBar.create();
+    return sideBar;
+}
+/* ----------------------------------------------------------------------------
+Ready IoT Solution - OWLOS
+Copyright 2019, 2020 by:
+- Konstantin Brul (konstabrul@gmail.com)
+- Vitalii Glushchenko (cehoweek@gmail.com)
+- Denys Melnychuk (meldenvar@gmail.com)
+- Denis Kirin (deniskirinacs@gmail.com)
+
+This file is part of Ready IoT Solution - OWLOS
+
+OWLOS is free software : you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+OWLOS is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with OWLOS. If not, see < https://www.gnu.org/licenses/>.
+
+GitHub: https://github.com/KirinDenis/owlos
+
+(Этот файл — часть Ready IoT Solution - OWLOS.
+
+OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
+ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
+была опубликована Фондом свободного программного обеспечения; версии 3
+лицензии, любой более поздней версии.
+
+OWLOS распространяется в надежде, что она будет полезной, но БЕЗО ВСЯКИХ
+ГАРАНТИЙ; даже без неявной гарантии ТОВАРНОГО ВИДА или ПРИГОДНОСТИ ДЛЯ
+ОПРЕДЕЛЕННЫХ ЦЕЛЕЙ.
+Подробнее см.в Стандартной общественной лицензии GNU.
+
+Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
+этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
+--------------------------------------------------------------------------------------*/
+
+function createValueEdit(parentElement, propertyName, propertyValue, propertyType) {
+    var edit = "";
+
+    if (propertyType.indexOf("r") == -1) {
+        if (propertyType.indexOf("b") != -1) //boolean
+        {
+            edit = parentElement.appendChild(document.createElement('select'));
+            edit.className = "form-control form-control-sm";
+            edit.style.width = "100%";
+            var valueSelectOption = edit.appendChild(document.createElement('option'));
+            valueSelectOption.innerText = "true";
+            valueSelectOption = edit.appendChild(document.createElement('option'));
+            valueSelectOption.innerText = "false";
+            if ((propertyValue === "1") || (propertyValue === 'true')) edit.selectedIndex = 0; else edit.selectedIndex = 1;
+        }
+        else
+            if (propertyType.indexOf("c") != -1) {
+                edit = parentElement.appendChild(document.createElement('select'));
+                edit.className = "form-control form-control-sm";
+                edit.style.width = "100%";
+                edit.style.backgroundColor = propertyValue;
+                edit.onchange = colorSelectOnChange;
+                var valueSelectOption = edit.appendChild(document.createElement('option'));
+                valueSelectOption.innerText = propertyValue;
+                valueSelectOption.style.backgroundColor = propertyValue;
+
+                valueSelectOption = edit.appendChild(document.createElement('option'));
+                valueSelectOption.innerText = theme.primary;
+                valueSelectOption.style.backgroundColor = theme.primary;
+
+                valueSelectOption = edit.appendChild(document.createElement('option'));
+                valueSelectOption.innerText = theme.secondary;
+                valueSelectOption.style.backgroundColor = theme.secondary;
+
+
+                valueSelectOption = edit.appendChild(document.createElement('option'));
+                valueSelectOption.innerText = theme.success;
+                valueSelectOption.style.backgroundColor = theme.success;
+
+                valueSelectOption = edit.appendChild(document.createElement('option'));
+                valueSelectOption.innerText = theme.info;
+                valueSelectOption.style.backgroundColor = theme.info;
+
+                valueSelectOption = edit.appendChild(document.createElement('option'));
+                valueSelectOption.innerText = theme.warning;
+                valueSelectOption.style.backgroundColor = theme.warning;
+
+                valueSelectOption = edit.appendChild(document.createElement('option'));
+                valueSelectOption.innerText = theme.danger;
+                valueSelectOption.style.backgroundColor = theme.danger;
+
+                valueSelectOption = edit.appendChild(document.createElement('option'));
+                valueSelectOption.innerText = theme.light;
+                valueSelectOption.style.backgroundColor = theme.light;
+
+                valueSelectOption = edit.appendChild(document.createElement('option'));
+                valueSelectOption.innerText = theme.dark;
+                valueSelectOption.style.backgroundColor = theme.dark;
+
+                edit.selectedIndex = 0;
+            }
+            else {
+                edit = parentElement.appendChild(document.createElement('input'));
+                edit.className = "form-control form-control-sm";
+
+                if (propertyType.indexOf("p") != -1) //password
+                {
+                    edit.type = "password";
+                    edit.placeholder = "Password";
+                }
+
+                if (propertyType.indexOf("i") != -1) //integer
+                {
+                    edit.type = "number";
+                }
+
+                if (propertyType.indexOf("f") != -1) //float
+                {
+                    edit.type = "number";
+                    edit.step = "0.01";
+                }
+
+                edit.style.width = "100%";
+                edit.value = propertyValue;
+            }
+
+        if (propertyType.indexOf("s") != -1) //selected
+        {
+            edit.style.backgroundColor = "#FAFAF0";
+        }
+
+        edit.id = "propValueInput_" + propertyName;
+        edit.propname = propertyName;
+        edit.propvalue = propertyValue; //default
+
+        edit.proptype = propertyType;
+    }
+
+    return edit;
+}
+
+function colorSelectOnChange(event) {
+    var select = event.currentTarget;
+    select.style.backgroundColor = select.options[select.selectedIndex].style.backgroundColor;
+    return false;
+}
+
+
+/* ----------------------------------------------------------------------------
+Ready IoT Solution - OWLOS
+Copyright 2019, 2020 by:
+- Konstantin Brul (konstabrul@gmail.com)
+- Vitalii Glushchenko (cehoweek@gmail.com)
+- Denys Melnychuk (meldenvar@gmail.com)
+- Denis Kirin (deniskirinacs@gmail.com)
+
+This file is part of Ready IoT Solution - OWLOS
+
+OWLOS is free software : you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+OWLOS is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with OWLOS. If not, see < https://www.gnu.org/licenses/>.
+
+GitHub: https://github.com/KirinDenis/owlos
+
+(Этот файл — часть Ready IoT Solution - OWLOS.
+
+OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
+ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
+была опубликована Фондом свободного программного обеспечения; версии 3
+лицензии, любой более поздней версии.
+
+OWLOS распространяется в надежде, что она будет полезной, но БЕЗО ВСЯКИХ
+ГАРАНТИЙ; даже без неявной гарантии ТОВАРНОГО ВИДА или ПРИГОДНОСТИ ДЛЯ
+ОПРЕДЕЛЕННЫХ ЦЕЛЕЙ.
+Подробнее см.в Стандартной общественной лицензии GNU.
+
+Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
+этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
+--------------------------------------------------------------------------------------*/
+
+var headerPanelUI = {
+    //роли кнопок headerPanel 
+    sideBarButtonRole: 0b00000001,
+    widgetsPanelButtonRole: 0b00000010,
+    nodePoropertiesPanelButtonRole: 0b00000100,
+    driverButtonRole: 0b00001000,
+    scriptButtonRole: 0b00010000,
+    filesButtonRole: 0b00100000,
+    consoleButtonRole: 0b01000000,
+    buttons: [],
+    statusPanels: [],
+    addButton: function (id, faIcon, title, buttonRole) {
+        var headerPanel = document.getElementById("header-panel-form");
+        if (headerPanel == undefined) {
+            return undefined;
+        }
+        var button = document.createElement("button");
+        button.className = "btn btn-sm btn-secondary header-button";
+        button.id = id;
+        button.setAttribute("data-toggle", "tooltip");
+        button.setAttribute("data-placement", "right");
+        button.buttonRole = buttonRole;
+        if (buttonRole != this.sideBarButtonRole) {
+            button.style.display = "none";
+        }
+
+        button.title = title;
+        var span = document.createElement("span");
+        span.className = faIcon;
+        button.appendChild(span);
+        headerPanel.appendChild(button);
+        this.buttons.push(button);
+        return button;
+    },
+
+    addStatusPanel: function (node) {
+        var headerPanelStatuses = document.getElementById("header-panel-statuses");
+        if (headerPanelStatuses == undefined) {
+            return undefined;
+        }
+
+        var statusPanel = document.createElement("div");
+        statusPanel.node = node;
+        statusPanel.statuses = [];
+        statusPanel.style.display = "none";
+        headerPanelStatuses.appendChild(statusPanel);
+
+        var nodeHref = document.createElement("a");
+        nodeHref.href = node.host;
+        nodeHref.target = "_blank";
+        nodeHref.innerText = node.nodenickname;
+        statusPanel.appendChild(nodeHref);
+
+        var sepparator = document.createElement("text");
+        sepparator.className = "text-secondary";
+        sepparator.innerHTML = "<strong>|</strong>";
+        statusPanel.appendChild(sepparator);
+        this.statusPanels.push(statusPanel);
+        return statusPanel;
+    },
+
+    hideAllButtons: function () {
+        for (var buttonIndex in this.buttons) {
+            if (this.buttons[buttonIndex].buttonRole != this.sideBarButtonRole) {
+                this.buttons[buttonIndex].style.display = "none";
+            }
+        }
+    },
+
+
+    getStatusesPanel: function (node) {
+        for (var statusPanelIndex in this.statusPanels) {
+            if (this.statusPanels[statusPanelIndex].node === node) {
+                return this.statusPanels[statusPanelIndex];
+            }
+        }
+        return undefined;
+    },
+
+    showStatusPanel: function (node) {
+        var statusPanel = this.getStatusesPanel(node);
+        if (statusPanel != undefined) {
+            statusPanel.style.display = "block";
+        }
+    },
+
+    hideStatusPanel: function (node) {
+        var statusPanel = this.getStatusesPanel(node);
+        if (statusPanel != undefined) {
+            statusPanel.style.display = "none";
+        }
+    },
+
+    hideAllStatusesPanels: function () {
+        for (var statusPanelIndex in this.statusPanels) {
+            this.statusPanels[statusPanelIndex].style.display = "none";
+        }
+    },
+
+    addStatus: function (node, id, text) {
+        var statusPanel = this.getStatusesPanel(node);
+        if (statusPanel == undefined) {
+            statusPanel = this.addStatusPanel(node);
+        }
+
+        var status = document.createElement("text");
+        status.id = node.nickname + id;
+        status.className = "text-secondary";
+        status.innerHTML = text;
+        statusPanel.appendChild(status);
+        statusPanel.statuses.push(status);
+
+        var sepparator = document.createElement("text");
+        sepparator.className = "text-secondary";
+        sepparator.innerHTML = "<strong>|</strong>";
+        statusPanel.appendChild(sepparator);
+
+        return status;
+    },
+
+    getButton: function (id) {
+        for (var buttonIndex in this.buttons) {
+            if (buttons[buttonIndex].id === id) {
+                return buttons[buttonIndex];
+            }
+        }
+        return undefined;
+    },
+
+    getStatus: function (node, id) {
+        return document.getElementById(node.nickname + id)
+    },
+
+    setStatusSuccess: function (node, id) {
+        var status = this.getStatus(node, id);
+        if (status != undefined) {
+            status.className = "text-success";
+        }
+    },
+
+    setStatusUnknown: function (node, id) {
+        var status = this.getStatus(id);
+        if (status != undefined) {
+            status.className = "text-secondary";
+        }
+    },
+
+    setStatusError: function (node, id) {
+        var status = this.getStatus(id);
+        if (status != undefined) {
+            status.className = "text-danger";
+        }
+    }
+}/* ----------------------------------------------------------------------------
+Ready IoT Solution - OWLOS
+Copyright 2019, 2020 by:
+- Konstantin Brul (konstabrul@gmail.com)
+- Vitalii Glushchenko (cehoweek@gmail.com)
+- Denys Melnychuk (meldenvar@gmail.com)
+- Denis Kirin (deniskirinacs@gmail.com)
+
+This file is part of Ready IoT Solution - OWLOS
+
+OWLOS is free software : you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+OWLOS is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with OWLOS. If not, see < https://www.gnu.org/licenses/>.
+
+GitHub: https://github.com/KirinDenis/owlos
+
+(Этот файл — часть Ready IoT Solution - OWLOS.
+
+OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
+ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
+была опубликована Фондом свободного программного обеспечения; версии 3
+лицензии, любой более поздней версии.
+
+OWLOS распространяется в надежде, что она будет полезной, но БЕЗО ВСЯКИХ
+ГАРАНТИЙ; даже без неявной гарантии ТОВАРНОГО ВИДА или ПРИГОДНОСТИ ДЛЯ
+ОПРЕДЕЛЕННЫХ ЦЕЛЕЙ.
+Подробнее см.в Стандартной общественной лицензии GNU.
+
+Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
+этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
+--------------------------------------------------------------------------------------*/
+
+var scriptsUI = {
+    onScriptNew: function (script) {
+        var scriptsSubmenuUl = document.getElementById(script.node.nodenickname + "scriptssubmenu");
+        if (scriptsSubmenuUl == undefined) return;
+        var scriptsLi = sideBar.createItem(scriptsSubmenuUl, script.node.nodenickname + "_" + script.name, "#" + script.node.nodenickname + "_" + script.name + "panel", script.name, sidebarItemClick, "fa fa-bolt", undefined);
+        switch (parseInt(script.status)) {
+            case stopScriptStatus: scriptsLi.href.style.color = ""; break;
+            case runScriptStatus: scriptsLi.href.style.color = theme.success; break;
+            case compilerScriptErrorStatus: scriptsLi.href.style.color = theme.warning; break;
+            default:
+                scriptsLi.href.style.color = theme.danger; break;
+        }
+
+
+        //Script panel 
+        var nodesPropsPanel = document.getElementById("nodesPropsPanel");
+        var scriptTab = nodesPropsPanel.appendChild(document.createElement('div'));
+        scriptTab.id = script.node.nodenickname + "_" + script.name + "panel";
+        scriptTab.className = "tab-pane fade md-form";
+        scriptsLi.panel = scriptTab;
+
+        var scriptHolder = scriptTab.appendChild(document.createElement('div'));
+        scriptHolder.className = "row";
+
+        var byteCodeCardDiv = scriptHolder.appendChild(document.createElement('div'));
+        byteCodeCardDiv.className = "col-md-8";
+        var byteCodeCard = byteCodeCardDiv.appendChild(document.createElement('div'));
+        byteCodeCard.className = "card bg-dark border-info mb-3";
+        var byteCodeCardHeader = byteCodeCard.appendChild(document.createElement('div'));
+        byteCodeCardHeader.className = "card-header";
+        byteCodeCardHeader.innerText = script.name + " script bytecode";
+        var byteCodeCardBody = byteCodeCard.appendChild(document.createElement('div'));
+        byteCodeCardBody.className = "card-body";
+        var pre = byteCodeCardBody.appendChild(document.createElement('pre'));
+        var textArea = pre.appendChild(document.createElement('textarea'));
+        textArea.id = script.node.nodenickname + "_" + script.name + "textarea";
+        textArea.className = "md-textarea text-primary form-control bg-dark";
+        textArea.placeholder = getLang("inputcodehere");
+        textArea.cols = 80;
+        textArea.rows = 20;
+        textArea.value = script.bytecode;
+        textArea.onkeydown = scriptsUI.textAreaOnKeyDown;
+
+        var scriptExecuteButton = headerPanelUI.addButton(script.node.nodenickname + "_" + script.name + "executionButton", "fa fa-bolt", getLang("scriptexecute"), headerPanelUI.scriptButtonRole);
+        scriptExecuteButton.script = script;
+        scriptExecuteButton.textArea = textArea;
+        scriptExecuteButton.labels = label;
+        scriptExecuteButton.onclick = scriptsUI.scriptExecuteClick;        
+        scriptsLi.href.scriptExecuteButton = scriptExecuteButton;
+
+        textArea.scriptExecuteButton = scriptExecuteButton;        
+
+        var scriptPauseButton = headerPanelUI.addButton(script.node.nodenickname + "_" + script.name + "pauseButton", "fa fa-pause", getLang("scriptpause"), headerPanelUI.scriptButtonRole);
+        scriptPauseButton.script = script;
+        scriptPauseButton.node = script.node; //когда ноду удалят и прийдет ActiveReciever - Script может уже не быть
+        scriptPauseButton.scriptExecuteButton = scriptExecuteButton;
+        scriptPauseButton.textArea = textArea;
+        scriptPauseButton.labels = label;
+        scriptPauseButton.onclick = scriptsUI.scriptPauseClick;
+        scriptsLi.href.scriptPauseButton = scriptPauseButton;
+        
+        scriptExecuteButton.scriptPauseButton = scriptPauseButton;
+
+        var scriptDebugButton = headerPanelUI.addButton(script.node.nodenickname + "_" + script.name + "debugButton", "fa fa-bug", getLang("scriptstartdebug"), headerPanelUI.scriptButtonRole);                    
+        scriptDebugButton.script = script;
+        scriptDebugButton.node = script.node;
+        scriptDebugButton.scriptExecuteButton = scriptExecuteButton;
+        scriptDebugButton.textArea = textArea;
+        scriptDebugButton.labels = label;
+        scriptDebugButton.onclick = scriptsUI.scriptDebugClick;
+        scriptDebugButton.debugNext = false;
+        
+        scriptsLi.href.scriptDebugButton = scriptDebugButton;
+        
+        var scriptDeleteButton = headerPanelUI.addButton(script.node.nodenickname + "_" + script.name + "deleteButton", "fa fa-trash", getLang("scriptdelete"), headerPanelUI.scriptButtonRole);                                            
+        scriptDeleteButton.script = script;
+        scriptDeleteButton.node = script.node; //когда ноду удалят и прийдет ActiveReciever - Script может уже не быть
+        scriptDeleteButton.scriptExecuteButton = scriptExecuteButton;
+        scriptDeleteButton.scriptPauseButton = scriptPauseButton;
+        scriptDeleteButton.textArea = textArea;
+        scriptDeleteButton.labels = label;
+        scriptDeleteButton.onclick = scriptsUI.scriptDeleteClick;
+
+        scriptExecuteButton.scriptDeleteButton = scriptDeleteButton;
+        scriptsLi.href.scriptDeleteButton = scriptDeleteButton;
+
+
+        /*
+        var scriptExecuteButton = byteCodeCardDiv.appendChild(document.createElement('button'));
+        scriptExecuteButton.type = "button";
+        scriptExecuteButton.id = script.node.nodenickname + "_" + script.name + "executionButton";
+        scriptExecuteButton.className = "btn btn-sm btn-success";
+        scriptExecuteButton.script = script;
+        scriptExecuteButton.textArea = textArea;
+        scriptExecuteButton.labels = label;
+        scriptExecuteButton.onclick = scriptsUI.scriptExecuteClick;
+        scriptExecuteButton.appendChild(document.createElement("i")).className = "fa fa-bolt";
+        var scriptExecuteButtonSpan = scriptExecuteButton.appendChild(document.createElement("span"));
+        scriptExecuteButtonSpan.innerHTML = " " + getLang("scriptexecute");
+        */
+
+        
+/*
+        var scriptPauseButton = byteCodeCardDiv.appendChild(document.createElement('button'));
+        scriptPauseButton.type = "button";
+        scriptPauseButton.id = script.node.nodenickname + "_" + script.name + "pauseButton";
+        scriptPauseButton.className = "btn btn-sm btn-warning";
+        scriptPauseButton.script = script;
+        scriptPauseButton.node = script.node; //когда ноду удалят и прийдет ActiveReciever - Script может уже не быть
+        scriptPauseButton.scriptExecuteButton = scriptExecuteButton;
+        scriptPauseButton.textArea = textArea;
+        scriptPauseButton.labels = label;
+        scriptPauseButton.onclick = scriptsUI.scriptPauseClick;
+        scriptPauseButton.appendChild(document.createElement("i")).className = "fa fa-pause";
+        var scriptPauseButtonSpan = scriptPauseButton.appendChild(document.createElement("span"));
+        scriptPauseButtonSpan.innerHTML = " " + getLang("scriptpause");
+        */
+
+        /*
+
+        var scriptDebugButton = byteCodeCardDiv.appendChild(document.createElement('button'));
+        scriptDebugButton.type = "button";
+        scriptDebugButton.id = script.node.nodenickname + "_" + script.name + "pauseButton";
+        scriptDebugButton.className = "btn btn-sm btn-warning";
+        scriptDebugButton.script = script;
+        scriptDebugButton.node = script.node;
+        scriptDebugButton.scriptExecuteButton = scriptExecuteButton;
+        scriptDebugButton.textArea = textArea;
+        scriptDebugButton.labels = label;
+        scriptDebugButton.onclick = scriptsUI.scriptDebugClick;
+        scriptDebugButton.appendChild(document.createElement("i")).className = "fa fa-bug";
+        scriptDebugButton.debugNext = false;
+        var scriptDebugButtonSpan = scriptDebugButton.appendChild(document.createElement("span"));
+        scriptDebugButtonSpan.innerHTML = " " + getLang("scriptstartdebug");
+        */
+
+        /*
+        var scriptDeleteButton = byteCodeCardDiv.appendChild(document.createElement('button'));
+        scriptDeleteButton.type = "button";
+        scriptDeleteButton.id = script.node.nodenickname + "_" + script.name + "deleteButton";
+        scriptDeleteButton.className = "btn btn-sm btn-danger";
+        scriptDeleteButton.script = script;
+        scriptDeleteButton.node = script.node; //когда ноду удалят и прийдет ActiveReciever - Script может уже не быть
+        scriptDeleteButton.scriptExecuteButton = scriptExecuteButton;
+        scriptDeleteButton.scriptPauseButton = scriptPauseButton;
+        scriptDeleteButton.textArea = textArea;
+        scriptDeleteButton.labels = label;
+        scriptDeleteButton.onclick = scriptsUI.scriptDeleteClick;
+        scriptDeleteButton.appendChild(document.createElement("i")).className = "fa fa-trash";
+        var scriptDeleteButtonSpan = scriptDeleteButton.appendChild(document.createElement("span"));
+        scriptDeleteButtonSpan.innerHTML = " " + getLang("scriptdelete");
+
+
+        scriptExecuteButton.scriptDeleteButton = scriptDeleteButton;
+        */
+
+        var label = byteCodeCardDiv.appendChild(document.createElement('label'));
+        label.id = script.node.nodenickname + "_" + script.name + "label";
+        label.for = script.node.nodenickname + "_" + script.name + "textarea";
+        scriptExecuteButton.label = label;
+
+        var scriptStatusCardDiv = scriptHolder.appendChild(document.createElement('div'));
+        scriptStatusCardDiv.className = "col-md-4";
+        var scriptStatusCard = scriptStatusCardDiv.appendChild(document.createElement('div'));
+        scriptStatusCard.className = "card bg-dark border-info mb-3";
+        var scriptStatusCardHeader = scriptStatusCard.appendChild(document.createElement('div'));
+        scriptStatusCardHeader.className = "card-header";
+        scriptStatusCardHeader.innerText = script.name + " status";
+        var scriptStatusCardBody = scriptStatusCard.appendChild(document.createElement('div'));
+        scriptStatusCardBody.className = "card-body";
+        var scriptStatusPre = scriptStatusCardBody.appendChild(document.createElement('pre'));
+        var statusLabel = scriptStatusPre.appendChild(document.createElement('label'));
+        statusLabel.id = script.node.nodenickname + "_" + script.name + "statuslabel";
+        scriptsUI.buildScriptStatus(script);
+
+    },
+
+    onScriptChange: function (script) {
+        var scriptsAhref = document.getElementById(script.node.nodenickname + "_" + script.name + "href");
+        if (scriptsAhref == undefined) return;
+        scriptsAhref.textSpan.innerHTML = script.name;
+
+        switch (parseInt(script.status)) {
+            case stopScriptStatus: scriptsAhref.style.color = ""; break;
+            case runScriptStatus: scriptsAhref.style.color = theme.success; break;
+            case compilerScriptErrorStatus: scriptsAhref.style.color = theme.warning; break;
+            default:
+                scriptsAhref.style.color = theme.danger; break;
+        }
+
+
+        var textArea = document.getElementById(script.node.nodenickname + "_" + script.name + "textarea");
+        var label = document.getElementById(script.node.nodenickname + "_" + script.name + "label");
+        if (textArea.value !== script.bytecode) {
+            if (textArea === document.activeElement) {
+                label.style.color = theme.danger;
+                label.innerHTML = "script: " + script.name + " Warning: changed outside or not save";
+            }
+            else {
+                label.innerHTML = "script: " + script.name;
+                label.style.color = "";
+                textArea.value = script.bytecode;
+            }
+        }
+        scriptsUI.buildScriptStatus(script);
+        if (script.status == debugScriptStatus) {
+            scriptsUI.selectCodeLine(textArea, script.debuglinenumber);
+        }
+    },
+
+    //https://stackoverflow.com/questions/13650534/how-to-select-line-of-text-in-textarea
+    selectCodeLine: function selectTextareaLine(tarea, lineNum) {
+        lineNum--; // array starts at 0
+        var lines = tarea.value.split("\n");
+        
+
+        // calculate start/end
+        var startPos = 0, endPos = tarea.value.length;
+        for (var x = 0; x < lines.length; x++) {
+            if (x == lineNum) {
+                break;
+            }
+            startPos += (lines[x].length + 1);
+
+        }
+
+        if (lineNum < 0) return;
+        var endPos = lines[lineNum].length + startPos;
+
+        // do selection
+        // Chrome / Firefox
+
+        if (typeof (tarea.selectionStart) != "undefined") {
+            tarea.focus();
+            tarea.selectionStart = startPos;
+            tarea.selectionEnd = endPos;
+            return true;
+        }
+
+        // IE
+        if (document.selection && document.selection.createRange) {
+            tarea.focus();
+            tarea.select();
+            var range = document.selection.createRange();
+            range.collapse(true);
+            range.moveEnd("character", endPos);
+            range.moveStart("character", startPos);
+            range.select();
+            return true;
+        }
+
+        return false;
+    },
+
+    scriptDebugClick: function (event) {
+        var scriptDebugButton = event.currentTarget;
+        if (scriptDebugButton.debugNext == false) {
+            scriptDebugButton.debugNext = true;
+            scriptsManager.startDebug(scriptDebugButton.script);
+        }
+        else {
+            scriptsManager.debugNext(scriptDebugButton.script);
+
+        }
+    },
+
+    buildScriptStatus: function (script) {
+        var statusLabel = document.getElementById(script.node.nodenickname + "_" + script.name + "statuslabel");
+        statusLabel.innerHTML = "<b>Status: </b>" + script.status + "\n" +
+            "<b>debuglinenumber: </b>" + script.debuglinenumber + "\n" +
+            "<b>codecount: </b>" + script.codecount + "\n" +
+            "<b>datacount: </b>" + script.datacount + "\n" +
+            "<b>timequant: </b>" + script.timequant + "\n" +
+            "<b>ip: </b>" + script.ip + "\n" +
+            "<b>variables: </b>" + script.variables;
+    },
+
+    onScriptDelete: function (script) {
+        var scriptsLi = document.getElementById(script.node.nodenickname + "_" + script.name + "li");
+        scriptsLi.parentElement.removeChild(scriptsLi);
+        scriptsLi.innerHTML = "";
+
+        var scriptsPanel = document.getElementById(script.node.nodenickname + "_" + script.name + "panel");
+        scriptsPanel.parentElement.removeChild(scriptsPanel);
+        scriptsPanel.innerHTML = "";
+
+        var scriptsSubmenuUl = document.getElementById(script.node.nodenickname + "scriptssubmenu");
+        for (childKey in scriptsSubmenuUl.childNodes) {
+            var scriptsLi = scriptsSubmenuUl.childNodes[childKey];
+            if (scriptsLi.scriptsAhref != undefined) {
+                var event = {
+                    currentTarget: scriptsLi.scriptsAhref
+                }
+                scriptsUI.driverAnchorClick(event);
+                $(scriptsLi.scriptsAhref).toggleClass("active");
+                $(scriptsLi.panel).toggleClass("active show");
+                return;
+            }
+        }
+
+        var nodePanelHRef = document.getElementById(script.node.nodenickname + "nodePropsHref");
+        var nodePropsPanel = document.getElementById(script.node.nodenickname + "nodePropsPanel");
+        var event = {
+            currentTarget: nodePanelHRef
+        }
+        scriptsUI.driverAnchorClick(event);
+        $(nodePanelHRef).toggleClass("active");
+        $(nodePropsPanel).toggleClass("active show");
+    },
+    //https://stackoverflow.com/questions/6637341/use-tab-to-indent-in-textarea
+    textAreaOnKeyDown: function (event) {
+        var keyCode = event.keyCode || event.which;
+        var textArea = event.currentTarget;
+
+        if (keyCode == 0x09) { //tab key code
+            event.preventDefault();
+            var start = textArea.selectionStart;
+            var end = textArea.selectionEnd;
+
+            // set textarea value to: text before caret + tab + text after caret
+            $(textArea).val($(textArea).val().substring(0, start)
+                + "\t"
+                + $(textArea).val().substring(end));
+
+            // put caret at right position again
+            textArea.selectionStart =
+                textArea.selectionEnd = start + 1;
+        }
+        else
+            if (keyCode == 0x77) { //F8
+                event = {
+                    currentTarget: textArea.scriptExecuteButton
+                }
+                scriptsUI.scriptExecuteClick(event);
+            }
+
+    },
+
+    scriptExecuteClick: function (event) {
+        var scriptExecuteButton = event.currentTarget;
+        scriptExecuteButton.className = "btn btn-sm btn-secondary";
+        var textArea = scriptExecuteButton.textArea;
+        var script = scriptExecuteButton.script;
+        script.bytecode = textArea.value;
+
+        var scriptPauseButton = scriptExecuteButton.scriptPauseButton;
+        scriptPauseButton.className = "btn btn-sm btn-secondary";
+        var scriptDeleteButton = scriptExecuteButton.scriptDeleteButton;
+        scriptDeleteButton.className = "btn btn-sm btn-secondary";
+        var textArea = scriptExecuteButton.textArea;
+        textArea.style.backgroundColor = theme.secondary;
+        textArea.disabled = true;
+
+
+        scriptsManager.createOrReplace(script, scriptsUI.executeScriptAsyncReciever, scriptExecuteButton);
+        return false;
+    },
+
+    executeScriptAsyncReciever: function (HTTPResult, sender) {
+        var scriptExecuteButton = sender;
+        var label = scriptExecuteButton.label;
+        var script = scriptExecuteButton.script;
+
+        var scriptPauseButton = scriptExecuteButton.scriptPauseButton;
+        scriptPauseButton.className = "btn btn-sm btn-warning";
+        var scriptDeleteButton = scriptExecuteButton.scriptDeleteButton;
+        scriptDeleteButton.className = "btn btn-sm btn-danger";
+        var textArea = scriptExecuteButton.textArea;
+        textArea.style.backgroundColor = "";
+        textArea.disabled = false;
+
+
+        if (!HTTPResult.indexOf("%error") == 0) {
+            scriptExecuteButton.className = "btn btn-sm btn-success";
+            script.node.networkStatus = NET_ONLINE;
+            scriptsManager.refresh(script.node);
+            label.style.color = theme.success;
+            label.innerText = "execute-OK";
+
+        }
+        else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
+            if (HTTPResult.indexOf("reponse") != -1) {
+                script.node.networkStatus = NET_ERROR;
+            }
+            else {
+                script.node.networkStatus = NET_OFFLINE;
+            }
+            scriptExecuteButton.className = "btn btn-sm btn-danger";
+            label.style.color = theme.danger;
+            label.innerText = HTTPResult;
+        }
+    },
+
+    scriptDeleteClick: function (event) {
+        var scriptDeleteButton = event.currentTarget;
+
+        makeModalDialog("resetPanel", "deletescript", getLang("deletescript"), "");
+        var modalBody = document.getElementById("deletescriptModalBody");
+        modalBody.appendChild(document.createElement('label')).innerHTML = getLang("areyousuredeletescript");
+
+        var modalFooter = document.getElementById("deletescriptModalFooter");
+
+        var scriptModalDeleteButton = modalFooter.appendChild(document.createElement('button'));
+        scriptModalDeleteButton.type = "button";
+        scriptModalDeleteButton.id = event.currentTarget.id + "modal";
+        scriptModalDeleteButton.className = "btn btn-sm btn-danger";
+        scriptModalDeleteButton.scriptDeleteButton = event.currentTarget;
+        scriptModalDeleteButton.onclick = scriptsUI.scriptModalDeleteClick;
+        scriptModalDeleteButton.appendChild(document.createElement("i")).className = "fa fa-trash";
+        var scriptModalDeleteButtonSpan = scriptModalDeleteButton.appendChild(document.createElement("span"));
+        scriptModalDeleteButtonSpan.innerHTML = " " + getLang("scriptdelete");
+
+        $("#deletescriptModal").modal('show');
+        return false;
+    },
+
+    scriptModalDeleteClick: function (event) {
+        var scriptModalDeleteButton = event.currentTarget;
+        var scriptDeleteButton = scriptModalDeleteButton.scriptDeleteButton;
+        $("#deletescriptModal").modal('hide');
+
+        scriptDeleteButton.className = "btn btn-sm btn-secondary";
+        var script = scriptDeleteButton.script;
+
+        var scriptExecuteButton = scriptDeleteButton.scriptExecuteButton;
+        scriptExecuteButton.className = "btn btn-sm btn-secondary";
+
+        var scriptPauseButton = scriptDeleteButton.scriptPauseButton;
+        scriptPauseButton.className = "btn btn-sm btn-secondary";
+
+        var textArea = scriptDeleteButton.textArea;
+        textArea.style.backgroundColor = theme.secondary;
+        textArea.disabled = true;
+
+        scriptsManager.delete(script, scriptsUI.scriptDeleteAsyncReciever, scriptDeleteButton);
+        return false;
+    },
+
+    scriptDeleteAsyncReciever: function (HTTPResult, sender) {
+
+        var scriptExecuteButton = sender;
+        var label = scriptExecuteButton.label;
+        var node = scriptExecuteButton.node;
+
+        if (!HTTPResult.indexOf("%error") == 0) {
+            node.networkStatus = NET_ONLINE; //UI редактора скрипта удалит onScriptDelete
+            scriptsManager.refresh(node);
+        }
+        else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
+
+
+            if (HTTPResult.indexOf("reponse") != -1) {
+                node.networkStatus = NET_ERROR;
+            }
+            else {
+                node.networkStatus = NET_OFFLINE;
+            }
+            scriptExecuteButton.className = "btn btn-sm btn-danger";
+            label.style.color = theme.danger;
+            label.innerText = HTTPResult;
+        }
+    },
+
+
+    createScriptClick: function (event) {
+        var scriptsAddAhref = event.currentTarget;
+        event.stopPropagation();
+
+        var newScriptDialog = createModalDialog(getLang("addscriptheader"), "");
+        newScriptDialog.node = scriptsAddAhref.node;
+        newScriptDialog.appendInput(createDialogInput("addscriptInput", getLang("addscriptname"), ""));
+
+        newScriptDialog.onOK = scriptsUI.createScriptUIClick;
+        newScriptDialog.show();
+
+        return false;
+    },
+
+    createScriptUIClick: function (newScriptDialog) {
+
+        var node = newScriptDialog.node;
+        var addscriptInput = newScriptDialog.getChild("addscriptInput");
+        if (addscriptInput.value === "") {
+            newScriptDialog.errorLabel.innerText = getLang("scriptnameempty");
+            return;
+        }
+
+        var script = createScript(node);
+        script.name = addscriptInput.value;
+        scriptsManager.createOrReplace(script, scriptsUI.createScriptAsynReciever, newScriptDialog);
+
+        return false;
+
+    },
+
+    createScriptAsynReciever: function (HTTPResult, newScriptDialog) {
+        var node = newScriptDialog.node;
+
+        if (!HTTPResult.indexOf("%error") == 0) {
+            node.networkStatus = NET_ONLINE;
+            newScriptDialog.hide();
+            scriptsManager.refresh(node);
+        }
+        else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
+            if (HTTPResult.indexOf("reponse") != -1) {
+                node.networkStatus = NET_ERROR;
+            }
+            else {
+                node.networkStatus = NET_OFFLINE;
+            }
+            newScriptDialog.errorLabel.innerText = HTTPResult;
+        }
+    }
+}
+/* ----------------------------------------------------------------------------
+Ready IoT Solution - OWLOS
+Copyright 2019, 2020 by:
+- Konstantin Brul (konstabrul@gmail.com)
+- Vitalii Glushchenko (cehoweek@gmail.com)
+- Denys Melnychuk (meldenvar@gmail.com)
+- Denis Kirin (deniskirinacs@gmail.com)
+
+This file is part of Ready IoT Solution - OWLOS
+
+OWLOS is free software : you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+OWLOS is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with OWLOS. If not, see < https://www.gnu.org/licenses/>.
+
+GitHub: https://github.com/KirinDenis/owlos
+
+(Этот файл — часть Ready IoT Solution - OWLOS.
+
+OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
+ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
+была опубликована Фондом свободного программного обеспечения; версии 3
+лицензии, любой более поздней версии.
+
+OWLOS распространяется в надежде, что она будет полезной, но БЕЗО ВСЯКИХ
+ГАРАНТИЙ; даже без неявной гарантии ТОВАРНОГО ВИДА или ПРИГОДНОСТИ ДЛЯ
+ОПРЕДЕЛЕННЫХ ЦЕЛЕЙ.
+Подробнее см.в Стандартной общественной лицензии GNU.
+
+Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
+этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
+--------------------------------------------------------------------------------------*/
+
+//Dashboard UI
+var dashboardUI = {
     dashboardModeListners: [],
     dashboardViewMode: true,
-
+    mainProperties: ",data,historydata,historyfile,temperature,humidity,temperaturehistoryfile,temperaturehistorydata,humidityhistoryfile,humidityhistorydata,text,heatindexhistorydata",
+    secondaryDrivers: ",wifi,esp,network",
     addDashboardModeListner: function (_event, _sender) { //для добавления нового подписчика(так же как и addValueListner)                                
         //check event listner and setup current network status 
         try {
@@ -558,60 +2105,55 @@ var dashboardUI = {
         }
         dashboardUI.dashboardModeListners.push(event = { event: _event, sender: _sender });
     },
-
     onConfigLoad: function (configProperties) {
+        var saveWidgetsButton = headerPanelUI.addButton("saveaddedwidget", "fa fa-save", getLang("saveconfiguration"), headerPanelUI.widgetsPanelButtonRole);
+        saveWidgetsButton.onclick = dashboardUI.saveAddedWidget;
+        var headerModeButton = headerPanelUI.addButton("dashboardaddwidget", "fa fa-edit", getLang("tooglewidgetsmode"), headerPanelUI.widgetsPanelButtonRole);
+        headerModeButton.onclick = dashboardUI.changeDashboadMode;
+        var addWidgetButton = headerPanelUI.addButton("dashboardaddwidget", "fa fa-plus", getLang("addwidget"), headerPanelUI.widgetsPanelButtonRole);
+        addWidgetButton.onclick = dashboardUI.onAddWidgetClick;
 
-
-        var saveButtonPanel = document.getElementById("saveButtonPanel");
-
-        var saveWidgetsButton = saveButtonPanel.appendChild(document.createElement('input'));
-        saveWidgetsButton.className = "btn btn-warning btn-sm";
-        saveWidgetsButton.type = "button";
-        saveWidgetsButton.value = getLang("saveaddedwidget");
-        saveWidgetsButton.hidden = true;
-        saveWidgetsButton.id = "saveWidgetsButton";
-        saveWidgetsButton.onclick = dashboardUI.saveAddedWidget;  
-        config.onChange = dashboardUI.onConfigChange;
-
-
-        var dashboardButtonsPanel = document.getElementById("dashboardButtonsPanel");
-        var headerModeButton = dashboardButtonsPanel.appendChild(document.createElement('input'));
-        headerModeButton.className = "btn btn-secondary btn-sm";
-        headerModeButton.type = "button";
-        headerModeButton.value = getLang("dashboardedit");
-        headerModeButton.onclick = dashboardUI.changeDashboadMode;        
-
-        var addWidgetButton = dashboardButtonsPanel.appendChild(document.createElement('input'));
-        addWidgetButton.className = "btn btn-success btn-sm";
-        addWidgetButton.type = "button";
-        addWidgetButton.value = getLang("dashboardaddwidget");
-        addWidgetButton.onclick = dashboardUI.addWidgetMode;
-
-        var driversWidgetsPanel = document.getElementById("driversWidgetsPanel");
-        
-        for (var i = 0; i < configProperties.dashboards[0].widgets.length; i++) {
-            try {
-                var widgetProp = configProperties.dashboards[0].widgets[i];
-                var widgetLayer = WidgetsLayer.getWidgetById(widgetProp.widgetWrapperId);
-                if (widgetLayer != undefined) {
-                    var widgetWrapper = new widgetLayer.widget(driversWidgetsPanel, undefined, undefined, configProperties.dashboards[0].widgets[i], widgetProp.widgetProperties);
-                                                          
-
-                    widgetWrapper.offlineStarter(driversWidgetsPanel, widgetProp.driverId, widgetProp.driverProperty);                    
-                    widgetWrapper.widget.onchange = config.onWidgetChange;
-                    widgetWrapper.widget.ondelete = config.onWidgetDelete;
-                    widgetWrapper.widget.properties = widgetProp.widgetProperties;
-                }
-            }
-            catch (exception) {
-                console.error(exception);
-                addToLogNL("ERROR starting exception: " + exception, 2);
-                addToLogNL("ERROR at widget: " + widgetProp, 2);
-            }
+        //эта панель появляется когда виджетов нет
+        var noWidgetsPanel = document.getElementById("noWidgetsPanel");
+        //эта кнопка описана в index.html, появляется когда виджетов нет
+        var noOneAddWidgetButton = document.getElementById("noOneAddWidgetButton");
+        if (noOneAddWidgetButton != undefined) {
+        document.getElementById("noOneAddWidgetButton").onclick = dashboardUI.onAddWidgetClick; 
         }
 
-    },
+        sideBar.dashboardItem.href.saveWidgetsButton = saveWidgetsButton;
+        sideBar.dashboardItem.href.headerModeButton = headerModeButton;
+        sideBar.dashboardItem.href.addWidgetButton = addWidgetButton;
 
+        var driversWidgetsPanel = document.getElementById("driversWidgetsPanel");
+
+        //если есть хоть какие то виджеты грузим их
+        if (configProperties.dashboards[0].widgets.length > 0) {
+            noWidgetsPanel.style.display = "none";
+            for (var i = 0; i < configProperties.dashboards[0].widgets.length; i++) {
+                try {
+                    var widgetProp = configProperties.dashboards[0].widgets[i];
+                    var widgetLayer = WidgetsLayer.getWidgetById(widgetProp.widgetWrapperId);
+                    if (widgetLayer != undefined) {
+                        var widgetWrapper = new widgetLayer.widget(driversWidgetsPanel, undefined, undefined, configProperties.dashboards[0].widgets[i], widgetProp.widgetProperties);
+                        widgetWrapper.offlineStarter(driversWidgetsPanel, widgetProp.driverId, widgetProp.driverProperty);
+                        widgetWrapper.widget.onchange = config.onWidgetChange;
+                        widgetWrapper.widget.ondelete = config.onWidgetDelete;
+                        widgetWrapper.widget.properties = widgetProp.widgetProperties;
+                    }
+                }
+                catch (exception) {
+                    console.error(exception);
+                    addToLogNL("ERROR starting exception: " + exception, 2);
+                    addToLogNL("ERROR at widget: " + widgetProp, 2);
+                }
+            }
+        }
+        else { //очень времено - создаем виджеты для стандартных драйверов по умолчания
+            document.getElementById("noWidgetsPanel").style.display = "block";
+            noWidgetsPanel.style.display = "block";
+        }
+    },
     changeDashboadMode: function (event) {
         var headerModeButton = event.currentTarget;
         dashboardUI.dashboardViewMode = !dashboardUI.dashboardViewMode;
@@ -624,263 +2166,163 @@ var dashboardUI = {
             headerModeButton.value = getLang("dashboardview");
             headerModeButton.className = "btn btn-info btn-sm";
         }
-
-
         for (var k = 0; k < dashboardUI.dashboardModeListners.length; k++) {
             dashboardUI.dashboardModeListners[k].event(dashboardUI.dashboardModeListners[k].sender, dashboardUI.dashboardViewMode);
         }
-
         return false;
     },
+    //Widgets panel -----------------------------------------------------------------------------------------------
+    onAddWidgetClick: function () {
 
-    addWidgetMode: function () {
+        var addWidgetDialog = createModalDialog(getLang("dashboardaddwidget"), "");
+        addWidgetDialog.appendSelect(createDialogSelect("nodeselect", "<strong>" + getLang("nodeselect") + "</strong>"));
 
-        makeModalDialog("resetPanel", "widget", getLang("dashboardaddwidget"), getLang("areYouSure"));
-        var modalBody = document.getElementById("widgetModalBody");
-        modalBody.innerHTML = "";
-        var modalFooter = document.getElementById("widgetModalFooter");
-        //Body form -----------------
-        var formGroup = modalBody.appendChild(document.createElement("div"));
-        formGroup.className = "form-group";
-
-        //driver select 
-        var driverLabel = formGroup.appendChild(document.createElement("label"));
-        driverLabel.setAttribute("for", "driverSelect");
-        driverLabel.innerText = getLang("nodeslist");
-        var driverSelect = formGroup.appendChild(document.createElement('select'));
-        driverSelect.className = "form-control form-control-sm";
-        driverSelect.id = "typeSelect";
+        var nodeSelect = addWidgetDialog.getChild("nodeselect");
+        nodeSelect.onchange = dashboardUI.onNodeSelectChange;
+        nodeSelect.addWidgetDialog = addWidgetDialog;
 
         for (var node in configProperties.nodes) {
+            var nodeSelectOption = nodeSelect.dialogSelect.appendOption(configProperties.nodes[node].nodenickname);
+            nodeSelectOption.node = configProperties.nodes[node];
+        }
 
-            for (var i = 0; i < configProperties.nodes[node].drivers.length; i++) {
-                var valueSelectOption = driverSelect.appendChild(document.createElement('option'));
-                valueSelectOption.innerText = getLang(configProperties.nodes[node].drivers[i]._nodenickname + "/" + configProperties.nodes[node].drivers[i]._id);
-                valueSelectOption.driver = configProperties.nodes[node].drivers[i];
+        addWidgetDialog.appendSelect(createDialogSelect("driverselect", getLang("driverselect")));
+        var driverSelect = addWidgetDialog.getChild("driverselect");
+        nodeSelect.driverSelect = driverSelect;
+        driverSelect.onchange = dashboardUI.onDriverSelectChange;
+
+        addWidgetDialog.appendSelect(createDialogSelect("propselect", getLang("propselect")));
+        var propSelect = addWidgetDialog.getChild("propselect");
+        driverSelect.propSelect = propSelect;
+        propSelect.onchange = dashboardUI.onPropSelectChange;
+
+        addWidgetDialog.appendSelect(createDialogSelect("widgetselect", getLang("widgetselect")));
+        var widgetSelect = addWidgetDialog.getChild("widgetselect");
+        propSelect.widgetSelect = widgetSelect;
+
+        dashboardUI.onNodeSelectChange(event = { currentTarget: nodeSelect });
+
+        addWidgetDialog.onOK = dashboardUI.doAddWidget;
+        addWidgetDialog.show();
+    },
+    doAddWidget: function (addWidgetDialog) {
+        var driverSelect = addWidgetDialog.getChild("driverselect");
+        var driver = driverSelect.options[driverSelect.selectedIndex].driver;
+        var propSelect = addWidgetDialog.getChild("propselect");
+        var driverProp = propSelect.options[propSelect.selectedIndex].prop;
+        var widgetSelect = addWidgetDialog.getChild("widgetselect");
+        var widgetLayer = widgetSelect.options[widgetSelect.selectedIndex].widgetLayer;
+
+        var driversWidgetsPanel = document.getElementById("driversWidgetsPanel");
+
+        new widgetLayer.widget(driversWidgetsPanel, driver, driverProp).onload = function (widgetWrapper) {
+            var configPropertiesWidget = config.addWidget("main", driver._id, driverProp.name, widgetLayer.id, widgetWrapper.widget.id, widgetWrapper.widget.properties);
+            widgetWrapper.widget.onchange = config.onWidgetChange;
+            widgetWrapper.widget.ondelete = config.onWidgetDelete;
+        };
+        document.getElementById("noWidgetsPanel").style.display = "none";
+        return true;
+    },
+    onNodeSelectChange: function (event) {
+        var nodeSelect = event.currentTarget;
+        var nodeSelectOption = nodeSelect.options[nodeSelect.selectedIndex];
+        var node = nodeSelectOption.node;
+        var driverSelect = nodeSelect.driverSelect;
+
+        driverSelect.options.length = 0;
+        for (var i = 0; i < node.drivers.length; i++) {
+            if (dashboardUI.secondaryDrivers.indexOf("," + node.drivers[i]._id) == -1) {
+                var driverSelectOption = driverSelect.dialogSelect.appendOption(node.drivers[i]._id, 0);
+                driverSelectOption.className = "bold-option";
             }
+            else {
+                var driverSelectOption = driverSelect.dialogSelect.appendOption(node.drivers[i]._id, 0);
+            }
+            driverSelectOption.driver = node.drivers[i];
         }
-
-        driverSelect.onchange = dashboardUI.onDriverSelect;
-        //driver property select 
-
-        var driverPropLabel = formGroup.appendChild(document.createElement("label"));
-        driverPropLabel.setAttribute("for", "driverPropSelect");
-        driverPropLabel.innerText = getLang("driversporplist");
-        var driverPropSelect = formGroup.appendChild(document.createElement('select'));
-        driverPropSelect.className = "form-control form-control-sm";
-        driverPropSelect.id = "typeSelect";
-
-        driverPropSelect.onchange = dashboardUI.onDriverPropSelect;
-
-        //widgets 
-        //driver select 
-        var widgetLabel = formGroup.appendChild(document.createElement("label"));
-        widgetLabel.setAttribute("for", "widgetSelect");
-        widgetLabel.innerText = getLang("widgetslist");
-        var widgetSelect = formGroup.appendChild(document.createElement('select'));
-        widgetSelect.className = "form-control form-control-sm";
-        widgetSelect.id = "typeSelect";
-
-
-
-        driverSelect.driverPropSelect = driverPropSelect;
-        driverPropSelect.driverSelect = driverSelect;
-        driverSelect.widgetSelect = widgetSelect;
-
-        var event = { currentTarget: driverSelect };
-        dashboardUI.onDriverSelect(event);
-
-
-        //end of Body form ----------
-        var widgetButton = modalFooter.appendChild(document.createElement("button"));
-        widgetButton.type = "button";
-        widgetButton.className = "btn btn-sm btn-success";
-        widgetButton.id = "widgetModalButton";
-        widgetButton.driverSelect = driverSelect;
-        widgetButton.onclick = dashboardUI.addWidgetClick;
-        widgetButton.innerText = getLang("dashboardaddwidgetbutton");
-
-        $("#widgetModal").modal('show');
-
-
+        if (node.drivers.length == 0) {
+            driverSelect.disabled = true;
+            nodeSelect.addWidgetDialog.errorLabel.innerHTML = getLang("nodeoffline");
+        }
+        else {
+            driverSelect.disabled = false;
+            driverSelect.selectedIndex = 0;
+            nodeSelect.addWidgetDialog.errorLabel.innerHTML = "";
+        }
+        dashboardUI.onDriverSelectChange(event = { currentTarget: driverSelect });
+        return false;
     },
-
-    onDriverSelect: function (event) {
+    onDriverSelectChange: function (event) {
         var driverSelect = event.currentTarget;
-        var driverPropSelect = driverSelect.driverPropSelect;
-        var widgetSelect = driverSelect.widgetSelect;
-        var valueSelectOption = driverSelect.options[driverSelect.selectedIndex];
-
-
-        var driver = valueSelectOption.driver;
-
-        driverPropSelect.options.length = 0;
-        for (var driverProp in driver) {
-            if ((driver[driverProp].name == undefined) || (driver[driverProp].type == undefined)) continue;
-            var propSelectOption = driverPropSelect.appendChild(document.createElement('option'));
-            propSelectOption.innerText = driver[driverProp].name;
-            propSelectOption.driverProp = driver[driverProp];
+        var propSelect = driverSelect.propSelect;
+        propSelect.options.length = 0;
+        propSelect.disabled = driverSelect.disabled;
+        if (!driverSelect.disabled) {
+            var driverSelectOption = driverSelect.options[driverSelect.selectedIndex];
+            var driver = driverSelectOption.driver;
+            for (var driverProp in driver) {
+                if ((driver[driverProp].name == undefined) || (driver[driverProp].type == undefined)) continue;
+                var driverPropValue = driver[driverProp].value;
+                if (driverPropValue.length > 10) {
+                    driverPropValue = driverPropValue.substr(0,7) + "...";
+                }
+                if (dashboardUI.mainProperties.indexOf("," + driver[driverProp].name) != -1) {
+                    var propSelectOption = propSelect.dialogSelect.appendOption(driver[driverProp].name + " [" + driverPropValue + "]", 0);
+                    propSelectOption.className = "bold-option";
+                }
+                else {
+                    var propSelectOption = propSelect.dialogSelect.appendOption(driver[driverProp].name + " [" + driverPropValue + "]");
+                }
+                propSelectOption.prop = driver[driverProp];
+                propSelectOption.driver = driver;
+            }
+            //три драйвера есть всегда, если нода online у этих драйверов точно есть свойства
+            propSelect.selectedIndex = 0;
         }
-
-        var driverPropSelectOption = driverPropSelect.options[driverPropSelect.selectedIndex];
-        var driverProp = driverPropSelectOption.driverProp;
-        dashboardUI.refreshWidgetsSelect(widgetSelect, driver, driverProp);
+        dashboardUI.onPropSelectChange(event = { currentTarget: propSelect });
+        return false;
     },
-
-    onDriverPropSelect: function (event) {
-        var driverPropSelect = event.currentTarget;
-        var driverSelect = driverPropSelect.driverSelect;
-        var widgetSelect = driverSelect.widgetSelect;
-
-        var driverSelectOption = driverSelect.options[driverSelect.selectedIndex];
-        var driver = driverSelectOption.driver;
-        var driverPropSelectOption = driverPropSelect.options[driverPropSelect.selectedIndex];
-        var driverProp = driverPropSelectOption.driverProp;
-        dashboardUI.refreshWidgetsSelect(widgetSelect, driver, driverProp);
-    },
-
-    refreshWidgetsSelect: function (widgetSelect, driver, driverProp) {
+    onPropSelectChange: function (event) {
+        var propSelect = event.currentTarget;
+        var widgetSelect = propSelect.widgetSelect;
         widgetSelect.options.length = 0;
-        for (var widget in WidgetsLayer) {
-            if (WidgetsLayer[widget].widget == undefined) continue;
-            if ((WidgetsLayer[widget].driversTypes.indexOf(";" + driver.type.value + ";") != -1) || (WidgetsLayer[widget].driversTypes == "any")) {
-                if ((WidgetsLayer[widget].driversProperties.indexOf(";" + driverProp.name + ";") != -1) || (WidgetsLayer[widget].driversProperties == "any")) {
-                    var widgetSelectOption = widgetSelect.appendChild(document.createElement('option'));
-                    widgetSelectOption.innerText = WidgetsLayer[widget].name;
-                    widgetSelectOption.widgetLayer = WidgetsLayer[widget];
+        widgetSelect.disabled = propSelect.disabled;
+        if (!widgetSelect.disabled) {
+            var propSelectOption = propSelect.options[propSelect.selectedIndex];
+            var prop = propSelectOption.prop;
+            var driver = propSelectOption.driver;
+            for (var widget in WidgetsLayer) {
+                if (WidgetsLayer[widget].widget == undefined) continue;
+                if ((WidgetsLayer[widget].driversTypes.indexOf(";" + driver.type.value + ";") != -1) || (WidgetsLayer[widget].driversTypes == "any")) {
+                    if ((WidgetsLayer[widget].driversProperties.indexOf(";" + prop.name + ";") != -1) || (WidgetsLayer[widget].driversProperties == "any")) {
+                        var widgetSelectOption = widgetSelect.dialogSelect.appendOption(WidgetsLayer[widget].name);
+                        widgetSelectOption.widgetLayer = WidgetsLayer[widget];
+                    }
                 }
             }
         }
-
+        return false;
     },
-
-    addWidgetClick: function (event) {
-        var driversWidgetsPanel = document.getElementById("driversWidgetsPanel");
-        var button = event.currentTarget;
-        var driverSelect = button.driverSelect;
-        var driverPropSelect = driverSelect.driverPropSelect;
-        var widgetSelect = driverSelect.widgetSelect;
-
-        var valueSelectOption = driverSelect.options[driverSelect.selectedIndex];
-        var driver = valueSelectOption.driver;
-        var driverProp = driverPropSelect.options[driverPropSelect.selectedIndex].driverProp;
-        var widgetLayer = widgetSelect.options[widgetSelect.selectedIndex].widgetLayer;
-
-        new widgetLayer.widget(driversWidgetsPanel, driver, driverProp).onload = function (widgetWrapper) {
-
-            var configPropertiesWidget = config.addWidget("main", driver._id, driverProp.name, widgetLayer.id, widgetWrapper.widget.id, widgetWrapper.widget.properties);
-
-            widgetWrapper.widget.onchange = config.onWidgetChange;
-            widgetWrapper.widget.ondelete = config.onWidgetDelete;
-
-
-            $("#widgetModal").modal('hide');
-        };
-
-        /*
-            var driversWidgetsPanel = document.getElementById("widgetsPanelDataDiv");
-            var driver = drivers.getDriverById("temperature");    
-            new TemperatureWidgetWrapper(driversWidgetsPanel, driver, driver.temperature);
-            new TemperatureWidgetWrapper(driversWidgetsPanel, driver, driver.temperature, 1);
-        
-            var driver = drivers.getDriverById("humidiry");
-            new HumidityDriver(driversWidgetsPanel, driver, driver.humidity);
-            new HumidityDriver(driversWidgetsPanel, driver, driver.humidity, 1);
-    
-        */
-
-    },
-
     saveAddedWidget: function (event) {
         var buttonSave = event.currentTarget;
         config.cancel = false;
-        // buttonSave.hidden = true;
-
-        var modalBody = document.getElementById("saveConfigModalBody");
-
-        if (modalBody == null || modalBody == undefined) {
-
-            makeModalDialog("resetPanel", "saveConfig", getLang("saveaddedwidget"), getLang("areYouSure"));
-            modalBody = document.getElementById("saveConfigModalBody");
-            modalBody.innerHTML = "";
-
-            //Body saving status text and progress bar
-
-            var divSavingStatus = modalBody.appendChild(document.createElement("div"));
-            var textStatus = divSavingStatus.appendChild(document.createElement("p"));
-            textStatus.className = "text-center";
-            textStatus.id = "savingTextStatus";
-
-            var divProgressClass = modalBody.appendChild(document.createElement("div"));
-            divProgressClass.className = "progress";
-            divProgressClass.id = "divProgressClass";
-
-            var progressBar = divProgressClass.appendChild(document.createElement("div"));
-            progressBar.className = "progress-bar progress-bar-striped bg-info";
-            progressBar.id = "saveProgressBar";
-            progressBar.setAttribute("role", "progressbar");
-            progressBar.setAttribute("aria-valuenow", "0");
-            progressBar.setAttribute("aria-valuemin", "0");
-            progressBar.setAttribute("aria-valuemax", "100");
-            progressBar.setAttribute("style", "width: 0%");
-            progressBar.innerHTML = "0%";
-
-            // Footer addition button "Close"
-            var modalFooter = document.getElementById("saveConfigModalFooter");
-            var saveCloseButton = modalFooter.appendChild(document.createElement("button"));
-            saveCloseButton.type = "button";
-            saveCloseButton.className = "btn btn-sm btn-success";
-            saveCloseButton.setAttribute("data-dismiss", "modal");
-            saveCloseButton.setAttribute("aria-label", "Close");
-            saveCloseButton.innerText = getLang("closebutton");
-            saveCloseButton.id = "saveConfigsaveCloseButton";
-            saveCloseButton.hidden = true;
-      
-
-            //Button cancel interrapt function
-            var savingCloseButton = document.getElementById("saveConfigcloseButton");
-            savingCloseButton.onclick = dashboardUI.addWidgetCancel;
-        }
-
-
-        $('#saveConfigModal').on('hide.bs.modal', function (event) {
-
-            if (config.cancel === true) {
-                config.cancel = false;
-                return true;
-            }
-            else {
-  
-                    event.preventDefault();
-                    event.stopImmediatePropagation();
-                    return false;
-            }
-            
-        });
-
-
-        $("#saveConfigModal").modal('show');
-
+        var saveDialog = createModalDialog(getLang("saveaddedwidget"), "");
+        saveDialog.appendChildToForm(createDialogLabel("savetext", "").label);
+        saveDialog.appendChildToForm(createDialogProgressbar("saveProgressBar").progressbarDiv);
+        saveDialog.OKButton.innerText = getLang("cancelbutton");
+        saveDialog.onOK = dashboardUI.addWidgetCancel;
+        saveDialog.show();
         config.save();
     },
-
-    addWidgetCancel: function (event) {
-
-        var buttonCancel = event.currentTarget;
-        var saveButtonAtPanel = document.getElementById("saveWidgetsButton");
-
-        if (saveButtonAtPanel !== null && saveButtonAtPanel !== undefined) {
-            saveButtonAtPanel.hidden = true;
-        }
+    addWidgetCancel: function () {
 
         config.cancel = true;
+        $("#showDialogPanelDialogModal").modal('hide');
     },
-
     onConfigChange: function (configProperties) {
         var saveButton = document.getElementById("saveWidgetsButton");
         saveButton.hidden = false;
     }
-
 }
 
 
@@ -934,10 +2376,10 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-const nodes = ['bytes', 'kb', 'mb', 'gb', 'tb', 'pb', 'eb', 'zb', 'yb']; 
+const nodes = ['bytes', 'kb', 'mb', 'gb', 'tb', 'pb', 'eb', 'zb', 'yb'];
 
 var FilesList =
-    
+
     function () {
         "use strict";
 
@@ -968,14 +2410,15 @@ var FilesList =
 
         _proto.drawFilesList = function drawFilesList() {
             if (this.uploadSpan == undefined) {
-                this.uploadSpan = this.filesAnchors.appendChild(document.createElement('button'));
-                this.uploadSpan.type = "button";
+                this.filesItem =  document.getElementById("filesitem" + this.node.nodenickname);
+                this.uploadSpan = headerPanelUI.addButton("uploadfilebuttoon", "fa fa-file", getLang("upload"), headerPanelUI.filesButtonRole);                                                    
                 this.uploadSpan.href = boardhost + "upload";
                 this.uploadSpan.onclick = this.uploadClick;
                 this.uploadSpan.setAttribute("data-toggle", "modal");
-                this.uploadSpan.setAttribute("data-target", "#uploadModal");
-                this.uploadSpan.innerText = getLang("upload");
+                this.uploadSpan.setAttribute("data-target", "#uploadModal");                
                 this.uploadSpan.filesList = this;
+                this.filesItem.href.uploadSpan = this.uploadSpan;
+                
             }
 
             if (this.tableDiv == undefined) {
@@ -998,11 +2441,11 @@ var FilesList =
                 th.scope = "col";
                 th = tr.appendChild(document.createElement('th'));
                 th.className = "w-10";
-                th.innerText = "name";
+                th.innerText = getLang("name");
                 th.scope = "col";
                 th = tr.appendChild(document.createElement('th'));
                 th.className = "w-5";
-                th.innerText = "size";
+                th.innerText = getLang("size");
                 th.scope = "col";
                 th = tr.appendChild(document.createElement('th')); //th.className = "w-50";
 
@@ -1080,45 +2523,14 @@ var FilesList =
         };
 
         _proto.uploadClick = function uploadClick(event) {
-            var filesListObject = event.currentTarget.filesList; //event.stopPropagation();
-
-            document.getElementById("addDriverPanel").innerHTML = "";
-            document.getElementById("resetPanel").innerHTML = "";
-            var uploadPanel = document.getElementById("uploadPanel");
-            uploadPanel.innerHTML = "";
-            var modalFade = uploadPanel.appendChild(document.createElement("div"));
-            modalFade.className = "modal fade";
-            modalFade.id = "uploadModal";
-            modalFade.tabindex = "-1";
-            modalFade.setAttribute("role", "dialog");
-            modalFade.setAttribute("aria-labelledby", "uploadModalLabel");
-            modalFade.setAttribute("aria-hidden", "true");
-            var modalDialog = modalFade.appendChild(document.createElement("div"));
-            modalDialog.className = "modal-dialog";
-            modalDialog.role = "document";
-            var modalContent = modalDialog.appendChild(document.createElement("div"));
-            modalContent.className = "modal-content";
-            var modalHeader = modalContent.appendChild(document.createElement("div"));
-            modalHeader.className = "modal-header";
-            var modalTitle = modalHeader.appendChild(document.createElement("h5"));
-            modalTitle.className = "modal-title";
-            modalTitle.id = "uploadModalLabel";
-            modalTitle.innerText = getLang("uploadfiles");
-            var closeHeaderButton = modalHeader.appendChild(document.createElement("button"));
-            closeHeaderButton.type = "button";
-            closeHeaderButton.className = "close";
-            closeHeaderButton.setAttribute("data-dismiss", "modal");
-            closeHeaderButton.setAttribute("aria-label", "Close");
-            var closeSpan = closeHeaderButton.appendChild(document.createElement("span"));
-            closeSpan.setAttribute("aria-hidden", "true");
-            closeSpan.innerText = "x";
-            var modalBody = modalContent.appendChild(document.createElement("div"));
-            modalBody.className = "modal-body";
-            var inputGroup = modalBody.appendChild(document.createElement("form"));
+            event.stopPropagation();
+            var uploadFilesDialog = createModalDialog(getLang("uploadfiles"), "");
+            uploadFilesDialog.filesListObject = event.currentTarget.filesList;
+            var inputGroup = uploadFilesDialog.body.appendChild(document.createElement("form"));
             inputGroup.className = "form-group";
             inputGroup.id = "inputGroup";
-            inputGroup.addEventListener('submit', filesListObject.inputGroupSubmit);
-            inputGroup.filesListObject = filesListObject;
+            inputGroup.addEventListener('submit', uploadFilesDialog.filesListObject.inputGroupSubmit);
+            inputGroup.filesListObject = uploadFilesDialog.filesListObject;
             var inputgroupprepend = inputGroup.appendChild(document.createElement("div"));
             inputgroupprepend.className = "input-group-prepend";
             var customFile = inputGroup.appendChild(document.createElement("div"));
@@ -1133,22 +2545,17 @@ var FilesList =
             fileInput.setAttribute("type", "file");
             fileInput.setAttribute("aria-describedby", "inputGroupFileAddon01");
             fileInput.multiple = true;
-            fileInput.onchange = filesListObject.inputGroupChange;
-            fileInput.filesListObject = filesListObject;
+            fileInput.onchange = uploadFilesDialog.filesListObject.inputGroupChange;
+            fileInput.filesListObject = uploadFilesDialog.filesListObject;
             var filesList = customFile.appendChild(document.createElement("div"));
             filesList.id = "filesList";
             fileInput.filesList = filesList;
             fileInput.label = label;
             fileInput.customFile = customFile;
-            var modalFooter = modalContent.appendChild(document.createElement("div"));
-            modalFooter.className = "modal-footer";
-            var closeButton = modalFooter.appendChild(document.createElement("button"));
-            closeButton.type = "button";
-            closeButton.className = "btn btn-info btn-sm";
-            closeButton.setAttribute("data-dismiss", "modal");
-            closeButton.setAttribute("aria-label", "Close");
-            closeButton.innerText = getLang("cancel");
-            $("#uploadtModal").modal('show');
+
+            uploadFilesDialog.OKButton.style.display = "none";
+            uploadFilesDialog.show();
+
             return false;
         };
 
@@ -1184,7 +2591,7 @@ var FilesList =
             filesListObject.uploadFileButton.className = "btn btn-success btn-sm";
             filesListObject.uploadFileButton.id = "doUploadButton";
             filesListObject.uploadFileButton.setAttribute("type", "submit");
-            filesListObject.uploadFileButton.innerText = "upload";
+            filesListObject.uploadFileButton.innerText = getLang("upload");
             filesListObject.uploadFileButton.used = false;
             label.innerText = files.length + " file(s) selected, size " + filesListObject.formatBytes(totalSize);
         };
@@ -1228,7 +2635,6 @@ var FilesList =
                     fileItem.innerHTML += ".";
                 }
             };
-
             request.onabort = function (oEvent) {
                 if (this.status == 0) return;
                 fileItem.innerHTML += " abort";
@@ -1259,11 +2665,9 @@ var FilesList =
                     fileItem.innerHTML += request.status + " error";
                 }
             };
-
             request.open("POST", endPoint, true);
             request.send(formData);
         };
-
         _proto.inputGroupSubmit = function inputGroupSubmit(event) {
             var filesListObject = event.currentTarget.filesListObject;
 
@@ -1278,7 +2682,6 @@ var FilesList =
 
             event.preventDefault();
         };
-
         return FilesList;
     }();/* ----------------------------------------------------------------------------
 Ready IoT Solution - OWLOS
@@ -1379,6 +2782,9 @@ OWLOS распространяется в надежде, что она буде
 
 */
 
+//палитра виджетов, настраивается при старте (смотрите index.js)
+var widgetsTheme = {};
+
 // флажки режимов виджета
 var WORK_MODE = 0; // в этом режиме виджет отображает данные
 var MOVE_MODE = 1; // в этом режиме виджет отображает элементы управления собой - переместить, изменить свойства, удалить
@@ -1404,7 +2810,6 @@ var BaseWidget =
             this._networkStatus = NET_OFFLINE; // по умолчанию виджет "считает" что не подключен к сети
             this._event = EVENT_NO; // никаких состояний нет 
             this.mouseEnter = false; // сбрасываем индикатор нахождения мыши над виджетом
-            
 
             // подготовка основной (родительский) панели виджета (все остальные элементы будут дочерний к этой панели)
             this.widgetHolder = this.parentPanel.appendChild(document.createElement("div"));
@@ -1415,7 +2820,7 @@ var BaseWidget =
             //container width  None (auto)  540px     720px    960px    1140px
             //Class prefix        col-     col-sm-  col-md-   col-lg-   col-xl- (1..12)
             //по умолчанию (когда длина меньше чем 540 - под два виджета на панель, когда больше 6 виджетов, более 960 - двенадцать виджетов 
-            this.widgetHolder.className = "col-3 col-sm-2 col-lg-1"; // назначаем Bootstrap класс для панели (одна ячейка из двенадцати по умолчанию) (в случае использования с Bootstrap)
+            this.widgetHolder.className = "col-3 col-sm-2 col-lg-1 widgetHolder"; // назначаем Bootstrap класс для панели (одна ячейка из двенадцати по умолчанию) (в случае использования с Bootstrap)
             this.widgetHolder.style.cursor = "pointer"; // переопределяем тип курсора
             this.widgetHolder.onmouseover = this.mouseOver; // когда пользователь наведет мышью на виджет сработает этот обработчик события 
             this.widgetHolder.onmouseout = this.mouseOut; // когда пользователь уберет мышь этот обработчик 
@@ -1468,7 +2873,7 @@ var BaseWidget =
 
             // фоновая панель (подложка) виджета (фон и бордюр)
             widget.SVGBackgroundPanel = new SVGArc(widget.SVGViewBox, widget.id + "backgroundpanel", 0, 0, widget.width, 1);
-            widget.SVGBackgroundPanel.drawRoundedRect(widget.width, widget.height, 5, 10, true, true, true, true);            
+            widget.SVGBackgroundPanel.drawRoundedRect(widget.width, widget.height, 5, 10, true, true, true, true);
             // панель для заголовка (верхняя часть виджета с его названием)
             widget.SVGHeaderPanel = new SVGArc(widget.SVGViewBox, widget.id + "headerpanel", 0, 0, widget.width, 1);
             widget.SVGHeaderPanel.drawRoundedRect(widget.width, 25, 5, 0, true, true, false, false);
@@ -1476,32 +2881,32 @@ var BaseWidget =
             widget.SVGBackdownpanel = new SVGArc(widget.SVGViewBox, widget.id + "backdownpanel", 0, widget.height - 10, widget.width, 1);
             widget.SVGBackdownpanel.drawRoundedRect(widget.width, 10, 5, 0, false, false, true, true);
             widget.SVGBackdownpanel.opacity = 0.9;
-            widget.SVGBackdownpanel.fill = theme.secondary;
+            widget.SVGBackdownpanel.fill = widgetsTheme.secondary;
             // основной текст виджета - обычно расположен в центре. Используется многими виджетами для отображения данных 
             // widget.size / 80 - размер шрифта текст относительно текущего масштаба widgetHolder
             widget.SVGWidgetText = new SVGText(widget.SVGViewBox, widget.id + "widgettext", widget.size / 80);
             widget.SVGWidgetText.opacity = 0.7;
-            widget.SVGWidgetText.color = theme.secondary;
+            widget.SVGWidgetText.color = widgetsTheme.secondary;
             // текст для заголовка виджета, находится над SVGHeaderPanel панелью
             widget.SVGHeaderText = new SVGText(widget.SVGViewBox, widget.id + "headertext", widget.size / 150);
-            widget.SVGHeaderText.color = theme.secondary;
+            widget.SVGHeaderText.color = widgetsTheme.success;
             // подпись внизу виджета, обычно информация о сетевом состоянии виджета (находится над SVGBackdownpanel)
             widget.SVGHint = new SVGText(widget.SVGViewBox, widget.id + "hint", widget.size / 150);
-            widget.SVGHint.color = theme.secondary;
+            widget.SVGHint.color = widgetsTheme.secondary;
 
             // подготавливаем градиент для спиннера (спиннер будет отображаться когда виджет уходит в состояния ожидания)
             var stop1 = document.createElementNS(xmlns, 'stop'); // первый фрагмент градиента 
-            stop1.setAttribute('stop-color', theme.info);
+            stop1.setAttribute('stop-color', widgetsTheme.info);
             stop1.setAttribute('stop-opacity', "0.7");
             stop1.setAttribute('offset', "0%");
             var stop2 = document.createElementNS(xmlns, 'stop'); // второй фрагмент градиента 
             stop2.setAttribute('class', 'stop2');
-            stop2.setAttribute('stop-color', theme.info);
+            stop2.setAttribute('stop-color', widgetsTheme.info);
             stop2.setAttribute('stop-opacity', "0.4");
             stop2.setAttribute('offset', "20%");
             var stop3 = document.createElementNS(xmlns, 'stop'); // третий фрагмент градиента 
             stop3.setAttribute('class', 'stop3');
-            stop3.setAttribute('stop-color', theme.info);
+            stop3.setAttribute('stop-color', widgetsTheme.info);
             stop3.setAttribute('stop-opacity', "0.0");
             stop3.setAttribute('offset', "60%");
             var gradient = document.createElementNS(xmlns, 'linearGradient'); // создаем градиент 
@@ -1532,7 +2937,7 @@ var BaseWidget =
                     // инкапсулируем каждый элемент и помещаем на свое место 
                     var SVGEqualizerpanel = new SVGRect(widget.SVGViewBox, widget.id + "equalizerpanel" + parseInt(x) + "_" + parseInt(y), widget.eX + x * widget.eWidth * 2, widget.eY + y * widget.eHeight * 2, widget.eRWidth, widget.eRWidth);
                     SVGEqualizerpanel.opacity = 0.0; // по умолчанию элемент не виден
-                    SVGEqualizerpanel.fill = theme.secondary;
+                    SVGEqualizerpanel.fill = widgetsTheme.secondary;
                     // помещаем элемент в столбец
                     equalizerY.push(SVGEqualizerpanel);
                 }
@@ -1545,25 +2950,25 @@ var BaseWidget =
             // кнопка сдвига влево
             // данные для прорисовки иконки кнопки "leftIcon" находится в DrawCore.js 
             widget.SVGLeftIcon = new SVGIcon(widget.SVGViewBox, leftIcon, widget.panding, widget.height - widget.rowSize, widget.rowSize, widget.rowSize);
-            widget.SVGLeftIcon.fill = theme.light;
+            widget.SVGLeftIcon.fill = widgetsTheme.light;
             widget.SVGLeftIcon.SVGIcon.widget = widget;
             widget.SVGLeftIcon.SVGIcon.onclick = widget.moveLeft; // назначаем обработчик события по клику на эту кнопку (смотрите метод moveLeft())
             widget.SVGLeftIcon.hide(); // по умолчанию кнопка скрыта 
             // кнопка сдвига вправо
             widget.SVGRightIcon = new SVGIcon(widget.SVGViewBox, rightIcon, widget.width - widget.rowSize, widget.height - widget.rowSize, widget.rowSize, widget.rowSize);
-            widget.SVGRightIcon.fill = theme.light;
+            widget.SVGRightIcon.fill = widgetsTheme.light;
             widget.SVGRightIcon.SVGIcon.widget = widget;
             widget.SVGRightIcon.SVGIcon.onclick = widget.moveRight;
             widget.SVGRightIcon.hide();
             // кнопка удаления виджета 
             widget.SVGDeleteIcon = new SVGIcon(widget.SVGViewBox, deleteIcon, widget.width - widget.rowSize + widget.size / 28, 0, widget.rowSize, widget.rowSize);
-            widget.SVGDeleteIcon.fill = theme.light;
+            widget.SVGDeleteIcon.fill = widgetsTheme.light;
             widget.SVGDeleteIcon.SVGIcon.widget = widget;
             widget.SVGDeleteIcon.SVGIcon.onclick = widget.deleteWidgetClick;
             widget.SVGDeleteIcon.hide();
             // кнопка отображения диалога редактирования свойств виджета 
             widget.SVGPropertiesIcon = new SVGIcon(widget.SVGViewBox, buildIcon, widget.width / 2 - widget.rowSize / 2, widget.height - widget.rowSize, widget.rowSize, widget.rowSize);
-            widget.SVGPropertiesIcon.fill = theme.light;
+            widget.SVGPropertiesIcon.fill = widgetsTheme.light;
             widget.SVGPropertiesIcon.SVGIcon.widget = widget;
             widget.SVGPropertiesIcon.SVGIcon.onclick = widget.propertiesClick;
             widget.SVGPropertiesIcon.hide();
@@ -1638,28 +3043,28 @@ var BaseWidget =
                     // toColor() - метод реализующий плавную смену градиентов цвета (анимация)
                     // this._properties.valuetextcolor.value свойства виджета определяющее цвет главного текста в онлайн режиме (пользователь может назначить свой цвет)
                     this.toColor(this.SVGWidgetText, this._properties.valuetextcolor.value);
-                    this.toColor(this.SVGHeaderText, theme.light);
+                    this.toColor(this.SVGHeaderText, widgetsTheme.info);
                     this.SVGHint.text = getLang("rid_online"); // назначаем текст для нижней подписи виджета (сетевой статус) в этом кейсе
-                    this.toColor(this.SVGHint, theme.success);
+                    this.toColor(this.SVGHint, widgetsTheme.success);
                     break;
                 case NET_ERROR: // ошибка сети
-                    this.toColor(this.SVGWidgetText, theme.danger);
-                    this.toColor(this.SVGHeaderText, theme.danger);
+                    this.toColor(this.SVGWidgetText, widgetsTheme.danger);
+                    this.toColor(this.SVGHeaderText, widgetsTheme.danger);
                     this.SVGHint.text = getLang("rid_error");
-                    this.toColor(this.SVGHint, theme.danger);
+                    this.toColor(this.SVGHint, widgetsTheme.danger);
                     break;
                 case NET_RECONNECT: // пере подключение (при таком статусе виджет ожидает соединения с сетью)
-                    this.toColor(this.SVGWidgetText, theme.info);
-                    this.toColor(this.SVGHeaderText, theme.info);
+                    this.toColor(this.SVGWidgetText, widgetsTheme.info);
+                    this.toColor(this.SVGHeaderText, widgetsTheme.info);
                     this.SVGHint.text = getLang("rid_connect");
-                    this.toColor(this.SVGHint, theme.info);
+                    this.toColor(this.SVGHint, widgetsTheme.info);
                     break;
                 default:
                     //по умолчанию виджет оффлайн, не подключен к сети 
-                    this.toColor(this.SVGWidgetText, theme.secondary);
-                    this.toColor(this.SVGHeaderText, theme.secondary);
+                    this.toColor(this.SVGWidgetText, widgetsTheme.secondary);
+                    this.toColor(this.SVGHeaderText, widgetsTheme.secondary);
                     this.SVGHint.text = getLang("rid_offline");
-                    this.toColor(this.SVGHint, theme.secondary);
+                    this.toColor(this.SVGHint, widgetsTheme.secondary);
                     break;
             }
 
@@ -1687,16 +3092,16 @@ var BaseWidget =
             // в зависимости от состояния сети, цвет нижней панели виджета меняется 
             switch (this._networkStatus) {
                 case NET_ONLINE:
-                    this.SVGBackdownpanel.fill = theme.success;
+                    this.SVGBackdownpanel.fill = widgetsTheme.success;
                     break;
                 case NET_ERROR:
-                    this.SVGBackdownpanel.fill = theme.danger;
+                    this.SVGBackdownpanel.fill = widgetsTheme.danger;
                     break;
                 case NET_RECONNECT:
-                    this.SVGBackdownpanel.fill = theme.info;
+                    this.SVGBackdownpanel.fill = widgetsTheme.info;
                     break;
                 default:
-                    this.SVGBackdownpanel.fill = theme.light;
+                    this.SVGBackdownpanel.fill = widgetsTheme.light;
                     break;
             }
 
@@ -1706,7 +3111,7 @@ var BaseWidget =
                     var equalizerY = this.equalizerX[x];
                     for (var y = 0; y < 5; y++) { // обходим все элементы в столбцах 
                         if (this._networkStatus == NET_ONLINE) { // если виджет онлайн делаем элемент видимым
-                            equalizerY[y].fill = theme.secondary; // цвет каждого элемента по умолчанию "неактивен" 
+                            equalizerY[y].fill = widgetsTheme.secondary; // цвет каждого элемента по умолчанию "неактивен" 
                             equalizerY[y].opacity = (y + 1) * 0.08;
                         } else { // если виджет оффлайн скрываем все элементы эквалайзера 
                             equalizerY[y].opacity = 0.0;
@@ -1720,7 +3125,6 @@ var BaseWidget =
                         // формат historyData:
                         // количество_элементов;значение_float_первого_элемента;значение_float_второго_элемента;...значение_float_последнего_элемента;
                         // номер последнего_элемента = количество_элементов
-
                         var splitHistory = this.historyData.split(";"); // парсим содержимое CSV в массив строк
                         var count = splitHistory[0]; // вынимаем количество_элементов
                         var prop = count / this.eCount; // сопоставляем количество присланных элементов с количеством столбцов эквалайзера 
@@ -1753,7 +3157,7 @@ var BaseWidget =
                             // value значение данных для текущего столбца, превращенное в количество видимых (окрашенных) элементов снизу-вверх
                             for (var y = 0; y < value; y++) { // изменяем цвет только для элементов согласно текущему значению historyData - относительно значения самого большого элемента из нее
                                 equalizerY[4 - y].opacity = (1.0 - parseFloat(y / 4.0)) / 2.0; // прозрачность элемента зависит от его позиции относительно по высоте (самые нижние ярче)
-                                equalizerY[4 - y].fill = theme.success;
+                                equalizerY[4 - y].fill = widgetsTheme.success;
                             }
                         }
                     }
@@ -1765,7 +3169,6 @@ var BaseWidget =
                     for (var y = 0; y < 5; y++) { equalizerY[y].opacity = 0.0; }
                 }
             }
-
             // когда сетевое состояние виджета находится в режиме - пере подключение, отображаем спиннер (анимация)           
             if (this._networkStatus == NET_RECONNECT) {
                 this.spinnerAngle += 1.5; // приращение угла вращения спиннера (влияет на скорость вращения, чем больше угол тем быстрее и на оборот)
@@ -1795,7 +3198,7 @@ var BaseWidget =
             if (this.SVGWidgetText == undefined) return; // если виджет "не готов" (не инкапсулированы SVG элементы) выходим
             // все SVG элементы расположенный в SVGViewBox - изменение его размеров повлияет не размеры остальных элементов
             this.SVGViewBox.setAttributeNS(null, "width", size);
-            this.SVGViewBox.setAttributeNS(null, "height", size );
+            this.SVGViewBox.setAttributeNS(null, "height", size);
         }
 
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1810,7 +3213,7 @@ var BaseWidget =
                 var widget = body.widgets[widgetKey]; // изымаем очередной виджет
 
                 if (window.innerWidth < switchToMobile) {
-                   // widget.widgetHolder.className = "col-sm-2";
+                    // widget.widgetHolder.className = "col-sm-2";
                 }
                 else {
                     //widget.widgetHolder.className = "col-sm-1";
@@ -1836,26 +3239,21 @@ var BaseWidget =
             widget.widgetHolder.className = "col-sm-4";
             // переключаем виджет в режим "работа" - мы будем отображать виджет в диалоге свойств в этом режиме (без кнопок)
             widget.mode = WORK_MODE;
-
             // подготавливаем  модальный диалог (смотрите функцию makeModalDialog() - она создает универсальные модальные диалоги, где "showProperties" префикс для ID)
-            makeModalDialog("resetPanel", "showProperties", getLang("showproperties"), "");
-            // после того как функция создала диaлог и все его элементы, изымаем modalBody элемент и modalFooter по их ID
-            var modalBody = document.getElementById("showPropertiesModalBody");
-            var modalFooter = document.getElementById("showPropertiesModalFooter");
-
+            var propDialog = createModalDialog(getLang("showproperties"), "");
             // заполняем modalBody и modalFooter элементами отображающими свойства данного виджета
             // создаем панель в верхней части диалога в которой будем отображать виджет - пользователь сможет видеть результаты изменения свойств виджета
-            var widgetDiv = modalBody.appendChild(document.createElement("div"));
-            widgetDiv.className = "driversWidgetsPanel d-flex justify-content-center";
+            var widgetDiv = propDialog.formGroup.appendChild(document.createElement("div"));
+            widgetDiv.className = "driversWidgetsPanel d-flex justify-content-center widget-editor-panel";
             widgetDiv.appendChild(widget.widgetHolder);
 
             // свойств очень много - модальный диалог может получится слишком длииным и не влазить в окно браузера, что не очень удобно для пользователя
             // по этому свойства виджета будут размещены в закладках внутри диалога 
             // создаем панель закладок 
-            var propUl = modalBody.appendChild(document.createElement("ul"));
-            propUl.className = "nav nav-tabs";
+            var propUl = propDialog.formGroup.appendChild(document.createElement("ul"));
+            propUl.className = "nav nav-tabs widget-editor-nav-tabs";
 
-            var tabContent = modalBody.appendChild(document.createElement("div"));
+            var tabContent = propDialog.formGroup.appendChild(document.createElement("div"));
             tabContent.className = "tab-content";
 
             // размещаем редакторы свойств виджета в закладках диалога 
@@ -1912,14 +3310,15 @@ var BaseWidget =
                 prependDiv.className = "input-group-prepend";
                 // название свойства 
                 var label = prependDiv.appendChild(document.createElement("label"));
-                label.className = "input-group-text";
+                label.className = "input-group-text smlabel";
                 label.setAttribute("for", "hostEdit");
                 label.innerText = key;
                 // редактор свойства
                 // свойство виджета представлено классом, свойство type которого определяет тип свойства - целое число, число со знаком, цвет и так далее 
                 // функция createValueEdit реагирует на type и создает соответствующий редактор (например comboBox с палитрой цветов если type = 'c' [color])
                 var propEdit = createValueEdit(inputGroup, widget.properties[key].name, widget.properties[key].value, widget.properties[key].type);
-                propEdit.className = "form-control form-control-sm";
+                propEdit.style.width = "";
+                propEdit.className = "form-control"; // form-control-sm
                 propEdit.placeholder = "type value here";
                 propEdit.id = "widgetproperty" + key;
                 // связываем редактор со свойством виджета - когда пользователь будет изменять в редакторе значения свойств - виджет будет тут же отображать полученный результат
@@ -1933,78 +3332,31 @@ var BaseWidget =
                 propEdit.onkeyup = widget.onPropertyChange;
             } // очередное свойство добавлено, возвращаемся и добавляем следующее в соответствующею закладку
 
-            // в низу диалога будет элемент отображающий особым цветом ошибки, например если пользователь выбрал неверное значение свойства виджета 
-            var setPropError = formGroup.appendChild(document.createElement("label"));
-            setPropError.className = "text-danger";
-            // кнопки "Закрыть" и "Отмена" созданы функцией makeModalDialog(), находим их по ID и назначаем свои обработчики
-            // кнопка "Закрыть" в шапке диалога (справа, крестик)
-            var closeHeaderButton = document.getElementById("showPropertiescloseHeaderButton");
-            closeHeaderButton.widget = widget; // запомним к какому виджету привязана кнопка 
-            closeHeaderButton.onclick = widget.discardProperties; // обработчик в виджете, вернет сохраненные значения свойств и закроет диалог 
-            // кнопка "Отмена" внизу диалога (так же как и кнопка "Закрыть")
-            var closeButton = document.getElementById("showPropertiescloseButton");
-            closeButton.widget = widget;
-            closeButton.onclick = widget.discardProperties;
-
             // кнопка "Применить ко всем", ее придется создать с нуля и добавить в modalFooter элемент  
             // нажатие на эту кнопку приведет к тому, что значения свойств текущего виджета, будут применены ко всем виджетам 
             // это очень удобно если необходимо глобально изменить стиль всех виджетов
             // но так же это опасно, потому как все виджеты изменят свои свойства по эталонну из этого виджета
-            var setAllWidgetsPropButton = modalFooter.appendChild(document.createElement("button"));
-            setAllWidgetsPropButton.type = "button";
-            setAllWidgetsPropButton.className = "btn btn-sm btn-warning";
-            setAllWidgetsPropButton.id = "allwidgetsModalButton";
-            setAllWidgetsPropButton.widget = widget; // привязываемся к текущему виджет 
-            setAllWidgetsPropButton.onclick = widget.setAllWidgetsProperties; // назначаем обработчик клика (сохраним свойства)
-            setAllWidgetsPropButton.innerText = getLang("setallwidgetspropbutton"); // надпись для кнопки из словаря (languagescore.js)            
-            setAllWidgetsPropButton.setPropError = setPropError; // элемент (надпись) для отображения пользователю сообщений об ошибках
-            // кнопка "Применить", так же как и setAllWidgetsPropButton, но будут изменены свойства текущего виджета 
-            var setPropButton = modalFooter.appendChild(document.createElement("button"));
-            setPropButton.type = "button";
-            setPropButton.className = "btn btn-sm btn-success";
-            setPropButton.id = "addnodeModalButton";
-            setPropButton.widget = widget;
-            setPropButton.onclick = widget.setProperties;
-            setPropButton.innerText = getLang("setpropbutton");
-            setPropButton.setPropError = setPropError;
+            var setAllWidgetsPropButton = createButton("allwidgetsModalButton", "btn btn-sm btn-warning", getLang("setallwidgetspropbutton"));
+            setAllWidgetsPropButton.button.onclick = widget.setAllWidgetsProperties;
+            setAllWidgetsPropButton.button.widget = widget;
+            setAllWidgetsPropButton.button.propDialog = propDialog;
+            propDialog.footer.appendChild(setAllWidgetsPropButton.button);
 
-            // пользователь может закрыть модальный диалог не используя кнопки "Закрыть", "Применить" или клавиши, а например просто кликнув вне этого диалога
-            // нам необходимо контролировать это событие закрытие диалога для того что бы вернуть значения свойств виджета и сам виджет в панель виджетов
-            // да - это событие равносильно нажатию кнопки "Закрыть" в диалоге 
-            // проблема - в том, что нажатие кнопок приводит к закрытию диалога, а закрытие диалога к вызову этого события. По этой причине обработчик сильно 
-            // усложняется - например пользователь нажал "Применить", обработчик клика кнопки закрыл диалог, а сам диалог в момент закрытия вызвал этот 
-            // обработчик и вернул все свойство к сохраненным.             
-            $('#showPropertiesModal').on('hidden.bs.modal', function (event) { // назначаем обработчик события закрытия диалога 
-                // идем на хитрость - все "легальные" кнопки закрытия диалога (те кнопки обработчики которых мы создали сами и нажатие которых приводит к закрытию диалога)
-                // будут создавать в объекте диалога свойство "setProp", в данном случае значение свойства не имеет значение, оно должно быть создано и не undefined 
-                if (document.getElementById("showPropertiesModal").setProp != undefined) { // если пользователь нажал "легальную" кнопку
-                    return; // просто выходим, ничего не делаем 
-                }
-                // диалог закрывается и это не контролируемое действие - вызываем наш обработчик widget.discardProperties() - вернем значения свойств виджета
-                // NOTE:
-                // такой подход может вызвать рекурсия, потом как widget.discardProperties() вызовет $("#showPropertiesModal").modal('hide');  тот в свою очередь 
-                // может повторно вызвать этот обработчик. Благо этого не происходит - ибо диалог уже закрывается. 
-                // мы "имитируем" параметры обработчика события onclick - event, через свойство currentTarget должна содержать ссылку на элемент вызвавший событие
-                var event = {
-                    currentTarget: closeHeaderButton
-                }
-                // вызываем наш обработчик клика на closeHeaderButton
-                widget.discardProperties(event);                
-            })
-
-            // отображаем созданный диалог 
-            $("#showPropertiesModal").modal('show');
+            //Show dialog 
+            propDialog.widget = widget;
+            propDialog.onOK = widget.setProperties;
+            propDialog.show();
         };
 
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         // обработчик клика на кнопку "Применить" для диалога редактирования свойств виджета 
-        BaseWidget.prototype.setProperties = function setProperties(event) {
+        BaseWidget.prototype.setProperties = function setProperties(propDialog) {
             // запрещаем все последующие обработчики
-            event.stopPropagation();
+            //event.stopPropagation();
             // получаем ссылку на нажатую кнопку из события
-            var button = event.currentTarget;
+            //var button = event.currentTarget;
             // получаем ссылку на виджет из свойства кнопки (свойство добавлено при создании кнопки)
-            var widget = button.widget;
+            var widget = propDialog.widget;
             // изымаем виджет из диалога
             widget.widgetHolder.parentElement.removeChild(widget.widgetHolder);
             // возвращаем виджет в панель виджетов
@@ -2017,19 +3369,15 @@ var BaseWidget =
             widget.doOnChange();
             // смотрите showProperties()-$('#showPropertiesModal').on('hidden.bs.modal', function (event) 
             // сообщаем обработчику закрытия диалога о том что мы обработали закрытие
-            document.getElementById("showPropertiesModal").setProp = true;
-            // закрываем диалог
-            $("#showPropertiesModal").modal('hide');
-
-            return false;
+            return true;
         };
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         // обработчик клика на кнопку "Применить ко всем" для диалога редактирования свойств виджета 
         BaseWidget.prototype.setAllWidgetsProperties = function setProperties(event) {
             // так же как для setProperties() - получаем ссылку на виджет, переносим его в панель виджетов
             event.stopPropagation();
-            var button = event.currentTarget;
-            var widget = button.widget;
+            var setAllWidgetsPropButton = event.currentTarget;
+            var widget = setAllWidgetsPropButton.widget;
             widget.widgetHolder.parentElement.removeChild(widget.widgetHolder);
             widget.parentPanel.insertBefore(widget.widgetHolder, widget.parentPanel.childNodes[widget.inParentIndex]);
             widget.widgetHolder.className = widget.inParentClass;
@@ -2054,16 +3402,16 @@ var BaseWidget =
                         someWidget.properties[key].value = propEdit.value; //используем его значение в качестве нового значения свойства очередного виджета
                     }
                 }
-
                 // все свойства очередного виджета перечислены и им назначены новые значения - обратимся к setter .properties для того что бы виджет перерисовал свои SVG элементы
                 someWidget.properties = someWidget.properties;
             }
             // сохраняем изменения
-            
+
             widget.doOnChange();
             // так же как для setProperties(), взводим setProp, закрываем диалог
-            document.getElementById("showPropertiesModal").setProp = true;
-            $("#showPropertiesModal").modal('hide');            
+            setAllWidgetsPropButton.propDialog.hide();
+            //document.getElementById("showPropertiesModal").setProp = true;
+            //$("#showPropertiesModal").modal('hide');            
             return false;
         };
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -2096,60 +3444,46 @@ var BaseWidget =
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         // обработчик события вызывается всеми редакторами свойств виджета, когда пользователь меняет им значение 
         BaseWidget.prototype.onPropertyChange = function onPropertyChange(event) {
-
             var propEdit = event.currentTarget;
             var widget = propEdit.widget;
-
             for (var key in widget.properties) {
                 var _propEdit = document.getElementById("widgetproperty" + key);
                 widget.properties[key].value = _propEdit.value;
             }
-
             widget.properties = widget.properties;
-
             if (propEdit.originalOnChange != undefined) {
                 propEdit.originalOnChange(event);
             }
-
             return true;
-
         };
 
         BaseWidget.prototype.moveLeft = function moveLeft(event) {
             var widget = event.currentTarget.widget;
-
             if (widget.mode == MOVE_MODE) {
                 var index = Array.prototype.slice.call(widget.parentPanel.childNodes).indexOf(widget.widgetHolder);
                 widget.parentPanel.removeChild(widget.widgetHolder);
                 widget.parentPanel.insertBefore(widget.widgetHolder, widget.parentPanel.childNodes[index - 1]);
             }
-
             return true;
         };
 
         BaseWidget.prototype.moveRight = function moveRight(event) {
             var widget = event.currentTarget.widget;
-
             if (widget.mode == MOVE_MODE) {
                 var index = Array.prototype.slice.call(widget.parentPanel.childNodes).indexOf(widget.widgetHolder);
                 widget.parentPanel.removeChild(widget.widgetHolder);
                 widget.parentPanel.insertBefore(widget.widgetHolder, widget.parentPanel.childNodes[index + 1]);
             }
-
             return true;
         };
-
         BaseWidget.prototype.propertiesClick = function movepropertiesClick(event) {
             event.stopPropagation();
             var widget = event.currentTarget.widget;
             if (widget.mode == MOVE_MODE) {
                 widget.showProperties(widget);
             }
-
             return true;
         };
-
-
         BaseWidget.prototype.plusSize = function plusSize(event) {
             var widget = event.currentTarget.widget;
 
@@ -2160,14 +3494,10 @@ var BaseWidget =
 
             return true;
         };
-
-
         BaseWidget.prototype.deleteWidget = function deleteWidget() {
             //this.event это setter, такое обращение приведет к оповещению всех подписантов на события виджета о текущем событии в виджете
             this.event = EVENT_DELETE;
-
             this.doOnDelete();
-
             var body = document.getElementsByTagName("BODY")[0];
             if (body.onresize == this.onPanelResize) {
                 body.onresize = null;
@@ -2181,8 +3511,6 @@ var BaseWidget =
             }
 
             body.widgets.splice(body.widgets.indexOf(this), 1);
-
-
             while (this.SVGViewBox.childNodes.length != 0) {
                 this.SVGViewBox.removeChild(this.SVGViewBox.childNodes[0]);
             }
@@ -2196,7 +3524,6 @@ var BaseWidget =
                     delete this[key];
                 }
             }
-
         };
 
         BaseWidget.prototype.deleteWidgetClick = function deleteWidgetClick(event) {
@@ -2216,7 +3543,6 @@ var BaseWidget =
             } else {
                 widget.mode = WORK_MODE;
             }
-
             return true;
         };
 
@@ -2251,22 +3577,16 @@ var BaseWidget =
             if (this._properties.headertext.value === '---') {
                 this._properties.headertext.value = label;
             }
-
-
             if (this.widgetText != widgetText) {
                 speak(this._properties.headertext + " " + widgetText);
             }
-
-
             this.historyData = historyData;
             this._data = data;
             this.widgetText = widgetText;
-
             this.spinnerAngle = 0;
             this.redrawAll();
         };
 
-        //---------------------------------------------------------------------------------------
         BaseWidget.prototype.redrawAll = function redrawAll() {
             if ((this._event == EVENT_DELETE) || (this._event == undefined)) { return; }
 
@@ -2278,10 +3598,7 @@ var BaseWidget =
             this.drawText();
         };
 
-
         BaseWidget.prototype.toColor = function toColor(element, color, method) {
-
-
             if (method == undefined) method = true;
             if (element == null) return;
 
@@ -2294,14 +3611,12 @@ var BaseWidget =
                 window.cancelAnimationFrame(element.animantionFrame);
                 this.animateColor(element, color, method);
             }
-
             element.animantion = true;
             this.animateColor(element, color, method);
         };
 
         BaseWidget.prototype.animateColor = function animateColor(element, color, method) {
             var _this2 = this;
-
             if (!element.animantion) return;
             var rgbSrc = element.colorRGB;
             var rgbDst = colorToRGB(color);
@@ -2327,36 +3642,36 @@ var BaseWidget =
                 });
             }
         };
-
-
+        //Изменение яркости видждета при наведения мыши, учитывает два варианта - при наведение становится ярче, либо угосает. 
         BaseWidget.prototype.drawMouseEnter = function drawMouseEnter() {
             if (this._mode != WORK_MODE) return;
             var _this = this;
-
+            var lamda = 0.05; //становится ярче
+            if (this._properties.backgroundselectopacity.value > this._properties.backgroundopacity.value) {
+                lamda = -0.05; //угасает
+            }
             if (this.mouseEnter) {
-                if (this.SVGBackgroundPanel.opacity > this._properties.backgroundselectopacity.value) {
-                    this.SVGBackgroundPanel.opacity -= 0.05;
+                if (this.SVGBackgroundPanel.opacity * lamda > this._properties.backgroundselectopacity.value * lamda) {
+                    this.SVGBackgroundPanel.opacity -= lamda;
                     requestAnimationFrame(function () {
                         return _this.drawMouseEnter();
                     });
                 }
             } else {
-                if (this.SVGBackgroundPanel.opacity < this._properties.backgroundopacity.value) {
-                    this.SVGBackgroundPanel.opacity += 0.005;
+                if (this.SVGBackgroundPanel.opacity * lamda < this._properties.backgroundopacity.value * lamda) {
+                    this.SVGBackgroundPanel.opacity += lamda;
                     requestAnimationFrame(function () {
                         return _this.drawMouseEnter();
                     });
                 }
             }
         };
-
         // возвращает объект свойств виджета по умолчанию - цвета, прозрачность, основные размеры элементов, все дочерний виджеты наследуют и дополняют эти свойства
         // виджет вызывает эту функцию что бы настроить свой стиль отображения по умолчанию. Программа или пользователь могут менять эти свойства, создавая новые стили виджета
         // ConfigCore.js сохраняет новые и измененные свойства виджетов в память микроконтроллера.
         BaseWidget.prototype.defaultWidgetProperties = function defaultWidgetProperties() {
             /*
-            каждое свойство виджета представлено отдельным объектом с тремя собственными свойствами(у всех свойств эти объекты одинаковы)
-        
+            каждое свойство виджета представлено отдельным объектом с тремя собственными свойствами(у всех свойств эти объекты одинаковы)    
             название_свойства: {
                 tab: -> код или имя закладки для диалога управления свойствами виджета, допустимы коды:
                 "G" - закладка General
@@ -2383,7 +3698,7 @@ var BaseWidget =
 
                 headercolor: { // цвет панели заголовка           
                     tab: "C", // закладка Colors
-                    value: theme.secondary,
+                    value: widgetsTheme.secondary,
                     type: "c" // тип редактора - редактор цветов
                 },
 
@@ -2395,31 +3710,31 @@ var BaseWidget =
 
                 backgroundcolor: { // цвет фона виджета           
                     tab: "C",
-                    value: theme.dark,
+                    value: widgetsTheme.dark,
                     type: "c"
                 },
 
                 backgroundopacity: { // прозрачность фона          
                     tab: "O",
-                    value: 1.0,
+                    value: 0.6,
                     type: "f"
                 },
 
                 bordercolor: { // цвет бордюра           
                     tab: "C",
-                    value: theme.secondary,
+                    value: widgetsTheme.secondary,
                     type: "c"
                 },
 
                 backgroundselectopacity: { // прозрачность фона виджета когда пользователь указал на него мышью           
                     tab: "O",
-                    value: 0.2,
+                    value: 0.9,
                     type: "f"
                 },
 
                 valuetextcolor: { // цвет основного текста виджета (обычно этот текст отображает данные переданные через метод refresh())            
                     tab: "C",
-                    value: theme.light,
+                    value: widgetsTheme.info,
                     type: "c"
                 },
 
@@ -2430,7 +3745,6 @@ var BaseWidget =
                 }
             }
         };
-
         BaseWidget.prototype.doOnLoad = function doOnLoad() {
             if (this._onload != undefined) {
                 for (var key in this._onload) {
@@ -2439,7 +3753,6 @@ var BaseWidget =
                 }
             }
         };
-
         BaseWidget.prototype.doOnChange = function doOnChange() {
             if (this._onchange != undefined) {
                 for (var key in this._onchange) {
@@ -2447,7 +3760,6 @@ var BaseWidget =
                 }
             }
         };
-
         BaseWidget.prototype.doOnDelete = function doOnDelete() {
             if (this._ondelete != undefined) {
                 for (var key in this._ondelete) {
@@ -2457,78 +3769,76 @@ var BaseWidget =
         };
 
         _createClass(BaseWidget, [
-            {         
-            key: "mode",
-            set: function set(mode) {
-                if ((this._event == EVENT_DELETE) || (this._event == undefined)) { return; } // если виджет удаляется ничего не делаем
-                this._mode = mode;
+            {
+                key: "mode",
+                set: function set(mode) {
+                    if ((this._event == EVENT_DELETE) || (this._event == undefined)) { return; } // если виджет удаляется ничего не делаем
+                    this._mode = mode;
+                    if (mode == WORK_MODE) {
+                        this.SVGBackgroundPanel.opacity = this._properties.backgroundopacity.value;
+                        this.SVGLeftIcon.hide();
+                        this.SVGRightIcon.hide(); //  this.SVGPlusIcon.hide();
 
-                if (mode == WORK_MODE) {
-                    this.SVGBackgroundPanel.opacity = this._properties.backgroundopacity.value;
-                    this.SVGLeftIcon.hide();
-                    this.SVGRightIcon.hide(); //  this.SVGPlusIcon.hide();
+                        this.SVGDeleteIcon.hide();
+                        this.SVGPropertiesIcon.hide();
 
-                    this.SVGDeleteIcon.hide();
-                    this.SVGPropertiesIcon.hide();
+                    } else if (mode == MOVE_MODE) {
+                        this.SVGBackgroundPanel.opacity = this._properties.backgroundopacity.value / 3;
+                        this.SVGLeftIcon.draw();
+                        this.SVGRightIcon.draw(); //   this.SVGPlusIcon.draw();
 
-                } else if (mode == MOVE_MODE) {
-                    this.SVGBackgroundPanel.opacity = this._properties.backgroundopacity.value / 3;
-                    this.SVGLeftIcon.draw();
-                    this.SVGRightIcon.draw(); //   this.SVGPlusIcon.draw();
-
-                    this.SVGDeleteIcon.draw();
-                    this.SVGPropertiesIcon.draw();
+                        this.SVGDeleteIcon.draw();
+                        this.SVGPropertiesIcon.draw();
+                    }
+                },
+                get: function get() {
+                    return this._mode;
+                }
+            }, {
+                key: "networkStatus",
+                get: function get() {
+                    return this._networkStatus;
+                },
+                set: function set(networkStatus) {
+                    if ((this._event == EVENT_DELETE) || (this._event == undefined)) { return; } // если виджет удаляется ничего не делаем
+                    if (networkStatus >= NET_OFFLINE && networkStatus <= NET_RECONNECT) {
+                        this._networkStatus = networkStatus;
+                        this.redrawAll();
+                    }
                 }
             },
-            get: function get() {
-                return this._mode;
-            }
-        }, {
-            key: "networkStatus",
-            get: function get() {
-                return this._networkStatus;
+            {
+                key: "properties",
+                get: function get() {
+                    return this._properties;
+                },
+                set: function set(properties) {
+                    if ((this._event == EVENT_DELETE) || (this._event == undefined)) { return; } // если виджет удаляется ничего не делаем
+                    if (properties == undefined) return;
+                    this._properties = properties;
+                    this.drawText();
+                    this.drawWidget();
+                }
             },
-            set: function set(networkStatus) {
-                if ((this._event == EVENT_DELETE) || (this._event == undefined)) { return; } // если виджет удаляется ничего не делаем
-                if (networkStatus >= NET_OFFLINE && networkStatus <= NET_RECONNECT) {
-                    this._networkStatus = networkStatus;
+            {
+                key: "data",
+                get: function get() {
+                    return this._data;
+                },
+                set: function set(data) {
+                    if ((this._event == EVENT_DELETE) || (this._event == undefined)) { return; } // если виджет удаляется ничего не делаем
+                    this._data = data;
                     this.redrawAll();
                 }
-            }
-        },
-
-        {
-            key: "properties",
-            get: function get() {
-                return this._properties;
             },
-            set: function set(properties) {
-                if ((this._event == EVENT_DELETE) || (this._event == undefined)) { return; } // если виджет удаляется ничего не делаем
-                if (properties == undefined) return;
-                this._properties = properties;
-                this.drawText();
-                this.drawWidget();
-            }
-        },
-        {
-            key: "data",
-            get: function get() {
-                return this._data;
-            },
-            set: function set(data) {
-                if ((this._event == EVENT_DELETE) || (this._event == undefined)) { return; } // если виджет удаляется ничего не делаем
-                this._data = data;
-                this.redrawAll();
-            }
-        },
-        {
-            key: "onload",
-            set: function set(onload) {
-                if (this._onload == undefined) {
-                    this._onload = [];
+            {
+                key: "onload",
+                set: function set(onload) {
+                    if (this._onload == undefined) {
+                        this._onload = [];
+                    }
+                    this._onload.push(onload);
                 }
-                this._onload.push(onload);
-            }
             },
             {
                 key: "onchange",
@@ -2539,20 +3849,16 @@ var BaseWidget =
                     this._onchange.push(onchange);
                 }
             },
-
-        {
-            key: "ondelete",
-            set: function set(ondelete) {
-                if (this._ondelete == undefined) {
-                    this._ondelete = [];
+            {
+                key: "ondelete",
+                set: function set(ondelete) {
+                    if (this._ondelete == undefined) {
+                        this._ondelete = [];
+                    }
+                    this._ondelete.push(ondelete);
                 }
-                this._ondelete.push(ondelete);
             }
-        }
-
-
         ]);
-
         return BaseWidget;
     }();﻿/* ----------------------------------------------------------------------------
 Ready IoT Solution - OWLOS
@@ -2595,13 +3901,10 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-var LCDWidget =
-    
+var LCDWidget =    
     function (_BaseWidget) {
         "use strict";
-
         _inheritsLoose(LCDWidget, _BaseWidget);
-
         function LCDWidget(parentPanel, id, size) {            
             return _BaseWidget.call(this, parentPanel, id, size) || this;         
         }
@@ -2620,9 +3923,6 @@ var LCDWidget =
             widget.widgetTextSize = widget.size / 110;
 
             widget.SVGViewBox.setAttributeNS(null, "viewBox", "0 0 " + widget.width + " " + widget.height);
-
-            //widget.SVGViewBox.setAttributeNS(null, "width", widget.width);
-
             widget.SVGBackgroundPanel.drawRoundedRect(widget.width, widget.height, 5, 10, true, true, true, true);
             widget.SVGHeaderPanel.drawRoundedRect(widget.width, 26, 5, 0, true, true, false, false);
             widget.SVGBackdownpanel.y += 3;
@@ -2701,9 +4001,7 @@ var LCDWidget =
             this.SVGViewBox.setAttributeNS(null, "width", size);
             this.SVGViewBox.setAttributeNS(null, "height", size / 2);
 
-        };
-        
-
+        };        
         LCDWidget.prototype.refresh = function refresh(widgetText, label, light) {
             label = getLang(label);
             this.widgetText = widgetText;
@@ -2718,7 +4016,6 @@ var LCDWidget =
 
             this.redrawAll();
         };
-
         LCDWidget.prototype.showEditor = function showEditor(event) {
             event.stopPropagation();
             var rPanel = event.currentTarget;
@@ -2738,42 +4035,7 @@ var LCDWidget =
         LCDWidget.prototype.hideEditor = function hideEditor() {
             this.pre.style.display = 'none';
             this.btnGroup.style.display = 'none';
-        }
-            /*
-                get _newtorkStatus() {
-                    return this.networkStatus;
-                }
-            
-                set _networkStatus(networkStatus) {
-                    if ((networkStatus >= NET_OFFLINE) && (networkStatus <= NET_RECONNECT)) {
-                        this.networkStatus = networkStatus;
-                        this.redrawAll();
-                    }
-                }
-            
-                get _percent() {
-                    return this.percent;
-                }
-            
-                set _percent(percent) {
-                    if ((percent >= 0) && (percent <= 100)) {
-                        this.percent = percent;
-                        this.redrawAll();
-                    }
-                }
-            
-                //---------------------------------------------------------------------------------------
-                redrawAll() {
-                    this.drawText();
-                    this.starttime = 0;
-                    requestAnimationFrame(() => this.drawWidget());
-            
-            
-                }
-                */
-            //---------------------------------------------------------------------------------------
-            //draw element text labels - percent value and text 
-            ;
+        };
 
         LCDWidget.prototype.drawText = function drawText() {
             _BaseWidget.prototype.drawText.call(this);
@@ -2824,62 +4086,6 @@ var LCDWidget =
             this.SVGHeaderText.text = this.label;
             this.SVGHeaderText.x = this.width / 2 - this.SVGHeaderText.width / 2;
             this.SVGHeaderText.y = this.SVGHeaderText.height - this.panding;
-           /*  switch (this.networkStatus) {
-                case NET_ONLINE: this.SVGHeaderText.color = theme.light; break;
-                case NET_ERROR: this.SVGHeaderText.color = theme.danger; break;
-                case NET_RECONNECT: this.SVGHeaderText.color = theme.info; break;
-                default: //offline
-                    this.SVGHeaderText.color = theme.secondary; break;
-            }
-               this.SVGWidgetText1.color = theme.light;
-            this.SVGWidgetText2.color = theme.light;
-            this.SVGWidgetText3.color = theme.light;
-            this.SVGWidgetText4.color = theme.light;
-             this.SVGWidgetText1.text = this.widgetText.substring(0, 20);
-            this.SVGWidgetText2.text = this.widgetText.substring(20, 40);
-            this.SVGWidgetText3.text = this.widgetText.substring(40, 60);
-            this.SVGWidgetText4.text = this.widgetText.substring(60);
-             this.SVGWidgetText1.x = this.widgetLeft;
-            this.SVGWidgetText1.y = this.widgetTop;
-             this.SVGWidgetText2.x = this.widgetLeft;
-            this.SVGWidgetText2.y = this.SVGWidgetText1.y + this.SVGWidgetText1.height;
-             this.SVGWidgetText3.x = this.widgetLeft;
-            this.SVGWidgetText3.y = this.SVGWidgetText2.y + this.SVGWidgetText2.height;
-             this.SVGWidgetText4.x = this.widgetLeft;
-            this.SVGWidgetText4.y = this.SVGWidgetText3.y + this.SVGWidgetText4.height;
-              */
-
-            /*        
-            //var newValue = getParsedDriverProperty(this.id, "text");
-            if (this.percent !== this.textarea.storedValue) {
-                this.textarea.value = this.percent;
-                this.textarea.storedValue = this.percent;
-            }
-             this.textElement.innerHTML = this.text;
-            
-            switch (this.networkStatus) {
-                case NET_ONLINE:
-                     this.textElement.className = "text-white text-center";
-                    this.hintElement.innerHTML = getLang("rid_online");
-                    this.hintElement.className = "LCDWidgetHint text-secondary text-center";
-                    break;
-                case NET_ERROR:
-                    this.textElement.className = "text-danger text-center";
-                    this.hintElement.innerHTML = getLang("rid_error");
-                    this.hintElement.className = "LCDWidgetHint text-danger text-center";
-                    break;
-                case NET_RECONNECT:
-                    this.textElement.className = "text-info text-center";
-                    this.hintElement.innerHTML = getLang("rid_connect");
-                    this.hintElement.className = "LCDWidgetHint text-info text-center";
-                    break;
-                default: //offline
-                    this.textElement.className = "text-secondary text-center";
-                    this.hintElement.innerHTML = getLang("rid_offline");
-                    this.hintElement.className = "LCDWidgetHint text-secondary text-center";
-                    break;
-            }
-            */
         };
 
         LCDWidget.prototype.drawWidget = function drawWidget() {
@@ -2891,25 +4097,6 @@ var LCDWidget =
             }
 
             _BaseWidget.prototype.drawWidget.call(this);
-            /*
-                    if (this.light == 1) {
-                        this.SVGWidgetBack.color = theme.info;
-                    }
-                    else {
-                        this.SVGWidgetBack.color = theme.secondary;
-                    }
-            
-                    //spinner 
-                    if (this.networkStatus == NET_RECONNECT) {
-                        this.spinnerAngle += 1.5;
-                        this.SVGArcSpinner.draw(this.spinnerAngle, 240 + this.spinnerAngle);
-                        requestAnimationFrame(() => this.drawWidget());
-                    }
-                    else {
-                        this.SVGArcSpinner.hide();
-                    }
-                    
-                    */
 
         };
 
@@ -3104,13 +4291,10 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-var LCDWidget =
-    
+var LCDWidget =    
     function (_BaseWidget) {
         "use strict";
-
         _inheritsLoose(LCDWidget, _BaseWidget);
-
         function LCDWidget(parentPanel, id, size) {            
             return _BaseWidget.call(this, parentPanel, id, size) || this;         
         }
@@ -3129,9 +4313,6 @@ var LCDWidget =
             widget.widgetTextSize = widget.size / 110;
 
             widget.SVGViewBox.setAttributeNS(null, "viewBox", "0 0 " + widget.width + " " + widget.height);
-
-            //widget.SVGViewBox.setAttributeNS(null, "width", widget.width);
-
             widget.SVGBackgroundPanel.drawRoundedRect(widget.width, widget.height, 5, 10, true, true, true, true);
             widget.SVGHeaderPanel.drawRoundedRect(widget.width, 26, 5, 0, true, true, false, false);
             widget.SVGBackdownpanel.y += 3;
@@ -3210,9 +4391,7 @@ var LCDWidget =
             this.SVGViewBox.setAttributeNS(null, "width", size);
             this.SVGViewBox.setAttributeNS(null, "height", size / 2);
 
-        };
-        
-
+        };        
         LCDWidget.prototype.refresh = function refresh(widgetText, label, light) {
             label = getLang(label);
             this.widgetText = widgetText;
@@ -3227,7 +4406,6 @@ var LCDWidget =
 
             this.redrawAll();
         };
-
         LCDWidget.prototype.showEditor = function showEditor(event) {
             event.stopPropagation();
             var rPanel = event.currentTarget;
@@ -3247,42 +4425,7 @@ var LCDWidget =
         LCDWidget.prototype.hideEditor = function hideEditor() {
             this.pre.style.display = 'none';
             this.btnGroup.style.display = 'none';
-        }
-            /*
-                get _newtorkStatus() {
-                    return this.networkStatus;
-                }
-            
-                set _networkStatus(networkStatus) {
-                    if ((networkStatus >= NET_OFFLINE) && (networkStatus <= NET_RECONNECT)) {
-                        this.networkStatus = networkStatus;
-                        this.redrawAll();
-                    }
-                }
-            
-                get _percent() {
-                    return this.percent;
-                }
-            
-                set _percent(percent) {
-                    if ((percent >= 0) && (percent <= 100)) {
-                        this.percent = percent;
-                        this.redrawAll();
-                    }
-                }
-            
-                //---------------------------------------------------------------------------------------
-                redrawAll() {
-                    this.drawText();
-                    this.starttime = 0;
-                    requestAnimationFrame(() => this.drawWidget());
-            
-            
-                }
-                */
-            //---------------------------------------------------------------------------------------
-            //draw element text labels - percent value and text 
-            ;
+        };
 
         LCDWidget.prototype.drawText = function drawText() {
             _BaseWidget.prototype.drawText.call(this);
@@ -3333,62 +4476,6 @@ var LCDWidget =
             this.SVGHeaderText.text = this.label;
             this.SVGHeaderText.x = this.width / 2 - this.SVGHeaderText.width / 2;
             this.SVGHeaderText.y = this.SVGHeaderText.height - this.panding;
-           /*  switch (this.networkStatus) {
-                case NET_ONLINE: this.SVGHeaderText.color = theme.light; break;
-                case NET_ERROR: this.SVGHeaderText.color = theme.danger; break;
-                case NET_RECONNECT: this.SVGHeaderText.color = theme.info; break;
-                default: //offline
-                    this.SVGHeaderText.color = theme.secondary; break;
-            }
-               this.SVGWidgetText1.color = theme.light;
-            this.SVGWidgetText2.color = theme.light;
-            this.SVGWidgetText3.color = theme.light;
-            this.SVGWidgetText4.color = theme.light;
-             this.SVGWidgetText1.text = this.widgetText.substring(0, 20);
-            this.SVGWidgetText2.text = this.widgetText.substring(20, 40);
-            this.SVGWidgetText3.text = this.widgetText.substring(40, 60);
-            this.SVGWidgetText4.text = this.widgetText.substring(60);
-             this.SVGWidgetText1.x = this.widgetLeft;
-            this.SVGWidgetText1.y = this.widgetTop;
-             this.SVGWidgetText2.x = this.widgetLeft;
-            this.SVGWidgetText2.y = this.SVGWidgetText1.y + this.SVGWidgetText1.height;
-             this.SVGWidgetText3.x = this.widgetLeft;
-            this.SVGWidgetText3.y = this.SVGWidgetText2.y + this.SVGWidgetText2.height;
-             this.SVGWidgetText4.x = this.widgetLeft;
-            this.SVGWidgetText4.y = this.SVGWidgetText3.y + this.SVGWidgetText4.height;
-              */
-
-            /*        
-            //var newValue = getParsedDriverProperty(this.id, "text");
-            if (this.percent !== this.textarea.storedValue) {
-                this.textarea.value = this.percent;
-                this.textarea.storedValue = this.percent;
-            }
-             this.textElement.innerHTML = this.text;
-            
-            switch (this.networkStatus) {
-                case NET_ONLINE:
-                     this.textElement.className = "text-white text-center";
-                    this.hintElement.innerHTML = getLang("rid_online");
-                    this.hintElement.className = "LCDWidgetHint text-secondary text-center";
-                    break;
-                case NET_ERROR:
-                    this.textElement.className = "text-danger text-center";
-                    this.hintElement.innerHTML = getLang("rid_error");
-                    this.hintElement.className = "LCDWidgetHint text-danger text-center";
-                    break;
-                case NET_RECONNECT:
-                    this.textElement.className = "text-info text-center";
-                    this.hintElement.innerHTML = getLang("rid_connect");
-                    this.hintElement.className = "LCDWidgetHint text-info text-center";
-                    break;
-                default: //offline
-                    this.textElement.className = "text-secondary text-center";
-                    this.hintElement.innerHTML = getLang("rid_offline");
-                    this.hintElement.className = "LCDWidgetHint text-secondary text-center";
-                    break;
-            }
-            */
         };
 
         LCDWidget.prototype.drawWidget = function drawWidget() {
@@ -3400,25 +4487,6 @@ var LCDWidget =
             }
 
             _BaseWidget.prototype.drawWidget.call(this);
-            /*
-                    if (this.light == 1) {
-                        this.SVGWidgetBack.color = theme.info;
-                    }
-                    else {
-                        this.SVGWidgetBack.color = theme.secondary;
-                    }
-            
-                    //spinner 
-                    if (this.networkStatus == NET_RECONNECT) {
-                        this.spinnerAngle += 1.5;
-                        this.SVGArcSpinner.draw(this.spinnerAngle, 240 + this.spinnerAngle);
-                        requestAnimationFrame(() => this.drawWidget());
-                    }
-                    else {
-                        this.SVGArcSpinner.hide();
-                    }
-                    
-                    */
 
         };
 
@@ -3621,9 +4689,7 @@ var MotionWidget =
         _inheritsLoose(MotionWidget, _BaseWidget);
 
         function MotionWidget(parentPanel, id, size) {
-
             return _BaseWidget.call(this, parentPanel, id, size) || this;
-            
         }
 
         MotionWidget.prototype.onWidgetHolderLoad = function onWidgetHolderLoad(event) {
@@ -3646,22 +4712,14 @@ var MotionWidget =
                 var SVGRadarArc4 = new SVGArc(widget.SVGViewBox, widget.id + "arcback4" + i, widget.centreX, widget.topMargin, i * widget.radius, widget.size / 34);
                 SVGRadarArc1.index = SVGRadarArc2.index = SVGRadarArc3.index = SVGRadarArc4.index = i;
                 SVGRadarArc1.color = SVGRadarArc2.color = SVGRadarArc3.color = SVGRadarArc4.color = theme.success;
-
                 widget.radar1.push(SVGRadarArc1);
-
                 widget.radar2.push(SVGRadarArc2);
-
                 widget.radar3.push(SVGRadarArc3);
-
                 widget.radar4.push(SVGRadarArc4);
             }
-
             widget.SVGArcSpinner.y = widget.topMargin;
-
             widget.clickableToTop();
-
             widget.proprties = widget._properties;
-
             widget.doOnLoad();
         };
 
@@ -3772,43 +4830,47 @@ OWLOS распространяется в надежде, что она буде
 
 var settingsUI = {
 
+    //добавляет новый пунк в сайдбар (раздел Узлы(Ноды))
+    addNodeSidebarItem: function (node, _parent, _id, _href, _text, _onclick, _icon, _span) {
+        var newSidebarItem = sideBar.createItem(_parent, _id + node.nodenickname, "#" + node.nodenickname + _href, _text, _onclick, "fa fa-microchip", _span);
+        newSidebarItem.href.node = node;
+        return newSidebarItem;
+    },
+
     onConfigLoad: function (configProperties) {
 
         if (configProperties.nodes.length == 0) return;
 
         for (var nodeKey in configProperties.nodes) {
             var node = configProperties.nodes[nodeKey];
-            if (document.getElementById("nodeNavItem" + node.nodenickname) == undefined) {
-                var nodeNavItem = sideBar.createItem(sideBar.nodeSubItem, "nodeNavItem" + node.nodenickname, "#" + node.nodenickname + "submenu", node.nodenickname, undefined, "fa fa-microchip", undefined);
-                // nodeNavItem.className = "";
-                // nodeNavItem.href.setAttribute("data-toggle", "collapse");                
-                //  nodeNavItem.href.setAttribute("aria-expanded", "false");
-                // nodeNavItem.href.className = "collapsed";
+            if (document.getElementById("nodeNavItem" + node.nodenickname) == undefined) {                
+                var nodeNavItem = this.addNodeSidebarItem(node, sideBar.nodeSubItem, "nodeNavItem", "submenu", node.nodenickname, sidebarItemClick, "fa fa-microchip", undefined);
 
                 var nodeNavSubItem = sideBar.createDeepItem(nodeNavItem, node.nodenickname + "submenu");
-                // nodeNavSubItem.className = "collapse";
-
 
                 //node properties subItem 
-                var nodePropItem = sideBar.createItem(nodeNavSubItem, "nodepropitem", "#" + node.nodenickname + "nodePropsPanel", getLang("nodeproperties"), settingsUI.driverAnchorClick, undefined, undefined);
-                //node drivers                 
-                var driversItem = sideBar.createItem(nodeNavSubItem, node.nodenickname + "driversitem", "#" + node.nodenickname + "driverssubmenu", getLang("drivers"), settingsUI.driverAnchorClick, undefined, "0");
-                var driversSubItem = sideBar.createDeepItem(driversItem, node.nodenickname + "driverssubmenu");
-                var addDriverItem = sideBar.createItem(driversSubItem, "adddriveritem", "#adddriveritem", getLang("adddriver"), settingsUI.addDriverClick, undefined, undefined);
-                addDriverItem.href.node = node;
-                
-                //node scripts
-                var scriptsItem = sideBar.createItem(nodeNavSubItem, "scriptsitem", "#" + node.nodenickname + "scriptssubmenu", getLang("scripts"), settingsUI.scriptAnchorClick, undefined, undefined);
-                var scriptsSubItem = sideBar.createDeepItem(scriptsItem, node.nodenickname + "scriptssubmenu");
-                sideBar.createItem(scriptsSubItem, "addscriptitem", "#addscriptitem", getLang("addscript"), settingsUI.driverAnchorClick, undefined, undefined);
-                //node files 
-                sideBar.createItem(nodeNavSubItem, "filesitem", "#" + node.nodenickname + "nodeFilesItem", getLang("files"), settingsUI.driverAnchorClick, undefined, undefined);
+                var nodePropItem = this.addNodeSidebarItem(node, nodeNavSubItem, "nodepropitem", "nodePropsPanel", getLang("nodeproperties"), sidebarItemClick, "fa fa-cog", undefined);
+                node.nodePropItem = nodePropItem;
+                //node drivers                                 
+                var driversItem = this.addNodeSidebarItem(node, nodeNavSubItem, "driversitem", "driverssubmenu", getLang("drivers"), sidebarItemClick, undefined, "0");
+                var driversSubItem = sideBar.createDeepItem(driversItem, node.nodenickname + "driverssubmenu");                
+                var addDriverItem = this.addNodeSidebarItem(node, driversSubItem, "adddriveritem", "adddriveritem", getLang("adddriver"), settingsUI.addDriverClick, "fa fa-plus", undefined);                
+                addDriverItem.href.style.color = theme.warning;
+
+                //node scripts                
+                var scriptsItem = this.addNodeSidebarItem(node, nodeNavSubItem, "scriptsitem", "scriptssubmenu", getLang("scripts"), settingsUI.scriptAnchorClick, undefined, undefined);                
+                var scriptsSubItem = sideBar.createDeepItem(scriptsItem, node.nodenickname + "scriptssubmenu");                
+                var addScriptItem = this.addNodeSidebarItem(node, scriptsSubItem, "addscriptitem", "addscriptitem", getLang("createscript"), scriptsUI.createScriptClick, "fa fa-plus", undefined);                
+                addScriptItem.href.style.color = theme.warning;
+
+                //node files                 
+                var filesItem = this.addNodeSidebarItem(node, nodeNavSubItem, "filesitem", "_filesfadepanel", getLang("files"), sidebarItemClick, undefined, undefined);
 
                 //--- nodePropsPanel ---------------------------------------------------------------------------
                 //панель для панелей с быстрым доступам к основным свойствам ноды
 
                 var nodesPropsPanel = document.getElementById("nodesPropsPanel");
-                
+
                 //--- nodePropsPanel ---------------------------------------------------------------------------
                 //панель для панелей с быстрым доступам к основным свойствам ноды
                 var nodePropsPanel = nodesPropsPanel.appendChild(document.createElement('div'));
@@ -3825,8 +4887,11 @@ var settingsUI = {
                 settingsUI.addCard(nodePropHolderPanel, node.nodenickname + "NetworkNodeProp", getLang("networknodeprop"), 12);
                 var networkNodePropBody = document.getElementById(node.nodenickname + "NetworkNodePropBody");
                 settingsUI.addDiv(networkNodePropBody, node.nodenickname + "NetworkNodePropBody1", 4);
+                $("#" + node.nodenickname + "NetworkNodePropBody1").toggleClass("node-prop-col");
                 settingsUI.addDiv(networkNodePropBody, node.nodenickname + "NetworkNodePropBody2", 4);
+                $("#" + node.nodenickname + "NetworkNodePropBody2").toggleClass("node-prop-col1");
                 settingsUI.addDiv(networkNodePropBody, node.nodenickname + "NetworkNodePropBody3", 4);
+                $("#" + node.nodenickname + "NetworkNodePropBody3").toggleClass("node-prop-col2");
 
                 settingsUI.addCard(nodePropHolderPanel, node.nodenickname + "WifiNodeProp", getLang("wifinodeprop"), 4); //WifiNodePropPanel - свойства WiFi                
                 settingsUI.addCard(nodePropHolderPanel, node.nodenickname + "SystemNodeProp", getLang("systemnodeprop"), 4);
@@ -3835,9 +4900,15 @@ var settingsUI = {
 
                 // Add Node Status Panel -----------------------------------------------------------------------------
                 var nodeStatusPanel = document.createElement("div");
-                nodeStatusPanel.id = node.nodenickname + "nodestatuspanel";
-                nodeNavItem.href.nodeStatusPanel = nodeStatusPanel;
+                nodeStatusPanel.id = node.nodenickname + "nodestatuspanel";                
+                nodeNavItem.href.nodeStatusPanel = nodeStatusPanel;  
 
+                var deleteNodeButton = headerPanelUI.addButton(node.nodenickname +  "DeleteNodeButton", "fa fa-minus", "delete node: " + node.nodenickname, headerPanelUI.nodePoropertiesPanelButtonRole);
+                deleteNodeButton.node = node;
+                deleteNodeButton.onclick = settingsUI.onDeleteNode;
+                nodePropItem.href.deleteNodeButton = deleteNodeButton;                              
+                nodeNavItem.href.deleteNodeButton = deleteNodeButton;
+        
                 nodeNavItem.href.onlinePanel = settingsUI.getStatusWidget(node.nodenickname + "onlineStatus", "Online", nodeStatusPanel);
 
                 node.addNetworkStatusListner(settingsUI.onOnlineStatusChange, nodeNavItem.href.onlinePanel);
@@ -3848,736 +4919,22 @@ var settingsUI = {
                 nodeNavItem.href.MQTTPanel = settingsUI.getStatusWidget(node.nodenickname + "mqttStatus", "MQTT", nodeStatusPanel);
                 nodeNavItem.href.OTAPanel = settingsUI.getStatusWidget(node.nodenickname + "otaStatus", "OTA", nodeStatusPanel);
 
-                document.getElementById("nodeStatusPanel").appendChild(nodeStatusPanel);
-
-                var nodeStatusPanelText = document.createElement("div");
-                nodeStatusPanelText.innerHTML = " <strong>" + node.nodenickname + "</strong> at <a href='" + node.host + "' target='_blank'>" + node.host + "</a>";
-                document.getElementById("nodeStatusPanelText").appendChild(nodeStatusPanelText);
-
-                nodeStatusPanel.nodeStatusPanelText = nodeStatusPanelText;
-                nodeStatusPanel.style.display = "none";
-                nodeStatusPanelText.style.display = "none";
-                //--- EndOf Node Status Panel ------------------------------------------------------------------------
-
-
-
-
-                /*
-                
-                                var nodeLi = sideBar.nodeSubItem.appendChild(document.createElement("li"));
-                                nodeLi.id = "nodeNavItem2" + node.nodenickname;
-                                nodeLi.node = node;
-                
-                                var nodeAhref = nodeLi.appendChild(document.createElement("a"));
-                                nodeAhref.href = "#" + node.nodenickname + "submenu2";
-                                nodeAhref.setAttribute("data-toggle", "collapse");
-                                nodeAhref.setAttribute("aria-expanded", "false");
-                                nodeAhref.innerHTML = node.nodenickname;
-                                nodeAhref.id = node.nodenickname + "ahref";
-                
-                
-                                //nodeAhref.onclick = settingsUI.driverAnchorClick;
-                                nodeAhref.parentLi = nodeLi;
-                                nodeAhref.node = node;
-                                node.addNetworkStatusListner(settingsUI.onNetworkChange, nodeAhref);
-                                var nodeSubmenuUl = nodeLi.appendChild(document.createElement("ul"));
-                
-                                nodeLi.nodeSubmenuUl = nodeSubmenuUl;
-                                nodeSubmenuUl.className = "collapse list-unstyled";
-                                nodeSubmenuUl.id = node.nodenickname + "submenu2";
-                
-                /*
-                
-                                //Node Tab panel ----------------------
-                                var nodePanelNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
-                                nodePanelNavItem.className = "nav-item";
-                                var nodePanelHRef = nodePanelNavItem.appendChild(document.createElement("a"));
-                                nodePanelHRef.id = node.nodenickname + "nodePropsHref";
-                                nodePanelHRef.className = "nav-link";
-                                nodePanelHRef.parentLi = nodeLi;
-                                //nodePanelHRef.style.color = theme.warning;
-                                nodePanelHRef.setAttribute("data-toggle", "tab");
-                                nodePanelHRef.onclick = settingsUI.driverAnchorClick;
-                                nodePanelHRef.innerText = getLang("nodeproperties");
-                                nodePanelHRef.href = "#" + node.nodenickname + "nodePropsPanel";
-                                nodePanelHRef.node = node;
-                                var nodesPropsPanel = document.getElementById("nodesPropsPanel");
-                
-                                //--- nodePropsPanel ---------------------------------------------------------------------------
-                                //панель для панелей с быстрым доступам к основным свойствам ноды
-                                var nodePropsPanel = nodesPropsPanel.appendChild(document.createElement('div'));
-                                nodePropsPanel.className = "tab-pane fade";
-                                nodePropsPanel.id = node.nodenickname + "nodePropsPanel";
-                                nodeAhref.nodefadepanel = nodePropsPanel;
-                
-                                var nodePropHolderPanel = nodePropsPanel.appendChild(document.createElement('div'));
-                                nodePropHolderPanel.id = node.nodenickname + "bodePropHoder";
-                                nodePropHolderPanel.className = "row";
-                
-                                //подготавливаем панели со свойствами ноды (для каждой ноды своя панель id = node.nodenickname + "nodePropPanel")
-                                //смотрите обработчик события onDriverLoaded() - он запоняет эту панель
-                                settingsUI.addCard(nodePropHolderPanel, node.nodenickname + "NetworkNodeProp", getLang("networknodeprop"), 12);
-                                var networkNodePropBody = document.getElementById(node.nodenickname + "NetworkNodePropBody");
-                                settingsUI.addDiv(networkNodePropBody, node.nodenickname + "NetworkNodePropBody1", 4);
-                                settingsUI.addDiv(networkNodePropBody, node.nodenickname + "NetworkNodePropBody2", 4);
-                                settingsUI.addDiv(networkNodePropBody, node.nodenickname + "NetworkNodePropBody3", 4);
-                
-                                settingsUI.addCard(nodePropHolderPanel, node.nodenickname + "WifiNodeProp", getLang("wifinodeprop"), 4); //WifiNodePropPanel - свойства WiFi                
-                                settingsUI.addCard(nodePropHolderPanel, node.nodenickname + "SystemNodeProp", getLang("systemnodeprop"), 4);
-                                settingsUI.addCard(nodePropHolderPanel, node.nodenickname + "UpdateNodeProp", getLang("updatenodeprop"), 4);
-                
-                
-                                //--- EndOf nodePropsPanel ---------------------------------------------------------------------------
-                
-                
-                
-                                //restful items main menu ----------------------
-                                var RESTfulNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
-                                RESTfulNavItem.className = "nav-item";
-                                RESTfulNavItem.id = node.nodenickname + "restfulsubmenu2";
-                
-                                var RESTfulAhref = RESTfulNavItem.appendChild(document.createElement("a"));
-                                RESTfulAhref.setAttribute("data-toggle", "collapse");
-                                RESTfulAhref.parentLi = RESTfulNavItem;
-                                RESTfulAhref.href = "#" + node.nodenickname + "restfulsubmenu";
-                                RESTfulAhref.node = node;
-                
-                                RESTfulAhref.appendChild(document.createElement("i")).className = "fa fa-cog";
-                                var RESTfulAhrefSpan = RESTfulAhref.appendChild(document.createElement("span"));
-                                RESTfulAhrefSpan.className = "menu-text";
-                                RESTfulAhrefSpan.innerHTML = "<b>" + getLang("RESTful") + "</b>";
-                
-                                RESTfulAhrefSpan = RESTfulAhref.appendChild(document.createElement("span"));
-                                RESTfulAhrefSpan.className = "badge badge-pill badge-warning";
-                                RESTfulAhrefSpan.id = node.nodenickname + "RESTfulAhrefDriverCountSpan";
-                                RESTfulAhrefSpan.innerHTML = "0";
-                                RESTfulAhrefSpan.driversCount = 0;
-                
-                
-                                var RESTfulSubmenuUl = RESTfulNavItem.appendChild(document.createElement("ul"));
-                                RESTfulSubmenuUl.className = "collapse list-unstyled";
-                                RESTfulSubmenuUl.id = node.nodenickname + "restfulsubmenu";
-                
-                                //Add driver submenuitem ----------------
-                                var driverNavItem = RESTfulSubmenuUl.appendChild(document.createElement("li"));
-                                driverNavItem.className = "nav-item";
-                                var driverHRef = driverNavItem.appendChild(document.createElement("a"));
-                                driverHRef.className = "nav-link";
-                                driverHRef.style.color = theme.warning;
-                                driverHRef.parentLi = nodeLi;
-                                //driverHRef.style.color = theme.success;
-                                driverHRef.setAttribute("data-toggle", "tab");
-                                driverHRef.onclick = settingsUI.addDriverClick;
-                                driverHRef.innerHTML = getLang("adddriver");
-                                driverHRef.href = "#home";
-                                driverHRef.node = node;
-                
-                
-                                //аdd script submenuitem ------------------
-                                var scriptsNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
-                                scriptsNavItem.className = "nav-item";
-                                var scriptsAhref = scriptsNavItem.appendChild(document.createElement("a"));
-                                scriptsAhref.className = "nav-link";
-                                scriptsAhref.parentLi = nodeLi;
-                                //filesHRef.style.color = theme.warning;
-                                scriptsAhref.setAttribute("data-toggle", "collapse");
-                                scriptsAhref.onclick = settingsUI.driverAnchorClick;
-                                scriptsAhref.href = "#" + node.nodenickname + "scriptssubmenu";
-                                scriptsAhref.node = node;
-                
-                                scriptsAhref.appendChild(document.createElement("i")).className = "fa fa-bolt";
-                
-                                var scriptsAhrefSpan = scriptsAhref.appendChild(document.createElement("span"));
-                                scriptsAhrefSpan.className = "menu-text";
-                                scriptsAhrefSpan.innerHTML = "<b>" + getLang("scripts") + "</b>";
-                
-                                scriptsAhrefSpan = scriptsAhref.appendChild(document.createElement("span"));
-                                scriptsAhrefSpan.className = "badge badge-pill badge-warning";
-                                scriptsAhrefSpan.id = node.nodenickname + "scriptsAhrefDriverCountSpan";
-                                scriptsAhrefSpan.innerHTML = "0";
-                                scriptsAhrefSpan.driversCount = 0;
-                
-                
-                                var scriptsSubmenuUl = scriptsNavItem.appendChild(document.createElement("ul"));
-                                scriptsSubmenuUl.className = "collapse list-unstyled";
-                                scriptsSubmenuUl.id = node.nodenickname + "scriptssubmenu";
-                
-                                //+add script submenu item 
-                                var scriptsAddLi = scriptsSubmenuUl.appendChild(document.createElement("li"));
-                                scriptsAddLi.className = "nav-item";
-                
-                                var scriptsAddAhref = scriptsAddLi.appendChild(document.createElement("a"));
-                                scriptsAddAhref.id = node.nodenickname + "scriptaddahref";
-                                scriptsAddAhref.className = "nav-link";
-                                scriptsAddAhref.style.color = theme.warning;
-                                scriptsAddAhref.setAttribute("data-toggle", "tab");
-                                scriptsAddAhref.href = "#";
-                                scriptsAddAhref.node = node; //привязываем пункт меню к ноде 
-                                scriptsAddAhref.innerHTML = getLang("createscript");
-                                scriptsAddAhref.onclick = settingsUI.createScriptClick;
-                                scriptsAddAhref.parentLi = scriptsAddLi; //сохраняем родительский driverId
-                
-                                scriptsManager.onNew = settingsUI.onScriptNew;
-                                scriptsManager.onChange = settingsUI.onScriptChange;
-                                scriptsManager.onDelete = settingsUI.onScriptDelete;
-                
-                
-                
-                                //Add files submenuitem ------------------
-                                var filesNavItem = nodeSubmenuUl.appendChild(document.createElement("li"));
-                                filesNavItem.className = "nav-item";
-                                var filesHRef = filesNavItem.appendChild(document.createElement("a"));
-                                filesHRef.className = "nav-link";
-                                filesHRef.parentLi = nodeLi;
-                                //filesHRef.style.color = theme.warning;
-                                filesHRef.setAttribute("data-toggle", "tab");
-                                filesHRef.onclick = settingsUI.driverAnchorClick;
-                                filesHRef.innerText = getLang("files");
-                                filesHRef.href = "#" + node.nodenickname + "filesfadepanel";
-                                filesHRef.node = node;
-                
-                                //new files tab ----------------
-                                var nodesPropsPanel = document.getElementById("nodesPropsPanel");
-                                var filesDiv = nodesPropsPanel.appendChild(document.createElement('div'));
-                                filesDiv.className = "tab-pane fade";
-                                filesDiv.id = node.nodenickname + "filesfadepanel";
-                                filesHRef.filesList = new FilesList(filesDiv, node);
-                
-                
-                
-                                // add Node Status Panel ---------------------------------------------
-                                var nodeStatusPanel = document.createElement("div");
-                                nodeStatusPanel.id = node.nodenickname + "nodestatuspanel";
-                                nodeAhref.nodeStatusPanel = nodeStatusPanel;
-                
-                                nodeAhref.onlinePanel = settingsUI.getStatusWidget(node.nodenickname + "onlineStatus", "Online", nodeStatusPanel);
-                
-                                node.addNetworkStatusListner(settingsUI.onOnlineStatusChange, nodeAhref.onlinePanel);
-                                nodeAhref.WiFiAPPanel = settingsUI.getStatusWidget(node.nodenickname + "wifiapStatus", "WiFi AP", nodeStatusPanel);
-                
-                                nodeAhref.WiFiSTPanel = settingsUI.getStatusWidget(node.nodenickname + "wifistStatus", "WiFi ST", nodeStatusPanel);
-                                nodeAhref.RESTfulPanel = settingsUI.getStatusWidget(node.nodenickname + "restfulStatus", "RESTful", nodeStatusPanel);
-                                nodeAhref.MQTTPanel = settingsUI.getStatusWidget(node.nodenickname + "mqttStatus", "MQTT", nodeStatusPanel);
-                                nodeAhref.OTAPanel = settingsUI.getStatusWidget(node.nodenickname + "otaStatus", "OTA", nodeStatusPanel);
-                
-                                document.getElementById("nodeStatusPanel").appendChild(nodeStatusPanel);
-                
-                                var nodeStatusPanelText = document.createElement("div");
-                                nodeStatusPanelText.innerHTML = " <strong>" + node.nodenickname + "</strong> at <a href='" + node.host + "' target='_blank'>" + node.host + "</a>";
-                                document.getElementById("nodeStatusPanelText").appendChild(nodeStatusPanelText);
-                
-                                nodeStatusPanel.nodeStatusPanelText = nodeStatusPanelText;
-                                nodeStatusPanel.style.display = "none";
-                                nodeStatusPanelText.style.display = "none";
-                                */
-            }
-
-        }
-
-    },
-
-    onScriptNew: function (script) {
-        var scriptsSubmenuUl = document.getElementById(script.node.nodenickname + "scriptssubmenu");
-        if (scriptsSubmenuUl == undefined) return;
-
-        var scriptsLi = scriptsSubmenuUl.appendChild(document.createElement("li"));
-        scriptsLi.id = script.node.nodenickname + "_" + script.name + "li";
-        scriptsLi.className = "nav-item";
-
-        var scriptsAhref = scriptsLi.appendChild(document.createElement("a"));
-        scriptsAhref.id = script.node.nodenickname + "_" + script.name + "scriptahref";
-        scriptsAhref.className = "nav-link";
-        scriptsAhref.setAttribute("data-toggle", "tab");
-        scriptsAhref.href = "#" + script.node.nodenickname + "_" + script.name + "panel"; //якорь на панель 
-        scriptsAhref.node = script.node; //привязываем пункт меню к ноде 
-        scriptsAhref.innerText = script.name;
-        scriptsAhref.onclick = settingsUI.driverAnchorClick; //обработчик клика на пунк меню (переключение панелей)
-        scriptsAhref.parentLi = scriptsLi; //сохраняем родительский driverId
-        scriptsLi.scriptsAhref = scriptsAhref;
-
-        switch (parseInt(script.status)) {
-            case stopScriptStatus: scriptsAhref.style.color = ""; break;
-            case runScriptStatus: scriptsAhref.style.color = theme.success; break;
-            case compilerScriptErrorStatus: scriptsAhref.style.color = theme.warning; break;
-            default:
-                scriptsAhref.style.color = theme.danger; break;
-        }
-
-
-        //Script panel 
-        var nodesPropsPanel = document.getElementById("nodesPropsPanel");
-        var scriptTab = nodesPropsPanel.appendChild(document.createElement('div'));
-        scriptTab.id = script.node.nodenickname + "_" + script.name + "panel";
-        scriptTab.className = "tab-pane fade md-form";
-        scriptsLi.panel = scriptTab;
-
-        var scriptHolder = scriptTab.appendChild(document.createElement('div'));
-        scriptHolder.className = "row";
-
-        var byteCodeCardDiv = scriptHolder.appendChild(document.createElement('div'));
-        byteCodeCardDiv.className = "col-md-8";
-        var byteCodeCard = byteCodeCardDiv.appendChild(document.createElement('div'));
-        byteCodeCard.className = "card text-white bg-primary mb-3";
-        var byteCodeCardHeader = byteCodeCard.appendChild(document.createElement('div'));
-        byteCodeCardHeader.className = "card-header";
-        byteCodeCardHeader.innerText = script.name + " script bytecode";
-        var byteCodeCardBody = byteCodeCard.appendChild(document.createElement('div'));
-        byteCodeCardBody.className = "card-body";
-        var pre = byteCodeCardBody.appendChild(document.createElement('pre'));
-        var textArea = pre.appendChild(document.createElement('textarea'));
-        textArea.id = script.node.nodenickname + "_" + script.name + "textarea";
-        textArea.className = "md-textarea form-control";
-        textArea.placeholder = getLang("inputcodehere");
-        textArea.cols = 80;
-        textArea.rows = 20;
-        textArea.value = script.bytecode;
-        textArea.onkeydown = settingsUI.textAreaOnKeyDown;
-
-        var scriptExecuteButton = byteCodeCardDiv.appendChild(document.createElement('button'));
-        scriptExecuteButton.type = "button";
-        scriptExecuteButton.id = script.node.nodenickname + "_" + script.name + "executionButton";
-        scriptExecuteButton.className = "btn btn-sm btn-success";
-        scriptExecuteButton.script = script;
-        scriptExecuteButton.textArea = textArea;
-        scriptExecuteButton.labels = label;
-        scriptExecuteButton.onclick = settingsUI.scriptExecuteClick;
-        scriptExecuteButton.appendChild(document.createElement("i")).className = "fa fa-bolt";
-        var scriptExecuteButtonSpan = scriptExecuteButton.appendChild(document.createElement("span"));
-        scriptExecuteButtonSpan.innerHTML = " " + getLang("scriptexecute");
-
-        textArea.scriptExecuteButton = scriptExecuteButton;
-
-        var scriptPauseButton = byteCodeCardDiv.appendChild(document.createElement('button'));
-        scriptPauseButton.type = "button";
-        scriptPauseButton.id = script.node.nodenickname + "_" + script.name + "pauseButton";
-        scriptPauseButton.className = "btn btn-sm btn-warning";
-        scriptPauseButton.script = script;
-        scriptPauseButton.node = script.node; //когда ноду удалят и прийдет ActiveReciever - Script может уже не быть
-        scriptPauseButton.scriptExecuteButton = scriptExecuteButton;
-        scriptPauseButton.textArea = textArea;
-        scriptPauseButton.labels = label;
-        scriptPauseButton.onclick = settingsUI.scriptPauseClick;
-        scriptPauseButton.appendChild(document.createElement("i")).className = "fa fa-pause";
-        var scriptPauseButtonSpan = scriptPauseButton.appendChild(document.createElement("span"));
-        scriptPauseButtonSpan.innerHTML = " " + getLang("scriptpause");
-
-        scriptExecuteButton.scriptPauseButton = scriptPauseButton;
-
-        var scriptDebugButton = byteCodeCardDiv.appendChild(document.createElement('button'));
-        scriptDebugButton.type = "button";
-        scriptDebugButton.id = script.node.nodenickname + "_" + script.name + "pauseButton";
-        scriptDebugButton.className = "btn btn-sm btn-warning";
-        scriptDebugButton.script = script;
-        scriptDebugButton.node = script.node;
-        scriptDebugButton.scriptExecuteButton = scriptExecuteButton;
-        scriptDebugButton.textArea = textArea;
-        scriptDebugButton.labels = label;
-        scriptDebugButton.onclick = settingsUI.scriptDebugClick;
-        scriptDebugButton.appendChild(document.createElement("i")).className = "fa fa-bug";
-        scriptDebugButton.debugNext = false;
-        var scriptDebugButtonSpan = scriptDebugButton.appendChild(document.createElement("span"));
-        scriptDebugButtonSpan.innerHTML = " " + getLang("scriptstartdebug");
-
-        var scriptDeleteButton = byteCodeCardDiv.appendChild(document.createElement('button'));
-        scriptDeleteButton.type = "button";
-        scriptDeleteButton.id = script.node.nodenickname + "_" + script.name + "deleteButton";
-        scriptDeleteButton.className = "btn btn-sm btn-danger";
-        scriptDeleteButton.script = script;
-        scriptDeleteButton.node = script.node; //когда ноду удалят и прийдет ActiveReciever - Script может уже не быть
-        scriptDeleteButton.scriptExecuteButton = scriptExecuteButton;
-        scriptDeleteButton.scriptPauseButton = scriptPauseButton;
-        scriptDeleteButton.textArea = textArea;
-        scriptDeleteButton.labels = label;
-        scriptDeleteButton.onclick = settingsUI.scriptDeleteClick;
-        scriptDeleteButton.appendChild(document.createElement("i")).className = "fa fa-trash";
-        var scriptDeleteButtonSpan = scriptDeleteButton.appendChild(document.createElement("span"));
-        scriptDeleteButtonSpan.innerHTML = " " + getLang("scriptdelete");
-
-
-        scriptExecuteButton.scriptDeleteButton = scriptDeleteButton;
-
-        var label = byteCodeCardDiv.appendChild(document.createElement('label'));
-        label.id = script.node.nodenickname + "_" + script.name + "label";
-        label.for = script.node.nodenickname + "_" + script.name + "textarea";
-        scriptExecuteButton.label = label;
-
-        var scriptStatusCardDiv = scriptHolder.appendChild(document.createElement('div'));
-        scriptStatusCardDiv.className = "col-md-4";
-        var scriptStatusCard = scriptStatusCardDiv.appendChild(document.createElement('div'));
-        scriptStatusCard.className = "card text-white bg-primary mb-3";
-        var scriptStatusCardHeader = scriptStatusCard.appendChild(document.createElement('div'));
-        scriptStatusCardHeader.className = "card-header";
-        scriptStatusCardHeader.innerText = script.name + " status";
-        var scriptStatusCardBody = scriptStatusCard.appendChild(document.createElement('div'));
-        scriptStatusCardBody.className = "card-body";
-        var scriptStatusPre = scriptStatusCardBody.appendChild(document.createElement('pre'));
-        var statusLabel = scriptStatusPre.appendChild(document.createElement('label'));
-        statusLabel.id = script.node.nodenickname + "_" + script.name + "statuslabel";
-        settingsUI.buildScriptStatus(script);
-
-    },
-
-    onScriptChange: function (script) {
-        var scriptsAhref = document.getElementById(script.node.nodenickname + "_" + script.name + "scriptahref");
-        if (scriptsAhref == undefined) return;
-        scriptsAhref.innerText = script.name;
-
-        switch (parseInt(script.status)) {
-            case stopScriptStatus: scriptsAhref.style.color = ""; break;
-            case runScriptStatus: scriptsAhref.style.color = theme.success; break;
-            case compilerScriptErrorStatus: scriptsAhref.style.color = theme.warning; break;
-            default:
-                scriptsAhref.style.color = theme.danger; break;
-        }
-
-
-        var textArea = document.getElementById(script.node.nodenickname + "_" + script.name + "textarea");
-        var label = document.getElementById(script.node.nodenickname + "_" + script.name + "label");
-        if (textArea.value !== script.bytecode) {
-            if (textArea === document.activeElement) {
-                label.style.color = theme.danger;
-                label.innerHTML = "script: " + script.name + " Warning: changed outside or not save";
-            }
-            else {
-                label.innerHTML = "script: " + script.name;
-                label.style.color = "";
-                textArea.value = script.bytecode;
+                var filesDiv = nodesPropsPanel.appendChild(document.createElement('div'));
+                filesDiv.className = "tab-pane fade";
+                filesDiv.id = node.nodenickname + "_filesfadepanel";
+                filesItem.href.filesList = new FilesList(filesDiv, node);
+                //--- EndOf Node files panel --------------------------------------------
             }
         }
-        settingsUI.buildScriptStatus(script);
-        if (script.status == debugScriptStatus) {
-            settingsUI.selectCodeLine(textArea, script.debuglinenumber);
-        }
     },
 
-    //https://stackoverflow.com/questions/13650534/how-to-select-line-of-text-in-textarea
-    selectCodeLine: function selectTextareaLine(tarea, lineNum) {
-        lineNum--; // array starts at 0
-        var lines = tarea.value.split("\n");
-
-        // calculate start/end
-        var startPos = 0, endPos = tarea.value.length;
-        for (var x = 0; x < lines.length; x++) {
-            if (x == lineNum) {
-                break;
-            }
-            startPos += (lines[x].length + 1);
-
-        }
-
-        var endPos = lines[lineNum].length + startPos;
-
-        // do selection
-        // Chrome / Firefox
-
-        if (typeof (tarea.selectionStart) != "undefined") {
-            tarea.focus();
-            tarea.selectionStart = startPos;
-            tarea.selectionEnd = endPos;
-            return true;
-        }
-
-        // IE
-        if (document.selection && document.selection.createRange) {
-            tarea.focus();
-            tarea.select();
-            var range = document.selection.createRange();
-            range.collapse(true);
-            range.moveEnd("character", endPos);
-            range.moveStart("character", startPos);
-            range.select();
-            return true;
-        }
-
-        return false;
-    },
-
-    scriptDebugClick: function (event) {
-        var scriptDebugButton = event.currentTarget;
-        if (scriptDebugButton.debugNext == false) {
-            scriptDebugButton.debugNext = true;
-            scriptsManager.startDebug(scriptDebugButton.script);
-        }
-        else {
-            scriptsManager.debugNext(scriptDebugButton.script);
-
-        }
-    },
-
-    buildScriptStatus: function (script) {
-        var statusLabel = document.getElementById(script.node.nodenickname + "_" + script.name + "statuslabel");
-        statusLabel.innerHTML = "<b>Status: </b>" + script.status + "\n" +
-            "<b>debuglinenumber: </b>" + script.debuglinenumber + "\n" +
-            "<b>codecount: </b>" + script.codecount + "\n" +
-            "<b>datacount: </b>" + script.datacount + "\n" +
-            "<b>timequant: </b>" + script.timequant + "\n" +
-            "<b>ip: </b>" + script.ip + "\n" +
-            "<b>variables: </b>" + script.variables;
-    },
-
-    onScriptDelete: function (script) {
-        var scriptsLi = document.getElementById(script.node.nodenickname + "_" + script.name + "li");
-        scriptsLi.parentElement.removeChild(scriptsLi);
-        scriptsLi.innerHTML = "";
-
-        var scriptsPanel = document.getElementById(script.node.nodenickname + "_" + script.name + "panel");
-        scriptsPanel.parentElement.removeChild(scriptsPanel);
-        scriptsPanel.innerHTML = "";
-
-        var scriptsSubmenuUl = document.getElementById(script.node.nodenickname + "scriptssubmenu");
-        for (childKey in scriptsSubmenuUl.childNodes) {
-            var scriptsLi = scriptsSubmenuUl.childNodes[childKey];
-            if (scriptsLi.scriptsAhref != undefined) {
-                var event = {
-                    currentTarget: scriptsLi.scriptsAhref
-                }
-                settingsUI.driverAnchorClick(event);
-                $(scriptsLi.scriptsAhref).toggleClass("active");
-                $(scriptsLi.panel).toggleClass("active show");
-                return;
-            }
-        }
-
-        var nodePanelHRef = document.getElementById(script.node.nodenickname + "nodePropsHref");
-        var nodePropsPanel = document.getElementById(script.node.nodenickname + "nodePropsPanel");
-        var event = {
-            currentTarget: nodePanelHRef
-        }
-        settingsUI.driverAnchorClick(event);
-        $(nodePanelHRef).toggleClass("active");
-        $(nodePropsPanel).toggleClass("active show");
-    },
-    //https://stackoverflow.com/questions/6637341/use-tab-to-indent-in-textarea
-    textAreaOnKeyDown: function (event) {
-        var keyCode = event.keyCode || event.which;
-        var textArea = event.currentTarget;
-
-        if (keyCode == 0x09) { //tab key code
-            event.preventDefault();
-            var start = textArea.selectionStart;
-            var end = textArea.selectionEnd;
-
-            // set textarea value to: text before caret + tab + text after caret
-            $(textArea).val($(textArea).val().substring(0, start)
-                + "\t"
-                + $(textArea).val().substring(end));
-
-            // put caret at right position again
-            textArea.selectionStart =
-                textArea.selectionEnd = start + 1;
-        }
-        else
-            if (keyCode == 0x77) { //F8
-                event = {
-                    currentTarget: textArea.scriptExecuteButton
-                }
-                settingsUI.scriptExecuteClick(event);
-            }
-
-    },
-
-    scriptExecuteClick: function (event) {
-        var scriptExecuteButton = event.currentTarget;
-        scriptExecuteButton.className = "btn btn-sm btn-secondary";
-        var textArea = scriptExecuteButton.textArea;
-        var script = scriptExecuteButton.script;
-        script.bytecode = textArea.value;
-
-        var scriptPauseButton = scriptExecuteButton.scriptPauseButton;
-        scriptPauseButton.className = "btn btn-sm btn-secondary";
-        var scriptDeleteButton = scriptExecuteButton.scriptDeleteButton;
-        scriptDeleteButton.className = "btn btn-sm btn-secondary";
-        var textArea = scriptExecuteButton.textArea;
-        textArea.style.backgroundColor = theme.secondary;
-        textArea.disabled = true;
-
-
-        scriptsManager.createOrReplace(script, settingsUI.executeScriptAsyncReciever, scriptExecuteButton);
-        return false;
-    },
-
-    executeScriptAsyncReciever: function (HTTPResult, sender) {
-        var scriptExecuteButton = sender;
-        var label = scriptExecuteButton.label;
-        var script = scriptExecuteButton.script;
-
-        var scriptPauseButton = scriptExecuteButton.scriptPauseButton;
-        scriptPauseButton.className = "btn btn-sm btn-warning";
-        var scriptDeleteButton = scriptExecuteButton.scriptDeleteButton;
-        scriptDeleteButton.className = "btn btn-sm btn-danger";
-        var textArea = scriptExecuteButton.textArea;
-        textArea.style.backgroundColor = "";
-        textArea.disabled = false;
-
-
-        if (!HTTPResult.indexOf("%error") == 0) {
-            scriptExecuteButton.className = "btn btn-sm btn-success";
-            script.node.networkStatus = NET_ONLINE;
-            scriptsManager.refresh(script.node);
-            label.style.color = theme.success;
-            label.innerText = "execute-OK";
-
-        }
-        else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
-            if (HTTPResult.indexOf("reponse") != -1) {
-                script.node.networkStatus = NET_ERROR;
-            }
-            else {
-                script.node.networkStatus = NET_OFFLINE;
-            }
-            scriptExecuteButton.className = "btn btn-sm btn-danger";
-            label.style.color = theme.danger;
-            label.innerText = HTTPResult;
-        }
-    },
-
-    scriptDeleteClick: function (event) {
-        var scriptDeleteButton = event.currentTarget;
-
-        makeModalDialog("resetPanel", "deletescript", getLang("deletescript"), "");
-        var modalBody = document.getElementById("deletescriptModalBody");
-        modalBody.appendChild(document.createElement('label')).innerHTML = getLang("areyousuredeletescript");
-
-        var modalFooter = document.getElementById("deletescriptModalFooter");
-
-        var scriptModalDeleteButton = modalFooter.appendChild(document.createElement('button'));
-        scriptModalDeleteButton.type = "button";
-        scriptModalDeleteButton.id = event.currentTarget.id + "modal";
-        scriptModalDeleteButton.className = "btn btn-sm btn-danger";
-        scriptModalDeleteButton.scriptDeleteButton = event.currentTarget;
-        scriptModalDeleteButton.onclick = settingsUI.scriptModalDeleteClick;
-        scriptModalDeleteButton.appendChild(document.createElement("i")).className = "fa fa-trash";
-        var scriptModalDeleteButtonSpan = scriptModalDeleteButton.appendChild(document.createElement("span"));
-        scriptModalDeleteButtonSpan.innerHTML = " " + getLang("scriptdelete");
-
-        $("#deletescriptModal").modal('show');
-        return false;
-    },
-
-    scriptModalDeleteClick: function (event) {
-        var scriptModalDeleteButton = event.currentTarget;
-        var scriptDeleteButton = scriptModalDeleteButton.scriptDeleteButton;
-        $("#deletescriptModal").modal('hide');
-
-        scriptDeleteButton.className = "btn btn-sm btn-secondary";
-        var script = scriptDeleteButton.script;
-
-        var scriptExecuteButton = scriptDeleteButton.scriptExecuteButton;
-        scriptExecuteButton.className = "btn btn-sm btn-secondary";
-
-        var scriptPauseButton = scriptDeleteButton.scriptPauseButton;
-        scriptPauseButton.className = "btn btn-sm btn-secondary";
-
-        var textArea = scriptDeleteButton.textArea;
-        textArea.style.backgroundColor = theme.secondary;
-        textArea.disabled = true;
-
-        scriptsManager.delete(script, settingsUI.scriptDeleteAsyncReciever, scriptDeleteButton);
-        return false;
-    },
-
-    scriptDeleteAsyncReciever: function (HTTPResult, sender) {
-
-        var scriptExecuteButton = sender;
-        var label = scriptExecuteButton.label;
-        var node = scriptExecuteButton.node;
-
-        if (!HTTPResult.indexOf("%error") == 0) {
-            node.networkStatus = NET_ONLINE; //UI редактора скрипта удалит onScriptDelete
-            scriptsManager.refresh(node);
-        }
-        else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
-
-
-            if (HTTPResult.indexOf("reponse") != -1) {
-                node.networkStatus = NET_ERROR;
-            }
-            else {
-                node.networkStatus = NET_OFFLINE;
-            }
-            scriptExecuteButton.className = "btn btn-sm btn-danger";
-            label.style.color = theme.danger;
-            label.innerText = HTTPResult;
-        }
-    },
-
-
-    createScriptClick: function (event) {
-        var scriptsAddAhref = event.currentTarget;
-        event.stopPropagation();
-
-        makeModalDialog("resetPanel", "addscript", getLang("addscriptheader"), "");
-        var modalFooter = document.getElementById("addscriptModalFooter");
-        var modalBody = document.getElementById("addscriptModalBody");
-
-        formGroup = modalBody.appendChild(document.createElement("div"));
-        formGroup.className = "form-group";
-        label = formGroup.appendChild(document.createElement("label"));
-        label.setAttribute("for", "hostEdit");
-        label.innerText = getLang("addscriptname");
-        var addScriptEdit = formGroup.appendChild(document.createElement('input'));
-        addScriptEdit.className = "form-control form-control-sm";
-        addScriptEdit.placeholder = "";
-        addScriptEdit.id = "addscriptInput";
-
-        var addScriptButton = modalFooter.appendChild(document.createElement("button"));
-        addScriptButton.type = "button";
-        addScriptButton.id = "addscriptModalButton";
-        addScriptButton.className = "btn btn-sm btn-success";
-        addScriptButton.node = scriptsAddAhref.node;
-        addScriptButton.onclick = settingsUI.createScriptUIClick;
-        addScriptButton.innerText = getLang("addscriptbutton");
-
-        var addScriptError = formGroup.appendChild(document.createElement("label"));
-        addScriptError.className = "text-danger";
-
-        addScriptButton.addScriptEdit = addScriptEdit;
-        addScriptButton.addScriptError = addScriptError;
-
-        $("#addscriptModal").modal('show');
-
-        return false;
-    },
-
-    createScriptUIClick: function (event) {
-        var addScriptButton = event.currentTarget;
-        var addScriptEdit = addScriptButton.addScriptEdit;
-        var node = addScriptButton.node;
-        if (addScriptButton.script == undefined) {
-            addScriptButton.script = createScript(node);
-        }
-        addScriptButton.script.name = addScriptEdit.value;
-        scriptsManager.createOrReplace(addScriptButton.script, settingsUI.createScriptAsynReciever, addScriptButton);
-        return false;
-    },
-
-    createScriptAsynReciever: function (HTTPResult, sender) {
-        var addScriptButton = sender;
-        var addScriptError = addScriptButton.addScriptError;
-        var node = addScriptButton.node;
-
-        if (!HTTPResult.indexOf("%error") == 0) {
-            node.networkStatus = NET_ONLINE;
-            $("#addscriptModal").modal('hide');
-            scriptsManager.refresh(node);
-        }
-        else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
-            if (HTTPResult.indexOf("reponse") != -1) {
-                node.networkStatus = NET_ERROR;
-            }
-            else {
-                node.networkStatus = NET_OFFLINE;
-            }
-            addScriptError.innerText = HTTPResult;
-        }
-    },
 
     //---------------------------------------------------------------------------------------------------------------------------------------------------
     //когда очередная нода загружает очередное драйвер - строим индикаторы в верхней панели "Настройки" - Online, WiFi AP, WiFi ST, RESTful, MQTT, OTA
     //и подготавлием панель управления нодой (с кнопками Update, Reset и основными свойствами ноды) - смотрите onConfigChange такая панель создается для каждой
     //ноды id = node.nodenickname + "nodePropPanel"    
     onDriverLoaded: function (sender, driver) {
-        
+        if ((driver == undefined) || (driver.type == undefined)) return;
         if (driver._new) { //если это драйвер загружено впервые (вновь созданные драйвера так же вызовут этот метод)
 
             var nodeSubmenuUl = document.getElementById(driver._nodenickname + "driverssubmenu"); //ищем пункт sideBar соответствующий ноде которой принадлежит драйвер
@@ -4586,28 +4943,26 @@ var settingsUI = {
             var node = config.getNodeByHost(driver._host); //узнаем какой ноде принадлежит драйвер
             if (node == undefined) return; //выходим если нода не найдена
 
-            var driverLi = nodeSubmenuUl.appendChild(document.createElement("li")); //добавляем дочерний пукт в меню ноды в sideBar
-            driverLi.className = "nav-item";
-
             //submenu drivers count 
-
-            var driverSpan = document.getElementById(driver._nodenickname + "driversitemspan");
-            if (driverSpan.driversCount == undefined) {
-                driverSpan.driversCount = 0;
+            driversitemlocalspan
+            var driverSpan = document.getElementById("driversitem" + driver._nodenickname + "span");
+            if (driverSpan != null) {
+                if (driverSpan.driversCount == undefined) {
+                    driverSpan.driversCount = 0;
+                }
+                driverSpan.driversCount++;
+                driverSpan.innerHTML = parseInt(driverSpan.driversCount);
             }
-            driverSpan.driversCount++;
-            driverSpan.innerHTML = parseInt(driverSpan.driversCount);
-
-            var driverAhref = driverLi.appendChild(document.createElement("a")); //отображаемая часть меню - гиперссылка
-            driverAhref.className = "nav-link";
-            driverAhref.setAttribute("data-toggle", "tab");
-            driverAhref.href = "#" + driver._nodenickname + "_" + driver._id; //якорь на панель с таблицей со свойствами выбранного драйвера (создается один раз)
-            driverAhref.node = config.getNodeByHost(driver._host); //привязываем пункт меню к ноде которой принадлежит драйвера (используется для быстрого поска ноды в будущем)
-            driverAhref.innerText = driver._id; //пункт меню отображает ID нового драйвера
-            driverAhref.onclick = settingsUI.driverAnchorClick; //обработчик клика на пунк меню (переключение панелей)
-            driverAhref.parentLi = driverLi; //сохраняем родительский driverId
-
             
+            var driverItem = settingsUI.addNodeSidebarItem(node, nodeSubmenuUl, "_" + driver._id, "_" + driver._id, driver._id, sidebarItemClick, "fa fa-sliders-h", undefined);
+            driver.driverItem = driverItem;
+            driverItem.href.node = node;
+            var deleteDriverButton = headerPanelUI.addButton(node.nodenickname +  "DeleteDriverButton", "fa fa-minus", "delete driver: " + driver._id, headerPanelUI.driverButtonRole);
+            deleteDriverButton.node = node;
+            deleteDriverButton.driver = driver;
+            deleteDriverButton.onclick = settingsUI.onDeleteDriver;            
+            driverItem.href.deleteDriverButton = deleteDriverButton;                              
+
             var nodePropAnchors = document.getElementById("nodePropNavBar"); //старая навигационная панель для отображения панелей свойств
             var nodesPropsPanel = document.getElementById("nodesPropsPanel");
             var wifiPropPanel = document.getElementById(node.nodenickname + "WifiNodePropBody"); //панель для cвойств            
@@ -4616,28 +4971,29 @@ var settingsUI = {
             var networkPropPanel1 = document.getElementById(node.nodenickname + "NetworkNodePropBody1");
             var networkPropPanel2 = document.getElementById(node.nodenickname + "NetworkNodePropBody2");
             var networkPropPanel3 = document.getElementById(node.nodenickname + "NetworkNodePropBody3");
-            
+
             //добавляем панель с таблицей со свойствами нового "driver" драйвера в панель nodesPropsPanel, якорим навигацию на nodePropAnchors, bootstrap cell size -> 12             
-            new TableWidget(nodePropAnchors, nodesPropsPanel, driver, 12);
-            
+            driver.driverPropTable = new TableWidget(nodePropAnchors, nodesPropsPanel, driver, 12);
+
             //если очередное загруженое драйвер WiFi
             if (driver.type.value == WiFiDriverType) {
                 //индикатор(widget) в верхней панеле для WiFi AP и Wifi ST - подключаем их к событиям WiFi текущей node.WifiDriver - теперь WifiDriver будет отправлять событие 
                 //о своем состоянии непосредственно индикаторам 
                 //сколько будет node столько будет индикаторов для их WiFi driver - мы отображаем только индикаторы выбранной в SideBar (текущей) node и ее драйвер
-                //смотрите getStatusWidget() метод - если индикатора нет его создадут и подпишут id как node.nodenickname + "wifiapStatus"
-                var WiFiAPPanel = settingsUI.getStatusWidget(node.nodenickname + "wifiapStatus", "WiFi AP", undefined);
+                //смотрите headerPanelUI.addStatus() метод - если индикатора нет его создадут и подпишут id как node.nodenickname + "wifiapStatus"
+
+                //#ST_PANEL
+                //WiFi Access Point header status indicator ----------------------------             
+                var WiFiAPPanel = headerPanelUI.addStatus(node, node.nodenickname + "wifiapStatus", "WiFi AP");
                 //подписываем свойство драйвера WiFi.wifiaccesspointavailable на обработчик settingsUI.onWiFiAPStatusChange
                 //если WiFi.wifiaccesspointavailable изменит значение, будет вызван settingsUI.onWiFiAPStatusChange
                 driver.wifiaccesspointavailable.addValueListner(settingsUI.onWiFiAPStatusChange, WiFiAPPanel);
-
+                //EndOf WiFi Access Point header status indicator ----------------------
                 //так же как и WiFi AP
-                var WiFiSTPanel = settingsUI.getStatusWidget(node.nodenickname + "wifistStatus", "WiFi ST", undefined); //
+                //var WiFiSTPanel = settingsUI.getStatusWidget(node.nodenickname + "wifistStatus", "WiFi ST", undefined); //
+                var WiFiSTPanel = headerPanelUI.addStatus(node, node.nodenickname + "wifistStatus", "WiFi ST"); //
                 driver.wifistatus.addValueListner(settingsUI.onWiFiSTStatusChange, WiFiSTPanel);
-
                 //панель со свойствами node - добавляем отображени уровня WiFi сигнала (так же подписываем на событие изменения значения WiFi.wifirssi)
-
-
                 var wifiAPCheckbox = settingsUI.addPropertyCheckbox(wifiPropPanel, driver.wifiaccesspointavailable, getLang("wifiaccesspointavailable"), "");
 
                 wifiAPCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(wifiPropPanel, driver.wifiaccesspointssid, getLang("wifiaccesspointssid"), ""));
@@ -4713,24 +5069,20 @@ var settingsUI = {
                     resetButton.driverHost = driver._host;
                     resetButton.onclick = settingsUI.modalResetClick;
 
-                    // settingsUI.addPropertyView(updatePropPanel, driver.firmwareversion, getLang("firmwareversion"));
-                    //  settingsUI.addPropertyView(updatePropPanel, driver.firmwarebuildnumber, getLang("firmwarebuildnumber"));
-
-
                 }
                 else
-                    if (driver.type.value == NetworkDriverType) {
-                        // document.title = driver.nodeid.value + " :: OWLOS"; //ToDo detect "local" node
+                    if (driver.type.value == NetworkDriverType) {                    
 
-                        var RESTfulPanel = settingsUI.getStatusWidget(node.nodenickname + "restfulStatus", "RESTful");
+                        var RESTfulPanel = headerPanelUI.addStatus(node, node.nodenickname + "restfulStatus", "RESTful");
                         driver.restfulavailable.addValueListner(settingsUI.onRESTfulStatusChange, RESTfulPanel);
+
                         var node = config.getNodeByHost(driver._host);
                         node.addNetworkStatusListner(settingsUI.onRESTfulOnlineStatusChange, RESTfulPanel);
 
-                        var MQTTPanel = settingsUI.getStatusWidget(node.nodenickname + "mqttStatus", "MQTT");
+                        var MQTTPanel = headerPanelUI.addStatus(node, node.nodenickname + "mqttStatus", "MQTT");
                         driver.mqttclientstate.addValueListner(settingsUI.onMQTTStatusChange, MQTTPanel);
 
-                        var OTAPanel = settingsUI.getStatusWidget(node.nodenickname + "otaStatus", "OTA");
+                        var OTAPanel = headerPanelUI.addStatus(node, node.nodenickname + "otaStatus", "OTA");
                         driver.otaavailable.addValueListner(settingsUI.onOTAStatusChange, OTAPanel);
 
                         var RESTfulCheckbox = settingsUI.addPropertyCheckbox(networkPropPanel1, driver.restfulavailable, getLang("restfulavailable"), "");
@@ -4804,137 +5156,52 @@ var settingsUI = {
                             driver.updateinfo.addValueListner(settingsUI.onUpdateInfoValueChange, updateWatcherDiv);
                             driver.updatepossible.addValueListner(settingsUI.onUpdateInfoValueChange, updateWatcherDiv);
                         }
-                        //}
                     }
         }
     },
 
-    driverAnchorClick: function (event) {
+    addNodeClick: function (event) {
+        event.stopPropagation();
+        var newNodeDialog = createModalDialog(getLang("addnodeheader"), "");
+        newNodeDialog.appendInput(createDialogInput("newnodename", getLang("addnodename"), ""));
+        newNodeDialog.appendInput(createDialogInput("newnodehost", getLang("addnodehost"), "http://host:port/ or https://host:port/"));
 
-        var aHref = event.currentTarget;
+        newNodeDialog.onOK = settingsUI.addNodeUIClick;
+        newNodeDialog.show();
+        return false;
+    },
 
+    addNodeUIClick: function (newNodeDialog) {
 
-        $(aHref).removeClass('active');
+        var inputName = newNodeDialog.getChild("newnodename");
+        var inputHost = newNodeDialog.getChild("newnodehost");
 
-        document.getElementById("sidebarText").style.display = "none";
-        document.getElementById("sidebarText").innerText = "";
-        document.getElementById("dashboardButtonsPanel").style.display = "none";
-
-        //$(aHref).toggleClass("active");
-
-        document.location = aHref.href;
-
-
-
-        var node = aHref.node;
-        if (node != undefined) {
-
-            if (aHref.nodeStatusPanel == undefined) {
-                aHref = document.getElementById("nodeNavItem" + node.nodenickname + "href");
-            }
-            if (aHref.nodeStatusPanel != undefined) {
-                var nodeStatusPanel = document.getElementById("nodeStatusPanel");
-                if (nodeStatusPanel.currentStatusPanel != undefined) {
-                    nodeStatusPanel.currentStatusPanel.style.display = "none";
-                    nodeStatusPanel.currentStatusPanel.nodeStatusPanelText.style.display = "none";
-                }
-                nodeStatusPanel.currentStatusPanel = aHref.nodeStatusPanel;
-                nodeStatusPanel.currentStatusPanel.style.display = "block";
-                nodeStatusPanel.currentStatusPanel.nodeStatusPanelText.style.display = "block";
-            }
-
+        if (inputHost.value.length == 0) {
+            newNodeDialog.errorLabel.innerText = getLang("addnodeerror_hostempty");
+            return false;
         }
 
-        //     if (aHref.getAttribute("aria-expanded") == "true") {
-        //         document.documentElement.scrollTop = document.documentElement.scrollTop - event.clientY - event.currentTarget.offsetHeight;
-        //     }
-
-
-        return false;
-    },
-
-
-    addNodeClick: function (event) {
-
-        event.stopPropagation();
-
-        makeModalDialog("resetPanel", "addnode", getLang("addnodeheader"), "");
-        var modalFooter = document.getElementById("addnodeModalFooter");
-        var modalBody = document.getElementById("addnodeModalBody");
-
-        formGroup = modalBody.appendChild(document.createElement("div"));
-        formGroup.className = "form-group";
-        label = formGroup.appendChild(document.createElement("label"));
-        label.setAttribute("for", "hostEdit");
-        label.innerText = getLang("addnodehost");
-        var hostEdit = formGroup.appendChild(document.createElement('input'));
-        hostEdit.className = "form-control form-control-sm";
-        hostEdit.placeholder = "http://host:port/ or https://host:port/";
-        hostEdit.id = "hostInput";
-
-        label = formGroup.appendChild(document.createElement("label"));
-        label.setAttribute("for", "nodenicknameEdit");
-        label.innerText = getLang("addnodenickname");
-        var nodenicknameEdit = formGroup.appendChild(document.createElement('input'));
-        nodenicknameEdit.className = "form-control form-control-sm";
-        nodenicknameEdit.id = "nodenicknameInput";
-        nodenicknameEdit.placeholder = "room, kitchen, bathroom... ";
-
-        var addNodeButton = modalFooter.appendChild(document.createElement("button"));
-        addNodeButton.type = "button";
-        addNodeButton.className = "btn btn-sm btn-success";
-        addNodeButton.id = "addnodeModalButton";
-        addNodeButton.onclick = settingsUI.addNodeUIClick;
-        addNodeButton.innerText = getLang("addnodebutton");
-
-        var addNodeError = formGroup.appendChild(document.createElement("label"));
-        addNodeError.className = "text-danger";
-
-        addNodeButton.hostEdit = hostEdit;
-        addNodeButton.nodenicknameEdit = nodenicknameEdit;
-        addNodeButton.addNodeError = addNodeError;
-
-        $("#addnodeModal").modal('show');
-
-        return false;
-    },
-
-    addNodeUIClick: function (event) {
-        event.stopPropagation();
-
-        var addNodeButton = event.currentTarget;
-        var hostEdit = addNodeButton.hostEdit;
-        var nodenicknameEdit = addNodeButton.nodenicknameEdit
-        var addNodeError = addNodeButton.addNodeError;
-
-        if (hostEdit.value.length == 0) {
-            addNodeError.innerText = getLang("addnodeerror_hostempty");
-            return false;
+        if (inputHost.value.indexOf("http") != 0) {
+            inputHost.value = "http://" + inputHost.value;
         }
 
         var regexp = RegExp("(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})");
 
-        if (!hostEdit.value.match(regexp)) {
-            addNodeError.innerText = getLang("addnodeerror_hostnoturl");
+        if (!inputHost.value.match(regexp)) {
+            newNodeDialog.errorLabel.innerText = getLang("addnodeerror_hostnoturl");
             return false;
         }
 
-        if (nodenicknameEdit.value.length == 0) {
-            addNodeError.innerText = getLang("addnodeerror_nicknameempty");
-            return false;
+        if (inputHost.value.slice(-1) !== '/') {
+            inputHost.value += '/';
         }
 
-        if (hostEdit.value.slice(-1) !== '/') {
-            hostEdit.value += '/';
+        //boardhost = input.value;
+        if (config.addNode(inputHost.value, inputName.value)) {
+            addToLogNL("Connection to master node " + boardhost + "...");
+            //use it as ping            
+            return true;
         }
-
-        if (config.addNode(hostEdit.value, nodenicknameEdit.value)) {
-            $("#addnodeModal").modal('hide');
-        }
-        else {
-            addNodeError.innerText = getLang("addnodeerror_cantsaveconfig");
-        }
-        //else todo ERROR
         return false;
     },
 
@@ -4957,24 +5224,26 @@ var settingsUI = {
     },
 
     modalResetClick: function (event) {
-
-        var driverHost = event.currentTarget.driverHost;
-
-        makeModalDialog("resetPanel", "reset", getLang("resetnode"), getLang("areYouSure"));
-        var modalFooter = document.getElementById("resetModalFooter");
-
-        var resetButton = modalFooter.appendChild(document.createElement("button"));
-        resetButton.type = "button";
-        resetButton.className = "btn btn-sm btn-danger";
-        resetButton.id = "resetModalButton";
-        resetButton.nodeHost = driverHost;
-        resetButton.onclick = settingsUI.resetClick;
-        resetButton.innerText = getLang("reset");
-
-        $("#resetModal").modal('show');
-
+        event.stopPropagation();
+        var driverHost = event.currentTarget.driverHost;    
+        var resetDialog = createModalDialog(getLang("reset"), "");
+        resetDialog.formGroup.innerHTML = getLang("areYouSure");
+        resetDialog.nodeHost = driverHost;
+        resetDialog.onOK = settingsUI.onResetOK;
+        resetDialog.show();        
         return false;
     },
+
+    onResetOK: function (resetDialog) {        
+        resetNodeOneWayTicket(resetDialog.nodeHost);
+
+        sleep(5000).then(function () {
+            location.reload();
+            return false;
+        });
+
+    },
+
 
     modalUpdateUIClick: function (event) {
 
@@ -5046,16 +5315,6 @@ var settingsUI = {
             sender.innerHTML += "HTTP client - " + HTTPResult;
         }
     },
-    resetClick: function (event) {
-        var resetButton = event.currentTarget;
-        reset(resetButton.nodeHost);
-
-        sleep(5000).then(function () {
-            location.reload();
-            return false;
-        });
-
-    },
     //--------------------------------------------------------------------------------------------------------------------
     modalUpdateFirmwareClick: function (event) {
         var updateButton = event.currentTarget;
@@ -5097,13 +5356,6 @@ var settingsUI = {
             location.reload();
             return false;
         });
-
-        /*
-        sleep(30000).then(() => {
-            location.reload();
-            return false;
-        });
-        */
         return false;
     },
 
@@ -5121,7 +5373,7 @@ var settingsUI = {
         cardPanel.id = id + "Panel";
         cardPanel.className = "col-md-" + cellSize;
         var card = cardPanel.appendChild(document.createElement('div'));
-        card.className = "card text-white bg-primary mb-3";
+        card.className = "card bg-dark border-info mb-3";
         var header = card.appendChild(document.createElement('div'));
         header.className = "card-header";
         var headerText = header.appendChild(document.createElement('div'));
@@ -5150,7 +5402,7 @@ var settingsUI = {
         if (propTextDiv == null) {
             propTextDiv = panelDiv.appendChild(document.createElement('div'));
             propTextDiv.id = propElementId;
-            propTextDiv.className = "text-light";
+            //propTextDiv.className = "text-light";
             propTextDiv.propertyText = text;
             if (sufix == undefined) sufix = "";
             propTextDiv.propertySufix = sufix;
@@ -5187,7 +5439,7 @@ var settingsUI = {
             prependDiv.className = "input-group-prepend";
 
             propText = prependDiv.appendChild(document.createElement("label"));
-            propText.className = "input-group-text";
+            propText.className = "input-group-text smlabel";
             propText.setAttribute("for", propElementId + "edit");
             propTextDiv.propText = propText;
 
@@ -5393,7 +5645,14 @@ var settingsUI = {
     onPropertyCheckboxChange: function (event) {
         event.stopPropagation();
         var propCheckbox = event.currentTarget;
+        var chekboxDialog = createModalDialog(getLang("applyChanges"), "");
+        chekboxDialog.formGroup.innerHTML = getLang("areYouSure");
+        chekboxDialog.propCheckbox = propCheckbox;
+        chekboxDialog.onOK = settingsUI.applyCheckboxChangeClick;
+        chekboxDialog.show();        
 
+
+        /*
         makeModalDialog("resetPanel", "checkboxchange", getLang("checkchangedialog"), getLang("areYouSure"));
 
 
@@ -5412,15 +5671,14 @@ var settingsUI = {
         checkChengButton.innerText = getLang("applycheck");
 
         $("#checkboxchangeModal").modal('show');
+        */
 
         return false;
 
     },
 
-    applyCheckboxChangeClick: function (event) {
-        event.stopPropagation();
-        var checkChengButton = event.currentTarget;
-        var propCheckbox = checkChengButton.propCheckbox;
+    applyCheckboxChangeClick: function (chekboxDialog) {            
+        var propCheckbox = chekboxDialog.propCheckbox;
         var propTextDiv = propCheckbox.propTextDiv;
         var driverProperty = propTextDiv.driverProperty;
         var propTextDiv = propCheckbox.propTextDiv;
@@ -5434,7 +5692,8 @@ var settingsUI = {
                 driverProperty.setValue("0", undefined, undefined);
             }
         }
-        $("#checkboxchangeModal").modal('hide');
+        chekboxDialog.hide();
+        //$("#checkboxchangeModal").modal('hide');
         return false;
     },
 
@@ -5476,7 +5735,6 @@ var settingsUI = {
         }
         return selectedStatus;
     },
-
 
     onUpdateInfoValueChange: function (sender, driverProperty) { //means esp.updateinfo property
 
@@ -5550,7 +5808,6 @@ var settingsUI = {
             sender.innerHTML = innerHTML;
         }
     },
-
     onOnlineStatusChange: function (sender, drivers) {
         var onlineStatus = getLang("netonline");
         if (drivers.networkStatus == NET_ONLINE) {
@@ -5571,50 +5828,48 @@ var settingsUI = {
         sender.setAttribute("data-content", getLang("connectionstatus") + onlineStatus);
         $('[data-toggle="popover"]').popover();
     },
-
-
     onWiFiAPStatusChange: function (sender, driverProperty) {
         if (driverProperty.value == 1) {
-            sender.className = "badge badge-success";
+            sender.className = "text-success"
 
         }
         else {
-            sender.className = "badge badge-secondary";
+            sender.className = "text-secondary";
         }
     },
 
     onWiFiSTStatusChange: function (sender, driverProperty) {
         var wifiSTconection = getLang("nostate");
-        sender.className = "badge badge-secondary";
+        sender.className = "text-secondary";
 
         switch (parseInt(driverProperty.value)) {
             case 0:
                 wifiSTconection = getLang("idlestatus");
-                sender.className = "badge badge-warning";
+                sender.className = "text-warning";
                 break;
             case 1:
                 wifiSTconection = getLang("nossidavailable");
-                sender.className = "badge badge-danger";
+                sender.className = "text-danger";
                 break;
             case 2:
                 wifiSTconection = getLang("scancompleted");
-                sender.className = "badge badge-warning";
+                sender.className = "text-warning";
                 break;
             case 3:
                 wifiSTconection = getLang("connected");
-                sender.className = "badge badge-success";
+                sender.className = "text-success";
                 break;
             case 4:
                 wifiSTconection = getLang("connectfailed");
-                sender.className = "badge badge-danger";
+                sender.className = "text-danger";
                 break;
             case 5:
                 wifiSTconection = getLang("connectionlost");
-                sender.className = "badge badge-danger";
+                sender.className = "text-danger";
                 break;
             case 6:
                 wifiSTconection = getLang("disconnected");
-                sender.className = "badge badge-secondary";
+                sender.className = "text-secondary";
                 break;
             default:
                 break;
@@ -5627,88 +5882,88 @@ var settingsUI = {
 
     onRESTfulStatusChange: function (sender, driverProperty) {
         if (driverProperty.value == 1) {
-            sender.className = "badge badge-success";
+            sender.className = "text-success";
 
         }
         else {
-            sender.className = "badge badge-secondary";
+            sender.className = "text-secondary";
         }
     },
 
     onRESTfulOnlineStatusChange: function (sender, drivers) {
         var onlineStatus = getLang("netonline");
         if (drivers.networkStatus == NET_ONLINE) {
-            sender.className = "badge badge-success";
+            sender.className = "text-success";
         }
         else
             if (drivers.networkStatus == NET_ERROR) {
-                sender.className = "badge badge-danger";
+                sender.className = "text-danger";
             }
             else
                 if (drivers.networkStatus == NET_OFFLINE) {
 
-                    sender.className = "badge badge-secondary";
+                    sender.className = "text-secondary";
                 }
     },
 
     onMQTTStatusChange: function (sender, driverProperty) {
 
-        sender.className = "badge badge-secondary";
+        sender.className = "text-secondary";
         mqttState = getLang("nostate");
 
         switch (parseInt(driverProperty.value)) {
             case -5:
-                sender.className = "badge badge-warning";
+                sender.className = "text-warning";
                 mqttState = getLang("debugmode");
                 break;
 
             case -4:
-                sender.className = "badge badge-danger";
+                sender.className = "text-danger";
                 mqttState = getLang("connectiontimeout");
                 break;
 
             case -3:
-                sender.className = "badge badge-danger";
+                sender.className = "text-danger";
                 mqttState = getLang("connectionlost");
                 break;
 
             case -2:
-                sender.className = "badge badge-danger";
+                sender.className = "text-danger";
                 mqttState = getLang("connectfailed");
                 break;
 
             case -1:
-                sender.className = "badge badge-secondary";
+                sender.className = "text-secondary";
                 mqttState = getLang("disconnected");
                 break;
 
             case 0:
-                sender.className = "badge badge-success";
+                sender.className = "text-success";
                 mqttState = getLang("connected");
                 break;
 
             case 1:
-                sender.className = "badge badge-danger";
+                sender.className = "text-danger";
                 mqttState = getLang("badprotocol");
                 break;
 
             case 2:
-                sender.className = "badge badge-danger";
+                sender.className = "text-danger";
                 mqttState = getLang("badclientid");
                 break;
 
             case 3:
-                sender.className = "badge badge-secondary";
+                sender.className = "text-secondary";
                 mqttState = getLang("unavailable");
                 break;
 
             case 4:
-                sender.className = "badge badge-danger";
+                sender.className = "text-danger";
                 mqttState = getLang("badcredentials");
                 break;
 
             case 5:
-                sender.className = "badge badge-danger";
+                sender.className = "text-danger";
                 mqttState = getLang("unauthorized");
                 break;
 
@@ -5723,18 +5978,53 @@ var settingsUI = {
 
     onOTAStatusChange: function (sender, driverProperty) {
         if (driverProperty.value == 1) {
-            sender.className = "badge badge-success";
+            sender.className = "text-success";
         }
         else {
-            sender.className = "badge badge-secondary";
+            sender.className = "text-secondary";
         }
     },
 
     addDriverClick: function (event) {
         event.stopPropagation();
-        settingsUI.driverAnchorClick(event);
+        sidebarItemClick(event);
         var addDriverAhref = event.currentTarget;
         driversUI.addDriver(addDriverAhref.node);
+    },
+
+    onDeleteNode: function (event) {
+        event.stopPropagation();
+    },
+
+    onDeleteDriver: function (event) {
+        event.stopPropagation();
+        var deleteDriverButton = event.currentTarget;
+        var node = deleteDriverButton.node;
+        var driver = deleteDriverButton.driver;
+
+        var deleteDriverDialog = createModalDialog(getLang("reset"), "");
+        deleteDriverDialog.formGroup.innerHTML = getLang("areYouSure");
+        deleteDriverDialog.node = node;
+        deleteDriverDialog.driver = driver;
+        deleteDriverDialog.onOK = settingsUI.onDeleteDriverOK;
+        deleteDriverDialog.show();        
+        return false;
+    },
+
+   onDeleteDriverOK: function (deleteDriverDialog) {        
+    deleteDriverAsync(deleteDriverDialog.node.host, deleteDriverDialog.driver._id, settingsUI.onDriverDeleteReciever, deleteDriverDialog);
+   },
+
+
+    onDriverDeleteReciever: function (HTTPResult, deleteDriverDialog) {
+        if (HTTPResult == "1") {
+            deleteDriverDialog.hide();
+            deleteDriverDialog.driver.driverItem.style.display = "none";              
+            document.getElementById(deleteDriverDialog.driver._nodenickname + "_" + deleteDriverDialog.driver._id).innerHTML = "";                                                         
+        } 
+        else {
+            deleteDriverDialog.errorLabel.innerHTML = HTTPResult;
+        }
     }
 
 }
@@ -5796,68 +6086,63 @@ var RadialWidget =
             var widget = rPanel.widget;
 
             widget._properties.linewidth =
-                {
-                    tab: "G",
-                    value: 10,
-                    type: "i"
-                };
+            {
+                tab: "G",
+                value: 10,
+                type: "i"
+            };
 
             widget._properties.rangetype =
-                {
-                    tab: "G",
-                    value: 'true',
-                    type: "b"
-                };
+            {
+                tab: "G",
+                value: 'true',
+                type: "b"
+            };
 
             widget._properties.min =
-                {
-                    tab: "G",
-                    value: 0,
-                    type: "f"
-                };
+            {
+                tab: "G",
+                value: 0,
+                type: "f"
+            };
 
             widget._properties.max =
-                {
-                    tab: "G",
-                    value: 100,
-                    type: "f"
-                };
+            {
+                tab: "G",
+                value: 100,
+                type: "f"
+            };
 
             widget._properties.percentbackgroundcolor =
-                {
-                    tab: "C",
-                    value: theme.secondary,
-                    type: "c"
-                };
+            {
+                tab: "C",
+                value: theme.secondary,
+                type: "c"
+            };
 
             widget._properties.percentbackgroundopacity =
-                {
-                    tab: "O",
-                    value: 0.5,
-                    type: "f"
-                };
+            {
+                tab: "O",
+                value: 0.5,
+                type: "f"
+            };
 
             widget._properties.percentcolor =
-                {
-                    tab: "C",
-                    value: theme.success,
-                    type: "c"
-                };
+            {
+                tab: "C",
+                value: theme.success,
+                type: "c"
+            };
 
             widget.radius = widget.size / 3;
             widget.topMargin = widget.centreY + widget.size / 10;
             widget.SVGArcBack = new SVGArc(widget.SVGViewBox, widget.id + "arcback", widget.centreX, widget.topMargin, widget.radius, widget._properties.linewidth);
             widget.SVGArcWidget = new SVGArc(widget.SVGViewBox, widget.id + "arcwidget", widget.centreX, widget.topMargin, widget.radius, widget._properties.linewidth);
             widget.SVGArcSpinner.y = widget.topMargin;
-
             widget.clickableToTop();
-
             widget.proprties = widget._properties;
-
             widget.doOnLoad();
         }
-
-
 
         RadialWidget.prototype.drawWidget = function drawWidget() {
             _BaseWidget.prototype.drawWidget.call(this);
@@ -5960,7 +6245,7 @@ var SmokeWidget =
 
         function SmokeWidget(parentPanel, id, size) {
 
-            return _BaseWidget.call(this, parentPanel, id, size) || this;          
+            return _BaseWidget.call(this, parentPanel, id, size) || this;
         }
 
         SmokeWidget.prototype.onWidgetHolderLoad = function onWidgetHolderLoad(event) {
@@ -6029,7 +6314,7 @@ var SmokeWidget =
 
             widget.doOnLoad();
         };
-        
+
         SmokeWidget.prototype.refresh = function refresh(data, widgetText, label) {
             widgetText = getLang(widgetText);
 
@@ -6144,7 +6429,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 var StepperWidget =
-    
+
     function () {
         "use strict";
 
@@ -6219,7 +6504,7 @@ var StepperWidget =
         };
 
         _proto.refresh = function refresh(percent, toPercent, widgetText, text) {
-            text = getLang(text); //if ((this.percent == percent) && (this.toPercent == toPercent) && (this.widgetText == widgetText) && (this.text == text)) return;
+            text = getLang(text); 
 
             this.percent = Math.round(percent);
             this.toPercent = Math.round(toPercent);
@@ -6246,33 +6531,6 @@ var StepperWidget =
             //draw pervent text ----------
             var elementWidth = 0;
             var elementHeight = 0;
-            /*
-            if (this.widgetElement == null) {
-                this.widgetElement = this.widgetHolder.appendChild(document.createElement("h4"));            
-                this.widgetElement.firstTime = true;
-            }
-            
-            switch (this.networkStatus) {
-                case NET_ONLINE: this.widgetElement.className = "ActuatorWidgetPercent text-success"; break;
-                case NET_ERROR: this.widgetElement.className = "ActuatorWidgetPercent text-danger"; break;
-                case NET_RECONNECT: this.widgetElement.className = "ActuatorWidgetPercent text-info"; break;
-                default: //offline
-                    this.widgetElement.className = "ActuatorWidgetPercent text-secondary"; break;
-            }
-             this.widgetElement.innerHTML = this.widgetText;
-            // this.widgetElement.innerHTML = "";
-             if (this.widgetElement.firstTime) {
-                var elementWidth = this.widgetElement.getBoundingClientRect().width;
-                 if (elementWidth < this.size) {
-                    this.widgetElement.style.fontSize = (this.size / 2) / elementWidth + "rem";
-                }
-                 elementWidth = this.widgetElement.getBoundingClientRect().width;
-                this.widgetElement.style.marginLeft = this.size / 2 - elementWidth / 2 + "px";
-                 var elementHeight = this.widgetElement.getBoundingClientRect().height;
-                this.widgetElement.style.marginTop = - (elementHeight / 2.0 + this.size / 2.0) + "px";
-                 this.widgetElement.firstTime = false;
-            }
-            */
             //draw text label --------------
 
             if (this.textElement == null) {
@@ -6597,14 +6855,14 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 var TemperatureWidget =
-    
+
     function (_BaseWidget) {
         "use strict";
 
         _inheritsLoose(TemperatureWidget, _BaseWidget);
 
         function TemperatureWidget(parentPanel, id, size) {
-            
+
             return _BaseWidget.call(this, parentPanel, id, size) || this;
         }
 
@@ -6619,21 +6877,21 @@ var TemperatureWidget =
             widget.tempItem = [];
 
             widget.SVGWidgetExtText = new SVGText(widget.SVGViewBox, widget.id + "widgetexttext", widget.size / 160);
-            widget.SVGWidgetExtText.color = theme.secondary;
+            widget.SVGWidgetExtText.color = widgetsTheme.secondary;
 
 
             for (var i = 0; i < 20; i++) {
                 var svgRect = new SVGRect(widget.SVGViewBox, widget.id + "tempItem" + i, widget.panding + widget.tempWidth * i, widget.tempTop, widget.tempWidth - 2, widget.tempHeight);
                 if (i < 7) {
-                    svgRect.fill = theme.info;
+                    svgRect.fill = widgetsTheme.info;
 
                 }
                 else {
                     if (i < 14) {
-                        svgRect.fill = theme.warning;
+                        svgRect.fill = widgetsTheme.warning;
                     }
                     else {
-                        svgRect.fill = theme.danger;
+                        svgRect.fill = widgetsTheme.danger;
                     }
                 }
 
@@ -6677,23 +6935,23 @@ var TemperatureWidget =
 
                 switch (this._networkStatus) {
                     case NET_ONLINE:
-                        this.toColor(this.SVGWidgetExtText, theme.light);
+                        this.toColor(this.SVGWidgetExtText, widgetsTheme.info);
                         break;
                     case NET_ERROR:
-                        this.toColor(this.SVGWidgetExtText, theme.danger);
+                        this.toColor(this.SVGWidgetExtText, widgetsTheme.danger);
                         break;
                     case NET_RECONNECT:
-                        this.toColor(this.SVGWidgetExtText, theme.info);
+                        this.toColor(this.SVGWidgetExtText, widgetsTheme.info);
                         break;
-                    default:                        
-                        this.toColor(this.SVGWidgetExtText, theme.secondary);
+                    default:
+                        this.toColor(this.SVGWidgetExtText, widgetsTheme.secondary);
                         break;
                 }
             }
-                else {
+            else {
                 this.SVGWidgetExtText.text = "";
             }
-          
+
         };
 
         TemperatureWidget.prototype.drawWidget = function drawWidget() {
@@ -6707,10 +6965,13 @@ var TemperatureWidget =
             }
 
             for (var i = 0; i < tempSize; i++) {
+                if (i >= this.tempItem.length) break;
+                if (this.tempItem[i].opacity != undefined) {
                 this.tempItem[i].opacity = 1.0 - (1.0 - i / 20);
+                }
             }
 
-           // this.svgTempIndex.x = this.panding + tempSize * this.tempWidth * 2;
+            // this.svgTempIndex.x = this.panding + tempSize * this.tempWidth * 2;
         };
 
         return TemperatureWidget;
@@ -6771,44 +7032,25 @@ var GraphWidget =
             _BaseWidget.prototype.onWidgetHolderLoad.call(this, event);
             var rPanel = event.currentTarget;
             var widget = rPanel.widget;
-
-            widget.widgetHolder.className = "col-6 col-sm-4 col-lg-2";
-            // widget.widgetHolder.removeChild(widget.SVGViewBox);
-
-
+            widget.widgetHolder.className = "col-6 col-sm-4 col-lg-2 widgetHolder";
             widget.topMargin = widget.size / 20; //this.panding = 5;
-
             widget.width = widget.size * 2;
             widget.height = widget.size;
             widget.centreX = widget.width / 2; //  this.centreY = this.height / 2;
-
-            
             widget.widgetTextSize = widget.size / 110;
             widget.graphWidth = widget.width - widget.panding;
             widget.graphHeight = widget.height - widget.size / 3.4;
             widget.graphTop = widget.size / 3.7;
-
             widget.SVGViewBox.setAttributeNS(null, "viewBox", "0 0 " + widget.width + " " + widget.height);
-
-            //  widget.SVGViewBox.setAttributeNS(null, "width", widget.width);
-            //  widget.SVGViewBox.setAttributeNS(null, "height", widget.height);
-
             widget.SVGBackgroundPanel.drawRoundedRect(widget.width - 5, widget.height - 6, 5, 10, true, true, true, true);
             widget.SVGBackdownpanel.drawRoundedRect(widget.width - 5, 10, 5, 0, false, false, true, true);
             widget.SVGHeaderPanel.drawRoundedRect(widget.width, 26, 5, 0, true, true, false, false);
-
-            //   widget.SVGBackdownpanel.y += 3;
-
-
             widget._properties.lineColor = { tab: "Graph", value: theme.success, type: "c" };
             widget._properties.lineOpacity = { tab: "Graph", value: 0.5, type: "f" };
-
             widget._properties.backOpacity = { tab: "Graph", value: 0.4, type: "f" };
-
             widget._properties.gradient1Color = { tab: "Graph", value: theme.success, type: "c" };
             widget._properties.gradient1Opacity = { tab: "Graph", value: 0.7, type: "f" };
             widget._properties.gradient1Offset = { tab: "Graph", value: 0, type: "i" };
-
             widget._properties.gradient2Color = { tab: "Graph", value: theme.success, type: "c" };
             widget._properties.gradient2Opacity = { tab: "Graph", value: 0.4, type: "f" };
             widget._properties.gradient2Offset = { tab: "Graph", value: 60, type: "i" };
@@ -6816,8 +7058,8 @@ var GraphWidget =
             widget._properties.gradient3Color = { tab: "Graph", value: theme.success, type: "c" };
             widget._properties.gradient3Opacity = { tab: "Graph", value: 0.2, type: "f" };
             widget._properties.gradient3Offset = { tab: "Graph", value: 80, type: "i" };
-            
-            widget.SVGBackdownpanel.width = widget.width;            
+
+            widget.SVGBackdownpanel.width = widget.width;
             widget.stop1 = document.createElementNS(xmlns, 'stop');
             widget.stop2 = document.createElementNS(xmlns, 'stop');
             widget.stop2.setAttribute('class', 'stop2');
@@ -6834,12 +7076,11 @@ var GraphWidget =
             widget.gradient.appendChild(widget.stop2);
             widget.gradient.appendChild(widget.stop3);
 
-
             widget.SVGViewBox.appendChild(widget.gradient);
 
             widget.SVGPath1 = new SVGArc(widget.SVGViewBox, widget.id + "path1", widget.graphTop + " " + widget.halfPanding + " " + widget.graphWidth + " " + widget.graphHeight);
             widget.SVGPath1.fill = 'url(#' + widget.id + 'GraphGradient)';
-            
+
             widget.SVGPath2 = new SVGArc(widget.SVGViewBox, widget.id + "path2", widget.graphTop + " " + widget.halfPanding + " " + widget.graphWidth + " " + widget.graphHeight);
             widget.SVGHeaderText.text = "Graph";
             widget.widgetLeft = widget.centreX - widget.textWidth / 2;
@@ -6861,30 +7102,14 @@ var GraphWidget =
             widget.SVGDownLine = new SVGRect(widget.SVGViewBox, widget.id + "downline", widget.width / 48, 0, widget.graphWidth, 1);
             widget.SVGDownLine.opacity = 0.1;
             widget.SVGDownLine.color = theme.secondary;
-
-
-            /*
-            if (icon != undefined) {
-                widget.SVGIcon = new SVGIcon(widget.SVGViewBox, icon, widget.width - widget.size / 6, widget.size / 24, widget.size / 8, widget.size / 8);
-            } else {
-                widget.SVGIcon = new SVGIcon(widget.SVGViewBox, addIcon, widget.width - widget.size / 6, widget.size / 24, widget.size / 8, widget.size / 8);
-            }
-            */
-            widget.SVGIcon = new SVGIcon(widget.SVGViewBox, addIcon, widget.width - widget.size / 6, widget.size / 24, widget.size / 8, widget.size / 8);
-
-            widget.SVGIcon.fill = theme.secondary;
-
+            //widget.SVGIcon = new SVGIcon(widget.SVGViewBox, addIcon, widget.width - widget.size / 6, widget.size / 24, widget.size / 8, widget.size / 8);
+            //widget.SVGIcon.fill = theme.secondary;
             widget.SVGWidgetText.hide();
-
             widget.SVGArcSpinner.x = widget.centreX;
             widget.ShowEqualizer = false;
             widget.SVGRightIcon.x = widget.width - widget.rowSize; //  this.SVGPlusIcon.x = this.width / 2 - this.rowSize / 2;
             widget.SVGPropertiesIcon.x = widget.width / 2 - widget.rowSize / 2;
             widget.SVGDeleteIcon.x = widget.width - widget.rowSize + widget.size / 55;
-
-
-            //   widget.widgetHolder.appendChild(widget.SVGViewBox);
-
             widget.clickableToTop();
             widget.proprties = widget._properties;
             widget.resize(widget.width);
@@ -6894,6 +7119,7 @@ var GraphWidget =
 
         GraphWidget.prototype.resize = function resize(size) {
             this.size = size;
+            if (this.SVGViewBox == undefined) return;
             this.SVGViewBox.setAttributeNS(null, "width", size);
             this.SVGViewBox.setAttributeNS(null, "height", size / 2);
 
@@ -6920,7 +7146,7 @@ var GraphWidget =
             }
             if (this.historyData != undefined) {
 
-                
+
                 this.stop1.setAttribute('stop-color', this.properties.gradient1Color.value);
                 this.stop1.setAttribute('stop-opacity', this.properties.gradient1Opacity.value);
                 this.stop1.setAttribute('offset', this.properties.gradient1Offset.value + '%');
@@ -6931,7 +7157,7 @@ var GraphWidget =
 
                 this.stop3.setAttribute('stop-color', ' ' + this.properties.gradient3Color.value);
                 this.stop3.setAttribute('stop-opacity', this.properties.gradient3Opacity.value);
-                this.stop3.setAttribute('offset', this.properties.gradient3Offset.value + '%');                
+                this.stop3.setAttribute('offset', this.properties.gradient3Offset.value + '%');
 
                 //reset 
                 var updatedFilteredData = this.historyDataFilter(this.graphWidth, this.historyData, 1, 1); //It is important to draw Y lalues at first and curve after!!!
@@ -6947,7 +7173,7 @@ var GraphWidget =
                         this.toColor(this.SVGTopLabel, theme.secondary);
                         this.toColor(this.SVGMiddleLabel, theme.secondary);
                         this.toColor(this.SVGDownLabel, theme.secondary);
-                        this.SVGIcon.fill = this._properties.backOpacity.value;
+                      //  this.SVGIcon.fill = theme.info;
                         break;
 
                     case NET_ERROR:
@@ -6956,7 +7182,7 @@ var GraphWidget =
                         this.toColor(this.SVGTopLabel, theme.danger);
                         this.toColor(this.SVGMiddleLabel, theme.danger);
                         this.toColor(this.SVGDownLabel, theme.danger);
-                        this.SVGIcon.fill = theme.danger;
+                     //   this.SVGIcon.fill = theme.danger;
                         break;
 
                     case NET_RECONNECT:
@@ -6965,7 +7191,7 @@ var GraphWidget =
                         this.toColor(this.SVGTopLabel, theme.info);
                         this.toColor(this.SVGMiddleLabel, theme.info);
                         this.toColor(this.SVGDownLabel, theme.info);
-                        this.SVGIcon.fill = theme.info;
+                     //   this.SVGIcon.fill = theme.info;
                         break;
 
                     default:
@@ -6975,7 +7201,7 @@ var GraphWidget =
                         this.toColor(this.SVGTopLabel, theme.secondary);
                         this.toColor(this.SVGMiddleLabel, theme.secondary);
                         this.toColor(this.SVGDownLabel, theme.secondary);
-                        this.SVGIcon.fill = theme.secondary;
+                       // this.SVGIcon.fill = theme.secondary;
                         break;
                 }
 
@@ -7212,7 +7438,6 @@ var GraphWidget =
                             }
                         } //Odering local max, min and middle value by their indexes
 
-
                         if (localSmallValueIndex < localBigValueIndex) {
                             if (localSmallValueIndex < localMiddleValueIndex) {
                                 filteredHistoryDataArray[3 * hdj] = localSmallValue;
@@ -7307,78 +7532,37 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 var TableWidget =
-    
+
     function () {
         "use strict";
 
         function TableWidget(nodePropAnchors, nodesPropsPanel, driver, size) {
             //панели в UI для рендеринга таблиц
             this.nodePropAnchors = nodePropAnchors; //document.getElementById("nodePropAnchors");
-
             this.nodesPropsPanel = nodesPropsPanel; // document.getElementById("nodesPropsPanel");
-
             this.driver = driver;
             this.size = size; //drivers.addNewDriverListner(this.newTable, this); //подписываемся на событие drivers о создании нового драйвера
-            //drivers.addDriverLoadedListner(this.driverLoaded, this); //подписываемся на событие drivers о создании нового драйвера
-            //if (document.getElementById(this.driver._nodenickname + "_" + this.driver._id) != undefined) return; 
-
             this.newTable(); //this.nodePropAnchors.innerHTML = "";
-            
-            //this.nodesPropsPanel.innerHTML = "";
         } //слушатель (получатель) событие создания нового драйвер (драйвер не содержит свойств на данном этапе)
 
 
         var _proto = TableWidget.prototype;
+        
 
         _proto.newTable = function newTable() {
             //добавляет кнопку в панель быстрого выбора драйвер
             if (this.nodePropAnchors != undefined) { }
-            /*
-            var driverNavItem = this.nodePropAnchors.appendChild(document.createElement("li"));
-            driverNavItem.className = "nav-item";
-            var driverHRef = driverNavItem.appendChild(document.createElement("a"));
-            driverHRef.className = "nav-link";
-            if (firstDriver) {
-                driverHRef.className += " active";
-            }
-            driverHRef.setAttribute("data-toggle", "tab");
-            driverHRef.innerText = getLang(this.driver._nodenickname + "/" + this.driver._id);
-            driverHRef.href = "#" + this.driver._nodenickname + "_" + this.driver._id;
-            */
-
-            /*
-            var anchorHref = this.nodePropAnchors.appendChild(document.createElement('button'));
-            anchorHref.type = "button";
-            anchorHref.href = "#" + this.driver._id;
-            anchorHref.onclick = this.driverAnchorClick;
-            anchorHref.innerText = this.driver._id;
-            anchorHref.className = "btn btn-default";
-            */
             //добавлет таблицу для свойств нового драйвера
-
-
             var div = this.nodesPropsPanel.appendChild(document.createElement('div'));
 
             if (this.nodePropAnchors != undefined) {
-                // div.className = "col-md-" + this.size + " driverdiv tab-pane fade";
                 div.className = "driverdiv tab-pane fade"; //if (firstDriver) {
-                //div.className += " active show";
-                //firstDriver = false;
                 //}
             } else {
                 div.className = "col-md-" + this.size + " driverdiv TableWidget";
             }
 
             div.id = this.driver._nodenickname + "_" + this.driver._id;
-            /*
-            var driverDiv = div.appendChild(document.createElement('div'));
-            driverDiv.className = "col-md-12 border-0 drivercard";
-            var driverDivHeader = driverDiv.appendChild(document.createElement('div'));
-            driverDivHeader.className = "card-header text-light";
-            driverDivHeader.innerText = this.driver._id;
-            var tableDiv = driverDiv.appendChild(document.createElement('div'));
-            tableDiv.className = "card-body"; 
-            */
             //таблица
 
             this.table = div.appendChild(document.createElement('table'));
@@ -7405,10 +7589,10 @@ var TableWidget =
             th.innerText = getLang("newvalue");
             th.scope = "col";
             th = tr.appendChild(document.createElement('th'));
-            th.className = "w-5";
+            th.className = "w-2";
             th.scope = "col";
             th = tr.appendChild(document.createElement('th'));
-            th.className = "w-5";
+            th.className = "w-2";
             th.scope = "col"; //ссылка в последней колонки для перехода вверх таблицы
 
             var anchorTopHref = th.appendChild(document.createElement('a'));
@@ -7501,8 +7685,11 @@ var TableWidget =
             driverProperty.addValueListner(this.onDriverPropValueChangeSetaHref, setPropHref); //четвертая колонка - редактор значения свойства, реализован так же как элементы для второй и третей колонки, со своим слушателем события
             //учитывает тип свойства драйвера - создает соответствующие типы редакторов createValueEdit() <-- TODO: метод старый, нуждается в рефакторинге 
 
-            var edit = createValueEdit(tr.appendChild(document.createElement('td')), driverProperty.name, driverProperty.value, driverProperty.type);
-            driverProperty.addValueListner(this.onDriverPropValueChangeEdit, edit); //пятая и шестая колонка, кнопки Set value и Get Value 
+            var propValueTD = tr.appendChild(document.createElement('td'));
+            if (driverProperty.type.indexOf("r") == -1) {
+                var edit = createValueEdit(propValueTD, driverProperty.name, driverProperty.value, driverProperty.type);
+                driverProperty.addValueListner(this.onDriverPropValueChangeEdit, edit); //пятая и шестая колонка, кнопки Set value и Get Value 
+            }
 
             var setButtonTd = tr.appendChild(document.createElement('td'));
             var getButtonTd = tr.appendChild(document.createElement('td')); //кнопка Get value 
@@ -7523,7 +7710,7 @@ var TableWidget =
             node.addNetworkStatusListner(this.onDriverPropNetworkStatusChange, getSpan); //подписка на глобальный сетевой статус
             //кнопка Set value не создается если свойство ReadOnly
 
-            if (!driverProperty.type.indexOf("r")!=-1) {
+            if (driverProperty.type.indexOf("r") == -1) {
                 //так же как и Set value кнопка - асинхронно меняет значение свойства и ожидает результат
                 var span = setButtonTd.appendChild(document.createElement('a'));
                 span.className = "badge badge-secondary";
@@ -7707,7 +7894,7 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 var ValueWidget =
-    
+
     function (_BaseWidget) {
         "use strict";
 
@@ -7724,20 +7911,19 @@ var ValueWidget =
 
             widget.radius = widget.size / 3;
             widget.topMargin = widget.centreY + widget.size / 10;
-            
+
             widget._properties.textfontsize =
-                {
-                    name: "Value text size",
-                    value: 1.0,
-                    type: "f"
-                };
+            {
+                name: "Value text size",
+                value: 1.0,
+                type: "f"
+            };
 
             widget.clickableToTop();
             widget.properties = widget._properties;
             widget.doOnLoad();
 
         };
-
 
         ValueWidget.prototype.drawText = function drawText() {
             if (this.SVGWidgetText == undefined) return;
@@ -7746,12 +7932,11 @@ var ValueWidget =
             }
             _BaseWidget.prototype.drawText.call(this);
             this.SVGWidgetText.color = theme.danger;
-            
+
         };
 
-
         ValueWidget.prototype.drawWidget = function drawWidget() {
-        
+
             _BaseWidget.prototype.drawWidget.call(this);
         };
 
@@ -7797,24 +7982,19 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-
 var DEFAULT_MASK = 0;
 var ICONS_MASK = 1;
 
 var ActuatorWidget =
-
     function (_BaseWidget) {
         "use strict";
-
         _inheritsLoose(ActuatorWidget, _BaseWidget);
-
         function ActuatorWidget(parentPanel, id, size, iconOn, iconOff) {
             var _baseWidget = _BaseWidget.call(this, parentPanel, id, size) || this;
             _baseWidget.iconOn = iconOn;
             _baseWidget.iconOff = iconOff;
             return _baseWidget;
         }
-
         ActuatorWidget.prototype.onWidgetHolderLoad = function onWidgetHolderLoad(event) {
             _BaseWidget.prototype.onWidgetHolderLoad.call(this, event);
             var rPanel = event.currentTarget;
@@ -7835,30 +8015,18 @@ var ActuatorWidget =
                 widget.SVGIconOn.SVGIcon.widget = _assertThisInitialized(widget);
                 widget.SVGIconOn.hide();
 
-
                 widget.SVGIconOff = new SVGIcon(widget.SVGViewBox, widget.iconOff, widget.width / 2 - widget.rowSize / 2, widget.height / 2 - widget.rowSize / 2, widget.rowSize, widget.rowSize);
                 widget.SVGIconOff.fill = theme.success;
                 widget.SVGIconOff.SVGIcon.widget = _assertThisInitialized(widget);
-
                 widget.SVGIconOff.hide();
-
                 widget.SVGArcSpinner.y = widget.centreY;
             }
-
             widget.SVGWidgetText.hide();
-
             widget.ShowEqualizer = false;
-
             widget.clickableToTop();
-
             widget.proprties = widget._properties;
-
             widget.doOnLoad();
-
         }
-
-
-
         ActuatorWidget.prototype.drawWidget = function drawWidget() {
             _BaseWidget.prototype.drawWidget.call(this);
 
@@ -7929,7 +8097,6 @@ var ActuatorWidget =
                 }
             }
         };
-
         return ActuatorWidget;
     }(BaseWidget);﻿/* ----------------------------------------------------------------------------
 Ready IoT Solution - OWLOS
@@ -7972,8 +8139,9 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-var boardhost = "http://81.95.178.177:8084/"; //DEBUG
-//var boardhost = "http://192.168.1.28:8084/"; //DEBUG as WiFi Access Point
+//var boardhost = "http://81.95.178.177:8084/"; //DEBUG
+//var boardhost = "http://iot.light.kiev.ua:8084/";
+var boardhost = "http://192.168.1.5:8084/"; //DEBUG as WiFi Access Point
 //var boardhost = ""; //UI loading from ESPxxxx
 
 
@@ -8015,7 +8183,7 @@ function deleteScriptAsync(host, name, asyncReciever, sender) {
 }
 
 
-function reset(host) {
+function resetNodeOneWayTicket(host) {
     return httpGetAsync(host + "reset");
 }
 
@@ -8038,6 +8206,9 @@ function getUpdateLogAsyncWithReciever(host, asyncReciever, upperAsyncReciever, 
     return httpGetAsyncWithReciever(host + "updatelog", asyncReciever, upperAsyncReciever, sender, upperSender);
 }
 
+function deleteDriverAsync(host, id, asyncReciever, upperAsyncReciever, sender, upperSender) {
+    return httpGetAsyncWithReciever(host + "deletedriver?id=" + id, asyncReciever, upperAsyncReciever, sender, upperSender);
+}
 
 function httpGet(_url) {
     var _data = null;
@@ -8149,14 +8320,11 @@ function httpPostAsyncWithErrorReson(_url, arg, _postdata, asyncReciever, counte
     $.ajax({
         url: encodeURI(_url + arg),
         type: "POST",
-
-
         data: formData,
         contentType: false,
         processData: false,
         cache: false,
         async: true,
-
         success: function (data) {
              addToLogNL("call RESTful: " + _url + " result OK", 1);
             _data = data;
@@ -8164,7 +8332,6 @@ function httpPostAsyncWithErrorReson(_url, arg, _postdata, asyncReciever, counte
                 asyncReciever(_data, counter, dataString, length, _url);
             }
         },
-
         error: function (XMLHttpRequest, textStatus, errorThrown) {
              addToLogNL("call POST async: " + _url + " result ERORR [" + XMLHttpRequest.status + "]", 2);
             _data = "%error[" + XMLHttpRequest.status + "]";
@@ -8176,10 +8343,8 @@ function httpPostAsyncWithErrorReson(_url, arg, _postdata, asyncReciever, counte
             }
         }
     });
-
     return _data;
 }
-
 
 function httpGetAsync(_url, asyncReciever, upperAsyncReciever, sender, upperSender, _timeout = 30000) {
     var _data = null;
@@ -8203,7 +8368,6 @@ function httpGetAsync(_url, asyncReciever, upperAsyncReciever, sender, upperSend
             }
 
         },
-
         error: function (XMLHttpRequest, textStatus, errorThrown) {
             //addToLogNL("call RESTful async: " + _url + " result ERORR [" + XMLHttpRequest.status + "]", 2);
             _data = "%error[" + XMLHttpRequest.status + "]";
@@ -8218,7 +8382,6 @@ function httpGetAsync(_url, asyncReciever, upperAsyncReciever, sender, upperSend
 
     return _data;
 }
-
 function httpGetAsyncWithReciever(_url, asyncReciever, upperAsyncReciever, sender, upperSender, _timeout = 30000) {
     var _data = null;
     $.ajax({
@@ -8242,21 +8405,16 @@ function httpGetAsyncWithReciever(_url, asyncReciever, upperAsyncReciever, sende
             }
         },
         
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-            //addToLogNL("call RESTful async: " + _url + " result ERORR [" + XMLHttpRequest.status + "]", 2);
+        error: function (XMLHttpRequest, textStatus, errorThrown) {            
             _data = "%error[" + XMLHttpRequest.status + "]";
             if ((XMLHttpRequest.responseText !== undefined) && (XMLHttpRequest.responseText !== null)) {
                 _data += " response: " + XMLHttpRequest.responseText;
             }
             if (asyncReciever != undefined) {
                 asyncReciever(_data, upperAsyncReciever, sender, upperSender);
-            }
-
-            //XMLHttpRequest.host;
+            }            
         }
-
     });
-
     return _data;
 }
 ﻿/* ----------------------------------------------------------------------------
@@ -8325,7 +8483,7 @@ function createScript(_node) {
 
 var scriptsManager = {
     scripts: [],
-    
+
     //подписчики (функции) на onNew событие скрипта 
     _onnew: [],
 
@@ -8390,7 +8548,7 @@ var scriptsManager = {
             else {
                 node.networkStatus = NET_OFFLINE;
             }
-            
+
         }
     },
 
@@ -8445,10 +8603,10 @@ var scriptsManager = {
                 return;
             }
         }
-        
-         scriptsManager.scripts.push(script); //TODO onNew event 
-         this.doOnNew(script);            
-        
+
+        scriptsManager.scripts.push(script); //TODO onNew event 
+        this.doOnNew(script);
+
     },
 
     parseScripts: function (httpResult, node) {
@@ -8564,13 +8722,9 @@ function defaultWebProp() {
         dashboards: [],
         nodes: []
     };
-
 }
 
 var configProperties = defaultWebProp();
-
-//var configPropertiesDriver;
-
 var config = {
 
     cancel: false,
@@ -8596,7 +8750,6 @@ var config = {
         config._onload.push(onload);
     },
 
-
     addDashboard: function (_id) {
         var dashboard = {
             id: _id,
@@ -8605,7 +8758,6 @@ var config = {
         configProperties.dashboards.push(dashboard);
         return dashboard;
     },
-
     getDashboardById: function (_id) {
         for (var i = 0; i < configProperties.dashboards.length; i++) {
             if (configProperties.dashboards[i].id == _id) {
@@ -8614,7 +8766,6 @@ var config = {
         }
         return undefined;
     },
-
     addWidget: function (_dashboardId, _daviceId, _driverProperty, _widgetWrapperId, _widgetId, _widgetProperties) {
         var dashboard = this.getDashboardById(_dashboardId);
         if (dashboard != undefined) {
@@ -8632,7 +8783,6 @@ var config = {
         }
         return undefined;
     },
-
     getWidgetConfigPropById: function (id) {
         for (var i = 0; i < configProperties.dashboards[0].widgets.length; i++) {
             if (configProperties.dashboards[0].widgets[i].widgetId === id) {
@@ -8641,7 +8791,6 @@ var config = {
         }
         return undefined;
     },
-
     onWidgetChange: function (widget) {
         var widgetConfigProp = config.getWidgetConfigPropById(widget.id);
         if (widgetConfigProp == undefined) {
@@ -8650,11 +8799,9 @@ var config = {
         widgetConfigProp.widgetProperties = widget.properties;
         config.doOnChange();
     },
-
     onWidgetDelete: function (widget) {
         var widgetConfigProp = config.getWidgetConfigPropById(widget.id);
         if (widgetConfigProp == undefined) return;
-
         //TODO: поправить удаление из массива
         configProperties.dashboards[0].widgets.splice(configProperties.dashboards[0].widgets.indexOf(widgetConfigProp), 1);
         config.doOnChange();
@@ -8662,10 +8809,10 @@ var config = {
 
     addNode: function (_host, _nodenickname) {
         if (this.getNodeByHost(_host) != undefined) return false;
-
         var node = {
             host: _host,
             nodenickname: _nodenickname,
+            nodeRefreshInterval: 10000,
             //-------------------------------------------------------------------------------------------------------------
             //сетевое состояние модуля - онлайн, офлайн, переподсоединение ("в работе"), ошибка --> по умолчанию онлайн
             //NOTE: у каждого свойства есть свое сетевое состояние и связанные события - это глобальный флаг для всех драйвер и элементов UI
@@ -8690,19 +8837,25 @@ var config = {
                 }
                 this.networkStatusListners.push(event = { event: _event, sender: _sender });
             },
-
+            nodeRefresh(node) {
+                    drivers.refresh(node);
+                    pins.refresh(node);
+                    driverPins.refresh(node);
+                    accessableDrivers.refresh(node);
+                    scriptsManager.refresh(node);            
+            },
             drivers: [],
             pins: [],
             driversPins: [],
             accessableDrivers: [],
 
         }
-
+        node.nodeRefresh(node);
+        setInterval(node.nodeRefresh(node), node.nodeRefreshInterval, node);
         configProperties.nodes.push(node);
         config.doOnChange();
         return true;
     },
-
     getNodeByHost: function (_host) {
         for (var node in configProperties.nodes) {
             if (configProperties.nodes[node].host == _host) {
@@ -8711,31 +8864,27 @@ var config = {
         }
         return undefined;
     },
-
-
-
     load: function (onLoadConfig) {
 
         httpGetAsync(boardhost + "getwebproperty?property=config", this.onLoadConfig, onLoadConfig, this, null, 10000); //boardhost host контроллера с которого идет первичная загрузка
     },
-
     onLoadConfig: function (_data, upperAsyncReciever, sender, upperSender) {
-
         var result = false;
-
         var stringifyConfig = _data;
         if (!stringifyConfig.indexOf("%error") == 0) {
             try {
                 configProperties = JSON.parse(unescape(stringifyConfig));
                 //check 
                 if (sender.getDashboardById("main") != undefined) {
-
                     var tempNodes = [];
                     for (var nodeKey in configProperties.nodes) {
-
+                        if (configProperties.nodes[nodeKey].nodeRefreshInterval == undefined)  {
+                            configProperties.nodes[nodeKey].nodeRefreshInterval = 10000;                           
+                        }  
                         var tempNode = {
                             id: configProperties.nodes[nodeKey].id,
                             host: configProperties.nodes[nodeKey].host,
+                            nodeRefreshInterval: configProperties.nodes[nodeKey].nodeRefreshInterval,
                             nodenickname: configProperties.nodes[nodeKey].nodenickname,
                             _networkStatus: NET_OFFLINE,
                             drivers: [],
@@ -8749,11 +8898,9 @@ var config = {
                                     this.networkStatusListners[k].event(this.networkStatusListners[k].sender, this);
                                 }
                             },
-
                             get networkStatus() {//получить текущее сетевое состояние
                                 return sender._networkStatus;
                             },
-
                             addNetworkStatusListner: function (_event, _sender) { //для добавления нового подписчика(так же как и addValueListner)                                
                                 //check event listner and setup current network status 
                                 try {
@@ -8764,8 +8911,18 @@ var config = {
                                     return; // don't add bad listner
                                 }
                                 this.networkStatusListners.push(event = { event: _event, sender: _sender });
-                            }
+                            }, 
+                            nodeRefresh(node) {
+                                drivers.refresh(node);
+                                pins.refresh(node);
+                                driverPins.refresh(node);
+                                accessableDrivers.refresh(node);
+                                scriptsManager.refresh(node);            
                         }
+            
+                        }
+                        tempNode.nodeRefresh(tempNode);
+                        setInterval(tempNode.nodeRefresh, tempNode.nodeRefreshInterval, tempNode);
                         tempNodes.push(tempNode);
                     }
                     configProperties.nodes = tempNodes;
@@ -8786,30 +8943,17 @@ var config = {
                 addToLogNL(getLang("getconfigfailsparse") + exception, 2);
             }
         }
-
         upperAsyncReciever(result);
         return result;
     },
-
     restoreDefault: function () {
-
         //parse problem, reset properties
         configProperties = defaultWebProp();
         addToLogNL(getLang("restoredefault"), 1);
-        sender.addDashboard("main");
-        sender.addNode(boardhost, "local");
-        /*
-        sender.addNode("http://176.100.2.105:8085/", "solomon_1");
-        sender.addNode("http://176.100.2.105:8086/", "solomon_2");
-        sender.addNode("http://81.95.178.177:8084/", "home_1");
-        sender.addNode("http://192.168.1.11:8084/", "home_2");
-        */
-
-        return sender.save();
-
+        config.addDashboard("main");
+        config.addNode(boardhost, "local");
+        return config.save();
     },
-
-
     // асинхронный метод сохранения внесенных изменений в настройки (передача строки разбитой на небольшие части в ноду) 
     save: function () {
 
@@ -8820,44 +8964,35 @@ var config = {
         if (saveButton !== undefined && saveButton !== null) {
             saveButton.hidden = true;
         }
-
-
         for (var key in configProperties) {
             if (key != "nodes") {
                 tempProp[key] = configProperties[key];
             }
         }
-
         for (var node in configProperties.nodes) {
             var jsonNode = {
                 id: configProperties.nodes[node].id,
                 host: configProperties.nodes[node].host,
+                nodeRefreshInterval: configProperties.nodes[node].nodeRefreshInterval,
                 nodenickname: configProperties.nodes[node].nodenickname,
                 _networkStatus: NET_OFFLINE,
                 drivers: [],
                 pins: [],
                 driversPins: [],
                 accessableDrivers: []
-
             }
-
             tempProp.nodes.push(jsonNode);
         }
-
         //конвертирование в формат JSON
         var stringifyConfig = JSON.stringify(tempProp);
-
         //установка размера подстроки
         var subStringLength = 1024;
-
         // вызов функции сохранения
         this.configSendAsync("Start", 0, stringifyConfig, subStringLength, boardhost);
-
         return true;
-
     },
 
-    //функция асинхронной передачи строки через RESTfull POST запрос с/без отображением(я) состояния передачи строки в модельном окне
+    //функция асинхронной передачи строки через RESTfull POST запрос с/без отображением(я) состояния передачи строки в модaльном окне
     //эта функция является одновременно и функцией обратного вызова для выполняемого RESTfull POST запроса 
     //аргументы функции: httpResult - результат выполнения RESTfull POST запроса, counter - счетчик, dataString - вся передаваемая строка, lengthDataSubString - длина подстроки, url - адрес для отправки RESTfull POST запроса
     configSendAsync: function (httpResult, counter, dataString, lengthDataSubString, url) {
@@ -8869,76 +9004,45 @@ var config = {
         var countedSections = Math.floor(dataString.length / lengthDataSubString);
         // часть переданной строки в %
         var sendingAmount = "0";
-
         // текущий статус передачи строки отображающийся в модельном окне
         var savingCurrentStatus = getLang("savingchanges");
-
         // элементы модального окна отобрающего процесс передачи строки
-        var saveProgressBar = document.getElementById("saveProgressBar");
-        var saveTextStatus = document.getElementById("savingTextStatus");
-        var savingCloseButton = document.getElementById("saveConfigcloseButton");
-        var saveButton = document.getElementById("saveWidgetsButton");
-        var closeButton = document.getElementById("saveConfigsaveCloseButton");
-
+        var saveProgressBar = document.getElementById("saveProgressBarprogressbar");
+        var saveTextStatus = document.getElementById("savetext");
+        var savingCloseButton = document.getElementById("showDialogPanelDialogOKButton");
+        var saveButton = document.getElementById("saveaddedwidget");
+        var closeButton = document.getElementById("showDialogPanelDialogcloseHeaderButton");
         //Проверка была ли отменена передача строки
         if (config.cancel == false) {
 
             //HTTPClient добавляет строку "%error" в начало Response если запрос не был завешен HTTPCode=200 или произашел TimeOut
             if (!httpResult.indexOf("%error") == 0) {
-
                 if (counter < countedSections) {
-
                     subString = dataString.slice(counter * lengthDataSubString, (counter + 1) * lengthDataSubString);
-
-
                     if (counter == 0) {
-
                         filePartName = "setwebproperty?property=head";
-
                     }
                     else {
-
                         filePartName = "setwebproperty?property=body";
-
                     }
-
                     sendingAmount = Math.floor((lengthDataSubString * counter / dataString.length) * 100).toString();
-
-
                 }
                 else {
-
                     if (counter == countedSections) {
-
                         subString = dataString.slice(counter * lengthDataSubString);
-
-
                         if (counter == 0) {
-
                             filePartName = "setwebproperty?property=head";
-
                         }
-
                         else {
-
                             filePartName = "setwebproperty?property=tail";
                             sendingAmount = "100";
-
                             if (savingCloseButton !== undefined && savingCloseButton !== null) {
                                 savingCloseButton.disabled = true;
                             }
-
                         }
-
                     }
-
                     else {
-
-
-
                         if (countedSections !== 0) {
-
-
                             sendingAmount = "100";
                             if (saveProgressBar !== undefined && saveProgressBar !== null) {
                                 saveProgressBar.setAttribute("aria-valuenow", sendingAmount);
@@ -8950,17 +9054,12 @@ var config = {
                                 savingCloseButton.hidden = true;
                                 closeButton.hidden = false;
                                 config.cancel = true;
+                                $("#showDialogPanelDialogModal").modal('hide');
                             }
-
-
                             addToLogNL("Sending long config string. FINISHED. Result = OK!");
-
                             return true;
-
-
                         }
                         else {
-
                             if (counter == 1) {
 
                                 filePartName = "setwebproperty?property=tail";
@@ -8970,12 +9069,8 @@ var config = {
                                 if (savingCloseButton !== undefined && savingCloseButton !== null) {
                                     savingCloseButton.disabled = true;
                                 }
-
-
                             }
                             else {
-
-
                                 sendingAmount = "100";
                                 if (saveProgressBar !== undefined && saveProgressBar !== null) {
                                     saveProgressBar.setAttribute("aria-valuenow", sendingAmount);
@@ -8988,19 +9083,13 @@ var config = {
                                     closeButton.hidden = false;
                                     config.cancel = true;
                                 }
-
                                 addToLogNL("Sending short config string. FINISHED. Result = OK!");
-
                                 return true;
-
                             }
                         }
                     }
-
                 }
-
                 counter++;
-
 
                 if (saveProgressBar !== undefined && saveProgressBar !== null) {
                     saveProgressBar.setAttribute("aria-valuenow", sendingAmount);
@@ -9008,15 +9097,11 @@ var config = {
                     saveProgressBar.innerHTML = sendingAmount + "%";
                     saveTextStatus.innerHTML = savingCurrentStatus;
                 }
-
-
                 addToLogNL("Sending config string. Still sending! " + filePartName);
                 //вызов функции асинхронного выполнения RESTfull POST запроса 
                 httpPostAsyncWithErrorReson(url, filePartName, subString, config.configSendAsync, counter, dataString, lengthDataSubString);
-
             }
             else {
-
                 //если HTTPClient вернул ошибку, сообщаем об ошибке в модальном окне если оно открыто, возвращаем false
                 if (saveTextStatus !== undefined && saveTextStatus !== null) {
                     saveTextStatus.innerHTML = getLang("savechangeserror");
@@ -9028,38 +9113,22 @@ var config = {
                 if (saveButton !== undefined && saveButton !== null) {
                     saveButton.hidden = false;
                 }
-
                 addToLogNL("Sending config string ERROR!" + httpResult);
                 return false;
-
             }
         }
         else {
             // если была отменена передача строки (нажатие кнопки "отменить" в модельном окне), закрываем модельное окно и возвращаем false
-
             var modalWindowBody = document.getElementById("saveConfigModalBody");
             if (modalWindowBody !== null && modalWindowBody !== undefined) {
                 $('#saveConfigModal').on('shown.bs.modal', function (e) {
                     $("#saveConfigModal").modal('hide');
                 });
             }
-
             return false;
         }
 
-
     }
-
-    /*
-    configPropertiesToDriver: function () {
-        var configPropertiesDriver = drivers.addDriver("config");
-        drivers.newDriverProperty(configPropertiesDriver, "type", 14, "ri"); //14 is config driver type
-        drivers.newDriverProperty(configPropertiesDriver, "language", configProperties.language, "");
-        drivers.newDriverProperty(configPropertiesDriver, "speak", configProperties.speack, "b");
-        drivers.newDriverProperty(configPropertiesDriver, "voice", configProperties.voice, "i");
-        drivers.onDriverLoaded(configPropertiesDriver);
-    }
-    */
 }
 
 ﻿/* ----------------------------------------------------------------------------
@@ -9237,7 +9306,7 @@ const ConfigDriverType = 14;
 
 var drivers = {
     // результат getalldriversproperties либо пустая строка
-    
+
     //массив объектов с драйверами
     //drivers: [],
 
@@ -9258,7 +9327,7 @@ var drivers = {
     //мы не можем использовать this, для обращения к методам этого объекта, поэтому заведомо передали себе ссылку на себя "asyncReciever"
     refreshResult: function (httpResult, node) {
         //HTTPClient добавляет строку "%error" в начало Response если запрос не был завешен HTTPCode=200 или произошел TimeOut
-        if (!httpResult.indexOf("%error")==0) {
+        if (!httpResult.indexOf("%error") == 0) {
             node.networkStatus = NET_ONLINE;
             //если запрос был выполнен удачно, парсим новые данные об драйверах, изменяем свойства drivers[] и добавляем новые driver если они появились
             //перед изучением парсинга, посмотрите результат API getalldriversproperties как текст
@@ -9267,7 +9336,7 @@ var drivers = {
 
         }
         else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
-            if (httpResult.indexOf("reponse")!=-1) {
+            if (httpResult.indexOf("reponse") != -1) {
                 node.networkStatus = NET_ERROR;
             }
             else {
@@ -9310,8 +9379,8 @@ var drivers = {
         if (node == undefined) return undefined;
         for (var i = 0; i < node.drivers.length; i++) {
             if (node.drivers[i]._id === driverId) {
-               return node.drivers[i];
-            }                
+                return node.drivers[i];
+            }
         }
         return undefined;
     },
@@ -9322,15 +9391,15 @@ var drivers = {
     parseDrivers: function (httpResult, node) {
         //первичный парсинг, помещаем строку пришедшую от HTTPClient в массив строк, разделяя по "\n"
         node.recievedDriversProperties = httpResult.split("\n");
-        
+
         if (node.recievedDriversProperties !== "") {//если первичный парсинг удался
-            
+
             var driver = undefined; //сбрасываем будущий объект со свойствами драйвера 
-            
+
             for (var i = 0; i < node.recievedDriversProperties.length; i++) {//перечисляем все строки в HTTPResult 
                 if (node.recievedDriversProperties[i] === "") continue; //если строка пуста, берем следующею
                 //--> разбор драйвер
-                if (node.recievedDriversProperties[i].indexOf("properties for:")==0) { //если заголовок драйвера найден                    
+                if (node.recievedDriversProperties[i].indexOf("properties for:") == 0) { //если заголовок драйвера найден                    
 
                     if (driver != undefined) {
                         this.onDriverLoaded(driver);
@@ -9385,7 +9454,7 @@ var drivers = {
                     else {
                         var propertyValue = parsedProp[1];
                         var propertyType = "";
-                    } 
+                    }
 
                     if (driver[propertyName] != undefined) {//если такое свойство уже существует
                         if (driver[propertyName].value != propertyValue) {//и если предыдущее значение не равно текущему                            
@@ -9461,8 +9530,7 @@ var drivers = {
             addValueListner: function (_event, _sender) { //регистрация подписки на изменения свойства                
                 try { //проверяем готов ли метод слушателя для обработчики этого события
                     _event(_sender, this);
-                } catch(exception)
-                {
+                } catch (exception) {
                     console.error(exception);
                     return; //неправильный метод либо не существует, либо вызовет исключение, не включаем его в число подписчиков
                 }
@@ -9531,7 +9599,7 @@ var drivers = {
             //асинхронный получатель будет вызван из HTTPClient после попытки изменить свойство драйвера
             //как было сказано выше - это будет другой поток и мы не имеем право использовать this
             setValueReciever: function (HTTPResult, upperReciever, sender, upperSender) {
-                if (!HTTPResult.indexOf("%error")==0) {//если не было сетевой ошибки
+                if (!HTTPResult.indexOf("%error") == 0) {//если не было сетевой ошибки
                     if (HTTPResult === "1") { //микроконтроллер  вернет "1" в качестве результата, если удалось изменить значения свойства драйвера
                         sender.networkStatus = NET_ONLINE; //разрешаем сетевой статус как "в сети" - до этого мы переходили в статус "в работе"
                         sender.value = sender.sendedValue; //ранее мы сохранили желаемое значение свойства, назначаем его в качестве нового значения свойства драйвера
@@ -9542,7 +9610,7 @@ var drivers = {
                     }
                 }
                 else {
-                    if (!HTTPResult.indexOf("response")!=-1) {//если HTTPClient вернул "%error" и в этой строке не было слова "response" - соединение не было установлено, статус "не в сети"
+                    if (!HTTPResult.indexOf("response") != -1) {//если HTTPClient вернул "%error" и в этой строке не было слова "response" - соединение не было установлено, статус "не в сети"
                         sender.networkStatus = NET_OFFLINE;
                     }
                     else { //если ответ был, но он не HTTPResult 200 OK - ошибка либо драйвера либо Unit 
@@ -9564,12 +9632,12 @@ var drivers = {
             },
             //асинхронный получатель значения свойства, отличается от "Set", там что примет от HTTPClient новое значение свойства, если не было ошибки сети
             getValueReciever: function (HTTPResult, upperReciever, sender, upperSender) {
-                if (!HTTPResult.indexOf("%error")==0) {
+                if (!HTTPResult.indexOf("%error") == 0) {
                     sender.networkStatus = NET_ONLINE; //возвращаемся в онлайн, были "в работе"
                     sender.value = HTTPResult; //новое значение свойства, все подписчики узнают об его изменении                    
                 }
                 else {
-                    if (!HTTPResult.indexOf("response")!=-1) { //уходим в оффлайн если ошибки
+                    if (!HTTPResult.indexOf("response") == -1) { //уходим в оффлайн если ошибки не вернули, значит timeout
                         sender.networkStatus = NET_OFFLINE;
                     }
                     else { //driver error
@@ -9659,6 +9727,9 @@ var driversUI = {
 
     onDriverSelectChange: function (event) {
         var driverSelect = event.currentTarget;
+        if (driverSelect.selectedIndex == -1) {
+            return true;
+        }
         var driverSelectOption = driverSelect.options[driverSelect.selectedIndex];
         var driver = driverSelectOption.driver;
 
@@ -9724,9 +9795,9 @@ var driversUI = {
                 }
             }
         }
+        //Example:
         //http://192.168.1.9:8084/adddriver?type=7&id=lcd1&pins=D21,D22,ADDR0x3F,VCC5,GND
         pinsString = "type=" + driver.type + "&id=" + document.getElementById("driverid").value + "&pins=" + pinsString;
-
         //TODO: decode Type from name 
         var httpResult = addDriver(driversUI.node.host, pinsString);
 
@@ -9745,12 +9816,9 @@ var driversUI = {
             }
             return true;
         }
-
         masterNodeDialog.errorLabel.innerText = httpResult;
         return false;
     },
-
-
 }
 ﻿var xmlns = "http://www.w3.org/2000/svg";
 
@@ -9838,27 +9906,6 @@ function describeArc(x, y, radius, startAngle, endAngle) {
     return d;
 }
 
-/*
-// convert 0..255 R,G,B values to binary string
-RGBToBin = function (r, g, b) {
-    var bin = r << 16 | g << 8 | b;
-    return (function (h) {
-        return new Array(25 - h.length).join("0") + h
-    })(bin.toString(2))
-}
-
-
-
-// convert a hexidecimal color string to 0..255 R,G,B
-hexToRGB = function (hex) {
-    var r = hex >> 16;
-    var g = hex >> 8 & 0xFF;
-    var b = hex & 0xFF;
-    return [r, g, b];
-}
-*/
-
-// convert 0..255 R,G,B values to a hexidecimal color string
 RGBToHex = function (r, g, b) {
     var bin = r << 16 | g << 8 | b;
     return (function (h) {
@@ -9874,7 +9921,6 @@ binToRGB = function (bin) {
     var b = pbin & 0xFF;
     return [r, g, b];
 }
-
 colorToRGB = function (color) {
     if (color == null) {
         return [0, 0, 0];
@@ -9884,7 +9930,6 @@ colorToRGB = function (color) {
     return binToRGB(color);
 }
 //-------------------------------------------------------------------------------------------------------------------
-
 var SVGText =
     function () {
         "use strict";
@@ -9895,7 +9940,6 @@ var SVGText =
             this.SVGText.id = this.id;
             this.SVGText.setAttributeNS(null, "height", "auto");
             this.SVGText.setAttributeNS(null, "font-family", theme.fontFamily);
-           // this.SVGText.setAttributeNS(null, "font-size", this.size + "em");
             svgElement.appendChild(this.SVGText);
             this.size = size;
         }
@@ -9907,7 +9951,6 @@ var SVGText =
             element.className = "WidgetText";
             element.innerHTML = text;
             var width = element.getBoundingClientRect().width;
-            //element.remove();
             document.body.removeChild(element);
             return width;
         };
@@ -9917,7 +9960,6 @@ var SVGText =
             element.className = "WidgetText";
             element.innerHTML = text;
             var width = element.getBoundingClientRect().height;
-            //element.remove();
             document.body.removeChild(element);
             return width;
         };
@@ -9943,19 +9985,19 @@ var SVGText =
                     var textSize = this.size * this.getTextWidth(text);
                     this.SVGText.setAttributeNS(null, "textLength", textSize);
                 }
-                },
-                get: function get() {
-                    return this.SVGText.textContent;
-                }
+            },
+            get: function get() {
+                return this.SVGText.textContent;
+            }
         }, {
-                key: "size",
-                set: function set(size) {
-                    this._size = size;
-                    this.SVGText.setAttributeNS(null, "font-size", size + "em");
-                },
-                get: function get() {
-                    return this._size; 
-                }
+            key: "size",
+            set: function set(size) {
+                this._size = size;
+                this.SVGText.setAttributeNS(null, "font-size", size + "em");
+            },
+            get: function get() {
+                return this._size;
+            }
         }, {
             key: "x",
             set: function set(x) {
@@ -9974,15 +10016,13 @@ var SVGText =
             }
         }, {
             key: "width",
-                get: function get() {
-                    return parseFloat(this.size * this.getTextWidth(this.text));
-                //return parseFloat(this.SVGText.getBoundingClientRect().width);
+            get: function get() {
+                return parseFloat(this.size * this.getTextWidth(this.text));
             }
         }, {
             key: "height",
-                get: function get() {                    
-                    return parseFloat(this.size * this.getTextHeight(this.text));
-                //return parseFloat(this.SVGText.getBoundingClientRect().height);
+            get: function get() {
+                return parseFloat(this.size * this.getTextHeight(this.text));
             }
         }, {
             key: "color",
@@ -10007,19 +10047,10 @@ var SVGText =
 
 //-----------------------------------------------------------------------------------------------------
 var SVGRect =
-    
     function () {
         "use strict";
-
         function SVGRect(svgElement, id, x, y, width, height) {
             this.id = id;
-            /*
-            this.x = x;
-            this.y = y;
-            this.width = width;
-            this.height = height;
-            */
-
             this.SVGRect = document.createElementNS(xmlns, "rect");
             this.SVGRect.setAttributeNS(null, 'x', x);
             this.SVGRect.setAttributeNS(null, 'y', y);
@@ -10100,9 +10131,7 @@ var SVGRect =
         return SVGRect;
     }();
 //SVGArc ------------------------------------------------------------------------------------
-
 var SVGArc =
-    
     function () {
         "use strict";
 
@@ -10110,11 +10139,20 @@ var SVGArc =
             this.id = id;
             this.x = x;
             this.y = y;
-            this._radius = radius;            
+            this._radius = radius;
             this.SVGArc = document.createElementNS(xmlns, "path");
-            this.SVGArc.setAttributeNS(null, 'x', x);
-            this.SVGArc.setAttributeNS(null, 'y', y);
-            this.SVGArc.setAttributeNS(null, 'stroke-width', lineWidth);
+            if (x != undefined) {
+                this.SVGArc.setAttributeNS(null, 'x', x);
+            }
+            if (y != undefined) {
+                this.SVGArc.setAttributeNS(null, 'y', y);
+            }
+            if (lineWidth != undefined) {
+                var _lineWidth = parseFloat(lineWidth);
+                if (!isNaN(_lineWidth)) {
+                    this.SVGArc.setAttributeNS(null, 'stroke-width', parseFloat(lineWidth));
+                }
+            }
             this.SVGArc.setAttributeNS(null, 'stroke-linejoin', "round");
             this.SVGArc.setAttributeNS(null, 'fill', 'none');
             svgElement.appendChild(this.SVGArc);
@@ -10123,13 +10161,21 @@ var SVGArc =
         var _proto = SVGArc.prototype;
 
         _proto.draw = function draw(from, to) {
+
+            if ((isNaN(from)) || (isNaN(to))) return;
             this.SVGArc.setAttributeNS(null, "d", describeArc(this.x, this.y, this._radius, from, to));
         };
 
         _proto.drawPath = function drawPath(path, width, height) {
-            this.SVGArc.setAttributeNS(null, 'width', width);
-            this.SVGArc.setAttributeNS(null, 'height', height);
-            this.SVGArc.setAttributeNS(null, "d", path);
+            if (!(isNaN(width))) {
+                this.SVGArc.setAttributeNS(null, 'width', width);
+            }
+            if (!(isNaN(height))) {
+                this.SVGArc.setAttributeNS(null, 'height', height);
+            }
+            if (path.indexOf("NaN") == -1) {
+                this.SVGArc.setAttributeNS(null, "d", path);
+            }
         };
 
         _proto.drawRoundedRect = function (width, height, curve, leftOffset, leftTop, rightTop, leftBottom, rightBottom) {
@@ -10144,7 +10190,6 @@ var SVGArc =
             else {
                 backH = width - curve * (leftOffset / 4);
             }
-
 
             var backV = height - curve * 2.5;
 
@@ -10170,16 +10215,19 @@ var SVGArc =
             }
             else {
                 var backH = width - curve * 2.5;
+                var lastVSign = " v-" + backV;
+                //SVG last rolback "v" attribute fix for sign values
+                if (backV < 0) {
+                    lastVSign = "v" + (0 - (backV * 2));
+                }
+
                 this.SVGArc.setAttributeNS(null, "d", "M" + curve * 3.0 +
-                    ", " + parseFloat(this.y - backV*3) + " h " + backH + " a" + rtCurve + "," + rtCurve + " 0 0 1  " + rtCurve +
+                    ", " + parseFloat(this.y - backV * 3) + " h " + backH + " a" + rtCurve + "," + rtCurve + " 0 0 1  " + rtCurve +
                     ", " + curve + " v " + backV * 2 + " a" + rbCurve + "," + rbCurve + " 0 0 1 -" + rbCurve +
                     ", " + curve + " h-" + backH + " a" + lbCurve + "," + lbCurve + " 0 0 1 -" + lbCurve +
-                    ",-" + curve + " v-" + backV + " a" + ltCurve + "," + ltCurve + " 0 0 1  " + ltCurve +                    
+                    ",-" + curve + lastVSign + " a" + ltCurve + "," + ltCurve + " 0 0 1  " + ltCurve +
                     ",-" + curve + " z");
-
             }
-
-
         };
         _proto.hide = function hide() {
             this.SVGArc.setAttributeNS(null, "d", "");
@@ -10225,18 +10273,18 @@ var SVGArc =
             get: function get() {
                 return parseFloat(this.SVGArc.getAttributeNS(null, 'opacity'));
             }
+        },
+        {
+            key: "linewidth",
+            set: function set(linewidth) {
+
+                this.SVGArc.setAttributeNS(null, 'stroke-width', parseFloat(linewidth));
             },
-            {
-                key: "linewidth",
-                set: function set(linewidth) {
-                    
-                    this.SVGArc.setAttributeNS(null, 'stroke-width', parseFloat(linewidth));
-                },
-                get: function get() {
-                    return parseFloat(this.SVGArc.getAttributeNS(null, 'stroke-width'));
-                }
-            }, 
-            {
+            get: function get() {
+                return parseFloat(this.SVGArc.getAttributeNS(null, 'stroke-width'));
+            }
+        },
+        {
             key: "radius",
             set: function set(radius) {
                 this._radius = parseFloat(radius);
@@ -10248,10 +10296,10 @@ var SVGArc =
 
         return SVGArc;
     }();
-//----------------------------------------------------------------------------------------------------------------------------------------------------------
 
+//----------------------------------------------------------------------------------------------------------------------------------------------------------
 var SVGIcon =
-    
+
     function () {
         "use strict";
 
@@ -10389,6 +10437,7 @@ OWLOS распространяется в надежде, что она буде
 
 var langua = "prepareUnit=Підготовка інтерфейсу користувача\n" +
     "dashboardTab=Панель пристроїв\n" +
+    "OK=Застосувати\n" +
     "nodeTab=Модуль\n" +
     "settingsTab=Вузли\n" +
     "filesTab=Файли\n" +
@@ -10396,28 +10445,28 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "network=Мережа\n" +
     "node=Модуль\n" +
     "esp=Esp\n" +
-    "reset=Скидання\n"+
-    "cancel=Скасувати\n"+
-    "areYouSure=Ви впевнені?\n"+
-    "resetnode=Перезавантажити модуль\n"+
-    "autorefreshoff=Автооновлення: вимкн.\n"+
-    "autorefreshon=Автообновление: вкл.\n"+
-    "name=Ім'я\n"+
-    "value=Значення\n"+
-    "newvalue=Нове значення\n"+
-    "property=Властивість\n"+
-    "top=Вгору\n"+
-    "dt_display=Відображати\n"+
-    "dt_recordsperpage=записів на сторінці\n"+
-    "dt_showing=Відображається c\n"+
-    "dt_to=по\n"+
-    "dt_of=всього\n"+
-    "dt_entries=записів\n"+
-    "dt_search=Пошук:\n"+
-    "dt_first=Перша\n"+
-    "dt_last=Остання\n"+
-    "dt_next=Наступна\n"+
-    "dt_previous=Попередня\n"+
+    "reset=Скидання\n" +
+    "cancel=Скасувати\n" +
+    "areYouSure=Ви впевнені?\n" +
+    "resetnode=Перезавантажити модуль\n" +
+    "autorefreshoff=Автооновлення: вимкн.\n" +
+    "autorefreshon=Автообновление: вкл.\n" +
+    "name=Ім'я\n" +
+    "value=Значення\n" +
+    "newvalue=Нове значення\n" +
+    "property=Властивість\n" +
+    "top=Вгору\n" +
+    "dt_display=Відображати\n" +
+    "dt_recordsperpage=записів на сторінці\n" +
+    "dt_showing=Відображається c\n" +
+    "dt_to=по\n" +
+    "dt_of=всього\n" +
+    "dt_entries=записів\n" +
+    "dt_search=Пошук:\n" +
+    "dt_first=Перша\n" +
+    "dt_last=Остання\n" +
+    "dt_next=Наступна\n" +
+    "dt_previous=Попередня\n" +
     "adddriver=Додати драйвер\n" +
     "addnode=Додати вузол\n" +
     "addnodeheader=Додати вузол\n" +
@@ -10429,9 +10478,9 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "addnodeerror_nicknameempty=Iм'я не може бути порожнім\n" +
     "addnodeerror_cantsaveconfig=Неможливо зберегти налаштування в вузлі\n" +
     "addnodeerror_cantaddnode=Неможливо додати вузол\n" +
-    "upload=Завантажити\n"+
-    "files=Файли\n"+
-    "uploadfiles=Завантажити файли до вузла\n"+
+    "upload=Завантажити\n" +
+    "files=Файли\n" +
+    "uploadfiles=Завантажити файли до вузла\n" +
     "selectfiles=Будь ласка, виберіть файли\n" +
     "temperature=Температура\n" +
     "humidity=Вологість\n" +
@@ -10455,7 +10504,7 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "low=Низька\n" +
     "smokelow=Низька\n" +
     "smokenorm=Середня\n" +
-    "smokehigh=Висока\n" +    
+    "smokehigh=Висока\n" +
     "yesmotion=Рух\n" +
     "nomotion=Немає\n" +
     "rid_online=В мережі\n" +
@@ -10465,22 +10514,22 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "lcd=Екран\n" +
     "send=Відпр.\n" +
     "clear=Підсв.\n" +
-	//connection statuses
-	"connected=З'єднано\n"+
-	"disconnected=Роз'єднано\n" +
-	"idlestatus=Зміна статусу\n"+
-    "nossidavailable=Обрана мережа недоступна\n"+ 
-	"scancompleted=Сканування виконано\n"+
-	"connectfailed=Не вдається підключитися\n"+
-    "connectionlost=Підключення втрачено\n"+
-    "nostate=Не визначено\n"+
-    "debugmode=Режим налагодження\n"+
-    "connectiontimeout=Тайм-аут з'єднання\n"+
-	"badprotocol=Невірний протокол\n"+
-    "badclientid=Невірний ідентифікатор клієнта\n"+
-    "unavailable=Недоступно\n"+
-    "badcredentials=Невірні облікові дані\n"+
-    "unauthorized=Не дозволено\n"+
+    //connection statuses
+    "connected=З'єднано\n" +
+    "disconnected=Роз'єднано\n" +
+    "idlestatus=Зміна статусу\n" +
+    "nossidavailable=Обрана мережа недоступна\n" +
+    "scancompleted=Сканування виконано\n" +
+    "connectfailed=Не вдається підключитися\n" +
+    "connectionlost=Підключення втрачено\n" +
+    "nostate=Не визначено\n" +
+    "debugmode=Режим налагодження\n" +
+    "connectiontimeout=Тайм-аут з'єднання\n" +
+    "badprotocol=Невірний протокол\n" +
+    "badclientid=Невірний ідентифікатор клієнта\n" +
+    "unavailable=Недоступно\n" +
+    "badcredentials=Невірні облікові дані\n" +
+    "unauthorized=Не дозволено\n" +
     "connectionstatus=Статус підключення: \n" +
     "detect=Є рух\n" +
     "notdetect=Немає\n" +
@@ -10546,7 +10595,7 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "updatehost=URL сервера оновлень\n" +
     "updatenodeprop=Панель оновлень прошивки\n" +
     "nodeproperties=Властивості вузла\n" +
-    "drivers=Драйвери\n" +  
+    "drivers=Драйвери\n" +
     "adddriverdigalog=Додати драйвер до вузлу\n" +
     "drivertype=Тип драйвера\n" +
     "driverid=ID драйвера\n" +
@@ -10555,7 +10604,7 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "adddriverbutton=Додати\n" +
     "notused=Не використовується\n" +
     "checkchangedialog=Застосувати зміни\n" +
-    "applycheck=Застосувати\n" +    
+    "applycheck=Застосувати\n" +
     "showproperties=Властивості віджета\n" +
     "setallwidgetspropbutton=Застосувати до всіх\n" +
     "setpropbutton=Застосувати\n" +
@@ -10565,8 +10614,8 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "scripts=Скріпти\n" +
     "scriptexecute=Виконати (F8)\n" +
     "scriptpause=Пауза\n" +
-    "scriptdelete=Вилучити\n" +  
-    "scriptstartdebug=Відлагоджувати\n" + 
+    "scriptdelete=Вилучити\n" +
+    "scriptstartdebug=Відлагоджувати\n" +
     "addscriptheader=Додати скріпт\n" +
     "addscriptbutton=Додати\n" +
     "addscriptname=Iм'я скріпта\n" +
@@ -10575,9 +10624,28 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "сhangessaved=Зміни збережені \n" +
     "savechangeserror=Помилка. Зміни не збережені. Спробуйте ще раз \n" +
     "savingchanges=Збереження змін\n" +
+    "nodeselect=Виберіть вузол\n" +
+    "driverselect=Виберіть драйвер\n" +
+    "propselect=Виберіть властивість\n" +
+    "widgetselect=Виберіть віджет\n" +
+    "tooglesidebar=Переключити бічну панель\n" +
+    "pinsidebar=Закріпити бічну панель\n" +
+    "saveconfiguration=Зберегти налаштування\n" +
+    "tooglewidgetsmode=Переключити режим віджетів\n" +
+    "addwidget=Додати віджет\n" +
+    "createdriverdialog=Додати драйвер\n" +
+    "addnodename=Додати вузол\n" +
+    "size=розмір\n" +
+    "radialwidget=Radial\n" +
     "language=ukraine\n";
 
+
 var langen = "prepareUnit=prepare UI, please wait...\n" +
+    "OK=Confirm\n" +
+    "nodeselect=1) Please select node\n" +
+    "driverselect=2) Select driver on selected node\n" +
+    "propselect=3) Select property of selected driver\n" +
+    "widgetselect=4) Select widget to visualize selected driver property\n" +
     "nodeTab=Node\n" +
     "settingsTab=Nodes\n" +
     "filesTab=Files\n" +
@@ -10756,7 +10824,7 @@ var langen = "prepareUnit=prepare UI, please wait...\n" +
     "scriptexecute=Run (F8)\n" +
     "scriptpause=Pause\n" +
     "scriptdelete=Delete\n" +
-    "scriptstartdebug=Debug\n" + 
+    "scriptstartdebug=Debug\n" +
     "addscriptheader=Adding script\n" +
     "addscriptbutton=Add\n" +
     "addscriptname=Script name\n" +
@@ -10764,6 +10832,7 @@ var langen = "prepareUnit=prepare UI, please wait...\n" +
     "сhangessaved=Changes saved\n" +
     "savechangeserror=Saving changes error. Close this window and try again later! \n" +
     "savingchanges=Saving changes\n" +
+    "radialwidget=Radial\n" +
     "language=english\n";
 
 var langru = "prepareUnit=Подготовка интерфейса пользователя\n" +
@@ -10944,7 +11013,7 @@ var langru = "prepareUnit=Подготовка интерфейса пользо
     "scriptexecute=Выполнить (F8)\n" +
     "scriptpause=Пауза\n" +
     "scriptdelete=Удалить\n" +
-    "scriptstartdebug=Отладка\n" + 
+    "scriptstartdebug=Отладка\n" +
     "addscriptheader=Добавить скрипт\n" +
     "addscriptbutton=Добавить\n" +
     "addscriptname=Имя скрипта\n" +
@@ -10953,6 +11022,18 @@ var langru = "prepareUnit=Подготовка интерфейса пользо
     "сhangessaved=Изменения внесены\n" +
     "savechangeserror=Ошибка сохранения изменений. Поробуйте еще раз\n" +
     "savingchanges=Сохранение изменений\n" +
+    "nodeselect=Select node\n" +
+    "driverselect=Select driver\n" +
+    "propselect=Select property\n" +
+    "widgetselect=Select widget\n" +
+    "tooglesidebar=Toogle sidebar\n" +
+    "pinsidebar=Pin sidebar\n" +
+    "saveconfiguration=Save configuration\n" +
+    "tooglewidgetsmode=Toogle widgets mode\n" +
+    "addwidget=Add widget\n" +
+    "createdriverdialog=Add driver\n" +
+    "addnodename=Add node\n" +
+    "radialwidget=Radial\n" +
     "language=russian\n";
 
 
@@ -10968,7 +11049,7 @@ function getLang(key) {
             }
         }
         else {
-            currentLang = "en"; 
+            currentLang = "ua";
         }
 
         if (currentLang == "") {
@@ -10990,7 +11071,7 @@ function getLang(key) {
                 return currentLang[i].split("=")[1];
             }
         }
-        
+
     } catch (exception) {
         //return "key" if exception or not found
     }
@@ -11005,7 +11086,7 @@ function langCompare(source, dest, panel) {
 
     for (var i = 0; i < sourceLang.length; i++) {
         if (sourceLang[i] === "") continue;
-        var sourceKey = sourceLang[i].split("=")[0];    
+        var sourceKey = sourceLang[i].split("=")[0];
         var found = false;
         for (var j = 0; j < destLang.length; j++) {
             if (destLang[j].indexOf(sourceKey + "=") == 0) {
@@ -11032,9 +11113,7 @@ function langCompare(source, dest, panel) {
             }
         }
     }
-
     panel.innerHTML = dest;
-
 }﻿
 /* ----------------------------------------------------------------------------
 Ready IoT Solution - OWLOS
@@ -11082,7 +11161,7 @@ OWLOS распространяется в надежде, что она буде
 //Base radial class 
 //-----------------------------------------------------------------------------------
 var BaseWidgetWrapper =
-    
+
     function () {
         "use strict";
 
@@ -11096,7 +11175,7 @@ var BaseWidgetWrapper =
                 this.driver = driver;
                 this.driverProperty = driverProperty;
                 this.offlineStarter(parentPanel, driver._id, driverProperty.name, noWidget);
-                
+
             }
         }
 
@@ -11110,7 +11189,7 @@ var BaseWidgetWrapper =
             if (noWidget == undefined || !noWidget) {
                 this.widget = new RadialWidget(parentPanel, this.makeUniqueId(driverId), configProperties.widgetssize);
                 this.widget.driverClass = this;
-                this.widget.onload = this.onWidgetLoad;                
+                this.widget.onload = this.onWidgetLoad;
             }
         };
 
@@ -11126,9 +11205,7 @@ var BaseWidgetWrapper =
 
         _proto.onWidgetLoad = function onWidgetLoad(widget) {
             widget.widgetHolder.onclick = widget.driverClass.widgetClick;
-            
-            //widget.driverClass.draw();
-            //widget.properties = widget.driverClass.configPropertiesWidget;
+
             if (widget.driverClass.widgetProperties != undefined) {
                 widget.properties = widget.driverClass.widgetProperties;
             }
@@ -11141,15 +11218,12 @@ var BaseWidgetWrapper =
                 widget.driverClass._onload(widget.driverClass);
             }
         };
-
-
         _proto.getWidgetProperties = function () {
             if (this.widget != undefined) {
                 return this.widget.properties;
             }
             return undefined;
         };
-
         _proto.joinDriver = function joinDriver(driver, driverProperty) {
             this.driver = driver;
             this.driverProperty = driverProperty;
@@ -11161,22 +11235,17 @@ var BaseWidgetWrapper =
             this.node = config.getNodeByHost(driver._host); //drivers.addNetworkStatusListner(this.onNetworkStatusChange, this);
 
             this.node.addNetworkStatusListner(this.onNetworkStatusChange, this);
-            this.driverProperty.addNetworkStatusListner(this.onNetworkStatusChange, this);
-            this.driverProperty.addValueListner(this.onValueChange, this);
+            if (this.driverProperty != undefined)
+            {
+                this.driverProperty.addNetworkStatusListner(this.onNetworkStatusChange, this);
+                this.driverProperty.addValueListner(this.onValueChange, this);
+            }
         };
 
         _proto.onDriverLoaded = function onDriverLoaded(sender, driver) {
             if (sender.driver != undefined) return;
 
             if (sender.driverId == driver._id) {
-                /*
-                sender.driver = driver;
-                sender.driverProperty = driver[sender.driverPropertyName];
-                sender.widget.driverClass.driverProperty = sender.driverProperty;
-                drivers.addNetworkStatusListner(sender.onNetworkStatusChange, sender);
-                sender.driverProperty.addNetworkStatusListner(sender.onNetworkStatusChange, sender);
-                sender.driverProperty.addValueListner(sender.onValueChange, sender);
-                */
                 sender.joinDriver(driver, driver[sender.driverPropertyName]);
             }
         };
@@ -11200,14 +11269,15 @@ var BaseWidgetWrapper =
                 }
             }
         };
-
         _proto.widgetClick = function widgetClick(event) {
             event.stopPropagation();
             var widgetPanel = event.currentTarget;
             var widget = widgetPanel.widget;
 
             if (widget.mode == WORK_MODE) {
+                if (widget.driverClass.driverProperty != undefined) {
                 widget.driverClass.driverProperty.getValue();
+                }
             }
 
             return true;
@@ -11215,7 +11285,7 @@ var BaseWidgetWrapper =
 
         _proto.refresh = function refresh() { };
 
-        _proto.draw = function draw() {};
+        _proto.draw = function draw() { };
 
         _createClass(BaseWidgetWrapper, [{
             key: "onload",
@@ -11277,7 +11347,7 @@ var RadialWidgetWrapper =
 
 
 var TemperatureWidgetWrapper =
-    
+
     function (_BaseWidgetWrapper) {
         "use strict";
 
@@ -11362,7 +11432,7 @@ var ValueWidgetWrapper =
 
 
 var HumidityWidgetWrapper =
-    
+
     function (_BaseWidgetWrapper2) {
         "use strict";
 
@@ -11392,7 +11462,7 @@ var HumidityWidgetWrapper =
             if (this.driverProperty == undefined) return;
 
             if (this.driverProperty.networkStatus == NET_ONLINE) {
-                this.widget.refresh(this.driverProperty.value, Math.round(this.driverProperty.value) + "%", this.driver._id + "-"+ getLang("humidity"), this.driver.humidityhistorydata.value);
+                this.widget.refresh(this.driverProperty.value, Math.round(this.driverProperty.value) + "%", this.driver._id + "-" + getLang("humidity"), this.driver.humidityhistorydata.value);
             } else {
                 this.widget.refresh(0, "--", this.driver._id);
             }
@@ -11406,7 +11476,7 @@ var HumidityWidgetWrapper =
 
 
 var HistoryDataGraphWidgetWrapper =
-    
+
     function (_BaseWidgetWrapper3) {
         "use strict";
 
@@ -11427,19 +11497,12 @@ var HistoryDataGraphWidgetWrapper =
 
             this.widget = new GraphWidget(parentPanel, this.makeUniqueId(driverId), configProperties.widgetssize, temperatureIcon);
             this.widget.driverClass = this;
-            this.widget.onload = this.onWidgetLoad;                
-
-           // this.widget.driverClass = this;
-            //this.widget.widgetHolder.onclick = this.widgetClick;
-            //this.draw();
-
+            this.widget.onload = this.onWidgetLoad;
         };
 
         _proto4.onWidgetLoad = function onWidgetLoad(widget) {
             widget.widgetHolder.onclick = widget.driverClass.widgetClick;
 
-            //widget.driverClass.draw();
-            //widget.properties = widget.driverClass.configPropertiesWidget;
             if (widget.driverClass.widgetProperties != undefined) {
                 widget.properties = widget.driverClass.widgetProperties;
             }
@@ -11472,7 +11535,7 @@ var HistoryDataGraphWidgetWrapper =
     }(BaseWidgetWrapper);
 
 var LightWidgetWrapper =
-    
+
     function (_BaseWidgetWrapper4) {
         "use strict";
 
@@ -11484,7 +11547,7 @@ var LightWidgetWrapper =
             _BaseWidgetWrapper4.prototype.offlineStarter.call(this, parentPanel, driverId, driverPropertyName, true);
 
             this.widget = new LightWidget(parentPanel, this.makeUniqueId(driverId), configProperties.widgetssize);
-            this.widget.driverClass = this;            
+            this.widget.driverClass = this;
             this.widget.onload = this.onWidgetLoad;
         };
 
@@ -11524,7 +11587,7 @@ var LightWidgetWrapper =
     }(BaseWidgetWrapper);
 
 var SmokeWidgetWrapper =
-    
+
     function (_BaseWidgetWrapper5) {
         "use strict";
 
@@ -11574,7 +11637,7 @@ var SmokeWidgetWrapper =
     }(BaseWidgetWrapper);
 
 var MotionWidgetWrapper =
-    
+
     function (_BaseWidgetWrapper6) {
         "use strict";
 
@@ -11645,7 +11708,7 @@ var MotionWidgetWrapper =
     }(BaseWidgetWrapper);
 
 var SensorWidgetWrapper =
-    
+
     function (_BaseWidgetWrapper7) {
         "use strict";
 
@@ -11684,7 +11747,7 @@ var SensorWidgetWrapper =
 
 
 var ActuatorWidgetWrapper =
-    
+
     function () {
         "use strict";
 
@@ -11743,7 +11806,6 @@ var ActuatorWidgetWrapper =
 
         };
 
-
         _proto9.joinDriver = function joinDriver(driver, driverProperty) {
             this.driver = driver;
             this.driverProperty = driverProperty;
@@ -11764,7 +11826,7 @@ var ActuatorWidgetWrapper =
                 sender.joinDriver(driver, driver[sender.driverPropertyName]);
             }
         };
-            
+
         _proto9.onValueChange = function onValueChange(sender, driverProperty) {
             sender.draw();
         };
@@ -11774,7 +11836,6 @@ var ActuatorWidgetWrapper =
                 sender.widget.networkStatus = driverProperty.networkStatus;
             }
         };
-
         _proto9.onDashboardModeChange = function onDashboardModeChange(sender, mode) {
             if (sender.widget != undefined) {
                 if (mode) {
@@ -11792,7 +11853,7 @@ var ActuatorWidgetWrapper =
 
             if (widget.mode == WORK_MODE) {
                 var driverProperty = widget.driverClass.driverProperty;
-
+                if (driverProperty == undefined) return;
                 if (parseInt(driverProperty.value) == 1) {
                     driverProperty.setValue(0);
                 } else {
@@ -11803,7 +11864,6 @@ var ActuatorWidgetWrapper =
 
             return true;
         };
-
         _proto9.draw = function draw() {
             if (this.widget == undefined) return;
             if (this.driverProperty == undefined) return;
@@ -11833,14 +11893,12 @@ var ActuatorWidgetWrapper =
                 this._onload = onload;
             }
         }]);
-
-
         return ActuatorWidgetWrapper;
     }(); //LCD ----------------------------------------------------------------------------------
 
 
 var LCDWidgetWrapper =
-    
+
     function () {
         "use strict";
 
@@ -12028,7 +12086,7 @@ var LCDWidgetWrapper =
 
 
 var StepperWidgetWrapper =
-    
+
     function () {
         "use strict";
 
@@ -12060,7 +12118,7 @@ var StepperWidgetWrapper =
             if (!data.indexOf("%error") == 0) {
                 driverClass.stepperWidget.networkStatus = NET_RECONNECT;
             } else {
-                if (!data.indexOf("response")!=-1) {//offline 
+                if (!data.indexOf("response") != -1) {//offline 
                     //  driverClass.stepperWidget.networkStatus = NET_OFFLINE;
                 } else {
                     //driver error
@@ -12106,14 +12164,14 @@ var StepperWidgetWrapper =
 
 
 var WidgetsLayer = {
-    
+
     RadialWidget: {
         id: "radialwidget",
         name: getLang("radial"),
         widget: RadialWidgetWrapper,
         driversTypes: "any",
         driversProperties: "any"
-    },    
+    },
     TemperatureWidget: {
         id: "temperature",
         name: getLang("temperature"),
@@ -12133,7 +12191,7 @@ var WidgetsLayer = {
         name: getLang("historydatagraph"),
         widget: HistoryDataGraphWidgetWrapper,
         driversTypes: "any",
-        driversProperties: ";historydata;historyfile;temperaturehistorydata;humidityhistorydata;"
+        driversProperties: ";historydata;historyfile;temperaturehistorydata;humidityhistorydata;heatindexhistorydata;"
     },
     LightWidget: {
         id: "light",
@@ -12203,6 +12261,8 @@ var WidgetsLayer = {
             if (WidgetsLayer[widgetProp].id == undefined) continue;
 
             if (WidgetsLayer[widgetProp].id == id) {
+                //динамический перевод name (виджеты могут появится ранее словаря языков)
+                WidgetsLayer[widgetProp].name = getLang(WidgetsLayer[widgetProp].id);
                 return WidgetsLayer[widgetProp];
             }
         }
@@ -12273,7 +12333,7 @@ OWLOS распространяется в надежде, что она буде
 //^^^---------------------------------------------------------------------------------------------------------------------------------------------------
 
 //Global flags 
-const NET_OFFLINE = 0; 
+const NET_OFFLINE = 0;
 const NET_ONLINE = 1;
 const NET_ERROR = 2;
 const NET_RECONNECT = 3;
@@ -12343,17 +12403,17 @@ function loadingScripts(withInternet) {
         link.rel = 'stylesheet';
 
         if (UIWatch === 'light') {
-            if (withInternet) link.href = "https://bootswatch.com/4/flatly/bootstrap.min.css"; 
+            if (withInternet) link.href = "https://bootswatch.com/4/flatly/bootstrap.min.css";
             else link.href = "bootstrap.spacelab.min.css"; //если мы без интернет
         }
         else {//default 
-            if (withInternet) link.href = "https://bootswatch.com/4/slate/bootstrap.min.css"; //если мы с интернет //link.href = "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css";
-            else link.href = "bootstrap.min.css"; //если мы без интернет
+            //if (withInternet) link.href = "https://bootswatch.com/4/slate/bootstrap.min.css"; //если мы с интернет //link.href = "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css";
+            //else 
+            //all time local copy loading
+            link.href = "bootstrap.min.css"; //если мы без интернет
 
         }
-        
         addToLog("loading bootstrap.css from " + link.href); //намерения загрузить в консоль
-
         document.getElementsByTagName("head")[0].appendChild(link);
         link.onload = function () {//если получится загрузить bootstap.css
             addToLogEnd("..OK", 1);//отметим в консоле об успехе 
@@ -12375,55 +12435,62 @@ function loadingScripts(withInternet) {
                     var bootstrapScript = document.createElement('script'); //и ОН САМЫЙ, без него никак, грузим - ждем
                     bootstrapScript.onload = function () {//готово
                         loadingScript("configcore.js");
-                        loadingScript("languagescore.js"); //все модулю без URL принадлежать OWS OS и всегда грузятся с flash
-                        loadingScript("speechcore.js");
-                        loadingScript("drawcore.js");
-                        loadingScript("restclientcore.js");
-                        loadingScript("driverscore.js");
-                        loadingScript("scriptscore.js");
-                        loadingScript("pinscore.js");
+                        var languageScript = document.createElement('script');
+                        languageScript.onload = function () {
+                            //loadingScript("languagescore.js"); //все модулю без URL принадлежать OWS OS и всегда грузятся с flash
+                            loadingScript("speechcore.js");
+                            loadingScript("drawcore.js");
+                            loadingScript("restclientcore.js");
+                            loadingScript("driverscore.js");
+                            loadingScript("scriptscore.js");
+                            loadingScript("pinscore.js");
 
-                        loadingScript("dialogelement.js");
-                        loadingScript("dialoginputelement.js");
-                        loadingScript("buttonelement.js");
-                        loadingScript("dialogselectelement.js");
-                        loadingScript("sidebarelement.js");
-                        loadingScript("valueeditorelement.js");
+                            loadingScript("dialogelement.js");
+                            loadingScript("dialoginputelement.js");
+                            loadingScript("buttonelement.js");
+                            loadingScript("dialogselectelement.js");
+                            loadingScript("sidebarelement.js");
+                            loadingScript("valueeditorelement.js");
+                            loadingScript("dialoglabelelement.js");
+                            loadingScript("dialogprogressbarelement.js");
 
-                        var baseWidgetScript = document.createElement('script');
-                        baseWidgetScript.onload = function () {
-                            //  loadingScript("basewidget.js");
-                            loadingScript("radialwidget.js");
-                            loadingScript("actuatorwidget.js");
-                            loadingScript("lcdwidget.js");
-                            loadingScript("stepperwidget.js");
-                            loadingScript("motionwidget.js");
-                            loadingScript("smokewidget.js");
-                            loadingScript("lightwidget.js");
-                            loadingScript("temperaturewidget.js");
-                            loadingScript("graphwidget.js");
-                            loadingScript("tablewidget.js");
-                            loadingScript("valuewidget.js");
-                            loadingScript("widgetswrappers.js");
-                            loadingScript("filespanelui.js");
-                            loadingScript("driversui.js");
-                            loadingScript("dashboardui.js");
-                            loadingScript("settingsui.js");
+                            var baseWidgetScript = document.createElement('script');
+                            baseWidgetScript.onload = function () {
+                                //  loadingScript("basewidget.js");
+                                loadingScript("radialwidget.js");
+                                loadingScript("actuatorwidget.js");
+                                loadingScript("lcdwidget.js");
+                                loadingScript("stepperwidget.js");
+                                loadingScript("motionwidget.js");
+                                loadingScript("smokewidget.js");
+                                loadingScript("lightwidget.js");
+                                loadingScript("temperaturewidget.js");
+                                loadingScript("graphwidget.js");
+                                loadingScript("tablewidget.js");
+                                loadingScript("valuewidget.js");
+                                loadingScript("widgetswrappers.js");
+                                loadingScript("headerpanelui.js");
+                                loadingScript("scriptsui.js");
+                                loadingScript("filespanelui.js");
+                                loadingScript("driversui.js");
+                                loadingScript("dashboardui.js");
+                                loadingScript("settingsui.js");
 
-                            //var nodePropertiesScript = document.createElement('script'); //с ожиданием
-                            //nodePropertiesScript.onload = function () { //when node properties is loading we can start index script
-
-                            loadingScript("index.js"); //ядро OWLOS UI, грузится последним, стартует систему
-                            //}
+                                loadingScript("index.js"); //ядро OWLOS UI, грузится последним, стартует систему
+                                //}
+                                //--> NOTE: код ниже - обратное сворачивание загрузчкив контента (стек загрузки)
+                                //nodePropertiesScript.src = "nodeproperties.js";
+                                //addToLogNL("loading nodeproperties from " + nodePropertiesScript.src);
+                                //document.getElementsByTagName('head')[0].appendChild(nodePropertiesScript);
+                            }
                             //--> NOTE: код ниже - обратное сворачивание загрузчкив контента (стек загрузки)
-                            //nodePropertiesScript.src = "nodeproperties.js";
-                            //addToLogNL("loading nodeproperties from " + nodePropertiesScript.src);
-                            //document.getElementsByTagName('head')[0].appendChild(nodePropertiesScript);
+                            baseWidgetScript.src = "basewidget.js";
+                            addToLogNL("loading basewidget from " + baseWidgetScript.src);
+                            document.getElementsByTagName('head')[0].appendChild(baseWidgetScript);
                         }
-                        //--> NOTE: код ниже - обратное сворачивание загрузчкив контента (стек загрузки)
-                        baseWidgetScript.src = "basewidget.js";
-                        addToLogNL("loading basewidget from " + baseWidgetScript.src);
-                        document.getElementsByTagName('head')[0].appendChild(baseWidgetScript);
+                        languageScript.src = "languagescore.js";
+                        addToLogNL("loading languagescore from " + languageScript.src);
+                        document.getElementsByTagName('head')[0].appendChild(languageScript);
                     }
                     //--> NOTE: код ниже - обратное сворачивание загрузчкив контента (стек загрузки)
                     if (withInternet) bootstrapScript.src = "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js";
@@ -12480,7 +12547,6 @@ function _defineProperties(target, props) {
         Object.defineProperty(target, descriptor.key, descriptor);
     }
 }
-
 function _createClass(Constructor, protoProps, staticProps) {
     if (protoProps) {
         _defineProperties(Constructor.prototype, protoProps);
@@ -12489,20 +12555,17 @@ function _createClass(Constructor, protoProps, staticProps) {
         _defineProperties(Constructor, staticProps); return Constructor;
     }
 }
-
 function _assertThisInitialized(self) {
     if (self === void 0) {
         throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
     } return self;
 }
-
 //see: https://learn.javascript.ru/prototype
 function _inheritsLoose(subClass, superClass) {
-    subClass.prototype = Object.create(superClass.prototype); 
+    subClass.prototype = Object.create(superClass.prototype);
     subClass.prototype.constructor = subClass;
     subClass.__proto__ = superClass;
 }
-
 function waitForElement(element, callBack) {
     window.setTimeout(function () {
         if ($("#" + element.id).length) {
@@ -12515,29 +12578,46 @@ function waitForElement(element, callBack) {
         }
     }, 500)
 }
-
 //--------------------------------------------------------------------------------------------------------------------------------------------------
 //работа с консолью реализована в bootcore.js - здесь этот код используется и не надо грузить лишние модули из index.html
 //даже если что то совсем пойдет не так - у нас есть возможность информировать пользователя, так как мы загрузили Log скрипты при помощи браузера
-
 //добавить строку обычным цветом
 function addToLog(text) {
     addToLog(text, 0);
 }
 //добавить строку с кодом цвета (кодом события)
 //NOTE: для указания цвета используется bootstrap - одна в начале загрузки его не будет, консоль "окрасится" если получится загрузить bootstrap
-function addToLog(text, code) {    
+function addToLog(text, code) {
     var bootLog = document.getElementById("bootLog");
+
+    while (bootLog.childNodes.length > 100) {
+        bootLog.removeChild(bootLog.lastChild);
+    }
+
+    var consoleDateText = document.createElement('text');
+    consoleDateText.className = "text-secondary";
+    consoleDateText.innerText = new Date().toLocaleString();
+
+    var consoleText = document.createElement('text');
+    //consoleText.className = "text-primary console-text";
+    consoleText.innerText = text;
+
+    bootLog.insertBefore(consoleText, bootLog.firstChild);
+    bootLog.insertBefore(consoleDateText, consoleText);
+
+
+
     if (code == 1) { //success
-        bootLog.innerHTML += "<text class='text-warning'>" + new Date().toLocaleString() + "</text><text class='text-success'> " + text + "</text>";
+        consoleText.className = "text-primary console-text";
     }
     else
         if (code == 2) { //error    
-            bootLog.innerHTML += "<text class='text-warning'>" + new Date().toLocaleString() + "</text><text class='text-danger'> " + text + "</text>";
+            consoleText.className = "text-danger console-text";
         }
         else {
-            bootLog.innerHTML += "<text class='text-warning'>" + new Date().toLocaleString() + "</text> " + text;
+            consoleText.className = "text-info console-text";
         }
+
 }
 //добавить строку обычным цветом и перевести карретку
 function addToLogNL(text) {
@@ -12556,17 +12636,20 @@ function addToLogEnd(text) {
 //добавить строку в конец текущей с цветом
 //очень удобно, печатаем серым "loading poper.js..." и если удалось добавляем в конец строки зеленым "ок" или красным "error"
 function addToLogEnd(text, code) {
+    addToLogNL(text, code);
+    /*
     var bootLog = document.getElementById("bootLog");
     if (code == 1) { //success
-        bootLog.innerHTML += "<text class='text-success'> " + text + "\n</text>";
+        bootLog.innerHTML = "<text class='text-success'> " + text + "\n</text>" + bootLog.innerHTML;
     }
     else
         if (code == 2) { //error    
-            bootLog.innerHTML += "<text class='text-danger'> " + text + "\n</text>";
+            bootLog.innerHTML = "<text class='text-danger'> " + text + "\n</text>" + bootLog.innerHTML;
         }
         else {
-            bootLog.innerHTML += text + "\n";
+            bootLog.innerHTML = text + "\n" + bootLog.innerHTML;
         }
+    */
 }
 ﻿/* ----------------------------------------------------------------------------
 Ready IoT Solution - OWLOS
@@ -12653,20 +12736,20 @@ const VCC_FAMILY = 2;    //пин входит в семейство пинов 
 
 function getFreePins(node, pinMask) {
     var pins = [];
-
+    //TEMP: ESP8266 VCC5 patch
+    if (pinMask == VCC5_MASK) {
+        pinMask = pinMask | VCC33_MASK;
+    }
     for (var i = 0; i < node.pins.length; i++) {
         var valid = (node.pins[i].pintypes & pinMask); // | (node.pins[i].extenedpintypes & pinMask);
         if (valid > 0) {
             pins.push(node.pins[i]);
         }
     }
-
     return pins;
 }
 
-
 var pins = {
-
     //Массив подписчиков на событие onNew  пина контроллера
     _onnew: [],
     doOnNew: function (pin) {
@@ -12674,12 +12757,10 @@ var pins = {
             pins._onnew[key](pin);
         }
     },
-
     //Добавление подсписчиков события onNew
     set onNew(onnew) {
         pins._onnew.push(onnew);
     },
-
     //Массив подписчиков на событие onDelete пина контроллера 
     _ondelete: [],
     doOnDelete: function (pin) {
@@ -12687,13 +12768,10 @@ var pins = {
             pins._ondelete[key](pin);
         }
     },
-
     //Добавление подсписчиков события onDelete
     set onDelete(ondelete) {
         pins._ondelete.push(ondelete);
     },
-
-
     //вызывается внешним кодом (смотрите index.js)
     refresh: function (node) {
         node.networkStatus = NET_REFRESH;
@@ -12724,12 +12802,9 @@ var pins = {
             else {
                 node.networkStatus = NET_OFFLINE;
             }
-            node.pins = "";
+            node.pins = [];
         }
     },
-
-    //-------------------------------------------------------------------------------------------------------------
-
     ////получить объект Pin по его GPIO номеру
     getPinByGPIONumber: function (GPIONumber, host) {
         var node = config.getNodeByHost(host);
@@ -12748,15 +12823,12 @@ var pins = {
     //а так же проверяет было ли драйвер создано и как изменились его свойства после предыдущего парсинга
     parsePins: function (httpResult, node) {
         //первичный парсинг, помещаем строку пришедшую от HTTPClient в массив строк, разделяя по "\n"
-
         if (node.pins != undefined) {
             for (var pinIndex in node.pins) {
                 node.pins[pinIndex].deleted = true; //все удалены перед началом парсинга      
             }
         }
-
         var recievedPinsProperties = httpResult.split("\n");
-
         if (recievedPinsProperties !== "") {//если первичный парсинг удался
 
             var pin = undefined; //сбрасываем будущий объект со свойствами пина 
@@ -12787,13 +12859,9 @@ var pins = {
                     //где:
                     //PropertyName - название свойства(уникальное в рамках одного пина)
                     //PropertyValue - значение этого свойства
-
                     //вторичный парсинг, помещаем строку в массив, разделяя по "=", первый элемент название, второй значение 
-
                     var propertyName = recievedPinsProperties[i].split("=")[0];
-
                     var propertyValue = recievedPinsProperties[i].split("=")[1];
-
                     if (pin[propertyName] != undefined) {//если такое свойство уже существует                        
                         pin[propertyName] = propertyValue; //меняем значение свойства на новое
                     }
@@ -12824,9 +12892,7 @@ var pins = {
     }, //ENDOF parse pins
 
     addPin: function (_pin, node) {
-
         var addOrNot = true;
-
         if (node.pins.length > 0) {
 
             for (var pinIndex in node.pins) {
@@ -12852,16 +12918,12 @@ var pins = {
 
             }
         }
-
         if (addOrNot) {
             node.pins.push(_pin);
         }
-
     },
 
-
     createPin: function (_name, node) {
-
         pin = { //создаем новый объект представляющий драйвер
             name: _name, //навастриваем уникальный ID драйвера, для идентификации объекта с драйверм в будущем
             nodenickname: node.nodenickname,
@@ -12877,16 +12939,12 @@ var pins = {
         }; //новый объект для драйвера сформирован        
         return pin;
     }
-
 }
-
 //----------------------------------------------------------------------------------------------------------------------------------
 //GetDriverPins 
 //----------------------------------------------------------------------------------------------------------------------------------
 var driverPins = {
-
-
-    //Массив подписчиков на событие onNew у пина драйвера 
+   //Массив подписчиков на событие onNew у пина драйвера 
     _onnew: [],
 
     doOnNew: function (driverPin) {
@@ -12913,9 +12971,6 @@ var driverPins = {
     set onDelete(ondelete) {
         driverPins._ondelete.push(ondelete);
     },
-
-
-
 
     refresh: function (node) {
         node.networkStatus = NET_REFRESH;
@@ -12946,10 +13001,9 @@ var driverPins = {
             else {
                 node.networkStatus = NET_OFFLINE;
             }
-            node.driversPins = "";
+            node.driversPins = [];
         }
     },
-
     parseDriverPin: function (httpResult, node) {
 
         if (node.driversPins.length > 0) {
@@ -12957,29 +13011,20 @@ var driverPins = {
                 node.driversPins[DriverPinIndex].deleted = true; //все удалены перед началом парсинга      
             }
         }
-
         var recievedDriverPins = httpResult.split("\n");
-
-
         if (recievedDriverPins !== "") {//если первичный парсинг удался
-
             var driverPin = undefined;
             var driverId = undefined;
-
             for (var i = 0; i < recievedDriverPins.length; i++) {//перечисляем все строки в HTTPResult 
-
                 if (recievedDriverPins[i] === "") continue; //если строка пуста, берем следующею
-
                 if (recievedDriverPins[i].indexOf("driverid:") == 0) { //если заголовок драйвера найден                    
                     //Добавляем собранный пин драйвера 
                     if (driverPin != undefined) {
                         node.driversPins.push(driverPin);
                         this.doOnNew(driverPin); //вызов обработчика события OnNew
                     }
-
                     driverId = recievedDriverPins[i].split(":")[1];
                     driverPin = this.addDriverPin(driverId, node);
-
                 }
                 else {
                     if (driverPin == undefined) continue;
@@ -12993,13 +13038,11 @@ var driverPins = {
                     }
                 }
             }
-
             if (driverPin != undefined) {
                 node.driversPins.push(driverPin);
                 this.doOnNew(driverPin); //вызов обработчика события OnNew
             }
         }
-
         var deleted = false;
         while (!deleted) {
             deleted = true;
@@ -13013,7 +13056,6 @@ var driverPins = {
                 }
             }
         }
-
     },
 
     addDriverPin: function (_driverId, _node) {
@@ -13031,7 +13073,6 @@ var driverPins = {
 
         return driverPin;
     },
-
 }
 
 //----------------------------------------------------------------------------------------------------------------------------------
@@ -13039,7 +13080,6 @@ var driverPins = {
 //Так же как и DriverPins - смотрите коментарии к этому классу там
 //----------------------------------------------------------------------------------------------------------------------------------
 var accessableDrivers = {
-
 
     refresh: function (node) {
         node.networkStatus = NET_REFRESH;
@@ -13060,31 +13100,23 @@ var accessableDrivers = {
             else {
                 node.networkStatus = NET_OFFLINE;
             }
-            node.driversPins = "";
+            node.driversPins = [];
         }
     },
-
     parseAccessableDrivers: function (httpResult, node) {
-
         var recievedAccessablePins = httpResult.split("\n");
-
         if (recievedAccessablePins !== "") {
-
             var _driver = undefined;
-
             for (var i = 0; i < recievedAccessablePins.length; i++) {
-
-                if (recievedAccessablePins[i] === "") continue; 
-
-                if (recievedAccessablePins[i].indexOf("name:") == 0) { 
-                    
+                if (recievedAccessablePins[i] === "") continue;
+                if (recievedAccessablePins[i].indexOf("name:") == 0) {
                     if (_driver != undefined) {
                         node.accessableDrivers.push(_driver);
                     }
 
                     driverName = recievedAccessablePins[i].split(":")[1];
                     _driver = { name: driverName };
-                        
+
                     // _driver = this.addDriver(driverName, node);
                 }
                 else {
@@ -13104,28 +13136,6 @@ var accessableDrivers = {
         }
     }
 }
-
-    /*
-    addDrivern: function (_driverName, _node) {
-        driverPin = {
-            driverName: _driverName,
-            name: "",
-            node: _node,
-            driverpintype: 0,
-            driverpintypedecoded: "",
-            driverpinindex: -1,
-            driveri2caddr: -1,
-            driversdapinname: "",
-            deleted: false,
-        };
-
-return driverPin;
-    },
-    */
-
-//}
-
-
 ﻿/* ----------------------------------------------------------------------------
 Ready IoT Solution - OWLOS
 Copyright 2019, 2020 by:
@@ -13200,10 +13210,7 @@ $(document).ready(function () {
     addToLogNL("OK loading scripts");
     addToLogNL("[START]", 1);
 
-    //Check languages DEBUG
-    //langCompare(langua, langru, document.getElementById("bootLog"));
-
-
+    //setup UX color theme 
     var style = window.getComputedStyle(document.body, null);
     theme.primary = style.getPropertyValue('--primary');
     theme.secondary = style.getPropertyValue('--secondary');
@@ -13215,7 +13222,7 @@ $(document).ready(function () {
     theme.dark = style.getPropertyValue('--dark');
     theme.fontFamily = style.fontFamily;
 
-    if (theme.primary === '') { //default dark
+    if (theme.primary === '') { //default dark UX theme 
         theme.primary = '#3A3F44';
         theme.secondary = '#7A8288';
         theme.success = '#62c462';
@@ -13225,11 +13232,20 @@ $(document).ready(function () {
         theme.light = '#e9ecef';
         theme.dark = '#272B30';
     }
+    //widget theme
+    widgetsTheme.primary = '#89c2dc';
+    widgetsTheme.secondary = '#3589b1';
+    widgetsTheme.success = '#3b99c4';
+    widgetsTheme.info = '#62add0';
+    widgetsTheme.warning = '#c43b5d';
+    widgetsTheme.danger = '#ee5f5b';
+    widgetsTheme.light = '#e9ecef';
+    widgetsTheme.dark = '#272B30';
+
 
     addToLogNL("Connection to master node " + boardhost + "...");
-    //use it as ping
-    httpGetAsyncWithReciever(boardhost + "getalldriversproperties", onNodeAnswer, null, null, null, 5000);
-
+    //use it as node ping
+    httpGetAsyncWithReciever(boardhost + "getalldriversproperties", onNodeAnswer, null, null, null, 20000);
 }
 );
 
@@ -13281,18 +13297,11 @@ function masterNodeDialogOKClick(masterNodeDialog) {
     return true;
 }
 
-
-
 function onLoadConfig(result) {
- //   try {
+    try {
         if (result) {
-
-            // config.onLoad = onConfigLoad;
-            //config.onLoad = 
-            // config.onLoad = 
-
-            sideBar =createSidebar();
-
+            sideBar = createSidebar();
+            
 
             settingsUI.onConfigLoad(configProperties);
             dashboardUI.onConfigLoad(configProperties);
@@ -13302,71 +13311,51 @@ function onLoadConfig(result) {
 
             addToLogNL(getLang("prepareUnit"));
 
-            drivers.addDriverLoadedListner(settingsUI.onDriverLoaded, settingsUI);
-            nodesRefresh();
+            scriptsManager.onNew = scriptsUI.onScriptNew;
+            scriptsManager.onChange = scriptsUI.onScriptChange;
+            scriptsManager.onDelete = scriptsUI.onScriptDelete;
 
+            drivers.addDriverLoadedListner(settingsUI.onDriverLoaded, settingsUI);
+            
             var boot = document.getElementById("boot");
             boot.parentElement.removeChild(boot);
             document.getElementById("consolePanel").appendChild(boot);
 
-            nodesRefreshHandle = setInterval(nodesRefresh, 60000);
-
-
-            /*
-            $("#createScript").click(function (event) {
-                var textArea = document.getElementById("scriptText");
-                httpPostAsyncWithErrorReson(boardhost + "createscript", "?name=main1", escape(textArea.value));
-            });
-            */
-
+            sidebarItemClick({currentTarget: sideBar.dashboardItem.href});
+            
             speak("OWLOS is ready");
-
         }
         else {
             status_online = NET_OFFLINE;
             speak("ERROR with host: " + boardhost);
             addToLogNL("ERROR with host: " + boardhost, 2);
+            config.restoreDefault();
         }
- //   }
-
-
- //   catch (exception) {
-  //      status_online = NET_OFFLINE;
-   //     addToLogNL("ERROR starting exception: " + exception, 2);
- //       addToLogNL("ERROR delete configurations files can help fix it: [your host]/deletefile?name=web.config", 2);
-  //  }
-
-
+    }
+    catch (exception) {
+        status_online = NET_OFFLINE;
+        addToLogNL("ERROR starting exception: " + exception, 2);
+        addToLogNL("ERROR delete configurations files can help fix it: [your host]/deletefile?name=web.config", 2);
+    }
 }
-
-
-function onConfigLoad(configProperties) {
-
-}
-
 
 function nodesRefresh() {
+    /*
     for (var node in configProperties.nodes) {
         drivers.refresh(configProperties.nodes[node]);
-
         pins.refresh(configProperties.nodes[node]);
         driverPins.refresh(configProperties.nodes[node]);
         accessableDrivers.refresh(configProperties.nodes[node]);
         scriptsManager.refresh(configProperties.nodes[node]);
     }
-}
-
-function sleep(time) {
-
-    return new Promise(function (resolve) {
-        return setTimeout(resolve, time);
-    });
-    /*
-    return new Promise((resolve) => setTimeout(resolve, time));
     */
 }
 
-
+function sleep(time) {
+    return new Promise(function (resolve) {
+        return setTimeout(resolve, time);
+    });
+}
 ﻿/* ----------------------------------------------------------------------------
 Ready IoT Solution - OWLOS
 Copyright 2019, 2020 by:
@@ -13441,10 +13430,7 @@ $(document).ready(function () {
     addToLogNL("OK loading scripts");
     addToLogNL("[START]", 1);
 
-    //Check languages DEBUG
-    //langCompare(langua, langru, document.getElementById("bootLog"));
-
-
+    //setup UX color theme 
     var style = window.getComputedStyle(document.body, null);
     theme.primary = style.getPropertyValue('--primary');
     theme.secondary = style.getPropertyValue('--secondary');
@@ -13456,7 +13442,7 @@ $(document).ready(function () {
     theme.dark = style.getPropertyValue('--dark');
     theme.fontFamily = style.fontFamily;
 
-    if (theme.primary === '') { //default dark
+    if (theme.primary === '') { //default dark UX theme 
         theme.primary = '#3A3F44';
         theme.secondary = '#7A8288';
         theme.success = '#62c462';
@@ -13466,11 +13452,20 @@ $(document).ready(function () {
         theme.light = '#e9ecef';
         theme.dark = '#272B30';
     }
+    //widget theme
+    widgetsTheme.primary = '#89c2dc';
+    widgetsTheme.secondary = '#3589b1';
+    widgetsTheme.success = '#3b99c4';
+    widgetsTheme.info = '#62add0';
+    widgetsTheme.warning = '#c43b5d';
+    widgetsTheme.danger = '#ee5f5b';
+    widgetsTheme.light = '#e9ecef';
+    widgetsTheme.dark = '#272B30';
+
 
     addToLogNL("Connection to master node " + boardhost + "...");
-    //use it as ping
-    httpGetAsyncWithReciever(boardhost + "getalldriversproperties", onNodeAnswer, null, null, null, 5000);
-
+    //use it as node ping
+    httpGetAsyncWithReciever(boardhost + "getalldriversproperties", onNodeAnswer, null, null, null, 20000);
 }
 );
 
@@ -13522,18 +13517,11 @@ function masterNodeDialogOKClick(masterNodeDialog) {
     return true;
 }
 
-
-
 function onLoadConfig(result) {
- //   try {
+    try {
         if (result) {
-
-            // config.onLoad = onConfigLoad;
-            //config.onLoad = 
-            // config.onLoad = 
-
-            sideBar =createSidebar();
-
+            sideBar = createSidebar();
+            
 
             settingsUI.onConfigLoad(configProperties);
             dashboardUI.onConfigLoad(configProperties);
@@ -13543,68 +13531,48 @@ function onLoadConfig(result) {
 
             addToLogNL(getLang("prepareUnit"));
 
-            drivers.addDriverLoadedListner(settingsUI.onDriverLoaded, settingsUI);
-            nodesRefresh();
+            scriptsManager.onNew = scriptsUI.onScriptNew;
+            scriptsManager.onChange = scriptsUI.onScriptChange;
+            scriptsManager.onDelete = scriptsUI.onScriptDelete;
 
+            drivers.addDriverLoadedListner(settingsUI.onDriverLoaded, settingsUI);
+            
             var boot = document.getElementById("boot");
             boot.parentElement.removeChild(boot);
             document.getElementById("consolePanel").appendChild(boot);
 
-            nodesRefreshHandle = setInterval(nodesRefresh, 60000);
-
-
-            /*
-            $("#createScript").click(function (event) {
-                var textArea = document.getElementById("scriptText");
-                httpPostAsyncWithErrorReson(boardhost + "createscript", "?name=main1", escape(textArea.value));
-            });
-            */
-
+            sidebarItemClick({currentTarget: sideBar.dashboardItem.href});
+            
             speak("OWLOS is ready");
-
         }
         else {
             status_online = NET_OFFLINE;
             speak("ERROR with host: " + boardhost);
             addToLogNL("ERROR with host: " + boardhost, 2);
+            config.restoreDefault();
         }
- //   }
-
-
- //   catch (exception) {
-  //      status_online = NET_OFFLINE;
-   //     addToLogNL("ERROR starting exception: " + exception, 2);
- //       addToLogNL("ERROR delete configurations files can help fix it: [your host]/deletefile?name=web.config", 2);
-  //  }
-
-
+    }
+    catch (exception) {
+        status_online = NET_OFFLINE;
+        addToLogNL("ERROR starting exception: " + exception, 2);
+        addToLogNL("ERROR delete configurations files can help fix it: [your host]/deletefile?name=web.config", 2);
+    }
 }
-
-
-function onConfigLoad(configProperties) {
-
-}
-
 
 function nodesRefresh() {
+    /*
     for (var node in configProperties.nodes) {
         drivers.refresh(configProperties.nodes[node]);
-
         pins.refresh(configProperties.nodes[node]);
         driverPins.refresh(configProperties.nodes[node]);
         accessableDrivers.refresh(configProperties.nodes[node]);
         scriptsManager.refresh(configProperties.nodes[node]);
     }
-}
-
-function sleep(time) {
-
-    return new Promise(function (resolve) {
-        return setTimeout(resolve, time);
-    });
-    /*
-    return new Promise((resolve) => setTimeout(resolve, time));
     */
 }
 
-
+function sleep(time) {
+    return new Promise(function (resolve) {
+        return setTimeout(resolve, time);
+    });
+}
