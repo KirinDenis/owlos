@@ -51,11 +51,11 @@ OWLOS распространяется в надежде, что она буде
   ----------------
   - Put your WiFi SSID and Password to:                                                                 */
 #ifndef APSSID
-#define APSSID "YOURSSID_HERE" //<-- YOUR WIFI ACCESS POINT SSID	      
-#define APPSK  "YOURPASSWORD_HERE" //<-- YOUR WIFI ACCESS POINT PASSWORS	      
+#define APSSID "YOURSSID_HERE"	  //<-- YOUR WIFI ACCESS POINT SSID
+#define APPSK "YOURPASSWORD_HERE" //<-- YOUR WIFI ACCESS POINT PASSWORS
 
 #endif
-  //-------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------------
 
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
@@ -65,16 +65,16 @@ OWLOS распространяется в надежде, что она буде
 #include <FS.h>
 #include "starter.h"
 
-
 #define boardNotSelected
 
-
-String host = "https://github.com/KirinDenis/owlos/tree/master/OWLOS/firmware/";
+String host = "https://raw.githubusercontent.com/KirinDenis/owlos/master/OWLOS/firmware/";
+const uint8_t fingerprint[] PROGMEM = "5F 3F 7A C2 56 9F 50 A4 66 76 47 C6 A1 8C A0 07 AA ED BB 8E";
 ESP8266WiFiMulti WiFiMulti;
 
 bool readyToUpdate = false;
 
-void starter_setup() {
+void starter_setup()
+{
 	ESP.wdtEnable(0); //disable ESP8266 software watch dog
 	Serial.begin(115200);
 	delay(1000);
@@ -148,7 +148,8 @@ void starter_setup() {
 	}
 }
 
-void download(String fileName, String  url) {
+void download(String fileName, String _url)
+{
 	if (!SPIFFS.begin())
 	{
 		Serial.println("An Error has occurred while mounting file system");
@@ -158,24 +159,34 @@ void download(String fileName, String  url) {
 	Serial.print("download: ");
 	Serial.print(fileName);
 	Serial.print("...");
-	Serial.printf("GET ", url.c_str());
+	Serial.printf("GET ", _url.c_str());
 
-	http.begin(url);
+	WiFiClientSecure client;
+	client.setFingerprint(fingerprint);
+	client.setInsecure();
+
+	http.begin(client, _url);
+
 	int httpCode = http.GET();
-	if (httpCode > 0) {
+	if (httpCode == 200)
+	{
 		File file = SPIFFS.open(fileName, "w");
-		if (!file) {
+		if (!file)
+		{
 			Serial.println("There was an error opening the file for writing: " + fileName);
 		}
-		if (httpCode == HTTP_CODE_OK) {
+		if (httpCode == HTTP_CODE_OK)
+		{
 			int len = http.getSize();
 			Serial.println(" size: " + String(len));
-			uint8_t buff[128] = { 0 };
-			WiFiClient * stream = http.getStreamPtr();
+			uint8_t buff[128] = {0};
+			WiFiClient *stream = http.getStreamPtr();
 			int dotCount = 0;
-			while (http.connected() && (len > 0 || len == -1)) {
+			while (http.connected() && (len > 0 || len == -1))
+			{
 				size_t size = stream->available();
-				if (size) {
+				if (size)
+				{
 					Serial.print(".");
 					dotCount++;
 					if (dotCount > 40)
@@ -185,7 +196,8 @@ void download(String fileName, String  url) {
 					}
 					int c = stream->readBytes(buff, ((size > sizeof(buff)) ? sizeof(buff) : size));
 					file.write(buff, c);
-					if (len > 0) {
+					if (len > 0)
+					{
 						len -= c;
 					}
 				}
@@ -197,17 +209,19 @@ void download(String fileName, String  url) {
 	}
 	else
 	{
-		Serial.println("fail " + url + "[" + String(httpCode) + "]");
+		Serial.println("fail " + _url + " [HTTP CODE: " + String(httpCode) + "]");
 	}
 	http.end();
 }
 
-void starter_loop() {
+void starter_loop()
+{
 	if (readyToUpdate)
 	{
-		if ((WiFiMulti.run() == WL_CONNECTED)) {
+		if ((WiFiMulti.run() == WL_CONNECTED))
+		{
 			Serial.println("Downloading files...");
-			
+
 			download("index.html.gz", host + "index.html.gz");
 			download("owlos.css.gz", host + "owlos.css.gz");
 			download("owlos.js.gz", host + "owlos.js.gz");
@@ -216,7 +230,10 @@ void starter_loop() {
 			Serial.println("Start updating firmware (onboard led must faster blinking)");
 			Serial.println("Please wait until board self restarting...");
 
-			WiFiClient client;
+			WiFiClientSecure client;
+			client.setFingerprint(fingerprint);
+			client.setInsecure();
+
 			ESPhttpUpdate.setLedPin(LED_BUILTIN, LOW);
 
 			t_httpUpdate_return ret = HTTP_UPDATE_NO_UPDATES;
@@ -234,14 +251,14 @@ void starter_loop() {
 
 #ifdef ARDUINO_ESP32
 			ret = ESPhttpUpdate.update(client, host + "OWLOS.ino.esp32.bin");
-#endif			
+#endif
 
 #ifdef ARDUINO_ESP32DEV
 			ret = ESPhttpUpdate.update(client, host + "OWLOS.ino.esp32dev.bin");
-#endif			
+#endif
 
-
-			switch (ret) {
+			switch (ret)
+			{
 			case HTTP_UPDATE_FAILED:
 				Serial.printf("ERROR (%d): %s\n", ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
 				delay(15000);

@@ -79,12 +79,51 @@ SECTIONS
   {
     *(.noinit)
   } >dram0_0_seg :dram0_0_phdr
+  /* IRAM is split into .text and .text1 to allow for moving specific */
+  /* functions into IRAM that would be matched by the irom0.text matcher */
+  .text : ALIGN(4)
+  {
+    _stext = .;
+    _text_start = ABSOLUTE(.);
+     *(.UserEnter.text)
+    . = ALIGN(16);
+    *(.DebugExceptionVector.text)
+    . = ALIGN(16);
+    *(.NMIExceptionVector.text)
+    . = ALIGN(16);
+    *(.KernelExceptionVector.text)
+    LONG(0)
+    LONG(0)
+    LONG(0)
+    LONG(0)
+    . = ALIGN(16);
+    *(.UserExceptionVector.text)
+    LONG(0)
+    LONG(0)
+    LONG(0)
+    LONG(0)
+    . = ALIGN(16);
+    *(.DoubleExceptionVector.text)
+    LONG(0)
+    LONG(0)
+    LONG(0)
+    LONG(0)
+    . = ALIGN (16);
+    *(.entry.text)
+    *(.init.literal)
+    *(.init)
+    *(.text.app_entry*) /* The main startup code */
+    *(.text.gdbstub*, .text.gdb_init) /* Any GDB hooks */
+    /* all functional callers are placed in IRAM (including SPI/IRQ callbacks/etc) here */
+    *(.text._ZNKSt8functionIF*EE*) /* std::function<any(...)>::operator()() const */
+  } >iram1_0_seg :iram1_0_phdr
   .irom0.text : ALIGN(4)
   {
     _irom0_text_start = ABSOLUTE(.);
     *(.ver_number)
-    *.c.o( EXCLUDE_FILE (umm_malloc.c.o) .literal*, EXCLUDE_FILE (umm_malloc.c.o) .text* )
-    *.cpp.o(.literal*, .text*)
+    *.c.o(.literal*, .text*)
+    *.cpp.o(EXCLUDE_FILE (umm_malloc.cpp.o) .literal*, EXCLUDE_FILE (umm_malloc.cpp.o) .text*)
+    *.cc.o(.literal*, .text*)
     *(.rodata._ZTV*) /* C++ vtables */
     *libgcc.a:unwind-dw2.o(.literal .text .rodata .literal.* .text.* .rodata.*)
     *libgcc.a:unwind-dw2-fde.o(.literal .text .rodata .literal.* .text.* .rodata.*)
@@ -119,8 +158,12 @@ SECTIONS
     *libwpa2.a:(.literal.* .text.*)
     *libwps.a:(.literal.* .text.*)
     *(.irom0.literal .irom.literal .irom.text.literal .irom0.text .irom0.text.* .irom.text .irom.text.*)
+    /* Constant strings in flash (PSTRs) */
+    *(.irom0.pstr.*)
     /* __FUNCTION__ locals */
     *(.rodata._ZZ*__FUNCTION__)
+    *(.rodata._ZZ*__PRETTY_FUNCTION__)
+    *(.rodata._ZZ*__func__)
     /* std::* exception strings, in their own section to allow string coalescing */
     *(.irom.exceptiontext)
     /* c++ typeof IDs, etc. */
@@ -136,37 +179,8 @@ SECTIONS
     _irom0_text_end = ABSOLUTE(.);
     _flash_code_end = ABSOLUTE(.);
   } >irom0_0_seg :irom0_0_phdr
-  .text : ALIGN(4)
+  .text1 : ALIGN(4)
   {
-    _stext = .;
-    _text_start = ABSOLUTE(.);
-     *(.UserEnter.text)
-    . = ALIGN(16);
-    *(.DebugExceptionVector.text)
-    . = ALIGN(16);
-    *(.NMIExceptionVector.text)
-    . = ALIGN(16);
-    *(.KernelExceptionVector.text)
-    LONG(0)
-    LONG(0)
-    LONG(0)
-    LONG(0)
-    . = ALIGN(16);
-    *(.UserExceptionVector.text)
-    LONG(0)
-    LONG(0)
-    LONG(0)
-    LONG(0)
-    . = ALIGN(16);
-    *(.DoubleExceptionVector.text)
-    LONG(0)
-    LONG(0)
-    LONG(0)
-    LONG(0)
-    . = ALIGN (16);
-    *(.entry.text)
-    *(.init.literal)
-    *(.init)
     *(.literal .text .iram.literal .iram.text .iram.text.* .literal.* .text.* .stub .gnu.warning .gnu.linkonce.literal.* .gnu.linkonce.t.*.literal .gnu.linkonce.t.*)
     *(.fini.literal)
     *(.fini)
