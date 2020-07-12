@@ -69,7 +69,7 @@ OWLOS распространяется в надежде, что она буде
 #define boardNotSelected
 
 
-String host = "http://81.95.178.177:8080/update/";
+String host = "https://github.com/KirinDenis/owlos/tree/master/OWLOS/firmware/";
 ESP8266WiFiMulti WiFiMulti;
 
 bool readyToUpdate = false;
