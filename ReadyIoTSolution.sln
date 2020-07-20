@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.539
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OWLOS", "OWLOS", "{CEAB6A89-5A7E-4F78-8DC9-903F3DCA2ACE}"
 	ProjectSection(SolutionItems) = preProject
@@ -156,7 +156,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "utils", "utils", "{9C6397B1
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OWLOSResources", "OWLOSResources", "{0DE788A3-BBF4-4E4D-81BB-58F1A2AEC80F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OWLOSAdmin", "OWLOSAdmin\OWLOSAdmin.csproj", "{035862CA-8F69-4BB8-816E-8A3F4D491679}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{035862CA-8F69-4BB8-816E-8A3F4D491679}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{035862CA-8F69-4BB8-816E-8A3F4D491679}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{035862CA-8F69-4BB8-816E-8A3F4D491679}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{035862CA-8F69-4BB8-816E-8A3F4D491679}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
@@ -170,6 +182,7 @@ Global
 		{B8F9C798-24FF-4E00-B903-228234AAE229} = {6C1C1756-D7E4-4399-AF22-7D43AAE2F9E7}
 		{6A416E69-AA4F-41A2-9C9E-6FD7D55E306A} = {6C1C1756-D7E4-4399-AF22-7D43AAE2F9E7}
 		{9C6397B1-FCB3-4718-A913-F52E5BE372EE} = {6C1C1756-D7E4-4399-AF22-7D43AAE2F9E7}
+		{035862CA-8F69-4BB8-816E-8A3F4D491679} = {CEAB6A89-5A7E-4F78-8DC9-903F3DCA2ACE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9A146DA9-5CF0-425C-A7F4-C00482E8A430}
