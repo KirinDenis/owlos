@@ -60,9 +60,9 @@ OWLOS распространяется в надежде, что она буде
 #define DEFAULT_WIFI_ACCESS_POINT_PASSWORD  "1122334455"
 #define DEFAULT_WIFI_ACCESS_POINT_IP  "192.168.4.1"
 
-#define DEFAULT_WIFI_STATION_AVAILABLE 0
-#define DEFAULT_WIFI_STATION_SSID ""
-#define DEFAULT_WIFI_STATION_PASSWORD ""
+#define DEFAULT_WIFI_STATION_AVAILABLE 1
+#define DEFAULT_WIFI_STATION_SSID "Palata#13"
+#define DEFAULT_WIFI_STATION_PASSWORD "qweasdzxc1234"
 
 #define DEFAULT_HTTP_SERVER_AVAILABLE true
 #define DEFAULT_HTTP_SERVER_USERNAME "admin"
@@ -1070,13 +1070,13 @@ bool nodeSetMQTTPassword(String _mqttpassword)
 //MQTTClientConnected
 int nodeGetMQTTClientConnected()
 {
-	return (int)(getMQTTClient()->connected());
+//	return (int)(getMQTTClient()->connected());
 }
 
 //MQTTClientState
 int nodeGetMQTTClientState()
 {
-	return getMQTTClient()->state();
+//	return getMQTTClient()->state();
 }
 
 //OTAAvailable()  

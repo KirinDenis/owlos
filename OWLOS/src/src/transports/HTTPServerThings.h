@@ -38,7 +38,7 @@ OWLOS распространяется в надежде, что она буде
 Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
-
+#include <Arduino.h>
 String decode(String param);
 String getContentType(String fileName);
 String GetNotFoundHTML();

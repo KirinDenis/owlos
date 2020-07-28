@@ -1,0 +1,2 @@
+void HTTPSWebServerBegin();
+void HTTPSWebServerLoop();

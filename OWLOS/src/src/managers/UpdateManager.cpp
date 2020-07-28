@@ -52,7 +52,7 @@ HTTPUpdate ESPhttpUpdate;
 
 #include <Arduino.h>
 #include "../drivers/ESPDriver.h"
-#include "../transports/HTTPServer.h"
+#include "../transports/HTTPSWebServer.h"
 #include "../transports/WebClient.h"
 #include "../managers/FileManager.h"
 
@@ -167,7 +167,7 @@ String updateUI()
 		updateUIStatus = UpdateStatusStarted;
 		updateLog += downloadFileWithLog("jquery.min.js.gz");
 		updateUIStatus = UpdateStatusAtProcess;
-		HTTPServerLoop();
+		HTTPSWebServerLoop();
 
 		updateLog += downloadFileWithLog("jquery.min.js.gz");
 		updateLog += downloadFileWithLog("popper.min.js.gz");
@@ -176,10 +176,10 @@ String updateUI()
 		updateLog += downloadFileWithLog("jquery.dataTables.min.js.gz");
 		updateLog += downloadFileWithLog("dataTables.min.css.gz");
 		updateLog += downloadFileWithLog("dataTables.min.js.gz");
-		HTTPServerLoop();
+		HTTPSWebServerLoop();
 
 		updateLog += downloadFileWithLog("ui.css.gz");
-		HTTPServerLoop();
+		HTTPSWebServerLoop();
 
 		updateLog += downloadFileWithLog("bootcore.js.gz");
 		updateLog += downloadFileWithLog("restclientcore.js.gz");
@@ -189,7 +189,7 @@ String updateUI()
 		updateLog += downloadFileWithLog("languagescore.js.gz");
 		updateLog += downloadFileWithLog("speechcore.js.gz");
 		updateLog += downloadFileWithLog("scriptcore.js.gz");
-		HTTPServerLoop();
+		HTTPSWebServerLoop();
 
 		updateLog += downloadFileWithLog("basewidget.js.gz");
 		updateLog += downloadFileWithLog("actuatorwidget.js.gz");
@@ -205,7 +205,7 @@ String updateUI()
 		updateLog += downloadFileWithLog("smokewidget.js.gz");
 		updateLog += downloadFileWithLog("stepperwidget.js.gz");
 		updateLog += downloadFileWithLog("valuewidget.js.gz");
-		HTTPServerLoop();
+		HTTPSWebServerLoop();
 
 		updateLog += downloadFileWithLog("widgetswrappers.js.gz");
 
@@ -219,7 +219,7 @@ String updateUI()
 
 		updateUIStatus = UpdateStatusComplete;
 		updateLog += "update UI complete\n";
-		HTTPServerLoop();
+		HTTPSWebServerLoop();
 	}
 	else
 	{

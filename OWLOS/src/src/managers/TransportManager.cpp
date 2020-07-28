@@ -44,10 +44,10 @@ OWLOS распространяется в надежде, что она буде
 #include <core_version.h>
 #include "TransportManager.h"
 #include "../drivers/ESPDriver.h"
-#include "../Managers\OTAManager.h"
-#include "../Managers\DriverManager.h"
-#include "../Transports\HTTPServer.h"
-#include "../Utils\Utils.h"
+#include "../Managers/OTAManager.h"
+#include "../Managers/DriverManager.h"
+#include "../Transports/HTTPSWebServer.h"
+#include "../Utils/Utils.h"
 
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 ESP8266WiFiMulti _WiFiMulti;
@@ -60,7 +60,7 @@ WiFiMulti _WiFiMulti;
 #endif
 
 WiFiClient wifiClient;
-MQTTClient *_MQTTClient;
+//MQTTClient *_MQTTClient;
 
 bool WiFiAccessPointConnected(false);
 unsigned long lastTryCheck(-ONESECOND);
@@ -74,10 +74,12 @@ bool wifiStatus = false;
 bool wifiAPResult = false;
 bool wifiResult = false;
 
+/*
 MQTTClient *getMQTTClient()
 {
 	return _MQTTClient;
 }
+*/
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
 void WiFiEvent(WiFiEvent_t event)
@@ -179,11 +181,12 @@ bool transportBegin()
 #endif
 #endif
 
+/*
 	if (_MQTTClient == nullptr)
 	{
 		_MQTTClient = new MQTTClient(wifiClient);
 	}
-
+*/
 	if ((nodeGetWiFiAccessPointAvailable() == 1) && (nodeGetWiFiAvailable() == 1))
 	{
 		nodeSetWiFiMode(WIFI_AP_STA);
@@ -531,7 +534,8 @@ bool transportReconnect()
 	{
 		if (nodeGetRESTfulAvailable() == 1)
 		{
-			HTTPServerBegin(nodeGetRESTfulServerPort());
+			//nodeGetRESTfulServerPort()
+			HTTPSWebServerBegin();
 		}
 
 		if (nodeGetOTAAvailable() == 1)
@@ -541,14 +545,17 @@ bool transportReconnect()
 
 		if (nodeGetMQTTAvailable() == 1)
 		{
+			/*
 			MQTTReconnect();
 			transportSetCallBack(Callback); //Regist Callback function for loopback subscribed messages (from MQTT Publishers)
+			*/
 		}
 	}
 
 	return result;
 }
 
+/*
 bool MQTTReconnect()
 {
 	if (nodeGetMQTTAvailable() == 1)
@@ -568,15 +575,15 @@ bool MQTTReconnect()
 #ifdef DetailedDebug
 			debugOut(TransportID, "Connecting to MQTT broker ...");
 #endif
-			_MQTTClient->setServer(stringToChar(nodeGetMQTTURL()), nodeGetMQTTPort()); // Configure MQTT connexion
-			if (_MQTTClient->connect(nodeGetMQTTID().c_str(), nodeGetMQTTLogin().c_str(), nodeGetMQTTPassword().c_str()))
+		//	_MQTTClient->setServer(stringToChar(nodeGetMQTTURL()), nodeGetMQTTPort()); // Configure MQTT connexion
+	//		if (_MQTTClient->connect(nodeGetMQTTID().c_str(), nodeGetMQTTLogin().c_str(), nodeGetMQTTPassword().c_str()))
 			{
 #ifdef DetailedDebug
 				debugOut(TransportID, "OK");
 #endif
 				return true;
 			}
-			else
+	//		else
 			{
 #ifdef DetailedDebug
 				debugOut(TransportID, "Fail - " + String(_MQTTClient->state()));
@@ -594,7 +601,8 @@ bool MQTTReconnect()
 		return false;
 	}
 }
-
+*/
+/*
 void transportSetCallBack(MQTT_CALLBACK_SIGNATURE)
 {
 	if (MQTTReconnect())
@@ -602,9 +610,12 @@ void transportSetCallBack(MQTT_CALLBACK_SIGNATURE)
 		_MQTTClient->setCallback(callback);
 	}
 }
+*/
+
 
 void transportSubscribe(String _topic)
 {
+	/*
 	if (MQTTReconnect())
 	{
 #ifdef DetailedDebug
@@ -612,22 +623,26 @@ void transportSubscribe(String _topic)
 #endif
 		_MQTTClient->subscribe(_topic.c_str());
 	}
+	*/
 }
+
+
 
 void transportLoop()
 {
 	if ((wifiAPResult) || (wifiResult))
 	{
 
+/*
 		if (MQTTReconnect())
 		{
 			MQTTReconnect();
 			_MQTTClient->loop();
 		}
-
+*/
 		if (nodeGetRESTfulAvailable() == 1)
 		{
-			HTTPServerLoop();
+			HTTPSWebServerLoop();
 		}
 
 		if (nodeGetOTAAvailable() == 1)
@@ -639,10 +654,12 @@ void transportLoop()
 
 bool transportPublish(String _topic, String _payload)
 {
+	/*
 	if (MQTTReconnect())
 	{
 		return _MQTTClient->publish(_topic.c_str(), _payload.c_str(), true);
 	}
+	*/
 	return true; //if MQTT is not available and RESTful change the property
 }
 

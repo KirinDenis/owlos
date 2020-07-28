@@ -64,6 +64,24 @@ var runOnce = true;
 
 var sideBar = undefined;
 
+function testHTTPS() {
+    httpGetAsyncWithReciever("http://192.168.1.5/", HTTPSResult, null);
+    //httpGetAsyncWithReciever("https://192.168.1.5/", HTTPSResult, null);
+}
+
+function HTTPSResult (httpResult, node) {
+    //HTTPClient добавляет строку "%error" в начало Response если запрос не был завешен HTTPCode=200 или произошел TimeOut
+    if (!httpResult.indexOf("%error") == 0) {
+        
+
+    }
+    else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
+    }
+}
+
+
+
+
 $(document).ready(function () {
 
     if (!runOnce) return;
@@ -71,6 +89,14 @@ $(document).ready(function () {
 
     addToLogNL("OK loading scripts");
     addToLogNL("[START]", 1);
+
+
+    //!!connection test 
+    
+    setInterval(testHTTPS, 100);
+
+    return; 
+    //-----------------
 
     //setup UX color theme 
     var style = window.getComputedStyle(document.body, null);

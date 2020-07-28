@@ -53,19 +53,16 @@ OWLOS распространяется в надежде, что она буде
 #include <HTTPClient.h>
 #endif
 
-
-#include "../Transports\MQTTClient.h"
-
 #define TransportID "Transport"
-MQTTClient* getMQTTClient();
+//MQTTClient* getMQTTClient();
 
 bool transportBegin();
 bool transportAvailable();
 bool WiFiAccessPointReconnect();
 bool transportReconnect();
 bool MQTTReconnect();
-void transportSetCallBack(MQTT_CALLBACK_SIGNATURE);
-void MQTTCallback(char* topic, byte* payload, unsigned int length);
+//void transportSetCallBack(MQTT_CALLBACK_SIGNATURE);
+//void MQTTCallback(char* topic, byte* payload, unsigned int length);
 void transportSubscribe(String topic);
 void transportLoop();
 bool transportPublish(String topic, String payload);
