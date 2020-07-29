@@ -4,160 +4,479 @@
   https://platformio.org/lib/show/5887/esp32_https_server/installation
   */
 
-
 // Include certificate data (see note above)
-//#include "cert.h"
-//#include "private_key.h"
-
+#include "cert.h"
+#include "private_key.h"
 
 // We will use wifi
 //#include <WiFi.h>
 
 // Includes for the server
 // Note: We include HTTPServer and HTTPSServer
-//#include <HTTPSServer.hpp>
+#include <HTTPSServer.hpp>
 #include <HTTPServer.hpp>
-//#include <SSLCert.hpp>
+#include <SSLCert.hpp>
 #include <HTTPRequest.hpp>
 #include <HTTPResponse.hpp>
 
-#include <stdio.h>
-#include <stdint.h>
-#include <stddef.h>
-#include <string.h>
-#include "esp_wifi.h"
-#include "esp_system.h"
-#include "nvs_flash.h"
-#include "esp_event.h"
-#include "tcpip_adapter.h"
+//#include <stdio.h>
+//#include <stdint.h>
+//#include <stddef.h>
+//#include <string.h>
+//#include "esp_wifi.h"
+//#include "esp_system.h"
+//#include "nvs_flash.h"
+//#include "esp_event.h"
+//#include "tcpip_adapter.h"
 //#include "esp_transport_ssl.h"
-#include "esp_transport.h"
+//#include "esp_transport.h"
 //#include "protocol_examples_common.h"
 
 //#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "freertos/semphr.h"
-#include "freertos/queue.h"
+//#include "freertos/task.h"
+//#include "freertos/semphr.h"
+//#include "freertos/queue.h"
 
-#include "lwip/sockets.h"
+//#include "lwip/sockets.h"
 //#include "lwip/dns.h"
-#include "lwip/netdb.h"
+//#include "lwip/netdb.h"
 
+#include "HTTPServerThings.h"
+#include "../drivers/ESPDriver.h"
+#include "../Managers/DriverManager.h"
+#include "../Managers/ScriptManager.h"
+//#include "../Managers/UpdateManager.h"
+#include "../Managers/FileManager.h"
+//#include "../Utils/Utils.h"
 
 // The HTTPS Server comes in a separate namespace. For easier use, include it here.
 using namespace httpsserver;
 
 // Create an SSL certificate object from the files included above
-//SSLCert cert = SSLCert(
-//  example_crt_DER, example_crt_DER_len,
-//  example_key_DER, example_key_DER_len
-//);
+SSLCert cert = SSLCert(
+    example_crt_DER, example_crt_DER_len,
+    example_key_DER, example_key_DER_len);
 
 // First, we create the HTTPSServer with the certificate created above
-//HTTPSServer secureServer = HTTPSServer(&cert);
+HTTPSServer secureServer = HTTPSServer(&cert);
 
 // Additionally, we create an HTTPServer for unencrypted traffic
 HTTPServer insecureServer = HTTPServer();
 
-// Declare some handler functions for the various URLs on the server
-void handleRoot(HTTPRequest * req, HTTPResponse * res);
-void handle404(HTTPRequest * req, HTTPResponse * res);
-void corsCallback(HTTPRequest * req, HTTPResponse * res);
-
-
-void HTTPSWebServerBegin()
+void handleOther(HTTPRequest *req, HTTPResponse *res)
 {
-  // Connect to WiFi
-
-  // For every resource available on the server, we need to create a ResourceNode
-  // The ResourceNode links URL and HTTP method to a handler function
-  ResourceNode * nodeRoot = new ResourceNode("/", "GET", &handleRoot);
-  ResourceNode * corsNode   = new ResourceNode("/*", "OPTIONS", &corsCallback);
-  ResourceNode * node404  = new ResourceNode("", "GET", &handle404);
-
-  // Add the root node to the servers. We can use the same ResourceNode on multiple
-  // servers (you could also run multiple HTTPS servers)
-  //secureServer.registerNode(nodeRoot);
-  insecureServer.registerNode(nodeRoot);
-
-  // We do the same for the default Node
-  //secureServer.setDefaultNode(node404);
-  insecureServer.setDefaultNode(node404);
-
-  //secureServer.registerNode(corsNode);
-  insecureServer.registerNode(corsNode);
-
-
-  Serial.println("Starting HTTPS server...");
- // secureServer.start();
-  Serial.println("Starting HTTP server...");
-  insecureServer.start();
-  //if (secureServer.isRunning() && insecureServer.isRunning()) {
- //   Serial.println("Servers ready.");
-//  }
-}
-
-void HTTPSWebServerLoop() {
-  // We need to call both loop functions here
-  //secureServer.loop();
-  insecureServer.loop();
-
-}
-
-// The hanlder functions are the same as in the Static-Page example.
-// The only difference is the check for isSecure in the root handler
-
-void handleRoot(HTTPRequest * req, HTTPResponse * res) {
-  res->setHeader("Content-Type", "text/html");
-	res->setHeader("Access-Control-Allow-Methods", "HEAD,GET,POST,DELETE,PUT,OPTIONS");
-	res->setHeader("Access-Control-Allow-Origin",  "*");
-	res->setHeader("Access-Control-Allow-Headers", "*");
-
+  //req->discardRequestBody();
   res->setStatusCode(200);
-  res->println("<!DOCTYPE html>");
-  res->println("<html>");
-  res->println("<head><title>Hello World!</title></head>");
-  res->println("<body>");
-  res->println("<h1>Hello World!</h1>");
-
-  res->print("<p>Your server is running for ");
-  res->print((int)(millis()/1000), DEC);
-  res->println(" seconds.</p>");
-
-  // You can check if you are connected over a secure connection, eg. if you
-  // want to use authentication and redirect the user to a secure connection
-  // for that
-  if (req->isSecure()) {
-    res->println("<p>You are connected via <strong>HTTPS</strong>.</p>");
-  } else {
-    res->println("<p>You are connected via <strong>HTTP</strong>.</p>");
-  }
-
-  res->println("</body>");
-  res->println("</html>");
-
-  Serial.println(ESP.getFreeHeap());
+  //res->setStatusText("Not Found");
+  res->setHeader("Content-Type", "text/html");
+  res->println(GetNotFoundHTML());
 }
 
-void handle404(HTTPRequest * req, HTTPResponse * res) {
+void corsCallback(HTTPRequest *req, HTTPResponse *res)
+{
+  res->setHeader("Access-Control-Allow-Methods", "GET,POST,DELETE,OPTIONS");
+  res->setHeader("Access-Control-Allow-Origin", "*");
+  res->setHeader("Access-Control-Allow-Headers", "*");
+  res->setHeader("Server", FIRMWARE_VERSION);
+}
+
+void handleNotFound(HTTPRequest *req, HTTPResponse *res)
+{
   req->discardRequestBody();
   res->setStatusCode(404);
   res->setStatusText("Not Found");
   res->setHeader("Content-Type", "text/html");
-  res->println("<!DOCTYPE html>");
-  res->println("<html>");
-  res->println("<head><title>Not Found</title></head>");
-  res->println("<body><h1>404 Not Found</h1><p>The requested resource was not found on this server.</p></body>");
-  res->println("</html>");
-  Serial.println(ESP.getFreeHeap());
 }
 
-void corsCallback(HTTPRequest * req, HTTPResponse * res) {
-	res->setHeader("Access-Control-Allow-Methods", "HEAD,GET,POST,DELETE,PUT,OPTIONS");
-	res->setHeader("Access-Control-Allow-Origin",  "*");
-	res->setHeader("Access-Control-Allow-Headers", "*");
+//RESTful APIs ---
+void handleNodeGetAllProperties(HTTPRequest *req, HTTPResponse *res)
+{
+  corsCallback(req, res);
+  res->setStatusCode(200);
+  res->println(nodeGetAllProperties());
+  return;
+}
+
+void handleGetLog(HTTPRequest *req, HTTPResponse *res)
+{
+  corsCallback(req, res);
+  ResourceParameters *params = req->getParams();
+  std::string paramVal;
+  if (params->getQueryParameter("number", paramVal))
+  {
+    {
+      res->setStatusCode(200);
+      if (paramVal == "1")
+      {
+        res->println(filesReadString(LogFile1));
+      }
+      else
+      {
+        res->println(filesReadString(LogFile2));
+      }
+      return;
+    }
+  }
+  handleNotFound(req, res);
+}
+
+void handleGetFileList(HTTPRequest *req, HTTPResponse *res)
+{
+  corsCallback(req, res);
+  ResourceParameters *params = req->getParams();
+  std::string paramVal;
+  if (params->getQueryParameter("path", paramVal))
+  {
+    {
+      res->setStatusCode(200);
+      res->println(filesGetList(String(paramVal.c_str())));
+      return;
+    }
+  }
+  handleNotFound(req, res);
+}
+
+void handleDeleteFile(HTTPRequest *req, HTTPResponse *res)
+{
+  corsCallback(req, res);
+  ResourceParameters *params = req->getParams();
+  std::string paramVal;
+  if (params->getQueryParameter("name", paramVal))
+  {
+    res->setStatusCode(200);
+    res->println(filesDelete(String(paramVal.c_str())));
+    return;
+  }
+  handleNotFound(req, res);
+}
+
+void handleGetNodeProperty(HTTPRequest *req, HTTPResponse *res)
+{
+  corsCallback(req, res);
+  ResourceParameters *params = req->getParams();
+  std::string paramVal;
+  if (params->getQueryParameter("property", paramVal))
+  {
+    String nodeProp = nodeOnMessage(nodeGetTopic() + "/get" + decode(String(paramVal.c_str())), "", NoTransportMask);
+    if ((nodeProp.length() == 0) || (nodeProp.equals(WrongPropertyName)))
+    {
+      req->discardRequestBody();
+      res->setStatusCode(405);
+      res->setStatusText("wrong node property: " + paramVal);
+      res->setHeader("Content-Type", "text/html");
+    }
+    else
+    {
+      res->setStatusCode(200);
+      res->println(nodeProp);
+    }
+    return;
+  }
+  handleNotFound(req, res);
+}
+
+void handleSetNodeProperty(HTTPRequest *req, HTTPResponse *res)
+{
+  corsCallback(req, res);
+  ResourceParameters *params = req->getParams();
+  std::string propertyParam;
+  std::string valParam;
+  if ((params->getQueryParameter("property", propertyParam)) && (params->getQueryParameter("value", valParam)))
+  {
+    String result = nodeOnMessage(nodeGetTopic() + "/set" + decode(String(propertyParam.c_str())), decode(String(valParam.c_str())), NoTransportMask);
+    if ((result.length() == 0) || (result.equals("0")))
+    {
+      req->discardRequestBody();
+      res->setStatusCode(503);
+      res->setStatusText("wrong node property: " + valParam);
+      res->setHeader("Content-Type", "text/html");
+    }
+    else
+    {
+      res->setStatusCode(200);
+      res->println(result);
+    }
+    return;
+  }
+  handleNotFound(req, res);
+}
+
+void handleAddDriver(HTTPRequest *req, HTTPResponse *res)
+{
+  corsCallback(req, res);
+  ResourceParameters *params = req->getParams();
+  std::string typeParam;
+  std::string idParam;
+  std::string pinsParam;
+
+  if ((params->getQueryParameter("type", typeParam)) && (params->getQueryParameter("id", idParam)) && (params->getQueryParameter("pins", pinsParam)))
+  {
+    int _type = std::atoi(typeParam.c_str());
+    String _id = decode(String(idParam.c_str()));
+    String _pins = decode(String(pinsParam.c_str()));
+    String result = driversAdd(_type, _id, _pins);
+    if (!result.equals("1"))
+    {
+      req->discardRequestBody();
+      res->setStatusCode(503);
+      res->setStatusText(result.c_str());
+      res->setHeader("Content-Type", "text/html");
+    }
+    else
+    {
+      if (!driversSaveList())
+      {
+        req->discardRequestBody();
+        res->setStatusCode(503);
+        res->setStatusText("bad, driver added but not stored to configuration file");
+        res->setHeader("Content-Type", "text/html");
+      }
+      else
+      {
+        res->setStatusCode(200);
+        res->println(result);
+      }
+    }
+    return;
+  }
+
+  handleNotFound(req, res);
+}
+
+void handleDeleteDriver(HTTPRequest *req, HTTPResponse *res)
+{
+  corsCallback(req, res);
+  ResourceParameters *params = req->getParams();
+  std::string idParam;
+
+  if (params->getQueryParameter("id", idParam))
+  {
+    String result = driversDelete(String(idParam.c_str()));
+    if (result.length() != 0)
+    {
+      req->discardRequestBody();
+      res->setStatusCode(503);
+      res->setStatusText(result.c_str());
+      res->setHeader("Content-Type", "text/html");
+    }
+    else
+    {
+      res->setStatusCode(200);
+      res->println("1");
+    }
+    return;
+  }
+  handleNotFound(req, res);
+}
+
+void handleGetDriversId(HTTPRequest *req, HTTPResponse *res)
+{
+  corsCallback(req, res);
+  res->setStatusCode(200);
+  res->println(driversGetDriversId().c_str());
+  return;
+}
+
+void handleGetDriverProperty(HTTPRequest *req, HTTPResponse *res)
+{
+  corsCallback(req, res);
+  ResourceParameters *params = req->getParams();
+  std::string idParam;
+  std::string propertyParam;
+
+  if ((params->getQueryParameter("id", idParam)) && (params->getQueryParameter("property", propertyParam)))
+  {
+    String result = driversGetDriverProperty(decode(String(idParam.c_str())), decode(String(propertyParam.c_str())));
+    if (result.length() == 0) //then try get this property from node
+    {
+        result = nodeOnMessage(nodeGetTopic() + "/get" + decode(String(propertyParam.c_str())), "", NoTransportMask);
+    }
+
+    if (result.length() == 0)
+    {
+      req->discardRequestBody();
+      res->setStatusCode(404);
+      res->setStatusText("wrong driver id: " + idParam + " use GetDriversId API to get all drivers list");
+      res->setHeader("Content-Type", "text/html");
+    }
+    else if (result.equals(NotAvailable))
+    {
+      req->discardRequestBody();
+      res->setStatusCode(404);
+      res->setStatusText("driver property: " + propertyParam + " set as NOT Available");
+      res->setHeader("Content-Type", "text/html");
+    }
+    else if (result.equals(WrongPropertyName))
+    {
+      req->discardRequestBody();
+      res->setStatusCode(404);
+      res->setStatusText("driver property: " + propertyParam + " not exists");
+      res->setHeader("Content-Type", "text/html");
+    }
+    else
+    {
+      res->setStatusCode(200);
+      res->println(result.c_str());
+    }
+    return;
+  }
+  handleNotFound(req, res);
+}
+
+void handleSetDriverProperty(HTTPRequest *req, HTTPResponse *res)
+{
+  corsCallback(req, res);
+  ResourceParameters *params = req->getParams();
+  std::string idParam;
+  std::string propertyParam;
+  std::string valueParam;
+
+  if ((params->getQueryParameter("id", idParam)) && (params->getQueryParameter("property", propertyParam)) && (params->getQueryParameter("value", valueParam)))
+  {
+    String result = driversSetDriverProperty(decode(String(idParam.c_str())), decode(String(propertyParam.c_str())), decode(String(valueParam.c_str())));
+    if (result.equals("1"))
+    {
+      res->setStatusCode(200);
+      res->println(driversGetDriversId().c_str());
+    }
+    else
+    {
+      if (result.equals("0"))
+      {
+        req->discardRequestBody();
+        res->setStatusCode(503);
+        res->setStatusText(result.c_str());
+        res->setHeader("Content-Type", "text/html");
+      }
+      else
+      {
+        handleGetNodeProperty(req, res);
+      }
+    }
+    return;
+  }
+  handleNotFound(req, res);
+}
+
+void handleGetDriverProperties(HTTPRequest *req, HTTPResponse *res)
+{
+  corsCallback(req, res);
+  ResourceParameters *params = req->getParams();
+  std::string idParam;
+
+  if (params->getQueryParameter("id", idParam))
+  {
+    String result = driversGetDriverProperties(String(idParam.c_str()));
+    if (result.length() != 0)
+    {
+      req->discardRequestBody();
+      res->setStatusCode(503);
+      res->setStatusText(result.c_str());
+      res->setHeader("Content-Type", "text/html");
+    }
+    else
+    {
+      res->setStatusCode(200);
+      res->println(result.c_str());
+    }
+    return;
+  }
+  handleNotFound(req, res);
+}
+
+void handleGetAllDriversProperties(HTTPRequest *req, HTTPResponse *res)
+{
+     res->setStatusCode(200);
+     res->println(driversGetAllDriversProperties().c_str());
+}
+
+void handleGetDriversAccessable(HTTPRequest *req, HTTPResponse *res)
+{
+     res->setStatusCode(200);
+     res->println(driversGetAccessable().c_str());
+}
+
+void handleGetAllScripts(HTTPRequest *req, HTTPResponse *res)
+{
+     res->setStatusCode(200);
+     res->println(scriptsGetAll().c_str());
+}
+
+void handleGetPinMap(HTTPRequest *req, HTTPResponse *res)
+{
+     res->setStatusCode(200);
+     res->println(getPinMap().c_str());
 }
 
 
 
 
+//ENDOF RESTful APIs ---
+
+void setResourceNode(const std::string &path, const std::string &method, const HTTPSCallbackFunction *callback)
+{
+  ResourceNode *resourceNode = new ResourceNode(path, method, callback);
+  secureServer.registerNode(resourceNode);
+  insecureServer.registerNode(resourceNode);
+}
+
+void HTTPSWebServerBegin()
+{
+  setResourceNode("/*", "OPTIONS", &corsCallback);
+  setResourceNode("/", "GET", &handleOther);
+
+  setResourceNode("/getallnodeproperties", "GET", &handleNodeGetAllProperties);
+  setResourceNode("/getlog", "GET", &handleGetLog);
+  setResourceNode("/getfilelist", "GET", &handleGetFileList);
+  setResourceNode("/deletefile", "GET", &handleDeleteFile);
+  setResourceNode("/deletefile", "DELETE", &handleDeleteFile);
+  setResourceNode("/getnodeproperty", "GET", &handleGetNodeProperty);
+  setResourceNode("/setnodeproperty", "GET", &handleSetNodeProperty);
+  setResourceNode("/adddriver", "GET", &handleAddDriver);
+  setResourceNode("/deletedriver", "GET", &handleDeleteDriver);
+  setResourceNode("/deletedriver", "DELETE", &handleDeleteDriver);
+  setResourceNode("/getdriversid", "GET", &handleGetDriversId);
+  setResourceNode("/getdriverproperty", "GET", &handleGetDriverProperty);
+  setResourceNode("/setdriverproperty", "GET", &handleSetDriverProperty);
+  setResourceNode("/getdriverproperties", "GET", &handleGetDriverProperties);
+  setResourceNode("/getalldriversproperties", "GET", &handleGetAllDriversProperties);
+  setResourceNode("/getdriversaccessable", "GET", &handleGetDriversAccessable);
+  setResourceNode("/getallscripts", "GET", &handleGetAllScripts);
+  setResourceNode("/getpinmap", "GET", &handleGetPinMap);
+  
+
+  // Connect to WiFi
+
+  // For every resource available on the server, we need to create a ResourceNode
+  // The ResourceNode links URL and HTTP method to a handler function
+  //ResourceNode * nodeRoot = new ResourceNode("/", "GET", &handleRoot);
+  //ResourceNode * corsNode   = new ResourceNode("/*", "OPTIONS", &corsCallback);
+  //ResourceNode * node404  = new ResourceNode("", "GET", &handle404);
+
+  // Add the root node to the servers. We can use the same ResourceNode on multiple
+  // servers (you could also run multiple HTTPS servers)
+  //secureServer.registerNode(nodeRoot);
+  //insecureServer.registerNode(nodeRoot);
+
+  // We do the same for the default Node
+  //secureServer.setDefaultNode(node404);
+  //insecureServer.setDefaultNode(node404);
+
+  //secureServer.registerNode(corsNode);
+  //insecureServer.registerNode(corsNode);
+
+  Serial.println("Starting HTTPS server...");
+  secureServer.start();
+  Serial.println("Starting HTTP server...");
+  insecureServer.start();
+  //if (secureServer.isRunning() && insecureServer.isRunning()) {
+  //   Serial.println("Servers ready.");
+  //  }
+}
+
+void HTTPSWebServerLoop()
+{
+  // We need to call both loop functions here
+  secureServer.loop();
+  insecureServer.loop();
+}

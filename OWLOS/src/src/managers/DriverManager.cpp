@@ -524,21 +524,6 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 		pins.remove(0, pinPos + 1);
 	}
 
-	/*
-	if (checkPinBusy(pin1)) return "bad, pin1:" + String(pin1) + " busy " + busyPins;
-	if (checkPinBusy(pin2)) return "bad, pin2:" + String(pin2) + " busy " + busyPins;
-	if (checkPinBusy(pin3)) return "bad, pin3:" + String(pin3) + " busy " + busyPins;
-	if (checkPinBusy(pin4)) return "bad, pin4:" + String(pin4) + " busy " + busyPins;
-
-	String pinMaping = checkPinMaping(pin1);
-	if (pinMaping.length() != 0) return "bad, pin1:" + String(pin1) + " " + pinMaping;
-	pinMaping = checkPinMaping(pin2);
-	if (pinMaping.length() != 0) return "bad, pin2:" + String(pin2) + " " + pinMaping;
-	pinMaping = checkPinMaping(pin3);
-	if (pinMaping.length() != 0) return "bad, pin3:" + String(pin3) + " " + pinMaping;
-	pinMaping = checkPinMaping(pin4);
-	if (pinMaping.length() != 0) return "bad, pin4:" + String(pin4) + " " + pinMaping;
-	*/
 
 	id.toLowerCase();
 
@@ -624,6 +609,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 		sensorDriver->init();
 		driversList[freeIndex] = sensorDriver;
 	}
+	/*
 	else if (type == LCD)
 	{
 #ifdef DetailedDebug
@@ -674,161 +660,12 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 		dhtDriver->id = id;
 		driversList[freeIndex] = dhtDriver;
 	}
-
+*/
 	else
 	{
 		return "not supported";
 	}
 
-	/*
-	if (type == DHTDriverType)
-	{
-
-		DHTDriver * dhtDriver = new DHTDriver;
-		dhtDriver->init(id);
-		dhtDriver->id = id;
-		dhtDriver->setPin(pin1);
-		addBusyPin(type, id + "DHT", pin1);
-		driversCount++;
-		driversList[driversCount - 1] = dhtDriver;
-	}
-	else
-			if (type == Light)
-			{
-				if (pin1 < 0) return "bad, pin1 wrong value";
-				LightDriver * lightDriver = new LightDriver;
-				lightDriver->init(id);
-				lightDriver->setPin(pin1);
-				addBusyPin(type, id, pin1);
-				driversCount++;
-				driversList[driversCount - 1] = lightDriver;
-			}
-			else
-				if (type == Smoke)
-				{
-					if (pin1 <= 0) return "bad, pin1 wrong value";
-					SmokeDriver * smokeDriver = new SmokeDriver;
-					smokeDriver->init(id);
-					smokeDriver->setPin(pin1);
-					addBusyPin(type, id, pin1);
-					driversCount++;
-					driversList[driversCount - 1] = smokeDriver;
-				}
-				else
-					if (type == Motion)
-					{
-						if (pin1 < 0) return "bad, pin1 wrong value";
-						MotionDriver * motionDriver = new MotionDriver;
-						motionDriver->id = id;
-						motionDriver->setPin(pin1);
-						addBusyPin(type, id, pin1);
-						motionDriver->init();
-						driversCount++;
-						driversList[driversCount - 1] = motionDriver;
-					}
-					else
-						if (type == Sensor)
-						{
-							if (pin1 < 0) return "bad, pin1 wrong value";
-							SensorDriver * sensorDriver = new SensorDriver;
-							sensorDriver->id = id;
-							sensorDriver->setPin(pin1);
-							addBusyPin(type, id, pin1);
-							sensorDriver->init();
-							driversCount++;
-							driversList[driversCount - 1] = sensorDriver;
-						}
-						else
-							if (type == Stepper)
-							{
-								if (pin1 < 0) return "bad, pin1 wrong value";
-								if (pin2 < 0) return "bad, pin2 wrong value";
-								if (pin3 < 0) return "bad, pin3 wrong value";
-								if (pin4 < 0) return "bad, pin4 wrong value";
-								if ((pin1 == pin2) || (pin1 == pin3) || (pin1 == pin4) || (pin2 == pin3) || (pin2 == pin4) || (pin3 == pin4)) return "bad, duplicate pins values";
-								StepperDriver * stepperDriver = new StepperDriver;
-								stepperDriver->id = id;
-								stepperDriver->setPin1(pin1);
-								stepperDriver->setPin2(pin2);
-								stepperDriver->setPin3(pin3);
-								stepperDriver->setPin4(pin4);
-								addBusyPin(type, id, pin1);
-								addBusyPin(type, id, pin2);
-								addBusyPin(type, id, pin3);
-								addBusyPin(type, id, pin4);
-								stepperDriver->init();
-								driversCount++;
-								driversList[driversCount - 1] = stepperDriver;
-							}
-							else
-								if (type == LCD)
-								{
-									if (checkPinBusy(D1)) return "bad, CLOCK pin busy:" + String(D1) + " busy " + busyPins;
-									if (checkPinBusy(D2)) return "bad, DATA pin busy:" + String(D2) + " busy " + busyPins;
-									LCDDriver * lcdDriver = new LCDDriver;
-									lcdDriver->id = id;
-									addBusyPin(type, id, D1);
-									addBusyPin(type, id, D2);
-									lcdDriver->init();
-									driversCount++;
-									driversList[driversCount - 1] = lcdDriver;
-								}
-								else
-									if (type == Actuator)
-									{
-										if (pin1 < 0) return "bad, pin1 wrong value";
-										 //setDriverPin(pinName1, id, 0, ActuatorDriver.getPinType(0)); // == ""
-
-										ActuatorDriver * actuatorDriver = new ActuatorDriver;
-										actuatorDriver->id = id;
-
-										actuatorDriver->init();
-
-										//actuatorDriver->setPin(pin1);
-										addBusyPin(type, id, pin1);
-										driversCount++;
-										driversList[driversCount - 1] = actuatorDriver;
-									}
-									else
-										if (type == Opto)
-										{
-											if (pin1 < 0) return "bad, pin1 wrong value";
-											if (pin2 < 0) return "bad, pin2 wrong value";
-											if (pin1 == pin2) return "bad, dublicate pins values";
-											OptoDriver * optoDriver = new OptoDriver;
-											optoDriver->init();
-											optoDriver->id = id;
-											optoDriver->setPin1(pin1);
-											optoDriver->setPin2(pin2);
-											addBusyPin(type, id, pin1);
-											addBusyPin(type, id, pin2);
-											driversCount++;
-											driversList[driversCount - 1] = optoDriver;
-										}
-										else
-											if (type == Valve)
-											{
-												if (pin1 < 0) return "bad, pin1 wrong value";
-												if (pin2 < 0) return "bad, pin2 wrong value";
-												if (pin3 < 0) return "bad, pin3 wrong value";
-												if ((pin1 == pin2) || (pin1 == pin3) || (pin2 == pin3)) return "bad, duplicate pins values";
-												ValveDriver * valveDriver = new ValveDriver;
-												valveDriver->init();
-												valveDriver->id = id;
-												valveDriver->setPin1(pin1);
-												valveDriver->setPin2(pin2);
-												valveDriver->setPin3(pin3);
-												addBusyPin(type, id, pin1);
-												addBusyPin(type, id, pin2);
-												addBusyPin(type, id, pin3);
-												driversCount++;
-												driversList[driversCount - 1] = valveDriver;
-											}
-											else
-											{
-												return "bad, driver type";
-											}
-*/
 	//if driver added at RUNTIME
 	if (transportAvailable())
 		driversList[freeIndex]->begin(nodeGetTopic());

@@ -46,8 +46,6 @@ OWLOS распространяется в надежде, что она буде
 #include "../Managers/TransportManager.h"
 
 
-#define FIRMWARE_VERSION "OWLOS version 1.8 (RC)"
-#define FIRMWARE_BUILD_NUMBER 72
 
 #define DEFAULT_ZERO_VALUE 0x00
 #define DEFAULT_EMPTY_STR_VALUE ""
@@ -226,7 +224,7 @@ String nodeGetAllProperties()
 	result += nodeGetAllWiFiStatuses() + "//r\n";
 	result += nodeGetWiFiNetworksParameters() + "//r\n";
 	result += nodeGetAllWiFiEncryptionTypes() + "//r\n";
-
+/*
 	result += "properties for:network\n";
 	result += "id=network//r\n";
 	result += "type=" + String(NetworkType) + "//r\n";
@@ -295,7 +293,7 @@ String nodeGetAllProperties()
 	//Pins 
 	//result += "busypins=" + nodeGetBusyPins() + "//rs\n";
 	//result += "pinsmap=" + nodeGetPinsMap() + "//r\n";
-
+*/
 	return result;
 }
 
@@ -323,6 +321,7 @@ String nodeOnMessage(String _topic, String _payload, int8_t transportMask)
 	if (String(topic + "/getnodeid").equals(_topic)) return onGetProperty("id", nodeGetUnitId(), transportMask);
 	else
 		if (String(topic + "/setnodeid").equals(_topic)) return String(nodeSetUnitId(_payload));
+		
 		else
 			if (String(topic + "/gettopic").equals(_topic)) return onGetProperty("topic", nodeGetTopic(), transportMask);
 			else
@@ -373,7 +372,7 @@ String nodeOnMessage(String _topic, String _payload, int8_t transportMask)
 																										if (String(topic + "/setwifiisconnected").equals(_topic)) return String(nodeSetWiFiIsConnected(std::atoi(_payload.c_str())));
 																										else
 																											if (String(topic + "/getconnectedwifissid").equals(_topic)) return onGetProperty("connectedwifissid", nodeGetConnectedWiFiSSID(), transportMask);
-
+/*
 																											else
 																												if (String(topic + "/getrestfulavailable").equals(_topic)) return onGetProperty("restfulavailable", String(nodeGetRESTfulAvailable()), transportMask);
 																												else
@@ -482,7 +481,7 @@ String nodeOnMessage(String _topic, String _payload, int8_t transportMask)
 																																																																												else
 																																																																													if (String(topic + "/getallwifiencryptiontypes").equals(_topic)) return String(nodeGetAllWiFiEncryptionTypes());
 
-	/**/
+	
 	//ESP class parameters
 																																																																													else
 																																																																														if (String(topic + "/getespresetinfo").equals(_topic)) return onGetProperty("espresetinfo", nodeGetESPResetInfo(), transportMask);
@@ -614,8 +613,11 @@ String nodeOnMessage(String _topic, String _payload, int8_t transportMask)
 																																																																																																																																										else
 																																																																																																																																											if (String(topic + "/setupdatehost").equals(_topic)) return String(nodeSetUpdateHost(_payload));
 																																																																																																																																											else
+																																																																																																																																											
 																																																																																																																																												//Update 
 																																																																																																																																												return result;
+*/		
+ return "";																																																																																																																																										
 }
 
 bool lock = false;

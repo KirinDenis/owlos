@@ -65,7 +65,7 @@ var runOnce = true;
 var sideBar = undefined;
 
 function testHTTPS() {
-    httpGetAsyncWithReciever("http://192.168.1.5/", HTTPSResult, null);
+    httpGetAsyncWithReciever("https://192.168.1.5/getallnodeproperties", HTTPSResult, null);
     //httpGetAsyncWithReciever("https://192.168.1.5/", HTTPSResult, null);
 }
 
@@ -91,11 +91,11 @@ $(document).ready(function () {
     addToLogNL("[START]", 1);
 
 
-    //!!connection test 
+    //!!connection test  ----------------
     
-    setInterval(testHTTPS, 100);
+    //setInterval(testHTTPS, 2000);
 
-    return; 
+    //return; 
     //-----------------
 
     //setup UX color theme 
