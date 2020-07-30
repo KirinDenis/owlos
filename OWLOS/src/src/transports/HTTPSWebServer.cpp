@@ -40,7 +40,7 @@
 //#include "lwip/sockets.h"
 //#include "lwip/dns.h"
 //#include "lwip/netdb.h"
-
+#include <SPIFFS.h>
 #include "HTTPServerThings.h"
 #include "../drivers/ESPDriver.h"
 #include "../Managers/DriverManager.h"
@@ -289,7 +289,7 @@ void handleGetDriverProperty(HTTPRequest *req, HTTPResponse *res)
     String result = driversGetDriverProperty(decode(String(idParam.c_str())), decode(String(propertyParam.c_str())));
     if (result.length() == 0) //then try get this property from node
     {
-        result = nodeOnMessage(nodeGetTopic() + "/get" + decode(String(propertyParam.c_str())), "", NoTransportMask);
+      result = nodeOnMessage(nodeGetTopic() + "/get" + decode(String(propertyParam.c_str())), "", NoTransportMask);
     }
 
     if (result.length() == 0)
@@ -337,11 +337,11 @@ void handleSetDriverProperty(HTTPRequest *req, HTTPResponse *res)
     if (result.equals("1"))
     {
       res->setStatusCode(200);
-      res->println(driversGetDriversId().c_str());
+      res->println(result);
     }
     else
     {
-      if (result.equals("0"))
+      if (!result.equals(WrongPropertyName))
       {
         req->discardRequestBody();
         res->setStatusCode(503);
@@ -350,7 +350,7 @@ void handleSetDriverProperty(HTTPRequest *req, HTTPResponse *res)
       }
       else
       {
-        handleGetNodeProperty(req, res);
+        handleSetNodeProperty(req, res);
       }
     }
     return;
@@ -386,30 +386,76 @@ void handleGetDriverProperties(HTTPRequest *req, HTTPResponse *res)
 
 void handleGetAllDriversProperties(HTTPRequest *req, HTTPResponse *res)
 {
-     res->setStatusCode(200);
-     res->println(driversGetAllDriversProperties().c_str());
+  corsCallback(req, res);
+  res->setStatusCode(200);
+  res->println(driversGetAllDriversProperties().c_str());
 }
 
 void handleGetDriversAccessable(HTTPRequest *req, HTTPResponse *res)
 {
-     res->setStatusCode(200);
-     res->println(driversGetAccessable().c_str());
+  corsCallback(req, res);
+  res->setStatusCode(200);
+  res->println(driversGetAccessable().c_str());
 }
 
 void handleGetAllScripts(HTTPRequest *req, HTTPResponse *res)
 {
-     res->setStatusCode(200);
-     res->println(scriptsGetAll().c_str());
+  corsCallback(req, res);
+  res->setStatusCode(200);
+  res->println(scriptsGetAll().c_str());
 }
 
 void handleGetPinMap(HTTPRequest *req, HTTPResponse *res)
 {
-     res->setStatusCode(200);
-     res->println(getPinMap().c_str());
+  corsCallback(req, res);
+  res->setStatusCode(200);
+  res->println(getPinMap().c_str());
 }
 
+void handleGetDriverPin(HTTPRequest *req, HTTPResponse *res)
+{
+  corsCallback(req, res);
+  res->setStatusCode(200);
+  res->println(getDriverPin());
+}
 
+void handleGetWebProperty(HTTPRequest *req, HTTPResponse *res)
+{
+  corsCallback(req, res);
+  res->setStatusCode(200);
+  res->println(filesReadString("/web.config"));
+}
 
+void handleSetWebProperty(HTTPRequest *req, HTTPResponse *res)
+{
+  corsCallback(req, res);
+  res->setStatusCode(200);
+  // Stream the incoming request body to the response body
+  // Theoretically, this should work for every request size.
+  byte buffer[256];
+
+  File fs_uploadFile;
+  fs_uploadFile = SPIFFS.open("/web.config", "w");
+  // HTTPReqeust::requestComplete can be used to check whether the
+  // body has been parsed completely.
+
+  while (!(req->requestComplete()))
+  {
+    yield();
+    // HTTPRequest::readBytes provides access to the request body.
+    // It requires a buffer, the max buffer length and it will return
+    // the amount of bytes that have been written to the buffer.
+    size_t s = req->readBytes(buffer, 256);
+
+    // The response does not only implement the Print interface to
+    // write character data to the response but also the write function
+    // to write binary data to the response.
+    res->write(buffer, s);
+    fs_uploadFile.write(buffer, s);
+  }
+	fs_uploadFile.close();
+  
+}
 
 //ENDOF RESTful APIs ---
 
@@ -443,7 +489,9 @@ void HTTPSWebServerBegin()
   setResourceNode("/getdriversaccessable", "GET", &handleGetDriversAccessable);
   setResourceNode("/getallscripts", "GET", &handleGetAllScripts);
   setResourceNode("/getpinmap", "GET", &handleGetPinMap);
-  
+  setResourceNode("/getdriverpin", "GET", &handleGetDriverPin);
+  setResourceNode("/getwebproperty", "GET", &handleGetWebProperty);
+  setResourceNode("/setwebproperty", "POST", &handleSetWebProperty);
 
   // Connect to WiFi
 
