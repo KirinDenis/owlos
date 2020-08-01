@@ -551,8 +551,8 @@ int runSum(int index) {
 	String value1 = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
 	String value2 = scripts[index].data[scripts[index].code[ip].arg2Addr].value;
 
-	float arg1 = std::atof(value1.c_str());
-	float arg2 = std::atof(value2.c_str());
+	float arg1 = atof(value1.c_str());
+	float arg2 = atof(value2.c_str());
 
 	String result = String(arg1 + arg2);
 
@@ -577,8 +577,8 @@ int runSub(int index) {
 	String value1 = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
 	String value2 = scripts[index].data[scripts[index].code[ip].arg2Addr].value;
 
-	float arg1 = std::atof(value1.c_str());
-	float arg2 = std::atof(value2.c_str());
+	float arg1 = atof(value1.c_str());
+	float arg2 = atof(value2.c_str());
 	String result = String(arg1 - arg2);
 
 	free(scripts[index].data[scripts[index].code[ip].resultAddr].value);
@@ -604,8 +604,8 @@ int runMult(int index) {
 	String value1 = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
 	String value2 = scripts[index].data[scripts[index].code[ip].arg2Addr].value;
 
-	float arg1 = std::atof(value1.c_str());
-	float arg2 = std::atof(value2.c_str());
+	float arg1 = atof(value1.c_str());
+	float arg2 = atof(value2.c_str());
 
 	//проверка выйдет ли результат умножения arg1 за arg2 за размер float
 	if (arg1 != 0.0f) {
@@ -640,8 +640,8 @@ int runDev(int index) {
 	String value1 = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
 	String value2 = scripts[index].data[scripts[index].code[ip].arg2Addr].value;
 
-	float arg1 = std::atof(value1.c_str());
-	float arg2 = std::atof(value2.c_str());
+	float arg1 = atof(value1.c_str());
+	float arg2 = atof(value2.c_str());
 
 	//Проверка на ноль делителя
 	if (arg2 == 0.0f) return -1;
@@ -691,7 +691,7 @@ int runGoto(int index) {
 	if (scripts[index].code[ip].type != GOTO_INSTRUCTION) return -1;
 	if (scripts[index].code[ip].arg1Addr == -1) return -1;
 	String value1 = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
-	int arg1 = std::atoi(value1.c_str());
+	int arg1 = atoi(value1.c_str());
 	return arg1;
 }
 
@@ -709,12 +709,12 @@ int runIfupper(int index) {
 	if (scripts[index].code[ip].type != IF_UPPER_INSTRUCTION) return -1;
 	String value1 = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
 	String value2 = scripts[index].data[scripts[index].code[ip].arg2Addr].value;
-	float arg1 = std::atof(value1.c_str());
-	float arg2 = std::atof(value2.c_str());
+	float arg1 = atof(value1.c_str());
+	float arg2 = atof(value2.c_str());
 	if (arg1 > arg2) {
 		if (scripts[index].code[ip].arg3Addr == -1) return -1;
 		String value3 = scripts[index].data[scripts[index].code[ip].arg3Addr].value;
-		int arg3 = std::atoi(value3.c_str());
+		int arg3 = atoi(value3.c_str());
 		return arg3;
 
 	}
@@ -737,12 +737,12 @@ int runIflower(int index) {
 	if (scripts[index].code[ip].type != IF_LOWER_INSTUCTION) return -1;
 	String value1 = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
 	String value2 = scripts[index].data[scripts[index].code[ip].arg2Addr].value;
-	float arg1 = std::atof(value1.c_str());
-	float arg2 = std::atof(value2.c_str());
+	float arg1 = atof(value1.c_str());
+	float arg2 = atof(value2.c_str());
 	if (arg1 < arg2) {
 		if (scripts[index].code[ip].arg3Addr == -1) return -1;
 		String value3 = scripts[index].data[scripts[index].code[ip].arg3Addr].value;
-		int arg3 = std::atoi(value3.c_str());
+		int arg3 = atoi(value3.c_str());
 		return arg3;
 	}
 	else {
@@ -764,12 +764,12 @@ int runIfequal(int index) {
 	if (scripts[index].code[ip].type != IF_EQUAL_INSTUCTION) return -1;
 	String value1 = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
 	String value2 = scripts[index].data[scripts[index].code[ip].arg2Addr].value;
-	float arg1 = std::atof(value1.c_str());
-	float arg2 = std::atof(value2.c_str());
+	float arg1 = atof(value1.c_str());
+	float arg2 = atof(value2.c_str());
 	if (arg1 == arg2) {
 		if (scripts[index].code[ip].arg3Addr == -1) return -1;
 		String value3 = scripts[index].data[scripts[index].code[ip].arg3Addr].value;
-		int arg3 = std::atoi(value3.c_str());
+		int arg3 = atoi(value3.c_str());
 		return arg3;
 	}
 	else {
@@ -1506,18 +1506,18 @@ bool scriptsLoad() {
 			String key = line.substring(0, line.indexOf(STRUCTURE_KEY_DELIMITER));
 			String value = line.substring(line.indexOf(STRUCTURE_KEY_DELIMITER) + 1);
 
-			if (key == "status") scripts[scriptCount].status = std::atoi(value.c_str());
+			if (key == "status") scripts[scriptCount].status = atoi(value.c_str());
 			else
 				if (key == "bytecode") {
 					scripts[scriptCount].byteCode = value;
 					scriptsCompile(scriptCount);
 				}
 				else
-					if (key == "codecount")  scripts[scriptCount].codeCount = std::atoi(value.c_str());
+					if (key == "codecount")  scripts[scriptCount].codeCount = atoi(value.c_str());
 					else
-						if (key == "datacount")  scripts[scriptCount].dataCount = std::atoi(value.c_str());
+						if (key == "datacount")  scripts[scriptCount].dataCount = atoi(value.c_str());
 						else
-							if (key == "timequant")  scripts[scriptCount].timeQuant = std::atoi(value.c_str());
+							if (key == "timequant")  scripts[scriptCount].timeQuant = atoi(value.c_str());
 		}
 		result.remove(0, linePos + 1);
 	}

@@ -38,8 +38,8 @@ OWLOS распространяется в надежде, что она буде
 Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
-#ifdef USE_VALVE_DRIVER
 #include "ValveDriver.h"
+#ifdef USE_VALVE_DRIVER
 
 //Драйвер запорной арматуры (ValveDriver) с электроприводом и резистивным сенсором положения
 //WiKi:
@@ -146,7 +146,7 @@ String ValveDriver::onMessage(String _topic, String _payload, int8_t transportMa
 	}
 	else if (String(topic + "/setposition").equals(_topic))
 	{
-		result = String(setPosition(std::atoi(_payload.c_str())));
+		result = String(setPosition(atoi(_payload.c_str())));
 	}
 
 	else if (String(topic + "/getphysicalposition").equals(_topic))

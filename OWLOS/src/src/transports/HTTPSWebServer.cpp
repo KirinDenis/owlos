@@ -213,7 +213,7 @@ void handleAddDriver(HTTPRequest *req, HTTPResponse *res)
 
   if ((params->getQueryParameter("type", typeParam)) && (params->getQueryParameter("id", idParam)) && (params->getQueryParameter("pins", pinsParam)))
   {
-    int _type = std::atoi(typeParam.c_str());
+    int _type = atoi(typeParam.c_str());
     String _id = decode(String(idParam.c_str()));
     String _pins = decode(String(pinsParam.c_str()));
     String result = driversAdd(_type, _id, _pins);

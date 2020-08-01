@@ -1,4 +1,4 @@
-#include <core_version.h>
+#include "../../../config.h"
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4 //OWLOS need this for hide from ESP8266
 #ifndef _ESP32_ANALOG_WRITE_
 #define _ESP32_ANALOG_WRITE_

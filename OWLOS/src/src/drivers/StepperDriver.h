@@ -39,11 +39,10 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
+#include "BaseDriver.h"
 #ifdef USE_STEPPER_DRIVER
 #ifndef STEPPERDRIVER_H
 #define STEPPERDRIVER_H
-
-#include "BaseDriver.h"
 
 #define VCC5_INDEX 4
 #define GND_INDEX 5

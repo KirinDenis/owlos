@@ -39,11 +39,10 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
+#include "BaseDriver.h"
 #ifdef USE_SENSOR_DRIVER
 #ifndef SENSOR_H
 #define SENSOR_H
-
-#include "BaseDriver.h"
 
 class SensorDriver : public BaseDriver
 {
@@ -86,4 +85,5 @@ private:
 	int data = -1;
 	float sensorTriger = 0;
 };
+#endif
 #endif

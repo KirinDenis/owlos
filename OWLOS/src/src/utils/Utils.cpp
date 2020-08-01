@@ -56,7 +56,9 @@ void debugOut(String tag, String text)
 {
 	if (Debug)
 	{
+#ifdef USE_ESP_DRIVER		
 		text = text + " [HEAP: " + String(ESP.getFreeHeap()) + "]";
+#endif		
 		Serial.println("DEBUG: " + tag + " - " + text);
 		if (WriteDebugLogs)
 		{

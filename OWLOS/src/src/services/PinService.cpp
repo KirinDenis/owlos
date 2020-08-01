@@ -83,7 +83,6 @@ PinService - реализует программный интерфейс меж
   может быть множество I2C адресов, с условием что они уникальны и соответствуют размерности I2C адреса.
 */
 
-#include <core_version.h>
 #include "PinService.h"
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
@@ -415,13 +414,24 @@ int getPinMode(uint32_t pin)
 {
 	if ((pin >= NUM_DIGITAL_PINS) || (pin < 0)) return (-1);
 
+#ifdef USE_ESP_BOARDS
 	uint32_t bit = digitalPinToBitMask(pin);
 	uint32_t port = digitalPinToPort(pin);
 	volatile uint32_t *reg = portModeRegister(port);
 	if (*reg & bit) return (OUTPUT);
+	volatile uint32_t *out = portOutputRegister(port);	
+    return ((*out & bit) ? INPUT_PULLUP : INPUT);	
+#else 	
+	uint8_t bit = digitalPinToBitMask(pin);
+	uint8_t port = digitalPinToPort(pin);
+	volatile uint8_t *reg = portModeRegister(port);
+	if (*reg & bit) return (OUTPUT);
+	volatile uint8_t *out = portOutputRegister(port);	
+    return ((*out & bit) ? INPUT_PULLUP : INPUT);	
+#endif
 
-	volatile uint32_t *out = portOutputRegister(port);
-	return ((*out & bit) ? INPUT_PULLUP : INPUT);
+
+	
 }
 
 //функция устанавливает режим пина

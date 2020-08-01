@@ -389,7 +389,7 @@ String driversLoadFromConfig()
 		}
 		if (id.length() != 0)
 		{
-			result += "{" + driversAdd(std::atoi(type.c_str()), id, pins) + "}";
+			result += "{" + driversAdd(atoi(type.c_str()), id, pins) + "}";
 		}
 
 		driverList.remove(0, linePos + 1);
@@ -534,12 +534,12 @@ if ((type == Sensor) || (type == Light) || (type == Smoke) || (type == Motion))
 			return "LCDDriver's pins quantity does not match, must be " + String(LCDDriver::getPinsCount());
 		}
 
-		result = checkDriverPin(_pins[SDA_INDEX], LCDDriver::getPinType(SDA_INDEX)) + checkDriverPin(_pins[SCL_INDEX], LCDDriver::getPinType(SCL_INDEX)) + _checkDriverPin(_pins[I2CADDR_INDEX], LCDDriver::getPinType(I2CADDR_INDEX), _pins[SDA_INDEX]) + checkDriverPin(_pins[VCC5_INDEX], LCDDriver::getPinType(VCC5_INDEX)) + checkDriverPin(_pins[GND_INDEX], LCDDriver::getPinType(GND_INDEX));
+		result = checkDriverPin(_pins[SDA_INDEX], LCDDriver::getPinType(SDA_INDEX)) + checkDriverPin(_pins[SCL_INDEX], LCDDriver::getPinType(SCL_INDEX)) + _checkDriverPin(_pins[I2CADDR_INDEX], LCDDriver::getPinType(I2CADDR_INDEX), _pins[SDA_INDEX]) + checkDriverPin(_pins[_VCC5_INDEX], LCDDriver::getPinType(_VCC5_INDEX)) + checkDriverPin(_pins[_GND_INDEX], LCDDriver::getPinType(_GND_INDEX));
 
 		if (result.length() != 0)
 			return result;
 
-		result = setDriverPin(_pins[SDA_INDEX], id, SDA_INDEX, LCDDriver::getPinType(SDA_INDEX)) + setDriverPin(_pins[SCL_INDEX], id, SCL_INDEX, LCDDriver::getPinType(SCL_INDEX)) + _setDriverPin(_pins[I2CADDR_INDEX], id, I2CADDR_INDEX, LCDDriver::getPinType(I2CADDR_INDEX), _pins[SDA_INDEX]) + setDriverPin(_pins[VCC5_INDEX], id, VCC5_INDEX, LCDDriver::getPinType(VCC5_INDEX)) + setDriverPin(_pins[GND_INDEX], id, GND_INDEX, LCDDriver::getPinType(GND_INDEX));
+		result = setDriverPin(_pins[SDA_INDEX], id, SDA_INDEX, LCDDriver::getPinType(SDA_INDEX)) + setDriverPin(_pins[SCL_INDEX], id, SCL_INDEX, LCDDriver::getPinType(SCL_INDEX)) + _setDriverPin(_pins[I2CADDR_INDEX], id, I2CADDR_INDEX, LCDDriver::getPinType(I2CADDR_INDEX), _pins[SDA_INDEX]) + setDriverPin(_pins[_VCC5_INDEX], id, _VCC5_INDEX, LCDDriver::getPinType(_VCC5_INDEX)) + setDriverPin(_pins[_GND_INDEX], id, _GND_INDEX, LCDDriver::getPinType(_GND_INDEX));
 
 		if (result.length() != 0)
 			return result;

@@ -39,14 +39,13 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
+#include "BaseDriver.h"
 #ifdef USE_DHT_DRIVER
 
 #ifndef DHTDRIVER_H
 #define DHTDRIVER_H
 
 #pragma once
-
-#include "BaseDriver.h"
 #include "../libraries/DHT_sensor_library/DHT.h"
 
 #define DRIVER_ID "DHT"

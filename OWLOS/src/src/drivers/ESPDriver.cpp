@@ -335,11 +335,11 @@ String nodeOnMessage(String _topic, String _payload, int8_t transportMask)
 						else
 							if (String(topic + "/getfirmwarebuildnumber").equals(_topic)) return onGetProperty("firmwarebuildnumber", String(nodeGetFirmwareBuildNumber()), transportMask);
 							else
-								if (String(topic + "/setfirmwarebuildnumber").equals(_topic)) return String(nodeSetFirmwareBuildNumber(std::atoi(_payload.c_str())));
+								if (String(topic + "/setfirmwarebuildnumber").equals(_topic)) return String(nodeSetFirmwareBuildNumber(atoi(_payload.c_str())));
 								else
 									if (String(topic + "/getwifiaccesspointavailable").equals(_topic)) return String(onGetProperty("wifiapavailable", String(nodeGetWiFiAccessPointAvailable()), transportMask));
 									else
-										if (String(topic + "/setwifiaccesspointavailable").equals(_topic)) return String(nodeSetWiFiAccessPointAvailable(std::atoi(_payload.c_str())));
+										if (String(topic + "/setwifiaccesspointavailable").equals(_topic)) return String(nodeSetWiFiAccessPointAvailable(atoi(_payload.c_str())));
 										else
 											if (String(topic + "/getwifiaccesspointssid").equals(_topic)) return onGetProperty("wifiaccesspointssid", nodeGetWiFiAccessPointSSID(), transportMask);
 											else
@@ -355,7 +355,7 @@ String nodeOnMessage(String _topic, String _payload, int8_t transportMask)
 																else
 																	if (String(topic + "/getwifiavailable").equals(_topic)) return String(onGetProperty("wifiavailable", String(nodeGetWiFiAvailable()), transportMask));
 																	else
-																		if (String(topic + "/setwifiavailable").equals(_topic)) return String(nodeSetWiFiAvailable(std::atoi(_payload.c_str())));
+																		if (String(topic + "/setwifiavailable").equals(_topic)) return String(nodeSetWiFiAvailable(atoi(_payload.c_str())));
 																		else
 																			if (String(topic + "/getwifissid").equals(_topic)) return onGetProperty("wifissid", nodeGetWiFiSSID(), transportMask);
 																			else
@@ -371,14 +371,14 @@ String nodeOnMessage(String _topic, String _payload, int8_t transportMask)
 																								else
 																									if (String(topic + "/getwifiisconnected").equals(_topic)) return onGetProperty("wifiisconnected", String(nodeGetWiFiIsConnected()), transportMask);
 																									else
-																										if (String(topic + "/setwifiisconnected").equals(_topic)) return String(nodeSetWiFiIsConnected(std::atoi(_payload.c_str())));
+																										if (String(topic + "/setwifiisconnected").equals(_topic)) return String(nodeSetWiFiIsConnected(atoi(_payload.c_str())));
 																										else
 																											if (String(topic + "/getconnectedwifissid").equals(_topic)) return onGetProperty("connectedwifissid", nodeGetConnectedWiFiSSID(), transportMask);
 /*
 																											else
 																												if (String(topic + "/getrestfulavailable").equals(_topic)) return onGetProperty("restfulavailable", String(nodeGetRESTfulAvailable()), transportMask);
 																												else
-																													if (String(topic + "/setrestfulavailable").equals(_topic)) return String(nodeSetRESTfulAvailable(std::atoi(_payload.c_str())));
+																													if (String(topic + "/setrestfulavailable").equals(_topic)) return String(nodeSetRESTfulAvailable(atoi(_payload.c_str())));
 																													else
 																														if (String(topic + "/getwebserverlogin").equals(_topic)) return onGetProperty("webserverlogin", nodeGetRESTfulServerUsername(), transportMask);
 																														else
@@ -390,11 +390,11 @@ String nodeOnMessage(String _topic, String _payload, int8_t transportMask)
 																																	else
 																																		if (String(topic + "/getrestfulserverport").equals(_topic)) return onGetProperty("restfulserverport", String(nodeGetRESTfulServerPort()), transportMask);
 																																		else
-																																			if (String(topic + "/setrestfulserverport").equals(_topic)) return String(nodeSetRESTfulServerPort(std::atoi(_payload.c_str())));
+																																			if (String(topic + "/setrestfulserverport").equals(_topic)) return String(nodeSetRESTfulServerPort(atoi(_payload.c_str())));
 																																			else
 																																				if (String(topic + "/getrestfulclientport").equals(_topic)) return onGetProperty("restfulclientport", String(nodeGetRESTfulClientPort()), transportMask);
 																																				else
-																																					if (String(topic + "/setrestfulclientport").equals(_topic)) return String(nodeSetRESTfulClientPort(std::atoi(_payload.c_str())));
+																																					if (String(topic + "/setrestfulclientport").equals(_topic)) return String(nodeSetRESTfulClientPort(atoi(_payload.c_str())));
 																																					else
 																																						if (String(topic + "/getrestfulclienturl").equals(_topic)) return onGetProperty("restfulclienturl", nodeGetRESTfulClientURL(), transportMask);
 																																						else
@@ -402,11 +402,11 @@ String nodeOnMessage(String _topic, String _payload, int8_t transportMask)
 																																							else
 																																								if (String(topic + "/getmqttavailable").equals(_topic)) return onGetProperty("mqttavailable", String(nodeGetMQTTAvailable()), transportMask);
 																																								else
-																																									if (String(topic + "/setmqttavailable").equals(_topic)) return String(nodeSetMQTTAvailable(std::atoi(_payload.c_str())));
+																																									if (String(topic + "/setmqttavailable").equals(_topic)) return String(nodeSetMQTTAvailable(atoi(_payload.c_str())));
 																																									else
 																																										if (String(topic + "/getmqttport").equals(_topic)) return onGetProperty("mqttport", String(nodeGetMQTTPort()), transportMask);
 																																										else
-																																											if (String(topic + "/setmqttport").equals(_topic)) return String(nodeSetMQTTPort(std::atoi(_payload.c_str())));
+																																											if (String(topic + "/setmqttport").equals(_topic)) return String(nodeSetMQTTPort(atoi(_payload.c_str())));
 																																											else
 																																												if (String(topic + "/getmqtturl").equals(_topic)) return onGetProperty("mqtturl", nodeGetMQTTURL(), transportMask);
 																																												else
@@ -430,11 +430,11 @@ String nodeOnMessage(String _topic, String _payload, int8_t transportMask)
 																																																					else
 																																																						if (String(topic + "/getotaavailable").equals(_topic)) return onGetProperty("otaavailable", String(nodeGetOTAAvailable()), transportMask);
 																																																						else
-																																																							if (String(topic + "/setotaavailable").equals(_topic)) return String(nodeSetOTAAvailable(std::atoi(_payload.c_str())));
+																																																							if (String(topic + "/setotaavailable").equals(_topic)) return String(nodeSetOTAAvailable(atoi(_payload.c_str())));
 																																																							else
 																																																								if (String(topic + "/getotaport").equals(_topic)) return onGetProperty("otaport", String(nodeGetOTAPort()), transportMask);
 																																																								else
-																																																									if (String(topic + "/setotaport").equals(_topic)) return String(nodeSetOTAPort(std::atoi(_payload.c_str())));
+																																																									if (String(topic + "/setotaport").equals(_topic)) return String(nodeSetOTAPort(atoi(_payload.c_str())));
 																																																									else
 																																																										if (String(topic + "/getotaid").equals(_topic)) return onGetProperty("otaid", nodeGetOTAID(), transportMask);
 																																																										else
@@ -447,33 +447,33 @@ String nodeOnMessage(String _topic, String _payload, int8_t transportMask)
 																																																													else
 																																																														if (String(topic + "/getwifirssi").equals(_topic)) return onGetProperty("wifirssi", String(nodeGetWiFiRSSI()), transportMask);
 																																																														else
-																																																															if (String(topic + "/setwifirssi").equals(_topic)) return String(nodeSetWiFiRSSI(std::atoi(_payload.c_str())));
+																																																															if (String(topic + "/setwifirssi").equals(_topic)) return String(nodeSetWiFiRSSI(atoi(_payload.c_str())));
 																																																															else
 																																																																if (String(topic + "/getwifimode").equals(_topic)) return onGetProperty("wifimode", String(nodeGetWiFiMode()), transportMask);
 																																																																else
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
-																																																																	if (String(topic + "/setwifimode").equals(_topic)) return String(nodeSetWiFiMode((WiFiMode_t)std::atoi(_payload.c_str())));
+																																																																	if (String(topic + "/setwifimode").equals(_topic)) return String(nodeSetWiFiMode((WiFiMode_t)atoi(_payload.c_str())));
 																																																																	else
 #endif
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
-																																																																		if (String(topic + "/setwifimode").equals(_topic)) return String(nodeSetWiFiMode((wifi_mode_t)std::atoi(_payload.c_str())));
+																																																																		if (String(topic + "/setwifimode").equals(_topic)) return String(nodeSetWiFiMode((wifi_mode_t)atoi(_payload.c_str())));
 																																																																		else
 
 #endif
 																																																																			if (String(topic + "/getwifistatus").equals(_topic)) return onGetProperty("wifistatus", String(nodeGetWiFiStatus()), transportMask);
 																																																																			else
-																																																																				if (String(topic + "/setwifistatus").equals(_topic)) return String(nodeSetWiFiStatus(std::atoi(_payload.c_str())));
+																																																																				if (String(topic + "/setwifistatus").equals(_topic)) return String(nodeSetWiFiStatus(atoi(_payload.c_str())));
 																																																																				else
 																																																																					if (String(topic + "/getwifistatustostring").equals(_topic)) return onGetProperty("wifistatustostring", String(nodeGetWiFiStatusToString()), transportMask);
 																																																																					else
 																																																																						if (String(topic + "/getscanwifinetworks").equals(_topic)) return onGetProperty("wifinetworkscount", String(nodeGetScanWiFiNetworks()), transportMask);
 																																																																						else
-																																																																							if (String(topic + "/setscanwifinetworks").equals(_topic)) return String(nodeSetScanWiFiNetworks(std::atoi(_payload.c_str())));
+																																																																							if (String(topic + "/setscanwifinetworks").equals(_topic)) return String(nodeSetScanWiFiNetworks(atoi(_payload.c_str())));
 																																																																							else
 																																																																								if (String(topic + "/getwifinetworkscount").equals(_topic)) return onGetProperty("wifinetworkscount", String(nodeGetWiFiNetworksCount()), transportMask);
 																																																																								else
-																																																																									if (String(topic + "/setwifinetworkscount").equals(_topic)) return String(nodeSetWiFiNetworksCount(std::atoi(_payload.c_str())));
+																																																																									if (String(topic + "/setwifinetworkscount").equals(_topic)) return String(nodeSetWiFiNetworksCount(atoi(_payload.c_str())));
 																																																																									else
 																																																																										if (String(topic + "/getwifinetworksparameters").equals(_topic)) return nodeGetWiFiNetworksParameters();
 																																																																										else
@@ -492,31 +492,31 @@ String nodeOnMessage(String _topic, String _payload, int8_t transportMask)
 																																																																															else
 																																																																																if (String(topic + "/getespreset").equals(_topic)) return onGetProperty("espreset", String(nodeGetESPReset()), transportMask);
 																																																																																else
-																																																																																	if (String(topic + "/setespreset").equals(_topic)) return String(nodeSetESPReset(std::atoi(_payload.c_str())));
+																																																																																	if (String(topic + "/setespreset").equals(_topic)) return String(nodeSetESPReset(atoi(_payload.c_str())));
 																																																																																	else
 																																																																																		if (String(topic + "/getesprestart").equals(_topic)) return onGetProperty("esprestart", String(nodeGetESPRestart()), transportMask);
 																																																																																		else
-																																																																																			if (String(topic + "/setesprestart").equals(_topic)) return String(nodeSetESPRestart(std::atoi(_payload.c_str())));
+																																																																																			if (String(topic + "/setesprestart").equals(_topic)) return String(nodeSetESPRestart(atoi(_payload.c_str())));
 																																																																																			else
 																																																																																				if (String(topic + "/getespvcc").equals(_topic)) return onGetProperty("espvcc", String(nodeGetESPVcc()), transportMask);
 																																																																																				else
-																																																																																					if (String(topic + "/setespvcc").equals(_topic)) return String(nodeSetESPVcc(std::atoi(_payload.c_str())));
+																																																																																					if (String(topic + "/setespvcc").equals(_topic)) return String(nodeSetESPVcc(atoi(_payload.c_str())));
 																																																																																					else
 																																																																																						if (String(topic + "/getespchipid").equals(_topic)) return onGetProperty("espchipid", String(nodeGetESPChipId()), transportMask);
 																																																																																						else
-																																																																																							if (String(topic + "/setespchipid").equals(_topic)) return String(nodeSetESPChipId(std::atoi(_payload.c_str())));
+																																																																																							if (String(topic + "/setespchipid").equals(_topic)) return String(nodeSetESPChipId(atoi(_payload.c_str())));
 																																																																																							else
 																																																																																								if (String(topic + "/getespfreeheap").equals(_topic)) return onGetProperty("espfreeheap", String(nodeGetESPFreeHeap()), transportMask);
 																																																																																								else
-																																																																																									if (String(topic + "/setespfreeheap").equals(_topic)) return String(nodeSetESPFreeHeap(std::atoi(_payload.c_str())));
+																																																																																									if (String(topic + "/setespfreeheap").equals(_topic)) return String(nodeSetESPFreeHeap(atoi(_payload.c_str())));
 																																																																																									else
 																																																																																										if (String(topic + "/getespmaxfreeblocksize").equals(_topic)) return onGetProperty("espmaxfreeblocksize", String(nodeGetESPMaxFreeBlockSize()), transportMask);
 																																																																																										else
-																																																																																											if (String(topic + "/setespmaxfreeblocksize").equals(_topic)) return String(nodeSetESPMaxFreeBlockSize(std::atoi(_payload.c_str())));
+																																																																																											if (String(topic + "/setespmaxfreeblocksize").equals(_topic)) return String(nodeSetESPMaxFreeBlockSize(atoi(_payload.c_str())));
 																																																																																											else
 																																																																																												if (String(topic + "/getespheapfragmentation").equals(_topic)) return onGetProperty("espheapfragmentation", String(nodeGetESPHeapFragmentation()), transportMask);
 																																																																																												else
-																																																																																													if (String(topic + "/setespheapfragmentation").equals(_topic)) return String(nodeSetESPHeapFragmentation(std::atoi(_payload.c_str())));
+																																																																																													if (String(topic + "/setespheapfragmentation").equals(_topic)) return String(nodeSetESPHeapFragmentation(atoi(_payload.c_str())));
 																																																																																													else
 																																																																																														if (String(topic + "/getespsdkversion").equals(_topic)) return onGetProperty("espsdkversion", String(*nodeGetESPSdkVersion()), transportMask);
 																																																																																														else
@@ -532,47 +532,47 @@ String nodeOnMessage(String _topic, String _payload, int8_t transportMask)
 																																																																																																			else
 																																																																																																				if (String(topic + "/getespbootversion").equals(_topic)) return onGetProperty("espbootversion", String(nodeGetESPBootVersion()), transportMask);
 																																																																																																				else
-																																																																																																					if (String(topic + "/setespbootversion").equals(_topic)) return String(nodeSetESPBootVersion(std::atoi(_payload.c_str())));
+																																																																																																					if (String(topic + "/setespbootversion").equals(_topic)) return String(nodeSetESPBootVersion(atoi(_payload.c_str())));
 																																																																																																					else
 																																																																																																						if (String(topic + "/getespbootmode").equals(_topic)) return onGetProperty("espbootmode", String(nodeGetESPBootMode()), transportMask);
 																																																																																																						else
-																																																																																																							if (String(topic + "/setespbootmode").equals(_topic)) return String(nodeSetESPBootMode(std::atoi(_payload.c_str())));
+																																																																																																							if (String(topic + "/setespbootmode").equals(_topic)) return String(nodeSetESPBootMode(atoi(_payload.c_str())));
 																																																																																																							else
 																																																																																																								if (String(topic + "/getespcpufreqmhz").equals(_topic)) return onGetProperty("espcpufreqmhz", String(nodeGetESPCpuFreqMHz()), transportMask);
 																																																																																																								else
-																																																																																																									if (String(topic + "/setespcpufreqmhz").equals(_topic)) return String(nodeSetESPCpuFreqMHz(std::atoi(_payload.c_str())));
+																																																																																																									if (String(topic + "/setespcpufreqmhz").equals(_topic)) return String(nodeSetESPCpuFreqMHz(atoi(_payload.c_str())));
 																																																																																																									else
 																																																																																																										if (String(topic + "/getespflashchipid").equals(_topic)) return onGetProperty("espflashchipid", String(nodeGetESPFlashChipId()), transportMask);
 																																																																																																										else
-																																																																																																											if (String(topic + "/setespflashchipid").equals(_topic)) return String(nodeSetESPFlashChipId(std::atoi(_payload.c_str())));
+																																																																																																											if (String(topic + "/setespflashchipid").equals(_topic)) return String(nodeSetESPFlashChipId(atoi(_payload.c_str())));
 																																																																																																											else
 																																																																																																												if (String(topic + "/getespflashchipvendorid").equals(_topic)) return onGetProperty("espflashchipvendorid", String(nodeGetESPFlashChipVendorId()), transportMask);
 																																																																																																												else
-																																																																																																													if (String(topic + "/setespflashchipvendorid").equals(_topic)) return String(nodeSetESPFlashChipVendorId(std::atoi(_payload.c_str())));
+																																																																																																													if (String(topic + "/setespflashchipvendorid").equals(_topic)) return String(nodeSetESPFlashChipVendorId(atoi(_payload.c_str())));
 																																																																																																													else
 																																																																																																														if (String(topic + "/getespflashchiprealsize").equals(_topic)) return onGetProperty("espflashchiprealsize", String(nodeGetESPFlashChipRealSize()), transportMask);
 																																																																																																														else
-																																																																																																															if (String(topic + "/setespflashchiprealsize").equals(_topic)) return String(nodeSetESPFlashChipRealSize(std::atoi(_payload.c_str())));
+																																																																																																															if (String(topic + "/setespflashchiprealsize").equals(_topic)) return String(nodeSetESPFlashChipRealSize(atoi(_payload.c_str())));
 																																																																																																															else
 																																																																																																																if (String(topic + "/getespflashchipsize").equals(_topic)) return onGetProperty("espflashchipsize", String(nodeGetESPFlashChipSize()), transportMask);
 																																																																																																																else
-																																																																																																																	if (String(topic + "/setespflashchipsize").equals(_topic)) return String(nodeSetESPFlashChipSize(std::atoi(_payload.c_str())));
+																																																																																																																	if (String(topic + "/setespflashchipsize").equals(_topic)) return String(nodeSetESPFlashChipSize(atoi(_payload.c_str())));
 																																																																																																																	else
 																																																																																																																		if (String(topic + "/getespflashchipspeed").equals(_topic)) return onGetProperty("espflashchipspeed", String(nodeGetESPFlashChipSpeed()), transportMask);
 																																																																																																																		else
-																																																																																																																			if (String(topic + "/setespflashchipspeed").equals(_topic)) return String(nodeSetESPFlashChipSpeed(std::atoi(_payload.c_str())));
+																																																																																																																			if (String(topic + "/setespflashchipspeed").equals(_topic)) return String(nodeSetESPFlashChipSpeed(atoi(_payload.c_str())));
 																																																																																																																			else
 																																																																																																																				if (String(topic + "/getespsketchsize").equals(_topic)) return onGetProperty("espsketchsize", String(nodeGetESPSketchSize()), transportMask);
 																																																																																																																				else
-																																																																																																																					if (String(topic + "/setespsketchsize").equals(_topic)) return String(nodeSetESPSketchSize(std::atoi(_payload.c_str())));
+																																																																																																																					if (String(topic + "/setespsketchsize").equals(_topic)) return String(nodeSetESPSketchSize(atoi(_payload.c_str())));
 																																																																																																																					else
 																																																																																																																						if (String(topic + "/getespfreesketchspace").equals(_topic)) return onGetProperty("espfreesketchspace", String(nodeGetESPFreeSketchSpace()), transportMask);
 																																																																																																																						else
-																																																																																																																							if (String(topic + "/setespfreesketchspace").equals(_topic)) return String(nodeSetESPFreeSketchSpace(std::atoi(_payload.c_str())));
+																																																																																																																							if (String(topic + "/setespfreesketchspace").equals(_topic)) return String(nodeSetESPFreeSketchSpace(atoi(_payload.c_str())));
 																																																																																																																							else
 																																																																																																																								if (String(topic + "/getespflashchipmode").equals(_topic)) return onGetProperty("espflashchipmode", String(nodeGetESPFlashChipMode()), transportMask);
 																																																																																																																								else
-																																																																																																																									if (String(topic + "/setespflashchipmode").equals(_topic)) return String(nodeSetESPFlashChipMode(std::atoi(_payload.c_str())));
+																																																																																																																									if (String(topic + "/setespflashchipmode").equals(_topic)) return String(nodeSetESPFlashChipMode(atoi(_payload.c_str())));
 																																																																																																																									else
 																																																																																																																										if (String(topic + "/getespsketchmd5").equals(_topic)) return onGetProperty("espsketchmd5", nodeGetESPSketchMD5(), transportMask);
 																																																																																																																										else
@@ -582,17 +582,17 @@ String nodeOnMessage(String _topic, String _payload, int8_t transportMask)
 																																																																																																																												else
 																																																																																																																													if (String(topic + "/setespresetreason").equals(_topic)) return String(nodeSetESPResetReason(_payload));
 																																																																																																																													else
-																																																																																																																														if (String(topic + "/getespmagicflashchipsize").equals(_topic)) return onGetProperty("espmagicflashchipsize", String(nodeGetESPMagicFlashChipSize((uint8_t)std::atoi(_payload.c_str()))), transportMask);
+																																																																																																																														if (String(topic + "/getespmagicflashchipsize").equals(_topic)) return onGetProperty("espmagicflashchipsize", String(nodeGetESPMagicFlashChipSize((uint8_t)atoi(_payload.c_str()))), transportMask);
 																																																																																																																														else
-																																																																																																																															if (String(topic + "/setespmagicflashchipsize").equals(_topic)) return String(nodeSetESPMagicFlashChipSize(std::atoi(_payload.c_str())));
+																																																																																																																															if (String(topic + "/setespmagicflashchipsize").equals(_topic)) return String(nodeSetESPMagicFlashChipSize(atoi(_payload.c_str())));
 																																																																																																																															else
-																																																																																																																																if (String(topic + "/getespmagicflashchipspeed").equals(_topic)) return onGetProperty("espmagicflashchipspeed", String(nodeGetESPMagicFlashChipSpeed((uint8_t)std::atoi(_payload.c_str()))), transportMask);
+																																																																																																																																if (String(topic + "/getespmagicflashchipspeed").equals(_topic)) return onGetProperty("espmagicflashchipspeed", String(nodeGetESPMagicFlashChipSpeed((uint8_t)atoi(_payload.c_str()))), transportMask);
 																																																																																																																																else
-																																																																																																																																	if (String(topic + "/setespmagicflashchipspeed").equals(_topic)) return String(nodeSetESPMagicFlashChipSpeed(std::atoi(_payload.c_str())));
+																																																																																																																																	if (String(topic + "/setespmagicflashchipspeed").equals(_topic)) return String(nodeSetESPMagicFlashChipSpeed(atoi(_payload.c_str())));
 																																																																																																																																	else
-																																																																																																																																		if (String(topic + "/getespmagicflashchipmode").equals(_topic)) return onGetProperty("espmagicflashchipmode", String(nodeGetESPMagicFlashChipMode((uint8_t)std::atoi(_payload.c_str()))), transportMask);
+																																																																																																																																		if (String(topic + "/getespmagicflashchipmode").equals(_topic)) return onGetProperty("espmagicflashchipmode", String(nodeGetESPMagicFlashChipMode((uint8_t)atoi(_payload.c_str()))), transportMask);
 																																																																																																																																		else
-																																																																																																																																			if (String(topic + "/setespmagicflashchipmode").equals(_topic)) return String(nodeSetESPMagicFlashChipMode(std::atoi(_payload.c_str())));
+																																																																																																																																			if (String(topic + "/setespmagicflashchipmode").equals(_topic)) return String(nodeSetESPMagicFlashChipMode(atoi(_payload.c_str())));
 	//Pins
 																																																																																																																																			else
 																																																																																																																																				//if (String(topic + "/getbusypins").equals(_topic)) return nodeGetBusyPins();
@@ -601,7 +601,7 @@ String nodeOnMessage(String _topic, String _payload, int8_t transportMask)
 																																																																																																																																					//else
 																																																																																																																																				if (String(topic + "/getupdateavailable").equals(_topic)) return onGetProperty("updateavailable", String(nodeGetUpdateAvailable()), transportMask);
 																																																																																																																																				else
-																																																																																																																																					if (String(topic + "/setupdateavailable").equals(_topic)) return String(nodeSetUpdateAvailable(std::atoi(_payload.c_str())));
+																																																																																																																																					if (String(topic + "/setupdateavailable").equals(_topic)) return String(nodeSetUpdateAvailable(atoi(_payload.c_str())));
 																																																																																																																																					else
 																																																																																																																																						if (String(topic + "/getupdatepossible").equals(_topic)) return onGetProperty("updatepossible", String(updateGetUpdatePossible()), transportMask);
 																																																																																																																																						else

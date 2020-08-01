@@ -38,8 +38,9 @@ OWLOS распространяется в надежде, что она буде
 Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
-#include <core_version.h>
+#include "HTTPWebClient.h"
 
+#ifdef USE_ESP_DRIVER
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 #include <ESP8266WiFi.h>
 #include <ESP8266WiFiMulti.h>
@@ -55,7 +56,6 @@ OWLOS распространяется в надежде, что она буде
 #include <HTTPUpdate.h>
 #endif
 
-#include <Arduino.h>
 #include <FS.h>
 
 #include "../utils/Utils.h"
@@ -136,3 +136,4 @@ bool downloadFile(String fileName, String  url) {
 	http.end();
 	return result;
 }
+#endif

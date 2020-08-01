@@ -238,7 +238,7 @@ String BaseDriver::onMessage(String _topic, String _payload, int8_t transportMas
 					else
 						if (String(topic + "/setavailable").equals(_topic))
 						{
-							return String(setAvailable(std::atoi(_payload.c_str())));
+							return String(setAvailable(atoi(_payload.c_str())));
 						}
 						else
 							//Type --------------------------------------------------------------------
@@ -253,7 +253,7 @@ String BaseDriver::onMessage(String _topic, String _payload, int8_t transportMas
 							}
 							else if (String(topic + "/settrap").equals(_topic))
 							{
-								return String(setTrap(std::atof(_payload.c_str())));
+								return String(setTrap(atof(_payload.c_str())));
 							}
 							else if (String(topic + "/getlastquerymillis").equals(_topic))
 							{
@@ -270,7 +270,7 @@ String BaseDriver::onMessage(String _topic, String _payload, int8_t transportMas
 							}
 							else if (String(topic + "/setqueryinterval").equals(_topic))
 							{
-								return String(setQueryInterval(std::atoi(_payload.c_str())));
+								return String(setQueryInterval(atoi(_payload.c_str())));
 							}
 	//Publish Interval -----------------------------------------------------------
 							else if (String(topic + "/getpublishinterval").equals(_topic))
@@ -279,7 +279,7 @@ String BaseDriver::onMessage(String _topic, String _payload, int8_t transportMas
 							}
 							else if (String(topic + "/setpublishinterval").equals(_topic))
 							{
-								return String(setPublishInterval(std::atoi(_payload.c_str())));
+								return String(setPublishInterval(atoi(_payload.c_str())));
 							}
 
 	//History data -------------------------------------------------------------

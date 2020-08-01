@@ -38,8 +38,8 @@ OWLOS распространяется в надежде, что она буде
 Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
-#ifdef USE_DHT_DRIVER
 #include "DHTDriver.h"
+#ifdef USE_DHT_DRIVER
 
 /*-------------------------------------------------------------------------------------------------------------------------
   Setup DHT sensor
@@ -134,7 +134,7 @@ float DHTDriver::DHTgetHeatIndex(bool _celsius)
 	}
 	else
 	{
-		return dht->computeHeatIndex(std::atof(temperature.c_str()), std::atof(humidity.c_str()), !_celsius); //для Цельсия - false, фля Фаренгейта true
+		return dht->computeHeatIndex(atof(temperature.c_str()), atof(humidity.c_str()), !_celsius); //для Цельсия - false, фля Фаренгейта true
 	}
 }
 //В каждом драйвере вызывают метод begin когда транспорт готов к работе
@@ -180,10 +180,10 @@ bool DHTDriver::query()
 {
 	if (BaseDriver::query())
 	{		
-		float _temperature = std::atof(temperature.c_str());
+		float _temperature = atof(temperature.c_str());
 		getTemperature();
 		//проверка ловушки
-		float different = std::atof(temperature.c_str()) - _temperature;
+		float different = atof(temperature.c_str()) - _temperature;
 		if ((different > trap) || (different < -trap))
 		{
 			onInsideChange("temperature", temperature);
@@ -192,14 +192,14 @@ bool DHTDriver::query()
 		if (millis() >= lastHistoryFileWriteMillis + historyFileWriteInterval)
 		{
 			lastHistoryFileWriteMillis = millis();
-			writeHistoryFile(std::atof(temperature.c_str()));
+			writeHistoryFile(atof(temperature.c_str()));
 		}
 		//Humidity --------------------------------------------------------------
-		float _humidity = std::atof(humidity.c_str());
+		float _humidity = atof(humidity.c_str());
 
 		getHumidity();
 		//проверка ловушки влажности
-		different = std::atof(humidity.c_str()) - _humidity;
+		different = atof(humidity.c_str()) - _humidity;
 		if ((different > trap) || (different < -trap))
 		{
 			onInsideChange("humidity", humidity);
@@ -211,9 +211,9 @@ bool DHTDriver::query()
 		if (millis() >= lastHistoryMillis + historyInterval)
 		{
 			lastHistoryMillis = millis();
-			setTemperatureHistoryData(std::atof(temperature.c_str()));
-			setHumidityHistoryData(std::atof(humidity.c_str()));
-			setHeatIndexHistoryData(std::atof(heatIndex.c_str()));
+			setTemperatureHistoryData(atof(temperature.c_str()));
+			setHumidityHistoryData(atof(humidity.c_str()));
+			setHeatIndexHistoryData(atof(heatIndex.c_str()));
 		}
 		return true;
 	}
@@ -261,7 +261,7 @@ String DHTDriver::onMessage(String _topic, String _payload, int8_t transportMask
 	}
 	else if (String(topic + "/setdhttype").equals(_topic))
 	{
-		result = String(setDHTType(std::atoi(_payload.c_str())));
+		result = String(setDHTType(atoi(_payload.c_str())));
 	}
 
 	if (!available)
@@ -273,7 +273,7 @@ String DHTDriver::onMessage(String _topic, String _payload, int8_t transportMask
 	}
 	else if (String(topic + "/setcelsius").equals(_topic))
 	{
-		result = String(setCelsius(std::atoi(_payload.c_str())));
+		result = String(setCelsius(atoi(_payload.c_str())));
 	}
 	else if ((String(topic + "/gettemperature").equals(_topic)) || (String(topic + "/settemperature").equals(_topic)))
 	{

@@ -38,8 +38,8 @@ OWLOS распространяется в надежде, что она буде
 Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
-#ifdef USE_SENSOR_DRIVER
 #include "SensorDriver.h"
+#ifdef USE_SENSOR_DRIVER
 #define DRIVER_ID "sensor"
 
 bool SensorDriver::init()

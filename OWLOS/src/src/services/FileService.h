@@ -39,7 +39,10 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-#include <Arduino.h>
+#include "../config.h"
+
+#ifndef FILESERVICES_H
+#define FILESERVICES_H
 
 bool filesBegin();
 bool filesLoop();
@@ -62,3 +65,5 @@ bool filesWriteFloat(String fileName, float value);
 
 String filesGetList(String path);
 bool filesWriteStructure(String fileName, void *value);
+
+#endif

@@ -42,30 +42,27 @@ OWLOS распространяется в надежде, что она буде
 #ifndef CONFIG_H
 #define CONFIG_H
 
-//#define USE_ESP_BOARDS
-#ifndef USE_ESP_BOARDS
-#define USE_ARDUINO_BOARDS
-#else 
+#define USE_ESP_BOARDS
+#ifdef USE_ESP_BOARDS
 #include <core_version.h>
-#endif
-
-
-#include <Arduino.h>
-#include "utils/Utils.h"
-
-//#define USE_ESP_DRIVER
+#define USE_ESP_DRIVER
 #ifdef USE_ESP_DRIVER
 #endif
+#else 
+#define USE_ARDUINO_BOARDS
+#endif
+
+#include "utils/Utils.h"
 
 #define USE_DRIVERS
 #ifdef USE_DRIVERS
 
-// #define USE_ACTUATOR_DRIVER
-// #define USE_SENSOR_DRIVER
-// #define USE_DHT_DRIVER
-// #define USE_LCD_DRIVER
-// #define USE_STEPPER_DRIVER
-// #define USE_VALVE_DRIVER
+#define USE_ACTUATOR_DRIVER
+#define USE_SENSOR_DRIVER
+//#define USE_DHT_DRIVER
+//#define USE_LCD_DRIVER
+//#define USE_STEPPER_DRIVER
+//#define USE_VALVE_DRIVER
 
 #endif
 #endif

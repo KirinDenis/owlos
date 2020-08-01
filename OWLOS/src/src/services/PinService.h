@@ -47,10 +47,11 @@ OWLOS распространяется в надежде, что она буде
 //пинов работающих в режиме OUTPUT.
 //---------------------------------------------------------------------------------------------------------------------------------------
 
-#ifndef PINService_H
-#define PINService_H
+#ifndef PINSERVICE_H
+#define PINSERVICE_H
 
-#include <Arduino.h>
+#include "../config.h"
+
 
 //Arduino.h GPIO FUNCTIONS fix for ESP8266 analog input
 #define ANALOG_INPUT	0x01

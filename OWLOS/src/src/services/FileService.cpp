@@ -39,10 +39,43 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-#include <core_version.h>
-#include "../Utils\Utils.h"
+
+#include "fileservice.h"
 
 #define FileSystem "File System"
+
+/*--------------------------------------------------------------------------------------
+Arduino File System ------------------------------------------------------------------------
+--------------------------------------------------------------------------------------*/
+#ifdef USE_ARDUINO_BOARDS
+bool filesBegin() {return true;}
+bool filesLoop() {return true;}
+bool filesExists(String fileName) {return true;}
+int filesGetSize(String fileName) {return 0;}
+bool filesDelete(String fileName){return true;}
+bool filesRename(String source, String dest){return true;}
+
+String filesReadString(String fileName){return "";}
+bool filesWriteStringDirect(String fileName, String value){return true;}
+bool filesWriteString(String fileName, String value){return true;}
+bool filesAppendString(String fileName, String value){return true;}
+bool filesAddString(String fileName, String value){return true;}
+
+int filesReadInt(String fileName){return 0;}
+bool filesWriteInt(String fileName, int value){return true;}
+
+float filesReadFloat(String fileName){return 0.0;}
+bool filesWriteFloat(String fileName, float value){return true;}
+
+String filesGetList(String path){return "";}
+bool filesWriteStructure(String fileName, void *value){return true;}
+
+#endif
+
+/*--------------------------------------------------------------------------------------
+ESP File System ------------------------------------------------------------------------
+--------------------------------------------------------------------------------------*/
+#if defined(ARDUINO_ESP8266_RELEASE_2_5_0) || defined(ARDUINO_ESP32_RELEASE_1_0_4)
 
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 #include <FS.h>
@@ -179,7 +212,7 @@ bool appendFileToWriteCache(String fileName, String value)
 
 bool filesExists(String fileName)
 {
-	fileName = normalizeFileName(fileName);
+	fileName = normalizeFileName(fileName);	
 	return SPIFFS.exists(fileName);
 }
 
@@ -440,7 +473,7 @@ int filesReadInt(String fileName)
 	String str = filesReadString(fileName);
 	if (str.length() != 0)
 	{
-		return std::atoi(str.c_str());
+		return atoi(str.c_str());
 	}
 
 	return 0;
@@ -456,7 +489,7 @@ float filesReadFloat(String fileName)
 	String str = filesReadString(fileName);
 	if (str.length() != 0)
 	{
-		return std::atof(str.c_str());
+		return atof(str.c_str());
 	}
 	return 0.0;
 }
@@ -534,3 +567,4 @@ bool filesWriteStructure(String fileName, void *value)
 
 	return true;
 }
+#endif

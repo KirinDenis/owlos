@@ -44,9 +44,6 @@ OWLOS распространяется в надежде, что она буде
 #ifndef ESP_DRIVER_H
 #define ESP_DRIVER_H
 
-#include <core_version.h>
-
-
 
 #define FIRMWARE_VERSION "OWLOS version 1.9 (RC)"
 #define FIRMWARE_BUILD_NUMBER 104
