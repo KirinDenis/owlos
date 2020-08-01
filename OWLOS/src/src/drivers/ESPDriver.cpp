@@ -40,10 +40,10 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 #include "ESPDriver.h"
-#include "../Managers/DriverManager.h"
-#include "../Managers/FileManager.h"
-#include "../Managers/UpdateManager.h"
-#include "../Managers/TransportManager.h"
+#include "../services/DriverService.h"
+#include "../services/FileService.h"
+#include "../services/UpdateService.h"
+#include "../services/TransportService.h"
 
 
 

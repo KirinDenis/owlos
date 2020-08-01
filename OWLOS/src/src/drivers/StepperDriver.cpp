@@ -39,6 +39,8 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
+#ifdef USE_STEPPER_DRIVER
+
 #include "StepperDriver.h"
 
 //Драйвер шагового электродвигателя (HALF-STEP DRIVE)
@@ -447,3 +449,4 @@ void StepperDriver::doOutput(int out)
 		driverPinWrite(id, PIN2_INDEX, bitRead(stepMask[out], 2));
 		driverPinWrite(id, PIN3_INDEX, bitRead(stepMask[out], 3));
 };
+#endif

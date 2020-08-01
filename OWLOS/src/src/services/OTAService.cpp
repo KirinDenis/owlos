@@ -3,7 +3,7 @@
 //https://github.com/esp8266/Arduino/blob/master/LICENSE
 
 
-#include "OTAManager.h"
+#include "OTAService.h"
 #include "../drivers/ESPDriver.h"
 #include "../Utils\Utils.h"
 

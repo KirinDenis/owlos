@@ -199,9 +199,9 @@ function onLoadConfig(result) {
 
             addToLogNL(getLang("prepareUnit"));
 
-            scriptsManager.onNew = scriptsUI.onScriptNew;
-            scriptsManager.onChange = scriptsUI.onScriptChange;
-            scriptsManager.onDelete = scriptsUI.onScriptDelete;
+            scriptsService.onNew = scriptsUI.onScriptNew;
+            scriptsService.onChange = scriptsUI.onScriptChange;
+            scriptsService.onDelete = scriptsUI.onScriptDelete;
 
             drivers.addDriverLoadedListner(settingsUI.onDriverLoaded, settingsUI);
             
@@ -234,7 +234,7 @@ function nodesRefresh() {
         pins.refresh(configProperties.nodes[node]);
         driverPins.refresh(configProperties.nodes[node]);
         accessableDrivers.refresh(configProperties.nodes[node]);
-        scriptsManager.refresh(configProperties.nodes[node]);
+        scriptsService.refresh(configProperties.nodes[node]);
     }
     */
 }

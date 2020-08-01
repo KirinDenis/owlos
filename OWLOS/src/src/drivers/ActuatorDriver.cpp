@@ -40,7 +40,7 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 #include "ActuatorDriver.h"
-
+#ifdef USE_ACTUATOR_DRIVER
 #define DRIVER_MASK "ActuatorDriver"
 #define DRIVER_ID "actuator1"
 #define ActuatorLoopInterval 200
@@ -345,3 +345,4 @@ bool ActuatorDriver::setInvert(bool _invert, bool doEvent)
 	return true;
 };
 
+#endif

@@ -42,11 +42,11 @@ OWLOS распространяется в надежде, что она буде
 
 #include "Kernel.h"
 #include "drivers/ESPDriver.h"
-#include "Managers/DriverManager.h"
-#include "Managers/FileManager.h"
-#include "Managers/TransportManager.h"
-#include "Managers/UpdateManager.h"
-#include "Managers/ScriptManager.h"
+#include "services/DriverService.h"
+#include "services/FileService.h"
+#include "services/TransportService.h"
+#include "services/UpdateService.h"
+#include "services/ScriptService.h"
 
 
 /*-----------------------------------------------------------------------------

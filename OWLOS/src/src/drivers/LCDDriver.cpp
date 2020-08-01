@@ -38,7 +38,7 @@ OWLOS распространяется в надежде, что она буде
 Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
-
+#ifdef USE_LCD_DRIVER
 #include "LCDDriver.h"
 
 //I2C LCD driver based on OWLOS\src\libraries\LiquidCrystal_I2C\LiquidCrystal_I2C.cpp by https://gitlab.com/tandembyte/liquidcrystal_i2c
@@ -57,7 +57,7 @@ OWLOS распространяется в надежде, что она буде
 //https://ru.wikipedia.org/wiki/HD44780
 
 //примечание: драйвер LCD требует I2C адрес подчиненного устройства на шине. Для совместимости с общей архитектурой драйверов - I2C адрес представлен внешне в роли 
-//пина. Что делает возможность управления адресом из PinManager. 
+//пина. Что делает возможность управления адресом из PinService. 
 
 #define DRIVER_ID "lcd"
 #define LCD_LOOP_INTERVAL 200
@@ -145,7 +145,7 @@ String LCDDriver::onMessage(String _topic, String _payload, int8_t transportMask
 	//с архитектурой, по этой причине необходим отдельный обработчик I2CADDR пина
 	if (String(topic + "/setpin" + String(I2CADDR_INDEX)).equals(_topic))
 	{
-		//base is put the new address to to PinManager
+		//base is put the new address to to PinService
 		result = init(); //init() get Address from PinManger	
 	}
 
@@ -615,3 +615,4 @@ bool LCDDriver::setY(int _y, bool doEvent)
 	return true;
 }
 ;
+#endif

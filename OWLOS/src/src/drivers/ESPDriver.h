@@ -43,6 +43,8 @@ OWLOS распространяется в надежде, что она буде
 
 #include <core_version.h>
 
+#include "../config.h"
+
 #define FIRMWARE_VERSION "OWLOS version 1.9 (RC)"
 #define FIRMWARE_BUILD_NUMBER 104
 
@@ -58,7 +60,7 @@ OWLOS распространяется в надежде, что она буде
 #include <rom/rtc.h>
 #endif
 
-#include "../utils/Utils.h"
+
 
 bool nodeInit();
 

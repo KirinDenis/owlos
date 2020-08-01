@@ -38,7 +38,7 @@ OWLOS распространяется в надежде, что она буде
 Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
-
+#ifdef USE_SENSOR_DRIVER
 #include "SensorDriver.h"
 #define DRIVER_ID "sensor"
 
@@ -198,3 +198,4 @@ int SensorDriver::getData()
 	data = driverPinRead(id, PIN0_INDEX);
 	return data;
 }
+#endif

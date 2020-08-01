@@ -43,10 +43,10 @@
 #include <SPIFFS.h>
 #include "HTTPServerThings.h"
 #include "../drivers/ESPDriver.h"
-#include "../Managers/DriverManager.h"
-#include "../Managers/ScriptManager.h"
-//#include "../Managers/UpdateManager.h"
-#include "../Managers/FileManager.h"
+#include "../services/DriverService.h"
+#include "../services/ScriptService.h"
+//#include "../services/UpdateService.h"
+#include "../services/FileService.h"
 //#include "../Utils/Utils.h"
 
 // The HTTPS Server comes in a separate namespace. For easier use, include it here.

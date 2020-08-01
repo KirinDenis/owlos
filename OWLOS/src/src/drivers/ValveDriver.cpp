@@ -38,7 +38,7 @@ OWLOS распространяется в надежде, что она буде
 Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
-
+#ifdef USE_VALVE_DRIVER
 #include "ValveDriver.h"
 
 //Драйвер запорной арматуры (ValveDriver) с электроприводом и резистивным сенсором положения
@@ -75,7 +75,7 @@ bool ValveDriver::init()
 		&& (setDriverPinMode(id, OPEN_PIN_INDEX, OUTPUT).length() == 0)
 		&& (setDriverPinMode(id, POSITION_PIN_INDEX, INPUT).length() == 0))
 	{
-		//PinManager разрешил использования всех необходимых Valve пинов, отправляем две команды стоп
+		//PinService разрешил использования всех необходимых Valve пинов, отправляем две команды стоп
 		driverPinWrite(id, CLOSE_PIN_INDEX, MOTOR_STOP_COMMAND);
 		driverPinWrite(id, OPEN_PIN_INDEX, MOTOR_STOP_COMMAND);
 		//Valve готова
@@ -267,3 +267,4 @@ void ValveDriver::toMinMaxPosition(int _pin)
 		digitalWrite(_pin, MOTOR_STOP_COMMAND); // stop command
 	}
 };
+#endif

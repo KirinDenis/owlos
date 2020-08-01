@@ -40,7 +40,7 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 #include "BaseDriver.h"
-#include "../Managers\DriverManager.h"
+#include "../services/DriverService.h"
 
 
   //init() is called before transport accessable, when ESP is Setupping()

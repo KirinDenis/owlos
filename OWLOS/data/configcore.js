@@ -168,7 +168,7 @@ var config = {
                     pins.refresh(node);
                     driverPins.refresh(node);
                     accessableDrivers.refresh(node);
-                    scriptsManager.refresh(node);            
+                    scriptsService.refresh(node);            
             },
             drivers: [],
             pins: [],
@@ -250,7 +250,7 @@ var config = {
                                 pins.refresh(node);
                                 driverPins.refresh(node);
                                 accessableDrivers.refresh(node);
-                                scriptsManager.refresh(node);            
+                                scriptsService.refresh(node);            
                         }
             
                         }

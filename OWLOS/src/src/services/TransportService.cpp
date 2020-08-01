@@ -42,10 +42,10 @@ OWLOS распространяется в надежде, что она буде
 #define TRANSPORTDRIVER_H
 
 #include <core_version.h>
-#include "TransportManager.h"
+#include "TransportService.h"
 #include "../drivers/ESPDriver.h"
-#include "../Managers/OTAManager.h"
-#include "../Managers/DriverManager.h"
+#include "../services/OTAService.h"
+#include "../services/DriverService.h"
 #include "../Transports/HTTPSWebServer.h"
 #include "../Utils/Utils.h"
 

@@ -116,22 +116,22 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "drivers", "drivers", "{E4AC
 		OWLOS\src\drivers\ValveDriver.h = OWLOS\src\drivers\ValveDriver.h
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "managers", "managers", "{B8F9C798-24FF-4E00-B903-228234AAE229}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "services", "services", "{B8F9C798-24FF-4E00-B903-228234AAE229}"
 	ProjectSection(SolutionItems) = preProject
-		OWLOS\src\managers\DriverManager.cpp = OWLOS\src\managers\DriverManager.cpp
-		OWLOS\src\managers\DriverManager.h = OWLOS\src\managers\DriverManager.h
-		OWLOS\src\managers\FileManager.cpp = OWLOS\src\managers\FileManager.cpp
-		OWLOS\src\managers\FileManager.h = OWLOS\src\managers\FileManager.h
-		OWLOS\src\managers\OTAManager.cpp = OWLOS\src\managers\OTAManager.cpp
-		OWLOS\src\managers\OTAManager.h = OWLOS\src\managers\OTAManager.h
-		OWLOS\src\managers\PinManager.cpp = OWLOS\src\managers\PinManager.cpp
-		OWLOS\src\managers\PinManager.h = OWLOS\src\managers\PinManager.h
-		OWLOS\src\managers\ScriptManager.cpp = OWLOS\src\managers\ScriptManager.cpp
-		OWLOS\src\managers\ScriptManager.h = OWLOS\src\managers\ScriptManager.h
-		OWLOS\src\managers\TransportManager.cpp = OWLOS\src\managers\TransportManager.cpp
-		OWLOS\src\managers\TransportManager.h = OWLOS\src\managers\TransportManager.h
-		OWLOS\src\managers\UpdateManager.cpp = OWLOS\src\managers\UpdateManager.cpp
-		OWLOS\src\managers\UpdateManager.h = OWLOS\src\managers\UpdateManager.h
+		OWLOS\src\services\DriverService.cpp = OWLOS\src\services\DriverService.cpp
+		OWLOS\src\services\DriverService.h = OWLOS\src\services\DriverService.h
+		OWLOS\src\services\FileService.cpp = OWLOS\src\services\FileService.cpp
+		OWLOS\src\services\FileService.h = OWLOS\src\services\FileService.h
+		OWLOS\src\services\OTAService.cpp = OWLOS\src\services\OTAService.cpp
+		OWLOS\src\services\OTAService.h = OWLOS\src\services\OTAService.h
+		OWLOS\src\services\PinService.cpp = OWLOS\src\services\PinService.cpp
+		OWLOS\src\services\PinService.h = OWLOS\src\services\PinService.h
+		OWLOS\src\services\ScriptService.cpp = OWLOS\src\services\ScriptService.cpp
+		OWLOS\src\services\ScriptService.h = OWLOS\src\services\ScriptService.h
+		OWLOS\src\services\TransportService.cpp = OWLOS\src\services\TransportService.cpp
+		OWLOS\src\services\TransportService.h = OWLOS\src\services\TransportService.h
+		OWLOS\src\services\UpdateService.cpp = OWLOS\src\services\UpdateService.cpp
+		OWLOS\src\services\UpdateService.h = OWLOS\src\services\UpdateService.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "transports", "transports", "{6A416E69-AA4F-41A2-9C9E-6FD7D55E306A}"

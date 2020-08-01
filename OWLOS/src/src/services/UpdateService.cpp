@@ -53,8 +53,8 @@ HTTPUpdate ESPhttpUpdate;
 #include <Arduino.h>
 #include "../drivers/ESPDriver.h"
 #include "../transports/HTTPSWebServer.h"
-#include "../transports/WebClient.h"
-#include "../managers/FileManager.h"
+#include "../transports/HTTPWebClient.h"
+#include "../services/FileService.h"
 
 
 #define updateid "update"

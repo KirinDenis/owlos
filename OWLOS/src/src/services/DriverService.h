@@ -38,101 +38,66 @@ OWLOS распространяется в надежде, что она буде
 Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
-#include <core_version.h>
+#include "../config.h"
 
-#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
-#include <ESP8266WiFi.h>
-#include <ESP8266WiFiMulti.h>
-#include <ESP8266HTTPClient.h>
-#include <ESP8266httpUpdate.h>
+#ifdef USE_DRIVERS
+
+#ifndef DRIVERSERVICE_H
+#define DRIVERSERVICE_H
+
+#include "../drivers/BaseDriver.h"
+
+#ifdef USE_ACTUATOR_DRIVER
+#include "../Drivers/ActuatorDriver.h"
 #endif
 
-#ifdef ARDUINO_ESP32_RELEASE_1_0_4
-#include <SPIFFS.h>
-#include <WiFi.h>
-#include <WiFiMulti.h>
-#include <HTTPClient.h>
-#include <HTTPUpdate.h>
+#ifdef USE_SENSOR_DRIVER
+#include "../Drivers/SensorDriver.h"
 #endif
 
-#include <Arduino.h>
-#include <FS.h>
-
-#include "../utils\Utils.h"
-#include "../managers\FileManager.h"
-
-#define webclientid "WebClient"
-HTTPClient http;
-
-bool downloadFile(String fileName, String  url) {
-	bool result = false;
-
-#ifdef DetailedDebug 
-	debugOut(webclientid, "download: " + fileName + " from: " + url);
+#ifdef USE_DHT_DRIVER
+#include "../Drivers/DHTDriver.h"
 #endif
 
-	if (!filesBegin())
-	{
-		//An Error has occurred while mounting file system
-		return result;;
-	}
+#ifdef USE_LCD_DRIVER
+#include "../Drivers/LCDDriver.h"
+#endif
 
-	http.begin(url);
-	int httpCode = http.GET();
-	if (httpCode > 0) {
+#ifdef USE_STEPPER_DRIVER
+#include "../Drivers/StepperDriver.h"
+#endif
 
-		File file = SPIFFS.open(fileName, "w");
-		if (!file) {
-#ifdef DetailedDebug 
-			debugOut(webclientid, "There was an error opening the file for writing: " + fileName);
+#ifdef USE_VALVE_DRIVER
+#include "../Drivers/ValveDriver.h"
 #endif
-			return result;
-		}
 
-		if (httpCode == HTTP_CODE_OK) {
-			int len = http.getSize();
-#ifdef DetailedDebug 
-			debugOut(webclientid, "download size: " + String(len));
-#endif
-			uint8_t buff[128] = { 0 };
-			WiFiClient * stream = http.getStreamPtr();
-			int dotCount = 0;
-			while (http.connected() && (len > 0 || len == -1)) {
-				size_t size = stream->available();
-				if (size) {
-					dotCount++;
-					if (dotCount > 40)
-					{
-						dotCount = 0;						
-					}
-					int c = stream->readBytes(buff, ((size > sizeof(buff)) ? sizeof(buff) : size));
-					file.write(buff, c);
-					if (len > 0) {
-						len -= c;
-					}
-				}
-				delay(10);
-			}
-			file.close();
-#ifdef DetailedDebug 
-			debugOut(webclientid, "download=OK");
-#endif
-			result = true;
+void driversInit(String _topic);
+void driversBegin(String nodeTopic);
+void driversLoop();
+String driversGetAccessable();
+void driversSubscribe();
+void driversCallback(String _topic, String _payload);
+String driversGetDriversId();
+BaseDriver* driversGetDriver(String id);
+String driversGetDriverProperty(String id, String property);
+String driversSetDriverProperty(String id, String property, String value);
+String driversGetDriverProperties(String id);
+String driversGetAllDriversProperties();
 
-		}
-		else
-		{
-#ifdef DetailedDebug 
-			debugOut(webclientid, "download=fail HTTPResult=" + String(httpCode));
+bool checkPinBusy(int pin);
+String driversGetBusyPins();
+String driversGetPinsMap();
+int driversPinNameToValue(String pinName);
+String driversValueToPinName(int pinValue);
+
+bool driversSaveList();
+String driversLoadFromConfig();
+
+String driversAdd(int type, String id, String pins);
+
+
+String driversChangePin(String pinName, String driverId, int driverPinIndex);
+String driversDelete(String id);
+
 #endif
-		}
-	}
-	else
-	{
-#ifdef DetailedDebug 
-		debugOut(webclientid, "download=fail");
 #endif
-	}
-	http.end();
-	return result;
-}

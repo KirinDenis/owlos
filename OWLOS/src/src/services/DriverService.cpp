@@ -38,11 +38,13 @@ OWLOS распространяется в надежде, что она буде
 Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
-#include <core_version.h>
+
+#include "DriverService.h"
+#ifdef USE_DRIVERS
 
 //ALL DEVICES constructors must be called here, current node topic must be puted as parameter
-//#include "PinManager.h"
-#include "DriverManager.h"
+//#include "PinService.h"
+
 #include "../drivers/ESPDriver.h"
 
 String __topic;
@@ -108,6 +110,7 @@ String driversGetAccessable()
 {
 	String result = "";
 
+#ifdef USE_ACTUATOR_DRIVER
 	result += "name:ActuatorDriver\n";
 	result += "type=" + String(Actuator) + "\n";
 	result += "pinscount=" + String(ActuatorDriver::getPinsCount()) + "\n";
@@ -116,7 +119,9 @@ String driversGetAccessable()
 		result += "pintype" + String(i) + "=" + ActuatorDriver::getPinType(i) + "\n";
 		result += "pintypedecoded" + String(i) + "=" + decodePinTypes(ActuatorDriver::getPinType(i)) + "\n";
 	}
+#endif
 
+#ifdef USE_SENSOR_DRIVER
 	result += "name:SensorDriver\n";
 	result += "type=" + String(Sensor) + "\n";
 	result += "pinscount=" + String(SensorDriver::getPinsCount()) + "\n";
@@ -152,7 +157,8 @@ String driversGetAccessable()
 		result += "pintype" + String(i) + "=" + SensorDriver::getPinType(i) + "\n";
 		result += "pintypedecoded" + String(i) + "=" + decodePinTypes(SensorDriver::getPinType(i)) + "\n";
 	}
-
+#endif	
+#ifdef USE_LCD_DRIVER
 	result += "name:LCDDriver\n";
 	result += "type=" + String(LCD) + "\n";
 	result += "pinscount=" + String(LCDDriver::getPinsCount()) + "\n";
@@ -161,7 +167,9 @@ String driversGetAccessable()
 		result += "pintype" + String(i) + "=" + LCDDriver::getPinType(i) + "\n";
 		result += "pintypedecoded" + String(i) + "=" + decodePinTypes(LCDDriver::getPinType(i)) + "\n";
 	}
+#endif	
 
+#ifdef USE_DHT_DRIVER
 	result += "name:DHTDriver\n";
 	result += "type=" + String(DHTDriverType) + "\n";
 	result += "pinscount=" + String(DHTDriver::getPinsCount()) + "\n";
@@ -170,7 +178,8 @@ String driversGetAccessable()
 		result += "pintype" + String(i) + "=" + DHTDriver::getPinType(i) + "\n";
 		result += "pintypedecoded" + String(i) + "=" + decodePinTypes(DHTDriver::getPinType(i)) + "\n";
 	}
-
+#endif
+#ifdef USE_STEPPER_DRIVER
 	result += "name:StepperDriver\n";
 	result += "type=" + String(Stepper) + "\n";
 	result += "pinscount=" + String(StepperDriver::getPinsCount()) + "\n";
@@ -179,7 +188,9 @@ String driversGetAccessable()
 		result += "pintype" + String(i) + "=" + StepperDriver::getPinType(i) + "\n";
 		result += "pintypedecoded" + String(i) + "=" + decodePinTypes(StepperDriver::getPinType(i)) + "\n";
 	}
+#endif
 
+#ifdef USE_VALVE_DRIVER
 	result += "name:ValveDriver\n";
 	result += "type=" + String(Valve) + "\n";
 	result += "pinscount=" + String(ValveDriver::getPinsCount()) + "\n";
@@ -188,7 +199,7 @@ String driversGetAccessable()
 		result += "pintype" + String(i) + "=" + ValveDriver::getPinType(i) + "\n";
 		result += "pintypedecoded" + String(i) + "=" + decodePinTypes(ValveDriver::getPinType(i)) + "\n";
 	}
-
+#endif
 	return result;
 }
 
@@ -283,112 +294,6 @@ String driversGetAllDriversProperties()
 	}
 	return result;
 }
-
-/*
-bool checkPinBusy(int pin)
-{
-	if (pin < 0) return false;
-	if (busyPins.indexOf(":" + String(pin) + ";") >= 0) return true;
-}
-
-void addBusyPin(int type, String id, int pin)
-{
-	busyPins += "[" + String(type) + "]" + id + ":" + String(pin) + ";";
-}
-
-String driversGetBusyPins()
-{
-	return busyPins;
-}
-
-String checkPinMaping(int pin)
-{
-	switch (pin)
-	{
-	case -1: //pin not used
-	case D0:
-	case D1:
-	case D2:
-	case D3:
-	case D4:
-	case D5:
-	case D6:
-	case D7:
-	case D8:
-#ifdef ARDUINO_ESP8266_NODEMCU
-	case D9:
-	case D10:
-#endif
-	case A0: return String();
-	}
-	return "wrong pin maping value, at this board model available next pin's values: " + driversGetPinsMap();
-}
-
-
-String driversGetPinsMap()
-{
-	return "D0-" + String(D0) + ";" +
-		"D1-" + String(D1) + ";" +
-		"D2-" + String(D2) + ";" +
-		"D3-" + String(D3) + ";" +
-		"D4-" + String(D4) + ";" +
-		"D5-" + String(D5) + ";" +
-		"D6-" + String(D6) + ";" +
-		"D7-" + String(D7) + ";" +
-		"D8-" + String(D8) + ";" +
-#ifdef ARDUINO_ESP8266_NODEMCU
-		"D9-" + String(D9) + ";" +
-		"D10-" + String(D10) + ";" +
-#endif
-		"BUILTIN_LED-" + String(BUILTIN_LED) + ";" +
-		"A0-" + String(A0) + ";";
-}
-
-int driversPinNameToValue(String pinName)
-{
-	if (pinName.equals("D0")) return D0;
-	if (pinName.equals("D1")) return D1;
-	if (pinName.equals("D2")) return D2;
-	if (pinName.equals("D3")) return D3;
-	if (pinName.equals("D4")) return D4;
-	if (pinName.equals("D5")) return D5;
-	if (pinName.equals("D6")) return D6;
-	if (pinName.equals("D7")) return D7;
-	if (pinName.equals("D8")) return D8;
-#ifdef ARDUINO_ESP8266_NODEMCU
-	if (pinName.equals("D9")) return D9;
-	if (pinName.equals("D10")) return D10;
-#endif
-	if (pinName.equals("A0")) return A0;
-	return -1;
-}
-
-String driversValueToPinName(int pinValue)
-{
-	if (pinValue == D0) return "D0";
-	if (pinValue == D1) return "D1";
-	if (pinValue == D2) return "D2";
-	if (pinValue == D3) return "D3";
-	if (pinValue == D4) return "D4";
-	if (pinValue == D5) return "D5";
-	if (pinValue == D6) return "D6";
-	if (pinValue == D7) return "D7";
-	if (pinValue == D8) return "D8";
-#ifdef ARDUINO_ESP8266_NODEMCU
-	if (pinValue == D9) return "D9";
-	if (pinValue == D10) return "D10";
-#endif
-	if (pinValue == A0) return "A0";
-	return String();
-}
-
-
-bool driversSaveToConfig(int type, String id, String pins)
-{
-	String driver = String(type) + ";" + id + ";" + pins + ";\n";
-	return filesAppendString("driverslist", driver);
-}
-*/
 
 bool driversSaveList()
 {
@@ -489,7 +394,7 @@ String driversLoadFromConfig()
 	return result;
 }
 
-//External driver manager API -------------------------------------------------
+//External driver Service API -------------------------------------------------
 String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 {
 #ifdef DetailedDebug
@@ -550,7 +455,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 	{
 		return "no space for locate new driver";
 	}
-
+#ifdef USE_ACTUATOR_DRIVER
 	if (type == Actuator)
 	{
 #ifdef DetailedDebug
@@ -580,7 +485,11 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 		actuatorDriver->init();
 		driversList[freeIndex] = actuatorDriver;
 	}
-	else if ((type == Sensor) || (type == Light) || (type == Smoke) || (type == Motion))
+	else 
+#endif	
+
+#ifdef USE_SENSOR_DRIVER
+if ((type == Sensor) || (type == Light) || (type == Smoke) || (type == Motion))
 	{
 #ifdef DetailedDebug
 		debugOut("pin", String(pinCount));
@@ -609,8 +518,10 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 		sensorDriver->init();
 		driversList[freeIndex] = sensorDriver;
 	}
-	/*
-	else if (type == LCD)
+	else
+#endif	
+#ifdef USE_LCD_DRIVER
+	if (type == LCD)
 	{
 #ifdef DetailedDebug
 		debugOut("pin", String(pinCount));
@@ -635,7 +546,11 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 		lcdDriver->init();
 		driversList[freeIndex] = lcdDriver;
 	}
-	else if (type == DHTDriverType)
+	else
+#endif
+
+#ifdef USE_DHT_DRIVER	
+	if (type == DHTDriverType)
 	{
 #ifdef DetailedDebug
 		debugOut("pin", String(pinCount));
@@ -660,8 +575,8 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 		dhtDriver->id = id;
 		driversList[freeIndex] = dhtDriver;
 	}
-*/
 	else
+#endif	
 	{
 		return "not supported";
 	}
@@ -734,3 +649,4 @@ String driversDelete(String id)
 	}
 	return "driver id=" + id + " not found, can't be deleted";
 }
+#endif

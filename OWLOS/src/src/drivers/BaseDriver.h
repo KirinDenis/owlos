@@ -38,15 +38,16 @@ OWLOS распространяется в надежде, что она буде
 Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
+#include "../config.h"
+#ifdef USE_DRIVERS
 #ifndef BASE_H
 #define BASE_H
 
 #pragma once //<- the BaseDriver node must INCLUDE ONCE TO THE PROJECT, else we have REDEFINITION error 
-#include <Arduino.h>
-#include "../Utils\Utils.h"
-#include "../Managers\PinManager.h"
-#include "../Managers\TransportManager.h"
-#include "../Managers\FileManager.h"
+//#include "../config.h"
+#include "../services/PinService.h"
+#include "../services/TransportService.h"
+#include "../services/FileService.h"
 
 /*
 
@@ -214,4 +215,5 @@ class BaseDriver
     //Sample: if available propery is changed at "stepper1" driver on node "node2544" the SET wrapper calls onInsideChange(), and the topic to be somthing like "world0/area1/front1/room1/node2544/stepper1/available"
     bool onInsideChange(String _property, String _payload);
 };
+#endif
 #endif

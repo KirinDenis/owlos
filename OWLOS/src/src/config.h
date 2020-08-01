@@ -1,4 +1,4 @@
-﻿/* ----------------------------------------------------------------------------
+/* ----------------------------------------------------------------------------
 Ready IoT Solution - OWLOS
 Copyright 2019, 2020 by:
 - Konstantin Brul (konstabrul@gmail.com)
@@ -39,39 +39,22 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
+#ifndef CONFIG_H
+#define CONFIG_H
+
+#include <core_version.h>
 #include <Arduino.h>
+#include "utils/Utils.h"
 
-#include "../Drivers/DHTDriver.h"
-#include "../Drivers/StepperDriver.h"
-#include "../Drivers/SensorDriver.h"
-#include "../Drivers/ActuatorDriver.h"
-#include "../Drivers/LCDDriver.h"
-#include "../Drivers/ValveDriver.h"
+//#define USE_DRIVERS
+#ifdef USE_DRIVERS
 
-void driversInit(String _topic);
-void driversBegin(String nodeTopic);
-void driversLoop();
-String driversGetAccessable();
-void driversSubscribe();
-void driversCallback(String _topic, String _payload);
-String driversGetDriversId();
-BaseDriver* driversGetDriver(String id);
-String driversGetDriverProperty(String id, String property);
-String driversSetDriverProperty(String id, String property, String value);
-String driversGetDriverProperties(String id);
-String driversGetAllDriversProperties();
+// #define USE_ACTUATOR_DRIVER
+// #define USE_SENSOR_DRIVER
+// #define USE_DHT_DRIVER
+// #define USE_LCD_DRIVER
+// #define USE_STEPPER_DRIVER
+// #define USE_VALVE_DRIVER
 
-bool checkPinBusy(int pin);
-String driversGetBusyPins();
-String driversGetPinsMap();
-int driversPinNameToValue(String pinName);
-String driversValueToPinName(int pinValue);
-
-bool driversSaveList();
-String driversLoadFromConfig();
-
-String driversAdd(int type, String id, String pins);
-
-
-String driversChangePin(String pinName, String driverId, int driverPinIndex);
-String driversDelete(String id);
+#endif
+#endif

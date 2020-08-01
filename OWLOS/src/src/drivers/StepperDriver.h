@@ -39,7 +39,10 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-#include <Arduino.h>
+#ifdef USE_STEPPER_DRIVER
+#ifndef STEPPERDRIVER_H
+#define STEPPERDRIVER_H
+
 #include "BaseDriver.h"
 
 #define VCC5_INDEX 4
@@ -110,3 +113,5 @@ private:
 	void doStop();
 	void doOutput(int out);
 };
+#endif
+#endif

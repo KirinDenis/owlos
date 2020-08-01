@@ -290,7 +290,7 @@ node_modules/
 **/*.Server/ModelManifest.xml
 _Pvt_Extensions
 
-# Paket dependency manager
+# Paket dependency Service
 .paket/paket.exe
 paket-files/
 

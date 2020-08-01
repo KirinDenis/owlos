@@ -47,8 +47,8 @@ OWLOS распространяется в надежде, что она буде
 //пинов работающих в режиме OUTPUT.
 //---------------------------------------------------------------------------------------------------------------------------------------
 
-#ifndef PINMANAGER_H
-#define PINMANAGER_H
+#ifndef PINService_H
+#define PINService_H
 
 #include <Arduino.h>
 
@@ -86,7 +86,7 @@ OWLOS распространяется в надежде, что она буде
 #define I2C_FAMILY  1    //пин входит в семейство I2C
 #define VCC_FAMILY  2    //пин входит в семейство пинов питания 	   
 						   
-//смотрите PinManager.cpp для пояснения полей этой записи
+//смотрите PinService.cpp для пояснения полей этой записи
 struct Pin
 {	
 	String name = "";
@@ -99,7 +99,7 @@ struct Pin
 	String location = "";
 };
 
-//смотрите PinManager.cpp для пояснения полей этой записи
+//смотрите PinService.cpp для пояснения полей этой записи
 struct DriverPin
 {	
 	String name = "";
@@ -111,7 +111,7 @@ struct DriverPin
 	String SDAPinName; 
 };
 
-//описание функций смотрите в PinManager.cpp
+//описание функций смотрите в PinService.cpp
 String getPinMap();
 String getDriverPin();
 String decodePinTypes(uint16_t pinType);
