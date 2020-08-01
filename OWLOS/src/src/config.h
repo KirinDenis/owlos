@@ -42,11 +42,22 @@ OWLOS распространяется в надежде, что она буде
 #ifndef CONFIG_H
 #define CONFIG_H
 
+//#define USE_ESP_BOARDS
+#ifndef USE_ESP_BOARDS
+#define USE_ARDUINO_BOARDS
+#else 
 #include <core_version.h>
+#endif
+
+
 #include <Arduino.h>
 #include "utils/Utils.h"
 
-//#define USE_DRIVERS
+//#define USE_ESP_DRIVER
+#ifdef USE_ESP_DRIVER
+#endif
+
+#define USE_DRIVERS
 #ifdef USE_DRIVERS
 
 // #define USE_ACTUATOR_DRIVER

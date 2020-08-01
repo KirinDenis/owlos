@@ -38,7 +38,10 @@ OWLOS распространяется в надежде, что она буде
 Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
-#include <core_version.h>
+#include "UpdateService.h"
+
+#ifdef USE_ESP_DRIVER
+
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 #include <ESP8266HTTPClient.h>
 #include <ESP8266httpUpdate.h>
@@ -50,7 +53,7 @@ OWLOS распространяется в надежде, что она буде
 HTTPUpdate ESPhttpUpdate;
 #endif
 
-#include <Arduino.h>
+
 #include "../drivers/ESPDriver.h"
 #include "../transports/HTTPSWebServer.h"
 #include "../transports/HTTPWebClient.h"
@@ -296,5 +299,5 @@ int updateFirmware()
 	return 0;
 }
 
-
+#endif
 

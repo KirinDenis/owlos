@@ -170,7 +170,7 @@ void BaseDriver::subscribe()
 
 int BaseDriver::parsePinNumber(String _topic, String getPinStr)
 {
-	return std::atoi(_topic.substring(_topic.indexOf(topic +  getPinStr) + String(topic + getPinStr).length()).c_str());
+	return atoi(_topic.substring(_topic.indexOf(topic +  getPinStr) + String(topic + getPinStr).length()).c_str());
 }
 
 String BaseDriver::onMessage(String _topic, String _payload, int8_t transportMask)
@@ -302,9 +302,12 @@ String BaseDriver::onGetProperty(String _property, String _payload, int8_t trans
 #ifdef DetailedDebug
 	debugOut(id, "|-> get property " + _property + " = " + _payload);
 #endif
+
 	if (transportMask && MQTTMask != 0)
 	{
+#ifdef USE_ESP_DRIVER		
 		transportPublish(topic + "/" + _property, _payload);
+#endif		
 	}
 	return _payload;
 }
@@ -315,7 +318,11 @@ bool BaseDriver::onInsideChange(String _property, String _payload/*, int8_t tran
 	debugOut(id, "|<- inside change " + _property + " = " + _payload);
 #endif
 
+#ifdef USE_ESP_DRIVER		
 	return transportPublish(topic + "/" + _property, _payload);
+#else
+	return true;	
+#endif			
 
 	//FFR for mutliple transport
 	/*

@@ -39,7 +39,13 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
+#ifndef KERNEL_H
+#define KERNEL_H
+
+#include "config.h"
 
 bool kernelSetup();
 bool kernelLoop();
+
+#endif
 

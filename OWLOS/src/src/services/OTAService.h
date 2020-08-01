@@ -1,3 +1,9 @@
+
+#include "../config.h"
+#ifdef USE_ESP_DRIVER
+#ifndef OTASERVICE_H
+#define OTASERVICE_H
+
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
@@ -15,3 +21,5 @@
 
 void OTABegin();
 void OTALoop();
+#endif
+#endif

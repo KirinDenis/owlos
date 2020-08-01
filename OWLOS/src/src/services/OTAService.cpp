@@ -4,6 +4,7 @@
 
 
 #include "OTAService.h"
+#ifdef USE_ESP_DRIVER
 #include "../drivers/ESPDriver.h"
 #include "../Utils\Utils.h"
 
@@ -82,3 +83,4 @@ void OTALoop()
 {
 	ArduinoOTA.handle();
 }
+#endif

@@ -38,8 +38,11 @@ OWLOS распространяется в надежде, что она буде
 Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
-#include <core_version.h>
-#include <Arduino.h>
+#ifndef TRANSPORTSERVICE_H
+#define TRANSPORTSERVICE_H
+
+#include "../config.h"
+#ifdef USE_ESP_DRIVER
 
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 #include <ESP8266WiFi.h>
@@ -74,6 +77,9 @@ ESP8266WiFiMulti transportGetWifiMulti();
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
 WiFiMulti transportGetWifiMulti();
+#endif
+
+#endif
 #endif
 
 

@@ -118,7 +118,7 @@ Battle Hamster Script
 - Изменяйте сценарий, изменяйте логику, добавляйте новые драйвера, добавляйте новые микроконтроллеры.
 */
 
-#include <Arduino.h>
+#include "../config.h"
 #include "DriverService.h"
 #include "../drivers/ESPDriver.h"
 
@@ -797,7 +797,9 @@ int runGetProp(int index) {
 
 	if ((value.length() == 0) || (value == WrongPropertyName)) //then try get this property from node
 	{
+#ifdef USE_ESP_DRIVER		
 		value = nodeOnMessage(nodeGetTopic() + "/get" + driverProp, "", NoTransportMask);
+#endif		
 	}
 
 	if (((value.length() == 0) || (value == WrongPropertyName)) && (getDataAddr(index, STOP_IF_DEVICE_NOTREADY) != -1))
@@ -830,7 +832,9 @@ int runSetProp(int index) {
 
 	if ((result.length() == 0) || (result == WrongPropertyName)) //try set node property
 	{
+#ifdef USE_ESP_DRIVER		
 		result = nodeOnMessage(nodeGetTopic() + "/set" + driverProp, value, NoTransportMask);
+#endif		
 	}
 
 	if (((value.length() == 0) || (value == WrongPropertyName)) && (getDataAddr(index, STOP_IF_DEVICE_NOTREADY) != -1))

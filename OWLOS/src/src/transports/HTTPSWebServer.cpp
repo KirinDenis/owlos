@@ -4,6 +4,8 @@
   https://platformio.org/lib/show/5887/esp32_https_server/installation
   */
 
+#include "HTTPSWebServer.h"
+#ifdef USE_ESP_DRIVER
 // Include certificate data (see note above)
 #include "cert.h"
 #include "private_key.h"
@@ -528,3 +530,4 @@ void HTTPSWebServerLoop()
   secureServer.loop();
   insecureServer.loop();
 }
+#endif

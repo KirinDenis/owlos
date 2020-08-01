@@ -38,6 +38,8 @@ OWLOS распространяется в надежде, что она буде
 Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
+#ifndef SCRIPTSERVICE_H
+#define SCRIPTSERVICE_H
 
 String scriptsGetAll();
 bool scriptsDelete(String name);
@@ -50,3 +52,4 @@ String scriptsCompile(int index);
 bool scriptsLoad();
 bool nearlyEqyal(float a, float b);
 void testCompile();
+#endif

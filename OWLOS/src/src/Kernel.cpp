@@ -38,14 +38,18 @@ OWLOS распространяется в надежде, что она буде
 Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
-#include <core_version.h>
+
 
 #include "Kernel.h"
+
+#ifdef USE_ESP_DRIVER
 #include "drivers/ESPDriver.h"
-#include "services/DriverService.h"
-#include "services/FileService.h"
 #include "services/TransportService.h"
 #include "services/UpdateService.h"
+#endif
+
+#include "services/DriverService.h"
+#include "services/FileService.h"
 #include "services/ScriptService.h"
 
 
@@ -59,7 +63,8 @@ bool kernelSetup()
 	delay(ONETENTHOFSECOND);  //sleep 1/10 of second
 	Serial.println("");
 
-#if defined(ARDUINO_ESP8266_RELEASE_2_5_0) || defined(ARDUINO_ESP32_RELEASE_1_0_4)
+
+#if defined(ARDUINO_ESP8266_RELEASE_2_5_0) || defined(ARDUINO_ESP32_RELEASE_1_0_4) || defined(USE_ARDUINO_BOARDS)
 
 	debugOut("kernel setup", "started...");//if Utils.h "Debug=true" start writing log to Serial
 
@@ -69,13 +74,17 @@ bool kernelSetup()
 #endif
 
 	filesBegin(); //prepare Flash file systeme (see Tools/Flash size item - use 2M Flash Size, is ZERO size by default -> switch to 2M    
+#ifdef USE_ESP_DRIVER	
 	nodeInit();
 	driversInit(nodeGetTopic()); //prepare onboard Unit's drivers
+#endif	
 	scriptsLoad();
 	//Setup network stack - WiFi -> after MQTT -- if both available Transport accessable, if not Unit try reconnect forever (every 5 sec by default)
 	//Ther is not connected at begin(), see Main::Loop() transportReconnect() function using
 	//The begin() just setup connection properties
+#ifdef USE_ESP_DRIVER	
 	transportBegin();
+#endif	
 	//The OWLOS harvester started up and went quietly...
 #ifdef DetailedDebug 
 	debugOut("kernel setup", "complete");//if Utils.h "Debug=true" start writing log to Serial
@@ -103,6 +112,7 @@ bool kernelLoop()
 #endif
 	//check WiFi and MQTT stack are available
 	//first time Main::loop() calling the transport is not available
+#ifdef USE_ESP_DRIVER
 	if (!transportAvailable()) //if not connected
 	{
 		if (transportReconnect()) //DO connection routin, see Transport.cpp
@@ -119,7 +129,7 @@ bool kernelLoop()
 	{
 		transportLoop(); //Ping MQTT (at this version MQTT used only, FFR Ping RESTful to
 	}
-
+#endif
 	//give CPU time quantum to each driver. Like are sample -> temperature sensor can check physical sensor value
 	driversLoop(); //the driverLoop() more actual for sensors drivers, the actuator drivers wait until Sub()->OnMessage() happens, see Main::Callback(...) function
 	//Scripts loop

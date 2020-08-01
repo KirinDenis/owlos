@@ -283,7 +283,10 @@ String driversGetDriverProperties(String id)
 
 String driversGetAllDriversProperties()
 {
-	String result = nodeGetAllProperties();
+	String result = "";
+#ifdef USE_ESP_DRIVER
+    result = nodeGetAllProperties();
+#endif	
 	for (int i = 0; i < DRIVERS_LIMIT; i++)
 	{
 		if (driversList[i] != nullptr)
@@ -581,9 +584,12 @@ if ((type == Sensor) || (type == Light) || (type == Smoke) || (type == Motion))
 		return "not supported";
 	}
 
-	//if driver added at RUNTIME
+#ifdef USE_ESP_DRIVER
+	//if driver added at RUNTIME	
 	if (transportAvailable())
+
 		driversList[freeIndex]->begin(nodeGetTopic());
+#endif		
 #ifdef DetailedDebug
 	debugOut("driversadd", "OK");
 #endif

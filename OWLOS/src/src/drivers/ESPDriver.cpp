@@ -40,6 +40,8 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 #include "ESPDriver.h"
+#ifdef USE_ESP_DRIVER
+
 #include "../services/DriverService.h"
 #include "../services/FileService.h"
 #include "../services/UpdateService.h"
@@ -1793,3 +1795,4 @@ bool nodeSetUpdateHost(String _updatehost)
 	updatehost = _updatehost;
 	return onInsideChange("updatehost", updatehost);
 }
+#endif
