@@ -40,6 +40,7 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 #include "BaseDriver.h"
+#ifdef USE_DRIVERS
 #include "../services/DriverService.h"
 
 
@@ -536,5 +537,5 @@ bool BaseDriver::writeHistoryFile(float _historydata)
 
 	return result;
 }
-
+#endif
 

@@ -38,31 +38,36 @@ OWLOS распространяется в надежде, что она буде
 Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
+//NOTE: don't use auto format for this file
 
 #ifndef CONFIG_H
 #define CONFIG_H
 
 #define USE_ESP_BOARDS
-#ifdef USE_ESP_BOARDS
-#include <core_version.h>
-#define USE_ESP_DRIVER
-#ifdef USE_ESP_DRIVER
-#endif
-#else 
-#define USE_ARDUINO_BOARDS
-#endif
+    #ifdef USE_ESP_BOARDS
+        #include <core_version.h>
+        #define USE_ESP_DRIVER
+            #ifdef USE_ESP_DRIVER
+                //#define USE_HTTPS_SERVER
+                #define USE_HTTP_SERVER         
+                //#define USE_UPDATE_SERVICE
+                //#define USE_OTA_SERVICE
+            #endif
+    #else
+        #define USE_ARDUINO_BOARDS
+    #endif
 
 #include "utils/Utils.h"
 
 #define USE_DRIVERS
-#ifdef USE_DRIVERS
-
-#define USE_ACTUATOR_DRIVER
-#define USE_SENSOR_DRIVER
-//#define USE_DHT_DRIVER
-//#define USE_LCD_DRIVER
-//#define USE_STEPPER_DRIVER
-//#define USE_VALVE_DRIVER
-
+    #ifdef USE_DRIVERS
+        #define USE_ACTUATOR_DRIVER
+        #define USE_SENSOR_DRIVER
+        //#define USE_DHT_DRIVER
+        //#define USE_LCD_DRIVER
+        //#define USE_STEPPER_DRIVER
+        //#define USE_VALVE_DRIVER
+    #endif
 #endif
-#endif
+
+//#define USE_SCRIPT

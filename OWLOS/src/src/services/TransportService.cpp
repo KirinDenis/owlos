@@ -257,8 +257,7 @@ bool transportAvailable()
 	//  }
 	//  storedWiFiAPState = nodeGetWiFiAccessPointAvailable();
 	//  storedWiFiSTState = nodeGetWiFiAvailable();
-
-	bool result = false;
+	
 	bool wifiAPResult = false;
 	bool wifiResult = false;
 
@@ -480,7 +479,9 @@ void Callback(char *_topic, byte *_payload, unsigned int length)
 		{
 			//if not UNIT property
 			//Put recieved message to all drivers, each driver can process any topic recieved by Unit
+#ifdef USE_DRIVERS			
 			driversCallback(String(_topic), String(payload_buff));
+#endif			
 		}
 	}
 }
@@ -533,12 +534,16 @@ bool transportReconnect()
 		if (nodeGetRESTfulAvailable() == 1)
 		{
 			//nodeGetRESTfulServerPort()
+#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)			
 			HTTPSWebServerBegin();
+#endif			
 		}
 
 		if (nodeGetOTAAvailable() == 1)
 		{
+#ifdef USE_OTA_SERVICE			
 			OTABegin();
+#endif					
 		}
 
 		if (nodeGetMQTTAvailable() == 1)
@@ -640,12 +645,16 @@ void transportLoop()
 */
 		if (nodeGetRESTfulAvailable() == 1)
 		{
+#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)			
 			HTTPSWebServerLoop();
+#endif			
 		}
 
 		if (nodeGetOTAAvailable() == 1)
 		{
+#ifdef USE_OTA_SERVICE						
 			OTALoop();
+#endif			
 		}
 	}
 }

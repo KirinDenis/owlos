@@ -47,11 +47,11 @@ OWLOS распространяется в надежде, что она буде
 //пинов работающих в режиме OUTPUT.
 //---------------------------------------------------------------------------------------------------------------------------------------
 
-#ifndef PINSERVICE_H
-#define PINSERVICE_H
-
 #include "../config.h"
 
+#ifdef USE_DRIVERS
+#ifndef PINSERVICE_H
+#define PINSERVICE_H
 
 //Arduino.h GPIO FUNCTIONS fix for ESP8266 analog input
 #define ANALOG_INPUT	0x01
@@ -138,4 +138,5 @@ void deleteDriverPin(String driverId, int driverPinIndex);
 int parseI2CAddr(String addrStr);
 void initPins();
 
+#endif
 #endif

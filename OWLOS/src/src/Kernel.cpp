@@ -75,10 +75,16 @@ bool kernelSetup()
 
 	filesBegin(); //prepare Flash file systeme (see Tools/Flash size item - use 2M Flash Size, is ZERO size by default -> switch to 2M    
 #ifdef USE_ESP_DRIVER	
-	nodeInit();
+	nodeInit();	
+#endif	
+
+#ifdef USE_DRIVERS
 	driversInit(nodeGetTopic()); //prepare onboard Unit's drivers
 #endif	
+
+#ifdef USE_SCRIPT
 	scriptsLoad();
+#endif	
 	//Setup network stack - WiFi -> after MQTT -- if both available Transport accessable, if not Unit try reconnect forever (every 5 sec by default)
 	//Ther is not connected at begin(), see Main::Loop() transportReconnect() function using
 	//The begin() just setup connection properties
@@ -119,8 +125,10 @@ bool kernelLoop()
 		{
 #ifdef DetailedDebug 
 			debugOut(nodeGetUnitId(), "Transport available"); //if HEAD and MQTT Brokker is available setuping drivers
-#endif			
+#endif		
+#ifdef USE_DRIVERS	
 			driversBegin(nodeGetTopic()); //initilize drivers network properties, each driver must publish() here TYPE and AVAILABLE status
+#endif					
 			nodeSubscribe(); //subscribe() all AVAILABLE drivers to here topics (see: driverID), the topic -> UnitTopic+ESPChipID/DriverId
 			//driversSubscribe();  
 		}
@@ -130,10 +138,16 @@ bool kernelLoop()
 		transportLoop(); //Ping MQTT (at this version MQTT used only, FFR Ping RESTful to
 	}
 #endif
+
 	//give CPU time quantum to each driver. Like are sample -> temperature sensor can check physical sensor value
+#ifdef USE_DRIVERS		
 	driversLoop(); //the driverLoop() more actual for sensors drivers, the actuator drivers wait until Sub()->OnMessage() happens, see Main::Callback(...) function
+#endif	
+
+#ifdef USE_SCRIPT
 	//Scripts loop
 	scriptsRun();
+#endif	
 	delay(ONETENTHOFSECOND); //Main::loop() sleep interval
 	return true;
 #endif

@@ -42,6 +42,7 @@ OWLOS распространяется в надежде, что она буде
 #define UPDATESERVICE_H
 
 #include "../config.h"
+#ifdef USE_UPDATE_SERVICE
 #ifdef USE_ESP_DRIVER
 
 int updateGetUpdatePossible();
@@ -54,5 +55,6 @@ String updateUI();
 
 int updateGetUpdateFirmwareStatus();
 int updateFirmware();
+#endif
 #endif
 #endif

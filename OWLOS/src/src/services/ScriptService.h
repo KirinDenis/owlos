@@ -41,6 +41,9 @@ OWLOS распространяется в надежде, что она буде
 #ifndef SCRIPTSERVICE_H
 #define SCRIPTSERVICE_H
 
+#include "../config.h"
+#ifdef USE_SCRIPT
+
 String scriptsGetAll();
 bool scriptsDelete(String name);
 bool scriptsSave();
@@ -52,4 +55,5 @@ String scriptsCompile(int index);
 bool scriptsLoad();
 bool nearlyEqyal(float a, float b);
 void testCompile();
+#endif
 #endif

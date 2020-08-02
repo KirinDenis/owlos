@@ -1,5 +1,6 @@
 
 #include "../config.h"
+#ifdef USE_OTA_SERVICE
 #ifdef USE_ESP_DRIVER
 #ifndef OTASERVICE_H
 #define OTASERVICE_H
@@ -21,5 +22,6 @@
 
 void OTABegin();
 void OTALoop();
+#endif
 #endif
 #endif

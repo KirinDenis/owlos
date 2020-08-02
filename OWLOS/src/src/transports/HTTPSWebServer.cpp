@@ -1,59 +1,51 @@
-/*
+/* ----------------------------------------------------------------------
   This unint based on the ESP32 HTTP(S) Webserver
   https://github.com/fhessel/esp32_https_server
   https://platformio.org/lib/show/5887/esp32_https_server/installation
-  */
+------------------------------------------------------------------------*/
 
 #include "HTTPSWebServer.h"
+#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)
 #ifdef USE_ESP_DRIVER
 // Include certificate data (see note above)
+
+#define HTTPS_LOGLEVEL 0
+
+#ifdef USE_HTTPS_SERVER
 #include "cert.h"
 #include "private_key.h"
-
-// We will use wifi
-//#include <WiFi.h>
+#endif
 
 // Includes for the server
 // Note: We include HTTPServer and HTTPSServer
+#ifdef USE_HTTPS_SERVER
 #include <HTTPSServer.hpp>
-#include <HTTPServer.hpp>
 #include <SSLCert.hpp>
+#endif
+#ifdef USE_HTTP_SERVER
+#include <HTTPServer.hpp>
+#endif
 #include <HTTPRequest.hpp>
 #include <HTTPResponse.hpp>
 
-//#include <stdio.h>
-//#include <stdint.h>
-//#include <stddef.h>
-//#include <string.h>
-//#include "esp_wifi.h"
-//#include "esp_system.h"
-//#include "nvs_flash.h"
-//#include "esp_event.h"
-//#include "tcpip_adapter.h"
-//#include "esp_transport_ssl.h"
-//#include "esp_transport.h"
-//#include "protocol_examples_common.h"
-
-//#include "freertos/FreeRTOS.h"
-//#include "freertos/task.h"
-//#include "freertos/semphr.h"
-//#include "freertos/queue.h"
-
-//#include "lwip/sockets.h"
-//#include "lwip/dns.h"
-//#include "lwip/netdb.h"
 #include <SPIFFS.h>
 #include "HTTPServerThings.h"
 #include "../drivers/ESPDriver.h"
+#ifdef USE_DRIVERS
 #include "../services/DriverService.h"
+#endif
+#ifdef USE_SCRIPT
 #include "../services/ScriptService.h"
-//#include "../services/UpdateService.h"
+#endif
+#ifdef USE_UPDATE_SERVICE
+#include "../services/UpdateService.h"
+#endif
 #include "../services/FileService.h"
-//#include "../Utils/Utils.h"
 
 // The HTTPS Server comes in a separate namespace. For easier use, include it here.
 using namespace httpsserver;
 
+#ifdef USE_HTTPS_SERVER
 // Create an SSL certificate object from the files included above
 SSLCert cert = SSLCert(
     example_crt_DER, example_crt_DER_len,
@@ -61,15 +53,16 @@ SSLCert cert = SSLCert(
 
 // First, we create the HTTPSServer with the certificate created above
 HTTPSServer secureServer = HTTPSServer(&cert);
+#endif
 
+#ifdef USE_HTTP_SERVER
 // Additionally, we create an HTTPServer for unencrypted traffic
 HTTPServer insecureServer = HTTPServer();
+#endif
 
 void handleOther(HTTPRequest *req, HTTPResponse *res)
 {
-  //req->discardRequestBody();
   res->setStatusCode(200);
-  //res->setStatusText("Not Found");
   res->setHeader("Content-Type", "text/html");
   res->println(GetNotFoundHTML());
 }
@@ -203,6 +196,7 @@ void handleSetNodeProperty(HTTPRequest *req, HTTPResponse *res)
   handleNotFound(req, res);
 }
 
+#ifdef USE_DRIVERS
 void handleAddDriver(HTTPRequest *req, HTTPResponse *res)
 {
   corsCallback(req, res);
@@ -400,13 +394,6 @@ void handleGetDriversAccessable(HTTPRequest *req, HTTPResponse *res)
   res->println(driversGetAccessable().c_str());
 }
 
-void handleGetAllScripts(HTTPRequest *req, HTTPResponse *res)
-{
-  corsCallback(req, res);
-  res->setStatusCode(200);
-  res->println(scriptsGetAll().c_str());
-}
-
 void handleGetPinMap(HTTPRequest *req, HTTPResponse *res)
 {
   corsCallback(req, res);
@@ -420,6 +407,16 @@ void handleGetDriverPin(HTTPRequest *req, HTTPResponse *res)
   res->setStatusCode(200);
   res->println(getDriverPin());
 }
+#endif
+
+#ifdef USE_SCRIPT
+void handleGetAllScripts(HTTPRequest *req, HTTPResponse *res)
+{
+  corsCallback(req, res);
+  res->setStatusCode(200);
+  res->println(scriptsGetAll().c_str());
+}
+#endif
 
 void handleGetWebProperty(HTTPRequest *req, HTTPResponse *res)
 {
@@ -455,16 +452,68 @@ void handleSetWebProperty(HTTPRequest *req, HTTPResponse *res)
     res->write(buffer, s);
     fs_uploadFile.write(buffer, s);
   }
-	fs_uploadFile.close();
-  
+  fs_uploadFile.close();
 }
+
+#ifdef USE_UPDATE_SERVICE
+void handleUpdateLog(HTTPRequest *req, HTTPResponse *res)
+{
+  corsCallback(req, res);
+  res->setStatusCode(200);
+  res->println(filesReadString("/web.config"));
+}
+
+void handleUpdateUI(HTTPRequest *req, HTTPResponse *res)
+{
+  corsCallback(req, res);
+  if (updateGetUpdatePossible() < 1)
+  {
+    res->setStatusCode(503);
+    res->println("0");
+  }
+  else if (updateGetUpdateUIStatus() < 2)
+  {
+    res->setStatusCode(504);
+    res->println("0");
+  }
+  else
+  {
+    res->setStatusCode(200);
+    res->println("1");
+    updateUI();
+  }
+}
+
+void handleUpdateFirmware(HTTPRequest *req, HTTPResponse *res)
+{
+
+  if (updateGetUpdatePossible() < 2)
+  {
+    res->setStatusCode(503);
+    res->println("0");
+  }
+  else if (updateGetUpdateFirmwareStatus() < 2)
+  {
+    res->setStatusCode(504);
+    res->println("0");
+  }
+  else
+  {
+    res->setStatusCode(200);
+    res->println("1");
+    updateFirmware();
+  }
+}
+#endif
 
 //ENDOF RESTful APIs ---
 
 void setResourceNode(const std::string &path, const std::string &method, const HTTPSCallbackFunction *callback)
 {
   ResourceNode *resourceNode = new ResourceNode(path, method, callback);
+#ifdef USE_HTTS_SERVER
   secureServer.registerNode(resourceNode);
+#endif
   insecureServer.registerNode(resourceNode);
 }
 
@@ -480,6 +529,7 @@ void HTTPSWebServerBegin()
   setResourceNode("/deletefile", "DELETE", &handleDeleteFile);
   setResourceNode("/getnodeproperty", "GET", &handleGetNodeProperty);
   setResourceNode("/setnodeproperty", "GET", &handleSetNodeProperty);
+#ifdef USE_DRIVERS  
   setResourceNode("/adddriver", "GET", &handleAddDriver);
   setResourceNode("/deletedriver", "GET", &handleDeleteDriver);
   setResourceNode("/deletedriver", "DELETE", &handleDeleteDriver);
@@ -489,45 +539,58 @@ void HTTPSWebServerBegin()
   setResourceNode("/getdriverproperties", "GET", &handleGetDriverProperties);
   setResourceNode("/getalldriversproperties", "GET", &handleGetAllDriversProperties);
   setResourceNode("/getdriversaccessable", "GET", &handleGetDriversAccessable);
-  setResourceNode("/getallscripts", "GET", &handleGetAllScripts);
   setResourceNode("/getpinmap", "GET", &handleGetPinMap);
   setResourceNode("/getdriverpin", "GET", &handleGetDriverPin);
+#endif  
+#ifdef USE_SCRIPTS  
+  setResourceNode("/getallscripts", "GET", &handleGetAllScripts);
+#endif  
   setResourceNode("/getwebproperty", "GET", &handleGetWebProperty);
   setResourceNode("/setwebproperty", "POST", &handleSetWebProperty);
 
-  // Connect to WiFi
+#ifdef USE_UPDATE_SERVICE
+  setResourceNode("/updatelog", "GET", &handleUpdateLog);
+  setResourceNode("/updateui", "GET", &handleUpdateUI);
+  setResourceNode("/updatefirmware", "GET", &handleUpdateFirmware);
+ #endif
 
-  // For every resource available on the server, we need to create a ResourceNode
-  // The ResourceNode links URL and HTTP method to a handler function
-  //ResourceNode * nodeRoot = new ResourceNode("/", "GET", &handleRoot);
-  //ResourceNode * corsNode   = new ResourceNode("/*", "OPTIONS", &corsCallback);
-  //ResourceNode * node404  = new ResourceNode("", "GET", &handle404);
-
-  // Add the root node to the servers. We can use the same ResourceNode on multiple
-  // servers (you could also run multiple HTTPS servers)
-  //secureServer.registerNode(nodeRoot);
-  //insecureServer.registerNode(nodeRoot);
-
-  // We do the same for the default Node
-  //secureServer.setDefaultNode(node404);
-  //insecureServer.setDefaultNode(node404);
-
-  //secureServer.registerNode(corsNode);
-  //insecureServer.registerNode(corsNode);
-
-  Serial.println("Starting HTTPS server...");
+#ifdef USE_HTTPS_SERVER
+#ifdef DetailedDebug
+  debugOut("HTTPS Server", "Starting HTTPS server...");
+#endif
   secureServer.start();
-  Serial.println("Starting HTTP server...");
+#ifdef DetailedDebug
+  if (secureServer.isRunning())
+  {
+    debugOut("HTTPS Server", "HTTPS server ready");
+  }
+#endif
+#endif
+
+#ifdef USE_HTTP_SERVER
+#ifdef DetailedDebug
+  debugOut("HTTP Server", "Starting HTTP server...");
+#endif
   insecureServer.start();
-  //if (secureServer.isRunning() && insecureServer.isRunning()) {
-  //   Serial.println("Servers ready.");
-  //  }
+#ifdef DetailedDebug
+  if (insecureServer.isRunning())
+  {
+    debugOut("HTTP Server", "HTTP server ready");
+  }
+#endif
+#endif
 }
 
 void HTTPSWebServerLoop()
 {
   // We need to call both loop functions here
+#ifdef USE_HTTPS_SERVER
   secureServer.loop();
+#endif
+
+#ifdef USE_HTTP_SERVER
   insecureServer.loop();
+#endif
 }
+#endif
 #endif

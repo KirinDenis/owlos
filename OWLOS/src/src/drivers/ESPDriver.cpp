@@ -1075,12 +1075,14 @@ bool nodeSetMQTTPassword(String _mqttpassword)
 int nodeGetMQTTClientConnected()
 {
 //	return (int)(getMQTTClient()->connected());
+return 1;
 }
 
 //MQTTClientState
 int nodeGetMQTTClientState()
 {
 //	return getMQTTClient()->state();
+return 1;
 }
 
 //OTAAvailable()  

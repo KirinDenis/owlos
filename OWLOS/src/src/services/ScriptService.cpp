@@ -118,9 +118,18 @@ Battle Hamster Script
 - Изменяйте сценарий, изменяйте логику, добавляйте новые драйвера, добавляйте новые микроконтроллеры.
 */
 
-#include "../config.h"
+#include "ScriptService.h"
+#ifdef USE_SCRIPT
+
+#ifdef USE_DRIVERS
 #include "DriverService.h"
+#endif
+
+#ifdef USE_ESP_DRIVER
 #include "../drivers/ESPDriver.h"
+#endif
+
+#include "FileService.h"
 
 #define SCRIPT_ID "script" 
 //Уберите комментарий этот флаг что бы включить трасерт (Tracert)
@@ -793,7 +802,11 @@ int runGetProp(int index) {
 	String driverId = scripts[index].data[scripts[index].code[ip].arg1Addr].value;
 	String driverProp = scripts[index].data[scripts[index].code[ip].arg2Addr].value;
 
+#ifdef USE_DRIVERS
 	String value = driversGetDriverProperty(driverId, driverProp);
+#else 	
+    String value = NotAvailable;
+#endif	
 
 	if ((value.length() == 0) || (value == WrongPropertyName)) //then try get this property from node
 	{
@@ -828,7 +841,11 @@ int runSetProp(int index) {
 	String driverProp = scripts[index].data[scripts[index].code[ip].arg2Addr].value;
 	String value = scripts[index].data[scripts[index].code[ip].arg3Addr].value;
 
+#ifdef USE_DRIVERS
 	String result = driversSetDriverProperty(driverId, driverProp, value);
+#else 
+     String result = "0";
+#endif	
 
 	if ((result.length() == 0) || (result == WrongPropertyName)) //try set node property
 	{
@@ -1063,7 +1080,7 @@ String clearSpace(String str, bool atBegin)
 -----------------------------------------------------------------------------*/
 String scriptsCompile(int index) {
 	String result = ""; //строка с результатом, по умолчанию пуста, ошибок не было
-	/*
+	
 	scripts[index].ip = 0; //сбрасывает указатель инструкций
 	scripts[index].codeCount = 0; //сбрасывает счетчик инструкций
 	scripts[index].dataCount = 0; //сбрасывает счетчик переменных (данных)
@@ -1407,7 +1424,7 @@ String scriptsCompile(int index) {
 		}
 		byteCode.remove(0, linePos + 1); //вырезаем разобранную строчку кода, переходим к следующей 
 	}
-	*/
+	
 	//компиляция окончена или прервана, возвращаем результат, если не пустая строка - произошла ошибка компиляции
 	return result;
 }
@@ -1531,4 +1548,4 @@ void testCompile()
 {
 	//Put some code for non UI tests
 }
-
+#endif

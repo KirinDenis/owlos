@@ -39,7 +39,7 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 #include "UpdateService.h"
-
+#ifdef USE_UPDATE_SERVICE
 #ifdef USE_ESP_DRIVER
 
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
@@ -170,7 +170,9 @@ String updateUI()
 		updateUIStatus = UpdateStatusStarted;
 		updateLog += downloadFileWithLog("jquery.min.js.gz");
 		updateUIStatus = UpdateStatusAtProcess;
+#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)		
 		HTTPSWebServerLoop();
+#endif		
 
 		updateLog += downloadFileWithLog("jquery.min.js.gz");
 		updateLog += downloadFileWithLog("popper.min.js.gz");
@@ -179,10 +181,14 @@ String updateUI()
 		updateLog += downloadFileWithLog("jquery.dataTables.min.js.gz");
 		updateLog += downloadFileWithLog("dataTables.min.css.gz");
 		updateLog += downloadFileWithLog("dataTables.min.js.gz");
+#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)		
 		HTTPSWebServerLoop();
+#endif		
 
 		updateLog += downloadFileWithLog("ui.css.gz");
+#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)		
 		HTTPSWebServerLoop();
+#endif		
 
 		updateLog += downloadFileWithLog("bootcore.js.gz");
 		updateLog += downloadFileWithLog("restclientcore.js.gz");
@@ -192,7 +198,9 @@ String updateUI()
 		updateLog += downloadFileWithLog("languagescore.js.gz");
 		updateLog += downloadFileWithLog("speechcore.js.gz");
 		updateLog += downloadFileWithLog("scriptcore.js.gz");
+#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)		
 		HTTPSWebServerLoop();
+#endif		
 
 		updateLog += downloadFileWithLog("basewidget.js.gz");
 		updateLog += downloadFileWithLog("actuatorwidget.js.gz");
@@ -208,8 +216,9 @@ String updateUI()
 		updateLog += downloadFileWithLog("smokewidget.js.gz");
 		updateLog += downloadFileWithLog("stepperwidget.js.gz");
 		updateLog += downloadFileWithLog("valuewidget.js.gz");
+#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)				
 		HTTPSWebServerLoop();
-
+#endif		
 		updateLog += downloadFileWithLog("widgetswrappers.js.gz");
 
 		updateLog += downloadFileWithLog("driversui.js.gz");
@@ -221,8 +230,7 @@ String updateUI()
 		updateLog += downloadFileWithLog("index.html.gz");
 
 		updateUIStatus = UpdateStatusComplete;
-		updateLog += "update UI complete\n";
-		HTTPSWebServerLoop();
+		updateLog += "update UI complete\n";		
 	}
 	else
 	{
@@ -300,4 +308,4 @@ int updateFirmware()
 }
 
 #endif
-
+#endif

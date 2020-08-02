@@ -84,6 +84,7 @@ PinService - реализует программный интерфейс меж
 */
 
 #include "PinService.h"
+#ifdef USE_DRIVERS
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
 //Сторонняя библиотека реализующая analogWrite() функцию для ESP32
@@ -235,7 +236,7 @@ Pin * getPinByDriverId(String  driverId, int driverPinIndex)
 String _checkDriverPin(String pinName, uint16_t pinType, String SDAPinName)
 {
 	DriverPin * _driverPins = nullptr; //указатель на драйвера занявшие пин, будет использован ниже. 
-	int _count = 0; //количество драйверов занявших пин
+	int _count; //количество драйверов занявших пин
 
 	Pin * pin = getPinByName(pinName); //узнаем существует ли физически пин с таким именем 
 	if (pin == nullptr) //если пин не существует
@@ -376,6 +377,7 @@ String _setDriverPin(String pinName, String driverId, uint16_t driverPinIndex, u
 			driverPin.driverId = driverId;
 			driverPin.driverPinType = pinType;
 			driverPin.driverPinIndex = driverPinIndex;
+			driverPin.driverI2CAddr = -1; //for CPP Inspect
 			addDriverPin(driverPin);
 			return ""; //выходим(ОК)
 		}
@@ -555,7 +557,7 @@ int driverPinRead(String driverId, int driverPinIndex)
 //
 //эта функция вызывается в начале загрузки и больше не используется (пины не могут меняться во время работы микроконтроллера)
 //эта функция определяет физический режим пина в момент загрузки вызывая getPinMode для каждого пина
-int addPin(Pin pin)
+int addPin(Pin const& pin)
 {
 	pinCount++;
 	Pin * newPinsPtr = new Pin[pinCount];
@@ -1237,5 +1239,5 @@ void initPins()
 	addPin(pin);
 #endif
 }
-
+#endif
 

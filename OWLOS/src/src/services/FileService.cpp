@@ -87,7 +87,7 @@ ESP File System ----------------------------------------------------------------
 #define FORMAT_SPIFFS_IF_FAILED true
 bool readyBegin = false;
 
-typedef struct fileWriteItem
+struct fileWriteItem
 {
 	String fileName;
 	String value;
