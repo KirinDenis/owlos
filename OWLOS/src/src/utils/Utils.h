@@ -44,7 +44,7 @@ OWLOS распространяется в надежде, что она буде
 #include <Arduino.h>
 
 #define Debug false
-#define DetailedDebug 
+//#define DetailedDebug 
 #define WriteDebugLogs false
 #define LogFilesSize 1024*10
 #define LogFile1 "log1"

@@ -52,6 +52,7 @@ OWLOS распространяется в надежде, что она буде
                 #define USE_HTTP_SERVER         
                 //#define USE_UPDATE_SERVICE
                 //#define USE_OTA_SERVICE
+                #define USE_MQTT
             #endif
     #else
         #define USE_ARDUINO_BOARDS

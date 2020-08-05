@@ -46,6 +46,9 @@ OWLOS распространяется в надежде, что она буде
 #include "../services/DriverService.h"
 #include "../Transports/HTTPSWebServer.h"
 
+#ifdef USE_MQTT
+#include "../transports/MQTTClient.h"
+#endif
 
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 ESP8266WiFiMulti _WiFiMulti;
@@ -58,7 +61,7 @@ WiFiMulti _WiFiMulti;
 #endif
 
 WiFiClient wifiClient;
-//MQTTClient *_MQTTClient;
+
 
 bool WiFiAccessPointConnected(false);
 unsigned long lastTryCheck(-ONESECOND);
@@ -72,12 +75,7 @@ bool wifiStatus = false;
 bool wifiAPResult = false;
 bool wifiResult = false;
 
-/*
-MQTTClient *getMQTTClient()
-{
-	return _MQTTClient;
-}
-*/
+
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
 void WiFiEvent(WiFiEvent_t event)
@@ -548,10 +546,12 @@ bool transportReconnect()
 
 		if (nodeGetMQTTAvailable() == 1)
 		{
-			/*
-			MQTTReconnect();
-			transportSetCallBack(Callback); //Regist Callback function for loopback subscribed messages (from MQTT Publishers)
-			*/
+#ifdef USE_MQTT			
+			
+			MQTTBegin();
+			//transportSetCallBack(Callback); //Regist Callback function for loopback subscribed messages (from MQTT Publishers)
+#endif			
+			
 		}
 	}
 
@@ -618,6 +618,9 @@ void transportSetCallBack(MQTT_CALLBACK_SIGNATURE)
 
 void transportSubscribe(String _topic)
 {
+	#ifdef USE_MQTT
+	 MQTTSubscribe(_topic);
+	#endif
 	/*
 	if (MQTTReconnect())
 	{
@@ -661,6 +664,9 @@ void transportLoop()
 
 bool transportPublish(String _topic, String _payload)
 {
+	#ifdef USE_MQTT
+	 MQTTPublish(_topic, _payload);
+	#endif
 	/*
 	if (MQTTReconnect())
 	{
