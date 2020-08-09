@@ -585,9 +585,7 @@ if ((type == Sensor) || (type == Light) || (type == Smoke) || (type == Motion))
 	}
 
 #ifdef USE_ESP_DRIVER
-	//if driver added at RUNTIME	
-	if (transportAvailable())
-
+	//if driver added at RUNTIME		
 		driversList[freeIndex]->begin(nodeGetTopic());
 #endif		
 #ifdef DetailedDebug

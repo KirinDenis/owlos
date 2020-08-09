@@ -138,7 +138,7 @@ var config = {
         var node = {
             host: _host,
             nodenickname: _nodenickname,
-            nodeRefreshInterval: 1000,
+            nodeRefreshInterval: 20000,
             //-------------------------------------------------------------------------------------------------------------
             //сетевое состояние модуля - онлайн, офлайн, переподсоединение ("в работе"), ошибка --> по умолчанию онлайн
             //NOTE: у каждого свойства есть свое сетевое состояние и связанные события - это глобальный флаг для всех драйвер и элементов UI
@@ -212,7 +212,7 @@ var config = {
                     var tempNodes = [];
                     for (var nodeKey in configProperties.nodes) {
                         if (configProperties.nodes[nodeKey].nodeRefreshInterval == undefined)  {
-                            configProperties.nodes[nodeKey].nodeRefreshInterval = 10000;                           
+                            configProperties.nodes[nodeKey].nodeRefreshInterval = 20000;                           
                         }  
                         var tempNode = {
                             id: configProperties.nodes[nodeKey].id,

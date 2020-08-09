@@ -119,6 +119,9 @@ bool kernelLoop()
 	//check WiFi and MQTT stack are available
 	//first time Main::loop() calling the transport is not available
 #ifdef USE_ESP_DRIVER
+//			nodeSubscribe(); //subscribe() all AVAILABLE drivers to here topics (see: driverID), the topic -> UnitTopic+ESPChipID/DriverId
+
+/*
 	if (!transportAvailable()) //if not connected
 	{
 		if (transportReconnect()) //DO connection routin, see Transport.cpp
@@ -137,6 +140,8 @@ bool kernelLoop()
 	{
 		transportLoop(); //Ping MQTT (at this version MQTT used only, FFR Ping RESTful to
 	}
+*/	
+transportLoop(); //Ping MQTT (at this version MQTT used only, FFR Ping RESTful to
 #endif
 
 	//give CPU time quantum to each driver. Like are sample -> temperature sensor can check physical sensor value

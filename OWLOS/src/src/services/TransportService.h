@@ -44,41 +44,20 @@ OWLOS распространяется в надежде, что она буде
 #include "../config.h"
 #ifdef USE_ESP_DRIVER
 
-#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
-#include <ESP8266WiFi.h>
-#include <ESP8266WiFiMulti.h>
-#include <ESP8266HTTPClient.h>
-#endif
-
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
-#include <WiFi.h>
+
 #include <WiFiMulti.h>
-#include <HTTPClient.h>
-#endif
 
 #define TransportID "Transport"
-//MQTTClient* getMQTTClient();
-
 bool transportBegin();
-bool transportAvailable();
-bool WiFiAccessPointReconnect();
-bool transportReconnect();
-bool MQTTReconnect();
-//void transportSetCallBack(MQTT_CALLBACK_SIGNATURE);
-//void MQTTCallback(char* topic, byte* payload, unsigned int length);
+
 void transportSubscribe(String topic);
 void transportLoop();
 bool transportPublish(String topic, String payload);
 
-
-#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
-ESP8266WiFiMulti transportGetWifiMulti();
-#endif
-
-#ifdef ARDUINO_ESP32_RELEASE_1_0_4
 WiFiMulti transportGetWifiMulti();
-#endif
 
+#endif
 #endif
 #endif
 

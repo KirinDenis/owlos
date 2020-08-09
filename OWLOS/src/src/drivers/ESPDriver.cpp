@@ -47,7 +47,7 @@ OWLOS распространяется в надежде, что она буде
 #include "../services/UpdateService.h"
 #include "../services/TransportService.h"
 
-
+#define DONT_USE_FILES
 
 #define DEFAULT_ZERO_VALUE 0x00
 #define DEFAULT_EMPTY_STR_VALUE ""
@@ -55,7 +55,7 @@ OWLOS распространяется в надежде, что она буде
 #define DEFAULT_ID "owlnode"
 #define DEFAULT_TOPIC "world0/area1/front1/room1/"
 
-#define DEFAULT_WIFI_ACCESS_POINT_AVAILABLE 1
+#define DEFAULT_WIFI_ACCESS_POINT_AVAILABLE 0
 #define DEFAULT_WIFI_ACCESS_POINT_SSID "owlnode"
 #define DEFAULT_WIFI_ACCESS_POINT_PASSWORD  "1122334455"
 #define DEFAULT_WIFI_ACCESS_POINT_IP  "192.168.4.1"
@@ -636,10 +636,8 @@ bool onInsideChange(String _property, String _value)
 		lock = true;
 		result = filesWriteString(String(DEFAULT_ID) + "." + _property, _value);
 
-		if (transportAvailable())
-		{
+		
 			result = transportPublish(topic + "/" + _property, _value);
-		}
 
 #ifdef DetailedDebug 
 		debugOut(nodeid, "|-> inside change ");
@@ -654,6 +652,10 @@ bool onInsideChange(String _property, String _value)
 //-------------------------------------------------------------------------------------------
 String _getStringPropertyValue(String _property, String _defaultvalue)
 {
+#ifdef DONT_USE_FILES
+	return _defaultvalue;
+#endif
+
 	String result = _defaultvalue;
 	if (filesExists(String(DEFAULT_ID) + "." + _property))
 	{
@@ -674,6 +676,10 @@ String _getStringPropertyValue(String _property, String _defaultvalue)
 //Integer property
 int _getIntPropertyValue(String _property, int _defaultvalue)
 {
+#ifdef DONT_USE_FILES
+	return _defaultvalue;
+#endif
+
 	int result = _defaultvalue;
 	if (filesExists(String(DEFAULT_ID) + "." + _property))
 	{
