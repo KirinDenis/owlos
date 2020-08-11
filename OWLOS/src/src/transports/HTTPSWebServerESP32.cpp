@@ -5,6 +5,9 @@
 ------------------------------------------------------------------------*/
 
 #include "HTTPSWebServer.h"
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+
 #if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)
 #ifdef USE_ESP_DRIVER
 // Include certificate data (see note above)
@@ -592,5 +595,6 @@ void HTTPSWebServerLoop()
   insecureServer.loop();
 #endif
 }
+#endif
 #endif
 #endif

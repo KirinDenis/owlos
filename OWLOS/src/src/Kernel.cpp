@@ -79,7 +79,11 @@ bool kernelSetup()
 #endif	
 
 #ifdef USE_DRIVERS
+#ifdef USE_ESP_DRIVER	
 	driversInit(nodeGetTopic()); //prepare onboard Unit's drivers
+#else 	
+    driversInit("owlosnode");
+#endif		
 #endif	
 
 #ifdef USE_SCRIPT

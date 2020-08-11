@@ -153,7 +153,9 @@ void WiFiEvent(WiFiEvent_t event)
 	case SYSTEM_EVENT_STA_DISCONNECTED:
 		debugOut(TransportID, "Disconnected from WiFi access point");		
 		wifiResult = false;
+#ifdef USE_MQTT		
 		MQTTDisconnect();
+#endif		
 		xTimerStart(wifiSTReconnectTimer, 0);		
 		break;
 	case SYSTEM_EVENT_STA_AUTHMODE_CHANGE:
@@ -166,8 +168,13 @@ void WiFiEvent(WiFiEvent_t event)
 				debugOut(TransportID, "WiFi connected as Client success, local IP: " + nodeGetWiFiIP());
 #endif
 		xTimerStop(wifiSTReconnectTimer, 0);				
+#ifdef USE_MQTT				
 		MQTTConnect();
+#endif		
+
+#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)
 		HTTPSWebServerBegin();
+#endif				
 		
 		break;
 	case SYSTEM_EVENT_STA_LOST_IP:
@@ -241,7 +248,11 @@ bool transportBegin()
 	//esp_wifi_set_ps(WIFI_PS_NONE);
 	//esp_wifi_set_ps(WIFI_PS_MAX_MODEM);
 #endif
+
+#ifdef USE_MQTT
      MQTTBegin();	
+#endif
+
 #ifdef DetailedDebug
 		debugOut(TransportID, "no WiFi mode select, WiFi not accessable");
 #endif

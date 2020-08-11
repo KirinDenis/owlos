@@ -40,8 +40,8 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 
-#ifndef HTTPWEBSERVER_H
-#define HTTPWEBSERVER_H
+#ifndef HTTPWEBPROP_H
+#define HTTPWEBPROP_H
 
 #include "../config.h"
 #ifdef USE_ESP_DRIVER

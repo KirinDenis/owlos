@@ -23,7 +23,7 @@
 #define ASYNCTCP_H_
 
 #include "IPAddress.h"
-#include "sdkconfig.h"
+#include  <sdkconfig.h">
 #include <functional>
 extern "C" {
     #include "freertos/semphr.h"
