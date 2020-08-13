@@ -226,7 +226,7 @@ String nodeGetAllProperties()
 	result += nodeGetAllWiFiStatuses() + "//r\n";
 	result += nodeGetWiFiNetworksParameters() + "//r\n";
 	result += nodeGetAllWiFiEncryptionTypes() + "//r\n";
-/*
+
 	result += "properties for:network\n";
 	result += "id=network//r\n";
 	result += "type=" + String(NetworkType) + "//r\n";
@@ -254,10 +254,12 @@ String nodeGetAllProperties()
 	result += "otaid=" + nodeGetOTAID() + "//\n";
 	result += "otapassword=" + nodeGetOTAPassword() + "//p\n";
 	result += "updateavailable=" + String(nodeGetUpdateAvailable()) + "//bs\n";
+#ifdef USE_UPDATE	
 	result += "updatepossible=" + String(updateGetUpdatePossible()) + "//ir\n";
 	result += "updateinfo=" + String(updateGetUpdateInfo()) + "//r\n";
 	result += "updateuistatus=" + String(updateGetUpdateUIStatus()) + "//ir\n";
 	result += "updatefirmwarestatus=" + String(updateGetUpdateFirmwareStatus()) + "//ir\n";
+#endif	
 	result += "updatehost=" + nodeGetUpdateHost() + "//s\n";
 
 
@@ -295,7 +297,7 @@ String nodeGetAllProperties()
 	//Pins 
 	//result += "busypins=" + nodeGetBusyPins() + "//rs\n";
 	//result += "pinsmap=" + nodeGetPinsMap() + "//r\n";
-*/
+
 	return result;
 }
 
@@ -374,7 +376,6 @@ String nodeOnMessage(String _topic, String _payload, int8_t transportMask)
 																										if (String(topic + "/setwifiisconnected").equals(_topic)) return String(nodeSetWiFiIsConnected(atoi(_payload.c_str())));
 																										else
 																											if (String(topic + "/getconnectedwifissid").equals(_topic)) return onGetProperty("connectedwifissid", nodeGetConnectedWiFiSSID(), transportMask);
-/*
 																											else
 																												if (String(topic + "/getrestfulavailable").equals(_topic)) return onGetProperty("restfulavailable", String(nodeGetRESTfulAvailable()), transportMask);
 																												else
@@ -601,16 +602,18 @@ String nodeOnMessage(String _topic, String _payload, int8_t transportMask)
 																																																																																																																																					//else
 																																																																																																																																				if (String(topic + "/getupdateavailable").equals(_topic)) return onGetProperty("updateavailable", String(nodeGetUpdateAvailable()), transportMask);
 																																																																																																																																				else
+																																																																																																																																				#ifdef USE_UPDATE	
 																																																																																																																																					if (String(topic + "/setupdateavailable").equals(_topic)) return String(nodeSetUpdateAvailable(atoi(_payload.c_str())));
 																																																																																																																																					else
-																																																																																																																																						if (String(topic + "/getupdatepossible").equals(_topic)) return onGetProperty("updatepossible", String(updateGetUpdatePossible()), transportMask);
+																																																																																																																																					if (String(topic + "/getupdatepossible").equals(_topic)) return onGetProperty("updatepossible", String(updateGetUpdatePossible()), transportMask);
+																																																																																																																																					else
+																																																																																																																																						if (String(topic + "/getupdateinfo").equals(_topic)) return onGetProperty("updateinfo", String(updateGetUpdateInfo()), transportMask);
 																																																																																																																																						else
-																																																																																																																																							if (String(topic + "/getupdateinfo").equals(_topic)) return onGetProperty("updateinfo", String(updateGetUpdateInfo()), transportMask);
-																																																																																																																																							else
 																																																																																																																																								if (String(topic + "/getupdateuistatus").equals(_topic)) return onGetProperty("updateuistatus", String(updateGetUpdateUIStatus()), transportMask);
-																																																																																																																																								else
+																																																																																																																																								else																																																																																																																																								
 																																																																																																																																									if (String(topic + "/getupdatefirmwarestatus").equals(_topic)) return onGetProperty("updateufirmwarestatus", String(updateGetUpdateFirmwareStatus()), transportMask);
 																																																																																																																																									else
+																																																																																																																																									#endif
 																																																																																																																																										if (String(topic + "/getupdatehost").equals(_topic)) return onGetProperty("updatehost", nodeGetUpdateHost(), transportMask);
 																																																																																																																																										else
 																																																																																																																																											if (String(topic + "/setupdatehost").equals(_topic)) return String(nodeSetUpdateHost(_payload));
@@ -618,7 +621,7 @@ String nodeOnMessage(String _topic, String _payload, int8_t transportMask)
 																																																																																																																																											
 																																																																																																																																												//Update 
 																																																																																																																																												return result;
-*/		
+		
  return "";																																																																																																																																										
 }
 
@@ -723,7 +726,7 @@ bool nodeSetUnitId(String _nodeid)
 //Topic --------------------------------------------------------------------------------------
 String nodeGetTopic()
 {
-	if (propertyFileReaded.indexOf("topic;") < 0) return topic = _getStringPropertyValue("topic", topic + nodeid);
+	if (propertyFileReaded.indexOf("topic;") < 0) return topic = _getStringPropertyValue("topic", DEFAULT_TOPIC + nodeid);
 	else return topic;
 }
 

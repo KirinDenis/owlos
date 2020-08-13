@@ -45,7 +45,9 @@ OWLOS распространяется в надежде, что она буде
 //ALL DEVICES constructors must be called here, current node topic must be puted as parameter
 //#include "PinService.h"
 
+#ifdef USE_ESP_DRIVER
 #include "../drivers/ESPDriver.h"
+#endif
 
 String __topic;
 String busyPins;

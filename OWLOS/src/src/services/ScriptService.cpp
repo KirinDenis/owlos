@@ -1131,12 +1131,14 @@ String scriptsCompile(int index) {
 		byteCode.remove(0, linePos + 1); //"1" длина разделителя "\n"
 	} //берем следующею строку 
 
+#ifdef USE_ESP_DRIVER
 	// проверим не выйдет ли полученный байт код за установленные пределы heap памяти 
 	if ((ESP.getFreeHeap() - HEAP_LIMIT) < (sizeof(Instruction) * _codeCount + sizeof(Variable) * _dataCount))
 	{
 		//байт код переполнит память, отказываемся от компиляции
 		return "out of heap";
 	}
+#endif	
 	//выделяем память в heap для сегмента кода и данных 
 	scripts[index].code = (Instruction*)malloc(sizeof(Instruction) * _codeCount);
 	scripts[index].data = (Variable*)malloc(sizeof(Variable) * _dataCount);

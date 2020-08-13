@@ -1,8 +1,5 @@
 #include "MQTTClient.h"
 
-#ifdef USE_MQTT
-#include "../libraries/AsyncMqttClient/AsyncMqttClient.h"
-#include <WiFi.h>
 
 #ifdef USE_ESP_DRIVER
 #include "../drivers/ESPDriver.h"
@@ -10,6 +7,10 @@
 #include "../services/DriverService.h"
 #endif
 #endif
+
+#ifdef USE_MQTT
+#include "../libraries/AsyncMqttClient/AsyncMqttClient.h"
+#include <WiFi.h>
 
 AsyncMqttClient mqttClient;
 TimerHandle_t mqttReconnectTimer;

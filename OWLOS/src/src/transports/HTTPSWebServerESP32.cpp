@@ -19,6 +19,7 @@
 #include "private_key.h"
 #endif
 
+#define HTTP_METHODS " GET, POST, DELETE, OPTIONS"
 // Includes for the server
 // Note: We include HTTPServer and HTTPSServer
 #ifdef USE_HTTPS_SERVER
@@ -72,9 +73,12 @@ void handleOther(HTTPRequest *req, HTTPResponse *res)
 
 void corsCallback(HTTPRequest *req, HTTPResponse *res)
 {
-  res->setHeader("Access-Control-Allow-Methods", "GET,POST,DELETE,OPTIONS");
+  res->setHeader("Content-Type", "text/plain");
+  res->setHeader("Content-Encoding", "");
+  res->setHeader("Access-Control-Max-Age", "10000");
+  res->setHeader("Access-Control-Allow-Methods", HTTP_METHODS);
   res->setHeader("Access-Control-Allow-Origin", "*");
-  res->setHeader("Access-Control-Allow-Headers", "*");
+  res->setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   res->setHeader("Server", FIRMWARE_VERSION);
 }
 

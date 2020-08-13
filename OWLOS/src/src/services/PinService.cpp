@@ -422,7 +422,7 @@ int getPinMode(uint32_t pin)
 	volatile uint32_t *reg = portModeRegister(port);
 	if (*reg & bit) return (OUTPUT);
 	volatile uint32_t *out = portOutputRegister(port);	
-    return ((*out & bit) ? INPUT_PULLUP : INPUT);	
+    return ((*out & bit) ? INPUT_PULLUP : INPUT);		
 #else 	
 	uint8_t bit = digitalPinToBitMask(pin);
 	uint8_t port = digitalPinToPort(pin);
@@ -432,8 +432,6 @@ int getPinMode(uint32_t pin)
     return ((*out & bit) ? INPUT_PULLUP : INPUT);	
 #endif
 
-
-	
 }
 
 //функция устанавливает режим пина

@@ -44,14 +44,13 @@ OWLOS распространяется в надежде, что она буде
 
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 
-#ifdef USE_HTTP_SERVER
+#if defined(USE_HTTPS_SERVER) || defined (USE_HTTP_SERVER)
 #ifdef USE_ESP_DRIVER
 
 #define HTTPServerId "HTTPServer"
 
-#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 #include <ESP.h>
-#ifdef USESSL
+#ifdef USE_HTTPS_SERVER
 #include <BearSSLHelpers.h>
 #include <WiFiServerSecureBearSSL.h>
 #include <WiFiClientSecure.h>
@@ -61,18 +60,6 @@ OWLOS распространяется в надежде, что она буде
 #endif
 #include <ESP8266mDNS.h>
 #include <FS.h>
-#endif
-
-#ifdef ARDUINO_ESP32_RELEASE_1_0_4
-#include <WiFi.h>
-#include <ESPmDNS.h>
-#include <SPIFFS.h>
-#ifdef USESSL
-#include <WiFiClientSecure.h>
-#else
-#include <WiFiClient.h>
-#endif
-#endif
 
 #include <MD5Builder.h>
 
@@ -87,15 +74,9 @@ OWLOS распространяется в надежде, что она буде
 
 #define HTTP_METHODS " GET, POST, OPTIONS"
 
-#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
-#ifdef USESSL
+#ifdef USE_HTTPS_SERVER
 WiFiServerSecure *server;
 #else
-WiFiServer *server;
-#endif
-#endif
-
-#ifdef ARDUINO_ESP32_RELEASE_1_0_4
 WiFiServer *server;
 #endif
 
@@ -119,7 +100,7 @@ String token = "";
 String token = ""; //type your secure token here
 #endif // DEBUG
 
-#ifdef USESSL
+#ifdef USE_HTTPS_SERVER
 static const char serverCert[] PROGMEM = R"EOF(
 -----BEGIN CERTIFICATE-----
 MIIB1jCCAYACEyE/NQ2eFWYAetidG/ckGeQP3S4wDQYJKoZIhvcNAQELBQAwbTEL
@@ -183,13 +164,12 @@ bool auth(String username, String password)
 	return token.equals(md5.toString());
 }
 
-void HTTPServerBegin(uint16_t port)
+void HTTPSWebServerBegin()
 {
 	calculateToken();
 
-#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
-#ifdef USESSL
-	server = new WiFiServerSecure(port);
+#ifdef USE_HTTPS_SERVER
+	server = new WiFiServerSecure(443);
 
 	if (MDNS.begin("OWLSmartHouseUnit.local"))
 	{
@@ -200,13 +180,7 @@ void HTTPServerBegin(uint16_t port)
 
 	server->begin();
 #else
-	server = new WiFiServer(port);
-	server->begin();
-#endif
-#endif
-
-#ifdef ARDUINO_ESP32_RELEASE_1_0_4
-	server = new WiFiServer(port);
+	server = new WiFiServer(80);
 	server->begin();
 #endif
 }
@@ -220,7 +194,7 @@ void sendResponseHeader(int HTTPResponseCode, String contentType, String Content
 	client.println("Access-Control-Allow-Methods: " + String(HTTP_METHODS));
 	client.println("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
 	client.println("Access-Control-Allow-Origin: *");
-	client.println("Server: OWLOS");
+	client.println("Server: " + String(FIRMWARE_VERSION));
 	client.println("");
 }
 
@@ -291,7 +265,6 @@ void handleNotFound(WiFiClient client)
 		sendResponseHeader(405, "text/html", "", client);
 		return;
 	}
-
 
 	if ((filesExists(uri)) || (filesExists(uri + ".gz")))
 	{
@@ -500,7 +473,7 @@ void handleGetDriversId(WiFiClient client)
 void handleSetDriverProperty(WiFiClient client)
 {
 	if (argsCount > 2)
-	{		
+	{
 		if ((argName[0].equals("id")) && (argName[1].equals("property")) && (argName[2].equals("value")))
 		{
 			String driverResult = driversSetDriverProperty(arg[0], decode(arg[1]), decode(arg[2]));
@@ -511,12 +484,12 @@ void handleSetDriverProperty(WiFiClient client)
 			else if (driverResult.equals("0"))
 			{
 				driverResult = "bad set property";
-			} 
-			else 
+			}
+			else
 			{
 				driverResult = WrongPropertyName;
 			}
-           
+
 			String nodeResult = "";
 			if (driverResult.equals(WrongPropertyName)) //try set node property
 			{
@@ -901,9 +874,142 @@ void handleDriverPinRead(WiFiClient client)
 	handleNotFound(client);
 }
 
-
+//TODO: Using upload file
 void handleSetWebProperty(WiFiClient client)
 {
+	//File fs_uploadFile;
+	if (argsCount > 0)
+	{
+		debugOut("upload param", arg[0]);
+	}
+	//debugOut("upload", decode(parsePostBody(client)));
+
+	String data = "";
+	String sectionSign = "";
+	//String body = "";
+	String fileName = "/web.config";
+	File fs_uploadFile;
+
+#define UPLOAD_DATA_LENGTH 200
+#define UPLOAD_BUFFER_SIZE 500
+	uint8_t *buf = nullptr;
+	int bufCount = 0;
+
+	bool append = false;
+	while (client.connected())
+	{
+		if (client.available())
+		{
+			yield();
+			char c = client.read();
+
+			if (append)
+			{
+				if (buf == nullptr)
+				{
+					buf = new uint8_t[UPLOAD_BUFFER_SIZE];
+				}
+
+				if (bufCount < UPLOAD_BUFFER_SIZE - 1)
+				{
+					buf[bufCount] = c;
+					bufCount++;
+				}
+				else
+				{
+					buf[bufCount] = c;
+					fs_uploadFile.write(buf, bufCount + 1);
+					bufCount = 0;
+				}
+			}
+
+			if (c == '\n')
+			{
+				if (sectionSign.length() == 0) //first entry
+				{
+					int length = data.length();
+					data.remove(length - 1, 1);
+					sectionSign = data;
+				}
+				else
+				{
+					{
+						if (data.indexOf("Content-Type:") != -1)
+						{
+							while (client.connected())
+							{
+								yield();
+								if ((!client.available()) || (client.read() == '\n'))
+								{
+									break;
+								}
+							}
+
+							debugOut("file_name", fileName);
+							if (!append)
+							{
+								//filesDelete(fileName);
+								fs_uploadFile = SPIFFS.open(fileName, "w");
+								append = true;
+							}
+						}
+						else if (data.indexOf("Content-Disposition:") != -1) //section header
+						{
+							/*
+							if (data.indexOf("filename=\"") == -1)
+							{
+								send(501, "text/html", "wrong file name", client);
+								debugOut("Upload", "501");
+								return;
+							}
+							fileName = data.substring(data.indexOf("filename=\"") + String("filename=\"").length());
+							fileName = "/" + fileName.substring(0, fileName.indexOf("\""));
+							*/
+						}
+						else if (data.length() != 0)
+						{
+
+							if (data.indexOf(sectionSign) != -1)
+							{
+								if (append)
+								{
+									debugOut("buffer1", String(bufCount));
+
+									bufCount -= (sectionSign.length() + 6);
+									debugOut("buffer1", String(bufCount));
+									if (bufCount > 0)
+									{
+										fs_uploadFile.write(buf, bufCount);
+									}
+								}
+								break;
+							}
+							else
+							{
+								fs_uploadFile.write(buf, bufCount);
+								bufCount = 0;
+							}
+						}
+					}
+				}
+				data = "";
+			}
+			if (data.length() < UPLOAD_DATA_LENGTH)
+			{
+				data += c;
+			}
+		}
+	}
+
+	fs_uploadFile.close();
+	if (buf != nullptr)
+	{
+		delete[] buf;
+	}
+
+	send(200, "text/html", "", client);
+
+	/*
 	if (argsCount > 0)
 	{
 		if (argName[0].equals("property"))
@@ -923,16 +1029,18 @@ void handleSetWebProperty(WiFiClient client)
 		}
 	}
 	handleNotFound(client);
+	*/
 }
 
-void handleGetDriverPin(WiFiClient client) {
+void handleGetDriverPin(WiFiClient client)
+{
 	send(200, "text/plain", getDriverPin(), client);
 }
-
 
 File fs_uploadFile;
 void handleUploadFile(WiFiClient client)
 {
+
 	if (argsCount > 0)
 	{
 		debugOut("upload param", arg[0]);
@@ -947,9 +1055,9 @@ void handleUploadFile(WiFiClient client)
 
 #define UPLOAD_DATA_LENGTH 200
 #define UPLOAD_BUFFER_SIZE 500
-	uint8_t *buf = nullptr;	
+	uint8_t *buf = nullptr;
 	int bufCount = 0;
-	
+
 	bool append = false;
 	while (client.connected())
 	{
@@ -965,16 +1073,16 @@ void handleUploadFile(WiFiClient client)
 					buf = new uint8_t[UPLOAD_BUFFER_SIZE];
 				}
 
-				if (bufCount < UPLOAD_BUFFER_SIZE-1)
+				if (bufCount < UPLOAD_BUFFER_SIZE - 1)
 				{
 					buf[bufCount] = c;
 					bufCount++;
 				}
 				else
 				{
-						buf[bufCount] = c;
-						fs_uploadFile.write(buf, bufCount + 1);
-						bufCount = 0;					
+					buf[bufCount] = c;
+					fs_uploadFile.write(buf, bufCount + 1);
+					bufCount = 0;
 				}
 			}
 
@@ -1027,23 +1135,21 @@ void handleUploadFile(WiFiClient client)
 								if (append)
 								{
 									debugOut("buffer1", String(bufCount));
-									
-										bufCount -= (sectionSign.length() + 6);
-										debugOut("buffer1", String(bufCount));
-										if (bufCount > 0)
-										{
-											fs_uploadFile.write(buf, bufCount);
-										}
-									
+
+									bufCount -= (sectionSign.length() + 6);
+									debugOut("buffer1", String(bufCount));
+									if (bufCount > 0)
+									{
+										fs_uploadFile.write(buf, bufCount);
+									}
 								}
 								break;
 							}
-							else 
+							else
 							{
-							   fs_uploadFile.write(buf, bufCount);
-						       bufCount = 0;					
+								fs_uploadFile.write(buf, bufCount);
+								bufCount = 0;
 							}
-
 						}
 					}
 				}
@@ -1051,7 +1157,7 @@ void handleUploadFile(WiFiClient client)
 			}
 			if (data.length() < UPLOAD_DATA_LENGTH)
 			{
-			 data += c;
+				data += c;
 			}
 		}
 	}
@@ -1065,20 +1171,14 @@ void handleUploadFile(WiFiClient client)
 	send(200, "text/html", "", client);
 }
 
-void HTTPServerLoop()
+void HTTPSWebServerLoop()
 {
-	/*
-	//#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
-#ifdef USESSL
+
+#ifdef USE_HTTPS_SERVER
 	WiFiClientSecure client = server->available();
 #else
 	WiFiClient client = server->available();
 #endif
-	//#endif
-
-	//#ifdef ARDUINO_ESP32_RELEASE_1_0_4
-	//	WiFiClient client = server->available();
-	//#endif
 
 	if (client)
 	{
@@ -1219,8 +1319,8 @@ void HTTPServerLoop()
 										handleGetPinMode(client);
 									}
 									else if (firstLine.indexOf("/getdriverpin") != -1)
-									{ 
-										handleGetDriverPin(client); 
+									{
+										handleGetDriverPin(client);
 									}
 									else if (firstLine.indexOf("/setdriverpinmode") != -1)
 									{
@@ -1242,7 +1342,9 @@ void HTTPServerLoop()
 									{
 										handleReset(client);
 									}
-									else if (firstLine.indexOf("/updatelog") != -1)
+									else
+#ifdef USE_UPDATE
+										if (firstLine.indexOf("/updatelog") != -1)
 									{
 										handleUpdateLog(client);
 									}
@@ -1266,7 +1368,9 @@ void HTTPServerLoop()
 									{
 										handleDebugNextScript(client);
 									}
-									else if (firstLine.indexOf("/getdriverproperties") != -1)
+									else
+#endif
+										if (firstLine.indexOf("/getdriverproperties") != -1)
 									{
 										handleGetDriverProperties(client);
 									}
@@ -1283,11 +1387,14 @@ void HTTPServerLoop()
 									//POST Section
 									if (method.equals("POST"))
 								{
+#ifdef USE_SCRIPT
 									if (firstLine.indexOf("/createscript") != -1)
 									{
 										handleCreateScript(client);
 									}
-									else if (firstLine.indexOf("/setwebproperty") != -1)
+									else
+#endif
+										if (firstLine.indexOf("/setwebproperty") != -1)
 									{
 										handleSetWebProperty(client);
 									}
@@ -1322,9 +1429,7 @@ void HTTPServerLoop()
 		}
 	}
 	client.stop();
-	*/
 }
-
 
 #endif
 #endif

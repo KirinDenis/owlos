@@ -70,7 +70,7 @@ bool filesWriteFloat(String fileName, float value){return true;}
 String filesGetList(String path){return "";}
 bool filesWriteStructure(String fileName, void *value){return true;}
 
-#endif
+#else
 
 /*--------------------------------------------------------------------------------------
 ESP File System ------------------------------------------------------------------------
@@ -567,4 +567,5 @@ bool filesWriteStructure(String fileName, void *value)
 
 	return true;
 }
+#endif
 #endif

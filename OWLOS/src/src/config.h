@@ -51,8 +51,10 @@ OWLOS распространяется в надежде, что она буде
                 //#define USE_HTTPS_SERVER
                 #define USE_HTTP_SERVER         
                 //#define USE_UPDATE_SERVICE
-                //#define USE_OTA_SERVICE
-                //#define USE_MQTT                
+               // #define USE_OTA_SERVICE
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4                
+               #define USE_MQTT                
+#endif                
             #endif
     #else
         #define USE_ARDUINO_BOARDS
@@ -68,7 +70,6 @@ OWLOS распространяется в надежде, что она буде
         //#define USE_LCD_DRIVER
         //#define USE_STEPPER_DRIVER
         //#define USE_VALVE_DRIVER
-
     #endif
 #endif
 
