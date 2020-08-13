@@ -1,6 +1,5 @@
 #include "AsyncMqttClient.hpp"
 
-
 AsyncMqttClient::AsyncMqttClient()
 : _connected(false)
 , _connectPacketNotEnoughSpace(false)

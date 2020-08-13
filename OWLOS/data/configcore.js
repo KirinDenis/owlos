@@ -328,7 +328,7 @@ var config = {
         // вызов функции сохранения
         //this.configSendAsync("Start", 0, stringifyConfig, subStringLength, boardhost);
         if (httpPostWithErrorReson(boardhost + "setwebproperty", stringifyConfig).indexOf("error") == -1) {
-            document.location.reload(true);
+            //document.location.reload(true);
         }
         return true;
     },

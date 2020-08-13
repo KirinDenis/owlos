@@ -31,6 +31,9 @@
 #endif
 #include <HTTPRequest.hpp>
 #include <HTTPResponse.hpp>
+#include <HTTPBodyParser.hpp>
+#include <HTTPMultipartBodyParser.hpp>
+#include <HTTPURLEncodedBodyParser.hpp>
 
 #include <SPIFFS.h>
 #include "HTTPServerThings.h"
@@ -66,8 +69,50 @@ HTTPServer insecureServer = HTTPServer();
 
 void handleOther(HTTPRequest *req, HTTPResponse *res)
 {
-  res->setStatusCode(200);
-  res->setHeader("Content-Type", "text/html");
+
+  String uri = String(req->getRequestString().c_str());
+  Serial.println(uri);
+  uri = uri.substring(uri.indexOf(" ") + 1);
+  Serial.println(uri);
+  uri = uri.substring(0, uri.indexOf(" "));
+  Serial.println(uri);
+
+  if ((uri.length() == 0) || (uri.equals("/")))
+    uri = "/index.html";
+
+  if (uri.indexOf("/favicon.ico") != -1)
+  {
+    res->setStatusCode(405);
+    return;
+  }
+
+  if ((filesExists(uri)) || (filesExists(uri + ".gz")))
+  {
+    String contentType = getContentType(uri);
+    String responseHeader = "";
+    if (filesExists(uri + ".gz"))
+    {
+      uri = uri + ".gz";
+      res->setStatusCode(200);
+      res->setHeader("Content-Type", "gz");
+    }
+    else
+    {
+      res->setStatusCode(200);
+      res->setHeader("Content-Type", "text/html");
+    }
+
+/*
+    File download = SPIFFS.open(uri, "r");
+    if (download)
+    {      
+      download.close();
+      return;
+    }
+*/
+     res->println(filesReadString(uri));
+  }
+  res->setStatusCode(404);
   res->println(GetNotFoundHTML());
 }
 
@@ -150,6 +195,59 @@ void handleDeleteFile(HTTPRequest *req, HTTPResponse *res)
     return;
   }
   handleNotFound(req, res);
+}
+
+void handleUploadFile(HTTPRequest *req, HTTPResponse *res)
+{
+  corsCallback(req, res);
+
+  HTTPBodyParser *parser;
+  std::string contentType = req->getHeader("Content-Type");
+  size_t semicolonPos = contentType.find(";");
+  if (semicolonPos != std::string::npos)
+  {
+    contentType = contentType.substr(0, semicolonPos);
+  }
+  if (contentType == "multipart/form-data")
+  {
+    parser = new HTTPMultipartBodyParser(req);
+  }
+  else
+  {
+    res->setStatusCode(503);
+    return;
+  }
+  // We iterate over the fields. Any field with a filename is uploaded
+
+  bool didwrite = false;
+  while (parser->nextField())
+  {
+    std::string name = parser->getFieldName();
+    std::string filename = parser->getFieldFilename();
+    std::string mimeType = parser->getFieldMimeType();
+
+    std::string pathname = "/" + filename;
+    File file = SPIFFS.open(pathname.c_str(), "w");
+    size_t fileLength = 0;
+    didwrite = true;
+    while (!parser->endOfField())
+    {
+      byte buf[512];
+      size_t readLength = parser->read(buf, 512);
+      file.write(buf, readLength);
+      fileLength += readLength;
+    }
+    file.close();
+  }
+  if (!didwrite)
+  {
+    res->setStatusCode(504);
+  }
+  else
+  {
+    res->setStatusCode(200);
+  }
+  delete parser;
 }
 
 void handleGetNodeProperty(HTTPRequest *req, HTTPResponse *res)
@@ -319,7 +417,7 @@ void handleGetDriverProperty(HTTPRequest *req, HTTPResponse *res)
     else
     {
       res->setStatusCode(200);
-      res->println(result.c_str());
+      res->print(result.c_str());
     }
     return;
   }
@@ -340,7 +438,7 @@ void handleSetDriverProperty(HTTPRequest *req, HTTPResponse *res)
     if (result.equals("1"))
     {
       res->setStatusCode(200);
-      res->println(result);
+      res->print(result);
     }
     else
     {
@@ -380,7 +478,7 @@ void handleGetDriverProperties(HTTPRequest *req, HTTPResponse *res)
     else
     {
       res->setStatusCode(200);
-      res->println(result.c_str());
+      res->print(result.c_str());
     }
     return;
   }
@@ -391,28 +489,28 @@ void handleGetAllDriversProperties(HTTPRequest *req, HTTPResponse *res)
 {
   corsCallback(req, res);
   res->setStatusCode(200);
-  res->println(driversGetAllDriversProperties().c_str());
+  res->print(driversGetAllDriversProperties().c_str());
 }
 
 void handleGetDriversAccessable(HTTPRequest *req, HTTPResponse *res)
 {
   corsCallback(req, res);
   res->setStatusCode(200);
-  res->println(driversGetAccessable().c_str());
+  res->print(driversGetAccessable().c_str());
 }
 
 void handleGetPinMap(HTTPRequest *req, HTTPResponse *res)
 {
   corsCallback(req, res);
   res->setStatusCode(200);
-  res->println(getPinMap().c_str());
+  res->print(getPinMap().c_str());
 }
 
 void handleGetDriverPin(HTTPRequest *req, HTTPResponse *res)
 {
   corsCallback(req, res);
   res->setStatusCode(200);
-  res->println(getDriverPin());
+  res->print(getDriverPin());
 }
 #endif
 
@@ -526,8 +624,6 @@ void setResourceNode(const std::string &path, const std::string &method, const H
 
 void HTTPSWebServerBegin()
 {
-  setResourceNode("/*", "OPTIONS", &corsCallback);
-  setResourceNode("/", "GET", &handleOther);
 
   setResourceNode("/getallnodeproperties", "GET", &handleNodeGetAllProperties);
   setResourceNode("/getlog", "GET", &handleGetLog);
@@ -536,7 +632,8 @@ void HTTPSWebServerBegin()
   setResourceNode("/deletefile", "DELETE", &handleDeleteFile);
   setResourceNode("/getnodeproperty", "GET", &handleGetNodeProperty);
   setResourceNode("/setnodeproperty", "GET", &handleSetNodeProperty);
-#ifdef USE_DRIVERS  
+  setResourceNode("/uploadfile", "POST", &handleUploadFile);
+#ifdef USE_DRIVERS
   setResourceNode("/adddriver", "GET", &handleAddDriver);
   setResourceNode("/deletedriver", "GET", &handleDeleteDriver);
   setResourceNode("/deletedriver", "DELETE", &handleDeleteDriver);
@@ -548,10 +645,10 @@ void HTTPSWebServerBegin()
   setResourceNode("/getdriversaccessable", "GET", &handleGetDriversAccessable);
   setResourceNode("/getpinmap", "GET", &handleGetPinMap);
   setResourceNode("/getdriverpin", "GET", &handleGetDriverPin);
-#endif  
-#ifdef USE_SCRIPTS  
+#endif
+#ifdef USE_SCRIPTS
   setResourceNode("/getallscripts", "GET", &handleGetAllScripts);
-#endif  
+#endif
   setResourceNode("/getwebproperty", "GET", &handleGetWebProperty);
   setResourceNode("/setwebproperty", "POST", &handleSetWebProperty);
 
@@ -559,7 +656,12 @@ void HTTPSWebServerBegin()
   setResourceNode("/updatelog", "GET", &handleUpdateLog);
   setResourceNode("/updateui", "GET", &handleUpdateUI);
   setResourceNode("/updatefirmware", "GET", &handleUpdateFirmware);
- #endif
+#endif
+
+  setResourceNode("/*", "OPTIONS", &corsCallback);
+  setResourceNode("/*", "GET", &handleOther);
+//  setResourceNode("", "GET", &handleOther);
+
 
 #ifdef USE_HTTPS_SERVER
 #ifdef DetailedDebug
