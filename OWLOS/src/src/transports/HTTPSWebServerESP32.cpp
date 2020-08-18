@@ -67,6 +67,22 @@ HTTPSServer secureServer = HTTPSServer(&cert);
 HTTPServer insecureServer = HTTPServer();
 #endif
 
+void corsCallbackNoType(HTTPRequest *req, HTTPResponse *res)
+{
+  res->setHeader("Access-Control-Max-Age", "10000");
+  res->setHeader("Access-Control-Allow-Methods", HTTP_METHODS);
+  res->setHeader("Access-Control-Allow-Origin", "*");
+  res->setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res->setHeader("Server", FIRMWARE_VERSION);
+}
+
+void corsCallback(HTTPRequest *req, HTTPResponse *res)
+{
+  res->setHeader("Content-Type", "text/plain");
+  res->setHeader("Content-Encoding", "");
+  corsCallbackNoType(req, res);
+}
+
 void handleOther(HTTPRequest *req, HTTPResponse *res)
 {
 
@@ -87,44 +103,45 @@ void handleOther(HTTPRequest *req, HTTPResponse *res)
   }
 
   if ((filesExists(uri)) || (filesExists(uri + ".gz")))
-  {
-    String contentType = getContentType(uri);
+  {    
+    res->setHeader("Content-Type", getContentType(uri).c_str());
     String responseHeader = "";
     if (filesExists(uri + ".gz"))
     {
       uri = uri + ".gz";
       res->setStatusCode(200);
-      res->setHeader("Content-Type", "gz");
+      res->setHeader("Content-Encoding", "gzip");
     }
     else
     {
       res->setStatusCode(200);
-      res->setHeader("Content-Type", "text/html");
+      res->setHeader("Content-Encoding", "text/html");
     }
+    
+    corsCallbackNoType(req, res);
 
-/*
     File download = SPIFFS.open(uri, "r");
     if (download)
-    {      
+    {
+      size_t fileLength = download.size();
+
+      while (fileLength > 512)
+      {
+        byte buf[512];
+        download.read(buf, 512);
+        res->write(buf, 512);
+        fileLength -= 512;
+      }
+      byte buf[fileLength];
+      download.read(buf, fileLength);
+      res->write(buf, fileLength);
+
       download.close();
-      return;
     }
-*/
-     res->println(filesReadString(uri));
+    return;
   }
   res->setStatusCode(404);
   res->println(GetNotFoundHTML());
-}
-
-void corsCallback(HTTPRequest *req, HTTPResponse *res)
-{
-  res->setHeader("Content-Type", "text/plain");
-  res->setHeader("Content-Encoding", "");
-  res->setHeader("Access-Control-Max-Age", "10000");
-  res->setHeader("Access-Control-Allow-Methods", HTTP_METHODS);
-  res->setHeader("Access-Control-Allow-Origin", "*");
-  res->setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  res->setHeader("Server", FIRMWARE_VERSION);
 }
 
 void handleNotFound(HTTPRequest *req, HTTPResponse *res)
@@ -660,8 +677,7 @@ void HTTPSWebServerBegin()
 
   setResourceNode("/*", "OPTIONS", &corsCallback);
   setResourceNode("/*", "GET", &handleOther);
-//  setResourceNode("", "GET", &handleOther);
-
+  //  setResourceNode("", "GET", &handleOther);
 
 #ifdef USE_HTTPS_SERVER
 #ifdef DetailedDebug

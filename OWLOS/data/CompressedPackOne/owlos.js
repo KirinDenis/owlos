@@ -5119,6 +5119,7 @@ var settingsUI = {
                         //Панель обновлений
                         var updateWatcherId = node.nodenickname + "updateWatcher";
                         var updateWatcherDiv = document.getElementById(updateWatcherId);
+			if (driver.updateinfo != undefined) {
                         if (updateWatcherDiv == null) {
                             updateWatcherDiv = updatePropPanel.appendChild(document.createElement('div'));
                             updateWatcherDiv.id = updateWatcherId;
@@ -5155,6 +5156,7 @@ var settingsUI = {
 
                             driver.updateinfo.addValueListner(settingsUI.onUpdateInfoValueChange, updateWatcherDiv);
                             driver.updatepossible.addValueListner(settingsUI.onUpdateInfoValueChange, updateWatcherDiv);
+			  }
                         }
                     }
         }
@@ -8142,7 +8144,7 @@ OWLOS распространяется в надежде, что она буде
 //var boardhost = "http://81.95.178.177:8084/"; //DEBUG
 //var boardhost = "http://iot.light.kiev.ua:8084/";
 //var boardhost = "http://192.168.1.5:8084/"; //DEBUG as WiFi Access Point
-var boardhost = "http://192.168.1.13/"; //Station mode
+var boardhost = "http://192.168.1.5/"; //Station mode
 //var boardhost = ""; //UI loading from ESPxxxx
 
 
