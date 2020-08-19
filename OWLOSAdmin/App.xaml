@@ -2,8 +2,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:OWLOSAdmin"
-             StartupUri="MainWindow.xaml">
+             StartupUri="EcosystemExplorer/EcosystemExplorerWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary Source = "Theme/OWLOSColors.xaml" />
     </Application.Resources>
 </Application>

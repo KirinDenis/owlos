@@ -1,0 +1,11 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <SolidColorBrush x:Key = "OWLOSPrimary" Color ="#FF3A3F44" />
+    <SolidColorBrush x:Key = "OWLOSSecondary" Color ="#FF7A8288" />
+    <SolidColorBrush x:Key = "OWLOSSuccess" Color ="#FF62c462" />
+    <SolidColorBrush x:Key = "OWLOSInfo" Color ="#FF5bc0de" />
+    <SolidColorBrush x:Key = "OWLOSWarning" Color ="#FFf89406" />
+    <SolidColorBrush x:Key = "OWLOSDanger" Color ="#FFee5f5b" />
+    <SolidColorBrush x:Key = "OWLOSLight" Color ="#FFe9ecef" />
+    <SolidColorBrush x:Key = "OWLOSDark" Color ="#FF272B30" />
+</ResourceDictionary>
