@@ -34,6 +34,15 @@
                 </Grid.ColumnDefinitions>
 
                 <Viewbox x:Name="viewbox"  Width="10025" Height="10025" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.ColumnSpan="2" Margin="0,0,-10000,-10000">
+                    <Viewbox.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform AngleX="0" AngleY="0"/>
+                            <RotateTransform/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </Viewbox.RenderTransform>
+
                     <Grid Background="{DynamicResource OWLOSPrimary}" >
                         <Grid.RowDefinitions>
                             <RowDefinition Height="35"/>
@@ -52,24 +61,24 @@
                         <VirtualizingStackPanel x:Name="nodeLines" Grid.Column="1" Grid.Row="1" Width="auto" Height="auto" RenderOptions.BitmapScalingMode="Fant"/>
 
 
-                        <Grid x:Name="nodeGrid" Grid.Column="1" Grid.Row="1" Width="10000" Height="10000" Background="#CC494949" HorizontalAlignment="Left" VerticalAlignment="Top" PreviewMouseDown="nodeGrid_PreviewMouseDown" PreviewMouseLeftButtonDown="nodeGrid_PreviewMouseLeftButtonDown">
+                        <Grid x:Name="nodeGrid" Grid.Column="1" Grid.Row="1" Width="10000" Height="10000" Background="{DynamicResource OWLOSPrimaryAlpha3}" HorizontalAlignment="Left" VerticalAlignment="Top" PreviewMouseDown="nodeGrid_PreviewMouseDown" PreviewMouseLeftButtonDown="nodeGrid_PreviewMouseLeftButtonDown" RenderTransformOrigin="0.5,0.5">
 
                         </Grid>
 
-                        <Grid x:Name="verticalNavigationGrid" Grid.Column="0" Grid.Row="1" Background="#A0727272" Width="37" HorizontalAlignment="Right" Visibility="Hidden" 
-                              TextOptions.TextFormattingMode="Display" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed"
+                        <Grid x:Name="verticalNavigationGrid" Grid.Column="0" Grid.Row="1" Background="{DynamicResource OWLOSInfoAlpha2}" Width="37" HorizontalAlignment="Right" Visibility="Hidden" 
+                              TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed"
                               RenderOptions.BitmapScalingMode="NearestNeighbor">
                             <Border Width="2" HorizontalAlignment="Right" />
                         </Grid>
 
-                        <Grid x:Name="horisontalNavigationGrid"  Grid.Row="0" Grid.Column="1" Background="#A0727272" Width="10000" Height="30" Visibility="Hidden" VerticalAlignment="Bottom" 
-                              TextOptions.TextFormattingMode="Display" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed"
+                        <Grid x:Name="horisontalNavigationGrid"  Grid.Row="0" Grid.Column="1" Background="{DynamicResource OWLOSInfoAlpha2}" Width="10000" Height="30" Visibility="Hidden" VerticalAlignment="Bottom" 
+                              TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed"
                               RenderOptions.BitmapScalingMode="NearestNeighbor">
-                            <Border Height="5" VerticalAlignment="Bottom" Margin="0,-3,0,-3">
+                            <Border Height="3" VerticalAlignment="Bottom" Margin="0,-3,0,-3">
                                 <Border.Background>
                                     <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
-                                        <GradientStop Color="#FF707070" Offset="0"/>
-                                        <GradientStop Color="#02110101" Offset="1"/>
+                                        <GradientStop Color="{DynamicResource OWLOSInfoColorAlpha1}" Offset="0"/>
+                                        <GradientStop Color="{DynamicResource OWLOSInfoColorAlpha1}" Offset="1"/>
                                     </LinearGradientBrush>
                                 </Border.Background>
                             </Border>
@@ -82,17 +91,17 @@
 
             <Grid Grid.Row="0" Height="30">
                 <StackPanel Orientation="Horizontal" Margin="10,0,10,0">
-                    <TextBlock Name="EcosystemExplorerTextBlock" Text="OWLOS Ecosystem"  Margin="5,0,5,0" VerticalAlignment="Center" Foreground="{DynamicResource OWLOSInfo}" FontWeight="Bold"/>
-                    <StackPanel Orientation="Horizontal" Margin="5,0,5,0"  VerticalAlignment="Center">
-                        <TextBlock Text="zoom:" VerticalAlignment="Center" Margin="5,0,0,0" Foreground="{DynamicResource OWLOSInfo}" />
+                    <TextBlock Name="EcosystemExplorerTextBlock" Text="OWLOS Ecosystem"  Margin="0,0,2,0" VerticalAlignment="Center" Foreground="{DynamicResource OWLOSInfo}" FontWeight="Bold"/>
+                    <StackPanel Orientation="Horizontal"  VerticalAlignment="Center">
+                        <TextBlock Text="zoom:" VerticalAlignment="Center" Margin="0,0,0,0" Foreground="{DynamicResource OWLOSInfo}" />
                         <TextBox Name="zoomTextBox" Text="100" Background="{x:Null}" VerticalAlignment="Center" BorderBrush="{x:Null}" FontWeight="Bold" Foreground="{DynamicResource OWLOSLight}" />
                         <TextBlock Text="%" VerticalAlignment="Center" Margin="0,0,5,0" Foreground="{DynamicResource OWLOSLight}" />
                     </StackPanel>
 
-                    <Image Name="zoomToOneHImage"  Width="25" Height="25" ToolTip="Zoom to 100%" Margin="5,0,5,0"/>
-                    <Image Name="zoomToFullImage"  Width="25" Height="25" ToolTip="Zoom to full view" Margin="5,0,5,0"/>
-                    <Image Name="autoScrollImage" Width="25" Height="25" ToolTip="Auto scroll" Margin="5,0,5,0" />
-                    <Image Name="drawCellImage" Width="25" Height="25" ToolTip="Draw cell" Margin="5,0,5,0"  />
+                    <Button Name="zoomToOneHImage"  Width="25" Height="25" ToolTip="Zoom to 100%" Margin="5,0,5,0" Content="Zo" Click="zoomToOneHImage_Click" />
+                    <Button Name="zoomToFullImage"  Width="25" Height="25" ToolTip="Zoom to full view" Margin="5,0,5,0" Content="Zf" Click="zoomToFullImage_Click"/>
+                    <Button Name="autoScrollImage" Width="25" Height="25" ToolTip="Auto scroll" Margin="5,0,5,0" Content="AS" Click="autoScrollImage_Click"/>
+                    <Button Name="drawCellImage" Width="25" Height="25" ToolTip="Draw cell" Margin="5,0,5,0"  Content="DC" Click="drawCellImage_Click"/>
 
                 </StackPanel>
             </Grid>
@@ -100,7 +109,7 @@
         </Grid>
         <Canvas Background="{DynamicResource OWLOSPrimary}" Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" ZIndex="999999999">
         </Canvas>
-        
+
         <Canvas Background="{DynamicResource OWLOSPrimary}" Grid.Row="0" Grid.Column="1" ZIndex="999999999">
         </Canvas>
 

@@ -11,8 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-
-
+using Point = System.Windows.Point;
 
 namespace OWLOSAdmin.EcosystemExplorer
 {
@@ -24,7 +23,7 @@ namespace OWLOSAdmin.EcosystemExplorer
         /// <summary>
         /// Width and Height of cell
         /// </summary>
-        private const int cellSize = 20000;
+        private const int cellSize = 10000;
 
         private const int cellStep = 25;
 
@@ -55,14 +54,17 @@ namespace OWLOSAdmin.EcosystemExplorer
 
             Dispatcher.BeginInvoke((Action)DrawCell, DispatcherPriority.Send);
 
-            NodeControl nodeCountrol = new NodeControl();
-            nodeGrid.Children.Add(nodeCountrol);
+            NodeControl nodeCountrol1 = new NodeControl();
+            nodeGrid.Children.Add(nodeCountrol1);
 
-            nodeCountrol = new NodeControl();
-            nodeGrid.Children.Add(nodeCountrol);
+            NodeControl nodeCountrol2 = new NodeControl();
+            nodeGrid.Children.Add(nodeCountrol2);
 
-            nodeCountrol = new NodeControl();
-            nodeGrid.Children.Add(nodeCountrol);
+            NodeControl nodeCountrol3 = new NodeControl();
+            nodeGrid.Children.Add(nodeCountrol3);
+
+            var relationLine = new EcosystemRelationLine(nodeCountrol1, nodeCountrol1, nodeCountrol2, nodeCountrol1, nodeGrid);
+            relationLine.DrawRelationLine();
         }
 
         /// <summary>
@@ -99,7 +101,7 @@ namespace OWLOSAdmin.EcosystemExplorer
                                                              mediaColorBrushRed.Color.R,
                                                              mediaColorBrushRed.Color.G,
                                                              mediaColorBrushRed.Color.B);
-                var mediaColorBrushBlack = (SolidColorBrush)App.Current.Resources["OWLOSInfo"];
+                var mediaColorBrushBlack = (SolidColorBrush)App.Current.Resources["OWLOSInfoAlpha3"];
                 System.Drawing.Color colorBlack = System.Drawing.Color.FromArgb(mediaColorBrushBlack.Color.A,
                                                              mediaColorBrushBlack.Color.R,
                                                              mediaColorBrushBlack.Color.G,
@@ -128,6 +130,7 @@ namespace OWLOSAdmin.EcosystemExplorer
                                 textBlock.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSSuccess"];
 
                                 drawingPen = penGreen;
+                                graphics = gBlack;
                             }
                             else
                                if (linePosition % 1000 == 0)
@@ -142,7 +145,7 @@ namespace OWLOSAdmin.EcosystemExplorer
                             }
                             else
                             {
-                                textBlock.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSPrimary"];
+                                textBlock.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSInfo"];
                                 if (linePosition < bitmapSize)
                                 {
                                     drawingPen = penBlack;
@@ -164,11 +167,11 @@ namespace OWLOSAdmin.EcosystemExplorer
                             else
                             if (linePosition % 1000 == 0)
                             {
-                                textBlock.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSWarning"];
+                                textBlock.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSDanger"];
                             }
                             else
                             {
-                                textBlock.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSPrimary"];
+                                textBlock.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSInfo"];
                             }
 
                             textBlock.HorizontalAlignment = HorizontalAlignment.Center;
@@ -189,13 +192,13 @@ namespace OWLOSAdmin.EcosystemExplorer
                             var horizontalBegin = new System.Drawing.Point();
                             var horizontalEnd = new System.Drawing.Point();
 
-
+                            
                             if (drawingPen == penGreen)
                             {
                                 //Для зелёных линий отдельно рисуем
-                                verticalBegin.X = verticalEnd.X = 0;
+                                verticalBegin.X = verticalEnd.X = cellSize / 10;
                                 verticalEnd.Y = bitmapSize;
-                                horizontalBegin.Y = horizontalEnd.Y = 0;
+                                horizontalBegin.Y = horizontalEnd.Y = cellSize / 10;
                                 horizontalBegin.X = 0;
                                 horizontalEnd.X = bitmapSize;
 
@@ -205,6 +208,7 @@ namespace OWLOSAdmin.EcosystemExplorer
                                     gGreenHorizontal.DrawLine(drawingPen, horizontalBegin, horizontalEnd);
                             }
                             else
+                            
                             {
                                 verticalBegin.X = verticalEnd.X = linePosition;
                                 verticalEnd.Y = bitmapSize;
@@ -468,6 +472,60 @@ namespace OWLOSAdmin.EcosystemExplorer
             }
 
 
+
+        }
+
+        private void zoomToOneHImage_Click(object sender, RoutedEventArgs e)
+        {
+            double zoomTo = 70.0f;
+            zoomTextBox.Text = (zoomTo).ToString(("F"));
+            double zoom = zoomTo * (cellSize / 100);
+            Zoom(new Point(EcosystemExplorerGrid.ActualWidth / 2 - zoom / 2, EcosystemExplorerGrid.ActualHeight / 2 - zoom / 2));
+
+        }
+
+        private void zoomToFullImage_Click(object sender, RoutedEventArgs e)
+        {
+            double zoomTo = 10.0f;
+            zoomTextBox.Text = (zoomTo).ToString(("F"));
+            double zoom = zoomTo * (cellSize / 100);
+            Zoom(new Point(EcosystemExplorerGrid.ActualWidth / 2 - zoom / 2, EcosystemExplorerGrid.ActualHeight / 2 - zoom / 2));
+
+        }
+
+        private void autoScrollImage_Click(object sender, RoutedEventArgs e)
+        {
+            if ((int)autoScrollImage.Tag == 1)
+            {
+                autoScrollImage.Tag = 0;
+               // autoScrollImage.Source = Icons.GetIcon(431);
+            }
+            else
+            {
+                autoScrollImage.Tag = 1;
+              //  autoScrollImage.Source = Icons.GetIcon(432);
+            }
+
+        }
+
+        private void drawCellImage_Click(object sender, RoutedEventArgs e)
+        {
+            if ((int)drawCellImage.Tag == 1)
+            {
+                drawCellImage.Tag = 0;
+                nodeLines.Visibility = Visibility.Hidden;
+
+                smallNodeLines.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                drawCellImage.Tag = 1;
+                nodeLines.Visibility = Visibility.Visible;
+                if (pZoom > 40)
+                {
+                    smallNodeLines.Visibility = Visibility.Visible;
+                }
+            }
 
         }
 

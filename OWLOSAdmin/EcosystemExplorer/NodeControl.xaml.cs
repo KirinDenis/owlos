@@ -112,8 +112,8 @@ namespace OWLOSAdmin.EcosystemExplorer
         {
             InitializeComponent();
 
-            transform.X = 10500;
-            transform.Y = 10200;
+            transform.X = 5500;
+            transform.Y = 5200;
             renderTransform.AddValueChanged(this, NodeControlPositionChanged);
             this.RenderTransform = transform;
 
@@ -202,6 +202,15 @@ namespace OWLOSAdmin.EcosystemExplorer
         private void UserControl_LostFocus(object sender, RoutedEventArgs e)
         {
             IsFocused = false;
+        }
+
+        private void UserControl_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                UserControl_GotFocus(this, null);
+            }
+
         }
     }
 }
