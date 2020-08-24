@@ -4,6 +4,9 @@
              xmlns:local="clr-namespace:OWLOSAdmin"
              StartupUri="EcosystemExplorer/EcosystemExplorerWindow.xaml">
     <Application.Resources>
-        <ResourceDictionary Source = "Theme/OWLOSColors.xaml" />
+        <ResourceDictionary Source = "Theme/OWLOSDarkTheme.xaml" />
+
+
     </Application.Resources>
+
 </Application>

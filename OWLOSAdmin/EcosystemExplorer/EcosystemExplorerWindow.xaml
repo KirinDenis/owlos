@@ -1,16 +1,20 @@
-﻿<Window x:Class="OWLOSAdmin.EcosystemExplorer.EcosystemExplorerWindow"
+﻿<Window x:Class="OWLOSAdmin.EcosystemExplorer.EcosystemExplorerWindow"        
+       
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OWLOSAdmin"
         mc:Ignorable="d"
-        Title="Ecosystem Explorer" Height="450" Width="800">
+        
+        Title="Ecosystem Explorer" Height="450" Width="800" FontFamily="file:///D:\Users\Egor\source\repos\KirinDenis\owlos\OWLOSAdmin\Fonts\#omega flight" >
 
+    
     <Grid x:Name="contentGrid" Background="{DynamicResource OWLOSPrimary}" >
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200*"/>
-            <ColumnDefinition Width="800*"/>
+            <ColumnDefinition Width="40*"/>
+            <ColumnDefinition Width="7*"/>
+            <ColumnDefinition Width="153*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="35"/>
@@ -19,7 +23,7 @@
             <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="1" Grid.Column="1">
+        <Grid Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,0,0,62" Grid.RowSpan="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="30"/>
                 <RowDefinition Height="583*"/>
@@ -91,7 +95,7 @@
 
             <Grid Grid.Row="0" Height="30">
                 <StackPanel Orientation="Horizontal" Margin="10,0,10,0">
-                    <TextBlock Name="EcosystemExplorerTextBlock" Text="OWLOS Ecosystem"  Margin="0,0,2,0" VerticalAlignment="Center" Foreground="{DynamicResource OWLOSInfo}" FontWeight="Bold"/>
+                    <TextBlock Name="EcosystemExplorerTextBlock" Text="OWLOS Ecosystem"  Margin="0,0,2,0" VerticalAlignment="Center" Foreground="{DynamicResource OWLOSInfo}" FontFamily="file:///D:\Users\Egor\source\repos\KirinDenis\owlos\OWLOSAdmin\Fonts\#omega flight" />
                     <StackPanel Orientation="Horizontal"  VerticalAlignment="Center">
                         <TextBlock Text="zoom:" VerticalAlignment="Center" Margin="0,0,0,0" Foreground="{DynamicResource OWLOSInfo}" />
                         <TextBox Name="zoomTextBox" Text="100" Background="{x:Null}" VerticalAlignment="Center" BorderBrush="{x:Null}" FontWeight="Bold" Foreground="{DynamicResource OWLOSLight}" />
@@ -102,7 +106,8 @@
                     <Button Name="zoomToFullImage"  Width="25" Height="25" ToolTip="Zoom to full view" Margin="5,0,5,0" Content="Zf" Click="zoomToFullImage_Click"/>
                     <Button Name="autoScrollImage" Width="25" Height="25" ToolTip="Auto scroll" Margin="5,0,5,0" Content="AS" Click="autoScrollImage_Click"/>
                     <Button Name="drawCellImage" Width="25" Height="25" ToolTip="Draw cell" Margin="5,0,5,0"  Content="DC" Click="drawCellImage_Click"/>
-
+                    <Button Name="animante" Width="25" Height="25" ToolTip="Draw cell" Margin="5,0,5,0"  Content="AN" Click="animante_Click" />
+                    <TextBlock x:Name="test" Text="100" Foreground="{DynamicResource OWLOSLight}" RenderTransformOrigin="1,3"/>
                 </StackPanel>
             </Grid>
 
@@ -110,10 +115,10 @@
         <Canvas Background="{DynamicResource OWLOSPrimary}" Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" ZIndex="999999999">
         </Canvas>
 
-        <Canvas Background="{DynamicResource OWLOSPrimary}" Grid.Row="0" Grid.Column="1" ZIndex="999999999">
+        <Canvas Background="{DynamicResource OWLOSPrimary}" Grid.Row="0" Grid.Column="1" ZIndex="999999999" Grid.ColumnSpan="2">
         </Canvas>
 
-        <Canvas Background="{DynamicResource OWLOSPrimary}" Grid.Row="2" Grid.RowSpan="2" Grid.Column="1" ZIndex="999999999">
+        <Canvas Background="{DynamicResource OWLOSPrimary}" Grid.Row="2" Grid.RowSpan="2" Grid.Column="1" ZIndex="999999999" Grid.ColumnSpan="2">
         </Canvas>
 
     </Grid>

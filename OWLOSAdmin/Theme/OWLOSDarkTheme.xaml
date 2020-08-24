@@ -22,4 +22,20 @@
     <SolidColorBrush x:Key = "OWLOSDangerAlpha3" Color ="#F0ee5f5b" />
     <SolidColorBrush x:Key = "OWLOSLight" Color ="#FFe9ecef" />
     <SolidColorBrush x:Key = "OWLOSDark" Color ="#FF272B30" />
+
+      
+    <FontFamily x:Key="OmegaFlightTTF">pack://application:,,,/Fonts/omegaflight.ttf</FontFamily>
+
+    
+    <Style x:Key="OWLOSWindowStyle" TargetType="{x:Type Window}">
+        <Setter Property="FontFamily" Value="OmegaFlightTTF" />
+    </Style>
+    
+
+    <Style x:Key="OWLOSWindowStyle2">
+        <Setter Property="TextElement.FontFamily" Value="OmegaFlightTTF" />
+    </Style>
+    
+
+
 </ResourceDictionary>

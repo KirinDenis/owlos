@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -526,6 +527,31 @@ namespace OWLOSAdmin.EcosystemExplorer
                     smallNodeLines.Visibility = Visibility.Visible;
                 }
             }
+
+        }
+
+        private void animante_Click(object sender, RoutedEventArgs e)
+        {
+            int b = 10;
+            int limit = 500;
+            float steps = 20.8f;
+            int step = ((int)(limit / steps));
+            Timer t = new Timer(100);
+            t.AutoReset = true;
+            t.Elapsed += new ElapsedEventHandler((Object source, ElapsedEventArgs e) => {
+                b += step; 
+                this.Dispatcher.Invoke(() =>
+                {
+                    if (b >= limit)
+                    {
+                        test.Text = limit.ToString();
+                        t.Stop();
+                        return;
+                    }
+                    test.Text = b.ToString();
+                });
+            });
+            t.Start();
 
         }
 
