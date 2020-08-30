@@ -1,4 +1,5 @@
 ﻿using OWLOSAdmin.Ecosystem;
+using OWLOSAdmin.Ecosystem.OWLOSNode;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -46,7 +47,7 @@ namespace OWLOSAdmin.EcosystemExplorer
             InitializeComponent();
 
             OWLOSNode node = new OWLOSNode();
-            node.AddDriver();
+            
 
             nodeGrid.Width = nodeGrid.Height = cellSize;
             viewbox.Width = viewbox.Height = cellSize / 10;
