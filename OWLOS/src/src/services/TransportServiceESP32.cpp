@@ -327,8 +327,27 @@ void transportLoop()
 		{
 			OTALoop();
 		}
-#endif					
+#endif		
+
+ if (Serial.available())
+ {
+
+	 String data = Serial.readStringUntil('\n');
+	 String topic = data.substring(0, data.indexOf(" "));
+	 String payload = data.substring(data.indexOf(" ")+ 1);
+    if (nodeOnMessage(String(topic), String(payload), MQTTMask).equals(WrongPropertyName))
+    {
+        //if not UNIT property
+        //Put recieved message to all drivers, each driver can process any topic recieved by Unit
+        #ifdef USE_DRIVERS			
+        driversCallback(String(topic), String(payload));
+        #endif			
+
+    }
+ }
 	}
+
+	
 }
 
 
@@ -345,6 +364,7 @@ bool transportPublish(String _topic, String _payload)
 	#ifdef USE_MQTT
 	 MQTTPublish(_topic, _payload);
 	#endif
+	 Serial.println("[DATA] " + _topic + " " + _payload);
 	return true; //if MQTT is not available and RESTful change the property
 }
 

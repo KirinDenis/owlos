@@ -16,9 +16,6 @@ namespace OWLOSAdmin.Ecosystem.OWLOSNode
                         |
                         |
 
-
-
-
     */
 
 
@@ -27,6 +24,8 @@ namespace OWLOSAdmin.Ecosystem.OWLOSNode
     {
         public OWLOSTransport transport = new OWLOSTransport();
         public List<OWLOSDriver> drivers { get; set; } = new List<OWLOSDriver>();
+
+        public event EventHandler NewDriver;
 
         private Timer lifeCycleTimer;
         public OWLOSNode()
@@ -48,7 +47,10 @@ namespace OWLOSAdmin.Ecosystem.OWLOSNode
             }
         }
 
-
+        protected virtual void OnNewDriver(EventArgs e)
+        {
+            NewDriver?.Invoke(this, e);
+        }
 
         private void parseDrivers(string driverData)
         {
@@ -63,8 +65,9 @@ namespace OWLOSAdmin.Ecosystem.OWLOSNode
                     driver = drivers.Find(n => n.name == driverName);
                     if (driver == null)
                     {
-                        driver = new OWLOSDriver(driverName);
+                        driver = new OWLOSDriver(this, driverName);
                         drivers.Add(driver);
+                        OnNewDriver(new EventArgs());
                     }
                 }
                 else
@@ -75,19 +78,9 @@ namespace OWLOSAdmin.Ecosystem.OWLOSNode
                         string key = driverProp.Substring(0, driverProp.IndexOf("="));
                         string value = driverProp.Substring(driverProp.IndexOf("=") + 1);
                         driver.SetParsedProperty(key, value);
-
-                        /*
-                        var expandoDict = driver as IDictionary<string, object>;
-                        if (expandoDict.ContainsKey(key))
-                            expandoDict[key] = value;
-                        else
-                            expandoDict.Add(key, value);
-                        */
                     }
                 }
             }
-            dynamic _driver = drivers[0];
-            _driver.id.value = "1";
         }
 
 

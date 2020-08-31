@@ -3,6 +3,7 @@ using OWLOSAdmin.Ecosystem.OWLOSNode;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Text;
 using System.Timers;
 using System.Windows;
@@ -71,6 +72,8 @@ namespace OWLOSAdmin.EcosystemExplorer
 
             var relationLine = new EcosystemRelationLine(nodeCountrol1, nodeCountrol1, nodeCountrol2, nodeCountrol1, nodeGrid);
             relationLine.DrawRelationLine();
+
+
         }
 
         /// <summary>
@@ -537,6 +540,17 @@ namespace OWLOSAdmin.EcosystemExplorer
 
         private void animante_Click(object sender, RoutedEventArgs e)
         {
+            RenderTargetBitmap bmp = new RenderTargetBitmap((int)contentGrid.ActualWidth, (int)contentGrid.ActualHeight, 96, 96, PixelFormats.Pbgra32);
+
+            bmp.Render(contentGrid);
+
+            var encoder = new PngBitmapEncoder();
+
+            encoder.Frames.Add(BitmapFrame.Create(bmp));
+
+            using (Stream stm = File.Create(@"d:\test.png"))
+                encoder.Save(stm);
+
             int b = 10;
             int limit = 500;
             float steps = 20.8f;

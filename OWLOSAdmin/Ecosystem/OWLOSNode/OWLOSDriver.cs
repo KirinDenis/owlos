@@ -5,6 +5,68 @@ using System.Text;
 
 namespace OWLOSAdmin.Ecosystem.OWLOSNode
 {
+
+    public class OWLOSDriver
+    {
+        public OWLOSNode parentNode = null;
+
+        public string name = "";
+
+        List<OWLOSDriverProperty> properties = new List<OWLOSDriverProperty>();
+
+        
+        public event EventHandler NewProperty;
+
+        public OWLOSDriver(OWLOSNode parentNode, string name)
+        {
+            this.parentNode = parentNode;
+            this.name = name;
+            
+        }
+
+        protected virtual void OnNewProperty(EventArgs e)
+        {
+            NewProperty?.Invoke(this, e);
+        }
+
+        public bool SetParsedProperty(string name, string value)
+        {
+            string _value = value.Substring(0, value.IndexOf("//"));
+            string _flags = value.Substring(value.IndexOf("//") + 2);
+
+            OWLOSDriverProperty property = new OWLOSDriverProperty();
+            property.value = _value;
+            property.flags = _flags;
+            properties.Add(property);
+            OnNewProperty(new EventArgs());
+            return true;
+        }
+
+        public int GetPropertiesCount()
+        {
+            return properties.Count;
+        }
+        public OWLOSDriverProperty GetProperty(string name)
+        {
+            return properties.Find(p => p.name == name);
+        }
+
+        public bool SetPropertyValue(string name, string value)
+        {
+            OWLOSDriverProperty property = GetProperty(name);
+            if (property == null)
+            {
+                return false;
+            }
+
+            property.value = value;
+            return true;
+        }
+
+    }
+
+    /*
+
     public class OWLOSDriver : DynamicObject
     {
         public string name = "";
@@ -30,7 +92,6 @@ namespace OWLOSAdmin.Ecosystem.OWLOSNode
             return true;
         }
 
-
         public int Count
         {
             get
@@ -38,6 +99,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOSNode
                 return properties.Count;
             }
         }
+
 
         public OWLOSDriver(string name)
         {
@@ -73,4 +135,5 @@ namespace OWLOSAdmin.Ecosystem.OWLOSNode
         }
 
     }
+    */
 }
