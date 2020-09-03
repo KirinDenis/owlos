@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OWLOSAdmin.Ecosystem;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
@@ -18,7 +19,7 @@ namespace OWLOSAdmin.EcosystemExplorer
     /// <summary>
     /// Interaction logic for NodeControl.xaml
     /// </summary>
-    public partial class NodeControl : UserControl
+    public partial class OWLOSNodeControl : UserControl
     {
         private DependencyPropertyDescriptor renderTransform = DependencyPropertyDescriptor.FromProperty(
             RenderTransformProperty,
@@ -33,7 +34,9 @@ namespace OWLOSAdmin.EcosystemExplorer
 
         public event EventHandler OnPositionChanged;
 
-        private static NodeControl CurrentFocused;
+        private static OWLOSNodeControl CurrentFocused;
+
+        private OWLOSNodeWrapper nodeWrapper;
 
         private bool _isFocused;
         public bool IsFocused
@@ -108,9 +111,15 @@ namespace OWLOSAdmin.EcosystemExplorer
         }
 
 
-        public NodeControl()
+        public OWLOSNodeControl(OWLOSNodeWrapper nodeWrapper)
         {
             InitializeComponent();
+
+            this.nodeWrapper = nodeWrapper;
+            if (nodeWrapper != null)
+            {
+                nodeWrapper.node.NewDriver += Node_NewDriver;
+            }
 
             transform.X = 5500;
             transform.Y = 5200;
@@ -128,6 +137,12 @@ namespace OWLOSAdmin.EcosystemExplorer
 
             mainBorder.BorderBrush = (SolidColorBrush)App.Current.Resources["OWLOSInfo"];
 
+        }
+
+        private void Node_NewDriver(object sender, EventArgs e)
+        {
+            
+            
         }
 
         private void NodeControlPositionChanged(object sender, EventArgs e)

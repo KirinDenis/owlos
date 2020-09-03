@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Text;
 
-namespace OWLOSAdmin.Ecosystem.OWLOSNode
+namespace OWLOSAdmin.Ecosystem.OWLOS
 {
 
     public class OWLOSDriver

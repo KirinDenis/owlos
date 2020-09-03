@@ -8,7 +8,7 @@ using System.Text;
 using System.Timers;
 using System.Windows.Controls;
 
-namespace OWLOSAdmin.Ecosystem.OWLOSNode
+namespace OWLOSAdmin.Ecosystem.OWLOS
 {
     /*
 
@@ -22,37 +22,24 @@ namespace OWLOSAdmin.Ecosystem.OWLOSNode
 
     public class OWLOSNode
     {
-        public OWLOSTransport transport = new OWLOSTransport();
+        
         public List<OWLOSDriver> drivers { get; set; } = new List<OWLOSDriver>();
 
         public event EventHandler NewDriver;
 
-        private Timer lifeCycleTimer;
+        
         public OWLOSNode()
         {
 
-            lifeCycleTimer = new Timer(100000);
-            lifeCycleTimer.AutoReset = true;
-            lifeCycleTimer.Elapsed += new ElapsedEventHandler(OnLifeCycleTimer);
-            lifeCycleTimer.Start();
-            OnLifeCycleTimer(null, null);
         }
 
-        private async void OnLifeCycleTimer(Object source, ElapsedEventArgs e)
-        {
-            string driverPoperties = await transport.HTTPGet("getalldriversproperties");
-            if (driverPoperties.IndexOf("Error:") != 0)
-            {
-                parseDrivers(driverPoperties);
-            }
-        }
 
         protected virtual void OnNewDriver(EventArgs e)
         {
             NewDriver?.Invoke(this, e);
         }
 
-        private void parseDrivers(string driverData)
+        public void parseDrivers(string driverData)
         {
             List<string> driverRaw = driverData.Split('\n').ToList();
             OWLOSDriver driver = null;

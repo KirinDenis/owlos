@@ -56,9 +56,10 @@ OWLOS распространяется в надежде, что она буде
 
 #include <esp_wifi.h>
 #include <WiFiAP.h>
-extern "C" {
-	#include "freertos/FreeRTOS.h"
-	#include "freertos/timers.h"
+extern "C"
+{
+#include "freertos/FreeRTOS.h"
+#include "freertos/timers.h"
 }
 
 WiFiMulti _WiFiMulti;
@@ -77,14 +78,13 @@ bool wifiStatus = false;
 bool wifiAPResult = false;
 bool wifiResult = false;
 
-
 void WiFiSTReconnect()
 {
-			if (WiFi.status() == WL_CONNECTED)
-			{
-			    xTimerStop(wifiSTReconnectTimer, 0);				
-				return;
-			}
+	if (WiFi.status() == WL_CONNECTED)
+	{
+		xTimerStop(wifiSTReconnectTimer, 0);
+		return;
+	}
 
 	if (nodeGetWiFiAvailable() == 1)
 	{
@@ -98,7 +98,6 @@ void WiFiSTReconnect()
 			return;
 		}
 
-		
 		{
 #ifdef DetailedDebug
 			debugOut(TransportID, "try to connect to - " + WiFiSSID + ":" + WiFiPassword + " wait ");
@@ -122,120 +121,116 @@ void WiFiSTReconnect()
 					break;
 				}
 			}
-
 		}
 	}
 }
-
-
 
 void WiFiEvent(WiFiEvent_t event)
 {
 	switch (event)
 	{
 	case SYSTEM_EVENT_WIFI_READY:
-		debugOut(TransportID, "WiFi interface ready");		
+		debugOut(TransportID, "WiFi interface ready");
 		break;
 	case SYSTEM_EVENT_SCAN_DONE:
-		debugOut(TransportID, "Completed scan for access points");			
+		debugOut(TransportID, "Completed scan for access points");
 		break;
 	case SYSTEM_EVENT_STA_START:
-		debugOut(TransportID, "WiFi client started");		
+		debugOut(TransportID, "WiFi client started");
 		break;
 	case SYSTEM_EVENT_STA_STOP:
-		debugOut(TransportID, "WiFi clients stopped");		
+		debugOut(TransportID, "WiFi clients stopped");
 		break;
 	case SYSTEM_EVENT_STA_CONNECTED:
-		debugOut(TransportID, "Connected to access point");		
-		xTimerStop(wifiSTReconnectTimer, 0);				
+		debugOut(TransportID, "Connected to access point");
+		xTimerStop(wifiSTReconnectTimer, 0);
 
 		break;
 	case SYSTEM_EVENT_STA_DISCONNECTED:
-		debugOut(TransportID, "Disconnected from WiFi access point");		
+		debugOut(TransportID, "Disconnected from WiFi access point");
 		wifiResult = false;
-#ifdef USE_MQTT		
+#ifdef USE_MQTT
 		MQTTDisconnect();
-#endif		
-		xTimerStart(wifiSTReconnectTimer, 0);		
+#endif
+		xTimerStart(wifiSTReconnectTimer, 0);
 		break;
 	case SYSTEM_EVENT_STA_AUTHMODE_CHANGE:
-		debugOut(TransportID, "Authentication mode of access point has changed");		
+		debugOut(TransportID, "Authentication mode of access point has changed");
 		break;
 	case SYSTEM_EVENT_STA_GOT_IP:
 		//TODO: setIP
-		 wifiResult = true;
+		wifiResult = true;
 #ifdef DetailedDebug
-				debugOut(TransportID, "WiFi connected as Client success, local IP: " + nodeGetWiFiIP());
+		debugOut(TransportID, "WiFi connected as Client success, local IP: " + nodeGetWiFiIP());
 #endif
-		xTimerStop(wifiSTReconnectTimer, 0);				
-#ifdef USE_MQTT				
+		xTimerStop(wifiSTReconnectTimer, 0);
+#ifdef USE_MQTT
 		MQTTConnect();
-#endif		
+#endif
 
 #if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)
 		HTTPSWebServerBegin();
-#endif				
-		
+#endif
+
 		break;
 	case SYSTEM_EVENT_STA_LOST_IP:
-		debugOut(TransportID, "Lost IP address and IP address is reset to 0");		
+		debugOut(TransportID, "Lost IP address and IP address is reset to 0");
 		break;
 	case SYSTEM_EVENT_STA_WPS_ER_SUCCESS:
-		debugOut(TransportID, "WiFi Protected Setup (WPS): succeeded in enrollee mode");		
+		debugOut(TransportID, "WiFi Protected Setup (WPS): succeeded in enrollee mode");
 		break;
 	case SYSTEM_EVENT_STA_WPS_ER_FAILED:
-		debugOut(TransportID, "WiFi Protected Setup (WPS): failed in enrollee mode");		
+		debugOut(TransportID, "WiFi Protected Setup (WPS): failed in enrollee mode");
 		break;
 	case SYSTEM_EVENT_STA_WPS_ER_TIMEOUT:
-		debugOut(TransportID, "WiFi Protected Setup (WPS): timeout in enrollee mode");		
+		debugOut(TransportID, "WiFi Protected Setup (WPS): timeout in enrollee mode");
 		break;
 	case SYSTEM_EVENT_STA_WPS_ER_PIN:
-		debugOut(TransportID, "WiFi Protected Setup (WPS): pin code in enrollee mode");		
+		debugOut(TransportID, "WiFi Protected Setup (WPS): pin code in enrollee mode");
 		break;
 	case SYSTEM_EVENT_AP_START:
-		debugOut(TransportID, "WiFi access point started");		
+		debugOut(TransportID, "WiFi access point started");
 		wifiAPResult = true;
 		break;
 	case SYSTEM_EVENT_AP_STOP:
-		debugOut(TransportID, "WiFi access point stopped");		
+		debugOut(TransportID, "WiFi access point stopped");
 		break;
 	case SYSTEM_EVENT_AP_STACONNECTED:
-		debugOut(TransportID, "Client connected");		
+		debugOut(TransportID, "Client connected");
 		break;
 	case SYSTEM_EVENT_AP_STADISCONNECTED:
-	    wifiAPResult = false;
-		debugOut(TransportID, "Client disconnected");		
+		wifiAPResult = false;
+		debugOut(TransportID, "Client disconnected");
 		break;
 	case SYSTEM_EVENT_AP_STAIPASSIGNED:
-		debugOut(TransportID, "Assigned IP address to client");		
+		debugOut(TransportID, "Assigned IP address to client");
 		break;
 	case SYSTEM_EVENT_AP_PROBEREQRECVED:
-		debugOut(TransportID, "Received probe request");		
+		debugOut(TransportID, "Received probe request");
 		break;
 	case SYSTEM_EVENT_GOT_IP6:
-		debugOut(TransportID, "IPv6 is preferred");		
+		debugOut(TransportID, "IPv6 is preferred");
 		break;
 	case SYSTEM_EVENT_ETH_START:
-		debugOut(TransportID, "Ethernet started");		
+		debugOut(TransportID, "Ethernet started");
 		break;
 	case SYSTEM_EVENT_ETH_STOP:
-		debugOut(TransportID, "Ethernet stopped");		
+		debugOut(TransportID, "Ethernet stopped");
 		break;
 	case SYSTEM_EVENT_ETH_CONNECTED:
-		debugOut(TransportID, "Ethernet connected");		
+		debugOut(TransportID, "Ethernet connected");
 		break;
 	case SYSTEM_EVENT_ETH_DISCONNECTED:
-		debugOut(TransportID, "Ethernet disconnected");		
+		debugOut(TransportID, "Ethernet disconnected");
 		break;
 	case SYSTEM_EVENT_ETH_GOT_IP:
-		debugOut(TransportID, "Obtained IP address");		
+		debugOut(TransportID, "Obtained IP address");
 		break;
 	default:
-	    debugOut(TransportID, "Unknown WiFi event");
+		debugOut(TransportID, "Unknown WiFi event");
 		break;
 	}
 }
-
 
 bool transportBegin()
 {
@@ -243,20 +238,20 @@ bool transportBegin()
 	debugOut(TransportID, "begin");
 #endif
 
-    WiFi.onEvent(WiFiEvent);	
-#ifdef DetailedDebug	
+	WiFi.onEvent(WiFiEvent);
+#ifdef DetailedDebug
 	//esp_wifi_set_ps(WIFI_PS_NONE);
 	//esp_wifi_set_ps(WIFI_PS_MAX_MODEM);
 #endif
 
 #ifdef USE_MQTT
-     MQTTBegin();	
+	MQTTBegin();
 #endif
 
 #ifdef DetailedDebug
-		debugOut(TransportID, "no WiFi mode select, WiFi not accessable");
+	debugOut(TransportID, "no WiFi mode select, WiFi not accessable");
 #endif
-//WiFi Access Point and Station mode ---
+	//WiFi Access Point and Station mode ---
 	if ((nodeGetWiFiAccessPointAvailable() == 1) && (nodeGetWiFiAvailable() == 1))
 	{
 		nodeSetWiFiMode(WIFI_AP_STA);
@@ -264,9 +259,9 @@ bool transportBegin()
 		debugOut(TransportID, "WiFi mode Access Point and Station (both)");
 #endif
 	}
-	else 
-//WiFi Access Point mode ---	
-	if (nodeGetWiFiAccessPointAvailable() == 1)
+	else
+		//WiFi Access Point mode ---
+		if (nodeGetWiFiAccessPointAvailable() == 1)
 	{
 		if (_WiFiMulti.run() == WL_CONNECTED)
 		{
@@ -279,25 +274,22 @@ bool transportBegin()
 		debugOut(TransportID, "WiFi mode Access Point");
 #endif
 	}
-	else 
-//WiFi Station mode ---	
-	if (nodeGetWiFiAvailable() == 1)
+	else
+		//WiFi Station mode ---
+		if (nodeGetWiFiAvailable() == 1)
 	{
 #ifdef DetailedDebug
 		debugOut(TransportID, "WiFi mode Station");
 #endif
 
-
-    
-
 		WiFi.softAPdisconnect(true);
-		nodeSetWiFiMode(WIFI_STA);		
-		wifiSTReconnectTimer = xTimerCreate("wifiTimer", pdMS_TO_TICKS(10000), pdTRUE, (void*)0, reinterpret_cast<TimerCallbackFunction_t>(WiFiSTReconnect));
+		nodeSetWiFiMode(WIFI_STA);
+		wifiSTReconnectTimer = xTimerCreate("wifiTimer", pdMS_TO_TICKS(10000), pdTRUE, (void *)0, reinterpret_cast<TimerCallbackFunction_t>(WiFiSTReconnect));
 		WiFiSTReconnect();
 	}
-//No WiFi mode ---	
-	else	
-	{		
+	//No WiFi mode ---
+	else
+	{
 		nodeSetWiFiMode(WIFI_OFF);
 		WiFi.softAPdisconnect(true);
 		esp_wifi_disconnect();
@@ -315,65 +307,68 @@ void transportLoop()
 	if ((wifiAPResult) || (wifiResult))
 	{
 
-#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)			
+#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)
 		if (nodeGetRESTfulAvailable() == 1)
 		{
 			HTTPSWebServerLoop();
 		}
-#endif					
+#endif
 
-#ifdef USE_OTA_SERVICE						
+#ifdef USE_OTA_SERVICE
 		if (nodeGetOTAAvailable() == 1)
 		{
 			OTALoop();
 		}
-#endif		
+#endif
 
- if (Serial.available())
- {
+		if (Serial.available())
+		{
+			
+			String data = Serial.readStringUntil('\n');
 
-	 String data = Serial.readStringUntil('\n');
-	 String topic = data.substring(0, data.indexOf(" "));
-	 String payload = data.substring(data.indexOf(" ")+ 1);
-    if (nodeOnMessage(String(topic), String(payload), MQTTMask).equals(WrongPropertyName))
-    {
-        //if not UNIT property
-        //Put recieved message to all drivers, each driver can process any topic recieved by Unit
-        #ifdef USE_DRIVERS			
-        driversCallback(String(topic), String(payload));
-        #endif			
+			if (data.indexOf("AT+GADP") == 0)
+			{
+               Serial.println(driversGetAllDriversProperties());	
+			}
+			else 
+			{
 
-    }
- }
+			String topic = data.substring(0, data.indexOf(" "));
+			String payload = data.substring(data.indexOf(" ") + 1);
+			Serial.println("RECIEVE " + topic + " " + payload);	
+			if (nodeOnMessage(String(topic), String(payload), MQTTMask).equals(WrongPropertyName))
+			{
+//if not UNIT property
+//Put recieved message to all drivers, each driver can process any topic recieved by Unit
+#ifdef USE_DRIVERS
+				driversCallback(String(topic), String(payload));
+#endif
+			}
+			}
+		}
 	}
-
-	
 }
-
 
 void transportSubscribe(String _topic)
 {
-	#ifdef USE_MQTT
-	 MQTTSubscribe(_topic);
-	#endif
+#ifdef USE_MQTT
+	MQTTSubscribe(_topic);
+#endif
 }
-
 
 bool transportPublish(String _topic, String _payload)
 {
-	#ifdef USE_MQTT
-	 MQTTPublish(_topic, _payload);
-	#endif
-	 Serial.println("[DATA] " + _topic + " " + _payload);
+#ifdef USE_MQTT
+	MQTTPublish(_topic, _payload);
+#endif
+	Serial.println("[DATA] " + _topic + " " + _payload);
 	return true; //if MQTT is not available and RESTful change the property
 }
-
 
 WiFiMulti transportGetWifiMulti()
 {
 	return _WiFiMulti;
 }
-
 
 #endif
 #endif

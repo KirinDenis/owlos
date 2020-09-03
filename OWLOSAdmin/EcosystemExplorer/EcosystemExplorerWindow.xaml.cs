@@ -1,5 +1,5 @@
 ﻿using OWLOSAdmin.Ecosystem;
-using OWLOSAdmin.Ecosystem.OWLOSNode;
+using OWLOSAdmin.Ecosystem.OWLOS;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -42,13 +42,19 @@ namespace OWLOSAdmin.EcosystemExplorer
 
         private double pZoom;
 
+        public OWLOSNodeControl adminControl;
+
 
         public EcosystemExplorerWindow()
         {
             InitializeComponent();
 
-            OWLOSNode node = new OWLOSNode();
-            
+            Admin admin = new Admin();
+            adminControl = new OWLOSNodeControl(null);
+            nodeGrid.Children.Add(adminControl);
+
+            admin.NewOWLOSNode += Admin_NewOWLOSNode;
+            admin.Load();
 
             nodeGrid.Width = nodeGrid.Height = cellSize;
             viewbox.Width = viewbox.Height = cellSize / 10;
@@ -61,18 +67,27 @@ namespace OWLOSAdmin.EcosystemExplorer
 
             Dispatcher.BeginInvoke((Action)DrawCell, DispatcherPriority.Send);
 
-            NodeControl nodeCountrol1 = new NodeControl();
-            nodeGrid.Children.Add(nodeCountrol1);
+            
 
+            /*
             NodeControl nodeCountrol2 = new NodeControl();
             nodeGrid.Children.Add(nodeCountrol2);
 
             NodeControl nodeCountrol3 = new NodeControl();
             nodeGrid.Children.Add(nodeCountrol3);
+            */
 
-            var relationLine = new EcosystemRelationLine(nodeCountrol1, nodeCountrol1, nodeCountrol2, nodeCountrol1, nodeGrid);
+
+
+        }
+
+        private void Admin_NewOWLOSNode(object sender, OWLOSNodeWrapperEventArgs e)
+        {
+            OWLOSNodeControl nodeCountrol1 = new OWLOSNodeControl(e.node);
+            nodeGrid.Children.Add(nodeCountrol1);
+
+            var relationLine = new EcosystemRelationLine(nodeCountrol1, nodeCountrol1, adminControl, nodeCountrol1, nodeGrid);
             relationLine.DrawRelationLine();
-
 
         }
 

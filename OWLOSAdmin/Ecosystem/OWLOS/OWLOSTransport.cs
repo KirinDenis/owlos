@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 
-namespace OWLOSAdmin.Ecosystem.OWLOSNode
+namespace OWLOSAdmin.Ecosystem.OWLOS
 {
     public enum NetworkStatus
     {
@@ -73,10 +74,36 @@ namespace OWLOSAdmin.Ecosystem.OWLOSNode
 
     public class OWLOSTransport
     {
-        public string RESTfulServerHost = "http://192.168.1.5/";
+        private OWLOSNode node = null;
+        public string RESTfulServerHost = "";
         public int RESTfulServerPort = 80;
+        private Timer lifeCycleTimer;
 
-        public async Task<string> HTTPGet(string APIName, string args = "")
+
+        public OWLOSTransport(OWLOSNode node)
+        {
+            this.node = node;
+        }
+        public void Start()
+        {
+            lifeCycleTimer = new Timer(100000);
+            lifeCycleTimer.AutoReset = true;
+            lifeCycleTimer.Elapsed += new ElapsedEventHandler(OnLifeCycleTimer);
+            lifeCycleTimer.Start();
+            OnLifeCycleTimer(null, null);
+
+        }
+
+        private async void OnLifeCycleTimer(Object source, ElapsedEventArgs e)
+        {
+            string driverPoperties = await Get("getalldriversproperties");
+            if (driverPoperties.IndexOf("Error:") != 0)
+            {
+                node.parseDrivers(driverPoperties);
+            }
+        }
+
+        public async Task<string> Get(string APIName, string args = "")
         {
             try
             {

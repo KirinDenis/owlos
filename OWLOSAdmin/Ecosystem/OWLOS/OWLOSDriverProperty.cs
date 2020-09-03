@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace OWLOSAdmin.Ecosystem.OWLOSNode
+namespace OWLOSAdmin.Ecosystem.OWLOS
 {
     public class OWLOSDriverProperty
     {
