@@ -86,7 +86,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         }
         public void Start()
         {
-            lifeCycleTimer = new Timer(100000);
+            lifeCycleTimer = new Timer(1000);
             lifeCycleTimer.AutoReset = true;
             lifeCycleTimer.Elapsed += new ElapsedEventHandler(OnLifeCycleTimer);
             lifeCycleTimer.Start();
@@ -96,11 +96,14 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         private async void OnLifeCycleTimer(Object source, ElapsedEventArgs e)
         {
+
             string driverPoperties = await Get("getalldriversproperties");
             if (driverPoperties.IndexOf("Error:") != 0)
             {
-                node.parseDrivers(driverPoperties);
+                    node.parseDrivers(driverPoperties);
+
             }
+            
         }
 
         public async Task<string> Get(string APIName, string args = "")

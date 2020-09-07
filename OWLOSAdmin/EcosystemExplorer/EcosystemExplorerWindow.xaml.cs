@@ -12,6 +12,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
@@ -42,7 +43,7 @@ namespace OWLOSAdmin.EcosystemExplorer
 
         private double pZoom;
 
-        public OWLOSNodeControl adminControl;
+        public EcosystemControl adminControl;
 
 
         public EcosystemExplorerWindow()
@@ -50,7 +51,7 @@ namespace OWLOSAdmin.EcosystemExplorer
             InitializeComponent();
 
             Admin admin = new Admin();
-            adminControl = new OWLOSNodeControl(null);
+            adminControl = new EcosystemControl(null);
             nodeGrid.Children.Add(adminControl);
 
             admin.NewOWLOSNode += Admin_NewOWLOSNode;
@@ -67,7 +68,12 @@ namespace OWLOSAdmin.EcosystemExplorer
 
             Dispatcher.BeginInvoke((Action)DrawCell, DispatcherPriority.Send);
 
-            
+
+            double zoomTo = 10.0f;
+            zoomTextBox.Text = (zoomTo).ToString(("F"));
+            double zoom = zoomTo * (cellSize / 100);
+
+
 
             /*
             NodeControl nodeCountrol2 = new NodeControl();
@@ -83,7 +89,7 @@ namespace OWLOSAdmin.EcosystemExplorer
 
         private void Admin_NewOWLOSNode(object sender, OWLOSNodeWrapperEventArgs e)
         {
-            OWLOSNodeControl nodeCountrol1 = new OWLOSNodeControl(e.node);
+            EcosystemControl nodeCountrol1 = new EcosystemControl(e.node);
             nodeGrid.Children.Add(nodeCountrol1);
 
             var relationLine = new EcosystemRelationLine(nodeCountrol1, nodeCountrol1, adminControl, nodeCountrol1, nodeGrid);
@@ -149,6 +155,7 @@ namespace OWLOSAdmin.EcosystemExplorer
                             TextBlock textBlock = new TextBlock();
                             textBlock.Text = linePosition.ToString();
                             textBlock.Margin = new Thickness(linePosition, 0, 0, 0);
+                            
                             if (linePosition == cellSize / 2)
                             {
                                 textBlock.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSSuccess"];
@@ -587,6 +594,59 @@ namespace OWLOSAdmin.EcosystemExplorer
             });
             t.Start();
 
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+            /*
+            var skewGrass = new DoubleAnimation
+            {
+                From = -15.0f,
+                To = 0.0f,
+                Duration = new Duration(TimeSpan.FromMilliseconds(2000)),
+                //RepeatBehavior = RepeatBehavior.,
+                //EasingFunction = new BackEase(),
+                //AutoReverse = true
+            };
+            */
+
+            DoubleAnimation skewGrassX;
+            DoubleAnimation skewGrassY;
+            DoubleAnimation rotate;
+
+            if ((explorerGrid.Tag == null) || (explorerGrid.Tag == "0"))
+            {
+                skewGrassX = new DoubleAnimation(-15.0f, 0.0f, new Duration(TimeSpan.FromMilliseconds(2000)));
+                skewGrassY = new DoubleAnimation(-10.0f, 0.0f, new Duration(TimeSpan.FromMilliseconds(2000)));
+                rotate = new DoubleAnimation(17.0f, 0.0f, new Duration(TimeSpan.FromMilliseconds(2000)));
+                explorerGrid.Tag = "1";
+            }
+            else
+            {
+                skewGrassX = new DoubleAnimation(-15.0f, new Duration(TimeSpan.FromMilliseconds(2000)));
+                skewGrassY = new DoubleAnimation(-10.0f, new Duration(TimeSpan.FromMilliseconds(2000)));
+                rotate = new DoubleAnimation(17.0f, new Duration(TimeSpan.FromMilliseconds(2000)));
+                explorerGrid.Tag = "0";
+            }
+
+
+            SkewTransform skewTransformX = new SkewTransform();
+            SkewTransform skewTransformY = new SkewTransform();
+            RotateTransform rotateTransform = new RotateTransform();
+
+            TransformGroup transformGroup = new TransformGroup();
+            transformGroup.Children.Add(skewTransformX);
+            transformGroup.Children.Add(skewTransformY);
+            transformGroup.Children.Add(rotateTransform);
+
+            explorerGrid.LayoutTransform = transformGroup;
+
+            skewTransformX.BeginAnimation(SkewTransform.AngleXProperty, skewGrassX);
+            skewTransformY.BeginAnimation(SkewTransform.AngleYProperty, skewGrassY);
+            rotateTransform.BeginAnimation(RotateTransform.AngleProperty, rotate);
+
+            
         }
 
         private void EcosystemExplorerGrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)

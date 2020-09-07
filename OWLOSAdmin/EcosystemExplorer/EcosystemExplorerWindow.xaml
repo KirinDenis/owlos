@@ -7,10 +7,10 @@
         xmlns:local="clr-namespace:OWLOSAdmin"
         mc:Ignorable="d"
         
-        Title="Ecosystem Explorer" Height="450" Width="800" FontFamily="file:///D:\Users\Egor\source\repos\KirinDenis\owlos\OWLOSAdmin\Fonts\#omega flight" >
+        Title="Ecosystem Explorer" Height="450" Width="800" FontFamily="file:///D:\Users\Egor\source\repos\KirinDenis\owlos\OWLOSAdmin\Fonts\#omega flight" WindowState="Maximized" SnapsToDevicePixels="True" >
 
-    
-    <Grid x:Name="contentGrid" Background="{DynamicResource OWLOSPrimary}" >
+
+    <Grid x:Name="contentGrid" Background="{DynamicResource OWLOSDark}" >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="40*"/>
             <ColumnDefinition Width="7*"/>
@@ -23,7 +23,21 @@
             <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,0,0,62" Grid.RowSpan="2">
+        <Grid x:Name="explorerGrid" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,0,0,62" Grid.RowSpan="2" RenderTransformOrigin="0.5,0.5">
+            <Grid.RenderTransform>
+                <TransformGroup>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Grid.RenderTransform>
+            <Grid.LayoutTransform>
+                <TransformGroup>
+                    <SkewTransform AngleX="-15" AngleY="-10"/>
+                    <RotateTransform Angle="17"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Grid.LayoutTransform>
             <Grid.RowDefinitions>
                 <RowDefinition Height="30"/>
                 <RowDefinition Height="583*"/>
@@ -31,7 +45,15 @@
 
 
 
-            <Grid x:Name="EcosystemExplorerGrid" Grid.Row="1" Grid.Column="0" PreviewMouseMove="EcosystemExplorerGrid_PreviewMouseMove" PreviewMouseDown="EcosystemExplorerGrid_PreviewMouseDown" PreviewMouseUp="EcosystemExplorerGrid_PreviewMouseUp" PreviewMouseWheel="EcosystemExplorerGrid_PreviewMouseWheel" >
+            <Grid x:Name="EcosystemExplorerGrid" Grid.Row="1" Grid.Column="0" PreviewMouseMove="EcosystemExplorerGrid_PreviewMouseMove" PreviewMouseDown="EcosystemExplorerGrid_PreviewMouseDown" PreviewMouseUp="EcosystemExplorerGrid_PreviewMouseUp" PreviewMouseWheel="EcosystemExplorerGrid_PreviewMouseWheel" RenderTransformOrigin="0.5,0" >
+                <Grid.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform ScaleX="1.8" ScaleY="1.8"/>
+                        <SkewTransform/>
+                        <RotateTransform/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Grid.RenderTransform>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="65*"/>
                     <ColumnDefinition Width="253*"/>
@@ -47,7 +69,7 @@
                         </TransformGroup>
                     </Viewbox.RenderTransform>
 
-                    <Grid Background="{DynamicResource OWLOSPrimary}" >
+                    <Grid Background="{DynamicResource OWLOSSecondary}" >
                         <Grid.RowDefinitions>
                             <RowDefinition Height="35"/>
                             <RowDefinition Height="100*"/>
@@ -65,24 +87,36 @@
                         <VirtualizingStackPanel x:Name="nodeLines" Grid.Column="1" Grid.Row="1" Width="auto" Height="auto" RenderOptions.BitmapScalingMode="Fant"/>
 
 
-                        <Grid x:Name="nodeGrid" Grid.Column="1" Grid.Row="1" Width="10000" Height="10000" Background="{DynamicResource OWLOSPrimaryAlpha3}" HorizontalAlignment="Left" VerticalAlignment="Top" PreviewMouseDown="nodeGrid_PreviewMouseDown" PreviewMouseLeftButtonDown="nodeGrid_PreviewMouseLeftButtonDown" RenderTransformOrigin="0.5,0.5">
+
+
+                        <Grid x:Name="nodeGrid" Grid.Column="1" Grid.Row="1" Width="10000" Height="10000" Background="{DynamicResource OWLOSDarkAlpha2}" HorizontalAlignment="Left" VerticalAlignment="Top" PreviewMouseDown="nodeGrid_PreviewMouseDown" PreviewMouseLeftButtonDown="nodeGrid_PreviewMouseLeftButtonDown" RenderTransformOrigin="0.5,0.5">
 
                         </Grid>
 
                         <Grid x:Name="verticalNavigationGrid" Grid.Column="0" Grid.Row="1" Background="{DynamicResource OWLOSInfoAlpha2}" Width="37" HorizontalAlignment="Right" Visibility="Hidden" 
                               TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed"
                               RenderOptions.BitmapScalingMode="NearestNeighbor">
-                            <Border Width="2" HorizontalAlignment="Right" />
+                            <Border Width="2" HorizontalAlignment="Right">
+                                <Border.Background>
+                                    <LinearGradientBrush EndPoint="1.5,1" MappingMode="RelativeToBoundingBox" StartPoint="1.5,0">
+                                        <GradientStop Color="{DynamicResource OWLOSDangerColor}" Offset="0"/>
+                                        <GradientStop Color="{DynamicResource OWLOSDangerColor}" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                            </Border>
+
                         </Grid>
+
+
 
                         <Grid x:Name="horisontalNavigationGrid"  Grid.Row="0" Grid.Column="1" Background="{DynamicResource OWLOSInfoAlpha2}" Width="10000" Height="30" Visibility="Hidden" VerticalAlignment="Bottom" 
                               TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed"
                               RenderOptions.BitmapScalingMode="NearestNeighbor">
                             <Border Height="3" VerticalAlignment="Bottom" Margin="0,-3,0,-3">
                                 <Border.Background>
-                                    <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
-                                        <GradientStop Color="{DynamicResource OWLOSInfoColorAlpha1}" Offset="0"/>
-                                        <GradientStop Color="{DynamicResource OWLOSInfoColorAlpha1}" Offset="1"/>
+                                    <LinearGradientBrush EndPoint="1.5,1" MappingMode="RelativeToBoundingBox" StartPoint="1.5,0">
+                                        <GradientStop Color="{DynamicResource OWLOSDangerColor}" Offset="0"/>
+                                        <GradientStop Color="{DynamicResource OWLOSDangerColor}" Offset="1"/>
                                     </LinearGradientBrush>
                                 </Border.Background>
                             </Border>
@@ -98,7 +132,7 @@
                     <TextBlock Name="EcosystemExplorerTextBlock" Text="OWLOS Ecosystem"  Margin="0,0,2,0" VerticalAlignment="Center" Foreground="{DynamicResource OWLOSInfo}" FontFamily="file:///D:\Users\Egor\source\repos\KirinDenis\owlos\OWLOSAdmin\Fonts\#omega flight" />
                     <StackPanel Orientation="Horizontal"  VerticalAlignment="Center">
                         <TextBlock Text="zoom:" VerticalAlignment="Center" Margin="0,0,0,0" Foreground="{DynamicResource OWLOSInfo}" />
-                        <TextBox Name="zoomTextBox" Text="100" Background="{x:Null}" VerticalAlignment="Center" BorderBrush="{x:Null}" FontWeight="Bold" Foreground="{DynamicResource OWLOSLight}" />
+                        <TextBox Name="zoomTextBox" Text="100" Background="{x:Null}" VerticalAlignment="Center" BorderBrush="{x:Null}" FontWeight="Bold" Foreground="{DynamicResource OWLOSLight}" SnapsToDevicePixels="True" />
                         <TextBlock Text="%" VerticalAlignment="Center" Margin="0,0,5,0" Foreground="{DynamicResource OWLOSLight}" />
                     </StackPanel>
 
@@ -108,17 +142,18 @@
                     <Button Name="drawCellImage" Width="25" Height="25" ToolTip="Draw cell" Margin="5,0,5,0"  Content="DC" Click="drawCellImage_Click"/>
                     <Button Width="25" Height="25" ToolTip="Draw cell" Margin="5,0,5,0"  Content="AN" Click="animante_Click" />
                     <TextBlock x:Name="test" Text="100" Foreground="{DynamicResource OWLOSLight}" RenderTransformOrigin="1,3"/>
+                    <Button Width="25" Height="25" ToolTip="Draw cell" Margin="5,0,5,0"  Content="PA" Click="Button_Click"  />
                 </StackPanel>
             </Grid>
 
         </Grid>
-        <Canvas Background="{DynamicResource OWLOSPrimary}" Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" ZIndex="999999999">
+        <Canvas Background="{DynamicResource OWLOSDarkAlpha1}" Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" ZIndex="999999999">
         </Canvas>
 
-        <Canvas Background="{DynamicResource OWLOSPrimary}" Grid.Row="0" Grid.Column="1" ZIndex="999999999" Grid.ColumnSpan="2">
+        <Canvas Background="{DynamicResource OWLOSDarkAlpha1}" Grid.Row="0" Grid.Column="1" ZIndex="999999999" Grid.ColumnSpan="2">
         </Canvas>
 
-        <Canvas Background="{DynamicResource OWLOSPrimary}" Grid.Row="2" Grid.RowSpan="2" Grid.Column="1" ZIndex="999999999" Grid.ColumnSpan="2">
+        <Canvas Background="{DynamicResource OWLOSDarkAlpha1}" Grid.Row="2" Grid.RowSpan="2" Grid.Column="1" ZIndex="999999999" Grid.ColumnSpan="2">
         </Canvas>
 
     </Grid>

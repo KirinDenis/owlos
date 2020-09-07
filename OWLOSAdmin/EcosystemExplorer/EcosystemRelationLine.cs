@@ -24,8 +24,8 @@ namespace OWLOSAdmin.EcosystemExplorer
     public class EcosystemRelationLine
     {
         private EcosystemPathLine ecosystemPathLine;
-        private OWLOSNodeControl aControl;
-        private OWLOSNodeControl bControl;
+        private EcosystemControl aControl;
+        private EcosystemControl bControl;
         private FrameworkElement frameworkElement;
         private Panel panel;
         private Ellipse ellipse;
@@ -41,7 +41,7 @@ namespace OWLOSAdmin.EcosystemExplorer
         //Ellipse.RenderTransformProperty,
         //typeof(Ellipse));
 
-        public EcosystemRelationLine(FrameworkElement parent, OWLOSNodeControl aWorldObjectControl, OWLOSNodeControl bWorldObjectControl,
+        public EcosystemRelationLine(FrameworkElement parent, EcosystemControl aWorldObjectControl, EcosystemControl bWorldObjectControl,
             FrameworkElement frameworkElement, Panel panel,
             Point[] offsetA = null, Point[] offsetB = null)
         {

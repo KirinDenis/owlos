@@ -18,6 +18,11 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
     */
 
+    public class OWLOSDriverWrapperEventArgs : EventArgs
+    {
+        public OWLOSDriver driver;
+    }
+
 
 
     public class OWLOSNode
@@ -25,7 +30,9 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         
         public List<OWLOSDriver> drivers { get; set; } = new List<OWLOSDriver>();
 
-        public event EventHandler NewDriver;
+        public delegate void DriverEventHandler(object? sender, OWLOSDriverWrapperEventArgs e);
+
+        public event DriverEventHandler NewDriver;
 
         
         public OWLOSNode()
@@ -34,7 +41,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         }
 
 
-        protected virtual void OnNewDriver(EventArgs e)
+        protected virtual void OnNewDriver(OWLOSDriverWrapperEventArgs e)
         {
             NewDriver?.Invoke(this, e);
         }
@@ -53,13 +60,16 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
                     if (driver == null)
                     {
                         driver = new OWLOSDriver(this, driverName);
-                        drivers.Add(driver);
-                        OnNewDriver(new EventArgs());
+                        
+                        OWLOSDriverWrapperEventArgs _OWLOSDriverWrapperEventArgs = new OWLOSDriverWrapperEventArgs();
+                        _OWLOSDriverWrapperEventArgs.driver = driver;
+                        OnNewDriver(_OWLOSDriverWrapperEventArgs);
                     }
                 }
                 else
                 if (driver != null)
                 {
+                    drivers.Add(driver);
                     if (driverProp.IndexOf("=") != -1)
                     {
                         string key = driverProp.Substring(0, driverProp.IndexOf("="));

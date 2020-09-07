@@ -6,6 +6,11 @@ using System.Text;
 namespace OWLOSAdmin.Ecosystem.OWLOS
 {
 
+    public class OWLOSPropertyWrapperEventArgs : EventArgs
+    {
+        public OWLOSDriverProperty property;
+    }
+
     public class OWLOSDriver
     {
         public OWLOSNode parentNode = null;
@@ -14,8 +19,10 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         List<OWLOSDriverProperty> properties = new List<OWLOSDriverProperty>();
 
-        
-        public event EventHandler NewProperty;
+        public delegate void PropertyEventHandler(object? sender, OWLOSPropertyWrapperEventArgs e);
+
+        public event PropertyEventHandler NewProperty;
+
 
         public OWLOSDriver(OWLOSNode parentNode, string name)
         {
@@ -24,7 +31,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             
         }
 
-        protected virtual void OnNewProperty(EventArgs e)
+        protected virtual void OnNewProperty(OWLOSPropertyWrapperEventArgs e)
         {
             NewProperty?.Invoke(this, e);
         }
@@ -35,10 +42,13 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             string _flags = value.Substring(value.IndexOf("//") + 2);
 
             OWLOSDriverProperty property = new OWLOSDriverProperty();
+            property.name = name;
             property.value = _value;
             property.flags = _flags;
             properties.Add(property);
-            OnNewProperty(new EventArgs());
+            OWLOSPropertyWrapperEventArgs _OWLOSPropertyWrapperEventArgs = new OWLOSPropertyWrapperEventArgs();
+            _OWLOSPropertyWrapperEventArgs.property = property; 
+            OnNewProperty(_OWLOSPropertyWrapperEventArgs);
             return true;
         }
 

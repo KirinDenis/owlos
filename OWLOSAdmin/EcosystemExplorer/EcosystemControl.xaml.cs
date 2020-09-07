@@ -1,4 +1,5 @@
 ﻿using OWLOSAdmin.Ecosystem;
+using OWLOSAdmin.Ecosystem.OWLOS;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,7 +20,7 @@ namespace OWLOSAdmin.EcosystemExplorer
     /// <summary>
     /// Interaction logic for NodeControl.xaml
     /// </summary>
-    public partial class OWLOSNodeControl : UserControl
+    public partial class EcosystemControl : UserControl
     {
         private DependencyPropertyDescriptor renderTransform = DependencyPropertyDescriptor.FromProperty(
             RenderTransformProperty,
@@ -34,7 +35,7 @@ namespace OWLOSAdmin.EcosystemExplorer
 
         public event EventHandler OnPositionChanged;
 
-        private static OWLOSNodeControl CurrentFocused;
+        private static EcosystemControl CurrentFocused;
 
         private OWLOSNodeWrapper nodeWrapper;
 
@@ -111,7 +112,7 @@ namespace OWLOSAdmin.EcosystemExplorer
         }
 
 
-        public OWLOSNodeControl(OWLOSNodeWrapper nodeWrapper)
+        public EcosystemControl(OWLOSNodeWrapper nodeWrapper)
         {
             InitializeComponent();
 
@@ -139,10 +140,26 @@ namespace OWLOSAdmin.EcosystemExplorer
 
         }
 
-        private void Node_NewDriver(object sender, EventArgs e)
+        private void Node_NewDriver(object sender, OWLOSDriverWrapperEventArgs e)
         {
             
-            
+            this.Dispatcher.Invoke(() =>
+            {
+                driversControl.Text = "";
+                driversControl.Text = driversControl.Text + e.driver.name + "\n";
+                e.driver.NewProperty += Driver_NewProperty;
+            });
+
+
+        }
+
+        private void Driver_NewProperty(object sender, OWLOSPropertyWrapperEventArgs e)
+        {
+            this.Dispatcher.Invoke(() =>
+            {
+
+                driversControl.Text = driversControl.Text + e.property.name + " -> " + e.property.value + "\n";
+            });
         }
 
         private void NodeControlPositionChanged(object sender, EventArgs e)

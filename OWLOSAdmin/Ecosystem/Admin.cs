@@ -39,6 +39,7 @@ namespace OWLOSAdmin.Ecosystem
         public void Load()
         {
             OWLOSNodeWrapper nodeWrapper = new OWLOSNodeWrapper();
+            nodeWrapper.RESTfulServerHost = "http://192.168.1.12/";
             nodeWrapper.node = new OWLOSNode();
 
             OWLOSNodeWrapperEventArgs eventArgs = new OWLOSNodeWrapperEventArgs();
