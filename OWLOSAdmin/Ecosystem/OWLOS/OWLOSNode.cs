@@ -20,6 +20,11 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
     public class OWLOSDriverWrapperEventArgs : EventArgs
     {
+        public OWLOSDriverWrapperEventArgs(OWLOSDriver driver)
+        {
+            this.driver = driver;
+        }
+
         public OWLOSDriver driver;
     }
 
@@ -32,7 +37,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         public delegate void DriverEventHandler(object? sender, OWLOSDriverWrapperEventArgs e);
 
-        public event DriverEventHandler NewDriver;
+        public event DriverEventHandler OnNewDriver;
 
         
         public OWLOSNode()
@@ -41,9 +46,9 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         }
 
 
-        protected virtual void OnNewDriver(OWLOSDriverWrapperEventArgs e)
+        protected virtual void NewDriver(OWLOSDriverWrapperEventArgs e)
         {
-            NewDriver?.Invoke(this, e);
+            OnNewDriver?.Invoke(this, e);
         }
 
         public void parseDrivers(string driverData)
@@ -61,10 +66,14 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
                     {
                         driver = new OWLOSDriver(this, driverName);
                         
-                        OWLOSDriverWrapperEventArgs _OWLOSDriverWrapperEventArgs = new OWLOSDriverWrapperEventArgs();
-                        _OWLOSDriverWrapperEventArgs.driver = driver;
-                        OnNewDriver(_OWLOSDriverWrapperEventArgs);
+                        OWLOSDriverWrapperEventArgs _OWLOSDriverWrapperEventArgs = new OWLOSDriverWrapperEventArgs(driver);
+                        
+                        NewDriver(_OWLOSDriverWrapperEventArgs);
                     }
+                    else
+                    {
+
+                    }                        
                 }
                 else
                 if (driver != null)

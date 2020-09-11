@@ -86,11 +86,11 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         }
         public void Start()
         {
-            lifeCycleTimer = new Timer(1000);
+            lifeCycleTimer = new Timer(100000);
             lifeCycleTimer.AutoReset = true;
             lifeCycleTimer.Elapsed += new ElapsedEventHandler(OnLifeCycleTimer);
             lifeCycleTimer.Start();
-            OnLifeCycleTimer(null, null);
+            //OnLifeCycleTimer(null, null);
 
         }
 

@@ -50,6 +50,7 @@ namespace OWLOSAdmin.EcosystemExplorer
         {
             InitializeComponent();
 
+            
             Admin admin = new Admin();
             adminControl = new EcosystemControl(null);
             nodeGrid.Children.Add(adminControl);
@@ -57,6 +58,22 @@ namespace OWLOSAdmin.EcosystemExplorer
             admin.NewOWLOSNode += Admin_NewOWLOSNode;
             admin.Load();
 
+            Random r = new Random(0xFFFF);
+            for (int i = 0; i < 10; i++)
+            {
+
+                ArcPathControl arcPathControl = new ArcPathControl();
+                nodeGrid.Children.Add(arcPathControl);
+
+                //arcPathControl.Margin = new Thickness(new Random(0xFFFF).Next(0, 1000), new Random(0xFFFF).Next(0, 1000), new Random(0xFFFF).Next(0, 1000), new Random(0xFFFF).Next(0, 1000));
+
+                TranslateTransform transform = new TranslateTransform();
+                transform.X += (r.Next(-5000, 5000));
+                transform.Y += (r.Next(-5000, 5000));
+                arcPathControl.RenderTransform = transform;
+            }
+
+            
             nodeGrid.Width = nodeGrid.Height = cellSize;
             viewbox.Width = viewbox.Height = cellSize / 10;
 

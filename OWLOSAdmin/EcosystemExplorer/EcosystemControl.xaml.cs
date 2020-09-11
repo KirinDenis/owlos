@@ -119,7 +119,7 @@ namespace OWLOSAdmin.EcosystemExplorer
             this.nodeWrapper = nodeWrapper;
             if (nodeWrapper != null)
             {
-                nodeWrapper.node.NewDriver += Node_NewDriver;
+                nodeWrapper.node.OnNewDriver += Node_NewDriver;
             }
 
             transform.X = 5500;
