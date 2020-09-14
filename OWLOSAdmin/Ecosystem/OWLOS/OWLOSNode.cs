@@ -5,6 +5,7 @@ using System.IO.Ports;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Controls;
 
@@ -32,14 +33,14 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
     public class OWLOSNode
     {
-        
+
         public List<OWLOSDriver> drivers { get; set; } = new List<OWLOSDriver>();
 
         public delegate void DriverEventHandler(object? sender, OWLOSDriverWrapperEventArgs e);
 
         public event DriverEventHandler OnNewDriver;
 
-        
+
         public OWLOSNode()
         {
 
@@ -51,7 +52,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             OnNewDriver?.Invoke(this, e);
         }
 
-        public void parseDrivers(string driverData)
+        public async Task parseDrivers(string driverData)
         {
             List<string> driverRaw = driverData.Split('\n').ToList();
             OWLOSDriver driver = null;
@@ -65,25 +66,25 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
                     if (driver == null)
                     {
                         driver = new OWLOSDriver(this, driverName);
-                        
+
                         OWLOSDriverWrapperEventArgs _OWLOSDriverWrapperEventArgs = new OWLOSDriverWrapperEventArgs(driver);
-                        
+
                         NewDriver(_OWLOSDriverWrapperEventArgs);
                     }
                     else
                     {
 
-                    }                        
+                    }
                 }
                 else
                 if (driver != null)
-                {
+                {                    
                     drivers.Add(driver);
                     if (driverProp.IndexOf("=") != -1)
                     {
                         string key = driverProp.Substring(0, driverProp.IndexOf("="));
                         string value = driverProp.Substring(driverProp.IndexOf("=") + 1);
-                        driver.SetParsedProperty(key, value);
+                        await driver.SetParsedProperty(key, value);
                     }
                 }
             }

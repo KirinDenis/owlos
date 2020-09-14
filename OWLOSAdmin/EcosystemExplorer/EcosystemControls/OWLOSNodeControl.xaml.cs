@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OWLOSAdmin.EcosystemExplorer.Huds;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
@@ -17,23 +18,23 @@ using System.Windows.Shapes;
 namespace OWLOSAdmin.EcosystemExplorer
 {
     /// <summary>
-    /// Interaction logic for ArcPathControl.xaml
+    /// Interaction logic for OWLOSNodeControl.xaml
     /// </summary>
-    public partial class ArcPathControl : UserControl
+    public partial class OWLOSNodeControl : UserControl
     {
 
         private double radius = 70;
         private double angel1 = 0;
 
-        public ArcPathControl()
+        public OWLOSNodeControl()
         {
             InitializeComponent();
 
-            path1.Data = Geometry.Parse(describeArc(100, 100, radius, 30, 180));
-            path2.Data = Geometry.Parse(describeArc(100, 100, radius, 30, 180));
-            path3.Data = Geometry.Parse(describeArc(100, 100, radius + 10, 30, 180));
-            path4.Data = Geometry.Parse(describeArc(100, 100, radius - 50, 0, 359));
-            path5.Data = Geometry.Parse(describeArc(100, 100, radius + 20, 0, 30));
+            path1.Data = HudLibrary.DrawArc(100, 100, radius, 30, 180);
+            path2.Data = HudLibrary.DrawArc(100, 100, radius, 30, 180);
+            path3.Data = HudLibrary.DrawArc(100, 100, radius + 10, 30, 180);
+            path4.Data = HudLibrary.DrawArc(100, 100, radius - 50, 0, 359);
+            path5.Data = HudLibrary.DrawArc(100, 100, radius + 20, 0, 30);
 
 
             Random r = new Random((int)DateTime.Now.Ticks);
@@ -105,33 +106,11 @@ namespace OWLOSAdmin.EcosystemExplorer
             {
 
 
-                path2.Data = Geometry.Parse(describeArc(100, 100, radius, 0, angel1));
+                path2.Data = HudLibrary.DrawArc(100, 100, radius, 0, angel1);
             });
         }
 
 
-        private Point polarToCartesian(double centerX, double centerY, double radius, double angleInDegrees)
-        {
-            var angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
-
-            Point point = new Point(centerX + (radius * Math.Cos(angleInRadians)), centerY + (radius * Math.Sin(angleInRadians)));
-
-            return point;
-        }
-
-        private string describeArc(double x, double y, double radius, double startAngle, double endAngle)
-        {
-
-            Point start = polarToCartesian(x, y, radius, endAngle);
-            Point end = polarToCartesian(x, y, radius, startAngle);
-
-            int largeArcFlag = endAngle - startAngle <= 180 ? 0 : 1;
-
-            NumberFormatInfo nfi = new NumberFormatInfo();
-            nfi.NumberDecimalSeparator = ".";
-
-            return string.Join(" ", new string[11] { "M", start.X.ToString(nfi), start.Y.ToString(nfi), "A", radius.ToString(nfi), radius.ToString(nfi), "0", largeArcFlag.ToString(nfi), "0", end.X.ToString(nfi), end.Y.ToString(nfi) });
-        }
 
         private void path5_MouseEnter(object sender, MouseEventArgs e)
         {

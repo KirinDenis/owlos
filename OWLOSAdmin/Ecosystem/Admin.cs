@@ -17,20 +17,19 @@ namespace OWLOSAdmin.Ecosystem
 
     public class OWLOSNodeWrapperEventArgs : EventArgs
     {
-        public OWLOSNodeWrapper node;
+        public OWLOSNodeWrapper nodeWrapper;
+        public OWLOSNodeWrapperEventArgs(OWLOSNodeWrapper nodeWrapper)
+        {
+            this.nodeWrapper = nodeWrapper;            
+        }
     }
-
-   
-
-    
-
     class Admin
     {
         
         List<OWLOSNodeWrapper> OWLOSNodeWrappers = new List<OWLOSNodeWrapper>();
 
-        public delegate void EventHandler2(object? sender, OWLOSNodeWrapperEventArgs e);
-        public event EventHandler2 NewOWLOSNode;
+        public delegate void NewNodeEventHandler(object? sender, OWLOSNodeWrapperEventArgs e);
+        public event NewNodeEventHandler OnNewNode;
 
         public Admin()
         {
@@ -39,22 +38,19 @@ namespace OWLOSAdmin.Ecosystem
         public void Load()
         {
             OWLOSNodeWrapper nodeWrapper = new OWLOSNodeWrapper();
-            nodeWrapper.RESTfulServerHost = "http://192.168.1.12/";
+            nodeWrapper.RESTfulServerHost = "http://192.168.1.101/";
             nodeWrapper.node = new OWLOSNode();
-
-            OWLOSNodeWrapperEventArgs eventArgs = new OWLOSNodeWrapperEventArgs();
-            eventArgs.node = nodeWrapper;
-
-            OnNewOWLOSNode(eventArgs);
+            
+            NewNode(new OWLOSNodeWrapperEventArgs(nodeWrapper));
             nodeWrapper.transport = new OWLOSTransport(nodeWrapper.node);
             nodeWrapper.transport.RESTfulServerHost = nodeWrapper.RESTfulServerHost;
             nodeWrapper.transport.Start();
             OWLOSNodeWrappers.Add(nodeWrapper);            
         }
 
-        protected virtual void OnNewOWLOSNode(OWLOSNodeWrapperEventArgs e)
+        protected virtual void NewNode(OWLOSNodeWrapperEventArgs e)
         {
-            NewOWLOSNode?.Invoke(this, e);
+            OnNewNode?.Invoke(this, e);
         }
 
     }

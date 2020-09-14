@@ -22,22 +22,20 @@ namespace OWLOSAdmin.EcosystemExplorer
     /// </summary>
     public partial class EcosystemControl : UserControl
     {
-        private DependencyPropertyDescriptor renderTransform = DependencyPropertyDescriptor.FromProperty(
-            RenderTransformProperty,
-            typeof(UserControl));
+        private DependencyPropertyDescriptor renderTransform = DependencyPropertyDescriptor.FromProperty(RenderTransformProperty, typeof(UserControl));
 
         private bool isInDrag = false;
 
         private Point currentPoint;
-        private Point anchorPoint;
 
+        private Point anchorPoint;
         public TranslateTransform transform { get; } = new TranslateTransform();
 
         public event EventHandler OnPositionChanged;
 
         private static EcosystemControl CurrentFocused;
 
-        private OWLOSNodeWrapper nodeWrapper;
+
 
         private bool _isFocused;
         public bool IsFocused
@@ -48,7 +46,8 @@ namespace OWLOSAdmin.EcosystemExplorer
                 _isFocused = value;
                 if (_isFocused)
                 {
-                    mainBorder.BorderBrush = (SolidColorBrush)App.Current.Resources["OWLOSInfo"];
+                   // this.OnGotFocus(new RoutedEventArgs());
+                    //mainBorder.BorderBrush = (SolidColorBrush)App.Current.Resources["OWLOSInfo"];
                     Dispatcher.Invoke((Action)(() =>
                     {
 
@@ -83,7 +82,8 @@ namespace OWLOSAdmin.EcosystemExplorer
                 }
                 else
                 {
-                    mainBorder.BorderBrush = (SolidColorBrush)App.Current.Resources["OWLOSDefault"];
+                   // this.OnLostFocus(new RoutedEventArgs());
+                    //mainBorder.BorderBrush = (SolidColorBrush)App.Current.Resources["OWLOSDefault"];
 
                     Dispatcher.Invoke((Action)(() =>
                     {
@@ -111,16 +111,19 @@ namespace OWLOSAdmin.EcosystemExplorer
             }
         }
 
+        private UserControl childControl = null;
 
-        public EcosystemControl(OWLOSNodeWrapper nodeWrapper)
+        public EcosystemControl(UserControl childControl)
         {
             InitializeComponent();
 
-            this.nodeWrapper = nodeWrapper;
-            if (nodeWrapper != null)
+            if (childControl != null)
             {
-                nodeWrapper.node.OnNewDriver += Node_NewDriver;
+                this.childControl = childControl;
+                mainGrid.Children.Add(childControl);
             }
+
+
 
             transform.X = 5500;
             transform.Y = 5200;
@@ -136,31 +139,12 @@ namespace OWLOSAdmin.EcosystemExplorer
                                                          mediaColorBrushBlack.Color.B);
             */
 
-            mainBorder.BorderBrush = (SolidColorBrush)App.Current.Resources["OWLOSInfo"];
+            //mainBorder.BorderBrush = (SolidColorBrush)App.Current.Resources["OWLOSInfo"];
+          //  this.OnLostFocus(new RoutedEventArgs());
 
         }
 
-        private void Node_NewDriver(object sender, OWLOSDriverWrapperEventArgs e)
-        {
-            
-            this.Dispatcher.Invoke(() =>
-            {
-                driversControl.Text = "";
-                driversControl.Text = driversControl.Text + e.driver.name + "\n";
-                e.driver.NewProperty += Driver_NewProperty;
-            });
 
-
-        }
-
-        private void Driver_NewProperty(object sender, OWLOSPropertyWrapperEventArgs e)
-        {
-            this.Dispatcher.Invoke(() =>
-            {
-
-                driversControl.Text = driversControl.Text + e.property.name + " -> " + e.property.value + "\n";
-            });
-        }
 
         private void NodeControlPositionChanged(object sender, EventArgs e)
         {

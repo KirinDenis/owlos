@@ -22,56 +22,6 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         public const int UART = 0x0004;
     }
 
-    public class OWLOSBaseTransport
-    {
-        public bool enabled = false;
-
-        public NetworkStatus networkStatus = NetworkStatus.offline;
-
-        public string hostEndPoint = string.Empty;
-
-        public string topic = string.Empty;
-
-        public string login = string.Empty;
-
-        public string password = string.Empty;
-        public async Task<string> Get(string topic)
-        {
-            return string.Empty;
-        }
-
-        public async Task<string> Set(string topic, string value)
-        {
-            return string.Empty; 
-        }
-    }
-
-    public class OWLOSHTTPTransport: OWLOSBaseTransport
-    {
-
-        
-
-        private async Task<string> HTTPGet(string APIName, string args = "")
-        {
-            try
-            {
-                HttpClient client = new HttpClient();
-                HttpResponseMessage response = await client.GetAsync(hostEndPoint + APIName + args);
-
-                response.EnsureSuccessStatusCode();
-                return await response.Content.ReadAsStringAsync();
-            }
-            catch (Exception exception)
-            {
-                return "Error:" + exception.Message;
-            }
-
-
-        }
-
-
-    }
-
     public class OWLOSTransport
     {
         private OWLOSNode node = null;
@@ -86,11 +36,11 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         }
         public void Start()
         {
-            lifeCycleTimer = new Timer(100000);
+            lifeCycleTimer = new Timer(1000);
             lifeCycleTimer.AutoReset = true;
             lifeCycleTimer.Elapsed += new ElapsedEventHandler(OnLifeCycleTimer);
             lifeCycleTimer.Start();
-            //OnLifeCycleTimer(null, null);
+            OnLifeCycleTimer(null, null);
 
         }
 
@@ -98,11 +48,15 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         {
 
             string driverPoperties = await Get("getalldriversproperties");
-            if (driverPoperties.IndexOf("Error:") != 0)
-            {
-                    node.parseDrivers(driverPoperties);
+            
+            
 
-            }
+                if (driverPoperties.IndexOf("Error:") != 0)
+                {
+                    await node.parseDrivers(driverPoperties);
+
+                }
+            
             
         }
 

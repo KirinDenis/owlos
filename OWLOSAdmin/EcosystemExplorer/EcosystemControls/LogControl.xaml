@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="OWLOSAdmin.EcosystemExplorer.EcosystemControl"
+﻿<UserControl x:Class="OWLOSAdmin.EcosystemExplorer.LogControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -10,9 +10,7 @@
              Height="Auto" Width="Auto"
              d:DesignHeight="400" d:DesignWidth="200" 
              Focusable="True" IsTabStop="True"              
-             PreviewMouseMove="NodeControlPreviewMouseMove" 
-             MouseDown="NodeControlMouseDown" 
-             MouseUp="NodeControlMouseUp" GotFocus="UserControl_GotFocus" LostFocus="UserControl_LostFocus" PreviewMouseDown="UserControl_PreviewMouseDown" ClipToBounds="True" SnapsToDevicePixels="True">
+             ClipToBounds="True" SnapsToDevicePixels="True">
 
 
 

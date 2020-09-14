@@ -55,22 +55,22 @@ namespace OWLOSAdmin.EcosystemExplorer
             adminControl = new EcosystemControl(null);
             nodeGrid.Children.Add(adminControl);
 
-            admin.NewOWLOSNode += Admin_NewOWLOSNode;
+            admin.OnNewNode += Admin_NewOWLOSNode;
             admin.Load();
 
             Random r = new Random(0xFFFF);
             for (int i = 0; i < 10; i++)
             {
 
-                ArcPathControl arcPathControl = new ArcPathControl();
-                nodeGrid.Children.Add(arcPathControl);
+                OWLOSNodeControl OWLOSNodeControl = new OWLOSNodeControl();
+                nodeGrid.Children.Add(OWLOSNodeControl);
 
-                //arcPathControl.Margin = new Thickness(new Random(0xFFFF).Next(0, 1000), new Random(0xFFFF).Next(0, 1000), new Random(0xFFFF).Next(0, 1000), new Random(0xFFFF).Next(0, 1000));
+                //OWLOSNodeControl.Margin = new Thickness(new Random(0xFFFF).Next(0, 1000), new Random(0xFFFF).Next(0, 1000), new Random(0xFFFF).Next(0, 1000), new Random(0xFFFF).Next(0, 1000));
 
                 TranslateTransform transform = new TranslateTransform();
                 transform.X += (r.Next(-5000, 5000));
                 transform.Y += (r.Next(-5000, 5000));
-                arcPathControl.RenderTransform = transform;
+                OWLOSNodeControl.RenderTransform = transform;
             }
 
             
@@ -106,10 +106,11 @@ namespace OWLOSAdmin.EcosystemExplorer
 
         private void Admin_NewOWLOSNode(object sender, OWLOSNodeWrapperEventArgs e)
         {
-            EcosystemControl nodeCountrol1 = new EcosystemControl(e.node);
-            nodeGrid.Children.Add(nodeCountrol1);
+            LogControl nodeCountrol1 = new LogControl(e.nodeWrapper);
+            
+            nodeGrid.Children.Add(nodeCountrol1.parentControl);
 
-            var relationLine = new EcosystemRelationLine(nodeCountrol1, nodeCountrol1, adminControl, nodeCountrol1, nodeGrid);
+            var relationLine = new EcosystemRelationLine(nodeCountrol1, nodeCountrol1.parentControl, adminControl, nodeCountrol1, nodeGrid);
             relationLine.DrawRelationLine();
 
         }

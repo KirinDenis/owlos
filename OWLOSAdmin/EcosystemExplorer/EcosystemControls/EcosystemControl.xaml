@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="OWLOSAdmin.EcosystemExplorer.EcosystemControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:OWLOSAdmin.EcosystemExplorer"
+             mc:Ignorable="d" 
+             HorizontalAlignment="Left" VerticalAlignment="Top"
+             MinHeight="150" MinWidth="150" 
+             Height="Auto" Width="Auto"
+             d:DesignHeight="200" d:DesignWidth="200" 
+             Focusable="True" IsTabStop="True"              
+             PreviewMouseMove="NodeControlPreviewMouseMove" 
+             MouseDown="NodeControlMouseDown" 
+             MouseUp="NodeControlMouseUp" 
+             GotFocus="UserControl_GotFocus" 
+             LostFocus="UserControl_LostFocus" 
+             PreviewMouseDown="UserControl_PreviewMouseDown" 
+             ClipToBounds="True" 
+             SnapsToDevicePixels="True">
+
+    <Grid Name="mainGrid" TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed">
+        <TextBlock Text="base ecosystem control" Foreground="{DynamicResource OWLOSInfoAlpha2}"/>
+        
+    </Grid>
+
+</UserControl>

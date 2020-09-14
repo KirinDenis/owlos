@@ -321,6 +321,8 @@ void transportLoop()
 		}
 #endif
 
+//TEMPORARY!!! TEST UART ONLY 
+/*
 		if (Serial.available())
 		{
 			
@@ -346,6 +348,7 @@ void transportLoop()
 			}
 			}
 		}
+		*/
 	}
 }
 
