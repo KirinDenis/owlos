@@ -1,4 +1,5 @@
-﻿using OWLOSAdmin.EcosystemExplorer.Huds;
+﻿using OWLOSAdmin.Ecosystem;
+using OWLOSAdmin.EcosystemExplorer.Huds;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -20,15 +21,28 @@ namespace OWLOSAdmin.EcosystemExplorer
     /// <summary>
     /// Interaction logic for OWLOSNodeControl.xaml
     /// </summary>
-    public partial class OWLOSNodeControl : UserControl
+    public partial class OWLOSNodeControl: UserControl, IEcosystemChildControl
     {
+
+        public EcosystemControl parentControl { get; set; }
 
         private double radius = 70;
         private double angel1 = 0;
 
-        public OWLOSNodeControl()
+        private OWLOSNodeWrapper nodeWrapper;
+
+        public OWLOSNodeControl(OWLOSNodeWrapper nodeWrapper)
         {
+
+            this.nodeWrapper = nodeWrapper;
+            if (nodeWrapper != null)
+            {
+                nodeWrapper.node.OnNewDriver += Node_OnNewDriver;
+            }
+
             InitializeComponent();
+
+            parentControl = new EcosystemControl(this);
 
             path1.Data = HudLibrary.DrawArc(100, 100, radius, 30, 180);
             path2.Data = HudLibrary.DrawArc(100, 100, radius, 30, 180);
@@ -92,6 +106,45 @@ namespace OWLOSAdmin.EcosystemExplorer
             OnLifeCycleTimer(null, null);
 
 
+        }
+
+        private void Node_OnNewDriver(object sender, Ecosystem.OWLOS.OWLOSDriverWrapperEventArgs e)
+        {
+            base.Dispatcher.Invoke(() =>
+            {
+                 OWLOSDriverPropControl driverCountrol = new OWLOSDriverPropControl(e.driver);
+                 (this.parentControl.Parent as Grid).Children.Add(driverCountrol.parentControl);
+
+
+
+                var relationLine = new EcosystemRelationLine(driverCountrol, driverCountrol.parentControl, this.parentControl, driverCountrol, this.parentControl.Parent as Grid);
+                relationLine.DrawRelationLine();
+
+                //driversControl.Text = "";
+                //driversControl.Text = driversControl.Text + e.driver.name + "\n";
+                //e.driver.NewProperty += Driver_NewProperty;
+            });
+
+        }
+
+        public void OnParentDrag()
+        {
+            
+        }
+
+        public void OnParentDrop()
+        {
+            
+        }
+
+        public void OnParentGetFocus()
+        {
+            
+        }
+
+        public void OnParentLostFocus()
+        {
+            
         }
 
         private async void OnLifeCycleTimer(Object source, ElapsedEventArgs e)

@@ -10,16 +10,16 @@
              Height="Auto" Width="Auto"
              d:DesignHeight="200" d:DesignWidth="200" 
              Focusable="True" IsTabStop="True"              
-             PreviewMouseMove="NodeControlPreviewMouseMove" 
-             MouseDown="NodeControlMouseDown" 
-             MouseUp="NodeControlMouseUp" 
-             GotFocus="UserControl_GotFocus" 
-             LostFocus="UserControl_LostFocus" 
-             PreviewMouseDown="UserControl_PreviewMouseDown" 
+             PreviewMouseMove="EcosystemControlPreviewMouseMove" 
+             MouseDown="EcosystemControlMouseDown" 
+             MouseUp="EcosystemControlMouseUp" 
+             GotFocus="EcosystemControlGotFocus" 
+             LostFocus="EcosystemControlLostFocus" 
+             PreviewMouseDown="EcosystemControlPreviewMouseDown" 
              ClipToBounds="True" 
              SnapsToDevicePixels="True">
 
-    <Grid Name="mainGrid" TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed">
+    <Grid Name="childHolderGrid" TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed">
         <TextBlock Text="base ecosystem control" Foreground="{DynamicResource OWLOSInfoAlpha2}"/>
         
     </Grid>

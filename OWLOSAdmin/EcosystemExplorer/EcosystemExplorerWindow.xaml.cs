@@ -58,21 +58,6 @@ namespace OWLOSAdmin.EcosystemExplorer
             admin.OnNewNode += Admin_NewOWLOSNode;
             admin.Load();
 
-            Random r = new Random(0xFFFF);
-            for (int i = 0; i < 10; i++)
-            {
-
-                OWLOSNodeControl OWLOSNodeControl = new OWLOSNodeControl();
-                nodeGrid.Children.Add(OWLOSNodeControl);
-
-                //OWLOSNodeControl.Margin = new Thickness(new Random(0xFFFF).Next(0, 1000), new Random(0xFFFF).Next(0, 1000), new Random(0xFFFF).Next(0, 1000), new Random(0xFFFF).Next(0, 1000));
-
-                TranslateTransform transform = new TranslateTransform();
-                transform.X += (r.Next(-5000, 5000));
-                transform.Y += (r.Next(-5000, 5000));
-                OWLOSNodeControl.RenderTransform = transform;
-            }
-
             
             nodeGrid.Width = nodeGrid.Height = cellSize;
             viewbox.Width = viewbox.Height = cellSize / 10;
@@ -106,7 +91,7 @@ namespace OWLOSAdmin.EcosystemExplorer
 
         private void Admin_NewOWLOSNode(object sender, OWLOSNodeWrapperEventArgs e)
         {
-            LogControl nodeCountrol1 = new LogControl(e.nodeWrapper);
+            OWLOSNodeControl nodeCountrol1 = new OWLOSNodeControl(e.nodeWrapper);
             
             nodeGrid.Children.Add(nodeCountrol1.parentControl);
 

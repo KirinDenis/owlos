@@ -192,7 +192,7 @@ namespace OWLOSAdmin.EcosystemExplorer
             if (curveLine != null) return false;
 
             ellipse = DrawPointer(frameworkElement, Parent, ellipseWidth, ellipseHeight, ellipseColor);
-            aControl.mainGrid.Children.Add(ellipse);
+            aControl.childHolderGrid.Children.Add(ellipse);
             ellipse.UpdateLayout();
 
             curveLine = DrawCurveLine(ellipse, Parent, aControl);
@@ -216,7 +216,7 @@ namespace OWLOSAdmin.EcosystemExplorer
         {
             if (IsDisposed) throw new ObjectDisposedException("Can't get access to disposed object.");
 
-            aControl.mainGrid.Children.Remove(ellipse);
+            aControl.childHolderGrid.Children.Remove(ellipse);
             panel.Children.Remove(curveLine);
         }
 

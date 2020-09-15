@@ -23,6 +23,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         public delegate void PropertyEventHandler(object? sender, OWLOSPropertyWrapperEventArgs e);
 
         public event PropertyEventHandler NewProperty;
+        public event PropertyEventHandler ChangeProperty;
 
 
         public OWLOSDriver(OWLOSNode parentNode, string name)
@@ -37,19 +38,40 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             NewProperty?.Invoke(this, e);
         }
 
+        protected virtual void OnChangeProperty(OWLOSPropertyWrapperEventArgs e)
+        {
+            ChangeProperty?.Invoke(this, e);
+        }
+
+
         public async Task<bool> SetParsedProperty(string name, string value)
         {
             string _value = value.Substring(0, value.IndexOf("//"));
             string _flags = value.Substring(value.IndexOf("//") + 2);
 
-            OWLOSDriverProperty property = new OWLOSDriverProperty();
-            property.name = name;
-            property.value = _value;
-            property.flags = _flags;
-            properties.Add(property);
-            OWLOSPropertyWrapperEventArgs _OWLOSPropertyWrapperEventArgs = new OWLOSPropertyWrapperEventArgs();
-            _OWLOSPropertyWrapperEventArgs.property = property; 
-            OnNewProperty(_OWLOSPropertyWrapperEventArgs);
+            OWLOSDriverProperty property =  properties.Find(p => p.name == name);
+
+            if (property == null)
+            {
+                property = new OWLOSDriverProperty();
+                property.name = name;
+                property.value = _value;
+                property.flags = _flags;
+                properties.Add(property);
+                OWLOSPropertyWrapperEventArgs _OWLOSPropertyWrapperEventArgs = new OWLOSPropertyWrapperEventArgs();
+                _OWLOSPropertyWrapperEventArgs.property = property;
+                OnNewProperty(_OWLOSPropertyWrapperEventArgs);
+            }
+            else
+            {
+                property.name = name;
+                property.value = _value;
+                property.flags = _flags;
+                OWLOSPropertyWrapperEventArgs _OWLOSPropertyWrapperEventArgs = new OWLOSPropertyWrapperEventArgs();
+                _OWLOSPropertyWrapperEventArgs.property = property;
+              //  OnChangeProperty(_OWLOSPropertyWrapperEventArgs);
+            }
+
             return true;
         }
 

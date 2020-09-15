@@ -70,6 +70,8 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
                         OWLOSDriverWrapperEventArgs _OWLOSDriverWrapperEventArgs = new OWLOSDriverWrapperEventArgs(driver);
 
                         NewDriver(_OWLOSDriverWrapperEventArgs);
+
+                        drivers.Add(driver);
                     }
                     else
                     {
@@ -78,8 +80,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
                 }
                 else
                 if (driver != null)
-                {                    
-                    drivers.Add(driver);
+                {                                        
                     if (driverProp.IndexOf("=") != -1)
                     {
                         string key = driverProp.Substring(0, driverProp.IndexOf("="));

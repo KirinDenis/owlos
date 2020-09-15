@@ -18,40 +18,42 @@ namespace OWLOSAdmin.EcosystemExplorer
     /// <summary>
     /// Interaction logic for LogControl.xaml
     /// </summary>
-    public partial class LogControl : UserControl, IEcosystemChildControl
+    public partial class OWLOSDriverPropControl : UserControl, IEcosystemChildControl
     {
-        
-        private OWLOSNodeWrapper nodeWrapper;
+
+        private OWLOSDriver driver;
 
         public EcosystemControl parentControl { get; set; }
 
-        public LogControl(OWLOSNodeWrapper nodeWrapper)
+        public OWLOSDriverPropControl(OWLOSDriver driver)
         {
             InitializeComponent();
+
             parentControl = new EcosystemControl(this);
 
-            this.nodeWrapper = nodeWrapper;
-            if (nodeWrapper != null)
+            this.driver = driver;
+            if (driver != null)
             {
-                nodeWrapper.node.OnNewDriver += Node_NewDriver;
+                driver.NewProperty += Driver_NewProperty;
+                driver.ChangeProperty += Driver_ChangeProperty;
             }
+
         }
 
-        private void Node_NewDriver(object sender, OWLOSDriverWrapperEventArgs e)
+        private void Driver_ChangeProperty(object sender, OWLOSPropertyWrapperEventArgs e)
         {
-            base.Dispatcher.Invoke(() =>
-            {
-                driversControl.Text = "";
-                driversControl.Text = driversControl.Text + e.driver.name + "\n";
-                e.driver.NewProperty += Driver_NewProperty;
-            });
+            //base.Dispatcher.Invoke(() =>
+            //{
+              //  driversControl.Text = driversControl.Text + e.property.name + " " + e.property.value + "\n";
+            //});
+
         }
 
         private void Driver_NewProperty(object sender, OWLOSPropertyWrapperEventArgs e)
         {
             base.Dispatcher.Invoke(() =>
             {
-                driversControl.Text = driversControl.Text + e.property.name + "\n";
+                driversControl.Text = driversControl.Text + e.property.name + " " + e.property.value + "\n";
             });
         }
 

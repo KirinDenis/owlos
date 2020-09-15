@@ -18,10 +18,12 @@ using System.Windows.Shapes;
 namespace OWLOSAdmin.EcosystemExplorer
 {
     /// <summary>
-    /// Interaction logic for NodeControl.xaml
+    /// Interaction logic for EcosystemControl.xaml
     /// </summary>
     public partial class EcosystemControl : UserControl
     {
+        private IEcosystemChildControl childControl = null;
+
         private DependencyPropertyDescriptor renderTransform = DependencyPropertyDescriptor.FromProperty(RenderTransformProperty, typeof(UserControl));
 
         private bool isInDrag = false;
@@ -35,8 +37,6 @@ namespace OWLOSAdmin.EcosystemExplorer
 
         private static EcosystemControl CurrentFocused;
 
-
-
         private bool _isFocused;
         public bool IsFocused
         {
@@ -46,11 +46,9 @@ namespace OWLOSAdmin.EcosystemExplorer
                 _isFocused = value;
                 if (_isFocused)
                 {
-                   // this.OnGotFocus(new RoutedEventArgs());
-                    //mainBorder.BorderBrush = (SolidColorBrush)App.Current.Resources["OWLOSInfo"];
+                    childControl?.OnParentGetFocus();
                     Dispatcher.Invoke((Action)(() =>
                     {
-
                         {
                             FrameworkElement frameworkElement = Mouse.DirectlyOver as FrameworkElement;
                             Type directlyOverType = frameworkElement?.GetType();
@@ -82,9 +80,7 @@ namespace OWLOSAdmin.EcosystemExplorer
                 }
                 else
                 {
-                   // this.OnLostFocus(new RoutedEventArgs());
-                    //mainBorder.BorderBrush = (SolidColorBrush)App.Current.Resources["OWLOSDefault"];
-
+                    childControl?.OnParentLostFocus();
                     Dispatcher.Invoke((Action)(() =>
                     {
                         //  if ((treeViewItem != null) && treeViewItem.IsSelected)
@@ -93,7 +89,6 @@ namespace OWLOSAdmin.EcosystemExplorer
                         //  }
                     }
                     ));
-
                 }
 
                 if (CurrentFocused != null
@@ -110,48 +105,31 @@ namespace OWLOSAdmin.EcosystemExplorer
                 }
             }
         }
-
-        private UserControl childControl = null;
-
-        public EcosystemControl(UserControl childControl)
+       
+        public EcosystemControl(IEcosystemChildControl childControl)
         {
             InitializeComponent();
 
             if (childControl != null)
             {
                 this.childControl = childControl;
-                mainGrid.Children.Add(childControl);
+                childHolderGrid.Children.Add(childControl as UserControl);
             }
-
-
 
             transform.X = 5500;
             transform.Y = 5200;
-            renderTransform.AddValueChanged(this, NodeControlPositionChanged);
+            renderTransform.AddValueChanged(this, EcosystemControlPositionChanged);
             this.RenderTransform = transform;
 
-
-            /*
-            var mediaColorBrushBlack = (SolidColorBrush)App.Current.Resources["OWLOSInfo"];
-            System.Drawing.Color colorBlack = System.Drawing.Color.FromArgb(mediaColorBrushBlack.Color.A,
-                                                         mediaColorBrushBlack.Color.R,
-                                                         mediaColorBrushBlack.Color.G,
-                                                         mediaColorBrushBlack.Color.B);
-            */
-
-            //mainBorder.BorderBrush = (SolidColorBrush)App.Current.Resources["OWLOSInfo"];
-          //  this.OnLostFocus(new RoutedEventArgs());
-
+            childControl?.OnParentLostFocus();
         }
 
-
-
-        private void NodeControlPositionChanged(object sender, EventArgs e)
+        private void EcosystemControlPositionChanged(object sender, EventArgs e)
         {
             OnPositionChanged?.Invoke(sender, e);
         }
 
-        private void NodeControlPreviewMouseMove(object sender, MouseEventArgs e)
+        private void EcosystemControlPreviewMouseMove(object sender, MouseEventArgs e)
         {
             if (isInDrag)
             {
@@ -168,12 +146,10 @@ namespace OWLOSAdmin.EcosystemExplorer
                 //((((Parent as Grid).Parent as Grid).Parent as Viewbox).Parent as ScrollViewer).ScrollToVerticalOffset(transform.Y);
                 //connectionLine.X2 = e.GetPosition(Parent as Grid).X - clickLocalPosition.X;
                 //connectionLine.Y2 = e.GetPosition(Parent as Grid).Y - clickLocalPosition.Y;
-
             }
-
         }
 
-        private void NodeControlMouseDown(object sender, MouseButtonEventArgs e)
+        private void EcosystemControlMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
@@ -197,7 +173,7 @@ namespace OWLOSAdmin.EcosystemExplorer
 
         }
 
-        private void NodeControlMouseUp(object sender, MouseButtonEventArgs e)
+        private void EcosystemControlMouseUp(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Released)
             {
@@ -207,26 +183,24 @@ namespace OWLOSAdmin.EcosystemExplorer
                     isInDrag = false;
                 }
             }
-
         }
 
-        private void UserControl_GotFocus(object sender, RoutedEventArgs e)
+        private void EcosystemControlGotFocus(object sender, RoutedEventArgs e)
         {
             IsFocused = true;
         }
 
-        private void UserControl_LostFocus(object sender, RoutedEventArgs e)
+        private void EcosystemControlLostFocus(object sender, RoutedEventArgs e)
         {
             IsFocused = false;
         }
 
-        private void UserControl_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        private void EcosystemControlPreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                UserControl_GotFocus(this, null);
+                EcosystemControlGotFocus(this, null);
             }
-
         }
     }
 }

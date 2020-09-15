@@ -46,18 +46,11 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         private async void OnLifeCycleTimer(Object source, ElapsedEventArgs e)
         {
-
             string driverPoperties = await Get("getalldriversproperties");
-            
-            
-
                 if (driverPoperties.IndexOf("Error:") != 0)
                 {
                     await node.parseDrivers(driverPoperties);
-
                 }
-            
-            
         }
 
         public async Task<string> Get(string APIName, string args = "")
