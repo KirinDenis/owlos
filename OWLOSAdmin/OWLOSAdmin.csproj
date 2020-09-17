@@ -18,6 +18,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="EcosystemExplorer\EcosystemControls\OWLOSDriverPropertyControl - Copy.xaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>OWLOSDriverPropertyControl.xaml.cs</DependentUpon>
+    </Compile>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

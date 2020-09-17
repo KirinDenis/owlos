@@ -40,10 +40,14 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         public event DriverEventHandler OnNewDriver;
 
+        public Admin admin;
 
-        public OWLOSNode()
+        public OWLOSNodeWrapper wrapper;
+
+        public OWLOSNode(Admin admin, OWLOSNodeWrapper wrapper)
         {
-
+            this.admin = admin;
+            this.wrapper = wrapper;
         }
 
 
@@ -59,7 +63,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             foreach (string driverProp in driverRaw)
             {
                 //find driver
-                if (driverProp.IndexOf(":") != -1)
+                if (driverProp.IndexOf("properties for:") != -1)
                 {
                     string driverName = driverProp.Substring(driverProp.IndexOf(":") + 1);
                     driver = drivers.Find(n => n.name == driverName);

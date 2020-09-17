@@ -112,7 +112,7 @@ namespace OWLOSAdmin.EcosystemExplorer
         {
             base.Dispatcher.Invoke(() =>
             {
-                 OWLOSDriverPropControl driverCountrol = new OWLOSDriverPropControl(e.driver);
+                 OWLOSDriverControl driverCountrol = new OWLOSDriverControl(e.driver);
                  (this.parentControl.Parent as Grid).Children.Add(driverCountrol.parentControl);
 
 

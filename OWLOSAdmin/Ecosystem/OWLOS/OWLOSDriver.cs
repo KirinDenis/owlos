@@ -23,7 +23,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         public delegate void PropertyEventHandler(object? sender, OWLOSPropertyWrapperEventArgs e);
 
         public event PropertyEventHandler NewProperty;
-        public event PropertyEventHandler ChangeProperty;
+        
 
 
         public OWLOSDriver(OWLOSNode parentNode, string name)
@@ -38,10 +38,6 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             NewProperty?.Invoke(this, e);
         }
 
-        protected virtual void OnChangeProperty(OWLOSPropertyWrapperEventArgs e)
-        {
-            ChangeProperty?.Invoke(this, e);
-        }
 
 
         public async Task<bool> SetParsedProperty(string name, string value)
@@ -53,7 +49,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
             if (property == null)
             {
-                property = new OWLOSDriverProperty();
+                property = new OWLOSDriverProperty(this);
                 property.name = name;
                 property.value = _value;
                 property.flags = _flags;
@@ -64,12 +60,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             }
             else
             {
-                property.name = name;
-                property.value = _value;
-                property.flags = _flags;
-                OWLOSPropertyWrapperEventArgs _OWLOSPropertyWrapperEventArgs = new OWLOSPropertyWrapperEventArgs();
-                _OWLOSPropertyWrapperEventArgs.property = property;
-              //  OnChangeProperty(_OWLOSPropertyWrapperEventArgs);
+                property.SetOutside(_value);
             }
 
             return true;

@@ -23,7 +23,7 @@ namespace OWLOSAdmin.Ecosystem
             this.nodeWrapper = nodeWrapper;            
         }
     }
-    class Admin
+    public class Admin
     {
         
         List<OWLOSNodeWrapper> OWLOSNodeWrappers = new List<OWLOSNodeWrapper>();
@@ -39,13 +39,17 @@ namespace OWLOSAdmin.Ecosystem
         {
             OWLOSNodeWrapper nodeWrapper = new OWLOSNodeWrapper();
             nodeWrapper.RESTfulServerHost = "http://192.168.1.101/";
-            nodeWrapper.node = new OWLOSNode();
+
             
-            NewNode(new OWLOSNodeWrapperEventArgs(nodeWrapper));
+
+            nodeWrapper.node = new OWLOSNode(this, nodeWrapper);
+            
+            
             nodeWrapper.transport = new OWLOSTransport(nodeWrapper.node);
             nodeWrapper.transport.RESTfulServerHost = nodeWrapper.RESTfulServerHost;
             nodeWrapper.transport.Start();
-            OWLOSNodeWrappers.Add(nodeWrapper);            
+            OWLOSNodeWrappers.Add(nodeWrapper);
+            NewNode(new OWLOSNodeWrapperEventArgs(nodeWrapper));
         }
 
         protected virtual void NewNode(OWLOSNodeWrapperEventArgs e)

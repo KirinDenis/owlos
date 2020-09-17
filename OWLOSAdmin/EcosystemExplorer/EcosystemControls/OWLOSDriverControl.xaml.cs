@@ -18,24 +18,27 @@ namespace OWLOSAdmin.EcosystemExplorer
     /// <summary>
     /// Interaction logic for LogControl.xaml
     /// </summary>
-    public partial class OWLOSDriverPropControl : UserControl, IEcosystemChildControl
+    public partial class OWLOSDriverControl : UserControl, IEcosystemChildControl
     {
 
         private OWLOSDriver driver;
 
         public EcosystemControl parentControl { get; set; }
 
-        public OWLOSDriverPropControl(OWLOSDriver driver)
+        public OWLOSDriverControl(OWLOSDriver driver)
         {
             InitializeComponent();
 
             parentControl = new EcosystemControl(this);
 
             this.driver = driver;
+
+            driverName.Text = driver.name;
+
             if (driver != null)
             {
                 driver.NewProperty += Driver_NewProperty;
-                driver.ChangeProperty += Driver_ChangeProperty;
+               
             }
 
         }
@@ -53,7 +56,9 @@ namespace OWLOSAdmin.EcosystemExplorer
         {
             base.Dispatcher.Invoke(() =>
             {
-                driversControl.Text = driversControl.Text + e.property.name + " " + e.property.value + "\n";
+                // driversControl.Text = driversControl.Text + e.property.name + " " + e.property.value + "\n";
+                OWLOSDriverPropertyControl propertyControl = new OWLOSDriverPropertyControl(e.property);
+                propertiesHolder.Children.Add(propertyControl);
             });
         }
 

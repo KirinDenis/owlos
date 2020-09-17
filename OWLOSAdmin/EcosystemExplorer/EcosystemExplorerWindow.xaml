@@ -5,6 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OWLOSAdmin"
+        FontFamily="file:///D:\Users\Egor\source\repos\KirinDenis\owlos\OWLOSAdmin\Fonts\#omega flight"
         mc:Ignorable="d"                
         Title="Ecosystem Explorer" Height="450" Width="800"  WindowState="Maximized" SnapsToDevicePixels="True" >
 
@@ -129,7 +130,7 @@
 
             <Grid Grid.Row="0" Height="30">
                 <StackPanel Orientation="Horizontal" Margin="10,0,10,0">
-                    <TextBlock Name="EcosystemExplorerTextBlock" Text="OWLOS Ecosystem"  Margin="0,0,2,0" VerticalAlignment="Center" Foreground="{DynamicResource OWLOSInfo}" FontFamily="file:///D:\Users\Egor\source\repos\KirinDenis\owlos\OWLOSAdmin\Fonts\#omega flight" />
+                    <TextBlock Name="EcosystemExplorerTextBlock" Text="OWLOS Ecosystem"  Margin="0,0,2,0" VerticalAlignment="Center" Foreground="{DynamicResource OWLOSInfo}"  />
                     <StackPanel Orientation="Horizontal"  VerticalAlignment="Center">
                         <TextBlock Text="zoom:" VerticalAlignment="Center" Margin="0,0,0,0" Foreground="{DynamicResource OWLOSInfo}" />
                         <TextBox Name="zoomTextBox" Text="100" Background="{x:Null}" VerticalAlignment="Center" BorderBrush="{x:Null}" FontWeight="Bold" Foreground="{DynamicResource OWLOSLight}" SnapsToDevicePixels="True" />
@@ -147,6 +148,7 @@
             </Grid>
 
         </Grid>
+        <!-- 
         <Canvas Background="{DynamicResource OWLOSDarkAlpha1}" Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" ZIndex="999999999">
         </Canvas>
 
@@ -155,6 +157,6 @@
 
         <Canvas Background="{DynamicResource OWLOSDarkAlpha1}" Grid.Row="2" Grid.RowSpan="2" Grid.Column="1" ZIndex="999999999" Grid.ColumnSpan="2">
         </Canvas>
-
+        -->
     </Grid>
 </Window>
