@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Text;
 using System.Threading.Tasks;
+using static OWLOSAdmin.Ecosystem.OWLOS.OWLOSDriverProperty;
 
 namespace OWLOSAdmin.Ecosystem.OWLOS
 {
 
-    public class OWLOSPropertyWrapperEventArgs : EventArgs
-    {
-        public OWLOSDriverProperty property;
-    }
 
     public class OWLOSDriver
     {
@@ -20,11 +17,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         List<OWLOSDriverProperty> properties = new List<OWLOSDriverProperty>();
 
-        public delegate void PropertyEventHandler(object? sender, OWLOSPropertyWrapperEventArgs e);
-
-        public event PropertyEventHandler NewProperty;
-        
-
+        public event PropertyEventHandler OnPropertyCreate;
 
         public OWLOSDriver(OWLOSNode parentNode, string name)
         {
@@ -32,13 +25,6 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             this.name = name;
             
         }
-
-        protected virtual void OnNewProperty(OWLOSPropertyWrapperEventArgs e)
-        {
-            NewProperty?.Invoke(this, e);
-        }
-
-
 
         public async Task<bool> SetParsedProperty(string name, string value)
         {
@@ -49,14 +35,9 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
             if (property == null)
             {
-                property = new OWLOSDriverProperty(this);
-                property.name = name;
-                property.value = _value;
-                property.flags = _flags;
+                property = new OWLOSDriverProperty(this, name, value, _flags);
                 properties.Add(property);
-                OWLOSPropertyWrapperEventArgs _OWLOSPropertyWrapperEventArgs = new OWLOSPropertyWrapperEventArgs();
-                _OWLOSPropertyWrapperEventArgs.property = property;
-                OnNewProperty(_OWLOSPropertyWrapperEventArgs);
+                PropertyCreate(new OWLOSPropertyWrapperEventArgs(property));
             }
             else
             {
@@ -65,6 +46,12 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
             return true;
         }
+
+        protected virtual void PropertyCreate(OWLOSPropertyWrapperEventArgs e)
+        {
+            OnPropertyCreate?.Invoke(this, e);
+        }
+
 
         public int GetPropertiesCount()
         {

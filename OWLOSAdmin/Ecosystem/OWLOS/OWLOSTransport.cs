@@ -73,17 +73,10 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         public async Task<string> GetDriverProperty(string driverName, string propertyName)
         {
-            try
-            {
                 HttpClient client = new HttpClient();
                 HttpResponseMessage response = await client.GetAsync(RESTfulServerHost + "getdriverproperty?id=" + driverName + "&property=" + propertyName);
                 response.EnsureSuccessStatusCode();
                 return await response.Content.ReadAsStringAsync();
-            }
-            catch (Exception exception)
-            {
-                return "Error:" + exception.Message;
-            }
 
         }
 

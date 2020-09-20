@@ -105,7 +105,40 @@ namespace OWLOSAdmin.EcosystemExplorer
                 propValue.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSInfo"];
             }
 
-            property.ChangeProperty += Property_ChangeProperty;
+            property.OnPropertyChange += Property_ChangeProperty;
+            property.OnPropertyTransportStatusChange += Property_OnPropertyTransportStatusChange;
+        }
+
+        private void Property_OnPropertyTransportStatusChange(object sender, OWLOSPropertyWrapperEventArgs e)
+        {
+            base.Dispatcher.Invoke(() =>
+            {
+
+                if (e.property.networkStatus == NetworkStatus.online)
+                {
+                    setButton.BorderBrush = (SolidColorBrush)App.Current.Resources["OWLOSInfo"];
+                    getButton.BorderBrush = (SolidColorBrush)App.Current.Resources["OWLOSInfo"];
+                }
+                else
+            if (e.property.networkStatus == NetworkStatus.erorr)
+                {
+                    setButton.BorderBrush = (SolidColorBrush)App.Current.Resources["OWLOSDanger"];
+                    getButton.BorderBrush = (SolidColorBrush)App.Current.Resources["OWLOSDanger"];
+                }
+                else
+            if (e.property.networkStatus == NetworkStatus.reconnect)
+                {
+                    setButton.BorderBrush = (SolidColorBrush)App.Current.Resources["OWLOSWarning"];
+                    getButton.BorderBrush = (SolidColorBrush)App.Current.Resources["OWLOSWarning"];
+                }
+                else
+            if (e.property.networkStatus == NetworkStatus.offline)
+                {
+                    setButton.BorderBrush = (SolidColorBrush)App.Current.Resources["OWLOSDark"];
+                    getButton.BorderBrush = (SolidColorBrush)App.Current.Resources["OWLOSDark"];
+                }
+            });
+
         }
 
         private void ValueToEditors()

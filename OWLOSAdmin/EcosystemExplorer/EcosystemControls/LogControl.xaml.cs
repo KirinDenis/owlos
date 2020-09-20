@@ -43,15 +43,7 @@ namespace OWLOSAdmin.EcosystemExplorer
             {
                 driversControl.Text = "";
                 driversControl.Text = driversControl.Text + e.driver.name + "\n";
-                e.driver.NewProperty += Driver_NewProperty;
-            });
-        }
-
-        private void Driver_NewProperty(object sender, OWLOSPropertyWrapperEventArgs e)
-        {
-            base.Dispatcher.Invoke(() =>
-            {
-                driversControl.Text = driversControl.Text + e.property.name + "\n";
+                //e.driver. += Driver_NewProperty;
             });
         }
 
