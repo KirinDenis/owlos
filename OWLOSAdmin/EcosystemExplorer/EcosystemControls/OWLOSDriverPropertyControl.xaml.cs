@@ -1,4 +1,5 @@
 ﻿using OWLOSAdmin.Ecosystem.OWLOS;
+using OWLOSAdmin.EcosystemExplorer.Huds;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -82,6 +83,8 @@ namespace OWLOSAdmin.EcosystemExplorer
 
 
         private OWLOSDriverProperty property;
+
+        private DoubleAnimation spinnerRotate;
         public OWLOSDriverPropertyControl(OWLOSDriverProperty property)
         {
             InitializeComponent();
@@ -107,38 +110,62 @@ namespace OWLOSAdmin.EcosystemExplorer
 
             property.OnPropertyChange += Property_ChangeProperty;
             property.OnPropertyTransportStatusChange += Property_OnPropertyTransportStatusChange;
+
+            propSpinner.Data = HudLibrary.DrawArc(10, 10, 7, 1, 240);
+
+            spinnerRotate = new DoubleAnimation
+            {
+                From = 0.0f,
+                To = 360,
+                Duration = new Duration(TimeSpan.FromMilliseconds(1000)),
+                RepeatBehavior = RepeatBehavior.Forever
+               // EasingFunction = new BackEase()                
+            };
+
+            propSpinner.RenderTransform = new RotateTransform();
+
         }
 
         private void Property_OnPropertyTransportStatusChange(object sender, OWLOSPropertyWrapperEventArgs e)
         {
             base.Dispatcher.Invoke(() =>
             {
+                Brush componentsBrush = (SolidColorBrush)App.Current.Resources["OWLOSInfo"]; //default NetworkStatus.online
+                EnableValueEditors();
 
-                if (e.property.networkStatus == NetworkStatus.online)
+                if (e.property.networkStatus == NetworkStatus.erorr)
                 {
-                    setButton.BorderBrush = (SolidColorBrush)App.Current.Resources["OWLOSInfo"];
-                    getButton.BorderBrush = (SolidColorBrush)App.Current.Resources["OWLOSInfo"];
-                }
-                else
-            if (e.property.networkStatus == NetworkStatus.erorr)
-                {
-                    setButton.BorderBrush = (SolidColorBrush)App.Current.Resources["OWLOSDanger"];
-                    getButton.BorderBrush = (SolidColorBrush)App.Current.Resources["OWLOSDanger"];
+                    componentsBrush = (SolidColorBrush)App.Current.Resources["OWLOSDanger"];
                 }
                 else
             if (e.property.networkStatus == NetworkStatus.reconnect)
                 {
-                    setButton.BorderBrush = (SolidColorBrush)App.Current.Resources["OWLOSWarning"];
-                    getButton.BorderBrush = (SolidColorBrush)App.Current.Resources["OWLOSWarning"];
+                    componentsBrush = (SolidColorBrush)App.Current.Resources["OWLOSInfoAlpha2"];
+                    DisableValueEditors();
                 }
                 else
             if (e.property.networkStatus == NetworkStatus.offline)
                 {
-                    setButton.BorderBrush = (SolidColorBrush)App.Current.Resources["OWLOSDark"];
-                    getButton.BorderBrush = (SolidColorBrush)App.Current.Resources["OWLOSDark"];
+                    componentsBrush = (SolidColorBrush)App.Current.Resources["OWLOSDark"];
                 }
-            });
 
+                propValueEdit.BorderBrush = propPasswordValueEdit.BorderBrush = propCheckBoxValueEdit.BorderBrush =
+                setButton.BorderBrush = setButton.Foreground = getButton.BorderBrush = getButton.Foreground = componentsBrush;
+            });
+        }
+
+        private void DisableValueEditors()
+        {
+            propValueEdit.IsEnabled = propPasswordValueEdit.IsEnabled = propCheckBoxValueEdit.IsEnabled = setButton.IsEnabled = getButton.IsEnabled = false;
+            propSpinner.Visibility = Visibility.Visible;
+            propSpinner.RenderTransform.BeginAnimation(RotateTransform.AngleProperty, spinnerRotate);
+        }
+
+        private void EnableValueEditors()
+        {
+            propValueEdit.IsEnabled = propPasswordValueEdit.IsEnabled = propCheckBoxValueEdit.IsEnabled = setButton.IsEnabled = getButton.IsEnabled = true;
+            propSpinner.Visibility = Visibility.Hidden;
+            propSpinner.RenderTransform.BeginAnimation(RotateTransform.AngleProperty, null);
         }
 
         private void ValueToEditors()

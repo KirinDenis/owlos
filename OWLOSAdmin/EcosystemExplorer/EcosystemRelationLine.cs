@@ -34,6 +34,7 @@ namespace OWLOSAdmin.EcosystemExplorer
         private bool IsDisposed = false;
         private Point[] offsetA = new Point[2];
         private Point[] offsetB = new Point[2];
+        
         public double ellipseWidth = 15;
         public double ellipseHeight = 15;
         private readonly TranslateTransform transform = new TranslateTransform();
@@ -79,7 +80,7 @@ namespace OWLOSAdmin.EcosystemExplorer
             //Create curve line
             Point startPointA = startElement.TranslatePoint(new Point(0, 0), relativeElement);
             //Correct start point A
-            startPointA = new Point(startPointA.X + startElement.Width, startPointA.Y + startElement.Height / 2);
+            startPointA = new Point(startPointA.X + startElement.Width, startPointA.Y + startElement.Height / 2 );                        
             //Set leveling for point B
             Point startPointB = new Point(startPointA.X + 100, startPointA.Y);
             //Do same for end point A & B
@@ -142,7 +143,7 @@ namespace OWLOSAdmin.EcosystemExplorer
                 relative //Relative
             });
 
-            Point correctPointA = new Point(points[0].X + offsetA.X, points[0].Y + offsetA.Y);
+            Point correctPointA = new Point(points[0].X + offsetA.X, points[0].Y + offsetA.Y);            
             //new Point(points[0].X + ellipse.Width, points[0].Y + ellipse.Height / 2);
             Point correctPointB = new Point(points[1].X + offsetB.X, points[1].Y + offsetB.Y);
             //new Point(points[1].X + 100, points[1].Y);
@@ -244,7 +245,7 @@ namespace OWLOSAdmin.EcosystemExplorer
         private void UpdatePositions()
         {
             Point relativeLocation = frameworkElement.TranslatePoint(new Point(0, 0), Parent);
-            transform.X = (relativeLocation.X + frameworkElement.ActualWidth + ellipse.Width) / 2;
+            transform.X = (relativeLocation.X + frameworkElement.ActualWidth + ellipse.Width) / 2 ;
             transform.Y = relativeLocation.Y + ellipse.Height / 2;
             ellipse.RenderTransform = transform;
 
@@ -258,8 +259,8 @@ namespace OWLOSAdmin.EcosystemExplorer
         {
 
             Point[] points = GetPositionFromTarget( ellipse, panel, ecosystemPathLine.Figure.StartPoint,
-                ecosystemPathLine.PointCollection[0], offsetA[0], offsetA[1]);
-            ecosystemPathLine.Figure.StartPoint = points[0];
+                ecosystemPathLine.PointCollection[0], offsetA[0], offsetA[1]);            
+            ecosystemPathLine.Figure.StartPoint = points[0];            
             ecosystemPathLine.PointCollection[0] = points[1];
         }
 
@@ -267,7 +268,7 @@ namespace OWLOSAdmin.EcosystemExplorer
         private void UpdatePointB()
         {
             Point[] points = GetPositionFromTarget(bControl, panel, ecosystemPathLine.PointCollection[2],
-                ecosystemPathLine.PointCollection[1], offsetB[0], offsetB[1]);
+                ecosystemPathLine.PointCollection[1], offsetB[0], offsetB[1]);            
             ecosystemPathLine.PointCollection[2] = points[0];
             ecosystemPathLine.PointCollection[1] = points[1];
         }

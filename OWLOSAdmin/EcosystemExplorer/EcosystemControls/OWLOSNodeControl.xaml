@@ -6,32 +6,21 @@
              xmlns:local="clr-namespace:OWLOSAdmin.EcosystemExplorer"
              mc:Ignorable="d" 
              
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="850" d:DesignWidth="850">
     <Grid>
         <Grid>
 
-
-            <Path Name="path1" Stroke="{DynamicResource OWLOSInfoAlpha2}" Data="M 100 200 A 200 200 0 0 0 450 40.1923788646684" StrokeThickness="10" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="200" Height="200" >
+            <Path Name="nodeShadowPath" Stroke="{DynamicResource OWLOSInfoAlpha2}" Data="M 100 200 A 200 200 0 0 0 450 40.1923788646684" StrokeThickness="10" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" >
                 <Path.Effect>
                     <BlurEffect/>
                 </Path.Effect>
             </Path>
         </Grid>
-        <Grid >
+        <Grid x:Name="nodeGrid">
 
-            <Path Name="path2" Stroke="{DynamicResource OWLOSInfoAlpha2}" Data="M 200 200 A 400 400 0 0 0 50 40.1923788646684" StrokeThickness="5" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" StrokeDashArray="0.3" Width="200" Height="200" StrokeLineJoin="Round" StrokeDashCap="Flat" StrokeDashOffset="3" StrokeMiterLimit="1" />
-            <Path Name="path3" Data="M 100 100 A 200 200 0 0 0 450 40.1923788646684" StrokeThickness="5" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="200" Height="200"  >
-                <Path.Stroke>
-                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0" SpreadMethod="Pad">
-                        <GradientStop Color="{DynamicResource OWLOSInfoColorAlpha2}" Offset="0.714"/>
-                        <GradientStop Color="{DynamicResource OWLOSInfoColorAlpha1}" Offset="1"/>
-                    </LinearGradientBrush>
-                </Path.Stroke>
-            </Path>
-            <Path Name="path4" Stroke="{DynamicResource OWLOSDanger}" Data="M 100 100 A 200 200 0 0 0 450 40.1923788646684" StrokeThickness="3" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="200" Height="200"  />
-            <Path Name="path5" Stroke="{DynamicResource OWLOSDanger}" Data="M 100 100 A 200 200 0 0 0 450 40" StrokeThickness="10" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="200" Height="200" MouseEnter="path5_MouseEnter"  MouseLeave="path5_MouseLeave"   />
-            <TextBlock x:Name="text1" Text="5%" Foreground="{DynamicResource OWLOSPrimary}" HorizontalAlignment="Center" VerticalAlignment="Center" ></TextBlock>
+            <Path Name="nodePath" Stroke="{DynamicResource OWLOSInfo}" Data="M 200 200 A 400 400 0 0 0 50 40.1923788646684" StrokeThickness="5" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" />
         </Grid>
+
 
     </Grid>
 </UserControl>
