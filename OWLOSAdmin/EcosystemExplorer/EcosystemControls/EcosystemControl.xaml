@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:OWLOSAdmin.EcosystemExplorer"
              mc:Ignorable="d" 
              HorizontalAlignment="Left" VerticalAlignment="Top"
-             MinHeight="150" MinWidth="150" 
+             MinHeight="0" MinWidth="0" 
              Height="Auto" Width="Auto"
              d:DesignHeight="200" d:DesignWidth="200" 
              Focusable="True" IsTabStop="True"              
@@ -17,11 +17,9 @@
              LostFocus="EcosystemControlLostFocus" 
              PreviewMouseDown="EcosystemControlPreviewMouseDown" 
              ClipToBounds="True" 
-             SnapsToDevicePixels="True">
+             SnapsToDevicePixels="True" >
 
-    <Grid Name="childHolderGrid" TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed">
-        <TextBlock Text="base ecosystem control" Foreground="{DynamicResource OWLOSInfoAlpha2}"/>
-        
+    <Grid Name="childHolderGrid" TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed" >
     </Grid>
 
 </UserControl>

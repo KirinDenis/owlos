@@ -29,7 +29,7 @@ namespace OWLOSAdmin.EcosystemExplorer
         private FrameworkElement frameworkElement;
         private Panel panel;
         private Ellipse ellipse;
-        private Path curveLine;
+        public Path curveLine;
         private FrameworkElement Parent;
         private bool IsDisposed = false;
         private Point[] offsetA = new Point[2];
@@ -69,10 +69,20 @@ namespace OWLOSAdmin.EcosystemExplorer
             else
             {
                 this.offsetB[0] = new Point(0, 25);
-                this.offsetB[1] = new Point(-100, 25);
+                this.offsetB[1] = new Point(-100, 0);
             }
 
 
+        }
+
+        public void Hide()
+        {
+            curveLine.Visibility = Visibility.Hidden;
+        }
+
+        public void Show()
+        {
+            curveLine.Visibility = Visibility.Visible;
         }
 
         public Path DrawCurveLine(FrameworkElement startElement, FrameworkElement relativeElement, FrameworkElement target, string lineColor = "#ffff")
@@ -80,7 +90,8 @@ namespace OWLOSAdmin.EcosystemExplorer
             //Create curve line
             Point startPointA = startElement.TranslatePoint(new Point(0, 0), relativeElement);
             //Correct start point A
-            startPointA = new Point(startPointA.X + startElement.Width, startPointA.Y + startElement.Height / 2 );                        
+            //   startPointA = new Point(startPointA.X + startElement.Width, startPointA.Y + startElement.Height / 2);
+            startPointA = new Point(startPointA.X + startElement.Width, startPointA.Y + startElement.Height / 2);
             //Set leveling for point B
             Point startPointB = new Point(startPointA.X + 100, startPointA.Y);
             //Do same for end point A & B
@@ -94,7 +105,7 @@ namespace OWLOSAdmin.EcosystemExplorer
             // Create a Path to hold the geometry.
             Path path = new Path();
             path.CacheMode = null;
-            path.Stroke = new BrushConverter().ConvertFromString(lineColor) as SolidColorBrush; ;
+            path.Stroke = new BrushConverter().ConvertFromString(lineColor) as SolidColorBrush; 
             path.StrokeThickness = 2;
 
             // Add a PathGeometry.
@@ -109,15 +120,15 @@ namespace OWLOSAdmin.EcosystemExplorer
             path_figure.StartPoint = points[0];
 
             // Create a PathSegmentCollection.
-            PathSegmentCollection path_segment_collection =
-                new PathSegmentCollection();
+            PathSegmentCollection path_segment_collection = new PathSegmentCollection();
             path_figure.Segments = path_segment_collection;
 
             // Add the rest of the points to a PointCollection.
-            PointCollection point_collection =
-                new PointCollection(points.Length - 1);
+            PointCollection point_collection = new PointCollection(points.Length - 1);
             for (int i = 1; i < points.Length; i++)
+            {
                 point_collection.Add(points[i]);
+            }
 
             // Make a PolyBezierSegment from the points.
             PolyBezierSegment bezier_segment = new PolyBezierSegment();
@@ -196,7 +207,7 @@ namespace OWLOSAdmin.EcosystemExplorer
             aControl.childHolderGrid.Children.Add(ellipse);
             ellipse.UpdateLayout();
 
-            curveLine = DrawCurveLine(ellipse, Parent, aControl);
+            curveLine = DrawCurveLine(ellipse, Parent, aControl, lineColor);
             ellipse.Tag = curveLine;
             panel.Children.Insert(panel.Children.Count - 1, curveLine);
             curveLine.UpdateLayout();
@@ -242,10 +253,10 @@ namespace OWLOSAdmin.EcosystemExplorer
             UpdatePositions();
         }
 
-        private void UpdatePositions()
+        public void UpdatePositions()
         {
             Point relativeLocation = frameworkElement.TranslatePoint(new Point(0, 0), Parent);
-            transform.X = (relativeLocation.X + frameworkElement.ActualWidth + ellipse.Width) / 2 ;
+            transform.X = (relativeLocation.X + frameworkElement.ActualWidth + ellipse.Width) / 2 ;            
             transform.Y = relativeLocation.Y + ellipse.Height / 2;
             ellipse.RenderTransform = transform;
 
@@ -268,7 +279,7 @@ namespace OWLOSAdmin.EcosystemExplorer
         private void UpdatePointB()
         {
             Point[] points = GetPositionFromTarget(bControl, panel, ecosystemPathLine.PointCollection[2],
-                ecosystemPathLine.PointCollection[1], offsetB[0], offsetB[1]);            
+                ecosystemPathLine.PointCollection[1], offsetB[0], offsetB[1]);          
             ecosystemPathLine.PointCollection[2] = points[0];
             ecosystemPathLine.PointCollection[1] = points[1];
         }

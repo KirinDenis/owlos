@@ -37,19 +37,26 @@ namespace OWLOSAdmin.Ecosystem
 
         public void Load()
         {
+            
             OWLOSNodeWrapper nodeWrapper = new OWLOSNodeWrapper();
-            nodeWrapper.RESTfulServerHost = "http://192.168.1.101/";
-
-            
-
-            nodeWrapper.node = new OWLOSNode(this, nodeWrapper);
-            
-            
+            nodeWrapper.RESTfulServerHost = "http://192.168.1.101/";            
+            nodeWrapper.node = new OWLOSNode(this, nodeWrapper);                        
             nodeWrapper.transport = new OWLOSTransport(nodeWrapper.node);
             nodeWrapper.transport.RESTfulServerHost = nodeWrapper.RESTfulServerHost;
             nodeWrapper.transport.Start();
             OWLOSNodeWrappers.Add(nodeWrapper);
             NewNode(new OWLOSNodeWrapperEventArgs(nodeWrapper));
+            
+
+            nodeWrapper = new OWLOSNodeWrapper();
+            nodeWrapper.RESTfulServerHost = "http://192.168.1.12/";
+            nodeWrapper.node = new OWLOSNode(this, nodeWrapper);
+            nodeWrapper.transport = new OWLOSTransport(nodeWrapper.node);
+            nodeWrapper.transport.RESTfulServerHost = nodeWrapper.RESTfulServerHost;
+            nodeWrapper.transport.Start();
+            OWLOSNodeWrappers.Add(nodeWrapper);
+            NewNode(new OWLOSNodeWrapperEventArgs(nodeWrapper));
+
         }
 
         protected virtual void NewNode(OWLOSNodeWrapperEventArgs e)

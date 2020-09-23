@@ -95,8 +95,10 @@ namespace OWLOSAdmin.EcosystemExplorer
             
             nodeGrid.Children.Add(nodeCountrol1.parentControl);
 
-            var relationLine = new EcosystemRelationLine(nodeCountrol1, nodeCountrol1.parentControl, adminControl, nodeCountrol1, nodeGrid);
-            relationLine.DrawRelationLine();
+            nodeCountrol1.parentControl.Show();
+
+            // var relationLine = new EcosystemRelationLine(nodeCountrol1, nodeCountrol1.parentControl, adminControl, nodeCountrol1, nodeGrid);
+            // relationLine.DrawRelationLine();
 
         }
 

@@ -16,17 +16,38 @@ using System.Windows.Shapes;
 
 namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
 {
+
     /// <summary>
     /// Interaction logic for OWLOSNodeDriverControl.xaml
     /// </summary>
     public partial class OWLOSNodeDriverControl : UserControl
     {
-        private OWLOSDriverControl driverCountrol;
+        private OWLOSDriverControl driverCountrol = null;
         private OWLOSNodeControl parentOWLOSNodeControl;
+
+        private EcosystemControl connector = new EcosystemControl(null);
+
+        private EcosystemRelationLine relationLine = null;
+
+        private OWLOSDriver driver = null;
+
+        private bool controlLeave = true;
         public OWLOSNodeDriverControl(OWLOSNodeControl parentOWLOSNodeControl, OWLOSDriver driver, double radius, double angel)
         {
             InitializeComponent();
 
+            this.driver = driver;
+
+            connector.MoveTransform(0, 0);
+            connector.Width = 10;
+            connector.Height = 10;
+            connector.HorizontalAlignment = HorizontalAlignment.Center;
+            connector.VerticalAlignment = VerticalAlignment.Top;
+            connector.Margin = new Thickness(0, 0, 0, 0);
+
+            connector.Background = (SolidColorBrush)App.Current.Resources["OWLOSWarning"];
+
+            text2.Children.Add(connector);
 
             this.parentOWLOSNodeControl = parentOWLOSNodeControl;
 
@@ -42,7 +63,22 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
             driverNameText.Text = driver.name;
 
             driverCountrol = new OWLOSDriverControl(driver);
+            driverCountrol.parentControl.Visibility = Visibility.Hidden;
+            driverCountrol.parentControl.Hide();
+
+
+            double xr = 1000 * Math.Cos(Math.PI * (angel / 6.0) - Math.PI / 2) + parentOWLOSNodeControl.parentControl.transform.X;
+            double yr = 1000 * Math.Sin(Math.PI * (angel / 6.0) - Math.PI / 2) + parentOWLOSNodeControl.parentControl.transform.Y;
+            driverCountrol.parentControl.MoveTransform(xr, yr);
+
+
             (parentOWLOSNodeControl.parentControl.Parent as Grid).Children.Add(driverCountrol.parentControl);
+            parentOWLOSNodeControl.parentControl.OnPositionChanged += ParentControl_OnPositionChanged;
+
+            relationLine = new EcosystemRelationLine(driverCountrol, driverCountrol.parentControl, connector, driverCountrol, parentOWLOSNodeControl.parentControl.Parent as Grid);
+            relationLine.DrawRelationLine(((SolidColorBrush)App.Current.Resources["OWLOSInfo"]).Color.ToString(), ((SolidColorBrush)App.Current.Resources["OWLOSInfo"]).Color.ToString());
+            relationLine.Hide();
+
 
 
             //driver.NewProperty += Driver_NewProperty;
@@ -55,6 +91,11 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
 
         }
 
+        private void ParentControl_OnPositionChanged(object sender, EventArgs e)
+        {
+            relationLine?.UpdatePositions();
+        }
+
         private void text2_Initialized(object sender, EventArgs e)
         {
 
@@ -62,13 +103,59 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
 
         private void text2_Loaded(object sender, RoutedEventArgs e)
         {
-            Point[] offsetB = new Point[2];
-            offsetB[0] = connector.TranslatePoint(new Point(0, 0), parentOWLOSNodeControl);            
-            offsetB[1] = new Point(0, 0);
+            //
+        }
+
+        private void pathL1_MouseEnter(object sender, MouseEventArgs e)
+        {
+            ColorAnimation animation;
+            animation = new ColorAnimation();
+            animation.To = ((SolidColorBrush)App.Current.Resources["OWLOSWarning"]).Color;
+            animation.Duration = new Duration(TimeSpan.FromSeconds(0.3));
+            pathL1.Stroke = new SolidColorBrush(((SolidColorBrush)pathL1.Stroke).Color);
+            pathL1.Stroke.BeginAnimation(SolidColorBrush.ColorProperty, animation);
+
+            relationLine.curveLine.Stroke = new SolidColorBrush(((SolidColorBrush)relationLine.curveLine.Stroke).Color);
+            relationLine.curveLine.Stroke.BeginAnimation(SolidColorBrush.ColorProperty, animation);
+
+        }
+
+        private void driverNameText_MouseEnter(object sender, MouseEventArgs e)
+        {
+            pathL1.Stroke = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSWarning"]).Color);
+            relationLine.curveLine.Stroke = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSWarning"]).Color);
+        }
 
 
-            var relationLine = new EcosystemRelationLine(driverCountrol, driverCountrol.parentControl, parentOWLOSNodeControl.parentControl, driverCountrol, parentOWLOSNodeControl.parentControl.Parent as Grid, null, offsetB);
-            relationLine.DrawRelationLine();
+        private void pathL1_MouseLeave(object sender, MouseEventArgs e)
+        {
+            ColorAnimation animation;
+            animation = new ColorAnimation();
+            animation.To = ((SolidColorBrush)App.Current.Resources["OWLOSInfo"]).Color;
+            animation.Duration = new Duration(TimeSpan.FromSeconds(2));
+            pathL1.Stroke = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSWarning"]).Color);
+            pathL1.Stroke.BeginAnimation(SolidColorBrush.ColorProperty, animation);
+
+            relationLine.curveLine.Stroke = new SolidColorBrush(((SolidColorBrush)relationLine.curveLine.Stroke).Color);
+            relationLine.curveLine.Stroke.BeginAnimation(SolidColorBrush.ColorProperty, animation);
+        }
+
+        private void pathL1_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (!driverCountrol.parentControl.isVisible)
+            {
+                if (driverCountrol.parentControl.Visibility == Visibility.Hidden)
+                {
+                    driverCountrol.parentControl.Visibility = Visibility.Visible;
+                }
+                driverCountrol.parentControl.Show();
+                relationLine.Show();
+            }
+            else
+            {
+                driverCountrol.parentControl.Hide();
+                relationLine.Hide();
+            }
 
         }
     }

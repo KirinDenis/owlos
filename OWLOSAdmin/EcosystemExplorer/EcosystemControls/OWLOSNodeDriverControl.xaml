@@ -6,30 +6,18 @@
              xmlns:local="clr-namespace:OWLOSAdmin.EcosystemExplorer.EcosystemControls"
              mc:Ignorable="d" 
              d:DesignHeight="700" d:DesignWidth="700">
-    <Grid x:Name="text2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" RenderTransformOrigin="0.5,0.5" Width="700" Height="700" Margin="0,0,0,0" Cursor="Hand" Loaded="text2_Loaded" >
+    <Grid x:Name="text2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" RenderTransformOrigin="0.5,0.5" Width="700" Height="700" Margin="0,0,0,0" Cursor="Hand" Loaded="text2_Loaded">
 
-        <Path Name="pathL1" Stroke="{DynamicResource OWLOSInfoAlpha3}" Data="M 500 90 A 300 300 0 0 0 350 50" StrokeThickness="40" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700"  />
+        <Path Name="pathL1" Stroke="{DynamicResource OWLOSInfoAlpha3}" Data="M 487 55 A 325 325 0 0 0 350 25" StrokeThickness="40" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" MouseLeftButtonDown="pathL1_PreviewMouseLeftButtonDown" MouseEnter="pathL1_MouseEnter" MouseLeave="pathL1_MouseLeave" />
         <Path Name="pathL2" Stroke="{DynamicResource OWLOSInfo}" Data="M 100 100 A 200 200 0 0 0 450 40" StrokeThickness="1" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700"  />
         <Path Name="pathL3" Stroke="{DynamicResource OWLOSInfo}" Data="M 100 100 A 200 200 0 0 0 450 40" StrokeThickness="1" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700"  />
-        <Ellipse x:Name="connector" Width="10" Height="10" Fill="{DynamicResource OWLOSWarning}" VerticalAlignment="Top" HorizontalAlignment="Center" />
-        <TextBlock x:Name="driverNameText" Text="Actuator" Foreground="{DynamicResource OWLOSLight}" HorizontalAlignment="Left" Margin="351,23,0,6" RenderTransformOrigin="0,0" FontSize="9" Width="171" TextAlignment="Center" >
-            <TextBlock.TextEffects>
-                <TextEffect>
-                    <TextEffect.Transform>
-                        <TransformGroup>
-                            <ScaleTransform/>
-                            <SkewTransform/>
-                            <RotateTransform Angle="-45"/>
-                            <TranslateTransform/>
-                        </TransformGroup>
-                    </TextEffect.Transform>
-                </TextEffect>
-            </TextBlock.TextEffects>
+        <Ellipse x:Name="connector2" Width="10" Height="10" Fill="{DynamicResource OWLOSWarning}" VerticalAlignment="Top" HorizontalAlignment="Center" />
+        <TextBlock x:Name="driverNameText" Text="ActuatorDriver1234567890ActuaA" Foreground="{DynamicResource OWLOSLight}" HorizontalAlignment="Left"  RenderTransformOrigin="0.5,0.5" FontSize="9" Width="137" TextAlignment="Center" VerticalAlignment="Top" Height="11" Margin="353,23,0,0" MouseLeftButtonDown="pathL1_PreviewMouseLeftButtonDown"  MouseEnter="driverNameText_MouseEnter" >
             <TextBlock.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
                     <SkewTransform/>
-                    <RotateTransform Angle="15.524"/>
+                    <RotateTransform Angle="12.566"/>
                     <TranslateTransform/>
                 </TransformGroup>
             </TextBlock.RenderTransform>

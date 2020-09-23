@@ -364,7 +364,7 @@ bool transportPublish(String _topic, String _payload)
 #ifdef USE_MQTT
 	MQTTPublish(_topic, _payload);
 #endif
-	Serial.println("[DATA] " + _topic + " " + _payload);
+	// UART pilot test Serial.println("[DATA] " + _topic + " " + _payload);
 	return true; //if MQTT is not available and RESTful change the property
 }
 

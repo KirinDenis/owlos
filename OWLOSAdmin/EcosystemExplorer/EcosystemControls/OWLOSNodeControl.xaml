@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:OWLOSAdmin.EcosystemExplorer"
              mc:Ignorable="d" 
-             
+             HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5"
              d:DesignHeight="850" d:DesignWidth="850">
     <Grid>
         <Grid>
@@ -17,8 +17,38 @@
             </Path>
         </Grid>
         <Grid x:Name="nodeGrid">
+            <Grid.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="0"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Grid.RenderTransform>
 
-            <Path Name="nodePath" Stroke="{DynamicResource OWLOSInfo}" Data="M 200 200 A 400 400 0 0 0 50 40.1923788646684" StrokeThickness="5" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" />
+            <Path Name="nodePath" Stroke="{DynamicResource OWLOSInfo}" Data="M 344 50 A 300 300 0 1 0 350 50" StrokeThickness="5" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" />
+
+            <Path Name="freeHeapPathBack" Stroke="{DynamicResource OWLOSSecondary}" Data="M 350 630 A 280 280 0 0 0 350 70" StrokeThickness="5" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" StrokeDashArray="0.3" StrokeLineJoin="Round" StrokeDashCap="Flat" StrokeDashOffset="3" StrokeMiterLimit="1"/>
+            <Path Name="freeHeapPath" Stroke="{DynamicResource OWLOSSuccessAlpha2}"     Data="M 350 130 A 280 280 0 0 0 350 70" StrokeThickness="5" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" StrokeDashArray="0.3" StrokeLineJoin="Round" StrokeDashCap="Flat" StrokeDashOffset="3" StrokeMiterLimit="1"/>
+            <TextBlock x:Name="freeHeapText" Text="freeHeap:" Foreground="{DynamicResource OWLOSInfo}" Margin="275,63,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
+
+            <Path Name="WiFiRSSIDPathBack" Stroke="{DynamicResource OWLOSSecondary}" Data="M 350 630 A 280 280 0 0 0 350 70" StrokeThickness="5" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" StrokeDashArray="2.0" StrokeLineJoin="Miter" StrokeDashCap="Round" StrokeDashOffset="6" StrokeMiterLimit="0"/>
+            <Path Name="WiFiRSSIDPath" Stroke="{DynamicResource OWLOSInfo}"     Data="M 350 130 A 280 280 0 0 0 350 70" StrokeThickness="5" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" StrokeDashArray="2.0" StrokeLineJoin="Miter" StrokeDashCap="Round" StrokeDashOffset="6" StrokeMiterLimit="0"/>
+            <TextBlock x:Name="WiFiRSSIDText" Text="WiFi:" Foreground="{DynamicResource OWLOSInfo}" Margin="318,83,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
+
+            <Path Name="PowerPathBack" Stroke="{DynamicResource OWLOSSecondary}" Data="M 350 630 A 280 280 0 0 0 350 70" StrokeThickness="5" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" StrokeDashArray="2.0" StrokeLineJoin="Miter" StrokeDashCap="Round" StrokeDashOffset="6" StrokeMiterLimit="0" />
+            <Path Name="PowerPath" Stroke="{DynamicResource OWLOSInfoAlpha3}"     Data="M 350 130 A 280 280 0 0 0 350 70" StrokeThickness="5" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" StrokeDashArray="2.0" StrokeLineJoin="Miter" StrokeDashCap="Round" StrokeDashOffset="6" StrokeMiterLimit="0"  />
+            <TextBlock x:Name="PowerText" Text="Power:" Foreground="{DynamicResource OWLOSInfo}" Margin="616,360,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <TextBlock.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="97"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </TextBlock.RenderTransform>
+            </TextBlock>    
+
         </Grid>
 
 

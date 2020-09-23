@@ -3,6 +3,7 @@ using OWLOSAdmin.EcosystemExplorer.EcosystemControls;
 using OWLOSAdmin.EcosystemExplorer.Huds;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Text;
 using System.Timers;
@@ -22,7 +23,7 @@ namespace OWLOSAdmin.EcosystemExplorer
     /// <summary>
     /// Interaction logic for OWLOSNodeControl.xaml
     /// </summary>
-    public partial class OWLOSNodeControl: UserControl, IEcosystemChildControl
+    public partial class OWLOSNodeControl : UserControl, IEcosystemChildControl
     {
 
         public EcosystemControl parentControl { get; set; }
@@ -33,6 +34,19 @@ namespace OWLOSAdmin.EcosystemExplorer
         private OWLOSNodeWrapper nodeWrapper;
 
         public int driversCount = 0;
+
+        private DependencyPropertyDescriptor renderTransform = DependencyPropertyDescriptor.FromProperty(RenderTransformProperty, typeof(UserControl));
+
+        private double freeHeapLimit = 250000; //ESP32 - todo 
+        private double freeHeapAngelLimit = 180;
+
+        private double WiFiRSSIDLimit = 120;  //-() db
+        private double WiFiRSSIDAngelLimit = 90;
+
+        private double PowerLimit = 65535; //chack for ESP32
+        private double PowerAngelLimit = 75;
+        private double PowerAngeStart = 105;
+
 
         public OWLOSNodeControl(OWLOSNodeWrapper nodeWrapper)
         {
@@ -47,10 +61,66 @@ namespace OWLOSAdmin.EcosystemExplorer
 
             parentControl = new EcosystemControl(this);
 
-            nodeShadowPath.Data = 
+            nodeShadowPath.Data =
             nodePath.Data = HudLibrary.DrawArc(350, 350, radius, 0, 359);
 
-            
+            freeHeapPathBack.Data = HudLibrary.DrawArc(350, 350, radius - 20, 0, freeHeapAngelLimit);
+            DrawFreeHeap(50);
+
+            WiFiRSSIDPathBack.Data = HudLibrary.DrawArc(350, 350, radius - 40, 0, WiFiRSSIDAngelLimit);
+            DrawWiFiRSSID(-50);
+
+            PowerPathBack.Data = HudLibrary.DrawArc(350, 350, radius - 40, PowerAngeStart, PowerAngelLimit + PowerAngeStart);
+            DrawPower(25000);
+
+
+            //RalationLines test 
+            /*
+            DoubleAnimation rotate = new DoubleAnimation
+            {
+                From = 0.0f,
+                To = 360.0f,
+                Duration = new Duration(TimeSpan.FromMilliseconds(10000)),
+                RepeatBehavior = RepeatBehavior.Forever,
+                EasingFunction = new BackEase()
+                //AutoReverse = true
+            };
+            RotateTransform rotateTransform = new RotateTransform();
+            this.RenderTransform = rotateTransform;
+            rotateTransform.BeginAnimation(RotateTransform.AngleProperty, rotate);
+            renderTransform.AddValueChanged(this, PositionChanged);
+            //nodeGrid.RenderTransform.Add
+            */
+
+
+        }
+
+        private void DrawFreeHeap(int value)
+        {
+            double freeHeapPercent = value / (freeHeapLimit / 100);
+            double freeHeapAngel = (freeHeapAngelLimit / 100) * freeHeapPercent;
+            freeHeapPath.Data = HudLibrary.DrawArc(350, 350, radius - 20, 0, freeHeapAngel);
+        }
+
+        private void DrawWiFiRSSID(int value)
+        {
+            value = value * -1;
+            double WiFiRSSIDPercent = value / (WiFiRSSIDLimit / 100);
+            double WiFiRSSIDAngel = (WiFiRSSIDAngelLimit / 100) * WiFiRSSIDPercent;
+            WiFiRSSIDPath.Data = HudLibrary.DrawArc(350, 350, radius - 40, 0, WiFiRSSIDAngel);
+        }
+
+        private void DrawPower(int value)
+        {            
+            double PowerPercent = value / (PowerLimit / 100);
+            double PowerAngel = (PowerAngelLimit / 100) * PowerPercent;
+            PowerPath.Data = HudLibrary.DrawArc(350, 350, radius - 40, PowerAngeStart, PowerAngel + PowerAngeStart);
+        }
+
+
+        private void PositionChanged(object sender, EventArgs e)
+        {
+            parentControl.EcosystemControlPositionChanged(sender, e);
 
         }
 
@@ -58,45 +128,98 @@ namespace OWLOSAdmin.EcosystemExplorer
         {
             base.Dispatcher.Invoke(() =>
             {
-
+                if (e.driver.name.Equals("esp"))
+                {
+                    e.driver.OnPropertyCreate += ESPDriver_OnPropertyCreate;
+                }
+                else
+                if (e.driver.name.Equals("wifi"))
+                {
+                    e.driver.OnPropertyCreate += WiFiDriver_OnPropertyCreate;
+                }
                 OWLOSNodeDriverControl _OWLOSNodeDriverControl = new OWLOSNodeDriverControl(this, e.driver, radius + 25, driversCount);
                 driversCount++;
                 nodeGrid.Children.Add(_OWLOSNodeDriverControl);
-                /*
-                 OWLOSDriverControl driverCountrol = new OWLOSDriverControl(e.driver);
-                 (this.parentControl.Parent as Grid).Children.Add(driverCountrol.parentControl);
-
-
-
-                var relationLine = new EcosystemRelationLine(driverCountrol, driverCountrol.parentControl, this.parentControl, driverCountrol, this.parentControl.Parent as Grid);
-                relationLine.DrawRelationLine();
-                */
-
-                //driversControl.Text = "";
-                //driversControl.Text = driversControl.Text + e.driver.name + "\n";
-                //e.driver.NewProperty += Driver_NewProperty;
             });
+
+        }
+
+        private void ESPDriver_OnPropertyCreate(object sender, Ecosystem.OWLOS.OWLOSPropertyWrapperEventArgs e)
+        {
+
+            if (e.property.name.Equals("espfreeheap"))
+            {
+                e.property.OnPropertyChange += ESPRAMProperty_OnPropertyChange;
+            }
+            else
+            if (e.property.name.Equals("espvcc"))
+            {
+                e.property.OnPropertyChange += ESPVCCProperty_OnPropertyChange;
+            }
+        }
+
+        private void WiFiDriver_OnPropertyCreate(object sender, Ecosystem.OWLOS.OWLOSPropertyWrapperEventArgs e)
+        {
+
+            if (e.property.name.Equals("wifirssi"))
+            {
+                e.property.OnPropertyChange += WiFiRSSIDProperty_OnPropertyChange;
+            }
+        }
+
+
+        private void ESPRAMProperty_OnPropertyChange(object sender, Ecosystem.OWLOS.OWLOSPropertyWrapperEventArgs e)
+        {
+            base.Dispatcher.Invoke(() =>
+            {
+
+                DrawFreeHeap(int.Parse(e.property.value));
+            }
+                );
+
+        }
+
+        private void ESPVCCProperty_OnPropertyChange(object sender, Ecosystem.OWLOS.OWLOSPropertyWrapperEventArgs e)
+        {
+            base.Dispatcher.Invoke(() =>
+            {
+
+                DrawPower(int.Parse(e.property.value));
+            }
+                );
+
+        }
+
+
+        private void WiFiRSSIDProperty_OnPropertyChange(object sender, Ecosystem.OWLOS.OWLOSPropertyWrapperEventArgs e)
+        {
+            base.Dispatcher.Invoke(() =>
+            {
+
+                DrawWiFiRSSID(int.Parse(e.property.value));
+            }
+                );
 
         }
 
         public void OnParentDrag()
         {
-            
+
         }
 
         public void OnParentDrop()
         {
-            
+
         }
 
         public void OnParentGetFocus()
         {
-            
+
         }
 
         public void OnParentLostFocus()
         {
-            
+
         }
 
         private async void OnLifeCycleTimer(Object source, ElapsedEventArgs e)

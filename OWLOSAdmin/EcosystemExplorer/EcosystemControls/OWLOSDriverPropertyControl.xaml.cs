@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -174,7 +175,44 @@ namespace OWLOSAdmin.EcosystemExplorer
             //Value viewer setup             
             if (!flags.isPassword)
             {
-                propValue.Text = CutValue(property.value);
+                float floatValue = 0;
+                float currentValue = 0;
+                if ((float.TryParse(property.value, out floatValue)) && (float.TryParse(propValue.Text, out currentValue)))
+                {
+                    if (floatValue == currentValue)
+                    {
+                        propValue.Text = property.value;
+                    }
+                    else
+                    {
+                        float step = (floatValue - currentValue) / 10;
+                        Timer valueTimer = new Timer(100);
+                        valueTimer.Elapsed += new ElapsedEventHandler((Object source, ElapsedEventArgs e) =>
+                        {
+                            currentValue += step;
+                            try
+                            {
+
+                                this.Dispatcher.Invoke(() =>
+                            {
+                                    if (currentValue >= floatValue)
+                                    {
+                                        propValue.Text = ((int)floatValue).ToString();
+                                        valueTimer.Stop();
+                                        return;
+                                    }
+                                    propValue.Text = ((int)currentValue).ToString();
+                            });
+                            }
+                            catch { }
+                        });
+                        valueTimer.Start();
+                    }
+                }
+                else
+                {
+                    propValue.Text = CutValue(property.value);
+                }
             }
             else
             {

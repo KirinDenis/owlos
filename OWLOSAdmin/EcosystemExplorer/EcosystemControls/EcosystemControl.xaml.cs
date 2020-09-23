@@ -11,6 +11,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -38,6 +39,8 @@ namespace OWLOSAdmin.EcosystemExplorer
         private static EcosystemControl CurrentFocused;
 
         private bool _isFocused;
+
+        public bool isVisible = true;
         public bool IsFocused
         {
             get { return _isFocused; }
@@ -116,15 +119,42 @@ namespace OWLOSAdmin.EcosystemExplorer
                 childHolderGrid.Children.Add(childControl as UserControl);
             }
 
-            transform.X = 5500;
-            transform.Y = 5200;
-            renderTransform.AddValueChanged(this, EcosystemControlPositionChanged);
-            this.RenderTransform = transform;
+            MoveTransform(5000, 5000);
 
             childControl?.OnParentLostFocus();
         }
 
-        private void EcosystemControlPositionChanged(object sender, EventArgs e)
+        public void Show()
+        {
+            isVisible = true;
+            ColorAnimation animation;
+            animation = new ColorAnimation();
+            animation.To = (new BrushConverter().ConvertFromString("#FFFFFFFF") as SolidColorBrush).Color;
+            animation.Duration = new Duration(TimeSpan.FromSeconds(1));
+            this.OpacityMask = new BrushConverter().ConvertFromString("#00FFFFFF") as SolidColorBrush;
+            this.OpacityMask.BeginAnimation(SolidColorBrush.ColorProperty, animation);
+        }
+
+        public void Hide()
+        {
+            isVisible = false;
+            ColorAnimation animation;
+            animation = new ColorAnimation();
+            animation.To = (new BrushConverter().ConvertFromString("#00FFFFFF") as SolidColorBrush).Color;
+            animation.Duration = new Duration(TimeSpan.FromSeconds(1));            
+            this.OpacityMask = new BrushConverter().ConvertFromString("#FFFFFFFF") as SolidColorBrush;
+            this.OpacityMask.BeginAnimation(SolidColorBrush.ColorProperty, animation);
+        }
+
+
+        public void MoveTransform(double x, double y)
+        {
+            transform.X = x;
+            transform.Y = y;
+            renderTransform.AddValueChanged(this, EcosystemControlPositionChanged);
+            this.RenderTransform = transform;
+        }
+        public void EcosystemControlPositionChanged(object sender, EventArgs e)
         {
             OnPositionChanged?.Invoke(sender, e);
         }
