@@ -63,6 +63,8 @@ namespace OWLOSAdmin.EcosystemExplorer
 
             nodeShadowPath.Data =
             nodePath.Data = HudLibrary.DrawArc(350, 350, radius, 0, 359);
+            insideNodePath.Data = HudLibrary.DrawArc(350, 350, radius-80, 0, 359);
+            insideNodePath2.Data = HudLibrary.DrawArc(350, 350, radius - 120, 0, 359);
 
             freeHeapPathBack.Data = HudLibrary.DrawArc(350, 350, radius - 20, 0, freeHeapAngelLimit);
             DrawFreeHeap(50);
@@ -73,6 +75,18 @@ namespace OWLOSAdmin.EcosystemExplorer
             PowerPathBack.Data = HudLibrary.DrawArc(350, 350, radius - 40, PowerAngeStart, PowerAngelLimit + PowerAngeStart);
             DrawPower(25000);
 
+            scriptsPath.Data = HudLibrary.DrawArc(350, 350, radius - 40, 185, 300);
+
+            script1Path.Data = HudLibrary.DrawArc(350, 350, radius - 60, 190, 210);
+            script2Path.Data = HudLibrary.DrawArc(350, 350, radius - 60, 215, 235);
+            script3Path.Data = HudLibrary.DrawArc(350, 350, radius - 60, 240, 260);
+
+            filesPath.Data = HudLibrary.DrawArc(350, 350, radius - 40, 302, 315);
+
+            propertiesPath.Data = HudLibrary.DrawArc(350, 350, radius - 40, 317, 359);
+            restFullPath.Data = HudLibrary.DrawArc(350, 350, radius - 100, 0, 40);
+            MQTTPath.Data = HudLibrary.DrawArc(350, 350, radius - 100, 45, 85);
+            UARTPath.Data = HudLibrary.DrawArc(350, 350, radius - 100, 90, 130);
 
             //RalationLines test 
             /*

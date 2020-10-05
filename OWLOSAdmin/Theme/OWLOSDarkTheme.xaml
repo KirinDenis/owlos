@@ -1,5 +1,36 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- 
+    <SolidColorBrush x:Key = "OWLOSPrimary" Color ="#FF2a4d6f" />
+    <SolidColorBrush x:Key = "OWLOSPrimaryAlpha1" Color ="#102a4d6f" />
+    <SolidColorBrush x:Key = "OWLOSPrimaryAlpha2" Color ="#C02a4d6f" />
+    <SolidColorBrush x:Key = "OWLOSPrimaryAlpha3" Color ="#DF2a4d6f" />
+    <SolidColorBrush x:Key = "OWLOSSecondary" Color ="#FF3e5975" />
+    <SolidColorBrush x:Key = "OWLOSSecondaryAlpha1" Color ="#103e5975" />
+    <SolidColorBrush x:Key = "OWLOSSecondaryAlpha2" Color ="#C03e5975" />
+    <SolidColorBrush x:Key = "OWLOSSecondaryAlpha3" Color ="#DF3e5975" />
+    <SolidColorBrush x:Key = "OWLOSSuccess" Color ="#FF295644" />
+    <SolidColorBrush x:Key = "OWLOSSuccessAlpha1" Color ="#10295644" />
+    <SolidColorBrush x:Key = "OWLOSSuccessAlpha2" Color ="#C0295644" />
+    <SolidColorBrush x:Key = "OWLOSSuccessAlpha3" Color ="#F0295644" />
+    <SolidColorBrush x:Key = "OWLOSInfo" Color ="#FFffffff" />
+    <SolidColorBrush x:Key = "OWLOSInfoAlpha1" Color ="#10ffffff" />
+    <SolidColorBrush x:Key = "OWLOSInfoAlpha2" Color ="#35ffffff" />
+    <SolidColorBrush x:Key = "OWLOSInfoAlpha3" Color ="#F0ffffff" />
+    <Color x:Key = "OWLOSInfoColorAlpha1" A ="#50" R="#5b"  G="#c0"  B="#de" />
+    <Color x:Key = "OWLOSInfoColorAlpha2" A ="#70" R="#5b"  G="#c0"  B="#de" />
+    <SolidColorBrush x:Key = "OWLOSWarning" Color ="#FF634d36" />
+    <Color x:Key = "OWLOSDangerColor" A ="#50" R="#c4" G="#3b" B="#3b" />
+    <SolidColorBrush x:Key = "OWLOSDanger" Color ="#FF633636" />
+    <SolidColorBrush x:Key = "OWLOSDangerAlpha1" Color ="#10633636" />
+    <SolidColorBrush x:Key = "OWLOSDangerAlpha2" Color ="#C0633636" />
+    <SolidColorBrush x:Key = "OWLOSDangerAlpha3" Color ="#F0633636" />
+    <SolidColorBrush x:Key = "OWLOSLight" Color ="#FFd9d9d9" />
+    <SolidColorBrush x:Key = "OWLOSDark" Color ="#FF1a2632" />
+    <SolidColorBrush x:Key = "OWLOSDarkAlpha1" Color ="#101a2632" />
+    <SolidColorBrush x:Key = "OWLOSDarkAlpha2" Color ="#C01a2632" />
+    <SolidColorBrush x:Key = "OWLOSDarkAlpha3" Color ="#F01a2632" />
+-->
     <SolidColorBrush x:Key = "OWLOSPrimary" Color ="#FF62add0" />
     <SolidColorBrush x:Key = "OWLOSPrimaryAlpha1" Color ="#1062add0" />
     <SolidColorBrush x:Key = "OWLOSPrimaryAlpha2" Color ="#C062add0" />
@@ -30,7 +61,7 @@
     <SolidColorBrush x:Key = "OWLOSDarkAlpha2" Color ="#C0122e3b" />
     <SolidColorBrush x:Key = "OWLOSDarkAlpha3" Color ="#F0122e3b" />
 
-      
+
     <FontFamily x:Key="OmegaFlightTTF">pack://application:,,,/Fonts/omegaflight.ttf</FontFamily>
 
     

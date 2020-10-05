@@ -13,6 +13,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using PathText;
 
 namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
 {
@@ -32,11 +33,17 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
         private OWLOSDriver driver = null;
 
         private bool controlLeave = true;
+
+        private double radius = 0;
+        private double angel = 0;
         public OWLOSNodeDriverControl(OWLOSNodeControl parentOWLOSNodeControl, OWLOSDriver driver, double radius, double angel)
         {
             InitializeComponent();
 
             this.driver = driver;
+
+            this.radius = radius;
+            this.angel = angel;
 
             connector.MoveTransform(0, 0);
             connector.Width = 10;
@@ -55,6 +62,8 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
             pathL1.Data = HudLibrary.DrawArc(350, 350, radius, _angel, _angel + 25);
             pathL2.Data = HudLibrary.DrawArc(350, 350, radius + 20, _angel, _angel + 25);
             pathL3.Data = HudLibrary.DrawArc(350, 350, radius - 20, _angel, _angel + 25);
+
+            
 
             RotateTransform rotateTransform = new RotateTransform();
             rotateTransform.Angle = angel * 30;
@@ -80,6 +89,7 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
             relationLine.Hide();
 
 
+            
 
             //driver.NewProperty += Driver_NewProperty;
 
@@ -103,7 +113,7 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
 
         private void text2_Loaded(object sender, RoutedEventArgs e)
         {
-            //
+            
         }
 
         private void pathL1_MouseEnter(object sender, MouseEventArgs e)
@@ -118,12 +128,16 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
             relationLine.curveLine.Stroke = new SolidColorBrush(((SolidColorBrush)relationLine.curveLine.Stroke).Color);
             relationLine.curveLine.Stroke.BeginAnimation(SolidColorBrush.ColorProperty, animation);
 
+            driverCountrol.mainBorder.BorderBrush = new SolidColorBrush(((SolidColorBrush)driverCountrol.mainBorder.BorderBrush).Color);
+            driverCountrol.mainBorder.BorderBrush.BeginAnimation(SolidColorBrush.ColorProperty, animation);
+
         }
 
         private void driverNameText_MouseEnter(object sender, MouseEventArgs e)
         {
             pathL1.Stroke = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSWarning"]).Color);
             relationLine.curveLine.Stroke = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSWarning"]).Color);
+            driverCountrol.mainBorder.BorderBrush = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSWarning"]).Color);
         }
 
 
@@ -138,6 +152,10 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
 
             relationLine.curveLine.Stroke = new SolidColorBrush(((SolidColorBrush)relationLine.curveLine.Stroke).Color);
             relationLine.curveLine.Stroke.BeginAnimation(SolidColorBrush.ColorProperty, animation);
+
+            driverCountrol.mainBorder.BorderBrush = new SolidColorBrush(((SolidColorBrush)driverCountrol.mainBorder.BorderBrush).Color);
+            driverCountrol.mainBorder.BorderBrush.BeginAnimation(SolidColorBrush.ColorProperty, animation);
+
         }
 
         private void pathL1_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -157,6 +175,11 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
                 relationLine.Hide();
             }
 
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            PathTextControl pathText = new PathTextControl(350, 350, radius, 0, 25, driverNameText);
         }
     }
 }

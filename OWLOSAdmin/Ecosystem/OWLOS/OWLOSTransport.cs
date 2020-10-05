@@ -49,7 +49,11 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             string driverPoperties = await Get("getalldriversproperties");
                 if (driverPoperties.IndexOf("Error:") != 0)
                 {
+                try
+                {
                     await node.parseDrivers(driverPoperties);
+                }
+                catch { }
                 }
         }
 
