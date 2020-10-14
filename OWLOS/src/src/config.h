@@ -66,7 +66,7 @@ OWLOS распространяется в надежде, что она буде
     #ifdef USE_DRIVERS
         #define USE_ACTUATOR_DRIVER
         #define USE_SENSOR_DRIVER
-        //#define USE_DHT_DRIVER
+        #define USE_DHT_DRIVER
         //#define USE_LCD_DRIVER
         //#define USE_STEPPER_DRIVER
         //#define USE_VALVE_DRIVER
