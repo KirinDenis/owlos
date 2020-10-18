@@ -40,7 +40,7 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 
-#include "fileservice.h"
+#include "FileService.h"
 
 #define FileSystem "File System"
 

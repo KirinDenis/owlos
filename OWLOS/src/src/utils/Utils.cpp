@@ -40,7 +40,7 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 #include "Utils.h"
-#include "..\services\FileService.h"
+#include "../services/FileService.h"
 
 
 bool filesAtRecurse = false;

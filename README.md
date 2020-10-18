@@ -18,7 +18,7 @@
 
 # How to build:
   - isnstall Arduino Studio 1.8.9. or upper.
-  - isnstall COM port driver if your ESP8266 board use CH340 chip https://wiki.wemos.cc/downloads
+  - isnstall COM port driver if your ESP8266 board use CH340 chip https://wiki.wemos.cc/downloads (you linux install cp210x driver)
   - at Arduino Studio menu File\Preferenses -> Addition board services -> http://arduino.esp8266.com/stable/package_esp8266com_index.json (NOTE: version 2.5.0)
   - at Arduino Studio menu Tools\Board->Board Service find and install ESP8266 commnodey (https://github.com/esp8266/Arduino)
   * see: https://github.com/wemos/Arduino_D1

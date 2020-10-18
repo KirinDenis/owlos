@@ -48,27 +48,27 @@ OWLOS распространяется в надежде, что она буде
 #include "../drivers/BaseDriver.h"
 
 #ifdef USE_ACTUATOR_DRIVER
-#include "../Drivers/ActuatorDriver.h"
+#include "../drivers/ActuatorDriver.h"
 #endif
 
 #ifdef USE_SENSOR_DRIVER
-#include "../Drivers/SensorDriver.h"
+#include "../drivers/SensorDriver.h"
 #endif
 
 #ifdef USE_DHT_DRIVER
-#include "../Drivers/DHTDriver.h"
+#include "../drivers/DHTDriver.h"
 #endif
 
 #ifdef USE_LCD_DRIVER
-#include "../Drivers/LCDDriver.h"
+#include "../drivers/LCDDriver.h"
 #endif
 
 #ifdef USE_STEPPER_DRIVER
-#include "../Drivers/StepperDriver.h"
+#include "../drivers/StepperDriver.h"
 #endif
 
 #ifdef USE_VALVE_DRIVER
-#include "../Drivers/ValveDriver.h"
+#include "../drivers/ValveDriver.h"
 #endif
 
 void driversInit(String _topic);
