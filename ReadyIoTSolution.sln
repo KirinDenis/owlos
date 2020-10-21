@@ -130,18 +130,27 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "services", "services", "{B8
 		OWLOS\src\services\ScriptService.h = OWLOS\src\services\ScriptService.h
 		OWLOS\src\services\TransportService.cpp = OWLOS\src\services\TransportService.cpp
 		OWLOS\src\services\TransportService.h = OWLOS\src\services\TransportService.h
+		OWLOS\src\src\services\TransportServiceESP32.cpp = OWLOS\src\src\services\TransportServiceESP32.cpp
+		OWLOS\src\src\services\TransportServiceESP8266.cpp = OWLOS\src\src\services\TransportServiceESP8266.cpp
 		OWLOS\src\services\UpdateService.cpp = OWLOS\src\services\UpdateService.cpp
 		OWLOS\src\services\UpdateService.h = OWLOS\src\services\UpdateService.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "transports", "transports", "{6A416E69-AA4F-41A2-9C9E-6FD7D55E306A}"
 	ProjectSection(SolutionItems) = preProject
+		OWLOS\src\src\transports\cert.h = OWLOS\src\src\transports\cert.h
 		OWLOS\src\transports\HTTPServer.cpp = OWLOS\src\transports\HTTPServer.cpp
 		OWLOS\src\transports\HTTPServer.h = OWLOS\src\transports\HTTPServer.h
 		OWLOS\src\transports\HTTPServerThings.cpp = OWLOS\src\transports\HTTPServerThings.cpp
 		OWLOS\src\transports\HTTPServerThings.h = OWLOS\src\transports\HTTPServerThings.h
+		OWLOS\src\src\transports\HTTPSWebServer.h = OWLOS\src\src\transports\HTTPSWebServer.h
+		OWLOS\src\src\transports\HTTPSWebServerESP32.cpp = OWLOS\src\src\transports\HTTPSWebServerESP32.cpp
+		OWLOS\src\src\transports\HTTPSWebServerESP8266.cpp = OWLOS\src\src\transports\HTTPSWebServerESP8266.cpp
+		OWLOS\src\src\transports\HTTPWebClient.cpp = OWLOS\src\src\transports\HTTPWebClient.cpp
+		OWLOS\src\src\transports\HTTPWebClient.h = OWLOS\src\src\transports\HTTPWebClient.h
 		OWLOS\src\transports\MQTTClient.cpp = OWLOS\src\transports\MQTTClient.cpp
 		OWLOS\src\transports\MQTTClient.h = OWLOS\src\transports\MQTTClient.h
+		OWLOS\src\src\transports\private_key.h = OWLOS\src\src\transports\private_key.h
 		OWLOS\src\transports\WebClient.cpp = OWLOS\src\transports\WebClient.cpp
 		OWLOS\src\transports\WebClient.h = OWLOS\src\transports\WebClient.h
 	EndProjectSection
@@ -156,7 +165,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "utils", "utils", "{9C6397B1
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OWLOSResources", "OWLOSResources", "{0DE788A3-BBF4-4E4D-81BB-58F1A2AEC80F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OWLOSAdmin", "OWLOSAdmin\OWLOSAdmin.csproj", "{035862CA-8F69-4BB8-816E-8A3F4D491679}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OWLOSAdmin", "OWLOSAdmin\OWLOSAdmin.csproj", "{035862CA-8F69-4BB8-816E-8A3F4D491679}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
