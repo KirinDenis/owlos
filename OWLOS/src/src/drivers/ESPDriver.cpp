@@ -55,6 +55,7 @@ OWLOS распространяется в надежде, что она буде
 #define DEFAULT_ID "owlnode"
 #define DEFAULT_TOPIC "world0/area1/front1/room1/"
 
+
 #define DEFAULT_WIFI_ACCESS_POINT_AVAILABLE 1
 #define DEFAULT_WIFI_ACCESS_POINT_SSID "owlnode"
 #define DEFAULT_WIFI_ACCESS_POINT_PASSWORD  "1122334455"

@@ -191,6 +191,10 @@ void WiFiEvent(WiFiEvent_t event)
 	case SYSTEM_EVENT_AP_START:
 		debugOut(TransportID, "WiFi access point started");
 		wifiAPResult = true;
+#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)
+		HTTPSWebServerBegin();
+#endif
+
 		break;
 	case SYSTEM_EVENT_AP_STOP:
 		debugOut(TransportID, "WiFi access point stopped");
@@ -255,6 +259,10 @@ bool transportBegin()
 	if ((nodeGetWiFiAccessPointAvailable() == 1) && (nodeGetWiFiAvailable() == 1))
 	{
 		nodeSetWiFiMode(WIFI_AP_STA);
+        //enable watch WiFi station timer
+		wifiSTReconnectTimer = xTimerCreate("wifiTimer", pdMS_TO_TICKS(10000), pdTRUE, (void *)0, reinterpret_cast<TimerCallbackFunction_t>(WiFiSTReconnect));
+		WiFiSTReconnect();
+
 #ifdef DetailedDebug
 		debugOut(TransportID, "WiFi mode Access Point and Station (both)");
 #endif
@@ -321,8 +329,8 @@ void transportLoop()
 		}
 #endif
 
-//TEMPORARY!!! TEST UART ONLY 
-/*
+		//TEMPORARY!!! TEST UART ONLY
+		/*
 		if (Serial.available())
 		{
 			
