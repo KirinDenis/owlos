@@ -38,6 +38,8 @@ OWLOS распространяется в надежде, что она буде
 Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
+#include "HTTPServerThings.h"
+#ifdef USE_ESP_DRIVER
 
 #include "../drivers/ESPDriver.h"
 
@@ -100,97 +102,77 @@ String decode(String param)
 
 String getContentType(String fileName)
 {
-	if (fileName.endsWith(".html") || fileName.endsWith(".htm")) return "text/html";
-	if (fileName.endsWith(".css")) return "text/css";
-	if (fileName.endsWith(".js")) return "application/javascript";
-	if (fileName.endsWith(".ico")) return "image/x-icon";
-	if (fileName.endsWith(".gz")) return "application/x-gzip";
+	if (fileName.endsWith(".html") || fileName.endsWith(".htm"))
+		return "text/html";
+	if (fileName.endsWith(".css"))
+		return "text/css";
+	if (fileName.endsWith(".js"))
+		return "application/javascript";
+	if (fileName.endsWith(".ico"))
+		return "image/x-icon";
+	if (fileName.endsWith(".gz"))
+		return "application/x-gzip";
 	return "text/plain";
 }
 
 String GetLogoHTML()
 {
-	String result = "<font size='1'><pre><code><span>";
+
+	String result = "<font color='#62add0' size='2'><pre><code><span>";
 	result += "                                         \n";
-	result += "@@@@@@@@#                       #@@@@@@@@\n";
-	result += "@@@@@@@@@@@@@/             ,@@@@@@@@@@@@@\n";
-	result += "@@@@@@@@@&(@@@@@@@.   .@@@@@@@(%@@@@@@@@@\n";
-	result += "@@@@@  .@@@/  ,@@@@@@@@@@@*  .@@@,  %@@@@\n";
-	result += "&@@@@@@,   .@@&    *@#    %@@*   ,@@@@@@@\n";
-	result += "%@@ @@@@@&     %@@     @@%     %@@@@@ @@&\n";
-	result += "(@@  @@%.@@@       @@@.      @@@,#@@% @@#\n";
-	result += ",@@, @@@ &@@@@             (@@@@ &@@  @@*\n";
-	result += " @@(  @@  @@@@@           @@@@@  @@#  @@.\n";
-	result += " @@&  @@(   @@@@@       @@@@@,  /@@  .@@ \n";
-	result += " @@@    &@@@. @@@@@,  @@@@@. &@@@    @@@ \n";
-	result += " ,@@@@@*  .@@@@@@@@@@@@@@@@@@@/  .@@@@@/ \n";
-	result += "     &@@@@@, #@@@@@@.@@@@@@@  @@@@@@     \n";
-	result += "        #@@@@@@@&       %@@@@@@@%        \n";
-	result += "          ,@@@@@@@   @@@@@@@(            \n";
-	result += "             .@@@@@@@@@@@.               \n";
-	result += "                 /@@@/                   \n";
+	result += "000000001                       100000000\n";
+	result += "0000000000000               0000000000000\n";
+	result += "000000000010000000     000000010000000000\n";
+	result += "00000  10001  1000000000001  10001  10000\n";
+	result += " 0000001   1001    101    0001   1000000 \n";
+	result += " 00 000001     100     001     100000 00 \n";
+	result += " 00  000 000       0001      000  00  00 \n";
+	result += " 00  000  0000              0000  00  00 \n";
+	result += " 00   00  00000           00000  00   00 \n";
+	result += " 00&  00    00000       00000    00  100 \n";
+	result += " 000     000  00000  00000  000     000 \n";
+	result += "  000001  100000000000000000001  10000  \n";
+	result += "      000001 0000000 0000000  000000     \n";
+	result += "         00000000       00000000         \n";
+	result += "           0000000   0000000             \n";
+	result += "              00000000000                \n";
+	result += "                  000                    \n";
 	result += "                                         \n";
-	result += "</code></pre></span></font><br>";
+	result += "</span></code></pre></font><br>";
 	return result;
 }
 
 String GetNotFoundHTML()
 {
 
-	String helloString = nodeGetUnitId() + "::Ready IoT Solution::OWLOS";
+	String helloString = FIRMWARE_VERSION; //nodeGetUnitId()
 	String acip = nodeGetWiFiAccessPointIP() + ":" + String(nodeGetRESTfulServerPort());
 	String ip = nodeGetWiFiIP() + ":" + String(nodeGetRESTfulServerPort());
 
 	String message = "<html><header><title>" + helloString + "</title>";
-	message += "<style>a{color: #00DC00;text-decoration: none;} a:hover {text-decoration: underline;} a:active {text-decoration: underline;}}</style></header>";
-	message += "<body  bgcolor='#4D4D4D'><font color='#A5A5A5'>" + GetLogoHTML() + "<h3>" + helloString + "</h3>";	
-	message += "Method: ";
-	//message += (webServer->method() == HTTP_GET) ? "GET" : "POST";
-	message += "<br>Arguments: ";
-	//message += argsCount;
-	message += "<br>";
-	message += "<font color='#208ECD'><h3>Available RESTful APIs for local network " + nodeGetWiFiSSID() + ":</h3></font>";
-	message += "<b>Log's API:</b><br>";
-	message += "<a href='http://" + ip + "/getlog?number=1' target='_blank'>http://" + ip + "/getlog?number=1</a> get first log file<br>";
-	message += "<a href='http://" + ip + "/getlog?number=2' target='_blank'>http://" + ip + "/getlog?number=2</a> get second log file<br>";
-	message += "<br><b>File's API:</b><br>";
-	message += "<a href='http://" + ip + "/getfilelist?path=' target='_blank'>http://" + ip + "/getfilelist?path=</a> get list of node files<br>";
-	message += "<a href='http://" + ip + "/deletefile?name=' target='_blank'>http://" + ip + "/deletefile?path=</a> delete file<br>";
+	message += "<style>a{color: #3b99c4;text-decoration: none;} a:hover {text-decoration: underline;} a:active {text-decoration: underline;}table td, table td * {vertical-align: top;}</style></header>";
+	message += "<body  bgcolor='#272B30'><font color='#272B30'><table><tr><td>" +
+			   message += GetLogoHTML();
+	message += "</td><td><pre><code><span><font color='#89c2dc' size=4><br>";
+	message += "&#x1F989;<b>" + helloString + "</b>\n";
+	message += "&#x1F30D;<a href='https://github.com/KirinDenis/owlos' target='_blank'>GitHub OWLOS</a><br>\n";
+	message += "&#x1F409;Copyright 2019, 2020 by:\n";
+	message += "	Serhii Lehkii (sergey@light.kiev.ua)\n";
+	message += "	Konstantin Brul (konstabrul@gmail.com)\n";
+	message += "	Vitalii Glushchenko (cehoweek@gmail.com)\n";
+	message += "	Stanislav Kvashchuk (skat@ukr.net)\n";
+	message += "	Vladimir Kovalevich (covalevich@gmail.com)\n";
+	message += "	Denys Melnychuk (meldenvar@gmail.com)\n";
+	message += "	Denis Kirin (deniskirinacs@gmail.com)\n<br>";
+	message += "&#x1F4E1;RESTful API endpoints:\n";
+	message += "	for Palata#13 <a href='http://" + ip + "/getallnodeproperties' target='_blank'>http://" + ip + "/</a>\n";
+	message += "	for owlnodef9ab6224 <a href='http://" + acip + "/getallnodeproperties' target='_blank'>http://" + acip + "/</a>\n";
+	message += "</span></code></pre>";
+	message += "</font>";
+	message += "</td>";
+	message += "</tr> ";
+	message += "</table></body>";
 
-	message += "<a href='http://" + ip + "/upload' target='_blank'>http://" + ip + "/upload</a> upload file WebForm (not API, use uploadfile POST request to upload file)<br>";
-	message += "<br><b>Unit's API:</b><br>";
-	message += "<a href='http://" + ip + "/getnodeproperty?property=id' target='_blank'>http://" + ip + "/getproperty?property=id</a> get node property<br>";
-	message += "<a href='http://" + ip + "/getallnodeproperties' target='_blank'>http://" + ip + "/getallnodeproperties</a> get all node's properties<br>";
-	message += "<a href='http://" + ip + "/setnodeproperty?property=foo&value=bar' target='_blank'>http://" + ip + "/setproperty?property=foo&value=bar</a> set node property<br>";
-	message += "<font color='red'><b>Be careful, changing the node's properties can do its unmanagement</b></font><br>";
-	message += "The node must be rebooted after changing the property value<br>";
-	message += "<br><b>Driver's API:</b><br>";
-	message += "<a href='http://" + ip + "/adddriver?type=foo&id=bar&pin1=foo&pin2=foo&pin3=foo&pin4=foo' target='_blank'>http://" + ip + "/adddriver?type=foo&id=bar&pin1=foo&pin2=foo&pin3=foo&pin4=foo</a> add new driver<br>";
-	message += "<a href='http://" + ip + "/getdriversid' target='_blank'>http://" + ip + "/getdriversid</a> get all drivers IDs<br>";
-	message += "<a href='http://" + ip + "/getdriverproperty?id=foo&property=bar' target='_blank'>http://" + ip + "/getdriverproperty?id=foo&property=bar</a> get driver property<br>";
-	message += "<a href='http://" + ip + "/setdriverproperty?id=foo&property=bar&value=bar' target='_blank'>http://" + ip + "/setdriverproperty?id=foo&property=bar&value=bar</a> set driver property<br>";
-	message += "<a href='http://" + ip + "/getdriverproperties?id=foo' target='_blank'>http://" + ip + "/getdriverproperties?id=foo</a> get driver's all properties<br>";
-	message += "<a href='http://" + ip + "/getalldriversproperties' target='_blank'>http://" + ip + "/getalldriversproperties</a> get all drivers all properties<br>";
-	message += "<a href='http://" + ip + "/reset' target='_blank'>http://" + ip + "/reset</a> reset node<br>";
-
-	message += "<font color='#208ECD'><h3>Available RESTful APIs for access point " + nodeGetWiFiAccessPointSSID() + ":</h3></font>";
-	message += "<b>Log's API:</b><br>";
-	message += "<a href='http://" + acip + "/getlog?number=1' target='_blank'>http://" + acip + "/getlog?number=1</a> get first log file<br>";
-	message += "<a href='http://" + acip + "/getlog?number=2' target='_blank'>http://" + acip + "/getlog?number=2</a> get second log file<br>";
-	message += "<br><b>Unit's API:</b><br>";
-	message += "<a href='http://" + acip + "/getnodeproperty?property=id' target='_blank'>http://" + acip + "/getproperty?property=id</a> get node property<br>";
-	message += "<a href='http://" + acip + "/getallnodeproperties' target='_blank'>http://" + acip + "/getallnodeproperties</a> get all node's properties<br>";
-	message += "<a href='http://" + acip + "/setnodeproperty?property=foo&value=bar' target='_blank'>http://" + acip + "/setproperty?property=foo&value=bar</a> set node property<br>";
-	message += "<font color='red'><b>Be careful, changing the node's properties can do its unmanagement</b></font><br>";
-	message += "The node must be rebooted after changing the property value<br>";
-	message += "<br><b>Driver's API:</b><br>";
-	message += "<a href='http://" + acip + "/getdriversid' target='_blank'>http://" + acip + "/getdriversid</a> get all drivers IDs<br>";
-	message += "<a href='http://" + acip + "/getdriverproperty?id=foo&property=bar' target='_blank'>http://" + acip + "/getdriverproperty?id=foo&property=bar</a> get driver property<br>";
-	message += "<a href='http://" + acip + "/setdriverproperty?id=foo&property=bar&value=bar' target='_blank'>http://" + acip + "/setdriverproperty?id=foo&property=bar&value=bar</a> set driver property<br>";
-	message += "<a href='http://" + acip + "/getdriverproperties?id=foo' target='_blank'>http://" + acip + "/getdriverproperties?id=foo</a> get driver's all properties<br>";
-	message += "<a href='http://" + acip + "/getalldriversproperties' target='_blank'>http://" + acip + "/getalldriversproperties</a> get all drivers all properties<br>";
-
-
-	message += "</font></body></html>";
 	return message;
 }
+#endif

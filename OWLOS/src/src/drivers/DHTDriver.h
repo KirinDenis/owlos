@@ -39,11 +39,14 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-#pragma once
-
-#include <Arduino.h>
-#include "../libraries\DHT_sensor_library\DHT.h"
 #include "BaseDriver.h"
+#ifdef USE_DHT_DRIVER
+
+#ifndef DHTDRIVER_H
+#define DHTDRIVER_H
+
+#pragma once
+#include "../libraries/DHT_sensor_library/DHT.h"
 
 #define DRIVER_ID "DHT"
 
@@ -122,3 +125,6 @@ private:
 	int historyTemperatureFileCount = 0;
 	int *temperatureHistoryFilesIndexes = new int[filesIndexesSize]();
 };
+
+#endif
+#endif

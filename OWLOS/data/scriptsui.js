@@ -297,10 +297,10 @@ var scriptsUI = {
         var scriptDebugButton = event.currentTarget;
         if (scriptDebugButton.debugNext == false) {
             scriptDebugButton.debugNext = true;
-            scriptsManager.startDebug(scriptDebugButton.script);
+            scriptsService.startDebug(scriptDebugButton.script);
         }
         else {
-            scriptsManager.debugNext(scriptDebugButton.script);
+            scriptsService.debugNext(scriptDebugButton.script);
 
         }
     },
@@ -393,7 +393,7 @@ var scriptsUI = {
         textArea.disabled = true;
 
 
-        scriptsManager.createOrReplace(script, scriptsUI.executeScriptAsyncReciever, scriptExecuteButton);
+        scriptsService.createOrReplace(script, scriptsUI.executeScriptAsyncReciever, scriptExecuteButton);
         return false;
     },
 
@@ -414,7 +414,7 @@ var scriptsUI = {
         if (!HTTPResult.indexOf("%error") == 0) {
             scriptExecuteButton.className = "btn btn-sm btn-success";
             script.node.networkStatus = NET_ONLINE;
-            scriptsManager.refresh(script.node);
+            scriptsService.refresh(script.node);
             label.style.color = theme.success;
             label.innerText = "execute-OK";
 
@@ -473,7 +473,7 @@ var scriptsUI = {
         textArea.style.backgroundColor = theme.secondary;
         textArea.disabled = true;
 
-        scriptsManager.delete(script, scriptsUI.scriptDeleteAsyncReciever, scriptDeleteButton);
+        scriptsService.delete(script, scriptsUI.scriptDeleteAsyncReciever, scriptDeleteButton);
         return false;
     },
 
@@ -485,7 +485,7 @@ var scriptsUI = {
 
         if (!HTTPResult.indexOf("%error") == 0) {
             node.networkStatus = NET_ONLINE; //UI редактора скрипта удалит onScriptDelete
-            scriptsManager.refresh(node);
+            scriptsService.refresh(node);
         }
         else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
 
@@ -528,7 +528,7 @@ var scriptsUI = {
 
         var script = createScript(node);
         script.name = addscriptInput.value;
-        scriptsManager.createOrReplace(script, scriptsUI.createScriptAsynReciever, newScriptDialog);
+        scriptsService.createOrReplace(script, scriptsUI.createScriptAsynReciever, newScriptDialog);
 
         return false;
 
@@ -540,7 +540,7 @@ var scriptsUI = {
         if (!HTTPResult.indexOf("%error") == 0) {
             node.networkStatus = NET_ONLINE;
             newScriptDialog.hide();
-            scriptsManager.refresh(node);
+            scriptsService.refresh(node);
         }
         else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
             if (HTTPResult.indexOf("reponse") != -1) {

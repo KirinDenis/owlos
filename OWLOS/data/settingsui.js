@@ -331,6 +331,7 @@ var settingsUI = {
                         //Панель обновлений
                         var updateWatcherId = node.nodenickname + "updateWatcher";
                         var updateWatcherDiv = document.getElementById(updateWatcherId);
+			if (driver.updateinfo != undefined) {
                         if (updateWatcherDiv == null) {
                             updateWatcherDiv = updatePropPanel.appendChild(document.createElement('div'));
                             updateWatcherDiv.id = updateWatcherId;
@@ -367,6 +368,7 @@ var settingsUI = {
 
                             driver.updateinfo.addValueListner(settingsUI.onUpdateInfoValueChange, updateWatcherDiv);
                             driver.updatepossible.addValueListner(settingsUI.onUpdateInfoValueChange, updateWatcherDiv);
+			  }
                         }
                     }
         }

@@ -1,0 +1,20 @@
+﻿<Window x:Class="OWLOS_WPF_1.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OWLOS_WPF_1"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <StackPanel Orientation="Vertical">
+            <Button Content="Get Actuator Data" HorizontalAlignment="Left" VerticalAlignment="Top" Click="Button_Click"/>
+            <Button Content="Get Actuator On" HorizontalAlignment="Left" VerticalAlignment="Top" Click="Button_Click_1" />
+            <Button Content="Get Actuator Off" HorizontalAlignment="Left" VerticalAlignment="Top" Click="Button_Click_2" />
+
+            
+            <TextBlock x:Name="label"  TextWrapping="WrapWithOverflow" />
+        
+        </StackPanel>
+    </Grid>
+</Window>

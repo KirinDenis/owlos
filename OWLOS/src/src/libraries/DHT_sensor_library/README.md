@@ -10,5 +10,5 @@ Tutorial: https://learn.adafruit.com/dht
 
 Examples include both a "standalone" DHT example, and one that works along with the Adafruit Unified Sensor Library. Unified sensor library is required even if using the standalone version.
 
-Recent Arduino IDE releases include the Library Manager for easy installation. Otherwise, to download, click the DOWNLOADS button in the top right corner, rename the uncompressed folder DHT. Check that the DHT folder contains DHT.cpp and DHT.h. Place the DHT library folder your <arduinosketchfolder>/libraries/ folder. You may need to create the libraries subfolder if its your first library. Restart the IDE.
+Recent Arduino IDE releases include the Library Service for easy installation. Otherwise, to download, click the DOWNLOADS button in the top right corner, rename the uncompressed folder DHT. Check that the DHT folder contains DHT.cpp and DHT.h. Place the DHT library folder your <arduinosketchfolder>/libraries/ folder. You may need to create the libraries subfolder if its your first library. Restart the IDE.
 

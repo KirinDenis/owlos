@@ -1,0 +1,12 @@
+﻿<Application x:Class="OWLOSAdmin.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:OWLOSAdmin"
+             StartupUri="EcosystemExplorer/EcosystemExplorerWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary Source = "Theme/OWLOSDarkTheme.xaml" />
+
+
+    </Application.Resources>
+
+</Application>

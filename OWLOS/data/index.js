@@ -64,6 +64,24 @@ var runOnce = true;
 
 var sideBar = undefined;
 
+function testHTTPS() {
+    httpGetAsyncWithReciever("https://192.168.1.5/getallnodeproperties", HTTPSResult, null);
+    //httpGetAsyncWithReciever("https://192.168.1.5/", HTTPSResult, null);
+}
+
+function HTTPSResult (httpResult, node) {
+    //HTTPClient добавляет строку "%error" в начало Response если запрос не был завешен HTTPCode=200 или произошел TimeOut
+    if (!httpResult.indexOf("%error") == 0) {
+        
+
+    }
+    else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
+    }
+}
+
+
+
+
 $(document).ready(function () {
 
     if (!runOnce) return;
@@ -71,6 +89,14 @@ $(document).ready(function () {
 
     addToLogNL("OK loading scripts");
     addToLogNL("[START]", 1);
+
+
+    //!!connection test  ----------------
+    
+    //setInterval(testHTTPS, 2000);
+
+    //return; 
+    //-----------------
 
     //setup UX color theme 
     var style = window.getComputedStyle(document.body, null);
@@ -173,9 +199,9 @@ function onLoadConfig(result) {
 
             addToLogNL(getLang("prepareUnit"));
 
-            scriptsManager.onNew = scriptsUI.onScriptNew;
-            scriptsManager.onChange = scriptsUI.onScriptChange;
-            scriptsManager.onDelete = scriptsUI.onScriptDelete;
+            scriptsService.onNew = scriptsUI.onScriptNew;
+            scriptsService.onChange = scriptsUI.onScriptChange;
+            scriptsService.onDelete = scriptsUI.onScriptDelete;
 
             drivers.addDriverLoadedListner(settingsUI.onDriverLoaded, settingsUI);
             
@@ -208,7 +234,7 @@ function nodesRefresh() {
         pins.refresh(configProperties.nodes[node]);
         driverPins.refresh(configProperties.nodes[node]);
         accessableDrivers.refresh(configProperties.nodes[node]);
-        scriptsManager.refresh(configProperties.nodes[node]);
+        scriptsService.refresh(configProperties.nodes[node]);
     }
     */
 }

@@ -40,6 +40,9 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 #include "StepperDriver.h"
+#ifdef USE_STEPPER_DRIVER
+
+
 
 //Драйвер шагового электродвигателя (HALF-STEP DRIVE)
 //WiKi:
@@ -72,8 +75,11 @@ OWLOS распространяется в надежде, что она буде
 //https://ru.wikipedia.org/wiki/%D0%9A%D0%BE%D0%BD%D1%86%D0%B5%D0%B2%D0%BE%D0%B9_%D0%B2%D1%8B%D0%BA%D0%BB%D1%8E%D1%87%D0%B0%D1%82%D0%B5%D0%BB%D1%8C
 
 //Основной метод драйвера setToPostion() - начните изучение драйвера с него. 
-
 #define DRIVER_ID "StepperDriver"
+
+#ifdef USE_ESP_DRIVER
+#include "../services/TransportService.h"
+#endif
 
 bool StepperDriver::init()
 {
@@ -149,7 +155,7 @@ String StepperDriver::onMessage(String _topic, String _payload, int8_t transport
 	}
 	else if (String(topic + "/settoposition").equals(_topic))
 	{
-		result = String(setToPosition(std::atoi(_payload.c_str())));
+		result = String(setToPosition(atoi(_payload.c_str())));
 	}
 	else
 		//Busy ----------------------------------------------------------------------
@@ -159,7 +165,7 @@ String StepperDriver::onMessage(String _topic, String _payload, int8_t transport
 		}
 		else if (String(topic + "/setbusy").equals(_topic))
 		{
-			result = String(setBusy(std::atoi(_payload.c_str())));
+			result = String(setBusy(atoi(_payload.c_str())));
 		}
 		else
 			//Stop ----------------------------------------------------------------------
@@ -169,7 +175,7 @@ String StepperDriver::onMessage(String _topic, String _payload, int8_t transport
 			}
 			else if (String(topic + "/setstop").equals(_topic))
 			{
-				result = String(setStop(std::atoi(_payload.c_str())));
+				result = String(setStop(atoi(_payload.c_str())));
 			}
 			else
 				//Position -----------------------------------------------------------------
@@ -179,7 +185,7 @@ String StepperDriver::onMessage(String _topic, String _payload, int8_t transport
 				}
 				else if (String(topic + "/setposition").equals(_topic))
 				{
-					result = String(setPosition(std::atoi(_payload.c_str()), true));
+					result = String(setPosition(atoi(_payload.c_str()), true));
 				}
 				else
 					//Range -----------------------------------------------------------------
@@ -189,7 +195,7 @@ String StepperDriver::onMessage(String _topic, String _payload, int8_t transport
 					}
 					else if (String(topic + "/setrange").equals(_topic))
 					{
-						result = String(setRange(std::atoi(_payload.c_str())));
+						result = String(setRange(atoi(_payload.c_str())));
 					}
 					else
 						//Speed ----------------------------------------------------------------
@@ -199,7 +205,7 @@ String StepperDriver::onMessage(String _topic, String _payload, int8_t transport
 						}
 						else if (String(topic + "/setspeed").equals(_topic))
 						{
-							result = String(setSpeed(std::atoi(_payload.c_str())));
+							result = String(setSpeed(atoi(_payload.c_str())));
 						}
 	return result;
 
@@ -276,7 +282,9 @@ bool StepperDriver::setToPosition(int _toPosition)
 
 		if (position % 5 == 0) //если шагов много, через определенный интервал - даем возможность отработать сети (возможно срабатывание WDT https://ru.wikipedia.org/wiki/%D0%A1%D1%82%D0%BE%D1%80%D0%BE%D0%B6%D0%B5%D0%B2%D0%BE%D0%B9_%D1%82%D0%B0%D0%B9%D0%BC%D0%B5%D1%80)
 		{
+#ifdef USE_ESP_DRIVER
 			transportLoop();
+#endif			
 		}
 		if (position % STEPPER_LOOP_INTERVAL == 0)//так же, через определенный интервал отправляем "наверх" информацию о текущем физическом положении двигателя
 		{
@@ -296,7 +304,9 @@ bool StepperDriver::setToPosition(int _toPosition)
 		setPosition(--position, false);
 		if (position % 5 == 0)
 		{
+#ifdef USE_ESP_DRIVER
 			transportLoop();
+#endif			
 		}
 		if (position % STEPPER_LOOP_INTERVAL == 0)
 		{
@@ -447,3 +457,4 @@ void StepperDriver::doOutput(int out)
 		driverPinWrite(id, PIN2_INDEX, bitRead(stepMask[out], 2));
 		driverPinWrite(id, PIN3_INDEX, bitRead(stepMask[out], 3));
 };
+#endif

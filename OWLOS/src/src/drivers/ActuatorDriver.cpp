@@ -40,7 +40,7 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 #include "ActuatorDriver.h"
-
+#ifdef USE_ACTUATOR_DRIVER
 #define DRIVER_MASK "ActuatorDriver"
 #define DRIVER_ID "actuator1"
 #define ActuatorLoopInterval 200
@@ -131,7 +131,7 @@ String ActuatorDriver::onMessage(String _topic, String _payload, int8_t transpor
 	}
 	else if (String(topic + "/setdata").equals(_topic))
 	{
-		result = String(setData(std::atoi(_payload.c_str()), true));
+		result = String(setData(atoi(_payload.c_str()), true));
 	}
 	else if (String(topic + "/getpwm").equals(_topic))
 	{
@@ -139,7 +139,7 @@ String ActuatorDriver::onMessage(String _topic, String _payload, int8_t transpor
 	}
 	else if (String(topic + "/setpwm").equals(_topic))
 	{
-		result = String(setPWM(std::atoi(_payload.c_str()), true));
+		result = String(setPWM(atoi(_payload.c_str()), true));
 	}
 	else if (String(topic + "/getpwmdelay").equals(_topic))
 	{
@@ -147,7 +147,7 @@ String ActuatorDriver::onMessage(String _topic, String _payload, int8_t transpor
 	}
 	else if (String(topic + "/setpwmdelay").equals(_topic))
 	{
-		result = String(setPWMDelay(std::atoi(_payload.c_str()), true));
+		result = String(setPWMDelay(atoi(_payload.c_str()), true));
 	}
 	else if (String(topic + "/getinvert").equals(_topic))
 	{
@@ -155,7 +155,7 @@ String ActuatorDriver::onMessage(String _topic, String _payload, int8_t transpor
 	}
 	else if (String(topic + "/setinvert").equals(_topic))
 	{
-		result = String(setInvert(std::atoi(_payload.c_str()), true));
+		result = String(setInvert(atoi(_payload.c_str()), true));
 	}
 
 	return result;
@@ -345,3 +345,4 @@ bool ActuatorDriver::setInvert(bool _invert, bool doEvent)
 	return true;
 };
 
+#endif

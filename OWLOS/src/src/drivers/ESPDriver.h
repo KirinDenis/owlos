@@ -38,7 +38,16 @@ OWLOS распространяется в надежде, что она буде
 Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
-#include <core_version.h>
+#include "../config.h"
+
+#ifdef USE_ESP_DRIVER
+#ifndef ESP_DRIVER_H
+#define ESP_DRIVER_H
+
+
+#define FIRMWARE_VERSION "OWLOS version 1.9 (RC)"
+#define FIRMWARE_BUILD_NUMBER 104
+
 
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 #include <ESP8266WiFi.h>
@@ -51,7 +60,7 @@ OWLOS распространяется в надежде, что она буде
 #include <rom/rtc.h>
 #endif
 
-#include "../utils/Utils.h"
+
 
 bool nodeInit();
 
@@ -279,3 +288,6 @@ bool nodeSetUpdateAvailable(int _updateavailable);
 
 String nodeGetUpdateHost();
 bool nodeSetUpdateHost(String _updatehost);
+
+#endif
+#endif

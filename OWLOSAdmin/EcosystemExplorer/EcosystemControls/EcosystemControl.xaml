@@ -1,0 +1,25 @@
+﻿<UserControl x:Class="OWLOSAdmin.EcosystemExplorer.EcosystemControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:OWLOSAdmin.EcosystemExplorer"
+             mc:Ignorable="d" 
+             HorizontalAlignment="Left" VerticalAlignment="Top"
+             MinHeight="0" MinWidth="0" 
+             Height="Auto" Width="Auto"
+             d:DesignHeight="200" d:DesignWidth="200" 
+             Focusable="True" IsTabStop="True"              
+             PreviewMouseMove="EcosystemControlPreviewMouseMove" 
+             MouseDown="EcosystemControlMouseDown" 
+             MouseUp="EcosystemControlMouseUp" 
+             GotFocus="EcosystemControlGotFocus" 
+             LostFocus="EcosystemControlLostFocus" 
+             PreviewMouseDown="EcosystemControlPreviewMouseDown" 
+             ClipToBounds="True" 
+             SnapsToDevicePixels="True" >
+
+    <Grid Name="childHolderGrid" TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed" >
+    </Grid>
+
+</UserControl>

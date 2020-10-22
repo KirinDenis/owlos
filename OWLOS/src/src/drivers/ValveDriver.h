@@ -39,8 +39,10 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-#include <Arduino.h>
 #include "BaseDriver.h"
+#ifdef USE_VALVE_DRIVER
+#ifndef VALVEDRIVER_H
+#define VALVEDRIVER_H
 
 #define CLOSE_PIN_INDEX 0
 #define OPEN_PIN_INDEX 1
@@ -94,3 +96,5 @@ private:
 	int newphysicalposition = 0;
 
 };
+#endif
+#endif

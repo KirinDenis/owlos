@@ -38,8 +38,8 @@ OWLOS распространяется в надежде, что она буде
 Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
-
 #include "LCDDriver.h"
+#ifdef USE_LCD_DRIVER
 
 //I2C LCD driver based on OWLOS\src\libraries\LiquidCrystal_I2C\LiquidCrystal_I2C.cpp by https://gitlab.com/tandembyte/liquidcrystal_i2c
 //
@@ -57,7 +57,7 @@ OWLOS распространяется в надежде, что она буде
 //https://ru.wikipedia.org/wiki/HD44780
 
 //примечание: драйвер LCD требует I2C адрес подчиненного устройства на шине. Для совместимости с общей архитектурой драйверов - I2C адрес представлен внешне в роли 
-//пина. Что делает возможность управления адресом из PinManager. 
+//пина. Что делает возможность управления адресом из PinService. 
 
 #define DRIVER_ID "lcd"
 #define LCD_LOOP_INTERVAL 200
@@ -145,7 +145,7 @@ String LCDDriver::onMessage(String _topic, String _payload, int8_t transportMask
 	//с архитектурой, по этой причине необходим отдельный обработчик I2CADDR пина
 	if (String(topic + "/setpin" + String(I2CADDR_INDEX)).equals(_topic))
 	{
-		//base is put the new address to to PinManager
+		//base is put the new address to to PinService
 		result = init(); //init() get Address from PinManger	
 	}
 
@@ -174,7 +174,7 @@ String LCDDriver::onMessage(String _topic, String _payload, int8_t transportMask
 	}
 	else if (String(topic + "/setdisplay").equals(_topic))
 	{
-		result = String(setDisplay(std::atoi(_payload.c_str()), true));
+		result = String(setDisplay(atoi(_payload.c_str()), true));
 	}
 	//Backlight
 	else if (String(topic + "/getbacklight").equals(_topic))
@@ -183,7 +183,7 @@ String LCDDriver::onMessage(String _topic, String _payload, int8_t transportMask
 	}
 	else if (String(topic + "/setbacklight").equals(_topic))
 	{
-		result = String(setBacklight(std::atoi(_payload.c_str()), true));
+		result = String(setBacklight(atoi(_payload.c_str()), true));
 	}
 	//Blink
 	else if (String(topic + "/getblink").equals(_topic))
@@ -192,7 +192,7 @@ String LCDDriver::onMessage(String _topic, String _payload, int8_t transportMask
 	}
 	else if (String(topic + "/setblink").equals(_topic))
 	{
-		result = String(setBlink(std::atoi(_payload.c_str()), true));
+		result = String(setBlink(atoi(_payload.c_str()), true));
 	}
 	//Cursor
 	else if (String(topic + "/getcursor").equals(_topic))
@@ -201,7 +201,7 @@ String LCDDriver::onMessage(String _topic, String _payload, int8_t transportMask
 	}
 	else if (String(topic + "/setcursor").equals(_topic))
 	{
-		result = String(setCursor(std::atoi(_payload.c_str()), true));
+		result = String(setCursor(atoi(_payload.c_str()), true));
 	}
 	//Autoscroll
 	else if (String(topic + "/getautoscroll").equals(_topic))
@@ -210,7 +210,7 @@ String LCDDriver::onMessage(String _topic, String _payload, int8_t transportMask
 	}
 	else if (String(topic + "/setautoscroll").equals(_topic))
 	{
-		result = String(setAutoscroll(std::atoi(_payload.c_str()), true));
+		result = String(setAutoscroll(atoi(_payload.c_str()), true));
 	}
 	//Clear
 	else if (String(topic + "/getclear").equals(_topic))
@@ -219,7 +219,7 @@ String LCDDriver::onMessage(String _topic, String _payload, int8_t transportMask
 	}
 	else if (String(topic + "/setclear").equals(_topic))
 	{
-		result = String(setClear(std::atoi(_payload.c_str()), true));
+		result = String(setClear(atoi(_payload.c_str()), true));
 	}
 	//X
 	else if (String(topic + "/getx").equals(_topic))
@@ -228,7 +228,7 @@ String LCDDriver::onMessage(String _topic, String _payload, int8_t transportMask
 	}
 	else if (String(topic + "/setx").equals(_topic))
 	{
-		result = String(setX(std::atoi(_payload.c_str()), true));
+		result = String(setX(atoi(_payload.c_str()), true));
 	}
 	//Y
 	else if (String(topic + "/gety").equals(_topic))
@@ -237,7 +237,7 @@ String LCDDriver::onMessage(String _topic, String _payload, int8_t transportMask
 	}
 	else if (String(topic + "/sety").equals(_topic))
 	{
-		result = String(setY(std::atoi(_payload.c_str()), true));
+		result = String(setY(atoi(_payload.c_str()), true));
 	}
 	//Cols
 	else if (String(topic + "/getcols").equals(_topic))
@@ -246,7 +246,7 @@ String LCDDriver::onMessage(String _topic, String _payload, int8_t transportMask
 	}
 	else if (String(topic + "/setcols").equals(_topic))
 	{
-		result = String(setCols(std::atoi(_payload.c_str()), true));
+		result = String(setCols(atoi(_payload.c_str()), true));
 	}
 	//Rows
 	else if (String(topic + "/getrows").equals(_topic))
@@ -255,7 +255,7 @@ String LCDDriver::onMessage(String _topic, String _payload, int8_t transportMask
 	}
 	else if (String(topic + "/setrows").equals(_topic))
 	{
-		result = String(setRows(std::atoi(_payload.c_str()), true));
+		result = String(setRows(atoi(_payload.c_str()), true));
 	}
 
 	return result;
@@ -615,3 +615,4 @@ bool LCDDriver::setY(int _y, bool doEvent)
 	return true;
 }
 ;
+#endif

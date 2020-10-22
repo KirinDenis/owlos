@@ -39,7 +39,16 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-#include "Utils.h"
+
+#ifndef HTTPWEBPROP_H
+#define HTTPWEBPROP_H
+
+#include "../config.h"
+#ifdef USE_ESP_DRIVER
+
 
 String webGetAllProperties();
 String webOnMessage(String _topic, String _payload);
+
+#endif
+#endif

@@ -62,7 +62,7 @@ function createScript(_node) {
     };
 }
 
-var scriptsManager = {
+var scriptsService = {
     scripts: [],
 
     //подписчики (функции) на onNew событие скрипта 
@@ -70,37 +70,37 @@ var scriptsManager = {
 
     //вызов события onNew скриптом
     doOnNew: function (script) {
-        for (var key in scriptsManager._onnew) {
-            scriptsManager._onnew[key](script);
+        for (var key in scriptsService._onnew) {
+            scriptsService._onnew[key](script);
         }
     },
 
     //Добавление обработчиков события onNew
     set onNew(onnew) {
-        scriptsManager._onnew.push(onnew);
+        scriptsService._onnew.push(onnew);
     },
 
 
     _onchange: [],
     doOnChange: function (script) {
-        for (var key in scriptsManager._onchange) {
-            scriptsManager._onchange[key](script);
+        for (var key in scriptsService._onchange) {
+            scriptsService._onchange[key](script);
         }
     },
 
     set onChange(onchange) {
-        scriptsManager._onchange.push(onchange);
+        scriptsService._onchange.push(onchange);
     },
 
     _ondelete: [],
     doOnDelete: function (script) {
-        for (var key in scriptsManager._ondelete) {
-            scriptsManager._ondelete[key](script);
+        for (var key in scriptsService._ondelete) {
+            scriptsService._ondelete[key](script);
         }
     },
 
     set onDelete(ondelete) {
-        scriptsManager._ondelete.push(ondelete);
+        scriptsService._ondelete.push(ondelete);
     },
 
 
@@ -109,7 +109,7 @@ var scriptsManager = {
         // асинхронный HTTP запрос
         // this.refreshResult - метод который будет вызван HTTPClient-ом по окончанию асинхронного запроса
         // this - ссылка на экземпляр этого объекта        
-        httpGetAsyncWithReciever(node.host + "getallscripts", scriptsManager.refreshResult, node);
+        httpGetAsyncWithReciever(node.host + "getallscripts", scriptsService.refreshResult, node);
     },
 
     //вызывается асинхронным HTTPClient по окончанию запроса, указан как параметр в httpGetAsyncWithReciever, смотрите this.refresh()
@@ -120,7 +120,7 @@ var scriptsManager = {
         //HTTPClient добавляет строку "%error" в начало Response если запрос не был завешен HTTPCode=200 или произошел TimeOut
         if (!httpResult.indexOf("%error") == 0) {
             node.networkStatus = NET_ONLINE;
-            scriptsManager.parseScripts(httpResult, node);
+            scriptsService.parseScripts(httpResult, node);
         }
         else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
             if (httpResult.indexOf("reponse") != -1) {
@@ -149,7 +149,7 @@ var scriptsManager = {
         var httpResult = httpGet(script.node.host + "debugnextscript?name=" + escape(script.name));
         if (!httpResult.indexOf("%error") == 0) {
             script.node.networkStatus = NET_ONLINE;
-            scriptsManager.parseScripts(httpResult, script.node);
+            scriptsService.parseScripts(httpResult, script.node);
             return true;
         }
         else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
@@ -168,33 +168,33 @@ var scriptsManager = {
     },
 
     getScript: function (node, name) {
-        for (var scriptKey in scriptsManager.scripts) {
-            if ((scriptsManager.scripts[scriptKey].node === node) && (scriptsManager.scripts[scriptKey].name === name)) {
-                return scriptsManager.scripts[scriptKey];
+        for (var scriptKey in scriptsService.scripts) {
+            if ((scriptsService.scripts[scriptKey].node === node) && (scriptsService.scripts[scriptKey].name === name)) {
+                return scriptsService.scripts[scriptKey];
             }
         }
         return undefined;
     },
 
     pushScript: function (script) {
-        for (var scriptKey in scriptsManager.scripts) {
-            if ((scriptsManager.scripts[scriptKey].node === script.node) && (scriptsManager.scripts[scriptKey].name === script.name)) {
-                scriptsManager.scripts[scriptKey] = script;
-                scriptsManager.doOnChange(scriptsManager.scripts[scriptKey]);
+        for (var scriptKey in scriptsService.scripts) {
+            if ((scriptsService.scripts[scriptKey].node === script.node) && (scriptsService.scripts[scriptKey].name === script.name)) {
+                scriptsService.scripts[scriptKey] = script;
+                scriptsService.doOnChange(scriptsService.scripts[scriptKey]);
                 return;
             }
         }
 
-        scriptsManager.scripts.push(script); //TODO onNew event 
+        scriptsService.scripts.push(script); //TODO onNew event 
         this.doOnNew(script);
 
     },
 
     parseScripts: function (httpResult, node) {
 
-        for (var scriptKey in scriptsManager.scripts) {
-            if ((scriptsManager.scripts[scriptKey].node === node)) {
-                scriptsManager.scripts[scriptKey].deleted = true; //все удалены перед началом парсинга
+        for (var scriptKey in scriptsService.scripts) {
+            if ((scriptsService.scripts[scriptKey].node === node)) {
+                scriptsService.scripts[scriptKey].deleted = true; //все удалены перед началом парсинга
             }
         }
 
@@ -211,7 +211,7 @@ var scriptsManager = {
                 if (recievedScripts[i].indexOf("script:") == 0) { //если заголовок драйвера найден                    
                     //add previos 
                     if (script != undefined) {
-                        scriptsManager.pushScript(script);
+                        scriptsService.pushScript(script);
                     }
 
                     script = createScript(node);
@@ -231,18 +231,18 @@ var scriptsManager = {
                 }
             }
             if (script != undefined) {
-                scriptsManager.pushScript(script);
+                scriptsService.pushScript(script);
             }
         }
 
         var deleted = false;
         while (!deleted) {
             deleted = true;
-            for (var scriptKey in scriptsManager.scripts) { //удаляем удаленные на стороне ноды 
-                if ((scriptsManager.scripts[scriptKey].node === node)) {
-                    if (scriptsManager.scripts[scriptKey].deleted === true) {
-                        this.doOnDelete(scriptsManager.scripts[scriptKey]);
-                        scriptsManager.scripts.splice(scriptKey, 1);
+            for (var scriptKey in scriptsService.scripts) { //удаляем удаленные на стороне ноды 
+                if ((scriptsService.scripts[scriptKey].node === node)) {
+                    if (scriptsService.scripts[scriptKey].deleted === true) {
+                        this.doOnDelete(scriptsService.scripts[scriptKey]);
+                        scriptsService.scripts.splice(scriptKey, 1);
                         deleted = false;
                         break;
                     }

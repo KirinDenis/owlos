@@ -138,7 +138,7 @@ var config = {
         var node = {
             host: _host,
             nodenickname: _nodenickname,
-            nodeRefreshInterval: 10000,
+            nodeRefreshInterval: 20000,
             //-------------------------------------------------------------------------------------------------------------
             //сетевое состояние модуля - онлайн, офлайн, переподсоединение ("в работе"), ошибка --> по умолчанию онлайн
             //NOTE: у каждого свойства есть свое сетевое состояние и связанные события - это глобальный флаг для всех драйвер и элементов UI
@@ -164,11 +164,11 @@ var config = {
                 this.networkStatusListners.push(event = { event: _event, sender: _sender });
             },
             nodeRefresh(node) {
-                    drivers.refresh(node);
-                    pins.refresh(node);
-                    driverPins.refresh(node);
-                    accessableDrivers.refresh(node);
-                    scriptsManager.refresh(node);            
+                drivers.refresh(node);
+                pins.refresh(node);
+                driverPins.refresh(node);
+                accessableDrivers.refresh(node);
+                scriptsService.refresh(node);
             },
             drivers: [],
             pins: [],
@@ -192,21 +192,33 @@ var config = {
     },
     load: function (onLoadConfig) {
 
-        httpGetAsync(boardhost + "getwebproperty?property=config", this.onLoadConfig, onLoadConfig, this, null, 10000); //boardhost host контроллера с которого идет первичная загрузка
+        httpGetAsync(boardhost + "getwebproperty?property=config", config.onLoadConfig, onLoadConfig, this, null, 10000); //boardhost host контроллера с которого идет первичная загрузка
     },
     onLoadConfig: function (_data, upperAsyncReciever, sender, upperSender) {
         var result = false;
         var stringifyConfig = _data;
         if (!stringifyConfig.indexOf("%error") == 0) {
             try {
-                configProperties = JSON.parse(unescape(stringifyConfig));
+
+                try {
+                    configProperties = JSON.parse(unescape(stringifyConfig));
+                }
+                catch  {
+                    //if not parsed HTTP POST section stored 
+                    if (stringifyConfig.indexOf("Content-Disposition") != 0) {
+                        stringifyConfig = stringifyConfig.substring(stringifyConfig.indexOf("{"), stringifyConfig.length);
+                        stringifyConfig = stringifyConfig.substring(0, stringifyConfig.indexOf("---"));
+                    }
+
+                    configProperties = JSON.parse(unescape(stringifyConfig));
+                }
                 //check 
                 if (sender.getDashboardById("main") != undefined) {
                     var tempNodes = [];
                     for (var nodeKey in configProperties.nodes) {
-                        if (configProperties.nodes[nodeKey].nodeRefreshInterval == undefined)  {
-                            configProperties.nodes[nodeKey].nodeRefreshInterval = 10000;                           
-                        }  
+                        if (configProperties.nodes[nodeKey].nodeRefreshInterval == undefined) {
+                            configProperties.nodes[nodeKey].nodeRefreshInterval = 20000;
+                        }
                         var tempNode = {
                             id: configProperties.nodes[nodeKey].id,
                             host: configProperties.nodes[nodeKey].host,
@@ -237,15 +249,15 @@ var config = {
                                     return; // don't add bad listner
                                 }
                                 this.networkStatusListners.push(event = { event: _event, sender: _sender });
-                            }, 
+                            },
                             nodeRefresh(node) {
                                 drivers.refresh(node);
                                 pins.refresh(node);
                                 driverPins.refresh(node);
                                 accessableDrivers.refresh(node);
-                                scriptsManager.refresh(node);            
-                        }
-            
+                                scriptsService.refresh(node);
+                            }
+
                         }
                         tempNode.nodeRefresh(tempNode);
                         setInterval(tempNode.nodeRefresh, tempNode.nodeRefreshInterval, tempNode);
@@ -314,7 +326,10 @@ var config = {
         //установка размера подстроки
         var subStringLength = 1024;
         // вызов функции сохранения
-        this.configSendAsync("Start", 0, stringifyConfig, subStringLength, boardhost);
+        //this.configSendAsync("Start", 0, stringifyConfig, subStringLength, boardhost);
+        if (httpPostWithErrorReson(boardhost + "setwebproperty", stringifyConfig).indexOf("error") == -1) {
+            //document.location.reload(true);
+        }
         return true;
     },
 

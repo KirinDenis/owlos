@@ -39,9 +39,11 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-//#include "config.h" ???
+#include "WebProperties.h"
+#ifdef USE_ESP_DRIVER
+
 #include "../drivers/ESPDriver.h"
-#include "../Managers/FileManager.h"
+#include "../services/FileService.h"
 
 #define id "webproperties"
 
@@ -110,4 +112,4 @@ String webOnMessage(String _topic, String _payload)
 	return result;
 }
 
-
+#endif
