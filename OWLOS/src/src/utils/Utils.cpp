@@ -105,3 +105,35 @@ void writeDebugLogFile(String fileName, int fileSize, String tag, String text)
 	}
 }
 
+bool matchRoute(String route, String topic, const char* path) {
+    return matchRoute(route.c_str(), topic.c_str(), path);
+}
+// Route = a/b/c/d /getsomething
+//   topic=^^^^^^^|^^^^^^^^^^^^^=path
+bool matchRoute(const char* route, const char* topic, const char* path)
+{
+    if (!route || !topic || !path)
+        return false;
+
+    int len = strlen(route);
+    const char * routePath = NULL;
+    //Find last /
+    for (int i = len; i >= 0; i--) {
+        if (route[i] == '/') {
+            routePath = route + i;
+            break;
+        }
+    }
+    if (!routePath)
+        return false;
+
+    //First check path
+    if (strcmp(routePath, path) != 0)
+        return false;
+    // Check only the topic part of route
+    if (strncmp(topic, route, len - strlen(routePath)) != 0)
+        return false;
+
+    return true;
+
+}

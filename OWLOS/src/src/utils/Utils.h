@@ -90,5 +90,7 @@ OWLOS распространяется в надежде, что она буде
 char* stringToChar(String src);
 void  debugOut(String tag, String text);
 void writeDebugLogFile(String fileName, int fileSize, String tag, String text);
+bool matchRoute(const char* route, const char* topic, const char* path);
+bool matchRoute(String route, String topic, const char* path);
 
 #endif
