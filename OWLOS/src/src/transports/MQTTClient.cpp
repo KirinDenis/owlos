@@ -164,8 +164,11 @@ bool MQTTBegin()
     mqttClient.onUnsubscribe(onMqttUnsubscribe);
     mqttClient.onMessage(onMqttMessage);
     mqttClient.onPublish(onMqttPublish);
-    mqttClient.setClientId("clientId-6KJqY90E1s");
-    mqttClient.setServer("broker.mqttdashboard.com", 1883);
+
+    mqttClient.setClientId(nodeGetMQTTID().c_str());    
+    mqttClient.setServer(nodeGetMQTTURL().c_str(), nodeGetMQTTPort());
+    debugOut("MQTT","Client Id:" + nodeGetMQTTID());
+    debugOut("MQTT","URL:" + nodeGetMQTTURL());
 
     return true;
 }

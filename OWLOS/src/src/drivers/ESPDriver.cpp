@@ -74,8 +74,9 @@ OWLOS распространяется в надежде, что она буде
 
 #define DEFAULT_MQTT_CLIENT_AVAILABLE true
 #define DEFAULT_MQTT_CLIENT_PORT 1883
-#define DEFAULT_MQTT_CLIENT_URL "192.168.1.100"
-#define DEFAULT_MQTT_CLIENT_LOGIN "owluser"
+#define DEFAULT_MQTT_CLIENT_URL "broker.hivemq.com"
+#define DEFAULT_MQTT_CLIENT_ID "clientId-tNQIToExMU"
+#define DEFAULT_MQTT_CLIENT_LOGIN ""
 #define DEFAULT_MQTT_CLIENT_PASSWORD ""
 
 #define DEFAULT_OTA_CLIENT_AVAILABLE false
@@ -1040,7 +1041,7 @@ bool nodeSetMQTTURL(String _mqtturl)
 //MQTTID()  
 String nodeGetMQTTID()
 {
-	if (propertyFileReaded.indexOf("mqttid;") < 0) return mqttid = _getStringPropertyValue("mqttid", DEFAULT_MQTT_CLIENT_URL);
+	if (propertyFileReaded.indexOf("mqttid;") < 0) return mqttid = _getStringPropertyValue("mqttid", DEFAULT_MQTT_CLIENT_ID);
 	else return mqttid;
 }
 
