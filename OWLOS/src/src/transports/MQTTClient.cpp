@@ -1,9 +1,8 @@
 #include "MQTTClient.h"
 
-
 #ifdef USE_ESP_DRIVER
 #include "../drivers/ESPDriver.h"
-#ifdef USE_DRIVERS			
+#ifdef USE_DRIVERS
 #include "../services/DriverService.h"
 #endif
 #endif
@@ -16,147 +15,152 @@ AsyncMqttClient mqttClient;
 TimerHandle_t mqttReconnectTimer;
 TimerHandle_t wifiReconnectTimer;
 
-void onMqttConnect(bool sessionPresent) {
-
+void onMqttConnect(bool sessionPresent)
+{
     xTimerStop(mqttReconnectTimer, 0);
-    debugOut("MQTT", "Connected to MQTT");
-    debugOut("MQTT","Session present: " + sessionPresent);
-    
-    #ifdef USE_ESP_DRIVER
+    debugOut("MQTT", "OnConnected to MQTT, Session present: " + String(sessionPresent));
+#ifdef USE_ESP_DRIVER
     nodeSubscribe();
-    #endif
-    /*
-     uint16_t packetIdSub = mqttClient.subscribe("test/lol", 2);
-     //Serial.print("Subscribing at QoS 2, packetId: ");
-     //Serial.println(packetIdSub);
-     mqttClient.publish("test/lol", 0, true, "test 1");
-     //Serial.println("Publishing at QoS 0");
-     uint16_t packetIdPub1 = mqttClient.publish("test/lol", 1, true, "test 2");
-     //Serial.print("Publishing at QoS 1, packetId: ");
-     //Serial.println(packetIdPub1);
-     uint16_t packetIdPub2 = mqttClient.publish("test/lol", 2, true, "test 3");
-     //Serial.print("Publishing at QoS 2, packetId: ");
-     //Serial.println(packetIdPub2);
-    */
+#endif
 }
 
-void onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
-    debugOut("MQTT","Disconnected from MQTT");
+void onMqttDisconnect(AsyncMqttClientDisconnectReason reason)
+{
+    if (Debug)
+    {
+        String disconnectReason = "OnDisconnected from MQTT: ";
+        switch (reason)
+        {
 
-    if (WiFi.isConnected()) {
+        case AsyncMqttClientDisconnectReason::TCP_DISCONNECTED:
+            disconnectReason += "TCP_DISCONNECTED";
+            break;
+
+        case AsyncMqttClientDisconnectReason::MQTT_UNACCEPTABLE_PROTOCOL_VERSION:
+            disconnectReason += "MQTT_UNACCEPTABLE_PROTOCOL_VERSION";
+            break;
+
+        case AsyncMqttClientDisconnectReason::MQTT_IDENTIFIER_REJECTED:
+            disconnectReason += "MQTT_IDENTIFIER_REJECTED";
+            break;
+
+        case AsyncMqttClientDisconnectReason::MQTT_SERVER_UNAVAILABLE:
+            disconnectReason += "MQTT_SERVER_UNAVAILABLE";
+            break;
+
+        case AsyncMqttClientDisconnectReason::MQTT_MALFORMED_CREDENTIALS:
+            disconnectReason += "MQTT_MALFORMED_CREDENTIALS";
+            break;
+
+        case AsyncMqttClientDisconnectReason::MQTT_NOT_AUTHORIZED:
+            disconnectReason += "MQTT_NOT_AUTHORIZED";
+            break;
+
+        case AsyncMqttClientDisconnectReason::ESP8266_NOT_ENOUGH_SPACE:
+            disconnectReason += "ESP8266_NOT_ENOUGH_SPACE/ESP32?";
+            break;
+
+        case AsyncMqttClientDisconnectReason::TLS_BAD_FINGERPRINT:
+            disconnectReason += "TLS_BAD_FINGERPRINT";
+            break;
+
+        default:
+            disconnectReason += "UNKNOWN";
+            break;
+        }
+        debugOut("MQTT", disconnectReason);
+    }
+
+    if (WiFi.isConnected())
+    {
         xTimerStart(mqttReconnectTimer, 0);
     }
 }
 
-void onMqttSubscribe(uint16_t packetId, uint8_t qos) {
-    debugOut("MQTT","Subscribe acknowledged.");
-    debugOut("MQTT","  packetId: ");
-    debugOut("MQTT", String(packetId));
-    debugOut("MQTT","  qos: ");
-    debugOut("MQTT", String(qos));
+void onMqttSubscribe(uint16_t packetId, uint8_t qos)
+{
+    debugOut("MQTT", "OnSubscribe acknowledged, packetId: " + String(packetId) + "  Qos: " + String(qos));
 }
 
-void onMqttUnsubscribe(uint16_t packetId) {
-    //Serial.println("Unsubscribe acknowledged.");
-    //Serial.print("  packetId: ");
-    //Serial.println(packetId);
+void onMqttUnsubscribe(uint16_t packetId)
+{
+    debugOut("MQTT", "OnUnsubscribe acknowledged: " + String(packetId));
 }
 
-void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total) {
-    debugOut("MQTT","Publish received.");
-    debugOut("MQTT","  topic: ");
-    debugOut("MQTT",topic);
-
-    #ifdef USE_ESP_DRIVER
+void onMqttMessage(char *topic, char *payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total)
+{
+    //cut payload buffer
+    String _payload = String(payload).substring(index, len);
+    String _topic = String(topic);
+    debugOut("MQTT", "OnPublish received: " + _topic + " payload: " + _payload);
+#ifdef USE_ESP_DRIVER
     //first check is Unit property?
-    if (nodeOnMessage(String(topic), String(payload), MQTTMask).equals(WrongPropertyName))
+    if (nodeOnMessage(_topic, _payload, MQTTMask).equals(WrongPropertyName))
     {
         //if not UNIT property
         //Put recieved message to all drivers, each driver can process any topic recieved by Unit
-        #ifdef USE_DRIVERS			
-        driversCallback(String(topic), String(payload));
-        #endif			
-
+#ifdef USE_DRIVERS
+        driversCallback(_topic, _payload);
+#endif
     }
-    #endif			    
-
-    //Serial.print("  qos: ");
-    //Serial.println(properties.qos);
-    //Serial.print("  dup: ");
-    //Serial.println(properties.dup);
-    //Serial.print("  retain: ");
-    //Serial.println(properties.retain);
-    //Serial.print("  len: ");
-    //Serial.println(len);
-    //Serial.print("  index: ");
-    //Serial.println(index);
-    //Serial.print("  total: ");
-    //Serial.println(total);
+#endif
 }
 
-void onMqttPublish(uint16_t packetId) {
-    debugOut("MQTT","Publish acknowledged.");
-    debugOut("MQTT","  packetId: ");
-    debugOut("MQTT", String(packetId));
+void onMqttPublish(uint16_t packetId)
+{
+    debugOut("MQTT", "OnPublish acknowledged, packetId: " + String(packetId));
 }
 
 void MQTTPublish(String _topic, String _payload)
 {
-    //Serial.print("Publish ");
-    //Serial.println(_topic);
-    uint16_t packetIdPub1 =   mqttClient.publish(_topic.c_str(), 0, true, _payload.c_str());
-    //Serial.print("Publishing at QoS 1, packetId: ");
-    //Serial.println(packetIdPub1);
+    if (WiFi.isConnected() && mqttClient.connected())
+    {
+        uint16_t packetIdPub = mqttClient.publish(_topic.c_str(), 0, true, _payload.c_str());
+        debugOut("MQTT", "[DO]->Publish: " + _topic + " payload: " + _payload + " packetIdPub: " + String(packetIdPub));
+    }
+    //TODO: say about ignore publish to hight level
 }
 
 void MQTTSubscribe(String _topic)
 {
-    debugOut("MQTT","Subscribe ");
-    debugOut("MQTT",_topic);
-
     uint16_t packetIdSub = mqttClient.subscribe(_topic.c_str(), 2);
-    debugOut("MQTT","Subscribing at QoS 2, packetId: ");
-    debugOut("MQTT", String(packetIdSub));
+    debugOut("MQTT", "[DO]->Subscribe: " + _topic + " QoS 2, packetId: " + String(packetIdSub));
 }
-/*
-  //uint16_t packetIdSub = mqttClient.subscribe("test/lol", 2);
-  ////Serial.print("Subscribing at QoS 2, packetId: ");
-  ////Serial.println(packetIdSub);
-  //mqttClient.publish("test/lol", 0, true, "test 1");
-  ////Serial.println("Publishing at QoS 0");
-  uint16_t packetIdPub1 = mqttClient.publish("test/lol", 1, true, "test 2");
-  //Serial.print("Publishing at QoS 1, packetId: ");
-  //Serial.println(packetIdPub1);
-  uint16_t packetIdPub2 = mqttClient.publish("test/lol", 2, true, "test 3");
-  //Serial.print("Publishing at QoS 2, packetId: ");
-  //Serial.println(packetIdPub2);
-*/
 
-void reconnectToMQTT() {
-    debugOut("MQTT","Connecting to MQTT...");
-    if ((WiFi.isConnected()) && (!mqttClient.connected()))
+bool connectionAsyncBlocker = false;
+void reconnectToMQTT()
+{
+    if (!connectionAsyncBlocker)
     {
-        mqttClient.connect();
-    }
-    else
-    {
-        xTimerStop(mqttReconnectTimer, 0);
+        connectionAsyncBlocker = true;
+        if ((WiFi.isConnected()) && (!mqttClient.connected()))
+        {
+            debugOut("MQTT", "[DO]->Connecting to MQTT broker...");
+            mqttClient.connect();
+        }
+        else
+        {
+            xTimerStop(mqttReconnectTimer, 0);
+        }
+        connectionAsyncBlocker = false;
     }
 }
 
-void MQTTDisconnect() {
-    debugOut("MQTT","Disconnect to MQTT...");
+void MQTTDisconnect()
+{
+    debugOut("MQTT", "[DO]->Disconnect from MQTT");
     xTimerStop(mqttReconnectTimer, 0);
     mqttClient.disconnect();
 }
 
-void MQTTConnect() {
+void MQTTConnect()
+{
     xTimerStart(mqttReconnectTimer, 0);
 }
 
 bool MQTTBegin()
 {
-    mqttReconnectTimer = xTimerCreate("mqttTimer", pdMS_TO_TICKS(2000), pdTRUE, (void*)0, reinterpret_cast<TimerCallbackFunction_t>(reconnectToMQTT));
+    mqttReconnectTimer = xTimerCreate("mqttTimer", pdMS_TO_TICKS(2000), pdFALSE, (void *)0, reinterpret_cast<TimerCallbackFunction_t>(reconnectToMQTT));
 
     mqttClient.onConnect(onMqttConnect);
     mqttClient.onDisconnect(onMqttDisconnect);
@@ -165,11 +169,16 @@ bool MQTTBegin()
     mqttClient.onMessage(onMqttMessage);
     mqttClient.onPublish(onMqttPublish);
 
-    mqttClient.setClientId(nodeGetMQTTID().c_str());    
-    mqttClient.setServer(nodeGetMQTTURL().c_str(), nodeGetMQTTPort());
-    debugOut("MQTT","Client Id:" + nodeGetMQTTID());
-    debugOut("MQTT","URL:" + nodeGetMQTTURL());
+    //  mqttClient.setClientId(nodeGetMQTTID().c_str());
+    //String _url = nodeGetMQTTURL();
+    String _url = "mqtt.eclipse.org";
+    
 
+    mqttClient.setServer("mqtt.eclipse.org", 1883);
+    //mqttClient.setServer(nodeGetMQTTURL().c_str(), nodeGetMQTTPort());
+    
+    debugOut("MQTT", "Client Id:" + nodeGetMQTTID());
+    debugOut("MQTT", "URL:" + nodeGetMQTTURL() + ":" + String(nodeGetMQTTPort()));
     return true;
 }
 

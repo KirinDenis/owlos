@@ -74,8 +74,8 @@ OWLOS распространяется в надежде, что она буде
 
 #define DEFAULT_MQTT_CLIENT_AVAILABLE true
 #define DEFAULT_MQTT_CLIENT_PORT 1883
-#define DEFAULT_MQTT_CLIENT_URL "broker.hivemq.com"
-#define DEFAULT_MQTT_CLIENT_ID "clientId-tNQIToExMU"
+#define DEFAULT_MQTT_CLIENT_URL "mqtt.eclipse.org"
+#define DEFAULT_MQTT_CLIENT_ID ""
 #define DEFAULT_MQTT_CLIENT_LOGIN ""
 #define DEFAULT_MQTT_CLIENT_PASSWORD ""
 

@@ -117,7 +117,6 @@ bool ActuatorDriver::publish()
 String ActuatorDriver::onMessage(String _topic, String _payload, int8_t transportMask)
 {
 	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
-
 	if (!result.equals(WrongPropertyName))
 		return result;
 

@@ -165,6 +165,7 @@ void WiFiEvent(WiFiEvent_t event)
 #endif
 		xTimerStop(wifiSTReconnectTimer, 0);
 #ifdef USE_MQTT
+    	MQTTBegin();
 		MQTTConnect();
 #endif
 
@@ -248,9 +249,6 @@ bool transportBegin()
 	//esp_wifi_set_ps(WIFI_PS_MAX_MODEM);
 #endif
 
-#ifdef USE_MQTT
-	MQTTBegin();
-#endif
 
 #ifdef DetailedDebug
 	debugOut(TransportID, "no WiFi mode select, WiFi not accessable");
