@@ -44,23 +44,15 @@ OWLOS распространяется в надежде, что она буде
 #ifndef ESP_DRIVER_H
 #define ESP_DRIVER_H
 
+#include "WifiDriver.h"
 
 #define FIRMWARE_VERSION "OWLOS version 1.9 (RC)"
 #define FIRMWARE_BUILD_NUMBER 104
 
 
-#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
-#include <ESP8266WiFi.h>
-#endif
-
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
-#include <WiFi.h>
-#include <WiFiClient.h>
-#include <WiFiType.h>
 #include <rom/rtc.h>
 #endif
-
-
 
 bool nodeInit();
 
@@ -81,30 +73,6 @@ bool nodeSetFirmwareVersion(String _firmwareversion);
 
 int nodeGetFirmwareBuildNumber();
 bool nodeSetFirmwareBuildNumber(int _firmwarebuildnumber);
-
-int nodeGetWiFiAccessPointAvailable();
-bool nodeSetWiFiAccessPointAvailable(int _wifiaccesspointavailable);
-
-String nodeGetWiFiAccessPointSSID();
-bool nodeSetWiFiAccessPointSSID(String _wifissid);
-
-String nodeGetWiFiAccessPointPassword();
-bool nodeSetWiFiAccessPointPassword(String _wifipassword);
-
-String nodeGetWiFiAccessPointIP();
-bool nodeSetWiFiAccessPointIP(String _wifiaccesspointip);
-
-int nodeGetWiFiAvailable();
-bool nodeSetWiFiAvailable(int _wifiavailable);
-
-String nodeGetWiFiSSID();
-bool nodeSetWiFiSSID(String _wifissid);
-
-String nodeGetWiFiPassword();
-bool nodeSetWiFiPassword(String _wifipassword);
-
-String nodeGetWiFiIP();
-bool nodeSetWiFiIP(String _wifiip);
 
 int nodeGetRESTfulAvailable();
 bool nodeSetRESTfulAvailable(int _restfulavailable);
@@ -156,47 +124,6 @@ bool nodeSetOTAID(String _otaid);
 
 String nodeGetOTAPassword();
 bool nodeSetOTAPassword(String _otapassword);
-
-// WiFi parameters
-int32_t nodeGetWiFiRSSI();
-bool nodeSetWiFiRSSI(int _currentwifirssi);
-
-
-#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
-WiFiMode_t nodeGetWiFiMode();
-bool nodeSetWiFiMode(WiFiMode_t _wifimode);
-#endif
-
-#ifdef ARDUINO_ESP32_RELEASE_1_0_4
-wifi_mode_t nodeGetWiFiMode();
-bool nodeSetWiFiMode(wifi_mode_t _wifimode);
-#endif
-
-
-String nodeGetAllWiFiModes();
-
-wl_status_t nodeGetWiFiStatus();
-bool nodeSetWiFiStatus(int _wifistatus);
-String nodeGetAllWiFiStatuses();
-String nodeGetWiFiStatusToString();
-
-int8_t nodeGetScanWiFiNetworks();
-bool nodeSetScanWiFiNetworks(int _scanwifinetworks);
-
-int8_t nodeGetWiFiNetworksCount();
-bool nodeSetWiFiNetworksCount(int _wifinetworkscount);
-
-String nodeGetWiFiNetworksParameters();
-//bool nodeSetWiFiNetworksParameters(String _wifinetworksparameters);
-String nodeGetAllWiFiEncryptionTypes();
-
-int nodeGetWiFiIsConnected();
-bool nodeSetWiFiIsConnected(int _wifiisconnected);
-
-int nodeGetWiFiIsDisconnected();
-int nodeSetWiFiIsDisconnected();
-
-String nodeGetConnectedWiFiSSID();
 
 /**/
 String nodeGetESPResetInfo();
@@ -289,5 +216,11 @@ bool nodeSetUpdateAvailable(int _updateavailable);
 String nodeGetUpdateHost();
 bool nodeSetUpdateHost(String _updatehost);
 
+#ifdef ESP_ENABLE_INTERNAL_API
+String onGetProperty(String _property, String _payload, int8_t transportMask);
+bool onInsideChange(String _property, String _value);
+int _getIntPropertyValue(String _property, int _defaultvalue);
+String _getStringPropertyValue(String _property, String _defaultvalue);
+#endif
 #endif
 #endif
