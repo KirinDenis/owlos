@@ -315,7 +315,7 @@ void handleSetNodeProperty(HTTPRequest *req, HTTPResponse *res)
     }
     return;
   }
-  handleNotFound(req, res);
+  handleNotFound(req, res);  
 }
 
 #ifdef USE_DRIVERS
@@ -459,17 +459,7 @@ void handleSetDriverProperty(HTTPRequest *req, HTTPResponse *res)
     }
     else
     {
-      if (!result.equals(WrongPropertyName))
-      {
-        req->discardRequestBody();
-        res->setStatusCode(503);
-        res->setStatusText(result.c_str());
-        res->setHeader("Content-Type", "text/html");
-      }
-      else
-      {
-        handleSetNodeProperty(req, res);
-      }
+      handleSetNodeProperty(req, res);
     }
     return;
   }
@@ -648,6 +638,7 @@ void HTTPSWebServerBegin()
   setResourceNode("/deletefile", "GET", &handleDeleteFile);
   setResourceNode("/deletefile", "DELETE", &handleDeleteFile);
   setResourceNode("/getnodeproperty", "GET", &handleGetNodeProperty);
+  //Set driver property set node property to - ESP, WiFi, Network
   setResourceNode("/setnodeproperty", "GET", &handleSetNodeProperty);
   setResourceNode("/uploadfile", "POST", &handleUploadFile);
 #ifdef USE_DRIVERS

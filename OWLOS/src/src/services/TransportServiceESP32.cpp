@@ -165,8 +165,11 @@ void WiFiEvent(WiFiEvent_t event)
 #endif
 		xTimerStop(wifiSTReconnectTimer, 0);
 #ifdef USE_MQTT
+if (nodeGetMQTTAvailable() == 1)
+{
     	MQTTBegin();
 		MQTTConnect();
+}
 #endif
 
 #if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)
@@ -361,14 +364,20 @@ void transportLoop()
 void transportSubscribe(String _topic)
 {
 #ifdef USE_MQTT
+if (nodeGetMQTTAvailable() == 1)
+{
 	MQTTSubscribe(_topic);
+}
 #endif
 }
 
 bool transportPublish(String _topic, String _payload)
 {
 #ifdef USE_MQTT
+if (nodeGetMQTTAvailable() == 1)
+{
 	MQTTPublish(_topic, _payload);
+}
 #endif
 	// UART pilot test Serial.println("[DATA] " + _topic + " " + _payload);
 	return true; //if MQTT is not available and RESTful change the property

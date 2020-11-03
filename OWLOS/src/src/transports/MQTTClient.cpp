@@ -168,14 +168,10 @@ bool MQTTBegin()
     mqttClient.onUnsubscribe(onMqttUnsubscribe);
     mqttClient.onMessage(onMqttMessage);
     mqttClient.onPublish(onMqttPublish);
-
-    //  mqttClient.setClientId(nodeGetMQTTID().c_str());
-    //String _url = nodeGetMQTTURL();
-    String _url = "mqtt.eclipse.org";
     
-
-    mqttClient.setServer("mqtt.eclipse.org", 1883);
-    //mqttClient.setServer(nodeGetMQTTURL().c_str(), nodeGetMQTTPort());
+    mqttClient.setClientId(stringToChar(nodeGetMQTTID()));
+    mqttClient.setCredentials(stringToChar(nodeGetMQTTLogin()), stringToChar(nodeGetMQTTPassword()));
+    mqttClient.setServer(stringToChar(nodeGetMQTTURL()), 1883);
     
     debugOut("MQTT", "Client Id:" + nodeGetMQTTID());
     debugOut("MQTT", "URL:" + nodeGetMQTTURL() + ":" + String(nodeGetMQTTPort()));
