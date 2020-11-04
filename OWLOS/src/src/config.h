@@ -49,24 +49,28 @@ OWLOS распространяется в надежде, что она буде
         #define USE_ESP_DRIVER
             #ifdef USE_ESP_DRIVER
 
-#define DEFAULT_WIFI_ACCESS_POINT_AVAILABLE 1
-#define DEFAULT_WIFI_ACCESS_POINT_SSID "owlnode"
-#define DEFAULT_WIFI_ACCESS_POINT_PASSWORD  "1122334455"
-#define DEFAULT_WIFI_ACCESS_POINT_IP  "192.168.4.1"
+// ВАЖНО:
+// DONT_USE_FILES флаг запрещает ESP драйверу сохранять значения свойств в файловой системе. 
+// Если этот флаг установлен при каждой перезагрузке ESP драйвер будет возвращатъся к значениям 
+// свойств по умолчанию - это более безопасно и делает невозможным перенастроить ESP драйвер удаленно. 
+// Однако требует пересборки и перенастройки для каждого устройства отдельно. 
+// Если ваше устройство с OWLOS работает стационарно и не предусматривается частого изменения 
+// настройки сети - используйте этот флаг. 
+//
+//              #define DONT_USE_FILES
 
-#define DEFAULT_WIFI_STATION_AVAILABLE 1
-#define DEFAULT_WIFI_STATION_SSID "Palata#13"
-#define DEFAULT_WIFI_STATION_PASSWORD "qweasdzxc1234"
+//Свойства WiFi по умолчанию. Если используется DONT_USE_FILES, иначе приоритетны значения свойств из файлов 
+                #define DEFAULT_WIFI_ACCESS_POINT_AVAILABLE 1
+                #define DEFAULT_WIFI_ACCESS_POINT_SSID "owlnode"
+                #define DEFAULT_WIFI_ACCESS_POINT_PASSWORD  "1122334455"
+                #define DEFAULT_WIFI_ACCESS_POINT_IP  "192.168.4.1"
 
-// WiFi properties
-#define DEFAULT_WIFI_MODE WIFI_OFF
-#define DEFAULT_WIFI_STATUS WL_DISCONNECTED
-#define DEFAULT_WIFI_STATUS_TO_STR WL_DISCONNECTED
+                #define DEFAULT_WIFI_STATION_AVAILABLE 1
+                #define DEFAULT_WIFI_STATION_SSID "Palata#13"
+                #define DEFAULT_WIFI_STATION_PASSWORD "qweasdzxc1234"
 
-#define DEFAULT_ZERO_VALUE 0x00
-#define DEFAULT_EMPTY_STR_VALUE ""
-#define DEFAULT_ID "owlnode"
-#define DEFAULT_TOPIC "world0/area1/front1/room1/"
+                #define DEFAULT_ID "owlnode"
+                #define DEFAULT_TOPIC "world0/area1/front1/room1/"
 
                 //#define USE_HTTPS_SERVER
                 #define USE_HTTP_SERVER         

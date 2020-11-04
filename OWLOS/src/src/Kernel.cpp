@@ -59,11 +59,11 @@ bool kernelSetup()
 {
 	Serial.begin(PORTSPEED); //setup Serial Monitor at PORTSPEED BAUD speed - see Utils.h for Constant definition
 	delay(ONETENTHOFSECOND); //sleep 1/10 of second
-	Serial.println("");
-
+	Serial.println();
+	
 #if defined(ARDUINO_ESP8266_RELEASE_2_5_0) || defined(ARDUINO_ESP32_RELEASE_1_0_4) || defined(USE_ARDUINO_BOARDS)
 
-	debugOut("kernel setup", "started..."); //if Utils.h "Debug=true" start writing log to Serial
+	debugOut("OWLOS kernel setup", "started..."); //if Utils.h "Debug=true" start writing log to Serial
 
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	ESP.wdtEnable(ONEMINUTE); //Software watch dog

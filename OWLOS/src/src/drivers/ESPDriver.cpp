@@ -47,9 +47,6 @@ OWLOS распространяется в надежде, что она буде
 #include "../services/UpdateService.h"
 #include "../services/TransportService.h"
 
-#define DONT_USE_FILES
-
-
 #define DEFAULT_HTTP_SERVER_AVAILABLE true
 #define DEFAULT_HTTP_SERVER_USERNAME "admin"
 #define DEFAULT_HTTP_SERVER_PASSWORD "admin"
@@ -511,7 +508,7 @@ bool onInsideChange(String _property, String _value)
 #endif
 		lock = false;
 	}
-
+    
 	return result;
 }
 //-------------------------------------------------------------------------------------------
@@ -672,7 +669,7 @@ int nodeGetRESTfulServerPort()
 		return restfulserverport = _getIntPropertyValue("restfulserverport", DEFAULT_HTTP_SERVER_PORT);
 	}
 	else
-	{
+	{	
 		return restfulserverport;
 	}
 }
@@ -689,8 +686,8 @@ int nodeGetRESTfulClientPort()
 	else return restfulclientport;
 }
 bool nodeSetRESTfulClientPort(int _restfulclientport)
-{
-	restfulclientport = _restfulclientport;
+{	
+	restfulclientport = _restfulclientport;	
 	return  onInsideChange("restfulclientport", String(restfulclientport));
 }
 
