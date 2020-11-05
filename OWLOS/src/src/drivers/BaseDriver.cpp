@@ -90,6 +90,7 @@ bool BaseDriver::begin(String _topic)
 	return available;
 }
 
+
 bool BaseDriver::query()
 {
 	if (available)
@@ -120,7 +121,7 @@ String BaseDriver::getAllProperties()
 			pins += "pin" + String(i) + "=" + driverPin->name + "//s\n";
 			//pins += "pintype" + String(i) + "=" + driverPin->driverPinType  + "\n";
 		    pins += "pintype" + String(i) + "=" + decodePinTypes(driverPin->driverPinType) + "//r\n";
-		}
+		}		
 		else
 		{
 			debugOut("PIN", "NULL");
