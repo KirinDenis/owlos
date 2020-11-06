@@ -184,6 +184,13 @@ void handleGetLog(HTTPRequest *req, HTTPResponse *res)
   handleNotFound(req, res);
 }
 
+void handleReset(HTTPRequest *req, HTTPResponse *res)
+{
+  corsCallback(req, res);
+  res->setStatusCode(200);
+  nodeSetESPReset(1);
+}
+
 void handleGetFileList(HTTPRequest *req, HTTPResponse *res)
 {
   corsCallback(req, res);
@@ -634,6 +641,7 @@ void HTTPSWebServerBegin()
 
   setResourceNode("/getallnodeproperties", "GET", &handleNodeGetAllProperties);
   setResourceNode("/getlog", "GET", &handleGetLog);
+  setResourceNode("/reset", "GET", &handleReset);
   setResourceNode("/getfilelist", "GET", &handleGetFileList);
   setResourceNode("/deletefile", "GET", &handleDeleteFile);
   setResourceNode("/deletefile", "DELETE", &handleDeleteFile);

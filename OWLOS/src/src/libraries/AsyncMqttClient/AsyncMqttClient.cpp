@@ -715,9 +715,6 @@ void AsyncMqttClient::connect() {
     _client.connect(_host, _port, _secure);
   }
 #else
-   Serial.println("Connect");  
-   Serial.println(_host);  
-
   if (_useIp) {
     _client.connect(_ip, _port);
   } else {
