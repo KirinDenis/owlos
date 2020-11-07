@@ -121,6 +121,8 @@ String BaseDriver::getAllProperties()
 			pins += "pin" + String(i) + "=" + driverPin->name + "//s\n";
 			//pins += "pintype" + String(i) + "=" + driverPin->driverPinType  + "\n";
 		    pins += "pintype" + String(i) + "=" + decodePinTypes(driverPin->driverPinType) + "//r\n";
+			debugOut("PINS", pins);
+			debugOut("PINTYPE", String(driverPin->driverPinType));
 		}		
 		else
 		{
@@ -207,7 +209,10 @@ String BaseDriver::onMessage(String _topic, String _payload, int8_t transportMas
 		else
 			if (_topic.indexOf(topic + "/setpin") == 0)
 			{				
-				int pinIndex = parsePinNumber(_topic, "/setpin");				
+				int pinIndex = parsePinNumber(_topic, "/setpin");	
+				debugOut("Change pin", _topic);
+				debugOut("Change pin", String(pinIndex));
+				debugOut("Change pin", String(_payload));
 				return  driversChangePin(_payload, id, pinIndex);
 			}
 	//ID --------------------------------------------------------------------

@@ -177,6 +177,7 @@ bool ActuatorDriver::getAnalog()
 bool ActuatorDriver::setAnalog(bool _analog, bool doEvent)
 {
 	//see init() if target pin is not analog the mask set _analog to "0" false
+	debugOut("ANALOG", String(_analog));
 	analog = _analog;
 	filesWriteInt(id + ".analog", analog);
 	if (doEvent)

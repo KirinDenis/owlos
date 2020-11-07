@@ -351,6 +351,7 @@ String _setDriverPin(String pinName, String driverId, uint16_t driverPinIndex, u
 		{
 			_driverPin->name = pinName; //в массиве с данными драйверов пинов - заменяем имя пина на новое
 			_driverPin->GPIONumber = pin->GPIONumber; //так же заменяем программный номер пина 
+			_driverPin->driverPinType = pin->pinTypes; //тип нового пина может отличатся
 			return ""; //пин изменен, выходим (ОК)
 		}
 		else //I2C пин драйвера существует, но физического пина не существует - значит это I2C адрес
@@ -669,6 +670,12 @@ DriverPin * getDriverPinByDriverId(String driverId, int driverPinIndex)
 
 		if ((driverPins[i].driverId.equals(driverId)) && (driverPins[i].driverPinIndex == driverPinIndex))
 		{
+
+		Serial.println(driverPins[i].driverId);
+		Serial.println(driverPins[i].driverPinIndex);
+		Serial.println(driverPins[i].driverPinType);
+		Serial.println(driverPins[i].GPIONumber);
+
 			return &driverPins[i];
 		}
 	}
