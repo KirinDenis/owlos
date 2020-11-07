@@ -258,7 +258,7 @@ String onGetProperty(String _property, String _payload, int8_t transportMask)
 String nodeOnMessage(String _topic, String _payload, int8_t transportMask)
 {	
 	String result = wifiOnMessage(_topic, _payload, transportMask);
-    if (!result.equals(WrongPropertyName))
+    if (!result.equals(WrongNodePropertyName))
         return result;
 	if (String(topic + "/getnodeid").equals(_topic)) return onGetProperty("id", nodeGetUnitId(), transportMask);
 	else
@@ -483,7 +483,7 @@ String nodeOnMessage(String _topic, String _payload, int8_t transportMask)
 																																																																																																																																												//Update 
 																																																																																																																																												return result;
 		
- return "";																																																																																																																																										
+ return WrongNodePropertyName;																																																																																																																																										
 }
 
 bool lock = false;

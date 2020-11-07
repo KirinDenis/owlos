@@ -87,11 +87,11 @@ void handleOther(HTTPRequest *req, HTTPResponse *res)
 {
 
   String uri = String(req->getRequestString().c_str());
-  Serial.println(uri);
+  Serial.print(uri);
   uri = uri.substring(uri.indexOf(" ") + 1);
-  Serial.println(uri);
+  Serial.print(uri);
   uri = uri.substring(0, uri.indexOf(" "));
-  Serial.println(uri);
+  Serial.print(uri);
 
   if ((uri.length() == 0) || (uri.equals("/")))
     uri = "/index.html";
@@ -103,7 +103,7 @@ void handleOther(HTTPRequest *req, HTTPResponse *res)
   }
 
   if ((filesExists(uri)) || (filesExists(uri + ".gz")))
-  {    
+  {
     res->setHeader("Content-Type", getContentType(uri).c_str());
     String responseHeader = "";
     if (filesExists(uri + ".gz"))
@@ -117,7 +117,7 @@ void handleOther(HTTPRequest *req, HTTPResponse *res)
       res->setStatusCode(200);
       res->setHeader("Content-Encoding", "text/html");
     }
-    
+
     corsCallbackNoType(req, res);
 
     File download = SPIFFS.open(uri, "r");
@@ -141,7 +141,7 @@ void handleOther(HTTPRequest *req, HTTPResponse *res)
     return;
   }
   res->setStatusCode(404);
-  res->println(GetNotFoundHTML());
+  res->print(GetNotFoundHTML());
 }
 
 void handleNotFound(HTTPRequest *req, HTTPResponse *res)
@@ -157,7 +157,7 @@ void handleNodeGetAllProperties(HTTPRequest *req, HTTPResponse *res)
 {
   corsCallback(req, res);
   res->setStatusCode(200);
-  res->println(nodeGetAllProperties());
+  res->print(nodeGetAllProperties());
   return;
 }
 
@@ -172,11 +172,11 @@ void handleGetLog(HTTPRequest *req, HTTPResponse *res)
       res->setStatusCode(200);
       if (paramVal == "1")
       {
-        res->println(filesReadString(LogFile1));
+        res->print(filesReadString(LogFile1));
       }
       else
       {
-        res->println(filesReadString(LogFile2));
+        res->print(filesReadString(LogFile2));
       }
       return;
     }
@@ -200,7 +200,7 @@ void handleGetFileList(HTTPRequest *req, HTTPResponse *res)
   {
     {
       res->setStatusCode(200);
-      res->println(filesGetList(String(paramVal.c_str())));
+      res->print(filesGetList(String(paramVal.c_str())));
       return;
     }
   }
@@ -215,7 +215,7 @@ void handleDeleteFile(HTTPRequest *req, HTTPResponse *res)
   if (params->getQueryParameter("name", paramVal))
   {
     res->setStatusCode(200);
-    res->println(filesDelete(String(paramVal.c_str())));
+    res->print(filesDelete(String(paramVal.c_str())));
     return;
   }
   handleNotFound(req, res);
@@ -292,14 +292,14 @@ void handleGetNodeProperty(HTTPRequest *req, HTTPResponse *res)
     else
     {
       res->setStatusCode(200);
-      res->println(nodeProp);
+      res->print(nodeProp);
     }
     return;
   }
   handleNotFound(req, res);
 }
 
-void handleSetNodeProperty(HTTPRequest *req, HTTPResponse *res)
+void handleSetNodeProperty(HTTPRequest *req, HTTPResponse *res, String driverResult)
 {
   corsCallback(req, res);
   ResourceParameters *params = req->getParams();
@@ -311,18 +311,27 @@ void handleSetNodeProperty(HTTPRequest *req, HTTPResponse *res)
     if ((result.length() == 0) || (result.equals("0")))
     {
       req->discardRequestBody();
-      res->setStatusCode(503);
-      res->setStatusText("wrong node property: " + valParam);
+      res->setStatusCode(400);
+      res->setStatusText(String(driverResult + " [or] wrong node property: " + decode(String(valParam.c_str()))).c_str());
       res->setHeader("Content-Type", "text/html");
     }
     else
     {
-      res->setStatusCode(200);
-      res->println(result);
+      if (result.equals("1"))
+      {
+        res->setStatusCode(200);
+        res->print(result);
+      }
+      else
+      {
+        res->setStatusCode(500);
+        res->print(driverResult + " [or] " + result);
+      }
+      
     }
     return;
   }
-  handleNotFound(req, res);  
+  handleNotFound(req, res);
 }
 
 #ifdef USE_DRIVERS
@@ -359,7 +368,7 @@ void handleAddDriver(HTTPRequest *req, HTTPResponse *res)
       else
       {
         res->setStatusCode(200);
-        res->println(result);
+        res->print(result);
       }
     }
     return;
@@ -387,7 +396,7 @@ void handleDeleteDriver(HTTPRequest *req, HTTPResponse *res)
     else
     {
       res->setStatusCode(200);
-      res->println("1");
+      res->print("1");
     }
     return;
   }
@@ -398,7 +407,7 @@ void handleGetDriversId(HTTPRequest *req, HTTPResponse *res)
 {
   corsCallback(req, res);
   res->setStatusCode(200);
-  res->println(driversGetDriversId().c_str());
+  res->print(driversGetDriversId().c_str());
   return;
 }
 
@@ -458,19 +467,34 @@ void handleSetDriverProperty(HTTPRequest *req, HTTPResponse *res)
 
   if ((params->getQueryParameter("id", idParam)) && (params->getQueryParameter("property", propertyParam)) && (params->getQueryParameter("value", valueParam)))
   {
+    debugOut("Property", "---------------------");
+    debugOut("Property", decode(String(idParam.c_str())));
+    debugOut("Property", decode(String(propertyParam.c_str())));
+    debugOut("Property", decode(String(valueParam.c_str())));
     String result = driversSetDriverProperty(decode(String(idParam.c_str())), decode(String(propertyParam.c_str())), decode(String(valueParam.c_str())));
-    if (result.equals("1"))
+    debugOut("Property result", result);
+    if (result.equals("1") || result.length() == 0)
     {
       res->setStatusCode(200);
-      res->print(result);
+      res->print("1");
     }
     else
     {
-      handleSetNodeProperty(req, res);
+      if ((result.indexOf(WrongDriverName) > -1) || (result.indexOf(WrongPropertyName) > -1))
+      {
+        debugOut("Property", "find at node");
+        handleSetNodeProperty(req, res, result);
+      }
+      else
+      {
+        res->setStatusCode(500);
+        res->print(result);
+      }
     }
     return;
   }
-  handleNotFound(req, res);
+  res->setStatusCode(400);
+  res->print("Bad parameter, true format: setdriverproperty?id=DRIVER_NAME&property=PROPERTY_NAME&value=VALUE");
 }
 
 void handleGetDriverProperties(HTTPRequest *req, HTTPResponse *res)
@@ -533,7 +557,7 @@ void handleGetAllScripts(HTTPRequest *req, HTTPResponse *res)
 {
   corsCallback(req, res);
   res->setStatusCode(200);
-  res->println(scriptsGetAll().c_str());
+  res->print(scriptsGetAll().c_str());
 }
 #endif
 
@@ -541,7 +565,7 @@ void handleGetWebProperty(HTTPRequest *req, HTTPResponse *res)
 {
   corsCallback(req, res);
   res->setStatusCode(200);
-  res->println(filesReadString("/web.config"));
+  res->print(filesReadString("/web.config"));
 }
 
 void handleSetWebProperty(HTTPRequest *req, HTTPResponse *res)
@@ -579,7 +603,7 @@ void handleUpdateLog(HTTPRequest *req, HTTPResponse *res)
 {
   corsCallback(req, res);
   res->setStatusCode(200);
-  res->println(filesReadString("/web.config"));
+  res->print(filesReadString("/web.config"));
 }
 
 void handleUpdateUI(HTTPRequest *req, HTTPResponse *res)
@@ -588,17 +612,17 @@ void handleUpdateUI(HTTPRequest *req, HTTPResponse *res)
   if (updateGetUpdatePossible() < 1)
   {
     res->setStatusCode(503);
-    res->println("0");
+    res->print("0");
   }
   else if (updateGetUpdateUIStatus() < 2)
   {
     res->setStatusCode(504);
-    res->println("0");
+    res->print("0");
   }
   else
   {
     res->setStatusCode(200);
-    res->println("1");
+    res->print("1");
     updateUI();
   }
 }
@@ -609,17 +633,17 @@ void handleUpdateFirmware(HTTPRequest *req, HTTPResponse *res)
   if (updateGetUpdatePossible() < 2)
   {
     res->setStatusCode(503);
-    res->println("0");
+    res->print("0");
   }
   else if (updateGetUpdateFirmwareStatus() < 2)
   {
     res->setStatusCode(504);
-    res->println("0");
+    res->print("0");
   }
   else
   {
     res->setStatusCode(200);
-    res->println("1");
+    res->print("1");
     updateFirmware();
   }
 }
@@ -647,7 +671,7 @@ void HTTPSWebServerBegin()
   setResourceNode("/deletefile", "DELETE", &handleDeleteFile);
   setResourceNode("/getnodeproperty", "GET", &handleGetNodeProperty);
   //Set driver property set node property to - ESP, WiFi, Network
-  setResourceNode("/setnodeproperty", "GET", &handleSetNodeProperty);
+  //setResourceNode("/setnodeproperty", "GET", &handleSetNodeProperty);
   setResourceNode("/uploadfile", "POST", &handleUploadFile);
 #ifdef USE_DRIVERS
   setResourceNode("/adddriver", "GET", &handleAddDriver);

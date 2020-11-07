@@ -43,8 +43,8 @@ OWLOS распространяется в надежде, что она буде
 
 #include <Arduino.h>
 
-#define Debug false
-//#define DetailedDebug 
+#define Debug true
+#define DetailedDebug 
 #define WriteDebugLogs false
 #define LogFilesSize 1024*10
 #define LogFile1 "log1"
@@ -86,6 +86,8 @@ OWLOS распространяется в надежде, что она буде
 //Not available selector
 #define NotAvailable "nan"
 #define WrongPropertyName "Drivers: wrong property name"
+#define WrongDriverName "Drivers: wrong driver name"
+#define WrongNodePropertyName "Node: wrong node property name"
 
 char* stringToChar(String src);
 void  debugOut(String tag, String text);

@@ -270,7 +270,9 @@ String driversSetDriverProperty(String id, String property, String value)
 {
 	BaseDriver *baseDriver = driversGetDriver(id);
 	if (baseDriver == NULL)
-		return "";
+	{
+		return WrongDriverName;
+	}
 	String result = baseDriver->onMessage(__topic + "/" + id + "/set" + property, value, MQTTMask);
 	return result;
 }
