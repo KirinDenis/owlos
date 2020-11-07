@@ -467,12 +467,7 @@ void handleSetDriverProperty(HTTPRequest *req, HTTPResponse *res)
 
   if ((params->getQueryParameter("id", idParam)) && (params->getQueryParameter("property", propertyParam)) && (params->getQueryParameter("value", valueParam)))
   {
-    debugOut("Property", "---------------------");
-    debugOut("Property", decode(String(idParam.c_str())));
-    debugOut("Property", decode(String(propertyParam.c_str())));
-    debugOut("Property", decode(String(valueParam.c_str())));
     String result = driversSetDriverProperty(decode(String(idParam.c_str())), decode(String(propertyParam.c_str())), decode(String(valueParam.c_str())));
-    debugOut("Property result", result);
     if (result.equals("1") || result.length() == 0)
     {
       res->setStatusCode(200);
@@ -481,8 +476,7 @@ void handleSetDriverProperty(HTTPRequest *req, HTTPResponse *res)
     else
     {
       if ((result.indexOf(WrongDriverName) > -1) || (result.indexOf(WrongPropertyName) > -1))
-      {
-        debugOut("Property", "find at node");
+      {    
         handleSetNodeProperty(req, res, result);
       }
       else

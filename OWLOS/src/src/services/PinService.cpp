@@ -670,12 +670,6 @@ DriverPin * getDriverPinByDriverId(String driverId, int driverPinIndex)
 
 		if ((driverPins[i].driverId.equals(driverId)) && (driverPins[i].driverPinIndex == driverPinIndex))
 		{
-
-		Serial.println(driverPins[i].driverId);
-		Serial.println(driverPins[i].driverPinIndex);
-		Serial.println(driverPins[i].driverPinType);
-		Serial.println(driverPins[i].GPIONumber);
-
 			return &driverPins[i];
 		}
 	}
