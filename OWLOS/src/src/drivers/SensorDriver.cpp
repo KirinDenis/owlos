@@ -50,13 +50,12 @@ bool SensorDriver::init()
 
 	DriverPin *driverPin = getDriverPinByDriverId(id, PIN0_INDEX); //командный пин "закрыть"
 	if (driverPin != nullptr)
-	{
-		//debugOut("PIN MODE 111", setDriverPinMode(id, PIN0_INDEX, INPUT));
-		//debugOut("PIN MODE 111", setDriverPinMode(id, PIN0_INDEX, ANALOG_INPUT));
-		
+	{		
 		//TODO: INPUT_PULLUP/INPUT_PULLDOWN
 
 		setAnalog(getPinByName(driverPin->name)->pinTypes & ANALOG_I_MASK, false);
+		
+		
 
 
 		if ((setDriverPinMode(id, PIN0_INDEX, INPUT).length() == 0) || (analog))
@@ -183,6 +182,20 @@ bool SensorDriver::getAnalog()
 bool SensorDriver::setAnalog(bool _analog, bool doEvent)
 {
 	analog = _analog;
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4       
+//TODO: Sensor Driver properties for control ESP32 Analog Input parameters
+                DriverPin *driverPin = getDriverPinByDriverId(id, PIN0_INDEX); 
+				adcStart(driverPin->GPIONumber);
+				pinMode(driverPin->GPIONumber, INPUT);
+				analogSetAttenuation(ADC_11db);
+				analogSetWidth(12);
+				analogSetCycles(255);
+				analogSetSamples(1);
+				analogReadResolution(12);
+#endif
+
+
 	filesWriteInt(id + ".analog", analog);
 	if (doEvent)
 	{

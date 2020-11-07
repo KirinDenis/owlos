@@ -1081,22 +1081,22 @@ var WidgetsLayer = {
         id: "light",
         name: getLang("light"),
         widget: LightWidgetWrapper,
-        driversTypes: ";" + LightDriverType + ";",
-        driversProperties: ";light;"
+        driversTypes: ";" + LightDriverType + ";"+ SensorDriverType + ";",
+        driversProperties: ";data;light;"
     },
     SmokeWidget: {
         id: "smoke",
         name: getLang("smoke"),
         widget: SmokeWidgetWrapper,
-        driversTypes: ";" + SmokeDriverType + ";",
-        driversProperties: ";smoke;"
+        driversTypes: ";" + SmokeDriverType + ";"+ SensorDriverType + ";",
+        driversProperties: ";data;smoke;"
     },
     MotionWidget: {
         id: "motion",
         name: getLang("motion"),
         widget: MotionWidgetWrapper,
-        driversTypes: ";" + MotionDriverType + ";",
-        driversProperties: ";motion;"
+        driversTypes: ";" + MotionDriverType + ";"+ SensorDriverType + ";",
+        driversProperties: ";data;motion;"
     },
     SensorWidget: {
         id: "sensor",

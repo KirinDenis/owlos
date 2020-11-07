@@ -538,8 +538,11 @@ int driverPinRead(String driverId, int driverPinIndex)
 #endif		
 		{			
 			if (getPinByName(driverPin->name)->pinTypes & ANALOG_I_MASK)
-			{
-				return analogRead(driverPin->GPIONumber);
+			{								
+				int16_t result = analogRead(driverPin->GPIONumber);
+				//debugOut("Pin service", String(driverPin->GPIONumber));
+				//debugOut("Pin service", String(result));
+				return result;
 			}
 			else
 			{
