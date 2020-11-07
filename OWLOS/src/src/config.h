@@ -144,7 +144,7 @@ OWLOS распространяется в надежде, что она буде
         #define USE_DHT_DRIVER
 
         //Драйвер I2C LCD дисплеев, поддерживает более одного дисплея на шине I2C
-        //#define USE_LCD_DRIVER
+        #define USE_LCD_DRIVER
 
         //Драйвер шаговых двигателей
         //#define USE_STEPPER_DRIVER
