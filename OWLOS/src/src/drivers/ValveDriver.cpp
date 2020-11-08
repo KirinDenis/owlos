@@ -135,31 +135,31 @@ bool ValveDriver::publish()
 	return false;
 };
 //Обработка внешних команд для драйвера Valve 
-String ValveDriver::onMessage(String _topic, String _payload, int8_t transportMask)
+String ValveDriver::onMessage(String route, String _payload, int8_t transportMask)
 {
-	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
+	String result = BaseDriver::onMessage(route, _payload, transportMask);
 	if (!result.equals(WrongPropertyName)) return result;
 
-	else if (String(topic + "/getposition").equals(_topic))
+	else if (matchRoute(route, topic, "/getposition"))
 	{
 		result = onGetProperty("position", String(getPosition()), transportMask);
 	}
-	else if (String(topic + "/setposition").equals(_topic))
+	else if (matchRoute(route, topic, "/setposition"))
 	{
 		result = String(setPosition(atoi(_payload.c_str())));
 	}
 
-	else if (String(topic + "/getphysicalposition").equals(_topic))
+	else if (matchRoute(route, topic, "/getphysicalposition"))
 	{
 		result = onGetProperty("physicalposition", String(getphysicalposition()), transportMask);
 	}
 
-	else if (String(topic + "/getminimumphysicalposition").equals(_topic))
+	else if (matchRoute(route, topic, "/getminimumphysicalposition"))
 	{
 		result = onGetProperty("minimumphysicalposition", String(getMinimumphysicalposition()), transportMask);
 	}
 
-	else if (String(topic + "/getmaximumphysicalposition").equals(_topic))
+	else if (matchRoute(route, topic, "/getmaximumphysicalposition"))
 	{
 		result = onGetProperty("maximumphysicalposition", String(getMaximumphysicalposition()), transportMask);
 	}

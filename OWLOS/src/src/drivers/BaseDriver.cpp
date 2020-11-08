@@ -174,127 +174,112 @@ int BaseDriver::parsePinNumber(String _topic, String getPinStr)
 	return atoi(_topic.substring(_topic.indexOf(topic +  getPinStr) + String(topic + getPinStr).length()).c_str());
 }
 
-String BaseDriver::onMessage(String _topic, String _payload, int8_t transportMask)
+String BaseDriver::onMessage(String route, String _payload, int8_t transportMask)
 {
-	if (_topic.indexOf(topic + "/getpintype") == 0)
-	{
-		int pinIndex = parsePinNumber(_topic, "/getpintype");
-		DriverPin * driverPin = getDriverPinByDriverId(id, pinIndex);
-		if (driverPin != nullptr)				
-		{
-			return String(driverPin->driverPinType);
-		}
-		else
-		{
-			return String(NO_MASK);
-		}
-	}
-	else	
-		if (_topic.indexOf(topic + "/getpin") == 0)
-		{
-			int pinIndex = parsePinNumber(_topic, "/getpin");
-			DriverPin * driverPin = getDriverPinByDriverId(id, pinIndex);
-			if (driverPin != nullptr)
-			{
-				return String(driverPin->name);
-			}
-			else
-			{
-				return String(-1);
-			}
-		}
-		else
-			if (_topic.indexOf(topic + "/setpin") == 0)
-			{				
-				int pinIndex = parsePinNumber(_topic, "/setpin");				
-				return  driversChangePin(_payload, id, pinIndex);
-			}
-	//ID --------------------------------------------------------------------
-	if (String(topic + "/getid").equals(_topic))
-	{
-		return onGetProperty("id", id, transportMask);
-	}
-	else
-		if (String(topic + "/setid").equals(_topic))
-		{
-			return NotAvailable;
-		}
-		else
-			//Topic --------------------------------------------------------------------
-			if (String(topic + "/gettopic").equals(_topic))
-			{
-				return onGetProperty("topic", topic, transportMask);
-			}
-			else
-				if (String(topic + "/settopic").equals(_topic))
-				{
-					return NotAvailable;
-				}
-				else
-					//Available --------------------------------------------------------------------
-					if (String(topic + "/getavailable").equals(_topic))
-					{
-						return onGetProperty("available", String(getAvailable()), transportMask); //Available can be changed only inside Unit!
-					}
-					else
-						if (String(topic + "/setavailable").equals(_topic))
-						{
-							return String(setAvailable(atoi(_payload.c_str())));
-						}
-						else
-							//Type --------------------------------------------------------------------
-							if ((String(topic + "/gettype").equals(_topic)) || (String(topic + "/settype").equals(_topic)))
-							{
-								return onGetProperty("type", String(getType()), transportMask);
-							}
-	//Trap ----------------------------------------------------------------------
-							else if (String(topic + "/gettrap").equals(_topic))
-							{
-								return onGetProperty("trap", String(getTrap()), transportMask);
-							}
-							else if (String(topic + "/settrap").equals(_topic))
-							{
-								return String(setTrap(atof(_payload.c_str())));
-							}
-							else if (String(topic + "/getlastquerymillis").equals(_topic))
-							{
-								return onGetProperty("lastquerymillis", String(lastQueryMillis), transportMask);
-							}
-							else if (String(topic + "/getlastpublishmillis").equals(_topic))
-							{
-								return onGetProperty("lastpublishmillis", String(lastPublishMillis), transportMask);
-							}
-	//Query Interval -----------------------------------------------------------
-							else if (String(topic + "/getqueryinterval").equals(_topic))
-							{
-								return onGetProperty("queryinterval", String(getQueryInterval()), transportMask);
-							}
-							else if (String(topic + "/setqueryinterval").equals(_topic))
-							{
-								return String(setQueryInterval(atoi(_payload.c_str())));
-							}
-	//Publish Interval -----------------------------------------------------------
-							else if (String(topic + "/getpublishinterval").equals(_topic))
-							{
-								return onGetProperty("publishinterval", String(getPublishInterval()), transportMask);
-							}
-							else if (String(topic + "/setpublishinterval").equals(_topic))
-							{
-								return String(setPublishInterval(atoi(_payload.c_str())));
-							}
+    if (matchRoute(route, topic, "/getpintype")) {
+        int pinIndex = parsePinNumber(route, "/getpintype");
+        DriverPin * driverPin = getDriverPinByDriverId(id, pinIndex);
+        if (driverPin != nullptr)				
+        {
+            return String(driverPin->driverPinType);
+        }
+        else
+        {
+            return String(NO_MASK);
+        }
+    } else if (matchRoute(route, topic, "/getpin")) {
+        int pinIndex = parsePinNumber(route, "/getpin");
+        DriverPin * driverPin = getDriverPinByDriverId(id, pinIndex);
+        if (driverPin != nullptr)
+        {
+            return String(driverPin->name);
+        }
+        else
+        {
+            return String(-1);
+        }
+    } else if (matchRoute(route, topic, "/setpin")) {				
+        int pinIndex = parsePinNumber(route, "/setpin");				
+        return  driversChangePin(_payload, id, pinIndex);
+    } else if (matchRoute(route, topic, "/getid"))
+    {
+        return onGetProperty("id", id, transportMask);
+    }
+    else if (matchRoute(route, topic, "/setid"))
+    {
+        return NotAvailable;
+    }
+    //Topic --------------------------------------------------------------------
+    else if (matchRoute(route, topic, "/gettopic"))
+    {
+        return onGetProperty("topic", topic, transportMask);
+    }
+    else if (matchRoute(route, topic, "/settopic"))
+    {
+        return NotAvailable;
+    }
+    //Available --------------------------------------------------------------------
+    else if (matchRoute(route, topic, "/getavailable"))
+    {
+        return onGetProperty("available", String(getAvailable()), transportMask); //Available can be changed only inside Unit!
+    }
+    else if (matchRoute(route, topic, "/setavailable"))
+    {
+        return String(setAvailable(atoi(_payload.c_str())));
+    }
+    //Type --------------------------------------------------------------------
+    else if ((matchRoute(route, topic, "/gettype")) || (matchRoute(route, topic, "/settype")))
+    {
+        return onGetProperty("type", String(getType()), transportMask);
+    }
+    //Trap ----------------------------------------------------------------------
+    else if (matchRoute(route, topic, "/gettrap"))
+    {
+        return onGetProperty("trap", String(getTrap()), transportMask);
+    }
+    else if (matchRoute(route, topic, "/settrap"))
+    {
+        return String(setTrap(atof(_payload.c_str())));
+    }
+    else if (matchRoute(route, topic, "/getlastquerymillis"))
+    {
+        return onGetProperty("lastquerymillis", String(lastQueryMillis), transportMask);
+    }
+    else if (matchRoute(route, topic, "/getlastpublishmillis"))
+    {
+        return onGetProperty("lastpublishmillis", String(lastPublishMillis), transportMask);
+    }
+    //Query Interval -----------------------------------------------------------
+    else if (matchRoute(route, topic, "/getqueryinterval"))
+    {
+        return onGetProperty("queryinterval", String(getQueryInterval()), transportMask);
+    }
+    else if (matchRoute(route, topic, "/setqueryinterval"))
+    {
+        return String(setQueryInterval(atoi(_payload.c_str())));
+    }
+    //Publish Interval -----------------------------------------------------------
+    else if (matchRoute(route, topic, "/getpublishinterval"))
+    {
+        return onGetProperty("publishinterval", String(getPublishInterval()), transportMask);
+    }
+    else if (matchRoute(route, topic, "/setpublishinterval"))
+    {
+        return String(setPublishInterval(atoi(_payload.c_str())));
+    }
 
-	//History data -------------------------------------------------------------
-							else if (String(topic + "/gethistorydata").equals(_topic))
-							{
-								return onGetProperty("historydata", String(getHistoryData()), transportMask);
-							}
+    //History data -------------------------------------------------------------
+    else if (matchRoute(route, topic, "/gethistorydata"))
+    {
+        return onGetProperty("historydata", String(getHistoryData()), transportMask);
+    }
 
-	//Read history file contents-------------------------------------------------------------
-							else if (String(topic + "/gethistoryfile").equals(_topic))
-							{
-								return onGetProperty("historyfile", String(readHistoryFile()), transportMask);
-							}
-	return WrongPropertyName;
+    //Read history file contents-------------------------------------------------------------
+    else if (matchRoute(route, topic, "/gethistoryfile"))
+    {
+        return onGetProperty("historyfile", String(readHistoryFile()), transportMask);
+    }
+    return WrongPropertyName;
 }
 
 //Called when client gets a property from network

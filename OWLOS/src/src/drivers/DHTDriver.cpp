@@ -249,17 +249,17 @@ bool DHTDriver::publish()
 	return false;
 }
 //опрос свойств драйвера для чтения записи от RESTful или MQTT
-String DHTDriver::onMessage(String _topic, String _payload, int8_t transportMask)
+String DHTDriver::onMessage(String route, String _payload, int8_t transportMask)
 {
-	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
+	String result = BaseDriver::onMessage(route, _payload, transportMask);
 	if (!result.equals(WrongPropertyName))
 		return result;
 
-	if (String(topic + "/getdhttype").equals(_topic))
+	if (matchRoute(route, topic, "/getdhttype"))
 	{
 		result = onGetProperty("dhttype", String(getDHTType()), transportMask);
 	}
-	else if (String(topic + "/setdhttype").equals(_topic))
+	else if (matchRoute(route, topic, "/setdhttype"))
 	{
 		result = String(setDHTType(atoi(_payload.c_str())));
 	}
@@ -267,43 +267,43 @@ String DHTDriver::onMessage(String _topic, String _payload, int8_t transportMask
 	if (!available)
 		return result;
 
-	if (String(topic + "/getcelsius").equals(_topic))
+	if (matchRoute(route, topic, "/getcelsius"))
 	{
 		result = onGetProperty("celsius", String(getCelsius()), transportMask);
 	}
-	else if (String(topic + "/setcelsius").equals(_topic))
+	else if (matchRoute(route, topic, "/setcelsius"))
 	{
 		result = String(setCelsius(atoi(_payload.c_str())));
 	}
-	else if ((String(topic + "/gettemperature").equals(_topic)) || (String(topic + "/settemperature").equals(_topic)))
+	else if ((matchRoute(route, topic, "/gettemperature")) || (matchRoute(route, topic, "/settemperature")))
 	{
 		result = onGetProperty("temperature", getTemperature(), transportMask);
 	}
-	else if ((String(topic + "/gethumidity").equals(_topic)) || (String(topic + "/sethumidity").equals(_topic)))
+	else if ((matchRoute(route, topic, "/gethumidity")) || (matchRoute(route, topic, "/sethumidity")))
 	{
 		result = onGetProperty("humidity", getHumidity(), transportMask);
 	}
-	else if ((String(topic + "/getheatindex").equals(_topic)) || (String(topic + "/setheatindex").equals(_topic)))
+	else if ((matchRoute(route, topic, "/getheatindex")) || (matchRoute(route, topic, "/setheatindex")))
 	{
 		result = onGetProperty("heatindex", getHeatIndex(), transportMask);
 	}
 	//Temperature history data -------------------------------------------------------------
-	else if (String(topic + "/gettemperaturehistorydata").equals(_topic))
+	else if (matchRoute(route, topic, "/gettemperaturehistorydata"))
 	{
 		return onGetProperty("temperaturehistorydata", String(getTemperatureHistoryData()), transportMask);
 	}
 	//Read history file contents-------------------------------------------------------------
-	else if (String(topic + "/gettemperaturehistoryfile").equals(_topic))
+	else if (matchRoute(route, topic, "/gettemperaturehistoryfile"))
 	{
 		return onGetProperty("temperaturehistoryfile", String(readTemperatureHistoryFile()), transportMask);
 	}
 
-	else if (String(topic + "/gethumidityhistorydata").equals(_topic))
+	else if (matchRoute(route, topic, "/gethumidityhistorydata"))
 	{
 		return onGetProperty("humidityhistorydata", String(getHumidityHistoryData()), transportMask);
 	}
 
-	else if (String(topic + "/getheatindexhistorydata").equals(_topic))
+	else if (matchRoute(route, topic, "/getheatindexhistorydata"))
 	{
 		return onGetProperty("heatindexhistorydata", String(getHeatIndexHistoryData()), transportMask);
 	}

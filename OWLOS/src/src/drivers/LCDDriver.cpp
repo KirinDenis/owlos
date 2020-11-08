@@ -137,13 +137,13 @@ String LCDDriver::getAllProperties()
 	return result;
 }
 //управление свойствами LCD драйвера
-String LCDDriver::onMessage(String _topic, String _payload, int8_t transportMask)
+String LCDDriver::onMessage(String route, String _payload, int8_t transportMask)
 {
 	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
 
 	//обычно драйвер не управляет свойствами пинов, но в данном драйвере адрес I2C порта использован в роли Pin - для совместимости 
 	//с архитектурой, по этой причине необходим отдельный обработчик I2CADDR пина
-	if (String(topic + "/setpin" + String(I2CADDR_INDEX)).equals(_topic))
+	if (matchRoute(route, topic, "/setpin"))
 	{
 		//base is put the new address to to PinService
 		result = init(); //init() get Address from PinManger	
@@ -151,109 +151,109 @@ String LCDDriver::onMessage(String _topic, String _payload, int8_t transportMask
 
 	if (!result.equals(WrongPropertyName)) return result;
 
-	if (String(topic + "/gettext").equals(_topic))
+	if (matchRoute(route, topic, "/gettext"))
 	{
 		result = onGetProperty("text", String(getText()), transportMask);
 	}
-	else if (String(topic + "/settext").equals(_topic))
+	else if (matchRoute(route, topic, "/settext"))
 	{
 		result = String(setText(_payload, true));
 	}
-	else if (String(topic + "/gettextbyrows").equals(_topic)) //just getText call - the text same for both API
+	else if (matchRoute(route, topic, "/gettextbyrows"))
 	{
 		result = onGetProperty("text", String(getText()), transportMask);
 	}
-	else if (String(topic + "/settextbyrows").equals(_topic))
+	else if (matchRoute(route, topic, "/settextbyrows"))
 	{
 		result = String(setTextByRows(_payload, true));
 	}
 	//Display
-	else if (String(topic + "/getdisplay").equals(_topic))
+	else if (matchRoute(route, topic, "/getdisplay"))
 	{
 		result = onGetProperty("display", String(getDisplay()), transportMask);
 	}
-	else if (String(topic + "/setdisplay").equals(_topic))
+	else if (matchRoute(route, topic, "/setdisplay"))
 	{
 		result = String(setDisplay(atoi(_payload.c_str()), true));
 	}
 	//Backlight
-	else if (String(topic + "/getbacklight").equals(_topic))
+	else if (matchRoute(route, topic, "/getbacklight"))
 	{
 		result = onGetProperty("backlight", String(getBacklight()), transportMask);
 	}
-	else if (String(topic + "/setbacklight").equals(_topic))
+	else if (matchRoute(route, topic, "/setbacklight"))
 	{
 		result = String(setBacklight(atoi(_payload.c_str()), true));
 	}
 	//Blink
-	else if (String(topic + "/getblink").equals(_topic))
+	else if (matchRoute(route, topic, "/getblink"))
 	{
 		result = onGetProperty("blink", String(getBlink()), transportMask);
 	}
-	else if (String(topic + "/setblink").equals(_topic))
+	else if (matchRoute(route, topic, "/setblink"))
 	{
 		result = String(setBlink(atoi(_payload.c_str()), true));
 	}
 	//Cursor
-	else if (String(topic + "/getcursor").equals(_topic))
+	else if (matchRoute(route, topic, "/getcursor"))
 	{
 		result = onGetProperty("cursor", String(getCursor()), transportMask);
 	}
-	else if (String(topic + "/setcursor").equals(_topic))
+	else if (matchRoute(route, topic, "/setcursor"))
 	{
 		result = String(setCursor(atoi(_payload.c_str()), true));
 	}
 	//Autoscroll
-	else if (String(topic + "/getautoscroll").equals(_topic))
+	else if (matchRoute(route, topic, "/getautoscroll"))
 	{
 		result = onGetProperty("autoscroll", String(getAutoscroll()), transportMask);
 	}
-	else if (String(topic + "/setautoscroll").equals(_topic))
+	else if (matchRoute(route, topic, "/setautoscroll"))
 	{
 		result = String(setAutoscroll(atoi(_payload.c_str()), true));
 	}
 	//Clear
-	else if (String(topic + "/getclear").equals(_topic))
+	else if (matchRoute(route, topic, "/getclear"))
 	{
 		result = onGetProperty("clear", String(getClear()), transportMask);
 	}
-	else if (String(topic + "/setclear").equals(_topic))
+	else if (matchRoute(route, topic, "/setclear"))
 	{
 		result = String(setClear(atoi(_payload.c_str()), true));
 	}
 	//X
-	else if (String(topic + "/getx").equals(_topic))
+	else if (matchRoute(route, topic, "/getx"))
 	{
 		result = onGetProperty("x", String(getX()), transportMask);
 	}
-	else if (String(topic + "/setx").equals(_topic))
+	else if (matchRoute(route, topic, "/setx"))
 	{
 		result = String(setX(atoi(_payload.c_str()), true));
 	}
 	//Y
-	else if (String(topic + "/gety").equals(_topic))
+	else if (matchRoute(route, topic, "/gety"))
 	{
 		result = onGetProperty("y", String(getY()), transportMask);
 	}
-	else if (String(topic + "/sety").equals(_topic))
+	else if (matchRoute(route, topic, "/sety"))
 	{
 		result = String(setY(atoi(_payload.c_str()), true));
 	}
 	//Cols
-	else if (String(topic + "/getcols").equals(_topic))
+	else if (matchRoute(route, topic, "/getcols"))
 	{
 		result = onGetProperty("cols", String(getCols()), transportMask);
 	}
-	else if (String(topic + "/setcols").equals(_topic))
+	else if (matchRoute(route, topic, "/setcols"))
 	{
 		result = String(setCols(atoi(_payload.c_str()), true));
 	}
 	//Rows
-	else if (String(topic + "/getrows").equals(_topic))
+	else if (matchRoute(route, topic, "/getrows"))
 	{
 		result = onGetProperty("rows", String(getRows()), transportMask);
 	}
-	else if (String(topic + "/setrows").equals(_topic))
+	else if (matchRoute(route, topic, "/setrows"))
 	{
 		result = String(setRows(atoi(_payload.c_str()), true));
 	}

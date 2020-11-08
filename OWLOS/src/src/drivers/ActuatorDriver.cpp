@@ -114,45 +114,45 @@ bool ActuatorDriver::publish()
 	return false;
 };
 
-String ActuatorDriver::onMessage(String _topic, String _payload, int8_t transportMask)
+String ActuatorDriver::onMessage(String route, String _payload, int8_t transportMask)
 {
-	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
+	String result = BaseDriver::onMessage(route, _payload, transportMask);
 	if (!result.equals(WrongPropertyName))
 		return result;
 
-	if (String(topic + "/getanalog").equals(_topic))
+	if (matchRoute(route, topic, "/getanalog"))
 	{
 		result = onGetProperty("analog", String(getAnalog()), transportMask);
 	}
-	else if (String(topic + "/getdata").equals(_topic))
+	else if (matchRoute(route, topic, "/getdata"))
 	{
 		result = onGetProperty("data", String(getData()), transportMask);
 	}
-	else if (String(topic + "/setdata").equals(_topic))
+	else if (matchRoute(route, topic, "/setdata"))
 	{
 		result = String(setData(atoi(_payload.c_str()), true));
 	}
-	else if (String(topic + "/getpwm").equals(_topic))
+	else if (matchRoute(route, topic, "/getpwm"))
 	{
 		result = onGetProperty("pwm", String(getPWM()), transportMask);
 	}
-	else if (String(topic + "/setpwm").equals(_topic))
+	else if (matchRoute(route, topic, "/setpwm"))
 	{
 		result = String(setPWM(atoi(_payload.c_str()), true));
 	}
-	else if (String(topic + "/getpwmdelay").equals(_topic))
+	else if (matchRoute(route, topic, "/getpwmdelay"))
 	{
 		result = onGetProperty("pwmdelay", String(getPWMDelay()), transportMask);
 	}
-	else if (String(topic + "/setpwmdelay").equals(_topic))
+	else if (matchRoute(route, topic, "/setpwmdelay"))
 	{
 		result = String(setPWMDelay(atoi(_payload.c_str()), true));
 	}
-	else if (String(topic + "/getinvert").equals(_topic))
+	else if (matchRoute(route, topic, "/getinvert"))
 	{
 		result = onGetProperty("invert", String(getInvert()), transportMask);
 	}
-	else if (String(topic + "/setinvert").equals(_topic))
+	else if (matchRoute(route, topic, "/setinvert"))
 	{
 		result = String(setInvert(atoi(_payload.c_str()), true));
 	}
