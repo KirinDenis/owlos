@@ -129,6 +129,8 @@ OWLOS распространяется в надежде, что она буде
         #define USE_ARDUINO_BOARDS
     #endif
 
+#define USE_UART
+
 #include "utils/Utils.h"
 
 //Включить в сборку драйвера 

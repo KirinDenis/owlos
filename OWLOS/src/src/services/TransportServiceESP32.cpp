@@ -46,6 +46,7 @@ OWLOS распространяется в надежде, что она буде
 #ifdef USE_ESP_DRIVER
 
 #include "../drivers/ESPDriver.h"
+
 #include "../services/OTAService.h"
 #include "../services/DriverService.h"
 #include "../transports/HTTPSWebServer.h"
@@ -53,6 +54,11 @@ OWLOS распространяется в надежде, что она буде
 #ifdef USE_MQTT
 #include "../transports/MQTTClient.h"
 #endif
+
+#ifdef USE_UART
+#include "../transports/UART.h"
+#endif
+
 
 #include <esp_wifi.h>
 #include <WiFiAP.h>
@@ -330,35 +336,11 @@ void transportLoop()
 		}
 #endif
 
-		//TEMPORARY!!! TEST UART ONLY
-		/*
-		if (Serial.available())
-		{
-			
-			String data = Serial.readStringUntil('\n');
-
-			if (data.indexOf("AT+GADP") == 0)
-			{
-               Serial.println(driversGetAllDriversProperties());	
-			}
-			else 
-			{
-
-			String topic = data.substring(0, data.indexOf(" "));
-			String payload = data.substring(data.indexOf(" ") + 1);
-			Serial.println("RECIEVE " + topic + " " + payload);	
-			if (nodeOnMessage(String(topic), String(payload), MQTTMask).equals(WrongPropertyName))
-			{
-//if not UNIT property
-//Put recieved message to all drivers, each driver can process any topic recieved by Unit
-#ifdef USE_DRIVERS
-				driversCallback(String(topic), String(payload));
-#endif
-			}
-			}
-		}
-		*/
 	}
+
+#ifdef USE_UART
+	UARTRecv();
+#endif
 }
 
 void transportSubscribe(String _topic)
@@ -379,8 +361,12 @@ if (nodeGetMQTTAvailable() == 1)
 	MQTTPublish(_topic, _payload);
 }
 #endif
-	// UART pilot test Serial.println("[DATA] " + _topic + " " + _payload);
-	return true; //if MQTT is not available and RESTful change the property
+
+#ifdef USE_UART
+    UARTSend(_topic, _payload);
+#endif
+	
+	return true; 
 }
 
 WiFiMulti transportGetWifiMulti()

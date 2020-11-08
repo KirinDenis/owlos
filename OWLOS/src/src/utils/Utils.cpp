@@ -59,18 +59,17 @@ void debugOut(String tag, String text)
 #ifdef USE_ESP_DRIVER		
 #ifdef SERIAL_COLORIZED_OUTPUT		
 		text = text + " \033\033[1;32m [" + String(ESP.getFreeHeap()) + "]";
-#elif
+#else
         text = text + " [" + String(ESP.getFreeHeap()) + "]";
 #endif		
 
 #endif		
  
-#ifdef SERIAL_COLORIZED_OUTPUT		
-        text.replace('=', ':');
+#ifdef SERIAL_COLORIZED_OUTPUT		        
 		Serial.println("\033\033[1;35m DEBUG: \033\033[1;36m " + tag + " \033\033[1;34m " + text);
 		Serial.print("\033\033[0m");
-#elif
-		Serial.println("DEBUG: " + tag + " - " + text);
+#else
+		Serial.print("DEBUG: " + tag + " - " + text + "\n");
 #endif		
 		if (WriteDebugLogs)
 		{
