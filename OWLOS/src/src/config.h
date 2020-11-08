@@ -122,7 +122,7 @@ OWLOS распространяется в надежде, что она буде
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4       
                 //Включает в сборку MQTT клиент
-                //#define USE_MQTT                
+                #define USE_MQTT                
 #endif                
             #endif
     #else
