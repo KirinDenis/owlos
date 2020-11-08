@@ -86,13 +86,10 @@ void corsCallback(HTTPRequest *req, HTTPResponse *res)
 void handleOther(HTTPRequest *req, HTTPResponse *res)
 {
 
-  String uri = String(req->getRequestString().c_str());
-  Serial.print(uri);
+  String uri = String(req->getRequestString().c_str());  
   uri = uri.substring(uri.indexOf(" ") + 1);
-  Serial.print(uri);
   uri = uri.substring(0, uri.indexOf(" "));
-  Serial.print(uri);
-
+  
   if ((uri.length() == 0) || (uri.equals("/")))
     uri = "/index.html";
 
