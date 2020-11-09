@@ -358,8 +358,9 @@ bool transportPublish(String _topic, String _payload)
 #ifdef USE_MQTT
 if (nodeGetMQTTAvailable() == 1)
 {
-	MQTTPublish(_topic, _payload);
+	MQTTPublish(_topic, _payload);	
 }
+
 #endif
 
 #ifdef USE_UART

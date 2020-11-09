@@ -66,7 +66,7 @@ void debugOut(String tag, String text)
 #endif		
  
 #ifdef SERIAL_COLORIZED_OUTPUT		        
-		Serial.println("\033\033[1;35m DEBUG: \033\033[1;36m " + tag + " \033\033[1;34m " + text);
+		Serial.print("\033\033[1;35m DEBUG: \033\033[1;36m " + tag + " \033\033[1;34m " + text + "\n");
 		Serial.print("\033\033[0m");
 #else
 		Serial.print("DEBUG: " + tag + " - " + text + "\n");
@@ -116,7 +116,7 @@ void writeDebugLogFile(String fileName, int fileSize, String tag, String text)
 	}
 }
 
-bool matchRoute(String route, String topic, const char* path) {
+bool matchRoute(String &route, String &topic, const char* path) {
     return matchRoute(route.c_str(), topic.c_str(), path);
 }
 // Route = a/b/c/d /getsomething

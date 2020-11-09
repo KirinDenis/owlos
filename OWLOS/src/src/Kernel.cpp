@@ -59,11 +59,12 @@ bool kernelSetup()
 {
 	Serial.begin(PORTSPEED); //setup Serial Monitor at PORTSPEED BAUD speed - see Utils.h for Constant definition
 	delay(ONETENTHOFSECOND); //sleep 1/10 of second
-	Serial.println();
+	
 	
 #if defined(ARDUINO_ESP8266_RELEASE_2_5_0) || defined(ARDUINO_ESP32_RELEASE_1_0_4) || defined(USE_ARDUINO_BOARDS)
 
 	debugOut("OWLOS kernel setup", "started..."); //if Utils.h "Debug=true" start writing log to Serial
+	
 
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	ESP.wdtEnable(ONEMINUTE); //Software watch dog
@@ -71,6 +72,7 @@ bool kernelSetup()
 #endif
 
 	filesBegin(); //prepare Flash file systeme (see Tools/Flash size item - use 2M Flash Size, is ZERO size by default -> switch to 2M
+	
 #ifdef USE_ESP_DRIVER
 	nodeInit();
 #endif
@@ -89,9 +91,10 @@ bool kernelSetup()
 	//Setup network stack - WiFi -> after MQTT -- if both available Transport accessable, if not Unit try reconnect forever (every 5 sec by default)
 	//Ther is not connected at begin(), see Main::Loop() transportReconnect() function using
 	//The begin() just setup connection properties
-#ifdef USE_ESP_DRIVER
+
 	transportBegin();
-#endif
+
+    driversAdd(Actuator, "a1", "IO32" );
 	//The OWLOS harvester started up and went quietly...
 #ifdef DetailedDebug
 	debugOut("kernel setup", "complete"); //if Utils.h "Debug=true" start writing log to Serial
@@ -104,6 +107,7 @@ bool kernelSetup()
 	debugOut("ESP8266 RELEASE 2.5.0", "https://github.com/esp8266/Arduino/releases/tag/2.5.0");
 	return false;
 #endif
+  	
 }
 
 /*-----------------------------------------------------------------------------
@@ -141,11 +145,16 @@ bool kernelLoop()
 	}
 #endif
 
-#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4  
 	transportLoop(); //Ping MQTT (at this version MQTT used only, FFR Ping RESTful to
 #endif
 #endif
 #endif
+
+#ifdef USE_ARDUINO_BOARDS
+	transportLoop(); 
+#endif
+
 		//give CPU time quantum to each driver. Like are sample -> temperature sensor can check physical sensor value
 #ifdef USE_DRIVERS
 	driversLoop(); //the driverLoop() more actual for sensors drivers, the actuator drivers wait until Sub()->OnMessage() happens, see Main::Callback(...) function

@@ -79,6 +79,15 @@ ESP8266WiFiMulti transportGetWifiMulti();
 
 #endif
 #endif
+
+#ifdef USE_ARDUINO_BOARDS
+bool transportBegin();
+bool transportAvailable();
+void transportLoop();
+bool transportPublish(String topic, String payload);
+
+#endif
+
 #endif
 
 

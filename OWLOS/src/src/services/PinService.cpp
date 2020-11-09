@@ -1240,6 +1240,25 @@ void initPins()
 	pin.location = "l18";
 	addPin(pin);
 #endif
+
+#ifdef USE_ARDUINO_BOARDS
+
+	pin.GPIONumber = -1;
+	pin.pinTypes = GND_MASK;
+	pin.name = "GND";
+	pin.chipNumber = -1;
+	pin.location = "r1";
+	addPin(pin);
+
+	pin.GPIONumber = 13;
+	pin.pinTypes = DIGITAL_IO_MASK;	
+	pin.name = "PIN13";
+	pin.chipNumber = 13;
+	pin.location = "r2";
+	addPin(pin);
+#endif
+
+
 }
 #endif
 

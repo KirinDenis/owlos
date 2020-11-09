@@ -346,10 +346,12 @@ String driversLoadFromConfig()
 {
 #ifdef DetailedDebug
 	debugOut("driverconfig", "load");
-#endif
+#endif    
 	String driverList = filesReadString("driverslist");
 	if (driverList.length() == 0)
+	{
 		return "bad driver list counfig file";
+	}
 
 	String result = String();
 

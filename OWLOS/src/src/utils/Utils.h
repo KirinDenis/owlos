@@ -45,16 +45,16 @@ OWLOS распространяется в надежде, что она буде
 
 //#define SERIAL_COLORIZED_OUTPUT
 #define Debug true
-//#define DetailedDebug 
+#define DetailedDebug 
 #define WriteDebugLogs false
 #define LogFilesSize 1024*10
 #define LogFile1 "log1"
 #define LogFile2 "log2"
 #define PORTSPEED 115200
-#define ONETENTHOFSECOND 100
-#define ONESECOND 1000
-#define TENSECOND 10000
-#define ONEMINUTE 60000 
+#define ONETENTHOFSECOND 100L
+#define ONESECOND 1000L
+#define TENSECOND 10000L
+#define ONEMINUTE 60000L 
 
 #define PayloadBufferSize 255
 
@@ -94,6 +94,6 @@ char* stringToChar(String src);
 void  debugOut(String tag, String text);
 void writeDebugLogFile(String fileName, int fileSize, String tag, String text);
 bool matchRoute(const char* route, const char* topic, const char* path);
-bool matchRoute(String route, String topic, const char* path);
+bool matchRoute(String &route, String &topic, const char* path);
 
 #endif

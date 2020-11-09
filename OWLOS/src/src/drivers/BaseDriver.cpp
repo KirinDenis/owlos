@@ -5,6 +5,7 @@ Copyright 2019, 2020 by:
 - Vitalii Glushchenko (cehoweek@gmail.com)
 - Denys Melnychuk (meldenvar@gmail.com)
 - Denis Kirin (deniskirinacs@gmail.com)
+- Mykyta Poturai (mykyta.poturai@tutanota.com)
 
 This file is part of Ready IoT Solution - OWLOS
 
@@ -43,9 +44,8 @@ OWLOS распространяется в надежде, что она буде
 #ifdef USE_DRIVERS
 #include "../services/DriverService.h"
 
-
-  //init() is called before transport accessable, when ESP is Setupping()
-  //Drivers load default GPIO and other property values from Flash file system thanks to Init()
+//init() is called before transport accessable, when ESP is Setupping()
+//Drivers load default GPIO and other property values from Flash file system thanks to Init()
 bool BaseDriver::init(String _id)
 {
 	id = _id;
@@ -81,7 +81,7 @@ void BaseDriver::del()
 bool BaseDriver::begin(String _topic)
 {
 	topic = _topic + '/' + id;
-	#ifdef DetailedDebug 
+#ifdef DetailedDebug
 	debugOut(id, "available with topic " + topic);
 #endif
 
@@ -90,12 +90,12 @@ bool BaseDriver::begin(String _topic)
 	return available;
 }
 
-
 bool BaseDriver::query()
 {
 	if (available)
 	{
-		if (millis() >= lastQueryMillis + queryInterval) {
+		if (millis() >= lastQueryMillis + queryInterval)
+		{
 			lastQueryMillis = millis();
 			return true;
 		}
@@ -114,13 +114,14 @@ String BaseDriver::getAllProperties()
 	String pins = "";
 	int count = getDriverPinsCount(id);
 	for (int i = 0; i < count; i++)
-	{		
-		DriverPin * driverPin = getDriverPinByDriverId(id, i);
+	{
+		DriverPin *driverPin = getDriverPinByDriverId(id, i);
 		if (driverPin != nullptr)
 		{
 			pins += "pin" + String(i) + "=" + driverPin->name + "//s\n";
-		    pins += "pintype" + String(i) + "=" + decodePinTypes(driverPin->driverPinType) + "//r\n";
-		}		
+			//pins += "pintype" + String(i) + "=" + driverPin->driverPinType  + "\n";
+			pins += "pintype" + String(i) + "=" + decodePinTypes(driverPin->driverPinType) + "//r\n";
+		}
 		else
 		{
 			debugOut("PIN", "NULL");
@@ -136,18 +137,12 @@ String BaseDriver::getAllProperties()
 	//if no type = string
 	//if not read only - write accessable
 	//this flags needed to UI and SDK builder - determinate API parameters types and SET API available
+
 	String result = "id=" + id + "//r\n";
-	result += pins;
-	result += "topic=" + topic + "//r\n";
-	result += "available=" + String(available) + "//bs\n";
-	result += "type=" + String(type) + "//r\n";
-	result += "trap=" + String(trap) + "//fs\n";
-	result += "lastquerymillis=" + String(lastQueryMillis) + "//ir\n";
-	result += "lastpublishmillis=" + String(lastPublishMillis) + "//ir\n";
-	result += "queryinterval=" + String(queryInterval) + "//i\n";
-	result += "publishinterval=" + String(publishInterval) + "//i\n";
-	result += "historydata=" + getHistoryData() + "//r\n";
-	result += "historyfile=//r\n";	
+
+	result += pins +
+			  +"topic=" + topic + "//r\n" + "available=" + String(available) + "//bs\n" + "type=" + String(type) + "//r\n" + "trap=" + String(trap) + "//fs\n" + "lastquerymillis=" + String(lastQueryMillis) + "//ir\n" + "lastpublishmillis=" + String(lastPublishMillis) + "//ir\n" + "queryinterval=" + String(queryInterval) + "//i\n" + "publishinterval=" + String(publishInterval) + "//i\n" + "historydata=" + getHistoryData() + "//r\n" + "historyfile=//r\n";
+
 	return result;
 }
 
@@ -155,7 +150,8 @@ bool BaseDriver::publish()
 {
 	if (available)
 	{
-		if (millis() >= lastPublishMillis + publishInterval) {
+		if (millis() >= lastPublishMillis + publishInterval)
+		{
 			lastPublishMillis = millis();
 			return true;
 		}
@@ -171,12 +167,13 @@ void BaseDriver::subscribe()
 
 int BaseDriver::parsePinNumber(String _topic, String getPinStr)
 {
-	return atoi(_topic.substring(_topic.indexOf(topic +  getPinStr) + String(topic + getPinStr).length()).c_str());
+	return atoi(_topic.substring(_topic.indexOf(topic + getPinStr) + String(topic + getPinStr).length()).c_str());
 }
 
-String BaseDriver::onMessage(String _topic, String _payload, int8_t transportMask)
+String BaseDriver::onMessage(String route, String _payload, int8_t transportMask)
 {
-	if (_topic.indexOf(topic + "/getpintype") == 0)
+	/*
+if (_topic.indexOf(topic + "/getpintype") == 0)
 	{
 		int pinIndex = parsePinNumber(_topic, "/getpintype");
 		DriverPin * driverPin = getDriverPinByDriverId(id, pinIndex);
@@ -295,6 +292,119 @@ String BaseDriver::onMessage(String _topic, String _payload, int8_t transportMas
 								return onGetProperty("historyfile", String(readHistoryFile()), transportMask);
 							}
 	return WrongPropertyName;
+*/
+	//-----------------------------------------------------------------------------------------------------
+
+	if (matchRoute(route, topic, "/getpintype"))
+	{
+		int pinIndex = parsePinNumber(route, "/getpintype");
+		DriverPin *driverPin = getDriverPinByDriverId(id, pinIndex);
+		if (driverPin != nullptr)
+		{
+			return String(driverPin->driverPinType);
+		}
+		else
+		{
+			return String(NO_MASK);
+		}
+	}
+	else if (matchRoute(route, topic, "/getpin"))
+	{
+		int pinIndex = parsePinNumber(route, "/getpin");
+		DriverPin *driverPin = getDriverPinByDriverId(id, pinIndex);
+		if (driverPin != nullptr)
+		{
+			return String(driverPin->name);
+		}
+		else
+		{
+			return String(-1);
+		}
+	}
+	else if (matchRoute(route, topic, "/setpin"))
+	{
+		int pinIndex = parsePinNumber(route, "/setpin");
+		return driversChangePin(_payload, id, pinIndex);
+	}
+	else if (matchRoute(route, topic, "/getid"))
+	{
+		return onGetProperty(F("id"), id, transportMask);
+	}
+	else if (matchRoute(route, topic, "/setid"))
+	{
+		return NotAvailable;
+	}
+	//Topic --------------------------------------------------------------------
+	else if (matchRoute(route, topic, "/gettopic"))
+	{
+		return onGetProperty(F("topic"), topic, transportMask);
+	}
+	else if (matchRoute(route, topic, "/settopic"))
+	{
+		return NotAvailable;
+	}
+	//Available --------------------------------------------------------------------
+	else if (matchRoute(route, topic, "/getavailable"))
+	{
+		return onGetProperty(F("available"), String(getAvailable()), transportMask); //Available can be changed only inside Unit!
+	}
+	else if (matchRoute(route, topic, "/setavailable"))
+	{
+		return String(setAvailable(atoi(_payload.c_str())));
+	}
+	//Type --------------------------------------------------------------------
+	else if ((matchRoute(route, topic, "/gettype")) || (matchRoute(route, topic, "/settype")))
+	{
+		return onGetProperty(F("type"), String(getType()), transportMask);
+	}
+	//Trap ----------------------------------------------------------------------
+	else if (matchRoute(route, topic, "/gettrap"))
+	{
+		return onGetProperty(F("trap"), String(getTrap()), transportMask);
+	}
+	else if (matchRoute(route, topic, "/settrap"))
+	{
+		return String(setTrap(atof(_payload.c_str())));
+	}
+	else if (matchRoute(route, topic, "/getlastquerymillis"))
+	{
+		return onGetProperty(F("lastquerymillis"), String(lastQueryMillis), transportMask);
+	}
+	else if (matchRoute(route, topic, "/getlastpublishmillis"))
+	{
+		return onGetProperty(F("lastpublishmillis"), String(lastPublishMillis), transportMask);
+	}
+	//Query Interval -----------------------------------------------------------
+	else if (matchRoute(route, topic, "/getqueryinterval"))
+	{
+		return onGetProperty(F("queryinterval"), String(getQueryInterval()), transportMask);
+	}
+	else if (matchRoute(route, topic, "/setqueryinterval"))
+	{
+		return String(setQueryInterval(atoi(_payload.c_str())));
+	}
+	//Publish Interval -----------------------------------------------------------
+	else if (matchRoute(route, topic, "/getpublishinterval"))
+	{
+		return onGetProperty(F("publishinterval"), String(getPublishInterval()), transportMask);
+	}
+	else if (matchRoute(route, topic, "/setpublishinterval"))
+	{
+		return String(setPublishInterval(atoi(_payload.c_str())));
+	}
+
+	//History data -------------------------------------------------------------
+	else if (matchRoute(route, topic, "/gethistorydata"))
+	{
+		return onGetProperty(F("historydata"), String(getHistoryData()), transportMask);
+	}
+
+	//Read history file contents-------------------------------------------------------------
+	else if (matchRoute(route, topic, "/gethistoryfile"))
+	{
+		return onGetProperty(F("historyfile"), String(readHistoryFile()), transportMask);
+	}
+	return WrongPropertyName;
 }
 
 //Called when client gets a property from network
@@ -306,24 +416,24 @@ String BaseDriver::onGetProperty(String _property, String _payload, int8_t trans
 
 	if (transportMask && MQTTMask != 0)
 	{
-#ifdef USE_ESP_DRIVER		
+#ifdef USE_ESP_DRIVER
 		transportPublish(topic + "/" + _property, _payload);
-#endif		
+#endif
 	}
 	return _payload;
 }
 
-bool BaseDriver::onInsideChange(String _property, String _payload/*, int8_t transportMask*/)
+bool BaseDriver::onInsideChange(String _property, String _payload /*, int8_t transportMask*/)
 {
 #ifdef DetailedDebug
 	debugOut(id, "|<- inside change " + _property + " = " + _payload);
 #endif
 
-#ifdef USE_ESP_DRIVER		
+#ifdef USE_ESP_DRIVER
 	return transportPublish(topic + "/" + _property, _payload);
 #else
-	return true;	
-#endif			
+	return true;
+#endif
 
 	//FFR for mutliple transport
 	/*
@@ -357,7 +467,6 @@ bool BaseDriver::setAvailable(int _available)
 	filesWriteInt(id + ".available", available);
 	return onInsideChange("available", String(available));
 }
-
 
 int BaseDriver::getType()
 {
@@ -434,7 +543,7 @@ bool BaseDriver::setPublishInterval(int _publishInterval)
 //HistoryData property GET<->SET wrappers
 String BaseDriver::getHistoryData()
 {
-	String	dataHistory = String(historyCount) + ";";
+	String dataHistory = String(historyCount) + ";";
 
 	for (int k = 0; k < historyCount; k++)
 	{
@@ -447,13 +556,15 @@ String BaseDriver::getHistoryData()
 bool BaseDriver::setHistoryData(float _historydata)
 {
 
-	if (historyCount < historySize) {
+	if (historyCount < historySize)
+	{
 		historyData[historyCount] = _historydata;
 		historyCount++;
 	}
 	else
 	{
-		for (int k = 1; k < historySize; k++) {
+		for (int k = 1; k < historySize; k++)
+		{
 			historyData[k - 1] = historyData[k];
 		}
 
@@ -478,14 +589,12 @@ String BaseDriver::readHistoryFile()
 	return result;
 }
 
-
 bool BaseDriver::writeHistoryFile(float _historydata)
 {
 
 	bool result = false;
 
 	String _historyfilename;
-
 
 	if (historyFileCount < historyFileWriteTime)
 	{
@@ -517,7 +626,6 @@ bool BaseDriver::writeHistoryFile(float _historydata)
 
 			//Put the current file to the end of array
 			historyFilesIndexes[filesIndexesSize - 1] = currentFile;
-
 		}
 
 		//delete file with oldest history
@@ -538,4 +646,3 @@ bool BaseDriver::writeHistoryFile(float _historydata)
 	return result;
 }
 #endif
-

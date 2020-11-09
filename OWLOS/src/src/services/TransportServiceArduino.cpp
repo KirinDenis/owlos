@@ -1,4 +1,4 @@
-/*----------------------------------------------------------------------------
+/* ----------------------------------------------------------------------------
 Ready IoT Solution - OWLOS
 Copyright 2019, 2020 by:
 - Konstantin Brul (konstabrul@gmail.com)
@@ -38,20 +38,52 @@ OWLOS распространяется в надежде, что она буде
 Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
-#ifndef noPlatformIO
 
-#include "src/Kernel.h"
+#include "TransportService.h"
+//Arduino ONLY --------------------------------------------------------------------------
+#ifdef USE_ARDUINO_BOARDS
 
-void setup() 
-{  
-	//OWLOS Kernel Setup  
-	kernelSetup();  	
+
+#ifdef USE_UART
+#include "../transports/UART.h"
+#endif
+
+
+
+
+bool transportBegin()
+{
+    //TODO: Check Serial
+    return true;
+}
+
+bool transportAvailable()
+{
+    //TODO: Check Serial
+    return true;
+}
+
+void transportLoop()
+{
+#ifdef USE_UART
+	UARTRecv();
+#endif
+}
+
+void transportSubscribe(String _topic)
+{
 
 }
 
-void loop() 
-{  
-	//OWLOS Kernel Loop
-	kernelLoop();
+bool transportPublish(String _topic, String _payload)
+{
+
+#ifdef USE_UART
+    UARTSend(_topic, _payload);
+#endif
+	
+	return true; 
 }
+
+
 #endif

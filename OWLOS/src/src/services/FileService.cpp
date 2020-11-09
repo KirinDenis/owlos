@@ -48,14 +48,19 @@ OWLOS распространяется в надежде, что она буде
 Arduino File System ------------------------------------------------------------------------
 --------------------------------------------------------------------------------------*/
 #ifdef USE_ARDUINO_BOARDS
-bool filesBegin() {return true;}
+
+
+bool filesBegin() 
+{
+	return false;
+}
 bool filesLoop() {return true;}
 bool filesExists(String fileName) {return true;}
 int filesGetSize(String fileName) {return 0;}
 bool filesDelete(String fileName){return true;}
 bool filesRename(String source, String dest){return true;}
 
-String filesReadString(String fileName){return "";}
+String filesReadString(String fileName){return String();}
 bool filesWriteStringDirect(String fileName, String value){return true;}
 bool filesWriteString(String fileName, String value){return true;}
 bool filesAppendString(String fileName, String value){return true;}

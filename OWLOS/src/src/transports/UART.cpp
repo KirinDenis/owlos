@@ -43,10 +43,12 @@ OWLOS распространяется в надежде, что она буде
 
 #ifdef USE_ESP_DRIVER
 #include "../drivers/ESPDriver.h"
+#endif
+
 #ifdef USE_DRIVERS
 #include "../services/DriverService.h"
 #endif
-#endif
+
 
 #ifdef USE_UART
 
@@ -56,6 +58,8 @@ OWLOS распространяется в надежде, что она буде
 #define ERROR_ANSWER "ERROR: "
 
 #define TOKENS_SIZE 10
+
+String SerialInput = "";
 
 void UARTSend(String topic, String payload)
 {
@@ -78,140 +82,147 @@ void UARTSendOK(String payload)
     Serial.print("\n");
 }
 
-void UARTRecv()
+
+void UARTRecv(String command)
 {
-    if (Serial.available())
+
+    if (command.length() > 0)
     {
-        //TODO byte by byte read until \n
-        String command = Serial.readStringUntil('\r');
-
-        if (command.length() > 0)
+        command.replace("\n", "");
+        //--- Tokenize command
+        String token[TOKENS_SIZE];
+        int count = 0;
+        while (command.indexOf(" ") != -1)
         {
-            command.replace("\n", "");
-            //--- Tokenize command
-            String token[TOKENS_SIZE];
-            int count = 0;
-            while (command.indexOf(" ") != -1)
+            if (count > TOKENS_SIZE - 2)
             {
-                if (count > TOKENS_SIZE - 2)
-                {
-                    break;
-                }
-                token[count] = command.substring(0, command.indexOf(" "));
-                command.replace(token[count] + " ", "");
-                count++;
+                break;
             }
-
-            command.replace(" ", "");
-            token[count] = command;
+            token[count] = command.substring(0, command.indexOf(" "));
+            command.replace(token[count] + " ", "");
             count++;
-            //--- ENDOF Tokenize command
+        }
 
-            for (int i = 0; i < count; i++)
+        command.replace(" ", "");
+        token[count] = command;
+        count++;
+        //--- ENDOF Tokenize command
+
+        for (int i = 0; i < count; i++)
+        {
+            debugOut("UART " + String(i), token[i]);
+        }
+
+        if ((count > 0) && (token[0].length() > 0))
+        {
+            token[0].toLowerCase();
+
+            if (token[0].equals("at+adp?"))
             {
-                debugOut("UART " + String(i), token[i]);
+                UARTSendOK(driversGetAllDriversProperties());
             }
-
-            if ((count > 0) && (token[0].length() > 0))
+            
+            else 
+            if (token[0].equals("at+fl?"))
             {
-                token[0].toLowerCase();
+                UARTSendOK(filesGetList(""));
+            }
+            else 
+            if (token[0].equals("at+f?"))
+            {
+                if (count > 1)
+                {
+                    UARTSendOK(filesReadString(token[1]));
+                }
+                else
+                {
+                    UARTSendError("bad or missing file name");
+                }
+            }
+            else 
+            
+            if (token[0].equals("at+dp?"))
+            {
+                if (count > 2)
+                {
+                    String result = driversGetDriverProperty(token[1], token[2]);
 
-                if (token[0].equals("at+adp?"))
-                {
-                    UARTSendOK(driversGetAllDriversProperties());
-                }
-                else if (token[0].equals("at+fl?"))
-                {
-                    UARTSendOK(filesGetList(""));
-                }
-                else if (token[0].equals("at+f?"))
-                {
-                    if (count > 1)
+#ifdef USE_ESP_DRIVER
+                    if (result.length() == 0) //then try get this property from node
                     {
-                        UARTSendOK(filesReadString(token[1]));
+                        result = nodeOnMessage(nodeGetTopic() + "/get" + token[2], "", NoTransportMask);
+                    }
+#endif                                        
+
+                    if (result.length() == 0)
+                    {
+                        UARTSendError("wrong driver id: " + token[1] + " use GetDriversId API to get all drivers list");
+                    }
+                    else if (result.equals(NotAvailable))
+                    {
+                        UARTSendError("driver property: " + token[2] + " set as NOT Available");
+                    }
+                    else if (result.equals(WrongPropertyName))
+                    {
+                        UARTSendError("driver property: " + token[2] + " not exists");
                     }
                     else
                     {
-                        UARTSendError("bad or missing file name");
+                        UARTSendOK(result);
                     }
                 }
-                else if (token[0].equals("at+dp?"))
+                else
                 {
-                    if (count > 2)
-                    {
-                        String result = driversGetDriverProperty(token[1], token[2]);
-                        if (result.length() == 0) //then try get this property from node
-                        {
-                            result = nodeOnMessage(nodeGetTopic() + "/get" + token[2], "", NoTransportMask);
-                        }
+                    UARTSendError("bad or missing parameter");
+                }
+            }
+            else if (token[0].equals("at+dp"))
+            {
+                if (count > 3)
+                {
 
-                        if (result.length() == 0)
-                        {
-                            UARTSendError("wrong driver id: " + token[1] + " use GetDriversId API to get all drivers list");
-                        }
-                        else if (result.equals(NotAvailable))
-                        {
-                            UARTSendError("driver property: " + token[2] + " set as NOT Available");
-                        }
-                        else if (result.equals(WrongPropertyName))
-                        {
-                            UARTSendError("driver property: " + token[2] + " not exists");
-                        }
-                        else
-                        {
-                            UARTSendOK(result);
-                        }
+                    String driverResult = driversSetDriverProperty(token[1], token[2], token[3]);
+                    if (driverResult.equals("1") || driverResult.length() == 0)
+                    {
+                        UARTSendOK("");
                     }
                     else
                     {
-                        UARTSendError("bad or missing parameter");
-                    }
-                }
-                else if (token[0].equals("at+dp"))
-                {
-                    if (count > 3)
-                    {
-
-                        String driverResult = driversSetDriverProperty(token[1], token[2], token[3]);
-                        if (driverResult.equals("1") || driverResult.length() == 0)
+#ifdef USE_ESP_DRIVER                        
+                        if ((driverResult.indexOf(WrongDriverName) > -1) || (driverResult.indexOf(WrongPropertyName) > -1))
                         {
-                            UARTSendOK("");
-                        }
-                        else
-                        {
-                            if ((driverResult.indexOf(WrongDriverName) > -1) || (driverResult.indexOf(WrongPropertyName) > -1))
+                            String result = nodeOnMessage(nodeGetTopic() + "/set" + token[2], token[3], NoTransportMask);
+                            if ((result.length() == 0) || (result.equals("0")))
                             {
-                                String result = nodeOnMessage(nodeGetTopic() + "/set" + token[2], token[3], NoTransportMask);
-                                if ((result.length() == 0) || (result.equals("0")))
-                                {
-                                    UARTSendError(driverResult + " [or] wrong node property: " + token[2]);
-                                }
-                                else
-                                {
-                                    if (result.equals("1"))
-                                    {
-                                        UARTSendOK("");
-                                    }
-                                    else
-                                    {
-                                        UARTSendError(driverResult + " [or] " + result);
-                                    }
-                                }
+                                UARTSendError(driverResult + " [or] wrong node property: " + token[2]);
                             }
                             else
                             {
-
-                                UARTSendError(driverResult);
+                                if (result.equals("1"))
+                                {
+                                    UARTSendOK("");
+                                }
+                                else
+                                {
+                                    UARTSendError(driverResult + " [or] " + result);
+                                }
                             }
                         }
-                    }
-                    else
-                    {
-                        UARTSendError("bad or missing parameter");
+                        else
+#endif                      
+                        {
+
+                            UARTSendError(driverResult);
+                        }
                     }
                 }
+                else
+                {
+                    UARTSendError("bad or missing parameter");
+                }
+            }
 
-                /*
+            /*
                 String result = WrongNodePropertyName;
 #ifdef USE_ESP_DRIVER
                 //result = nodeOnMessage(topic, command, NoTransportMask);
@@ -224,12 +235,28 @@ void UARTRecv()
                 }
 #endif
 */
-            }
-            else
-            {
-                UARTSendError("empty command");
-            }
+        }
+        else
+        {
+            UARTSendError("empty command");
         }
     }
 }
+
+void UARTRecv()
+{
+    
+    if (Serial.available())
+    {
+        String currentStr = Serial.readString();
+        SerialInput += currentStr;
+        if (SerialInput.indexOf('\r') != -1)
+        {
+            Serial.flush();
+            UARTRecv(SerialInput);
+            SerialInput = "";
+        }
+    }
+}
+
 #endif
