@@ -149,19 +149,19 @@ bool SensorDriver::publish()
 	return false;
 };
 
-String SensorDriver::onMessage(String _topic, String _payload, int8_t transportMask)
+String SensorDriver::onMessage(String route, String _payload, int8_t transportMask)
 {
-	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
+	String result = BaseDriver::onMessage(route, _payload, transportMask);
 	if (!result.equals(WrongPropertyName))
 		return result;
 
-	if (String(topic + "/getanalog").equals(_topic))
+	if (matchRoute(route, topic, "/getanalog"))
 	{
 		result = onGetProperty("analog", String(getAnalog()), transportMask);
 	}
 	else
 
-		if (String(topic + "/getdata").equals(_topic))
+		if (matchRoute(route, topic, "/getdata"))
 	{
 		result = onGetProperty("data", String(getData()), transportMask);
 	}

@@ -47,6 +47,9 @@ OWLOS распространяется в надежде, что она буде
 #include "../services/UpdateService.h"
 #include "../services/TransportService.h"
 
+#define DONT_USE_FILES
+
+
 #define DEFAULT_HTTP_SERVER_AVAILABLE true
 #define DEFAULT_HTTP_SERVER_USERNAME "admin"
 #define DEFAULT_HTTP_SERVER_PASSWORD "admin"
@@ -255,235 +258,229 @@ String onGetProperty(String _property, String _payload, int8_t transportMask)
 	return _payload;
 }
 
-String nodeOnMessage(String _topic, String _payload, int8_t transportMask)
+String nodeOnMessage(String route, String _payload, int8_t transportMask)
 {	
-	String result = wifiOnMessage(_topic, _payload, transportMask);
-    if (!result.equals(WrongNodePropertyName))
+    String result = wifiOnMessage(route, _payload, transportMask);
+    if (!result.equals(WrongPropertyName))
         return result;
-	if (String(topic + "/getnodeid").equals(_topic)) return onGetProperty("id", nodeGetUnitId(), transportMask);
-	else
-		if (String(topic + "/setnodeid").equals(_topic)) return String(nodeSetUnitId(_payload));
-		
-		else
-			if (String(topic + "/gettopic").equals(_topic)) return onGetProperty("topic", nodeGetTopic(), transportMask);
-			else
-				if (String(topic + "/settopic").equals(_topic)) return String(nodeSetTopic(_payload));
-				else
-					if (String(topic + "/getfirmwareversion").equals(_topic)) return onGetProperty("firmwareversion", nodeGetFirmwareVersion(), transportMask);
-					else
-						if (String(topic + "/setfirmwareversion").equals(_topic)) return String(nodeSetFirmwareVersion(_payload));
-						else
-							if (String(topic + "/getfirmwarebuildnumber").equals(_topic)) return onGetProperty("firmwarebuildnumber", String(nodeGetFirmwareBuildNumber()), transportMask);
-							else
-								if (String(topic + "/setfirmwarebuildnumber").equals(_topic)) return String(nodeSetFirmwareBuildNumber(atoi(_payload.c_str())));
-																											else
-																												if (String(topic + "/getrestfulavailable").equals(_topic)) return onGetProperty("restfulavailable", String(nodeGetRESTfulAvailable()), transportMask);
-																												else
-																													if (String(topic + "/setrestfulavailable").equals(_topic)) return String(nodeSetRESTfulAvailable(atoi(_payload.c_str())));
-																													else
-																														if (String(topic + "/getwebserverlogin").equals(_topic)) return onGetProperty("webserverlogin", nodeGetRESTfulServerUsername(), transportMask);
-																														else
-																															if (String(topic + "/setwebserverlogin").equals(_topic)) return String(nodeSetRESTfulServerUsername(_payload));
-																															else
-																																if (String(topic + "/getwebserverpwd").equals(_topic)) return onGetProperty("webserverpwd", nodeGetRESTfulServerPassword(), transportMask);
-																																else
-																																	if (String(topic + "/setwebserverpwd").equals(_topic)) return String(nodeSetRESTfulServerPassword(_payload));
-																																	else
-																																		if (String(topic + "/getrestfulserverport").equals(_topic)) return onGetProperty("restfulserverport", String(nodeGetRESTfulServerPort()), transportMask);
-																																		else
-																																			if (String(topic + "/setrestfulserverport").equals(_topic)) return String(nodeSetRESTfulServerPort(atoi(_payload.c_str())));
-																																			else
-																																				if (String(topic + "/getrestfulclientport").equals(_topic)) return onGetProperty("restfulclientport", String(nodeGetRESTfulClientPort()), transportMask);
-																																				else
-																																					if (String(topic + "/setrestfulclientport").equals(_topic)) return String(nodeSetRESTfulClientPort(atoi(_payload.c_str())));
-																																					else
-																																						if (String(topic + "/getrestfulclienturl").equals(_topic)) return onGetProperty("restfulclienturl", nodeGetRESTfulClientURL(), transportMask);
-																																						else
-																																							if (String(topic + "/setrestfulclienturl").equals(_topic)) return String(nodeSetRESTfulClientURL(_payload));
-																																							else
-																																								if (String(topic + "/getmqttavailable").equals(_topic)) return onGetProperty("mqttavailable", String(nodeGetMQTTAvailable()), transportMask);
-																																								else
-																																									if (String(topic + "/setmqttavailable").equals(_topic)) return String(nodeSetMQTTAvailable(atoi(_payload.c_str())));
-																																									else
-																																										if (String(topic + "/getmqttport").equals(_topic)) return onGetProperty("mqttport", String(nodeGetMQTTPort()), transportMask);
-																																										else
-																																											if (String(topic + "/setmqttport").equals(_topic)) return String(nodeSetMQTTPort(atoi(_payload.c_str())));
-																																											else
-																																												if (String(topic + "/getmqtturl").equals(_topic)) return onGetProperty("mqtturl", nodeGetMQTTURL(), transportMask);
-																																												else
-																																													if (String(topic + "/setmqtturl").equals(_topic)) return String(nodeSetMQTTURL(_payload));
-																																													else
-																																														if (String(topic + "/getmqttid").equals(_topic)) return onGetProperty("mqttid", nodeGetMQTTID(), transportMask);
-																																														else
-																																															if (String(topic + "/setmqttid").equals(_topic)) return String(nodeSetMQTTID(_payload));
-																																															else
-																																																if (String(topic + "/getmqttlogin").equals(_topic)) return onGetProperty("mqttlogin", nodeGetMQTTLogin(), transportMask);
-																																																else
-																																																	if (String(topic + "/setmqttlogin").equals(_topic)) return String(nodeSetMQTTLogin(_payload));
-																																																	else
-																																																		if (String(topic + "/getmqttpassword").equals(_topic)) return onGetProperty("mqttpassword", nodeGetMQTTPassword(), transportMask);
-																																																		else
-																																																			if (String(topic + "/setmqttpassword").equals(_topic)) return String(nodeSetMQTTPassword(_payload));
-																																																			else
-																																																				if (String(topic + "/getmqttclientconnected").equals(_topic)) return String(nodeGetMQTTClientConnected());
-																																																				else
-																																																					if (String(topic + "/getmqttclientstate").equals(_topic)) return String(nodeGetMQTTClientState());
-																																																					else
-																																																						if (String(topic + "/getotaavailable").equals(_topic)) return onGetProperty("otaavailable", String(nodeGetOTAAvailable()), transportMask);
-																																																						else
-																																																							if (String(topic + "/setotaavailable").equals(_topic)) return String(nodeSetOTAAvailable(atoi(_payload.c_str())));
-																																																							else
-																																																								if (String(topic + "/getotaport").equals(_topic)) return onGetProperty("otaport", String(nodeGetOTAPort()), transportMask);
-																																																								else
-																																																									if (String(topic + "/setotaport").equals(_topic)) return String(nodeSetOTAPort(atoi(_payload.c_str())));
-																																																									else
-																																																										if (String(topic + "/getotaid").equals(_topic)) return onGetProperty("otaid", nodeGetOTAID(), transportMask);
-																																																										else
-																																																											if (String(topic + "/setotaid").equals(_topic)) return String(nodeSetOTAID(_payload));
-																																																											else
-																																																												if (String(topic + "/getotapassword").equals(_topic)) return onGetProperty("otapassword", nodeGetMQTTPassword(), transportMask);
-																																																												else
-																																																													if (String(topic + "/setotapassword").equals(_topic)) return String(nodeSetOTAPassword(_payload));
-	// WiFi parameters
-	
-	//ESP class parameters
-																																																																													else
-																																																																														if (String(topic + "/getespresetinfo").equals(_topic)) return onGetProperty("espresetinfo", nodeGetESPResetInfo(), transportMask);
-																																																																														else
-																																																																															if (String(topic + "/setespresetinfo").equals(_topic)) return String(nodeSetESPResetInfo(_payload));
-																																																																															else
-																																																																																if (String(topic + "/getespreset").equals(_topic)) return onGetProperty("espreset", String(nodeGetESPReset()), transportMask);
-																																																																																else
-																																																																																	if (String(topic + "/setespreset").equals(_topic)) return String(nodeSetESPReset(atoi(_payload.c_str())));
-																																																																																	else
-																																																																																		if (String(topic + "/getesprestart").equals(_topic)) return onGetProperty("esprestart", String(nodeGetESPRestart()), transportMask);
-																																																																																		else
-																																																																																			if (String(topic + "/setesprestart").equals(_topic)) return String(nodeSetESPRestart(atoi(_payload.c_str())));
-																																																																																			else
-																																																																																				if (String(topic + "/getespvcc").equals(_topic)) return onGetProperty("espvcc", String(nodeGetESPVcc()), transportMask);
-																																																																																				else
-																																																																																					if (String(topic + "/setespvcc").equals(_topic)) return String(nodeSetESPVcc(atoi(_payload.c_str())));
-																																																																																					else
-																																																																																						if (String(topic + "/getespchipid").equals(_topic)) return onGetProperty("espchipid", String(nodeGetESPChipId()), transportMask);
-																																																																																						else
-																																																																																							if (String(topic + "/setespchipid").equals(_topic)) return String(nodeSetESPChipId(atoi(_payload.c_str())));
-																																																																																							else
-																																																																																								if (String(topic + "/getespfreeheap").equals(_topic)) return onGetProperty("espfreeheap", String(nodeGetESPFreeHeap()), transportMask);
-																																																																																								else
-																																																																																									if (String(topic + "/setespfreeheap").equals(_topic)) return String(nodeSetESPFreeHeap(atoi(_payload.c_str())));
-																																																																																									else
-																																																																																										if (String(topic + "/getespmaxfreeblocksize").equals(_topic)) return onGetProperty("espmaxfreeblocksize", String(nodeGetESPMaxFreeBlockSize()), transportMask);
-																																																																																										else
-																																																																																											if (String(topic + "/setespmaxfreeblocksize").equals(_topic)) return String(nodeSetESPMaxFreeBlockSize(atoi(_payload.c_str())));
-																																																																																											else
-																																																																																												if (String(topic + "/getespheapfragmentation").equals(_topic)) return onGetProperty("espheapfragmentation", String(nodeGetESPHeapFragmentation()), transportMask);
-																																																																																												else
-																																																																																													if (String(topic + "/setespheapfragmentation").equals(_topic)) return String(nodeSetESPHeapFragmentation(atoi(_payload.c_str())));
-																																																																																													else
-																																																																																														if (String(topic + "/getespsdkversion").equals(_topic)) return onGetProperty("espsdkversion", String(*nodeGetESPSdkVersion()), transportMask);
-																																																																																														else
-																																																																																															if (String(topic + "/setespsdkversion").equals(_topic)) return String(nodeSetESPSdkVersion(_payload));
-																																																																																															else
-																																																																																																if (String(topic + "/getespcoreversion").equals(_topic)) return onGetProperty("espcoreversion", nodeGetESPCoreVersion(), transportMask);
-																																																																																																else
-																																																																																																	if (String(topic + "/setespcoreversion").equals(_topic)) return String(nodeSetESPCoreVersion(_payload));
-																																																																																																	else
-																																																																																																		if (String(topic + "/getespfullversion").equals(_topic)) return onGetProperty("espfullversion", nodeGetESPFullVersion(), transportMask);
-																																																																																																		else
-																																																																																																			if (String(topic + "/setespfullversion").equals(_topic)) return String(nodeSetESPFullVersion(_payload));
-																																																																																																			else
-																																																																																																				if (String(topic + "/getespbootversion").equals(_topic)) return onGetProperty("espbootversion", String(nodeGetESPBootVersion()), transportMask);
-																																																																																																				else
-																																																																																																					if (String(topic + "/setespbootversion").equals(_topic)) return String(nodeSetESPBootVersion(atoi(_payload.c_str())));
-																																																																																																					else
-																																																																																																						if (String(topic + "/getespbootmode").equals(_topic)) return onGetProperty("espbootmode", String(nodeGetESPBootMode()), transportMask);
-																																																																																																						else
-																																																																																																							if (String(topic + "/setespbootmode").equals(_topic)) return String(nodeSetESPBootMode(atoi(_payload.c_str())));
-																																																																																																							else
-																																																																																																								if (String(topic + "/getespcpufreqmhz").equals(_topic)) return onGetProperty("espcpufreqmhz", String(nodeGetESPCpuFreqMHz()), transportMask);
-																																																																																																								else
-																																																																																																									if (String(topic + "/setespcpufreqmhz").equals(_topic)) return String(nodeSetESPCpuFreqMHz(atoi(_payload.c_str())));
-																																																																																																									else
-																																																																																																										if (String(topic + "/getespflashchipid").equals(_topic)) return onGetProperty("espflashchipid", String(nodeGetESPFlashChipId()), transportMask);
-																																																																																																										else
-																																																																																																											if (String(topic + "/setespflashchipid").equals(_topic)) return String(nodeSetESPFlashChipId(atoi(_payload.c_str())));
-																																																																																																											else
-																																																																																																												if (String(topic + "/getespflashchipvendorid").equals(_topic)) return onGetProperty("espflashchipvendorid", String(nodeGetESPFlashChipVendorId()), transportMask);
-																																																																																																												else
-																																																																																																													if (String(topic + "/setespflashchipvendorid").equals(_topic)) return String(nodeSetESPFlashChipVendorId(atoi(_payload.c_str())));
-																																																																																																													else
-																																																																																																														if (String(topic + "/getespflashchiprealsize").equals(_topic)) return onGetProperty("espflashchiprealsize", String(nodeGetESPFlashChipRealSize()), transportMask);
-																																																																																																														else
-																																																																																																															if (String(topic + "/setespflashchiprealsize").equals(_topic)) return String(nodeSetESPFlashChipRealSize(atoi(_payload.c_str())));
-																																																																																																															else
-																																																																																																																if (String(topic + "/getespflashchipsize").equals(_topic)) return onGetProperty("espflashchipsize", String(nodeGetESPFlashChipSize()), transportMask);
-																																																																																																																else
-																																																																																																																	if (String(topic + "/setespflashchipsize").equals(_topic)) return String(nodeSetESPFlashChipSize(atoi(_payload.c_str())));
-																																																																																																																	else
-																																																																																																																		if (String(topic + "/getespflashchipspeed").equals(_topic)) return onGetProperty("espflashchipspeed", String(nodeGetESPFlashChipSpeed()), transportMask);
-																																																																																																																		else
-																																																																																																																			if (String(topic + "/setespflashchipspeed").equals(_topic)) return String(nodeSetESPFlashChipSpeed(atoi(_payload.c_str())));
-																																																																																																																			else
-																																																																																																																				if (String(topic + "/getespsketchsize").equals(_topic)) return onGetProperty("espsketchsize", String(nodeGetESPSketchSize()), transportMask);
-																																																																																																																				else
-																																																																																																																					if (String(topic + "/setespsketchsize").equals(_topic)) return String(nodeSetESPSketchSize(atoi(_payload.c_str())));
-																																																																																																																					else
-																																																																																																																						if (String(topic + "/getespfreesketchspace").equals(_topic)) return onGetProperty("espfreesketchspace", String(nodeGetESPFreeSketchSpace()), transportMask);
-																																																																																																																						else
-																																																																																																																							if (String(topic + "/setespfreesketchspace").equals(_topic)) return String(nodeSetESPFreeSketchSpace(atoi(_payload.c_str())));
-																																																																																																																							else
-																																																																																																																								if (String(topic + "/getespflashchipmode").equals(_topic)) return onGetProperty("espflashchipmode", String(nodeGetESPFlashChipMode()), transportMask);
-																																																																																																																								else
-																																																																																																																									if (String(topic + "/setespflashchipmode").equals(_topic)) return String(nodeSetESPFlashChipMode(atoi(_payload.c_str())));
-																																																																																																																									else
-																																																																																																																										if (String(topic + "/getespsketchmd5").equals(_topic)) return onGetProperty("espsketchmd5", nodeGetESPSketchMD5(), transportMask);
-																																																																																																																										else
-																																																																																																																											if (String(topic + "/setespsketchmd5").equals(_topic)) return String(nodeSetESPSketchMD5(_payload));
-																																																																																																																											else
-																																																																																																																												if (String(topic + "/getespresetreason").equals(_topic)) return onGetProperty("espresetreason", nodeGetESPResetReason(), transportMask);
-																																																																																																																												else
-																																																																																																																													if (String(topic + "/setespresetreason").equals(_topic)) return String(nodeSetESPResetReason(_payload));
-																																																																																																																													else
-																																																																																																																														if (String(topic + "/getespmagicflashchipsize").equals(_topic)) return onGetProperty("espmagicflashchipsize", String(nodeGetESPMagicFlashChipSize((uint8_t)atoi(_payload.c_str()))), transportMask);
-																																																																																																																														else
-																																																																																																																															if (String(topic + "/setespmagicflashchipsize").equals(_topic)) return String(nodeSetESPMagicFlashChipSize(atoi(_payload.c_str())));
-																																																																																																																															else
-																																																																																																																																if (String(topic + "/getespmagicflashchipspeed").equals(_topic)) return onGetProperty("espmagicflashchipspeed", String(nodeGetESPMagicFlashChipSpeed((uint8_t)atoi(_payload.c_str()))), transportMask);
-																																																																																																																																else
-																																																																																																																																	if (String(topic + "/setespmagicflashchipspeed").equals(_topic)) return String(nodeSetESPMagicFlashChipSpeed(atoi(_payload.c_str())));
-																																																																																																																																	else
-																																																																																																																																		if (String(topic + "/getespmagicflashchipmode").equals(_topic)) return onGetProperty("espmagicflashchipmode", String(nodeGetESPMagicFlashChipMode((uint8_t)atoi(_payload.c_str()))), transportMask);
-																																																																																																																																		else
-																																																																																																																																			if (String(topic + "/setespmagicflashchipmode").equals(_topic)) return String(nodeSetESPMagicFlashChipMode(atoi(_payload.c_str())));
-	//Pins
-																																																																																																																																			else
-																																																																																																																																				//if (String(topic + "/getbusypins").equals(_topic)) return nodeGetBusyPins();
-																																																																																																																																				//else
-																																																																																																																																					//if (String(topic + "/getpinsmap").equals(_topic)) return nodeGetPinsMap();
-																																																																																																																																					//else
-																																																																																																																																				if (String(topic + "/getupdateavailable").equals(_topic)) return onGetProperty("updateavailable", String(nodeGetUpdateAvailable()), transportMask);
-																																																																																																																																				else
-																																																																																																																																				#ifdef USE_UPDATE	
-																																																																																																																																					if (String(topic + "/setupdateavailable").equals(_topic)) return String(nodeSetUpdateAvailable(atoi(_payload.c_str())));
-																																																																																																																																					else
-																																																																																																																																					if (String(topic + "/getupdatepossible").equals(_topic)) return onGetProperty("updatepossible", String(updateGetUpdatePossible()), transportMask);
-																																																																																																																																					else
-																																																																																																																																						if (String(topic + "/getupdateinfo").equals(_topic)) return onGetProperty("updateinfo", String(updateGetUpdateInfo()), transportMask);
-																																																																																																																																						else
-																																																																																																																																								if (String(topic + "/getupdateuistatus").equals(_topic)) return onGetProperty("updateuistatus", String(updateGetUpdateUIStatus()), transportMask);
-																																																																																																																																								else																																																																																																																																								
-																																																																																																																																									if (String(topic + "/getupdatefirmwarestatus").equals(_topic)) return onGetProperty("updateufirmwarestatus", String(updateGetUpdateFirmwareStatus()), transportMask);
-																																																																																																																																									else
-																																																																																																																																									#endif
-																																																																																																																																										if (String(topic + "/getupdatehost").equals(_topic)) return onGetProperty("updatehost", nodeGetUpdateHost(), transportMask);
-																																																																																																																																										else
-																																																																																																																																											if (String(topic + "/setupdatehost").equals(_topic)) return String(nodeSetUpdateHost(_payload));
-																																																																																																																																											else
-																																																																																																																																											
-																																																																																																																																												//Update 
-																																																																																																																																												return result;
-		
- return WrongNodePropertyName;																																																																																																																																										
+    if (matchRoute(route, topic, "/getnodeid")) {
+        return onGetProperty("id", nodeGetUnitId(), transportMask);
+    } else if (matchRoute(route, topic, "/setnodeid")) {
+        return String(nodeSetUnitId(_payload));
+    } else if (matchRoute(route, topic, "/gettopic")) {
+        return onGetProperty("topic", nodeGetTopic(), transportMask);
+    } else if (matchRoute(route, topic, "/settopic")) {
+        return String(nodeSetTopic(_payload));
+    } else if (matchRoute(route, topic, "/getfirmwareversion")) {
+        return onGetProperty("firmwareversion", nodeGetFirmwareVersion(), transportMask);
+    } else if (matchRoute(route, topic, "/setfirmwareversion")) {
+        return String(nodeSetFirmwareVersion(_payload));
+    } else if (matchRoute(route, topic, "/getfirmwarebuildnumber")) {
+        return onGetProperty("firmwarebuildnumber", String(nodeGetFirmwareBuildNumber()), transportMask);
+    } else if (matchRoute(route, topic, "/setfirmwarebuildnumber")) {
+        return String(nodeSetFirmwareBuildNumber(atoi(_payload.c_str())));
+    } else if (matchRoute(route, topic, "/getrestfulavailable")) {
+        return onGetProperty("restfulavailable", String(nodeGetRESTfulAvailable()), transportMask);
+    } else if (matchRoute(route, topic, "/setrestfulavailable")) {
+        return String(nodeSetRESTfulAvailable(atoi(_payload.c_str())));
+    } else if (matchRoute(route, topic, "/getwebserverlogin")) {
+        return onGetProperty("webserverlogin", nodeGetRESTfulServerUsername(), transportMask);
+    } else if (matchRoute(route, topic, "/setwebserverlogin")) {
+        return String(nodeSetRESTfulServerUsername(_payload));
+    } else if (matchRoute(route, topic, "/getwebserverpwd")) {
+        return onGetProperty("webserverpwd", nodeGetRESTfulServerPassword(), transportMask);
+    } else if (matchRoute(route, topic, "/setwebserverpwd")) {
+        return String(nodeSetRESTfulServerPassword(_payload));
+    } else if (matchRoute(route, topic, "/getrestfulserverport")) {
+        return onGetProperty("restfulserverport", String(nodeGetRESTfulServerPort()), transportMask);
+    } else if (matchRoute(route, topic, "/setrestfulserverport")) {
+        return String(nodeSetRESTfulServerPort(atoi(_payload.c_str())));
+    } else if (matchRoute(route, topic, "/getrestfulclientport")) {
+        return onGetProperty("restfulclientport", String(nodeGetRESTfulClientPort()), transportMask);
+    } else if (matchRoute(route, topic, "/setrestfulclientport")) {
+        return String(nodeSetRESTfulClientPort(atoi(_payload.c_str())));
+    } else if (matchRoute(route, topic, "/getrestfulclienturl")) {
+        return onGetProperty("restfulclienturl", nodeGetRESTfulClientURL(), transportMask);
+    } else if (matchRoute(route, topic, "/setrestfulclienturl")) {
+        return String(nodeSetRESTfulClientURL(_payload));
+    } else if (matchRoute(route, topic, "/getmqttavailable")) {
+        return onGetProperty("mqttavailable", String(nodeGetMQTTAvailable()), transportMask);
+    } else if (matchRoute(route, topic, "/setmqttavailable")) {
+        return String(nodeSetMQTTAvailable(atoi(_payload.c_str())));
+    } else if (matchRoute(route, topic, "/getmqttport")) {
+        return onGetProperty("mqttport", String(nodeGetMQTTPort()), transportMask);
+    } else if (matchRoute(route, topic, "/setmqttport")) {
+        return String(nodeSetMQTTPort(atoi(_payload.c_str())));
+    } else if (matchRoute(route, topic, "/getmqtturl")) {
+        return onGetProperty("mqtturl", nodeGetMQTTURL(), transportMask);
+    } else if (matchRoute(route, topic, "/setmqtturl")) {
+        return String(nodeSetMQTTURL(_payload));
+    } else if (matchRoute(route, topic, "/getmqttid")) {
+        return onGetProperty("mqttid", nodeGetMQTTID(), transportMask);
+    } else if (matchRoute(route, topic, "/setmqttid")) {
+        return String(nodeSetMQTTID(_payload));
+    } else if (matchRoute(route, topic, "/getmqttlogin")) {
+        return onGetProperty("mqttlogin", nodeGetMQTTLogin(), transportMask);
+    } else if (matchRoute(route, topic, "/setmqttlogin")) {
+        return String(nodeSetMQTTLogin(_payload));
+    } else if (matchRoute(route, topic, "/getmqttpassword")) {
+        return onGetProperty("mqttpassword", nodeGetMQTTPassword(), transportMask);
+    } else if (matchRoute(route, topic, "/setmqttpassword")) {
+        return String(nodeSetMQTTPassword(_payload));
+    } else if (matchRoute(route, topic, "/getmqttclientconnected")) {
+        return String(nodeGetMQTTClientConnected());
+    } else if (matchRoute(route, topic, "/getmqttclientstate")) {
+        return String(nodeGetMQTTClientState());
+    } else if (matchRoute(route, topic, "/getotaavailable")) {
+        return onGetProperty("otaavailable", String(nodeGetOTAAvailable()), transportMask);
+    } else if (matchRoute(route, topic, "/setotaavailable")) {
+        return String(nodeSetOTAAvailable(atoi(_payload.c_str())));
+    } else if (matchRoute(route, topic, "/getotaport")) {
+        return onGetProperty("otaport", String(nodeGetOTAPort()), transportMask);
+    } else if (matchRoute(route, topic, "/setotaport")) {
+        return String(nodeSetOTAPort(atoi(_payload.c_str())));
+    } else if (matchRoute(route, topic, "/getotaid")) {
+        return onGetProperty("otaid", nodeGetOTAID(), transportMask);
+    } else if (matchRoute(route, topic, "/setotaid")) {
+        return String(nodeSetOTAID(_payload));
+    } else if (matchRoute(route, topic, "/getotapassword")) {
+        return onGetProperty("otapassword", nodeGetMQTTPassword(), transportMask);
+    } else if (matchRoute(route, topic, "/setotapassword")) {
+        return String(nodeSetOTAPassword(_payload));
+        //ESP class parameters
+    } else if (matchRoute(route, topic, "/getespresetinfo")) {
+        return onGetProperty("espresetinfo", nodeGetESPResetInfo(), transportMask);
+    } else if (matchRoute(route, topic, "/setespresetinfo")) {
+        return String(nodeSetESPResetInfo(_payload));
+    } else if (matchRoute(route, topic, "/getespreset")) {
+        return onGetProperty("espreset", String(nodeGetESPReset()), transportMask);
+    } else if (matchRoute(route, topic, "/setespreset")) {
+        return String(nodeSetESPReset(atoi(_payload.c_str())));
+    } else if (matchRoute(route, topic, "/getesprestart")) {
+        return onGetProperty("esprestart", String(nodeGetESPRestart()), transportMask);
+    } else if (matchRoute(route, topic, "/setesprestart")) {
+        return String(nodeSetESPRestart(atoi(_payload.c_str())));
+    } else if (matchRoute(route, topic, "/getespvcc")) {
+        return onGetProperty("espvcc", String(nodeGetESPVcc()), transportMask);
+    } else if (matchRoute(route, topic, "/setespvcc")) {
+        return String(nodeSetESPVcc(atoi(_payload.c_str())));
+    } else if (matchRoute(route, topic, "/getespchipid")) {
+        return onGetProperty("espchipid", String(nodeGetESPChipId()), transportMask);
+    } else if (matchRoute(route, topic, "/setespchipid")) {
+        return String(nodeSetESPChipId(atoi(_payload.c_str())));
+    } else if (matchRoute(route, topic, "/getespfreeheap")) {
+        return onGetProperty("espfreeheap", String(nodeGetESPFreeHeap()), transportMask);
+    } else if (matchRoute(route, topic, "/setespfreeheap")) {
+        return String(nodeSetESPFreeHeap(atoi(_payload.c_str())));
+    } else if (matchRoute(route, topic, "/getespmaxfreeblocksize")) {
+        return onGetProperty("espmaxfreeblocksize", String(nodeGetESPMaxFreeBlockSize()), transportMask);
+    } else if (matchRoute(route, topic, "/setespmaxfreeblocksize")) {
+        return String(nodeSetESPMaxFreeBlockSize(atoi(_payload.c_str())));
+    } else if (matchRoute(route, topic, "/getespheapfragmentation")) {
+        return onGetProperty("espheapfragmentation", String(nodeGetESPHeapFragmentation()), transportMask);
+    } else if (matchRoute(route, topic, "/setespheapfragmentation")) {
+        return String(nodeSetESPHeapFragmentation(atoi(_payload.c_str())));
+    } else if (matchRoute(route, topic, "/getespsdkversion")) {
+        return onGetProperty("espsdkversion", String(*nodeGetESPSdkVersion()), transportMask);
+    } else if (matchRoute(route, topic, "/setespsdkversion")) {
+        return String(nodeSetESPSdkVersion(_payload));
+    } else if (matchRoute(route, topic, "/getespcoreversion")) {
+        return onGetProperty("espcoreversion", nodeGetESPCoreVersion(), transportMask);
+    } else if (matchRoute(route, topic, "/setespcoreversion")) {
+        return String(nodeSetESPCoreVersion(_payload));
+    } else if (matchRoute(route, topic, "/getespfullversion")) {
+        return onGetProperty("espfullversion", nodeGetESPFullVersion(), transportMask);
+    } else if (matchRoute(route, topic, "/setespfullversion")) {
+        return String(nodeSetESPFullVersion(_payload));
+    } else if (matchRoute(route, topic, "/getespbootversion")) {
+        return onGetProperty("espbootversion", String(nodeGetESPBootVersion()), transportMask);
+    } else if (matchRoute(route, topic, "/setespbootversion")) {
+        return String(nodeSetESPBootVersion(atoi(_payload.c_str())));
+    } else if (matchRoute(route, topic, "/getespbootmode")) {
+        return onGetProperty("espbootmode", String(nodeGetESPBootMode()), transportMask);
+    } else if (matchRoute(route, topic, "/setespbootmode")) {
+        return String(nodeSetESPBootMode(atoi(_payload.c_str())));
+    } else if (matchRoute(route, topic, "/getespcpufreqmhz")) {
+        return onGetProperty("espcpufreqmhz", String(nodeGetESPCpuFreqMHz()), transportMask);
+    } else if (matchRoute(route, topic, "/setespcpufreqmhz")) {
+        return String(nodeSetESPCpuFreqMHz(atoi(_payload.c_str())));
+    } else if (matchRoute(route, topic, "/getespflashchipid")) {
+        return onGetProperty("espflashchipid", String(nodeGetESPFlashChipId()), transportMask);
+    } else if (matchRoute(route, topic, "/setespflashchipid")) {
+        return String(nodeSetESPFlashChipId(atoi(_payload.c_str())));
+    } else if (matchRoute(route, topic, "/getespflashchipvendorid")) {
+        return onGetProperty("espflashchipvendorid", String(nodeGetESPFlashChipVendorId()), transportMask);
+    } else if (matchRoute(route, topic, "/setespflashchipvendorid")) {
+        return String(nodeSetESPFlashChipVendorId(atoi(_payload.c_str())));
+    } else if (matchRoute(route, topic, "/getespflashchiprealsize")) {
+        return onGetProperty("espflashchiprealsize", String(nodeGetESPFlashChipRealSize()), transportMask);
+    } else if (matchRoute(route, topic, "/setespflashchiprealsize")) {
+        return String(nodeSetESPFlashChipRealSize(atoi(_payload.c_str())));
+    } else if (matchRoute(route, topic, "/getespflashchipsize")) {
+        return onGetProperty("espflashchipsize", String(nodeGetESPFlashChipSize()), transportMask);
+    } else if (matchRoute(route, topic, "/setespflashchipsize")) {
+        return String(nodeSetESPFlashChipSize(atoi(_payload.c_str())));
+    } else if (matchRoute(route, topic, "/getespflashchipspeed")) {
+        return onGetProperty("espflashchipspeed", String(nodeGetESPFlashChipSpeed()), transportMask);
+    } else if (matchRoute(route, topic, "/setespflashchipspeed")) {
+        return String(nodeSetESPFlashChipSpeed(atoi(_payload.c_str())));
+    } else if (matchRoute(route, topic, "/getespsketchsize")) {
+        return onGetProperty("espsketchsize", String(nodeGetESPSketchSize()), transportMask);
+    } else if (matchRoute(route, topic, "/setespsketchsize")) {
+        return String(nodeSetESPSketchSize(atoi(_payload.c_str())));
+    } else if (matchRoute(route, topic, "/getespfreesketchspace")) {
+        return onGetProperty("espfreesketchspace", String(nodeGetESPFreeSketchSpace()), transportMask);
+    } else if (matchRoute(route, topic, "/setespfreesketchspace")) {
+        return String(nodeSetESPFreeSketchSpace(atoi(_payload.c_str())));
+    } else if (matchRoute(route, topic, "/getespflashchipmode")) {
+        return onGetProperty("espflashchipmode", String(nodeGetESPFlashChipMode()), transportMask);
+    } else if (matchRoute(route, topic, "/setespflashchipmode")) {
+        return String(nodeSetESPFlashChipMode(atoi(_payload.c_str())));
+    } else if (matchRoute(route, topic, "/getespsketchmd5")) {
+        return onGetProperty("espsketchmd5", nodeGetESPSketchMD5(), transportMask);
+    } else if (matchRoute(route, topic, "/setespsketchmd5")) {
+        return String(nodeSetESPSketchMD5(_payload));
+    } else if (matchRoute(route, topic, "/getespresetreason")) {
+        return onGetProperty("espresetreason", nodeGetESPResetReason(), transportMask);
+    } else if (matchRoute(route, topic, "/setespresetreason")) {
+        return String(nodeSetESPResetReason(_payload));
+    } else if (matchRoute(route, topic, "/getespmagicflashchipsize")) {
+        return onGetProperty("espmagicflashchipsize", String(nodeGetESPMagicFlashChipSize((uint8_t)atoi(_payload.c_str()))), transportMask);
+    } else if (matchRoute(route, topic, "/setespmagicflashchipsize")) {
+        return String(nodeSetESPMagicFlashChipSize(atoi(_payload.c_str())));
+    } else if (matchRoute(route, topic, "/getespmagicflashchipspeed")) {
+        return onGetProperty("espmagicflashchipspeed", String(nodeGetESPMagicFlashChipSpeed((uint8_t)atoi(_payload.c_str()))), transportMask);
+    } else if (matchRoute(route, topic, "/setespmagicflashchipspeed")) {
+        return String(nodeSetESPMagicFlashChipSpeed(atoi(_payload.c_str())));
+    } else if (matchRoute(route, topic, "/getespmagicflashchipmode")) {
+        return onGetProperty("espmagicflashchipmode", String(nodeGetESPMagicFlashChipMode((uint8_t)atoi(_payload.c_str()))), transportMask);
+    } else if (matchRoute(route, topic, "/setespmagicflashchipmode")) {
+        return String(nodeSetESPMagicFlashChipMode(atoi(_payload.c_str())));
+        //Pins
+    } else if (matchRoute(route, topic, "/getupdateavailable")) {
+        return onGetProperty("updateavailable", String(nodeGetUpdateAvailable()), transportMask);
+    } 
+#ifdef USE_UPDATE	
+    else if (matchRoute(route, topic, "/setupdateavailable")) {
+        return String(nodeSetUpdateAvailable(atoi(_payload.c_str())));
+    } else if (matchRoute(route, topic, "/getupdatepossible")) {
+        return onGetProperty("updatepossible", String(updateGetUpdatePossible()), transportMask);
+    } else if (matchRoute(route, topic, "/getupdateinfo")) {
+        return onGetProperty("updateinfo", String(updateGetUpdateInfo()), transportMask);
+    } else if (matchRoute(route, topic, "/getupdateuistatus")) {
+        return onGetProperty("updateuistatus", String(updateGetUpdateUIStatus()), transportMask);
+    } else if (matchRoute(route, topic, "/getupdatefirmwarestatus")) {
+        return onGetProperty("updateufirmwarestatus", String(updateGetUpdateFirmwareStatus()), transportMask);
+    } 
+#endif
+    else if (matchRoute(route, topic, "/getupdatehost")) {
+        return onGetProperty("updatehost", nodeGetUpdateHost(), transportMask);
+    } else if (matchRoute(route, topic, "/setupdatehost")) {
+        return String(nodeSetUpdateHost(_payload));
+    } else
+        //Update 
+        return result;
+    return "";
 }
 
 bool lock = false;
@@ -508,7 +505,7 @@ bool onInsideChange(String _property, String _value)
 #endif
 		lock = false;
 	}
-    
+
 	return result;
 }
 //-------------------------------------------------------------------------------------------
@@ -669,7 +666,7 @@ int nodeGetRESTfulServerPort()
 		return restfulserverport = _getIntPropertyValue("restfulserverport", DEFAULT_HTTP_SERVER_PORT);
 	}
 	else
-	{	
+	{
 		return restfulserverport;
 	}
 }
@@ -686,8 +683,8 @@ int nodeGetRESTfulClientPort()
 	else return restfulclientport;
 }
 bool nodeSetRESTfulClientPort(int _restfulclientport)
-{	
-	restfulclientport = _restfulclientport;	
+{
+	restfulclientport = _restfulclientport;
 	return  onInsideChange("restfulclientport", String(restfulclientport));
 }
 
