@@ -70,12 +70,9 @@ bool LCDDriver::init()
 	getCols();
 	getRows();
 	//получаем I2C Slave адрес для обращения к текущему LCD на I2C шине
-	debugOut("LCD", "--------------");
-	debugOut("LCD", id);
 	DriverPin * pinDriverInfo = getDriverPinByDriverId(id, I2CADDR_INDEX);
 	if (pinDriverInfo != nullptr)
 	{
-		debugOut("LCD", "NOT NULL");
 		//если пользователь задал адрес, инкапсулируем класс обслуживающий LCD и пробуем работать с дисплеем через указанный порт
 		debugOut("LCD", String(pinDriverInfo->driverI2CAddr));
 		lcd = new LiquidCrystal_I2C(pinDriverInfo->driverI2CAddr, cols, rows); //port = 0x27 for PCF8574T and PCF8574AT for 0x3F, 16 cols, 2 raws
@@ -139,7 +136,7 @@ String LCDDriver::getAllProperties()
 //управление свойствами LCD драйвера
 String LCDDriver::onMessage(String route, String _payload, int8_t transportMask)
 {
-	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
+	String result = BaseDriver::onMessage(route, _payload, transportMask);
 
 	//обычно драйвер не управляет свойствами пинов, но в данном драйвере адрес I2C порта использован в роли Pin - для совместимости 
 	//с архитектурой, по этой причине необходим отдельный обработчик I2CADDR пина
