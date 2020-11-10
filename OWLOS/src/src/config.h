@@ -157,5 +157,5 @@ OWLOS распространяется в надежде, что она буде
 #endif
 
 
-
-//#define USE_SCRIPT
+//Включить поддержку скриптов
+#define USE_SCRIPT

@@ -59,13 +59,11 @@ bool kernelSetup()
 {
 	Serial.begin(PORTSPEED); //setup Serial Monitor at PORTSPEED BAUD speed - see Utils.h for Constant definition
 	delay(ONETENTHOFSECOND); //sleep 1/10 of second
-	
-	
+	Serial.println();
+		
 #if defined(ARDUINO_ESP8266_RELEASE_2_5_0) || defined(ARDUINO_ESP32_RELEASE_1_0_4) || defined(USE_ARDUINO_BOARDS)
-
 	debugOut("OWLOS kernel setup", "started..."); //if Utils.h "Debug=true" start writing log to Serial
 	
-
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	ESP.wdtEnable(ONEMINUTE); //Software watch dog
 							  // ESP.wdtDisable(); //try it for you ESP8266 WDT
@@ -92,9 +90,7 @@ bool kernelSetup()
 	//Ther is not connected at begin(), see Main::Loop() transportReconnect() function using
 	//The begin() just setup connection properties
 
-	transportBegin();
-
-    driversAdd(Actuator, "a1", "IO32" );
+	transportBegin();    
 	//The OWLOS harvester started up and went quietly...
 #ifdef DetailedDebug
 	debugOut("kernel setup", "complete"); //if Utils.h "Debug=true" start writing log to Serial
