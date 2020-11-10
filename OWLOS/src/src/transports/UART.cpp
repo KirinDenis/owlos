@@ -117,8 +117,9 @@ void UARTRecv(String command)
 
         if ((count > 0) && (token[0].length() > 0))
         {
+            Serial.println(token[0]);
             token[0].toUpperCase();
-            Serial.print(token[0]);
+            Serial.println(token[0]);
             //GET log
             if (token[0].equals("AT+LOG?"))
             {
@@ -379,7 +380,7 @@ void UARTRecv(String command)
             else
 #ifdef USE_SCRIPT
                 //GET get all scripts
-                if (token[0].equals("AT+АS?"))
+                if (token[0].equals("AT+AS?"))
             {
                 UARTSendOK(scriptsGetAll());
             }
@@ -414,6 +415,8 @@ void UARTRecv()
         if (SerialInput.indexOf('\r') != -1)
         {
             Serial.flush();
+            SerialInput.replace("\r", "");
+            SerialInput.replace("\n", "");
             UARTRecv(SerialInput);
             SerialInput = "";
         }
