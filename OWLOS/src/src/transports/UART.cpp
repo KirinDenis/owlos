@@ -221,6 +221,13 @@ void UARTRecv(String command)
                 }
             }
             else
+                //GET delete all files
+                if (token[0].equals("AT+DAF"))
+            {
+                UARTSendOK(String(filesDeleteAllFiles()));
+            }
+
+            else
                 //SET create file
                 //TODO: read serial to file before duble \n\n or else break
                 if (token[0].equals("AT+FC"))

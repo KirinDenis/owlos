@@ -59,6 +59,10 @@ OWLOS распространяется в надежде, что она буде
 #include "../transports/UART.h"
 #endif
 
+#ifdef USE_HTTP_CLIENT
+#include "../transports/HTTPWebClient.h"
+#endif
+
 
 #include <esp_wifi.h>
 #include <WiFiAP.h>
@@ -360,11 +364,14 @@ if (nodeGetMQTTAvailable() == 1)
 {
 	MQTTPublish(_topic, _payload);	
 }
-
 #endif
 
 #ifdef USE_UART
     UARTSend(_topic, _payload);
+#endif
+
+#ifdef USE_HTTP_CLIENT
+    WebClientPublish(_topic, _payload);
 #endif
 	
 	return true; 

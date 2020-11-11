@@ -58,78 +58,113 @@ OWLOS распространяется в надежде, что она буде
 
 #include <FS.h>
 
+#include "../drivers/ESPDriver.h"
 #include "../utils/Utils.h"
 #include "../services/FileService.h"
 
 #define webclientid "WebClient"
 HTTPClient http;
 
-bool downloadFile(String fileName, String  url) {
+#ifdef USE_HTTP_CLIENT
+bool WebClientPublish(String topic, String payload)
+{
+	if (nodeGetRESTfulClientAvailable() == 1)
+	{
+		if (WiFi.isConnected())
+	{
+
+		topic.replace("/", "%2F");	
+
+		String url = nodeGetRESTfulClientURL() + "?topic=" + topic + "&payload=" + payload;		
+		debugOut(webclientid, url );
+		
+		http.begin(url);
+		int httpCode = http.GET();
+		if (httpCode == HTTP_CODE_OK)
+		{
+			http.end();
+			return true;
+		}
+		http.end();
+	}
+	}
+	return false;
+}
+#endif
+
+bool downloadFile(String fileName, String url)
+{
 	bool result = false;
 
-#ifdef DetailedDebug 
+#ifdef DetailedDebug
 	debugOut(webclientid, "download: " + fileName + " from: " + url);
 #endif
 
 	if (!filesBegin())
 	{
 		//An Error has occurred while mounting file system
-		return result;;
+		return result;
+		;
 	}
 
 	http.begin(url);
 	int httpCode = http.GET();
-	if (httpCode > 0) {
+	if (httpCode > 0)
+	{
 
 		File file = SPIFFS.open(fileName, "w");
-		if (!file) {
-#ifdef DetailedDebug 
+		if (!file)
+		{
+#ifdef DetailedDebug
 			debugOut(webclientid, "There was an error opening the file for writing: " + fileName);
 #endif
 			return result;
 		}
 
-		if (httpCode == HTTP_CODE_OK) {
+		if (httpCode == HTTP_CODE_OK)
+		{
 			int len = http.getSize();
-#ifdef DetailedDebug 
+#ifdef DetailedDebug
 			debugOut(webclientid, "download size: " + String(len));
 #endif
-			uint8_t buff[128] = { 0 };
-			WiFiClient * stream = http.getStreamPtr();
+			uint8_t buff[128] = {0};
+			WiFiClient *stream = http.getStreamPtr();
 			int dotCount = 0;
-			while (http.connected() && (len > 0 || len == -1)) {
+			while (http.connected() && (len > 0 || len == -1))
+			{
 				size_t size = stream->available();
-				if (size) {
+				if (size)
+				{
 					dotCount++;
 					if (dotCount > 40)
 					{
-						dotCount = 0;						
+						dotCount = 0;
 					}
 					int c = stream->readBytes(buff, ((size > sizeof(buff)) ? sizeof(buff) : size));
 					file.write(buff, c);
-					if (len > 0) {
+					if (len > 0)
+					{
 						len -= c;
 					}
 				}
 				delay(10);
 			}
 			file.close();
-#ifdef DetailedDebug 
+#ifdef DetailedDebug
 			debugOut(webclientid, "download=OK");
 #endif
 			result = true;
-
 		}
 		else
 		{
-#ifdef DetailedDebug 
+#ifdef DetailedDebug
 			debugOut(webclientid, "download=fail HTTPResult=" + String(httpCode));
 #endif
 		}
 	}
 	else
 	{
-#ifdef DetailedDebug 
+#ifdef DetailedDebug
 		debugOut(webclientid, "download=fail");
 #endif
 	}

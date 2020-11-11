@@ -47,15 +47,14 @@ OWLOS распространяется в надежде, что она буде
 #include "../services/UpdateService.h"
 #include "../services/TransportService.h"
 
-#define DONT_USE_FILES
-
-
 #define DEFAULT_HTTP_SERVER_AVAILABLE true
 #define DEFAULT_HTTP_SERVER_USERNAME "admin"
 #define DEFAULT_HTTP_SERVER_PASSWORD "admin"
 #define DEFAULT_HTTP_SERVER_PORT 8084
+
+#define DEFAULT_HTTP_CLIENT_AVAILABLE true
+#define DEFAULT_HTTP_CLIENT_URL "http://localhost"
 #define DEFAULT_HTTP_CLIENT_PORT 8080
-#define DEFAULT_HTTP_CLIENT_URL ""
 
 #define DEFAULT_MQTT_CLIENT_AVAILABLE true
 #define DEFAULT_MQTT_CLIENT_PORT 1883
@@ -89,8 +88,12 @@ int restfulavailable(DEFAULT_HTTP_SERVER_AVAILABLE);
 String webserverlogin(DEFAULT_HTTP_SERVER_USERNAME);
 String webserverpwd(DEFAULT_HTTP_SERVER_PASSWORD);
 int restfulserverport(DEFAULT_HTTP_SERVER_PORT);
-int restfulclientport(DEFAULT_HTTP_CLIENT_PORT);
+
+int restfulclientavailable(DEFAULT_HTTP_CLIENT_AVAILABLE);
 String restfulclienturl(DEFAULT_HTTP_CLIENT_URL);
+int restfulclientport(DEFAULT_HTTP_CLIENT_PORT);
+
+
 int mqttavailable(DEFAULT_MQTT_CLIENT_AVAILABLE);
 int mqttport(DEFAULT_MQTT_CLIENT_PORT);
 String mqtturl(DEFAULT_MQTT_CLIENT_URL);
@@ -177,8 +180,9 @@ String nodeGetAllProperties()
 	result += "webserverlogin=" + nodeGetRESTfulServerUsername() + "//\n";
 	result += "webserverpwd=" + nodeGetRESTfulServerPassword() + "//sp\n";
 	result += "restfulserverport=" + String(nodeGetRESTfulServerPort()) + "//i\n";
-	result += "restfulclientport=" + String(nodeGetRESTfulClientPort()) + "//i\n";
+	result += "restfulclientavailable=" + String(nodeGetRESTfulClientAvailable()) + "//bs\n";
 	result += "restfulclienturl=" + nodeGetRESTfulClientURL() + "//\n";
+	result += "restfulclientport=" + String(nodeGetRESTfulClientPort()) + "//i\n";	
 	result += "mqttavailable=" + String(nodeGetMQTTAvailable()) + "//bs\n";
 	result += "mqttport=" + String(nodeGetMQTTPort()) + "//i\n";
 	result += "mqtturl=" + nodeGetMQTTURL() + "//\n";
@@ -299,10 +303,17 @@ String nodeOnMessage(String route, String _payload, int8_t transportMask)
         return onGetProperty("restfulclientport", String(nodeGetRESTfulClientPort()), transportMask);
     } else if (matchRoute(route, topic, "/setrestfulclientport")) {
         return String(nodeSetRESTfulClientPort(atoi(_payload.c_str())));
+
+    } else if (matchRoute(route, topic, "/getrestfulclientavailable")) {
+        return onGetProperty("restfulclientavailable", String(nodeGetRESTfulClientAvailable()), transportMask);
+    } else if (matchRoute(route, topic, "/setrestfulclientavailable")) {
+        return String(nodeSetRESTfulClientAvailable(atoi(_payload.c_str())));
+
     } else if (matchRoute(route, topic, "/getrestfulclienturl")) {
         return onGetProperty("restfulclienturl", nodeGetRESTfulClientURL(), transportMask);
     } else if (matchRoute(route, topic, "/setrestfulclienturl")) {
         return String(nodeSetRESTfulClientURL(_payload));
+
     } else if (matchRoute(route, topic, "/getmqttavailable")) {
         return onGetProperty("mqttavailable", String(nodeGetMQTTAvailable()), transportMask);
     } else if (matchRoute(route, topic, "/setmqttavailable")) {
@@ -675,6 +686,25 @@ bool nodeSetRESTfulServerPort(int _restfulserverport)
 	restfulserverport = _restfulserverport;
 	return  onInsideChange("restfulserverport", String(restfulserverport));
 }
+
+//RESTfulClientAvailable()  
+int nodeGetRESTfulClientAvailable()
+{
+	if (propertyFileReaded.indexOf("restfulclientavailable;") < 0)
+	{
+		return restfulclientavailable = _getIntPropertyValue("restfulclientavailable", DEFAULT_HTTP_CLIENT_AVAILABLE);
+	}
+	else
+	{
+		return restfulclientavailable;
+	}
+}
+bool nodeSetRESTfulClientAvailable(int _restfulclientavailable)
+{
+	restfulclientavailable = _restfulclientavailable;
+	return  onInsideChange("restfulclientavailable", String(restfulclientavailable));
+}
+
 
 //RESTfulClientPort()  
 int nodeGetRESTfulClientPort()

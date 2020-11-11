@@ -90,6 +90,9 @@ bool nodeSetRESTfulServerPassword(String _webserverpwd);
 int nodeGetRESTfulServerPort();
 bool nodeSetRESTfulServerPort(int _restfulserverport);
 
+int nodeGetRESTfulClientAvailable();
+bool nodeSetRESTfulClientAvailable(int _restfulavailable);
+
 int nodeGetRESTfulClientPort();
 bool nodeSetRESTfulClientPort(int _restfulclientport);
 

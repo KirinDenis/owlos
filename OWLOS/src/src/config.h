@@ -57,7 +57,7 @@ OWLOS распространяется в надежде, что она буде
                 // Если ваше устройство с OWLOS работает стационарно и не предусматривается частого изменения 
                 // настройки сети - используйте этот флаг.
                 //
-                // #define DONT_USE_FILES
+                //#define DONT_USE_FILES
 
                 //Свойства WiFi по умолчанию. Если используется DONT_USE_FILES, иначе приоритетны значения этих свойств из файлов настроек
                 //Если соответствующий файл отсутствует, используется значения из этих #define
@@ -109,7 +109,9 @@ OWLOS распространяется в надежде, что она буде
                 //#define USE_HTTPS_SERVER
 
                 //Включает в сборку OWLOS HTTP Server 
-                #define USE_HTTP_SERVER         
+                #define USE_HTTP_SERVER  
+
+                #define USE_HTTP_CLIENT
 
                 //Включает поиск и установку обновлений OWLOS в сети Internet
                 //Новые версии готовых прошивок находятся здесь: https://github.com/KirinDenis/owlos/tree/master/OWLOS
@@ -143,10 +145,10 @@ OWLOS распространяется в надежде, что она буде
         #define USE_SENSOR_DRIVER
 
         //Драйвер цифровых серсоров температуры и влажности (Digital Humidity and Temperature) - DHT11, DTH22 и прочих
-        #define USE_DHT_DRIVER
+        //#define USE_DHT_DRIVER
 
         //Драйвер I2C LCD дисплеев, поддерживает более одного дисплея на шине I2C
-        #define USE_LCD_DRIVER
+       // #define USE_LCD_DRIVER
 
         //Драйвер шаговых двигателей
         //#define USE_STEPPER_DRIVER
@@ -158,4 +160,4 @@ OWLOS распространяется в надежде, что она буде
 
 
 //Включить поддержку скриптов
-#define USE_SCRIPT
+//#define USE_SCRIPT
