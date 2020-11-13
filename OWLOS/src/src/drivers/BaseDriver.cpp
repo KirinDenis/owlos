@@ -82,7 +82,9 @@ bool BaseDriver::begin(String _topic)
 {
 	topic = _topic + '/' + id;
 	#ifdef DetailedDebug 
-	debugOut(id, "available with topic " + topic);
+	#ifdef DEBUG
+debugOut(id, "available with topic " + topic);
+#endif
 #endif
 
 	subscribe();
@@ -123,7 +125,9 @@ String BaseDriver::getAllProperties()
 		}
 		else
 		{
-			debugOut("PIN", "NULL");
+			#ifdef DEBUG
+debugOut("PIN", "NULL");
+#endif
 		}
 	}
 	//flags started with "//" chars at end of the string:
@@ -286,7 +290,9 @@ String BaseDriver::onMessage(String route, String _payload, int8_t transportMask
 String BaseDriver::onGetProperty(String _property, String _payload, int8_t transportMask)
 {
 #ifdef DetailedDebug
-	debugOut(id, "|-> get property " + _property + " = " + _payload);
+	#ifdef DEBUG
+debugOut(id, "|-> get property " + _property + " = " + _payload);
+#endif
 #endif
 
 	if (transportMask && MQTTMask != 0)
@@ -301,7 +307,9 @@ String BaseDriver::onGetProperty(String _property, String _payload, int8_t trans
 bool BaseDriver::onInsideChange(String _property, String _payload/*, int8_t transportMask*/)
 {
 #ifdef DetailedDebug
-	debugOut(id, "|<- inside change " + _property + " = " + _payload);
+	#ifdef DEBUG
+debugOut(id, "|<- inside change " + _property + " = " + _payload);
+#endif
 #endif
 
 #ifdef USE_ESP_DRIVER		
@@ -314,7 +322,9 @@ bool BaseDriver::onInsideChange(String _property, String _payload/*, int8_t tran
 	/*
 	bool result = true;
 	  #ifdef
-	  DetailedDebug debugOut(id, "|<- inside change " + _property + " = " +  _payload);
+	  DetailedDebug #ifdef DEBUG
+debugOut(id, "|<- inside change " + _property + " = " +  _payload);
+#endif
 	  #endif
 	if (transportMask && MQTTMask > 1)
 	{
@@ -331,7 +341,9 @@ int BaseDriver::getAvailable()
 		available = filesReadInt(id + ".available");
 	}
 #ifdef DetailedDebug
-	debugOut(id, "available=" + String(available));
+	#ifdef DEBUG
+debugOut(id, "available=" + String(available));
+#endif
 #endif
 	return available;
 }
@@ -347,7 +359,9 @@ bool BaseDriver::setAvailable(int _available)
 int BaseDriver::getType()
 {
 #ifdef DetailedDebug
-	debugOut(id, "type=" + type);
+	#ifdef DEBUG
+debugOut(id, "type=" + type);
+#endif
 #endif
 	return type;
 }
@@ -366,7 +380,9 @@ float BaseDriver::getTrap()
 		trap = filesReadFloat(id + ".trap");
 	}
 #ifdef DetailedDebug
-	debugOut(id, "trap=" + String(trap));
+	#ifdef DEBUG
+debugOut(id, "trap=" + String(trap));
+#endif
 #endif
 	return trap;
 }
@@ -385,7 +401,9 @@ int BaseDriver::getQueryInterval()
 		queryInterval = filesReadInt(id + ".queryinterval");
 	}
 #ifdef DetailedDebug
-	debugOut(id, "queryinterval=" + String(queryInterval));
+	#ifdef DEBUG
+debugOut(id, "queryinterval=" + String(queryInterval));
+#endif
 #endif
 	return queryInterval;
 }
@@ -404,7 +422,9 @@ int BaseDriver::getPublishInterval()
 		publishInterval = filesReadInt(id + ".publishinterval");
 	}
 #ifdef DetailedDebug
-	debugOut(id, "publishinterval=" + String(publishInterval));
+	#ifdef DEBUG
+debugOut(id, "publishinterval=" + String(publishInterval));
+#endif
 #endif
 	return publishInterval;
 }

@@ -925,7 +925,9 @@ bool scriptsRun() {
 		if (scripts[i].name.length() != 0)
 		{
 #ifdef SCRIPT_TRACERT					
-			debugOut(SCRIPT_ID, "script: " + scripts[i].name + " status: " + String(scripts[i].status) + " quants: " + String(scripts[i].timeQuant));
+			#ifdef DEBUG
+debugOut(SCRIPT_ID, "script: " + scripts[i].name + " status: " + String(scripts[i].status) + " quants: " + String(scripts[i].timeQuant));
+#endif
 #endif
 
 			if ((scripts[i].status == RUN_STATUS) || (scripts[i].status == CRITICAL_RUN_STATUS))
@@ -937,7 +939,9 @@ bool scriptsRun() {
 					{
 						int lastInstructionCode = filesReadInt(scripts[i].name + ".rf"); //run flag					
 #ifdef SCRIPT_TRACERT					
-						debugOut(SCRIPT_ID, "-> LI: " + String(lastInstructionCode));
+						#ifdef DEBUG
+debugOut(SCRIPT_ID, "-> LI: " + String(lastInstructionCode));
+#endif
 #endif
 						scripts[i].firstTime = false;
 						if (lastInstructionCode != -1) //loose last instruction TODO: use the value for debug
@@ -950,7 +954,9 @@ bool scriptsRun() {
 						}
 					}
 #ifdef SCRIPT_TRACERT					
-					debugOut(SCRIPT_ID, "-> addr: " + String(scripts[i].ip));
+					#ifdef DEBUG
+debugOut(SCRIPT_ID, "-> addr: " + String(scripts[i].ip));
+#endif
 #endif
 					filesWriteInt(scripts[i].name + ".rf", scripts[i].ip); //up RF flag (store last instruction)
 					bool result = executeInstruction(i);
@@ -958,20 +964,28 @@ bool scriptsRun() {
 					filesWriteInt(scripts[i].name + ".rf", -1); //escapre RF flag 
 #else	
 					bool fwResult = filesWriteInt(scripts[i].name + ".rf", -1); //escapre RF flag 
-					debugOut(SCRIPT_ID, "fwResult: " + String(fwResult));
-					debugOut(SCRIPT_ID, "<- addr: " + String(scripts[i].ip));
+					#ifdef DEBUG
+debugOut(SCRIPT_ID, "fwResult: " + String(fwResult));
+#endif
+					#ifdef DEBUG
+debugOut(SCRIPT_ID, "<- addr: " + String(scripts[i].ip));
+#endif
 #endif
 					if (!result)
 					{
 						scripts[i].status = STOP_STATUS;
 #ifdef SCRIPT_TRACERT					
-						debugOut(SCRIPT_ID, "stop by instruction result");
+						#ifdef DEBUG
+debugOut(SCRIPT_ID, "stop by instruction result");
+#endif
 #endif
 						break;
 					}
 					scripts[i].quantCounter++;
 #ifdef SCRIPT_TRACERT					
-					debugOut(SCRIPT_ID, "quants counter: " + String(scripts[i].quantCounter));
+					#ifdef DEBUG
+debugOut(SCRIPT_ID, "quants counter: " + String(scripts[i].quantCounter));
+#endif
 #endif
 					if (scripts[i].quantCounter >= scripts[i].timeQuant) break;
 

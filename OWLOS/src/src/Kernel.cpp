@@ -62,7 +62,9 @@ bool kernelSetup()
 	Serial.println();
 		
 #if defined(ARDUINO_ESP8266_RELEASE_2_5_0) || defined(ARDUINO_ESP32_RELEASE_1_0_4) || defined(USE_ARDUINO_BOARDS)
-	debugOut("OWLOS kernel setup", "started..."); //if Utils.h "Debug=true" start writing log to Serial
+	#ifdef DEBUG
+debugOut("OWLOS kernel setup", "started...");
+#endif //if Utils.h "Debug=true" start writing log to Serial
 	
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	ESP.wdtEnable(ONEMINUTE); //Software watch dog
@@ -93,14 +95,28 @@ bool kernelSetup()
 	transportBegin();    
 	//The OWLOS harvester started up and went quietly...
 #ifdef DetailedDebug
-	debugOut("kernel setup", "complete"); //if Utils.h "Debug=true" start writing log to Serial
+	#ifdef DEBUG
+debugOut("kernel setup", "complete");
+#endif //if Utils.h "Debug=true" start writing log to Serial
 #endif
 	return true;
 #else
-	debugOut("OWLOS kernel", "building problem");
-	debugOut("OWLOS kernel", "can's start, please install ESP32 RELEASE 1.0.4 or ESP8266 RELEASE 2.5.0 for building");
-	debugOut("ESP32 RELEASE 1.0.4", "https://github.com/espressif/arduino-esp32/releases/tag/1.0.4");
-	debugOut("ESP8266 RELEASE 2.5.0", "https://github.com/esp8266/Arduino/releases/tag/2.5.0");
+	#ifdef DEBUG
+#ifdef DEBUG
+debugOut("OWLOS kernel", "building problem");
+#endif
+#endif
+	#ifdef DEBUG
+#ifdef DEBUG
+debugOut("OWLOS kernel", "can's start, please install ESP32 RELEASE 1.0.4 or ESP8266 RELEASE 2.5.0 for building");
+#endif
+#endif
+	#ifdef DEBUG
+debugOut("ESP32 RELEASE 1.0.4", "https://github.com/espressif/arduino-esp32/releases/tag/1.0.4");
+#endif
+	#ifdef DEBUG
+debugOut("ESP8266 RELEASE 2.5.0", "https://github.com/esp8266/Arduino/releases/tag/2.5.0");
+#endif
 	return false;
 #endif
   	
@@ -126,7 +142,9 @@ bool kernelLoop()
 		if (transportReconnect()) //DO connection routin, see Transport.cpp
 		{
 #ifdef DetailedDebug
-			debugOut(nodeGetUnitId(), "Transport available"); //if HEAD and MQTT Brokker is available setuping drivers
+			#ifdef DEBUG
+debugOut(nodeGetUnitId(), "Transport available");
+#endif //if HEAD and MQTT Brokker is available setuping drivers
 #endif
 #ifdef USE_DRIVERS
 			driversBegin(nodeGetTopic()); //initilize drivers network properties, each driver must publish() here TYPE and AVAILABLE status

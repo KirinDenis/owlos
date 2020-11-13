@@ -55,7 +55,9 @@ OWLOS распространяется в надежде, что она буде
 bool DHTDriver::DHTsetup(int dhttype)
 {
 #ifdef DetailedDebug
-	debugOut(id, "setup");
+	#ifdef DEBUG
+debugOut(id, "setup");
+#endif
 #endif
 	//если DHT уже был настроен выходим
 	if (DHTSetuped)
@@ -73,7 +75,9 @@ bool DHTDriver::DHTsetup(int dhttype)
 		//пробуем прочесть значение температуры
 		float _temperature = dht->readTemperature();
 #ifdef DetailedDebug
-		debugOut(id, "DHT temperature " + String(_temperature));
+		#ifdef DEBUG
+debugOut(id, "DHT temperature " + String(_temperature));
+#endif
 #endif
 		//если DHT сломан, не присоединен, ошиблись с PIN _temperature = NAN, ниже проверка на NAN (неопределенное состояние float переменной )
 		if (_temperature == _temperature)
@@ -151,14 +155,18 @@ bool DHTDriver::begin(String _topic)
 		{
 			available = true; //сенсор доступен
 #ifdef DetailedDebug
-			debugOut(id, "Physical DHT sensor available");
+			#ifdef DEBUG
+debugOut(id, "Physical DHT sensor available");
+#endif
 #endif
 		}
 		else
 		{
 			available = false; //сенсор не доступен
 #ifdef DetailedDebug
-			debugOut(id, "Physical DHT sensor NOT available");
+			#ifdef DEBUG
+debugOut(id, "Physical DHT sensor NOT available");
+#endif
 #endif
 		}
 	}
@@ -318,7 +326,9 @@ int DHTDriver::getDHTType()
 		dhttype = filesReadInt(id + ".dhttype");
 	}
 #ifdef DetailedDebug
-	debugOut(id, "dhttype=" + String(dhttype));
+	#ifdef DEBUG
+debugOut(id, "dhttype=" + String(dhttype));
+#endif
 #endif
 	return dhttype;
 }
@@ -352,7 +362,9 @@ bool DHTDriver::getCelsius()
 		celsius = filesReadInt(id + ".celsius");
 	}
 #ifdef DetailedDebug
-	debugOut(id, "celsius=" + String(celsius));
+	#ifdef DEBUG
+debugOut(id, "celsius=" + String(celsius));
+#endif
 #endif
 	return celsius;
 }
@@ -395,7 +407,9 @@ String DHTDriver::getTemperature()
 		setAvailable(false);
 		temperature = "nan";
 #ifdef DetailedDebug
-		debugOut(id, "DHT object not ready");
+		#ifdef DEBUG
+debugOut(id, "DHT object not ready");
+#endif
 #endif
 		return temperature;
 	}
@@ -407,7 +421,9 @@ String DHTDriver::getTemperature()
 		setAvailable(false);
 		temperature = "nan";
 #ifdef DetailedDebug
-		debugOut(id, "Going to NOT available now, check sensor");
+		#ifdef DEBUG
+debugOut(id, "Going to NOT available now, check sensor");
+#endif
 #endif
 	}
 	else
@@ -415,7 +431,9 @@ String DHTDriver::getTemperature()
 		temperature = String(_temperature);
 	}
 #ifdef DetailedDebug
-	debugOut(id, "temperature=" + temperature);
+	#ifdef DEBUG
+debugOut(id, "temperature=" + temperature);
+#endif
 #endif
 	return temperature;
 }
@@ -428,7 +446,9 @@ String DHTDriver::getHumidity()
 		setAvailable(false);
 		humidity = "nan";
 #ifdef DetailedDebug
-		debugOut(id, "DHT object not ready");
+		#ifdef DEBUG
+debugOut(id, "DHT object not ready");
+#endif
 #endif
 		return humidity;
 	}
@@ -439,7 +459,9 @@ String DHTDriver::getHumidity()
 		setAvailable(false);
 		humidity = "nan";
 #ifdef DetailedDebug
-		debugOut(id, "Going to NOT available now, check sensor");
+		#ifdef DEBUG
+debugOut(id, "Going to NOT available now, check sensor");
+#endif
 #endif
 	}
 	else
@@ -447,7 +469,9 @@ String DHTDriver::getHumidity()
 		humidity = String(_humidity);
 	}
 #ifdef DetailedDebug
-	debugOut(id, "humidity=" + humidity);
+	#ifdef DEBUG
+debugOut(id, "humidity=" + humidity);
+#endif
 #endif
 	return humidity;
 }
@@ -460,7 +484,9 @@ String DHTDriver::getHeatIndex()
 		setAvailable(false);
 		heatIndex = "nan";
 #ifdef DetailedDebug
-		debugOut(id, "DHT object not ready");
+		#ifdef DEBUG
+debugOut(id, "DHT object not ready");
+#endif
 #endif
 		return heatIndex;
 	}
@@ -471,7 +497,9 @@ String DHTDriver::getHeatIndex()
 		setAvailable(false);
 		heatIndex = "nan";
 #ifdef DetailedDebug
-		debugOut(id, "Going to NOT available now, check sensor");
+		#ifdef DEBUG
+debugOut(id, "Going to NOT available now, check sensor");
+#endif
 #endif
 	}
 	else
@@ -479,7 +507,9 @@ String DHTDriver::getHeatIndex()
 		heatIndex = String(_heatIndex);
 	}
 #ifdef DetailedDebug
-	debugOut(id, "humidity=" + humidity);
+	#ifdef DEBUG
+debugOut(id, "humidity=" + humidity);
+#endif
 #endif
 	return heatIndex;
 }

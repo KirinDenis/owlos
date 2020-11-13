@@ -99,14 +99,18 @@ void WiFiSTReconnect()
 		if (WiFiSSID.length() == 0)
 		{
 #ifdef DetailedDebug
-			debugOut(TransportID, "WiFi SSID not defined");
+			#ifdef DEBUG
+debugOut(TransportID, "WiFi SSID not defined");
+#endif
 #endif
 			return;
 		}
 
 		{
 #ifdef DetailedDebug
-			debugOut(TransportID, "try to connect to - " + WiFiSSID + ":" + WiFiPassword + " wait ");
+			#ifdef DEBUG
+debugOut(TransportID, "try to connect to - " + WiFiSSID + ":" + WiFiPassword + " wait ");
+#endif
 #endif
 
 			_WiFiMulti.addAP(WiFiSSID.c_str(), WiFiPassword.c_str());
@@ -117,12 +121,16 @@ void WiFiSTReconnect()
 				delay(100);
 				wait++;
 #ifdef DetailedDebug
-				debugOut(TransportID, "Wait for WiFi [" + String(wait) + "] from [10]");
+				#ifdef DEBUG
+debugOut(TransportID, "Wait for WiFi [" + String(wait) + "] from [10]");
+#endif
 #endif
 				if (wait > 9)
 				{
 #ifdef DetailedDebug
-					debugOut(TransportID, "Wait for WiFi TimeOut...break");
+					#ifdef DEBUG
+debugOut(TransportID, "Wait for WiFi TimeOut...break");
+#endif
 #endif
 					break;
 				}
@@ -136,24 +144,36 @@ void WiFiEvent(WiFiEvent_t event)
 	switch (event)
 	{
 	case SYSTEM_EVENT_WIFI_READY:
-		debugOut(TransportID, "WiFi interface ready");
+		#ifdef DEBUG
+debugOut(TransportID, "WiFi interface ready");
+#endif
 		break;
 	case SYSTEM_EVENT_SCAN_DONE:
-		debugOut(TransportID, "Completed scan for access points");
+		#ifdef DEBUG
+debugOut(TransportID, "Completed scan for access points");
+#endif
 		break;
 	case SYSTEM_EVENT_STA_START:
-		debugOut(TransportID, "WiFi client started");
+		#ifdef DEBUG
+debugOut(TransportID, "WiFi client started");
+#endif
 		break;
 	case SYSTEM_EVENT_STA_STOP:
-		debugOut(TransportID, "WiFi clients stopped");
+		#ifdef DEBUG
+debugOut(TransportID, "WiFi clients stopped");
+#endif
 		break;
 	case SYSTEM_EVENT_STA_CONNECTED:
-		debugOut(TransportID, "Connected to access point");
+		#ifdef DEBUG
+debugOut(TransportID, "Connected to access point");
+#endif
 		xTimerStop(wifiSTReconnectTimer, 0);
 
 		break;
 	case SYSTEM_EVENT_STA_DISCONNECTED:
-		debugOut(TransportID, "Disconnected from WiFi access point");
+		#ifdef DEBUG
+debugOut(TransportID, "Disconnected from WiFi access point");
+#endif
 		wifiResult = false;
 #ifdef USE_MQTT
 		MQTTDisconnect();
@@ -161,13 +181,17 @@ void WiFiEvent(WiFiEvent_t event)
 		xTimerStart(wifiSTReconnectTimer, 0);
 		break;
 	case SYSTEM_EVENT_STA_AUTHMODE_CHANGE:
-		debugOut(TransportID, "Authentication mode of access point has changed");
+		#ifdef DEBUG
+debugOut(TransportID, "Authentication mode of access point has changed");
+#endif
 		break;
 	case SYSTEM_EVENT_STA_GOT_IP:
 		//TODO: setIP
 		wifiResult = true;
 #ifdef DetailedDebug
-		debugOut(TransportID, "WiFi connected as Client success, local IP: " + nodeGetWiFiIP());
+		#ifdef DEBUG
+debugOut(TransportID, "WiFi connected as Client success, local IP: " + nodeGetWiFiIP());
+#endif
 #endif
 		xTimerStop(wifiSTReconnectTimer, 0);
 #ifdef USE_MQTT
@@ -184,22 +208,34 @@ if (nodeGetMQTTAvailable() == 1)
 
 		break;
 	case SYSTEM_EVENT_STA_LOST_IP:
-		debugOut(TransportID, "Lost IP address and IP address is reset to 0");
+		#ifdef DEBUG
+debugOut(TransportID, "Lost IP address and IP address is reset to 0");
+#endif
 		break;
 	case SYSTEM_EVENT_STA_WPS_ER_SUCCESS:
-		debugOut(TransportID, "WiFi Protected Setup (WPS): succeeded in enrollee mode");
+		#ifdef DEBUG
+debugOut(TransportID, "WiFi Protected Setup (WPS): succeeded in enrollee mode");
+#endif
 		break;
 	case SYSTEM_EVENT_STA_WPS_ER_FAILED:
-		debugOut(TransportID, "WiFi Protected Setup (WPS): failed in enrollee mode");
+		#ifdef DEBUG
+debugOut(TransportID, "WiFi Protected Setup (WPS): failed in enrollee mode");
+#endif
 		break;
 	case SYSTEM_EVENT_STA_WPS_ER_TIMEOUT:
-		debugOut(TransportID, "WiFi Protected Setup (WPS): timeout in enrollee mode");
+		#ifdef DEBUG
+debugOut(TransportID, "WiFi Protected Setup (WPS): timeout in enrollee mode");
+#endif
 		break;
 	case SYSTEM_EVENT_STA_WPS_ER_PIN:
-		debugOut(TransportID, "WiFi Protected Setup (WPS): pin code in enrollee mode");
+		#ifdef DEBUG
+debugOut(TransportID, "WiFi Protected Setup (WPS): pin code in enrollee mode");
+#endif
 		break;
 	case SYSTEM_EVENT_AP_START:
-		debugOut(TransportID, "WiFi access point started");
+		#ifdef DEBUG
+debugOut(TransportID, "WiFi access point started");
+#endif
 		wifiAPResult = true;
 #if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)
 		HTTPSWebServerBegin();
@@ -207,41 +243,65 @@ if (nodeGetMQTTAvailable() == 1)
 
 		break;
 	case SYSTEM_EVENT_AP_STOP:
-		debugOut(TransportID, "WiFi access point stopped");
+		#ifdef DEBUG
+debugOut(TransportID, "WiFi access point stopped");
+#endif
 		break;
 	case SYSTEM_EVENT_AP_STACONNECTED:
-		debugOut(TransportID, "Client connected");
+		#ifdef DEBUG
+debugOut(TransportID, "Client connected");
+#endif
 		break;
 	case SYSTEM_EVENT_AP_STADISCONNECTED:
 		wifiAPResult = false;
-		debugOut(TransportID, "Client disconnected");
+		#ifdef DEBUG
+debugOut(TransportID, "Client disconnected");
+#endif
 		break;
 	case SYSTEM_EVENT_AP_STAIPASSIGNED:
-		debugOut(TransportID, "Assigned IP address to client");
+		#ifdef DEBUG
+debugOut(TransportID, "Assigned IP address to client");
+#endif
 		break;
 	case SYSTEM_EVENT_AP_PROBEREQRECVED:
-		debugOut(TransportID, "Received probe request");
+		#ifdef DEBUG
+debugOut(TransportID, "Received probe request");
+#endif
 		break;
 	case SYSTEM_EVENT_GOT_IP6:
-		debugOut(TransportID, "IPv6 is preferred");
+		#ifdef DEBUG
+debugOut(TransportID, "IPv6 is preferred");
+#endif
 		break;
 	case SYSTEM_EVENT_ETH_START:
-		debugOut(TransportID, "Ethernet started");
+		#ifdef DEBUG
+debugOut(TransportID, "Ethernet started");
+#endif
 		break;
 	case SYSTEM_EVENT_ETH_STOP:
-		debugOut(TransportID, "Ethernet stopped");
+		#ifdef DEBUG
+debugOut(TransportID, "Ethernet stopped");
+#endif
 		break;
 	case SYSTEM_EVENT_ETH_CONNECTED:
-		debugOut(TransportID, "Ethernet connected");
+		#ifdef DEBUG
+debugOut(TransportID, "Ethernet connected");
+#endif
 		break;
 	case SYSTEM_EVENT_ETH_DISCONNECTED:
-		debugOut(TransportID, "Ethernet disconnected");
+		#ifdef DEBUG
+debugOut(TransportID, "Ethernet disconnected");
+#endif
 		break;
 	case SYSTEM_EVENT_ETH_GOT_IP:
-		debugOut(TransportID, "Obtained IP address");
+		#ifdef DEBUG
+debugOut(TransportID, "Obtained IP address");
+#endif
 		break;
 	default:
-		debugOut(TransportID, "Unknown WiFi event");
+		#ifdef DEBUG
+debugOut(TransportID, "Unknown WiFi event");
+#endif
 		break;
 	}
 }
@@ -249,7 +309,9 @@ if (nodeGetMQTTAvailable() == 1)
 bool transportBegin()
 {
 #ifdef DetailedDebug
-	debugOut(TransportID, "begin");
+	#ifdef DEBUG
+debugOut(TransportID, "begin");
+#endif
 #endif
 
 	WiFi.onEvent(WiFiEvent);
@@ -260,7 +322,9 @@ bool transportBegin()
 
 
 #ifdef DetailedDebug
-	debugOut(TransportID, "no WiFi mode select, WiFi not accessable");
+	#ifdef DEBUG
+debugOut(TransportID, "no WiFi mode select, WiFi not accessable");
+#endif
 #endif
 	//WiFi Access Point and Station mode ---
 	if ((nodeGetWiFiAccessPointAvailable() == 1) && (nodeGetWiFiAvailable() == 1))
@@ -271,7 +335,9 @@ bool transportBegin()
 		WiFiSTReconnect();
 
 #ifdef DetailedDebug
-		debugOut(TransportID, "WiFi mode Access Point and Station (both)");
+		#ifdef DEBUG
+debugOut(TransportID, "WiFi mode Access Point and Station (both)");
+#endif
 #endif
 	}
 	else
@@ -286,7 +352,9 @@ bool transportBegin()
 		}
 		nodeSetWiFiMode(WIFI_AP);
 #ifdef DetailedDebug
-		debugOut(TransportID, "WiFi mode Access Point");
+		#ifdef DEBUG
+debugOut(TransportID, "WiFi mode Access Point");
+#endif
 #endif
 	}
 	else
@@ -294,7 +362,9 @@ bool transportBegin()
 		if (nodeGetWiFiAvailable() == 1)
 	{
 #ifdef DetailedDebug
-		debugOut(TransportID, "WiFi mode Station");
+		#ifdef DEBUG
+debugOut(TransportID, "WiFi mode Station");
+#endif
 #endif
 
 		WiFi.softAPdisconnect(true);

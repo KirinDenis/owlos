@@ -68,7 +68,9 @@ bool downloadFile(String fileName, String  url) {
 	bool result = false;
 
 #ifdef DetailedDebug 
-	debugOut(webclientid, "download: " + fileName + " from: " + url);
+	#ifdef DEBUG
+debugOut(webclientid, "download: " + fileName + " from: " + url);
+#endif
 #endif
 
 	if (!filesBegin())
@@ -84,7 +86,9 @@ bool downloadFile(String fileName, String  url) {
 		File file = SPIFFS.open(fileName, "w");
 		if (!file) {
 #ifdef DetailedDebug 
-			debugOut(webclientid, "There was an error opening the file for writing: " + fileName);
+			#ifdef DEBUG
+debugOut(webclientid, "There was an error opening the file for writing: " + fileName);
+#endif
 #endif
 			return result;
 		}
@@ -92,7 +96,9 @@ bool downloadFile(String fileName, String  url) {
 		if (httpCode == HTTP_CODE_OK) {
 			int len = http.getSize();
 #ifdef DetailedDebug 
-			debugOut(webclientid, "download size: " + String(len));
+			#ifdef DEBUG
+debugOut(webclientid, "download size: " + String(len));
+#endif
 #endif
 			uint8_t buff[128] = { 0 };
 			WiFiClient * stream = http.getStreamPtr();
@@ -115,7 +121,9 @@ bool downloadFile(String fileName, String  url) {
 			}
 			file.close();
 #ifdef DetailedDebug 
-			debugOut(webclientid, "download=OK");
+			#ifdef DEBUG
+debugOut(webclientid, "download=OK");
+#endif
 #endif
 			result = true;
 
@@ -123,14 +131,18 @@ bool downloadFile(String fileName, String  url) {
 		else
 		{
 #ifdef DetailedDebug 
-			debugOut(webclientid, "download=fail HTTPResult=" + String(httpCode));
+			#ifdef DEBUG
+debugOut(webclientid, "download=fail HTTPResult=" + String(httpCode));
+#endif
 #endif
 		}
 	}
 	else
 	{
 #ifdef DetailedDebug 
-		debugOut(webclientid, "download=fail");
+		#ifdef DEBUG
+debugOut(webclientid, "download=fail");
+#endif
 #endif
 	}
 	http.end();

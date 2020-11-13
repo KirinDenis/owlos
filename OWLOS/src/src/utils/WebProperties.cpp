@@ -56,7 +56,9 @@ String webGetWebConfig()
 	}
 
 #ifdef DetailedDebug 
-	debugOut(id, "config=" + result);
+	#ifdef DEBUG
+debugOut(id, "config=" + result);
+#endif
 #endif
 	return result;
 }
@@ -64,7 +66,9 @@ String webGetWebConfig()
 bool webSetHead(String _webConfig)
 {
 #ifdef DetailedDebug 
-	debugOut(id, "|<- inside change config=" + _webConfig);
+	#ifdef DEBUG
+debugOut(id, "|<- inside change config=" + _webConfig);
+#endif
 #endif
 	filesWriteString("web.temp", _webConfig);
 	return true;
@@ -73,7 +77,9 @@ bool webSetHead(String _webConfig)
 bool webSetBody(String _webConfig)
 {
 #ifdef DetailedDebug 
-	debugOut(id, "|<- inside change config=" + _webConfig);
+	#ifdef DEBUG
+debugOut(id, "|<- inside change config=" + _webConfig);
+#endif
 #endif
 	filesAddString("web.temp", _webConfig);
 	return true;
@@ -82,7 +88,9 @@ bool webSetBody(String _webConfig)
 bool webSetTail(String _webConfig)
 {
 #ifdef DetailedDebug 
-	debugOut(id, "|<- inside change config=" + _webConfig);
+	#ifdef DEBUG
+debugOut(id, "|<- inside change config=" + _webConfig);
+#endif
 #endif
 	filesRename("web.config", "oldweb.config");
 	if (filesAddString("web.temp", _webConfig))

@@ -44,7 +44,7 @@ OWLOS распространяется в надежде, что она буде
 
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 
-#if defined(USE_HTTPS_SERVER) || defined (USE_HTTP_SERVER)
+#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)
 #ifdef USE_ESP_DRIVER
 
 #define HTTPServerId "HTTPServer"
@@ -173,7 +173,9 @@ void HTTPSWebServerBegin()
 
 	if (MDNS.begin("OWLSmartHouseUnit.local"))
 	{
+#ifdef DEBUG
 		debugOut("MDNS", "MDNS responder started OWLSmartHouseUnit.local");
+#endif
 	}
 	server->setBufferSizes(256, 256);
 	server->setRSACert(new BearSSL::X509List(serverCert), new BearSSL::PrivateKey(serverKey));
@@ -226,10 +228,14 @@ String parsePostBody(WiFiClient client)
 				{
 					if (data.indexOf(sectionSign) != -1) //endof section parsing
 					{
-						//TODO somthing with body
+//TODO somthing with body
+#ifdef DEBUG
 						debugOut("d_body", body);
+#endif
 #ifdef DetailedDebug
+#ifdef DEBUG
 						debugOut("BODY", body);
+#endif
 #endif
 						break;
 					}
@@ -242,7 +248,9 @@ String parsePostBody(WiFiClient client)
 						else if (data.length() != 0)
 						{
 							body += data;
+#ifdef DEBUG
 							debugOut("c_body", data);
+#endif
 						}
 					}
 				}
@@ -880,9 +888,10 @@ void handleSetWebProperty(WiFiClient client)
 	//File fs_uploadFile;
 	if (argsCount > 0)
 	{
+#ifdef DEBUG
 		debugOut("upload param", arg[0]);
+#endif
 	}
-	//debugOut("upload", decode(parsePostBody(client)));
 
 	String data = "";
 	String sectionSign = "";
@@ -945,7 +954,9 @@ void handleSetWebProperty(WiFiClient client)
 								}
 							}
 
+#ifdef DEBUG
 							debugOut("file_name", fileName);
+#endif
 							if (!append)
 							{
 								//filesDelete(fileName);
@@ -959,7 +970,9 @@ void handleSetWebProperty(WiFiClient client)
 							if (data.indexOf("filename=\"") == -1)
 							{
 								send(501, "text/html", "wrong file name", client);
-								debugOut("Upload", "501");
+								#ifdef DEBUG
+debugOut("Upload", "501");
+#endif
 								return;
 							}
 							fileName = data.substring(data.indexOf("filename=\"") + String("filename=\"").length());
@@ -973,10 +986,14 @@ void handleSetWebProperty(WiFiClient client)
 							{
 								if (append)
 								{
+#ifdef DEBUG
 									debugOut("buffer1", String(bufCount));
+#endif
 
 									bufCount -= (sectionSign.length() + 6);
+#ifdef DEBUG
 									debugOut("buffer1", String(bufCount));
+#endif
 									if (bufCount > 0)
 									{
 										fs_uploadFile.write(buf, bufCount);
@@ -1043,9 +1060,10 @@ void handleUploadFile(WiFiClient client)
 
 	if (argsCount > 0)
 	{
+#ifdef DEBUG
 		debugOut("upload param", arg[0]);
+#endif
 	}
-	//debugOut("upload", decode(parsePostBody(client)));
 
 	String data = "";
 	String sectionSign = "";
@@ -1108,7 +1126,9 @@ void handleUploadFile(WiFiClient client)
 								}
 							}
 
+#ifdef DEBUG
 							debugOut("file_name", fileName);
+#endif
 							if (!append)
 							{
 								//filesDelete(fileName);
@@ -1121,7 +1141,9 @@ void handleUploadFile(WiFiClient client)
 							if (data.indexOf("filename=\"") == -1)
 							{
 								send(501, "text/html", "wrong file name", client);
+#ifdef DEBUG
 								debugOut("Upload", "501");
+#endif
 								return;
 							}
 							fileName = data.substring(data.indexOf("filename=\"") + String("filename=\"").length());
@@ -1134,10 +1156,14 @@ void handleUploadFile(WiFiClient client)
 							{
 								if (append)
 								{
+#ifdef DEBUG
 									debugOut("buffer1", String(bufCount));
+#endif
 
 									bufCount -= (sectionSign.length() + 6);
+#ifdef DEBUG
 									debugOut("buffer1", String(bufCount));
+#endif
 									if (bufCount > 0)
 									{
 										fs_uploadFile.write(buf, bufCount);
@@ -1204,7 +1230,9 @@ void HTTPSWebServerLoop()
 					else // currentLine.length() == 0 END OF HEADER RECIEVE
 					{
 #ifdef DetailedDebug
+#ifdef DEBUG
 						debugOut("---", firstLine);
+#endif
 #endif
 						method = firstLine.substring(0, firstLine.indexOf(" "));
 
@@ -1216,7 +1244,9 @@ void HTTPSWebServerLoop()
 							if ((uri.length() == 0) || (uri.equals("/")))
 								uri = "/index.html";
 #ifdef DetailedDebug
+#ifdef DEBUG
 							debugOut("-->", uri);
+#endif
 #endif
 							argsCount = 0;
 							int hasArgs = firstLine.indexOf('?');
@@ -1245,7 +1275,9 @@ void HTTPSWebServerLoop()
 							{
 								//GET section
 #ifdef DetailedDebug
+#ifdef DEBUG
 								debugOut("METHOD", method);
+#endif
 #endif
 								yield();
 								if (method.equals("OPTIONS"))

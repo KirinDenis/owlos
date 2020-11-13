@@ -74,7 +74,9 @@ bool LCDDriver::init()
 	if (pinDriverInfo != nullptr)
 	{
 		//если пользователь задал адрес, инкапсулируем класс обслуживающий LCD и пробуем работать с дисплеем через указанный порт
-		debugOut("LCD", String(pinDriverInfo->driverI2CAddr));
+		#ifdef DEBUG
+debugOut("LCD", String(pinDriverInfo->driverI2CAddr));
+#endif
 		lcd = new LiquidCrystal_I2C(pinDriverInfo->driverI2CAddr, cols, rows); //port = 0x27 for PCF8574T and PCF8574AT for 0x3F, 16 cols, 2 raws
 		lcd->init();  //init properies
 		//мы не проверяем удалось ли подключить дисплей, пробуем применить настройки, пользователь визуально определит - прошло ли действие успешно   
@@ -104,7 +106,9 @@ bool LCDDriver::init()
 
 		return true;
 	}
-	debugOut("LCD", "NUL NUL NUL");
+	#ifdef DEBUG
+debugOut("LCD", "NUL NUL NUL");
+#endif
 	return false;
 }
 //когда сеть доступна
@@ -265,7 +269,9 @@ String LCDDriver::getText()
 		text = filesReadString(id + ".text");
 	}
 #ifdef DetailedDebug
-	debugOut(id, "text=" + String(text));
+	#ifdef DEBUG
+debugOut(id, "text=" + String(text));
+#endif
 #endif
 	return text;
 }
@@ -328,7 +334,9 @@ int LCDDriver::getCols()
 		cols = filesReadInt(id + ".cols");
 	}
 #ifdef DetailedDebug
-	debugOut(id, "cols=" + String(cols));
+	#ifdef DEBUG
+debugOut(id, "cols=" + String(cols));
+#endif
 #endif
 	return cols;
 }
@@ -352,7 +360,9 @@ int LCDDriver::getRows()
 		rows = filesReadInt(id + ".rows");
 	}
 #ifdef DetailedDebug
-	debugOut(id, "rows=" + String(rows));
+	#ifdef DEBUG
+debugOut(id, "rows=" + String(rows));
+#endif
 #endif
 	return rows;
 }
@@ -376,7 +386,9 @@ int LCDDriver::getDisplay()
 		display = filesReadInt(id + ".display");
 	}
 #ifdef DetailedDebug
-	debugOut(id, "display=" + String(display));
+	#ifdef DEBUG
+debugOut(id, "display=" + String(display));
+#endif
 #endif
 	return display;
 }
@@ -411,7 +423,9 @@ int LCDDriver::getBacklight()
 		backlight = filesReadInt(id + ".backlight");
 	}
 #ifdef DetailedDebug
-	debugOut(id, "backlight=" + String(backlight));
+	#ifdef DEBUG
+debugOut(id, "backlight=" + String(backlight));
+#endif
 #endif
 	return backlight;
 }
@@ -443,7 +457,9 @@ int LCDDriver::getBlink()
 		blink = filesReadInt(id + ".blink");
 	}
 #ifdef DetailedDebug
-	debugOut(id, "blink=" + String(blink));
+	#ifdef DEBUG
+debugOut(id, "blink=" + String(blink));
+#endif
 #endif
 	return blink;
 }
@@ -475,7 +491,9 @@ int LCDDriver::getCursor()
 		cursor = filesReadInt(id + ".cursor");
 	}
 #ifdef DetailedDebug
-	debugOut(id, "cursor=" + String(cursor));
+	#ifdef DEBUG
+debugOut(id, "cursor=" + String(cursor));
+#endif
 #endif
 	return cursor;
 }
@@ -507,7 +525,9 @@ int LCDDriver::getAutoscroll()
 		autoscroll = filesReadInt(id + ".autoscroll");
 	}
 #ifdef DetailedDebug
-	debugOut(id, "autoscroll=" + String(autoscroll));
+	#ifdef DEBUG
+debugOut(id, "autoscroll=" + String(autoscroll));
+#endif
 #endif
 	return autoscroll;
 }
@@ -535,7 +555,9 @@ int LCDDriver::getClear()
 {
 	clear = 0; //clear is function, 0 is not executed now
 #ifdef DetailedDebug
-	debugOut(id, "clear=" + String(clear));
+	#ifdef DEBUG
+debugOut(id, "clear=" + String(clear));
+#endif
 #endif
 	return clear;
 }
@@ -563,7 +585,9 @@ int LCDDriver::getX()
 		x = filesReadInt(id + ".x");
 	}
 #ifdef DetailedDebug
-	debugOut(id, "x=" + String(x));
+	#ifdef DEBUG
+debugOut(id, "x=" + String(x));
+#endif
 #endif
 	return x;
 }
@@ -593,7 +617,9 @@ int LCDDriver::getY()
 		y = filesReadInt(id + ".y");
 	}
 #ifdef DetailedDebug
-	debugOut(id, "y=" + String(y));
+	#ifdef DEBUG
+debugOut(id, "y=" + String(y));
+#endif
 #endif
 	return y;
 }

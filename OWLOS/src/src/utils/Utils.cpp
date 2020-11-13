@@ -52,10 +52,9 @@ char* stringToChar(String src)
 	return data;
 }
 
+#ifdef DEBUG
 void debugOut(String tag, String text)
 {
-	if (Debug)
-	{
 #ifdef USE_ESP_DRIVER		
 #ifdef SERIAL_COLORIZED_OUTPUT		
 		text = text + " \033\033[1;32m [" + String(ESP.getFreeHeap()) + "]";
@@ -101,8 +100,9 @@ void debugOut(String tag, String text)
 			}
 			filesAtRecurse = false;
 		}
-	}
+
 }
+#endif
 
 void writeDebugLogFile(String fileName, int fileSize, String tag, String text)
 {

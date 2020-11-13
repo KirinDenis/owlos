@@ -249,7 +249,9 @@ void nodeSubscribe()
 String onGetProperty(String _property, String _payload, int8_t transportMask)
 {
 #ifdef DetailedDebug 
-	debugOut(nodeid, "|-> get property " + _property + " = " + _payload);
+	#ifdef DEBUG
+debugOut(nodeid, "|-> get property " + _property + " = " + _payload);
+#endif
 #endif 
 	if (transportMask && MQTTMask != 0)
 	{
@@ -488,7 +490,9 @@ bool lock = false;
 bool onInsideChange(String _property, String _value)
 {
 #ifdef DetailedDebug 
-	debugOut(nodeid, "|<- inside change " + _property + " = " + _value);
+	#ifdef DEBUG
+debugOut(nodeid, "|<- inside change " + _property + " = " + _value);
+#endif
 #endif
 
 	bool result = false;
@@ -501,7 +505,9 @@ bool onInsideChange(String _property, String _value)
 			result = transportPublish(topic + "/" + _property, _value);
 
 #ifdef DetailedDebug 
-		debugOut(nodeid, "|-> inside change ");
+		#ifdef DEBUG
+debugOut(nodeid, "|-> inside change ");
+#endif
 #endif
 		lock = false;
 	}
@@ -530,7 +536,9 @@ String _getStringPropertyValue(String _property, String _defaultvalue)
 	}
 	propertyFileReaded += _property + ";";
 #ifdef DetailedDebug 
-	debugOut(nodeid, _property + "=" + result);
+	#ifdef DEBUG
+debugOut(nodeid, _property + "=" + result);
+#endif
 #endif
 	return result;
 }
@@ -554,7 +562,9 @@ int _getIntPropertyValue(String _property, int _defaultvalue)
 	}
 	propertyFileReaded += _property + ";";
 #ifdef DetailedDebug 	
-	debugOut(nodeid, _property + "=" + String(result));
+	#ifdef DEBUG
+debugOut(nodeid, _property + "=" + String(result));
+#endif
 #endif	
 	return result;
 }

@@ -269,7 +269,9 @@ int nodeGetWiFiAccessPointAvailable()
 
 bool nodeSetWiFiAccessPointAvailable(int _wifiapavailable)
 {
-	debugOut("MY", "nodeSetWiFiAccessPointAvailable");
+	#ifdef DEBUG
+debugOut("MY", "nodeSetWiFiAccessPointAvailable");
+#endif
 	wifiapavailable = _wifiapavailable;
 	return onInsideChange("wifiapavailable", String(wifiapavailable));
 }
@@ -318,7 +320,9 @@ String nodeGetWiFiAccessPointIP()
 	{
 		IPAddress real_wifiaccesspointip = WiFi.softAPIP();
 #ifdef DetailedDebug
-		debugOut(nodeid, "Current Access Point IP: " + real_wifiaccesspointip.toString());
+		#ifdef DEBUG
+debugOut(nodeid, "Current Access Point IP: " + real_wifiaccesspointip.toString());
+#endif
 #endif
 		if (propertyFileReaded.indexOf("wifiaccesspointip;") < 0)
 			wifiaccesspointip = _getStringPropertyValue("wifiaccesspointip", real_wifiaccesspointip.toString());
@@ -326,13 +330,17 @@ String nodeGetWiFiAccessPointIP()
 		if (!real_wifiaccesspointip.toString().equals(wifiaccesspointip))
 		{
 #ifdef DetailedDebug
-			debugOut(nodeid, "Current Access Point IP not equals");
+			#ifdef DEBUG
+debugOut(nodeid, "Current Access Point IP not equals");
+#endif
 #endif
 
 			if (!nodeSetWiFiAccessPointIP(wifiaccesspointip))
 			{
 #ifdef DetailedDebug
-				debugOut(nodeid, "Can't change Access Point IP to: " + wifiaccesspointip);
+				#ifdef DEBUG
+debugOut(nodeid, "Can't change Access Point IP to: " + wifiaccesspointip);
+#endif
 #endif
 
 				wifiaccesspointip = NotAvailable;
@@ -345,7 +353,9 @@ String nodeGetWiFiAccessPointIP()
 		wifiaccesspointip = NotAvailable;
 	}
 #ifdef DetailedDebug
-	debugOut(nodeid, "wifiaccesspointip=" + wifiaccesspointip);
+	#ifdef DEBUG
+debugOut(nodeid, "wifiaccesspointip=" + wifiaccesspointip);
+#endif
 #endif
 
 	return wifiaccesspointip;
@@ -355,7 +365,9 @@ bool nodeSetWiFiAccessPointIP(String _wifiaccesspointip)
 {
 	IPAddress real_wifiaccesspointip;
 #ifdef DetailedDebug
-	debugOut(nodeid, "Current Access Point IP: " + WiFi.softAPIP().toString());
+	#ifdef DEBUG
+debugOut(nodeid, "Current Access Point IP: " + WiFi.softAPIP().toString());
+#endif
 #endif
 
 	if (real_wifiaccesspointip.fromString(_wifiaccesspointip))

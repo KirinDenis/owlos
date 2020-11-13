@@ -216,7 +216,9 @@ int StepperDriver::getToPosition()
 		toPosition = filesReadInt(id + ".toposition");
 	}
 #ifdef DetailedDebug
-	debugOut(id, "toposition=" + String(toPosition));
+	#ifdef DEBUG
+debugOut(id, "toposition=" + String(toPosition));
+#endif
 #endif
 	return toPosition;
 }
@@ -233,7 +235,9 @@ bool StepperDriver::setToPosition(int _toPosition)
 	{
 		onInsideChange("busy", String(busy));
 #ifdef DetailedDebug
-		debugOut(id, "Stepper busy ");
+		#ifdef DEBUG
+debugOut(id, "Stepper busy ");
+#endif
 #endif
 		return false;
 	}
@@ -254,7 +258,9 @@ bool StepperDriver::setToPosition(int _toPosition)
 	}
 
 #ifdef DetailedDebug
-	debugOut(id, "setToPosition: " + String(_toPosition) + "->" + String(toPosition));
+	#ifdef DEBUG
+debugOut(id, "setToPosition: " + String(_toPosition) + "->" + String(toPosition));
+#endif
 #endif
 	//запоминаем новую toPostion 
 	//в этой реализации драйвера, если в момент движение произойдет сбой, после восстановления - движение продолжится
@@ -325,7 +331,9 @@ int StepperDriver::getBusy()
 		busy = filesReadInt(id + ".busy");
 	}
 #ifdef DetailedDebug
-	debugOut(id, "busy=" + String(busy));
+	#ifdef DEBUG
+debugOut(id, "busy=" + String(busy));
+#endif
 #endif
 	return busy;
 }
@@ -345,7 +353,9 @@ int StepperDriver::getStop()
 		stop = filesReadInt(id + ".stop");
 	}
 #ifdef DetailedDebug
-	debugOut(id, "stop=" + String(stop));
+	#ifdef DEBUG
+debugOut(id, "stop=" + String(stop));
+#endif
 #endif
 	return stop;
 }
@@ -369,7 +379,9 @@ int StepperDriver::getPosition()
 		position = filesReadInt(id + ".position");
 	}
 #ifdef DetailedDebug
-	debugOut(id, "position=" + String(position));
+	#ifdef DEBUG
+debugOut(id, "position=" + String(position));
+#endif
 #endif
 	return position;
 }
@@ -394,7 +406,9 @@ int StepperDriver::getRange()
 		range = filesReadInt(id + ".range");
 	}
 #ifdef DetailedDebug
-	debugOut(id, "range=" + String(range));
+	#ifdef DEBUG
+debugOut(id, "range=" + String(range));
+#endif
 #endif
 	return range;
 }
@@ -414,7 +428,9 @@ int StepperDriver::getSpeed()
 		speed = filesReadInt(id + ".speed");
 	}
 #ifdef DetailedDebug
-	debugOut(id, "speed=" + String(speed));
+	#ifdef DEBUG
+debugOut(id, "speed=" + String(speed));
+#endif
 #endif
 	return speed;
 }

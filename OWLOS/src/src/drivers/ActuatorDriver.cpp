@@ -168,7 +168,9 @@ bool ActuatorDriver::getAnalog()
 		data = filesReadInt(id + ".analog");
 	}
 #ifdef DetailedDebug
-	debugOut(id, "analog=" + String(data));
+	#ifdef DEBUG
+debugOut(id, "analog=" + String(data));
+#endif
 #endif
 
 	return data;
@@ -177,7 +179,9 @@ bool ActuatorDriver::getAnalog()
 bool ActuatorDriver::setAnalog(bool _analog, bool doEvent)
 {
 	//see init() if target pin is not analog the mask set _analog to "0" false
-	debugOut("ANALOG", String(_analog));
+	#ifdef DEBUG
+debugOut("ANALOG", String(_analog));
+#endif
 	analog = _analog;
 	filesWriteInt(id + ".analog", analog);
 	if (doEvent)

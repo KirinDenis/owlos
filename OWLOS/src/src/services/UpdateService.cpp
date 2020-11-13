@@ -138,7 +138,9 @@ int updateGetUpdatePossible()
 	}
 
 #ifdef DetailedDebug 
-	debugOut(updateid, "check update possible result: " + String(updatePossible));
+	#ifdef DEBUG
+debugOut(updateid, "check update possible result: " + String(updatePossible));
+#endif
 #endif
 	return updatePossible;
 }
@@ -252,7 +254,9 @@ int updateFirmware()
 		updateLog += "update firmware started\n";
 		updateFirmwareStatus = UpdateStatusStarted;
 #ifdef DetailedDebug 
-		debugOut(updateid, "Update firmware started\n");
+		#ifdef DEBUG
+debugOut(updateid, "Update firmware started\n");
+#endif
 #endif
 		String host = nodeGetUpdateHost();
 		WiFiClient client;
@@ -278,17 +282,23 @@ int updateFirmware()
 		switch (ret) {
 		case HTTP_UPDATE_FAILED:
 #ifdef DetailedDebug 
-			debugOut(updateid, "update error: [" + String(ESPhttpUpdate.getLastError()) + "] " + ESPhttpUpdate.getLastErrorString().c_str());
+			#ifdef DEBUG
+debugOut(updateid, "update error: [" + String(ESPhttpUpdate.getLastError()) + "] " + ESPhttpUpdate.getLastErrorString().c_str());
+#endif
 #endif
 			break;
 		case HTTP_UPDATE_NO_UPDATES:
 #ifdef DetailedDebug 
-			debugOut(updateid, "no updates");
+			#ifdef DEBUG
+debugOut(updateid, "no updates");
+#endif
 #endif
 			break;
 		case HTTP_UPDATE_OK:
 #ifdef DetailedDebug 
-			debugOut(updateid, "update OK");
+			#ifdef DEBUG
+debugOut(updateid, "update OK");
+#endif
 #endif
 			break;
 		}
@@ -300,7 +310,9 @@ int updateFirmware()
 	{
 		updateFirmwareStatus = UpdateStatusUndefined;
 #ifdef DetailedDebug 
-		debugOut(updateid, "Update firmware fail");
+		#ifdef DEBUG
+debugOut(updateid, "Update firmware fail");
+#endif
 #endif
 		updateLog += "update firmware fail\n";
 	}

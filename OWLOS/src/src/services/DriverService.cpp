@@ -65,7 +65,9 @@ void driversInit(String _topic)
 	__topic = _topic;
 	initPins();
 #ifdef DetailedDebug
-	debugOut("driverconfig", driversLoadFromConfig());
+	#ifdef DEBUG
+debugOut("driverconfig", driversLoadFromConfig());
+#endif
 #else
 	driversLoadFromConfig();
 #endif
@@ -345,7 +347,9 @@ bool driversSaveList()
 String driversLoadFromConfig()
 {
 #ifdef DetailedDebug
-	debugOut("driverconfig", "load");
+	#ifdef DEBUG
+debugOut("driverconfig", "load");
+#endif
 #endif    
 	String driverList = filesReadString("driverslist");
 	if (driverList.length() == 0)
@@ -359,7 +363,9 @@ String driversLoadFromConfig()
 	String line;
 
 #ifdef DetailedDebug
-	debugOut("driverconfig", "do parse");
+	#ifdef DEBUG
+debugOut("driverconfig", "do parse");
+#endif
 #endif
 
 	while ((linePos = driverList.indexOf(lineDelimiter)) != -1)
@@ -367,7 +373,9 @@ String driversLoadFromConfig()
 
 		line = driverList.substring(0, linePos);
 #ifdef DetailedDebug
-		debugOut("driverconfig_load line_", line);
+		#ifdef DEBUG
+debugOut("driverconfig_load line_", line);
+#endif
 #endif
 		int valuePos = 0;
 		int valueCount = 0;
@@ -407,8 +415,12 @@ String driversLoadFromConfig()
 String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 {
 #ifdef DetailedDebug
-	debugOut("driversadd_id", id);
-	debugOut("driversadd_pins", pins);
+	#ifdef DEBUG
+debugOut("driversadd_id", id);
+#endif
+	#ifdef DEBUG
+debugOut("driversadd_pins", pins);
+#endif
 #endif
 	int driversCount = driversGetCount();
 	if (driversCount >= DRIVERS_LIMIT)
@@ -432,7 +444,9 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 		if (_pins[pinCount].length() == 0)
 			break;
 #ifdef DetailedDebug
-		debugOut("pin", _pins[pinCount]);
+		#ifdef DEBUG
+debugOut("pin", _pins[pinCount]);
+#endif
 #endif
 		pinCount++;
 		pins.remove(0, pinPos + 1);
@@ -468,7 +482,9 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 	if (type == Actuator)
 	{
 #ifdef DetailedDebug
-		debugOut("pin", String(pinCount));
+		#ifdef DEBUG
+debugOut("pin", String(pinCount));
+#endif
 #endif
 		if (pinCount != ActuatorDriver::getPinsCount())
 		{
@@ -478,7 +494,9 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 		result = checkDriverPin(_pins[PIN0_INDEX], ActuatorDriver::getPinType(PIN0_INDEX)) + checkDriverPin(_pins[PIN1_INDEX], ActuatorDriver::getPinType(PIN1_INDEX));
 
 #ifdef DetailedDebug
-		debugOut("DCResult", result);
+		#ifdef DEBUG
+debugOut("DCResult", result);
+#endif
 #endif
 
 		if (result.length() != 0)
@@ -501,7 +519,9 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 if ((type == Sensor) || (type == Light) || (type == Smoke) || (type == Motion))
 	{
 #ifdef DetailedDebug
-		debugOut("pin", String(pinCount));
+		#ifdef DEBUG
+debugOut("pin", String(pinCount));
+#endif
 #endif
 		if (pinCount != SensorDriver::getPinsCount())
 		{
@@ -511,7 +531,9 @@ if ((type == Sensor) || (type == Light) || (type == Smoke) || (type == Motion))
 		result = checkDriverPin(_pins[PIN0_INDEX], SensorDriver::getPinType(PIN0_INDEX)) + checkDriverPin(_pins[PIN1_INDEX], SensorDriver::getPinType(PIN1_INDEX)) + checkDriverPin(_pins[PIN2_INDEX], SensorDriver::getPinType(PIN2_INDEX));
 
 #ifdef DetailedDebug
-		debugOut("DCResult", result);
+		#ifdef DEBUG
+debugOut("DCResult", result);
+#endif
 #endif
 
 		if (result.length() != 0)
@@ -533,7 +555,9 @@ if ((type == Sensor) || (type == Light) || (type == Smoke) || (type == Motion))
 	if (type == LCD)
 	{
 #ifdef DetailedDebug
-		debugOut("pin", String(pinCount));
+		#ifdef DEBUG
+debugOut("pin", String(pinCount));
+#endif
 #endif
 		if (pinCount != LCDDriver::getPinsCount())
 		{
@@ -562,7 +586,9 @@ if ((type == Sensor) || (type == Light) || (type == Smoke) || (type == Motion))
 	if (type == DHTDriverType)
 	{
 #ifdef DetailedDebug
-		debugOut("pin", String(pinCount));
+		#ifdef DEBUG
+debugOut("pin", String(pinCount));
+#endif
 #endif
 		if (pinCount != DHTDriver::getPinsCount())
 		{
@@ -595,7 +621,9 @@ if ((type == Sensor) || (type == Light) || (type == Smoke) || (type == Motion))
 		driversList[freeIndex]->begin(nodeGetTopic());
 #endif		
 #ifdef DetailedDebug
-	debugOut("driversadd", "OK");
+	#ifdef DEBUG
+debugOut("driversadd", "OK");
+#endif
 #endif
 
 	return "1";
@@ -628,7 +656,9 @@ String driversChangePin(String pinName, String driverId, int driverPinIndex)
 String driversDelete(String id)
 {
 #ifdef DetailedDebug
-	debugOut("driversdelete", id);
+	#ifdef DEBUG
+debugOut("driversdelete", id);
+#endif
 #endif
 	bool found = false;
 	String driverlist = "";

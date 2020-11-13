@@ -33,14 +33,18 @@ void OTABegin()
 
 		// NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
 #ifdef DetailedDebug 
-		debugOut(OTAID, "begin updating " + type);
+		#ifdef DEBUG
+debugOut(OTAID, "begin updating " + type);
+#endif
 #endif
 	});
 
 	ArduinoOTA.onEnd([]()
 	{
 #ifdef DetailedDebug 
-		debugOut(OTAID, "complete");
+		#ifdef DEBUG
+debugOut(OTAID, "complete");
+#endif
 #endif
 	});
 
@@ -50,7 +54,9 @@ void OTABegin()
 		if (value % 25 == 0)
 		{
 #ifdef DetailedDebug 
-			debugOut(OTAID, "do update " + String(value) + "%");
+			#ifdef DEBUG
+debugOut(OTAID, "do update " + String(value) + "%");
+#endif
 #endif
 		}
 
@@ -60,19 +66,29 @@ void OTABegin()
 #ifdef DetailedDebug 
 		
 		if (error == OTA_AUTH_ERROR) {
-			debugOut(OTAID, "Auth Failed");
+			#ifdef DEBUG
+debugOut(OTAID, "Auth Failed");
+#endif
 		}
 		else if (error == OTA_BEGIN_ERROR) {
-			debugOut(OTAID, "Begin Failed");
+			#ifdef DEBUG
+debugOut(OTAID, "Begin Failed");
+#endif
 		}
 		else if (error == OTA_CONNECT_ERROR) {
-			debugOut(OTAID, "Connect Failed");
+			#ifdef DEBUG
+debugOut(OTAID, "Connect Failed");
+#endif
 		}
 		else if (error == OTA_RECEIVE_ERROR) {
-			debugOut(OTAID, "Receive Failed");
+			#ifdef DEBUG
+debugOut(OTAID, "Receive Failed");
+#endif
 		}
 		else if (error == OTA_END_ERROR) {
-			debugOut(OTAID, "End Failed");
+			#ifdef DEBUG
+debugOut(OTAID, "End Failed");
+#endif
 		}
 #endif
 	});

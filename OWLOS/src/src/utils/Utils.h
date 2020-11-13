@@ -44,8 +44,10 @@ OWLOS распространяется в надежде, что она буде
 #include <Arduino.h>
 
 //#define SERIAL_COLORIZED_OUTPUT
-#define Debug false
+//#define DEBUG
+#ifdef DEBUG
 //#define DetailedDebug 
+#endif
 #define WriteDebugLogs false
 #define LogFilesSize 1024*10
 #define LogFile1 "log1"
@@ -91,7 +93,9 @@ OWLOS распространяется в надежде, что она буде
 #define WrongNodePropertyName "Node: wrong node property name"
 
 char* stringToChar(String src);
+#ifdef DEBUG
 void  debugOut(String tag, String text);
+#endif
 void writeDebugLogFile(String fileName, int fileSize, String tag, String text);
 bool matchRoute(const char* route, const char* topic, const char* path);
 bool matchRoute(String &route, String &topic, const char* path);

@@ -695,26 +695,34 @@ void HTTPSWebServerBegin()
 
 #ifdef USE_HTTPS_SERVER
 #ifdef DetailedDebug
-  debugOut("HTTPS Server", "Starting HTTPS server...");
+  #ifdef DEBUG
+debugOut("HTTPS Server", "Starting HTTPS server...");
+#endif
 #endif
   secureServer.start();
 #ifdef DetailedDebug
   if (secureServer.isRunning())
   {
-    debugOut("HTTPS Server", "HTTPS server ready");
+    #ifdef DEBUG
+debugOut("HTTPS Server", "HTTPS server ready");
+#endif
   }
 #endif
 #endif
 
 #ifdef USE_HTTP_SERVER
 #ifdef DetailedDebug
-  debugOut("HTTP Server", "Starting HTTP server...");
+  #ifdef DEBUG
+debugOut("HTTP Server", "Starting HTTP server...");
+#endif
 #endif
   insecureServer.start();
 #ifdef DetailedDebug
   if (insecureServer.isRunning())
   {
-    debugOut("HTTP Server", "HTTP server ready");
+    #ifdef DEBUG
+debugOut("HTTP Server", "HTTP server ready");
+#endif
   }
 #endif
 #endif

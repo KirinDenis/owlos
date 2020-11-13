@@ -138,7 +138,9 @@ bool filesBegin()
 	if (!_SPIFFSBegin())
 	{
 #ifdef DetailedDebug 
-		debugOut(FileSystem, "File system not available before, try MOUNT new FLASH drive, please wait...");
+		#ifdef DEBUG
+debugOut(FileSystem, "File system not available before, try MOUNT new FLASH drive, please wait...");
+#endif
 #endif
 		SPIFFS.format();
 	}
@@ -148,13 +150,17 @@ bool filesBegin()
 	if (result)
 	{
 #ifdef DetailedDebug 
-		debugOut(FileSystem, "File system mount OK");
+		#ifdef DEBUG
+debugOut(FileSystem, "File system mount OK");
+#endif
 #endif
 	}
 	else
 	{
 #ifdef DetailedDebug 
-		debugOut(FileSystem, "File system mount FAIL");
+		#ifdef DEBUG
+debugOut(FileSystem, "File system mount FAIL");
+#endif
 #endif
 	}
 
@@ -167,7 +173,9 @@ bool filesLoop()
 	if (!_SPIFFSBegin())
 	{
 #ifdef DetailedDebug 
-		debugOut(FileSystem, "An Error has occurred while mounting file system");
+		#ifdef DEBUG
+debugOut(FileSystem, "An Error has occurred while mounting file system");
+#endif
 #endif
 		return false;
 	}
@@ -181,7 +189,9 @@ bool filesLoop()
 			filesWriteCache[i].fileName = "";
 			if (!file) {
 #ifdef DetailedDebug 
-				debugOut(FileSystem, "There was an error opening the file for writing");
+				#ifdef DEBUG
+debugOut(FileSystem, "There was an error opening the file for writing");
+#endif
 #endif
 				return false;
 			}
@@ -189,7 +199,9 @@ bool filesLoop()
 			if (!file.print(filesWriteCache[i].value))
 			{
 #ifdef DetailedDebug 
-				debugOut(FileSystem, "fileWriteString failed");
+				#ifdef DEBUG
+debugOut(FileSystem, "fileWriteString failed");
+#endif
 #endif
 			}
 			filesWriteCache[i].value = "";
@@ -229,7 +241,9 @@ int filesGetSize(String fileName)
 	if (!_SPIFFSBegin())
 	{
 #ifdef DetailedDebug 
-		debugOut(FileSystem, "An Error has occurred while mounting file system");
+		#ifdef DEBUG
+debugOut(FileSystem, "An Error has occurred while mounting file system");
+#endif
 #endif
 		return -1;
 	}
@@ -241,7 +255,9 @@ int filesGetSize(String fileName)
 
 	if (!file) {
 #ifdef DetailedDebug 
-		debugOut(FileSystem, "There was an error opening the file: " + fileName);
+		#ifdef DEBUG
+debugOut(FileSystem, "There was an error opening the file: " + fileName);
+#endif
 #endif
 		return -3;
 	}
@@ -257,13 +273,17 @@ bool filesDelete(String fileName)
 {
 	fileName = normalizeFileName(fileName);
 #ifdef DetailedDebug 
-	debugOut(FileSystem, "|-> filesDelete: " + fileName);
+	#ifdef DEBUG
+debugOut(FileSystem, "|-> filesDelete: " + fileName);
+#endif
 #endif
 
 	if (!_SPIFFSBegin())
 	{
 #ifdef DetailedDebug 
-		debugOut(FileSystem, "An Error has occurred while mounting file system");
+		#ifdef DEBUG
+debugOut(FileSystem, "An Error has occurred while mounting file system");
+#endif
 #endif
 		return false;
 	}
@@ -283,7 +303,9 @@ bool filesRename(String source, String dest)
 	if (!_SPIFFSBegin())
 	{
 #ifdef DetailedDebug 
-		debugOut(FileSystem, "An Error has occurred while mounting file system");
+		#ifdef DEBUG
+debugOut(FileSystem, "An Error has occurred while mounting file system");
+#endif
 #endif
 		return false;
 	}
@@ -308,7 +330,9 @@ String filesReadString(String fileName)
 	if (!_SPIFFSBegin())
 	{
 #ifdef DetailedDebug 
-		debugOut(FileSystem, "An Error has occurred while mounting file system");
+		#ifdef DEBUG
+debugOut(FileSystem, "An Error has occurred while mounting file system");
+#endif
 #endif
 		return result;
 	}
@@ -318,7 +342,9 @@ String filesReadString(String fileName)
 
 	if (!file) {
 #ifdef DetailedDebug 
-		debugOut(FileSystem, "There was an error opening the file for reading: " + fileName);
+		#ifdef DEBUG
+debugOut(FileSystem, "There was an error opening the file for reading: " + fileName);
+#endif
 #endif
 
 		return result;
@@ -338,7 +364,9 @@ bool filesWriteStringDirect(String fileName, String value)
 	if (!_SPIFFSBegin())
 	{
 #ifdef DetailedDebug 
-		debugOut(FileSystem, "An Error has occurred while mounting file system");
+		#ifdef DEBUG
+debugOut(FileSystem, "An Error has occurred while mounting file system");
+#endif
 #endif
 		return false;
 	}
@@ -349,7 +377,9 @@ bool filesWriteStringDirect(String fileName, String value)
 
 	if (!file) {
 #ifdef DetailedDebug 
-		debugOut(FileSystem, "There was an error opening the file for writing: " + fileName);
+		#ifdef DEBUG
+debugOut(FileSystem, "There was an error opening the file for writing: " + fileName);
+#endif
 #endif
 		return false;
 	}
@@ -357,7 +387,9 @@ bool filesWriteStringDirect(String fileName, String value)
 	if (!file.print(value))
 	{
 #ifdef DetailedDebug 
-		debugOut(FileSystem, "fileWriteString failed: " + fileName);
+		#ifdef DEBUG
+debugOut(FileSystem, "fileWriteString failed: " + fileName);
+#endif
 #endif
 	}
 
@@ -371,7 +403,9 @@ bool filesWriteStringDirect(String fileName, String value)
 	
 	if (!file) {
 #ifdef DetailedDebug 
-		debugOut(FileSystem, "There was an error opening the file for writing");
+		#ifdef DEBUG
+debugOut(FileSystem, "There was an error opening the file for writing");
+#endif
 #endif
 		return false;
 	}
@@ -379,7 +413,9 @@ bool filesWriteStringDirect(String fileName, String value)
 	if (!file.print(value))
 	{
 #ifdef DetailedDebug 
-		debugOut(FileSystem, "fileWriteString failed");
+		#ifdef DEBUG
+debugOut(FileSystem, "fileWriteString failed");
+#endif
 #endif
 	}	
 	file.close();
@@ -407,7 +443,9 @@ bool filesAppendString(String fileName, String value)
 	if (!_SPIFFSBegin())
 	{
 #ifdef DetailedDebug 
-		debugOut(FileSystem, "An Error has occurred while mounting file system");
+		#ifdef DEBUG
+debugOut(FileSystem, "An Error has occurred while mounting file system");
+#endif
 #endif
 		return false;
 	}
@@ -415,7 +453,9 @@ bool filesAppendString(String fileName, String value)
 	File file = SPIFFS.open(fileName, "a");
 	if (!file) {
 #ifdef DetailedDebug 
-		debugOut(FileSystem, "There was an error opening the file for writing: " + fileName);
+		#ifdef DEBUG
+debugOut(FileSystem, "There was an error opening the file for writing: " + fileName);
+#endif
 #endif
 		return false;
 	}
@@ -423,7 +463,9 @@ bool filesAppendString(String fileName, String value)
 	if (!file.println(value))
 	{
 #ifdef DetailedDebug 
-		debugOut(FileSystem, "fileAppendString failed: " + fileName);
+		#ifdef DEBUG
+debugOut(FileSystem, "fileAppendString failed: " + fileName);
+#endif
 #endif
 	}
 
@@ -436,13 +478,17 @@ bool filesAddString(String fileName, String value)
 {
 	fileName = normalizeFileName(fileName);
 #ifdef DetailedDebug 
-	debugOut(FileSystem, "|-> filesAddString: " + fileName);
+	#ifdef DEBUG
+debugOut(FileSystem, "|-> filesAddString: " + fileName);
+#endif
 #endif
 
 	if (!_SPIFFSBegin())
 	{
 #ifdef DetailedDebug 
-		debugOut(FileSystem, "An Error has occurred while mounting file system");
+		#ifdef DEBUG
+debugOut(FileSystem, "An Error has occurred while mounting file system");
+#endif
 #endif
 		return false;
 	}
@@ -455,7 +501,9 @@ bool filesAddString(String fileName, String value)
 	File file = SPIFFS.open(fileName, "a");
 	if (!file) {
 #ifdef DetailedDebug 
-		debugOut(FileSystem, "There was an error opening the file for writing: " + fileName);
+		#ifdef DEBUG
+debugOut(FileSystem, "There was an error opening the file for writing: " + fileName);
+#endif
 #endif
 		return false;
 	}
@@ -463,7 +511,9 @@ bool filesAddString(String fileName, String value)
 	if (!file.print(value))
 	{
 #ifdef DetailedDebug 
-		debugOut(FileSystem, "fileAddString failed: " + fileName);
+		#ifdef DEBUG
+debugOut(FileSystem, "fileAddString failed: " + fileName);
+#endif
 #endif
 	}
 
@@ -508,13 +558,17 @@ String filesGetList(String path)
 {
 	path = normalizeFileName(path);
 #ifdef DetailedDebug 
-	debugOut(FileSystem, "|-> filesGetList: " + path);
+	#ifdef DEBUG
+debugOut(FileSystem, "|-> filesGetList: " + path);
+#endif
 #endif
 
 	if (!_SPIFFSBegin())
 	{
 #ifdef DetailedDebug 
-		debugOut(FileSystem, "An Error has occurred while mounting file system");
+		#ifdef DEBUG
+debugOut(FileSystem, "An Error has occurred while mounting file system");
+#endif
 #endif
 		return "";
 	}
@@ -546,7 +600,9 @@ bool filesWriteStructure(String fileName, void *value)
 	if (!_SPIFFSBegin())
 	{
 #ifdef DetailedDebug 
-       debugOut(FileSystem, "An Error has occurred while mounting file system");
+       #ifdef DEBUG
+debugOut(FileSystem, "An Error has occurred while mounting file system");
+#endif
 	   return false;
 #endif
 	}
@@ -554,7 +610,9 @@ bool filesWriteStructure(String fileName, void *value)
 	File file = SPIFFS.open("/" + fileName, "w");
 	if (!file) {
 #ifdef DetailedDebug 
-		debugOut(FileSystem, "There was an error opening the file for writing: " + fileName);
+		#ifdef DEBUG
+debugOut(FileSystem, "There was an error opening the file for writing: " + fileName);
+#endif
 #endif
 		return false;
 	}
@@ -563,7 +621,9 @@ bool filesWriteStructure(String fileName, void *value)
 	if (writedSize != sizeof(value))
 	{
 #ifdef DetailedDebug 
-		debugOut(FileSystem, "File write failed");
+		#ifdef DEBUG
+debugOut(FileSystem, "File write failed");
+#endif
 #endif
 		return false;
 	}

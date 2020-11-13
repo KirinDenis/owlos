@@ -173,7 +173,9 @@ int ValveDriver::getphysicalposition()
 		physicalposition = filesReadInt(id + ".physicalposition");
 	}
 #ifdef DetailedDebug
-	debugOut(id, "physicalposition=" + String(physicalposition));
+	#ifdef DEBUG
+debugOut(id, "physicalposition=" + String(physicalposition));
+#endif
 #endif
 	return physicalposition;
 }
@@ -185,7 +187,9 @@ int ValveDriver::getMinimumphysicalposition()
 		minimumphysicalposition = filesReadInt(id + ".minimumphysicalposition");
 	}
 #ifdef DetailedDebug
-	debugOut(id, "minimumphysicalposition=" + String(minimumphysicalposition));
+	#ifdef DEBUG
+debugOut(id, "minimumphysicalposition=" + String(minimumphysicalposition));
+#endif
 #endif
 	return minimumphysicalposition;
 }
@@ -197,7 +201,9 @@ int ValveDriver::getMaximumphysicalposition()
 		maximumphysicalposition = filesReadInt(id + ".maximumphysicalposition");
 	}
 #ifdef DetailedDebug
-	debugOut(id, "maximumphysicalposition=" + String(maximumphysicalposition));
+	#ifdef DEBUG
+debugOut(id, "maximumphysicalposition=" + String(maximumphysicalposition));
+#endif
 #endif
 	return maximumphysicalposition;
 }
@@ -209,7 +215,9 @@ int ValveDriver::getPosition()
 		position = filesReadInt(id + ".position");
 	}
 #ifdef DetailedDebug
-	debugOut(id, "position=" + String(position));
+	#ifdef DEBUG
+debugOut(id, "position=" + String(position));
+#endif
 #endif
 	return position;
 }
