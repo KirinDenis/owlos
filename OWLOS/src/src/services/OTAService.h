@@ -15,7 +15,6 @@
 #include <ESPmDNS.h>
 #endif
 
-
 #include <Arduino.h>
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>

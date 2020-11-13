@@ -58,46 +58,20 @@ OWLOS распространяется в надежде, что она буде
 
 #include <FS.h>
 
-#include "../drivers/ESPDriver.h"
 #include "../utils/Utils.h"
 #include "../services/FileService.h"
 
 #define webclientid "WebClient"
 HTTPClient http;
 
-#ifdef USE_HTTP_CLIENT
-bool WebClientPublish(String topic, String payload)
-{
-	if (nodeGetRESTfulClientAvailable() == 1)
-	{
-		if (WiFi.isConnected())
-	{
-
-		topic.replace("/", "%2F");	
-
-		String url = nodeGetRESTfulClientURL() + "?topic=" + topic + "&payload=" + payload;		
-		debugOut(webclientid, url );
-		
-		http.begin(url);
-		int httpCode = http.GET();
-		if (httpCode == HTTP_CODE_OK)
-		{
-			http.end();
-			return true;
-		}
-		http.end();
-	}
-	}
-	return false;
-}
-#endif
-
 bool downloadFile(String fileName, String url)
 {
 	bool result = false;
 
 #ifdef DetailedDebug
+#ifdef DEBUG
 	debugOut(webclientid, "download: " + fileName + " from: " + url);
+#endif
 #endif
 
 	if (!filesBegin())
@@ -116,7 +90,9 @@ bool downloadFile(String fileName, String url)
 		if (!file)
 		{
 #ifdef DetailedDebug
+#ifdef DEBUG
 			debugOut(webclientid, "There was an error opening the file for writing: " + fileName);
+#endif
 #endif
 			return result;
 		}
@@ -125,7 +101,9 @@ bool downloadFile(String fileName, String url)
 		{
 			int len = http.getSize();
 #ifdef DetailedDebug
+#ifdef DEBUG
 			debugOut(webclientid, "download size: " + String(len));
+#endif
 #endif
 			uint8_t buff[128] = {0};
 			WiFiClient *stream = http.getStreamPtr();
@@ -151,21 +129,27 @@ bool downloadFile(String fileName, String url)
 			}
 			file.close();
 #ifdef DetailedDebug
+#ifdef DEBUG
 			debugOut(webclientid, "download=OK");
+#endif
 #endif
 			result = true;
 		}
 		else
 		{
 #ifdef DetailedDebug
+#ifdef DEBUG
 			debugOut(webclientid, "download=fail HTTPResult=" + String(httpCode));
+#endif
 #endif
 		}
 	}
 	else
 	{
 #ifdef DetailedDebug
+#ifdef DEBUG
 		debugOut(webclientid, "download=fail");
+#endif
 #endif
 	}
 	http.end();

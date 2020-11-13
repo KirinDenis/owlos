@@ -50,16 +50,13 @@ bool SensorDriver::init()
 
 	DriverPin *driverPin = getDriverPinByDriverId(id, PIN0_INDEX); //командный пин "закрыть"
 	if (driverPin != nullptr)
-	{		
+	{
 		//TODO: INPUT_PULLUP/INPUT_PULLDOWN
 
 		setAnalog(getPinByName(driverPin->name)->pinTypes & ANALOG_I_MASK, false);
-		
-		
-
 
 		if ((setDriverPinMode(id, PIN0_INDEX, INPUT).length() == 0) || (analog))
-		{			
+		{
 			if (getData() != -1)
 			{
 
@@ -132,11 +129,10 @@ bool SensorDriver::query()
 
 String SensorDriver::getAllProperties()
 {
-	String result = BaseDriver::getAllProperties();
-	result += "analog=" + String(analog) + "//br\n";
-	result += "data=" + String(data) + "//ris\n";
-
-	return result;
+	return BaseDriver::getAllProperties() +
+		   "analog=" + String(analog) + "//br\n"
+										"data=" +
+		   String(data) + "//ris\n";
 }
 
 bool SensorDriver::publish()
@@ -183,18 +179,17 @@ bool SensorDriver::setAnalog(bool _analog, bool doEvent)
 {
 	analog = _analog;
 
-#ifdef ARDUINO_ESP32_RELEASE_1_0_4       
-//TODO: Sensor Driver properties for control ESP32 Analog Input parameters
-                DriverPin *driverPin = getDriverPinByDriverId(id, PIN0_INDEX); 
-				adcStart(driverPin->GPIONumber);
-				pinMode(driverPin->GPIONumber, INPUT);
-				analogSetAttenuation(ADC_11db);
-				analogSetWidth(12);
-				analogSetCycles(255);
-				analogSetSamples(1);
-				analogReadResolution(12);
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+	//TODO: Sensor Driver properties for control ESP32 Analog Input parameters
+	DriverPin *driverPin = getDriverPinByDriverId(id, PIN0_INDEX);
+	adcStart(driverPin->GPIONumber);
+	pinMode(driverPin->GPIONumber, INPUT);
+	analogSetAttenuation(ADC_11db);
+	analogSetWidth(12);
+	analogSetCycles(255);
+	analogSetSamples(1);
+	analogReadResolution(12);
 #endif
-
 
 	filesWriteInt(id + ".analog", analog);
 	if (doEvent)

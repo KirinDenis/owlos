@@ -43,13 +43,9 @@ OWLOS распространяется в надежде, что она буде
 //Arduino ONLY --------------------------------------------------------------------------
 #ifdef USE_ARDUINO_BOARDS
 
-
 #ifdef USE_UART
 #include "../transports/UART.h"
 #endif
-
-
-
 
 bool transportBegin()
 {
@@ -66,13 +62,12 @@ bool transportAvailable()
 void transportLoop()
 {
 #ifdef USE_UART
-	UARTRecv();
+    UARTRecv();
 #endif
 }
 
 void transportSubscribe(String _topic)
 {
-
 }
 
 bool transportPublish(String _topic, String _payload)
@@ -81,9 +76,8 @@ bool transportPublish(String _topic, String _payload)
 #ifdef USE_UART
     UARTSend(_topic, _payload);
 #endif
-	
-	return true; 
-}
 
+    return true;
+}
 
 #endif

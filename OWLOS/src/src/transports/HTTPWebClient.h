@@ -44,11 +44,7 @@ OWLOS распространяется в надежде, что она буде
 #include "../config.h"
 #ifdef USE_ESP_DRIVER
 
-#ifdef USE_HTTP_CLIENT
-bool WebClientPublish(String topic, String payload);
-#endif
-
-bool downloadFile(String fileName, String  url);
+bool downloadFile(String fileName, String url);
 
 #endif
 #endif

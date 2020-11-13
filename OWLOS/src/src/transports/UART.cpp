@@ -141,7 +141,9 @@ void UARTRecv(String command)
 
         for (int i = 0; i < count; i++)
         {
+#ifdef DEBUG
             debugOut("UART " + String(i), token[i]);
+#endif
         }
 
         if ((count > 0) && (token[0].length() > 0))

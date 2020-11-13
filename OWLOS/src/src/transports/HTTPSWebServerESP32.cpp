@@ -86,10 +86,10 @@ void corsCallback(HTTPRequest *req, HTTPResponse *res)
 void handleOther(HTTPRequest *req, HTTPResponse *res)
 {
 
-  String uri = String(req->getRequestString().c_str());  
+  String uri = String(req->getRequestString().c_str());
   uri = uri.substring(uri.indexOf(" ") + 1);
   uri = uri.substring(0, uri.indexOf(" "));
-  
+
   if ((uri.length() == 0) || (uri.equals("/")))
     uri = "/index.html";
 
@@ -324,7 +324,6 @@ void handleSetNodeProperty(HTTPRequest *req, HTTPResponse *res, String driverRes
         res->setStatusCode(500);
         res->print(driverResult + " [or] " + result);
       }
-      
     }
     return;
   }
@@ -473,7 +472,7 @@ void handleSetDriverProperty(HTTPRequest *req, HTTPResponse *res)
     else
     {
       if ((result.indexOf(WrongDriverName) > -1) || (result.indexOf(WrongPropertyName) > -1))
-      {    
+      {
         handleSetNodeProperty(req, res, result);
       }
       else
@@ -695,26 +694,34 @@ void HTTPSWebServerBegin()
 
 #ifdef USE_HTTPS_SERVER
 #ifdef DetailedDebug
+#ifdef DEBUG
   debugOut("HTTPS Server", "Starting HTTPS server...");
+#endif
 #endif
   secureServer.start();
 #ifdef DetailedDebug
   if (secureServer.isRunning())
   {
+#ifdef DEBUG
     debugOut("HTTPS Server", "HTTPS server ready");
+#endif
   }
 #endif
 #endif
 
 #ifdef USE_HTTP_SERVER
 #ifdef DetailedDebug
+#ifdef DEBUG
   debugOut("HTTP Server", "Starting HTTP server...");
+#endif
 #endif
   insecureServer.start();
 #ifdef DetailedDebug
   if (insecureServer.isRunning())
   {
+#ifdef DEBUG
     debugOut("HTTP Server", "HTTP server ready");
+#endif
   }
 #endif
 #endif

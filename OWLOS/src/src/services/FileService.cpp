@@ -39,7 +39,6 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-
 #include "FileService.h"
 
 #define FileSystem "File System"
@@ -49,31 +48,30 @@ Arduino File System ------------------------------------------------------------
 --------------------------------------------------------------------------------------*/
 #ifdef USE_ARDUINO_BOARDS
 
-
-bool filesBegin() 
+bool filesBegin()
 {
 	return false;
 }
-bool filesLoop() {return true;}
-bool filesExists(String fileName) {return true;}
-int filesGetSize(String fileName) {return 0;}
-bool filesDelete(String fileName){return true;}
-bool filesRename(String source, String dest){return true;}
+bool filesLoop() { return true; }
+bool filesExists(String fileName) { return true; }
+int filesGetSize(String fileName) { return 0; }
+bool filesDelete(String fileName) { return true; }
+bool filesRename(String source, String dest) { return true; }
 
-String filesReadString(String fileName){return String();}
-bool filesWriteStringDirect(String fileName, String value){return true;}
-bool filesWriteString(String fileName, String value){return true;}
-bool filesAppendString(String fileName, String value){return true;}
-bool filesAddString(String fileName, String value){return true;}
+String filesReadString(String fileName) { return String(); }
+bool filesWriteStringDirect(String fileName, String value) { return true; }
+bool filesWriteString(String fileName, String value) { return true; }
+bool filesAppendString(String fileName, String value) { return true; }
+bool filesAddString(String fileName, String value) { return true; }
 
-int filesReadInt(String fileName){return 0;}
-bool filesWriteInt(String fileName, int value){return true;}
+int filesReadInt(String fileName) { return 0; }
+bool filesWriteInt(String fileName, int value) { return true; }
 
-float filesReadFloat(String fileName){return 0.0;}
-bool filesWriteFloat(String fileName, float value){return true;}
+float filesReadFloat(String fileName) { return 0.0; }
+bool filesWriteFloat(String fileName, float value) { return true; }
 
-String filesGetList(String path){return "";}
-bool filesWriteStructure(String fileName, void *value){return true;}
+String filesGetList(String path) { return ""; }
+bool filesWriteStructure(String fileName, void *value) { return true; }
 
 #else
 
@@ -102,7 +100,6 @@ struct fileWriteItem
 
 fileWriteItem filesWriteCache[filesWriteCacheSize];
 #endif
-
 
 //NOTE: DON'T forget "Tools/Flash Size" set to 1M-2M, it is desable by default
 //http://wikihandbk.com/wiki/ESP8266:%D0%9F%D1%80%D0%BE%D1%88%D0%B8%D0%B2%D0%BA%D0%B8/Arduino/%D0%A0%D0%B0%D0%B1%D0%BE%D1%82%D0%B0_%D1%81_%D1%84%D0%B0%D0%B9%D0%BB%D0%BE%D0%B2%D0%BE%D0%B9_%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%BE%D0%B9_%D0%B2_%D0%B0%D0%B4%D0%B4%D0%BE%D0%BD%D0%B5_ESP8266_%D0%B4%D0%BB%D1%8F_IDE_Arduino
@@ -137,8 +134,10 @@ bool filesBegin()
 {
 	if (!_SPIFFSBegin())
 	{
-#ifdef DetailedDebug 
+#ifdef DetailedDebug
+#ifdef DEBUG
 		debugOut(FileSystem, "File system not available before, try MOUNT new FLASH drive, please wait...");
+#endif
 #endif
 		SPIFFS.format();
 	}
@@ -147,14 +146,18 @@ bool filesBegin()
 
 	if (result)
 	{
-#ifdef DetailedDebug 
+#ifdef DetailedDebug
+#ifdef DEBUG
 		debugOut(FileSystem, "File system mount OK");
+#endif
 #endif
 	}
 	else
 	{
-#ifdef DetailedDebug 
+#ifdef DetailedDebug
+#ifdef DEBUG
 		debugOut(FileSystem, "File system mount FAIL");
+#endif
 #endif
 	}
 
@@ -166,8 +169,10 @@ bool filesLoop()
 {
 	if (!_SPIFFSBegin())
 	{
-#ifdef DetailedDebug 
+#ifdef DetailedDebug
+#ifdef DEBUG
 		debugOut(FileSystem, "An Error has occurred while mounting file system");
+#endif
 #endif
 		return false;
 	}
@@ -179,17 +184,22 @@ bool filesLoop()
 
 			File file = SPIFFS.open(filesWriteCache[i].fileName, FILE_WRITE);
 			filesWriteCache[i].fileName = "";
-			if (!file) {
-#ifdef DetailedDebug 
+			if (!file)
+			{
+#ifdef DetailedDebug
+#ifdef DEBUG
 				debugOut(FileSystem, "There was an error opening the file for writing");
+#endif
 #endif
 				return false;
 			}
 
 			if (!file.print(filesWriteCache[i].value))
 			{
-#ifdef DetailedDebug 
+#ifdef DetailedDebug
+#ifdef DEBUG
 				debugOut(FileSystem, "fileWriteString failed");
+#endif
 #endif
 			}
 			filesWriteCache[i].value = "";
@@ -217,7 +227,7 @@ bool appendFileToWriteCache(String fileName, String value)
 
 bool filesExists(String fileName)
 {
-	fileName = normalizeFileName(fileName);	
+	fileName = normalizeFileName(fileName);
 	return SPIFFS.exists(fileName);
 }
 
@@ -228,20 +238,26 @@ int filesGetSize(String fileName)
 
 	if (!_SPIFFSBegin())
 	{
-#ifdef DetailedDebug 
+#ifdef DetailedDebug
+#ifdef DEBUG
 		debugOut(FileSystem, "An Error has occurred while mounting file system");
+#endif
 #endif
 		return -1;
 	}
 
-	if (!filesExists(fileName)) return -2;
+	if (!filesExists(fileName))
+		return -2;
 
 	// open file for reading
 	File file = SPIFFS.open(fileName, "r");
 
-	if (!file) {
-#ifdef DetailedDebug 
+	if (!file)
+	{
+#ifdef DetailedDebug
+#ifdef DEBUG
 		debugOut(FileSystem, "There was an error opening the file: " + fileName);
+#endif
 #endif
 		return -3;
 	}
@@ -256,19 +272,24 @@ int filesGetSize(String fileName)
 bool filesDelete(String fileName)
 {
 	fileName = normalizeFileName(fileName);
-#ifdef DetailedDebug 
+#ifdef DetailedDebug
+#ifdef DEBUG
 	debugOut(FileSystem, "|-> filesDelete: " + fileName);
+#endif
 #endif
 
 	if (!_SPIFFSBegin())
 	{
-#ifdef DetailedDebug 
+#ifdef DetailedDebug
+#ifdef DEBUG
 		debugOut(FileSystem, "An Error has occurred while mounting file system");
+#endif
 #endif
 		return false;
 	}
 
-	if (!filesExists(fileName)) return false;
+	if (!filesExists(fileName))
+		return false;
 
 	SPIFFS.remove(fileName);
 
@@ -282,13 +303,16 @@ bool filesRename(String source, String dest)
 
 	if (!_SPIFFSBegin())
 	{
-#ifdef DetailedDebug 
+#ifdef DetailedDebug
+#ifdef DEBUG
 		debugOut(FileSystem, "An Error has occurred while mounting file system");
+#endif
 #endif
 		return false;
 	}
 
-	if (!filesExists(source)) return false;
+	if (!filesExists(source))
+		return false;
 
 	if (filesExists(dest))
 	{
@@ -307,8 +331,10 @@ String filesReadString(String fileName)
 	String result = String();
 	if (!_SPIFFSBegin())
 	{
-#ifdef DetailedDebug 
+#ifdef DetailedDebug
+#ifdef DEBUG
 		debugOut(FileSystem, "An Error has occurred while mounting file system");
+#endif
 #endif
 		return result;
 	}
@@ -316,9 +342,12 @@ String filesReadString(String fileName)
 	// open file for reading
 	File file = SPIFFS.open(fileName, "r");
 
-	if (!file) {
-#ifdef DetailedDebug 
+	if (!file)
+	{
+#ifdef DetailedDebug
+#ifdef DEBUG
 		debugOut(FileSystem, "There was an error opening the file for reading: " + fileName);
+#endif
 #endif
 
 		return result;
@@ -337,27 +366,33 @@ bool filesWriteStringDirect(String fileName, String value)
 	fileName = normalizeFileName(fileName);
 	if (!_SPIFFSBegin())
 	{
-#ifdef DetailedDebug 
+#ifdef DetailedDebug
+#ifdef DEBUG
 		debugOut(FileSystem, "An Error has occurred while mounting file system");
+#endif
 #endif
 		return false;
 	}
 
-
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	File file = SPIFFS.open(fileName, "w");
 
-	if (!file) {
-#ifdef DetailedDebug 
+	if (!file)
+	{
+#ifdef DetailedDebug
+#ifdef DEBUG
 		debugOut(FileSystem, "There was an error opening the file for writing: " + fileName);
+#endif
 #endif
 		return false;
 	}
 
 	if (!file.print(value))
 	{
-#ifdef DetailedDebug 
+#ifdef DetailedDebug
+#ifdef DEBUG
 		debugOut(FileSystem, "fileWriteString failed: " + fileName);
+#endif
 #endif
 	}
 
@@ -368,24 +403,28 @@ bool filesWriteStringDirect(String fileName, String value)
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
 	File file = SPIFFS.open(fileName, FILE_WRITE);
-	
-	if (!file) {
-#ifdef DetailedDebug 
+
+	if (!file)
+	{
+#ifdef DetailedDebug
+#ifdef DEBUG
 		debugOut(FileSystem, "There was an error opening the file for writing");
+#endif
 #endif
 		return false;
 	}
 
 	if (!file.print(value))
 	{
-#ifdef DetailedDebug 
+#ifdef DetailedDebug
+#ifdef DEBUG
 		debugOut(FileSystem, "fileWriteString failed");
 #endif
-	}	
+#endif
+	}
 	file.close();
 	return true;
 #endif
-
 }
 
 bool filesWriteString(String fileName, String value)
@@ -397,7 +436,6 @@ bool filesWriteString(String fileName, String value)
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
 	return appendFileToWriteCache(fileName, value);
 #endif
-
 }
 
 bool filesAppendString(String fileName, String value)
@@ -406,24 +444,31 @@ bool filesAppendString(String fileName, String value)
 
 	if (!_SPIFFSBegin())
 	{
-#ifdef DetailedDebug 
+#ifdef DetailedDebug
+#ifdef DEBUG
 		debugOut(FileSystem, "An Error has occurred while mounting file system");
+#endif
 #endif
 		return false;
 	}
 
 	File file = SPIFFS.open(fileName, "a");
-	if (!file) {
-#ifdef DetailedDebug 
+	if (!file)
+	{
+#ifdef DetailedDebug
+#ifdef DEBUG
 		debugOut(FileSystem, "There was an error opening the file for writing: " + fileName);
+#endif
 #endif
 		return false;
 	}
 
 	if (!file.println(value))
 	{
-#ifdef DetailedDebug 
+#ifdef DetailedDebug
+#ifdef DEBUG
 		debugOut(FileSystem, "fileAppendString failed: " + fileName);
+#endif
 #endif
 	}
 
@@ -435,14 +480,18 @@ bool filesAppendString(String fileName, String value)
 bool filesAddString(String fileName, String value)
 {
 	fileName = normalizeFileName(fileName);
-#ifdef DetailedDebug 
+#ifdef DetailedDebug
+#ifdef DEBUG
 	debugOut(FileSystem, "|-> filesAddString: " + fileName);
+#endif
 #endif
 
 	if (!_SPIFFSBegin())
 	{
-#ifdef DetailedDebug 
+#ifdef DetailedDebug
+#ifdef DEBUG
 		debugOut(FileSystem, "An Error has occurred while mounting file system");
+#endif
 #endif
 		return false;
 	}
@@ -453,17 +502,22 @@ bool filesAddString(String fileName, String value)
 	}
 
 	File file = SPIFFS.open(fileName, "a");
-	if (!file) {
-#ifdef DetailedDebug 
+	if (!file)
+	{
+#ifdef DetailedDebug
+#ifdef DEBUG
 		debugOut(FileSystem, "There was an error opening the file for writing: " + fileName);
+#endif
 #endif
 		return false;
 	}
 
 	if (!file.print(value))
 	{
-#ifdef DetailedDebug 
+#ifdef DetailedDebug
+#ifdef DEBUG
 		debugOut(FileSystem, "fileAddString failed: " + fileName);
+#endif
 #endif
 	}
 
@@ -471,7 +525,6 @@ bool filesAddString(String fileName, String value)
 
 	return true;
 }
-
 
 int filesReadInt(String fileName)
 {
@@ -507,14 +560,18 @@ bool filesWriteFloat(String fileName, float value)
 String filesGetList(String path)
 {
 	path = normalizeFileName(path);
-#ifdef DetailedDebug 
+#ifdef DetailedDebug
+#ifdef DEBUG
 	debugOut(FileSystem, "|-> filesGetList: " + path);
+#endif
 #endif
 
 	if (!_SPIFFSBegin())
 	{
-#ifdef DetailedDebug 
+#ifdef DetailedDebug
+#ifdef DEBUG
 		debugOut(FileSystem, "An Error has occurred while mounting file system");
+#endif
 #endif
 		return "";
 	}
@@ -533,7 +590,8 @@ String filesGetList(String path)
 
 	File file = root.openNextFile();
 
-	while (file) {
+	while (file)
+	{
 		result += String(file.name()) + " " + String(file.size()) + "\n";
 		file = root.openNextFile();
 	}
@@ -581,25 +639,32 @@ bool filesWriteStructure(String fileName, void *value)
 {
 	if (!_SPIFFSBegin())
 	{
-#ifdef DetailedDebug 
-       debugOut(FileSystem, "An Error has occurred while mounting file system");
-	   return false;
+#ifdef DetailedDebug
+#ifdef DEBUG
+		debugOut(FileSystem, "An Error has occurred while mounting file system");
+#endif
+		return false;
 #endif
 	}
 
 	File file = SPIFFS.open("/" + fileName, "w");
-	if (!file) {
-#ifdef DetailedDebug 
+	if (!file)
+	{
+#ifdef DetailedDebug
+#ifdef DEBUG
 		debugOut(FileSystem, "There was an error opening the file for writing: " + fileName);
+#endif
 #endif
 		return false;
 	}
 
-	int writedSize = file.write((byte*)&value, sizeof(value));
+	int writedSize = file.write((byte *)&value, sizeof(value));
 	if (writedSize != sizeof(value))
 	{
-#ifdef DetailedDebug 
+#ifdef DetailedDebug
+#ifdef DEBUG
 		debugOut(FileSystem, "File write failed");
+#endif
 #endif
 		return false;
 	}

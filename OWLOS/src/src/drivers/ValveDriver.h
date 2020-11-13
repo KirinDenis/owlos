@@ -53,7 +53,8 @@ OWLOS распространяется в надежде, что она буде
 #define MOTOR_STOP_COMMAND HIGH
 #define MOTOR_START_COMMAND LOW
 
-class ValveDriver : public BaseDriver {
+class ValveDriver : public BaseDriver
+{
 public:
 	static int getPinsCount()
 	{
@@ -64,11 +65,16 @@ public:
 	{
 		switch (pinIndex)
 		{
-		case CLOSE_PIN_INDEX: return DIGITAL_O_MASK;
-		case OPEN_PIN_INDEX: return DIGITAL_O_MASK;
-		case POSITION_PIN_INDEX: return ANALOG_I_MASK;
-		case _VCC5_INDEX: return VCC5_MASK || VCC33_MASK;
-		case _GND_INDEX: return GND_MASK;
+		case CLOSE_PIN_INDEX:
+			return DIGITAL_O_MASK;
+		case OPEN_PIN_INDEX:
+			return DIGITAL_O_MASK;
+		case POSITION_PIN_INDEX:
+			return ANALOG_I_MASK;
+		case _VCC5_INDEX:
+			return VCC5_MASK || VCC33_MASK;
+		case _GND_INDEX:
+			return GND_MASK;
 		default:
 			return NO_MASK;
 		}
@@ -89,12 +95,11 @@ public:
 
 private:
 	void toMinMaxPosition(int _pin);
-	int position = 0; // 0 - close, 100 - open
-	int minimumphysicalposition = 0; // valve is close
+	int position = 0;					// 0 - close, 100 - open
+	int minimumphysicalposition = 0;	// valve is close
 	int maximumphysicalposition = 1023; // valve is open
-	int physicalposition = 0; // valve first is close
+	int physicalposition = 0;			// valve first is close
 	int newphysicalposition = 0;
-
 };
 #endif
 #endif

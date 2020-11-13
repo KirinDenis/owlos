@@ -49,14 +49,12 @@ OWLOS распространяется в надежде, что она буде
 #define FIRMWARE_VERSION "OWLOS version 1.10 (RC)"
 #define FIRMWARE_BUILD_NUMBER 107
 
-
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
 #include <rom/rtc.h>
 #endif
 
 #define DEFAULT_ZERO_VALUE 0x00
 #define DEFAULT_EMPTY_STR_VALUE ""
-
 
 bool nodeInit();
 
@@ -157,7 +155,7 @@ bool nodeSetESPMaxFreeBlockSize(int _espmaxfreeblocksize);
 uint8_t nodeGetESPHeapFragmentation();
 bool nodeSetESPHeapFragmentation(int _espheapfragmentation);
 
-const char * nodeGetESPSdkVersion();
+const char *nodeGetESPSdkVersion();
 bool nodeSetESPSdkVersion(String _espsdkversion);
 
 String nodeGetESPCoreVersion();

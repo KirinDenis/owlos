@@ -51,9 +51,9 @@ OWLOS распространяется в надежде, что она буде
 #define _VCC5_INDEX 3
 #define _GND_INDEX 4
 
-class LCDDriver : public BaseDriver {
+class LCDDriver : public BaseDriver
+{
 public:
-
 	static int getPinsCount()
 	{
 		return 5;
@@ -63,11 +63,16 @@ public:
 	{
 		switch (pinIndex)
 		{
-		case SDA_INDEX: return SDA_MASK;
-		case SCL_INDEX: return SCL_MASK;
-		case I2CADDR_INDEX: return I2CADDR_MASK;
-		case _VCC5_INDEX: return VCC5_MASK || VCC33_MASK;
-		case _GND_INDEX: return GND_MASK;
+		case SDA_INDEX:
+			return SDA_MASK;
+		case SCL_INDEX:
+			return SCL_MASK;
+		case I2CADDR_INDEX:
+			return I2CADDR_MASK;
+		case _VCC5_INDEX:
+			return VCC5_MASK || VCC33_MASK;
+		case _GND_INDEX:
+			return GND_MASK;
 		default:
 			return NO_MASK;
 		}
@@ -114,7 +119,7 @@ public:
 	bool setY(int _y, bool doEvent);
 
 private:
-	LiquidCrystal_I2C * lcd = nullptr;
+	LiquidCrystal_I2C *lcd = nullptr;
 	int cols = 20;
 	int rows = 4;
 	int display = 1;
