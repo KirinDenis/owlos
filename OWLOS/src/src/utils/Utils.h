@@ -44,7 +44,7 @@ OWLOS распространяется в надежде, что она буде
 #include <Arduino.h>
 
 //#define SERIAL_COLORIZED_OUTPUT
-#define DEBUG
+//#define DEBUG
 #ifdef DEBUG
 //#define DetailedDebug
 #endif
