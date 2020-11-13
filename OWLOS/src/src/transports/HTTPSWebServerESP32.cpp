@@ -253,6 +253,7 @@ void handleUploadFile(HTTPRequest *req, HTTPResponse *res)
     didwrite = true;
     while (!parser->endOfField())
     {
+      yield();
       byte buf[512];
       size_t readLength = parser->read(buf, 512);
       file.write(buf, readLength);
@@ -549,6 +550,137 @@ void handleGetAllScripts(HTTPRequest *req, HTTPResponse *res)
   res->setStatusCode(200);
   res->print(scriptsGetAll().c_str());
 }
+
+void handleStartDebugScript(HTTPRequest *req, HTTPResponse *res)
+{
+  corsCallback(req, res);
+  ResourceParameters *params = req->getParams();
+  std::string nameParam;
+
+  if (params->getQueryParameter("name", nameParam))
+  {
+    if (!scriptsStartDebug(String(nameParam.c_str())))
+    {
+      req->discardRequestBody();
+      res->setStatusCode(503);
+      res->setStatusText("can't start debug script");
+      res->setHeader("Content-Type", "text/html");
+    }
+    else
+    {
+      res->setStatusCode(200);
+      res->print("OK");
+    }
+    return;
+  }
+  handleNotFound(req, res);
+}
+
+void handleDebugNextScript(HTTPRequest *req, HTTPResponse *res)
+{
+  corsCallback(req, res);
+  ResourceParameters *params = req->getParams();
+  std::string nameParam;
+
+  if (params->getQueryParameter("name", nameParam))
+  {
+    String result = scriptsDebugNext(String(nameParam.c_str()));
+    if (result.length() != 0)
+    {
+      req->discardRequestBody();
+      res->setStatusCode(503);
+      res->setStatusText(result.c_str());
+      res->setHeader("Content-Type", "text/html");
+    }
+    else
+    {
+      res->setStatusCode(200);
+      res->print("OK");
+    }
+    return;
+  }
+  handleNotFound(req, res);
+}
+
+void handleCreateScript(HTTPRequest *req, HTTPResponse *res)
+{
+  corsCallback(req, res);
+
+  ResourceParameters *params = req->getParams();
+  std::string name;
+
+  if (params->getQueryParameter("name", name))
+  {
+    HTTPBodyParser *parser;
+    std::string contentType = req->getHeader("Content-Type");
+    size_t semicolonPos = contentType.find(";");
+    if (semicolonPos != std::string::npos)
+    {
+      contentType = contentType.substr(0, semicolonPos);
+    }
+    
+    if (contentType == "multipart/form-data")
+    {
+      parser = new HTTPMultipartBodyParser(req);
+    }
+    else
+    {
+      res->setStatusCode(501);
+      return;
+    }
+    // We iterate over the fields. Any field with a filename is uploaded
+    String byteCode = "";
+    bool didwrite = false;
+    if (parser->nextField())
+    {
+      //std::string name = parser->getFieldName();
+
+      size_t fileLength = 0;
+      didwrite = true;
+      while (!parser->endOfField())
+      {
+        yield();
+        byte buf[512];
+        size_t readLength = parser->read(buf, 512);
+        byteCode = String((char *)buf);
+        fileLength += readLength;
+      }
+
+      if (!didwrite)
+      {
+        res->setStatusCode(504);
+      }
+      else
+      {
+        debugOut("SCRIPT", name.c_str());
+        debugOut("SCRIPT", byteCode);
+        String result = scriptsCreate(decode(name.c_str()), decode(byteCode));
+
+        if (result.length() != 0)
+        {
+
+          res->setStatusCode(503);
+          res->setStatusText(result.c_str());
+          res->setHeader("Content-Type", "text/html");
+        }
+        else
+        {
+          res->setStatusCode(200);
+        }
+      }
+    }
+    else
+    {
+      res->setStatusCode(502);
+    }
+    delete parser;
+  }
+  else
+  {
+    res->setStatusCode(403);
+  }  
+}
+
 #endif
 
 void handleGetWebProperty(HTTPRequest *req, HTTPResponse *res)
@@ -676,8 +808,11 @@ void HTTPSWebServerBegin()
   setResourceNode("/getpinmap", "GET", &handleGetPinMap);
   setResourceNode("/getdriverpin", "GET", &handleGetDriverPin);
 #endif
-#ifdef USE_SCRIPTS
+#ifdef USE_SCRIPT
   setResourceNode("/getallscripts", "GET", &handleGetAllScripts);
+  setResourceNode("/startdebugscript", "GET", &handleStartDebugScript);
+  setResourceNode("/debugnextscript", "GET", &handleDebugNextScript);
+  setResourceNode("/createscript", "POST", &handleCreateScript);
 #endif
   setResourceNode("/getwebproperty", "GET", &handleGetWebProperty);
   setResourceNode("/setwebproperty", "POST", &handleSetWebProperty);
