@@ -82,29 +82,42 @@ int8_t wifinetworkscount((int8_t)DEFAULT_ZERO_VALUE);
 
 String nodeGetWiFiProperties()
 {
-	String result = "properties for:wifi\n";
-	result += "id=wifi//r\n";
-	result += "type=" + String(WiFiType) + "//r\n";
-	result += "wifiaccesspointavailable=" + String(nodeGetWiFiAccessPointAvailable()) + "//bs\n";
-	result += "wifiaccesspointssid=" + nodeGetWiFiAccessPointSSID() + "//s\n";
-	result += "wifiappassword=" + nodeGetWiFiAccessPointPassword() + "//sp\n";
-	result += "wifiaccesspointip=" + nodeGetWiFiAccessPointIP() + "//\n";
-	result += "wifiavailable=" + String(nodeGetWiFiAvailable()) + "//bs\n";
-	result += "wifissid=" + nodeGetWiFiSSID() + "//s\n";
-	result += "wifipassword=" + nodeGetWiFiPassword() + "//ps\n";
-	result += "wifiip=" + nodeGetWiFiIP() + "//\n";
-	result += "wifiisconnected=" + String(nodeGetWiFiIsConnected()) + "//bs\n";
-	result += "connectedwifissid=" + nodeGetConnectedWiFiSSID() + "//sr\n";
-	result += "wifirssi=" + String(nodeGetWiFiRSSI()) + "//r\n";
-	result += "wifimode=" + String(nodeGetWiFiMode()) + "//r\n";
-	result += nodeGetAllWiFiModes() + "//r\n";
-	result += "wifistatus=" + String(nodeGetWiFiStatus()) + "//r\n";
-	result += "wifistatustostring=" + String(nodeGetWiFiStatusToString()) + "//r\n";
-	result += nodeGetAllWiFiStatuses() + "//r\n";
-	result += nodeGetWiFiNetworksParameters() + "//r\n";
-	result += nodeGetAllWiFiEncryptionTypes() + "//r\n";
-
-	return result;
+	return "properties for:wifi\n"
+		   "id=wifi//r\n"
+		   "type=" +
+		   String(WiFiType) + "//r\n"
+							  "wifiaccesspointavailable=" +
+		   String(nodeGetWiFiAccessPointAvailable()) + "//bs\n"
+													   "wifiaccesspointssid=" +
+		   nodeGetWiFiAccessPointSSID() + "//s\n"
+										  "wifiappassword=" +
+		   nodeGetWiFiAccessPointPassword() + "//sp\n"
+											  "wifiaccesspointip=" +
+		   nodeGetWiFiAccessPointIP() + "//\n"
+										"wifiavailable=" +
+		   String(nodeGetWiFiAvailable()) + "//bs\n"
+											"wifissid=" +
+		   nodeGetWiFiSSID() + "//s\n"
+							   "wifipassword=" +
+		   nodeGetWiFiPassword() + "//ps\n"
+								   "wifiip=" +
+		   nodeGetWiFiIP() + "//\n"
+							 "wifiisconnected=" +
+		   String(nodeGetWiFiIsConnected()) + "//bs\n"
+											  "connectedwifissid=" +
+		   nodeGetConnectedWiFiSSID() + "//sr\n"
+										"wifirssi=" +
+		   String(nodeGetWiFiRSSI()) + "//r\n"
+									   "wifimode=" +
+		   String(nodeGetWiFiMode()) + "//r\n" +
+		   nodeGetAllWiFiModes() + "//r\n"
+								   "wifistatus=" +
+		   String(nodeGetWiFiStatus()) + "//r\n"
+										 "wifistatustostring=" +
+		   String(nodeGetWiFiStatusToString()) + "//r\n" +
+		   nodeGetAllWiFiStatuses() + "//r\n" +
+		   nodeGetWiFiNetworksParameters() + "//r\n" +
+		   nodeGetAllWiFiEncryptionTypes() + "//r\n";
 }
 
 String wifiOnMessage(String route, String _payload, int8_t transportMask)
@@ -269,8 +282,8 @@ int nodeGetWiFiAccessPointAvailable()
 
 bool nodeSetWiFiAccessPointAvailable(int _wifiapavailable)
 {
-	#ifdef DEBUG
-debugOut("MY", "nodeSetWiFiAccessPointAvailable");
+#ifdef DEBUG
+	debugOut("MY", "nodeSetWiFiAccessPointAvailable");
 #endif
 	wifiapavailable = _wifiapavailable;
 	return onInsideChange("wifiapavailable", String(wifiapavailable));
@@ -320,8 +333,8 @@ String nodeGetWiFiAccessPointIP()
 	{
 		IPAddress real_wifiaccesspointip = WiFi.softAPIP();
 #ifdef DetailedDebug
-		#ifdef DEBUG
-debugOut(nodeid, "Current Access Point IP: " + real_wifiaccesspointip.toString());
+#ifdef DEBUG
+		debugOut(nodeid, "Current Access Point IP: " + real_wifiaccesspointip.toString());
 #endif
 #endif
 		if (propertyFileReaded.indexOf("wifiaccesspointip;") < 0)
@@ -330,16 +343,16 @@ debugOut(nodeid, "Current Access Point IP: " + real_wifiaccesspointip.toString()
 		if (!real_wifiaccesspointip.toString().equals(wifiaccesspointip))
 		{
 #ifdef DetailedDebug
-			#ifdef DEBUG
-debugOut(nodeid, "Current Access Point IP not equals");
+#ifdef DEBUG
+			debugOut(nodeid, "Current Access Point IP not equals");
 #endif
 #endif
 
 			if (!nodeSetWiFiAccessPointIP(wifiaccesspointip))
 			{
 #ifdef DetailedDebug
-				#ifdef DEBUG
-debugOut(nodeid, "Can't change Access Point IP to: " + wifiaccesspointip);
+#ifdef DEBUG
+				debugOut(nodeid, "Can't change Access Point IP to: " + wifiaccesspointip);
 #endif
 #endif
 
@@ -353,8 +366,8 @@ debugOut(nodeid, "Can't change Access Point IP to: " + wifiaccesspointip);
 		wifiaccesspointip = NotAvailable;
 	}
 #ifdef DetailedDebug
-	#ifdef DEBUG
-debugOut(nodeid, "wifiaccesspointip=" + wifiaccesspointip);
+#ifdef DEBUG
+	debugOut(nodeid, "wifiaccesspointip=" + wifiaccesspointip);
 #endif
 #endif
 
@@ -365,8 +378,8 @@ bool nodeSetWiFiAccessPointIP(String _wifiaccesspointip)
 {
 	IPAddress real_wifiaccesspointip;
 #ifdef DetailedDebug
-	#ifdef DEBUG
-debugOut(nodeid, "Current Access Point IP: " + WiFi.softAPIP().toString());
+#ifdef DEBUG
+	debugOut(nodeid, "Current Access Point IP: " + WiFi.softAPIP().toString());
 #endif
 #endif
 

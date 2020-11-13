@@ -108,7 +108,7 @@ void onMqttConnect(bool sessionPresent)
 
 void onMqttDisconnect(AsyncMqttClientDisconnectReason reason)
 {
-    #ifdef DEBUG
+#ifdef DEBUG
     {
         String disconnectReason = "OnDisconnected from MQTT: ";
         switch (reason)
@@ -159,7 +159,7 @@ void onMqttDisconnect(AsyncMqttClientDisconnectReason reason)
     {
         xTimerStart(mqttReconnectTimer, 0);
     }
-#endif    
+#endif
 }
 
 void onMqttSubscribe(uint16_t packetId, uint8_t qos)

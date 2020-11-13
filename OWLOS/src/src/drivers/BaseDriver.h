@@ -43,7 +43,7 @@ OWLOS распространяется в надежде, что она буде
 #ifndef BASE_H
 #define BASE_H
 
-#pragma once //<- the BaseDriver node must INCLUDE ONCE TO THE PROJECT, else we have REDEFINITION error 
+#pragma once //<- the BaseDriver node must INCLUDE ONCE TO THE PROJECT, else we have REDEFINITION error
 //#include "../config.h"
 #include "../services/PinService.h"
 #include "../services/TransportService.h"
@@ -66,21 +66,18 @@ OWLOS распространяется в надежде, что она буде
 #define PIN2_INDEX 2
 #define PIN3_INDEX 3
 
-
 class BaseDriver
 {
-  public:
+public:
+    static int getPinsCount()
+    {
+        return 0;
+    }
 
-	  static int getPinsCount()
-	  {
-		 return 0;
-	  }
-
-	  static uint16_t getPinType(int pinIndex)
-	  {
-		  return NO_MASK;
-	  }
-
+    static uint16_t getPinType(int pinIndex)
+    {
+        return NO_MASK;
+    }
 
     //Driver id property, used with topic and identify driver inside system
     String id = "";
@@ -93,7 +90,7 @@ class BaseDriver
     //The driver must check here physical state and preload property values stored by Flash file system (if exists)
     virtual bool init(String _id);
 
-	void del();
+    void del();
 
     //Method begin(..) calls after(IF) transport is available and Unit "know" self and drivers ID's and Topic's (see: Main::Loop()->DriversBegin())
     virtual bool begin(String _topic);
@@ -108,7 +105,7 @@ class BaseDriver
     //...
     //propNameNNN=propNNNValue
     virtual String getAllProperties();
-    
+
     //The publish() method as query() metohod calls from Main::Loop()->DriversLoop()->..., but less often then publish(), not ask physical driver values, but publish() the value via transport()
     //to all subscribed to driver topic clients
     virtual bool publish();
@@ -127,7 +124,7 @@ class BaseDriver
     int getType();
     bool setType(int _type);
 
-	//Trap settings
+    //Trap settings
     float getTrap();
     bool setTrap(float _trap);
 
@@ -139,18 +136,18 @@ class BaseDriver
     int getPublishInterval();
     bool setPublishInterval(int _publishInterval);
 
-	//HistoryData property GET<->SET wrappers
-	String getHistoryData();
-	bool setHistoryData(float _historydata);
+    //HistoryData property GET<->SET wrappers
+    String getHistoryData();
+    bool setHistoryData(float _historydata);
 
-	//History file property Read<->Write wrappers
-	String readHistoryFile();
-	bool writeHistoryFile(float _historydata);
+    //History file property Read<->Write wrappers
+    String readHistoryFile();
+    bool writeHistoryFile(float _historydata);
 
-  protected:
-	  int parsePinNumber(String _topic, String getPinStr);
+protected:
+    int parsePinNumber(String _topic, String getPinStr);
     //TRUE(1)
-    //FALSE(0) 
+    //FALSE(0)
     //FALSE by default
     int available = 0;
 
@@ -159,26 +156,24 @@ class BaseDriver
 
     float trap = 0;
 
-	//String historyFileName = "";
+    //String historyFileName = "";
 
- 
-	//Default size of history data array. By default array size allows store data during 5 minuts every 10 seconds
-	int historySize = 30;
+    //Default size of history data array. By default array size allows store data during 5 minuts every 10 seconds
+    int historySize = 30;
 
-	//Current driver array for storing history the data. By default array size allows store history data during 5 minuts every 10 seconds
-	float *historyData = new float[historySize]();
+    //Current driver array for storing history the data. By default array size allows store history data during 5 minuts every 10 seconds
+    float *historyData = new float[historySize]();
 
-	//Count the amount of times a history file is written. 
-	
-		//Set time for writing history file
-	int historyFileWriteTime = 60;
-	int filesIndexesSize = 25; //24 with history + 1 for current writting;
+    //Count the amount of times a history file is written.
 
-	int currentFile = 0;
-	int currentFileIndex = 0;
-	int historyFileCount = 0;
-	int *historyFilesIndexes = new int[filesIndexesSize]();
+    //Set time for writing history file
+    int historyFileWriteTime = 60;
+    int filesIndexesSize = 25; //24 with history + 1 for current writting;
 
+    int currentFile = 0;
+    int currentFileIndex = 0;
+    int historyFileCount = 0;
+    int *historyFilesIndexes = new int[filesIndexesSize]();
 
     //accomulate last query() method call time (see: queryInterval property and query() method)
     unsigned long lastQueryMillis = 0;
@@ -186,26 +181,26 @@ class BaseDriver
     //accomulate last publish() method call time (see: publishInterval property and publish() method)
     unsigned long lastPublishMillis = 0;
 
-	//accomulate last publish() method call time (see: publishInterval property and publish() method)
-	unsigned long lastHistoryMillis = 0;
+    //accomulate last publish() method call time (see: publishInterval property and publish() method)
+    unsigned long lastHistoryMillis = 0;
 
-	//Amount of history elements
-	int historyCount = 0;
+    //Amount of history elements
+    int historyCount = 0;
 
-	//accomulate last writeHistoryFile method call time 
-	unsigned long lastHistoryFileWriteMillis = 0;
+    //accomulate last writeHistoryFile method call time
+    unsigned long lastHistoryFileWriteMillis = 0;
 
     //Set count how often the query() method "core section" must be called  (NOTE: for stabale works queryInterval property MUST BE BIGGER THAN publishInterval property)
-    unsigned long queryInterval = ONESECOND;    
+    unsigned long queryInterval = ONESECOND;
 
     //Set count how often the publish() method "core section" must be called
     unsigned long publishInterval = ONESECOND * 600;
 
-	//Set count how often the put the driver data in the LogData array, by default logInterval is equal to one minute
-	unsigned long historyInterval = ONESECOND * 10;
+    //Set count how often the put the driver data in the LogData array, by default logInterval is equal to one minute
+    unsigned long historyInterval = ONESECOND * 10;
 
-	//Set count how often the put the driver data in the LogData array, by default logInterval is equal to one minute
-	unsigned long historyFileWriteInterval = ONESECOND * 60; // ONESECOND * 60;
+    //Set count how often the put the driver data in the LogData array, by default logInterval is equal to one minute
+    unsigned long historyFileWriteInterval = ONESECOND * 60; // ONESECOND * 60;
 
     //Calls when client get property from network
     String onGetProperty(String _property, String _payload, int8_t transportMask);

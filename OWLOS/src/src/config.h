@@ -43,8 +43,11 @@ OWLOS распространяется в надежде, что она буде
 #ifndef CONFIG_H
 #define CONFIG_H
 
+
+
 #define USE_ESP_BOARDS
     #ifdef USE_ESP_BOARDS
+       
         #include <core_version.h>
         #define USE_ESP_DRIVER
             #ifdef USE_ESP_DRIVER
@@ -57,7 +60,7 @@ OWLOS распространяется в надежде, что она буде
                 // Если ваше устройство с OWLOS работает стационарно и не предусматривается частого изменения 
                 // настройки сети - используйте этот флаг.
                 //
-                // #define DONT_USE_FILES
+                //#define DONT_USE_FILES
 
                 //Свойства WiFi по умолчанию. Если используется DONT_USE_FILES, иначе приоритетны значения этих свойств из файлов настроек
                 //Если соответствующий файл отсутствует, используется значения из этих #define
@@ -109,7 +112,9 @@ OWLOS распространяется в надежде, что она буде
                 //#define USE_HTTPS_SERVER
 
                 //Включает в сборку OWLOS HTTP Server 
-                #define USE_HTTP_SERVER         
+                #define USE_HTTP_SERVER  
+
+                #define USE_HTTP_CLIENT
 
                 //Включает поиск и установку обновлений OWLOS в сети Internet
                 //Новые версии готовых прошивок находятся здесь: https://github.com/KirinDenis/owlos/tree/master/OWLOS
@@ -118,7 +123,7 @@ OWLOS распространяется в надежде, что она буде
                 //#define USE_UPDATE_SERVICE
 
                 //Включает OTA (Over The Air) возможность загружать новые прошивки по локальной WiFi сети (без использования UART)
-                //#define USE_OTA_SERVICE
+                #define USE_OTA_SERVICE
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4       
                 //Включает в сборку MQTT клиент
@@ -128,6 +133,7 @@ OWLOS распространяется в надежде, что она буде
     #else
         #define USE_ARDUINO_BOARDS
     #endif
+    
 
 #define USE_UART
 
@@ -149,10 +155,10 @@ OWLOS распространяется в надежде, что она буде
         #define USE_LCD_DRIVER
 
         //Драйвер шаговых двигателей
-        //#define USE_STEPPER_DRIVER
+        #define USE_STEPPER_DRIVER
         
         //Драйвер запорных арматур (закрыть, открыть, положени)
-        //#define USE_VALVE_DRIVER
+        #define USE_VALVE_DRIVER
     #endif
 #endif
 

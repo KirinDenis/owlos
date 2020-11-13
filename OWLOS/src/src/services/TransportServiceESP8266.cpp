@@ -66,13 +66,11 @@ bool wifiStatus = false;
 bool wifiAPResult = false;
 bool wifiResult = false;
 
-
-
 bool transportBegin()
 {
 #ifdef DetailedDebug
-	#ifdef DEBUG
-debugOut(TransportID, "begin");
+#ifdef DEBUG
+	debugOut(TransportID, "begin");
 #endif
 #endif
 
@@ -80,8 +78,8 @@ debugOut(TransportID, "begin");
 	{
 		nodeSetWiFiMode(WIFI_AP_STA);
 #ifdef DetailedDebug
-		#ifdef DEBUG
-debugOut(TransportID, "WiFi mode Access Point and Station (both)");
+#ifdef DEBUG
+		debugOut(TransportID, "WiFi mode Access Point and Station (both)");
 #endif
 #endif
 	}
@@ -90,8 +88,8 @@ debugOut(TransportID, "WiFi mode Access Point and Station (both)");
 		nodeSetWiFiMode(WIFI_AP);
 		wifi_station_disconnect();
 #ifdef DetailedDebug
-		#ifdef DEBUG
-debugOut(TransportID, "WiFi mode Access Point");
+#ifdef DEBUG
+		debugOut(TransportID, "WiFi mode Access Point");
 #endif
 #endif
 	}
@@ -100,8 +98,8 @@ debugOut(TransportID, "WiFi mode Access Point");
 		nodeSetWiFiMode(WIFI_STA);
 		WiFi.softAPdisconnect(true);
 #ifdef DetailedDebug
-		#ifdef DEBUG
-debugOut(TransportID, "WiFi mode Station");
+#ifdef DEBUG
+		debugOut(TransportID, "WiFi mode Station");
 #endif
 #endif
 	}
@@ -111,8 +109,8 @@ debugOut(TransportID, "WiFi mode Station");
 		WiFi.softAPdisconnect(true);
 		wifi_station_disconnect();
 #ifdef DetailedDebug
-		#ifdef DEBUG
-debugOut(TransportID, "no WiFi mode select, WiFi not accessable");
+#ifdef DEBUG
+		debugOut(TransportID, "no WiFi mode select, WiFi not accessable");
 #endif
 #endif
 		return false;
@@ -153,8 +151,8 @@ bool transportAvailable()
 	}
 
 #ifdef DetailedDebug
-	#ifdef DEBUG
-debugOut(TransportID, "WiFi AP=" + String(nodeGetWiFiAccessPointAvailable()) + ":" + String(wifiAPResult) + "|" + "WiFi ST=" + String(nodeGetWiFiAvailable()) + ":" + String(wifiResult) + " (" + nodeGetWiFiIP() + ")");
+#ifdef DEBUG
+	debugOut(TransportID, "WiFi AP=" + String(nodeGetWiFiAccessPointAvailable()) + ":" + String(wifiAPResult) + "|" + "WiFi ST=" + String(nodeGetWiFiAvailable()) + ":" + String(wifiResult) + " (" + nodeGetWiFiIP() + ")");
 #endif
 #endif
 	wifiStatus = wifiAPResult & wifiResult;
@@ -176,8 +174,8 @@ bool WiFiAccessPointReconnect()
 		{
 			WiFiAccessPointConnected = true;
 #ifdef DetailedDebug
-			#ifdef DEBUG
-debugOut(TransportID, "Started as WiFi Access Point: " + nodeGetWiFiAccessPointSSID() + " IP: " + accessPointIP);
+#ifdef DEBUG
+			debugOut(TransportID, "Started as WiFi Access Point: " + nodeGetWiFiAccessPointSSID() + " IP: " + accessPointIP);
 #endif
 #endif
 			return true;
@@ -186,8 +184,8 @@ debugOut(TransportID, "Started as WiFi Access Point: " + nodeGetWiFiAccessPointS
 		{
 			WiFiAccessPointConnected = false;
 #ifdef DetailedDebug
-			#ifdef DEBUG
-debugOut(TransportID, "WiFi Access Point not started as " + nodeGetWiFiAccessPointSSID());
+#ifdef DEBUG
+			debugOut(TransportID, "WiFi Access Point not started as " + nodeGetWiFiAccessPointSSID());
 #endif
 #endif
 		}
@@ -212,8 +210,8 @@ bool WiFiReconnect()
 		if (WiFiSSID.length() == 0)
 		{
 #ifdef DetailedDebug
-			#ifdef DEBUG
-debugOut(TransportID, "WiFi SSID not defined");
+#ifdef DEBUG
+			debugOut(TransportID, "WiFi SSID not defined");
 #endif
 #endif
 			return false;
@@ -222,14 +220,14 @@ debugOut(TransportID, "WiFi SSID not defined");
 		if (WiFi.status() != WL_CONNECTED)
 		{
 #ifdef DetailedDebug
-			#ifdef DEBUG
-debugOut(TransportID, "try to connect to - " + WiFiSSID + ":" + WiFiPassword + " wait ");
+#ifdef DEBUG
+			debugOut(TransportID, "try to connect to - " + WiFiSSID + ":" + WiFiPassword + " wait ");
 #endif
 #endif
 			nodeGetScanWiFiNetworks();
 #ifdef DetailedDebug
-			#ifdef DEBUG
-debugOut(TransportID, nodeGetWiFiNetworksParameters());
+#ifdef DEBUG
+			debugOut(TransportID, nodeGetWiFiNetworksParameters());
 #endif
 #endif
 			if (!_WiFiMulti.existsAP(WiFiSSID.c_str(), WiFiPassword.c_str()))
@@ -243,15 +241,15 @@ debugOut(TransportID, nodeGetWiFiNetworksParameters());
 				delay(500);
 				wait++;
 #ifdef DetailedDebug
-				#ifdef DEBUG
-debugOut(TransportID, "Wait for WiFi [" + String(wait) + "] from [10]");
+#ifdef DEBUG
+				debugOut(TransportID, "Wait for WiFi [" + String(wait) + "] from [10]");
 #endif
 #endif
 				if (wait > 9)
 				{
 #ifdef DetailedDebug
-					#ifdef DEBUG
-debugOut(TransportID, "Wait for WiFi TimeOut...break");
+#ifdef DEBUG
+					debugOut(TransportID, "Wait for WiFi TimeOut...break");
 #endif
 #endif
 					break;
@@ -261,8 +259,8 @@ debugOut(TransportID, "Wait for WiFi TimeOut...break");
 			if (WiFi.status() == WL_CONNECTED)
 			{
 #ifdef DetailedDebug
-				#ifdef DEBUG
-debugOut(TransportID, "WiFi connected as Client success, local IP: " + nodeGetWiFiIP());
+#ifdef DEBUG
+				debugOut(TransportID, "WiFi connected as Client success, local IP: " + nodeGetWiFiIP());
 #endif
 #endif
 				return true;
@@ -282,8 +280,8 @@ void Callback(char *_topic, byte *_payload, unsigned int length)
 	if (nodeGetMQTTAvailable() == 1)
 	{
 #ifdef DetailedDebug
-		#ifdef DEBUG
-debugOut(TransportID, "onMessage topic - " + String(_topic));
+#ifdef DEBUG
+		debugOut(TransportID, "onMessage topic - " + String(_topic));
 #endif
 #endif
 		char payload_buff[PayloadBufferSize]; // create character buffer with ending by null terminator (zero string format)
@@ -316,8 +314,8 @@ bool transportReconnect()
 
 	lastTryReconnect = millis();
 #ifdef DetailedDebug
-	#ifdef DEBUG
-debugOut(TransportID, "begin reconnect, WiFi AP=" + String(nodeGetWiFiAccessPointAvailable()) + " WiFi ST=" + String(nodeGetWiFiAvailable()));
+#ifdef DEBUG
+	debugOut(TransportID, "begin reconnect, WiFi AP=" + String(nodeGetWiFiAccessPointAvailable()) + " WiFi ST=" + String(nodeGetWiFiAvailable()));
 #endif
 #endif
 
@@ -343,8 +341,8 @@ debugOut(TransportID, "begin reconnect, WiFi AP=" + String(nodeGetWiFiAccessPoin
 			wifiAPResult = true;
 	}
 #ifdef DetailedDebug
-	#ifdef DEBUG
-debugOut(TransportID, "reconnect result, WiFi AP=" + String(wifiAPResult) + " WiFi ST=" + String(wifiResult));
+#ifdef DEBUG
+	debugOut(TransportID, "reconnect result, WiFi AP=" + String(wifiAPResult) + " WiFi ST=" + String(wifiResult));
 #endif
 #endif
 
@@ -361,9 +359,9 @@ debugOut(TransportID, "reconnect result, WiFi AP=" + String(wifiAPResult) + " Wi
 
 		if (nodeGetOTAAvailable() == 1)
 		{
-#ifdef USE_OTA            
+#ifdef USE_OTA
 			OTABegin();
-#endif            
+#endif
 		}
 		if (nodeGetMQTTAvailable() == 1)
 		{
@@ -374,9 +372,7 @@ debugOut(TransportID, "reconnect result, WiFi AP=" + String(wifiAPResult) + " Wi
 
 void transportSubscribe(String _topic)
 {
-
 }
-
 
 void transportLoop()
 {
@@ -390,9 +386,9 @@ void transportLoop()
 
 		if (nodeGetOTAAvailable() == 1)
 		{
-#ifdef USE_OTA         
+#ifdef USE_OTA
 			OTALoop();
-#endif            
+#endif
 		}
 	}
 }
@@ -408,7 +404,6 @@ ESP8266WiFiMulti transportGetWifiMulti()
 	return _WiFiMulti;
 }
 #endif
-
 
 #endif
 #endif

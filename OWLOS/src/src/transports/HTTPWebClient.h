@@ -44,7 +44,7 @@ OWLOS распространяется в надежде, что она буде
 #include "../config.h"
 #ifdef USE_ESP_DRIVER
 
-bool downloadFile(String fileName, String  url);
+bool downloadFile(String fileName, String url);
 
 #endif
 #endif

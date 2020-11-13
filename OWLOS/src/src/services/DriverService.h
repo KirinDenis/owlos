@@ -78,7 +78,7 @@ String driversGetAccessable();
 void driversSubscribe();
 void driversCallback(String _topic, String _payload);
 String driversGetDriversId();
-BaseDriver* driversGetDriver(String id);
+BaseDriver *driversGetDriver(String id);
 String driversGetDriverProperty(String id, String property);
 String driversSetDriverProperty(String id, String property, String value);
 String driversGetDriverProperties(String id);
@@ -94,7 +94,6 @@ bool driversSaveList();
 String driversLoadFromConfig();
 
 String driversAdd(int type, String id, String pins);
-
 
 String driversChangePin(String pinName, String driverId, int driverPinIndex);
 String driversDelete(String id);

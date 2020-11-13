@@ -43,43 +43,55 @@ OWLOS распространяется в надежде, что она буде
 
 //I2C LCD driver based on OWLOS\src\libraries\LiquidCrystal_I2C\LiquidCrystal_I2C.cpp by https://gitlab.com/tandembyte/liquidcrystal_i2c
 //
-//Известные I2C адрес для разных типов PCF8574хх чипов (если перемычки не соединенны) 
-//порт 0x27 для PCF8574T 
-//порт 0x3F для PCF8574AT 
+//Известные I2C адрес для разных типов PCF8574хх чипов (если перемычки не соединенны)
+//порт 0x27 для PCF8574T
+//порт 0x3F для PCF8574AT
 //если вам известны адреса для других типов - передайте их нам
+//https://raspberrypi.stackexchange.com/questions/39773/how-can-i-use-multiple-lcd-with-connected-via-i2c-on-same-raspberry-project
+//A0 | A1 | A2 | 8574 | 8574A
+//----+----+----+------+-------
+//  L |  L |  L | 0x20 | 0x38
+//  L |  L |  H | 0x21 | 0x39
+//  L |  H |  L | 0x22 | 0x3A
+//  L |  H |  H | 0x23 | 0x3B
+//  H |  L |  L | 0x24 | 0x3C
+//  H |  L |  H | 0x25 | 0x3D
+//  H |  H |  L | 0x26 | 0x3E
+//  H |  H |  H | 0x27 | 0x3F
 //
 //Хорошая лекция по I2C шине:
 //https://www.youtube.com/watch?v=_4KD29qnhNM
 //WiKi:
 //https://ru.wikipedia.org/wiki/I%C2%B2C
 //https://ru.wikipedia.org/wiki/%D0%96%D0%B8%D0%B4%D0%BA%D0%BE%D0%BA%D1%80%D0%B8%D1%81%D1%82%D0%B0%D0%BB%D0%BB%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9_%D0%B4%D0%B8%D1%81%D0%BF%D0%BB%D0%B5%D0%B9
-//контроллер LCD 
+//контроллер LCD
 //https://ru.wikipedia.org/wiki/HD44780
 
-//примечание: драйвер LCD требует I2C адрес подчиненного устройства на шине. Для совместимости с общей архитектурой драйверов - I2C адрес представлен внешне в роли 
-//пина. Что делает возможность управления адресом из PinService. 
+//примечание: драйвер LCD требует I2C адрес подчиненного устройства на шине. Для совместимости с общей архитектурой драйверов - I2C адрес представлен внешне в роли
+//пина. Что делает возможность управления адресом из PinService.
 
 #define DRIVER_ID "lcd"
 #define LCD_LOOP_INTERVAL 200
 
 bool LCDDriver::init()
 {
-	if (id.length() == 0) id = DRIVER_ID;
+	if (id.length() == 0)
+		id = DRIVER_ID;
 	BaseDriver::init(id);
 	//считываем количество колонок и строк дисплея из файла или из константы (по умолчанию 20x4)
 	getCols();
 	getRows();
 	//получаем I2C Slave адрес для обращения к текущему LCD на I2C шине
-	DriverPin * pinDriverInfo = getDriverPinByDriverId(id, I2CADDR_INDEX);
+	DriverPin *pinDriverInfo = getDriverPinByDriverId(id, I2CADDR_INDEX);
 	if (pinDriverInfo != nullptr)
 	{
-		//если пользователь задал адрес, инкапсулируем класс обслуживающий LCD и пробуем работать с дисплеем через указанный порт
-		#ifdef DEBUG
-debugOut("LCD", String(pinDriverInfo->driverI2CAddr));
+//если пользователь задал адрес, инкапсулируем класс обслуживающий LCD и пробуем работать с дисплеем через указанный порт
+#ifdef DEBUG
+		debugOut("LCD", String(pinDriverInfo->driverI2CAddr));
 #endif
 		lcd = new LiquidCrystal_I2C(pinDriverInfo->driverI2CAddr, cols, rows); //port = 0x27 for PCF8574T and PCF8574AT for 0x3F, 16 cols, 2 raws
-		lcd->init();  //init properies
-		//мы не проверяем удалось ли подключить дисплей, пробуем применить настройки, пользователь визуально определит - прошло ли действие успешно   
+		lcd->init();														   //init properies
+		//мы не проверяем удалось ли подключить дисплей, пробуем применить настройки, пользователь визуально определит - прошло ли действие успешно
 		getDisplay();
 		setDisplay(display, false);
 
@@ -106,8 +118,8 @@ debugOut("LCD", String(pinDriverInfo->driverI2CAddr));
 
 		return true;
 	}
-	#ifdef DEBUG
-debugOut("LCD", "NUL NUL NUL");
+#ifdef DEBUG
+	debugOut("LCD", "NUL NUL NUL");
 #endif
 	return false;
 }
@@ -122,35 +134,45 @@ bool LCDDriver::begin(String _topic)
 //возвращает свойства драйвера LCD
 String LCDDriver::getAllProperties()
 {
-	String result = BaseDriver::getAllProperties();
-	result += "text=" + text + "//s\n";
-	result += "textbyrows=" + text + "//s\n"; //the same text 
-	result += "display=" + String(display) + "//b\n";
-	result += "backlight=" + String(backlight) + "//b\n";
-	result += "cursor=" + String(cursor) + "//b\n";
-	result += "blink=" + String(blink) + "//b\n";
-	result += "autoscroll=" + String(autoscroll) + "//b\n";
-	result += "clear=" + String(clear) + "//b\n";
-	result += "x=" + String(x) + "//i\n";
-	result += "y=" + String(y) + "//i\n";
-	result += "cols=" + String(cols) + "//i\n";
-	result += "rows=" + String(rows) + "//i\n";
-	return result;
+	return BaseDriver::getAllProperties();
+	"text=" + text + "//s\n"
+					 "textbyrows=" +
+		text + "//s\n"
+			   "display=" +
+		String(display) + "//b\n"
+						  "backlight=" +
+		String(backlight) + "//b\n"
+							"cursor=" +
+		String(cursor) + "//b\n"
+						 "blink=" +
+		String(blink) + "//b\n";
+	"autoscroll=" + String(autoscroll) + "//b\n"
+										 "clear=" +
+		String(clear) + "//b\n"
+						"x=" +
+		String(x) + "//i\n"
+					"y=" +
+		String(y) + "//i\n"
+					"cols=" +
+		String(cols) + "//i\n"
+					   "rows=" +
+		String(rows) + "//i\n";
 }
 //управление свойствами LCD драйвера
 String LCDDriver::onMessage(String route, String _payload, int8_t transportMask)
 {
 	String result = BaseDriver::onMessage(route, _payload, transportMask);
 
-	//обычно драйвер не управляет свойствами пинов, но в данном драйвере адрес I2C порта использован в роли Pin - для совместимости 
+	//обычно драйвер не управляет свойствами пинов, но в данном драйвере адрес I2C порта использован в роли Pin - для совместимости
 	//с архитектурой, по этой причине необходим отдельный обработчик I2CADDR пина
 	if (matchRoute(route, topic, "/setpin"))
 	{
 		//base is put the new address to to PinService
-		result = init(); //init() get Address from PinManger	
+		result = init(); //init() get Address from PinManger
 	}
 
-	if (!result.equals(WrongPropertyName)) return result;
+	if (!result.equals(WrongPropertyName))
+		return result;
 
 	if (matchRoute(route, topic, "/gettext"))
 	{
@@ -269,8 +291,8 @@ String LCDDriver::getText()
 		text = filesReadString(id + ".text");
 	}
 #ifdef DetailedDebug
-	#ifdef DEBUG
-debugOut(id, "text=" + String(text));
+#ifdef DEBUG
+	debugOut(id, "text=" + String(text));
 #endif
 #endif
 	return text;
@@ -288,15 +310,15 @@ bool LCDDriver::setText(String _text, bool doEvent)
 	}
 	return true;
 }
-//Печатает текст от левого верхнего угла дисплея, слева на право, сверху вниз. Учитывает размер дисплея. 
-//Если используется дисплей 20x4 и передан _text длиной 48 символов - то он будет размещен в трех верхних строках 
-//дисплея, при этом в последней строке будет всего 8 символов. 
-//Позиция курсора изменяется. 
+//Печатает текст от левого верхнего угла дисплея, слева на право, сверху вниз. Учитывает размер дисплея.
+//Если используется дисплей 20x4 и передан _text длиной 48 символов - то он будет размещен в трех верхних строках
+//дисплея, при этом в последней строке будет всего 8 символов.
+//Позиция курсора изменяется.
 bool LCDDriver::setTextByRows(String _text, bool doEvent)
 {
 	text = _text;
 	setClear(1, false);
-	String textRows[rows]; //массив соответствует указанному количеству строк дисплея 
+	String textRows[rows];		   //массив соответствует указанному количеству строк дисплея
 	for (int i = 0; i < rows; i++) //"нарезаем" _text на указанное количество колонок (длине строки дисплея)
 	{
 		if (i == 0)
@@ -334,8 +356,8 @@ int LCDDriver::getCols()
 		cols = filesReadInt(id + ".cols");
 	}
 #ifdef DetailedDebug
-	#ifdef DEBUG
-debugOut(id, "cols=" + String(cols));
+#ifdef DEBUG
+	debugOut(id, "cols=" + String(cols));
 #endif
 #endif
 	return cols;
@@ -360,8 +382,8 @@ int LCDDriver::getRows()
 		rows = filesReadInt(id + ".rows");
 	}
 #ifdef DetailedDebug
-	#ifdef DEBUG
-debugOut(id, "rows=" + String(rows));
+#ifdef DEBUG
+	debugOut(id, "rows=" + String(rows));
 #endif
 #endif
 	return rows;
@@ -386,8 +408,8 @@ int LCDDriver::getDisplay()
 		display = filesReadInt(id + ".display");
 	}
 #ifdef DetailedDebug
-	#ifdef DEBUG
-debugOut(id, "display=" + String(display));
+#ifdef DEBUG
+	debugOut(id, "display=" + String(display));
 #endif
 #endif
 	return display;
@@ -412,10 +434,10 @@ bool LCDDriver::setDisplay(int _display, bool doEvent)
 	}
 	return true;
 }
-//!Важно: большинство I2C блоков управления дисплеем обладают физическим переключателем (джампером) - включающим и выключающим подсветку. 
-//Если это переключатель выключен - подсветка дисплея программно доступна не будет. 
+//!Важно: большинство I2C блоков управления дисплеем обладают физическим переключателем (джампером) - включающим и выключающим подсветку.
+//Если это переключатель выключен - подсветка дисплея программно доступна не будет.
 
-//Возвращает состояние подсветки - не физическое состояние, а последнее установленное. 
+//Возвращает состояние подсветки - не физическое состояние, а последнее установленное.
 int LCDDriver::getBacklight()
 {
 	if (filesExists(id + ".backlight"))
@@ -423,8 +445,8 @@ int LCDDriver::getBacklight()
 		backlight = filesReadInt(id + ".backlight");
 	}
 #ifdef DetailedDebug
-	#ifdef DEBUG
-debugOut(id, "backlight=" + String(backlight));
+#ifdef DEBUG
+	debugOut(id, "backlight=" + String(backlight));
 #endif
 #endif
 	return backlight;
@@ -457,8 +479,8 @@ int LCDDriver::getBlink()
 		blink = filesReadInt(id + ".blink");
 	}
 #ifdef DetailedDebug
-	#ifdef DEBUG
-debugOut(id, "blink=" + String(blink));
+#ifdef DEBUG
+	debugOut(id, "blink=" + String(blink));
 #endif
 #endif
 	return blink;
@@ -491,8 +513,8 @@ int LCDDriver::getCursor()
 		cursor = filesReadInt(id + ".cursor");
 	}
 #ifdef DetailedDebug
-	#ifdef DEBUG
-debugOut(id, "cursor=" + String(cursor));
+#ifdef DEBUG
+	debugOut(id, "cursor=" + String(cursor));
 #endif
 #endif
 	return cursor;
@@ -525,8 +547,8 @@ int LCDDriver::getAutoscroll()
 		autoscroll = filesReadInt(id + ".autoscroll");
 	}
 #ifdef DetailedDebug
-	#ifdef DEBUG
-debugOut(id, "autoscroll=" + String(autoscroll));
+#ifdef DEBUG
+	debugOut(id, "autoscroll=" + String(autoscroll));
 #endif
 #endif
 	return autoscroll;
@@ -555,8 +577,8 @@ int LCDDriver::getClear()
 {
 	clear = 0; //clear is function, 0 is not executed now
 #ifdef DetailedDebug
-	#ifdef DEBUG
-debugOut(id, "clear=" + String(clear));
+#ifdef DEBUG
+	debugOut(id, "clear=" + String(clear));
 #endif
 #endif
 	return clear;
@@ -585,8 +607,8 @@ int LCDDriver::getX()
 		x = filesReadInt(id + ".x");
 	}
 #ifdef DetailedDebug
-	#ifdef DEBUG
-debugOut(id, "x=" + String(x));
+#ifdef DEBUG
+	debugOut(id, "x=" + String(x));
 #endif
 #endif
 	return x;
@@ -598,9 +620,11 @@ bool LCDDriver::setX(int _x, bool doEvent)
 	{
 		return false;
 	}
-	if (_x < 0) _x = 0;
-	if (_x > cols) _x = cols;
-	x = _x;	
+	if (_x < 0)
+		_x = 0;
+	if (_x > cols)
+		_x = cols;
+	x = _x;
 	lcd->setCursor(x, y);
 	filesWriteInt(id + ".x", x);
 	if (doEvent)
@@ -617,8 +641,8 @@ int LCDDriver::getY()
 		y = filesReadInt(id + ".y");
 	}
 #ifdef DetailedDebug
-	#ifdef DEBUG
-debugOut(id, "y=" + String(y));
+#ifdef DEBUG
+	debugOut(id, "y=" + String(y));
 #endif
 #endif
 	return y;
@@ -626,8 +650,10 @@ debugOut(id, "y=" + String(y));
 //Установить курсор в указанную строку (Y координата)
 bool LCDDriver::setY(int _y, bool doEvent)
 {
-	if (_y < 0) _y = 0;
-	if (_y > rows) _y = rows;
+	if (_y < 0)
+		_y = 0;
+	if (_y > rows)
+		_y = rows;
 	y = _y;
 	lcd->setCursor(x, y);
 	filesWriteInt(id + ".y", y);
@@ -636,6 +662,5 @@ bool LCDDriver::setY(int _y, bool doEvent)
 		return onInsideChange("y", String(y));
 	}
 	return true;
-}
-;
+};
 #endif

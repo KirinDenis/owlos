@@ -64,84 +64,91 @@ OWLOS распространяется в надежде, что она буде
 #define webclientid "WebClient"
 HTTPClient http;
 
-bool downloadFile(String fileName, String  url) {
+bool downloadFile(String fileName, String url)
+{
 	bool result = false;
 
-#ifdef DetailedDebug 
-	#ifdef DEBUG
-debugOut(webclientid, "download: " + fileName + " from: " + url);
+#ifdef DetailedDebug
+#ifdef DEBUG
+	debugOut(webclientid, "download: " + fileName + " from: " + url);
 #endif
 #endif
 
 	if (!filesBegin())
 	{
 		//An Error has occurred while mounting file system
-		return result;;
+		return result;
+		;
 	}
 
 	http.begin(url);
 	int httpCode = http.GET();
-	if (httpCode > 0) {
+	if (httpCode > 0)
+	{
 
 		File file = SPIFFS.open(fileName, "w");
-		if (!file) {
-#ifdef DetailedDebug 
-			#ifdef DEBUG
-debugOut(webclientid, "There was an error opening the file for writing: " + fileName);
+		if (!file)
+		{
+#ifdef DetailedDebug
+#ifdef DEBUG
+			debugOut(webclientid, "There was an error opening the file for writing: " + fileName);
 #endif
 #endif
 			return result;
 		}
 
-		if (httpCode == HTTP_CODE_OK) {
+		if (httpCode == HTTP_CODE_OK)
+		{
 			int len = http.getSize();
-#ifdef DetailedDebug 
-			#ifdef DEBUG
-debugOut(webclientid, "download size: " + String(len));
+#ifdef DetailedDebug
+#ifdef DEBUG
+			debugOut(webclientid, "download size: " + String(len));
 #endif
 #endif
-			uint8_t buff[128] = { 0 };
-			WiFiClient * stream = http.getStreamPtr();
+			uint8_t buff[128] = {0};
+			WiFiClient *stream = http.getStreamPtr();
 			int dotCount = 0;
-			while (http.connected() && (len > 0 || len == -1)) {
+			while (http.connected() && (len > 0 || len == -1))
+			{
 				size_t size = stream->available();
-				if (size) {
+				if (size)
+				{
 					dotCount++;
 					if (dotCount > 40)
 					{
-						dotCount = 0;						
+						dotCount = 0;
 					}
 					int c = stream->readBytes(buff, ((size > sizeof(buff)) ? sizeof(buff) : size));
 					file.write(buff, c);
-					if (len > 0) {
+					if (len > 0)
+					{
 						len -= c;
 					}
 				}
 				delay(10);
 			}
 			file.close();
-#ifdef DetailedDebug 
-			#ifdef DEBUG
-debugOut(webclientid, "download=OK");
+#ifdef DetailedDebug
+#ifdef DEBUG
+			debugOut(webclientid, "download=OK");
 #endif
 #endif
 			result = true;
-
 		}
 		else
 		{
-#ifdef DetailedDebug 
-			#ifdef DEBUG
-debugOut(webclientid, "download=fail HTTPResult=" + String(httpCode));
+#ifdef DetailedDebug
+#ifdef DEBUG
+			debugOut(webclientid, "download=fail HTTPResult=" + String(httpCode));
 #endif
 #endif
 		}
 	}
 	else
 	{
-#ifdef DetailedDebug 
-		#ifdef DEBUG
-debugOut(webclientid, "download=fail");
+#ifdef DetailedDebug
+#ifdef DEBUG
+		debugOut(webclientid, "download=fail");
 #endif
 #endif
 	}

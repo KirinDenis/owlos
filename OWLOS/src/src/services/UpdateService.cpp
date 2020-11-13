@@ -53,12 +53,10 @@ OWLOS распространяется в надежде, что она буде
 HTTPUpdate ESPhttpUpdate;
 #endif
 
-
 #include "../drivers/ESPDriver.h"
 #include "../transports/HTTPSWebServer.h"
 #include "../transports/HTTPWebClient.h"
 #include "../services/FileService.h"
-
 
 #define updateid "update"
 
@@ -104,7 +102,6 @@ String updateGetUpdateInfo()
 	return updateInfo;
 }
 
-
 int updateGetUpdatePossible()
 {
 	if (nodeGetUpdateAvailable() != 1)
@@ -130,16 +127,16 @@ int updateGetUpdatePossible()
 					updatePossible = UpdateBoth;
 				}
 				else
-				{ //software or other boot				
+				{ //software or other boot
 					updatePossible = UpdateOnlyUI;
 				}
 			}
 		}
 	}
 
-#ifdef DetailedDebug 
-	#ifdef DEBUG
-debugOut(updateid, "check update possible result: " + String(updatePossible));
+#ifdef DetailedDebug
+#ifdef DEBUG
+	debugOut(updateid, "check update possible result: " + String(updatePossible));
 #endif
 #endif
 	return updatePossible;
@@ -172,9 +169,9 @@ String updateUI()
 		updateUIStatus = UpdateStatusStarted;
 		updateLog += downloadFileWithLog("jquery.min.js.gz");
 		updateUIStatus = UpdateStatusAtProcess;
-#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)		
+#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)
 		HTTPSWebServerLoop();
-#endif		
+#endif
 
 		updateLog += downloadFileWithLog("jquery.min.js.gz");
 		updateLog += downloadFileWithLog("popper.min.js.gz");
@@ -183,14 +180,14 @@ String updateUI()
 		updateLog += downloadFileWithLog("jquery.dataTables.min.js.gz");
 		updateLog += downloadFileWithLog("dataTables.min.css.gz");
 		updateLog += downloadFileWithLog("dataTables.min.js.gz");
-#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)		
+#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)
 		HTTPSWebServerLoop();
-#endif		
+#endif
 
 		updateLog += downloadFileWithLog("ui.css.gz");
-#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)		
+#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)
 		HTTPSWebServerLoop();
-#endif		
+#endif
 
 		updateLog += downloadFileWithLog("bootcore.js.gz");
 		updateLog += downloadFileWithLog("restclientcore.js.gz");
@@ -200,9 +197,9 @@ String updateUI()
 		updateLog += downloadFileWithLog("languagescore.js.gz");
 		updateLog += downloadFileWithLog("speechcore.js.gz");
 		updateLog += downloadFileWithLog("scriptcore.js.gz");
-#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)		
+#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)
 		HTTPSWebServerLoop();
-#endif		
+#endif
 
 		updateLog += downloadFileWithLog("basewidget.js.gz");
 		updateLog += downloadFileWithLog("actuatorwidget.js.gz");
@@ -218,9 +215,9 @@ String updateUI()
 		updateLog += downloadFileWithLog("smokewidget.js.gz");
 		updateLog += downloadFileWithLog("stepperwidget.js.gz");
 		updateLog += downloadFileWithLog("valuewidget.js.gz");
-#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)				
+#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)
 		HTTPSWebServerLoop();
-#endif		
+#endif
 		updateLog += downloadFileWithLog("widgetswrappers.js.gz");
 
 		updateLog += downloadFileWithLog("driversui.js.gz");
@@ -232,7 +229,7 @@ String updateUI()
 		updateLog += downloadFileWithLog("index.html.gz");
 
 		updateUIStatus = UpdateStatusComplete;
-		updateLog += "update UI complete\n";		
+		updateLog += "update UI complete\n";
 	}
 	else
 	{
@@ -253,9 +250,9 @@ int updateFirmware()
 	{
 		updateLog += "update firmware started\n";
 		updateFirmwareStatus = UpdateStatusStarted;
-#ifdef DetailedDebug 
-		#ifdef DEBUG
-debugOut(updateid, "Update firmware started\n");
+#ifdef DetailedDebug
+#ifdef DEBUG
+		debugOut(updateid, "Update firmware started\n");
 #endif
 #endif
 		String host = nodeGetUpdateHost();
@@ -279,25 +276,26 @@ debugOut(updateid, "Update firmware started\n");
 		ret = ESPhttpUpdate.update(client, host + "OWLOS.ino.d1_mini.bin");
 #endif
 
-		switch (ret) {
+		switch (ret)
+		{
 		case HTTP_UPDATE_FAILED:
-#ifdef DetailedDebug 
-			#ifdef DEBUG
-debugOut(updateid, "update error: [" + String(ESPhttpUpdate.getLastError()) + "] " + ESPhttpUpdate.getLastErrorString().c_str());
+#ifdef DetailedDebug
+#ifdef DEBUG
+			debugOut(updateid, "update error: [" + String(ESPhttpUpdate.getLastError()) + "] " + ESPhttpUpdate.getLastErrorString().c_str());
 #endif
 #endif
 			break;
 		case HTTP_UPDATE_NO_UPDATES:
-#ifdef DetailedDebug 
-			#ifdef DEBUG
-debugOut(updateid, "no updates");
+#ifdef DetailedDebug
+#ifdef DEBUG
+			debugOut(updateid, "no updates");
 #endif
 #endif
 			break;
 		case HTTP_UPDATE_OK:
-#ifdef DetailedDebug 
-			#ifdef DEBUG
-debugOut(updateid, "update OK");
+#ifdef DetailedDebug
+#ifdef DEBUG
+			debugOut(updateid, "update OK");
 #endif
 #endif
 			break;
@@ -309,9 +307,9 @@ debugOut(updateid, "update OK");
 	else
 	{
 		updateFirmwareStatus = UpdateStatusUndefined;
-#ifdef DetailedDebug 
-		#ifdef DEBUG
-debugOut(updateid, "Update firmware fail");
+#ifdef DetailedDebug
+#ifdef DEBUG
+		debugOut(updateid, "Update firmware fail");
 #endif
 #endif
 		updateLog += "update firmware fail\n";

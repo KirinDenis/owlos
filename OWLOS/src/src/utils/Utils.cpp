@@ -42,12 +42,11 @@ OWLOS распространяется в надежде, что она буде
 #include "Utils.h"
 #include "../services/FileService.h"
 
-
 bool filesAtRecurse = false;
 
-char* stringToChar(String src)
+char *stringToChar(String src)
 {
-	char* data = (char *)malloc(src.length() + 1);
+	char *data = (char *)malloc(src.length() + 1);
 	src.toCharArray(data, src.length() + 1);
 	return data;
 }
@@ -55,52 +54,52 @@ char* stringToChar(String src)
 #ifdef DEBUG
 void debugOut(String tag, String text)
 {
-#ifdef USE_ESP_DRIVER		
-#ifdef SERIAL_COLORIZED_OUTPUT		
-		text = text + " \033\033[1;32m [" + String(ESP.getFreeHeap()) + "]";
+#ifdef USE_ESP_DRIVER
+#ifdef SERIAL_COLORIZED_OUTPUT
+	text = text + " \033\033[1;32m [" + String(ESP.getFreeHeap()) + "]";
 #else
-        text = text + " [" + String(ESP.getFreeHeap()) + "]";
-#endif		
+	text = text + " [" + String(ESP.getFreeHeap()) + "]";
+#endif
 
-#endif		
- 
-#ifdef SERIAL_COLORIZED_OUTPUT		        
-		Serial.print("\033\033[1;35m DEBUG: \033\033[1;36m " + tag + " \033\033[1;34m " + text + "\n");
-		Serial.print("\033\033[0m");
+#endif
+
+#ifdef SERIAL_COLORIZED_OUTPUT
+	Serial.print("\033\033[1;35m DEBUG: \033\033[1;36m " + tag + " \033\033[1;34m " + text + "\n");
+	Serial.print("\033\033[0m");
 #else
-		Serial.print("DEBUG: " + tag + " - " + text + "\n");
-#endif		
-		if (WriteDebugLogs)
+	Serial.print("DEBUG: " + tag + " - " + text + "\n");
+#endif
+	if (WriteDebugLogs)
+	{
+		if (filesAtRecurse)
+			return;
+		filesAtRecurse = true;
+		int log1Size = filesGetSize(LogFile1);
+		int log2Size = filesGetSize(LogFile2);
+
+		if (log1Size < LogFilesSize)
 		{
-			if (filesAtRecurse) return;
-			filesAtRecurse = true;
-			int log1Size = filesGetSize(LogFile1);
-			int log2Size = filesGetSize(LogFile2);
-
-			if (log1Size < LogFilesSize)
+			writeDebugLogFile(LogFile1, log1Size, tag, text);
+			log1Size = filesGetSize(LogFile1);
+			if (log1Size >= LogFilesSize)
 			{
-				writeDebugLogFile(LogFile1, log1Size, tag, text);
-				log1Size = filesGetSize(LogFile1);
-				if (log1Size >= LogFilesSize)
-				{
-					filesDelete(LogFile2);
-				}
+				filesDelete(LogFile2);
+			}
+		}
+		else
+		{
+			if (log2Size < LogFilesSize)
+			{
+				writeDebugLogFile(LogFile2, log2Size, tag, text);
 			}
 			else
 			{
-				if (log2Size < LogFilesSize)
-				{
-					writeDebugLogFile(LogFile2, log2Size, tag, text);
-				}
-				else
-				{
-					filesDelete(LogFile1);
-					writeDebugLogFile(LogFile1, log1Size, tag, text);
-				}
+				filesDelete(LogFile1);
+				writeDebugLogFile(LogFile1, log1Size, tag, text);
 			}
-			filesAtRecurse = false;
 		}
-
+		filesAtRecurse = false;
+	}
 }
 #endif
 
@@ -116,35 +115,37 @@ void writeDebugLogFile(String fileName, int fileSize, String tag, String text)
 	}
 }
 
-bool matchRoute(String &route, String &topic, const char* path) {
-    return matchRoute(route.c_str(), topic.c_str(), path);
+bool matchRoute(String &route, String &topic, const char *path)
+{
+	return matchRoute(route.c_str(), topic.c_str(), path);
 }
 // Route = a/b/c/d /getsomething
 //   topic=^^^^^^^|^^^^^^^^^^^^^=path
-bool matchRoute(const char* route, const char* topic, const char* path)
+bool matchRoute(const char *route, const char *topic, const char *path)
 {
-    if (!route || !topic || !path)
-        return false;
+	if (!route || !topic || !path)
+		return false;
 
-    int len = strlen(route);
-    const char * routePath = NULL;
-    //Find last /
-    for (int i = len; i >= 0; i--) {
-        if (route[i] == '/') {
-            routePath = route + i;
-            break;
-        }
-    }
-    if (!routePath)
-        return false;
+	int len = strlen(route);
+	const char *routePath = NULL;
+	//Find last /
+	for (int i = len; i >= 0; i--)
+	{
+		if (route[i] == '/')
+		{
+			routePath = route + i;
+			break;
+		}
+	}
+	if (!routePath)
+		return false;
 
-    //First check path
-    if (strcmp(routePath, path) != 0)
-        return false;
-    // Check only the topic part of route
-    if (strncmp(topic, route, len - strlen(routePath)) != 0)
-        return false;
+	//First check path
+	if (strcmp(routePath, path) != 0)
+		return false;
+	// Check only the topic part of route
+	if (strncmp(topic, route, len - strlen(routePath)) != 0)
+		return false;
 
-    return true;
-
+	return true;
 }

@@ -44,56 +44,57 @@ OWLOS распространяется в надежде, что она буде
 #ifndef ACTUATORDRIVER_H
 #define ACTUATORDRIVER_H
 
+class ActuatorDriver : public BaseDriver
+{
+public:
+	static int getPinsCount()
+	{
+		return 2;
+	}
 
-class ActuatorDriver : public BaseDriver {
-  public:
-	  
-	  static int getPinsCount()
-	  {
-		  return 2;
-	  }
+	static uint16_t getPinType(int pinIndex)
+	{
+		switch (pinIndex)
+		{
+		case PIN0_INDEX:
+			return DIGITAL_O_MASK | ANALOG_O_MASK;
+		case PIN1_INDEX:
+			return GND_MASK;
 
-	  static uint16_t getPinType(int pinIndex)
-	  {
-		  switch (pinIndex)
-		  {
-		  case PIN0_INDEX: return DIGITAL_O_MASK | ANALOG_O_MASK;
-		  case PIN1_INDEX: return GND_MASK;
+		default:
+			return NO_MASK;
+		}
+	}
 
-		  default:
-			  return NO_MASK;
-		  }
-	  }
-
-    bool init();
+	bool init();
 	void del();
-    bool begin(String _topic);
-    bool query();
-    String getAllProperties();
-    bool publish();
-    String onMessage(String _topic, String _payload, int8_t transportMask);
+	bool begin(String _topic);
+	bool query();
+	String getAllProperties();
+	bool publish();
+	String onMessage(String _topic, String _payload, int8_t transportMask);
 
 	bool getAnalog();
 	bool setAnalog(bool _analog, bool doEvent);
 
-    int getData();
-    bool setData(int _data,  bool doEvent);
+	int getData();
+	bool setData(int _data, bool doEvent);
 
-    bool getPWM();
-    bool setPWM(bool _pwm,  bool doEvent);
+	bool getPWM();
+	bool setPWM(bool _pwm, bool doEvent);
 
-    bool getInvert();
-    bool setInvert(bool _invert,  bool doEvent);
+	bool getInvert();
+	bool setInvert(bool _invert, bool doEvent);
 
-    int getPWMDelay();
-    bool setPWMDelay(int _pwmdelay,  bool doEvent);
+	int getPWMDelay();
+	bool setPWMDelay(int _pwmdelay, bool doEvent);
 
-  private:
-	  bool analog = false;
-      int data = 0;
-	  bool pwm = false;	  
-	  int pwmdelay = 1;
-	  bool invert = false;
+private:
+	bool analog = false;
+	int data = 0;
+	bool pwm = false;
+	int pwmdelay = 1;
+	bool invert = false;
 };
 #endif
 #endif
