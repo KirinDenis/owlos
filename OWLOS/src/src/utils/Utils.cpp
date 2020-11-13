@@ -52,50 +52,51 @@ char *stringToChar(String src)
 }
 
 #ifdef DEBUG
-void debugOut(String tag, String text)
+void debugOut(const String &tag, const String &text)
 {
 #ifdef USE_ESP_DRIVER
 #ifdef SERIAL_COLORIZED_OUTPUT
-	text = text + " \033\033[1;32m [" + String(ESP.getFreeHeap()) + "]";
+	String _text = text + " \033\033[1;32m [" + String(ESP.getFreeHeap()) + "]";
 #else
-	text = text + " [" + String(ESP.getFreeHeap()) + "]";
+	String _text = text + " [" + String(ESP.getFreeHeap()) + "]";
 #endif
 
 #endif
 
 #ifdef SERIAL_COLORIZED_OUTPUT
-	Serial.print("\033\033[1;35m DEBUG: \033\033[1;36m " + tag + " \033\033[1;34m " + text + "\n");
+	Serial.print("\033\033[1;35m DEBUG: \033\033[1;36m " + tag + " \033\033[1;34m " + _text + "\n");
 	Serial.print("\033\033[0m");
 #else
-	Serial.print("DEBUG: " + tag + " - " + text + "\n");
+	Serial.print("DEBUG: " + tag + " - " + _text + "\n");
 #endif
-	if (WriteDebugLogs)
+
+	if (WRITE_DEBUG_LOG_FILES)
 	{
 		if (filesAtRecurse)
 			return;
 		filesAtRecurse = true;
-		int log1Size = filesGetSize(LogFile1);
-		int log2Size = filesGetSize(LogFile2);
+		int log1Size = filesGetSize(DEBUG_LOG_FILE1_NAME);
+		int log2Size = filesGetSize(DEBUG_LOG_FILE2_NAME);
 
-		if (log1Size < LogFilesSize)
+		if (log1Size < DEBUG_LOG_FILES_SIZE)
 		{
-			writeDebugLogFile(LogFile1, log1Size, tag, text);
-			log1Size = filesGetSize(LogFile1);
-			if (log1Size >= LogFilesSize)
+			writeDebugLogFile(DEBUG_LOG_FILE1_NAME, log1Size, tag, _text);
+			log1Size = filesGetSize(DEBUG_LOG_FILE1_NAME);
+			if (log1Size >= DEBUG_LOG_FILES_SIZE)
 			{
-				filesDelete(LogFile2);
+				filesDelete(DEBUG_LOG_FILE2_NAME);
 			}
 		}
 		else
 		{
-			if (log2Size < LogFilesSize)
+			if (log2Size < DEBUG_LOG_FILES_SIZE)
 			{
-				writeDebugLogFile(LogFile2, log2Size, tag, text);
+				writeDebugLogFile(DEBUG_LOG_FILE2_NAME, log2Size, tag, _text);
 			}
 			else
 			{
-				filesDelete(LogFile1);
-				writeDebugLogFile(LogFile1, log1Size, tag, text);
+				filesDelete(DEBUG_LOG_FILE1_NAME);
+				writeDebugLogFile(DEBUG_LOG_FILE1_NAME, log1Size, tag, _text);
 			}
 		}
 		filesAtRecurse = false;

@@ -870,17 +870,17 @@ int runGetProp(int index)
 #ifdef USE_DRIVERS
 	String value = driversGetDriverProperty(driverId, driverProp);
 #else
-	String value = NotAvailable;
+	String value = NOT_AVAILABLE;
 #endif
 
-	if ((value.length() == 0) || (value == WrongPropertyName)) //then try get this property from node
+	if ((value.length() == 0) || (value == WRONG_PROPERTY_NAME)) //then try get this property from node
 	{
 #ifdef USE_ESP_DRIVER
-		value = nodeOnMessage(nodeGetTopic() + "/get" + driverProp, "", NoTransportMask);
+		value = nodeOnMessage(nodeGetTopic() + "/get" + driverProp, "", NO_TRANSPORT_MASK);
 #endif
 	}
 
-	if (((value.length() == 0) || (value == WrongPropertyName)) && (getDataAddr(index, STOP_IF_DEVICE_NOTREADY) != -1))
+	if (((value.length() == 0) || (value == WRONG_PROPERTY_NAME)) && (getDataAddr(index, STOP_IF_DEVICE_NOTREADY) != -1))
 	{
 		return -1; //temporary
 	}
@@ -915,14 +915,14 @@ int runSetProp(int index)
 	String result = "0";
 #endif
 
-	if ((result.length() == 0) || (result == WrongPropertyName)) //try set node property
+	if ((result.length() == 0) || (result == WRONG_PROPERTY_NAME)) //try set node property
 	{
 #ifdef USE_ESP_DRIVER
-		result = nodeOnMessage(nodeGetTopic() + "/set" + driverProp, value, NoTransportMask);
+		result = nodeOnMessage(nodeGetTopic() + "/set" + driverProp, value, NO_TRANSPORT_MASK);
 #endif
 	}
 
-	if (((value.length() == 0) || (value == WrongPropertyName)) && (getDataAddr(index, STOP_IF_DEVICE_NOTREADY) != -1))
+	if (((value.length() == 0) || (value == WRONG_PROPERTY_NAME)) && (getDataAddr(index, STOP_IF_DEVICE_NOTREADY) != -1))
 	{
 		return -1;
 	}

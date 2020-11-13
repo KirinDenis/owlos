@@ -63,7 +63,7 @@ String wifiaccesspointip(DEFAULT_WIFI_ACCESS_POINT_IP);
 int wifiavailable(DEFAULT_WIFI_STATION_AVAILABLE);
 String wifissid(DEFAULT_WIFI_STATION_SSID);
 String wifipassword(DEFAULT_WIFI_STATION_PASSWORD);
-String wifiip(NotAvailable);
+String wifiip(NOT_AVAILABLE);
 int32_t wifirssi((int32_t)DEFAULT_ZERO_VALUE);
 
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
@@ -85,7 +85,7 @@ String nodeGetWiFiProperties()
 	return "properties for:wifi\n"
 		   "id=wifi//r\n"
 		   "type=" +
-		   String(WiFiType) + "//r\n"
+		   String(WIFI_DRIVER_TYPE) + "//r\n"
 							  "wifiaccesspointavailable=" +
 		   String(nodeGetWiFiAccessPointAvailable()) + "//bs\n"
 													   "wifiaccesspointssid=" +
@@ -122,7 +122,7 @@ String nodeGetWiFiProperties()
 
 String wifiOnMessage(String route, String _payload, int8_t transportMask)
 {
-	String result = WrongPropertyName;
+	
 	if (matchRoute(route, topic, "/getwifiaccesspointavailable"))
 	{
 		return String(onGetProperty("wifiapavailable", String(nodeGetWiFiAccessPointAvailable()), transportMask));
@@ -267,7 +267,7 @@ String wifiOnMessage(String route, String _payload, int8_t transportMask)
 	{
 		return String(nodeGetAllWiFiEncryptionTypes());
 	}
-	return WrongNodePropertyName;
+	return WRONG_NODE_PROPERTY_NAME;
 }
 
 //WiFi -----------------------------------------------------------------------------------------
@@ -356,14 +356,14 @@ String nodeGetWiFiAccessPointIP()
 #endif
 #endif
 
-				wifiaccesspointip = NotAvailable;
+				wifiaccesspointip = NOT_AVAILABLE;
 			}
 		}
 	}
 	else
 	{
 		WiFi.softAPdisconnect(true);
-		wifiaccesspointip = NotAvailable;
+		wifiaccesspointip = NOT_AVAILABLE;
 	}
 #ifdef DetailedDebug
 #ifdef DEBUG

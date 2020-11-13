@@ -63,8 +63,8 @@ HTTPUpdate ESPhttpUpdate;
 #define UpdateInfoFile "updateinfo.html"
 
 #define UpdateNotBegin -2
-#define UpdateNotAvailable -1
-#define UpdateServerNotAvailable 0
+#define UpdateNOT_AVAILABLE -1
+#define UpdateServerNOT_AVAILABLE 0
 #define UpdateOnlyUI 1
 #define UpdateBoth 2
 
@@ -106,7 +106,7 @@ int updateGetUpdatePossible()
 {
 	if (nodeGetUpdateAvailable() != 1)
 	{
-		updatePossible = UpdateNotAvailable;
+		updatePossible = UpdateNOT_AVAILABLE;
 	}
 	else
 	{
@@ -116,7 +116,7 @@ int updateGetUpdatePossible()
 			skipLoopCount = 0;
 			if (!downloadFile(UpdateInfoFile, nodeGetUpdateHost() + UpdateInfoFile))
 			{
-				updatePossible = UpdateServerNotAvailable;
+				updatePossible = UpdateServerNOT_AVAILABLE;
 			}
 			else
 			{
@@ -165,68 +165,68 @@ String updateUI()
 {
 	if (updateGetUpdatePossible() > 0)
 	{
-		updateLog = "update UI started\n";
+		updateLog = F("update UI started\n");
 		updateUIStatus = UpdateStatusStarted;
-		updateLog += downloadFileWithLog("jquery.min.js.gz");
+		updateLog += downloadFileWithLog(F("jquery.min.js.gz"));
 		updateUIStatus = UpdateStatusAtProcess;
 #if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)
 		HTTPSWebServerLoop();
 #endif
 
-		updateLog += downloadFileWithLog("jquery.min.js.gz");
-		updateLog += downloadFileWithLog("popper.min.js.gz");
-		updateLog += downloadFileWithLog("bootstrap.min.css.gz");
-		updateLog += downloadFileWithLog("bootstrap.min.js.gz");
-		updateLog += downloadFileWithLog("jquery.dataTables.min.js.gz");
-		updateLog += downloadFileWithLog("dataTables.min.css.gz");
-		updateLog += downloadFileWithLog("dataTables.min.js.gz");
+		updateLog += downloadFileWithLog(F("jquery.min.js.gz"));
+		updateLog += downloadFileWithLog(F("popper.min.js.gz"));
+		updateLog += downloadFileWithLog(F("bootstrap.min.css.gz"));
+		updateLog += downloadFileWithLog(F("bootstrap.min.js.gz"));
+		updateLog += downloadFileWithLog(F("jquery.dataTables.min.js.gz"));
+		updateLog += downloadFileWithLog(F("dataTables.min.css.gz"));
+		updateLog += downloadFileWithLog(F("dataTables.min.js.gz"));
 #if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)
 		HTTPSWebServerLoop();
 #endif
 
-		updateLog += downloadFileWithLog("ui.css.gz");
+		updateLog += downloadFileWithLog(F("ui.css.gz"));
 #if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)
 		HTTPSWebServerLoop();
 #endif
 
-		updateLog += downloadFileWithLog("bootcore.js.gz");
-		updateLog += downloadFileWithLog("restclientcore.js.gz");
-		updateLog += downloadFileWithLog("configcore.js.gz");
-		updateLog += downloadFileWithLog("driverscore.js.gz");
-		updateLog += downloadFileWithLog("drawcore.js.gz");
-		updateLog += downloadFileWithLog("languagescore.js.gz");
-		updateLog += downloadFileWithLog("speechcore.js.gz");
-		updateLog += downloadFileWithLog("scriptcore.js.gz");
+		updateLog += downloadFileWithLog(F("bootcore.js.gz"));
+		updateLog += downloadFileWithLog(F("restclientcore.js.gz"));
+		updateLog += downloadFileWithLog(F("configcore.js.gz"));
+		updateLog += downloadFileWithLog(F("driverscore.js.gz"));
+		updateLog += downloadFileWithLog(F("drawcore.js.gz"));
+		updateLog += downloadFileWithLog(F("languagescore.js.gz"));
+		updateLog += downloadFileWithLog(F("speechcore.js.gz"));
+		updateLog += downloadFileWithLog(F("scriptcore.js.gz"));
 #if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)
 		HTTPSWebServerLoop();
 #endif
 
-		updateLog += downloadFileWithLog("basewidget.js.gz");
-		updateLog += downloadFileWithLog("actuatorwidget.js.gz");
-		updateLog += downloadFileWithLog("temperaturewidget.js.gz");
-		updateLog += downloadFileWithLog("graphwidget.js.gz");
-		updateLog += downloadFileWithLog("tablewidget.js.gz");
-		updateLog += downloadFileWithLog("lcdwidget.js.gz");
-		updateLog += downloadFileWithLog("lightwidget.js.gz");
-		updateLog += downloadFileWithLog("lcdwidget.js.gz");
-		updateLog += downloadFileWithLog("lightwidget.js.gz");
-		updateLog += downloadFileWithLog("motionwidget.js.gz");
-		updateLog += downloadFileWithLog("radialwidget.js.gz");
-		updateLog += downloadFileWithLog("smokewidget.js.gz");
-		updateLog += downloadFileWithLog("stepperwidget.js.gz");
-		updateLog += downloadFileWithLog("valuewidget.js.gz");
+		updateLog += downloadFileWithLog(F("basewidget.js.gz"));
+		updateLog += downloadFileWithLog(F("actuatorwidget.js.gz"));
+		updateLog += downloadFileWithLog(F("temperaturewidget.js.gz"));
+		updateLog += downloadFileWithLog(F("graphwidget.js.gz"));
+		updateLog += downloadFileWithLog(F("tablewidget.js.gz"));
+		updateLog += downloadFileWithLog(F("lcdwidget.js.gz"));
+		updateLog += downloadFileWithLog(F("lightwidget.js.gz"));
+		updateLog += downloadFileWithLog(F("lcdwidget.js.gz"));
+		updateLog += downloadFileWithLog(F("lightwidget.js.gz"));
+		updateLog += downloadFileWithLog(F("motionwidget.js.gz"));
+		updateLog += downloadFileWithLog(F("radialwidget.js.gz"));
+		updateLog += downloadFileWithLog(F("smokewidget.js.gz"));
+		updateLog += downloadFileWithLog(F("stepperwidget.js.gz"));
+		updateLog += downloadFileWithLog(F("valuewidget.js.gz"));
 #if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)
 		HTTPSWebServerLoop();
 #endif
-		updateLog += downloadFileWithLog("widgetswrappers.js.gz");
+		updateLog += downloadFileWithLog(F("widgetswrappers.js.gz"));
 
-		updateLog += downloadFileWithLog("driversui.js.gz");
-		updateLog += downloadFileWithLog("settingsui.js.gz");
-		updateLog += downloadFileWithLog("filespanelui.js.gz");
-		updateLog += downloadFileWithLog("dashboardui.js.gz");
+		updateLog += downloadFileWithLog(F("driversui.js.gz"));
+		updateLog += downloadFileWithLog(F("settingsui.js.gz"));
+		updateLog += downloadFileWithLog(F("filespanelui.js.gz"));
+		updateLog += downloadFileWithLog(F("dashboardui.js.gz"));
 
-		updateLog += downloadFileWithLog("index.js.gz");
-		updateLog += downloadFileWithLog("index.html.gz");
+		updateLog += downloadFileWithLog(F("index.js.gz"));
+		updateLog += downloadFileWithLog(F("index.html.gz"));
 
 		updateUIStatus = UpdateStatusComplete;
 		updateLog += "update UI complete\n";

@@ -116,7 +116,7 @@ String driversGetAccessable()
 
 #ifdef USE_ACTUATOR_DRIVER
 	result += "name:ActuatorDriver\n";
-	result += "type=" + String(Actuator) + "\n";
+	result += "type=" + String(ACTUATOR_DRIVER_TYPE) + "\n";
 	result += "pinscount=" + String(ActuatorDriver::getPinsCount()) + "\n";
 	for (int i = 0; i < ActuatorDriver::getPinsCount(); i++)
 	{
@@ -127,7 +127,7 @@ String driversGetAccessable()
 
 #ifdef USE_SENSOR_DRIVER
 	result += "name:SensorDriver\n";
-	result += "type=" + String(Sensor) + "\n";
+	result += "type=" + String(SENSOR_DRIVER_TYPE) + "\n";
 	result += "pinscount=" + String(SensorDriver::getPinsCount()) + "\n";
 	for (int i = 0; i < SensorDriver::getPinsCount(); i++)
 	{
@@ -136,7 +136,7 @@ String driversGetAccessable()
 	}
 
 	result += "name:LightDriver\n";
-	result += "type=" + String(Sensor) + "\n";
+	result += "type=" + String(SENSOR_DRIVER_TYPE) + "\n";
 	result += "pinscount=" + String(SensorDriver::getPinsCount()) + "\n";
 	for (int i = 0; i < SensorDriver::getPinsCount(); i++)
 	{
@@ -145,7 +145,7 @@ String driversGetAccessable()
 	}
 
 	result += "name:SmokeDriver\n";
-	result += "type=" + String(Sensor) + "\n";
+	result += "type=" + String(SENSOR_DRIVER_TYPE) + "\n";
 	result += "pinscount=" + String(SensorDriver::getPinsCount()) + "\n";
 	for (int i = 0; i < SensorDriver::getPinsCount(); i++)
 	{
@@ -154,7 +154,7 @@ String driversGetAccessable()
 	}
 
 	result += "name:MotionDriver\n";
-	result += "type=" + String(Sensor) + "\n";
+	result += "type=" + String(SENSOR_DRIVER_TYPE) + "\n";
 	result += "pinscount=" + String(SensorDriver::getPinsCount()) + "\n";
 	for (int i = 0; i < SensorDriver::getPinsCount(); i++)
 	{
@@ -164,7 +164,7 @@ String driversGetAccessable()
 #endif
 #ifdef USE_LCD_DRIVER
 	result += "name:LCDDriver\n";
-	result += "type=" + String(LCD) + "\n";
+	result += "type=" + String(LCD_DRIVER_TYPE) + "\n";
 	result += "pinscount=" + String(LCDDriver::getPinsCount()) + "\n";
 	for (int i = 0; i < LCDDriver::getPinsCount(); i++)
 	{
@@ -175,7 +175,7 @@ String driversGetAccessable()
 
 #ifdef USE_DHT_DRIVER
 	result += "name:DHTDriver\n";
-	result += "type=" + String(DHTDriverType) + "\n";
+	result += "type=" + String(DHT_DRIVER_TYPE) + "\n";
 	result += "pinscount=" + String(DHTDriver::getPinsCount()) + "\n";
 	for (int i = 0; i < DHTDriver::getPinsCount(); i++)
 	{
@@ -185,7 +185,7 @@ String driversGetAccessable()
 #endif
 #ifdef USE_STEPPER_DRIVER
 	result += "name:StepperDriver\n";
-	result += "type=" + String(Stepper) + "\n";
+	result += "type=" + String(STEPPER_DRIVER_TYPE) + "\n";
 	result += "pinscount=" + String(StepperDriver::getPinsCount()) + "\n";
 	for (int i = 0; i < StepperDriver::getPinsCount(); i++)
 	{
@@ -196,7 +196,7 @@ String driversGetAccessable()
 
 #ifdef USE_VALVE_DRIVER
 	result += "name:ValveDriver\n";
-	result += "type=" + String(Valve) + "\n";
+	result += "type=" + String(VALVE_DRIVER_TYPE) + "\n";
 	result += "pinscount=" + String(ValveDriver::getPinsCount()) + "\n";
 	for (int i = 0; i < ValveDriver::getPinsCount(); i++)
 	{
@@ -226,7 +226,7 @@ void driversCallback(String _topic, String _payload)
 	{
 		if (driversList[i] != nullptr)
 		{
-			driversList[i]->onMessage(_topic, _payload, MQTTMask);
+			driversList[i]->onMessage(_topic, _payload, MQTT_TRANSPORT_MASK);
 		}
 	}
 }
@@ -265,7 +265,7 @@ String driversGetDriverProperty(String id, String property)
 	if (baseDriver == NULL)
 		return "";
 
-	return baseDriver->onMessage(__topic + "/" + id + "/get" + property, "", NoTransportMask);
+	return baseDriver->onMessage(__topic + "/" + id + "/get" + property, "", NO_TRANSPORT_MASK);
 }
 
 String driversSetDriverProperty(String id, String property, String value)
@@ -273,9 +273,9 @@ String driversSetDriverProperty(String id, String property, String value)
 	BaseDriver *baseDriver = driversGetDriver(id);
 	if (baseDriver == NULL)
 	{
-		return WrongDriverName;
+		return WRONG_DRIVER_NAME;
 	}
-	String result = baseDriver->onMessage(__topic + "/" + id + "/set" + property, value, MQTTMask);
+	String result = baseDriver->onMessage(__topic + "/" + id + "/set" + property, value, MQTT_TRANSPORT_MASK);
 	return result;
 }
 
@@ -478,7 +478,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 		return "no space for locate new driver";
 	}
 #ifdef USE_ACTUATOR_DRIVER
-	if (type == Actuator)
+	if (type == ACTUATOR_DRIVER_TYPE)
 	{
 #ifdef DetailedDebug
 #ifdef DEBUG
@@ -515,7 +515,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 #endif
 
 #ifdef USE_SENSOR_DRIVER
-		if ((type == Sensor) || (type == Light) || (type == Smoke) || (type == Motion))
+		if ((type == SENSOR_DRIVER_TYPE) || (type == LIGHT_DRIVER_TYPE) || (type == SMOKE_DRIVER_TYPE) || (type == MOTION_DRIVER_TYPE))
 	{
 #ifdef DetailedDebug
 #ifdef DEBUG
@@ -551,7 +551,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 	else
 #endif
 #ifdef USE_LCD_DRIVER
-		if (type == LCD)
+		if (type == LCD_DRIVER_TYPE)
 	{
 #ifdef DetailedDebug
 #ifdef DEBUG
@@ -582,7 +582,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 #endif
 
 #ifdef USE_DHT_DRIVER
-		if (type == DHTDriverType)
+		if (type == DHT_DRIVER_TYPE)
 	{
 #ifdef DetailedDebug
 #ifdef DEBUG

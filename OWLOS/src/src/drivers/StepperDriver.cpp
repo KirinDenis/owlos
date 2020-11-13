@@ -120,7 +120,7 @@ bool StepperDriver::begin(String _topic)
 	setBusy(0);
 	setStop(0);
 	BaseDriver::begin(_topic);
-	setType(Stepper);
+	setType(STEPPER_DRIVER_TYPE);
 	setAvailable(available);
 	return available;
 }
@@ -144,7 +144,7 @@ String StepperDriver::getAllProperties()
 String StepperDriver::onMessage(String route, String _payload, int8_t transportMask)
 {
 	String result = BaseDriver::onMessage(route, _payload, transportMask);
-	if (!result.equals(WrongPropertyName))
+	if (!result.equals(WRONG_PROPERTY_NAME))
 		return result;
 	//Stepper driver to position step counter -----------------------------------
 	if (matchRoute(route, topic, "/gettoposition"))

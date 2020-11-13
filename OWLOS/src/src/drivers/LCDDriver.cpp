@@ -127,7 +127,7 @@ bool LCDDriver::init()
 bool LCDDriver::begin(String _topic)
 {
 	BaseDriver::begin(_topic);
-	setType(LCD);
+	setType(LCD_DRIVER_TYPE);
 	setAvailable(available);
 	return available;
 }
@@ -171,7 +171,7 @@ String LCDDriver::onMessage(String route, String _payload, int8_t transportMask)
 		result = init(); //init() get Address from PinManger
 	}
 
-	if (!result.equals(WrongPropertyName))
+	if (!result.equals(WRONG_PROPERTY_NAME))
 		return result;
 
 	if (matchRoute(route, topic, "/gettext"))

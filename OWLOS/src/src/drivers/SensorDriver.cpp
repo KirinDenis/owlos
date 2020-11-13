@@ -71,7 +71,7 @@ bool SensorDriver::begin(String _topic)
 {
 	BaseDriver::begin(_topic);
 	available = true;
-	setType(Sensor);
+	setType(SENSOR_DRIVER_TYPE);
 	setAvailable(available);
 	return available;
 }
@@ -148,7 +148,7 @@ bool SensorDriver::publish()
 String SensorDriver::onMessage(String route, String _payload, int8_t transportMask)
 {
 	String result = BaseDriver::onMessage(route, _payload, transportMask);
-	if (!result.equals(WrongPropertyName))
+	if (!result.equals(WRONG_PROPERTY_NAME))
 		return result;
 
 	if (matchRoute(route, topic, "/getanalog"))

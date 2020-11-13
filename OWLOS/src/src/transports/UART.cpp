@@ -158,11 +158,11 @@ void UARTRecv(String command)
                 {
                     if (token[1].equals("1"))
                     {
-                        UARTSendOK(filesReadString(LogFile1));
+                        UARTSendOK(filesReadString(DEBUG_LOG_FILE1_NAME));
                     }
                     else
                     {
-                        UARTSendOK(filesReadString(LogFile2));
+                        UARTSendOK(filesReadString(DEBUG_LOG_FILE2_NAME));
                     }
                 }
                 else
@@ -323,7 +323,7 @@ void UARTRecv(String command)
 #ifdef USE_ESP_DRIVER
                     if (result.length() == 0) //then try get this property from node
                     {
-                        result = nodeOnMessage(nodeGetTopic() + "/get" + token[2], "", NoTransportMask);
+                        result = nodeOnMessage(nodeGetTopic() + "/get" + token[2], "", NO_TRANSPORT_MASK);
                     }
 #endif
 
@@ -331,11 +331,11 @@ void UARTRecv(String command)
                     {
                         UARTSendError("wrong driver id: " + token[1] + " use GetDriversId API to get all drivers list");
                     }
-                    else if (result.equals(NotAvailable))
+                    else if (result.equals(NOT_AVAILABLE))
                     {
                         UARTSendError("driver property: " + token[2] + " set as NOT Available");
                     }
-                    else if (result.equals(WrongPropertyName))
+                    else if (result.equals(WRONG_PROPERTY_NAME))
                     {
                         UARTSendError("driver property: " + token[2] + " not exists");
                     }
@@ -364,9 +364,9 @@ void UARTRecv(String command)
                     else
                     {
 #ifdef USE_ESP_DRIVER
-                        if ((driverResult.indexOf(WrongDriverName) > -1) || (driverResult.indexOf(WrongPropertyName) > -1))
+                        if ((driverResult.indexOf(WRONG_DRIVER_NAME) > -1) || (driverResult.indexOf(WRONG_PROPERTY_NAME) > -1))
                         {
-                            String result = nodeOnMessage(nodeGetTopic() + "/set" + token[2], token[3], NoTransportMask);
+                            String result = nodeOnMessage(nodeGetTopic() + "/set" + token[2], token[3], NO_TRANSPORT_MASK);
                             if ((result.length() == 0) || (result.equals("0")))
                             {
                                 UARTSendError(driverResult + " [or] wrong node property: " + token[2]);

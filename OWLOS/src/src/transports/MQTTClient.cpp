@@ -192,7 +192,7 @@ void onMqttMessage(char *topic, char *payload, AsyncMqttClientMessageProperties 
 #endif
 #ifdef USE_ESP_DRIVER
     //first check is Unit property?
-    if (nodeOnMessage(_topic, _payload, MQTTMask).equals(WrongNodePropertyName))
+    if (nodeOnMessage(_topic, _payload, MQTT_TRANSPORT_MASK).equals(WRONG_NODE_PROPERTY_NAME))
     {
         //if not UNIT property
         //Put recieved message to all drivers, each driver can process any topic recieved by Unit

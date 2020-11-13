@@ -59,12 +59,28 @@ OWLOS распространяется в надежде, что она буде
   Please NOTE: The class itself is never used as a driver class.
                                                                             (...One morning thick snow fell in Babylon...) */
 
-//#define DRIVER_MASK "BaseDriver"
+
+#define TEST_DRIVER_TYPE 0
+#define DHT_DRIVER_TYPE 1
+#define LIGHT_DRIVER_TYPE 2
+#define SMOKE_DRIVER_TYPE 3
+#define MOTION_DRIVER_TYPE 4
+#define SENSOR_DRIVER_TYPE 5
+#define STEPPER_DRIVER_TYPE 6
+#define LCD_DRIVER_TYPE 7
+#define ACTUATOR_DRIVER_TYPE 8
+#define OPTO_DRIVER_TYPE 9
+#define VALVE_DRIVER_TYPE 10
+#define WIFI_DRIVER_TYPE 11
+#define NETWORK_DRIVER_TYPE 12
+#define ESP_DRIVER_TYPE 13
+#define CONFIG_DRIVER_TYPE 14
 
 #define PIN0_INDEX 0
 #define PIN1_INDEX 1
 #define PIN2_INDEX 2
 #define PIN3_INDEX 3
+
 
 class BaseDriver
 {

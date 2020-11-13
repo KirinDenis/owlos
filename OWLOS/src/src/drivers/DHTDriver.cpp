@@ -172,7 +172,7 @@ bool DHTDriver::begin(String _topic)
 	}
 
 	trap = 0.1f;
-	setType(DHTDriverType);
+	setType(DHT_DRIVER_TYPE);
 	setAvailable(available); //сообщаем наверх о доступности сенсора
 	return available;
 }
@@ -266,7 +266,7 @@ bool DHTDriver::publish()
 String DHTDriver::onMessage(String route, String _payload, int8_t transportMask)
 {
 	String result = BaseDriver::onMessage(route, _payload, transportMask);
-	if (!result.equals(WrongPropertyName))
+	if (!result.equals(WRONG_PROPERTY_NAME))
 		return result;
 
 	if (matchRoute(route, topic, "/getdhttype"))

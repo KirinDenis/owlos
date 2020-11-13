@@ -88,7 +88,7 @@ bool ValveDriver::init()
 bool ValveDriver::begin(String _topic)
 {
 	BaseDriver::begin(_topic);
-	setType(Valve);
+	setType(VALVE_DRIVER_TYPE);
 	setAvailable(available);
 	return available;
 }
@@ -139,7 +139,7 @@ bool ValveDriver::publish()
 String ValveDriver::onMessage(String route, String _payload, int8_t transportMask)
 {
 	String result = BaseDriver::onMessage(route, _payload, transportMask);
-	if (!result.equals(WrongPropertyName))
+	if (!result.equals(WRONG_PROPERTY_NAME))
 		return result;
 
 	else if (matchRoute(route, topic, "/getposition"))

@@ -43,8 +43,6 @@ OWLOS распространяется в надежде, что она буде
 #ifndef CONFIG_H
 #define CONFIG_H
 
-
-
 #define USE_ESP_BOARDS
     #ifdef USE_ESP_BOARDS
        
@@ -123,7 +121,7 @@ OWLOS распространяется в надежде, что она буде
                 //#define USE_UPDATE_SERVICE
 
                 //Включает OTA (Over The Air) возможность загружать новые прошивки по локальной WiFi сети (без использования UART)
-                #define USE_OTA_SERVICE
+                //#define USE_OTA_SERVICE
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4       
                 //Включает в сборку MQTT клиент

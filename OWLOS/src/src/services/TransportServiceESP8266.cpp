@@ -294,7 +294,7 @@ void Callback(char *_topic, byte *_payload, unsigned int length)
 		payload_buff[i] = '\0'; //terminate string with zero
 
 		//first check is Unit property?
-		if (nodeOnMessage(String(_topic), String(payload_buff), MQTTMask).equals(WrongPropertyName))
+		if (nodeOnMessage(String(_topic), String(payload_buff), MQTT_TRANSPORT_MASK).equals(WRONG_PROPERTY_NAME))
 		{
 			//if not UNIT property
 			//Put recieved message to all drivers, each driver can process any topic recieved by Unit

@@ -224,7 +224,7 @@ String BaseDriver::onMessage(String route, String _payload, int8_t transportMask
 	}
 	else if (matchRoute(route, topic, "/setid"))
 	{
-		return NotAvailable;
+		return NOT_AVAILABLE;
 	}
 	//Topic --------------------------------------------------------------------
 	else if (matchRoute(route, topic, "/gettopic"))
@@ -233,7 +233,7 @@ String BaseDriver::onMessage(String route, String _payload, int8_t transportMask
 	}
 	else if (matchRoute(route, topic, "/settopic"))
 	{
-		return NotAvailable;
+		return NOT_AVAILABLE;
 	}
 	//Available --------------------------------------------------------------------
 	else if (matchRoute(route, topic, "/getavailable"))
@@ -296,7 +296,7 @@ String BaseDriver::onMessage(String route, String _payload, int8_t transportMask
 	{
 		return onGetProperty("historyfile", String(readHistoryFile()), transportMask);
 	}
-	return WrongPropertyName;
+	return WRONG_PROPERTY_NAME;
 }
 
 //Called when client gets a property from network
@@ -308,7 +308,7 @@ String BaseDriver::onGetProperty(String _property, String _payload, int8_t trans
 #endif
 #endif
 
-	if (transportMask && MQTTMask != 0)
+	if (transportMask && MQTT_TRANSPORT_MASK != 0)
 	{
 #ifdef USE_ESP_DRIVER
 		transportPublish(topic + "/" + _property, _payload);
@@ -339,7 +339,7 @@ bool BaseDriver::onInsideChange(String _property, String _payload /*, int8_t tra
 debugOut(id, "|<- inside change " + _property + " = " +  _payload);
 #endif
 	  #endif
-	if (transportMask && MQTTMask > 1)
+	if (transportMask && MQTT_TRANSPORT_MASK > 1)
 	{
 	   result = result & transportPublish(topic + "/" + _property, _payload);
 	}

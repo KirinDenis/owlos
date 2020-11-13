@@ -64,7 +64,7 @@ OWLOS распространяется в надежде, что она буде
 #define DEFAULT_OTA_CLIENT_AVAILABLE false
 #define DEFAULT_OTA_CLIENT_PORT 8266
 #define DEFAULT_OTA_CLIENT_ID "owlnode"
-#define DEFAULT_OTA_CLIENT_PASSWORD "cas777"
+#define DEFAULT_OTA_CLIENT_PASSWORD "owlos"
 
 //Update
 #define DEFAULT_UPDATE_AVAILABLE true
@@ -165,7 +165,7 @@ String nodeGetAllProperties()
 		   "properties for:network\n"
 		   "id=network//r\n"
 		   "type=" +
-		   String(NetworkType) + "//r\n"
+		   String(NETWORK_DRIVER_TYPE) + "//r\n"
 								 "firmwareversion=" +
 		   nodeGetFirmwareVersion() + "//r\n"
 									  "firmwarebuildnumber=" +
@@ -229,7 +229,7 @@ String nodeGetAllProperties()
 								 "properties for:esp\n"
 								 "id=esp//r\n"
 								 "type=" +
-		   String(ESPType) + "//r\n"
+		   String(ESP_DRIVER_TYPE) + "//r\n"
 							 "espresetinfo=" +
 		   nodeGetESPResetInfo() + "//r\n"
 								   "espreset=" +
@@ -298,7 +298,7 @@ String onGetProperty(String _property, String _payload, int8_t transportMask)
 	debugOut(nodeid, "|-> get property " + _property + " = " + _payload);
 #endif
 #endif
-	if (transportMask && MQTTMask != 0)
+	if (transportMask && MQTT_TRANSPORT_MASK != 0)
 	{
 		transportPublish(topic + "/" + _property, _payload);
 	}
@@ -308,7 +308,7 @@ String onGetProperty(String _property, String _payload, int8_t transportMask)
 String nodeOnMessage(String route, String _payload, int8_t transportMask)
 {
 	String result = wifiOnMessage(route, _payload, transportMask);
-	if (!result.equals(WrongNodePropertyName))
+	if (!result.equals(WRONG_NODE_PROPERTY_NAME))
 		return result;
 	if (matchRoute(route, topic, "/getnodeid"))
 	{
@@ -781,7 +781,7 @@ String _getStringPropertyValue(String _property, String _defaultvalue)
 	else
 	{
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
-		nodeOnMessage(topic + "/set" + _property, result, NoTransportMask);
+		nodeOnMessage(topic + "/set" + _property, result, NO_TRANSPORT_MASK);
 #endif
 	}
 	propertyFileReaded += _property + ";";
@@ -807,7 +807,7 @@ int _getIntPropertyValue(String _property, int _defaultvalue)
 	else
 	{
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
-		nodeOnMessage(topic + "/set" + _property, String(result), NoTransportMask);
+		nodeOnMessage(topic + "/set" + _property, String(result), NO_TRANSPORT_MASK);
 #endif
 	}
 	propertyFileReaded += _property + ";";
@@ -1348,7 +1348,7 @@ String nodeGetESPCoreVersion()
 #endif
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
-	return NotAvailable;
+	return NOT_AVAILABLE;
 #endif
 }
 bool nodeSetESPCoreVersion(String _espcoreversion)
@@ -1367,7 +1367,7 @@ String nodeGetESPFullVersion()
 #endif
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
-	return NotAvailable;
+	return NOT_AVAILABLE;
 #endif
 }
 

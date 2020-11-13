@@ -169,11 +169,11 @@ void handleGetLog(HTTPRequest *req, HTTPResponse *res)
       res->setStatusCode(200);
       if (paramVal == "1")
       {
-        res->print(filesReadString(LogFile1));
+        res->print(filesReadString(DEBUG_LOG_FILE1_NAME));
       }
       else
       {
-        res->print(filesReadString(LogFile2));
+        res->print(filesReadString(DEBUG_LOG_FILE2_NAME));
       }
       return;
     }
@@ -278,8 +278,8 @@ void handleGetNodeProperty(HTTPRequest *req, HTTPResponse *res)
   std::string paramVal;
   if (params->getQueryParameter("property", paramVal))
   {
-    String nodeProp = nodeOnMessage(nodeGetTopic() + "/get" + decode(String(paramVal.c_str())), "", NoTransportMask);
-    if ((nodeProp.length() == 0) || (nodeProp.equals(WrongPropertyName)))
+    String nodeProp = nodeOnMessage(nodeGetTopic() + "/get" + decode(String(paramVal.c_str())), "", NO_TRANSPORT_MASK);
+    if ((nodeProp.length() == 0) || (nodeProp.equals(WRONG_PROPERTY_NAME)))
     {
       req->discardRequestBody();
       res->setStatusCode(405);
@@ -304,7 +304,7 @@ void handleSetNodeProperty(HTTPRequest *req, HTTPResponse *res, String driverRes
   std::string valParam;
   if ((params->getQueryParameter("property", propertyParam)) && (params->getQueryParameter("value", valParam)))
   {
-    String result = nodeOnMessage(nodeGetTopic() + "/set" + decode(String(propertyParam.c_str())), decode(String(valParam.c_str())), NoTransportMask);
+    String result = nodeOnMessage(nodeGetTopic() + "/set" + decode(String(propertyParam.c_str())), decode(String(valParam.c_str())), NO_TRANSPORT_MASK);
     if ((result.length() == 0) || (result.equals("0")))
     {
       req->discardRequestBody();
@@ -419,7 +419,7 @@ void handleGetDriverProperty(HTTPRequest *req, HTTPResponse *res)
     String result = driversGetDriverProperty(decode(String(idParam.c_str())), decode(String(propertyParam.c_str())));
     if (result.length() == 0) //then try get this property from node
     {
-      result = nodeOnMessage(nodeGetTopic() + "/get" + decode(String(propertyParam.c_str())), "", NoTransportMask);
+      result = nodeOnMessage(nodeGetTopic() + "/get" + decode(String(propertyParam.c_str())), "", NO_TRANSPORT_MASK);
     }
 
     if (result.length() == 0)
@@ -429,14 +429,14 @@ void handleGetDriverProperty(HTTPRequest *req, HTTPResponse *res)
       res->setStatusText("wrong driver id: " + idParam + " use GetDriversId API to get all drivers list");
       res->setHeader("Content-Type", "text/html");
     }
-    else if (result.equals(NotAvailable))
+    else if (result.equals(NOT_AVAILABLE))
     {
       req->discardRequestBody();
       res->setStatusCode(404);
       res->setStatusText("driver property: " + propertyParam + " set as NOT Available");
       res->setHeader("Content-Type", "text/html");
     }
-    else if (result.equals(WrongPropertyName))
+    else if (result.equals(WRONG_PROPERTY_NAME))
     {
       req->discardRequestBody();
       res->setStatusCode(404);
@@ -471,7 +471,7 @@ void handleSetDriverProperty(HTTPRequest *req, HTTPResponse *res)
     }
     else
     {
-      if ((result.indexOf(WrongDriverName) > -1) || (result.indexOf(WrongPropertyName) > -1))
+      if ((result.indexOf(WRONG_DRIVER_NAME) > -1) || (result.indexOf(WRONG_PROPERTY_NAME) > -1))
       {
         handleSetNodeProperty(req, res, result);
       }

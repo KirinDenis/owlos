@@ -108,7 +108,7 @@ String webGetAllProperties()
 
 String webOnMessage(String _topic, String _payload)
 {
-	String result = WrongPropertyName;
+	String result = WRONG_PROPERTY_NAME;
 	if (String(nodeGetTopic() + "/getconfig").equals(_topic)) return webGetWebConfig();
 	else
 		if (String(nodeGetTopic() + "/sethead").equals(_topic)) return String(webSetHead(_payload));
