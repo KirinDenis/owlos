@@ -82,7 +82,7 @@ public:
 	bool query();
 	String getAllProperties();
 	bool publish();
-	String onMessage(String _topic, String _payload, int8_t transportMask);
+	String onMessage(const String &route, const String &_payload, int8_t transportMask);
 	int getDHTType();
 	bool setDHTType(int _dhttype);
 	bool getCelsius();

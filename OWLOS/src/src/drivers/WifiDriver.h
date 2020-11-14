@@ -77,7 +77,7 @@ int nodeSetWiFiIsDisconnected();
 
 String nodeGetConnectedWiFiSSID();
 String nodeGetWiFiProperties();
-String wifiOnMessage(String _topic, String _payload, int8_t transportMask);
+String wifiOnMessage(const String &route, const String &_payload, int8_t transportMask);
 
 #endif
 #endif

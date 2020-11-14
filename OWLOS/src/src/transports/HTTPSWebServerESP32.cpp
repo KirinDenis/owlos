@@ -602,6 +602,32 @@ void handleDebugNextScript(HTTPRequest *req, HTTPResponse *res)
   handleNotFound(req, res);
 }
 
+void handleDeleteScript(HTTPRequest *req, HTTPResponse *res)
+{
+  corsCallback(req, res);
+  ResourceParameters *params = req->getParams();
+  std::string nameParam;
+
+  if (params->getQueryParameter("name", nameParam))
+  {
+    
+    if (!scriptsDelete(decode(String(nameParam.c_str()))))
+    {
+      req->discardRequestBody();
+      res->setStatusCode(503);      
+      res->setHeader("Content-Type", "text/html");
+    }
+    else
+    {
+      res->setStatusCode(200);
+      res->print("OK");
+    }
+    return;
+  }
+  handleNotFound(req, res);
+}
+
+
 void handleCreateScript(HTTPRequest *req, HTTPResponse *res)
 {
   corsCallback(req, res);
@@ -628,12 +654,12 @@ void handleCreateScript(HTTPRequest *req, HTTPResponse *res)
       res->setStatusCode(501);
       return;
     }
-    // We iterate over the fields. Any field with a filename is uploaded
+    
     String byteCode = "";
     bool didwrite = false;
     if (parser->nextField())
     {
-      //std::string name = parser->getFieldName();
+      
 
       size_t fileLength = 0;
       didwrite = true;
@@ -812,6 +838,7 @@ void HTTPSWebServerBegin()
   setResourceNode("/getallscripts", "GET", &handleGetAllScripts);
   setResourceNode("/startdebugscript", "GET", &handleStartDebugScript);
   setResourceNode("/debugnextscript", "GET", &handleDebugNextScript);
+  setResourceNode("/deletescript", "GET", &handleDeleteScript);  
   setResourceNode("/createscript", "POST", &handleCreateScript);
 #endif
   setResourceNode("/getwebproperty", "GET", &handleGetWebProperty);

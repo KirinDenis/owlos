@@ -117,7 +117,7 @@ bool ActuatorDriver::publish()
 	return false;
 };
 
-String ActuatorDriver::onMessage(String route, String _payload, int8_t transportMask)
+String ActuatorDriver::onMessage(const String &route, const String &_payload, int8_t transportMask)
 {
 	String result = BaseDriver::onMessage(route, _payload, transportMask);
 	if (!result.equals(WRONG_PROPERTY_NAME))

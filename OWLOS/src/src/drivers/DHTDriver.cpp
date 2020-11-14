@@ -263,7 +263,7 @@ bool DHTDriver::publish()
 	return false;
 }
 //опрос свойств драйвера для чтения записи от RESTful или MQTT
-String DHTDriver::onMessage(String route, String _payload, int8_t transportMask)
+String DHTDriver::onMessage(const String &route, const String &_payload, int8_t transportMask)
 {
 	String result = BaseDriver::onMessage(route, _payload, transportMask);
 	if (!result.equals(WRONG_PROPERTY_NAME))

@@ -145,7 +145,7 @@ bool SensorDriver::publish()
 	return false;
 };
 
-String SensorDriver::onMessage(String route, String _payload, int8_t transportMask)
+String SensorDriver::onMessage(const String &route, const String &_payload, int8_t transportMask)
 {
 	String result = BaseDriver::onMessage(route, _payload, transportMask);
 	if (!result.equals(WRONG_PROPERTY_NAME))

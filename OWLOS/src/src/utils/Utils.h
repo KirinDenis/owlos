@@ -78,6 +78,6 @@ void debugOut(const String &tag, const String &text);
 #endif
 void writeDebugLogFile(String fileName, int fileSize, String tag, String text);
 bool matchRoute(const char *route, const char *topic, const char *path);
-bool matchRoute(String &route, String &topic, const char *path);
+bool matchRoute(const String &route, const String &topic, const char *path);
 
 #endif

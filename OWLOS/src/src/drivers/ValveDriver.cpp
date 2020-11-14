@@ -136,7 +136,7 @@ bool ValveDriver::publish()
 	return false;
 };
 //Обработка внешних команд для драйвера Valve
-String ValveDriver::onMessage(String route, String _payload, int8_t transportMask)
+String ValveDriver::onMessage(const String &route, const String &_payload, int8_t transportMask)
 {
 	String result = BaseDriver::onMessage(route, _payload, transportMask);
 	if (!result.equals(WRONG_PROPERTY_NAME))

@@ -305,7 +305,7 @@ String onGetProperty(String _property, String _payload, int8_t transportMask)
 	return _payload;
 }
 
-String nodeOnMessage(String route, String _payload, int8_t transportMask)
+String nodeOnMessage(const String &route, const String &_payload, int8_t transportMask)
 {
 	String result = wifiOnMessage(route, _payload, transportMask);
 	if (!result.equals(WRONG_NODE_PROPERTY_NAME))

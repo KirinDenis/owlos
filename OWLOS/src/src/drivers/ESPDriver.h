@@ -62,7 +62,7 @@ String nodeGetAllProperties();
 
 void nodeSubscribe();
 
-String nodeOnMessage(String _topic, String _payload, int8_t transportMask);
+String nodeOnMessage(const String &route, const String &_payload, int8_t transportMask);
 
 String nodeGetUnitId();
 bool nodeSetUnitId(String _nodeid);
