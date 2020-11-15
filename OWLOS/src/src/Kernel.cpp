@@ -88,11 +88,13 @@ bool kernelSetup()
 #ifdef USE_SCRIPT
 	scriptsLoad();
 #endif
+
+
 	//Setup network stack - WiFi -> after MQTT -- if both available Transport accessable, if not Unit try reconnect forever (every 5 sec by default)
 	//Ther is not connected at begin(), see Main::Loop() transportReconnect() function using
 	//The begin() just setup connection properties
-
 	transportBegin();
+
 	//The OWLOS harvester started up and went quietly...
 #ifdef DetailedDebug
 #ifdef DEBUG
@@ -101,20 +103,11 @@ bool kernelSetup()
 #endif
 	return true;
 #else
-#ifdef DEBUG
+
 #ifdef DEBUG
 	debugOut("OWLOS kernel", "building problem");
-#endif
-#endif
-#ifdef DEBUG
-#ifdef DEBUG
 	debugOut("OWLOS kernel", "can's start, please install ESP32 RELEASE 1.0.4 or ESP8266 RELEASE 2.5.0 for building");
-#endif
-#endif
-#ifdef DEBUG
 	debugOut("ESP32 RELEASE 1.0.4", "https://github.com/espressif/arduino-esp32/releases/tag/1.0.4");
-#endif
-#ifdef DEBUG
 	debugOut("ESP8266 RELEASE 2.5.0", "https://github.com/esp8266/Arduino/releases/tag/2.5.0");
 #endif
 	return false;
@@ -162,9 +155,10 @@ bool kernelLoop()
 	transportLoop(); //Ping MQTT (at this version MQTT used only, FFR Ping RESTful to
 #endif
 #endif
+
 #endif
 
-#ifdef USE_ARDUINO_BOARDS
+#if defined(USE_ARDUINO_BOARDS) || !defined(USE_ESP_DRIVER)
 	transportLoop();
 #endif
 

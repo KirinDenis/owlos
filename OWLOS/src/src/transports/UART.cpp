@@ -172,12 +172,14 @@ void UARTRecv(String command)
             }
             else
                 //SET reset
+#ifdef USE_ESP_DRIVER                
                 if ((token[0].equals("AT+R")) || (token[0].equals("AT+RESET")))
             {
                 UARTSendOK("");
                 nodeSetESPReset(1);
             }
             else
+#endif            
                 //GET all drivers properties
                 if (token[0].equals("AT+ADP?"))
             {

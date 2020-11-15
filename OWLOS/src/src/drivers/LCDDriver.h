@@ -82,7 +82,7 @@ public:
 
 	bool begin(String _topic);
 	String getAllProperties();
-	String onMessage(const String &route, const String &_payload, int8_t transportMask);
+	String onMessage(String route, String _payload, int8_t transportMask);
 
 	int getCols();
 	bool setCols(int _cols, bool doEvent);

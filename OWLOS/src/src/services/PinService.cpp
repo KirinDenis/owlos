@@ -455,7 +455,7 @@ int getPinMode(uint32_t pin)
 	if ((pin >= NUM_DIGITAL_PINS) || (pin < 0))
 		return (-1);
 
-#ifdef USE_ESP_BOARDS
+#if defined(ARDUINO_ESP8266_RELEASE_2_5_0) || defined(ARDUINO_ESP32_RELEASE_1_0_4) || defined(USE_ARDUINO_BOARDS)
 	uint32_t bit = digitalPinToBitMask(pin);
 	uint32_t port = digitalPinToPort(pin);
 	volatile uint32_t *reg = portModeRegister(port);

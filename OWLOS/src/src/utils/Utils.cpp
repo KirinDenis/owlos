@@ -55,12 +55,13 @@ char *stringToChar(String src)
 void debugOut(const String &tag, const String &text)
 {
 #ifdef USE_ESP_DRIVER
-#ifdef SERIAL_COLORIZED_OUTPUT
-	String _text = text + " \033\033[1;32m [" + String(ESP.getFreeHeap()) + "]";
+	#ifdef SERIAL_COLORIZED_OUTPUT
+		String _text = text + " \033\033[1;32m [" + String(ESP.getFreeHeap()) + "]";
+	#else
+		String _text = text + " [" + String(ESP.getFreeHeap()) + "]";
+	#endif
 #else
-	String _text = text + " [" + String(ESP.getFreeHeap()) + "]";
-#endif
-
+    String _text = text;
 #endif
 
 #ifdef SERIAL_COLORIZED_OUTPUT

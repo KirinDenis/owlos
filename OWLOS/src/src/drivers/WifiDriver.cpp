@@ -120,7 +120,7 @@ String nodeGetWiFiProperties()
 		   nodeGetAllWiFiEncryptionTypes() + "//r\n";
 }
 
-String wifiOnMessage(const String &route, const String &_payload, int8_t transportMask)
+String wifiOnMessage(String route, String _payload, int8_t transportMask)
 {
 	
 	if (matchRoute(route, topic, "/getwifiaccesspointavailable"))

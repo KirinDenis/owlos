@@ -43,11 +43,11 @@ OWLOS распространяется в надежде, что она буде
 #ifndef CONFIG_H
 #define CONFIG_H
 
+
 #define USE_ESP_BOARDS
     #ifdef USE_ESP_BOARDS
-       
-        #include <core_version.h>
-        #define USE_ESP_DRIVER
+        #include <core_version.h>               
+//        #define USE_ESP_DRIVER
             #ifdef USE_ESP_DRIVER
 
                 // ВАЖНО:
@@ -123,10 +123,10 @@ OWLOS распространяется в надежде, что она буде
                 //Включает OTA (Over The Air) возможность загружать новые прошивки по локальной WiFi сети (без использования UART)
                 //#define USE_OTA_SERVICE
 
-#ifdef ARDUINO_ESP32_RELEASE_1_0_4       
-                //Включает в сборку MQTT клиент
-                #define USE_MQTT                
-#endif                
+                #ifdef ARDUINO_ESP32_RELEASE_1_0_4       
+                    //Включает в сборку MQTT клиент
+                    #define USE_MQTT                
+                #endif                
             #endif
     #else
         #define USE_ARDUINO_BOARDS

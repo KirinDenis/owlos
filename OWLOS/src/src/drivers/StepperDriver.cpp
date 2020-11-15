@@ -141,7 +141,7 @@ String StepperDriver::getAllProperties()
 		   String(speed) + "//i\n";
 }
 
-String StepperDriver::onMessage(const String &route, const String &_payload, int8_t transportMask)
+String StepperDriver::onMessage(String route, String _payload, int8_t transportMask)
 {
 	String result = BaseDriver::onMessage(route, _payload, transportMask);
 	if (!result.equals(WRONG_PROPERTY_NAME))
