@@ -68,7 +68,7 @@ bool downloadFile(String fileName, String url)
 {
 	bool result = false;
 
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(webclientid, "download: " + fileName + " from: " + url);
 #endif
@@ -89,7 +89,7 @@ bool downloadFile(String fileName, String url)
 		File file = SPIFFS.open(fileName, "w");
 		if (!file)
 		{
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 			debugOut(webclientid, "There was an error opening the file for writing: " + fileName);
 #endif
@@ -100,7 +100,7 @@ bool downloadFile(String fileName, String url)
 		if (httpCode == HTTP_CODE_OK)
 		{
 			int len = http.getSize();
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 			debugOut(webclientid, "download size: " + String(len));
 #endif
@@ -128,7 +128,7 @@ bool downloadFile(String fileName, String url)
 				delay(10);
 			}
 			file.close();
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 			debugOut(webclientid, "download=OK");
 #endif
@@ -137,7 +137,7 @@ bool downloadFile(String fileName, String url)
 		}
 		else
 		{
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 			debugOut(webclientid, "download=fail HTTPResult=" + String(httpCode));
 #endif
@@ -146,7 +146,7 @@ bool downloadFile(String fileName, String url)
 	}
 	else
 	{
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 		debugOut(webclientid, "download=fail");
 #endif

@@ -96,7 +96,7 @@ bool kernelSetup()
 	transportBegin();
 
 	//The OWLOS harvester started up and went quietly...
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut("kernel setup", "complete");
 #endif //if Utils.h "Debug=true" start writing log to Serial
@@ -133,7 +133,7 @@ bool kernelLoop()
 	{
 		if (transportReconnect()) //DO connection routin, see Transport.cpp
 		{
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 			debugOut(nodeGetUnitId(), "Transport available");
 #endif //if HEAD and MQTT Brokker is available setuping drivers

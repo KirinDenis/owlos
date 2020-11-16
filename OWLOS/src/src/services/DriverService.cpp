@@ -64,7 +64,7 @@ void driversInit(String _topic)
 {
 	__topic = _topic;
 	initPins();
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut("driverconfig", driversLoadFromConfig());
 #endif
@@ -346,7 +346,7 @@ bool driversSaveList()
 
 String driversLoadFromConfig()
 {
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut("driverconfig", "load");
 #endif
@@ -362,7 +362,7 @@ String driversLoadFromConfig()
 	int linePos = 0;
 	String line;
 
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut("driverconfig", "do parse");
 #endif
@@ -372,7 +372,7 @@ String driversLoadFromConfig()
 	{
 
 		line = driverList.substring(0, linePos);
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 		debugOut("driverconfig_load line_", line);
 #endif
@@ -414,7 +414,7 @@ String driversLoadFromConfig()
 //External driver Service API -------------------------------------------------
 String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 {
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut("driversadd_id", id);
 #endif
@@ -443,7 +443,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 		_pins[pinCount] = pins.substring(0, pinPos);
 		if (_pins[pinCount].length() == 0)
 			break;
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 		debugOut("pin", _pins[pinCount]);
 #endif
@@ -480,7 +480,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 #ifdef USE_ACTUATOR_DRIVER
 	if (type == ACTUATOR_DRIVER_TYPE)
 	{
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 		debugOut("pin", String(pinCount));
 #endif
@@ -492,7 +492,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 
 		result = checkDriverPin(_pins[PIN0_INDEX], ActuatorDriver::getPinType(PIN0_INDEX)) + checkDriverPin(_pins[PIN1_INDEX], ActuatorDriver::getPinType(PIN1_INDEX));
 
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 		debugOut("DCResult", result);
 #endif
@@ -517,7 +517,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 #ifdef USE_SENSOR_DRIVER
 		if ((type == SENSOR_DRIVER_TYPE) || (type == LIGHT_DRIVER_TYPE) || (type == SMOKE_DRIVER_TYPE) || (type == MOTION_DRIVER_TYPE))
 	{
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 		debugOut("pin", String(pinCount));
 #endif
@@ -529,7 +529,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 
 		result = checkDriverPin(_pins[PIN0_INDEX], SensorDriver::getPinType(PIN0_INDEX)) + checkDriverPin(_pins[PIN1_INDEX], SensorDriver::getPinType(PIN1_INDEX)) + checkDriverPin(_pins[PIN2_INDEX], SensorDriver::getPinType(PIN2_INDEX));
 
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 		debugOut("DCResult", result);
 #endif
@@ -553,7 +553,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 #ifdef USE_LCD_DRIVER
 		if (type == LCD_DRIVER_TYPE)
 	{
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 		debugOut("pin", String(pinCount));
 #endif
@@ -584,7 +584,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 #ifdef USE_DHT_DRIVER
 		if (type == DHT_DRIVER_TYPE)
 	{
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 		debugOut("pin", String(pinCount));
 #endif
@@ -619,7 +619,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 	//if driver added at RUNTIME
 	driversList[freeIndex]->begin(nodeGetTopic());
 #endif
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut("driversadd", "OK");
 #endif
@@ -654,7 +654,7 @@ String driversChangePin(String pinName, String driverId, int driverPinIndex)
 
 String driversDelete(String id)
 {
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut("driversdelete", id);
 #endif

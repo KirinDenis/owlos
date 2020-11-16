@@ -232,7 +232,7 @@ String parsePostBody(WiFiClient client)
 #ifdef DEBUG
 						debugOut("d_body", body);
 #endif
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 						debugOut("BODY", body);
 #endif
@@ -1229,7 +1229,7 @@ void HTTPSWebServerLoop()
 					}
 					else // currentLine.length() == 0 END OF HEADER RECIEVE
 					{
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 						debugOut("---", firstLine);
 #endif
@@ -1243,7 +1243,7 @@ void HTTPSWebServerLoop()
 							uri = uri.substring(0, uri.indexOf(" "));
 							if ((uri.length() == 0) || (uri.equals("/")))
 								uri = "/index.html";
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 							debugOut("-->", uri);
 #endif
@@ -1274,7 +1274,7 @@ void HTTPSWebServerLoop()
 							if (firstLine.indexOf("token=" + token) == -1)
 							{
 								//GET section
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 								debugOut("METHOD", method);
 #endif

@@ -80,7 +80,7 @@ void BaseDriver::del()
 bool BaseDriver::begin(const String &_topic)
 {
 	topic = _topic + '/' + id;
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "available with topic " + topic);
 #endif
@@ -302,7 +302,7 @@ String BaseDriver::onMessage(const String &route, const String &_payload, int8_t
 //Called when client gets a property from network
 String BaseDriver::onGetProperty(String _property, String _payload, int8_t transportMask)
 {
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "|-> get property " + _property + " = " + _payload);
 #endif
@@ -319,7 +319,7 @@ String BaseDriver::onGetProperty(String _property, String _payload, int8_t trans
 
 bool BaseDriver::onInsideChange(String _property, String _payload /*, int8_t transportMask*/)
 {
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "|<- inside change " + _property + " = " + _payload);
 #endif
@@ -335,7 +335,7 @@ bool BaseDriver::onInsideChange(String _property, String _payload /*, int8_t tra
 	/*
 	bool result = true;
 	  #ifdef
-	  DetailedDebug #ifdef DEBUG
+	  DETAILED_DEBUG #ifdef DEBUG
 debugOut(id, "|<- inside change " + _property + " = " +  _payload);
 #endif
 	  #endif
@@ -353,7 +353,7 @@ int BaseDriver::getAvailable()
 	{
 		available = filesReadInt(id + ".available");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "available=" + String(available));
 #endif
@@ -370,7 +370,7 @@ bool BaseDriver::setAvailable(int _available)
 
 int BaseDriver::getType()
 {
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "type=" + type);
 #endif
@@ -391,7 +391,7 @@ float BaseDriver::getTrap()
 	{
 		trap = filesReadFloat(id + ".trap");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "trap=" + String(trap));
 #endif
@@ -412,7 +412,7 @@ int BaseDriver::getQueryInterval()
 	{
 		queryInterval = filesReadInt(id + ".queryinterval");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "queryinterval=" + String(queryInterval));
 #endif
@@ -433,7 +433,7 @@ int BaseDriver::getPublishInterval()
 	{
 		publishInterval = filesReadInt(id + ".publishinterval");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "publishinterval=" + String(publishInterval));
 #endif

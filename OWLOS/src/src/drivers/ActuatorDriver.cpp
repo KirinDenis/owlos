@@ -170,7 +170,7 @@ bool ActuatorDriver::getAnalog()
 	{
 		data = filesReadInt(id + ".analog");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "analog=" + String(data));
 #endif

@@ -97,7 +97,7 @@ void WiFiSTReconnect()
 		String WiFiPassword = nodeGetWiFiPassword();
 		if (WiFiSSID.length() == 0)
 		{
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 			debugOut(TransportID, "WiFi SSID not defined");
 #endif
@@ -106,7 +106,7 @@ void WiFiSTReconnect()
 		}
 
 		{
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 			debugOut(TransportID, "try to connect to - " + WiFiSSID + ":" + WiFiPassword + " wait ");
 #endif
@@ -119,14 +119,14 @@ void WiFiSTReconnect()
 			{
 				delay(100);
 				wait++;
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 				debugOut(TransportID, "Wait for WiFi [" + String(wait) + "] from [10]");
 #endif
 #endif
 				if (wait > 9)
 				{
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 					debugOut(TransportID, "Wait for WiFi TimeOut...break");
 #endif
@@ -187,7 +187,7 @@ void WiFiEvent(WiFiEvent_t event)
 	case SYSTEM_EVENT_STA_GOT_IP:
 		//TODO: setIP
 		wifiResult = true;
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 		debugOut(TransportID, "WiFi connected as Client success, local IP: " + nodeGetWiFiIP());
 #endif
@@ -307,32 +307,37 @@ void WiFiEvent(WiFiEvent_t event)
 
 bool transportBegin()
 {
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(TransportID, "begin");
 #endif
 #endif
 
 	WiFi.onEvent(WiFiEvent);
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 	//esp_wifi_set_ps(WIFI_PS_NONE);
 	//esp_wifi_set_ps(WIFI_PS_MAX_MODEM);
 #endif
 
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
-	debugOut(TransportID, "no WiFi mode select, WiFi not accessable");
+	debugOut(TransportID, "Prepare to select WiFi mode...");
 #endif
 #endif
 	//WiFi Access Point and Station mode ---
 	if ((nodeGetWiFiAccessPointAvailable() == 1) && (nodeGetWiFiAvailable() == 1))
 	{
+		esp_wifi_connect();
 		nodeSetWiFiMode(WIFI_AP_STA);
 		//enable watch WiFi station timer
 		wifiSTReconnectTimer = xTimerCreate("wifiTimer", pdMS_TO_TICKS(10000), pdTRUE, (void *)0, reinterpret_cast<TimerCallbackFunction_t>(WiFiSTReconnect));
 		WiFiSTReconnect();
 
-#ifdef DetailedDebug
+			WiFi.softAP(nodeGetWiFiAccessPointSSID().c_str(), nodeGetWiFiAccessPointPassword().c_str());
+			nodeSetWiFiAccessPointIP(WiFi.softAPIP().toString());
+
+
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 		debugOut(TransportID, "WiFi mode Access Point and Station (both)");
 #endif
@@ -341,15 +346,19 @@ bool transportBegin()
 	else
 		//WiFi Access Point mode ---
 		if (nodeGetWiFiAccessPointAvailable() == 1)
-	{
-		if (_WiFiMulti.run() == WL_CONNECTED)
-		{
-			esp_wifi_disconnect();
-			esp_wifi_stop();
-			esp_wifi_deinit();
-		}
-		nodeSetWiFiMode(WIFI_AP);
-#ifdef DetailedDebug
+	{		
+		//STOP all
+		nodeSetWiFiMode(WIFI_OFF);						
+			esp_wifi_disconnect();			
+			
+			//esp_wifi_deinit();
+			//START as access point 			
+			esp_wifi_connect();
+			nodeSetWiFiMode(WIFI_AP);			
+			WiFi.softAP(nodeGetWiFiAccessPointSSID().c_str(), nodeGetWiFiAccessPointPassword().c_str());
+			nodeSetWiFiAccessPointIP(WiFi.softAPIP().toString());
+
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 		debugOut(TransportID, "WiFi mode Access Point");
 #endif
@@ -359,13 +368,13 @@ bool transportBegin()
 		//WiFi Station mode ---
 		if (nodeGetWiFiAvailable() == 1)
 	{
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 		debugOut(TransportID, "WiFi mode Station");
 #endif
 #endif
-
-		WiFi.softAPdisconnect(true);
+        esp_wifi_connect();
+		WiFi.softAPdisconnect(false);
 		nodeSetWiFiMode(WIFI_STA);
 		wifiSTReconnectTimer = xTimerCreate("wifiTimer", pdMS_TO_TICKS(10000), pdTRUE, (void *)0, reinterpret_cast<TimerCallbackFunction_t>(WiFiSTReconnect));
 		WiFiSTReconnect();
@@ -373,11 +382,11 @@ bool transportBegin()
 	//No WiFi mode ---
 	else
 	{
-		nodeSetWiFiMode(WIFI_OFF);
-		WiFi.softAPdisconnect(true);
+		nodeSetWiFiMode(WIFI_OFF);		
+		WiFi.softAPdisconnect(true);		
 		esp_wifi_disconnect();
-		esp_wifi_stop();
-		esp_wifi_deinit();
+		//	esp_wifi_stop(); //make crash if wifi not running before
+		//esp_wifi_deinit();
 		return false;
 	}
 
@@ -423,7 +432,8 @@ void transportSubscribe(String _topic)
 bool transportPublish(String _topic, String _payload)
 {
 #ifdef USE_MQTT
-	if (nodeGetMQTTAvailable() == 1)
+
+	if ((nodeGetWiFiAvailable() == 1) && (nodeGetMQTTAvailable() == 1) && (WiFi.isConnected()))
 	{
 		MQTTPublish(_topic, _payload);
 	}

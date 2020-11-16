@@ -134,7 +134,7 @@ int updateGetUpdatePossible()
 		}
 	}
 
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(updateid, "check update possible result: " + String(updatePossible));
 #endif
@@ -250,7 +250,7 @@ int updateFirmware()
 	{
 		updateLog += "update firmware started\n";
 		updateFirmwareStatus = UpdateStatusStarted;
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 		debugOut(updateid, "Update firmware started\n");
 #endif
@@ -279,21 +279,21 @@ int updateFirmware()
 		switch (ret)
 		{
 		case HTTP_UPDATE_FAILED:
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 			debugOut(updateid, "update error: [" + String(ESPhttpUpdate.getLastError()) + "] " + ESPhttpUpdate.getLastErrorString().c_str());
 #endif
 #endif
 			break;
 		case HTTP_UPDATE_NO_UPDATES:
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 			debugOut(updateid, "no updates");
 #endif
 #endif
 			break;
 		case HTTP_UPDATE_OK:
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 			debugOut(updateid, "update OK");
 #endif
@@ -307,7 +307,7 @@ int updateFirmware()
 	else
 	{
 		updateFirmwareStatus = UpdateStatusUndefined;
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 		debugOut(updateid, "Update firmware fail");
 #endif

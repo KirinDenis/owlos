@@ -47,7 +47,7 @@ OWLOS распространяется в надежде, что она буде
 #define USE_ESP_BOARDS
     #ifdef USE_ESP_BOARDS
         #include <core_version.h>               
-//        #define USE_ESP_DRIVER
+          #define USE_ESP_DRIVER
             #ifdef USE_ESP_DRIVER
 
                 // ВАЖНО:
@@ -86,7 +86,7 @@ OWLOS распространяется в надежде, что она буде
                 #define DEFAULT_WIFI_ACCESS_POINT_IP  "192.168.4.1"         //файл /owlnode.wifiaccesspointip
 
                 //Включает/Выключает (1/0) WiFi режим станции (подключается к указаной WiFi сети (точки доступа))
-                #define DEFAULT_WIFI_STATION_AVAILABLE 1
+                #define DEFAULT_WIFI_STATION_AVAILABLE 0
 
                 //Название подключаемой точки доступа (WiFi сети)
                 //При запуске OWLOS сделает 10 попыток подключится к DEFAULT_WIFI_STATION_SSID сети, в случае неудачи 
@@ -95,10 +95,10 @@ OWLOS распространяется в надежде, что она буде
                 //OWLOS будет делать попытки соединения постоянно, до перезагрузки. 
                 //Такой способ страхует от неправильного указания названия точки доступа - дело в том что процесс подключения
                 //занимает очень много ресурсов и делает устройство OWLOS медленным. 
-                #define DEFAULT_WIFI_STATION_SSID "Palata#13"
+                #define DEFAULT_WIFI_STATION_SSID "" //Palata#13
 
                 //Пароль подключаемой точки доступа. 
-                #define DEFAULT_WIFI_STATION_PASSWORD "qweasdzxc1234"
+                #define DEFAULT_WIFI_STATION_PASSWORD "" //qweasdzxc1234
 
                 //Название этого устройсва с OWLOS для формирования Topic (уникального пути к устройству в сети)
                 #define DEFAULT_ID "owlnode"

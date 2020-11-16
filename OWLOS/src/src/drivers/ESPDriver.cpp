@@ -293,7 +293,7 @@ void nodeSubscribe()
 
 String onGetProperty(String _property, String _payload, int8_t transportMask)
 {
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(nodeid, "|-> get property " + _property + " = " + _payload);
 #endif
@@ -740,7 +740,7 @@ bool lock = false;
 
 bool onInsideChange(String _property, String _value)
 {
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(nodeid, "|<- inside change " + _property + " = " + _value);
 #endif
@@ -754,7 +754,7 @@ bool onInsideChange(String _property, String _value)
 
 		result = transportPublish(topic + "/" + _property, _value);
 
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 		debugOut(nodeid, "|-> inside change ");
 #endif
@@ -785,7 +785,7 @@ String _getStringPropertyValue(String _property, String _defaultvalue)
 #endif
 	}
 	propertyFileReaded += _property + ";";
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(nodeid, _property + "=" + result);
 #endif
@@ -811,7 +811,7 @@ int _getIntPropertyValue(String _property, int _defaultvalue)
 #endif
 	}
 	propertyFileReaded += _property + ";";
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(nodeid, _property + "=" + String(result));
 #endif

@@ -855,13 +855,13 @@ void HTTPSWebServerBegin()
   //  setResourceNode("", "GET", &handleOther);
 
 #ifdef USE_HTTPS_SERVER
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
   debugOut("HTTPS Server", "Starting HTTPS server...");
 #endif
 #endif
   secureServer.start();
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
   if (secureServer.isRunning())
   {
 #ifdef DEBUG
@@ -872,13 +872,13 @@ void HTTPSWebServerBegin()
 #endif
 
 #ifdef USE_HTTP_SERVER
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
   debugOut("HTTP Server", "Starting HTTP server...");
 #endif
 #endif
   insecureServer.start();
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
   if (insecureServer.isRunning())
   {
 #ifdef DEBUG

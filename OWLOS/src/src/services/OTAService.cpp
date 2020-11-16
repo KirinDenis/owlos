@@ -30,7 +30,7 @@ void OTABegin()
 		}
 
 		// NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 		debugOut(OTAID, "begin updating " + type);
 #endif
@@ -38,7 +38,7 @@ void OTABegin()
 	});
 
 	ArduinoOTA.onEnd([]() {
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 		debugOut(OTAID, "complete");
 #endif
@@ -49,7 +49,7 @@ void OTABegin()
 		int value = progress / (total / 100);
 		if (value % 25 == 0)
 		{
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 			debugOut(OTAID, "do update " + String(value) + "%");
 #endif
@@ -58,7 +58,7 @@ void OTABegin()
 	});
 
 	ArduinoOTA.onError([](ota_error_t error) {
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 		if (error == OTA_AUTH_ERROR)
 		{
 #ifdef DEBUG

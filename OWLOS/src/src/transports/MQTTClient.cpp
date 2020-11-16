@@ -164,7 +164,7 @@ void onMqttDisconnect(AsyncMqttClientDisconnectReason reason)
 
 void onMqttSubscribe(uint16_t packetId, uint8_t qos)
 {
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
     debugOut("MQTT", "OnSubscribe acknowledged, packetId: " + String(packetId) + "  Qos: " + String(qos));
 #endif
@@ -173,7 +173,7 @@ void onMqttSubscribe(uint16_t packetId, uint8_t qos)
 
 void onMqttUnsubscribe(uint16_t packetId)
 {
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
     debugOut("MQTT", "OnUnsubscribe acknowledged: " + String(packetId));
 #endif
@@ -185,7 +185,7 @@ void onMqttMessage(char *topic, char *payload, AsyncMqttClientMessageProperties 
     //cut payload buffer
     String _payload = String(payload).substring(index, len);
     String _topic = String(topic);
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
     debugOut("MQTT", "OnPublish received: " + _topic + " payload: " + _payload);
 #endif
@@ -205,7 +205,7 @@ void onMqttMessage(char *topic, char *payload, AsyncMqttClientMessageProperties 
 
 void onMqttPublish(uint16_t packetId)
 {
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
     debugOut("MQTT", "OnPublish acknowledged, packetId: " + String(packetId));
 #endif
@@ -216,7 +216,7 @@ void MQTTPublish(String _topic, String _payload)
 {
     if (WiFi.isConnected() && mqttClient.connected())
     {
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
         uint16_t packetIdPub = mqttClient.publish(_topic.c_str(), 0, true, _payload.c_str());
 #ifdef DEBUG
         debugOut("MQTT", "[DO]->Publish: " + _topic + " payload: " + _payload + " packetIdPub: " + String(packetIdPub));
@@ -230,7 +230,7 @@ void MQTTPublish(String _topic, String _payload)
 
 void MQTTSubscribe(String _topic)
 {
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
     uint16_t packetIdSub = mqttClient.subscribe(_topic.c_str(), 2);
 #ifdef DEBUG
     debugOut("MQTT", "[DO]->Subscribe: " + _topic + " QoS 2, packetId: " + String(packetIdSub));

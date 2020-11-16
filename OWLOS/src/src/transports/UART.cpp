@@ -51,6 +51,8 @@ AT+FC - создать файл
 
 AT+FD - удалить файл
 
+AT+DAF - удалить все фйалы (сброс настроек)
+
 AT+ADP? - получить свойства всех драйверов
 
 AT+AD - создать драйвер
@@ -224,6 +226,12 @@ void UARTRecv(String command)
                     UARTSendError("bad or missing file name");
                 }
             }
+            else
+                //GET delete all files
+                if (token[0].equals("AT+DAF"))
+            {
+                UARTSendOK(String(filesDeleteAllFiles()));
+            }            
             else
                 //SET create file
                 //TODO: read serial to file before duble \n\n or else break

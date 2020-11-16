@@ -212,7 +212,7 @@ int StepperDriver::getToPosition()
 	{
 		toPosition = filesReadInt(id + ".toposition");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "toposition=" + String(toPosition));
 #endif
@@ -231,7 +231,7 @@ bool StepperDriver::setToPosition(int _toPosition)
 	if (busy == 1)
 	{
 		onInsideChange("busy", String(busy));
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 		debugOut(id, "Stepper busy ");
 #endif
@@ -254,7 +254,7 @@ bool StepperDriver::setToPosition(int _toPosition)
 		toPosition = 0;
 	}
 
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "setToPosition: " + String(_toPosition) + "->" + String(toPosition));
 #endif
@@ -331,7 +331,7 @@ int StepperDriver::getBusy()
 	{
 		busy = filesReadInt(id + ".busy");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "busy=" + String(busy));
 #endif
@@ -353,7 +353,7 @@ int StepperDriver::getStop()
 	{
 		stop = filesReadInt(id + ".stop");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "stop=" + String(stop));
 #endif
@@ -380,7 +380,7 @@ int StepperDriver::getPosition()
 	{
 		position = filesReadInt(id + ".position");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "position=" + String(position));
 #endif
@@ -407,7 +407,7 @@ int StepperDriver::getRange()
 	{
 		range = filesReadInt(id + ".range");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "range=" + String(range));
 #endif
@@ -429,7 +429,7 @@ int StepperDriver::getSpeed()
 	{
 		speed = filesReadInt(id + ".speed");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "speed=" + String(speed));
 #endif

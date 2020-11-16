@@ -282,11 +282,21 @@ int nodeGetWiFiAccessPointAvailable()
 
 bool nodeSetWiFiAccessPointAvailable(int _wifiapavailable)
 {
-#ifdef DEBUG
-	debugOut("MY", "nodeSetWiFiAccessPointAvailable");
-#endif
-	wifiapavailable = _wifiapavailable;
-	return onInsideChange("wifiapavailable", String(wifiapavailable));
+	//проблема в том что после изменения этого флага - нам надо включить или выключить точку доступа
+	//что перенастроить текущий транспорт. 
+	//поэтому - сначала устанавливаем флаг, запоминаем результать и только потом перенастраиваем транспорт
+	int __wifiapavailable = wifiapavailable; //store current value 
+	wifiapavailable = _wifiapavailable; //вносим изменения в флаг
+
+	bool result = onInsideChange("wifiapavailable", String(wifiapavailable)); //store result
+
+	//если флаг был изменен
+	if (wifiapavailable != __wifiapavailable)
+	{
+		transportBegin();
+	}
+	
+	return result;
 }
 
 //WiFiAccessPointSSID
@@ -332,7 +342,7 @@ String nodeGetWiFiAccessPointIP()
 	if (nodeGetWiFiAccessPointAvailable() == 1)
 	{
 		IPAddress real_wifiaccesspointip = WiFi.softAPIP();
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 		debugOut(nodeid, "Current Access Point IP: " + real_wifiaccesspointip.toString());
 #endif
@@ -342,7 +352,7 @@ String nodeGetWiFiAccessPointIP()
 
 		if (!real_wifiaccesspointip.toString().equals(wifiaccesspointip))
 		{
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 			debugOut(nodeid, "Current Access Point IP not equals");
 #endif
@@ -350,7 +360,7 @@ String nodeGetWiFiAccessPointIP()
 
 			if (!nodeSetWiFiAccessPointIP(wifiaccesspointip))
 			{
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 				debugOut(nodeid, "Can't change Access Point IP to: " + wifiaccesspointip);
 #endif
@@ -365,7 +375,7 @@ String nodeGetWiFiAccessPointIP()
 		WiFi.softAPdisconnect(true);
 		wifiaccesspointip = NOT_AVAILABLE;
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(nodeid, "wifiaccesspointip=" + wifiaccesspointip);
 #endif
@@ -377,7 +387,7 @@ String nodeGetWiFiAccessPointIP()
 bool nodeSetWiFiAccessPointIP(String _wifiaccesspointip)
 {
 	IPAddress real_wifiaccesspointip;
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(nodeid, "Current Access Point IP: " + WiFi.softAPIP().toString());
 #endif
@@ -406,8 +416,18 @@ int nodeGetWiFiAvailable()
 
 bool nodeSetWiFiAvailable(int _wifiavailable)
 {
-	wifiavailable = _wifiavailable;
-	return onInsideChange("wifiavailable", String(wifiavailable));
+	//SEE: nodeGetWiFiAPAvailable
+	int __wifiavailable = wifiavailable; 
+	wifiavailable = _wifiavailable; 
+
+	bool result = onInsideChange("wifiavailable", String(wifiavailable)); //store result
+
+	if (wifiavailable != __wifiavailable)
+	{
+		transportBegin();
+	}
+	
+	return result;
 }
 
 //WiFiSSID
