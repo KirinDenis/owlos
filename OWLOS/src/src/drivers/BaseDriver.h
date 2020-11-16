@@ -60,21 +60,6 @@ OWLOS распространяется в надежде, что она буде
                                                                             (...One morning thick snow fell in Babylon...) */
 
 
-#define TEST_DRIVER_TYPE 0
-#define DHT_DRIVER_TYPE 1
-#define LIGHT_DRIVER_TYPE 2
-#define SMOKE_DRIVER_TYPE 3
-#define MOTION_DRIVER_TYPE 4
-#define SENSOR_DRIVER_TYPE 5
-#define STEPPER_DRIVER_TYPE 6
-#define LCD_DRIVER_TYPE 7
-#define ACTUATOR_DRIVER_TYPE 8
-#define OPTO_DRIVER_TYPE 9
-#define VALVE_DRIVER_TYPE 10
-#define WIFI_DRIVER_TYPE 11
-#define NETWORK_DRIVER_TYPE 12
-#define ESP_DRIVER_TYPE 13
-#define CONFIG_DRIVER_TYPE 14
 
 #define PIN0_INDEX 0
 #define PIN1_INDEX 1
@@ -104,12 +89,12 @@ public:
 
     //Method init() calls before transport accessable, from Main::Setup()->DriversInit()
     //The driver must check here physical state and preload property values stored by Flash file system (if exists)
-    virtual bool init(String &_id);
+    virtual bool init(String _id);
 
     void del();
 
     //Method begin(..) calls after(IF) transport is available and Unit "know" self and drivers ID's and Topic's (see: Main::Loop()->DriversBegin())
-    virtual bool begin(const String &_topic);
+    virtual bool begin(const String _topic);
 
     //The query() method calls from Main::Loop()->DriversLoop()->... and give the driver time quantum to check here physical part (get physical light power from LRS like sample)
     //the method work both with publish() method, but must call here "core section" more often as publish()
@@ -130,7 +115,7 @@ public:
     void subscribe();
 
     //This method works both with subscribe() method and receive all messages pushed to this driver subscribed topics
-    virtual String onMessage(const String &route, const String &_payload, int8_t transportMask);
+    virtual String onMessage(const String route, const String _payload, int8_t transportMask);
 
     //Available property GET<->SET wrappers
     int getAvailable();

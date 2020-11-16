@@ -173,15 +173,15 @@ void UARTRecv(String command)
                 }
             }
             else
-                //SET reset
-#ifdef USE_ESP_DRIVER                
+            //SET reset
+#ifdef USE_ESP_DRIVER
                 if ((token[0].equals("AT+R")) || (token[0].equals("AT+RESET")))
             {
                 UARTSendOK("");
                 nodeSetESPReset(1);
             }
             else
-#endif            
+#endif
                 //GET all drivers properties
                 if (token[0].equals("AT+ADP?"))
             {
@@ -231,7 +231,7 @@ void UARTRecv(String command)
                 if (token[0].equals("AT+DAF"))
             {
                 UARTSendOK(String(filesDeleteAllFiles()));
-            }            
+            }
             else
                 //SET create file
                 //TODO: read serial to file before duble \n\n or else break
@@ -263,6 +263,10 @@ void UARTRecv(String command)
                     if (result.equals("1"))
                     {
                         UARTSendOK("driver created, id: " + token[2]);
+                        if (!driversSaveList())
+                        {
+                            UARTSendError("bad, driver added but not stored to configuration file");
+                        }
                     }
                     else
                     {
@@ -328,15 +332,17 @@ void UARTRecv(String command)
             {
                 if (count > 2)
                 {
+                    debugOut("1", "1");
                     String result = driversGetDriverProperty(token[1], token[2]);
-
+                    debugOut("2", result);
 #ifdef USE_ESP_DRIVER
                     if (result.length() == 0) //then try get this property from node
                     {
                         result = nodeOnMessage(nodeGetTopic() + "/get" + token[2], "", NO_TRANSPORT_MASK);
+                        debugOut("3", result);
                     }
 #endif
-
+                    debugOut("4", result);
                     if (result.length() == 0)
                     {
                         UARTSendError("wrong driver id: " + token[1] + " use GetDriversId API to get all drivers list");

@@ -45,7 +45,7 @@ OWLOS распространяется в надежде, что она буде
 
 //init() is called before transport accessable, when ESP is Setupping()
 //Drivers load default GPIO and other property values from Flash file system thanks to Init()
-bool BaseDriver::init(String &_id)
+bool BaseDriver::init(String _id)
 {
 	id = _id;
 
@@ -77,7 +77,7 @@ void BaseDriver::del()
 }
 
 //begin(..) is called after transport accessable when Unit knows its and drivers' IDs and Topics
-bool BaseDriver::begin(const String &_topic)
+bool BaseDriver::begin(const String _topic)
 {
 	topic = _topic + '/' + id;
 #ifdef DETAILED_DEBUG
@@ -185,7 +185,7 @@ int BaseDriver::parsePinNumber(String _topic, String getPinStr)
 	return atoi(_topic.substring(_topic.indexOf(topic + getPinStr) + String(topic + getPinStr).length()).c_str());
 }
 
-String BaseDriver::onMessage(const String &route, const String &_payload, int8_t transportMask)
+String BaseDriver::onMessage(const String route, const String _payload, int8_t transportMask)
 {
 	if (route.indexOf(topic + "/getpintype") == 0)
 	{

@@ -72,6 +72,22 @@ OWLOS распространяется в надежде, что она буде
 #define WRONG_DRIVER_NAME F("Drivers: wrong driver name")
 #define WRONG_NODE_PROPERTY_NAME F("Node: wrong node property name")
 
+#define TEST_DRIVER_TYPE 0
+#define DHT_DRIVER_TYPE 1
+#define LIGHT_DRIVER_TYPE 2
+#define SMOKE_DRIVER_TYPE 3
+#define MOTION_DRIVER_TYPE 4
+#define SENSOR_DRIVER_TYPE 5
+#define STEPPER_DRIVER_TYPE 6
+#define LCD_DRIVER_TYPE 7
+#define ACTUATOR_DRIVER_TYPE 8
+#define OPTO_DRIVER_TYPE 9
+#define VALVE_DRIVER_TYPE 10
+#define WIFI_DRIVER_TYPE 11
+#define NETWORK_DRIVER_TYPE 12
+#define ESP_DRIVER_TYPE 13
+#define CONFIG_DRIVER_TYPE 14
+
 char *stringToChar(String src);
 #ifdef DEBUG
 void debugOut(const String &tag, const String &text);

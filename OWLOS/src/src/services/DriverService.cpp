@@ -618,6 +618,8 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 #ifdef USE_ESP_DRIVER
 	//if driver added at RUNTIME
 	driversList[freeIndex]->begin(nodeGetTopic());
+#else 	
+    driversList[freeIndex]->begin("owlosnode");
 #endif
 #ifdef DETAILED_DEBUG
 #ifdef DEBUG
