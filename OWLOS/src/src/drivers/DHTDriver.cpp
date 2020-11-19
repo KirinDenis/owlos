@@ -228,7 +228,7 @@ bool DHTDriver::query()
 	return false;
 }
 
-//сборщик свойств драйвера, по этим свойствам строится карта RESTful API и MQTT подписки
+//сборщик свойств драйвера, по этим свойствам строится карта HTTPServer API и MQTT подписки
 String DHTDriver::getAllProperties()
 {
 	return BaseDriver::getAllProperties() +
@@ -262,7 +262,7 @@ bool DHTDriver::publish()
 	}
 	return false;
 }
-//опрос свойств драйвера для чтения записи от RESTful или MQTT
+//опрос свойств драйвера для чтения записи от HTTPServer или MQTT
 String DHTDriver::onMessage(String route, String _payload, int8_t transportMask)
 {
 	String result = BaseDriver::onMessage(route, _payload, transportMask);

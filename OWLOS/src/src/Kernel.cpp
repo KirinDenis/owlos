@@ -147,12 +147,12 @@ bool kernelLoop()
 	}
 	else //if network (Transport) to be available
 	{
-		transportLoop(); //Ping MQTT (at this version MQTT used only, FFR Ping RESTful to
+		transportLoop(); //Ping MQTT (at this version MQTT used only, FFR Ping HTTPServer to
 	}
 #endif
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
-	transportLoop(); //Ping MQTT (at this version MQTT used only, FFR Ping RESTful to
+	transportLoop(); //Ping MQTT (at this version MQTT used only, FFR Ping HTTPServer to
 #endif
 #endif
 

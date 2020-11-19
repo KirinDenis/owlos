@@ -399,7 +399,7 @@ void transportLoop()
 	{
 
 #if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)
-		if (nodeGetRESTfulAvailable() == 1)
+		if (nodeGetHTTPServerAvailable() == 1)
 		{
 			HTTPSWebServerLoop();
 		}

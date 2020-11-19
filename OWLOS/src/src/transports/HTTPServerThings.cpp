@@ -145,14 +145,14 @@ static const char OWLOSCopyLeft[] PROGMEM = "&#x1F30D;<a href='https://github.co
 											"	Vladimir Kovalevich (covalevich@gmail.com)\n"
 											"	Denys Melnychuk (meldenvar@gmail.com)\n"
 											"	Denis Kirin (deniskirinacs@gmail.com)\n<br>"
-											"&#x1F4E1;RESTful API endpoints:\n";
+											"&#x1F4E1;HTTPServer API endpoints:\n";
 
 String GetNotFoundHTML()
 {
 
 	String helloString = FIRMWARE_VERSION; //nodeGetUnitId()
-	String acip = nodeGetWiFiAccessPointIP() + ":" + String(nodeGetRESTfulServerPort());
-	String ip = nodeGetWiFiIP() + ":" + String(nodeGetRESTfulServerPort());
+	String acip = nodeGetWiFiAccessPointIP() + ":" + String(nodeGetHTTPServerPort());
+	String ip = nodeGetWiFiIP() + ":" + String(nodeGetHTTPServerPort());
 
 	return "<html><header><title>" + helloString + FPSTR("</title>"
 														 "<style>a{color: #3b99c4;text-decoration: none;} a:hover {text-decoration: underline;} a:active {text-decoration: underline;}table td, table td * {vertical-align: top;}</style></header>"

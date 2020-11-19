@@ -48,23 +48,35 @@ String nodeGetNetworkProperties();
 String networkOnMessage(String route, String _payload, int8_t transportMask);
 
 
-int nodeGetRESTfulAvailable();
-bool nodeSetRESTfulAvailable(int _restfulavailable);
+int nodeGetHTTPServerAvailable();
+bool nodeSetHTTPServerAvailable(int _httpavailable);
 
-String nodeGetRESTfulServerUsername();
-bool nodeSetRESTfulServerUsername(String _webserverlogin);
+String nodeGetHTTPServerUsername();
+bool nodeSetHTTPServerUsername(String _httpserverlogin);
 
-String nodeGetRESTfulServerPassword();
-bool nodeSetRESTfulServerPassword(String _webserverpwd);
+String nodeGetHTTPServerPassword();
+bool nodeSetHTTPServerPassword(String _httpserverpwd);
 
-int nodeGetRESTfulServerPort();
-bool nodeSetRESTfulServerPort(int _restfulserverport);
+int nodeGetHTTPServerPort();
+bool nodeSetHTTPServerPort(int _httpserverport);
 
-int nodeGetRESTfulClientPort();
-bool nodeSetRESTfulClientPort(int _restfulclientport);
+int nodeGetHTTPSServerAvailable();
+bool nodeSetHTTPSServerAvailable(int _httpsavailable);
 
-String nodeGetRESTfulClientURL();
-bool nodeSetRESTfulClientURL(String _restfulclienturl);
+String nodeGetHTTPSServerUsername();
+bool nodeSetHTTPSServerUsername(String _httpsserverlogin);
+
+String nodeGetHTTPSServerPassword();
+bool nodeSetHTTPSServerPassword(String _httpsserverpwd);
+
+int nodeGetHTTPSServerPort();
+bool nodeSetHTTPSServerPort(int _httpsserverport);
+
+int nodeGetHTTPClientPort();
+bool nodeSetHTTPClientPort(int _httpclientport);
+
+String nodeGetHTTPClientURL();
+bool nodeSetHTTPClientURL(String _httpclienturl);
 
 int nodeGetMQTTAvailable();
 bool nodeSetMQTTAvailable(int _mqttavailable);

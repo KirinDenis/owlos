@@ -160,7 +160,7 @@ String decodePinTypes(uint16_t pinType)
 	return decodedPinTypes;
 }
 
-//Возвращает данные о количестве и состояние всех пинов и драйверов в текстовом виде. Используется RESTful API и для отладки.
+//Возвращает данные о количестве и состояние всех пинов и драйверов в текстовом виде. Используется HTTPServer API и для отладки.
 String getPinMap()
 {
 	String result = "";
@@ -185,7 +185,7 @@ String getPinMap()
 	return result;
 }
 
-//Возвращает данные о занятых драйверами пинах в текстовом виде. Используется RESTful API и для отладки.
+//Возвращает данные о занятых драйверами пинах в текстовом виде. Используется HTTPServer API и для отладки.
 String getDriverPin()
 {
 	String result = "";

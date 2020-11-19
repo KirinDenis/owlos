@@ -58,7 +58,7 @@ extern String nodeid;
 #define DEFAULT_HTTP_SERVER_PASSWORD "admin"
 #define DEFAULT_HTTP_SERVER_PORT 80
 
-#define DEFAULT_HTTPS_SERVER_AVAILABLE true
+#define DEFAULT_HTTPS_SERVER_AVAILABLE false
 #define DEFAULT_HTTPS_SERVER_USERNAME "admin"
 #define DEFAULT_HTTPS_SERVER_PASSWORD "admin"
 #define DEFAULT_HTTPS_SERVER_PORT 443
@@ -82,12 +82,18 @@ extern String nodeid;
 #define DEFAULT_UPDATE_AVAILABLE true
 #define DEFAULT_UPDATE_HOST "http://81.95.178.177:8080/update/"
 
-int restfulavailable(DEFAULT_HTTP_SERVER_AVAILABLE);
-String webserverlogin(DEFAULT_HTTP_SERVER_USERNAME);
-String webserverpwd(DEFAULT_HTTP_SERVER_PASSWORD);
-int restfulserverport(DEFAULT_HTTP_SERVER_PORT);
-int restfulclientport(DEFAULT_HTTP_CLIENT_PORT);
-String restfulclienturl(DEFAULT_HTTP_CLIENT_URL);
+int httpserveravailable(DEFAULT_HTTP_SERVER_AVAILABLE);
+String httpserverlogin(DEFAULT_HTTP_SERVER_USERNAME);
+String httpserverpwd(DEFAULT_HTTP_SERVER_PASSWORD);
+int httpserverserverport(DEFAULT_HTTP_SERVER_PORT);
+
+int httpsserveravailable(DEFAULT_HTTPS_SERVER_AVAILABLE);
+String httpsserverlogin(DEFAULT_HTTPS_SERVER_USERNAME);
+String httpsserverpwd(DEFAULT_HTTPS_SERVER_PASSWORD);
+int httpsserverserverport(DEFAULT_HTTPS_SERVER_PORT);
+
+int httpclientport(DEFAULT_HTTP_CLIENT_PORT);
+String httpclienturl(DEFAULT_HTTP_CLIENT_URL);
 
 int mqttavailable(DEFAULT_MQTT_CLIENT_AVAILABLE);
 int mqttport(DEFAULT_MQTT_CLIENT_PORT);
@@ -119,18 +125,19 @@ String nodeGetNetworkProperties()
 		   nodeGetUnitId() + "//\n"
 							 "topic=" +
 		   nodeGetTopic() + "//\n"
-							"restfulavailable=" +
-		   String(nodeGetRESTfulAvailable()) + "//bs\n"
-											   "webserverlogin=" +
-		   nodeGetRESTfulServerUsername() + "//\n"
-											"webserverpwd=" +
-		   nodeGetRESTfulServerPassword() + "//sp\n"
-											"restfulserverport=" +
-		   String(nodeGetRESTfulServerPort()) + "//i\n"
-												"restfulclientport=" +
-		   String(nodeGetRESTfulClientPort()) + "//i\n"
-												"restfulclienturl=" +
-		   nodeGetRESTfulClientURL() + "//\n"
+
+			"httpserveravailable=" + String(nodeGetHTTPServerAvailable()) + "//bs\n"
+			"httpserverlogin=" + nodeGetHTTPSServerUsername() + "//\n"
+			"httpserverpwd=" + nodeGetHTTPSServerPassword() + "//sp\n"
+			"httpserverserverport=" + String(nodeGetHTTPSServerPort()) + "//i\n"
+
+			"httpsserveravailable=" + String(nodeGetHTTPSServerAvailable()) + "//bs\n"
+			"httpsserverlogin=" + nodeGetHTTPSServerUsername() + "//\n"
+			"httpsserverpwd=" + nodeGetHTTPSServerPassword() + "//sp\n"
+			"httpsserverserverport=" + String(nodeGetHTTPSServerPort()) + "//i\n"
+
+												"httpclientport=" + String(nodeGetHTTPClientPort()) + "//i\n"
+												"httpclienturl=" +nodeGetHTTPClientURL() + "//\n"
 									   "mqttavailable=" +
 		   String(nodeGetMQTTAvailable()) + "//bs\n"
 											"mqttport=" +
@@ -175,53 +182,86 @@ String nodeGetNetworkProperties()
 
 String networkOnMessage(String route, String _payload, int8_t transportMask)
 {
- if (matchRoute(route, topic, "/getrestfulavailable"))
+    if (matchRoute(route, topic, "/gethttpserveravailable"))
 	{
-		return onGetProperty("restfulavailable", String(nodeGetRESTfulAvailable()), transportMask);
+		return onGetProperty("httpserveravailable", String(nodeGetHTTPServerAvailable()), transportMask);
 	}
-	else if (matchRoute(route, topic, "/setrestfulavailable"))
+	else if (matchRoute(route, topic, "/sethttpserveravailable"))
 	{
-		return String(nodeSetRESTfulAvailable(atoi(_payload.c_str())));
+		return String(nodeSetHTTPServerAvailable(atoi(_payload.c_str())));
 	}
-	else if (matchRoute(route, topic, "/getwebserverlogin"))
+	else if (matchRoute(route, topic, "/gethttpserverlogin"))
 	{
-		return onGetProperty("webserverlogin", nodeGetRESTfulServerUsername(), transportMask);
+		return onGetProperty("httpserverlogin", nodeGetHTTPSServerUsername(), transportMask);
 	}
-	else if (matchRoute(route, topic, "/setwebserverlogin"))
+	else if (matchRoute(route, topic, "/sethttpserverlogin"))
 	{
-		return String(nodeSetRESTfulServerUsername(_payload));
+		return String(nodeSetHTTPSServerUsername(_payload));
 	}
-	else if (matchRoute(route, topic, "/getwebserverpwd"))
+	else if (matchRoute(route, topic, "/gethttpserverpwd"))
 	{
-		return onGetProperty("webserverpwd", nodeGetRESTfulServerPassword(), transportMask);
+		return onGetProperty("httpserverpwd", nodeGetHTTPSServerPassword(), transportMask);
 	}
-	else if (matchRoute(route, topic, "/setwebserverpwd"))
+	else if (matchRoute(route, topic, "/sethttpserverpwd"))
 	{
-		return String(nodeSetRESTfulServerPassword(_payload));
+		return String(nodeSetHTTPSServerPassword(_payload));
 	}
-	else if (matchRoute(route, topic, "/getrestfulserverport"))
+	else if (matchRoute(route, topic, "/gethttpserverserverport"))
 	{
-		return onGetProperty("restfulserverport", String(nodeGetRESTfulServerPort()), transportMask);
+		return onGetProperty("httpserverserverport", String(nodeGetHTTPSServerPort()), transportMask);
 	}
-	else if (matchRoute(route, topic, "/setrestfulserverport"))
+	else if (matchRoute(route, topic, "/sethttpserverserverport"))
 	{
-		return String(nodeSetRESTfulServerPort(atoi(_payload.c_str())));
+		return String(nodeSetHTTPSServerPort(atoi(_payload.c_str())));
 	}
-	else if (matchRoute(route, topic, "/getrestfulclientport"))
+    else if (matchRoute(route, topic, "/gethttpsserveravailable"))
 	{
-		return onGetProperty("restfulclientport", String(nodeGetRESTfulClientPort()), transportMask);
+		return onGetProperty("httpsserveravailable", String(nodeGetHTTPSServerAvailable()), transportMask);
 	}
-	else if (matchRoute(route, topic, "/setrestfulclientport"))
+	else if (matchRoute(route, topic, "/sethttpsserveravailable"))
 	{
-		return String(nodeSetRESTfulClientPort(atoi(_payload.c_str())));
+		return String(nodeSetHTTPSServerAvailable(atoi(_payload.c_str())));
 	}
-	else if (matchRoute(route, topic, "/getrestfulclienturl"))
+	else if (matchRoute(route, topic, "/gethttpsserverlogin"))
 	{
-		return onGetProperty("restfulclienturl", nodeGetRESTfulClientURL(), transportMask);
+		return onGetProperty("httpsserverlogin", nodeGetHTTPSServerUsername(), transportMask);
 	}
-	else if (matchRoute(route, topic, "/setrestfulclienturl"))
+	else if (matchRoute(route, topic, "/sethttpsserverlogin"))
 	{
-		return String(nodeSetRESTfulClientURL(_payload));
+		return String(nodeSetHTTPSServerUsername(_payload));
+	}
+	else if (matchRoute(route, topic, "/gethttpsserverpwd"))
+	{
+		return onGetProperty("httpsserverpwd", nodeGetHTTPSServerPassword(), transportMask);
+	}
+	else if (matchRoute(route, topic, "/sethttpsserverpwd"))
+	{
+		return String(nodeSetHTTPSServerPassword(_payload));
+	}
+	else if (matchRoute(route, topic, "/gethttpsserverserverport"))
+	{
+		return onGetProperty("httpsserverserverport", String(nodeGetHTTPSServerPort()), transportMask);
+	}
+	else if (matchRoute(route, topic, "/sethttpsserverserverport"))
+	{
+		return String(nodeSetHTTPSServerPort(atoi(_payload.c_str())));
+	}
+
+	else if (matchRoute(route, topic, "/gethttpclientport"))
+	{
+		return onGetProperty("httpclientport", String(nodeGetHTTPClientPort()), transportMask);
+	}
+	else if (matchRoute(route, topic, "/sethttpclientport"))
+	{
+		return String(nodeSetHTTPClientPort(atoi(_payload.c_str())));
+	}
+	else if (matchRoute(route, topic, "/gethttpclienturl"))
+	{
+		return onGetProperty("httpclienturl", nodeGetHTTPClientURL(), transportMask);
+	}
+	else if (matchRoute(route, topic, "/sethttpclienturl"))
+	{
+		return String(nodeSetHTTPClientURL(_payload));
 	}
 	else if (matchRoute(route, topic, "/getmqttavailable"))
 	{
@@ -315,96 +355,160 @@ String networkOnMessage(String route, String _payload, int8_t transportMask)
 	return WRONG_NODE_PROPERTY_NAME;
 }
 
-//RESTfulAvailable()
-int nodeGetRESTfulAvailable()
+//HTTPServerAvailable()
+int nodeGetHTTPServerAvailable()
 {
-	if (propertyFileReaded.indexOf("restfulavailable;") < 0)
+	if (propertyFileReaded.indexOf("httpserveravailable;") < 0)
 	{
-		return restfulavailable = _getIntPropertyValue("restfulavailable", DEFAULT_HTTP_SERVER_AVAILABLE);
+		return httpserveravailable = _getIntPropertyValue("httpserveravailable", DEFAULT_HTTP_SERVER_AVAILABLE);
 	}
 	else
 	{
-		return restfulavailable;
+		return httpserveravailable;
 	}
 }
-bool nodeSetRESTfulAvailable(int _restfulavailable)
+bool nodeSetHTTPServerAvailable(int _httpserveravailable)
 {
-	restfulavailable = _restfulavailable;
-	return onInsideChange("restfulavailable", String(restfulavailable));
+	httpserveravailable = _httpserveravailable;
+	return onInsideChange("httpserveravailable", String(httpserveravailable));
 }
 
-//RESTfulServerUsername
-String nodeGetRESTfulServerUsername()
+//HTTPSServerUsername
+String nodeGetHTTPServerUsername()
 {
-	if (propertyFileReaded.indexOf("webserverlogin;") < 0)
-		return webserverlogin = _getStringPropertyValue("webserverlogin", DEFAULT_HTTP_SERVER_USERNAME);
+	if (propertyFileReaded.indexOf("httpserverlogin;") < 0)
+		return httpserverlogin = _getStringPropertyValue("httpserverlogin", DEFAULT_HTTP_SERVER_USERNAME);
 	else
-		return webserverlogin;
+		return httpserverlogin;
 }
-bool nodeSetRESTfulServerUsername(String _webserverlogin)
+bool nodeSetHTTPServerUsername(String _httpserverlogin)
 {
-	webserverlogin = _webserverlogin;
-	return onInsideChange("webserverlogin", String(webserverlogin));
+	httpserverlogin = _httpserverlogin;
+	return onInsideChange("httpserverlogin", String(httpserverlogin));
 }
 
-//RESTfulServerPassword
-String nodeGetRESTfulServerPassword()
+//HTTPSServerPassword
+String nodeGetHTTPServerPassword()
 {
-	if (propertyFileReaded.indexOf("webserverpwd;") < 0)
-		return webserverpwd = _getStringPropertyValue("webserverpwd", DEFAULT_HTTP_SERVER_PASSWORD);
+	if (propertyFileReaded.indexOf("httpserverpwd;") < 0)
+		return httpserverpwd = _getStringPropertyValue("httpserverpwd", DEFAULT_HTTP_SERVER_PASSWORD);
 	else
-		return webserverpwd;
+		return httpserverpwd;
 }
-bool nodeSetRESTfulServerPassword(String _webserverpwd)
+bool nodeSetHTTPServerPassword(String _httpserverpwd)
 {
-	webserverpwd = _webserverpwd;
-	return onInsideChange("webserverpwd", String(webserverpwd));
+	httpserverpwd = _httpserverpwd;
+	return onInsideChange("httpserverpwd", String(httpserverpwd));
 }
 
-//RESTfulServerPort()
-int nodeGetRESTfulServerPort()
+//HTTPSServerPort()
+int nodeGetHTTPServerPort()
 {
-	if (propertyFileReaded.indexOf("restfulserverport;") < 0)
+	if (propertyFileReaded.indexOf("httpserverserverport;") < 0)
 	{
-		return restfulserverport = _getIntPropertyValue("restfulserverport", DEFAULT_HTTP_SERVER_PORT);
+		return httpserverserverport = _getIntPropertyValue("httpserverserverport", DEFAULT_HTTP_SERVER_PORT);
 	}
 	else
 	{
-		return restfulserverport;
+		return httpserverserverport;
 	}
 }
-bool nodeSetRESTfulServerPort(int _restfulserverport)
+bool nodeSetHTTPServerPort(int _httpserverserverport)
 {
-	restfulserverport = _restfulserverport;
-	return onInsideChange("restfulserverport", String(restfulserverport));
+	httpserverserverport = _httpserverserverport;
+	return onInsideChange("httpserverserverport", String(httpserverserverport));
 }
 
-//RESTfulClientPort()
-int nodeGetRESTfulClientPort()
+//HTTPSServerAvailable() ---
+int nodeGetHTTPSServerAvailable()
 {
-	if (propertyFileReaded.indexOf("restfulclientport;") < 0)
-		return restfulclientport = _getIntPropertyValue("restfulclientport", DEFAULT_HTTP_CLIENT_PORT);
+	if (propertyFileReaded.indexOf("httpsserveravailable;") < 0)
+	{
+		return httpsserveravailable = _getIntPropertyValue("httpsserveravailable", DEFAULT_HTTPS_SERVER_AVAILABLE);
+	}
 	else
-		return restfulclientport;
+	{
+		return httpsserveravailable;
+	}
 }
-bool nodeSetRESTfulClientPort(int _restfulclientport)
+bool nodeSetHTTPSServerAvailable(int _httpsserveravailable)
 {
-	restfulclientport = _restfulclientport;
-	return onInsideChange("restfulclientport", String(restfulclientport));
+	httpsserveravailable = _httpsserveravailable;
+	return onInsideChange("httpsserveravailable", String(httpsserveravailable));
 }
 
-//RESTfulClientURL()
-String nodeGetRESTfulClientURL()
+//HTTPSServerUsername
+String nodeGetHTTPSServerUsername()
 {
-	if (propertyFileReaded.indexOf("restfulclienturl;") < 0)
-		return restfulclienturl = _getStringPropertyValue("restfulclienturl", DEFAULT_HTTP_CLIENT_URL);
+	if (propertyFileReaded.indexOf("httpsserverlogin;") < 0)
+		return httpsserverlogin = _getStringPropertyValue("httpsserverlogin", DEFAULT_HTTPS_SERVER_USERNAME);
 	else
-		return restfulclienturl;
+		return httpsserverlogin;
 }
-bool nodeSetRESTfulClientURL(String _restfulclienturl)
+bool nodeSetHTTPSServerUsername(String _httpsserverlogin)
 {
-	restfulclienturl = _restfulclienturl;
-	return onInsideChange("restfulclienturl", String(restfulclienturl));
+	httpsserverlogin = _httpsserverlogin;
+	return onInsideChange("httpsserverlogin", String(httpsserverlogin));
+}
+
+//HTTPSServerPassword
+String nodeGetHTTPSServerPassword()
+{
+	if (propertyFileReaded.indexOf("httpsserverpwd;") < 0)
+		return httpsserverpwd = _getStringPropertyValue("httpsserverpwd", DEFAULT_HTTPS_SERVER_PASSWORD);
+	else
+		return httpsserverpwd;
+}
+bool nodeSetHTTPSServerPassword(String _httpsserverpwd)
+{
+	httpsserverpwd = _httpsserverpwd;
+	return onInsideChange("httpsserverpwd", String(httpsserverpwd));
+}
+
+//HTTPServerPort()
+int nodeGetHTTPSServerPort()
+{
+	if (propertyFileReaded.indexOf("httpsserverserverport;") < 0)
+	{
+		return httpsserverserverport = _getIntPropertyValue("httpsserverserverport", DEFAULT_HTTPS_SERVER_PORT);
+	}
+	else
+	{
+		return httpsserverserverport;
+	}
+}
+bool nodeSetHTTPSServerPort(int _httpsserverserverport)
+{
+	httpsserverserverport = _httpsserverserverport;
+	return onInsideChange("httpsserverserverport", String(httpsserverserverport));
+}
+
+//HTTPClientPort()
+int nodeGetHTTPClientPort()
+{
+	if (propertyFileReaded.indexOf("httpclientport;") < 0)
+		return httpclientport = _getIntPropertyValue("httpclientport", DEFAULT_HTTP_CLIENT_PORT);
+	else
+		return httpclientport;
+}
+bool nodeSetHTTPClientPort(int _httpclientport)
+{
+	httpclientport = _httpclientport;
+	return onInsideChange("httpclientport", String(httpclientport));
+}
+
+//HTTPClientURL()
+String nodeGetHTTPClientURL()
+{
+	if (propertyFileReaded.indexOf("httpclienturl;") < 0)
+		return httpclienturl = _getStringPropertyValue("httpclienturl", DEFAULT_HTTP_CLIENT_URL);
+	else
+		return httpclienturl;
+}
+bool nodeSetHTTPClientURL(String _httpclienturl)
+{
+	httpclienturl = _httpclienturl;
+	return onInsideChange("httpclienturl", String(httpclienturl));
 }
 
 //MQTTAvailable()

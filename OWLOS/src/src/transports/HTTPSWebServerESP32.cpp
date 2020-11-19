@@ -149,7 +149,7 @@ void handleNotFound(HTTPRequest *req, HTTPResponse *res)
   res->setHeader("Content-Type", "text/html");
 }
 
-//RESTful APIs ---
+//HTTPServer APIs ---
 void handleNodeGetAllProperties(HTTPRequest *req, HTTPResponse *res)
 {
   corsCallback(req, res);
@@ -797,7 +797,7 @@ void handleUpdateFirmware(HTTPRequest *req, HTTPResponse *res)
 }
 #endif
 
-//ENDOF RESTful APIs ---
+//ENDOF HTTPServer APIs ---
 
 void setResourceNode(const std::string &path, const std::string &method, const HTTPSCallbackFunction *callback)
 {

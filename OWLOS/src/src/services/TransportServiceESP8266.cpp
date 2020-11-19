@@ -351,9 +351,9 @@ bool transportReconnect()
 
 	if (result)
 	{
-		if (nodeGetRESTfulAvailable() == 1)
+		if (nodeGetHTTPServerAvailable() == 1)
 		{
-			//nodeGetRESTfulServerPort()
+			//nodeGetHTTPServerServerPort()
 			HTTPSWebServerBegin();
 		}
 
@@ -379,7 +379,7 @@ void transportLoop()
 	if ((wifiAPResult) || (wifiResult))
 	{
 
-		if (nodeGetRESTfulAvailable() == 1)
+		if (nodeGetHTTPServerAvailable() == 1)
 		{
 			HTTPSWebServerLoop();
 		}
@@ -395,7 +395,7 @@ void transportLoop()
 
 bool transportPublish(String _topic, String _payload)
 {
-	return true; //if MQTT is not available and RESTful change the property
+	return true; //if MQTT is not available and HTTPServer change the property
 }
 
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
