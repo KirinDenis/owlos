@@ -171,6 +171,6 @@ bool kernelLoop()
 	//Scripts loop
 	scriptsRun();
 #endif
-	delay(ONETENTHOFSECOND); //Main::loop() sleep interval
+	delay(ONEHUNDREDTH); //Main::loop() sleep interval
 	return true;
 }

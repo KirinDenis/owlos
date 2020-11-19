@@ -333,9 +333,8 @@ bool transportBegin()
 		wifiSTReconnectTimer = xTimerCreate("wifiTimer", pdMS_TO_TICKS(10000), pdTRUE, (void *)0, reinterpret_cast<TimerCallbackFunction_t>(WiFiSTReconnect));
 		WiFiSTReconnect();
 
-			WiFi.softAP(nodeGetWiFiAccessPointSSID().c_str(), nodeGetWiFiAccessPointPassword().c_str());
-			nodeSetWiFiAccessPointIP(WiFi.softAPIP().toString());
-
+		WiFi.softAP(nodeGetWiFiAccessPointSSID().c_str(), nodeGetWiFiAccessPointPassword().c_str());
+		nodeSetWiFiAccessPointIP(WiFi.softAPIP().toString());
 
 #ifdef DETAILED_DEBUG
 #ifdef DEBUG
@@ -346,17 +345,17 @@ bool transportBegin()
 	else
 		//WiFi Access Point mode ---
 		if (nodeGetWiFiAccessPointAvailable() == 1)
-	{		
+	{
 		//STOP all
-		nodeSetWiFiMode(WIFI_OFF);						
-			esp_wifi_disconnect();			
-			
-			//esp_wifi_deinit();
-			//START as access point 			
-			esp_wifi_connect();
-			nodeSetWiFiMode(WIFI_AP);			
-			WiFi.softAP(nodeGetWiFiAccessPointSSID().c_str(), nodeGetWiFiAccessPointPassword().c_str());
-			nodeSetWiFiAccessPointIP(WiFi.softAPIP().toString());
+		nodeSetWiFiMode(WIFI_OFF);
+		esp_wifi_disconnect();
+
+		//esp_wifi_deinit();
+		//START as access point
+		esp_wifi_connect();
+		nodeSetWiFiMode(WIFI_AP);
+		WiFi.softAP(nodeGetWiFiAccessPointSSID().c_str(), nodeGetWiFiAccessPointPassword().c_str());
+		nodeSetWiFiAccessPointIP(WiFi.softAPIP().toString());
 
 #ifdef DETAILED_DEBUG
 #ifdef DEBUG
@@ -373,7 +372,7 @@ bool transportBegin()
 		debugOut(TransportID, "WiFi mode Station");
 #endif
 #endif
-        esp_wifi_connect();
+		esp_wifi_connect();
 		WiFi.softAPdisconnect(false);
 		nodeSetWiFiMode(WIFI_STA);
 		wifiSTReconnectTimer = xTimerCreate("wifiTimer", pdMS_TO_TICKS(10000), pdTRUE, (void *)0, reinterpret_cast<TimerCallbackFunction_t>(WiFiSTReconnect));
@@ -382,8 +381,8 @@ bool transportBegin()
 	//No WiFi mode ---
 	else
 	{
-		nodeSetWiFiMode(WIFI_OFF);		
-		WiFi.softAPdisconnect(true);		
+		nodeSetWiFiMode(WIFI_OFF);
+		WiFi.softAPdisconnect(true);
 		esp_wifi_disconnect();
 		//	esp_wifi_stop(); //make crash if wifi not running before
 		//esp_wifi_deinit();

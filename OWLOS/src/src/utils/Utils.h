@@ -55,6 +55,7 @@ OWLOS распространяется в надежде, что она буде
 #define DEBUG_LOG_FILE2_NAME "log2"
 #define PORTSPEED 115200
 #define ONETENTHOFSECOND 100L
+#define ONEHUNDREDTH 10L
 #define ONESECOND 1000L
 #define TENSECOND 10000L
 #define ONEMINUTE 60000L

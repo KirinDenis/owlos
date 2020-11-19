@@ -332,17 +332,17 @@ void UARTRecv(String command)
             {
                 if (count > 2)
                 {
-                    debugOut("1", "1");
+                    
                     String result = driversGetDriverProperty(token[1], token[2]);
-                    debugOut("2", result);
+                    
 #ifdef USE_ESP_DRIVER
                     if (result.length() == 0) //then try get this property from node
                     {
                         result = nodeOnMessage(nodeGetTopic() + "/get" + token[2], "", NO_TRANSPORT_MASK);
-                        debugOut("3", result);
+                    
                     }
 #endif
-                    debugOut("4", result);
+                    
                     if (result.length() == 0)
                     {
                         UARTSendError("wrong driver id: " + token[1] + " use GetDriversId API to get all drivers list");
