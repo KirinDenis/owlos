@@ -85,12 +85,12 @@ extern String nodeid;
 int httpserveravailable(DEFAULT_HTTP_SERVER_AVAILABLE);
 String httpserverlogin(DEFAULT_HTTP_SERVER_USERNAME);
 String httpserverpwd(DEFAULT_HTTP_SERVER_PASSWORD);
-int httpserverserverport(DEFAULT_HTTP_SERVER_PORT);
+int httpserverport(DEFAULT_HTTP_SERVER_PORT);
 
 int httpsserveravailable(DEFAULT_HTTPS_SERVER_AVAILABLE);
 String httpsserverlogin(DEFAULT_HTTPS_SERVER_USERNAME);
 String httpsserverpwd(DEFAULT_HTTPS_SERVER_PASSWORD);
-int httpsserverserverport(DEFAULT_HTTPS_SERVER_PORT);
+int httpsserverport(DEFAULT_HTTPS_SERVER_PORT);
 
 int httpclientport(DEFAULT_HTTP_CLIENT_PORT);
 String httpclienturl(DEFAULT_HTTP_CLIENT_URL);
@@ -127,14 +127,14 @@ String nodeGetNetworkProperties()
 		   nodeGetTopic() + "//\n"
 
 			"httpserveravailable=" + String(nodeGetHTTPServerAvailable()) + "//bs\n"
-			"httpserverlogin=" + nodeGetHTTPSServerUsername() + "//\n"
-			"httpserverpwd=" + nodeGetHTTPSServerPassword() + "//sp\n"
-			"httpserverserverport=" + String(nodeGetHTTPSServerPort()) + "//i\n"
+			"httpserverlogin=" + nodeGetHTTPServerUsername() + "//\n"
+			"httpserverpwd=" + nodeGetHTTPServerPassword() + "//sp\n"
+			"httpserverport=" + String(nodeGetHTTPServerPort()) + "//i\n"
 
 			"httpsserveravailable=" + String(nodeGetHTTPSServerAvailable()) + "//bs\n"
 			"httpsserverlogin=" + nodeGetHTTPSServerUsername() + "//\n"
 			"httpsserverpwd=" + nodeGetHTTPSServerPassword() + "//sp\n"
-			"httpsserverserverport=" + String(nodeGetHTTPSServerPort()) + "//i\n"
+			"httpsserverport=" + String(nodeGetHTTPSServerPort()) + "//i\n"
 
 												"httpclientport=" + String(nodeGetHTTPClientPort()) + "//i\n"
 												"httpclienturl=" +nodeGetHTTPClientURL() + "//\n"
@@ -192,28 +192,29 @@ String networkOnMessage(String route, String _payload, int8_t transportMask)
 	}
 	else if (matchRoute(route, topic, "/gethttpserverlogin"))
 	{
-		return onGetProperty("httpserverlogin", nodeGetHTTPSServerUsername(), transportMask);
+		return onGetProperty("httpserverlogin", nodeGetHTTPServerUsername(), transportMask);
 	}
 	else if (matchRoute(route, topic, "/sethttpserverlogin"))
 	{
-		return String(nodeSetHTTPSServerUsername(_payload));
+		return String(nodeSetHTTPServerUsername(_payload));
 	}
 	else if (matchRoute(route, topic, "/gethttpserverpwd"))
 	{
-		return onGetProperty("httpserverpwd", nodeGetHTTPSServerPassword(), transportMask);
+		return onGetProperty("httpserverpwd", nodeGetHTTPServerPassword(), transportMask);
 	}
 	else if (matchRoute(route, topic, "/sethttpserverpwd"))
 	{
-		return String(nodeSetHTTPSServerPassword(_payload));
+		return String(nodeSetHTTPServerPassword(_payload));
 	}
-	else if (matchRoute(route, topic, "/gethttpserverserverport"))
+	else if (matchRoute(route, topic, "/gethttpserverport"))
 	{
-		return onGetProperty("httpserverserverport", String(nodeGetHTTPSServerPort()), transportMask);
+		return onGetProperty("httpserverport", String(nodeGetHTTPServerPort()), transportMask);
 	}
-	else if (matchRoute(route, topic, "/sethttpserverserverport"))
+	else if (matchRoute(route, topic, "/sethttpserverport"))
 	{
-		return String(nodeSetHTTPSServerPort(atoi(_payload.c_str())));
+		return String(nodeSetHTTPServerPort(atoi(_payload.c_str())));
 	}
+	//HTTPS ---
     else if (matchRoute(route, topic, "/gethttpsserveravailable"))
 	{
 		return onGetProperty("httpsserveravailable", String(nodeGetHTTPSServerAvailable()), transportMask);
@@ -238,11 +239,11 @@ String networkOnMessage(String route, String _payload, int8_t transportMask)
 	{
 		return String(nodeSetHTTPSServerPassword(_payload));
 	}
-	else if (matchRoute(route, topic, "/gethttpsserverserverport"))
+	else if (matchRoute(route, topic, "/gethttpsserverport"))
 	{
-		return onGetProperty("httpsserverserverport", String(nodeGetHTTPSServerPort()), transportMask);
+		return onGetProperty("httpsserverport", String(nodeGetHTTPSServerPort()), transportMask);
 	}
-	else if (matchRoute(route, topic, "/sethttpsserverserverport"))
+	else if (matchRoute(route, topic, "/sethttpsserverport"))
 	{
 		return String(nodeSetHTTPSServerPort(atoi(_payload.c_str())));
 	}
@@ -403,20 +404,20 @@ bool nodeSetHTTPServerPassword(String _httpserverpwd)
 
 //HTTPSServerPort()
 int nodeGetHTTPServerPort()
-{
-	if (propertyFileReaded.indexOf("httpserverserverport;") < 0)
-	{
-		return httpserverserverport = _getIntPropertyValue("httpserverserverport", DEFAULT_HTTP_SERVER_PORT);
+{	
+	if (propertyFileReaded.indexOf("httpserverport;") < 0)
+	{	
+		return httpserverport = _getIntPropertyValue("httpserverport", DEFAULT_HTTP_SERVER_PORT);
 	}
 	else
-	{
-		return httpserverserverport;
+	{	
+		return httpserverport;
 	}
 }
-bool nodeSetHTTPServerPort(int _httpserverserverport)
+bool nodeSetHTTPServerPort(int _httpserverport)
 {
-	httpserverserverport = _httpserverserverport;
-	return onInsideChange("httpserverserverport", String(httpserverserverport));
+	httpserverport = _httpserverport;
+	return onInsideChange("httpserverport", String(httpserverport));
 }
 
 //HTTPSServerAvailable() ---
@@ -468,19 +469,19 @@ bool nodeSetHTTPSServerPassword(String _httpsserverpwd)
 //HTTPServerPort()
 int nodeGetHTTPSServerPort()
 {
-	if (propertyFileReaded.indexOf("httpsserverserverport;") < 0)
+	if (propertyFileReaded.indexOf("httpsserverport;") < 0)
 	{
-		return httpsserverserverport = _getIntPropertyValue("httpsserverserverport", DEFAULT_HTTPS_SERVER_PORT);
+		return httpsserverport = _getIntPropertyValue("httpsserverport", DEFAULT_HTTPS_SERVER_PORT);
 	}
 	else
 	{
-		return httpsserverserverport;
+		return httpsserverport;
 	}
 }
-bool nodeSetHTTPSServerPort(int _httpsserverserverport)
+bool nodeSetHTTPSServerPort(int _httpsserverport)
 {
-	httpsserverserverport = _httpsserverserverport;
-	return onInsideChange("httpsserverserverport", String(httpsserverserverport));
+	httpsserverport = _httpsserverport;
+	return onInsideChange("httpsserverport", String(httpsserverport));
 }
 
 //HTTPClientPort()

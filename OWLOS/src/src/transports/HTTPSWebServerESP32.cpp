@@ -64,8 +64,9 @@ HTTPSServer secureServer = HTTPSServer(&cert);
 
 #ifdef USE_HTTP_SERVER
 // Additionally, we create an HTTPServer for unencrypted traffic
-HTTPServer insecureServer = HTTPServer();
+HTTPServer insecureServer = HTTPServer(nodeGetHTTPServerPort());
 #endif
+
 
 void corsCallbackNoType(HTTPRequest *req, HTTPResponse *res)
 {
@@ -610,11 +611,11 @@ void handleDeleteScript(HTTPRequest *req, HTTPResponse *res)
 
   if (params->getQueryParameter("name", nameParam))
   {
-    
+
     if (!scriptsDelete(decode(String(nameParam.c_str()))))
     {
       req->discardRequestBody();
-      res->setStatusCode(503);      
+      res->setStatusCode(503);
       res->setHeader("Content-Type", "text/html");
     }
     else
@@ -626,7 +627,6 @@ void handleDeleteScript(HTTPRequest *req, HTTPResponse *res)
   }
   handleNotFound(req, res);
 }
-
 
 void handleCreateScript(HTTPRequest *req, HTTPResponse *res)
 {
@@ -644,7 +644,7 @@ void handleCreateScript(HTTPRequest *req, HTTPResponse *res)
     {
       contentType = contentType.substr(0, semicolonPos);
     }
-    
+
     if (contentType == "multipart/form-data")
     {
       parser = new HTTPMultipartBodyParser(req);
@@ -654,12 +654,11 @@ void handleCreateScript(HTTPRequest *req, HTTPResponse *res)
       res->setStatusCode(501);
       return;
     }
-    
+
     String byteCode = "";
     bool didwrite = false;
     if (parser->nextField())
     {
-      
 
       size_t fileLength = 0;
       didwrite = true;
@@ -704,7 +703,7 @@ void handleCreateScript(HTTPRequest *req, HTTPResponse *res)
   else
   {
     res->setStatusCode(403);
-  }  
+  }
 }
 
 #endif
@@ -838,7 +837,7 @@ void HTTPSWebServerBegin()
   setResourceNode("/getallscripts", "GET", &handleGetAllScripts);
   setResourceNode("/startdebugscript", "GET", &handleStartDebugScript);
   setResourceNode("/debugnextscript", "GET", &handleDebugNextScript);
-  setResourceNode("/deletescript", "GET", &handleDeleteScript);  
+  setResourceNode("/deletescript", "GET", &handleDeleteScript);
   setResourceNode("/createscript", "POST", &handleCreateScript);
 #endif
   setResourceNode("/getwebproperty", "GET", &handleGetWebProperty);
@@ -877,7 +876,14 @@ void HTTPSWebServerBegin()
   debugOut("HTTP Server", "Starting HTTP server...");
 #endif
 #endif
-  insecureServer.start();
+
+  ///WORK ONLY 
+  ///insecureServer._port = nodeGetHTTPServerPort();
+
+  if (nodeGetHTTPServerAvailable() == 1)
+  {
+    insecureServer.start();
+  }
 #ifdef DETAILED_DEBUG
   if (insecureServer.isRunning())
   {
@@ -897,7 +903,26 @@ void HTTPSWebServerLoop()
 #endif
 
 #ifdef USE_HTTP_SERVER
-  insecureServer.loop();
+
+  
+  if (nodeGetHTTPServerAvailable() == 1)
+  {
+    if (insecureServer.isRunning())
+    {
+      insecureServer.loop();
+    }
+    else
+    {
+      insecureServer.start();
+    }
+  }
+  else
+  {
+    if (insecureServer.isRunning())
+    {
+      insecureServer.stop();
+    }
+  }
 #endif
 }
 #endif
