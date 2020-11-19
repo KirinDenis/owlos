@@ -15,6 +15,10 @@
 #include <rom/rtc.h>
 #endif
 
+
+String nodeGetWiFiProperties();
+String wifiOnMessage(String route, String _payload, int8_t transportMask);
+
 int nodeGetWiFiAccessPointAvailable();
 bool nodeSetWiFiAccessPointAvailable(int _wifiaccesspointavailable);
 
@@ -76,8 +80,6 @@ int nodeGetWiFiIsDisconnected();
 int nodeSetWiFiIsDisconnected();
 
 String nodeGetConnectedWiFiSSID();
-String nodeGetWiFiProperties();
-String wifiOnMessage(String route, String _payload, int8_t transportMask);
 
 #endif
 #endif
