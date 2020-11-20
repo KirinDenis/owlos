@@ -205,6 +205,13 @@ void WiFiEvent(WiFiEvent_t event)
 		HTTPSWebServerBegin();
 #endif
 
+#ifdef USE_OTA_SERVICE
+		if (nodeGetOTAAvailable() == 1)
+		{
+			OTABegin();
+		}
+#endif		
+
 		break;
 	case SYSTEM_EVENT_STA_LOST_IP:
 #ifdef DEBUG
@@ -399,10 +406,7 @@ void transportLoop()
 	{
 
 #if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)
-		if (nodeGetHTTPServerAvailable() == 1)
-		{
-			HTTPSWebServerLoop();
-		}
+			HTTPSWebServerLoop();		
 #endif
 
 #ifdef USE_OTA_SERVICE

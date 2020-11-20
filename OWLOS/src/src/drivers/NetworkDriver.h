@@ -47,7 +47,7 @@ OWLOS распространяется в надежде, что она буде
 String nodeGetNetworkProperties();
 String networkOnMessage(String route, String _payload, int8_t transportMask);
 
-
+#ifdef USE_HTTP_SERVER
 int nodeGetHTTPServerAvailable();
 bool nodeSetHTTPServerAvailable(int _httpavailable);
 
@@ -59,7 +59,9 @@ bool nodeSetHTTPServerPassword(String _httpserverpwd);
 
 int nodeGetHTTPServerPort();
 bool nodeSetHTTPServerPort(int _httpserverport);
+#endif
 
+#ifdef USE_HTTPS_SERVER
 int nodeGetHTTPSServerAvailable();
 bool nodeSetHTTPSServerAvailable(int _httpsavailable);
 
@@ -71,13 +73,17 @@ bool nodeSetHTTPSServerPassword(String _httpsserverpwd);
 
 int nodeGetHTTPSServerPort();
 bool nodeSetHTTPSServerPort(int _httpsserverport);
+#endif
 
+#ifdef USE_HTTP_CLIENT
 int nodeGetHTTPClientPort();
 bool nodeSetHTTPClientPort(int _httpclientport);
 
 String nodeGetHTTPClientURL();
 bool nodeSetHTTPClientURL(String _httpclienturl);
+#endif
 
+#ifdef USE_MQTT
 int nodeGetMQTTAvailable();
 bool nodeSetMQTTAvailable(int _mqttavailable);
 
@@ -98,7 +104,9 @@ bool nodeSetMQTTPassword(String _mqttpassword);
 
 int nodeGetMQTTClientConnected();
 int nodeGetMQTTClientState();
+#endif
 
+#ifdef USE_OTA_SERVICE
 int nodeGetOTAAvailable();
 bool nodeSetOTAAvailable(int _otaavailable);
 
@@ -110,6 +118,7 @@ bool nodeSetOTAID(String _otaid);
 
 String nodeGetOTAPassword();
 bool nodeSetOTAPassword(String _otapassword);
+#endif
 
 int nodeGetUpdateAvailable();
 bool nodeSetUpdateAvailable(int _updateavailable);

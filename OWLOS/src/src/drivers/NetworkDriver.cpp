@@ -53,48 +53,65 @@ extern String propertyFileReaded;
 extern String topic;
 extern String nodeid;
 
+#ifdef USE_HTTP_SERVER
 #define DEFAULT_HTTP_SERVER_AVAILABLE true
 #define DEFAULT_HTTP_SERVER_USERNAME "admin"
 #define DEFAULT_HTTP_SERVER_PASSWORD "admin"
 #define DEFAULT_HTTP_SERVER_PORT 80
+#endif
 
+#ifdef USE_HTTPS_SERVER
 #define DEFAULT_HTTPS_SERVER_AVAILABLE false
 #define DEFAULT_HTTPS_SERVER_USERNAME "admin"
 #define DEFAULT_HTTPS_SERVER_PASSWORD "admin"
 #define DEFAULT_HTTPS_SERVER_PORT 443
+#endif
 
+#ifdef USE_HTTP_CLIENT
 #define DEFAULT_HTTP_CLIENT_PORT 8080
 #define DEFAULT_HTTP_CLIENT_URL ""
+#endif
 
+#ifdef USE_MQTT
 #define DEFAULT_MQTT_CLIENT_AVAILABLE true
 #define DEFAULT_MQTT_CLIENT_PORT 1883
 #define DEFAULT_MQTT_CLIENT_URL "mqtt.eclipse.org"
 #define DEFAULT_MQTT_CLIENT_ID ""
 #define DEFAULT_MQTT_CLIENT_LOGIN ""
 #define DEFAULT_MQTT_CLIENT_PASSWORD ""
+#endif
 
+#ifdef USE_OTA_SERVICE
 #define DEFAULT_OTA_CLIENT_AVAILABLE false
 #define DEFAULT_OTA_CLIENT_PORT 8266
 #define DEFAULT_OTA_CLIENT_ID "owlnode"
 #define DEFAULT_OTA_CLIENT_PASSWORD "owlos"
+#endif
 
 //Update
 #define DEFAULT_UPDATE_AVAILABLE true
 #define DEFAULT_UPDATE_HOST "http://81.95.178.177:8080/update/"
 
+#ifdef USE_HTTP_SERVER
 int httpserveravailable(DEFAULT_HTTP_SERVER_AVAILABLE);
 String httpserverlogin(DEFAULT_HTTP_SERVER_USERNAME);
 String httpserverpwd(DEFAULT_HTTP_SERVER_PASSWORD);
 int httpserverport(DEFAULT_HTTP_SERVER_PORT);
+#endif
 
+#ifdef USE_HTTPS_SERVER
 int httpsserveravailable(DEFAULT_HTTPS_SERVER_AVAILABLE);
 String httpsserverlogin(DEFAULT_HTTPS_SERVER_USERNAME);
 String httpsserverpwd(DEFAULT_HTTPS_SERVER_PASSWORD);
 int httpsserverport(DEFAULT_HTTPS_SERVER_PORT);
+#endif
 
+#ifdef USE_HTTP_CLIENT
 int httpclientport(DEFAULT_HTTP_CLIENT_PORT);
 String httpclienturl(DEFAULT_HTTP_CLIENT_URL);
+#endif
 
+#ifdef USE_MQTT
 int mqttavailable(DEFAULT_MQTT_CLIENT_AVAILABLE);
 int mqttport(DEFAULT_MQTT_CLIENT_PORT);
 String mqtturl(DEFAULT_MQTT_CLIENT_URL);
@@ -102,10 +119,14 @@ String mqttid(DEFAULT_MQTT_CLIENT_URL);
 String mqttlogin(DEFAULT_MQTT_CLIENT_LOGIN);
 String mqttpassword(DEFAULT_MQTT_CLIENT_PASSWORD);
 //int mqttclientconnected(DefaultMQTTClientConnected);
+#endif
+
+#ifdef USE_OTA_SERVICE
 int otaavailable(DEFAULT_OTA_CLIENT_AVAILABLE);
 int otaport(DEFAULT_OTA_CLIENT_PORT);
 String otaid(DEFAULT_OTA_CLIENT_ID);
 String otapassword(DEFAULT_OTA_CLIENT_PASSWORD);
+#endif
 
 //Update
 int updateavailable(DEFAULT_UPDATE_AVAILABLE);
@@ -126,18 +147,26 @@ String nodeGetNetworkProperties()
 							 "topic=" +
 		   nodeGetTopic() + "//\n"
 
+#ifdef USE_HTTP_SERVER
 			"httpserveravailable=" + String(nodeGetHTTPServerAvailable()) + "//bs\n"
 			"httpserverlogin=" + nodeGetHTTPServerUsername() + "//\n"
 			"httpserverpwd=" + nodeGetHTTPServerPassword() + "//sp\n"
 			"httpserverport=" + String(nodeGetHTTPServerPort()) + "//i\n"
+#endif			
 
+#ifdef USE_HTTPS_SERVER
 			"httpsserveravailable=" + String(nodeGetHTTPSServerAvailable()) + "//bs\n"
 			"httpsserverlogin=" + nodeGetHTTPSServerUsername() + "//\n"
 			"httpsserverpwd=" + nodeGetHTTPSServerPassword() + "//sp\n"
 			"httpsserverport=" + String(nodeGetHTTPSServerPort()) + "//i\n"
+#endif						
 
+#ifdef USE_HTTP_CLIENT
 												"httpclientport=" + String(nodeGetHTTPClientPort()) + "//i\n"
 												"httpclienturl=" +nodeGetHTTPClientURL() + "//\n"
+#endif												
+
+#ifdef USE_MQTT
 									   "mqttavailable=" +
 		   String(nodeGetMQTTAvailable()) + "//bs\n"
 											"mqttport=" +
@@ -154,7 +183,9 @@ String nodeGetNetworkProperties()
 		   String(nodeGetMQTTClientConnected()) + "//bs\n"
 												  "mqttclientstate=" +
 		   String(nodeGetMQTTClientState()) + "//i\n"
+#endif
 
+#ifdef USE_OTA_SERVICE
 											  "otaavailable=" +
 		   String(nodeGetOTAAvailable()) + "//bs\n"
 										   "otaport=" +
@@ -163,9 +194,12 @@ String nodeGetNetworkProperties()
 		   nodeGetOTAID() + "//\n"
 							"otapassword=" +
 		   nodeGetOTAPassword() + "//p\n"
+#endif		   
+
+#ifdef USE_UPDATE		   
 								  "updateavailable=" +
 		   String(nodeGetUpdateAvailable()) + "//bs\n"
-#ifdef USE_UPDATE
+
 											  "updatepossible=" +
 		   String(updateGetUpdatePossible()) + "//ir\n"
 											   "updateinfo=" +
@@ -182,6 +216,7 @@ String nodeGetNetworkProperties()
 
 String networkOnMessage(String route, String _payload, int8_t transportMask)
 {
+#ifdef USE_HTTP_SERVER	
     if (matchRoute(route, topic, "/gethttpserveravailable"))
 	{
 		return onGetProperty("httpserveravailable", String(nodeGetHTTPServerAvailable()), transportMask);
@@ -215,7 +250,11 @@ String networkOnMessage(String route, String _payload, int8_t transportMask)
 		return String(nodeSetHTTPServerPort(atoi(_payload.c_str())));
 	}
 	//HTTPS ---
-    else if (matchRoute(route, topic, "/gethttpsserveravailable"))
+    else 
+#endif	
+
+#ifdef USE_HTTPS_SERVER
+	if (matchRoute(route, topic, "/gethttpsserveravailable"))
 	{
 		return onGetProperty("httpsserveravailable", String(nodeGetHTTPSServerAvailable()), transportMask);
 	}
@@ -247,8 +286,11 @@ String networkOnMessage(String route, String _payload, int8_t transportMask)
 	{
 		return String(nodeSetHTTPSServerPort(atoi(_payload.c_str())));
 	}
-
-	else if (matchRoute(route, topic, "/gethttpclientport"))
+	else 
+#endif	
+	
+#ifdef USE_HTTP_CLIENT	
+	if (matchRoute(route, topic, "/gethttpclientport"))
 	{
 		return onGetProperty("httpclientport", String(nodeGetHTTPClientPort()), transportMask);
 	}
@@ -264,7 +306,11 @@ String networkOnMessage(String route, String _payload, int8_t transportMask)
 	{
 		return String(nodeSetHTTPClientURL(_payload));
 	}
-	else if (matchRoute(route, topic, "/getmqttavailable"))
+	else 
+#endif	
+
+#ifdef USE_MQTT
+	if (matchRoute(route, topic, "/getmqttavailable"))
 	{
 		return onGetProperty("mqttavailable", String(nodeGetMQTTAvailable()), transportMask);
 	}
@@ -320,7 +366,11 @@ String networkOnMessage(String route, String _payload, int8_t transportMask)
 	{
 		return String(nodeGetMQTTClientState());
 	}
-	else if (matchRoute(route, topic, "/getotaavailable"))
+	else 
+#endif	
+
+#ifdef USE_OTA_SERVICE
+	if (matchRoute(route, topic, "/getotaavailable"))
 	{
 		return onGetProperty("otaavailable", String(nodeGetOTAAvailable()), transportMask);
 	}
@@ -346,16 +396,18 @@ String networkOnMessage(String route, String _payload, int8_t transportMask)
 	}
 	else if (matchRoute(route, topic, "/getotapassword"))
 	{
-		return onGetProperty("otapassword", nodeGetMQTTPassword(), transportMask);
+		return onGetProperty("otapassword", nodeGetOTAPassword(), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setotapassword"))
 	{
 		return String(nodeSetOTAPassword(_payload));
 		//ESP class parameters
 	}
+#endif		
 	return WRONG_NODE_PROPERTY_NAME;
 }
 
+#ifdef USE_HTTP_SERVER
 //HTTPServerAvailable()
 int nodeGetHTTPServerAvailable()
 {
@@ -419,7 +471,9 @@ bool nodeSetHTTPServerPort(int _httpserverport)
 	httpserverport = _httpserverport;
 	return onInsideChange("httpserverport", String(httpserverport));
 }
+#endif
 
+#ifdef USE_HTTPS_SERVER
 //HTTPSServerAvailable() ---
 int nodeGetHTTPSServerAvailable()
 {
@@ -483,7 +537,9 @@ bool nodeSetHTTPSServerPort(int _httpsserverport)
 	httpsserverport = _httpsserverport;
 	return onInsideChange("httpsserverport", String(httpsserverport));
 }
+#endif
 
+#ifdef USE_HTTP_CLIENT
 //HTTPClientPort()
 int nodeGetHTTPClientPort()
 {
@@ -511,7 +567,9 @@ bool nodeSetHTTPClientURL(String _httpclienturl)
 	httpclienturl = _httpclienturl;
 	return onInsideChange("httpclienturl", String(httpclienturl));
 }
+#endif
 
+#ifdef USE_MQTT
 //MQTTAvailable()
 int nodeGetMQTTAvailable()
 {
@@ -623,7 +681,9 @@ int nodeGetMQTTClientState()
 	//	return getMQTTClient()->state();
 	return 1;
 }
+#endif
 
+#ifdef USE_OTA_SERVICE
 //OTAAvailable()
 int nodeGetOTAAvailable()
 {
@@ -693,6 +753,7 @@ bool nodeSetOTAPassword(String _otapassword)
 	otapassword = _otapassword;
 	return onInsideChange("otapassword", String(otapassword));
 }
+#endif
 
 //UpdateAvailable()
 int nodeGetUpdateAvailable()

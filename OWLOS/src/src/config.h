@@ -104,7 +104,7 @@ OWLOS распространяется в надежде, что она буде
                 #define DEFAULT_ID "owlnode"
 
                 //Topic - путь к устройству в сети по умолчанию
-                #define DEFAULT_TOPIC "world0/area1/front1/room1/"
+                #define DEFAULT_TOPIC "owlos/"
 
                 //Включает в сборку OWLOS HTTPS Server (обратите внимание на необходимость перегенерации сертификата)
                 //#define USE_HTTPS_SERVER
@@ -112,7 +112,7 @@ OWLOS распространяется в надежде, что она буде
                 //Включает в сборку OWLOS HTTP Server 
                 #define USE_HTTP_SERVER  
 
-                #define USE_HTTP_CLIENT
+                //#define USE_HTTP_CLIENT
 
                 //Включает поиск и установку обновлений OWLOS в сети Internet
                 //Новые версии готовых прошивок находятся здесь: https://github.com/KirinDenis/owlos/tree/master/OWLOS
@@ -124,8 +124,8 @@ OWLOS распространяется в надежде, что она буде
                 //#define USE_OTA_SERVICE
 
                 #ifdef ARDUINO_ESP32_RELEASE_1_0_4       
-                    //Включает в сборку MQTT клиент
-                  //  #define USE_MQTT                
+                //Включает в сборку MQTT клиент
+                 //#define USE_MQTT                
                 #endif                
             #endif
     #else

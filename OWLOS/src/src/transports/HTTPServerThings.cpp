@@ -39,6 +39,9 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 #include "HTTPServerThings.h"
+
+#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)
+
 #ifdef USE_ESP_DRIVER
 
 #include "../drivers/ESPDriver.h"
@@ -150,22 +153,11 @@ static const char OWLOSCopyLeft[] PROGMEM = "&#x1F30D;<a href='https://github.co
 String GetNotFoundHTML()
 {
 
-	String helloString = FIRMWARE_VERSION; //nodeGetUnitId()
-	String acip = nodeGetWiFiAccessPointIP() + ":" + String(nodeGetHTTPServerPort());
-	String ip = nodeGetWiFiIP() + ":" + String(nodeGetHTTPServerPort());
-
-	return "<html><header><title>" + helloString + FPSTR("</title>"
-														 "<style>a{color: #3b99c4;text-decoration: none;} a:hover {text-decoration: underline;} a:active {text-decoration: underline;}table td, table td * {vertical-align: top;}</style></header>"
-														 "<body  bgcolor='#272B30'><font color='#272B30'><table><tr><td>") +
-		   OWLOSLogo + "</td><td><pre><code><span><font color='#89c2dc' size=4><br>"
-					   "&#x1F989;<b>" +
-		   helloString + "</b>\n" + OWLOSCopyLeft + "	for Palata#13 <a href='http://" + ip + "/getallnodeproperties' target='_blank'>http://" + ip + "/</a>\n"
-																																						"	for owlnodef9ab6224 <a href='http://" +
-		   acip + "/getallnodeproperties' target='_blank'>http://" + acip + "/</a>\n"
-																			"</span></code></pre>"
-																			"</font>"
-																			"</td>"
-																			"</tr> "
-																			"</table></body>";
+	return "<html><header><title>" + String(FIRMWARE_VERSION) + FPSTR("</title>"
+																	  "<style>a{color: #3b99c4;text-decoration: none;} a:hover {text-decoration: underline;} a:active {text-decoration: underline;}table td, table td * {vertical-align: top;}</style></header>"
+																	  "<body  bgcolor='#272B30'><font color='#272B30'><table><tr><td>") +
+		   OWLOSLogo + "</td><td><pre><code><span><font color='#89c2dc' size=4><br>&#x1F989;<b>" +
+		   FIRMWARE_VERSION + "</b>\n" + OWLOSCopyLeft + "</span></code></pre></font></td></tr></table></body>";
 }
+#endif
 #endif
