@@ -71,13 +71,10 @@ bool ActuatorDriver::init()
 }
 
 bool ActuatorDriver::begin(String _topic)
-{
-	debugOut("ACTURATOR", "BEGIN");
-	BaseDriver::begin(_topic);
-	debugOut("ACTURATOR", "BEGIN2");
+{	
+	BaseDriver::begin(_topic);	
 	setType(ACTUATOR_DRIVER_TYPE);
-	setAvailable(available);
-	debugOut("ACTURATOR", "BEGIN3");
+	setAvailable(available);	
 	return available;
 }
 
