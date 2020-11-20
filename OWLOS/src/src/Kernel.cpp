@@ -88,33 +88,26 @@ bool kernelSetup()
 #ifdef USE_SCRIPT
 	scriptsLoad();
 #endif
+
+
 	//Setup network stack - WiFi -> after MQTT -- if both available Transport accessable, if not Unit try reconnect forever (every 5 sec by default)
 	//Ther is not connected at begin(), see Main::Loop() transportReconnect() function using
 	//The begin() just setup connection properties
-
 	transportBegin();
+
 	//The OWLOS harvester started up and went quietly...
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut("kernel setup", "complete");
 #endif //if Utils.h "Debug=true" start writing log to Serial
 #endif
 	return true;
 #else
-#ifdef DEBUG
+
 #ifdef DEBUG
 	debugOut("OWLOS kernel", "building problem");
-#endif
-#endif
-#ifdef DEBUG
-#ifdef DEBUG
 	debugOut("OWLOS kernel", "can's start, please install ESP32 RELEASE 1.0.4 or ESP8266 RELEASE 2.5.0 for building");
-#endif
-#endif
-#ifdef DEBUG
 	debugOut("ESP32 RELEASE 1.0.4", "https://github.com/espressif/arduino-esp32/releases/tag/1.0.4");
-#endif
-#ifdef DEBUG
 	debugOut("ESP8266 RELEASE 2.5.0", "https://github.com/esp8266/Arduino/releases/tag/2.5.0");
 #endif
 	return false;
@@ -140,7 +133,7 @@ bool kernelLoop()
 	{
 		if (transportReconnect()) //DO connection routin, see Transport.cpp
 		{
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 			debugOut(nodeGetUnitId(), "Transport available");
 #endif //if HEAD and MQTT Brokker is available setuping drivers
@@ -154,17 +147,18 @@ bool kernelLoop()
 	}
 	else //if network (Transport) to be available
 	{
-		transportLoop(); //Ping MQTT (at this version MQTT used only, FFR Ping RESTful to
+		transportLoop(); //Ping MQTT (at this version MQTT used only, FFR Ping HTTPServer to
 	}
 #endif
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
-	transportLoop(); //Ping MQTT (at this version MQTT used only, FFR Ping RESTful to
-#endif
+	transportLoop(); //Ping MQTT (at this version MQTT used only, FFR Ping HTTPServer to
 #endif
 #endif
 
-#ifdef USE_ARDUINO_BOARDS
+#endif
+
+#if defined(USE_ARDUINO_BOARDS) || !defined(USE_ESP_DRIVER)
 	transportLoop();
 #endif
 
@@ -177,6 +171,6 @@ bool kernelLoop()
 	//Scripts loop
 	scriptsRun();
 #endif
-	delay(ONETENTHOFSECOND); //Main::loop() sleep interval
+	delay(ONEHUNDREDTH); //Main::loop() sleep interval
 	return true;
 }

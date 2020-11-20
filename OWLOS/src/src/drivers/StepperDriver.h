@@ -91,7 +91,7 @@ public:
 	void del();
 	bool begin(String _topic);
 	String getAllProperties();
-	String onMessage(String _topic, String _payload, int8_t transportMask);
+	String onMessage(String route, String _payload, int8_t transportMask);
 
 	int getToPosition();
 	bool setToPosition(int _toPosition);

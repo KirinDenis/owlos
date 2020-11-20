@@ -120,6 +120,10 @@ var FilesList =
                 for (var i = 0; i < this.parsedFilesList.length; i++) {
                     if (this.parsedFilesList[i] === "") continue;
                     var parsedFile = this.parsedFilesList[i].split(" ");
+                    if (parsedFile[0].indexOf("/") == 0)
+                    {
+                        parsedFile[0] = parsedFile[0].substring(1, parsedFile[0].length);
+                    }
                     var tr = tbody.appendChild(document.createElement('tr'));
                     var th = tr.appendChild(document.createElement('th'));
                     th.scope = "row";
@@ -127,7 +131,9 @@ var FilesList =
                     filesCount++;
                     var nameTd = tr.appendChild(document.createElement('td'));
                     var downloadHref = nameTd.appendChild(document.createElement('a'));
-                    downloadHref.href = boardhost + "downloadfile?name=" + parsedFile[0];
+                 //Old version   
+                 //   downloadHref.href = boardhost + "downloadfile?name=" + parsedFile[0];
+                    downloadHref.href = boardhost + parsedFile[0];
                     downloadHref.target = "_blank";
                     downloadHref.title = "Download '" + parsedFile[0] + "' file";
                     downloadHref.innerText = parsedFile[0];

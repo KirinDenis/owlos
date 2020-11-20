@@ -88,7 +88,7 @@ bool ValveDriver::init()
 bool ValveDriver::begin(String _topic)
 {
 	BaseDriver::begin(_topic);
-	setType(Valve);
+	setType(VALVE_DRIVER_TYPE);
 	setAvailable(available);
 	return available;
 }
@@ -139,7 +139,7 @@ bool ValveDriver::publish()
 String ValveDriver::onMessage(String route, String _payload, int8_t transportMask)
 {
 	String result = BaseDriver::onMessage(route, _payload, transportMask);
-	if (!result.equals(WrongPropertyName))
+	if (!result.equals(WRONG_PROPERTY_NAME))
 		return result;
 
 	else if (matchRoute(route, topic, "/getposition"))
@@ -174,7 +174,7 @@ int ValveDriver::getphysicalposition()
 	{
 		physicalposition = filesReadInt(id + ".physicalposition");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "physicalposition=" + String(physicalposition));
 #endif
@@ -188,7 +188,7 @@ int ValveDriver::getMinimumphysicalposition()
 	{
 		minimumphysicalposition = filesReadInt(id + ".minimumphysicalposition");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "minimumphysicalposition=" + String(minimumphysicalposition));
 #endif
@@ -202,7 +202,7 @@ int ValveDriver::getMaximumphysicalposition()
 	{
 		maximumphysicalposition = filesReadInt(id + ".maximumphysicalposition");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "maximumphysicalposition=" + String(maximumphysicalposition));
 #endif
@@ -216,7 +216,7 @@ int ValveDriver::getPosition()
 	{
 		position = filesReadInt(id + ".position");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "position=" + String(position));
 #endif

@@ -45,9 +45,10 @@ OWLOS распространяется в надежде, что она буде
 #define ESP_DRIVER_H
 
 #include "WifiDriver.h"
+#include "NetworkDriver.h"
 
-#define FIRMWARE_VERSION "OWLOS version 1.10 (RC)"
-#define FIRMWARE_BUILD_NUMBER 107
+#define FIRMWARE_VERSION "OWLOS version 1.11 (RC)"
+#define FIRMWARE_BUILD_NUMBER 108
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
 #include <rom/rtc.h>
@@ -62,7 +63,7 @@ String nodeGetAllProperties();
 
 void nodeSubscribe();
 
-String nodeOnMessage(String _topic, String _payload, int8_t transportMask);
+String nodeOnMessage(const String &route, const String &_payload, int8_t transportMask);
 
 String nodeGetUnitId();
 bool nodeSetUnitId(String _nodeid);
@@ -76,59 +77,6 @@ bool nodeSetFirmwareVersion(String _firmwareversion);
 int nodeGetFirmwareBuildNumber();
 bool nodeSetFirmwareBuildNumber(int _firmwarebuildnumber);
 
-int nodeGetRESTfulAvailable();
-bool nodeSetRESTfulAvailable(int _restfulavailable);
-
-String nodeGetRESTfulServerUsername();
-bool nodeSetRESTfulServerUsername(String _webserverlogin);
-
-String nodeGetRESTfulServerPassword();
-bool nodeSetRESTfulServerPassword(String _webserverpwd);
-
-int nodeGetRESTfulServerPort();
-bool nodeSetRESTfulServerPort(int _restfulserverport);
-
-int nodeGetRESTfulClientAvailable();
-bool nodeSetRESTfulClientAvailable(int _restfulavailable);
-
-int nodeGetRESTfulClientPort();
-bool nodeSetRESTfulClientPort(int _restfulclientport);
-
-String nodeGetRESTfulClientURL();
-bool nodeSetRESTfulClientURL(String _restfulclienturl);
-
-int nodeGetMQTTAvailable();
-bool nodeSetMQTTAvailable(int _mqttavailable);
-
-int nodeGetMQTTPort();
-bool nodeSetMQTTPort(int _mqttport);
-
-String nodeGetMQTTURL();
-bool nodeSetMQTTURL(String _mqtturl);
-
-String nodeGetMQTTID();
-bool nodeSetMQTTID(String _mqttid);
-
-String nodeGetMQTTLogin();
-bool nodeSetMQTTLogin(String _mqttlogin);
-
-String nodeGetMQTTPassword();
-bool nodeSetMQTTPassword(String _mqttpassword);
-
-int nodeGetMQTTClientConnected();
-int nodeGetMQTTClientState();
-
-int nodeGetOTAAvailable();
-bool nodeSetOTAAvailable(int _otaavailable);
-
-int nodeGetOTAPort();
-bool nodeSetOTAPort(int _otaport);
-
-String nodeGetOTAID();
-bool nodeSetOTAID(String _otaid);
-
-String nodeGetOTAPassword();
-bool nodeSetOTAPassword(String _otapassword);
 
 /**/
 String nodeGetESPResetInfo();
@@ -215,11 +163,6 @@ bool nodeSetESPMagicFlashChipMode(int _espmagicflashchipmode);
 String nodeGetBusyPins();
 String nodeGetPinsMap();
 
-int nodeGetUpdateAvailable();
-bool nodeSetUpdateAvailable(int _updateavailable);
-
-String nodeGetUpdateHost();
-bool nodeSetUpdateHost(String _updatehost);
 
 #ifdef ESP_ENABLE_INTERNAL_API
 String onGetProperty(String _property, String _payload, int8_t transportMask);

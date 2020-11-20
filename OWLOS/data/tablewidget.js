@@ -282,8 +282,8 @@ var TableWidget =
                 //иначе текстовое представление - текст может быть очень длинным, ограничиваем в 20 символов
                 var cutValue = driverProperty.value;
 
-                if (cutValue.length > 20) {
-                    cutValue = cutValue.slice(0, 20) + "...";
+                if (cutValue.length > 50) {
+                    cutValue = cutValue.slice(0, 50) + "...";
                 }
 
                 if (driverProperty.type.indexOf("p") != -1) {

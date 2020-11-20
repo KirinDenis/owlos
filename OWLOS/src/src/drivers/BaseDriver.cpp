@@ -77,10 +77,10 @@ void BaseDriver::del()
 }
 
 //begin(..) is called after transport accessable when Unit knows its and drivers' IDs and Topics
-bool BaseDriver::begin(String _topic)
+bool BaseDriver::begin(const String _topic)
 {
 	topic = _topic + '/' + id;
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "available with topic " + topic);
 #endif
@@ -185,7 +185,7 @@ int BaseDriver::parsePinNumber(String _topic, String getPinStr)
 	return atoi(_topic.substring(_topic.indexOf(topic + getPinStr) + String(topic + getPinStr).length()).c_str());
 }
 
-String BaseDriver::onMessage(String route, String _payload, int8_t transportMask)
+String BaseDriver::onMessage(const String route, const String _payload, int8_t transportMask)
 {
 	if (route.indexOf(topic + "/getpintype") == 0)
 	{
@@ -224,7 +224,7 @@ String BaseDriver::onMessage(String route, String _payload, int8_t transportMask
 	}
 	else if (matchRoute(route, topic, "/setid"))
 	{
-		return NotAvailable;
+		return NOT_AVAILABLE;
 	}
 	//Topic --------------------------------------------------------------------
 	else if (matchRoute(route, topic, "/gettopic"))
@@ -233,7 +233,7 @@ String BaseDriver::onMessage(String route, String _payload, int8_t transportMask
 	}
 	else if (matchRoute(route, topic, "/settopic"))
 	{
-		return NotAvailable;
+		return NOT_AVAILABLE;
 	}
 	//Available --------------------------------------------------------------------
 	else if (matchRoute(route, topic, "/getavailable"))
@@ -296,19 +296,19 @@ String BaseDriver::onMessage(String route, String _payload, int8_t transportMask
 	{
 		return onGetProperty("historyfile", String(readHistoryFile()), transportMask);
 	}
-	return WrongPropertyName;
+	return WRONG_PROPERTY_NAME;
 }
 
 //Called when client gets a property from network
 String BaseDriver::onGetProperty(String _property, String _payload, int8_t transportMask)
 {
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "|-> get property " + _property + " = " + _payload);
 #endif
 #endif
 
-	if (transportMask && MQTTMask != 0)
+	if (transportMask && MQTT_TRANSPORT_MASK != 0)
 	{
 #ifdef USE_ESP_DRIVER
 		transportPublish(topic + "/" + _property, _payload);
@@ -319,7 +319,7 @@ String BaseDriver::onGetProperty(String _property, String _payload, int8_t trans
 
 bool BaseDriver::onInsideChange(String _property, String _payload /*, int8_t transportMask*/)
 {
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "|<- inside change " + _property + " = " + _payload);
 #endif
@@ -335,11 +335,11 @@ bool BaseDriver::onInsideChange(String _property, String _payload /*, int8_t tra
 	/*
 	bool result = true;
 	  #ifdef
-	  DetailedDebug #ifdef DEBUG
+	  DETAILED_DEBUG #ifdef DEBUG
 debugOut(id, "|<- inside change " + _property + " = " +  _payload);
 #endif
 	  #endif
-	if (transportMask && MQTTMask > 1)
+	if (transportMask && MQTT_TRANSPORT_MASK > 1)
 	{
 	   result = result & transportPublish(topic + "/" + _property, _payload);
 	}
@@ -353,7 +353,7 @@ int BaseDriver::getAvailable()
 	{
 		available = filesReadInt(id + ".available");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "available=" + String(available));
 #endif
@@ -370,7 +370,7 @@ bool BaseDriver::setAvailable(int _available)
 
 int BaseDriver::getType()
 {
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "type=" + type);
 #endif
@@ -391,7 +391,7 @@ float BaseDriver::getTrap()
 	{
 		trap = filesReadFloat(id + ".trap");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "trap=" + String(trap));
 #endif
@@ -412,7 +412,7 @@ int BaseDriver::getQueryInterval()
 	{
 		queryInterval = filesReadInt(id + ".queryinterval");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "queryinterval=" + String(queryInterval));
 #endif
@@ -433,7 +433,7 @@ int BaseDriver::getPublishInterval()
 	{
 		publishInterval = filesReadInt(id + ".publishinterval");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "publishinterval=" + String(publishInterval));
 #endif

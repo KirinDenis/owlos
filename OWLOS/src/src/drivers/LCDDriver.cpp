@@ -127,7 +127,7 @@ bool LCDDriver::init()
 bool LCDDriver::begin(String _topic)
 {
 	BaseDriver::begin(_topic);
-	setType(LCD);
+	setType(LCD_DRIVER_TYPE);
 	setAvailable(available);
 	return available;
 }
@@ -171,7 +171,7 @@ String LCDDriver::onMessage(String route, String _payload, int8_t transportMask)
 		result = init(); //init() get Address from PinManger
 	}
 
-	if (!result.equals(WrongPropertyName))
+	if (!result.equals(WRONG_PROPERTY_NAME))
 		return result;
 
 	if (matchRoute(route, topic, "/gettext"))
@@ -290,7 +290,7 @@ String LCDDriver::getText()
 	{
 		text = filesReadString(id + ".text");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "text=" + String(text));
 #endif
@@ -355,7 +355,7 @@ int LCDDriver::getCols()
 	{
 		cols = filesReadInt(id + ".cols");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "cols=" + String(cols));
 #endif
@@ -381,7 +381,7 @@ int LCDDriver::getRows()
 	{
 		rows = filesReadInt(id + ".rows");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "rows=" + String(rows));
 #endif
@@ -407,7 +407,7 @@ int LCDDriver::getDisplay()
 	{
 		display = filesReadInt(id + ".display");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "display=" + String(display));
 #endif
@@ -444,7 +444,7 @@ int LCDDriver::getBacklight()
 	{
 		backlight = filesReadInt(id + ".backlight");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "backlight=" + String(backlight));
 #endif
@@ -478,7 +478,7 @@ int LCDDriver::getBlink()
 	{
 		blink = filesReadInt(id + ".blink");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "blink=" + String(blink));
 #endif
@@ -512,7 +512,7 @@ int LCDDriver::getCursor()
 	{
 		cursor = filesReadInt(id + ".cursor");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "cursor=" + String(cursor));
 #endif
@@ -546,7 +546,7 @@ int LCDDriver::getAutoscroll()
 	{
 		autoscroll = filesReadInt(id + ".autoscroll");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "autoscroll=" + String(autoscroll));
 #endif
@@ -576,7 +576,7 @@ bool LCDDriver::setAutoscroll(int _autoscroll, bool doEvent)
 int LCDDriver::getClear()
 {
 	clear = 0; //clear is function, 0 is not executed now
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "clear=" + String(clear));
 #endif
@@ -606,7 +606,7 @@ int LCDDriver::getX()
 	{
 		x = filesReadInt(id + ".x");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "x=" + String(x));
 #endif
@@ -640,7 +640,7 @@ int LCDDriver::getY()
 	{
 		y = filesReadInt(id + ".y");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "y=" + String(y));
 #endif

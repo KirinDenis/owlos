@@ -51,6 +51,8 @@ AT+FC - создать файл
 
 AT+FD - удалить файл
 
+AT+DAF - удалить все фйалы (сброс настроек)
+
 AT+ADP? - получить свойства всех драйверов
 
 AT+AD - создать драйвер
@@ -158,11 +160,11 @@ void UARTRecv(String command)
                 {
                     if (token[1].equals("1"))
                     {
-                        UARTSendOK(filesReadString(LogFile1));
+                        UARTSendOK(filesReadString(DEBUG_LOG_FILE1_NAME));
                     }
                     else
                     {
-                        UARTSendOK(filesReadString(LogFile2));
+                        UARTSendOK(filesReadString(DEBUG_LOG_FILE2_NAME));
                     }
                 }
                 else
@@ -171,13 +173,15 @@ void UARTRecv(String command)
                 }
             }
             else
-                //SET reset
+            //SET reset
+#ifdef USE_ESP_DRIVER
                 if ((token[0].equals("AT+R")) || (token[0].equals("AT+RESET")))
             {
                 UARTSendOK("");
                 nodeSetESPReset(1);
             }
             else
+#endif
                 //GET all drivers properties
                 if (token[0].equals("AT+ADP?"))
             {
@@ -228,7 +232,6 @@ void UARTRecv(String command)
             {
                 UARTSendOK(String(filesDeleteAllFiles()));
             }
-
             else
                 //SET create file
                 //TODO: read serial to file before duble \n\n or else break
@@ -260,6 +263,10 @@ void UARTRecv(String command)
                     if (result.equals("1"))
                     {
                         UARTSendOK("driver created, id: " + token[2]);
+                        if (!driversSaveList())
+                        {
+                            UARTSendError("bad, driver added but not stored to configuration file");
+                        }
                     }
                     else
                     {
@@ -325,24 +332,26 @@ void UARTRecv(String command)
             {
                 if (count > 2)
                 {
+                    
                     String result = driversGetDriverProperty(token[1], token[2]);
-
+                    
 #ifdef USE_ESP_DRIVER
                     if (result.length() == 0) //then try get this property from node
                     {
-                        result = nodeOnMessage(nodeGetTopic() + "/get" + token[2], "", NoTransportMask);
+                        result = nodeOnMessage(nodeGetTopic() + "/get" + token[2], "", NO_TRANSPORT_MASK);
+                    
                     }
 #endif
-
+                    
                     if (result.length() == 0)
                     {
                         UARTSendError("wrong driver id: " + token[1] + " use GetDriversId API to get all drivers list");
                     }
-                    else if (result.equals(NotAvailable))
+                    else if (result.equals(NOT_AVAILABLE))
                     {
                         UARTSendError("driver property: " + token[2] + " set as NOT Available");
                     }
-                    else if (result.equals(WrongPropertyName))
+                    else if (result.equals(WRONG_PROPERTY_NAME))
                     {
                         UARTSendError("driver property: " + token[2] + " not exists");
                     }
@@ -371,9 +380,9 @@ void UARTRecv(String command)
                     else
                     {
 #ifdef USE_ESP_DRIVER
-                        if ((driverResult.indexOf(WrongDriverName) > -1) || (driverResult.indexOf(WrongPropertyName) > -1))
+                        if ((driverResult.indexOf(WRONG_DRIVER_NAME) > -1) || (driverResult.indexOf(WRONG_PROPERTY_NAME) > -1))
                         {
-                            String result = nodeOnMessage(nodeGetTopic() + "/set" + token[2], token[3], NoTransportMask);
+                            String result = nodeOnMessage(nodeGetTopic() + "/set" + token[2], token[3], NO_TRANSPORT_MASK);
                             if ((result.length() == 0) || (result.equals("0")))
                             {
                                 UARTSendError(driverResult + " [or] wrong node property: " + token[2]);

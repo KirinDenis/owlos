@@ -71,10 +71,10 @@ bool ActuatorDriver::init()
 }
 
 bool ActuatorDriver::begin(String _topic)
-{
-	BaseDriver::begin(_topic);
-	setType(Actuator);
-	setAvailable(available);
+{	
+	BaseDriver::begin(_topic);	
+	setType(ACTUATOR_DRIVER_TYPE);
+	setAvailable(available);	
 	return available;
 }
 
@@ -120,7 +120,7 @@ bool ActuatorDriver::publish()
 String ActuatorDriver::onMessage(String route, String _payload, int8_t transportMask)
 {
 	String result = BaseDriver::onMessage(route, _payload, transportMask);
-	if (!result.equals(WrongPropertyName))
+	if (!result.equals(WRONG_PROPERTY_NAME))
 		return result;
 
 	if (matchRoute(route, topic, "/getanalog"))
@@ -170,7 +170,7 @@ bool ActuatorDriver::getAnalog()
 	{
 		data = filesReadInt(id + ".analog");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "analog=" + String(data));
 #endif

@@ -23,17 +23,17 @@
 // Includes for the server
 // Note: We include HTTPServer and HTTPSServer
 #ifdef USE_HTTPS_SERVER
-#include <HTTPSServer.hpp>
-#include <SSLCert.hpp>
+#include "../libraries/esp32_https_server/src/HTTPSServer.hpp"
+#include "../libraries/esp32_https_server/src/SSLCert.hpp"
 #endif
 #ifdef USE_HTTP_SERVER
-#include <HTTPServer.hpp>
+#include "../libraries/esp32_https_server/src/HTTPServer.hpp"
 #endif
-#include <HTTPRequest.hpp>
-#include <HTTPResponse.hpp>
-#include <HTTPBodyParser.hpp>
-#include <HTTPMultipartBodyParser.hpp>
-#include <HTTPURLEncodedBodyParser.hpp>
+#include "../libraries/esp32_https_server/src/HTTPRequest.hpp"
+#include "../libraries/esp32_https_server/src/HTTPResponse.hpp"
+#include "../libraries/esp32_https_server/src/HTTPBodyParser.hpp"
+#include "../libraries/esp32_https_server/src/HTTPMultipartBodyParser.hpp"
+#include "../libraries/esp32_https_server/src/HTTPURLEncodedBodyParser.hpp"
 
 #include <SPIFFS.h>
 #include "HTTPServerThings.h"
@@ -64,8 +64,9 @@ HTTPSServer secureServer = HTTPSServer(&cert);
 
 #ifdef USE_HTTP_SERVER
 // Additionally, we create an HTTPServer for unencrypted traffic
-HTTPServer insecureServer = HTTPServer();
+HTTPServer insecureServer = HTTPServer(nodeGetHTTPServerPort());
 #endif
+
 
 void corsCallbackNoType(HTTPRequest *req, HTTPResponse *res)
 {
@@ -149,7 +150,7 @@ void handleNotFound(HTTPRequest *req, HTTPResponse *res)
   res->setHeader("Content-Type", "text/html");
 }
 
-//RESTful APIs ---
+//HTTPServer APIs ---
 void handleNodeGetAllProperties(HTTPRequest *req, HTTPResponse *res)
 {
   corsCallback(req, res);
@@ -169,11 +170,11 @@ void handleGetLog(HTTPRequest *req, HTTPResponse *res)
       res->setStatusCode(200);
       if (paramVal == "1")
       {
-        res->print(filesReadString(LogFile1));
+        res->print(filesReadString(DEBUG_LOG_FILE1_NAME));
       }
       else
       {
-        res->print(filesReadString(LogFile2));
+        res->print(filesReadString(DEBUG_LOG_FILE2_NAME));
       }
       return;
     }
@@ -253,6 +254,7 @@ void handleUploadFile(HTTPRequest *req, HTTPResponse *res)
     didwrite = true;
     while (!parser->endOfField())
     {
+      yield();
       byte buf[512];
       size_t readLength = parser->read(buf, 512);
       file.write(buf, readLength);
@@ -278,8 +280,8 @@ void handleGetNodeProperty(HTTPRequest *req, HTTPResponse *res)
   std::string paramVal;
   if (params->getQueryParameter("property", paramVal))
   {
-    String nodeProp = nodeOnMessage(nodeGetTopic() + "/get" + decode(String(paramVal.c_str())), "", NoTransportMask);
-    if ((nodeProp.length() == 0) || (nodeProp.equals(WrongPropertyName)))
+    String nodeProp = nodeOnMessage(nodeGetTopic() + "/get" + decode(String(paramVal.c_str())), "", NO_TRANSPORT_MASK);
+    if ((nodeProp.length() == 0) || (nodeProp.equals(WRONG_PROPERTY_NAME)))
     {
       req->discardRequestBody();
       res->setStatusCode(405);
@@ -304,7 +306,7 @@ void handleSetNodeProperty(HTTPRequest *req, HTTPResponse *res, String driverRes
   std::string valParam;
   if ((params->getQueryParameter("property", propertyParam)) && (params->getQueryParameter("value", valParam)))
   {
-    String result = nodeOnMessage(nodeGetTopic() + "/set" + decode(String(propertyParam.c_str())), decode(String(valParam.c_str())), NoTransportMask);
+    String result = nodeOnMessage(nodeGetTopic() + "/set" + decode(String(propertyParam.c_str())), decode(String(valParam.c_str())), NO_TRANSPORT_MASK);
     if ((result.length() == 0) || (result.equals("0")))
     {
       req->discardRequestBody();
@@ -419,7 +421,7 @@ void handleGetDriverProperty(HTTPRequest *req, HTTPResponse *res)
     String result = driversGetDriverProperty(decode(String(idParam.c_str())), decode(String(propertyParam.c_str())));
     if (result.length() == 0) //then try get this property from node
     {
-      result = nodeOnMessage(nodeGetTopic() + "/get" + decode(String(propertyParam.c_str())), "", NoTransportMask);
+      result = nodeOnMessage(nodeGetTopic() + "/get" + decode(String(propertyParam.c_str())), "", NO_TRANSPORT_MASK);
     }
 
     if (result.length() == 0)
@@ -429,14 +431,14 @@ void handleGetDriverProperty(HTTPRequest *req, HTTPResponse *res)
       res->setStatusText("wrong driver id: " + idParam + " use GetDriversId API to get all drivers list");
       res->setHeader("Content-Type", "text/html");
     }
-    else if (result.equals(NotAvailable))
+    else if (result.equals(NOT_AVAILABLE))
     {
       req->discardRequestBody();
       res->setStatusCode(404);
       res->setStatusText("driver property: " + propertyParam + " set as NOT Available");
       res->setHeader("Content-Type", "text/html");
     }
-    else if (result.equals(WrongPropertyName))
+    else if (result.equals(WRONG_PROPERTY_NAME))
     {
       req->discardRequestBody();
       res->setStatusCode(404);
@@ -471,7 +473,7 @@ void handleSetDriverProperty(HTTPRequest *req, HTTPResponse *res)
     }
     else
     {
-      if ((result.indexOf(WrongDriverName) > -1) || (result.indexOf(WrongPropertyName) > -1))
+      if ((result.indexOf(WRONG_DRIVER_NAME) > -1) || (result.indexOf(WRONG_PROPERTY_NAME) > -1))
       {
         handleSetNodeProperty(req, res, result);
       }
@@ -549,6 +551,161 @@ void handleGetAllScripts(HTTPRequest *req, HTTPResponse *res)
   res->setStatusCode(200);
   res->print(scriptsGetAll().c_str());
 }
+
+void handleStartDebugScript(HTTPRequest *req, HTTPResponse *res)
+{
+  corsCallback(req, res);
+  ResourceParameters *params = req->getParams();
+  std::string nameParam;
+
+  if (params->getQueryParameter("name", nameParam))
+  {
+    if (!scriptsStartDebug(String(nameParam.c_str())))
+    {
+      req->discardRequestBody();
+      res->setStatusCode(503);
+      res->setStatusText("can't start debug script");
+      res->setHeader("Content-Type", "text/html");
+    }
+    else
+    {
+      res->setStatusCode(200);
+      res->print("OK");
+    }
+    return;
+  }
+  handleNotFound(req, res);
+}
+
+void handleDebugNextScript(HTTPRequest *req, HTTPResponse *res)
+{
+  corsCallback(req, res);
+  ResourceParameters *params = req->getParams();
+  std::string nameParam;
+
+  if (params->getQueryParameter("name", nameParam))
+  {
+    String result = scriptsDebugNext(String(nameParam.c_str()));
+    if (result.length() != 0)
+    {
+      req->discardRequestBody();
+      res->setStatusCode(503);
+      res->setStatusText(result.c_str());
+      res->setHeader("Content-Type", "text/html");
+    }
+    else
+    {
+      res->setStatusCode(200);
+      res->print("OK");
+    }
+    return;
+  }
+  handleNotFound(req, res);
+}
+
+void handleDeleteScript(HTTPRequest *req, HTTPResponse *res)
+{
+  corsCallback(req, res);
+  ResourceParameters *params = req->getParams();
+  std::string nameParam;
+
+  if (params->getQueryParameter("name", nameParam))
+  {
+
+    if (!scriptsDelete(decode(String(nameParam.c_str()))))
+    {
+      req->discardRequestBody();
+      res->setStatusCode(503);
+      res->setHeader("Content-Type", "text/html");
+    }
+    else
+    {
+      res->setStatusCode(200);
+      res->print("OK");
+    }
+    return;
+  }
+  handleNotFound(req, res);
+}
+
+void handleCreateScript(HTTPRequest *req, HTTPResponse *res)
+{
+  corsCallback(req, res);
+
+  ResourceParameters *params = req->getParams();
+  std::string name;
+
+  if (params->getQueryParameter("name", name))
+  {
+    HTTPBodyParser *parser;
+    std::string contentType = req->getHeader("Content-Type");
+    size_t semicolonPos = contentType.find(";");
+    if (semicolonPos != std::string::npos)
+    {
+      contentType = contentType.substr(0, semicolonPos);
+    }
+
+    if (contentType == "multipart/form-data")
+    {
+      parser = new HTTPMultipartBodyParser(req);
+    }
+    else
+    {
+      res->setStatusCode(501);
+      return;
+    }
+
+    String byteCode = "";
+    bool didwrite = false;
+    if (parser->nextField())
+    {
+
+      size_t fileLength = 0;
+      didwrite = true;
+      while (!parser->endOfField())
+      {
+        yield();
+        byte buf[512];
+        size_t readLength = parser->read(buf, 512);
+        byteCode = String((char *)buf);
+        fileLength += readLength;
+      }
+
+      if (!didwrite)
+      {
+        res->setStatusCode(504);
+      }
+      else
+      {
+        debugOut("SCRIPT", name.c_str());
+        debugOut("SCRIPT", byteCode);
+        String result = scriptsCreate(decode(name.c_str()), decode(byteCode));
+
+        if (result.length() != 0)
+        {
+
+          res->setStatusCode(503);
+          res->setStatusText(result.c_str());
+          res->setHeader("Content-Type", "text/html");
+        }
+        else
+        {
+          res->setStatusCode(200);
+        }
+      }
+    }
+    else
+    {
+      res->setStatusCode(502);
+    }
+    delete parser;
+  }
+  else
+  {
+    res->setStatusCode(403);
+  }
+}
+
 #endif
 
 void handleGetWebProperty(HTTPRequest *req, HTTPResponse *res)
@@ -639,15 +796,18 @@ void handleUpdateFirmware(HTTPRequest *req, HTTPResponse *res)
 }
 #endif
 
-//ENDOF RESTful APIs ---
+//ENDOF HTTPServer APIs ---
 
 void setResourceNode(const std::string &path, const std::string &method, const HTTPSCallbackFunction *callback)
 {
   ResourceNode *resourceNode = new ResourceNode(path, method, callback);
-#ifdef USE_HTTS_SERVER
+#ifdef USE_HTTPS_SERVER
   secureServer.registerNode(resourceNode);
 #endif
+
+#ifdef USE_HTTP_SERVER
   insecureServer.registerNode(resourceNode);
+#endif
 }
 
 void HTTPSWebServerBegin()
@@ -676,8 +836,12 @@ void HTTPSWebServerBegin()
   setResourceNode("/getpinmap", "GET", &handleGetPinMap);
   setResourceNode("/getdriverpin", "GET", &handleGetDriverPin);
 #endif
-#ifdef USE_SCRIPTS
+#ifdef USE_SCRIPT
   setResourceNode("/getallscripts", "GET", &handleGetAllScripts);
+  setResourceNode("/startdebugscript", "GET", &handleStartDebugScript);
+  setResourceNode("/debugnextscript", "GET", &handleDebugNextScript);
+  setResourceNode("/deletescript", "GET", &handleDeleteScript);
+  setResourceNode("/createscript", "POST", &handleCreateScript);
 #endif
   setResourceNode("/getwebproperty", "GET", &handleGetWebProperty);
   setResourceNode("/setwebproperty", "POST", &handleSetWebProperty);
@@ -693,13 +857,21 @@ void HTTPSWebServerBegin()
   //  setResourceNode("", "GET", &handleOther);
 
 #ifdef USE_HTTPS_SERVER
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
   debugOut("HTTPS Server", "Starting HTTPS server...");
 #endif
 #endif
-  secureServer.start();
-#ifdef DetailedDebug
+
+  secureServer._port = nodeGetHTTPSServerPort();
+
+  if (nodeGetHTTPSServerAvailable() == 1)
+  {
+    secureServer.start();
+  }
+
+  
+#ifdef DETAILED_DEBUG
   if (secureServer.isRunning())
   {
 #ifdef DEBUG
@@ -710,13 +882,19 @@ void HTTPSWebServerBegin()
 #endif
 
 #ifdef USE_HTTP_SERVER
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
   debugOut("HTTP Server", "Starting HTTP server...");
 #endif
 #endif
-  insecureServer.start();
-#ifdef DetailedDebug
+  
+  insecureServer._port = nodeGetHTTPServerPort();
+
+  if (nodeGetHTTPServerAvailable() == 1)
+  {
+    insecureServer.start();
+  }
+#ifdef DETAILED_DEBUG
   if (insecureServer.isRunning())
   {
 #ifdef DEBUG
@@ -731,11 +909,49 @@ void HTTPSWebServerLoop()
 {
   // We need to call both loop functions here
 #ifdef USE_HTTPS_SERVER
-  secureServer.loop();
+  
+  if (nodeGetHTTPSServerAvailable() == 1)
+  {
+    if (secureServer.isRunning())
+    {
+      secureServer.loop();
+    }
+    else
+    {
+      secureServer.start();
+    }
+  }
+  else
+  {
+    if (secureServer.isRunning())
+    {
+      secureServer.stop();
+    }
+  }
+
 #endif
 
 #ifdef USE_HTTP_SERVER
-  insecureServer.loop();
+
+  
+  if (nodeGetHTTPServerAvailable() == 1)
+  {
+    if (insecureServer.isRunning())
+    {
+      insecureServer.loop();
+    }
+    else
+    {
+      insecureServer.start();
+    }
+  }
+  else
+  {
+    if (insecureServer.isRunning())
+    {
+      insecureServer.stop();
+    }
+  }
 #endif
 }
 #endif

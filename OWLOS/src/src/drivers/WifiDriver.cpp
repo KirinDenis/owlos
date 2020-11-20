@@ -63,7 +63,7 @@ String wifiaccesspointip(DEFAULT_WIFI_ACCESS_POINT_IP);
 int wifiavailable(DEFAULT_WIFI_STATION_AVAILABLE);
 String wifissid(DEFAULT_WIFI_STATION_SSID);
 String wifipassword(DEFAULT_WIFI_STATION_PASSWORD);
-String wifiip(NotAvailable);
+String wifiip(NOT_AVAILABLE);
 int32_t wifirssi((int32_t)DEFAULT_ZERO_VALUE);
 
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
@@ -85,7 +85,7 @@ String nodeGetWiFiProperties()
 	return "properties for:wifi\n"
 		   "id=wifi//r\n"
 		   "type=" +
-		   String(WiFiType) + "//r\n"
+		   String(WIFI_DRIVER_TYPE) + "//r\n"
 							  "wifiaccesspointavailable=" +
 		   String(nodeGetWiFiAccessPointAvailable()) + "//bs\n"
 													   "wifiaccesspointssid=" +
@@ -122,7 +122,7 @@ String nodeGetWiFiProperties()
 
 String wifiOnMessage(String route, String _payload, int8_t transportMask)
 {
-	String result = WrongPropertyName;
+	
 	if (matchRoute(route, topic, "/getwifiaccesspointavailable"))
 	{
 		return String(onGetProperty("wifiapavailable", String(nodeGetWiFiAccessPointAvailable()), transportMask));
@@ -267,7 +267,7 @@ String wifiOnMessage(String route, String _payload, int8_t transportMask)
 	{
 		return String(nodeGetAllWiFiEncryptionTypes());
 	}
-	return WrongNodePropertyName;
+	return WRONG_NODE_PROPERTY_NAME;
 }
 
 //WiFi -----------------------------------------------------------------------------------------
@@ -282,11 +282,21 @@ int nodeGetWiFiAccessPointAvailable()
 
 bool nodeSetWiFiAccessPointAvailable(int _wifiapavailable)
 {
-#ifdef DEBUG
-	debugOut("MY", "nodeSetWiFiAccessPointAvailable");
-#endif
-	wifiapavailable = _wifiapavailable;
-	return onInsideChange("wifiapavailable", String(wifiapavailable));
+	//проблема в том что после изменения этого флага - нам надо включить или выключить точку доступа
+	//что перенастроить текущий транспорт. 
+	//поэтому - сначала устанавливаем флаг, запоминаем результать и только потом перенастраиваем транспорт
+	int __wifiapavailable = wifiapavailable; //store current value 
+	wifiapavailable = _wifiapavailable; //вносим изменения в флаг
+
+	bool result = onInsideChange("wifiapavailable", String(wifiapavailable)); //store result
+
+	//если флаг был изменен
+	if (wifiapavailable != __wifiapavailable)
+	{
+		transportBegin();
+	}
+	
+	return result;
 }
 
 //WiFiAccessPointSSID
@@ -332,7 +342,7 @@ String nodeGetWiFiAccessPointIP()
 	if (nodeGetWiFiAccessPointAvailable() == 1)
 	{
 		IPAddress real_wifiaccesspointip = WiFi.softAPIP();
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 		debugOut(nodeid, "Current Access Point IP: " + real_wifiaccesspointip.toString());
 #endif
@@ -342,7 +352,7 @@ String nodeGetWiFiAccessPointIP()
 
 		if (!real_wifiaccesspointip.toString().equals(wifiaccesspointip))
 		{
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 			debugOut(nodeid, "Current Access Point IP not equals");
 #endif
@@ -350,22 +360,22 @@ String nodeGetWiFiAccessPointIP()
 
 			if (!nodeSetWiFiAccessPointIP(wifiaccesspointip))
 			{
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 				debugOut(nodeid, "Can't change Access Point IP to: " + wifiaccesspointip);
 #endif
 #endif
 
-				wifiaccesspointip = NotAvailable;
+				wifiaccesspointip = NOT_AVAILABLE;
 			}
 		}
 	}
 	else
 	{
 		WiFi.softAPdisconnect(true);
-		wifiaccesspointip = NotAvailable;
+		wifiaccesspointip = NOT_AVAILABLE;
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(nodeid, "wifiaccesspointip=" + wifiaccesspointip);
 #endif
@@ -377,7 +387,7 @@ String nodeGetWiFiAccessPointIP()
 bool nodeSetWiFiAccessPointIP(String _wifiaccesspointip)
 {
 	IPAddress real_wifiaccesspointip;
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(nodeid, "Current Access Point IP: " + WiFi.softAPIP().toString());
 #endif
@@ -406,8 +416,18 @@ int nodeGetWiFiAvailable()
 
 bool nodeSetWiFiAvailable(int _wifiavailable)
 {
-	wifiavailable = _wifiavailable;
-	return onInsideChange("wifiavailable", String(wifiavailable));
+	//SEE: nodeGetWiFiAPAvailable
+	int __wifiavailable = wifiavailable; 
+	wifiavailable = _wifiavailable; 
+
+	bool result = onInsideChange("wifiavailable", String(wifiavailable)); //store result
+
+	if (wifiavailable != __wifiavailable)
+	{
+		transportBegin();
+	}
+	
+	return result;
 }
 
 //WiFiSSID

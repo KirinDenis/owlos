@@ -134,7 +134,7 @@ void calculateToken()
 #ifdef NOT_SECURE_TOKEN
 	MD5Builder md5;
 	md5.begin();
-	md5.add(nodeGetRESTfulServerUsername() + nodeGetRESTfulServerPassword() + nodeGetESPFlashChipId());
+	md5.add(nodeGetHTTPServerServerUsername() + nodeGetHTTPServerServerPassword() + nodeGetESPFlashChipId());
 	md5.calculate();
 	token = md5.toString();
 #endif
@@ -232,7 +232,7 @@ String parsePostBody(WiFiClient client)
 #ifdef DEBUG
 						debugOut("d_body", body);
 #endif
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 						debugOut("BODY", body);
 #endif
@@ -300,7 +300,7 @@ void handleNotFound(WiFiClient client)
 	send(404, "text/html", GetNotFoundHTML(), client);
 }
 
-//RESTful API -----------------------------------------------
+//HTTPServer API -----------------------------------------------
 
 void handleGetLog(WiFiClient client)
 {
@@ -312,11 +312,11 @@ void handleGetLog(WiFiClient client)
 			String log = "wrong log number argument";
 			if (arg[0].equals("1"))
 			{
-				log = filesReadString(LogFile1);
+				log = filesReadString(DEBUG_LOG_FILE1_NAME);
 			}
 			else
 			{
-				log = filesReadString(LogFile2);
+				log = filesReadString(DEBUG_LOG_FILE2_NAME);
 			}
 			send(200, "text/plain", log, client);
 			return;
@@ -375,8 +375,8 @@ void handleGetUnitProperty(WiFiClient client)
 	{
 		if (argName[0].equals("property"))
 		{
-			String nodeProp = nodeOnMessage(nodeGetTopic() + "/get" + decode(arg[0]), "", NoTransportMask);
-			if ((nodeProp.length() == 0) || (nodeProp.equals(WrongPropertyName)))
+			String nodeProp = nodeOnMessage(nodeGetTopic() + "/get" + decode(arg[0]), "", NO_TRANSPORT_MASK);
+			if ((nodeProp.length() == 0) || (nodeProp.equals(WRONG_PROPERTY_NAME)))
 			{
 				nodeProp = "wrong node property: " + arg[0];
 				send(404, "text/html", nodeProp, client);
@@ -398,7 +398,7 @@ void handleSetUnitProperty(WiFiClient client)
 	{
 		if ((argName[0].equals("property")) && (argName[1].equals("value")))
 		{
-			String result = nodeOnMessage(nodeGetTopic() + "/set" + decode(arg[0]), decode(arg[1]), NoTransportMask);
+			String result = nodeOnMessage(nodeGetTopic() + "/set" + decode(arg[0]), decode(arg[1]), NO_TRANSPORT_MASK);
 			if ((result.length() == 0) || (result.equals("0")))
 			{
 				result = "wrong node property set: " + arg[0] + "=" + arg[1];
@@ -495,14 +495,14 @@ void handleSetDriverProperty(WiFiClient client)
 			}
 			else
 			{
-				driverResult = WrongPropertyName;
+				driverResult = WRONG_PROPERTY_NAME;
 			}
 
 			String nodeResult = "";
-			if (driverResult.equals(WrongPropertyName)) //try set node property
+			if (driverResult.equals(WRONG_PROPERTY_NAME)) //try set node property
 			{
 				driverResult = "";
-				nodeResult = nodeOnMessage(nodeGetTopic() + "/set" + decode(arg[1]), decode(arg[2]), NoTransportMask);
+				nodeResult = nodeOnMessage(nodeGetTopic() + "/set" + decode(arg[1]), decode(arg[2]), NO_TRANSPORT_MASK);
 				if (nodeResult.equals("1"))
 				{
 					nodeResult = "";
@@ -549,7 +549,7 @@ void handleGetWebProperty(WiFiClient client)
 				return;
 			}
 			/*
-			if ((configProperties.length() == 0) || (configProperties.equals(WrongPropertyName)))
+			if ((configProperties.length() == 0) || (configProperties.equals(WRONG_PROPERTY_NAME)))
 			{
 				configProperties = "wrong web property: " + arg[0);
 				send(404, "text/html", configProperties);
@@ -651,7 +651,7 @@ void handleGetDriverProperty(WiFiClient client)
 			String driverProp = driversGetDriverProperty(arg[0], decode(arg[1]));
 			if (driverProp.length() == 0) //then try get this property from node
 			{
-				driverProp = nodeOnMessage(nodeGetTopic() + "/get" + decode(arg[1]), "", NoTransportMask);
+				driverProp = nodeOnMessage(nodeGetTopic() + "/get" + decode(arg[1]), "", NO_TRANSPORT_MASK);
 			}
 
 			if (driverProp.length() == 0)
@@ -659,12 +659,12 @@ void handleGetDriverProperty(WiFiClient client)
 				driverProp = "wrong driver id: " + arg[0] + " use GetDriversId API to get all drivers list";
 				send(404, "text/html", driverProp, client);
 			}
-			else if (driverProp.equals(NotAvailable))
+			else if (driverProp.equals(NOT_AVAILABLE))
 			{
 				driverProp = "driver property: " + arg[1] + " set as NOT Available";
 				send(404, "text/html", driverProp, client);
 			}
-			else if (driverProp.equals(WrongPropertyName))
+			else if (driverProp.equals(WRONG_PROPERTY_NAME))
 			{
 				driverProp = "driver property: " + arg[1] + " not exists";
 				send(404, "text/html", driverProp, client);
@@ -1229,7 +1229,7 @@ void HTTPSWebServerLoop()
 					}
 					else // currentLine.length() == 0 END OF HEADER RECIEVE
 					{
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 						debugOut("---", firstLine);
 #endif
@@ -1243,7 +1243,7 @@ void HTTPSWebServerLoop()
 							uri = uri.substring(0, uri.indexOf(" "));
 							if ((uri.length() == 0) || (uri.equals("/")))
 								uri = "/index.html";
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 							debugOut("-->", uri);
 #endif
@@ -1274,7 +1274,7 @@ void HTTPSWebServerLoop()
 							if (firstLine.indexOf("token=" + token) == -1)
 							{
 								//GET section
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 								debugOut("METHOD", method);
 #endif

@@ -59,12 +59,13 @@ OWLOS распространяется в надежде, что она буде
   Please NOTE: The class itself is never used as a driver class.
                                                                             (...One morning thick snow fell in Babylon...) */
 
-//#define DRIVER_MASK "BaseDriver"
+
 
 #define PIN0_INDEX 0
 #define PIN1_INDEX 1
 #define PIN2_INDEX 2
 #define PIN3_INDEX 3
+
 
 class BaseDriver
 {
@@ -93,7 +94,7 @@ public:
     void del();
 
     //Method begin(..) calls after(IF) transport is available and Unit "know" self and drivers ID's and Topic's (see: Main::Loop()->DriversBegin())
-    virtual bool begin(String _topic);
+    virtual bool begin(const String _topic);
 
     //The query() method calls from Main::Loop()->DriversLoop()->... and give the driver time quantum to check here physical part (get physical light power from LRS like sample)
     //the method work both with publish() method, but must call here "core section" more often as publish()
@@ -114,7 +115,7 @@ public:
     void subscribe();
 
     //This method works both with subscribe() method and receive all messages pushed to this driver subscribed topics
-    virtual String onMessage(String _topic, String _payload, int8_t transportMask);
+    virtual String onMessage(const String route, const String _payload, int8_t transportMask);
 
     //Available property GET<->SET wrappers
     int getAvailable();

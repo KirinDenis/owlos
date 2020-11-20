@@ -54,7 +54,7 @@ OWLOS распространяется в надежде, что она буде
 //вернет TRUE если DHT сенсор доступен
 bool DHTDriver::DHTsetup(int dhttype)
 {
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "setup");
 #endif
@@ -74,7 +74,7 @@ bool DHTDriver::DHTsetup(int dhttype)
 		dht->begin();
 		//пробуем прочесть значение температуры
 		float _temperature = dht->readTemperature();
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 		debugOut(id, "DHT temperature " + String(_temperature));
 #endif
@@ -154,7 +154,7 @@ bool DHTDriver::begin(String _topic)
 		if (DHTsetup(dhttype)) //пробуем подключится к DHT
 		{
 			available = true; //сенсор доступен
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 			debugOut(id, "Physical DHT sensor available");
 #endif
@@ -163,7 +163,7 @@ bool DHTDriver::begin(String _topic)
 		else
 		{
 			available = false; //сенсор не доступен
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 			debugOut(id, "Physical DHT sensor NOT available");
 #endif
@@ -172,7 +172,7 @@ bool DHTDriver::begin(String _topic)
 	}
 
 	trap = 0.1f;
-	setType(DHTDriverType);
+	setType(DHT_DRIVER_TYPE);
 	setAvailable(available); //сообщаем наверх о доступности сенсора
 	return available;
 }
@@ -228,7 +228,7 @@ bool DHTDriver::query()
 	return false;
 }
 
-//сборщик свойств драйвера, по этим свойствам строится карта RESTful API и MQTT подписки
+//сборщик свойств драйвера, по этим свойствам строится карта HTTPServer API и MQTT подписки
 String DHTDriver::getAllProperties()
 {
 	return BaseDriver::getAllProperties() +
@@ -262,11 +262,11 @@ bool DHTDriver::publish()
 	}
 	return false;
 }
-//опрос свойств драйвера для чтения записи от RESTful или MQTT
+//опрос свойств драйвера для чтения записи от HTTPServer или MQTT
 String DHTDriver::onMessage(String route, String _payload, int8_t transportMask)
 {
 	String result = BaseDriver::onMessage(route, _payload, transportMask);
-	if (!result.equals(WrongPropertyName))
+	if (!result.equals(WRONG_PROPERTY_NAME))
 		return result;
 
 	if (matchRoute(route, topic, "/getdhttype"))
@@ -331,7 +331,7 @@ int DHTDriver::getDHTType()
 	{
 		dhttype = filesReadInt(id + ".dhttype");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "dhttype=" + String(dhttype));
 #endif
@@ -367,7 +367,7 @@ bool DHTDriver::getCelsius()
 	{
 		celsius = filesReadInt(id + ".celsius");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "celsius=" + String(celsius));
 #endif
@@ -412,7 +412,7 @@ String DHTDriver::getTemperature()
 	{
 		setAvailable(false);
 		temperature = "nan";
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 		debugOut(id, "DHT object not ready");
 #endif
@@ -426,7 +426,7 @@ String DHTDriver::getTemperature()
 		//если сенсор не доступем
 		setAvailable(false);
 		temperature = "nan";
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 		debugOut(id, "Going to NOT available now, check sensor");
 #endif
@@ -436,7 +436,7 @@ String DHTDriver::getTemperature()
 	{
 		temperature = String(_temperature);
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "temperature=" + temperature);
 #endif
@@ -451,7 +451,7 @@ String DHTDriver::getHumidity()
 	{
 		setAvailable(false);
 		humidity = "nan";
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 		debugOut(id, "DHT object not ready");
 #endif
@@ -464,7 +464,7 @@ String DHTDriver::getHumidity()
 	{
 		setAvailable(false);
 		humidity = "nan";
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 		debugOut(id, "Going to NOT available now, check sensor");
 #endif
@@ -474,7 +474,7 @@ String DHTDriver::getHumidity()
 	{
 		humidity = String(_humidity);
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "humidity=" + humidity);
 #endif
@@ -489,7 +489,7 @@ String DHTDriver::getHeatIndex()
 	{
 		setAvailable(false);
 		heatIndex = "nan";
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 		debugOut(id, "DHT object not ready");
 #endif
@@ -502,7 +502,7 @@ String DHTDriver::getHeatIndex()
 	{
 		setAvailable(false);
 		heatIndex = "nan";
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 		debugOut(id, "Going to NOT available now, check sensor");
 #endif
@@ -512,7 +512,7 @@ String DHTDriver::getHeatIndex()
 	{
 		heatIndex = String(_heatIndex);
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
 #ifdef DEBUG
 	debugOut(id, "humidity=" + humidity);
 #endif

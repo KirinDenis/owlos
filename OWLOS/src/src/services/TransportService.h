@@ -80,7 +80,7 @@ ESP8266WiFiMulti transportGetWifiMulti();
 #endif
 #endif
 
-#ifdef USE_ARDUINO_BOARDS
+#if defined(USE_ARDUINO_BOARDS) || !defined(USE_ESP_DRIVER)
 bool transportBegin();
 bool transportAvailable();
 void transportLoop();

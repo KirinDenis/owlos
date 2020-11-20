@@ -44,12 +44,10 @@ OWLOS распространяется в надежде, что она буде
 #define CONFIG_H
 
 
-
 #define USE_ESP_BOARDS
     #ifdef USE_ESP_BOARDS
-       
-        #include <core_version.h>
-        #define USE_ESP_DRIVER
+        #include <core_version.h>               
+          #define USE_ESP_DRIVER
             #ifdef USE_ESP_DRIVER
 
                 // ВАЖНО:
@@ -88,7 +86,7 @@ OWLOS распространяется в надежде, что она буде
                 #define DEFAULT_WIFI_ACCESS_POINT_IP  "192.168.4.1"         //файл /owlnode.wifiaccesspointip
 
                 //Включает/Выключает (1/0) WiFi режим станции (подключается к указаной WiFi сети (точки доступа))
-                #define DEFAULT_WIFI_STATION_AVAILABLE 1
+                #define DEFAULT_WIFI_STATION_AVAILABLE 0
 
                 //Название подключаемой точки доступа (WiFi сети)
                 //При запуске OWLOS сделает 10 попыток подключится к DEFAULT_WIFI_STATION_SSID сети, в случае неудачи 
@@ -97,16 +95,16 @@ OWLOS распространяется в надежде, что она буде
                 //OWLOS будет делать попытки соединения постоянно, до перезагрузки. 
                 //Такой способ страхует от неправильного указания названия точки доступа - дело в том что процесс подключения
                 //занимает очень много ресурсов и делает устройство OWLOS медленным. 
-                #define DEFAULT_WIFI_STATION_SSID "Palata#13"
+                #define DEFAULT_WIFI_STATION_SSID "" //Palata#13
 
                 //Пароль подключаемой точки доступа. 
-                #define DEFAULT_WIFI_STATION_PASSWORD "qweasdzxc1234"
+                #define DEFAULT_WIFI_STATION_PASSWORD "" //qweasdzxc1234
 
                 //Название этого устройсва с OWLOS для формирования Topic (уникального пути к устройству в сети)
                 #define DEFAULT_ID "owlnode"
 
                 //Topic - путь к устройству в сети по умолчанию
-                #define DEFAULT_TOPIC "world0/area1/front1/room1/"
+                #define DEFAULT_TOPIC "owlos/"
 
                 //Включает в сборку OWLOS HTTPS Server (обратите внимание на необходимость перегенерации сертификата)
                 //#define USE_HTTPS_SERVER
@@ -114,7 +112,7 @@ OWLOS распространяется в надежде, что она буде
                 //Включает в сборку OWLOS HTTP Server 
                 #define USE_HTTP_SERVER  
 
-                #define USE_HTTP_CLIENT
+                //#define USE_HTTP_CLIENT
 
                 //Включает поиск и установку обновлений OWLOS в сети Internet
                 //Новые версии готовых прошивок находятся здесь: https://github.com/KirinDenis/owlos/tree/master/OWLOS
@@ -123,12 +121,12 @@ OWLOS распространяется в надежде, что она буде
                 //#define USE_UPDATE_SERVICE
 
                 //Включает OTA (Over The Air) возможность загружать новые прошивки по локальной WiFi сети (без использования UART)
-                #define USE_OTA_SERVICE
+                //#define USE_OTA_SERVICE
 
-#ifdef ARDUINO_ESP32_RELEASE_1_0_4       
+                #ifdef ARDUINO_ESP32_RELEASE_1_0_4       
                 //Включает в сборку MQTT клиент
-                #define USE_MQTT                
-#endif                
+                 #define USE_MQTT                
+                #endif                
             #endif
     #else
         #define USE_ARDUINO_BOARDS
@@ -149,16 +147,16 @@ OWLOS распространяется в надежде, что она буде
         #define USE_SENSOR_DRIVER
 
         //Драйвер цифровых серсоров температуры и влажности (Digital Humidity and Temperature) - DHT11, DTH22 и прочих
-        //#define USE_DHT_DRIVER
+       // #define USE_DHT_DRIVER
 
         //Драйвер I2C LCD дисплеев, поддерживает более одного дисплея на шине I2C
-       // #define USE_LCD_DRIVER
+        #define USE_LCD_DRIVER
 
         //Драйвер шаговых двигателей
-        #define USE_STEPPER_DRIVER
+        //#define USE_STEPPER_DRIVER
         
         //Драйвер запорных арматур (закрыть, открыть, положени)
-        #define USE_VALVE_DRIVER
+        //#define USE_VALVE_DRIVER
     #endif
 #endif
 

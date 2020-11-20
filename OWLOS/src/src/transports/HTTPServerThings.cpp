@@ -39,6 +39,9 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 #include "HTTPServerThings.h"
+
+#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)
+
 #ifdef USE_ESP_DRIVER
 
 #include "../drivers/ESPDriver.h"
@@ -120,13 +123,13 @@ static const char OWLOSLogo[] PROGMEM = "<font color='#62add0' size='2'><pre><co
 										"0000000000000               0000000000000\n"
 										"000000000010000000     000000010000000000\n"
 										"00000  10001  1000000000001  10001  10000\n"
-										"0000001   1001    101    0001   1000000\n"
-										"00 000001     100     001     100000 00\n"
-										"00  000 000       0001      000  00  00\n"
-										"00  000  0000              0000  00  00\n"
-										"00   00  00000           00000  00   00\n"
-										"00&  00    00000       00000    00  100\n"
-										"000     000  00000  00000  000     000\n"
+										" 0000001   1001    101    0001   1000000\n"
+										" 00 000001     100     001     100000 00\n"
+										" 00  000 000       0001      000  00  00\n"
+										" 00  000  0000              0000  00  00\n"
+										" 00   00  00000           00000  00   00\n"
+										" 00&  00    00000       00000    00  100\n"
+										" 000     000  00000  00000  000     000\n"
 										" 000001  100000000000000000001  10000\n"
 										"    000001 0000000 0000000  000000\n"
 										"        00000000       00000000\n"
@@ -145,27 +148,16 @@ static const char OWLOSCopyLeft[] PROGMEM = "&#x1F30D;<a href='https://github.co
 											"	Vladimir Kovalevich (covalevich@gmail.com)\n"
 											"	Denys Melnychuk (meldenvar@gmail.com)\n"
 											"	Denis Kirin (deniskirinacs@gmail.com)\n<br>"
-											"&#x1F4E1;RESTful API endpoints:\n";
+											"&#x1F4E1;HTTPServer API endpoints:\n";
 
 String GetNotFoundHTML()
 {
 
-	String helloString = FIRMWARE_VERSION; //nodeGetUnitId()
-	String acip = nodeGetWiFiAccessPointIP() + ":" + String(nodeGetRESTfulServerPort());
-	String ip = nodeGetWiFiIP() + ":" + String(nodeGetRESTfulServerPort());
-
-	return "<html><header><title>" + helloString + FPSTR("</title>"
-														 "<style>a{color: #3b99c4;text-decoration: none;} a:hover {text-decoration: underline;} a:active {text-decoration: underline;}table td, table td * {vertical-align: top;}</style></header>"
-														 "<body  bgcolor='#272B30'><font color='#272B30'><table><tr><td>") +
-		   OWLOSLogo + "</td><td><pre><code><span><font color='#89c2dc' size=4><br>"
-					   "&#x1F989;<b>" +
-		   helloString + "</b>\n" + OWLOSCopyLeft + "	for Palata#13 <a href='http://" + ip + "/getallnodeproperties' target='_blank'>http://" + ip + "/</a>\n"
-																																						"	for owlnodef9ab6224 <a href='http://" +
-		   acip + "/getallnodeproperties' target='_blank'>http://" + acip + "/</a>\n"
-																			"</span></code></pre>"
-																			"</font>"
-																			"</td>"
-																			"</tr> "
-																			"</table></body>";
+	return "<html><header><title>" + String(FIRMWARE_VERSION) + FPSTR("</title>"
+																	  "<style>a{color: #3b99c4;text-decoration: none;} a:hover {text-decoration: underline;} a:active {text-decoration: underline;}table td, table td * {vertical-align: top;}</style></header>"
+																	  "<body  bgcolor='#272B30'><font color='#272B30'><table><tr><td>") +
+		   OWLOSLogo + "</td><td><pre><code><span><font color='#89c2dc' size=4><br>&#x1F989;<b>" +
+		   FIRMWARE_VERSION + "</b>\n" + OWLOSCopyLeft + "</span></code></pre></font></td></tr></table></body>";
 }
+#endif
 #endif

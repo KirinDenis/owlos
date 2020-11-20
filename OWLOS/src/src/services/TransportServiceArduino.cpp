@@ -41,7 +41,7 @@ OWLOS распространяется в надежде, что она буде
 
 #include "TransportService.h"
 //Arduino ONLY --------------------------------------------------------------------------
-#ifdef USE_ARDUINO_BOARDS
+#if defined(USE_ARDUINO_BOARDS) || !defined(USE_ESP_DRIVER)
 
 #ifdef USE_UART
 #include "../transports/UART.h"

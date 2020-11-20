@@ -55,7 +55,7 @@ String webGetWebConfig()
 		result = filesReadString("web.config");
 	}
 
-#ifdef DetailedDebug 
+#ifdef DETAILED_DEBUG 
 	#ifdef DEBUG
 debugOut(id, "config=" + result);
 #endif
@@ -65,7 +65,7 @@ debugOut(id, "config=" + result);
 
 bool webSetHead(String _webConfig)
 {
-#ifdef DetailedDebug 
+#ifdef DETAILED_DEBUG 
 	#ifdef DEBUG
 debugOut(id, "|<- inside change config=" + _webConfig);
 #endif
@@ -76,7 +76,7 @@ debugOut(id, "|<- inside change config=" + _webConfig);
 
 bool webSetBody(String _webConfig)
 {
-#ifdef DetailedDebug 
+#ifdef DETAILED_DEBUG 
 	#ifdef DEBUG
 debugOut(id, "|<- inside change config=" + _webConfig);
 #endif
@@ -87,7 +87,7 @@ debugOut(id, "|<- inside change config=" + _webConfig);
 
 bool webSetTail(String _webConfig)
 {
-#ifdef DetailedDebug 
+#ifdef DETAILED_DEBUG 
 	#ifdef DEBUG
 debugOut(id, "|<- inside change config=" + _webConfig);
 #endif
@@ -108,7 +108,7 @@ String webGetAllProperties()
 
 String webOnMessage(String _topic, String _payload)
 {
-	String result = WrongPropertyName;
+	String result = WRONG_PROPERTY_NAME;
 	if (String(nodeGetTopic() + "/getconfig").equals(_topic)) return webGetWebConfig();
 	else
 		if (String(nodeGetTopic() + "/sethead").equals(_topic)) return String(webSetHead(_payload));

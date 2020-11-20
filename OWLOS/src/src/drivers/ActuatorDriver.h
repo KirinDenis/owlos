@@ -72,7 +72,7 @@ public:
 	bool query();
 	String getAllProperties();
 	bool publish();
-	String onMessage(String _topic, String _payload, int8_t transportMask);
+	String onMessage(String route, String _payload, int8_t transportMask);
 
 	bool getAnalog();
 	bool setAnalog(bool _analog, bool doEvent);

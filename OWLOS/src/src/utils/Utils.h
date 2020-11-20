@@ -46,59 +46,55 @@ OWLOS распространяется в надежде, что она буде
 //#define SERIAL_COLORIZED_OUTPUT
 //#define DEBUG
 #ifdef DEBUG
-//#define DetailedDebug
+	#define DETAILED_DEBUG
 #endif
 
-
-#define WriteDebugLogs false
-#define LogFilesSize 1024 * 10
-#define LogFile1 "log1"
-#define LogFile2 "log2"
+#define WRITE_DEBUG_LOG_FILES false
+#define DEBUG_LOG_FILES_SIZE 10240L
+#define DEBUG_LOG_FILE1_NAME "log1"
+#define DEBUG_LOG_FILE2_NAME "log2"
 #define PORTSPEED 115200
 #define ONETENTHOFSECOND 100L
+#define ONEHUNDREDTH 10L
 #define ONESECOND 1000L
 #define TENSECOND 10000L
 #define ONEMINUTE 60000L
 
-#define PayloadBufferSize 255
-
-#define HTTPServerDefaultPort 8080
-
-#define TestDriverType 0
-#define DHTDriverType 1
-#define Light 2
-#define Smoke 3
-#define Motion 4
-#define Sensor 5
-#define Stepper 6
-#define LCD 7
-#define Actuator 8
-#define Opto 9
-#define Valve 10
-#define WiFiType 11
-#define NetworkType 12
-#define ESPType 13
-#define Config 14
-
 //Transport masks
-#define NoTransportMask 0b00000000
-#define MQTTMask 0b00000001
-#define RESTfulClientMask 0b00000010
-#define GSMMask 0b00000100
-#define RxTxMask 0b00001000 //debug is transport by this flag
+#define NO_TRANSPORT_MASK 0b00000000
+#define MQTT_TRANSPORT_MASK 0b00000001
+#define RESTFUL_TRANSPORT_MASK 0b00000010
+#define GSM_TRANSPORT_MASK 0b00000100
+#define UART_TRANSPORT_MASK 0b00001000 //debug is transport by this flag
 
 //Not available selector
-#define NotAvailable "nan"
-#define WrongPropertyName "Drivers: wrong property name"
-#define WrongDriverName "Drivers: wrong driver name"
-#define WrongNodePropertyName "Node: wrong node property name"
+#define NOT_AVAILABLE F("nan")
+#define WRONG_PROPERTY_NAME F("Drivers: wrong property name")
+#define WRONG_DRIVER_NAME F("Drivers: wrong driver name")
+#define WRONG_NODE_PROPERTY_NAME F("Node: wrong node property name")
+
+#define TEST_DRIVER_TYPE 0
+#define DHT_DRIVER_TYPE 1
+#define LIGHT_DRIVER_TYPE 2
+#define SMOKE_DRIVER_TYPE 3
+#define MOTION_DRIVER_TYPE 4
+#define SENSOR_DRIVER_TYPE 5
+#define STEPPER_DRIVER_TYPE 6
+#define LCD_DRIVER_TYPE 7
+#define ACTUATOR_DRIVER_TYPE 8
+#define OPTO_DRIVER_TYPE 9
+#define VALVE_DRIVER_TYPE 10
+#define WIFI_DRIVER_TYPE 11
+#define NETWORK_DRIVER_TYPE 12
+#define ESP_DRIVER_TYPE 13
+#define CONFIG_DRIVER_TYPE 14
 
 char *stringToChar(String src);
 #ifdef DEBUG
-void debugOut(String tag, String text);
+void debugOut(const String &tag, const String &text);
 #endif
 void writeDebugLogFile(String fileName, int fileSize, String tag, String text);
 bool matchRoute(const char *route, const char *topic, const char *path);
-bool matchRoute(String &route, String &topic, const char *path);
+bool matchRoute(const String &route, const String &topic, const char *path);
 
 #endif
