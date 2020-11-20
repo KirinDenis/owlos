@@ -78,6 +78,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "openssl", "openssl", "{5025
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6C1C1756-D7E4-4399-AF22-7D43AAE2F9E7}"
 	ProjectSection(SolutionItems) = preProject
+		OWLOS\src\src\config.h = OWLOS\src\src\config.h
 		OWLOS\src\Kernel.cpp = OWLOS\src\Kernel.cpp
 		OWLOS\src\Kernel.h = OWLOS\src\Kernel.h
 	EndProjectSection
