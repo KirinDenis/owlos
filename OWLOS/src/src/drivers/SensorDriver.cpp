@@ -51,16 +51,12 @@ bool SensorDriver::init()
 	DriverPin *driverPin = getDriverPinByDriverId(id, PIN0_INDEX); //командный пин "закрыть"
 	if (driverPin != nullptr)
 	{
-		//debugOut("PIN MODE 111", setDriverPinMode(id, PIN0_INDEX, INPUT));
-		//debugOut("PIN MODE 111", setDriverPinMode(id, PIN0_INDEX, ANALOG_INPUT));
-		
 		//TODO: INPUT_PULLUP/INPUT_PULLDOWN
 
 		setAnalog(getPinByName(driverPin->name)->pinTypes & ANALOG_I_MASK, false);
 
-
 		if ((setDriverPinMode(id, PIN0_INDEX, INPUT).length() == 0) || (analog))
-		{			
+		{
 			if (getData() != -1)
 			{
 
@@ -75,7 +71,7 @@ bool SensorDriver::begin(String _topic)
 {
 	BaseDriver::begin(_topic);
 	available = true;
-	setType(Sensor);
+	setType(SENSOR_DRIVER_TYPE);
 	setAvailable(available);
 	return available;
 }
@@ -133,11 +129,10 @@ bool SensorDriver::query()
 
 String SensorDriver::getAllProperties()
 {
-	String result = BaseDriver::getAllProperties();
-	result += "analog=" + String(analog) + "//br\n";
-	result += "data=" + String(data) + "//ris\n";
-
-	return result;
+	return BaseDriver::getAllProperties() +
+		   "analog=" + String(analog) + "//br\n"
+										"data=" +
+		   String(data) + "//ris\n";
 }
 
 bool SensorDriver::publish()
@@ -150,19 +145,19 @@ bool SensorDriver::publish()
 	return false;
 };
 
-String SensorDriver::onMessage(String _topic, String _payload, int8_t transportMask)
+String SensorDriver::onMessage(String route, String _payload, int8_t transportMask)
 {
-	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
-	if (!result.equals(WrongPropertyName))
+	String result = BaseDriver::onMessage(route, _payload, transportMask);
+	if (!result.equals(WRONG_PROPERTY_NAME))
 		return result;
 
-	if (String(topic + "/getanalog").equals(_topic))
+	if (matchRoute(route, topic, "/getanalog"))
 	{
 		result = onGetProperty("analog", String(getAnalog()), transportMask);
 	}
 	else
 
-		if (String(topic + "/getdata").equals(_topic))
+		if (matchRoute(route, topic, "/getdata"))
 	{
 		result = onGetProperty("data", String(getData()), transportMask);
 	}
@@ -183,6 +178,19 @@ bool SensorDriver::getAnalog()
 bool SensorDriver::setAnalog(bool _analog, bool doEvent)
 {
 	analog = _analog;
+
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4
+	//TODO: Sensor Driver properties for control ESP32 Analog Input parameters
+	DriverPin *driverPin = getDriverPinByDriverId(id, PIN0_INDEX);
+	adcStart(driverPin->GPIONumber);
+	pinMode(driverPin->GPIONumber, INPUT);
+	analogSetAttenuation(ADC_11db);
+	analogSetWidth(12);
+	analogSetCycles(255);
+	analogSetSamples(1);
+	analogReadResolution(12);
+#endif
+
 	filesWriteInt(id + ".analog", analog);
 	if (doEvent)
 	{

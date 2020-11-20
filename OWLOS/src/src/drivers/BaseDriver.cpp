@@ -43,9 +43,8 @@ OWLOS распространяется в надежде, что она буде
 #ifdef USE_DRIVERS
 #include "../services/DriverService.h"
 
-
-  //init() is called before transport accessable, when ESP is Setupping()
-  //Drivers load default GPIO and other property values from Flash file system thanks to Init()
+//init() is called before transport accessable, when ESP is Setupping()
+//Drivers load default GPIO and other property values from Flash file system thanks to Init()
 bool BaseDriver::init(String _id)
 {
 	id = _id;
@@ -78,11 +77,13 @@ void BaseDriver::del()
 }
 
 //begin(..) is called after transport accessable when Unit knows its and drivers' IDs and Topics
-bool BaseDriver::begin(String _topic)
+bool BaseDriver::begin(const String _topic)
 {
 	topic = _topic + '/' + id;
-	#ifdef DetailedDebug 
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 	debugOut(id, "available with topic " + topic);
+#endif
 #endif
 
 	subscribe();
@@ -94,7 +95,8 @@ bool BaseDriver::query()
 {
 	if (available)
 	{
-		if (millis() >= lastQueryMillis + queryInterval) {
+		if (millis() >= lastQueryMillis + queryInterval)
+		{
 			lastQueryMillis = millis();
 			return true;
 		}
@@ -113,17 +115,19 @@ String BaseDriver::getAllProperties()
 	String pins = "";
 	int count = getDriverPinsCount(id);
 	for (int i = 0; i < count; i++)
-	{		
-		DriverPin * driverPin = getDriverPinByDriverId(id, i);
+	{
+		DriverPin *driverPin = getDriverPinByDriverId(id, i);
 		if (driverPin != nullptr)
 		{
 			pins += "pin" + String(i) + "=" + driverPin->name + "//s\n";
 			//pins += "pintype" + String(i) + "=" + driverPin->driverPinType  + "\n";
-		    pins += "pintype" + String(i) + "=" + decodePinTypes(driverPin->driverPinType) + "//r\n";
+			pins += "pintype" + String(i) + "=" + decodePinTypes(driverPin->driverPinType) + "//r\n";
 		}
 		else
 		{
+#ifdef DEBUG
 			debugOut("PIN", "NULL");
+#endif
 		}
 	}
 	//flags started with "//" chars at end of the string:
@@ -136,26 +140,33 @@ String BaseDriver::getAllProperties()
 	//if no type = string
 	//if not read only - write accessable
 	//this flags needed to UI and SDK builder - determinate API parameters types and SET API available
-	String result = "id=" + id + "//r\n";
-	result += pins;
-	result += "topic=" + topic + "//r\n";
-	result += "available=" + String(available) + "//bs\n";
-	result += "type=" + String(type) + "//r\n";
-	result += "trap=" + String(trap) + "//fs\n";
-	result += "lastquerymillis=" + String(lastQueryMillis) + "//ir\n";
-	result += "lastpublishmillis=" + String(lastPublishMillis) + "//ir\n";
-	result += "queryinterval=" + String(queryInterval) + "//i\n";
-	result += "publishinterval=" + String(publishInterval) + "//i\n";
-	result += "historydata=" + getHistoryData() + "//r\n";
-	result += "historyfile=//r\n";	
-	return result;
+	return "id=" + id + "//r\n" + pins +
+		   "topic=" + topic + "//r\n"
+							  "available=" +
+		   String(available) + "//bs\n"
+							   "type=" +
+		   String(type) + "//r\n"
+						  "trap=" +
+		   String(trap) + "//fs\n"
+						  "lastquerymillis=" +
+		   String(lastQueryMillis) + "//ir\n"
+									 "lastpublishmillis=" +
+		   String(lastPublishMillis) + "//ir\n"
+									   "queryinterval=" +
+		   String(queryInterval) + "//i\n"
+								   "publishinterval=" +
+		   String(publishInterval) + "//i\n"
+									 "historydata=" +
+		   getHistoryData() + "//r\n"
+							  "historyfile=//r\n";
 }
 
 bool BaseDriver::publish()
 {
 	if (available)
 	{
-		if (millis() >= lastPublishMillis + publishInterval) {
+		if (millis() >= lastPublishMillis + publishInterval)
+		{
 			lastPublishMillis = millis();
 			return true;
 		}
@@ -171,16 +182,16 @@ void BaseDriver::subscribe()
 
 int BaseDriver::parsePinNumber(String _topic, String getPinStr)
 {
-	return atoi(_topic.substring(_topic.indexOf(topic +  getPinStr) + String(topic + getPinStr).length()).c_str());
+	return atoi(_topic.substring(_topic.indexOf(topic + getPinStr) + String(topic + getPinStr).length()).c_str());
 }
 
-String BaseDriver::onMessage(String _topic, String _payload, int8_t transportMask)
+String BaseDriver::onMessage(const String route, const String _payload, int8_t transportMask)
 {
-	if (_topic.indexOf(topic + "/getpintype") == 0)
+	if (route.indexOf(topic + "/getpintype") == 0)
 	{
-		int pinIndex = parsePinNumber(_topic, "/getpintype");
-		DriverPin * driverPin = getDriverPinByDriverId(id, pinIndex);
-		if (driverPin != nullptr)				
+		int pinIndex = parsePinNumber(route, "/getpintype");
+		DriverPin *driverPin = getDriverPinByDriverId(id, pinIndex);
+		if (driverPin != nullptr)
 		{
 			return String(driverPin->driverPinType);
 		}
@@ -189,149 +200,146 @@ String BaseDriver::onMessage(String _topic, String _payload, int8_t transportMas
 			return String(NO_MASK);
 		}
 	}
-	else	
-		if (_topic.indexOf(topic + "/getpin") == 0)
+	else if (route.indexOf(topic + "/getpin") == 0)
+	{
+		int pinIndex = parsePinNumber(route, "/getpin");
+		DriverPin *driverPin = getDriverPinByDriverId(id, pinIndex);
+		if (driverPin != nullptr)
 		{
-			int pinIndex = parsePinNumber(_topic, "/getpin");
-			DriverPin * driverPin = getDriverPinByDriverId(id, pinIndex);
-			if (driverPin != nullptr)
-			{
-				return String(driverPin->name);
-			}
-			else
-			{
-				return String(-1);
-			}
+			return String(driverPin->name);
 		}
 		else
-			if (_topic.indexOf(topic + "/setpin") == 0)
-			{				
-				int pinIndex = parsePinNumber(_topic, "/setpin");				
-				return  driversChangePin(_payload, id, pinIndex);
-			}
-	//ID --------------------------------------------------------------------
-	if (String(topic + "/getid").equals(_topic))
+		{
+			return String(-1);
+		}
+	}
+	else if (route.indexOf(topic + "/setpin") == 0)
+	{
+		int pinIndex = parsePinNumber(route, "/setpin");
+		return driversChangePin(_payload, id, pinIndex);
+	}
+	else if (matchRoute(route, topic, "/getid"))
 	{
 		return onGetProperty("id", id, transportMask);
 	}
-	else
-		if (String(topic + "/setid").equals(_topic))
-		{
-			return NotAvailable;
-		}
-		else
-			//Topic --------------------------------------------------------------------
-			if (String(topic + "/gettopic").equals(_topic))
-			{
-				return onGetProperty("topic", topic, transportMask);
-			}
-			else
-				if (String(topic + "/settopic").equals(_topic))
-				{
-					return NotAvailable;
-				}
-				else
-					//Available --------------------------------------------------------------------
-					if (String(topic + "/getavailable").equals(_topic))
-					{
-						return onGetProperty("available", String(getAvailable()), transportMask); //Available can be changed only inside Unit!
-					}
-					else
-						if (String(topic + "/setavailable").equals(_topic))
-						{
-							return String(setAvailable(atoi(_payload.c_str())));
-						}
-						else
-							//Type --------------------------------------------------------------------
-							if ((String(topic + "/gettype").equals(_topic)) || (String(topic + "/settype").equals(_topic)))
-							{
-								return onGetProperty("type", String(getType()), transportMask);
-							}
+	else if (matchRoute(route, topic, "/setid"))
+	{
+		return NOT_AVAILABLE;
+	}
+	//Topic --------------------------------------------------------------------
+	else if (matchRoute(route, topic, "/gettopic"))
+	{
+		return onGetProperty("topic", topic, transportMask);
+	}
+	else if (matchRoute(route, topic, "/settopic"))
+	{
+		return NOT_AVAILABLE;
+	}
+	//Available --------------------------------------------------------------------
+	else if (matchRoute(route, topic, "/getavailable"))
+	{
+		return onGetProperty("available", String(getAvailable()), transportMask); //Available can be changed only inside Unit!
+	}
+	else if (matchRoute(route, topic, "/setavailable"))
+	{
+		return String(setAvailable(atoi(_payload.c_str())));
+	}
+	//Type --------------------------------------------------------------------
+	else if ((matchRoute(route, topic, "/gettype")) || (matchRoute(route, topic, "/settype")))
+	{
+		return onGetProperty("type", String(getType()), transportMask);
+	}
 	//Trap ----------------------------------------------------------------------
-							else if (String(topic + "/gettrap").equals(_topic))
-							{
-								return onGetProperty("trap", String(getTrap()), transportMask);
-							}
-							else if (String(topic + "/settrap").equals(_topic))
-							{
-								return String(setTrap(atof(_payload.c_str())));
-							}
-							else if (String(topic + "/getlastquerymillis").equals(_topic))
-							{
-								return onGetProperty("lastquerymillis", String(lastQueryMillis), transportMask);
-							}
-							else if (String(topic + "/getlastpublishmillis").equals(_topic))
-							{
-								return onGetProperty("lastpublishmillis", String(lastPublishMillis), transportMask);
-							}
+	else if (matchRoute(route, topic, "/gettrap"))
+	{
+		return onGetProperty("trap", String(getTrap()), transportMask);
+	}
+	else if (matchRoute(route, topic, "/settrap"))
+	{
+		return String(setTrap(atof(_payload.c_str())));
+	}
+	else if (matchRoute(route, topic, "/getlastquerymillis"))
+	{
+		return onGetProperty("lastquerymillis", String(lastQueryMillis), transportMask);
+	}
+	else if (matchRoute(route, topic, "/getlastpublishmillis"))
+	{
+		return onGetProperty("lastpublishmillis", String(lastPublishMillis), transportMask);
+	}
 	//Query Interval -----------------------------------------------------------
-							else if (String(topic + "/getqueryinterval").equals(_topic))
-							{
-								return onGetProperty("queryinterval", String(getQueryInterval()), transportMask);
-							}
-							else if (String(topic + "/setqueryinterval").equals(_topic))
-							{
-								return String(setQueryInterval(atoi(_payload.c_str())));
-							}
+	else if (matchRoute(route, topic, "/getqueryinterval"))
+	{
+		return onGetProperty("queryinterval", String(getQueryInterval()), transportMask);
+	}
+	else if (matchRoute(route, topic, "/setqueryinterval"))
+	{
+		return String(setQueryInterval(atoi(_payload.c_str())));
+	}
 	//Publish Interval -----------------------------------------------------------
-							else if (String(topic + "/getpublishinterval").equals(_topic))
-							{
-								return onGetProperty("publishinterval", String(getPublishInterval()), transportMask);
-							}
-							else if (String(topic + "/setpublishinterval").equals(_topic))
-							{
-								return String(setPublishInterval(atoi(_payload.c_str())));
-							}
+	else if (matchRoute(route, topic, "/getpublishinterval"))
+	{
+		return onGetProperty("publishinterval", String(getPublishInterval()), transportMask);
+	}
+	else if (matchRoute(route, topic, "/setpublishinterval"))
+	{
+		return String(setPublishInterval(atoi(_payload.c_str())));
+	}
 
 	//History data -------------------------------------------------------------
-							else if (String(topic + "/gethistorydata").equals(_topic))
-							{
-								return onGetProperty("historydata", String(getHistoryData()), transportMask);
-							}
+	else if (matchRoute(route, topic, "/gethistorydata"))
+	{
+		return onGetProperty("historydata", String(getHistoryData()), transportMask);
+	}
 
 	//Read history file contents-------------------------------------------------------------
-							else if (String(topic + "/gethistoryfile").equals(_topic))
-							{
-								return onGetProperty("historyfile", String(readHistoryFile()), transportMask);
-							}
-	return WrongPropertyName;
+	else if (matchRoute(route, topic, "/gethistoryfile"))
+	{
+		return onGetProperty("historyfile", String(readHistoryFile()), transportMask);
+	}
+	return WRONG_PROPERTY_NAME;
 }
 
 //Called when client gets a property from network
 String BaseDriver::onGetProperty(String _property, String _payload, int8_t transportMask)
 {
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 	debugOut(id, "|-> get property " + _property + " = " + _payload);
 #endif
+#endif
 
-	if (transportMask && MQTTMask != 0)
+	if (transportMask && MQTT_TRANSPORT_MASK != 0)
 	{
-#ifdef USE_ESP_DRIVER		
+#ifdef USE_ESP_DRIVER
 		transportPublish(topic + "/" + _property, _payload);
-#endif		
+#endif
 	}
 	return _payload;
 }
 
-bool BaseDriver::onInsideChange(String _property, String _payload/*, int8_t transportMask*/)
+bool BaseDriver::onInsideChange(String _property, String _payload /*, int8_t transportMask*/)
 {
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 	debugOut(id, "|<- inside change " + _property + " = " + _payload);
 #endif
+#endif
 
-#ifdef USE_ESP_DRIVER		
+#ifdef USE_ESP_DRIVER
 	return transportPublish(topic + "/" + _property, _payload);
 #else
-	return true;	
-#endif			
+	return true;
+#endif
 
 	//FFR for mutliple transport
 	/*
 	bool result = true;
 	  #ifdef
-	  DetailedDebug debugOut(id, "|<- inside change " + _property + " = " +  _payload);
+	  DETAILED_DEBUG #ifdef DEBUG
+debugOut(id, "|<- inside change " + _property + " = " +  _payload);
+#endif
 	  #endif
-	if (transportMask && MQTTMask > 1)
+	if (transportMask && MQTT_TRANSPORT_MASK > 1)
 	{
 	   result = result & transportPublish(topic + "/" + _property, _payload);
 	}
@@ -345,8 +353,10 @@ int BaseDriver::getAvailable()
 	{
 		available = filesReadInt(id + ".available");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 	debugOut(id, "available=" + String(available));
+#endif
 #endif
 	return available;
 }
@@ -358,11 +368,12 @@ bool BaseDriver::setAvailable(int _available)
 	return onInsideChange("available", String(available));
 }
 
-
 int BaseDriver::getType()
 {
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 	debugOut(id, "type=" + type);
+#endif
 #endif
 	return type;
 }
@@ -380,8 +391,10 @@ float BaseDriver::getTrap()
 	{
 		trap = filesReadFloat(id + ".trap");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 	debugOut(id, "trap=" + String(trap));
+#endif
 #endif
 	return trap;
 }
@@ -399,8 +412,10 @@ int BaseDriver::getQueryInterval()
 	{
 		queryInterval = filesReadInt(id + ".queryinterval");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 	debugOut(id, "queryinterval=" + String(queryInterval));
+#endif
 #endif
 	return queryInterval;
 }
@@ -418,8 +433,10 @@ int BaseDriver::getPublishInterval()
 	{
 		publishInterval = filesReadInt(id + ".publishinterval");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 	debugOut(id, "publishinterval=" + String(publishInterval));
+#endif
 #endif
 	return publishInterval;
 }
@@ -434,7 +451,7 @@ bool BaseDriver::setPublishInterval(int _publishInterval)
 //HistoryData property GET<->SET wrappers
 String BaseDriver::getHistoryData()
 {
-	String	dataHistory = String(historyCount) + ";";
+	String dataHistory = String(historyCount) + ";";
 
 	for (int k = 0; k < historyCount; k++)
 	{
@@ -447,13 +464,15 @@ String BaseDriver::getHistoryData()
 bool BaseDriver::setHistoryData(float _historydata)
 {
 
-	if (historyCount < historySize) {
+	if (historyCount < historySize)
+	{
 		historyData[historyCount] = _historydata;
 		historyCount++;
 	}
 	else
 	{
-		for (int k = 1; k < historySize; k++) {
+		for (int k = 1; k < historySize; k++)
+		{
 			historyData[k - 1] = historyData[k];
 		}
 
@@ -478,14 +497,12 @@ String BaseDriver::readHistoryFile()
 	return result;
 }
 
-
 bool BaseDriver::writeHistoryFile(float _historydata)
 {
 
 	bool result = false;
 
 	String _historyfilename;
-
 
 	if (historyFileCount < historyFileWriteTime)
 	{
@@ -517,7 +534,6 @@ bool BaseDriver::writeHistoryFile(float _historydata)
 
 			//Put the current file to the end of array
 			historyFilesIndexes[filesIndexesSize - 1] = currentFile;
-
 		}
 
 		//delete file with oldest history
@@ -538,4 +554,3 @@ bool BaseDriver::writeHistoryFile(float _historydata)
 	return result;
 }
 #endif
-

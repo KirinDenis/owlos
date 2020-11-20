@@ -15,6 +15,10 @@
 #include <rom/rtc.h>
 #endif
 
+
+String nodeGetWiFiProperties();
+String wifiOnMessage(String route, String _payload, int8_t transportMask);
+
 int nodeGetWiFiAccessPointAvailable();
 bool nodeSetWiFiAccessPointAvailable(int _wifiaccesspointavailable);
 
@@ -43,7 +47,6 @@ bool nodeSetWiFiIP(String _wifiip);
 int32_t nodeGetWiFiRSSI();
 bool nodeSetWiFiRSSI(int _currentwifirssi);
 
-
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 WiFiMode_t nodeGetWiFiMode();
 bool nodeSetWiFiMode(WiFiMode_t _wifimode);
@@ -53,7 +56,6 @@ bool nodeSetWiFiMode(WiFiMode_t _wifimode);
 wifi_mode_t nodeGetWiFiMode();
 bool nodeSetWiFiMode(wifi_mode_t _wifimode);
 #endif
-
 
 String nodeGetAllWiFiModes();
 
@@ -78,9 +80,6 @@ int nodeGetWiFiIsDisconnected();
 int nodeSetWiFiIsDisconnected();
 
 String nodeGetConnectedWiFiSSID();
-String nodeGetWiFiProperties();
-String wifiOnMessage(String _topic, String _payload, int8_t transportMask);
-
 
 #endif
 #endif

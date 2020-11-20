@@ -64,8 +64,10 @@ void driversInit(String _topic)
 {
 	__topic = _topic;
 	initPins();
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 	debugOut("driverconfig", driversLoadFromConfig());
+#endif
 #else
 	driversLoadFromConfig();
 #endif
@@ -114,7 +116,7 @@ String driversGetAccessable()
 
 #ifdef USE_ACTUATOR_DRIVER
 	result += "name:ActuatorDriver\n";
-	result += "type=" + String(Actuator) + "\n";
+	result += "type=" + String(ACTUATOR_DRIVER_TYPE) + "\n";
 	result += "pinscount=" + String(ActuatorDriver::getPinsCount()) + "\n";
 	for (int i = 0; i < ActuatorDriver::getPinsCount(); i++)
 	{
@@ -125,7 +127,7 @@ String driversGetAccessable()
 
 #ifdef USE_SENSOR_DRIVER
 	result += "name:SensorDriver\n";
-	result += "type=" + String(Sensor) + "\n";
+	result += "type=" + String(SENSOR_DRIVER_TYPE) + "\n";
 	result += "pinscount=" + String(SensorDriver::getPinsCount()) + "\n";
 	for (int i = 0; i < SensorDriver::getPinsCount(); i++)
 	{
@@ -134,7 +136,7 @@ String driversGetAccessable()
 	}
 
 	result += "name:LightDriver\n";
-	result += "type=" + String(Sensor) + "\n";
+	result += "type=" + String(SENSOR_DRIVER_TYPE) + "\n";
 	result += "pinscount=" + String(SensorDriver::getPinsCount()) + "\n";
 	for (int i = 0; i < SensorDriver::getPinsCount(); i++)
 	{
@@ -143,7 +145,7 @@ String driversGetAccessable()
 	}
 
 	result += "name:SmokeDriver\n";
-	result += "type=" + String(Sensor) + "\n";
+	result += "type=" + String(SENSOR_DRIVER_TYPE) + "\n";
 	result += "pinscount=" + String(SensorDriver::getPinsCount()) + "\n";
 	for (int i = 0; i < SensorDriver::getPinsCount(); i++)
 	{
@@ -152,28 +154,28 @@ String driversGetAccessable()
 	}
 
 	result += "name:MotionDriver\n";
-	result += "type=" + String(Sensor) + "\n";
+	result += "type=" + String(SENSOR_DRIVER_TYPE) + "\n";
 	result += "pinscount=" + String(SensorDriver::getPinsCount()) + "\n";
 	for (int i = 0; i < SensorDriver::getPinsCount(); i++)
 	{
 		result += "pintype" + String(i) + "=" + SensorDriver::getPinType(i) + "\n";
 		result += "pintypedecoded" + String(i) + "=" + decodePinTypes(SensorDriver::getPinType(i)) + "\n";
 	}
-#endif	
+#endif
 #ifdef USE_LCD_DRIVER
 	result += "name:LCDDriver\n";
-	result += "type=" + String(LCD) + "\n";
+	result += "type=" + String(LCD_DRIVER_TYPE) + "\n";
 	result += "pinscount=" + String(LCDDriver::getPinsCount()) + "\n";
 	for (int i = 0; i < LCDDriver::getPinsCount(); i++)
 	{
 		result += "pintype" + String(i) + "=" + LCDDriver::getPinType(i) + "\n";
 		result += "pintypedecoded" + String(i) + "=" + decodePinTypes(LCDDriver::getPinType(i)) + "\n";
 	}
-#endif	
+#endif
 
 #ifdef USE_DHT_DRIVER
 	result += "name:DHTDriver\n";
-	result += "type=" + String(DHTDriverType) + "\n";
+	result += "type=" + String(DHT_DRIVER_TYPE) + "\n";
 	result += "pinscount=" + String(DHTDriver::getPinsCount()) + "\n";
 	for (int i = 0; i < DHTDriver::getPinsCount(); i++)
 	{
@@ -183,7 +185,7 @@ String driversGetAccessable()
 #endif
 #ifdef USE_STEPPER_DRIVER
 	result += "name:StepperDriver\n";
-	result += "type=" + String(Stepper) + "\n";
+	result += "type=" + String(STEPPER_DRIVER_TYPE) + "\n";
 	result += "pinscount=" + String(StepperDriver::getPinsCount()) + "\n";
 	for (int i = 0; i < StepperDriver::getPinsCount(); i++)
 	{
@@ -194,7 +196,7 @@ String driversGetAccessable()
 
 #ifdef USE_VALVE_DRIVER
 	result += "name:ValveDriver\n";
-	result += "type=" + String(Valve) + "\n";
+	result += "type=" + String(VALVE_DRIVER_TYPE) + "\n";
 	result += "pinscount=" + String(ValveDriver::getPinsCount()) + "\n";
 	for (int i = 0; i < ValveDriver::getPinsCount(); i++)
 	{
@@ -224,7 +226,7 @@ void driversCallback(String _topic, String _payload)
 	{
 		if (driversList[i] != nullptr)
 		{
-			driversList[i]->onMessage(_topic, _payload, MQTTMask);
+			driversList[i]->onMessage(_topic, _payload, MQTT_TRANSPORT_MASK);
 		}
 	}
 }
@@ -263,15 +265,17 @@ String driversGetDriverProperty(String id, String property)
 	if (baseDriver == NULL)
 		return "";
 
-	return baseDriver->onMessage(__topic + "/" + id + "/get" + property, "", NoTransportMask);
+	return baseDriver->onMessage(__topic + "/" + id + "/get" + property, "", NO_TRANSPORT_MASK);
 }
 
 String driversSetDriverProperty(String id, String property, String value)
 {
 	BaseDriver *baseDriver = driversGetDriver(id);
 	if (baseDriver == NULL)
-		return "";
-	String result = baseDriver->onMessage(__topic + "/" + id + "/set" + property, value, MQTTMask);
+	{
+		return WRONG_DRIVER_NAME;
+	}
+	String result = baseDriver->onMessage(__topic + "/" + id + "/set" + property, value, MQTT_TRANSPORT_MASK);
 	return result;
 }
 
@@ -287,8 +291,8 @@ String driversGetAllDriversProperties()
 {
 	String result = "";
 #ifdef USE_ESP_DRIVER
-    result = nodeGetAllProperties();
-#endif	
+	result = nodeGetAllProperties();
+#endif
 	for (int i = 0; i < DRIVERS_LIMIT; i++)
 	{
 		if (driversList[i] != nullptr)
@@ -342,28 +346,36 @@ bool driversSaveList()
 
 String driversLoadFromConfig()
 {
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 	debugOut("driverconfig", "load");
+#endif
 #endif
 	String driverList = filesReadString("driverslist");
 	if (driverList.length() == 0)
+	{
 		return "bad driver list counfig file";
+	}
 
 	String result = String();
 
 	int linePos = 0;
 	String line;
 
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 	debugOut("driverconfig", "do parse");
+#endif
 #endif
 
 	while ((linePos = driverList.indexOf(lineDelimiter)) != -1)
 	{
 
 		line = driverList.substring(0, linePos);
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 		debugOut("driverconfig_load line_", line);
+#endif
 #endif
 		int valuePos = 0;
 		int valueCount = 0;
@@ -402,9 +414,13 @@ String driversLoadFromConfig()
 //External driver Service API -------------------------------------------------
 String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 {
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 	debugOut("driversadd_id", id);
+#endif
+#ifdef DEBUG
 	debugOut("driversadd_pins", pins);
+#endif
 #endif
 	int driversCount = driversGetCount();
 	if (driversCount >= DRIVERS_LIMIT)
@@ -427,13 +443,14 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 		_pins[pinCount] = pins.substring(0, pinPos);
 		if (_pins[pinCount].length() == 0)
 			break;
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 		debugOut("pin", _pins[pinCount]);
+#endif
 #endif
 		pinCount++;
 		pins.remove(0, pinPos + 1);
 	}
-
 
 	id.toLowerCase();
 
@@ -461,10 +478,12 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 		return "no space for locate new driver";
 	}
 #ifdef USE_ACTUATOR_DRIVER
-	if (type == Actuator)
+	if (type == ACTUATOR_DRIVER_TYPE)
 	{
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 		debugOut("pin", String(pinCount));
+#endif
 #endif
 		if (pinCount != ActuatorDriver::getPinsCount())
 		{
@@ -473,8 +492,10 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 
 		result = checkDriverPin(_pins[PIN0_INDEX], ActuatorDriver::getPinType(PIN0_INDEX)) + checkDriverPin(_pins[PIN1_INDEX], ActuatorDriver::getPinType(PIN1_INDEX));
 
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 		debugOut("DCResult", result);
+#endif
 #endif
 
 		if (result.length() != 0)
@@ -490,14 +511,16 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 		actuatorDriver->init();
 		driversList[freeIndex] = actuatorDriver;
 	}
-	else 
-#endif	
+	else
+#endif
 
 #ifdef USE_SENSOR_DRIVER
-if ((type == Sensor) || (type == Light) || (type == Smoke) || (type == Motion))
+		if ((type == SENSOR_DRIVER_TYPE) || (type == LIGHT_DRIVER_TYPE) || (type == SMOKE_DRIVER_TYPE) || (type == MOTION_DRIVER_TYPE))
 	{
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 		debugOut("pin", String(pinCount));
+#endif
 #endif
 		if (pinCount != SensorDriver::getPinsCount())
 		{
@@ -506,8 +529,10 @@ if ((type == Sensor) || (type == Light) || (type == Smoke) || (type == Motion))
 
 		result = checkDriverPin(_pins[PIN0_INDEX], SensorDriver::getPinType(PIN0_INDEX)) + checkDriverPin(_pins[PIN1_INDEX], SensorDriver::getPinType(PIN1_INDEX)) + checkDriverPin(_pins[PIN2_INDEX], SensorDriver::getPinType(PIN2_INDEX));
 
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 		debugOut("DCResult", result);
+#endif
 #endif
 
 		if (result.length() != 0)
@@ -524,12 +549,14 @@ if ((type == Sensor) || (type == Light) || (type == Smoke) || (type == Motion))
 		driversList[freeIndex] = sensorDriver;
 	}
 	else
-#endif	
+#endif
 #ifdef USE_LCD_DRIVER
-	if (type == LCD)
+		if (type == LCD_DRIVER_TYPE)
 	{
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 		debugOut("pin", String(pinCount));
+#endif
 #endif
 		if (pinCount != LCDDriver::getPinsCount())
 		{
@@ -554,11 +581,13 @@ if ((type == Sensor) || (type == Light) || (type == Smoke) || (type == Motion))
 	else
 #endif
 
-#ifdef USE_DHT_DRIVER	
-	if (type == DHTDriverType)
+#ifdef USE_DHT_DRIVER
+		if (type == DHT_DRIVER_TYPE)
 	{
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 		debugOut("pin", String(pinCount));
+#endif
 #endif
 		if (pinCount != DHTDriver::getPinsCount())
 		{
@@ -581,17 +610,21 @@ if ((type == Sensor) || (type == Light) || (type == Smoke) || (type == Motion))
 		driversList[freeIndex] = dhtDriver;
 	}
 	else
-#endif	
+#endif
 	{
 		return "not supported";
 	}
 
 #ifdef USE_ESP_DRIVER
-	//if driver added at RUNTIME		
-		driversList[freeIndex]->begin(nodeGetTopic());
-#endif		
-#ifdef DetailedDebug
+	//if driver added at RUNTIME
+	driversList[freeIndex]->begin(nodeGetTopic());
+#else 	
+    driversList[freeIndex]->begin("owlosnode");
+#endif
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 	debugOut("driversadd", "OK");
+#endif
 #endif
 
 	return "1";
@@ -623,8 +656,10 @@ String driversChangePin(String pinName, String driverId, int driverPinIndex)
 
 String driversDelete(String id)
 {
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 	debugOut("driversdelete", id);
+#endif
 #endif
 	bool found = false;
 	String driverlist = "";

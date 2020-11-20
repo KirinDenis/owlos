@@ -71,10 +71,10 @@ bool ActuatorDriver::init()
 }
 
 bool ActuatorDriver::begin(String _topic)
-{
-	BaseDriver::begin(_topic);
-	setType(Actuator);
-	setAvailable(available);
+{	
+	BaseDriver::begin(_topic);	
+	setType(ACTUATOR_DRIVER_TYPE);
+	setAvailable(available);	
 	return available;
 }
 
@@ -95,13 +95,16 @@ bool ActuatorDriver::query()
 
 String ActuatorDriver::getAllProperties()
 {
-	String result = BaseDriver::getAllProperties();
-	result += "analog=" + String(analog) + "//br\n";
-	result += "data=" + String(data) + "//is\n";
-	result += "pwm=" + String(pwm) + "//b\n";
-	result += "pwmdelay=" + String(pwmdelay) + "//i\n";
-	result += "invert=" + String(invert) + "//b\n";
-	return result;
+	return BaseDriver::getAllProperties() +
+		   "analog=" + String(analog) + "//br\n"
+										"data=" +
+		   String(data) + "//is\n"
+						  "pwm=" +
+		   String(pwm) + "//b\n"
+						 "pwmdelay=" +
+		   String(pwmdelay) + "//i\n"
+							  "invert=" +
+		   String(invert) + "//b\n";
 }
 
 bool ActuatorDriver::publish()
@@ -114,45 +117,45 @@ bool ActuatorDriver::publish()
 	return false;
 };
 
-String ActuatorDriver::onMessage(String _topic, String _payload, int8_t transportMask)
+String ActuatorDriver::onMessage(String route, String _payload, int8_t transportMask)
 {
-	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
-	if (!result.equals(WrongPropertyName))
+	String result = BaseDriver::onMessage(route, _payload, transportMask);
+	if (!result.equals(WRONG_PROPERTY_NAME))
 		return result;
 
-	if (String(topic + "/getanalog").equals(_topic))
+	if (matchRoute(route, topic, "/getanalog"))
 	{
 		result = onGetProperty("analog", String(getAnalog()), transportMask);
 	}
-	else if (String(topic + "/getdata").equals(_topic))
+	else if (matchRoute(route, topic, "/getdata"))
 	{
 		result = onGetProperty("data", String(getData()), transportMask);
 	}
-	else if (String(topic + "/setdata").equals(_topic))
+	else if (matchRoute(route, topic, "/setdata"))
 	{
 		result = String(setData(atoi(_payload.c_str()), true));
 	}
-	else if (String(topic + "/getpwm").equals(_topic))
+	else if (matchRoute(route, topic, "/getpwm"))
 	{
 		result = onGetProperty("pwm", String(getPWM()), transportMask);
 	}
-	else if (String(topic + "/setpwm").equals(_topic))
+	else if (matchRoute(route, topic, "/setpwm"))
 	{
 		result = String(setPWM(atoi(_payload.c_str()), true));
 	}
-	else if (String(topic + "/getpwmdelay").equals(_topic))
+	else if (matchRoute(route, topic, "/getpwmdelay"))
 	{
 		result = onGetProperty("pwmdelay", String(getPWMDelay()), transportMask);
 	}
-	else if (String(topic + "/setpwmdelay").equals(_topic))
+	else if (matchRoute(route, topic, "/setpwmdelay"))
 	{
 		result = String(setPWMDelay(atoi(_payload.c_str()), true));
 	}
-	else if (String(topic + "/getinvert").equals(_topic))
+	else if (matchRoute(route, topic, "/getinvert"))
 	{
 		result = onGetProperty("invert", String(getInvert()), transportMask);
 	}
-	else if (String(topic + "/setinvert").equals(_topic))
+	else if (matchRoute(route, topic, "/setinvert"))
 	{
 		result = String(setInvert(atoi(_payload.c_str()), true));
 	}
@@ -167,8 +170,10 @@ bool ActuatorDriver::getAnalog()
 	{
 		data = filesReadInt(id + ".analog");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 	debugOut(id, "analog=" + String(data));
+#endif
 #endif
 
 	return data;
@@ -176,7 +181,10 @@ bool ActuatorDriver::getAnalog()
 
 bool ActuatorDriver::setAnalog(bool _analog, bool doEvent)
 {
-	//see init() if target pin is not analog the mask set _analog to "0" false
+//see init() if target pin is not analog the mask set _analog to "0" false
+#ifdef DEBUG
+	debugOut("ANALOG", String(_analog));
+#endif
 	analog = _analog;
 	filesWriteInt(id + ".analog", analog);
 	if (doEvent)
@@ -204,44 +212,46 @@ int ActuatorDriver::getData()
 
 bool ActuatorDriver::setData(int _data, bool doEvent)
 {
-	
+
 	int storeData = data;
 
 	data = _data;
 
-    if (invert)
+	if (invert)
 	{
-		if (analog || pwm)	
+		if (analog || pwm)
 		{
 			_data = 1024 - _data;
 			storeData = 1024 - storeData;
-		}	
-		else 
+		}
+		else
 		{
-			_data = 1 - _data;	
+			_data = 1 - _data;
 			storeData = 1 - storeData;
 		}
 	}
 
-    if ((pwm) && (pwmdelay > 0))
+	if ((pwm) && (pwmdelay > 0))
 	{
-		//if ESP OPTION with  interval = 0 do not do this 
-		if (storeData > _data) 
+		//if ESP OPTION with  interval = 0 do not do this
+		if (storeData > _data)
 		{
-			for (int i=storeData; i > _data; i--) 
+			for (int i = storeData; i > _data; i--)
 			{
-				if (_driverPinWrite(id, PIN0_INDEX, i, pwm).length() != 0) break;
+				if (_driverPinWrite(id, PIN0_INDEX, i, pwm).length() != 0)
+					break;
 				delay(pwmdelay); //TODO ESP OPTION with this interval
-				yield(); //throw a bone to watch dog
+				yield();		 //throw a bone to watch dog
 			}
 		}
-		else 
+		else
 		{
-			for (int i=storeData; i < _data; i++) 
+			for (int i = storeData; i < _data; i++)
 			{
-				if (_driverPinWrite(id, PIN0_INDEX, i, pwm).length() != 0) break;
+				if (_driverPinWrite(id, PIN0_INDEX, i, pwm).length() != 0)
+					break;
 				delay(pwmdelay); //TODO ESP OPTION with this interval
-				yield(); //throw a bone to watch dog
+				yield();		 //throw a bone to watch dog
 			}
 		}
 	}
@@ -284,7 +294,7 @@ bool ActuatorDriver::setPWM(bool _pwm, bool doEvent)
 	{
 		return onInsideChange("pwm", String(pwm));
 	}
-	return true;	
+	return true;
 };
 
 //PWM Delay -------------------------------------------
@@ -315,11 +325,10 @@ bool ActuatorDriver::setPWMDelay(int _pwmdelay, bool doEvent)
 	return true;
 };
 
-
 //Invert -------------------------------------------
 bool ActuatorDriver::getInvert()
 {
-	invert = false; 
+	invert = false;
 	if (filesExists(id + ".invert"))
 	{
 		invert = filesReadInt(id + ".invert");

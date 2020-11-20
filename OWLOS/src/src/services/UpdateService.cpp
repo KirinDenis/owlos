@@ -53,20 +53,18 @@ OWLOS распространяется в надежде, что она буде
 HTTPUpdate ESPhttpUpdate;
 #endif
 
-
 #include "../drivers/ESPDriver.h"
 #include "../transports/HTTPSWebServer.h"
 #include "../transports/HTTPWebClient.h"
 #include "../services/FileService.h"
-
 
 #define updateid "update"
 
 #define UpdateInfoFile "updateinfo.html"
 
 #define UpdateNotBegin -2
-#define UpdateNotAvailable -1
-#define UpdateServerNotAvailable 0
+#define UpdateNOT_AVAILABLE -1
+#define UpdateServerNOT_AVAILABLE 0
 #define UpdateOnlyUI 1
 #define UpdateBoth 2
 
@@ -104,12 +102,11 @@ String updateGetUpdateInfo()
 	return updateInfo;
 }
 
-
 int updateGetUpdatePossible()
 {
 	if (nodeGetUpdateAvailable() != 1)
 	{
-		updatePossible = UpdateNotAvailable;
+		updatePossible = UpdateNOT_AVAILABLE;
 	}
 	else
 	{
@@ -119,7 +116,7 @@ int updateGetUpdatePossible()
 			skipLoopCount = 0;
 			if (!downloadFile(UpdateInfoFile, nodeGetUpdateHost() + UpdateInfoFile))
 			{
-				updatePossible = UpdateServerNotAvailable;
+				updatePossible = UpdateServerNOT_AVAILABLE;
 			}
 			else
 			{
@@ -130,15 +127,17 @@ int updateGetUpdatePossible()
 					updatePossible = UpdateBoth;
 				}
 				else
-				{ //software or other boot				
+				{ //software or other boot
 					updatePossible = UpdateOnlyUI;
 				}
 			}
 		}
 	}
 
-#ifdef DetailedDebug 
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 	debugOut(updateid, "check update possible result: " + String(updatePossible));
+#endif
 #endif
 	return updatePossible;
 }
@@ -166,71 +165,71 @@ String updateUI()
 {
 	if (updateGetUpdatePossible() > 0)
 	{
-		updateLog = "update UI started\n";
+		updateLog = F("update UI started\n");
 		updateUIStatus = UpdateStatusStarted;
-		updateLog += downloadFileWithLog("jquery.min.js.gz");
+		updateLog += downloadFileWithLog(F("jquery.min.js.gz"));
 		updateUIStatus = UpdateStatusAtProcess;
-#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)		
+#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)
 		HTTPSWebServerLoop();
-#endif		
+#endif
 
-		updateLog += downloadFileWithLog("jquery.min.js.gz");
-		updateLog += downloadFileWithLog("popper.min.js.gz");
-		updateLog += downloadFileWithLog("bootstrap.min.css.gz");
-		updateLog += downloadFileWithLog("bootstrap.min.js.gz");
-		updateLog += downloadFileWithLog("jquery.dataTables.min.js.gz");
-		updateLog += downloadFileWithLog("dataTables.min.css.gz");
-		updateLog += downloadFileWithLog("dataTables.min.js.gz");
-#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)		
+		updateLog += downloadFileWithLog(F("jquery.min.js.gz"));
+		updateLog += downloadFileWithLog(F("popper.min.js.gz"));
+		updateLog += downloadFileWithLog(F("bootstrap.min.css.gz"));
+		updateLog += downloadFileWithLog(F("bootstrap.min.js.gz"));
+		updateLog += downloadFileWithLog(F("jquery.dataTables.min.js.gz"));
+		updateLog += downloadFileWithLog(F("dataTables.min.css.gz"));
+		updateLog += downloadFileWithLog(F("dataTables.min.js.gz"));
+#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)
 		HTTPSWebServerLoop();
-#endif		
+#endif
 
-		updateLog += downloadFileWithLog("ui.css.gz");
-#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)		
+		updateLog += downloadFileWithLog(F("ui.css.gz"));
+#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)
 		HTTPSWebServerLoop();
-#endif		
+#endif
 
-		updateLog += downloadFileWithLog("bootcore.js.gz");
-		updateLog += downloadFileWithLog("restclientcore.js.gz");
-		updateLog += downloadFileWithLog("configcore.js.gz");
-		updateLog += downloadFileWithLog("driverscore.js.gz");
-		updateLog += downloadFileWithLog("drawcore.js.gz");
-		updateLog += downloadFileWithLog("languagescore.js.gz");
-		updateLog += downloadFileWithLog("speechcore.js.gz");
-		updateLog += downloadFileWithLog("scriptcore.js.gz");
-#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)		
+		updateLog += downloadFileWithLog(F("bootcore.js.gz"));
+		updateLog += downloadFileWithLog(F("restclientcore.js.gz"));
+		updateLog += downloadFileWithLog(F("configcore.js.gz"));
+		updateLog += downloadFileWithLog(F("driverscore.js.gz"));
+		updateLog += downloadFileWithLog(F("drawcore.js.gz"));
+		updateLog += downloadFileWithLog(F("languagescore.js.gz"));
+		updateLog += downloadFileWithLog(F("speechcore.js.gz"));
+		updateLog += downloadFileWithLog(F("scriptcore.js.gz"));
+#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)
 		HTTPSWebServerLoop();
-#endif		
+#endif
 
-		updateLog += downloadFileWithLog("basewidget.js.gz");
-		updateLog += downloadFileWithLog("actuatorwidget.js.gz");
-		updateLog += downloadFileWithLog("temperaturewidget.js.gz");
-		updateLog += downloadFileWithLog("graphwidget.js.gz");
-		updateLog += downloadFileWithLog("tablewidget.js.gz");
-		updateLog += downloadFileWithLog("lcdwidget.js.gz");
-		updateLog += downloadFileWithLog("lightwidget.js.gz");
-		updateLog += downloadFileWithLog("lcdwidget.js.gz");
-		updateLog += downloadFileWithLog("lightwidget.js.gz");
-		updateLog += downloadFileWithLog("motionwidget.js.gz");
-		updateLog += downloadFileWithLog("radialwidget.js.gz");
-		updateLog += downloadFileWithLog("smokewidget.js.gz");
-		updateLog += downloadFileWithLog("stepperwidget.js.gz");
-		updateLog += downloadFileWithLog("valuewidget.js.gz");
-#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)				
+		updateLog += downloadFileWithLog(F("basewidget.js.gz"));
+		updateLog += downloadFileWithLog(F("actuatorwidget.js.gz"));
+		updateLog += downloadFileWithLog(F("temperaturewidget.js.gz"));
+		updateLog += downloadFileWithLog(F("graphwidget.js.gz"));
+		updateLog += downloadFileWithLog(F("tablewidget.js.gz"));
+		updateLog += downloadFileWithLog(F("lcdwidget.js.gz"));
+		updateLog += downloadFileWithLog(F("lightwidget.js.gz"));
+		updateLog += downloadFileWithLog(F("lcdwidget.js.gz"));
+		updateLog += downloadFileWithLog(F("lightwidget.js.gz"));
+		updateLog += downloadFileWithLog(F("motionwidget.js.gz"));
+		updateLog += downloadFileWithLog(F("radialwidget.js.gz"));
+		updateLog += downloadFileWithLog(F("smokewidget.js.gz"));
+		updateLog += downloadFileWithLog(F("stepperwidget.js.gz"));
+		updateLog += downloadFileWithLog(F("valuewidget.js.gz"));
+#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)
 		HTTPSWebServerLoop();
-#endif		
-		updateLog += downloadFileWithLog("widgetswrappers.js.gz");
+#endif
+		updateLog += downloadFileWithLog(F("widgetswrappers.js.gz"));
 
-		updateLog += downloadFileWithLog("driversui.js.gz");
-		updateLog += downloadFileWithLog("settingsui.js.gz");
-		updateLog += downloadFileWithLog("filespanelui.js.gz");
-		updateLog += downloadFileWithLog("dashboardui.js.gz");
+		updateLog += downloadFileWithLog(F("driversui.js.gz"));
+		updateLog += downloadFileWithLog(F("settingsui.js.gz"));
+		updateLog += downloadFileWithLog(F("filespanelui.js.gz"));
+		updateLog += downloadFileWithLog(F("dashboardui.js.gz"));
 
-		updateLog += downloadFileWithLog("index.js.gz");
-		updateLog += downloadFileWithLog("index.html.gz");
+		updateLog += downloadFileWithLog(F("index.js.gz"));
+		updateLog += downloadFileWithLog(F("index.html.gz"));
 
 		updateUIStatus = UpdateStatusComplete;
-		updateLog += "update UI complete\n";		
+		updateLog += "update UI complete\n";
 	}
 	else
 	{
@@ -251,8 +250,10 @@ int updateFirmware()
 	{
 		updateLog += "update firmware started\n";
 		updateFirmwareStatus = UpdateStatusStarted;
-#ifdef DetailedDebug 
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 		debugOut(updateid, "Update firmware started\n");
+#endif
 #endif
 		String host = nodeGetUpdateHost();
 		WiFiClient client;
@@ -275,20 +276,27 @@ int updateFirmware()
 		ret = ESPhttpUpdate.update(client, host + "OWLOS.ino.d1_mini.bin");
 #endif
 
-		switch (ret) {
+		switch (ret)
+		{
 		case HTTP_UPDATE_FAILED:
-#ifdef DetailedDebug 
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 			debugOut(updateid, "update error: [" + String(ESPhttpUpdate.getLastError()) + "] " + ESPhttpUpdate.getLastErrorString().c_str());
+#endif
 #endif
 			break;
 		case HTTP_UPDATE_NO_UPDATES:
-#ifdef DetailedDebug 
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 			debugOut(updateid, "no updates");
+#endif
 #endif
 			break;
 		case HTTP_UPDATE_OK:
-#ifdef DetailedDebug 
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 			debugOut(updateid, "update OK");
+#endif
 #endif
 			break;
 		}
@@ -299,8 +307,10 @@ int updateFirmware()
 	else
 	{
 		updateFirmwareStatus = UpdateStatusUndefined;
-#ifdef DetailedDebug 
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 		debugOut(updateid, "Update firmware fail");
+#endif
 #endif
 		updateLog += "update firmware fail\n";
 	}

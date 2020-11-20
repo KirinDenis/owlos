@@ -47,19 +47,20 @@ OWLOS распространяется в надежде, что она буде
 //Обзор:
 //https://www.youtube.com/watch?v=tt9oZyzgMZ8
 //Примечания:
-// - поддерживается редукторная запорная арматура, с двумя командными контакторами - "открыть", "закрыть". 
-// - возможно использование сенсора положения - переменный регистр прикрепленный к затвору. Требует калибровки - замер сопротивления в положение "открыто" и в положение "закрыто". 
-//   резистор подключается к АЦП ESPxx, оцифрованное значение уровня сигнала используется драйвером для выполнения команд "открыть" "закрыть". 
-//   без использования сенсора положения - необходимо выделять время на выполнения команд. Время необходимо установить экспериментально - переключая запорную арматуру между положениями. 
-//   для безопасности увеличьте полученное значение на два. 
-// Вам понадобится два цифровых Output пина и один аналоговый Input (АЦП) пин. 
+// - поддерживается редукторная запорная арматура, с двумя командными контакторами - "открыть", "закрыть".
+// - возможно использование сенсора положения - переменный регистр прикрепленный к затвору. Требует калибровки - замер сопротивления в положение "открыто" и в положение "закрыто".
+//   резистор подключается к АЦП ESPxx, оцифрованное значение уровня сигнала используется драйвером для выполнения команд "открыть" "закрыть".
+//   без использования сенсора положения - необходимо выделять время на выполнения команд. Время необходимо установить экспериментально - переключая запорную арматуру между положениями.
+//   для безопасности увеличьте полученное значение на два.
+// Вам понадобится два цифровых Output пина и один аналоговый Input (АЦП) пин.
 
 #define DRIVER_ID "valve"
 
-//проверка доступности Valve 
+//проверка доступности Valve
 bool ValveDriver::init()
 {
-	if (id.length() == 0) id = DRIVER_ID;
+	if (id.length() == 0)
+		id = DRIVER_ID;
 	BaseDriver::init(id);
 
 	/*
@@ -71,9 +72,7 @@ bool ValveDriver::init()
 		&& (positionPinDriverInfo != nullptr))
 	{
 	*/
-	if ((setDriverPinMode(id, CLOSE_PIN_INDEX, OUTPUT).length() == 0)
-		&& (setDriverPinMode(id, OPEN_PIN_INDEX, OUTPUT).length() == 0)
-		&& (setDriverPinMode(id, POSITION_PIN_INDEX, INPUT).length() == 0))
+	if ((setDriverPinMode(id, CLOSE_PIN_INDEX, OUTPUT).length() == 0) && (setDriverPinMode(id, OPEN_PIN_INDEX, OUTPUT).length() == 0) && (setDriverPinMode(id, POSITION_PIN_INDEX, INPUT).length() == 0))
 	{
 		//PinService разрешил использования всех необходимых Valve пинов, отправляем две команды стоп
 		driverPinWrite(id, CLOSE_PIN_INDEX, MOTOR_STOP_COMMAND);
@@ -89,7 +88,7 @@ bool ValveDriver::init()
 bool ValveDriver::begin(String _topic)
 {
 	BaseDriver::begin(_topic);
-	setType(Valve);
+	setType(VALVE_DRIVER_TYPE);
 	setAvailable(available);
 	return available;
 }
@@ -98,7 +97,7 @@ bool ValveDriver::query()
 {
 	if (BaseDriver::query())
 	{
-		// publish Valve data if they are changed 
+		// publish Valve data if they are changed
 		int oldPosition = position;
 		if (oldPosition != getPosition()) //получить и передать текущее положение заслонки в процентах
 		{
@@ -116,12 +115,14 @@ bool ValveDriver::query()
 //Возвращает все свойства драйвера Valve
 String ValveDriver::getAllProperties()
 {
-	String result = BaseDriver::getAllProperties();
-	result += "position=" + String(position) + "\n";
-	result += "physicalposition=" + String(physicalposition) + "\n";
-	result += "minimumphysicalposition=" + String(minimumphysicalposition) + "\n";
-	result += "maximumphysicalposition=" + String(maximumphysicalposition) + "\n";
-	return result;
+	return BaseDriver::getAllProperties() +
+		   "position=" + String(position) + "\n"
+											"physicalposition=" +
+		   String(physicalposition) + "\n"
+									  "minimumphysicalposition=" +
+		   String(minimumphysicalposition) + "\n"
+											 "maximumphysicalposition=" +
+		   String(maximumphysicalposition) + "\n";
 }
 //Отправка данных о положении заслонки Valva в сеть по publishInterval
 bool ValveDriver::publish()
@@ -134,32 +135,33 @@ bool ValveDriver::publish()
 	}
 	return false;
 };
-//Обработка внешних команд для драйвера Valve 
-String ValveDriver::onMessage(String _topic, String _payload, int8_t transportMask)
+//Обработка внешних команд для драйвера Valve
+String ValveDriver::onMessage(String route, String _payload, int8_t transportMask)
 {
-	String result = BaseDriver::onMessage(_topic, _payload, transportMask);
-	if (!result.equals(WrongPropertyName)) return result;
+	String result = BaseDriver::onMessage(route, _payload, transportMask);
+	if (!result.equals(WRONG_PROPERTY_NAME))
+		return result;
 
-	else if (String(topic + "/getposition").equals(_topic))
+	else if (matchRoute(route, topic, "/getposition"))
 	{
 		result = onGetProperty("position", String(getPosition()), transportMask);
 	}
-	else if (String(topic + "/setposition").equals(_topic))
+	else if (matchRoute(route, topic, "/setposition"))
 	{
 		result = String(setPosition(atoi(_payload.c_str())));
 	}
 
-	else if (String(topic + "/getphysicalposition").equals(_topic))
+	else if (matchRoute(route, topic, "/getphysicalposition"))
 	{
 		result = onGetProperty("physicalposition", String(getphysicalposition()), transportMask);
 	}
 
-	else if (String(topic + "/getminimumphysicalposition").equals(_topic))
+	else if (matchRoute(route, topic, "/getminimumphysicalposition"))
 	{
 		result = onGetProperty("minimumphysicalposition", String(getMinimumphysicalposition()), transportMask);
 	}
 
-	else if (String(topic + "/getmaximumphysicalposition").equals(_topic))
+	else if (matchRoute(route, topic, "/getmaximumphysicalposition"))
 	{
 		result = onGetProperty("maximumphysicalposition", String(getMaximumphysicalposition()), transportMask);
 	}
@@ -172,8 +174,10 @@ int ValveDriver::getphysicalposition()
 	{
 		physicalposition = filesReadInt(id + ".physicalposition");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 	debugOut(id, "physicalposition=" + String(physicalposition));
+#endif
 #endif
 	return physicalposition;
 }
@@ -184,8 +188,10 @@ int ValveDriver::getMinimumphysicalposition()
 	{
 		minimumphysicalposition = filesReadInt(id + ".minimumphysicalposition");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 	debugOut(id, "minimumphysicalposition=" + String(minimumphysicalposition));
+#endif
 #endif
 	return minimumphysicalposition;
 }
@@ -196,8 +202,10 @@ int ValveDriver::getMaximumphysicalposition()
 	{
 		maximumphysicalposition = filesReadInt(id + ".maximumphysicalposition");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 	debugOut(id, "maximumphysicalposition=" + String(maximumphysicalposition));
+#endif
 #endif
 	return maximumphysicalposition;
 }
@@ -208,8 +216,10 @@ int ValveDriver::getPosition()
 	{
 		position = filesReadInt(id + ".position");
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 	debugOut(id, "position=" + String(position));
+#endif
 #endif
 	return position;
 }
@@ -218,7 +228,7 @@ bool ValveDriver::setPosition(int _position)
 {
 	// valve stop commands, valve has veto for all output pins LOW level
 	bool result = false;
-	//команда стоп			
+	//команда стоп
 	if ((driverPinWrite(id, CLOSE_PIN_INDEX, MOTOR_STOP_COMMAND).length() == 0) && (driverPinWrite(id, OPEN_PIN_INDEX, MOTOR_STOP_COMMAND).length() == 0))
 	{
 
@@ -233,20 +243,20 @@ bool ValveDriver::setPosition(int _position)
 		else
 			//открыть заслонку
 			if (_position == 100)
-			{ // opening valve
-				toMinMaxPosition(OPEN_PIN_INDEX);
-				maximumphysicalposition = physicalposition;
-				filesWriteInt(id + ".maximumphysicalposition", maximumphysicalposition);
-				result = onInsideChange("maximumphysicalposition", String(maximumphysicalposition));
-			}
-			else return result; // _position must be equal 0 or 100
-			// after mooving
+		{ // opening valve
+			toMinMaxPosition(OPEN_PIN_INDEX);
+			maximumphysicalposition = physicalposition;
+			filesWriteInt(id + ".maximumphysicalposition", maximumphysicalposition);
+			result = onInsideChange("maximumphysicalposition", String(maximumphysicalposition));
+		}
+		else
+			return result; // _position must be equal 0 or 100
+						   // after mooving
 		position = _position;
 		filesWriteInt(id + ".position", position);
 		onInsideChange("position", String(position));
 		filesWriteInt(id + ".physicalposition", physicalposition);
 		return onInsideChange("physicalposition", String(physicalposition));
-
 	}
 	return false;
 }
@@ -260,10 +270,12 @@ void ValveDriver::toMinMaxPosition(int _pin)
 		{
 			delay(500); // mooving
 			newphysicalposition = driverPinRead(id, POSITION_PIN_INDEX);
-			if (newphysicalposition == physicalposition) break; // valve is stoped
-			if (newphysicalposition == -1) break;
+			if (newphysicalposition == physicalposition)
+				break; // valve is stoped
+			if (newphysicalposition == -1)
+				break;
 			physicalposition = newphysicalposition;
-		} // for
+		}										// for
 		digitalWrite(_pin, MOTOR_STOP_COMMAND); // stop command
 	}
 };

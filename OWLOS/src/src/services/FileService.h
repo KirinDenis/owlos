@@ -49,6 +49,7 @@ bool filesLoop();
 bool filesExists(String fileName);
 int filesGetSize(String fileName);
 bool filesDelete(String fileName);
+bool filesDeleteAllFiles();
 bool filesRename(String source, String dest);
 
 String filesReadString(String fileName);

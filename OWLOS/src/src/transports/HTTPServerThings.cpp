@@ -39,140 +39,125 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 #include "HTTPServerThings.h"
+
+#if defined(USE_HTTPS_SERVER) || defined(USE_HTTP_SERVER)
+
 #ifdef USE_ESP_DRIVER
 
 #include "../drivers/ESPDriver.h"
 
 String decode(String param)
 {
-	param.replace("+", " ");
-	param.replace("%20", " ");
-	param.replace("%21", "!");
-	param.replace("%23", "#");
-	param.replace("%24", "$");
-	param.replace("%26", "&");
-	param.replace("%27", "'");
-	param.replace("%28", "(");
-	param.replace("%29", ")");
-	param.replace("%2A", "*");
-	param.replace("%2B", "+");
-	param.replace("%2C", ",");
-	param.replace("%2F", "/");
-	param.replace("%3A", ":");
-	param.replace("%3B", ";");
-	param.replace("%3D", "=");
-	param.replace("%3F", "?");
-	param.replace("%40", "@");
-	param.replace("%5B", "[");
-	param.replace("%5D", "]");
-	param.replace("%3E", ">");
-	param.replace("%3C", "<");
-	param.replace("%0A", "\n");
-	param.replace("%0D", "\n");
-	param.replace("%09", "\t");
+	param.replace(F("+"), F(" "));
+	param.replace(F("%20"), F(" "));
+	param.replace(F("%21"), F("!"));
+	param.replace(F("%23"), F("#"));
+	param.replace(F("%24"), F("$"));
+	param.replace(F("%26"), F("&"));
+	param.replace(F("%27"), F("'"));
+	param.replace(F("%28"), F("(F("));
+	param.replace(F("%29"), F(")"));
+	param.replace(F("%2A"), F("*"));
+	param.replace(F("%2B"), F("+"));
+	param.replace(F("%2C"), F(","));
+	param.replace(F("%2F"), F("/"));
+	param.replace(F("%3A"), F(":"));
+	param.replace(F("%3B"), F(";"));
+	param.replace(F("%3D"), F("="));
+	param.replace(F("%3F"), F("?"));
+	param.replace(F("%40"), F("@"));
+	param.replace(F("%5B"), F("["));
+	param.replace(F("%5D"), F("]"));
+	param.replace(F("%3E"), F(">"));
+	param.replace(F("%3C"), F("<"));
+	param.replace(F("%0A"), F("\n"));
+	param.replace(F("%0D"), F("\n"));
+	param.replace(F("%09"), F("\t"));
 
-	param.replace("%25+", " ");
-	param.replace("%2520", " ");
-	param.replace("%2521", "!");
-	param.replace("%2523", "#");
-	param.replace("%2524", "$");
-	param.replace("%2526", "&");
-	param.replace("%2527", "'");
-	param.replace("%2528", "(");
-	param.replace("%2529", ")");
-	param.replace("%252A", "*");
-	param.replace("%252B", "+");
-	param.replace("%252C", ",");
-	param.replace("%252F", "/");
-	param.replace("%253A", ":");
-	param.replace("%253B", ";");
-	param.replace("%253D", "=");
-	param.replace("%253F", "?");
-	param.replace("%2540", "@");
-	param.replace("%255B", "[");
-	param.replace("%255D", "]");
-	param.replace("%253E", ">");
-	param.replace("%253C", "<");
-	param.replace("%250A", "\n");
-	param.replace("%250D", "\n");
-	param.replace("%2509", "\t");
+	param.replace(F("%25+"), F(" "));
+	param.replace(F("%2520"), F(" "));
+	param.replace(F("%2521"), F("!"));
+	param.replace(F("%2523"), F("#"));
+	param.replace(F("%2524"), F("$"));
+	param.replace(F("%2526"), F("&"));
+	param.replace(F("%2527"), F("'"));
+	param.replace(F("%2528"), F("("));
+	param.replace(F("%2529"), F(")"));
+	param.replace(F("%252A"), F("*"));
+	param.replace(F("%252B"), F("+"));
+	param.replace(F("%252C"), F(","));
+	param.replace(F("%252F"), F("/"));
+	param.replace(F("%253A"), F(":"));
+	param.replace(F("%253B"), F(";"));
+	param.replace(F("%253D"), F("="));
+	param.replace(F("%253F"), F("?"));
+	param.replace(F("%2540"), F("@"));
+	param.replace(F("%255B"), F("["));
+	param.replace(F("%255D"), F("]"));
+	param.replace(F("%253E"), F(">"));
+	param.replace(F("%253C"), F("<"));
+	param.replace(F("%250A"), F("\n"));
+	param.replace(F("%250D"), F("\n"));
+	param.replace(F("%2509"), F("\t"));
 
 	return param;
 }
 
 String getContentType(String fileName)
 {
-	if (fileName.endsWith(".html") || fileName.endsWith(".htm"))
-		return "text/html";
-	if (fileName.endsWith(".css"))
-		return "text/css";
-	if (fileName.endsWith(".js"))
-		return "application/javascript";
-	if (fileName.endsWith(".ico"))
-		return "image/x-icon";
-	if (fileName.endsWith(".gz"))
-		return "application/x-gzip";
-	return "text/plain";
+	if (fileName.endsWith(F(".html")) || fileName.endsWith(F(".htm")))
+		return F("text/html");
+	if (fileName.endsWith(F(".css")))
+		return F("text/css");
+	if (fileName.endsWith(F(".js")))
+		return F("application/javascript");
+	if (fileName.endsWith(F(".ico")))
+		return F("image/x-icon");
+	if (fileName.endsWith(F(".gz")))
+		return F("application/x-gzip");
+	return F("text/plain");
 }
 
-String GetLogoHTML()
-{
+static const char OWLOSLogo[] PROGMEM = "<font color='#62add0' size='2'><pre><code><span>\n"
+										"000000001                       100000000\n"
+										"0000000000000               0000000000000\n"
+										"000000000010000000     000000010000000000\n"
+										"00000  10001  1000000000001  10001  10000\n"
+										" 0000001   1001    101    0001   1000000\n"
+										" 00 000001     100     001     100000 00\n"
+										" 00  000 000       0001      000  00  00\n"
+										" 00  000  0000              0000  00  00\n"
+										" 00   00  00000           00000  00   00\n"
+										" 00&  00    00000       00000    00  100\n"
+										" 000     000  00000  00000  000     000\n"
+										" 000001  100000000000000000001  10000\n"
+										"    000001 0000000 0000000  000000\n"
+										"        00000000       00000000\n"
+										"          0000000   0000000\n"
+										"             00000000000\n"
+										"                 000\n"
+										"\n"
+										"</span></code></pre></font><br>";
 
-	String result = "<font color='#62add0' size='2'><pre><code><span>";
-	result += "                                         \n";
-	result += "000000001                       100000000\n";
-	result += "0000000000000               0000000000000\n";
-	result += "000000000010000000     000000010000000000\n";
-	result += "00000  10001  1000000000001  10001  10000\n";
-	result += " 0000001   1001    101    0001   1000000 \n";
-	result += " 00 000001     100     001     100000 00 \n";
-	result += " 00  000 000       0001      000  00  00 \n";
-	result += " 00  000  0000              0000  00  00 \n";
-	result += " 00   00  00000           00000  00   00 \n";
-	result += " 00&  00    00000       00000    00  100 \n";
-	result += " 000     000  00000  00000  000     000 \n";
-	result += "  000001  100000000000000000001  10000  \n";
-	result += "      000001 0000000 0000000  000000     \n";
-	result += "         00000000       00000000         \n";
-	result += "           0000000   0000000             \n";
-	result += "              00000000000                \n";
-	result += "                  000                    \n";
-	result += "                                         \n";
-	result += "</span></code></pre></font><br>";
-	return result;
-}
+static const char OWLOSCopyLeft[] PROGMEM = "&#x1F30D;<a href='https://github.com/KirinDenis/owlos' target='_blank'>GitHub OWLOS</a><br>\n"
+											"&#x1F409;Copyright 2019, 2020 by:\n"
+											"	Serhii Lehkii (sergey@light.kiev.ua)\n"
+											"	Konstantin Brul (konstabrul@gmail.com)\n"
+											"	Vitalii Glushchenko (cehoweek@gmail.com)\n"
+											"	Stanislav Kvashchuk (skat@ukr.net)\n"
+											"	Vladimir Kovalevich (covalevich@gmail.com)\n"
+											"	Denys Melnychuk (meldenvar@gmail.com)\n"
+											"	Denis Kirin (deniskirinacs@gmail.com)\n<br>"
+											"&#x1F4E1;HTTPServer API endpoints:\n";
 
 String GetNotFoundHTML()
 {
 
-	String helloString = FIRMWARE_VERSION; //nodeGetUnitId()
-	String acip = nodeGetWiFiAccessPointIP() + ":" + String(nodeGetRESTfulServerPort());
-	String ip = nodeGetWiFiIP() + ":" + String(nodeGetRESTfulServerPort());
-
-	String message = "<html><header><title>" + helloString + "</title>";
-	message += "<style>a{color: #3b99c4;text-decoration: none;} a:hover {text-decoration: underline;} a:active {text-decoration: underline;}table td, table td * {vertical-align: top;}</style></header>";
-	message += "<body  bgcolor='#272B30'><font color='#272B30'><table><tr><td>" +
-			   message += GetLogoHTML();
-	message += "</td><td><pre><code><span><font color='#89c2dc' size=4><br>";
-	message += "&#x1F989;<b>" + helloString + "</b>\n";
-	message += "&#x1F30D;<a href='https://github.com/KirinDenis/owlos' target='_blank'>GitHub OWLOS</a><br>\n";
-	message += "&#x1F409;Copyright 2019, 2020 by:\n";
-	message += "	Serhii Lehkii (sergey@light.kiev.ua)\n";
-	message += "	Konstantin Brul (konstabrul@gmail.com)\n";
-	message += "	Vitalii Glushchenko (cehoweek@gmail.com)\n";
-	message += "	Stanislav Kvashchuk (skat@ukr.net)\n";
-	message += "	Vladimir Kovalevich (covalevich@gmail.com)\n";
-	message += "	Denys Melnychuk (meldenvar@gmail.com)\n";
-	message += "	Denis Kirin (deniskirinacs@gmail.com)\n<br>";
-	message += "&#x1F4E1;RESTful API endpoints:\n";
-	message += "	for Palata#13 <a href='http://" + ip + "/getallnodeproperties' target='_blank'>http://" + ip + "/</a>\n";
-	message += "	for owlnodef9ab6224 <a href='http://" + acip + "/getallnodeproperties' target='_blank'>http://" + acip + "/</a>\n";
-	message += "</span></code></pre>";
-	message += "</font>";
-	message += "</td>";
-	message += "</tr> ";
-	message += "</table></body>";
-
-	return message;
+	return "<html><header><title>" + String(FIRMWARE_VERSION) + FPSTR("</title>"
+																	  "<style>a{color: #3b99c4;text-decoration: none;} a:hover {text-decoration: underline;} a:active {text-decoration: underline;}table td, table td * {vertical-align: top;}</style></header>"
+																	  "<body  bgcolor='#272B30'><font color='#272B30'><table><tr><td>") +
+		   OWLOSLogo + "</td><td><pre><code><span><font color='#89c2dc' size=4><br>&#x1F989;<b>" +
+		   FIRMWARE_VERSION + "</b>\n" + OWLOSCopyLeft + "</span></code></pre></font></td></tr></table></body>";
 }
+#endif
 #endif

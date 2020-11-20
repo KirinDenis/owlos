@@ -66,35 +66,41 @@ bool wifiStatus = false;
 bool wifiAPResult = false;
 bool wifiResult = false;
 
-
-
 bool transportBegin()
 {
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 	debugOut(TransportID, "begin");
+#endif
 #endif
 
 	if ((nodeGetWiFiAccessPointAvailable() == 1) && (nodeGetWiFiAvailable() == 1))
 	{
 		nodeSetWiFiMode(WIFI_AP_STA);
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 		debugOut(TransportID, "WiFi mode Access Point and Station (both)");
+#endif
 #endif
 	}
 	else if (nodeGetWiFiAccessPointAvailable() == 1)
 	{
 		nodeSetWiFiMode(WIFI_AP);
 		wifi_station_disconnect();
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 		debugOut(TransportID, "WiFi mode Access Point");
+#endif
 #endif
 	}
 	else if (nodeGetWiFiAvailable() == 1)
 	{
 		nodeSetWiFiMode(WIFI_STA);
 		WiFi.softAPdisconnect(true);
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 		debugOut(TransportID, "WiFi mode Station");
+#endif
 #endif
 	}
 	else
@@ -102,8 +108,10 @@ bool transportBegin()
 		nodeSetWiFiMode(WIFI_OFF);
 		WiFi.softAPdisconnect(true);
 		wifi_station_disconnect();
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 		debugOut(TransportID, "no WiFi mode select, WiFi not accessable");
+#endif
 #endif
 		return false;
 	}
@@ -142,8 +150,10 @@ bool transportAvailable()
 			wifiResult = true;
 	}
 
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 	debugOut(TransportID, "WiFi AP=" + String(nodeGetWiFiAccessPointAvailable()) + ":" + String(wifiAPResult) + "|" + "WiFi ST=" + String(nodeGetWiFiAvailable()) + ":" + String(wifiResult) + " (" + nodeGetWiFiIP() + ")");
+#endif
 #endif
 	wifiStatus = wifiAPResult & wifiResult;
 	return wifiStatus;
@@ -163,16 +173,20 @@ bool WiFiAccessPointReconnect()
 		if (softAPResult)
 		{
 			WiFiAccessPointConnected = true;
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 			debugOut(TransportID, "Started as WiFi Access Point: " + nodeGetWiFiAccessPointSSID() + " IP: " + accessPointIP);
+#endif
 #endif
 			return true;
 		}
 		else
 		{
 			WiFiAccessPointConnected = false;
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 			debugOut(TransportID, "WiFi Access Point not started as " + nodeGetWiFiAccessPointSSID());
+#endif
 #endif
 		}
 	}
@@ -195,20 +209,26 @@ bool WiFiReconnect()
 		String WiFiPassword = nodeGetWiFiPassword();
 		if (WiFiSSID.length() == 0)
 		{
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 			debugOut(TransportID, "WiFi SSID not defined");
+#endif
 #endif
 			return false;
 		}
 
 		if (WiFi.status() != WL_CONNECTED)
 		{
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 			debugOut(TransportID, "try to connect to - " + WiFiSSID + ":" + WiFiPassword + " wait ");
 #endif
+#endif
 			nodeGetScanWiFiNetworks();
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 			debugOut(TransportID, nodeGetWiFiNetworksParameters());
+#endif
 #endif
 			if (!_WiFiMulti.existsAP(WiFiSSID.c_str(), WiFiPassword.c_str()))
 			{
@@ -220,13 +240,17 @@ bool WiFiReconnect()
 			{
 				delay(500);
 				wait++;
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 				debugOut(TransportID, "Wait for WiFi [" + String(wait) + "] from [10]");
+#endif
 #endif
 				if (wait > 9)
 				{
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 					debugOut(TransportID, "Wait for WiFi TimeOut...break");
+#endif
 #endif
 					break;
 				}
@@ -234,8 +258,10 @@ bool WiFiReconnect()
 
 			if (WiFi.status() == WL_CONNECTED)
 			{
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 				debugOut(TransportID, "WiFi connected as Client success, local IP: " + nodeGetWiFiIP());
+#endif
 #endif
 				return true;
 			}
@@ -253,8 +279,10 @@ void Callback(char *_topic, byte *_payload, unsigned int length)
 {
 	if (nodeGetMQTTAvailable() == 1)
 	{
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 		debugOut(TransportID, "onMessage topic - " + String(_topic));
+#endif
 #endif
 		char payload_buff[PayloadBufferSize]; // create character buffer with ending by null terminator (zero string format)
 		int i;
@@ -266,7 +294,7 @@ void Callback(char *_topic, byte *_payload, unsigned int length)
 		payload_buff[i] = '\0'; //terminate string with zero
 
 		//first check is Unit property?
-		if (nodeOnMessage(String(_topic), String(payload_buff), MQTTMask).equals(WrongPropertyName))
+		if (nodeOnMessage(String(_topic), String(payload_buff), MQTT_TRANSPORT_MASK).equals(WRONG_PROPERTY_NAME))
 		{
 			//if not UNIT property
 			//Put recieved message to all drivers, each driver can process any topic recieved by Unit
@@ -285,8 +313,10 @@ bool transportReconnect()
 	}
 
 	lastTryReconnect = millis();
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 	debugOut(TransportID, "begin reconnect, WiFi AP=" + String(nodeGetWiFiAccessPointAvailable()) + " WiFi ST=" + String(nodeGetWiFiAvailable()));
+#endif
 #endif
 
 	bool result = false;
@@ -310,8 +340,10 @@ bool transportReconnect()
 		if (nodeGetWiFiAvailable() == 1)
 			wifiAPResult = true;
 	}
-#ifdef DetailedDebug
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
 	debugOut(TransportID, "reconnect result, WiFi AP=" + String(wifiAPResult) + " WiFi ST=" + String(wifiResult));
+#endif
 #endif
 
 	wifiStatus = wifiAPResult | wifiResult;
@@ -319,17 +351,17 @@ bool transportReconnect()
 
 	if (result)
 	{
-		if (nodeGetRESTfulAvailable() == 1)
+		if (nodeGetHTTPServerAvailable() == 1)
 		{
-			//nodeGetRESTfulServerPort()
+			//nodeGetHTTPServerServerPort()
 			HTTPSWebServerBegin();
 		}
 
 		if (nodeGetOTAAvailable() == 1)
 		{
-#ifdef USE_OTA            
+#ifdef USE_OTA
 			OTABegin();
-#endif            
+#endif
 		}
 		if (nodeGetMQTTAvailable() == 1)
 		{
@@ -340,32 +372,30 @@ bool transportReconnect()
 
 void transportSubscribe(String _topic)
 {
-
 }
-
 
 void transportLoop()
 {
 	if ((wifiAPResult) || (wifiResult))
 	{
 
-		if (nodeGetRESTfulAvailable() == 1)
+		if (nodeGetHTTPServerAvailable() == 1)
 		{
 			HTTPSWebServerLoop();
 		}
 
 		if (nodeGetOTAAvailable() == 1)
 		{
-#ifdef USE_OTA         
+#ifdef USE_OTA
 			OTALoop();
-#endif            
+#endif
 		}
 	}
 }
 
 bool transportPublish(String _topic, String _payload)
 {
-	return true; //if MQTT is not available and RESTful change the property
+	return true; //if MQTT is not available and HTTPServer change the property
 }
 
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
@@ -374,7 +404,6 @@ ESP8266WiFiMulti transportGetWifiMulti()
 	return _WiFiMulti;
 }
 #endif
-
 
 #endif
 #endif

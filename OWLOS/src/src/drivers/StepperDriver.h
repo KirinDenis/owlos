@@ -58,7 +58,8 @@ OWLOS распространяется в надежде, что она буде
 #define DEFAULT_SPEED 2000
 #define DEFAULT_COUNTS_PER_REVOLUTION 512
 
-class StepperDriver : public BaseDriver {
+class StepperDriver : public BaseDriver
+{
 public:
 	static int getPinsCount()
 	{
@@ -69,12 +70,18 @@ public:
 	{
 		switch (pinIndex)
 		{
-		case PIN0_INDEX: return DIGITAL_O_MASK;
-		case PIN1_INDEX: return DIGITAL_O_MASK;
-		case PIN2_INDEX: return DIGITAL_O_MASK;
-		case PIN3_INDEX: return DIGITAL_O_MASK;
-		case VCC5_INDEX: return VCC5_MASK;
-		case GND_INDEX: return GND_MASK;
+		case PIN0_INDEX:
+			return DIGITAL_O_MASK;
+		case PIN1_INDEX:
+			return DIGITAL_O_MASK;
+		case PIN2_INDEX:
+			return DIGITAL_O_MASK;
+		case PIN3_INDEX:
+			return DIGITAL_O_MASK;
+		case VCC5_INDEX:
+			return VCC5_MASK;
+		case GND_INDEX:
+			return GND_MASK;
 		default:
 			return NO_MASK;
 		}
@@ -84,7 +91,7 @@ public:
 	void del();
 	bool begin(String _topic);
 	String getAllProperties();
-	String onMessage(String _topic, String _payload, int8_t transportMask);
+	String onMessage(String route, String _payload, int8_t transportMask);
 
 	int getToPosition();
 	bool setToPosition(int _toPosition);
@@ -100,15 +107,15 @@ public:
 	bool setSpeed(int _speed);
 
 private:
-	//HALF-STEP drive bit masks	
-	int stepMask[STEPS_COUNT] = { 0b1000, 0b1100, 0b0100, 0b0110, 0b0010, 0b0011, 0b0001, 0b1001 }; //0bABCD если 1 обмотка включена		
-	int toPosition = DEFAULT_TO_POSITION; //заданная позиция к которой мотор отсчитывает "шаги" относительно текущей позиции position
-	int busy = DEFAULT_BUSY; //флажок, если драйвер занят перебором шагов (1)
-	int stop = DEFAULT_STOP; //если мотор остановлен (1)
-	int position = DEFAULT_POSITION; //текущая позиция (оценочная - шаговые моторы склоны к проскальзыванию при перегрузке вала, требует калибровки) 
-	int range = DEFAULT_RANGE; //количество шагов от 0..range в пределе которых мотор может "шагать"
-	int speed = DEFAULT_SPEED; //скорость переключения обмоток - индивидуальная для каждого мотора - слишком маленькое значение - обмотки не успеют притянуть якорь, слишком большое обмотки начнут сильно греться а скорость вращения будет медленной
-	
+	//HALF-STEP drive bit masks
+	int stepMask[STEPS_COUNT] = {0b1000, 0b1100, 0b0100, 0b0110, 0b0010, 0b0011, 0b0001, 0b1001}; //0bABCD если 1 обмотка включена
+	int toPosition = DEFAULT_TO_POSITION;														  //заданная позиция к которой мотор отсчитывает "шаги" относительно текущей позиции position
+	int busy = DEFAULT_BUSY;																	  //флажок, если драйвер занят перебором шагов (1)
+	int stop = DEFAULT_STOP;																	  //если мотор остановлен (1)
+	int position = DEFAULT_POSITION;															  //текущая позиция (оценочная - шаговые моторы склоны к проскальзыванию при перегрузке вала, требует калибровки)
+	int range = DEFAULT_RANGE;																	  //количество шагов от 0..range в пределе которых мотор может "шагать"
+	int speed = DEFAULT_SPEED;																	  //скорость переключения обмоток - индивидуальная для каждого мотора - слишком маленькое значение - обмотки не успеют притянуть якорь, слишком большое обмотки начнут сильно греться а скорость вращения будет медленной
+
 	void doStop();
 	void doOutput(int out);
 };

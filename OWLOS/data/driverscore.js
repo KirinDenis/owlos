@@ -389,7 +389,7 @@ var drivers = {
                     return;
                 }
                 else {
-                    if (this.networkStatus == NET_ONLINE) {//если текущее состояние "в сети" можем вызывать API
+                    if ((this.networkStatus == NET_ONLINE) || (this.networkStatus == NET_ERROR))  {//если текущее состояние "в сети" или предидущий вызов привел к сбою, но устройство остается в сети можем вызывать API
                         this.networkStatus = NET_RECONNECT; //переключаем сетевое состояние в режим "в работе"
                         this.sendedValue = _value; //сохраняем новое значение(которое пытаемся установить) во временное свойство
                         //мы не проверяем тип свойства - перекладывая это на сторону микроконтроллера - мог ошибится автор UI или автор прошивки.
@@ -421,14 +421,18 @@ var drivers = {
                     }
                     else {
                         sender.networkStatus = NET_ERROR; //если HTTPClient сказал OK-200 но Unit не вернул "1" нам не удалось изменить свойство, переходим в статус "ошибка"
+                        //TODO: Store HTTPResult with NetworkStatus
+                        alert(HTTPResult);
                     }
                 }
                 else {
-                    if (!HTTPResult.indexOf("response") != -1) {//если HTTPClient вернул "%error" и в этой строке не было слова "response" - соединение не было установлено, статус "не в сети"
+                    if (HTTPResult.indexOf("response") == -1) {//если HTTPClient вернул "%error" и в этой строке не было слова "response" - соединение не было установлено, статус "не в сети"
                         sender.networkStatus = NET_OFFLINE;
                     }
                     else { //если ответ был, но он не HTTPResult 200 OK - ошибка либо драйвера либо Unit 
                         sender.networkStatus = NET_ERROR;
+                        //TODO: Store HTTPResult with NetworkStatus
+                        alert(HTTPResult);
                     }
                 }
                 if (upperReciever != undefined) { //если были назначены вторичные получатели асинхронного вызова - их вызовут здесь
@@ -444,7 +448,7 @@ var drivers = {
                 this.networkStatus = NET_RECONNECT;
                 getDriverPropertyAsyncWithReciever(this.parenthost, this.parentid, this.name, this.getValueReciever, upperReciever, this, upperSender);
             },
-            //асинхронный получатель значения свойства, отличается от "Set", там что примет от HTTPClient новое значение свойства, если не было ошибки сети
+            //асинхронный получатель значения свойства, отличается от "Set", тeм что примет от HTTPClient новое значение свойства, если не было ошибки сети
             getValueReciever: function (HTTPResult, upperReciever, sender, upperSender) {
                 if (!HTTPResult.indexOf("%error") == 0) {
                     sender.networkStatus = NET_ONLINE; //возвращаемся в онлайн, были "в работе"

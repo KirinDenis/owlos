@@ -48,4 +48,3 @@ bool kernelSetup();
 bool kernelLoop();
 
 #endif
-

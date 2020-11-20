@@ -42,14 +42,14 @@ OWLOS распространяется в надежде, что она буде
 
 #include "src/Kernel.h"
 
-void setup() 
-{  
-	//OWLOS Kernel Setup  
-	kernelSetup();  
+void setup()
+{
+	//OWLOS Kernel Setup
+	kernelSetup();
 }
 
-void loop() 
-{  
+void loop()
+{
 	//OWLOS Kernel Loop
 	kernelLoop();
 }

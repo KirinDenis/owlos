@@ -78,6 +78,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "openssl", "openssl", "{5025
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6C1C1756-D7E4-4399-AF22-7D43AAE2F9E7}"
 	ProjectSection(SolutionItems) = preProject
+		OWLOS\src\src\config.h = OWLOS\src\src\config.h
 		OWLOS\src\Kernel.cpp = OWLOS\src\Kernel.cpp
 		OWLOS\src\Kernel.h = OWLOS\src\Kernel.h
 	EndProjectSection
@@ -104,6 +105,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "drivers", "drivers", "{E4AC
 		OWLOS\src\drivers\LightDriver.h = OWLOS\src\drivers\LightDriver.h
 		OWLOS\src\drivers\MotionDriver.cpp = OWLOS\src\drivers\MotionDriver.cpp
 		OWLOS\src\drivers\MotionDriver.h = OWLOS\src\drivers\MotionDriver.h
+		OWLOS\src\src\drivers\NetworkDriver.cpp = OWLOS\src\src\drivers\NetworkDriver.cpp
+		OWLOS\src\src\drivers\NetworkDriver.h = OWLOS\src\src\drivers\NetworkDriver.h
 		OWLOS\src\drivers\OptoDriver.cpp = OWLOS\src\drivers\OptoDriver.cpp
 		OWLOS\src\drivers\OptoDriver.h = OWLOS\src\drivers\OptoDriver.h
 		OWLOS\src\drivers\SensorDriver.cpp = OWLOS\src\drivers\SensorDriver.cpp
@@ -114,6 +117,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "drivers", "drivers", "{E4AC
 		OWLOS\src\drivers\StepperDriver.h = OWLOS\src\drivers\StepperDriver.h
 		OWLOS\src\drivers\ValveDriver.cpp = OWLOS\src\drivers\ValveDriver.cpp
 		OWLOS\src\drivers\ValveDriver.h = OWLOS\src\drivers\ValveDriver.h
+		OWLOS\src\src\drivers\WifiDriver.cpp = OWLOS\src\src\drivers\WifiDriver.cpp
+		OWLOS\src\src\drivers\WifiDriver.h = OWLOS\src\src\drivers\WifiDriver.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "services", "services", "{B8F9C798-24FF-4E00-B903-228234AAE229}"
