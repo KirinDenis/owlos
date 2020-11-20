@@ -636,40 +636,6 @@ String filesGetList(String path)
 	return result;
 }
 
-bool filesDeleteAllFiles()
-{
-	
-	if (!_SPIFFSBegin())
-	{
-#ifdef DetailedDebug 
-		debugOut(FileSystem, "An Error has occurred while mounting file system");
-#endif
-		return false;
-	}
-
-	
-#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
-	//TODO
-#endif
-
-#ifdef ARDUINO_ESP32_RELEASE_1_0_4
-	
-    File root = SPIFFS.open("/");
-	File file = root.openNextFile();
-
-	while (file) {
-		SPIFFS.remove(file.name());
-
-#ifdef DetailedDebug 
-		debugOut(FileSystem, "Deleted: " file.name());
-#endif
-
-		root = SPIFFS.open("/");
-		file = root.openNextFile();
-	}
-#endif
-	return true;
-}
 
 
 bool filesWriteStructure(String fileName, void *value)
