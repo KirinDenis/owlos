@@ -463,42 +463,8 @@ String nodeOnMessage(const String &route, const String &_payload, int8_t transpo
 		return String(nodeSetESPMagicFlashChipMode(atoi(_payload.c_str())));
 		//Pins
 	}
-	else if (matchRoute(route, topic, "/getupdateavailable"))
-	{
-		return onGetProperty("updateavailable", String(nodeGetUpdateAvailable()), transportMask);
-	}
-#ifdef USE_UPDATE
-	else if (matchRoute(route, topic, "/setupdateavailable"))
-	{
-		return String(nodeSetUpdateAvailable(atoi(_payload.c_str())));
-	}
-	else if (matchRoute(route, topic, "/getupdatepossible"))
-	{
-		return onGetProperty("updatepossible", String(updateGetUpdatePossible()), transportMask);
-	}
-	else if (matchRoute(route, topic, "/getupdateinfo"))
-	{
-		return onGetProperty("updateinfo", String(updateGetUpdateInfo()), transportMask);
-	}
-	else if (matchRoute(route, topic, "/getupdateuistatus"))
-	{
-		return onGetProperty("updateuistatus", String(updateGetUpdateUIStatus()), transportMask);
-	}
-	else if (matchRoute(route, topic, "/getupdatefirmwarestatus"))
-	{
-		return onGetProperty("updateufirmwarestatus", String(updateGetUpdateFirmwareStatus()), transportMask);
-	}
-#endif
-	else if (matchRoute(route, topic, "/getupdatehost"))
-	{
-		return onGetProperty("updatehost", nodeGetUpdateHost(), transportMask);
-	}
-	else if (matchRoute(route, topic, "/setupdatehost"))
-	{
-		return String(nodeSetUpdateHost(_payload));
-	}
-	else
-		//Update
+	else 
+		
 		return result;
 	return "";
 }

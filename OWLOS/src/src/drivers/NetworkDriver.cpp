@@ -88,9 +88,10 @@ extern String nodeid;
 #define DEFAULT_OTA_CLIENT_PASSWORD "owlos"
 #endif
 
-//Update
+#ifdef USE_UPDATE_SERVICE
 #define DEFAULT_UPDATE_AVAILABLE true
-#define DEFAULT_UPDATE_HOST "http://81.95.178.177:8080/update/"
+#define DEFAULT_UPDATE_HOST "https://github.com/KirinDenis/owlos/tree/master/OWLOS"
+#endif
 
 #ifdef USE_HTTP_SERVER
 int httpserveravailable(DEFAULT_HTTP_SERVER_AVAILABLE);
@@ -128,9 +129,10 @@ String otaid(DEFAULT_OTA_CLIENT_ID);
 String otapassword(DEFAULT_OTA_CLIENT_PASSWORD);
 #endif
 
-//Update
+#ifdef USE_UPDATE_SERVICE
 int updateavailable(DEFAULT_UPDATE_AVAILABLE);
 String updatehost(DEFAULT_UPDATE_HOST);
+#endif
 
 String nodeGetNetworkProperties()
 {
@@ -196,7 +198,7 @@ String nodeGetNetworkProperties()
 		   nodeGetOTAPassword() + "//p\n"
 #endif		   
 
-#ifdef USE_UPDATE		   
+#ifdef USE_UPDATE_SERVICE
 								  "updateavailable=" +
 		   String(nodeGetUpdateAvailable()) + "//bs\n"
 
@@ -208,9 +210,11 @@ String nodeGetNetworkProperties()
 		   String(updateGetUpdateUIStatus()) + "//ir\n"
 											   "updatefirmwarestatus=" +
 		   String(updateGetUpdateFirmwareStatus()) + "//ir\n"
-#endif
+
 													 "updatehost=" +
-		   nodeGetUpdateHost() + "//s\n";
+		   nodeGetUpdateHost() + "//s\n"
+#endif		   
+;
 
 }
 
@@ -402,6 +406,43 @@ String networkOnMessage(String route, String _payload, int8_t transportMask)
 	{
 		return String(nodeSetOTAPassword(_payload));
 		//ESP class parameters
+	}
+	else 
+#endif	
+#ifdef USE_UPDATE_SERVICE
+	if (matchRoute(route, topic, "/getupdateavailable"))
+	{
+		return onGetProperty("updateavailable", String(nodeGetUpdateAvailable()), transportMask);
+	}
+
+	else if (matchRoute(route, topic, "/setupdateavailable"))
+	{
+		return String(nodeSetUpdateAvailable(atoi(_payload.c_str())));
+	}
+	else if (matchRoute(route, topic, "/getupdatepossible"))
+	{
+		return onGetProperty("updatepossible", String(updateGetUpdatePossible()), transportMask);
+	}
+	else if (matchRoute(route, topic, "/getupdateinfo"))
+	{
+		return onGetProperty("updateinfo", String(updateGetUpdateInfo()), transportMask);
+	}
+	else if (matchRoute(route, topic, "/getupdateuistatus"))
+	{
+		return onGetProperty("updateuistatus", String(updateGetUpdateUIStatus()), transportMask);
+	}
+	else if (matchRoute(route, topic, "/getupdatefirmwarestatus"))
+	{
+		return onGetProperty("updateufirmwarestatus", String(updateGetUpdateFirmwareStatus()), transportMask);
+	}
+
+	else if (matchRoute(route, topic, "/getupdatehost"))
+	{
+		return onGetProperty("updatehost", nodeGetUpdateHost(), transportMask);
+	}
+	else if (matchRoute(route, topic, "/setupdatehost"))
+	{
+		return String(nodeSetUpdateHost(_payload));
 	}
 #endif		
 	return WRONG_NODE_PROPERTY_NAME;
@@ -755,6 +796,7 @@ bool nodeSetOTAPassword(String _otapassword)
 }
 #endif
 
+#ifdef USE_UPDATE_SERVICE
 //UpdateAvailable()
 int nodeGetUpdateAvailable()
 {
@@ -786,6 +828,6 @@ bool nodeSetUpdateHost(String _updatehost)
 	updatehost = _updatehost;
 	return onInsideChange("updatehost", updatehost);
 }
-
+#endif
 
 #endif

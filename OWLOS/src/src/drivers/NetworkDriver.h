@@ -120,11 +120,13 @@ String nodeGetOTAPassword();
 bool nodeSetOTAPassword(String _otapassword);
 #endif
 
+#ifdef USE_UPDATE_SERVICE
 int nodeGetUpdateAvailable();
 bool nodeSetUpdateAvailable(int _updateavailable);
 
 String nodeGetUpdateHost();
 bool nodeSetUpdateHost(String _updatehost);
+#endif
 
 #endif
 #endif
