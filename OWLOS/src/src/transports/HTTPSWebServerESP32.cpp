@@ -23,17 +23,17 @@
 // Includes for the server
 // Note: We include HTTPServer and HTTPSServer
 #ifdef USE_HTTPS_SERVER
-#include <HTTPSServer.hpp>
-#include <SSLCert.hpp>
+#include "../libraries/esp32_https_server/src/HTTPSServer.hpp"
+#include "../libraries/esp32_https_server/src/SSLCert.hpp"
 #endif
 #ifdef USE_HTTP_SERVER
-#include <HTTPServer.hpp>
+#include "../libraries/esp32_https_server/src/HTTPServer.hpp"
 #endif
-#include <HTTPRequest.hpp>
-#include <HTTPResponse.hpp>
-#include <HTTPBodyParser.hpp>
-#include <HTTPMultipartBodyParser.hpp>
-#include <HTTPURLEncodedBodyParser.hpp>
+#include "../libraries/esp32_https_server/src/HTTPRequest.hpp"
+#include "../libraries/esp32_https_server/src/HTTPResponse.hpp"
+#include "../libraries/esp32_https_server/src/HTTPBodyParser.hpp"
+#include "../libraries/esp32_https_server/src/HTTPMultipartBodyParser.hpp"
+#include "../libraries/esp32_https_server/src/HTTPURLEncodedBodyParser.hpp"
 
 #include <SPIFFS.h>
 #include "HTTPServerThings.h"
@@ -801,10 +801,13 @@ void handleUpdateFirmware(HTTPRequest *req, HTTPResponse *res)
 void setResourceNode(const std::string &path, const std::string &method, const HTTPSCallbackFunction *callback)
 {
   ResourceNode *resourceNode = new ResourceNode(path, method, callback);
-#ifdef USE_HTTS_SERVER
+#ifdef USE_HTTPS_SERVER
   secureServer.registerNode(resourceNode);
 #endif
+
+#ifdef USE_HTTP_SERVER
   insecureServer.registerNode(resourceNode);
+#endif
 }
 
 void HTTPSWebServerBegin()
@@ -859,7 +862,15 @@ void HTTPSWebServerBegin()
   debugOut("HTTPS Server", "Starting HTTPS server...");
 #endif
 #endif
-  secureServer.start();
+
+  secureServer._port = nodeGetHTTPSServerPort();
+
+  if (nodeGetHTTPSServerAvailable() == 1)
+  {
+    secureServer.start();
+  }
+
+  
 #ifdef DETAILED_DEBUG
   if (secureServer.isRunning())
   {
@@ -876,9 +887,8 @@ void HTTPSWebServerBegin()
   debugOut("HTTP Server", "Starting HTTP server...");
 #endif
 #endif
-
-  ///WORK ONLY 
-  ///insecureServer._port = nodeGetHTTPServerPort();
+  
+  insecureServer._port = nodeGetHTTPServerPort();
 
   if (nodeGetHTTPServerAvailable() == 1)
   {
@@ -899,7 +909,26 @@ void HTTPSWebServerLoop()
 {
   // We need to call both loop functions here
 #ifdef USE_HTTPS_SERVER
-  secureServer.loop();
+  
+  if (nodeGetHTTPSServerAvailable() == 1)
+  {
+    if (secureServer.isRunning())
+    {
+      secureServer.loop();
+    }
+    else
+    {
+      secureServer.start();
+    }
+  }
+  else
+  {
+    if (secureServer.isRunning())
+    {
+      secureServer.stop();
+    }
+  }
+
 #endif
 
 #ifdef USE_HTTP_SERVER

@@ -125,7 +125,7 @@ OWLOS распространяется в надежде, что она буде
 
                 #ifdef ARDUINO_ESP32_RELEASE_1_0_4       
                     //Включает в сборку MQTT клиент
-                    #define USE_MQTT                
+                  //  #define USE_MQTT                
                 #endif                
             #endif
     #else
@@ -147,19 +147,19 @@ OWLOS распространяется в надежде, что она буде
         #define USE_SENSOR_DRIVER
 
         //Драйвер цифровых серсоров температуры и влажности (Digital Humidity and Temperature) - DHT11, DTH22 и прочих
-        #define USE_DHT_DRIVER
+       // #define USE_DHT_DRIVER
 
         //Драйвер I2C LCD дисплеев, поддерживает более одного дисплея на шине I2C
         #define USE_LCD_DRIVER
 
         //Драйвер шаговых двигателей
-        #define USE_STEPPER_DRIVER
+        //#define USE_STEPPER_DRIVER
         
         //Драйвер запорных арматур (закрыть, открыть, положени)
-        #define USE_VALVE_DRIVER
+        //#define USE_VALVE_DRIVER
     #endif
 #endif
 
 
 //Включить поддержку скриптов
-#define USE_SCRIPT
+//#define USE_SCRIPT
