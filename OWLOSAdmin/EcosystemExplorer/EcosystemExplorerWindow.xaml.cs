@@ -1,48 +1,105 @@
-﻿using OWLOSAdmin.Ecosystem;
-using OWLOSAdmin.Ecosystem.OWLOS;
+﻿/* ----------------------------------------------------------------------------
+Ready IoT Solution - OWLOS
+Copyright 2019, 2020 by:
+- Konstantin Brul (konstabrul@gmail.com)
+- Vitalii Glushchenko (cehoweek@gmail.com)
+- Denys Melnychuk (meldenvar@gmail.com)
+- Denis Kirin (deniskirinacs@gmail.com)
+
+This file is part of Ready IoT Solution - OWLOS
+
+OWLOS is free software : you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+OWLOS is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with OWLOS. If not, see < https://www.gnu.org/licenses/>.
+
+GitHub: https://github.com/KirinDenis/owlos
+
+(Этот файл — часть Ready IoT Solution - OWLOS.
+
+OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
+ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
+была опубликована Фондом свободного программного обеспечения; версии 3
+лицензии, любой более поздней версии.
+
+OWLOS распространяется в надежде, что она будет полезной, но БЕЗО ВСЯКИХ
+ГАРАНТИЙ; даже без неявной гарантии ТОВАРНОГО ВИДА или ПРИГОДНОСТИ ДЛЯ
+ОПРЕДЕЛЕННЫХ ЦЕЛЕЙ.
+Подробнее см.в Стандартной общественной лицензии GNU.
+
+Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
+этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
+--------------------------------------------------------------------------------------*/
+
+
+using OWLOSAdmin.Ecosystem;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Text;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 using Point = System.Windows.Point;
 
 namespace OWLOSAdmin.EcosystemExplorer
 {
     /// <summary>
-    /// Interaction logic for EcosystemExplorerWindow.xaml
+    /// OWLOS Ecosystem Explorer 
     /// </summary>
     public partial class EcosystemExplorerWindow : Window
     {
         /// <summary>
         /// Width and Height of cell
+        /// Размер сетки 
         /// </summary>
         private const int cellSize = 10000;
 
+        /// <summary>
+        /// Шаг сетки
+        /// </summary>
         private const int cellStep = 25;
 
-        private System.Windows.Point downPoint;
-        private double hOffset, vOffset;
-
         //  UIColors colorChema = new UIColors();
+
         /// <summary>
         /// Cell zoom factor (mouse while zoom)
+        /// Шаг зума
         /// </summary>
         public double zoomFactor = 5.4f;
 
-        private double pZoom;
+        /// <summary>
+        /// Текущий уровень зума
+        /// Также определяет - рисовать или нет мелкие координатные линии, в зависемости от текущего зум - если масштаб мелкий 
+        /// линии не рисуются - много мелких линий зашумляет окно
+        /// </summary>
+        private double currentZoom = 10.0f;
 
+        /// <summary>
+        /// Перетаскивания сетки мышью - для запоминания координат клика
+        /// </summary>
+        private System.Windows.Point downPoint;
+
+        /// <summary>
+        /// Смещения при перетаскивании сетки 
+        /// </summary>
+        private double hOffset, vOffset;
+
+        /// <summary>
+        /// Для тестов ноды 
+        /// </summary>
         public EcosystemControl adminControl;
 
 
@@ -50,58 +107,51 @@ namespace OWLOSAdmin.EcosystemExplorer
         {
             InitializeComponent();
 
-            
+            //Временно для теста нод ----------
             Admin admin = new Admin();
             adminControl = new EcosystemControl(null);
             nodeGrid.Children.Add(adminControl);
 
             admin.OnNewNode += Admin_NewOWLOSNode;
             admin.Load();
+            //END OF Временно для теста нод ---
 
-            
+            //Настраиваем разметы элементы в зависимости от выбраного размера сетки
             nodeGrid.Width = nodeGrid.Height = cellSize;
             viewbox.Width = viewbox.Height = cellSize / 10;
 
-            autoScrollImage.Tag = (int)0;
-            drawCellImage.Tag = (int)1;
+            autoScrollImage.Tag = 0;
+            drawCellImage.Tag = 1;
 
-            // nodeGrid.Tag = nodeTreeView;
-
-
+            //Рисуем сетку 
             Dispatcher.BeginInvoke((Action)DrawCell, DispatcherPriority.Send);
-
-
-            double zoomTo = 10.0f;
-            zoomTextBox.Text = (zoomTo).ToString(("F"));
-            double zoom = zoomTo * (cellSize / 100);
-
-
-
-            /*
-            NodeControl nodeCountrol2 = new NodeControl();
-            nodeGrid.Children.Add(nodeCountrol2);
-
-            NodeControl nodeCountrol3 = new NodeControl();
-            nodeGrid.Children.Add(nodeCountrol3);
-            */
-
-
-
         }
 
+        /// <summary>
+        /// Настраиваем начальный зум и позицию пользователя в сетке (можно сделать после загрузки всех компонентов окна, поэтому вынесено из конструктора EcosystemExplorerWindow())
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            zoomTextBox.Text = (currentZoom).ToString(("F"));
+            Zoom(new Point(cellSize / 2.0f, cellSize / 2.0f));
+        }
+
+
+        /// <summary>
+        /// Временно, проверка загрузки нод
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Admin_NewOWLOSNode(object sender, OWLOSNodeWrapperEventArgs e)
         {
             OWLOSNodeControl nodeCountrol1 = new OWLOSNodeControl(e.nodeWrapper);
-            
             nodeGrid.Children.Add(nodeCountrol1.parentControl);
-
             nodeCountrol1.parentControl.Show();
-
-            // var relationLine = new EcosystemRelationLine(nodeCountrol1, nodeCountrol1.parentControl, adminControl, nodeCountrol1, nodeGrid);
-            // relationLine.DrawRelationLine();
-
         }
 
+        #region DrawCell
         /// <summary>
         /// Drawing cell grid lines (navigation lines)
         /// </summary>
@@ -115,41 +165,42 @@ namespace OWLOSAdmin.EcosystemExplorer
             const int bitmapSize = 2000;
             const int bitmapLength = cellSize / bitmapSize;
             const int posCenter = (bitmapLength / 2);
-            var size = new System.Drawing.Rectangle(0, 0, bitmapSize, bitmapSize);
+            System.Drawing.Rectangle size = new System.Drawing.Rectangle(0, 0, bitmapSize, bitmapSize);
             //Выделяем место для наших линий дабы потом их отрендерить в UI
             BitmapSource bsSmallBlack, bsBlackRed, bsBlackGreenHorizontal, bsBlackGreenVertical, bsBlackGreenCenter;
 
             //Подготавливаем колажи где будут нарисованы наши линии
-            using (var blackBitmap = new Bitmap(bitmapSize, bitmapSize))
-            using (var smallBlackBitmap = new Bitmap(bitmapSize, bitmapSize))
-            using (var greenBitmapVertical = new Bitmap(bitmapSize, bitmapSize))
-            using (var greenBitmapHorizontal = new Bitmap(bitmapSize, bitmapSize))
-            using (var redBitmap = new Bitmap(bitmapSize, bitmapSize))
+            using (Bitmap blackBitmap = new Bitmap(bitmapSize, bitmapSize))
+            using (Bitmap smallBlackBitmap = new Bitmap(bitmapSize, bitmapSize))
+            using (Bitmap greenBitmapVertical = new Bitmap(bitmapSize, bitmapSize))
+            using (Bitmap greenBitmapHorizontal = new Bitmap(bitmapSize, bitmapSize))
+            using (Bitmap redBitmap = new Bitmap(bitmapSize, bitmapSize))
             {
-                var mediaColorBrushGreen = (SolidColorBrush)App.Current.Resources["OWLOSSuccess"];
+                SolidColorBrush mediaColorBrushGreen = (SolidColorBrush)App.Current.Resources["OWLOSSuccess"];
                 System.Drawing.Color colorGreen = System.Drawing.Color.FromArgb(mediaColorBrushGreen.Color.A,
                                                              mediaColorBrushGreen.Color.R,
                                                              mediaColorBrushGreen.Color.G,
                                                              mediaColorBrushGreen.Color.B);
-                var mediaColorBrushRed = (SolidColorBrush)App.Current.Resources["OWLOSDanger"];
+                SolidColorBrush mediaColorBrushRed = (SolidColorBrush)App.Current.Resources["OWLOSDanger"];
                 System.Drawing.Color colorRed = System.Drawing.Color.FromArgb(mediaColorBrushRed.Color.A,
                                                              mediaColorBrushRed.Color.R,
                                                              mediaColorBrushRed.Color.G,
                                                              mediaColorBrushRed.Color.B);
-                var mediaColorBrushBlack = (SolidColorBrush)App.Current.Resources["OWLOSInfoAlpha3"];
+                SolidColorBrush mediaColorBrushBlack = (SolidColorBrush)App.Current.Resources["OWLOSInfoAlpha3"];
                 System.Drawing.Color colorBlack = System.Drawing.Color.FromArgb(mediaColorBrushBlack.Color.A,
                                                              mediaColorBrushBlack.Color.R,
                                                              mediaColorBrushBlack.Color.G,
                                                              mediaColorBrushBlack.Color.B);
-                var penGreen = new System.Drawing.Pen(colorGreen, 10);
-                var penRed = new System.Drawing.Pen(colorRed, 6);
-                var penBlack = new System.Drawing.Pen(colorBlack, 2);
-                var smallPenBlack = new System.Drawing.Pen(colorBlack, .3f);
+                System.Drawing.Pen penGreen = new System.Drawing.Pen(colorGreen, 10);
+                System.Drawing.Pen penRed = new System.Drawing.Pen(colorRed, 6);
+                System.Drawing.Pen penBlack = new System.Drawing.Pen(colorBlack, 2);
+                System.Drawing.Pen smallPenBlack = new System.Drawing.Pen(colorBlack, .3f);
 
                 //Подготавливаем почву для рисования линий
-                using (var gSmallBlack = System.Drawing.Graphics.FromImage(smallBlackBitmap))
-                using (var gBlack = System.Drawing.Graphics.FromImage(blackBitmap))
-                using (var gRed = System.Drawing.Graphics.FromImage(redBitmap))
+                using (Graphics gSmallBlack = System.Drawing.Graphics.FromImage(smallBlackBitmap))
+                using (Graphics gBlack = System.Drawing.Graphics.FromImage(blackBitmap))
+                using (Graphics gRed = System.Drawing.Graphics.FromImage(redBitmap))
+                {
                     //Далее сам процесс отрисовки линий и координат
                     for (int linePosition = 0; linePosition < cellSize; linePosition += cellStep)
                     {
@@ -157,10 +208,12 @@ namespace OWLOSAdmin.EcosystemExplorer
                         System.Drawing.Graphics graphics = null;
                         if (linePosition % 100 == 0)
                         {
-                            TextBlock textBlock = new TextBlock();
-                            textBlock.Text = linePosition.ToString();
-                            textBlock.Margin = new Thickness(linePosition, 0, 0, 0);
-                            
+                            TextBlock textBlock = new TextBlock
+                            {
+                                Text = linePosition.ToString(),
+                                Margin = new Thickness(linePosition, 0, 0, 0)
+                            };
+
                             if (linePosition == cellSize / 2)
                             {
                                 textBlock.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSSuccess"];
@@ -192,9 +245,11 @@ namespace OWLOSAdmin.EcosystemExplorer
                             textBlock.VerticalAlignment = VerticalAlignment.Center;
                             horisontalNavigationGrid.Children.Add(textBlock);
 
-                            textBlock = new TextBlock();
-                            textBlock.Text = linePosition.ToString();
-                            textBlock.Margin = new Thickness(0, linePosition, 0, 0);
+                            textBlock = new TextBlock
+                            {
+                                Text = linePosition.ToString(),
+                                Margin = new Thickness(0, linePosition, 0, 0)
+                            };
                             if (linePosition == cellSize / 2)
                             {
 
@@ -222,13 +277,13 @@ namespace OWLOSAdmin.EcosystemExplorer
 
                         if (drawingPen != null)
                         {
-                            var verticalBegin = new System.Drawing.Point();
-                            var verticalEnd = new System.Drawing.Point();
+                            System.Drawing.Point verticalBegin = new System.Drawing.Point();
+                            System.Drawing.Point verticalEnd = new System.Drawing.Point();
 
-                            var horizontalBegin = new System.Drawing.Point();
-                            var horizontalEnd = new System.Drawing.Point();
+                            System.Drawing.Point horizontalBegin = new System.Drawing.Point();
+                            System.Drawing.Point horizontalEnd = new System.Drawing.Point();
 
-                            
+
                             if (drawingPen == penGreen)
                             {
                                 //Для зелёных линий отдельно рисуем
@@ -238,13 +293,18 @@ namespace OWLOSAdmin.EcosystemExplorer
                                 horizontalBegin.X = 0;
                                 horizontalEnd.X = bitmapSize;
 
-                                using (var gGreenVertical = System.Drawing.Graphics.FromImage(greenBitmapVertical))
+                                using (Graphics gGreenVertical = System.Drawing.Graphics.FromImage(greenBitmapVertical))
+                                {
                                     gGreenVertical.DrawLine(drawingPen, verticalBegin, verticalEnd);
-                                using (var gGreenHorizontal = System.Drawing.Graphics.FromImage(greenBitmapHorizontal))
+                                }
+
+                                using (Graphics gGreenHorizontal = System.Drawing.Graphics.FromImage(greenBitmapHorizontal))
+                                {
                                     gGreenHorizontal.DrawLine(drawingPen, horizontalBegin, horizontalEnd);
+                                }
                             }
                             else
-                            
+
                             {
                                 verticalBegin.X = verticalEnd.X = linePosition;
                                 verticalEnd.Y = bitmapSize;
@@ -257,6 +317,7 @@ namespace OWLOSAdmin.EcosystemExplorer
                             }
                         }
                     }
+                }
 
                 //Переводим из bitmap в bitmapSource
                 System.Drawing.Imaging.BitmapData bitmapData = smallBlackBitmap.LockBits(size, System.Drawing.Imaging.ImageLockMode.ReadOnly, smallBlackBitmap.PixelFormat);
@@ -279,12 +340,16 @@ namespace OWLOSAdmin.EcosystemExplorer
             {
                 //Поповоду virtualizingstackpanel - https://docs.microsoft.com/en-us/dotnet/api/system.windows.controls.virtualizingstackpanel?view=netframework-4.8 - В самому низу Remarks
                 //Поле для больших линий
-                var horizontalVirtualStackPanel = new VirtualizingStackPanel();
-                horizontalVirtualStackPanel.Orientation = Orientation.Horizontal;
+                VirtualizingStackPanel horizontalVirtualStackPanel = new VirtualizingStackPanel
+                {
+                    Orientation = Orientation.Horizontal
+                };
                 nodeLines.Children.Add(horizontalVirtualStackPanel);
                 //Поле для маленьких линий
-                var smallHorizontalVirtualStackPanel = new VirtualizingStackPanel();
-                smallHorizontalVirtualStackPanel.Orientation = Orientation.Horizontal;
+                VirtualizingStackPanel smallHorizontalVirtualStackPanel = new VirtualizingStackPanel
+                {
+                    Orientation = Orientation.Horizontal
+                };
                 smallNodeLines.Children.Add(smallHorizontalVirtualStackPanel);
                 for (int posX = 0; posX < bitmapLength; posX++)
                 {
@@ -329,15 +394,16 @@ namespace OWLOSAdmin.EcosystemExplorer
             horisontalNavigationGrid.Visibility = Visibility.Visible;
             verticalNavigationGrid.Visibility = Visibility.Visible;
         }
+        
 
         private static BitmapSource CombineBitmaps(System.Drawing.Rectangle size, params System.Drawing.Bitmap[] args)
         {
 
-            using (var bitmap = new System.Drawing.Bitmap(size.Width, size.Height))
+            using (Bitmap bitmap = new System.Drawing.Bitmap(size.Width, size.Height))
             {
-                using (var gA = System.Drawing.Graphics.FromImage(bitmap))
+                using (Graphics gA = System.Drawing.Graphics.FromImage(bitmap))
                 {
-                    foreach (var b in args)
+                    foreach (Bitmap b in args)
                     {
                         gA.DrawImage(b, size);
                     }
@@ -353,18 +419,12 @@ namespace OWLOSAdmin.EcosystemExplorer
                 return bitmapSource;
             }
         }
+        #endregion
 
         private void Zoom(System.Windows.Point point)
         {
-            double tempZoom = double.NaN;
-            if (!double.TryParse(zoomTextBox.Text, out tempZoom))
-            {
-                return;
-            }
-            pZoom = tempZoom;
-            double zoom = tempZoom * (cellSize / 100);
 
-
+            double zoom = currentZoom * (cellSize / 100);
 
             if ((zoom > EcosystemExplorerGrid.ActualWidth) && (zoom > EcosystemExplorerGrid.ActualHeight))
             {
@@ -378,7 +438,7 @@ namespace OWLOSAdmin.EcosystemExplorer
                 viewbox.Width = viewbox.Height = EcosystemExplorerGrid.ActualWidth;
             }
 
-            if (pZoom < 40)
+            if (currentZoom < 40)
             {
                 smallNodeLines.Visibility = Visibility.Hidden;
             }
@@ -394,10 +454,25 @@ namespace OWLOSAdmin.EcosystemExplorer
 
         private void MoveWorld(System.Windows.Point point)
         {
-            if (point.X + viewbox.ActualWidth < EcosystemExplorerGrid.ActualWidth) point.X = EcosystemExplorerGrid.ActualWidth - viewbox.ActualWidth;
-            if (point.Y + viewbox.ActualHeight < EcosystemExplorerGrid.ActualHeight) point.Y = EcosystemExplorerGrid.ActualHeight - viewbox.ActualHeight;
-            if (point.X > 0) point.X = 0;
-            if (point.Y > 0) point.Y = 0;
+            if (point.X + viewbox.ActualWidth < EcosystemExplorerGrid.ActualWidth)
+            {
+                point.X = EcosystemExplorerGrid.ActualWidth - viewbox.ActualWidth;
+            }
+
+            if (point.Y + viewbox.ActualHeight < EcosystemExplorerGrid.ActualHeight)
+            {
+                point.Y = EcosystemExplorerGrid.ActualHeight - viewbox.ActualHeight;
+            }
+
+            if (point.X > 0)
+            {
+                point.X = 0;
+            }
+
+            if (point.Y > 0)
+            {
+                point.Y = 0;
+            }
 
             viewbox.Margin = new Thickness(point.X, point.Y, 0, 0);
 
@@ -411,56 +486,44 @@ namespace OWLOSAdmin.EcosystemExplorer
         }
 
 
-
-
-        private void nodeGrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            //
-        }
-
-        private void nodeGrid_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-
-        }
-
+        /// <summary>
+        /// Zoom когда пользователь вращает колесеко мышки. Учитывается положени мыши относительно центра окна - зум происходит со сдвигом к позиции указателя мыши. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void EcosystemExplorerGrid_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
+            //в зависемости от текущего масштаба вычисляем делту колеса мыши
             double tempZoom = (viewbox.ActualWidth + e.Delta * zoomFactor) / (cellSize / 100);
             double zoom = tempZoom * (cellSize / 100);
 
             if ((zoom > EcosystemExplorerGrid.ActualWidth) && (zoom > EcosystemExplorerGrid.ActualHeight))
             {
+                //из e. события запрашиваем координаты указателя мыши относительно EcosystemExplorerGrid
                 System.Windows.Point point = e.GetPosition(EcosystemExplorerGrid);
                 double aspect = zoom / viewbox.ActualWidth;
 
+                //пересчитываем относительный сдвиг - вверх
                 point.X -= (Math.Abs(viewbox.Margin.Left) + point.X) * aspect;
                 point.Y -= (Math.Abs(viewbox.Margin.Top) + point.Y) * aspect;
 
                 //ecosystemExplorerTextBlock.Text = point.X.ToString() + ":" + point.Y.ToString();
-                zoomTextBox.Text = tempZoom.ToString("F");
+                currentZoom = tempZoom;
+                zoomTextBox.Text = currentZoom.ToString("F");
                 Zoom(point);
             }
             e.Handled = true;
-
         }
 
-
-        private void EcosystemExplorerGrid_PreviewMouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (e.MiddleButton != MouseButtonState.Pressed)
-            {
-                EcosystemExplorerGrid.Cursor = null;
-            }
-
-        }
-
+        /// <summary>
+        /// Когда пользователь двигает мышь с зажатой кнопкой над сеткой 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void EcosystemExplorerGrid_PreviewMouseMove(object sender, MouseEventArgs e)
         {
             int x = (int)e.GetPosition(nodeGrid).X;
             int y = (int)e.GetPosition(nodeGrid).Y;
-
-
-
 
             if (e.MiddleButton == MouseButtonState.Pressed)
             {
@@ -506,9 +569,41 @@ namespace OWLOSAdmin.EcosystemExplorer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Клик в сетку - запоминаем позицию, возможно пользователь зажмет кнопку на мыши и будет ею двигать
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void EcosystemExplorerGrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.MiddleButton == MouseButtonState.Pressed)
+            {
+                downPoint = e.GetPosition(EcosystemExplorerGrid);
+                hOffset = viewbox.Margin.Left;
+                vOffset = viewbox.Margin.Top;
+                EcosystemExplorerGrid.Cursor = Cursors.SizeAll;
+            }
+        }
 
 
+        private void nodeGrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            //
+        }
 
+        private void nodeGrid_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            //
+        }
+
+        private void EcosystemExplorerGrid_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (e.MiddleButton != MouseButtonState.Pressed)
+            {
+                EcosystemExplorerGrid.Cursor = null;
+            }
         }
 
         private void zoomToOneHImage_Click(object sender, RoutedEventArgs e)
@@ -517,7 +612,6 @@ namespace OWLOSAdmin.EcosystemExplorer
             zoomTextBox.Text = (zoomTo).ToString(("F"));
             double zoom = zoomTo * (cellSize / 100);
             Zoom(new Point(EcosystemExplorerGrid.ActualWidth / 2 - zoom / 2, EcosystemExplorerGrid.ActualHeight / 2 - zoom / 2));
-
         }
 
         private void zoomToFullImage_Click(object sender, RoutedEventArgs e)
@@ -529,21 +623,31 @@ namespace OWLOSAdmin.EcosystemExplorer
 
         }
 
+        /// <summary>
+        /// Переключатель - выбирает режимы при котором сетка движется автоматически, если пользователь зацепил объект мышью
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void autoScrollImage_Click(object sender, RoutedEventArgs e)
         {
             if ((int)autoScrollImage.Tag == 1)
             {
                 autoScrollImage.Tag = 0;
-               // autoScrollImage.Source = Icons.GetIcon(431);
+                // autoScrollImage.Source = Icons.GetIcon(431);
             }
             else
             {
                 autoScrollImage.Tag = 1;
-              //  autoScrollImage.Source = Icons.GetIcon(432);
+                //  autoScrollImage.Source = Icons.GetIcon(432);
             }
 
         }
 
+        /// <summary>
+        /// Включает - выключает прорисовку сетки
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void drawCellImage_Click(object sender, RoutedEventArgs e)
         {
             if ((int)drawCellImage.Tag == 1)
@@ -557,7 +661,7 @@ namespace OWLOSAdmin.EcosystemExplorer
             {
                 drawCellImage.Tag = 1;
                 nodeLines.Visibility = Visibility.Visible;
-                if (pZoom > 40)
+                if (currentZoom > 40)
                 {
                     smallNodeLines.Visibility = Visibility.Visible;
                 }
@@ -565,42 +669,11 @@ namespace OWLOSAdmin.EcosystemExplorer
 
         }
 
-        private void animante_Click(object sender, RoutedEventArgs e)
-        {
-            RenderTargetBitmap bmp = new RenderTargetBitmap((int)contentGrid.ActualWidth, (int)contentGrid.ActualHeight, 96, 96, PixelFormats.Pbgra32);
-
-            bmp.Render(contentGrid);
-
-            var encoder = new PngBitmapEncoder();
-
-            encoder.Frames.Add(BitmapFrame.Create(bmp));
-
-            using (Stream stm = File.Create(@"d:\test.png"))
-                encoder.Save(stm);
-
-            int b = 10;
-            int limit = 500;
-            float steps = 20.8f;
-            int step = ((int)(limit / steps));
-            Timer t = new Timer(100);
-            t.AutoReset = true;
-            t.Elapsed += new ElapsedEventHandler((Object source, ElapsedEventArgs e) => {
-                b += step; 
-                this.Dispatcher.Invoke(() =>
-                {
-                    if (b >= limit)
-                    {
-                        test.Text = limit.ToString();
-                        t.Stop();
-                        return;
-                    }
-                    test.Text = b.ToString();
-                });
-            });
-            t.Start();
-
-        }
-
+        /// <summary>
+        /// Переключатель плоский или наклоный просмотр сетки
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Button_Click(object sender, RoutedEventArgs e)
         {
 
@@ -651,19 +724,9 @@ namespace OWLOSAdmin.EcosystemExplorer
             skewTransformY.BeginAnimation(SkewTransform.AngleYProperty, skewGrassY);
             rotateTransform.BeginAnimation(RotateTransform.AngleProperty, rotate);
 
-            
-        }
-
-        private void EcosystemExplorerGrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.MiddleButton == MouseButtonState.Pressed)
-            {
-                downPoint = e.GetPosition(EcosystemExplorerGrid);
-                hOffset = viewbox.Margin.Left;
-                vOffset = viewbox.Margin.Top;
-                EcosystemExplorerGrid.Cursor = Cursors.SizeAll;
-            }
 
         }
+
+
     }
 }
