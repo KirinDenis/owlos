@@ -5,26 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:OWLOSAdmin.EcosystemExplorer.EcosystemControls"
              mc:Ignorable="d" 
-             d:DesignHeight="700" d:DesignWidth="700" Loaded="UserControl_Loaded">
-    <Grid x:Name="text2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" RenderTransformOrigin="0.5,0.5" Width="700" Height="700" Margin="0,0,0,0" Cursor="Hand" Loaded="text2_Loaded">
+             d:DesignHeight="700" d:DesignWidth="700" Loaded="UserControl_Loaded" >
+    
+    <Grid x:Name="driverMainGrid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" RenderTransformOrigin="0.5,0.5" Width="700" Height="700" Margin="0,0,0,0" Cursor="Hand">
 
-        <Path Name="pathL1" Stroke="{DynamicResource OWLOSInfoAlpha3}" Data="M 487 55 A 325 325 0 0 0 350 25" StrokeThickness="40" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" MouseLeftButtonDown="pathL1_PreviewMouseLeftButtonDown" MouseEnter="pathL1_MouseEnter" MouseLeave="pathL1_MouseLeave" />
-        <Path Name="pathL2" Stroke="{DynamicResource OWLOSInfo}" Data="M 100 100 A 200 200 0 0 0 450 40" StrokeThickness="1" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700"  />
-        <Path Name="pathL3" Stroke="{DynamicResource OWLOSInfo}" Data="M 100 100 A 200 200 0 0 0 450 40" StrokeThickness="1" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700"  />
-        <Ellipse x:Name="connector2" Width="10" Height="10" Fill="{DynamicResource OWLOSWarning}" VerticalAlignment="Top" HorizontalAlignment="Center" />
-        <TextBlock x:Name="driverNameText" Text="ActuatorDriver1234567890ActuaA" Foreground="{DynamicResource OWLOSLight}" HorizontalAlignment="Left"  RenderTransformOrigin="0.5,0.5" FontSize="9" Width="137" TextAlignment="Center" VerticalAlignment="Top" Height="11" Margin="353,23,0,0" MouseLeftButtonDown="pathL1_PreviewMouseLeftButtonDown"  MouseEnter="driverNameText_MouseEnter" >
-        </TextBlock>
+        <Path Name="driverBorder1" Stroke="{DynamicResource OWLOSInfo}" Data="M 100 100 A 200 200 0 0 0 450 40" StrokeThickness="1" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700"  />
+        <Path Name="driverBorder2" Stroke="{DynamicResource OWLOSInfo}" Data="M 100 100 A 200 200 0 0 0 450 40" StrokeThickness="1" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700"  />
 
-        <TextBlock x:Name="text22" Text="" Foreground="{DynamicResource OWLOSLight}" HorizontalAlignment="Left" Margin="402,57,0,-26" RenderTransformOrigin="0,0" FontSize="9" Width="50" TextAlignment="Center" >
-            <TextBlock.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform/>
-                    <SkewTransform/>
-                    <RotateTransform Angle="15.524"/>
-                    <TranslateTransform/>
-                </TransformGroup>
-            </TextBlock.RenderTransform>
-        </TextBlock>
-
+        <Path Name="driverBackground" Stroke="{DynamicResource OWLOSInfoAlpha3}" Data="M 487 55 A 325 325 0 0 0 350 25" StrokeThickness="40" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" MouseLeftButtonDown="driverBackground_PreviewMouseLeftButtonDown" MouseEnter="driverBackground_MouseEnter" MouseLeave="driverBackground_MouseLeave" />
+        <TextBlock x:Name="driverNameText" Text="ActuatorDriver1234567890ActuaA" Foreground="{DynamicResource OWLOSLight}" HorizontalAlignment="Left"  RenderTransformOrigin="0.5,0.5" FontSize="9" Width="137" TextAlignment="Center" VerticalAlignment="Top" Height="11" Margin="353,23,0,0" />
     </Grid>
 </UserControl>

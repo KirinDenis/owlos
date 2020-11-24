@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:OWLOSAdmin.EcosystemExplorer"
              mc:Ignorable="d" 
              HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5"
-             d:DesignHeight="850" d:DesignWidth="850">
+             d:DesignHeight="850" d:DesignWidth="850" Background="#02000000">
     <Grid>
         <Grid>
 

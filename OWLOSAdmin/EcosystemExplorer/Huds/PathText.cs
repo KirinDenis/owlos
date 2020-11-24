@@ -60,7 +60,9 @@ namespace PathText
                 textBlock[i].FontStretch = sourceTextBlock.FontStretch;
                 textBlock[i].FontWeight = sourceTextBlock.FontWeight;
                 textBlock[i].FontStyle = sourceTextBlock.FontStyle;
-                
+                textBlock[i].IsHitTestVisible = false;
+
+
 
                 textBlock[i].Background = sourceTextBlock.Background;
                 textBlock[i].Foreground = sourceTextBlock.Foreground;

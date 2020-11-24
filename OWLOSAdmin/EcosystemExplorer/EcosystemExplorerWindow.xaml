@@ -4,14 +4,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:OWLOSAdmin"
-        FontFamily="file:///D:\Users\Egor\source\repos\KirinDenis\owlos\OWLOSAdmin\Fonts\#omega flight"
+        xmlns:local="clr-namespace:OWLOSAdmin"        
         mc:Ignorable="d"                
-        Title="Ecosystem Explorer" Height="450" Width="800"  WindowState="Maximized" SnapsToDevicePixels="True" Loaded="Window_Loaded" >
+        Title="Ecosystem Explorer" Height="450" Width="800"  WindowState="Maximized" SnapsToDevicePixels="True" Loaded="Window_Loaded" PreviewKeyDown="Window_PreviewKeyDown" Background="{DynamicResource OWLOSDark}" >
 
-    <!-- FontFamily="file:///Fonts\#omega flight"-->
+    <!-- FontFamily="file:///D:\Users\Egor\source\repos\KirinDenis\owlos\OWLOSAdmin\Fonts\#omega flight"-->
 
-    <Grid x:Name="contentGrid" Background="{DynamicResource OWLOSDark}" >
+    <Grid x:Name="contentGrid" Background="{DynamicResource OWLOSAfterDark}" >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="40*"/>
             <ColumnDefinition Width="7*"/>
@@ -34,8 +33,8 @@
             </Grid.RenderTransform>
             <Grid.LayoutTransform>
                 <TransformGroup>
-                    
-                    
+
+
                     <TranslateTransform/>
                 </TransformGroup>
             </Grid.LayoutTransform>
@@ -46,7 +45,7 @@
 
 
 
-            <Grid x:Name="EcosystemExplorerGrid" Grid.Row="1" Grid.Column="0" PreviewMouseMove="EcosystemExplorerGrid_PreviewMouseMove" PreviewMouseDown="EcosystemExplorerGrid_PreviewMouseDown" PreviewMouseUp="EcosystemExplorerGrid_PreviewMouseUp" PreviewMouseWheel="EcosystemExplorerGrid_PreviewMouseWheel" RenderTransformOrigin="0.5,0" >
+            <Grid x:Name="EcosystemExplorerGrid" Grid.Row="1" Grid.Column="0" PreviewMouseMove="EcosystemExplorerGrid_PreviewMouseMove" PreviewMouseDown="EcosystemExplorerGrid_PreviewMouseDown" PreviewMouseUp="EcosystemExplorerGrid_PreviewMouseUp" PreviewMouseWheel="EcosystemExplorerGrid_PreviewMouseWheel" RenderTransformOrigin="0.3,0" >
                 <Grid.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform ScaleX="1.8" ScaleY="1.8"/>
@@ -55,12 +54,8 @@
                         <TranslateTransform/>
                     </TransformGroup>
                 </Grid.RenderTransform>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="65*"/>
-                    <ColumnDefinition Width="253*"/>
-                </Grid.ColumnDefinitions>
 
-                <Viewbox x:Name="viewbox"  Width="10025" Height="10025" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.ColumnSpan="2" Margin="0,0,-10000,-10000">
+                <Viewbox x:Name="viewbox"  Width="10025" Height="10025" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="0,0,-10000,-10000">
                     <Viewbox.RenderTransform>
                         <TransformGroup>
                             <ScaleTransform/>
@@ -70,7 +65,7 @@
                         </TransformGroup>
                     </Viewbox.RenderTransform>
 
-                    <Grid Background="{DynamicResource OWLOSSecondary}" >
+                    <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="35"/>
                             <RowDefinition Height="100*"/>
@@ -90,7 +85,7 @@
 
 
 
-                        <Grid x:Name="nodeGrid" Grid.Column="1" Grid.Row="1" Width="10000" Height="10000" Background="{DynamicResource OWLOSDarkAlpha2}" HorizontalAlignment="Left" VerticalAlignment="Top" PreviewMouseDown="nodeGrid_PreviewMouseDown" PreviewMouseLeftButtonDown="nodeGrid_PreviewMouseLeftButtonDown" RenderTransformOrigin="0.5,0.5">
+                        <Grid x:Name="nodeGrid" Grid.Column="1" Grid.Row="1" Width="10000" Height="10000" Background="{DynamicResource OWLOSDarkAlpha3}" HorizontalAlignment="Left" VerticalAlignment="Top" PreviewMouseDown="nodeGrid_PreviewMouseDown" PreviewMouseLeftButtonDown="nodeGrid_PreviewMouseLeftButtonDown" RenderTransformOrigin="0.5,0.5">
 
                         </Grid>
 
@@ -141,7 +136,7 @@
                     <Button Name="zoomToFullImage"  Width="25" Height="25" ToolTip="Zoom to full view" Margin="5,0,5,0" Content="Zf" Click="zoomToFullImage_Click"/>
                     <Button Name="autoScrollImage" Width="25" Height="25" ToolTip="Auto scroll" Margin="5,0,5,0" Content="AS" Click="autoScrollImage_Click"/>
                     <Button Name="drawCellImage" Width="25" Height="25" ToolTip="Draw cell" Margin="5,0,5,0"  Content="DC" Click="drawCellImage_Click"/>
-                    <Button Width="25" Height="25" ToolTip="Draw cell" Margin="5,0,5,0"  Content="PA" Click="Button_Click"  />
+                    <Button Name="perspectiveViewImage" Width="25" Height="25" ToolTip="Draw cell" Margin="5,0,5,0"  Content="PA" Click="perspectiveViewImage_Click"  />
                 </StackPanel>
             </Grid>
 

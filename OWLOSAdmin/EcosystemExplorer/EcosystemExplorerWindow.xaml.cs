@@ -97,6 +97,12 @@ namespace OWLOSAdmin.EcosystemExplorer
         /// </summary>
         private double hOffset, vOffset;
 
+
+        /// <summary>
+        /// Последняя точка перехода
+        /// </summary>
+        private Point lastPoint;
+
         /// <summary>
         /// Для тестов ноды 
         /// </summary>
@@ -135,7 +141,11 @@ namespace OWLOSAdmin.EcosystemExplorer
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             zoomTextBox.Text = (currentZoom).ToString(("F"));
-            Zoom(new Point(cellSize / 2.0f, cellSize / 2.0f));
+
+            Point point = new Point(EcosystemExplorerGrid.ActualWidth / 2.0f, -EcosystemExplorerGrid.ActualHeight / 2.0f);
+            Zoom(point);
+            viewbox.UpdateLayout();
+            MoveWorld(point);
         }
 
 
@@ -426,7 +436,7 @@ namespace OWLOSAdmin.EcosystemExplorer
 
             double zoom = currentZoom * (cellSize / 100);
 
-            if ((zoom > EcosystemExplorerGrid.ActualWidth) && (zoom > EcosystemExplorerGrid.ActualHeight))
+            if ((zoom > EcosystemExplorerGrid.ActualWidth / 4) && (zoom > EcosystemExplorerGrid.ActualHeight / 4))
             {
                 viewbox.Width = zoom;
                 viewbox.Height = zoom;
@@ -435,7 +445,7 @@ namespace OWLOSAdmin.EcosystemExplorer
             }
             else
             {
-                viewbox.Width = viewbox.Height = EcosystemExplorerGrid.ActualWidth;
+                viewbox.Width = viewbox.Height = EcosystemExplorerGrid.ActualWidth / 4;
             }
 
             if (currentZoom < 40)
@@ -449,19 +459,19 @@ namespace OWLOSAdmin.EcosystemExplorer
                     smallNodeLines.Visibility = Visibility.Visible;
                 }
             }
-
         }
 
         private void MoveWorld(System.Windows.Point point)
         {
-            if (point.X + viewbox.ActualWidth < EcosystemExplorerGrid.ActualWidth)
+            
+            if (point.X + viewbox.ActualWidth < EcosystemExplorerGrid.ActualWidth - EcosystemExplorerGrid.ActualWidth / 2)
             {
-                point.X = EcosystemExplorerGrid.ActualWidth - viewbox.ActualWidth;
+                point.X = EcosystemExplorerGrid.ActualWidth - viewbox.ActualWidth - EcosystemExplorerGrid.ActualWidth / 2;
             }
 
-            if (point.Y + viewbox.ActualHeight < EcosystemExplorerGrid.ActualHeight)
+            if (point.Y + viewbox.ActualHeight < EcosystemExplorerGrid.ActualHeight - EcosystemExplorerGrid.ActualHeight / 2)
             {
-                point.Y = EcosystemExplorerGrid.ActualHeight - viewbox.ActualHeight;
+                point.Y = EcosystemExplorerGrid.ActualHeight - viewbox.ActualHeight - EcosystemExplorerGrid.ActualHeight / 2;
             }
 
             if (point.X > 0)
@@ -474,6 +484,7 @@ namespace OWLOSAdmin.EcosystemExplorer
                 point.Y = 0;
             }
 
+
             viewbox.Margin = new Thickness(point.X, point.Y, 0, 0);
 
             double alpha = viewbox.ActualHeight / cellSize;
@@ -483,7 +494,59 @@ namespace OWLOSAdmin.EcosystemExplorer
             verticalNavigationGrid.Margin = new Thickness(viewbox.Margin.Left / alpha, 0, viewbox.Margin.Left / alpha - 30, 0);
             verticalNavigationGrid.UpdateLayout();
 
+            lastPoint = point;
+
         }
+
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Key.Left:
+                    lastPoint.X += 100.0f;
+                    MoveWorld(lastPoint);
+                    break;
+                case Key.Right:
+                    lastPoint.X -= 100.0f;
+                    MoveWorld(lastPoint);
+                    break;
+                case Key.Up:
+                    lastPoint.Y += 100.0f;
+                    MoveWorld(lastPoint);
+                    break;
+                case Key.Down:
+                    lastPoint.Y -= 100.0f;
+                    MoveWorld(lastPoint);
+                    break;
+                case Key.Home:
+                    lastPoint.X = 0.0f;                    
+                    MoveWorld(lastPoint);
+                    break;
+                case Key.End:
+                    lastPoint.X = EcosystemExplorerGrid.ActualWidth - viewbox.ActualWidth - EcosystemExplorerGrid.ActualWidth / 2;                    
+                    MoveWorld(lastPoint);
+                    break;
+                case Key.PageUp:
+                    lastPoint.Y = 0;
+                    MoveWorld(lastPoint);
+                    break;
+                case Key.PageDown:
+                    lastPoint.Y = EcosystemExplorerGrid.ActualHeight - viewbox.ActualHeight;
+                    MoveWorld(lastPoint);
+                    break;
+                case Key.OemPlus:
+                    currentZoom += 10;
+                    Zoom(lastPoint);
+                    break;
+                case Key.OemMinus:
+                    currentZoom -= 10;
+                    Zoom(lastPoint);
+                    break;
+
+
+            }
+        }
+
 
 
         /// <summary>
@@ -497,7 +560,7 @@ namespace OWLOSAdmin.EcosystemExplorer
             double tempZoom = (viewbox.ActualWidth + e.Delta * zoomFactor) / (cellSize / 100);
             double zoom = tempZoom * (cellSize / 100);
 
-            if ((zoom > EcosystemExplorerGrid.ActualWidth) && (zoom > EcosystemExplorerGrid.ActualHeight))
+            if ((zoom > EcosystemExplorerGrid.ActualWidth / 4) && (zoom > EcosystemExplorerGrid.ActualHeight / 4))
             {
                 //из e. события запрашиваем координаты указателя мыши относительно EcosystemExplorerGrid
                 System.Windows.Point point = e.GetPosition(EcosystemExplorerGrid);
@@ -522,8 +585,8 @@ namespace OWLOSAdmin.EcosystemExplorer
         /// <param name="e"></param>
         private void EcosystemExplorerGrid_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            int x = (int)e.GetPosition(nodeGrid).X;
-            int y = (int)e.GetPosition(nodeGrid).Y;
+            //int x = (int)e.GetPosition(nodeGrid).X;
+            //int y = (int)e.GetPosition(nodeGrid).Y;
 
             if (e.MiddleButton == MouseButtonState.Pressed)
             {
@@ -607,18 +670,16 @@ namespace OWLOSAdmin.EcosystemExplorer
         }
 
         private void zoomToOneHImage_Click(object sender, RoutedEventArgs e)
-        {
-            double zoomTo = 70.0f;
-            zoomTextBox.Text = (zoomTo).ToString(("F"));
-            double zoom = zoomTo * (cellSize / 100);
+        {            
+            currentZoom = 70.0f; 
+            double zoom = currentZoom * (cellSize / 100);
             Zoom(new Point(EcosystemExplorerGrid.ActualWidth / 2 - zoom / 2, EcosystemExplorerGrid.ActualHeight / 2 - zoom / 2));
         }
 
         private void zoomToFullImage_Click(object sender, RoutedEventArgs e)
         {
-            double zoomTo = 10.0f;
-            zoomTextBox.Text = (zoomTo).ToString(("F"));
-            double zoom = zoomTo * (cellSize / 100);
+            currentZoom = 20.0f;
+            double zoom = currentZoom * (cellSize / 100);
             Zoom(new Point(EcosystemExplorerGrid.ActualWidth / 2 - zoom / 2, EcosystemExplorerGrid.ActualHeight / 2 - zoom / 2));
 
         }
@@ -669,45 +730,33 @@ namespace OWLOSAdmin.EcosystemExplorer
 
         }
 
+
         /// <summary>
         /// Переключатель плоский или наклоный просмотр сетки
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void perspectiveViewImage_Click(object sender, RoutedEventArgs e)
         {
-
-            /*
-            var skewGrass = new DoubleAnimation
-            {
-                From = -15.0f,
-                To = 0.0f,
-                Duration = new Duration(TimeSpan.FromMilliseconds(2000)),
-                //RepeatBehavior = RepeatBehavior.,
-                //EasingFunction = new BackEase(),
-                //AutoReverse = true
-            };
-            */
 
             DoubleAnimation skewGrassX;
             DoubleAnimation skewGrassY;
             DoubleAnimation rotate;
 
-            if ((explorerGrid.Tag == null) || (explorerGrid.Tag == "0"))
-            {
-                skewGrassX = new DoubleAnimation(-15.0f, 0.0f, new Duration(TimeSpan.FromMilliseconds(2000)));
-                skewGrassY = new DoubleAnimation(-10.0f, 0.0f, new Duration(TimeSpan.FromMilliseconds(2000)));
-                rotate = new DoubleAnimation(17.0f, 0.0f, new Duration(TimeSpan.FromMilliseconds(2000)));
-                explorerGrid.Tag = "1";
-            }
-            else
+            if ((explorerGrid.Tag == null) || (explorerGrid.Tag.ToString().Equals("1")))
             {
                 skewGrassX = new DoubleAnimation(-15.0f, new Duration(TimeSpan.FromMilliseconds(2000)));
                 skewGrassY = new DoubleAnimation(-10.0f, new Duration(TimeSpan.FromMilliseconds(2000)));
                 rotate = new DoubleAnimation(17.0f, new Duration(TimeSpan.FromMilliseconds(2000)));
                 explorerGrid.Tag = "0";
             }
-
+            else
+            {
+                skewGrassX = new DoubleAnimation(-15.0f, 0.0f, new Duration(TimeSpan.FromMilliseconds(2000)));
+                skewGrassY = new DoubleAnimation(-10.0f, 0.0f, new Duration(TimeSpan.FromMilliseconds(2000)));
+                rotate = new DoubleAnimation(17.0f, 0.0f, new Duration(TimeSpan.FromMilliseconds(2000)));
+                explorerGrid.Tag = "1";
+            }
 
             SkewTransform skewTransformX = new SkewTransform();
             SkewTransform skewTransformY = new SkewTransform();
@@ -723,10 +772,6 @@ namespace OWLOSAdmin.EcosystemExplorer
             skewTransformX.BeginAnimation(SkewTransform.AngleXProperty, skewGrassX);
             skewTransformY.BeginAnimation(SkewTransform.AngleYProperty, skewGrassY);
             rotateTransform.BeginAnimation(RotateTransform.AngleProperty, rotate);
-
-
         }
-
-
     }
 }

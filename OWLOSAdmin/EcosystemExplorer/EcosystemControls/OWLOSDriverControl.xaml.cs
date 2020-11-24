@@ -25,6 +25,8 @@ namespace OWLOSAdmin.EcosystemExplorer
 
         public EcosystemControl parentControl { get; set; }
 
+        private int propertyCounter = 0;
+
         public OWLOSDriverControl(OWLOSDriver driver)
         {
             InitializeComponent();
@@ -46,8 +48,13 @@ namespace OWLOSAdmin.EcosystemExplorer
         {
             base.Dispatcher.Invoke(() =>
             {
-                // driversControl.Text = driversControl.Text + e.property.name + " " + e.property.value + "\n";
+                
+                propertyCounter++;
                 OWLOSDriverPropertyControl propertyControl = new OWLOSDriverPropertyControl(e.property);
+                if ((propertyCounter & 1) > 0)
+                {
+                    propertyControl.Background = (SolidColorBrush)App.Current.Resources["OWLOSSecondaryAlpha2"];
+                }
                 propertiesHolder.Children.Add(propertyControl);
             });
         }

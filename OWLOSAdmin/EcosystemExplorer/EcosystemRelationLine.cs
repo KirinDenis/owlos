@@ -91,7 +91,7 @@ namespace OWLOSAdmin.EcosystemExplorer
             Point startPointA = startElement.TranslatePoint(new Point(0, 0), relativeElement);
             //Correct start point A
             //   startPointA = new Point(startPointA.X + startElement.Width, startPointA.Y + startElement.Height / 2);
-            startPointA = new Point(startPointA.X + startElement.Width, startPointA.Y + startElement.Height / 2);
+            startPointA = new Point(startPointA.X + startElement.Width, startPointA.Y - startElement.Height / 2);
             //Set leveling for point B
             Point startPointB = new Point(startPointA.X + 100, startPointA.Y);
             //Do same for end point A & B
