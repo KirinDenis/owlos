@@ -41,6 +41,7 @@ OWLOS распространяется в надежде, что она буде
 
 
 using OWLOSAdmin.Ecosystem;
+using OWLOSAdmin.Tools;
 using System;
 using System.Drawing;
 using System.IO;
@@ -112,6 +113,15 @@ namespace OWLOSAdmin.EcosystemExplorer
         public EcosystemExplorerWindow()
         {
             InitializeComponent();
+
+            Icon = Icons.GetIcon(1815);
+
+            zoomToOneHImage.Source = Icons.GetIcon(491);
+            zoomToFullImage.Source = Icons.GetIcon(492);
+            autoScrollImage.Source = Icons.GetIcon(1502);
+            drawCellImage.Source = Icons.GetIcon(1536);
+            perspectiveViewImage.Source = Icons.GetIcon(65);
+            iconsViewImage.Source = Icons.GetIcon(327);
 
             //Временно для теста нод ----------
             Admin admin = new Admin();
@@ -728,6 +738,11 @@ namespace OWLOSAdmin.EcosystemExplorer
                 }
             }
 
+        }
+
+        private void iconsViewImage_Click(object sender, RoutedEventArgs e)
+        {
+            new IconsToolWindow().Show();
         }
 
 

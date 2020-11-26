@@ -132,11 +132,12 @@
                         <TextBlock Text="%" VerticalAlignment="Center" Margin="0,0,5,0" Foreground="{DynamicResource OWLOSLight}" />
                     </StackPanel>
 
-                    <Button Name="zoomToOneHImage"  Width="25" Height="25" ToolTip="Zoom to 100%" Margin="5,0,5,0" Content="Zo" Click="zoomToOneHImage_Click" />
-                    <Button Name="zoomToFullImage"  Width="25" Height="25" ToolTip="Zoom to full view" Margin="5,0,5,0" Content="Zf" Click="zoomToFullImage_Click"/>
-                    <Button Name="autoScrollImage" Width="25" Height="25" ToolTip="Auto scroll" Margin="5,0,5,0" Content="AS" Click="autoScrollImage_Click"/>
-                    <Button Name="drawCellImage" Width="25" Height="25" ToolTip="Draw cell" Margin="5,0,5,0"  Content="DC" Click="drawCellImage_Click"/>
-                    <Button Name="perspectiveViewImage" Width="25" Height="25" ToolTip="Draw cell" Margin="5,0,5,0"  Content="PA" Click="perspectiveViewImage_Click"  />
+                    <Image Name="zoomToOneHImage"  Width="25" Height="25" ToolTip="Zoom to 100%" Margin="5,0,5,0" MouseDown="zoomToOneHImage_Click" Cursor="Hand" />
+                    <Image  Name="zoomToFullImage"  Width="25" Height="25" ToolTip="Zoom to full view" Margin="5,0,5,0" MouseDown="zoomToFullImage_Click" Cursor="Hand"/>
+                    <Image  Name="autoScrollImage" Width="25" Height="25" ToolTip="Auto scroll" Margin="5,0,5,0" MouseDown="autoScrollImage_Click" Cursor="Hand"/>
+                    <Image Name="drawCellImage" Width="25" Height="25" ToolTip="Draw cell" Margin="5,0,5,0"   MouseDown="drawCellImage_Click" Cursor="Hand"/>
+                    <Image Name="perspectiveViewImage" Width="25" Height="25" ToolTip="Draw cell" Margin="5,0,5,0"   MouseDown="perspectiveViewImage_Click" Cursor="Hand"/>
+                    <Image Name="iconsViewImage" Width="25" Height="25" ToolTip="Draw cell" Margin="5,0,5,0"   MouseDown="iconsViewImage_Click" Cursor="Hand"/>
                 </StackPanel>
             </Grid>
 
