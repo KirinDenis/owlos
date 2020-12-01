@@ -78,16 +78,7 @@
 
 
 
-                        <Image x:Name="nodeImage" Source="../Resources/drawable/owlos_core4.jpg" Grid.Column="1" Grid.Row="1" Width="10000" Height="10000"/>
-                        <VirtualizingStackPanel x:Name="smallNodeLines" Grid.Column="1" Grid.Row="1" Width="auto" Height="auto" RenderOptions.BitmapScalingMode="Fant"/>
-                        <VirtualizingStackPanel x:Name="nodeLines" Grid.Column="1" Grid.Row="1" Width="auto" Height="auto" RenderOptions.BitmapScalingMode="Fant"/>
-
-
-
-
-                        <Grid x:Name="nodeGrid" Grid.Column="1" Grid.Row="1" Width="10000" Height="10000" Background="{DynamicResource OWLOSDarkAlpha3}" HorizontalAlignment="Left" VerticalAlignment="Top" PreviewMouseDown="nodeGrid_PreviewMouseDown" PreviewMouseLeftButtonDown="nodeGrid_PreviewMouseLeftButtonDown" RenderTransformOrigin="0.5,0.5">
-
-                        </Grid>
+                        <Image x:Name="nodeImage" Grid.Column="1" Grid.Row="1" Width="10000" Height="10000"/>
 
                         <Grid x:Name="verticalNavigationGrid" Grid.Column="0" Grid.Row="1" Background="{DynamicResource OWLOSInfoAlpha2}" Width="37" HorizontalAlignment="Right" Visibility="Hidden" 
                               TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed"
@@ -117,6 +108,14 @@
                                 </Border.Background>
                             </Border>
                         </Grid>
+
+                        <VirtualizingStackPanel x:Name="smallNodeLines" Grid.Column="1" Grid.Row="1" Width="auto" Height="auto" RenderOptions.BitmapScalingMode="Fant"/>
+                        <VirtualizingStackPanel x:Name="nodeLines" Grid.Column="1" Grid.Row="1" Width="auto" Height="auto" RenderOptions.BitmapScalingMode="Fant"/>
+
+                        <Grid x:Name="nodeGrid" Grid.Column="1" Grid.Row="1" Width="10000" Height="10000" HorizontalAlignment="Left" VerticalAlignment="Top" PreviewMouseDown="nodeGrid_PreviewMouseDown" PreviewMouseLeftButtonDown="nodeGrid_PreviewMouseLeftButtonDown" RenderTransformOrigin="0.5,0.5">
+
+                        </Grid>
+
                     </Grid>
                 </Viewbox>
 

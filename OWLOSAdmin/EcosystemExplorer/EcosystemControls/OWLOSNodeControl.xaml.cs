@@ -218,22 +218,22 @@ namespace OWLOSAdmin.EcosystemExplorer
 
         public void OnParentDrag()
         {
-
+            nodePath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSDanger"];
         }
 
         public void OnParentDrop()
         {
-
+            nodePath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSWarning"];
         }
 
         public void OnParentGetFocus()
         {
-
+            nodePath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSWarning"];
         }
 
         public void OnParentLostFocus()
         {
-
+            nodePath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSInfo"];
         }
 
         private async void OnLifeCycleTimer(Object source, ElapsedEventArgs e)

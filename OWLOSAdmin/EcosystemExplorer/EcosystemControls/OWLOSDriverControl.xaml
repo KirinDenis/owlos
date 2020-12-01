@@ -15,21 +15,24 @@
 
 
     <Grid Name="mainGrid" TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed">
-        <Border BorderThickness="0,4,4,0" Focusable="True" BorderBrush="{DynamicResource OWLOSInfoAlpha3}"  HorizontalAlignment="Right" VerticalAlignment="Top" Width="20" Height="20" ClipToBounds="True" SnapsToDevicePixels="True"/>
-        <Border BorderThickness="4,4,0,0" Focusable="True" BorderBrush="{DynamicResource OWLOSInfoAlpha3}"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="20" Height="20" ClipToBounds="True" SnapsToDevicePixels="True"/>
-        <Border BorderThickness="0,0,4,4" Focusable="True" BorderBrush="{DynamicResource OWLOSInfoAlpha3}"  HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="20" Height="20" ClipToBounds="True" SnapsToDevicePixels="True"/>
-        <Border BorderThickness="4,0,0,4" Focusable="True" BorderBrush="{DynamicResource OWLOSInfoAlpha3}"  HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="20" Height="20" ClipToBounds="True" SnapsToDevicePixels="True"/>
+        <Border BorderThickness="0,4,4,0" Margin="0,0,0,0" BorderBrush="{DynamicResource OWLOSInfoAlpha3}"  HorizontalAlignment="Right" VerticalAlignment="Top" Width="20" Height="20" ClipToBounds="True" SnapsToDevicePixels="True"/>
+        <Border BorderThickness="4,0,0,0" Margin="0,0,0,0"  BorderBrush="{DynamicResource OWLOSInfoAlpha3}"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="20" Height="20" ClipToBounds="True" SnapsToDevicePixels="True"/>
+        <Border BorderThickness="0,4,0,0" Margin="0,0,0,0"  BorderBrush="{DynamicResource OWLOSInfoAlpha3}"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="20" Height="20" ClipToBounds="True" SnapsToDevicePixels="True" RenderTransformOrigin="0.5,0.5" />
+        <Border BorderThickness="0,0,4,4"  BorderBrush="{DynamicResource OWLOSInfoAlpha3}"  HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="20" Height="20" ClipToBounds="True" SnapsToDevicePixels="True"/>
+        <Border BorderThickness="4,0,0,4"  BorderBrush="{DynamicResource OWLOSInfoAlpha3}"  HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="20" Height="20" ClipToBounds="True" SnapsToDevicePixels="True"/>
 
-        <Border Name="mainBorder" BorderThickness="2" Focusable="True" BorderBrush="{DynamicResource OWLOSInfoAlpha3}" Margin="10,10,10,10" Background="{DynamicResource OWLOSDark}">
-            <Grid Margin="10,10,10,10">
+        <Border Name="mainBorder" BorderThickness="2" Focusable="True" BorderBrush="{DynamicResource OWLOSInfoAlpha2}" Margin="10,10,10,10" Background="{DynamicResource OWLOSDarkAlpha2}">
+            <Grid Margin="0,4,0,4">
                 <StackPanel Orientation="Vertical">
-                <TextBlock x:Name="driverName" Text="driversControl" Foreground="{DynamicResource OWLOSLight}" TextWrapping="Wrap" FontSize="14"/>
-                <StackPanel x:Name="propertiesHolder" Orientation="Vertical" Margin="5,5,5,5" />
+                <TextBlock x:Name="driverName" Margin="10" Text="driversControl" Foreground="{DynamicResource OWLOSLight}" TextWrapping="Wrap" FontSize="14"/>
+                <StackPanel x:Name="propertiesHolder" Orientation="Vertical" Margin="0,5,0,5" />
                 </StackPanel>
             </Grid>
         </Border>
 
         
+
+
     </Grid>
 
 </UserControl>

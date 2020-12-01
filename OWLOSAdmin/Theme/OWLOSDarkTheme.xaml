@@ -42,7 +42,7 @@
     <SolidColorBrush x:Key = "OWLOSSecondaryAlpha3" Color ="#DF1d4c62" />
     <SolidColorBrush x:Key = "OWLOSSuccess" Color ="#FF3BC43B" />
     <SolidColorBrush x:Key = "OWLOSSuccessAlpha1" Color ="#103BC43B" />
-    <SolidColorBrush x:Key = "OWLOSSuccessAlpha2" Color ="#C03BC43B" />
+    <SolidColorBrush x:Key = "OWLOSSuccessAlpha2" Color ="#503BC43B" />
     <SolidColorBrush x:Key = "OWLOSSuccessAlpha3" Color ="#F03BC43B" />
     <SolidColorBrush x:Key = "OWLOSInfo" Color ="#FF3589b1" />
     <SolidColorBrush x:Key = "OWLOSInfoAlpha1" Color ="#103589b1" />
@@ -54,7 +54,7 @@
     <Color x:Key = "OWLOSDangerColor" A ="#50" R="#c4" G="#3b" B="#3b" />
     <SolidColorBrush x:Key = "OWLOSDanger" Color ="#FFc43b3b" />
     <SolidColorBrush x:Key = "OWLOSDangerAlpha1" Color ="#10c43b3b" />
-    <SolidColorBrush x:Key = "OWLOSDangerAlpha2" Color ="#C0c43b3b" />
+    <SolidColorBrush x:Key = "OWLOSDangerAlpha2" Color ="#50c43b3b" />
     <SolidColorBrush x:Key = "OWLOSDangerAlpha3" Color ="#F0c43b3b" />
     <SolidColorBrush x:Key = "OWLOSLight" Color ="#FFd8ebf3" />
     <SolidColorBrush x:Key = "OWLOSDark" Color ="#FF122e3b" />

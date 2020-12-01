@@ -141,15 +141,17 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
             driverCountrol.parentControl.Hide();
 
 
-            //создаем и настраиваем соеденительную линию
-            relationLine = new EcosystemRelationLine(driverCountrol, driverCountrol.parentControl, connector, driverCountrol, parentOWLOSNodeControl.parentControl.Parent as Grid);
-           // relationLine.DrawRelationLine(((SolidColorBrush)App.Current.Resources["OWLOSInfo"]).Color.ToString(), ((SolidColorBrush)App.Current.Resources["OWLOSInfo"]).Color.ToString());
-            //relationLine.Hide();
 
             //контролируем родительский элемент (hud ноды) если он начнем перемещатся по экосистеме
             //перерисуем соединительную линию
             (parentOWLOSNodeControl.parentControl.Parent as Grid).Children.Add(driverCountrol.parentControl);
             parentOWLOSNodeControl.parentControl.OnPositionChanged += ParentControl_OnPositionChanged;
+
+            //создаем и настраиваем соеденительную линию
+            relationLine = new EcosystemRelationLine(driverCountrol, driverCountrol.parentControl, connector, driverCountrol, parentOWLOSNodeControl.parentControl.Parent as Grid);
+            // relationLine.DrawRelationLine(((SolidColorBrush)App.Current.Resources["OWLOSInfo"]).Color.ToString(), ((SolidColorBrush)App.Current.Resources["OWLOSInfo"]).Color.ToString());
+            //relationLine.Hide();
+
         }
 
         private void ParentControl_OnPositionChanged(object sender, EventArgs e)
@@ -231,7 +233,7 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
                     double yr = 1000 * Math.Sin(Math.PI * (angel / 6.0) - Math.PI / 2) + parentOWLOSNodeControl.parentControl.transform.Y;
                     driverCountrol.parentControl.MoveTransform(xr, yr);
 
-                    relationLine.DrawRelationLine(((SolidColorBrush)App.Current.Resources["OWLOSInfo"]).Color.ToString(), ((SolidColorBrush)App.Current.Resources["OWLOSInfo"]).Color.ToString());
+                    relationLine.DrawRelationLine(((SolidColorBrush)App.Current.Resources["OWLOSWarning"]).Color.ToString(), ((SolidColorBrush)App.Current.Resources["OWLOSWarning"]).Color.ToString());
                 }
                 relationLine.Show();
             }

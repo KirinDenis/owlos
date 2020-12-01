@@ -196,17 +196,17 @@ namespace OWLOSAdmin.EcosystemExplorer
             using (Bitmap greenBitmapHorizontal = new Bitmap(bitmapSize, bitmapSize))
             using (Bitmap redBitmap = new Bitmap(bitmapSize, bitmapSize))
             {
-                SolidColorBrush mediaColorBrushGreen = (SolidColorBrush)App.Current.Resources["OWLOSSuccess"];
+                SolidColorBrush mediaColorBrushGreen = (SolidColorBrush)App.Current.Resources["OWLOSSuccessAlpha2"];
                 System.Drawing.Color colorGreen = System.Drawing.Color.FromArgb(mediaColorBrushGreen.Color.A,
                                                              mediaColorBrushGreen.Color.R,
                                                              mediaColorBrushGreen.Color.G,
                                                              mediaColorBrushGreen.Color.B);
-                SolidColorBrush mediaColorBrushRed = (SolidColorBrush)App.Current.Resources["OWLOSDanger"];
+                SolidColorBrush mediaColorBrushRed = (SolidColorBrush)App.Current.Resources["OWLOSDangerAlpha2"];
                 System.Drawing.Color colorRed = System.Drawing.Color.FromArgb(mediaColorBrushRed.Color.A,
                                                              mediaColorBrushRed.Color.R,
                                                              mediaColorBrushRed.Color.G,
                                                              mediaColorBrushRed.Color.B);
-                SolidColorBrush mediaColorBrushBlack = (SolidColorBrush)App.Current.Resources["OWLOSInfoAlpha3"];
+                SolidColorBrush mediaColorBrushBlack = (SolidColorBrush)App.Current.Resources["OWLOSInfoAlpha2"];
                 System.Drawing.Color colorBlack = System.Drawing.Color.FromArgb(mediaColorBrushBlack.Color.A,
                                                              mediaColorBrushBlack.Color.R,
                                                              mediaColorBrushBlack.Color.G,

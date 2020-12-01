@@ -61,7 +61,7 @@ namespace OWLOSAdmin.EcosystemExplorer
 
         public void OnParentGetFocus()
         {
-            mainBorder.BorderBrush = (SolidColorBrush)App.Current.Resources["OWLOSInfo"];
+            mainBorder.BorderBrush = (SolidColorBrush)App.Current.Resources["OWLOSWarning"];
         }
 
         public void OnParentLostFocus()
