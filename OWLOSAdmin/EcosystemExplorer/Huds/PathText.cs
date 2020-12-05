@@ -77,12 +77,13 @@ namespace PathText
             double angel = this.fromAngel - 90;
 
             angel += 25 / 2  - textBlocksAngel / 2;
+            
 
             for (int i = 0; i < sourceTextBlock.Text.Length; i++)
             {
                 //if (angel > this.toAngel - 90) break;
 
-
+                
                 double xP = radius * Math.Cos(angel / ((180 / Math.PI))) + x;
                 double yP = radius * Math.Sin(angel / ((180 / Math.PI))) + y;
 
@@ -103,8 +104,8 @@ namespace PathText
                 textBlock[i].RenderTransform = group;
 
 
-                rt.Angle = angel + 97 - (textBlock[i].DesiredSize.Width);
-                angel += textBlock[i].DesiredSize.Width / 5;
+                rt.Angle = angel + 97.0f - (textBlock[i].DesiredSize.Width);
+                angel += textBlock[i].DesiredSize.Width / (radius / 60.0f);
 
             }
             grid.Children.Remove(sourceTextBlock);

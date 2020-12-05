@@ -140,8 +140,6 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
             driverCountrol.parentControl.Visibility = Visibility.Hidden;
             driverCountrol.parentControl.Hide();
 
-
-
             //контролируем родительский элемент (hud ноды) если он начнем перемещатся по экосистеме
             //перерисуем соединительную линию
             (parentOWLOSNodeControl.parentControl.Parent as Grid).Children.Add(driverCountrol.parentControl);
@@ -169,7 +167,7 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
         /// <param name="e"></param>
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            PathTextControl pathText = new PathTextControl(350, 350, radius, 0, 25, driverNameText);
+            PathTextControl pathText = new PathTextControl(350, 350, radius + 10, 0, 25, driverNameText);
         }
 
         private void driverBackground_MouseEnter(object sender, MouseEventArgs e)

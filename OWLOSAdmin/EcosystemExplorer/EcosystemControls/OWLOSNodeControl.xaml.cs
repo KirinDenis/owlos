@@ -1,6 +1,48 @@
-﻿using OWLOSAdmin.Ecosystem;
+﻿/* ----------------------------------------------------------------------------
+Ready IoT Solution - OWLOS
+Copyright 2019, 2020 by:
+- Konstantin Brul (konstabrul@gmail.com)
+- Vitalii Glushchenko (cehoweek@gmail.com)
+- Denys Melnychuk (meldenvar@gmail.com)
+- Denis Kirin (deniskirinacs@gmail.com)
+
+This file is part of Ready IoT Solution - OWLOS
+
+OWLOS is free software : you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+OWLOS is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with OWLOS. If not, see < https://www.gnu.org/licenses/>.
+
+GitHub: https://github.com/KirinDenis/owlos
+
+(Этот файл — часть Ready IoT Solution - OWLOS.
+
+OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
+ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
+была опубликована Фондом свободного программного обеспечения; версии 3
+лицензии, любой более поздней версии.
+
+OWLOS распространяется в надежде, что она будет полезной, но БЕЗО ВСЯКИХ
+ГАРАНТИЙ; даже без неявной гарантии ТОВАРНОГО ВИДА или ПРИГОДНОСТИ ДЛЯ
+ОПРЕДЕЛЕННЫХ ЦЕЛЕЙ.
+Подробнее см.в Стандартной общественной лицензии GNU.
+
+Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
+этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
+--------------------------------------------------------------------------------------*/
+
+using OWLOSAdmin.Ecosystem;
 using OWLOSAdmin.EcosystemExplorer.EcosystemControls;
 using OWLOSAdmin.EcosystemExplorer.Huds;
+using PathText;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -66,10 +108,10 @@ namespace OWLOSAdmin.EcosystemExplorer
             insideNodePath.Data = HudLibrary.DrawArc(350, 350, radius-80, 0, 359);
             insideNodePath2.Data = HudLibrary.DrawArc(350, 350, radius - 120, 0, 359);
 
-            freeHeapPathBack.Data = HudLibrary.DrawArc(350, 350, radius - 20, 0, freeHeapAngelLimit);
+            freeHeapPathBack.Data = HudLibrary.DrawArc(350, 350, radius - 20, 11, freeHeapAngelLimit);
             DrawFreeHeap(50);
 
-            WiFiRSSIDPathBack.Data = HudLibrary.DrawArc(350, 350, radius - 40, 0, WiFiRSSIDAngelLimit);
+            WiFiRSSIDPathBack.Data = HudLibrary.DrawArc(350, 350, radius - 40, 11, WiFiRSSIDAngelLimit);
             DrawWiFiRSSID(-50);
 
             PowerPathBack.Data = HudLibrary.DrawArc(350, 350, radius - 40, PowerAngeStart, PowerAngelLimit + PowerAngeStart);
@@ -109,11 +151,30 @@ namespace OWLOSAdmin.EcosystemExplorer
 
         }
 
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            PathTextControl _freeHeapText = new PathTextControl(350, 350, radius - 10, -7, 5, freeHeapText);
+            PathTextControl _WifiRSSIDText = new PathTextControl(350, 350, radius - 30, -4, 5, WiFiRSSIDText);
+            PathTextControl _PowerTextText = new PathTextControl(330, 350, radius - 15, PowerAngeStart-20, PowerAngeStart-5, PowerText);
+
+            PathTextControl _restFulText = new PathTextControl(350, 350, radius - 90, 7, 50, restFulText);
+            PathTextControl _MQTTText = new PathTextControl(350, 350, radius - 90, 52, 50, MQTTText);
+            PathTextControl _UARTText = new PathTextControl(350, 350, radius - 90, 95, 50, UARTText);
+            PathTextControl _propertiesText = new PathTextControl(350, 350, radius - 10, 325, 250, propertiesText);
+            PathTextControl _filesText = new PathTextControl(350, 350, radius - 10, 296, 250, filesText);
+            PathTextControl _scriptsText = new PathTextControl(350, 350, radius - 10, 180, 250, scriptsText);
+
+            PathTextControl _script1Text = new PathTextControl(350, 350, radius - 55, 187, 250, script1Text);
+            PathTextControl _script2Text = new PathTextControl(350, 350, radius - 55, 212, 250, script2Text);
+            PathTextControl _script3Text = new PathTextControl(350, 350, radius - 55, 237, 250, script3Text);
+
+        }
+
         private void DrawFreeHeap(int value)
         {
             double freeHeapPercent = value / (freeHeapLimit / 100);
             double freeHeapAngel = (freeHeapAngelLimit / 100) * freeHeapPercent;
-            freeHeapPath.Data = HudLibrary.DrawArc(350, 350, radius - 20, 0, freeHeapAngel);
+            freeHeapPath.Data = HudLibrary.DrawArc(350, 350,  radius - 20, 11, freeHeapAngel);
         }
 
         private void DrawWiFiRSSID(int value)
@@ -121,7 +182,7 @@ namespace OWLOSAdmin.EcosystemExplorer
             value = value * -1;
             double WiFiRSSIDPercent = value / (WiFiRSSIDLimit / 100);
             double WiFiRSSIDAngel = (WiFiRSSIDAngelLimit / 100) * WiFiRSSIDPercent;
-            WiFiRSSIDPath.Data = HudLibrary.DrawArc(350, 350, radius - 40, 0, WiFiRSSIDAngel);
+            WiFiRSSIDPath.Data = HudLibrary.DrawArc(350, 350, radius - 40, 11, WiFiRSSIDAngel);
         }
 
         private void DrawPower(int value)
@@ -219,21 +280,25 @@ namespace OWLOSAdmin.EcosystemExplorer
         public void OnParentDrag()
         {
             nodePath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSDanger"];
+            nodeShadowPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSDangerAlpha2"];
         }
 
         public void OnParentDrop()
         {
             nodePath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSWarning"];
+            nodeShadowPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSWarningAlpha2"];
         }
 
         public void OnParentGetFocus()
         {
             nodePath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSWarning"];
+            nodeShadowPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSWarningAlpha2"];
         }
 
         public void OnParentLostFocus()
         {
             nodePath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSInfo"];
+            nodeShadowPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSInfoAlpha2"];
         }
 
         private async void OnLifeCycleTimer(Object source, ElapsedEventArgs e)

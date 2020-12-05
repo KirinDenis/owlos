@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:OWLOSAdmin.EcosystemExplorer"
              mc:Ignorable="d" 
              HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5"
-             d:DesignHeight="850" d:DesignWidth="850" Background="#02000000">
+             d:DesignHeight="850" d:DesignWidth="850" Background="#02000000" Loaded="UserControl_Loaded">
     <Grid>
         <Grid>
 
@@ -28,17 +28,17 @@
 
             <Path Name="nodePath" Stroke="{DynamicResource OWLOSInfo}" Data="M 344 50 A 300 300 0 1 0 350 50" StrokeThickness="5" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" />
 
-            <Path Name="freeHeapPathBack" Stroke="{DynamicResource OWLOSSecondary}" Data="M 350 630 A 280 280 0 0 0 350 70" StrokeThickness="5" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" StrokeDashArray="0.3" StrokeLineJoin="Round" StrokeDashCap="Flat" StrokeDashOffset="3" StrokeMiterLimit="1"/>
-            <Path Name="freeHeapPath" Stroke="{DynamicResource OWLOSSuccessAlpha2}"     Data="M 350 130 A 280 280 0 0 0 350 70" StrokeThickness="5" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" StrokeDashArray="0.3" StrokeLineJoin="Round" StrokeDashCap="Flat" StrokeDashOffset="3" StrokeMiterLimit="1"/>
-            <TextBlock x:Name="freeHeapText" Text="freeHeap:" Foreground="{DynamicResource OWLOSInfo}" Margin="275,63,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
+            <Path Name="freeHeapPathBack" Stroke="{DynamicResource OWLOSSuccessAlpha2}" Data="M 350 630 A 280 280 0 0 0 350 70" StrokeThickness="5" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" StrokeMiterLimit="1"/>
+            <Path Name="freeHeapPath" Stroke="{DynamicResource OWLOSSuccess}"     Data="M 350 130 A 280 280 0 0 0 350 70" StrokeThickness="5" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700"  StrokeDashArray="0.5" StrokeLineJoin="Round" StrokeDashCap="Flat" StrokeDashOffset="3" StrokeMiterLimit="1"/>
+            <TextBlock x:Name="freeHeapText" Text="free heap" Foreground="{DynamicResource OWLOSPrimary}" Margin="350,60,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
 
-            <Path Name="WiFiRSSIDPathBack" Stroke="{DynamicResource OWLOSSecondary}" Data="M 350 630 A 280 280 0 0 0 350 70" StrokeThickness="5" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" StrokeDashArray="2.0" StrokeLineJoin="Miter" StrokeDashCap="Round" StrokeDashOffset="6" StrokeMiterLimit="0"/>
-            <Path Name="WiFiRSSIDPath" Stroke="{DynamicResource OWLOSInfo}"     Data="M 350 130 A 280 280 0 0 0 350 70" StrokeThickness="5" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" StrokeDashArray="2.0" StrokeLineJoin="Miter" StrokeDashCap="Round" StrokeDashOffset="6" StrokeMiterLimit="0"/>
-            <TextBlock x:Name="WiFiRSSIDText" Text="WiFi:" Foreground="{DynamicResource OWLOSInfo}" Margin="318,83,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
+            <Path Name="WiFiRSSIDPathBack" Stroke="{DynamicResource OWLOSWarningAlpha2}" Data="M 350 630 A 280 280 0 0 0 350 70" StrokeThickness="5" RenderTransformOrigin="0.5,0.5" StrokeMiterLimit="1"/>
+            <Path Name="WiFiRSSIDPath" Stroke="{DynamicResource OWLOSWarning}"     Data="M 350 130 A 280 280 0 0 0 350 70" StrokeThickness="5" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" StrokeDashArray="0.5" StrokeLineJoin="Round" StrokeDashCap="Flat" StrokeDashOffset="3" StrokeMiterLimit="1"/>
+            <TextBlock x:Name="WiFiRSSIDText" Text="wifi" Foreground="{DynamicResource OWLOSPrimary}" Margin="350,80,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
 
-            <Path Name="PowerPathBack" Stroke="{DynamicResource OWLOSSecondary}" Data="M 350 630 A 280 280 0 0 0 350 70" StrokeThickness="5" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" StrokeDashArray="2.0" StrokeLineJoin="Miter" StrokeDashCap="Round" StrokeDashOffset="6" StrokeMiterLimit="0" />
-            <Path Name="PowerPath" Stroke="{DynamicResource OWLOSInfoAlpha3}"     Data="M 350 130 A 280 280 0 0 0 350 70" StrokeThickness="5" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" StrokeDashArray="2.0" StrokeLineJoin="Miter" StrokeDashCap="Round" StrokeDashOffset="6" StrokeMiterLimit="0"  />
-            <TextBlock x:Name="PowerText" Text="Power:" Foreground="{DynamicResource OWLOSInfo}" Margin="616,360,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <Path Name="PowerPathBack" Stroke="{DynamicResource OWLOSDangerAlpha2}" Data="M 350 630 A 280 280 0 0 0 350 70" StrokeThickness="5" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" StrokeMiterLimit="1" />
+            <Path Name="PowerPath" Stroke="{DynamicResource OWLOSDangerAlpha3}"     Data="M 350 130 A 280 280 0 0 0 350 70" StrokeThickness="5" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" StrokeDashArray="0.5" StrokeLineJoin="Round" StrokeDashCap="Flat" StrokeDashOffset="3" StrokeMiterLimit="1"  />
+            <TextBlock x:Name="PowerText" Text="power" Foreground="{DynamicResource OWLOSPrimary}" Margin="616,360,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
                 <TextBlock.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -50,29 +50,11 @@
             </TextBlock>
 
             <Path Name="scriptsPath" Stroke="{DynamicResource OWLOSInfo}" Data="M 182 150 A 260 260 0 0 0 304 606" StrokeThickness="70" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" />
-            <TextBlock x:Name="scriptsText" Text="Scripts" Foreground="{DynamicResource OWLOSLight}" Margin="310,635,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
-                <TextBlock.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform Angle="192"/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </TextBlock.RenderTransform>
-            </TextBlock>
+            <TextBlock x:Name="scriptsText" Text="Scripts" Foreground="{DynamicResource OWLOSLight}" Margin="310,635,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
 
 
             <Path Name="script1Path" Stroke="{DynamicResource OWLOSPrimary}" Data="M 182 150 A 260 260 0 0 0 304 606" StrokeThickness="30" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" />
-            <TextBlock x:Name="script1Text" Text="Script 1" Foreground="{DynamicResource OWLOSLight}" Margin="290,590,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
-                <TextBlock.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform Angle="200"/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </TextBlock.RenderTransform>
-            </TextBlock>
+            <TextBlock x:Name="script1Text" Text="Script 1" Foreground="{DynamicResource OWLOSLight}" Margin="290,590,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
 
 
@@ -103,16 +85,7 @@
             </TextBlock>
 
             <Path Name="filesPath" Stroke="{DynamicResource OWLOSInfoAlpha3}" Data="M 182 150 A 260 260 0 0 0 304 606" StrokeThickness="70" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" />
-            <TextBlock x:Name="filesText" Text="Files" Foreground="{DynamicResource OWLOSLight}" Margin="110,195,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
-                <TextBlock.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform Angle="310"/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </TextBlock.RenderTransform>
-            </TextBlock>
+            <TextBlock x:Name="filesText" Text="Files" Foreground="{DynamicResource OWLOSLight}" Margin="110,195,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
             <TextBlock x:Name="filesSizeText" Text="4.5Mb" Foreground="{DynamicResource OWLOSWarning}" Margin="140,210,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
                 <TextBlock.RenderTransform>
@@ -126,16 +99,8 @@
             </TextBlock>
 
             <Path Name="propertiesPath" Stroke="{DynamicResource OWLOSInfoAlpha3}" Data="M 182 150 A 260 260 0 0 0 304 606" StrokeThickness="70" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" />
-            <TextBlock x:Name="propertiesText" Text="Node properties" Foreground="{DynamicResource OWLOSLight}" Margin="160,135,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
-                <TextBlock.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform Angle="330"/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </TextBlock.RenderTransform>
-            </TextBlock>
+            <TextBlock x:Name="propertiesText" Text="Node properties" Foreground="{DynamicResource OWLOSLight}" Margin="160,135,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
+
 
             <Path Name="insideNodePath" Stroke="{DynamicResource OWLOSInfo}" Data="M 344 50 A 300 300 0 1 0 350 50" StrokeThickness="2" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" />
             <Path Name="restFullPath" Stroke="{DynamicResource OWLOSPrimary}" Data="M 182 150 A 260 260 0 0 0 304 606" StrokeThickness="30" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" />
@@ -143,38 +108,10 @@
             <Path Name="UARTPath" Stroke="{DynamicResource OWLOSWarning}" Data="M 182 150 A 260 260 0 0 0 304 606" StrokeThickness="30" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" />
             <Path Name="insideNodePath2" Stroke="{DynamicResource OWLOSInfo}" Data="M 344 50 A 300 300 0 1 0 350 50" StrokeThickness="1" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" />
 
-            <TextBlock x:Name="restFulText" Text="RESTful" Foreground="{DynamicResource OWLOSDark}" Margin="390,145,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
-                <TextBlock.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform Angle="20"/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </TextBlock.RenderTransform>
-            </TextBlock>
+            <TextBlock x:Name="restFulText" Text="HTTP" Foreground="{DynamicResource OWLOSDark}" Margin="390,145,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="14"/>
+            <TextBlock x:Name="MQTTText" Text="MQTT" Foreground="{DynamicResource OWLOSDark}" Margin="530,245,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="14"/>
+            <TextBlock x:Name="UARTText" Text="UART" Foreground="{DynamicResource OWLOSDark}" Margin="550,400,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="14"/>
 
-            <TextBlock x:Name="MQTTText" Text="MQTT" Foreground="{DynamicResource OWLOSDark}" Margin="530,245,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
-                <TextBlock.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform Angle="70"/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </TextBlock.RenderTransform>
-            </TextBlock>
-
-            <TextBlock x:Name="UARTText" Text="UART" Foreground="{DynamicResource OWLOSDark}" Margin="550,400,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
-                <TextBlock.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform Angle="110"/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </TextBlock.RenderTransform>
-            </TextBlock>
 
             <StackPanel Orientation="Vertical" Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBlock x:Name="nodeNameText" Text="owlnode1534" Foreground="{DynamicResource OWLOSLight}" FontSize="32" TextAlignment="Center" />

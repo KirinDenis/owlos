@@ -39,8 +39,7 @@ namespace OWLOSAdmin.EcosystemExplorer
 
             if (driver != null)
             {
-                driver.OnPropertyCreate += Driver_NewProperty;
-               
+                driver.OnPropertyCreate += Driver_NewProperty;               
             }
         }
 
