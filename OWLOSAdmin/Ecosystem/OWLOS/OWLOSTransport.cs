@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 
@@ -24,7 +22,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
     public class OWLOSTransport
     {
-        private OWLOSNode node = null;
+        private readonly OWLOSNode node = null;
         public string RESTfulServerHost = "";
         public int RESTfulServerPort = 80;
         private Timer lifeCycleTimer;
@@ -36,32 +34,27 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         }
         public void Start()
         {
-            lifeCycleTimer = new Timer(1000);
-            lifeCycleTimer.AutoReset = true;
+            lifeCycleTimer = new Timer(1000)
+            {
+                AutoReset = true
+            };
             lifeCycleTimer.Elapsed += new ElapsedEventHandler(OnLifeCycleTimer);
             lifeCycleTimer.Start();
             OnLifeCycleTimer(null, null);
 
         }
 
-        private async void OnLifeCycleTimer(Object source, ElapsedEventArgs e)
+        private async void OnLifeCycleTimer(object source, ElapsedEventArgs e)
         {
-            string driverPoperties = await Get("getalldriversproperties");
-                if (driverPoperties.IndexOf("Error:") != 0)
-                {
-                try
-                {
-                    await node.parseDrivers(driverPoperties);
-                }
-                catch { }
-                }
+            await GetAllDriversProperties();
+            await GetAllScripts();
         }
 
         public async Task<string> Get(string APIName, string args = "")
         {
             try
             {
-                HttpClient client = new HttpClient();                
+                HttpClient client = new HttpClient();
                 HttpResponseMessage response = await client.GetAsync(RESTfulServerHost + APIName + args);
 
                 response.EnsureSuccessStatusCode();
@@ -71,17 +64,46 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             {
                 return "Error:" + exception.Message;
             }
-            
+        }
 
+        
+        public async Task<bool> GetAllScripts()
+        {
+            string driverPoperties = await Get("getallscripts");
+            if (driverPoperties.IndexOf("Error:") != 0)
+            {
+                try
+                {
+                    await node.parseDrivers(driverPoperties);
+                    return true;
+                }
+                catch { }
+            }
+            return false;
+        }
+
+
+        public async Task<bool> GetAllDriversProperties()
+        {
+            string driverPoperties = await Get("getalldriversproperties");
+            if (driverPoperties.IndexOf("Error:") != 0)
+            {
+                try
+                {
+                    await node.parseDrivers(driverPoperties);
+                    return true;
+                }
+                catch { }
+            }
+            return false;
         }
 
         public async Task<string> GetDriverProperty(string driverName, string propertyName)
         {
-                HttpClient client = new HttpClient();
-                HttpResponseMessage response = await client.GetAsync(RESTfulServerHost + "getdriverproperty?id=" + driverName + "&property=" + propertyName);
-                response.EnsureSuccessStatusCode();
-                return await response.Content.ReadAsStringAsync();
-
+            HttpClient client = new HttpClient();
+            HttpResponseMessage response = await client.GetAsync(RESTfulServerHost + "getdriverproperty?id=" + driverName + "&property=" + propertyName);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadAsStringAsync();
         }
 
         public async Task<string> SetDriverProperty(string driverName, string propertyName, string propertyValue)

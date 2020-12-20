@@ -95,6 +95,12 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             }
         }
 
+        public async Task parseScripts(string scriptData)
+        {
+
+        }
+
+
 
         public void newProp(object sender, EventArgs e)
         {
