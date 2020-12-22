@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OWLOSAdmin.Ecosystem.OWLOSDTOs;
+using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.IO.Ports;
@@ -30,6 +31,10 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
     }
 
 
+    public class OWLOSNodeConfig
+    {
+        public List<OWLOSConnection> connections = new List<OWLOSConnection>();
+    }
 
     public class OWLOSNode
     {
@@ -42,12 +47,62 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         public Admin admin;
 
-        public OWLOSNodeWrapper wrapper;
+        public List<IOWLOSTransport> transports = new List<IOWLOSTransport>();
 
-        public OWLOSNode(Admin admin, OWLOSNodeWrapper wrapper)
+        public OWLOSNodeConfig config = null;
+
+        private Timer lifeCycleTimer;
+
+        public OWLOSNode(Admin admin, OWLOSNodeConfig config)
         {
+            this.config = config;
             this.admin = admin;
-            this.wrapper = wrapper;
+
+            foreach (OWLOSConnection connection in config.connections)
+            {
+                switch (connection.connectionType)
+                {
+                    case ConnectionType.RESTfulClient:
+                        RESTfulClientTransport _RESTfulClientTransport = new RESTfulClientTransport();
+                        _RESTfulClientTransport.connection = connection;
+                        transports.Add(_RESTfulClientTransport);
+                        break;
+                    case ConnectionType.UART:
+                        UARTTransport _UARTTransport = new UARTTransport(this);
+                        _UARTTransport.connection = connection;
+                        transports.Add(_UARTTransport);
+                        break;
+
+                }
+            }
+            Start();
+            //    this.wrapper = wrapper;
+        }
+
+        public void Start()
+        {
+            lifeCycleTimer = new Timer(1000)
+            {
+                AutoReset = true
+            };
+            lifeCycleTimer.Elapsed += new ElapsedEventHandler(OnLifeCycleTimer);
+            lifeCycleTimer.Start();
+            OnLifeCycleTimer(null, null);
+
+        }
+
+        private async void OnLifeCycleTimer(object source, ElapsedEventArgs e)
+        {
+            foreach (IOWLOSTransport _OWLOSTransport in transports)
+            {
+                DriversDTO driversDTO = await _OWLOSTransport.GetAllDriversProperties();
+                if (driversDTO.error == "")
+                {
+                    //DTO to Drivers
+                }
+            }
+            //await GetAllDriversProperties();
+            //await GetAllScripts();
         }
 
 
@@ -84,7 +139,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
                 }
                 else
                 if (driver != null)
-                {                                        
+                {
                     if (driverProp.IndexOf("=") != -1)
                     {
                         string key = driverProp.Substring(0, driverProp.IndexOf("="));

@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace OWLOSAdmin.Ecosystem.OWLOS
 {
-    interface IOWLOSTransport
+    public interface IOWLOSTransport
     {
-        public IOWLOSConnection connection { get; set; }
-        public Task<DriversDTO> GetAllDriversProperties();
+        public OWLOSConnection connection { get; set; }
+
+        abstract public Task<DriversDTO> GetAllDriversProperties();
+        public DriversDTO GetAllDriversProperties(string data);
 
     }
 }

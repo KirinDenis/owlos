@@ -100,20 +100,17 @@ void UARTSend(String topic, String payload)
     Serial.print(PUBLISH_ANSWER + topic + " " + payload + "\n");
 }
 
-void UARTSendError(String payload)
+void UARTSendError(String topic, String payload)
 {
-    Serial.print(ERROR_ANSWER);
-    Serial.print("\n");
-    Serial.print(payload + "\n");
-    Serial.print("\n");
+    Serial.print(ERROR_ANSWER + topic + "\n");    
+    Serial.print(payload + "\n\n");
+    
 }
 
-void UARTSendOK(String payload)
+void UARTSendOK(String topic, String payload)
 {
-    Serial.print(OK_ANSWER);
-    Serial.print("\n");
-    Serial.print(payload + "\n");
-    Serial.print("\n");
+    Serial.print(OK_ANSWER + topic + "\n");    
+    Serial.print(payload + "\n\n");    
 }
 
 void UARTRecv(String command)
@@ -160,16 +157,16 @@ void UARTRecv(String command)
                 {
                     if (token[1].equals("1"))
                     {
-                        UARTSendOK(filesReadString(DEBUG_LOG_FILE1_NAME));
+                        UARTSendOK(token[0], filesReadString(DEBUG_LOG_FILE1_NAME));
                     }
                     else
                     {
-                        UARTSendOK(filesReadString(DEBUG_LOG_FILE2_NAME));
+                        UARTSendOK(token[0], filesReadString(DEBUG_LOG_FILE2_NAME));
                     }
                 }
                 else
                 {
-                    UARTSendError("bad or missing log file number");
+                    UARTSendError(token[0], "bad or missing log file number");
                 }
             }
             else
@@ -177,7 +174,7 @@ void UARTRecv(String command)
 #ifdef USE_ESP_DRIVER
                 if ((token[0].equals("AT+R")) || (token[0].equals("AT+RESET")))
             {
-                UARTSendOK("");
+                UARTSendOK(token[0], "");
                 nodeSetESPReset(1);
             }
             else
@@ -185,13 +182,13 @@ void UARTRecv(String command)
                 //GET all drivers properties
                 if (token[0].equals("AT+ADP?"))
             {
-                UARTSendOK(driversGetAllDriversProperties());
+                UARTSendOK(token[0], driversGetAllDriversProperties());
             }
             else
                 //GET files list
                 if (token[0].equals("AT+FL?"))
             {
-                UARTSendOK(filesGetList(""));
+                UARTSendOK(token[0], filesGetList(""));
             }
             else
                 //GET file
@@ -199,11 +196,11 @@ void UARTRecv(String command)
             {
                 if (count > 1)
                 {
-                    UARTSendOK(filesReadString(token[1]));
+                    UARTSendOK(token[0], filesReadString(token[1]));
                 }
                 else
                 {
-                    UARTSendError("bad or missing file name");
+                    UARTSendError(token[0], "bad or missing file name");
                 }
             }
             else
@@ -214,23 +211,23 @@ void UARTRecv(String command)
                 {
                     if (filesDelete(token[1]))
                     {
-                        UARTSendOK("file deleted: " + token[1]);
+                        UARTSendOK(token[0], "file deleted: " + token[1]);
                     }
                     else
                     {
-                        UARTSendError("bad file name: " + token[1]);
+                        UARTSendError(token[0], "bad file name: " + token[1]);
                     }
                 }
                 else
                 {
-                    UARTSendError("bad or missing file name");
+                    UARTSendError(token[0], "bad or missing file name");
                 }
             }
             else
                 //GET delete all files
                 if (token[0].equals("AT+DAF"))
             {
-                UARTSendOK(String(filesDeleteAllFiles()));
+                UARTSendOK(token[0], String(filesDeleteAllFiles()));
             }
             else
                 //SET create file
@@ -241,16 +238,16 @@ void UARTRecv(String command)
                 {
                     if (filesWriteString(token[1], token[2]))
                     {
-                        UARTSendOK("file created: " + token[1]);
+                        UARTSendOK(token[0], "file created: " + token[1]);
                     }
                     else
                     {
-                        UARTSendError("bad file name or SPIFFS problem: " + token[1]);
+                        UARTSendError(token[0], "bad file name or SPIFFS problem: " + token[1]);
                     }
                 }
                 else
                 {
-                    UARTSendError("bad or missing file name or content");
+                    UARTSendError(token[0], "bad or missing file name or content");
                 }
             }
             else
@@ -262,20 +259,20 @@ void UARTRecv(String command)
                     String result = driversAdd(atoi(token[1].c_str()), token[2], token[3]);
                     if (result.equals("1"))
                     {
-                        UARTSendOK("driver created, id: " + token[2]);
+                        UARTSendOK(token[0], "driver created, id: " + token[2]);
                         if (!driversSaveList())
                         {
-                            UARTSendError("bad, driver added but not stored to configuration file");
+                            UARTSendError(token[0], "bad, driver added but not stored to configuration file");
                         }
                     }
                     else
                     {
-                        UARTSendError("driver creation problem: " + result);
+                        UARTSendError(token[0], "driver creation problem: " + result);
                     }
                 }
                 else
                 {
-                    UARTSendError("bad parameters, format: at+ad type id pin1,pin2,...pinN");
+                    UARTSendError(token[0], "bad parameters, format: at+ad type id pin1,pin2,...pinN");
                 }
             }
             else
@@ -287,23 +284,23 @@ void UARTRecv(String command)
                     String result = driversDelete(token[1]);
                     if (result.length() == 0)
                     {
-                        UARTSendOK("driver deleted, id: " + token[1]);
+                        UARTSendOK(token[0], "driver deleted, id: " + token[1]);
                     }
                     else
                     {
-                        UARTSendError("delete driver problem: " + result);
+                        UARTSendError(token[0], "delete driver problem: " + result);
                     }
                 }
                 else
                 {
-                    UARTSendError("bad parameters, format: at+dd id");
+                    UARTSendError(token[0], "bad parameters, format: at+dd id");
                 }
             }
             else
                 //GET drivers Ids
                 if (token[0].equals("AT+DIDS?"))
             {
-                UARTSendOK(driversGetDriversId());
+                UARTSendOK(token[0], driversGetDriversId());
             }
             else
                 //GET driver properties
@@ -314,16 +311,16 @@ void UARTRecv(String command)
                     String result = driversGetDriverProperties(token[1]);
                     if (result.length() == 0)
                     {
-                        UARTSendOK(result);
+                        UARTSendOK(token[0], result);
                     }
                     else
                     {
-                        UARTSendError("driver problem: " + result);
+                        UARTSendError(token[0], "driver problem: " + result);
                     }
                 }
                 else
                 {
-                    UARTSendError("bad parameters, format: at+dps? id");
+                    UARTSendError(token[0], "bad parameters, format: at+dps? id");
                 }
             }
             else
@@ -345,24 +342,24 @@ void UARTRecv(String command)
                     
                     if (result.length() == 0)
                     {
-                        UARTSendError("wrong driver id: " + token[1] + " use GetDriversId API to get all drivers list");
+                        UARTSendError(token[0], "wrong driver id: " + token[1] + " use GetDriversId API to get all drivers list");
                     }
                     else if (result.equals(NOT_AVAILABLE))
                     {
-                        UARTSendError("driver property: " + token[2] + " set as NOT Available");
+                        UARTSendError(token[0], "driver property: " + token[2] + " set as NOT Available");
                     }
                     else if (result.equals(WRONG_PROPERTY_NAME))
                     {
-                        UARTSendError("driver property: " + token[2] + " not exists");
+                        UARTSendError(token[0], "driver property: " + token[2] + " not exists");
                     }
                     else
                     {
-                        UARTSendOK(result);
+                        UARTSendOK(token[0], result);
                     }
                 }
                 else
                 {
-                    UARTSendError("bad or missing parameter");
+                    UARTSendError(token[0], "bad or missing parameter");
                 }
             }
             else
@@ -375,7 +372,7 @@ void UARTRecv(String command)
                     String driverResult = driversSetDriverProperty(token[1], token[2], token[3]);
                     if (driverResult.equals("1") || driverResult.length() == 0)
                     {
-                        UARTSendOK("");
+                        UARTSendOK(token[0], "");
                     }
                     else
                     {
@@ -385,17 +382,17 @@ void UARTRecv(String command)
                             String result = nodeOnMessage(nodeGetTopic() + "/set" + token[2], token[3], NO_TRANSPORT_MASK);
                             if ((result.length() == 0) || (result.equals("0")))
                             {
-                                UARTSendError(driverResult + " [or] wrong node property: " + token[2]);
+                                UARTSendError(token[0], driverResult + " [or] wrong node property: " + token[2]);
                             }
                             else
                             {
                                 if (result.equals("1"))
                                 {
-                                    UARTSendOK("");
+                                    UARTSendOK(token[0], "");
                                 }
                                 else
                                 {
-                                    UARTSendError(driverResult + " [or] " + result);
+                                    UARTSendError(token[0], driverResult + " [or] " + result);
                                 }
                             }
                         }
@@ -403,33 +400,33 @@ void UARTRecv(String command)
 #endif
                         {
 
-                            UARTSendError(driverResult);
+                            UARTSendError(token[0], driverResult);
                         }
                     }
                 }
                 else
                 {
-                    UARTSendError("bad parameters");
+                    UARTSendError(token[0], "bad parameters");
                 }
             }
             else
                 //GET pins map
                 if (token[0].equals("AT+PM?"))
             {
-                UARTSendOK(getPinMap());
+                UARTSendOK(token[0], getPinMap());
             }
             else
                 //GET driver pins map
                 if (token[0].equals("AT+DPM?"))
             {
-                UARTSendOK(getDriverPin());
+                UARTSendOK(token[0], getDriverPin());
             }
             else
 #ifdef USE_SCRIPT
                 //GET get all scripts
                 if (token[0].equals("AT+AS?"))
             {
-                UARTSendOK(scriptsGetAll());
+                UARTSendOK(token[0], scriptsGetAll());
             }
             else
 #endif
@@ -437,17 +434,17 @@ void UARTRecv(String command)
                 if (token[0].equals("AT+WP?"))
             {
 
-                UARTSendOK(filesReadString("/web.config"));
+                UARTSendOK(token[0], filesReadString("/web.config"));
             }
             else
             {
-                UARTSendError("unknown command");
+                UARTSendError(token[0], "unknown command");
             }
         }
 
         else
         {
-            UARTSendError("empty command");
+            UARTSendError(token[0], "empty command");
         }
     }
 }

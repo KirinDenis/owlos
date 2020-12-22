@@ -141,6 +141,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
             try
             {
+                /*
                 string result = await driver.parentNode.wrapper.transport.GetDriverProperty(driver.name, this.name);
 
                 if (result.IndexOf("%error") != 0)
@@ -153,6 +154,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
                 {
                     networkStatus = NetworkStatus.erorr;
                 }
+                */
 
             }
             catch (Exception exception) //TODO: last error or on error event
@@ -175,6 +177,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
             try
             {
+                /*
                 string result = await driver.parentNode.wrapper.transport.SetDriverProperty(driver.name, this.name, _value);
 
                 if (result.IndexOf("%error") != 0)
@@ -187,7 +190,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
                 {
                     networkStatus = NetworkStatus.erorr;
                 }
-
+                */
             }
             catch (Exception exception) //TODO: last error or on error event
             {

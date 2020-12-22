@@ -14,63 +14,19 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         public string error = "wrong client initialization";
     }
 
-    public class RESTfulClientTransport : IOWLOSTransport
+    public class RESTfulClientTransport : OWLOSTransport
     {
-        protected RESTfulClientConnection _connection = null;
-        public IOWLOSConnection connection { get => _connection; set { _connection = value as RESTfulClientConnection; } }
+        protected OWLOSConnection _connection = null;
+        override public OWLOSConnection connection { get => _connection; set { _connection = value as OWLOSConnection; } }
 
-        public async Task<DriversDTO> GetAllDriversProperties()
+        override public async Task<DriversDTO> GetAllDriversProperties()
         {
             DriversDTO driversDTO = new DriversDTO();
 
             RESTfulClientResultModel getResult = await Get("getalldriversproperties");
             if (string.IsNullOrEmpty(getResult.error))
             {
-
-                List<string> driverRaw = getResult.result.Split('\n').ToList();
-                DriverDTO driver = null;
-
-                foreach (string driverProp in driverRaw)
-                {
-                    //find driver
-                    if (driverProp.IndexOf("properties for:") != -1)
-                    {
-                        driver = new DriverDTO();
-
-                        driver.name = driverProp.Substring(driverProp.IndexOf(":") + 1);
-
-                        driversDTO.drivers.Add(driver);
-                    }
-                    else
-                    if (driver != null)
-                    {
-                        if (driverProp.IndexOf("=") != -1)
-                        {
-                            driver.name = driverProp.Substring(0, driverProp.IndexOf("="));
-                            driver.alue = driverProp.Substring(driverProp.IndexOf("=") + 1);
-                            await driver.SetParsedProperty(key, value);
-
-                            string _value = value.Substring(0, value.IndexOf("//"));
-                            string _flags = value.Substring(value.IndexOf("//") + 2);
-
-                            OWLOSDriverProperty property = properties.Find(p => p.name == name);
-
-                            if (property == null)
-                            {
-                                property = new OWLOSDriverProperty(this, name, value, _flags);
-                                properties.Add(property);
-                                PropertyCreate(new OWLOSPropertyWrapperEventArgs(property));
-                            }
-                            else
-                            {
-                                property.SetOutside(_value);
-                            }
-
-
-                        }
-                    }
-                }
-
+                driversDTO = base.GetAllDriversProperties(getResult.result);
             }
             else
             {

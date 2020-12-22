@@ -1,126 +1,77 @@
-﻿using System;
-using System.Net.Http;
+﻿using OWLOSAdmin.Ecosystem.OWLOSDTOs;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using System.Timers;
 
 namespace OWLOSAdmin.Ecosystem.OWLOS
 {
-    public enum NetworkStatus
+    public class OWLOSTransport : IOWLOSTransport
     {
-        offline = 0,
-        online,
-        reconnect,
-        erorr
-    }
+        virtual public OWLOSConnection connection { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-    public class TransportType
-    {
-        public const int HttpClient = 0x0001;
-        public const int MQTTClient = 0x0002;
-        public const int UART = 0x0004;
-    }
-
-    public class OWLOSTransport
-    {
-        private readonly OWLOSNode node = null;
-        public string RESTfulServerHost = "";
-        public int RESTfulServerPort = 80;
-        private Timer lifeCycleTimer;
-
-
-        public OWLOSTransport(OWLOSNode node)
+        virtual public Task<DriversDTO> GetAllDriversProperties()
         {
-            this.node = node;
-        }
-        public void Start()
-        {
-            lifeCycleTimer = new Timer(1000)
-            {
-                AutoReset = true
-            };
-            lifeCycleTimer.Elapsed += new ElapsedEventHandler(OnLifeCycleTimer);
-            lifeCycleTimer.Start();
-            OnLifeCycleTimer(null, null);
-
+            throw new NotImplementedException();
         }
 
-        private async void OnLifeCycleTimer(object source, ElapsedEventArgs e)
+        public DriversDTO GetAllDriversProperties(string data)
         {
-            await GetAllDriversProperties();
-            await GetAllScripts();
-        }
+            DriversDTO driversDTO = new DriversDTO();
+            List<string> driverRaw = data.Split('\n').ToList();
+            DriverDTO driver = null;
 
-        public async Task<string> Get(string APIName, string args = "")
-        {
-            try
+            foreach (string driverProp in driverRaw)
             {
-                HttpClient client = new HttpClient();
-                HttpResponseMessage response = await client.GetAsync(RESTfulServerHost + APIName + args);
-
-                response.EnsureSuccessStatusCode();
-                return await response.Content.ReadAsStringAsync();
-            }
-            catch (Exception exception)
-            {
-                return "Error:" + exception.Message;
-            }
-        }
-
-        
-        public async Task<bool> GetAllScripts()
-        {
-            string driverPoperties = await Get("getallscripts");
-            if (driverPoperties.IndexOf("Error:") != 0)
-            {
-                try
+                //find driver
+                if (driverProp.IndexOf("properties for:") != -1)
                 {
-                    await node.parseDrivers(driverPoperties);
-                    return true;
+                    driver = new DriverDTO
+                    {
+                        name = driverProp.Substring(driverProp.IndexOf(":") + 1)
+                    };
+
+                    driversDTO.drivers.Add(driver);
                 }
-                catch { }
-            }
-            return false;
-        }
-
-
-        public async Task<bool> GetAllDriversProperties()
-        {
-            string driverPoperties = await Get("getalldriversproperties");
-            if (driverPoperties.IndexOf("Error:") != 0)
-            {
-                try
+                else
+                if (driver != null)
                 {
-                    await node.parseDrivers(driverPoperties);
-                    return true;
+                    if (driverProp.IndexOf("=") != -1)
+                    {
+                        DriverPropertyDTO driverProperty = new DriverPropertyDTO
+                        {
+                            name = driverProp.Substring(0, driverProp.IndexOf("="))
+                        };
+                        string _value = driverProp.Substring(driverProp.IndexOf("=") + 1);
+                        //await driver.SetParsedProperty(key, value);
+
+                        driverProperty.value = _value.Substring(0, _value.IndexOf("//"));
+                        //string _flags = value.Substring(value.IndexOf("//") + 2);
+                        //TODO: flags prop type
+                        //driverProperty.propType
+
+                        driver.properties.Add(driverProperty);
+
+
+                        //OWLOSDriverProperty property = properties.Find(p => p.name == name);
+                        /*
+                         if (property == null)
+                         {
+                             property = new OWLOSDriverProperty(this, name, value, _flags);
+                             properties.Add(property);
+                             PropertyCreate(new OWLOSPropertyWrapperEventArgs(property));
+                         }
+                         else
+                         {
+                             property.SetOutside(_value);
+                         }
+                        */
+
+                    }
                 }
-                catch { }
             }
-            return false;
+            driversDTO.error = string.Empty;
+            return driversDTO;
         }
-
-        public async Task<string> GetDriverProperty(string driverName, string propertyName)
-        {
-            HttpClient client = new HttpClient();
-            HttpResponseMessage response = await client.GetAsync(RESTfulServerHost + "getdriverproperty?id=" + driverName + "&property=" + propertyName);
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadAsStringAsync();
-        }
-
-        public async Task<string> SetDriverProperty(string driverName, string propertyName, string propertyValue)
-        {
-            try
-            {
-                HttpClient client = new HttpClient();
-                HttpResponseMessage response = await client.GetAsync(RESTfulServerHost + "setdriverproperty?id=" + driverName + "&property=" + propertyName + "&value=" + propertyValue);
-                response.EnsureSuccessStatusCode();
-                return await response.Content.ReadAsStringAsync();
-            }
-            catch (Exception exception)
-            {
-                return "Error:" + exception.Message;
-            }
-
-        }
-
     }
 }
