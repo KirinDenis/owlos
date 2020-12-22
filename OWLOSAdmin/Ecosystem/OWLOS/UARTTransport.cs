@@ -19,6 +19,8 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         private OWLOSNode node;
 
+        string indata = "";
+
         public UARTTransport(OWLOSNode node)
         {
 
@@ -30,8 +32,8 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             mySerialPort.Parity = Parity.None;
             mySerialPort.StopBits = StopBits.One;
             mySerialPort.DataBits = 8;
-            //mySerialPort.Handshake = Handshake.None;
-            // mySerialPort.RtsEnable = true;
+            mySerialPort.Handshake = Handshake.None;
+            //mySerialPort.RtsEnable = true;
 
             mySerialPort.DataReceived += new SerialDataReceivedEventHandler(DataReceivedHandler);
 
@@ -58,10 +60,10 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         protected async Task<RESTfulClientResultModel> Get(string APIName, string args = "")
         {
-            
-            
+
+
             RESTfulClientResultModel result = new RESTfulClientResultModel();
-            if (once) return result;
+            // if (once) return result;
             once = true;
 
             if ((_connection == null) || (string.IsNullOrEmpty(_connection.host)))
@@ -74,7 +76,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
                 if (mySerialPort.IsOpen)
                 {
-                    mySerialPort.WriteLine(APIName + "\r");
+                    mySerialPort.WriteLine(APIName + "\n\r");
                 }
 
 
@@ -96,34 +98,40 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
         {
             SerialPort sp = (SerialPort)sender;
-            string indata = sp.ReadExisting();
-            List<string> serialRaw = indata.Split('\n').ToList();
+            indata += sp.ReadExisting();
 
-            int i = 0;
-            while (i < serialRaw.Count)
+            if (indata.IndexOf("\n\n") != -1)
             {
-                string data = serialRaw[i];
-                if (data.IndexOf("OK: ") == 0)
+                List<string> serialRaw = indata.Split('\n').ToList();
+                indata = "";
+
+                int i = 0;
+                while (i < serialRaw.Count)
                 {
-                    string APIName = data.Substring(4);
-                    string APIData = string.Empty;
-
-                    i++;
-
-                    while (!(string.IsNullOrEmpty(serialRaw[i]) && string.IsNullOrEmpty(serialRaw[i + 1])))
+                    string data = serialRaw[i];
+                    if (data.IndexOf("OK: ") == 0)
                     {
-                        APIData += serialRaw[i] + "\n";
+                        string APIName = data.Substring(4);
+                        string APIData = string.Empty;
+
                         i++;
-                    }
 
-                    if (APIName.ToUpper().Equals("AT+ADP?"))
-                    {
-                               
-                       DriversDTO drivers = base.GetAllDriversProperties(APIData);
+                        while ((i < serialRaw.Count - 1) && (!(string.IsNullOrEmpty(serialRaw[i]) && string.IsNullOrEmpty(serialRaw[i + 1]))))
+                        {
+                            APIData += serialRaw[i] + "\n";
+                            i++;
+                        }
+
+                        if (APIName.ToUpper().Equals("AT+ADP?"))
+                        {
+
+                            //DriversDTO drivers = base.GetAllDriversProperties(APIData);
+                            node.parseDrivers(APIData);
+                        }
                     }
+                    i++;
                 }
-                i++;
-            }    
+            }
         }
 
 

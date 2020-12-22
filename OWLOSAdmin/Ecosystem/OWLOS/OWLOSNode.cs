@@ -63,7 +63,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
                 switch (connection.connectionType)
                 {
                     case ConnectionType.RESTfulClient:
-                        RESTfulClientTransport _RESTfulClientTransport = new RESTfulClientTransport();
+                        RESTfulClientTransport _RESTfulClientTransport = new RESTfulClientTransport(this);
                         _RESTfulClientTransport.connection = connection;
                         transports.Add(_RESTfulClientTransport);
                         break;
@@ -81,7 +81,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         public void Start()
         {
-            lifeCycleTimer = new Timer(1000)
+            lifeCycleTimer = new Timer(10000)
             {
                 AutoReset = true
             };

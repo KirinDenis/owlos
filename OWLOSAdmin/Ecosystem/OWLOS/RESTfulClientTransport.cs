@@ -19,6 +19,13 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         protected OWLOSConnection _connection = null;
         override public OWLOSConnection connection { get => _connection; set { _connection = value as OWLOSConnection; } }
 
+        private OWLOSNode node = null;
+
+        public RESTfulClientTransport(OWLOSNode node)
+        {
+            this.node = node;
+        }
+
         override public async Task<DriversDTO> GetAllDriversProperties()
         {
             DriversDTO driversDTO = new DriversDTO();
@@ -26,7 +33,8 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             RESTfulClientResultModel getResult = await Get("getalldriversproperties");
             if (string.IsNullOrEmpty(getResult.error))
             {
-                driversDTO = base.GetAllDriversProperties(getResult.result);
+                //driversDTO = base.GetAllDriversProperties(getResult.result);
+                node.parseDrivers(getResult.result);
             }
             else
             {
