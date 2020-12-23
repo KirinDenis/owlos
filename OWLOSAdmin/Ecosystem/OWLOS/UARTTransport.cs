@@ -100,37 +100,45 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             SerialPort sp = (SerialPort)sender;
             indata += sp.ReadExisting();
 
+            
+
             if (indata.IndexOf("\n\n") != -1)
             {
-                List<string> serialRaw = indata.Split('\n').ToList();
-                indata = "";
-
-                int i = 0;
-                while (i < serialRaw.Count)
+                while (indata.IndexOf("\n\n") != -1)
                 {
-                    string data = serialRaw[i];
-                    if (data.IndexOf("OK: ") == 0)
+                    string _data = indata.Substring(0, indata.IndexOf("\n\n") + 2);
+                    indata = indata.Substring(indata.IndexOf("\n\n") + 2);
+                    List<string> serialRaw = _data.Split('\n').ToList();
+                    
+
+                    int i = 0;
+                    while (i < serialRaw.Count)
                     {
-                        string APIName = data.Substring(4);
-                        string APIData = string.Empty;
-
-                        i++;
-
-                        while ((i < serialRaw.Count - 1) && (!(string.IsNullOrEmpty(serialRaw[i]) && string.IsNullOrEmpty(serialRaw[i + 1]))))
+                        string data = serialRaw[i];
+                        if (data.IndexOf("OK: ") == 0)
                         {
-                            APIData += serialRaw[i] + "\n";
+                            string APIName = data.Substring(4);
+                            string APIData = string.Empty;
+
                             i++;
-                        }
 
-                        if (APIName.ToUpper().Equals("AT+ADP?"))
-                        {
+                            while ((i < serialRaw.Count - 1) && (!(string.IsNullOrEmpty(serialRaw[i]) && string.IsNullOrEmpty(serialRaw[i + 1]))))
+                            {
+                                APIData += serialRaw[i] + "\n";
+                                i++;
+                            }
 
-                            //DriversDTO drivers = base.GetAllDriversProperties(APIData);
-                            node.parseDrivers(APIData);
+                            if (APIName.ToUpper().Equals("AT+ADP?"))
+                            {
+
+                                //DriversDTO drivers = base.GetAllDriversProperties(APIData);
+                                node.parseDrivers(APIData);
+                            }
                         }
+                        i++;
                     }
-                    i++;
                 }
+
             }
         }
 
