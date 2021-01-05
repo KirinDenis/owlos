@@ -97,7 +97,7 @@ String SerialInput = "";
 
 void UARTSend(String topic, String payload)
 {
-    Serial.print(PUBLISH_ANSWER + topic + " " + payload + "\n");
+    Serial.print(PUBLISH_ANSWER + topic + " " + payload + "\n\n");
 }
 
 void UARTSendError(String topic, String payload)

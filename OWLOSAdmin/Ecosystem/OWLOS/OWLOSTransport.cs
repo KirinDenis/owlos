@@ -6,8 +6,20 @@ using System.Threading.Tasks;
 
 namespace OWLOSAdmin.Ecosystem.OWLOS
 {
+    public enum NetworkStatus
+    {
+        Offline = 0,
+        Online,
+        Reconnect,
+        Erorr
+    }
+
+
+
     public class OWLOSTransport : IOWLOSTransport
     {
+        public NetworkStatus networkStatus = NetworkStatus.Offline;
+
         virtual public OWLOSConnection connection { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         virtual public Task<DriversDTO> GetAllDriversProperties()
@@ -15,7 +27,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             throw new NotImplementedException();
         }
 
-        public DriversDTO GetAllDriversProperties(string data)
+        virtual public DriversDTO GetAllDriversProperties(string data)
         {
             DriversDTO driversDTO = new DriversDTO();
             List<string> driverRaw = data.Split('\n').ToList();

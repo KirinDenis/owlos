@@ -134,18 +134,18 @@ namespace OWLOSAdmin.EcosystemExplorer
                 Brush componentsBrush = (SolidColorBrush)App.Current.Resources["OWLOSInfo"]; //default NetworkStatus.online
                 EnableValueEditors();
 
-                if (e.property.networkStatus == NetworkStatus.erorr)
+                if (e.property.networkStatus == NetworkStatus.Erorr)
                 {
                     componentsBrush = (SolidColorBrush)App.Current.Resources["OWLOSDanger"];
                 }
                 else
-            if (e.property.networkStatus == NetworkStatus.reconnect)
+            if (e.property.networkStatus == NetworkStatus.Reconnect)
                 {
                     componentsBrush = (SolidColorBrush)App.Current.Resources["OWLOSInfoAlpha2"];
                     DisableValueEditors();
                 }
                 else
-            if (e.property.networkStatus == NetworkStatus.offline)
+            if (e.property.networkStatus == NetworkStatus.Offline)
                 {
                     componentsBrush = (SolidColorBrush)App.Current.Resources["OWLOSDark"];
                 }

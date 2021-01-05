@@ -19,7 +19,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
     public class OWLOSDriverProperty
     {
-        protected NetworkStatus _networkStatus = NetworkStatus.offline;
+        protected NetworkStatus _networkStatus = NetworkStatus.Offline;
         public NetworkStatus networkStatus
         {
             get
@@ -93,7 +93,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
             
 
-            networkStatus = NetworkStatus.online;
+            networkStatus = NetworkStatus.Online;
 
         }
 
@@ -132,12 +132,12 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         //--------------------------------------------------------------------------------------------------------
         public async Task<string> GetOutside()
         {
-            if (networkStatus == NetworkStatus.reconnect)
+            if (networkStatus == NetworkStatus.Reconnect)
             {
                 return value;
             }
 
-            networkStatus = NetworkStatus.reconnect;
+            networkStatus = NetworkStatus.Reconnect;
 
             try
             {
@@ -159,7 +159,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             }
             catch (Exception exception) //TODO: last error or on error event
             {
-                networkStatus = NetworkStatus.offline;
+                networkStatus = NetworkStatus.Offline;
             }
 
             return value;
@@ -168,12 +168,12 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         public async Task<string> SetInside(string _value)
         {
 
-            if (networkStatus == NetworkStatus.reconnect)
+            if (networkStatus == NetworkStatus.Reconnect)
             {
                 return "error reconnect";
             }
 
-            networkStatus = NetworkStatus.reconnect;
+            networkStatus = NetworkStatus.Reconnect;
 
             try
             {
@@ -194,7 +194,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             }
             catch (Exception exception) //TODO: last error or on error event
             {
-                networkStatus = NetworkStatus.offline;
+                networkStatus = NetworkStatus.Offline;
             }
 
             return "error";
@@ -204,7 +204,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         {
             if (value != _value)
             {
-                networkStatus = NetworkStatus.online;
+                networkStatus = NetworkStatus.Online;
                 value = _value;
                 PropertySetOutside(new OWLOSPropertyWrapperEventArgs(this));
             }

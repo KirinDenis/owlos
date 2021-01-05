@@ -1,50 +1,107 @@
-﻿using OWLOSAdmin.Ecosystem.OWLOSDTOs;
+﻿using Newtonsoft.Json;
+using OWLOSAdmin.Ecosystem.OWLOSDTOs;
 using System;
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OWLOSAdmin.Ecosystem.OWLOS
 {
+
+    public class UARTClientConnectionDTO
+    {
+        public string port;
+
+        public int baudRate;
+
+        public Parity parity;
+
+        public StopBits stopBits;
+
+        public int dataBits;
+
+        public Handshake handshake;
+
+        public bool RTSEnable;
+    }
+
+
     public class UARTTransport : OWLOSTransport
     {
         protected OWLOSConnection _connection = null;
-        override public OWLOSConnection connection { get => _connection; set { _connection = value as OWLOSConnection; } }
+
+        protected UARTClientConnectionDTO _UARTClientConnectionDTO;
+
+        protected SerialPort serialPort;
+        public override OWLOSConnection connection
+        {
+            get => _connection;
+            set
+            {
+                _connection = value;
+                _UARTClientConnectionDTO = JsonConvert.DeserializeObject<UARTClientConnectionDTO>(_connection.connectionString);
+
+                if (serialPort == null)
+                {
+                    serialPort = new SerialPort(_UARTClientConnectionDTO.port);
+                }
+
+                serialPort.BaudRate = _UARTClientConnectionDTO.baudRate;
+                serialPort.Parity = _UARTClientConnectionDTO.parity;
+                serialPort.StopBits = _UARTClientConnectionDTO.stopBits;
+                serialPort.DataBits = _UARTClientConnectionDTO.dataBits;
+                serialPort.Handshake = _UARTClientConnectionDTO.handshake;
+                serialPort.RtsEnable = _UARTClientConnectionDTO.RTSEnable;
+
+                serialPort.DataReceived += new SerialDataReceivedEventHandler(DataReceivedHandler);
+                OpenPort();
+            }
+        }
 
         private bool once = false;
 
-        private SerialPort mySerialPort;
 
-        private OWLOSNode node;
-
-        string indata = "";
+        private readonly OWLOSNode node;
+        private string indata = "";
 
         public UARTTransport(OWLOSNode node)
         {
 
             this.node = node;
-            //mySerialPort = new SerialPort(_connection.host);
-            mySerialPort = new SerialPort("COM7");
-
-            mySerialPort.BaudRate = 115200;
-            mySerialPort.Parity = Parity.None;
-            mySerialPort.StopBits = StopBits.One;
-            mySerialPort.DataBits = 8;
-            mySerialPort.Handshake = Handshake.None;
-            //mySerialPort.RtsEnable = true;
-
-            mySerialPort.DataReceived += new SerialDataReceivedEventHandler(DataReceivedHandler);
-
-            mySerialPort.Open();
 
         }
 
-        override public async Task<DriversDTO> GetAllDriversProperties()
+        private bool OpenPort()
+        {
+            networkStatus = NetworkStatus.Offline;
+            if (serialPort == null)
+            {
+                return false;
+            }
+
+            if (!serialPort.IsOpen)
+            {
+                try
+                {
+                    serialPort.Open();
+                    networkStatus = NetworkStatus.Online;
+                }
+                catch
+                {
+                    networkStatus = NetworkStatus.Erorr;
+                    return false;
+                }
+            }
+            return true;
+
+        }
+
+        public override async Task<DriversDTO> GetAllDriversProperties()
         {
             DriversDTO driversDTO = new DriversDTO();
 
+            networkStatus = NetworkStatus.Reconnect;
             RESTfulClientResultModel getResult = await Get("AT+ADP?");
             if (string.IsNullOrEmpty(getResult.error))
             {
@@ -66,20 +123,22 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             // if (once) return result;
             once = true;
 
-            if ((_connection == null) || (string.IsNullOrEmpty(_connection.host)))
+            if ((_connection == null) || (string.IsNullOrEmpty(_UARTClientConnectionDTO.port)))
             {
                 return result;
             }
 
             try
             {
-
-                if (mySerialPort.IsOpen)
+                if (OpenPort())
                 {
-                    mySerialPort.WriteLine(APIName + "\n\r");
+                    serialPort.WriteLine(APIName + "\n\r");                    
+                    return result;
                 }
-
-
+                else
+                {
+                    result.error = "can't open port";
+                }
 
             }
             catch (Exception exception)
@@ -90,17 +149,17 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             return result;
         }
 
-        public DriversDTO GetAllDriversProperties(string data)
+        public override DriversDTO GetAllDriversProperties(string data)
         {
             return base.GetAllDriversProperties(data);
         }
 
         private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
         {
+            networkStatus = NetworkStatus.Online;
             SerialPort sp = (SerialPort)sender;
             indata += sp.ReadExisting();
 
-            
 
             if (indata.IndexOf("\n\n") != -1)
             {
@@ -109,7 +168,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
                     string _data = indata.Substring(0, indata.IndexOf("\n\n") + 2);
                     indata = indata.Substring(indata.IndexOf("\n\n") + 2);
                     List<string> serialRaw = _data.Split('\n').ToList();
-                    
+
 
                     int i = 0;
                     while (i < serialRaw.Count)
@@ -130,9 +189,8 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
                             if (APIName.ToUpper().Equals("AT+ADP?"))
                             {
-
-                                //DriversDTO drivers = base.GetAllDriversProperties(APIData);
-                                node.parseDrivers(APIData);
+                                 Task task = node.parseDrivers(APIData);
+                                // node.parseDrivers(APIData);
                             }
                         }
                         i++;
@@ -140,6 +198,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
                 }
 
             }
+
         }
 
 

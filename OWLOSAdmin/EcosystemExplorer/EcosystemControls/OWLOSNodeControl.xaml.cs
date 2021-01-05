@@ -40,6 +40,7 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 using OWLOSAdmin.Ecosystem;
+using OWLOSAdmin.Ecosystem.OWLOS;
 using OWLOSAdmin.EcosystemExplorer.EcosystemControls;
 using OWLOSAdmin.EcosystemExplorer.Huds;
 using PathText;
@@ -126,9 +127,9 @@ namespace OWLOSAdmin.EcosystemExplorer
             filesPath.Data = HudLibrary.DrawArc(350, 350, radius - 40, 302, 315);
 
             propertiesPath.Data = HudLibrary.DrawArc(350, 350, radius - 40, 317, 359);
-            restFullPath.Data = HudLibrary.DrawArc(350, 350, radius - 100, 0, 40);
-            MQTTPath.Data = HudLibrary.DrawArc(350, 350, radius - 100, 45, 85);
-            UARTPath.Data = HudLibrary.DrawArc(350, 350, radius - 100, 90, 130);
+            
+            //MQTTPath.Data = HudLibrary.DrawArc(350, 350, radius - 100, 45, 85);
+            //UARTPath.Data = HudLibrary.DrawArc(350, 350, radius - 100, 90, 130);
 
             //RalationLines test 
             /*
@@ -157,9 +158,58 @@ namespace OWLOSAdmin.EcosystemExplorer
             PathTextControl _WifiRSSIDText = new PathTextControl(350, 350, radius - 30, -4, 5, WiFiRSSIDText);
             PathTextControl _PowerTextText = new PathTextControl(330, 350, radius - 15, PowerAngeStart-20, PowerAngeStart-5, PowerText);
 
-            PathTextControl _restFulText = new PathTextControl(350, 350, radius - 90, 7, 50, restFulText);
-            PathTextControl _MQTTText = new PathTextControl(350, 350, radius - 90, 52, 50, MQTTText);
-            PathTextControl _UARTText = new PathTextControl(350, 350, radius - 90, 95, 50, UARTText);
+            
+            if (nodeWrapper.node != null)
+            {
+
+                
+                if (nodeWrapper.node.transports.Count > 0)
+                {
+
+                    double trasnportPathStep = 4.0f;
+                    double oneTransportAngel = (360 / 4) / nodeWrapper.node.transports.Count - trasnportPathStep;
+                    for (int i=0; i < nodeWrapper.node.transports.Count; i ++)
+                    {
+                        double nextAngel = i * (oneTransportAngel + trasnportPathStep);
+                        Path transportPath = new Path();
+                        transportPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSPrimary"];
+                        transportPath.Data = HudLibrary.DrawArc(350, 350, radius - 100, nextAngel, nextAngel + oneTransportAngel);
+                        transportPath.StrokeThickness = 30;
+                        transportPath.RenderTransformOrigin = new Point(0.5f,0.5f);
+                        transportPath.HorizontalAlignment = HorizontalAlignment.Center;
+                        transportPath.VerticalAlignment = VerticalAlignment.Center; 
+                        transportPath.Width = 700;
+                        transportPath.Height = 700;
+                        nodeGrid.Children.Add(transportPath);
+
+                        TextBlock transportText = new TextBlock();
+                        transportText.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSDark"];
+                        transportText.HorizontalAlignment = HorizontalAlignment.Left;
+                        transportText.VerticalAlignment = VerticalAlignment.Top;
+                        transportText.FontSize = 14;
+                        nodeGrid.Children.Add(transportText);
+
+                        switch (nodeWrapper.node.transports[i].connection.connectionType)
+                        {
+                            case ConnectionType.RESTfulClient:
+                                transportText.Text = "HTTP";
+                                break;
+                            case ConnectionType.UART:
+                                transportText.Text = "UART";
+                                break;
+
+                        }
+
+                        PathTextControl _transportPathText = new PathTextControl(350, 350, radius - 90, nextAngel, oneTransportAngel + trasnportPathStep * 2, transportText);
+
+
+
+                        
+                        //PathTextControl _MQTTText = new PathTextControl(350, 350, radius - 90, 52, 50, MQTTText);
+                        //PathTextControl _UARTText = new PathTextControl(350, 350, radius - 90, 95, 50, UARTText);
+                    }
+                }
+            }
             PathTextControl _propertiesText = new PathTextControl(350, 350, radius - 10, 325, 250, propertiesText);
             PathTextControl _filesText = new PathTextControl(350, 350, radius - 10, 296, 250, filesText);
             PathTextControl _scriptsText = new PathTextControl(350, 350, radius - 10, 180, 250, scriptsText);

@@ -5,13 +5,6 @@ using System.Timers;
 
 namespace OWLOSAdmin.Ecosystem.OWLOS
 {
-    public enum NetworkStatus
-    {
-        offline = 0,
-        online,
-        reconnect,
-        erorr
-    }
 
     public class TransportType
     {

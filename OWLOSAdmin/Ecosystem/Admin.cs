@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.IO.Ports;
 using System.Text;
 
 
@@ -61,14 +62,28 @@ namespace OWLOSAdmin.Ecosystem
                 OWLOSConnection _RESTfulClientConnection = new OWLOSConnection();
                 _RESTfulClientConnection.connectionType = ConnectionType.RESTfulClient;
                 _RESTfulClientConnection.name = "rest";
-                _RESTfulClientConnection.host = "192.168.1.101";
+
+                RESTfulClientConnectionDTO _RESTfulClientConnectionDTO = new RESTfulClientConnectionDTO();
+                _RESTfulClientConnectionDTO.host = "192.168.1.101";
+                _RESTfulClientConnection.connectionString = JsonConvert.SerializeObject(_RESTfulClientConnectionDTO);
+
                 _OWLOSNodeConfig.connections.Add(_RESTfulClientConnection);
 
-                _RESTfulClientConnection = new OWLOSConnection();
-                _RESTfulClientConnection.connectionType = ConnectionType.UART;
-                _RESTfulClientConnection.name = "UART";
-                _RESTfulClientConnection.host = "COM7";
-                _OWLOSNodeConfig.connections.Add(_RESTfulClientConnection);
+                OWLOSConnection _UARTClientConnection = new OWLOSConnection();
+                _UARTClientConnection = new OWLOSConnection();
+                _UARTClientConnection.connectionType = ConnectionType.UART;
+                _UARTClientConnection.name = "UART";
+                UARTClientConnectionDTO _UARTClientConnectionDTO = new UARTClientConnectionDTO();
+                _UARTClientConnectionDTO.port = "COM7";
+                _UARTClientConnectionDTO.baudRate = 115200;
+                _UARTClientConnectionDTO.parity = Parity.None;
+                _UARTClientConnectionDTO.stopBits = StopBits.One;
+                _UARTClientConnectionDTO.dataBits = 8;
+                _UARTClientConnectionDTO.handshake = Handshake.None;
+                _UARTClientConnectionDTO.RTSEnable = false;
+                _UARTClientConnection.connectionString = JsonConvert.SerializeObject(_UARTClientConnectionDTO);
+                
+                _OWLOSNodeConfig.connections.Add(_UARTClientConnection);
 
                 config.nodesConfig.Add(_OWLOSNodeConfig);
                 Save();
