@@ -56,6 +56,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
                 serialPort.DataReceived += new SerialDataReceivedEventHandler(DataReceivedHandler);
                 OpenPort();
+
             }
         }
 
@@ -69,11 +70,11 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         {
 
             this.node = node;
-
         }
 
         private bool OpenPort()
         {
+            
             networkStatus = NetworkStatus.Offline;
             if (serialPort == null)
             {
@@ -84,6 +85,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             {
                 try
                 {
+
                     serialPort.Open();
                     networkStatus = NetworkStatus.Online;
                 }
@@ -105,11 +107,11 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             RESTfulClientResultModel getResult = await Get("AT+ADP?");
             if (string.IsNullOrEmpty(getResult.error))
             {
-                driversDTO = base.GetAllDriversProperties(getResult.result);
+                //   driversDTO = base.GetAllDriversProperties(getResult.result);
             }
             else
             {
-                driversDTO.error = getResult.error;
+                //  driversDTO.error = getResult.error;
             }
 
             return driversDTO;
@@ -120,10 +122,8 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
 
             RESTfulClientResultModel result = new RESTfulClientResultModel();
-            // if (once) return result;
-            once = true;
-
-            if ((_connection == null) || (string.IsNullOrEmpty(_UARTClientConnectionDTO.port)))
+            //  if ((_connection == null) || (string.IsNullOrEmpty(_UARTClientConnectionDTO.port)))
+            if ((_connection == null))
             {
                 return result;
             }
@@ -132,7 +132,9 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             {
                 if (OpenPort())
                 {
-                    serialPort.WriteLine(APIName + "\n\r");                    
+
+                    serialPort.WriteLine(APIName + "\n\r");
+                    result.error = string.Empty;
                     return result;
                 }
                 else
@@ -189,8 +191,8 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
                             if (APIName.ToUpper().Equals("AT+ADP?"))
                             {
-                                 Task task = node.parseDrivers(APIData);
-                                // node.parseDrivers(APIData);
+                               Task task = node.parseDrivers(APIData);
+                             //    node.parseDrivers(APIData);
                             }
                         }
                         i++;
@@ -200,7 +202,5 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             }
 
         }
-
-
     }
 }

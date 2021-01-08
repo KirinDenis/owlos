@@ -14,13 +14,40 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         Erorr
     }
 
+    public class OWLOSTransportArgs : EventArgs
+    {
+        public OWLOSTransportArgs(NetworkStatus networkStatus)
+        {
+            this.networkStatus = networkStatus;
+        }
+
+        public NetworkStatus networkStatus;
+    }
 
 
     public class OWLOSTransport : IOWLOSTransport
     {
-        public NetworkStatus networkStatus = NetworkStatus.Offline;
+        protected NetworkStatus _networkStatus = NetworkStatus.Offline;
+        public NetworkStatus networkStatus 
+        {
+            get 
+            { 
+                return _networkStatus; 
+            }
+            set
+            {
+                _networkStatus = value;
+                OnTransportStatusChanger?.Invoke(this, value);
+            }        
+        }
+
+        //public delegate void TransportEventHandler(object? sender, NetworkStatus e);
+
+        public event IOWLOSTransport.TransportEventHandler OnTransportStatusChanger;
+
 
         virtual public OWLOSConnection connection { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public object tag { get; set; }
 
         virtual public Task<DriversDTO> GetAllDriversProperties()
         {

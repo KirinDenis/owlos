@@ -98,6 +98,7 @@ namespace OWLOSAdmin.EcosystemExplorer
             if (nodeWrapper != null)
             {
                 nodeWrapper.node.OnNewDriver += Node_OnNewDriver;
+                
             }
 
             InitializeComponent();
@@ -152,6 +153,8 @@ namespace OWLOSAdmin.EcosystemExplorer
 
         }
 
+        
+
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             PathTextControl _freeHeapText = new PathTextControl(350, 350, radius - 10, -7, 5, freeHeapText);
@@ -165,11 +168,15 @@ namespace OWLOSAdmin.EcosystemExplorer
                 
                 if (nodeWrapper.node.transports.Count > 0)
                 {
+                    
 
                     double trasnportPathStep = 4.0f;
                     double oneTransportAngel = (360 / 4) / nodeWrapper.node.transports.Count - trasnportPathStep;
                     for (int i=0; i < nodeWrapper.node.transports.Count; i ++)
                     {
+
+                        nodeWrapper.node.transports[i].OnTransportStatusChanger += OWLOSNodeControl_OnTransportStatusChanger;
+
                         double nextAngel = i * (oneTransportAngel + trasnportPathStep);
                         Path transportPath = new Path();
                         transportPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSPrimary"];
@@ -180,6 +187,7 @@ namespace OWLOSAdmin.EcosystemExplorer
                         transportPath.VerticalAlignment = VerticalAlignment.Center; 
                         transportPath.Width = 700;
                         transportPath.Height = 700;
+                        nodeWrapper.node.transports[i].tag = transportPath;
                         nodeGrid.Children.Add(transportPath);
 
                         TextBlock transportText = new TextBlock();
@@ -218,6 +226,39 @@ namespace OWLOSAdmin.EcosystemExplorer
             PathTextControl _script2Text = new PathTextControl(350, 350, radius - 55, 212, 250, script2Text);
             PathTextControl _script3Text = new PathTextControl(350, 350, radius - 55, 237, 250, script3Text);
 
+        }
+
+        private void OWLOSNodeControl_OnTransportStatusChanger(object sender, NetworkStatus e)
+        {
+            OWLOSTransport transport = sender as OWLOSTransport;
+            if (transport.connection.connectionType == ConnectionType.UART)
+            {
+                base.Dispatcher.Invoke(() =>
+                {
+
+                    Path transportPath = transport.tag as Path;
+
+                    switch (e)
+                    {
+                        case NetworkStatus.Online:
+                            transportPath.Data = HudLibrary.DrawArc(350, 350, radius - 100, 45, 75);
+                            break;
+                        case NetworkStatus.Offline:
+                            transportPath.Data = HudLibrary.DrawArc(350, 350, radius - 100, 90 + 45, 90 + 75);
+                            break;
+
+                        case NetworkStatus.Reconnect:
+                            transportPath.Data = HudLibrary.DrawArc(350, 350, radius - 100, 180 + 45, 180 + 75);
+                            break;
+
+                        case NetworkStatus.Erorr:
+                            transportPath.Data = HudLibrary.DrawArc(350, 350, radius - 100, 270 + 45, 270 + 75);
+                            break;
+
+
+                    }
+                });
+            }
         }
 
         private void DrawFreeHeap(int value)

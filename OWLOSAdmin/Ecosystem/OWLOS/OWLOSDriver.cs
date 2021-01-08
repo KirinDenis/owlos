@@ -35,7 +35,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
             if (property == null)
             {
-                property = new OWLOSDriverProperty(this, name, value, _flags);
+                property = new OWLOSDriverProperty(this, name, _value, _flags);
                 properties.Add(property);
                 PropertyCreate(new OWLOSPropertyWrapperEventArgs(property));
             }

@@ -69,6 +69,18 @@ namespace OWLOSAdmin.Ecosystem
 
                 _OWLOSNodeConfig.connections.Add(_RESTfulClientConnection);
 
+                /*
+
+                _RESTfulClientConnection = new OWLOSConnection();
+                _RESTfulClientConnection.connectionType = ConnectionType.UART;
+                _RESTfulClientConnection.name = "UART";
+                _RESTfulClientConnection.host = "COM7";
+                _OWLOSNodeConfig.connections.Add(_RESTfulClientConnection);
+
+                config.nodesConfig.Add(_OWLOSNodeConfig);
+                */
+
+                
                 OWLOSConnection _UARTClientConnection = new OWLOSConnection();
                 _UARTClientConnection = new OWLOSConnection();
                 _UARTClientConnection.connectionType = ConnectionType.UART;
@@ -84,6 +96,8 @@ namespace OWLOSAdmin.Ecosystem
                 _UARTClientConnection.connectionString = JsonConvert.SerializeObject(_UARTClientConnectionDTO);
                 
                 _OWLOSNodeConfig.connections.Add(_UARTClientConnection);
+               
+
 
                 config.nodesConfig.Add(_OWLOSNodeConfig);
                 Save();

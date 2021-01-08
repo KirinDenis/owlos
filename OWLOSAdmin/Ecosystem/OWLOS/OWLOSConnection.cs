@@ -15,6 +15,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         public string connectionString;
 
+        public string host;
         
     }
 }
