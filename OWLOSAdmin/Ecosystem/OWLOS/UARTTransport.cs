@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using OWLOSAdmin.Ecosystem.OWLOSDTOs;
 using System;
 using System.Collections.Generic;
 using System.IO.Ports;
@@ -100,22 +99,32 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         }
 
-        public override async Task<DriversDTO> GetAllDriversProperties()
-        {
-            DriversDTO driversDTO = new DriversDTO();
-
+        public override async Task<bool> GetAllDriversProperties()
+        {            
             networkStatus = NetworkStatus.Reconnect;
             RESTfulClientResultModel getResult = await Get("AT+ADP?");
             if (string.IsNullOrEmpty(getResult.error))
             {
-                //   driversDTO = base.GetAllDriversProperties(getResult.result);
+                return true;
             }
             else
             {
-                //  driversDTO.error = getResult.error;
-            }
+                return false;
+            }            
+        }
 
-            return driversDTO;
+        public override async Task<bool> SetDriverProperty(string driver, string property, string value)
+        {
+            networkStatus = NetworkStatus.Reconnect;
+            RESTfulClientResultModel getResult = await Get("AT+DP " + driver + " " + property + " " + value);
+            if (string.IsNullOrEmpty(getResult.error))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         protected async Task<RESTfulClientResultModel> Get(string APIName, string args = "")
@@ -152,17 +161,17 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             return result;
         }
 
-        public override DriversDTO GetAllDriversProperties(string data)
-        {
-            return base.GetAllDriversProperties(data);
-        }
-
         private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
         {
             networkStatus = NetworkStatus.Online;
             SerialPort sp = (SerialPort)sender;
             indata += sp.ReadExisting();
 
+            //clean echo 
+            while (indata.IndexOf("\r\n") != -1)
+            {
+                indata = indata.Substring(indata.IndexOf("\r\n") + 2);
+            }
 
             if (indata.IndexOf("\n\n") != -1)
             {
@@ -192,10 +201,16 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
                             if (APIName.ToUpper().Equals("AT+ADP?"))
                             {
-                               Task task = node.parseDrivers(APIData);
+                               Task task = node.ParseGetAllDriversProperties(APIData);
                              //    node.parseDrivers(APIData);
                             }
                         }
+
+                        if (data.IndexOf("PUB: ") == 0 )
+                        {
+                            Task task = node.ParseNodePublish(data);
+                        }    
+
                         i++;
                     }
                 }

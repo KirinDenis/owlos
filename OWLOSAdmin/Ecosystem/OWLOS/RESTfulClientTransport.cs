@@ -1,10 +1,6 @@
 ﻿using Newtonsoft.Json;
-using OWLOSAdmin.Ecosystem.OWLOSDTOs;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OWLOSAdmin.Ecosystem.OWLOS
@@ -43,22 +39,35 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             this.node = node;
         }
 
-        override public async Task<DriversDTO> GetAllDriversProperties()
-        {
-            DriversDTO driversDTO = new DriversDTO();
 
+        override public async Task<bool> GetAllDriversProperties()
+        {
             RESTfulClientResultModel getResult = await Get("getalldriversproperties");
             if (string.IsNullOrEmpty(getResult.error))
-            {
-                //base.GetAllDriversProperties(getResult.result);
-                node.parseDrivers(getResult.result);
+            {                
+                node.ParseGetAllDriversProperties(getResult.result);
+                return true;
             }
             else
             {
-                driversDTO.error = getResult.error;
+                return false;
+            }            
+        }
+
+        public override async Task<bool> SetDriverProperty(string driver, string property, string value)
+        {
+
+            RESTfulClientResultModel getResult = await Get("setdriverproperty?id=" + driver + "&property=" + property + "&value=" + property);
+            
+            if (string.IsNullOrEmpty(getResult.error))
+            {                
+                return true;
+            }
+            else
+            {
+                return false;
             }
 
-            return driversDTO;
         }
 
         protected async Task<RESTfulClientResultModel> Get(string APIName, string args = "")

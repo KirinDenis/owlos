@@ -1,12 +1,16 @@
-﻿using OWLOSAdmin.Ecosystem.OWLOSDTOs;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace OWLOSAdmin.Ecosystem.OWLOS
 {
-    public interface IOWLOSTransport
+    public interface IOWLOSAbstractTransport
+    {
+        abstract public Task<bool> GetAllDriversProperties();
+
+        abstract public Task<bool> SetDriverProperty(string driver, string property, string value);
+
+
+    }
+    public interface IOWLOSTransport : IOWLOSAbstractTransport
     {
         public object tag { get; set; }
         public OWLOSConnection connection { get; set; }
@@ -14,8 +18,5 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         delegate void TransportEventHandler(object? sender, NetworkStatus e);
 
         event TransportEventHandler OnTransportStatusChanger;
-        abstract public Task<DriversDTO> GetAllDriversProperties();
-        public DriversDTO GetAllDriversProperties(string data);
-
     }
 }

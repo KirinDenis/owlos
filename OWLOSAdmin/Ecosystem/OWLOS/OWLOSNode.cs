@@ -1,14 +1,8 @@
-﻿using OWLOSAdmin.Ecosystem.OWLOSDTOs;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Dynamic;
-using System.IO.Ports;
 using System.Linq;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
-using System.Windows.Controls;
 
 namespace OWLOSAdmin.Ecosystem.OWLOS
 {
@@ -36,7 +30,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         public List<OWLOSConnection> connections = new List<OWLOSConnection>();
     }
 
-    public class OWLOSNode
+    public class OWLOSNode : IOWLOSAbstractTransport
     {
 
         public List<OWLOSDriver> drivers { get; set; } = new List<OWLOSDriver>();
@@ -93,14 +87,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         private async void OnLifeCycleTimer(object source, ElapsedEventArgs e)
         {
-            foreach (IOWLOSTransport _OWLOSTransport in transports)
-            {
-                DriversDTO driversDTO = await _OWLOSTransport.GetAllDriversProperties();
-                if (driversDTO.error == "")
-                {
-                    //DTO to Drivers
-                }
-            }
+            await GetAllDriversProperties();
             //await GetAllDriversProperties();
             //await GetAllScripts();
         }
@@ -111,7 +98,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             OnNewDriver?.Invoke(this, e);
         }
 
-        public async Task parseDrivers(string driverData)
+        public async Task ParseGetAllDriversProperties(string driverData)
         {
             List<string> driverRaw = driverData.Split('\n').ToList();
             OWLOSDriver driver = null;
@@ -155,10 +142,76 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         }
 
+        public async Task ParseNodePublish(string data)
+        {
+            data = data.Substring(data.IndexOf(" ") + 1);
+            string topic = data.Substring(0, data.IndexOf(" "));
+            string value = data.Substring(data.IndexOf(" ") + 1);
 
+            List<string> tokenizeTopic = topic.Split('/').ToList();
+            if (tokenizeTopic.Count > 2)
+            {
+                
+                string driverName = tokenizeTopic[tokenizeTopic.Count - 2];
+                string property = tokenizeTopic[tokenizeTopic.Count - 1];
+
+                //find driver
+                OWLOSDriver driver = drivers.Find(d => d.name == driverName);
+                
+                if (driver != null)
+                {
+                    await driver.SetParsedProperty(property, value);
+                }//can be ESP drivers
+                else
+                {
+                    driver = drivers.Find(d => d.name == "wifi");
+                    if (driver != null)
+                    {
+                        if (await driver.SetParsedProperty(property, value) != true)
+                        {
+                            driver = drivers.Find(d => d.name == "network");
+                            if (driver != null)
+                            {
+                                if (await driver.SetParsedProperty(property, value) != true)
+                                {
+                                    driver = drivers.Find(d => d.name == "esp");
+                                    if (driver != null)
+                                    {
+                                        await driver.SetParsedProperty(property, value);
+                                    }
+                                }
+                            }    
+                        }    
+                    }
+                }
+
+            }
+
+        }
 
         public void newProp(object sender, EventArgs e)
         {
+
+        }
+
+        public async Task<bool> GetAllDriversProperties()
+        {
+            bool result = false;
+            foreach (IOWLOSTransport _OWLOSTransport in transports)
+            {
+                result |= await _OWLOSTransport.GetAllDriversProperties();
+            }
+            return result;
+        }
+
+        public async Task<bool> SetDriverProperty(string driver, string property, string value)
+        {
+            bool result = false;
+            foreach (IOWLOSTransport _OWLOSTransport in transports)
+            {
+                result |= await _OWLOSTransport.SetDriverProperty(driver, property, value);
+            }
+            return result;
 
         }
 

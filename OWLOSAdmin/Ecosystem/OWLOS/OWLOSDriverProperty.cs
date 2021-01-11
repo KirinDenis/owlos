@@ -175,6 +175,20 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
             networkStatus = NetworkStatus.Reconnect;
 
+            bool result = await driver.parentNode.SetDriverProperty(driver.name, this.name, _value);
+
+            if (result)
+            {
+                networkStatus = NetworkStatus.Online;
+                PropertySetInside(new OWLOSPropertyWrapperEventArgs(this));
+                return string.Empty;
+            }
+            else
+            {
+                networkStatus = NetworkStatus.Erorr;
+            }
+
+
             try
             {
                 /*

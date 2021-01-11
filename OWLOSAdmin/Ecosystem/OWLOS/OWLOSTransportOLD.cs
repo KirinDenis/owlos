@@ -67,7 +67,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             {
                 try
                 {
-                    await node.parseDrivers(driverPoperties);
+                 //   await node.parseDrivers(driverPoperties);
                     return true;
                 }
                 catch { }
@@ -83,7 +83,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             {
                 try
                 {
-                    await node.parseDrivers(driverPoperties);
+                   // await node.parseDrivers(driverPoperties);
                     return true;
                 }
                 catch { }
