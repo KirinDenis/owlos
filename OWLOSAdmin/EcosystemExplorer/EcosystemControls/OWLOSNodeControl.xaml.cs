@@ -63,6 +63,15 @@ using System.Windows.Shapes;
 
 namespace OWLOSAdmin.EcosystemExplorer
 {
+
+    public class TransportHud
+    {
+        public double angel;
+        public double length;
+        public Path transportPath;
+        public TextBlock transportText;
+        public PathTextControl pathTransportText;
+    }
     /// <summary>
     /// Interaction logic for OWLOSNodeControl.xaml
     /// </summary>
@@ -161,63 +170,161 @@ namespace OWLOSAdmin.EcosystemExplorer
             PathTextControl _WifiRSSIDText = new PathTextControl(350, 350, radius - 30, -4, 5, WiFiRSSIDText);
             PathTextControl _PowerTextText = new PathTextControl(330, 350, radius - 15, PowerAngeStart-20, PowerAngeStart-5, PowerText);
 
-            
+            //Transport Hud over markers ONLINE ---
+            Path transportOwerPathONLINE = new Path();
+            transportOwerPathONLINE.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSSuccessAlpha2"];
+            transportOwerPathONLINE.Data = HudLibrary.DrawArc(350, 350, radius - 100, 0, 90);
+            transportOwerPathONLINE.StrokeThickness = 30;
+            transportOwerPathONLINE.RenderTransformOrigin = new Point(0.5f, 0.5f);
+            transportOwerPathONLINE.HorizontalAlignment = HorizontalAlignment.Center;
+            transportOwerPathONLINE.VerticalAlignment = VerticalAlignment.Center;
+            transportOwerPathONLINE.Width = 700;
+            transportOwerPathONLINE.Height = 700;
+            nodeGrid.Children.Add(transportOwerPathONLINE);
+
+            TextBlock transportTextONLINE = new TextBlock();
+            transportTextONLINE.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSSuccess"];
+            transportTextONLINE.HorizontalAlignment = HorizontalAlignment.Left;
+            transportTextONLINE.VerticalAlignment = VerticalAlignment.Top;
+            transportTextONLINE.FontSize = 12;
+            transportTextONLINE.Text = "online";
+            nodeGrid.Children.Add(transportTextONLINE);
+
+            PathTextControl pathTransportTextONLINE = new PathTextControl(350, 350, radius - 120, -7, 5, transportTextONLINE);
+
+            //Transport Hud over markers OFFLINE ---
+            Path transportOwerPathOFFLINE = new Path();
+            transportOwerPathOFFLINE.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSWarningAlpha2"];
+            transportOwerPathOFFLINE.Data = HudLibrary.DrawArc(350, 350, radius - 100, 90, 180);
+            transportOwerPathOFFLINE.StrokeThickness = 30;
+            transportOwerPathOFFLINE.RenderTransformOrigin = new Point(0.5f, 0.5f);
+            transportOwerPathOFFLINE.HorizontalAlignment = HorizontalAlignment.Center;
+            transportOwerPathOFFLINE.VerticalAlignment = VerticalAlignment.Center;
+            transportOwerPathOFFLINE.Width = 700;
+            transportOwerPathOFFLINE.Height = 700;
+            nodeGrid.Children.Add(transportOwerPathOFFLINE);
+
+            TextBlock transportTextOFFLINE = new TextBlock();
+            transportTextOFFLINE.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSWarning"];
+            transportTextOFFLINE.HorizontalAlignment = HorizontalAlignment.Left;
+            transportTextOFFLINE.VerticalAlignment = VerticalAlignment.Top;
+            transportTextOFFLINE.FontSize = 12;
+            transportTextOFFLINE.Text = "offline";
+            nodeGrid.Children.Add(transportTextOFFLINE);
+
+            PathTextControl pathTransportTextOFFLINE = new PathTextControl(350, 350, radius - 120, 90-7, 5, transportTextOFFLINE);
+
+
+            //Transport Hud over markers RECONNECT ---
+            Path transportOwerPathRECONNECT = new Path();
+            transportOwerPathRECONNECT.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSSecondaryAlpha2"];
+            transportOwerPathRECONNECT.Data = HudLibrary.DrawArc(350, 350, radius - 100, 180, 270);
+            transportOwerPathRECONNECT.StrokeThickness = 30;
+            transportOwerPathRECONNECT.RenderTransformOrigin = new Point(0.5f, 0.5f);
+            transportOwerPathRECONNECT.HorizontalAlignment = HorizontalAlignment.Center;
+            transportOwerPathRECONNECT.VerticalAlignment = VerticalAlignment.Center;
+            transportOwerPathRECONNECT.Width = 700;
+            transportOwerPathRECONNECT.Height = 700;
+            nodeGrid.Children.Add(transportOwerPathRECONNECT);
+
+            TextBlock transportTextRECONNECT = new TextBlock();
+            transportTextRECONNECT.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSSecondary"];
+            transportTextRECONNECT.HorizontalAlignment = HorizontalAlignment.Left;
+            transportTextRECONNECT.VerticalAlignment = VerticalAlignment.Top;
+            transportTextRECONNECT.FontSize = 12;
+            transportTextRECONNECT.Text = "reconnect";
+            nodeGrid.Children.Add(transportTextRECONNECT);
+
+            PathTextControl pathTransportTextRECONNECT = new PathTextControl(350, 350, radius - 120, 180 - 7, 5, transportTextRECONNECT);
+
+
+            //Transport Hud over markers ERROR ---
+            Path transportOwerPathERROR = new Path();
+            transportOwerPathERROR.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSDangerAlpha2"];
+            transportOwerPathERROR.Data = HudLibrary.DrawArc(350, 350, radius - 100, 270, 359);
+            transportOwerPathERROR.StrokeThickness = 30;
+            transportOwerPathERROR.RenderTransformOrigin = new Point(0.5f, 0.5f);
+            transportOwerPathERROR.HorizontalAlignment = HorizontalAlignment.Center;
+            transportOwerPathERROR.VerticalAlignment = VerticalAlignment.Center;
+            transportOwerPathERROR.Width = 700;
+            transportOwerPathERROR.Height = 700;
+            nodeGrid.Children.Add(transportOwerPathERROR);
+
+            TextBlock transportTextERROR = new TextBlock();
+            transportTextERROR.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSDanger"];
+            transportTextERROR.HorizontalAlignment = HorizontalAlignment.Left;
+            transportTextERROR.VerticalAlignment = VerticalAlignment.Top;
+            transportTextERROR.FontSize = 12;
+            transportTextERROR.Text = "error";
+            nodeGrid.Children.Add(transportTextERROR);
+
+            PathTextControl pathTransportTextERROR = new PathTextControl(350, 350, radius - 120, 270 - 7, 5, transportTextERROR);
+            //--- ENDOF transport hud over 
+
+
+            double trasnportPathStep = 4.0f;
             if (nodeWrapper.node != null)
             {
+
 
                 
                 if (nodeWrapper.node.transports.Count > 0)
                 {
                     
 
-                    double trasnportPathStep = 4.0f;
                     double oneTransportAngel = (360 / 4) / nodeWrapper.node.transports.Count - trasnportPathStep;
                     for (int i=0; i < nodeWrapper.node.transports.Count; i ++)
                     {
 
+                        TransportHud transportHud = new TransportHud();
+                        nodeWrapper.node.transports[i].tag = transportHud;
                         nodeWrapper.node.transports[i].OnTransportStatusChanger += OWLOSNodeControl_OnTransportStatusChanger;
-
+                        
                         double nextAngel = i * (oneTransportAngel + trasnportPathStep);
-                        Path transportPath = new Path();
-                        transportPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSPrimary"];
-                        transportPath.Data = HudLibrary.DrawArc(350, 350, radius - 100, nextAngel, nextAngel + oneTransportAngel);
-                        transportPath.StrokeThickness = 30;
-                        transportPath.RenderTransformOrigin = new Point(0.5f,0.5f);
-                        transportPath.HorizontalAlignment = HorizontalAlignment.Center;
-                        transportPath.VerticalAlignment = VerticalAlignment.Center; 
-                        transportPath.Width = 700;
-                        transportPath.Height = 700;
-                        nodeWrapper.node.transports[i].tag = transportPath;
-                        nodeGrid.Children.Add(transportPath);
+                        transportHud.angel = nextAngel;
+                        transportHud.length = nextAngel + oneTransportAngel;
 
-                        TextBlock transportText = new TextBlock();
-                        transportText.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSDark"];
-                        transportText.HorizontalAlignment = HorizontalAlignment.Left;
-                        transportText.VerticalAlignment = VerticalAlignment.Top;
-                        transportText.FontSize = 14;
-                        nodeGrid.Children.Add(transportText);
+                        transportHud.transportPath = new Path();
+                        transportHud.transportPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSPrimary"];
+                        transportHud.transportPath.Data = HudLibrary.DrawArc(350, 350, radius - 100, transportHud.angel, transportHud.length);
+                        transportHud.transportPath.StrokeThickness = 30;
+                        transportHud.transportPath.RenderTransformOrigin = new Point(0.5f,0.5f);
+                        transportHud.transportPath.HorizontalAlignment = HorizontalAlignment.Center;
+                        transportHud.transportPath.VerticalAlignment = VerticalAlignment.Center;
+                        transportHud.transportPath.Width = 700;
+                        transportHud.transportPath.Height = 700;
+                        
+                        nodeGrid.Children.Add(transportHud.transportPath);
+
+                        transportHud.transportText = new TextBlock();
+                        transportHud.transportText.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSDark"];
+                        transportHud.transportText.HorizontalAlignment = HorizontalAlignment.Left;
+                        transportHud.transportText.VerticalAlignment = VerticalAlignment.Top;
+                        transportHud.transportText.FontSize = 14;
+                        nodeGrid.Children.Add(transportHud.transportText);
 
                         switch (nodeWrapper.node.transports[i].connection.connectionType)
                         {
                             case ConnectionType.RESTfulClient:
-                                transportText.Text = "HTTP";
+                                transportHud.transportText.Text = "HTTP";
                                 break;
                             case ConnectionType.UART:
-                                transportText.Text = "UART";
+                                transportHud.transportText.Text = "UART";
                                 break;
 
                         }
 
-                        PathTextControl _transportPathText = new PathTextControl(350, 350, radius - 90, nextAngel, oneTransportAngel + trasnportPathStep * 2, transportText);
-
-
-
+                        transportHud.pathTransportText = new PathTextControl(350, 350, radius - 90, nextAngel, oneTransportAngel + trasnportPathStep * 2, transportHud.transportText);
                         
                         //PathTextControl _MQTTText = new PathTextControl(350, 350, radius - 90, 52, 50, MQTTText);
                         //PathTextControl _UARTText = new PathTextControl(350, 350, radius - 90, 95, 50, UARTText);
                     }
                 }
             }
+
+
+
+
             PathTextControl _propertiesText = new PathTextControl(350, 350, radius - 10, 325, 250, propertiesText);
             PathTextControl _filesText = new PathTextControl(350, 350, radius - 10, 296, 250, filesText);
             PathTextControl _scriptsText = new PathTextControl(350, 350, radius - 10, 180, 250, scriptsText);
@@ -231,32 +338,37 @@ namespace OWLOSAdmin.EcosystemExplorer
         private void OWLOSNodeControl_OnTransportStatusChanger(object sender, NetworkStatus e)
         {
             OWLOSTransport transport = sender as OWLOSTransport;
-            if (transport.connection.connectionType == ConnectionType.UART)
+            //if (transport.connection.connectionType == ConnectionType.UART)
             {
                 base.Dispatcher.Invoke(() =>
                 {
 
-                    Path transportPath = transport.tag as Path;
+                    TransportHud transportHud = transport.tag as TransportHud;
+                    
 
                     switch (e)
                     {
                         case NetworkStatus.Online:
-                            transportPath.Data = HudLibrary.DrawArc(350, 350, radius - 100, 45, 75);
+                            transportHud.transportPath.Data = HudLibrary.DrawArc(350, 350, radius - 100, transportHud.angel, transportHud.length);
+                          //  transportHud.pathTransportText = new PathTextControl(350, 350, radius - 90, transportHud.angel, 20, transportHud.transportText);
                             break;
                         case NetworkStatus.Offline:
-                            transportPath.Data = HudLibrary.DrawArc(350, 350, radius - 100, 90 + 45, 90 + 75);
+                            transportHud.transportPath.Data = HudLibrary.DrawArc(350, 350, radius - 100, 90 + transportHud.angel, 90 + transportHud.length);
+                          //  transportHud.pathTransportText = new PathTextControl(350, 350, radius - 90, 90 + transportHud.angel, 90 + 20, transportHud.transportText);
                             break;
 
                         case NetworkStatus.Reconnect:
-                            transportPath.Data = HudLibrary.DrawArc(350, 350, radius - 100, 180 + 45, 180 + 75);
+                            transportHud.transportPath.Data = HudLibrary.DrawArc(350, 350, radius - 100, 180 + transportHud.angel, 180 + transportHud.length);
+                         //   transportHud.pathTransportText = new PathTextControl(350, 350, radius - 90, 180 + transportHud.angel, 180 + 20, transportHud.transportText);
                             break;
 
                         case NetworkStatus.Erorr:
-                            transportPath.Data = HudLibrary.DrawArc(350, 350, radius - 100, 270 + 45, 270 + 75);
+                            transportHud.transportPath.Data = HudLibrary.DrawArc(350, 350, radius - 100, 270 + transportHud.angel, 270 + transportHud.length);
+                         //   transportHud.pathTransportText = new PathTextControl(350, 350, radius - 90, 270 + transportHud.angel, 270 + 20, transportHud.transportText);
                             break;
-
-
                     }
+
+                    
                 });
             }
         }

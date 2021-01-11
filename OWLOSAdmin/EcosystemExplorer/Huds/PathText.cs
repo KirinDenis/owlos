@@ -19,6 +19,7 @@ namespace PathText
     /// </summary>
     public class PathTextControl
     {
+        private Grid grid = null;
         private TextBlock sourceTextBlock = null;
 
         private double x;
@@ -45,7 +46,10 @@ namespace PathText
         private void Update()
         {
 
-            Grid grid = sourceTextBlock.Parent as Grid;
+            if (grid == null)
+            {
+                grid = sourceTextBlock.Parent as Grid;
+            }
 
             TextBlock[] textBlock = new TextBlock[sourceTextBlock.Text.Length];
 

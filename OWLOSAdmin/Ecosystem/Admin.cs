@@ -64,7 +64,7 @@ namespace OWLOSAdmin.Ecosystem
                 _RESTfulClientConnection.name = "rest";
 
                 RESTfulClientConnectionDTO _RESTfulClientConnectionDTO = new RESTfulClientConnectionDTO();
-                _RESTfulClientConnectionDTO.host = "192.168.1.101";
+                _RESTfulClientConnectionDTO.host = "http://192.168.1.101/";
                 _RESTfulClientConnection.connectionString = JsonConvert.SerializeObject(_RESTfulClientConnectionDTO);
 
                 _OWLOSNodeConfig.connections.Add(_RESTfulClientConnection);

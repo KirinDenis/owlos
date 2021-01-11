@@ -75,9 +75,10 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         private bool OpenPort()
         {
             
-            networkStatus = NetworkStatus.Offline;
+            networkStatus = NetworkStatus.Reconnect;
             if (serialPort == null)
             {
+                networkStatus = NetworkStatus.Erorr;
                 return false;
             }
 
@@ -91,7 +92,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
                 }
                 catch
                 {
-                    networkStatus = NetworkStatus.Erorr;
+                    networkStatus = NetworkStatus.Offline;
                     return false;
                 }
             }

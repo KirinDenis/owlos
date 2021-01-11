@@ -50,7 +50,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             RESTfulClientResultModel getResult = await Get("getalldriversproperties");
             if (string.IsNullOrEmpty(getResult.error))
             {
-                //driversDTO = base.GetAllDriversProperties(getResult.result);
+                //base.GetAllDriversProperties(getResult.result);
                 node.parseDrivers(getResult.result);
             }
             else
@@ -63,10 +63,12 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         protected async Task<RESTfulClientResultModel> Get(string APIName, string args = "")
         {
+            networkStatus = NetworkStatus.Reconnect;
             RESTfulClientResultModel result = new RESTfulClientResultModel();
 
             if ((_connection == null) || (string.IsNullOrEmpty(_RESTfulClientConnectionDTO.host)))
             {
+                networkStatus = NetworkStatus.Offline;
                 return result;
             }    
 
@@ -77,10 +79,12 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
                 response.EnsureSuccessStatusCode();
                 result.result = await response.Content.ReadAsStringAsync();
-                result.error = string.Empty;                
+                result.error = string.Empty;
+                networkStatus = NetworkStatus.Online;
             }
             catch (Exception exception)
             {
+                networkStatus = NetworkStatus.Erorr;
                 result.error = exception.Message;
             }
 
