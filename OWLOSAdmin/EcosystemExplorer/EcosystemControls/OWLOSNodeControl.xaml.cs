@@ -265,7 +265,7 @@ namespace OWLOSAdmin.EcosystemExplorer
                         transportHud.length = nextAngel + oneTransportAngel;
 
                         transportHud.transportPath = new Path();
-                        transportHud.transportPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSPrimary"];
+                        transportHud.transportPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSPrimaryAlpha2"];
                         transportHud.transportPath.Data = HudLibrary.DrawArc(350, 350, radius - 100, transportHud.angel, transportHud.length);
                         transportHud.transportPath.StrokeThickness = 30;
                         transportHud.transportPath.RenderTransformOrigin = new Point(0.5f,0.5f);

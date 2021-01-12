@@ -55,50 +55,59 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
     /// <summary>
     /// Наружный леписток с именем драйвера и доступом к свойствам драйвера по клику
     /// </summary>
-    public partial class OWLOSNodeDriverControl : UserControl
+    public partial class OWLOSPetalControl : UserControl
     {
         /// <summary>
-        /// элемент - таблица со свойствами драйвера 
+        /// нода которой принадлежит этот лепесток
         /// </summary>
-        private readonly OWLOSDriverControl driverCountrol = null;
-
-        /// <summary>
-        /// нода которой принадлежит этот драйвер
-        /// </summary>
-        private readonly OWLOSNodeControl parentOWLOSNodeControl;
+        protected OWLOSNodeControl parentOWLOSNodeControl;
 
         /// <summary>
         /// графический элемент, указывает конец связывающей линии
         /// </summary>
-        private readonly EcosystemControl connector = null; 
+        protected EcosystemControl connector = null;
 
         /// <summary>
         /// графический элемент, связывающая линия
         /// </summary>
-        private readonly EcosystemRelationLine relationLine = null;
-
-        /// <summary>
-        /// драйвер 
-        /// </summary>
-        private readonly OWLOSDriver driver = null;
+        protected EcosystemRelationLine relationLine = null;
 
         /// <summary>
         /// радиальный размер элемента, управляется элементом ноды
         /// </summary>
-        private readonly double radius = 0;
+        protected double radius = 0;
 
         /// <summary>
         /// угол поворота элемента относительно hud-а ноды
         /// </summary>
-        private readonly double angel = 0;
-        public OWLOSNodeDriverControl(OWLOSNodeControl parentOWLOSNodeControl, OWLOSDriver driver, double radius, double angel)
+        protected double angel = 0;
+
+        public OWLOSPetalControl(OWLOSNodeControl parentOWLOSNodeControl, double radius, double angel)
         {
+
             InitializeComponent();
 
-            this.parentOWLOSNodeControl = parentOWLOSNodeControl;
-            this.driver = driver;
+            this.parentOWLOSNodeControl = parentOWLOSNodeControl;            
             this.radius = radius;
             this.angel = angel;
+
+            parentOWLOSNodeControl.parentControl.OnPositionChanged += ParentControl_OnPositionChanged;
+
+            //рисуем лепесток для драйвера
+            double _angel = 0;
+            petalBackground.Data = HudLibrary.DrawArc(350, 350, radius, _angel, _angel + 25);
+            petalBorder1.Data = HudLibrary.DrawArc(350, 350, radius + 20, _angel, _angel + 25);
+            petalBorder2.Data = HudLibrary.DrawArc(350, 350, radius - 20, _angel, _angel + 25);
+
+
+            //поворачиваем леписток драйвера относительно hud ноды
+            RotateTransform rotateTransform = new RotateTransform
+            {
+                Angle = angel * 30
+            };
+            petalMainGrid.RenderTransform = rotateTransform;
+
+
 
             //подготавливаем конектор - элементы экосистемы могут соединятся друг с другом, в данном случае
             //одна нода имеет множество присоединеных драйверов. По этой причине нужно инкапсулировать много элементов 
@@ -116,39 +125,9 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
             elipse.Height = 10;
             elipse.Fill = (SolidColorBrush)App.Current.Resources["OWLOSWarning"];
             connector.childHolderGrid.Children.Add(elipse);
-          
-            driverMainGrid.Children.Add(connector);
 
-            //рисуем лепесток для драйвера
-            double _angel = 0;
-            driverBackground.Data = HudLibrary.DrawArc(350, 350, radius, _angel, _angel + 25);
-            driverBorder1.Data = HudLibrary.DrawArc(350, 350, radius + 20, _angel, _angel + 25);
-            driverBorder2.Data = HudLibrary.DrawArc(350, 350, radius - 20, _angel, _angel + 25);
 
-            //поворачиваем леписток драйвера относительно hud ноды
-            RotateTransform rotateTransform = new RotateTransform
-            {
-                Angle = angel * 30
-            };
-            driverMainGrid.RenderTransform = rotateTransform;
-
-            //Название драйвера, смотрите UserControl_Loaded - пересчет извиба надписи
-            driverNameText.Text = driver.name;
-
-            //создаем элемент таблицу отображающею свойста драйвера
-            driverCountrol = new OWLOSDriverControl(driver);
-            driverCountrol.parentControl.Visibility = Visibility.Hidden;
-            driverCountrol.parentControl.Hide();
-
-            //контролируем родительский элемент (hud ноды) если он начнем перемещатся по экосистеме
-            //перерисуем соединительную линию
-            (parentOWLOSNodeControl.parentControl.Parent as Grid).Children.Add(driverCountrol.parentControl);
-            parentOWLOSNodeControl.parentControl.OnPositionChanged += ParentControl_OnPositionChanged;
-
-            //создаем и настраиваем соеденительную линию
-            relationLine = new EcosystemRelationLine(driverCountrol, driverCountrol.parentControl, connector, driverCountrol, parentOWLOSNodeControl.parentControl.Parent as Grid);
-            // relationLine.DrawRelationLine(((SolidColorBrush)App.Current.Resources["OWLOSInfo"]).Color.ToString(), ((SolidColorBrush)App.Current.Resources["OWLOSInfo"]).Color.ToString());
-            //relationLine.Hide();
+            petalMainGrid.Children.Add(connector);
 
         }
 
@@ -167,42 +146,40 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
         /// <param name="e"></param>
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            PathTextControl pathText = new PathTextControl(350, 350, radius + 10, 0, 25, driverNameText);
+            PathTextControl pathText = new PathTextControl(350, 350, radius + 10, 0, 25, petalNameText);
         }
 
-        private void driverBackground_MouseEnter(object sender, MouseEventArgs e)
+        private void petalBackground_MouseEnter(object sender, MouseEventArgs e)
         {
-            
+
             ColorAnimation animation;
             animation = new ColorAnimation
             {
                 To = ((SolidColorBrush)App.Current.Resources["OWLOSWarning"]).Color,
                 Duration = new Duration(TimeSpan.FromSeconds(0.3))
             };
-            driverBackground.Stroke = new SolidColorBrush(((SolidColorBrush)driverBackground.Stroke).Color);
-            driverBackground.Stroke.BeginAnimation(SolidColorBrush.ColorProperty, animation);
+
+            petalBackground.Stroke = new SolidColorBrush(((SolidColorBrush)petalBackground.Stroke).Color);
+            petalBackground.Stroke.BeginAnimation(SolidColorBrush.ColorProperty, animation);
 
             if (relationLine.curveLine != null)
             {
                 relationLine.curveLine.Stroke = new SolidColorBrush(((SolidColorBrush)relationLine.curveLine.Stroke).Color);
                 relationLine.curveLine.Stroke.BeginAnimation(SolidColorBrush.ColorProperty, animation);
             }
-            
-           driverCountrol.mainBorder.BorderBrush = new SolidColorBrush(((SolidColorBrush)driverCountrol.mainBorder.BorderBrush).Color);
-            driverCountrol.mainBorder.BorderBrush.BeginAnimation(SolidColorBrush.ColorProperty, animation);
 
         }
 
-        private void driverBackground_MouseLeave(object sender, MouseEventArgs e)
-        {            
+        private void petalBackground_MouseLeave(object sender, MouseEventArgs e)
+        {
             ColorAnimation animation;
             animation = new ColorAnimation
             {
                 To = ((SolidColorBrush)App.Current.Resources["OWLOSInfo"]).Color,
                 Duration = new Duration(TimeSpan.FromSeconds(2))
             };
-            driverBackground.Stroke = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSWarning"]).Color);
-            driverBackground.Stroke.BeginAnimation(SolidColorBrush.ColorProperty, animation);
+            petalBackground.Stroke = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSWarning"]).Color);
+            petalBackground.Stroke.BeginAnimation(SolidColorBrush.ColorProperty, animation);
 
             if (relationLine.curveLine != null)
             {
@@ -210,37 +187,8 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
                 relationLine.curveLine.Stroke.BeginAnimation(SolidColorBrush.ColorProperty, animation);
             }
 
-            driverCountrol.mainBorder.BorderBrush = new SolidColorBrush(((SolidColorBrush)driverCountrol.mainBorder.BorderBrush).Color);
-            driverCountrol.mainBorder.BorderBrush.BeginAnimation(SolidColorBrush.ColorProperty, animation);
         }
 
-        private void driverBackground_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            if (!driverCountrol.parentControl.isVisible)
-            {
-                if (driverCountrol.parentControl.Visibility == Visibility.Hidden)
-                {
-                    driverCountrol.parentControl.Visibility = Visibility.Visible;
-                }
-                driverCountrol.parentControl.Show();
-
-                if (relationLine.curveLine == null) 
-                {
-                    //вычисляем с какой стороны от hud ноды находится леписток драйвера и вычисляем позицию элемента таблицы относительно hud ноды
-                    double xr = 1000 * Math.Cos(Math.PI * (angel / 6.0) - Math.PI / 2) + parentOWLOSNodeControl.parentControl.transform.X;
-                    double yr = 1000 * Math.Sin(Math.PI * (angel / 6.0) - Math.PI / 2) + parentOWLOSNodeControl.parentControl.transform.Y;
-                    driverCountrol.parentControl.MoveTransform(xr, yr);
-
-                    relationLine.DrawRelationLine(((SolidColorBrush)App.Current.Resources["OWLOSWarning"]).Color.ToString(), ((SolidColorBrush)App.Current.Resources["OWLOSWarning"]).Color.ToString());
-                }
-                relationLine.Show();
-            }
-            else
-            {
-                driverCountrol.parentControl.Hide();
-                relationLine.Hide();
-            }
-        }
 
     }
 }
