@@ -88,7 +88,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         private async void OnLifeCycleTimer(object source, ElapsedEventArgs e)
         {
             await GetAllDriversProperties();
-            //await GetAllDriversProperties();
+            await GetAllFiles();
             //await GetAllScripts();
         }
 
@@ -135,6 +135,11 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
                     }
                 }
             }
+        }
+
+        public async Task ParseGetAllFiles(string driverData)
+        {
+
         }
 
         public async Task parseScripts(string scriptData)
@@ -203,6 +208,17 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             }
             return result;
         }
+
+        public async Task<bool> GetAllFiles()
+        {
+            bool result = false;
+            foreach (IOWLOSTransport _OWLOSTransport in transports)
+            {
+                result |= await _OWLOSTransport.GetAllFiles();
+            }
+            return result;
+        }
+
 
         public async Task<bool> SetDriverProperty(string driver, string property, string value)
         {

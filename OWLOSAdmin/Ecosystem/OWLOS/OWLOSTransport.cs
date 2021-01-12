@@ -54,6 +54,11 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             throw new NotImplementedException();
         }
 
+        virtual public async Task<bool> GetAllFiles()
+        {
+            throw new NotImplementedException();
+        }
+
         virtual public async Task<bool> SetDriverProperty(string driver, string property, string value)
         {
             throw new NotImplementedException();

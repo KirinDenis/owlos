@@ -138,27 +138,6 @@ namespace OWLOSAdmin.EcosystemExplorer
 
             propertiesPath.Data = HudLibrary.DrawArc(350, 350, radius - 40, 317, 359);
             
-            //MQTTPath.Data = HudLibrary.DrawArc(350, 350, radius - 100, 45, 85);
-            //UARTPath.Data = HudLibrary.DrawArc(350, 350, radius - 100, 90, 130);
-
-            //RalationLines test 
-            /*
-            DoubleAnimation rotate = new DoubleAnimation
-            {
-                From = 0.0f,
-                To = 360.0f,
-                Duration = new Duration(TimeSpan.FromMilliseconds(10000)),
-                RepeatBehavior = RepeatBehavior.Forever,
-                EasingFunction = new BackEase()
-                //AutoReverse = true
-            };
-            RotateTransform rotateTransform = new RotateTransform();
-            this.RenderTransform = rotateTransform;
-            rotateTransform.BeginAnimation(RotateTransform.AngleProperty, rotate);
-            renderTransform.AddValueChanged(this, PositionChanged);
-            //nodeGrid.RenderTransform.Add
-            */
-
 
         }
 
@@ -213,6 +192,7 @@ namespace OWLOSAdmin.EcosystemExplorer
             nodeGrid.Children.Add(transportTextOFFLINE);
 
             PathTextControl pathTransportTextOFFLINE = new PathTextControl(350, 350, radius - 120, 90-7, 5, transportTextOFFLINE);
+            
 
 
             //Transport Hud over markers RECONNECT ---
@@ -316,6 +296,7 @@ namespace OWLOSAdmin.EcosystemExplorer
 
                         transportHud.pathTransportText = new PathTextControl(350, 350, radius - 90, nextAngel, oneTransportAngel + trasnportPathStep * 2, transportHud.transportText);
                         
+
                         //PathTextControl _MQTTText = new PathTextControl(350, 350, radius - 90, 52, 50, MQTTText);
                         //PathTextControl _UARTText = new PathTextControl(350, 350, radius - 90, 95, 50, UARTText);
                     }
@@ -350,21 +331,25 @@ namespace OWLOSAdmin.EcosystemExplorer
                     {
                         case NetworkStatus.Online:
                             transportHud.transportPath.Data = HudLibrary.DrawArc(350, 350, radius - 100, transportHud.angel, transportHud.length);
+                            transportHud.pathTransportText.Rotate(transportHud.angel);
                           //  transportHud.pathTransportText = new PathTextControl(350, 350, radius - 90, transportHud.angel, 20, transportHud.transportText);
                             break;
                         case NetworkStatus.Offline:
                             transportHud.transportPath.Data = HudLibrary.DrawArc(350, 350, radius - 100, 90 + transportHud.angel, 90 + transportHud.length);
-                          //  transportHud.pathTransportText = new PathTextControl(350, 350, radius - 90, 90 + transportHud.angel, 90 + 20, transportHud.transportText);
+                            transportHud.pathTransportText.Rotate(90 + transportHud.angel);
+                            //  transportHud.pathTransportText = new PathTextControl(350, 350, radius - 90, 90 + transportHud.angel, 90 + 20, transportHud.transportText);
                             break;
 
                         case NetworkStatus.Reconnect:
                             transportHud.transportPath.Data = HudLibrary.DrawArc(350, 350, radius - 100, 180 + transportHud.angel, 180 + transportHud.length);
-                         //   transportHud.pathTransportText = new PathTextControl(350, 350, radius - 90, 180 + transportHud.angel, 180 + 20, transportHud.transportText);
+                            transportHud.pathTransportText.Rotate(180 + transportHud.angel);
+                            //   transportHud.pathTransportText = new PathTextControl(350, 350, radius - 90, 180 + transportHud.angel, 180 + 20, transportHud.transportText);
                             break;
 
                         case NetworkStatus.Erorr:
                             transportHud.transportPath.Data = HudLibrary.DrawArc(350, 350, radius - 100, 270 + transportHud.angel, 270 + transportHud.length);
-                         //   transportHud.pathTransportText = new PathTextControl(350, 350, radius - 90, 270 + transportHud.angel, 270 + 20, transportHud.transportText);
+                            transportHud.pathTransportText.Rotate(270 + transportHud.angel);
+                            //   transportHud.pathTransportText = new PathTextControl(350, 350, radius - 90, 270 + transportHud.angel, 270 + 20, transportHud.transportText);
                             break;
                     }
 

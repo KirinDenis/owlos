@@ -113,6 +113,21 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             }            
         }
 
+        public override async Task<bool> GetAllFiles()
+        {
+            networkStatus = NetworkStatus.Reconnect;
+            RESTfulClientResultModel getResult = await Get("AT+FL?");
+            if (string.IsNullOrEmpty(getResult.error))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
         public override async Task<bool> SetDriverProperty(string driver, string property, string value)
         {
             networkStatus = NetworkStatus.Reconnect;

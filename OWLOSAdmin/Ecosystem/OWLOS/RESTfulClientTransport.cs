@@ -54,6 +54,21 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             }            
         }
 
+        override public async Task<bool> GetAllFiles()
+        {
+            RESTfulClientResultModel getResult = await Get("getfilelist?path=");
+            if (string.IsNullOrEmpty(getResult.error))
+            {
+                node.ParseGetAllFiles(getResult.result);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
         public override async Task<bool> SetDriverProperty(string driver, string property, string value)
         {
 
