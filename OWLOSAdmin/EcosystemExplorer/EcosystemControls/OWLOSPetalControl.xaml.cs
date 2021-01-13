@@ -82,7 +82,9 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
         /// </summary>
         protected double angel = 0;
 
-        public OWLOSPetalControl(OWLOSNodeControl parentOWLOSNodeControl, double radius, double angel)
+        protected double length = 0;
+
+        public OWLOSPetalControl(OWLOSNodeControl parentOWLOSNodeControl, double radius, double angel, double length)
         {
 
             InitializeComponent();
@@ -90,24 +92,14 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
             this.parentOWLOSNodeControl = parentOWLOSNodeControl;            
             this.radius = radius;
             this.angel = angel;
+            this.length = length;
 
             parentOWLOSNodeControl.parentControl.OnPositionChanged += ParentControl_OnPositionChanged;
 
-            //рисуем лепесток для драйвера
-            double _angel = 0;
-            petalBackground.Data = HudLibrary.DrawArc(350, 350, radius, _angel, _angel + 25);
-            petalBorder1.Data = HudLibrary.DrawArc(350, 350, radius + 20, _angel, _angel + 25);
-            petalBorder2.Data = HudLibrary.DrawArc(350, 350, radius - 20, _angel, _angel + 25);
-
-
-            //поворачиваем леписток драйвера относительно hud ноды
-            RotateTransform rotateTransform = new RotateTransform
-            {
-                Angle = angel * 30
-            };
-            petalMainGrid.RenderTransform = rotateTransform;
-
-
+            //рисуем лепесток для драйвера            
+            petalBackground.Data = HudLibrary.DrawArc(350, 350, radius, angel, length);
+            petalBorder1.Data = HudLibrary.DrawArc(350, 350, radius + 20, angel, length);
+            petalBorder2.Data = HudLibrary.DrawArc(350, 350, radius - 20, angel, length);
 
             //подготавливаем конектор - элементы экосистемы могут соединятся друг с другом, в данном случае
             //одна нода имеет множество присоединеных драйверов. По этой причине нужно инкапсулировать много элементов 
@@ -131,9 +123,20 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
 
         }
 
+        public void Rotate(double angel)
+        {
+            this.angel = angel;
+            //поворачиваем леписток драйвера относительно hud ноды
+            RotateTransform rotateTransform = new RotateTransform
+            {
+                Angle = angel
+            };
+            petalMainGrid.RenderTransform = rotateTransform;
+        }
+
         private void ParentControl_OnPositionChanged(object sender, EventArgs e)
         {
-            if (relationLine.curveLine != null)
+            if (relationLine?.curveLine != null)
             {
                 relationLine?.UpdatePositions();
             }
@@ -162,7 +165,7 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
             petalBackground.Stroke = new SolidColorBrush(((SolidColorBrush)petalBackground.Stroke).Color);
             petalBackground.Stroke.BeginAnimation(SolidColorBrush.ColorProperty, animation);
 
-            if (relationLine.curveLine != null)
+            if (relationLine?.curveLine != null)
             {
                 relationLine.curveLine.Stroke = new SolidColorBrush(((SolidColorBrush)relationLine.curveLine.Stroke).Color);
                 relationLine.curveLine.Stroke.BeginAnimation(SolidColorBrush.ColorProperty, animation);
@@ -181,7 +184,7 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
             petalBackground.Stroke = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSWarning"]).Color);
             petalBackground.Stroke.BeginAnimation(SolidColorBrush.ColorProperty, animation);
 
-            if (relationLine.curveLine != null)
+            if (relationLine?.curveLine != null)
             {
                 relationLine.curveLine.Stroke = new SolidColorBrush(((SolidColorBrush)relationLine.curveLine.Stroke).Color);
                 relationLine.curveLine.Stroke.BeginAnimation(SolidColorBrush.ColorProperty, animation);

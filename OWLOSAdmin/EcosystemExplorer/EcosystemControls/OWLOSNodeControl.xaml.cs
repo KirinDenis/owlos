@@ -68,9 +68,7 @@ namespace OWLOSAdmin.EcosystemExplorer
     {
         public double angel;
         public double length;
-        public Path transportPath;
-        public TextBlock transportText;
-        public PathTextControl pathTransportText;
+        public OWLOSPetalControl pental;
     }
     /// <summary>
     /// Interaction logic for OWLOSNodeControl.xaml
@@ -256,49 +254,31 @@ namespace OWLOSAdmin.EcosystemExplorer
                     for (int i=0; i < nodeWrapper.node.transports.Count; i ++)
                     {
 
+                        //--------------------------------------------
                         TransportHud transportHud = new TransportHud();
                         nodeWrapper.node.transports[i].tag = transportHud;
                         nodeWrapper.node.transports[i].OnTransportStatusChanger += OWLOSNodeControl_OnTransportStatusChanger;
-                        
+
+ 
+
                         double nextAngel = i * (oneTransportAngel + trasnportPathStep);
                         transportHud.angel = nextAngel;
                         transportHud.length = nextAngel + oneTransportAngel;
 
-                        transportHud.transportPath = new Path();
-                        transportHud.transportPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSPrimaryAlpha2"];
-                        transportHud.transportPath.Data = HudLibrary.DrawArc(350, 350, radius - 100, transportHud.angel, transportHud.length);
-                        transportHud.transportPath.StrokeThickness = 30;
-                        transportHud.transportPath.RenderTransformOrigin = new Point(0.5f,0.5f);
-                        transportHud.transportPath.HorizontalAlignment = HorizontalAlignment.Center;
-                        transportHud.transportPath.VerticalAlignment = VerticalAlignment.Center;
-                        transportHud.transportPath.Width = 700;
-                        transportHud.transportPath.Height = 700;
-                        
-                        nodeGrid.Children.Add(transportHud.transportPath);
-
-                        transportHud.transportText = new TextBlock();
-                        transportHud.transportText.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSDark"];
-                        transportHud.transportText.HorizontalAlignment = HorizontalAlignment.Left;
-                        transportHud.transportText.VerticalAlignment = VerticalAlignment.Top;
-                        transportHud.transportText.FontSize = 14;
-                        nodeGrid.Children.Add(transportHud.transportText);
+                        transportHud.pental = new OWLOSPetalControl(this, radius - 100, transportHud.angel, transportHud.length);
 
                         switch (nodeWrapper.node.transports[i].connection.connectionType)
                         {
                             case ConnectionType.RESTfulClient:
-                                transportHud.transportText.Text = "HTTP";
+                                transportHud.pental.petalNameText.Text = "HTTP";                                
                                 break;
                             case ConnectionType.UART:
-                                transportHud.transportText.Text = "UART";
+                                transportHud.pental.petalNameText.Text = "UART";                                
                                 break;
-
                         }
 
-                        transportHud.pathTransportText = new PathTextControl(350, 350, radius - 90, nextAngel, oneTransportAngel + trasnportPathStep * 2, transportHud.transportText);
-                        
+                        nodeGrid.Children.Add(transportHud.pental);
 
-                        //PathTextControl _MQTTText = new PathTextControl(350, 350, radius - 90, 52, 50, MQTTText);
-                        //PathTextControl _UARTText = new PathTextControl(350, 350, radius - 90, 95, 50, UARTText);
                     }
                 }
             }
@@ -330,26 +310,18 @@ namespace OWLOSAdmin.EcosystemExplorer
                     switch (e)
                     {
                         case NetworkStatus.Online:
-                            transportHud.transportPath.Data = HudLibrary.DrawArc(350, 350, radius - 100, transportHud.angel, transportHud.length);
-                            transportHud.pathTransportText.Rotate(transportHud.angel);
-                          //  transportHud.pathTransportText = new PathTextControl(350, 350, radius - 90, transportHud.angel, 20, transportHud.transportText);
+                            transportHud.pental.Rotate(transportHud.angel);
                             break;
                         case NetworkStatus.Offline:
-                            transportHud.transportPath.Data = HudLibrary.DrawArc(350, 350, radius - 100, 90 + transportHud.angel, 90 + transportHud.length);
-                            transportHud.pathTransportText.Rotate(90 + transportHud.angel);
-                            //  transportHud.pathTransportText = new PathTextControl(350, 350, radius - 90, 90 + transportHud.angel, 90 + 20, transportHud.transportText);
+                            transportHud.pental.Rotate(90 + transportHud.angel);
                             break;
 
                         case NetworkStatus.Reconnect:
-                            transportHud.transportPath.Data = HudLibrary.DrawArc(350, 350, radius - 100, 180 + transportHud.angel, 180 + transportHud.length);
-                            transportHud.pathTransportText.Rotate(180 + transportHud.angel);
-                            //   transportHud.pathTransportText = new PathTextControl(350, 350, radius - 90, 180 + transportHud.angel, 180 + 20, transportHud.transportText);
+                            transportHud.pental.Rotate(180 + transportHud.angel);
                             break;
 
                         case NetworkStatus.Erorr:
-                            transportHud.transportPath.Data = HudLibrary.DrawArc(350, 350, radius - 100, 270 + transportHud.angel, 270 + transportHud.length);
-                            transportHud.pathTransportText.Rotate(270 + transportHud.angel);
-                            //   transportHud.pathTransportText = new PathTextControl(350, 350, radius - 90, 270 + transportHud.angel, 270 + 20, transportHud.transportText);
+                            transportHud.pental.Rotate(270 + transportHud.angel);
                             break;
                     }
 
@@ -400,7 +372,7 @@ namespace OWLOSAdmin.EcosystemExplorer
                 {
                     e.driver.OnPropertyCreate += WiFiDriver_OnPropertyCreate;
                 }
-                OWLOSNodeDriverControl _OWLOSNodeDriverControl = new OWLOSNodeDriverControl(this, e.driver, radius + 25, driversCount);
+                OWLOSNodeDriverControl _OWLOSNodeDriverControl = new OWLOSNodeDriverControl(this, e.driver, radius + 25, driversCount, driversCount + 25);
                 driversCount++;
                 nodeGrid.Children.Add(_OWLOSNodeDriverControl);
             });

@@ -2,19 +2,13 @@
 using OWLOSAdmin.EcosystemExplorer.Huds;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace OWLOSAdmin.EcosystemExplorer
 {
@@ -46,7 +40,7 @@ namespace OWLOSAdmin.EcosystemExplorer
                 return;
             }
             flags = flags.ToLower();
-            if (flags.IndexOf("r") != -1 )
+            if (flags.IndexOf("r") != -1)
             {
                 isReadOnly = true;
             }
@@ -73,6 +67,7 @@ namespace OWLOSAdmin.EcosystemExplorer
         }
     }
 
+
     /// <summary>
     /// Interaction logic for OWLOSDriverPropertyControl.xaml
     /// </summary>
@@ -83,9 +78,11 @@ namespace OWLOSAdmin.EcosystemExplorer
         public PropertyFlags flags = null;
 
 
-        private OWLOSDriverProperty property;
+        private readonly OWLOSDriverProperty property;
 
-        private DoubleAnimation spinnerRotate;
+        private readonly DoubleAnimation spinnerRotate;
+
+        private readonly List<string> TimePropertiesNames = new List<string> { "lastquerymillis", "lastpublishmillis", "queryinterval", "publishinterval" };
         public OWLOSDriverPropertyControl(OWLOSDriverProperty property)
         {
             InitializeComponent();
@@ -120,7 +117,7 @@ namespace OWLOSAdmin.EcosystemExplorer
                 To = 360,
                 Duration = new Duration(TimeSpan.FromMilliseconds(1000)),
                 RepeatBehavior = RepeatBehavior.Forever
-               // EasingFunction = new BackEase()                
+                // EasingFunction = new BackEase()                
             };
 
             propSpinner.RenderTransform = new RotateTransform();
@@ -175,26 +172,33 @@ namespace OWLOSAdmin.EcosystemExplorer
             //Value viewer setup             
             if (!flags.isPassword)
             {
-                float floatValue = 0;
-                float currentValue = 0;
-                if ((float.TryParse(property.value, out floatValue)) && (float.TryParse(propValue.Text, out currentValue)))
+                if ((TimePropertiesNames.IndexOf(property.name) != -1) && long.TryParse(property.value, out long longValue))
                 {
-                    if (floatValue == currentValue)
-                    {
-                        propValue.Text = property.value;
-                    }
-                    else
-                    {
-                        float step = (floatValue - currentValue) / 10;
-                        Timer valueTimer = new Timer(100);
-                        valueTimer.Elapsed += new ElapsedEventHandler((Object source, ElapsedEventArgs e) =>
-                        {
-                            currentValue += step;
-                            try
-                            {
+                    TimeSpan timeSpan = TimeSpan.FromMilliseconds(longValue);
+                    propValue.Text = string.Format("{0:D2}:{1:D2}:{2:D2}.{3:D3}ms", timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds);
+                }
+                else
+                {
 
-                                this.Dispatcher.Invoke(() =>
+                    if ((float.TryParse(property.value, out float floatValue)) && (float.TryParse(propValue.Text, out float currentValue)))
+                    {
+
+                        if (floatValue == currentValue)
+                        {
+                            propValue.Text = property.value;
+                        }
+                        else
+                        {
+                            float step = (floatValue - currentValue) / 10;
+                            Timer valueTimer = new Timer(100);
+                            valueTimer.Elapsed += new ElapsedEventHandler((object source, ElapsedEventArgs e) =>
                             {
+                                currentValue += step;
+                                try
+                                {
+
+                                    Dispatcher.Invoke(() =>
+                                {
                                     if (currentValue >= floatValue)
                                     {
                                         propValue.Text = ((int)floatValue).ToString();
@@ -202,16 +206,18 @@ namespace OWLOSAdmin.EcosystemExplorer
                                         return;
                                     }
                                     propValue.Text = ((int)currentValue).ToString();
+                                });
+                                }
+                                catch { }
                             });
-                            }
-                            catch { }
-                        });
-                        valueTimer.Start();
+                            valueTimer.Start();
+                        }
                     }
-                }
-                else
-                {
-                    propValue.Text = CutValue(property.value);
+
+                    else
+                    {
+                        propValue.Text = CutValue(property.value);
+                    }
                 }
             }
             else
@@ -283,10 +289,12 @@ namespace OWLOSAdmin.EcosystemExplorer
                 ValueToEditors();
 
                 ColorAnimation animation;
-                animation = new ColorAnimation();             
-                animation.To = ((SolidColorBrush)App.Current.Resources["OWLOSDanger"]).Color;
-                animation.Duration = new Duration(TimeSpan.FromSeconds(1));
-                animation.AutoReverse = true;
+                animation = new ColorAnimation
+                {
+                    To = ((SolidColorBrush)App.Current.Resources["OWLOSDanger"]).Color,
+                    Duration = new Duration(TimeSpan.FromSeconds(1)),
+                    AutoReverse = true
+                };
                 try
                 {
                     if (flags.isSelected)
