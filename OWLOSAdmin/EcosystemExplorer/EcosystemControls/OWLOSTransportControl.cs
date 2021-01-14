@@ -18,7 +18,7 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
 
             if (transport.connection.connectionType == ConnectionType.RESTfulClient)
             {
-                OWLOSRESTfulTransportControl RESTfulTransportControl = new OWLOSRESTfulTransportControl();
+                OWLOSRESTfulTransportControl RESTfulTransportControl = new OWLOSRESTfulTransportControl(transport);
                 propertiesHolder.Children.Add(RESTfulTransportControl);
             }
 

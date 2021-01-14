@@ -48,6 +48,11 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         virtual public OWLOSConnection connection { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public object tag { get; set; }
+        public long totlaSend { get; set; }
+        public long totlaRecv { get; set; }
+
+        private List<LogItem> _logItems = new List<LogItem>();
+        public List<LogItem> logItems { get => _logItems;}
 
         virtual public async Task<bool> GetAllDriversProperties()
         {
@@ -64,5 +69,9 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             throw new NotImplementedException();
         }
 
+        public void AddToLog(LogItem logItem)
+        {
+            _logItems.Add(logItem);
+        }
     }
 }

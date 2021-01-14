@@ -25,7 +25,7 @@
             <Grid Margin="0,4,0,4">
                 <StackPanel Orientation="Vertical">
                 <TextBlock x:Name="panelName" Margin="10" Text="OWLOS panel control" Foreground="{DynamicResource OWLOSLight}" TextWrapping="Wrap" FontSize="14"/>
-                <StackPanel x:Name="propertiesHolder" Orientation="Vertical" Margin="10,5,10,5" />
+                <StackPanel x:Name="propertiesHolder" Orientation="Vertical" Margin="0,5" />
                 </StackPanel>
             </Grid>
         </Border>
