@@ -196,7 +196,8 @@ void UARTRecv(String command)
             {
                 if (count > 1)
                 {
-                    UARTSendOK(token[0], filesReadString(token[1]));
+                    UARTSendOK(token[0] + " " + token[1], filesReadString(token[1]));
+
                 }
                 else
                 {

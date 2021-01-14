@@ -39,7 +39,6 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-using OWLOSAdmin.Ecosystem.OWLOS;
 using OWLOSAdmin.EcosystemExplorer.Huds;
 using PathText;
 using System;
@@ -89,17 +88,17 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
 
             InitializeComponent();
 
-            this.parentOWLOSNodeControl = parentOWLOSNodeControl;            
+            this.parentOWLOSNodeControl = parentOWLOSNodeControl;
             this.radius = radius;
             this.angel = angel;
             this.length = length;
 
             parentOWLOSNodeControl.parentControl.OnPositionChanged += ParentControl_OnPositionChanged;
 
-            //рисуем лепесток для драйвера            
-            petalBackground.Data = HudLibrary.DrawArc(350, 350, radius, angel, length);
-            petalBorder1.Data = HudLibrary.DrawArc(350, 350, radius + 20, angel, length);
-            petalBorder2.Data = HudLibrary.DrawArc(350, 350, radius - 20, angel, length);
+            double startAngel = 0;
+            petalBackground.Data = HudLibrary.DrawArc(350, 350, radius, startAngel, length);
+            petalBorder1.Data = HudLibrary.DrawArc(350, 350, radius + 20, startAngel, length);
+            petalBorder2.Data = HudLibrary.DrawArc(350, 350, radius - 20, startAngel, length);
 
             //подготавливаем конектор - элементы экосистемы могут соединятся друг с другом, в данном случае
             //одна нода имеет множество присоединеных драйверов. По этой причине нужно инкапсулировать много элементов 
@@ -111,13 +110,16 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
             connector.HorizontalAlignment = HorizontalAlignment.Center;
             connector.VerticalAlignment = VerticalAlignment.Top;
             connector.Margin = new Thickness(0, 0, 0, 0);
+            connector.MoveTransform(0, 330 - radius);
 
-            Ellipse elipse = new Ellipse();
-            elipse.Width = 10;
-            elipse.Height = 10;
-            elipse.Fill = (SolidColorBrush)App.Current.Resources["OWLOSWarning"];
+
+            Ellipse elipse = new Ellipse
+            {
+                Width = 10,
+                Height = 10,
+                Fill = (SolidColorBrush)App.Current.Resources["OWLOSWarning"]
+            };
             connector.childHolderGrid.Children.Add(elipse);
-
 
             petalMainGrid.Children.Add(connector);
 
@@ -125,7 +127,7 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
 
         public void Rotate(double angel)
         {
-            this.angel = angel;
+            
             //поворачиваем леписток драйвера относительно hud ноды
             RotateTransform rotateTransform = new RotateTransform
             {
@@ -149,7 +151,7 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
         /// <param name="e"></param>
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            PathTextControl pathText = new PathTextControl(350, 350, radius + 10, 0, 25, petalNameText);
+            PathTextControl pathText = new PathTextControl(350, 350, radius + 10, 0, length, petalNameText);
         }
 
         private void petalBackground_MouseEnter(object sender, MouseEventArgs e)
@@ -170,7 +172,6 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
                 relationLine.curveLine.Stroke = new SolidColorBrush(((SolidColorBrush)relationLine.curveLine.Stroke).Color);
                 relationLine.curveLine.Stroke.BeginAnimation(SolidColorBrush.ColorProperty, animation);
             }
-
         }
 
         private void petalBackground_MouseLeave(object sender, MouseEventArgs e)
@@ -189,9 +190,6 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
                 relationLine.curveLine.Stroke = new SolidColorBrush(((SolidColorBrush)relationLine.curveLine.Stroke).Color);
                 relationLine.curveLine.Stroke.BeginAnimation(SolidColorBrush.ColorProperty, animation);
             }
-
         }
-
-
     }
 }

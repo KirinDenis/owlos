@@ -49,59 +49,98 @@ using System.Windows.Media;
 namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
 {
     /// <summary>
-    /// Наружный леписток с именем драйвера и доступом к свойствам драйвера по клику
+    /// Наружный лепесток с сетевым состоянием
     /// </summary>
-    public partial class OWLOSNodeDriverControl : OWLOSPetalControl
+    public partial class OWLOSNodeTransportControl : OWLOSPetalControl
     {
         /// <summary>
         /// элемент - таблица со свойствами драйвера 
         /// </summary>
-        private readonly OWLOSDriverControl driverCountrol = null;
+        private readonly OWLOSTransportControl transportCountrol = null;
 
         /// <summary>
         /// драйвер 
         /// </summary>
-        private readonly OWLOSDriver driver = null;
+        private readonly IOWLOSTransport transport;
 
-        public OWLOSNodeDriverControl(OWLOSNodeControl parentOWLOSNodeControl, OWLOSDriver driver, double radius, double angel, double length) : base(parentOWLOSNodeControl, radius, angel, length)
+        public OWLOSNodeTransportControl(OWLOSNodeControl parentOWLOSNodeControl, IOWLOSTransport transport, double radius, double angel, double length) : base(parentOWLOSNodeControl, radius, angel, length)
         {
             Rotate(angel);
-            this.driver = driver;
+            this.transport = transport;
 
-            //создаем элемент таблицу отображающею свойста драйвера
-            driverCountrol = new OWLOSDriverControl(driver);
-            driverCountrol.parentControl.Visibility = Visibility.Hidden;
-            driverCountrol.parentControl.Hide();
+            transport.OnTransportStatusChanger += OnTransportStatusChanger;
+            
+            transportCountrol = new OWLOSTransportControl(transport);
+            transportCountrol.parentControl.Visibility = Visibility.Hidden;
+            transportCountrol.parentControl.Hide();
 
             //контролируем родительский элемент (hud ноды) если он начнем перемещатся по экосистеме
             //перерисуем соединительную линию
-            (parentOWLOSNodeControl.parentControl.Parent as Grid).Children.Add(driverCountrol.parentControl);
+            (parentOWLOSNodeControl.parentControl.Parent as Grid).Children.Add(transportCountrol.parentControl);
 
             //Название драйвера, смотрите UserControl_Loaded - пересчет извиба надписи
-            petalNameText.Text = driver.name;
+            petalNameText.Text = transport.connection.name;
 
             //создаем и настраиваем соеденительную линию
-            relationLine = new EcosystemRelationLine(driverCountrol, driverCountrol.parentControl, connector, driverCountrol, parentOWLOSNodeControl.parentControl.Parent as Grid);
+            relationLine = new EcosystemRelationLine(transportCountrol, transportCountrol.parentControl, connector, transportCountrol, parentOWLOSNodeControl.parentControl.Parent as Grid);
 
             petalBackground.PreviewMouseLeftButtonDown += petalBackground_PreviewMouseLeftButtonDown;
         }
 
+        private void OnTransportStatusChanger(object sender, NetworkStatus e)
+        {
+                base.Dispatcher.Invoke(() =>
+                {
+                    OWLOSTransport transport = sender as OWLOSTransport;
+
+
+                        switch (e)
+                        {
+                            case NetworkStatus.Online:
+                                Rotate(angel);
+                                break;
+                            case NetworkStatus.Offline:
+                                Rotate(90 + angel);
+                                break;
+
+                            case NetworkStatus.Reconnect:
+                                Rotate(180 + angel);
+                                break;
+
+                            case NetworkStatus.Erorr:
+                                Rotate(270 + angel);
+                                break;
+                        }
+
+                    this.UpdateLayout();
+
+                    if (relationLine?.curveLine != null)
+                    {
+                        relationLine?.UpdatePositions();
+                    }
+
+                });
+
+
+        }
+
         private void petalBackground_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (!driverCountrol.parentControl.isVisible)
+            
+            if (!transportCountrol.parentControl.isVisible)
             {
-                if (driverCountrol.parentControl.Visibility == Visibility.Hidden)
+                if (transportCountrol.parentControl.Visibility == Visibility.Hidden)
                 {
-                    driverCountrol.parentControl.Visibility = Visibility.Visible;
+                    transportCountrol.parentControl.Visibility = Visibility.Visible;
                 }
-                driverCountrol.parentControl.Show();
+                transportCountrol.parentControl.Show();
 
                 if (relationLine.curveLine == null)
                 {
                     //вычисляем с какой стороны от hud ноды находится леписток драйвера и вычисляем позицию элемента таблицы относительно hud ноды
-                    double xr = 1000 * Math.Cos(angel * Math.PI / 180 - Math.PI / 2) + parentOWLOSNodeControl.parentControl.transform.X;
-                    double yr = 1000 * Math.Sin(angel * Math.PI / 180 - Math.PI / 2) + parentOWLOSNodeControl.parentControl.transform.Y;
-                    driverCountrol.parentControl.MoveTransform(xr, yr);
+                    double xr = 700 * Math.Cos(angel * Math.PI / 180 - Math.PI / 2) + parentOWLOSNodeControl.parentControl.transform.X;
+                    double yr = 700 * Math.Sin(angel * Math.PI / 180 - Math.PI / 2) + parentOWLOSNodeControl.parentControl.transform.Y;
+                    transportCountrol.parentControl.MoveTransform(xr, yr);
 
                     relationLine.DrawRelationLine(((SolidColorBrush)App.Current.Resources["OWLOSWarning"]).Color.ToString(), ((SolidColorBrush)App.Current.Resources["OWLOSWarning"]).Color.ToString());
                 }
@@ -109,9 +148,10 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
             }
             else
             {
-                driverCountrol.parentControl.Hide();
+                transportCountrol.parentControl.Hide();
                 relationLine.Hide();
             }
+            
         }
     }
 }
