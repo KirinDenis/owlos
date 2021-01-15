@@ -49,58 +49,6 @@
             </TextBlock.RenderTransform>
             </TextBlock>
 
-            <Path Name="scriptsPath" Stroke="{DynamicResource OWLOSInfo}" Data="M 182 150 A 260 260 0 0 0 304 606" StrokeThickness="70" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" />
-            <TextBlock x:Name="scriptsText" Text="Scripts" Foreground="{DynamicResource OWLOSLight}" Margin="310,635,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
-
-
-            <Path Name="script1Path" Stroke="{DynamicResource OWLOSPrimary}" Data="M 182 150 A 260 260 0 0 0 304 606" StrokeThickness="30" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" />
-            <TextBlock x:Name="script1Text" Text="Script 1" Foreground="{DynamicResource OWLOSLight}" Margin="290,590,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-
-
-
-            <Path Name="script2Path" Stroke="{DynamicResource OWLOSPrimary}" Data="M 182 150 A 260 260 0 0 0 304 606" StrokeThickness="30" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" />
-            <TextBlock x:Name="script2Text" Text="Script 2" Foreground="{DynamicResource OWLOSLight}" Margin="195,540,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
-                <TextBlock.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform Angle="225"/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </TextBlock.RenderTransform>
-            </TextBlock>
-
-
-
-            <Path Name="script3Path" Stroke="{DynamicResource OWLOSPrimary}" Data="M 182 150 A 260 260 0 0 0 304 606" StrokeThickness="30" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" />
-            <TextBlock x:Name="script3Text" Text="Script 3" Foreground="{DynamicResource OWLOSLight}" Margin="130,460,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
-                <TextBlock.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform Angle="250"/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </TextBlock.RenderTransform>
-            </TextBlock>
-
-            <Path Name="filesPath" Stroke="{DynamicResource OWLOSInfoAlpha3}" Data="M 182 150 A 260 260 0 0 0 304 606" StrokeThickness="70" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" />
-            <TextBlock x:Name="filesText" Text="Files" Foreground="{DynamicResource OWLOSLight}" Margin="110,195,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-
-            <TextBlock x:Name="filesSizeText" Text="4.5Mb" Foreground="{DynamicResource OWLOSWarning}" Margin="140,210,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
-                <TextBlock.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform Angle="310"/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </TextBlock.RenderTransform>
-            </TextBlock>
-
-            <Path Name="propertiesPath" Stroke="{DynamicResource OWLOSInfoAlpha3}" Data="M 182 150 A 260 260 0 0 0 304 606" StrokeThickness="70" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" />
-            <TextBlock x:Name="propertiesText" Text="Node properties" Foreground="{DynamicResource OWLOSLight}" Margin="160,135,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
-
 
             <Path Name="insideNodePath" Stroke="{DynamicResource OWLOSInfo}" Data="M 344 50 A 300 300 0 1 0 350 50" StrokeThickness="2" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" />
             

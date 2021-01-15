@@ -7,7 +7,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 {
     public class OWLOSFiles
     {
-        List<OWLOSFile> filesList = new List<OWLOSFile>();
+        public List<OWLOSFile> filesList = new List<OWLOSFile>();
         public delegate void NewFileEventHandler(object sender, OWLOSFile owlosFile);
         public event NewFileEventHandler OnNewFile;
 

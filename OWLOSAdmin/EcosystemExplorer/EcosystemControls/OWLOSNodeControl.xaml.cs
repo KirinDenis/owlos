@@ -120,15 +120,15 @@ namespace OWLOSAdmin.EcosystemExplorer
             PowerPathBack.Data = HudLibrary.DrawArc(350, 350, radius - 40, PowerAngeStart, PowerAngelLimit + PowerAngeStart);
             DrawPower(25000);
 
-            scriptsPath.Data = HudLibrary.DrawArc(350, 350, radius - 40, 185, 300);
+            //scriptsPath.Data = HudLibrary.DrawArc(350, 350, radius - 40, 185, 300);
 
-            script1Path.Data = HudLibrary.DrawArc(350, 350, radius - 60, 190, 210);
-            script2Path.Data = HudLibrary.DrawArc(350, 350, radius - 60, 215, 235);
-            script3Path.Data = HudLibrary.DrawArc(350, 350, radius - 60, 240, 260);
+            //script1Path.Data = HudLibrary.DrawArc(350, 350, radius - 60, 190, 210);
+            //script2Path.Data = HudLibrary.DrawArc(350, 350, radius - 60, 215, 235);
+            //script3Path.Data = HudLibrary.DrawArc(350, 350, radius - 60, 240, 260);
 
-            filesPath.Data = HudLibrary.DrawArc(350, 350, radius - 40, 302, 315);
+            
 
-            propertiesPath.Data = HudLibrary.DrawArc(350, 350, radius - 40, 317, 359);
+            //propertiesPath.Data = HudLibrary.DrawArc(350, 350, radius - 40, 317, 359);
             
 
         }
@@ -248,13 +248,15 @@ namespace OWLOSAdmin.EcosystemExplorer
                 }
             }
 
-            PathTextControl _propertiesText = new PathTextControl(350, 350, radius - 10, 325, 250, propertiesText);
-            PathTextControl _filesText = new PathTextControl(350, 350, radius - 10, 296, 250, filesText);
-            PathTextControl _scriptsText = new PathTextControl(350, 350, radius - 10, 180, 250, scriptsText);
+            nodeGrid.Children.Add( new OWLOSNodeFileControl(this, nodeWrapper.node.files, radius - 40, 270, 45));
 
-            PathTextControl _script1Text = new PathTextControl(350, 350, radius - 55, 187, 250, script1Text);
-            PathTextControl _script2Text = new PathTextControl(350, 350, radius - 55, 212, 250, script2Text);
-            PathTextControl _script3Text = new PathTextControl(350, 350, radius - 55, 237, 250, script3Text);
+            //PathTextControl _propertiesText = new PathTextControl(350, 350, radius - 10, 325, 250, propertiesText);
+            //PathTextControl _filesText = new PathTextControl(350, 350, radius - 10, 296, 250, filesText);
+            //PathTextControl _scriptsText = new PathTextControl(350, 350, radius - 10, 180, 250, scriptsText);
+
+            //PathTextControl _script1Text = new PathTextControl(350, 350, radius - 55, 187, 250, script1Text);
+            //PathTextControl _script2Text = new PathTextControl(350, 350, radius - 55, 212, 250, script2Text);
+            //PathTextControl _script3Text = new PathTextControl(350, 350, radius - 55, 237, 250, script3Text);
 
         }
 

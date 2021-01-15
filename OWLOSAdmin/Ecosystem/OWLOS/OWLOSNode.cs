@@ -35,26 +35,22 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         public List<OWLOSDriver> drivers { get; set; } = new List<OWLOSDriver>();
 
-        public OWLOSFiles owlosFiles { get; set; } = new OWLOSFiles(); ///parser, events
+        public OWLOSFiles files { get; set; } = new OWLOSFiles(); ///parser, events
 
         public delegate void DriverEventHandler(object? sender, OWLOSDriverWrapperEventArgs e);
 
         public event DriverEventHandler OnNewDriver;
-
-       
-        
-        public Admin admin;
-
+               
         public List<IOWLOSTransport> transports = new List<IOWLOSTransport>();
 
         public OWLOSNodeConfig config = null;
 
         private Timer lifeCycleTimer;
 
-        public OWLOSNode(Admin admin, OWLOSNodeConfig config)
+        public OWLOSNode(OWLOSNodeConfig config)
         {
             this.config = config;
-            this.admin = admin;
+  
 
             foreach (OWLOSConnection connection in config.connections)
             {

@@ -7,6 +7,8 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
     public class OWLOSFile
     {
+
+        public object tag;
       
         public string name = String.Empty;
 

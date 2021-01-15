@@ -81,5 +81,10 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             logItems.Add(logItem);
             OnLogItem?.Invoke(this, logItem);
         }
+
+        public Task<bool> DownLoadFile(string fileName)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

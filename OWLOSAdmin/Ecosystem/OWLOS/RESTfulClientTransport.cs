@@ -59,7 +59,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             RESTfulClientResultModel getResult = await Get("getfilelist?path=");
             if (string.IsNullOrEmpty(getResult.error))
             {
-                node.owlosFiles.ParseGetAllFiles(getResult.result);
+                node.files.ParseGetAllFiles(getResult.result);
                 return true;
             }
             else
