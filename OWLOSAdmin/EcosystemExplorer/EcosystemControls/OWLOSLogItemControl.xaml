@@ -14,10 +14,10 @@
             <ColumnDefinition Width="150*"/>
         </Grid.ColumnDefinitions>
 
-        <TextBlock x:Name="DateTimeText" Text="11" Margin="10,0" Foreground="{DynamicResource OWLOSPrimary}" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"></TextBlock>
+        <TextBlock x:Name="DateTimeText" Text="11" Margin="10,0" Foreground="{DynamicResource OWLOSInfo}" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
         <TextBlock x:Name="sentRecvText" Text="send" Grid.Column="1" Foreground="{DynamicResource OWLOSPrimary}" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"></TextBlock>
-        <TextBlock x:Name="sizeText" Text="" Grid.Column="2" Foreground="{DynamicResource OWLOSPrimary}" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
-        <TextBlock x:Name="logText" TextWrapping="NoWrap" Text="send" Grid.Column="3" Foreground="{DynamicResource OWLOSPrimary}" HorizontalAlignment="Left" VerticalAlignment="Center" Height="18" ></TextBlock>
+        <TextBlock x:Name="sizeText" Text="" Grid.Column="2" Foreground="{DynamicResource OWLOSInfo}" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
+        <TextBlock x:Name="logText" TextWrapping="NoWrap" Text="send" Grid.Column="3" Foreground="{DynamicResource OWLOSPrimary}" HorizontalAlignment="Left" VerticalAlignment="Center" Height="18" MouseDown="logText_MouseDown" ></TextBlock>
 
     </Grid>
 </UserControl>

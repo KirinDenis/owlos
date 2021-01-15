@@ -29,11 +29,11 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
             {
                 if (logItem.isSend)
                 {
-                    sentRecvText.Text = "send";
+                    sentRecvText.Text = "->|";
                 }
                 else
                 {
-                    sentRecvText.Text = "recv";
+                    sentRecvText.Text = "|<-";
                 }
 
                 sizeText.Text = logItem.size.ToString();
@@ -44,17 +44,26 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
                 {
                     case NetworkStatus.Online:
                         sentRecvText.Text = "online";
+                        logText.Foreground = sentRecvText.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSSuccess"];
+                        
                         break;
                     case NetworkStatus.Offline:
                         sentRecvText.Text = "offline";
+                        logText.Foreground = sentRecvText.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSWarning"];
                         break;
                     case NetworkStatus.Erorr:
                         sentRecvText.Text = "error";
+                        logText.Foreground = sentRecvText.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSDanger"];
                         break;
                 }
             }
 
             logText.Text = logItem.text;
+        }
+
+        private void logText_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            logText.Height = double.NaN;
         }
     }
 }

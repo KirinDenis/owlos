@@ -44,6 +44,11 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
                 }
 
                 OWLOSLogItemControl logControl = new OWLOSLogItemControl(e);
+                if ((logPanel.Children.Count & 1) > 0)
+                {
+                    logControl.Background = (SolidColorBrush)App.Current.Resources["OWLOSSecondaryAlpha3"];
+                }
+
                 logPanel.Children.Insert(0, logControl);
                 
             });
@@ -75,5 +80,7 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
                 send_recv_Text.Text = transport.totlaSend.ToString() + "/" + transport.totlaRecv.ToString();
             });
         }
+
+
     }
 }

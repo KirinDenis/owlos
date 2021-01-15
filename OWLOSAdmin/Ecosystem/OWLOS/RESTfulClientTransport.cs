@@ -145,6 +145,17 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             {
                 networkStatus = NetworkStatus.Erorr;
                 result.error = exception.Message;
+
+                AddToLog(new LogItem()
+                {
+                    dateTime = DateTime.Now,
+                    isSend = true,
+                    networkStatus = _networkStatus,
+                    size = 0,
+                    text = exception.Message
+
+                }); ;
+
             }
 
             return result;

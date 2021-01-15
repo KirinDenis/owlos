@@ -35,7 +35,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
                 _networkStatus = value;
                 OnTransportStatusChanger?.Invoke(this, value);
 
-                if ((_networkStatus == NetworkStatus.Offline) || (_networkStatus == NetworkStatus.Erorr))
+                if ((_networkStatus == NetworkStatus.Offline))
                 {
                     AddToLog(new LogItem()
                     {

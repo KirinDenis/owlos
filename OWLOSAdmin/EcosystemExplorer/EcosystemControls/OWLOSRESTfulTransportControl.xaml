@@ -13,7 +13,7 @@
             <RowDefinition Height="30"/>
             <RowDefinition Height="30"/>
             <RowDefinition Height="30"/>
-            <RowDefinition Height="120"/>
+            <RowDefinition Height="320"/>
             
         </Grid.RowDefinitions>
 
@@ -75,16 +75,16 @@
         </Grid>
 
         <Grid Grid.Row="6">
-            <ScrollViewer>
+            <ScrollViewer VerticalScrollBarVisibility="Hidden">
                 <StackPanel x:Name="logPanel" Orientation="Vertical">
 
                 </StackPanel>
             </ScrollViewer>
-            <Grid>
+            <Grid x:Name="logHideGrid" >
                 <Grid.Background>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                         <GradientStop Color="#00000000" Offset="0.003"/>
-                        <GradientStop Color="{DynamicResource OWLOSInfoColorAlpha1}" Offset="0.997"/>
+                        <GradientStop Color="#F0122e3b" Offset="0.997"/>
                     </LinearGradientBrush>
                 </Grid.Background>
 
