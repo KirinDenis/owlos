@@ -64,5 +64,9 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             throw new NotImplementedException();
         }
 
+        public Task<bool> DownLoadFile(string fileName)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

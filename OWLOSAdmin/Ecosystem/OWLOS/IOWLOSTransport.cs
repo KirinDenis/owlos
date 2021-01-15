@@ -8,6 +8,8 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         abstract public Task<bool> GetAllFiles();
 
+        abstract public Task<bool> DownLoadFile(string fileName);
+
         abstract public Task<bool> SetDriverProperty(string driver, string property, string value);
 
 

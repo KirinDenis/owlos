@@ -35,10 +35,14 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         public List<OWLOSDriver> drivers { get; set; } = new List<OWLOSDriver>();
 
+        public OWLOSFiles owlosFiles { get; set; } = new OWLOSFiles(); ///parser, events
+
         public delegate void DriverEventHandler(object? sender, OWLOSDriverWrapperEventArgs e);
 
         public event DriverEventHandler OnNewDriver;
 
+       
+        
         public Admin admin;
 
         public List<IOWLOSTransport> transports = new List<IOWLOSTransport>();
@@ -137,10 +141,6 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             }
         }
 
-        public async Task ParseGetAllFiles(string driverData)
-        {
-
-        }
 
         public async Task parseScripts(string scriptData)
         {
@@ -215,6 +215,17 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             foreach (IOWLOSTransport _OWLOSTransport in transports)
             {
                 result |= await _OWLOSTransport.GetAllFiles();
+            }
+            return result;
+        }
+
+
+        public async Task<bool> DownLoadFile(string fileName)
+        {
+            bool result = false;
+            foreach (IOWLOSTransport _OWLOSTransport in transports)
+            {
+                result |= await _OWLOSTransport.DownLoadFile(fileName);
             }
             return result;
         }

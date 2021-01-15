@@ -91,8 +91,6 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             this._value = value;
             this.flags = flags;
 
-            
-
             networkStatus = NetworkStatus.Online;
 
         }
