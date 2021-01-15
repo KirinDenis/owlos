@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:OWLOSAdmin.EcosystemExplorer"
              mc:Ignorable="d" 
              d:DesignHeight="30" d:DesignWidth="800">
-    <Grid Margin="10,0,10,0">
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="150"/>
             <ColumnDefinition Width="150"/>
@@ -14,11 +14,11 @@
             <ColumnDefinition Width="50"/>
             <ColumnDefinition Width="50"/>
         </Grid.ColumnDefinitions>
-        <StackPanel Orientation="Horizontal">
-            <TextBlock x:Name="propName" Text="123" Foreground="{DynamicResource OWLOSPrimary}" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"></TextBlock>
+        <StackPanel Orientation="Horizontal" Margin="10,0">
+            <TextBlock x:Name="propName" Text="name" Foreground="{DynamicResource OWLOSPrimary}" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"></TextBlock>
             <Path x:Name="propSpinner" Visibility="Hidden" Stroke="{DynamicResource OWLOSInfoAlpha2}" StrokeThickness="3" Height="20" Width="20" Margin="0,0,0,0" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" />
         </StackPanel>
-        <TextBlock x:Name="propValue" Grid.Column="1" Text="123" Foreground="{DynamicResource OWLOSPrimary}" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
+        <TextBlock x:Name="propValue" Grid.Column="1" Text="value" Foreground="{DynamicResource OWLOSPrimary}" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
         <Grid Grid.Column="2">
            <TextBox x:Name="propValueEdit" Visibility="Hidden" Text="123" Foreground="{DynamicResource OWLOSPrimary}" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="{DynamicResource OWLOSDarkAlpha1}" BorderBrush="{DynamicResource OWLOSPrimaryAlpha2}"></TextBox>
             <PasswordBox x:Name="propPasswordValueEdit" Visibility="Hidden" Password="123" Foreground="{DynamicResource OWLOSPrimary}" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="{DynamicResource OWLOSDark}" BorderBrush="{DynamicResource OWLOSInfoAlpha2}"></PasswordBox>

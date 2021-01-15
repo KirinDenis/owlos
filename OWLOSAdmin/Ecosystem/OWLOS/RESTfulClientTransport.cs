@@ -21,7 +21,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
     {
         protected OWLOSConnection _connection = null;
 
-        protected RESTfulClientConnectionDTO _RESTfulClientConnectionDTO;
+        public RESTfulClientConnectionDTO _RESTfulClientConnectionDTO;
         override public OWLOSConnection connection 
         { 
             get => _connection; 
@@ -87,8 +87,17 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         protected async Task<RESTfulClientResultModel> Get(string APIName, string args = "")
         {
-            networkStatus = NetworkStatus.Reconnect;
+
+            
             RESTfulClientResultModel result = new RESTfulClientResultModel();
+            if (!connection.enable)
+            {
+                networkStatus = NetworkStatus.Offline;
+                result.error = "RESTful disable";
+                return result;
+            }
+
+            networkStatus = NetworkStatus.Reconnect;
 
             if ((_connection == null) || (string.IsNullOrEmpty(_RESTfulClientConnectionDTO.host)))
             {
@@ -98,11 +107,37 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
             try
             {
-                HttpClient client = new HttpClient();                
-                HttpResponseMessage response = await client.GetAsync(_RESTfulClientConnectionDTO.host + APIName + args);
+                HttpClient client = new HttpClient();
+
+                string queryString = _RESTfulClientConnectionDTO.host + APIName + args;
+
+                totlaSend += queryString.Length;
+                AddToLog(new LogItem()
+                {
+                    dateTime = DateTime.Now,
+                    isSend = true,
+                    networkStatus = NetworkStatus.Reconnect,
+                    size = queryString.Length,                    
+                    text = queryString
+                });
+
+                HttpResponseMessage response = await client.GetAsync(queryString);
 
                 response.EnsureSuccessStatusCode();
                 result.result = await response.Content.ReadAsStringAsync();
+
+                totlaRecv += result.result.Length;
+
+                AddToLog(new LogItem()
+                {
+                    dateTime = DateTime.Now,
+                    isSend = false,
+                    networkStatus = NetworkStatus.Reconnect,                    
+                    size = result.result.Length,
+                    text = result.result
+                });
+
+
                 result.error = string.Empty;
                 networkStatus = NetworkStatus.Online;
             }
@@ -110,6 +145,17 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             {
                 networkStatus = NetworkStatus.Erorr;
                 result.error = exception.Message;
+
+                AddToLog(new LogItem()
+                {
+                    dateTime = DateTime.Now,
+                    isSend = true,
+                    networkStatus = _networkStatus,
+                    size = 0,
+                    text = exception.Message
+
+                }); ;
+
             }
 
             return result;

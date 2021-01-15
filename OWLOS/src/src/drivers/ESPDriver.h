@@ -103,7 +103,7 @@ bool nodeSetESPMaxFreeBlockSize(int _espmaxfreeblocksize);
 uint8_t nodeGetESPHeapFragmentation();
 bool nodeSetESPHeapFragmentation(int _espheapfragmentation);
 
-const char *nodeGetESPSdkVersion();
+String nodeGetESPSdkVersion();
 bool nodeSetESPSdkVersion(String _espsdkversion);
 
 String nodeGetESPCoreVersion();

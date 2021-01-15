@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace OWLOSAdmin.Ecosystem.OWLOS
 {
@@ -11,16 +13,36 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         abstract public Task<bool> DownLoadFile(string fileName);
 
         abstract public Task<bool> SetDriverProperty(string driver, string property, string value);
+    }
 
+    public class LogItem
+    {
+        public DateTime dateTime;
 
+        public bool isSend;
+
+        public string text;
+
+        public NetworkStatus networkStatus;
+
+        public int size;        
     }
     public interface IOWLOSTransport : IOWLOSAbstractTransport
     {
         public object tag { get; set; }
+        public long totlaSend { get; set; }
+        public long totlaRecv { get; set; }
+        public List<LogItem> logItems { get; }
         public OWLOSConnection connection { get; set; }
+
+        public void AddToLog(LogItem logItem);
 
         delegate void TransportEventHandler(object? sender, NetworkStatus e);
 
+        delegate void LogEventHandler(object? sender, LogItem e);
+
         event TransportEventHandler OnTransportStatusChanger;
+
+        event LogEventHandler OnLogItem;
     }
 }

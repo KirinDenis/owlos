@@ -7,15 +7,13 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
     public enum ConnectionType { RESTfulClient, MQTT, UART }
     public class OWLOSConnection
     {
-        public bool enable;
+        public bool enable = true;
 
         public string name;
 
         public ConnectionType connectionType;
 
         public string connectionString;
-
-        public string host;
         
     }
 }
