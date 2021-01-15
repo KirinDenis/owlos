@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="OWLOSAdmin.EcosystemExplorer.EcosystemControls.OWLOSLogItemControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:OWLOSAdmin.EcosystemExplorer.EcosystemControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="30" d:DesignWidth="400">
+    <Grid Width="500">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="150"/>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="150*"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock x:Name="DateTimeText" Text="11" Margin="10,0" Foreground="{DynamicResource OWLOSPrimary}" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"></TextBlock>
+        <TextBlock x:Name="sentRecvText" Text="send" Grid.Column="1" Foreground="{DynamicResource OWLOSPrimary}" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"></TextBlock>
+        <TextBlock x:Name="sizeText" Text="" Grid.Column="2" Foreground="{DynamicResource OWLOSPrimary}" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
+        <TextBlock x:Name="logText" TextWrapping="NoWrap" Text="send" Grid.Column="3" Foreground="{DynamicResource OWLOSPrimary}" HorizontalAlignment="Left" VerticalAlignment="Center" Height="18" ></TextBlock>
+
+    </Grid>
+</UserControl>

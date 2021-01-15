@@ -27,10 +27,26 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
 
             this.transport = transport as RESTfulClientTransport;
             this.transport.OnTransportStatusChanger += Transport_OnTransportStatusChanger;
+            this.transport.OnLogItem += Transport_OnLogItem;
 
             nameText.Text = this.transport.connection.name;
             hostText.Text = this.transport._RESTfulClientConnectionDTO.host;
             portText.Text = this.transport._RESTfulClientConnectionDTO.port.ToString();
+        }
+
+        private void Transport_OnLogItem(object sender, LogItem e)
+        {
+            base.Dispatcher.Invoke(() =>
+            {
+                if (logPanel.Children.Count > 100)
+                {
+                    logPanel.Children.RemoveAt(logPanel.Children.Count - 1);
+                }
+
+                OWLOSLogItemControl logControl = new OWLOSLogItemControl(e);
+                logPanel.Children.Insert(0, logControl);
+                
+            });
         }
 
         private void Transport_OnTransportStatusChanger(object sender, NetworkStatus e)

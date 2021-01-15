@@ -112,6 +112,14 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
                 string queryString = _RESTfulClientConnectionDTO.host + APIName + args;
 
                 totlaSend += queryString.Length;
+                AddToLog(new LogItem()
+                {
+                    dateTime = DateTime.Now,
+                    isSend = true,
+                    networkStatus = NetworkStatus.Reconnect,
+                    size = queryString.Length,                    
+                    text = queryString
+                });
 
                 HttpResponseMessage response = await client.GetAsync(queryString);
 
@@ -119,6 +127,16 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
                 result.result = await response.Content.ReadAsStringAsync();
 
                 totlaRecv += result.result.Length;
+
+                AddToLog(new LogItem()
+                {
+                    dateTime = DateTime.Now,
+                    isSend = false,
+                    networkStatus = NetworkStatus.Reconnect,                    
+                    size = result.result.Length,
+                    text = result.result
+                });
+
 
                 result.error = string.Empty;
                 networkStatus = NetworkStatus.Online;

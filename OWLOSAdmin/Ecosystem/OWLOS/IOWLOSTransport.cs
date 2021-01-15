@@ -23,9 +23,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         public NetworkStatus networkStatus;
 
-        public int send;
-
-        public int recv;
+        public int size;        
     }
     public interface IOWLOSTransport : IOWLOSAbstractTransport
     {
@@ -39,6 +37,10 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         delegate void TransportEventHandler(object? sender, NetworkStatus e);
 
+        delegate void LogEventHandler(object? sender, LogItem e);
+
         event TransportEventHandler OnTransportStatusChanger;
+
+        event LogEventHandler OnLogItem;
     }
 }

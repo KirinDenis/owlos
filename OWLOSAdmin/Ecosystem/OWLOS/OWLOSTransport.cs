@@ -1,7 +1,6 @@
 ﻿
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace OWLOSAdmin.Ecosystem.OWLOS
@@ -28,50 +27,59 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
     public class OWLOSTransport : IOWLOSTransport
     {
         protected NetworkStatus _networkStatus = NetworkStatus.Offline;
-        public NetworkStatus networkStatus 
+        public NetworkStatus networkStatus
         {
-            get 
-            { 
-                return _networkStatus; 
-            }
+            get => _networkStatus;
             set
             {
                 _networkStatus = value;
                 OnTransportStatusChanger?.Invoke(this, value);
-            }        
+
+                if ((_networkStatus == NetworkStatus.Offline) || (_networkStatus == NetworkStatus.Erorr))
+                {
+                    AddToLog(new LogItem()
+                    {
+                        dateTime = DateTime.Now,
+                        isSend = false,
+                        networkStatus = _networkStatus,
+                        size = 0
+                    });
+                }
+
+            }
         }
 
-        //public delegate void TransportEventHandler(object? sender, NetworkStatus e);
-
+        
         public event IOWLOSTransport.TransportEventHandler OnTransportStatusChanger;
 
+        public event IOWLOSTransport.LogEventHandler OnLogItem;
 
-        virtual public OWLOSConnection connection { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public virtual OWLOSConnection connection { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public object tag { get; set; }
         public long totlaSend { get; set; }
         public long totlaRecv { get; set; }
+        public List<LogItem> logItems { get; } = new List<LogItem>();
 
-        private List<LogItem> _logItems = new List<LogItem>();
-        public List<LogItem> logItems { get => _logItems;}
-
-        virtual public async Task<bool> GetAllDriversProperties()
+        public virtual async Task<bool> GetAllDriversProperties()
         {
             throw new NotImplementedException();
         }
 
-        virtual public async Task<bool> GetAllFiles()
+        public virtual async Task<bool> GetAllFiles()
         {
             throw new NotImplementedException();
         }
 
-        virtual public async Task<bool> SetDriverProperty(string driver, string property, string value)
+        public virtual async Task<bool> SetDriverProperty(string driver, string property, string value)
         {
             throw new NotImplementedException();
         }
 
         public void AddToLog(LogItem logItem)
         {
-            _logItems.Add(logItem);
+            logItems.Add(logItem);
+            OnLogItem?.Invoke(this, logItem);
         }
     }
 }
