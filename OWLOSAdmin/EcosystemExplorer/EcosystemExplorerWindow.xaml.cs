@@ -122,6 +122,8 @@ namespace OWLOSAdmin.EcosystemExplorer
             drawCellImage.Source = Icons.GetIcon(1536);
             perspectiveViewImage.Source = Icons.GetIcon(65);
             iconsViewImage.Source = Icons.GetIcon(327);
+            transparentViewImage.Source = Icons.GetIcon(463);
+            duplicateWindowImage.Source = Icons.GetIcon(1263);
 
             //Временно для теста нод ----------
             Admin admin = new Admin();
@@ -585,7 +587,10 @@ namespace OWLOSAdmin.EcosystemExplorer
                 zoomTextBox.Text = currentZoom.ToString("F");
                 Zoom(point);
             }
-            e.Handled = true;
+            if (e.RoutedEvent != null)
+            {
+                e.Handled = true;
+            }
         }
 
         /// <summary>
@@ -658,6 +663,12 @@ namespace OWLOSAdmin.EcosystemExplorer
                 vOffset = viewbox.Margin.Top;
                 EcosystemExplorerGrid.Cursor = Cursors.SizeAll;
             }
+            else 
+            if (e.RightButton == MouseButtonState.Pressed)
+            {
+                MouseWheelEventArgs mouseWheelEventArgs = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, 300);
+                EcosystemExplorerGrid_PreviewMouseWheel(sender, mouseWheelEventArgs);
+            }
         }
 
 
@@ -724,14 +735,13 @@ namespace OWLOSAdmin.EcosystemExplorer
             if ((int)drawCellImage.Tag == 1)
             {
                 drawCellImage.Tag = 0;
-                nodeLines.Visibility = Visibility.Hidden;
-
-                smallNodeLines.Visibility = Visibility.Hidden;
+                verticalNavigationGrid.Visibility = horisontalNavigationGrid.Visibility = smallNodeLines.Visibility = nodeLines.Visibility = Visibility.Hidden;
+                                
             }
             else
             {
                 drawCellImage.Tag = 1;
-                nodeLines.Visibility = Visibility.Visible;
+                verticalNavigationGrid.Visibility = horisontalNavigationGrid.Visibility =  nodeLines.Visibility = Visibility.Visible;
                 if (currentZoom > 40)
                 {
                     smallNodeLines.Visibility = Visibility.Visible;
@@ -743,6 +753,34 @@ namespace OWLOSAdmin.EcosystemExplorer
         private void iconsViewImage_Click(object sender, RoutedEventArgs e)
         {
             new IconsToolWindow().Show();
+        }
+
+        private void transparentViewImage_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (this.AllowsTransparency)
+            {
+                EcosystemExplorerWindow ecosystemExplorer = new EcosystemExplorerWindow();
+                ecosystemExplorer.Show();
+                this.Close();
+            }
+            else
+            {
+                
+                EcosystemExplorerWindow ecosystemExplorer = new EcosystemExplorerWindow();
+
+                ecosystemExplorer.AllowsTransparency = true;
+                ecosystemExplorer.WindowStyle = WindowStyle.None;
+                ecosystemExplorer.Background = null;
+                ecosystemExplorer.Show();
+                this.Close();
+            }
+        }
+
+        private void duplicateWindowImage_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            EcosystemExplorerWindow ecosystemExplorer = new EcosystemExplorerWindow();
+            ecosystemExplorer.Show();
+
         }
 
 

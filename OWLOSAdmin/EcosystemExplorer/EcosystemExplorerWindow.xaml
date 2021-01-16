@@ -135,8 +135,10 @@
                     <Image  Name="zoomToFullImage"  Width="25" Height="25" ToolTip="Zoom to full view" Margin="5,0,5,0" MouseDown="zoomToFullImage_Click" Cursor="Hand"/>
                     <Image  Name="autoScrollImage" Width="25" Height="25" ToolTip="Auto scroll" Margin="5,0,5,0" MouseDown="autoScrollImage_Click" Cursor="Hand"/>
                     <Image Name="drawCellImage" Width="25" Height="25" ToolTip="Draw cell" Margin="5,0,5,0"   MouseDown="drawCellImage_Click" Cursor="Hand"/>
-                    <Image Name="perspectiveViewImage" Width="25" Height="25" ToolTip="Draw cell" Margin="5,0,5,0"   MouseDown="perspectiveViewImage_Click" Cursor="Hand"/>
-                    <Image Name="iconsViewImage" Width="25" Height="25" ToolTip="Draw cell" Margin="5,0,5,0"   MouseDown="iconsViewImage_Click" Cursor="Hand"/>
+                    <Image Name="perspectiveViewImage" Width="25" Height="25" ToolTip="3D view" Margin="5,0,5,0"   MouseDown="perspectiveViewImage_Click" Cursor="Hand"/>
+                    <Image Name="iconsViewImage" Width="25" Height="25" ToolTip="Icon collection [development]" Margin="5,0,5,0"   MouseDown="iconsViewImage_Click" Cursor="Hand"/>
+                    <Image Name="transparentViewImage" Width="25" Height="25" ToolTip="Transparent view" Margin="5,0,5,0" Cursor="Hand" MouseDown="transparentViewImage_MouseDown"/>
+                    <Image Name="duplicateWindowImage" Width="25" Height="25" ToolTip="Duplicate window" Margin="5,0,5,0" Cursor="Hand" MouseDown="duplicateWindowImage_MouseDown" />
                 </StackPanel>
             </Grid>
 
