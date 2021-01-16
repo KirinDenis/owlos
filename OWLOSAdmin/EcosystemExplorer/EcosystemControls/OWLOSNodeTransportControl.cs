@@ -63,7 +63,7 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
         /// </summary>
         private readonly IOWLOSTransport transport;
 
-        public OWLOSNodeTransportControl(OWLOSNodeControl parentOWLOSNodeControl, IOWLOSTransport transport, double radius, double angel, double length) : base(parentOWLOSNodeControl, radius, angel, length)
+        public OWLOSNodeTransportControl(OWLOSNodeControl parentOWLOSNodeControl, IOWLOSTransport transport, double radius, double angel, double length, double width) : base(parentOWLOSNodeControl, radius, angel, length, width)
         {
             Rotate(angel);
             this.transport = transport;

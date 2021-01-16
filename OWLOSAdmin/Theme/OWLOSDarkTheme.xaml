@@ -48,6 +48,7 @@
     <SolidColorBrush x:Key = "OWLOSInfoAlpha1" Color ="#103589b1" />
     <SolidColorBrush x:Key = "OWLOSInfoAlpha2" Color ="#353589b1" />
     <SolidColorBrush x:Key = "OWLOSInfoAlpha3" Color ="#F03589b1" />
+    <SolidColorBrush x:Key = "OWLOSInfoAlpha4" Color ="#A03589b1" />
     <Color x:Key = "OWLOSInfoColorAlpha1" A ="#50" R="#5b"  G="#c0"  B="#de" />
     <Color x:Key = "OWLOSInfoColorAlpha2" A ="#70" R="#5b"  G="#c0"  B="#de" />
     <SolidColorBrush x:Key = "OWLOSWarning" Color ="#FFc4803b" />

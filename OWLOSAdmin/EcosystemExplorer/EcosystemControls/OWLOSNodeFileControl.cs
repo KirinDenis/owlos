@@ -63,7 +63,7 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
         /// </summary>
         private readonly OWLOSFiles files;
 
-        public OWLOSNodeFileControl(OWLOSNodeControl parentOWLOSNodeControl, OWLOSFiles files, double radius, double angel, double length) : base(parentOWLOSNodeControl, radius, angel, length)
+        public OWLOSNodeFileControl(OWLOSNodeControl parentOWLOSNodeControl, OWLOSFiles files, double radius, double angel, double length, double width) : base(parentOWLOSNodeControl, radius, angel, length, width)
         {
             Rotate(angel);
             this.files = files;

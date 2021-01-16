@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:OWLOSAdmin.EcosystemExplorer"
              mc:Ignorable="d" 
              HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5"
-             d:DesignHeight="850" d:DesignWidth="850" Background="#02000000" Loaded="UserControl_Loaded">
+              Background="#02000000" Loaded="UserControl_Loaded">
     <Grid>
         <Grid>
 
@@ -30,7 +30,7 @@
 
             <Path Name="freeHeapPathBack" Stroke="{DynamicResource OWLOSSuccessAlpha2}" Data="M 350 630 A 280 280 0 0 0 350 70" StrokeThickness="5" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" StrokeMiterLimit="1"/>
             <Path Name="freeHeapPath" Stroke="{DynamicResource OWLOSSuccess}"     Data="M 350 130 A 280 280 0 0 0 350 70" StrokeThickness="5" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700"  StrokeDashArray="0.5" StrokeLineJoin="Round" StrokeDashCap="Flat" StrokeDashOffset="3" StrokeMiterLimit="1"/>
-            <TextBlock x:Name="freeHeapText" Text="free heap" Foreground="{DynamicResource OWLOSPrimary}" Margin="350,60,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
+            <TextBlock x:Name="freeHeapText" Text="heap" Foreground="{DynamicResource OWLOSPrimary}" Margin="350,60,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
 
             <Path Name="WiFiRSSIDPathBack" Stroke="{DynamicResource OWLOSWarningAlpha2}" Data="M 350 630 A 280 280 0 0 0 350 70" StrokeThickness="5" RenderTransformOrigin="0.5,0.5" StrokeMiterLimit="1"/>
             <Path Name="WiFiRSSIDPath" Stroke="{DynamicResource OWLOSWarning}"     Data="M 350 130 A 280 280 0 0 0 350 70" StrokeThickness="5" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700" StrokeDashArray="0.5" StrokeLineJoin="Round" StrokeDashCap="Flat" StrokeDashOffset="3" StrokeMiterLimit="1"/>
@@ -57,6 +57,15 @@
 
 
             <StackPanel Orientation="Vertical" Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock x:Name="wifiAPText" Text="WiFi AP off" Foreground="{DynamicResource OWLOSInfo}" TextAlignment="Center" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock x:Name="wifiSTText" Text="WiFi ST off" Foreground="{DynamicResource OWLOSInfo}" TextAlignment="Center" />
+                    <TextBlock x:Name="wifiSTConnectedText" Text="" Foreground="{DynamicResource OWLOSInfo}" TextAlignment="Center" />
+                    <TextBlock x:Name="wifiSTSSIDText" Text="" Foreground="{DynamicResource OWLOSInfo}" TextAlignment="Center" />
+                    <TextBlock x:Name="wifiSTIPText" Text="" Foreground="{DynamicResource OWLOSInfo}" TextAlignment="Center" />
+                </StackPanel>
                 <TextBlock x:Name="nodeNameText" Text="owlnode1534" Foreground="{DynamicResource OWLOSLight}" FontSize="32" TextAlignment="Center" />
                 <TextBlock x:Name="nodeAPIPText" Text="AP:192.168.4.1 ST:192.168.0.101" Foreground="{DynamicResource OWLOSInfo}" TextAlignment="Center" />
                 <TextBlock x:Name="nodeLiveText" Text="304.53min" Foreground="{DynamicResource OWLOSInfo}" FontSize="22" TextAlignment="Center" />

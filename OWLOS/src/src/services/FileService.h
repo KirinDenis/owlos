@@ -48,12 +48,12 @@ bool filesBegin();
 bool filesLoop();
 bool filesExists(String fileName);
 int filesGetSize(String fileName);
-bool filesDelete(String fileName);
-bool filesDeleteAllFiles();
+bool filesDelete(String fileName); //API
+bool filesDeleteAllFiles();        //API
 bool filesRename(String source, String dest);
 
-String filesReadString(String fileName);
-bool filesWriteStringDirect(String fileName, String value);
+String filesReadString(String fileName); //API
+bool filesWriteStringDirect(String fileName, String value); //API
 bool filesWriteString(String fileName, String value);
 bool filesAppendString(String fileName, String value);
 bool filesAddString(String fileName, String value);
@@ -64,7 +64,7 @@ bool filesWriteInt(String fileName, int value);
 float filesReadFloat(String fileName);
 bool filesWriteFloat(String fileName, float value);
 
-String filesGetList(String path);
+String filesGetList(String path); //API
 bool filesWriteStructure(String fileName, void *value);
 
 #endif

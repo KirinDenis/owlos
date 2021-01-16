@@ -63,7 +63,7 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
         /// </summary>
         private readonly OWLOSDriver driver = null;
 
-        public OWLOSNodeDriverControl(OWLOSNodeControl parentOWLOSNodeControl, OWLOSDriver driver, double radius, double angel, double length) : base(parentOWLOSNodeControl, radius, angel, length)
+        public OWLOSNodeDriverControl(OWLOSNodeControl parentOWLOSNodeControl, OWLOSDriver driver, double radius, double angel, double length, double width) : base(parentOWLOSNodeControl, radius, angel, length, width)
         {
             Rotate(angel);
             this.driver = driver;

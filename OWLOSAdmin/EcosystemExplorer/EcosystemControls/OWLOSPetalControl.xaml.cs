@@ -83,7 +83,7 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
 
         protected double length = 0;
 
-        public OWLOSPetalControl(OWLOSNodeControl parentOWLOSNodeControl, double radius, double angel, double length)
+        public OWLOSPetalControl(OWLOSNodeControl parentOWLOSNodeControl, double radius, double angel, double length, double width)
         {
 
             InitializeComponent();
@@ -96,9 +96,10 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
             parentOWLOSNodeControl.parentControl.OnPositionChanged += ParentControl_OnPositionChanged;
 
             double startAngel = 0;
-            petalBackground.Data = HudLibrary.DrawArc(350, 350, radius, startAngel, length);
-            petalBorder1.Data = HudLibrary.DrawArc(350, 350, radius + 20, startAngel, length);
-            petalBorder2.Data = HudLibrary.DrawArc(350, 350, radius - 20, startAngel, length);
+            petalBackground.Data = HudLibrary.DrawArc(Gold.center, Gold.center, radius, startAngel, length);
+            petalBackground.StrokeThickness = width;
+            petalBorder1.Data = HudLibrary.DrawArc(Gold.center, Gold.center, radius + width / 2, startAngel, length);
+            petalBorder2.Data = HudLibrary.DrawArc(Gold.center, Gold.center, radius - width / 2, startAngel, length);
 
             //подготавливаем конектор - элементы экосистемы могут соединятся друг с другом, в данном случае
             //одна нода имеет множество присоединеных драйверов. По этой причине нужно инкапсулировать много элементов 
@@ -179,7 +180,7 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
             ColorAnimation animation;
             animation = new ColorAnimation
             {
-                To = ((SolidColorBrush)App.Current.Resources["OWLOSInfo"]).Color,
+                To = ((SolidColorBrush)App.Current.Resources["OWLOSInfoAlpha4"]).Color,
                 Duration = new Duration(TimeSpan.FromSeconds(2))
             };
             petalBackground.Stroke = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSWarning"]).Color);

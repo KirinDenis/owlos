@@ -816,7 +816,7 @@ void HTTPSWebServerBegin()
   setResourceNode("/reset", "GET", &handleReset);
   setResourceNode("/getfilelist", "GET", &handleGetFileList);
   setResourceNode("/deletefile", "GET", &handleDeleteFile);
-  setResourceNode("/deletefile", "DELETE", &handleDeleteFile);
+  setResourceNode("/deletefile", "DELETE", &handleDeleteFile);  
   setResourceNode("/getnodeproperty", "GET", &handleGetNodeProperty);
   //Set driver property set node property to - ESP, WiFi, Network
   //setResourceNode("/setnodeproperty", "GET", &handleSetNodeProperty);
