@@ -32,6 +32,8 @@ namespace OWLOSAdmin.EcosystemExplorer
         private Point currentPoint;
 
         private Point anchorPoint;
+
+        public double resizeArea = 20.0f;
         public TranslateTransform transform { get; } = new TranslateTransform();
 
         public event EventHandler OnPositionChanged;
@@ -41,6 +43,8 @@ namespace OWLOSAdmin.EcosystemExplorer
         private bool _isFocused;
 
         public bool isVisible = true;
+
+        private Point ResizePoint;
         public bool IsFocused
         {
             get { return _isFocused; }
@@ -165,10 +169,20 @@ namespace OWLOSAdmin.EcosystemExplorer
             {
                 //this.Margin = new Thickness(e.GetPosition(Parent as Grid).X - clickLocalPosition.X, e.GetPosition(Parent as Grid).Y - clickLocalPosition.Y, 0, 0);
                 currentPoint = e.GetPosition(Parent as Grid);
+                Point localPoint = e.GetPosition(this);
 
-                transform.X += (currentPoint.X - anchorPoint.X);
-                transform.Y += (currentPoint.Y - anchorPoint.Y);
-                this.RenderTransform = transform;
+                //drag or resize 
+                if ((localPoint.X > resizeArea) && (localPoint.Y > resizeArea) && (Width - localPoint.X > resizeArea) && (Height -  localPoint.Y > resizeArea))
+                {
+                    transform.X += (currentPoint.X - anchorPoint.X);
+                    transform.Y += (currentPoint.Y - anchorPoint.Y);
+                    this.RenderTransform = transform;
+                }
+                else
+                {                 
+                    Width = ActualWidth + (currentPoint.X - anchorPoint.X);
+                    Height = ActualHeight + (currentPoint.Y - anchorPoint.Y);
+                }
 
                 anchorPoint = currentPoint;
 
@@ -195,9 +209,13 @@ namespace OWLOSAdmin.EcosystemExplorer
                                                  directlyOverType != typeof(ScrollBar) &&
                                                  directlyOverType != typeof(TextBox)))
                 {
+
+
                     anchorPoint = e.GetPosition(Parent as Grid);
                     this.CaptureMouse();
                     isInDrag = true;
+
+
                 }
             }
 
@@ -229,7 +247,9 @@ namespace OWLOSAdmin.EcosystemExplorer
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
+                ResizePoint = e.GetPosition(Parent as Grid);
                 EcosystemControlGotFocus(this, null);
+              //  EcosystemControlMouseDown(this, e);
             }
         }
     }

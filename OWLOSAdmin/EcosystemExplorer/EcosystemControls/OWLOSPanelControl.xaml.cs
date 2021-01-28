@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using OWLOSAdmin.EcosystemExplorer.EcosystemControls;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace OWLOSAdmin.EcosystemExplorer
@@ -9,6 +11,8 @@ namespace OWLOSAdmin.EcosystemExplorer
     public partial class OWLOSPanelControl : UserControl, IEcosystemChildControl
     {
         public EcosystemControl parentControl { get; set; }
+
+        
 
         public OWLOSPanelControl()
         {
@@ -35,6 +39,18 @@ namespace OWLOSAdmin.EcosystemExplorer
         public void OnParentDrop()
         {
             //
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            OWLOSWindow window = new OWLOSWindow();
+            (parentControl.Parent as Grid).Children.Remove(parentControl);
+            parentControl.RenderTransform = null;
+            parentControl.HorizontalAlignment = HorizontalAlignment.Stretch;
+            parentControl.VerticalAlignment = VerticalAlignment.Stretch;
+            window.MainGrid.Children.Add(parentControl);
+            parentControl.Show();
+            window.Show();
         }
     }
 }

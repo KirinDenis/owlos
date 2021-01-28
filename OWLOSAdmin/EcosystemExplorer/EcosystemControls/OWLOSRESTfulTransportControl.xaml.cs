@@ -21,6 +21,9 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
     {
         private RESTfulClientTransport transport;
 
+        private OWLOSLogPanelControl logPanel;
+        private OWLOSLogPanelControl recvLogPanel;
+
         public OWLOSRESTfulTransportControl(IOWLOSTransport transport)
         {
             InitializeComponent();
@@ -29,27 +32,47 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
             this.transport.OnTransportStatusChanger += Transport_OnTransportStatusChanger;
             this.transport.OnLogItem += Transport_OnLogItem;
 
+            enabledCheckbox.IsChecked = this.transport.connection.enable;
             nameText.Text = this.transport.connection.name;
             hostText.Text = this.transport._RESTfulClientConnectionDTO.host;
             portText.Text = this.transport._RESTfulClientConnectionDTO.port.ToString();
+
+            logGrid.Children.Add(logPanel = new OWLOSLogPanelControl());
+            recvLogGrid.Children.Add(recvLogPanel = new OWLOSLogPanelControl());
         }
 
         private void Transport_OnLogItem(object sender, LogItem e)
         {
             base.Dispatcher.Invoke(() =>
             {
-                if (logPanel.Children.Count > 100)
-                {
-                    logPanel.Children.RemoveAt(logPanel.Children.Count - 1);
-                }
 
-                OWLOSLogItemControl logControl = new OWLOSLogItemControl(e);
-                if ((logPanel.Children.Count & 1) > 0)
+                if (e.isSend)
                 {
-                    logControl.Background = (SolidColorBrush)App.Current.Resources["OWLOSSecondaryAlpha3"];
-                }
+                    switch (e.networkStatus)
+                    {
+                        case NetworkStatus.Online:
+                            
+                            logPanel.AddToLog(e.text, 0);
+                            break;
 
-                logPanel.Children.Insert(0, logControl);
+                        case NetworkStatus.Offline:
+                            logPanel.AddToLog(e.text, 1);                            
+                            break;
+
+                        case NetworkStatus.Reconnect:
+                            logPanel.AddToLog(e.text, 2);                            
+                            break;
+
+                        case NetworkStatus.Erorr:
+                            logPanel.AddToLog(e.text, 3);                            
+                            break;
+                    }
+                    
+                }
+                else
+                {
+                    recvLogPanel.AddToLog(e.text, 2);
+                }
                 
             });
         }
@@ -79,6 +102,14 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
 
                 send_recv_Text.Text = transport.totlaSend.ToString() + "/" + transport.totlaRecv.ToString();
             });
+        }
+
+        private void enabledCheckbox_Checked(object sender, RoutedEventArgs e)
+        {
+            if (transport != null)
+            {
+                transport.connection.enable = enabledCheckbox.IsChecked.Value;
+            }
         }
 
 
