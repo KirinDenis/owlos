@@ -71,20 +71,13 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
             transport.OnTransportStatusChanger += OnTransportStatusChanger;
             
             transportCountrol = new OWLOSTransportControl(transport);
-            transportCountrol.parentControl.Visibility = Visibility.Hidden;
-            transportCountrol.parentControl.Hide();
 
-            //контролируем родительский элемент (hud ноды) если он начнем перемещатся по экосистеме
-            //перерисуем соединительную линию
-            (parentOWLOSNodeControl.parentControl.Parent as Grid).Children.Add(transportCountrol.parentControl);
-
+            base.RegistRelatedPanel(transportCountrol.parentControl);
+            
+           
             //Название драйвера, смотрите UserControl_Loaded - пересчет извиба надписи
             petalNameText.Text = transport.connection.name;
 
-            //создаем и настраиваем соеденительную линию
-            relationLine = new EcosystemRelationLine(transportCountrol, transportCountrol.parentControl, connector, transportCountrol, parentOWLOSNodeControl.parentControl.Parent as Grid);
-
-            petalBackground.PreviewMouseLeftButtonDown += petalBackground_PreviewMouseLeftButtonDown;
         }
 
         private void OnTransportStatusChanger(object sender, NetworkStatus e)
@@ -124,34 +117,5 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
 
         }
 
-        private void petalBackground_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            
-            if (!transportCountrol.parentControl.isVisible)
-            {
-                if (transportCountrol.parentControl.Visibility == Visibility.Hidden)
-                {
-                    transportCountrol.parentControl.Visibility = Visibility.Visible;
-                }
-                transportCountrol.parentControl.Show();
-
-                if (relationLine.curveLine == null)
-                {
-                    //вычисляем с какой стороны от hud ноды находится леписток драйвера и вычисляем позицию элемента таблицы относительно hud ноды
-                    double xr = 700 * Math.Cos(angel * Math.PI / 180 - Math.PI / 2) + parentOWLOSNodeControl.parentControl.transform.X;
-                    double yr = 700 * Math.Sin(angel * Math.PI / 180 - Math.PI / 2) + parentOWLOSNodeControl.parentControl.transform.Y;
-                    transportCountrol.parentControl.MoveTransform(xr, yr);
-
-                    relationLine.DrawRelationLine(((SolidColorBrush)App.Current.Resources["OWLOSWarning"]).Color.ToString(), ((SolidColorBrush)App.Current.Resources["OWLOSWarning"]).Color.ToString());
-                }
-                relationLine.Show();
-            }
-            else
-            {
-                transportCountrol.parentControl.Hide();
-                relationLine.Hide();
-            }
-            
-        }
     }
 }

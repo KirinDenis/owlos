@@ -38,10 +38,17 @@ namespace PathText
         private void Update()
         {
 
+            if (sourceTextBlock.Parent == null)
+            {
+                return;
+            }
+
             if (grid == null)
             {
                 grid = sourceTextBlock.Parent as Grid;
             }
+
+            
 
             textBlock = new TextBlock[sourceTextBlock.Text.Length];
 

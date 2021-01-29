@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OWLOSAdmin.EcosystemExplorer.EcosystemControls"
         mc:Ignorable="d"
-        Title="OWLOSWindow" Height="450" Width="800" Background="{x:Null}" AllowsTransparency="True" WindowStyle="None">
+        Title="OWLOSWindow" Height="450" Width="800" Background="{x:Null}" AllowsTransparency="True" WindowStyle="None" PreviewMouseDown="Window_PreviewMouseDown" >
     <Grid Name="MainGrid">
         
     </Grid>

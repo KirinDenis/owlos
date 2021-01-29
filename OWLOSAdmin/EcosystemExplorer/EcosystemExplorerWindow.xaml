@@ -10,6 +10,8 @@
 
     <!-- FontFamily="file:///D:\Users\Egor\source\repos\KirinDenis\owlos\OWLOSAdmin\Fonts\#omega flight"-->
 
+
+
     <Grid x:Name="contentGrid" Background="{DynamicResource OWLOSAfterDark}" >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="40*"/>

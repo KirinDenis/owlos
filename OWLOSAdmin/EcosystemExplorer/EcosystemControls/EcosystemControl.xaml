@@ -19,7 +19,18 @@
              ClipToBounds="True" 
              SnapsToDevicePixels="True" >
 
-    <Grid Name="childHolderGrid" TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed" >
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="SwitchWindowTransparentButton" Width="25" Content="T" Click="SwitchWindowTransparentButton_Click"/>
+            <Button x:Name="SwitchWindowButton" Width="25" Content="W" Click="SwitchWindowButton_Click"/>
+            <Button x:Name="CloseButton" Width="25" Content="X" Click="CloseButton_Click"/>
+        </StackPanel>
+        <Grid Name="childHolderGrid" TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed" Grid.Row="1" >
+        </Grid>
     </Grid>
 
 </UserControl>

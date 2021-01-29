@@ -21,5 +21,11 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
         {
             InitializeComponent();
         }
+
+        private void Window_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            //this.DragMove();
+        }
+
     }
 }

@@ -83,6 +83,10 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
 
         protected double length = 0;
 
+        protected bool onceLoaded = false;
+
+        protected EcosystemControl relatedPanel = null;
+
         public OWLOSPetalControl(OWLOSNodeControl parentOWLOSNodeControl, double radius, double angel, double length, double width)
         {
 
@@ -126,6 +130,83 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
 
         }
 
+        public void RegistRelatedPanel(EcosystemControl relatedPanel)
+        {
+            this.relatedPanel = relatedPanel;
+
+            relatedPanel.Visibility = Visibility.Hidden;
+            relatedPanel.Hide();
+
+            //контролируем родительский элемент (hud ноды) если он начнем перемещатся по экосистеме
+            //перерисуем соединительную линию
+            (parentOWLOSNodeControl.parentControl.Parent as Grid).Children.Add(relatedPanel);
+
+
+            //создаем и настраиваем соеденительную линию
+            //relationLine = new EcosystemRelationLine(relatedPanel, relatedPanel, connector, driverCountrol, parentOWLOSNodeControl.parentControl.Parent as Grid);
+            relationLine = new EcosystemRelationLine(relatedPanel, relatedPanel, connector, relatedPanel, parentOWLOSNodeControl.parentControl.Parent as Grid);
+            
+
+            petalBackground.PreviewMouseLeftButtonDown += petalBackground_PreviewMouseLeftButtonDown;
+
+            relatedPanel.OnShow += ParentControl_OnShow;
+            relatedPanel.OnHiden += ParentControl_OnHiden;
+
+            relatedPanel.OnWindow += RelatedPanel_OnWindow;
+            relatedPanel.OnEcosystem += RelatedPanel_OnEcosystem;
+
+        }
+
+        private void RelatedPanel_OnEcosystem(object sender, EventArgs e)
+        {
+            relationLine.Show();
+        }
+
+        private void RelatedPanel_OnWindow(object sender, EventArgs e)
+        {
+            relationLine.Hide();
+        }
+
+        private void ParentControl_OnHiden(object sender, EventArgs e)
+        {
+            relationLine.Hide();
+        }
+
+        private void ParentControl_OnShow(object sender, EventArgs e)
+        {
+            if (relatedPanel.window == null)
+            {
+                if (relationLine.curveLine == null)
+                {
+                    //вычисляем с какой стороны от hud ноды находится леписток драйвера и вычисляем позицию элемента таблицы относительно hud ноды
+                    double xr = 1000 * Math.Cos(angel * Math.PI / 180 - Math.PI / 2) + parentOWLOSNodeControl.parentControl.transform.X;
+                    double yr = 1000 * Math.Sin(angel * Math.PI / 180 - Math.PI / 2) + parentOWLOSNodeControl.parentControl.transform.Y;
+                    relatedPanel.MoveTransform(xr, yr);
+
+                    relationLine.DrawRelationLine(((SolidColorBrush)App.Current.Resources["OWLOSWarning"]).Color.ToString(), ((SolidColorBrush)App.Current.Resources["OWLOSWarning"]).Color.ToString());
+                }
+                relationLine.Show();
+            }
+
+        }
+
+        private void petalBackground_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (!relatedPanel.isVisible)
+            {
+                if (relatedPanel.Visibility == Visibility.Hidden)
+                {
+                    relatedPanel.Visibility = Visibility.Visible;
+                }
+                relatedPanel.Show();
+
+            }
+            else
+            {
+                relatedPanel.Hide();
+            }
+        }
+
         public void Rotate(double angel)
         {
             
@@ -152,7 +233,11 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
         /// <param name="e"></param>
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            PathTextControl pathText = new PathTextControl(350, 350, radius + 10, 0, length, petalNameText);
+            if (!onceLoaded)
+            {
+                PathTextControl pathText = new PathTextControl(350, 350, radius + 10, 0, length, petalNameText);
+                onceLoaded = true;
+            }
         }
 
         private void petalBackground_MouseEnter(object sender, MouseEventArgs e)

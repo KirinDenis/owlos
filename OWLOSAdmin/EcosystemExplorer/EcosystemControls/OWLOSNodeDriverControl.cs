@@ -70,48 +70,13 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
 
             //создаем элемент таблицу отображающею свойста драйвера
             driverCountrol = new OWLOSDriverControl(driver);
-            driverCountrol.parentControl.Visibility = Visibility.Hidden;
-            driverCountrol.parentControl.Hide();
-
-            //контролируем родительский элемент (hud ноды) если он начнем перемещатся по экосистеме
-            //перерисуем соединительную линию
-            (parentOWLOSNodeControl.parentControl.Parent as Grid).Children.Add(driverCountrol.parentControl);
+            //передаем управление присоедененой панелью в радительский объект (сам Control является Child этой панели)
+            base.RegistRelatedPanel(driverCountrol.parentControl);
 
             //Название драйвера, смотрите UserControl_Loaded - пересчет извиба надписи
             petalNameText.Text = driver.name;
 
-            //создаем и настраиваем соеденительную линию
-            relationLine = new EcosystemRelationLine(driverCountrol, driverCountrol.parentControl, connector, driverCountrol, parentOWLOSNodeControl.parentControl.Parent as Grid);
-
-            petalBackground.PreviewMouseLeftButtonDown += petalBackground_PreviewMouseLeftButtonDown;
         }
 
-        private void petalBackground_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            if (!driverCountrol.parentControl.isVisible)
-            {
-                if (driverCountrol.parentControl.Visibility == Visibility.Hidden)
-                {
-                    driverCountrol.parentControl.Visibility = Visibility.Visible;
-                }
-                driverCountrol.parentControl.Show();
-
-                if (relationLine.curveLine == null)
-                {
-                    //вычисляем с какой стороны от hud ноды находится леписток драйвера и вычисляем позицию элемента таблицы относительно hud ноды
-                    double xr = 1000 * Math.Cos(angel * Math.PI / 180 - Math.PI / 2) + parentOWLOSNodeControl.parentControl.transform.X;
-                    double yr = 1000 * Math.Sin(angel * Math.PI / 180 - Math.PI / 2) + parentOWLOSNodeControl.parentControl.transform.Y;
-                    driverCountrol.parentControl.MoveTransform(xr, yr);
-
-                    relationLine.DrawRelationLine(((SolidColorBrush)App.Current.Resources["OWLOSWarning"]).Color.ToString(), ((SolidColorBrush)App.Current.Resources["OWLOSWarning"]).Color.ToString());
-                }
-                relationLine.Show();
-            }
-            else
-            {
-                driverCountrol.parentControl.Hide();
-                relationLine.Hide();
-            }
-        }
     }
 }

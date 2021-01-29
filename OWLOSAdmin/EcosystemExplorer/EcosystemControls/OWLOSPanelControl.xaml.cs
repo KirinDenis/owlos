@@ -43,14 +43,16 @@ namespace OWLOSAdmin.EcosystemExplorer
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            OWLOSWindow window = new OWLOSWindow();
+            /*
+            parentControl.window = new OWLOSWindow();
             (parentControl.Parent as Grid).Children.Remove(parentControl);
             parentControl.RenderTransform = null;
             parentControl.HorizontalAlignment = HorizontalAlignment.Stretch;
             parentControl.VerticalAlignment = VerticalAlignment.Stretch;
-            window.MainGrid.Children.Add(parentControl);
+            parentControl.window.MainGrid.Children.Add(parentControl);
             parentControl.Show();
-            window.Show();
+            parentControl.window.Show();
+            */
         }
     }
 }
