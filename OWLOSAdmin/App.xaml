@@ -4,9 +4,13 @@
              xmlns:local="clr-namespace:OWLOSAdmin"
              StartupUri="EcosystemExplorer/EcosystemExplorerWindow.xaml">
     <Application.Resources>
-        <ResourceDictionary Source = "Theme/OWLOSDarkTheme.xaml" />
+        
 
-
+        <ResourceDictionary Source = "Theme/OWLOSDarkTheme.xaml">
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Theme/ScrollBar.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 
 </Application>

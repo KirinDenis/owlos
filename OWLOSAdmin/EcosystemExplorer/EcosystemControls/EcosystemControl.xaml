@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              HorizontalAlignment="Left" VerticalAlignment="Top"
              MinHeight="0" MinWidth="0" 
-             Height="Auto" Width="Auto"
+             Height="700" Width="700"
              d:DesignHeight="200" d:DesignWidth="200" 
              Focusable="True" IsTabStop="True"              
              PreviewMouseMove="EcosystemControlPreviewMouseMove" 
@@ -17,7 +17,7 @@
              LostFocus="EcosystemControlLostFocus" 
              PreviewMouseDown="EcosystemControlPreviewMouseDown" 
              ClipToBounds="True" 
-             SnapsToDevicePixels="True" >
+             SnapsToDevicePixels="True" Background="#02000000" >
 
     <Grid>
         <Grid.RowDefinitions>
@@ -25,12 +25,13 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button x:Name="SwitchWindowTransparentButton" Width="25" Content="T" Click="SwitchWindowTransparentButton_Click"/>
-            <Button x:Name="SwitchWindowButton" Width="25" Content="W" Click="SwitchWindowButton_Click"/>
-            <Button x:Name="CloseButton" Width="25" Content="X" Click="CloseButton_Click"/>
+            <Button x:Name="SwitchWindowTransparentButton" Width="25" Content="T" Click="SwitchWindowTransparentButton_Click" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{DynamicResource OWLOSPrimary}"/>
+            <Button x:Name="SwitchWindowButton" Width="25" Content="W" Click="SwitchWindowButton_Click" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{DynamicResource OWLOSPrimary}"/>
+            <Button x:Name="CloseButton" Width="25" Content="X" Click="CloseButton_Click" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{DynamicResource OWLOSPrimary}"/>
         </StackPanel>
-        <Grid Name="childHolderGrid" TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed" Grid.Row="1" >
+        <Grid Name="childHolderGrid" TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed" Grid.Row="1">
         </Grid>
+        <Border Grid.Row="1" BorderThickness="0,0,4,4"  BorderBrush="{DynamicResource OWLOSInfoAlpha3}"  HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="20" Height="20" ClipToBounds="True" SnapsToDevicePixels="True" Cursor="SizeNWSE" Background="#02FDFAFA"/>
     </Grid>
 
 </UserControl>
