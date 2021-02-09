@@ -1,17 +1,51 @@
-﻿using System;
+﻿/* ----------------------------------------------------------------------------
+Ready IoT Solution - OWLOS
+Copyright 2019, 2020 by:
+- Konstantin Brul (konstabrul@gmail.com)
+- Vitalii Glushchenko (cehoweek@gmail.com)
+- Denys Melnychuk (meldenvar@gmail.com)
+- Denis Kirin (deniskirinacs@gmail.com)
+
+This file is part of Ready IoT Solution - OWLOS
+
+OWLOS is free software : you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+OWLOS is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with OWLOS. If not, see < https://www.gnu.org/licenses/>.
+
+GitHub: https://github.com/KirinDenis/owlos
+
+(Этот файл — часть Ready IoT Solution - OWLOS.
+
+OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
+ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
+была опубликована Фондом свободного программного обеспечения; версии 3
+лицензии, любой более поздней версии.
+
+OWLOS распространяется в надежде, что она будет полезной, но БЕЗО ВСЯКИХ
+ГАРАНТИЙ; даже без неявной гарантии ТОВАРНОГО ВИДА или ПРИГОДНОСТИ ДЛЯ
+ОПРЕДЕЛЕННЫХ ЦЕЛЕЙ.
+Подробнее см.в Стандартной общественной лицензии GNU.
+
+Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
+этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
+--------------------------------------------------------------------------------------*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
 {
@@ -20,7 +54,6 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
     /// </summary>
     public partial class OWLOSLogPanelControl : UserControl
     {
-
         private int logCount = 0;
         private double saveY = 0;
         private bool atAnimation = false;
@@ -32,10 +65,17 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
 
         public void AddToLog(string text, int code)
         {
-            List<string> lines = text.Split('\n').ToList();
-            foreach (string line in lines)
+            if (!string.IsNullOrEmpty(text))
             {
-                Add(line, code);
+                List<string> lines = text.Split('\n').ToList();
+                foreach (string line in lines)
+                {
+                    Add(line, code);
+                }
+            }
+            else
+            {
+                Add("--> NULL line to log", 3);
             }
         }
 
@@ -46,14 +86,10 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
 
                 if (!string.IsNullOrEmpty(text))
                 {
-                    TextBlock textBlock = new TextBlock();
-                    //textBlock.Text += DateTime.Now + " " + text;
+                    TextBlock textBlock = new TextBlock();               
                     logPanel.Children.Add(textBlock);
                     logCount++;
                     textBlock.Name = "text" + logCount.ToString();
-                    
-                    //textBlock.Foreground = new SolidColorBrush(Colors.LightBlue);
-                    
 
                     if (!atAnimation)
                     {
@@ -71,121 +107,91 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
                             {
                                 EndY = -(logCount * prev.ActualHeight / 4.0f - logScrollView.ActualHeight);
                             }
-                            //EndY = -(logCount * (prev.ActualHeight - prev.BaselineOffset));
-
-                            //EndY = -(logCount * prev.ActualHeight / 3.0f);
-                            //EndY = -logCount * 15;
                         }
                         else
                         {
                             EndY = -logCount * 15;
                         }
 
-
-
-
-                        var AnimationY = new DoubleAnimation(saveY, EndY, TimeSpan.FromSeconds(1));
+                        DoubleAnimation AnimationY = new DoubleAnimation(saveY, EndY, TimeSpan.FromSeconds(1));
                         AnimationY.Completed += AnimationY_Completed;
                         saveY = EndY;
 
-                        var Transform = new TranslateTransform();
+                        TranslateTransform Transform = new TranslateTransform();
                         logPanel.RenderTransform = Transform;
 
-
                         Transform.BeginAnimation(TranslateTransform.YProperty, AnimationY);
-
                     }
 
 
                     ColorAnimation animation = new ColorAnimation
                     {
-                        To = ((SolidColorBrush)App.Current.Resources["OWLOSInfoAlpha4"]).Color,
                         Duration = new Duration(TimeSpan.FromSeconds(10))
                     };
 
                     switch (code)
                     {
                         case 0:
+                            animation.To = ((SolidColorBrush)App.Current.Resources["OWLOSSuccessAlpha4"]).Color;
                             textBlock.Foreground = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSSuccess"]).Color);
                             break;
                         case 1:
+                            animation.To = ((SolidColorBrush)App.Current.Resources["OWLOSWarningAlpha4"]).Color;
                             textBlock.Foreground = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSWarning"]).Color);
                             break;
-                        case 2:
-                            textBlock.Foreground = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSPrimary"]).Color);
-                            break;
                         case 3:
+                            animation.To = ((SolidColorBrush)App.Current.Resources["OWLOSDangerAlpha4"]).Color;
                             textBlock.Foreground = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSDanger"]).Color);
                             break;
+                        default:
+                            animation.To = ((SolidColorBrush)App.Current.Resources["OWLOSInfoAlpha4"]).Color;
+                            textBlock.Foreground = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSLight"]).Color);
+                            break;
+
                     }
 
                     textBlock.Foreground.BeginAnimation(SolidColorBrush.ColorProperty, animation);
 
 
-                    //var AnimationS = new DoubleAnimation(0, 10, TimeSpan.FromSeconds(4));
-                    //var Transform2 = new TranslateTransform();
-                    //textBlock.RenderTransform = Transform2;
-                    //Transform2.BeginAnimation(TranslateTransform.XProperty, AnimationS);
-
-
                     //https://stackoverflow.com/questions/3430659/is-there-a-wpf-typewriter-effect
-                    Storyboard story = new Storyboard();
-                    story.FillBehavior = FillBehavior.HoldEnd;
-                    //story.RepeatBehavior = RepeatBehavior.
+                    Storyboard story = new Storyboard
+                    {
+                        FillBehavior = FillBehavior.HoldEnd
+                    };
 
-                    
-                    StringAnimationUsingKeyFrames stringAnimationUsingKeyFrames = new StringAnimationUsingKeyFrames();
-                    stringAnimationUsingKeyFrames.Duration = new Duration(TimeSpan.FromSeconds(1));
+                    StringAnimationUsingKeyFrames stringAnimationUsingKeyFrames = new StringAnimationUsingKeyFrames
+                    {
+                        Duration = new Duration(TimeSpan.FromSeconds(1))
+                    };
 
 
-                    string tmp = string.Empty;
+                    string tempText = string.Empty;
                     text = DateTime.Now + " " + text;
                     foreach (char c in text)
                     {
-                        DiscreteStringKeyFrame discreteStringKeyFrame = new DiscreteStringKeyFrame();
-                        discreteStringKeyFrame.KeyTime = KeyTime.Paced;
-                        tmp += c;
+                        DiscreteStringKeyFrame discreteStringKeyFrame = new DiscreteStringKeyFrame
+                        {
+                            KeyTime = KeyTime.Paced
+                        };
+                        tempText += c;
                         stringAnimationUsingKeyFrames.KeyFrames.Add(discreteStringKeyFrame);
-                        discreteStringKeyFrame.Value = tmp + "█";
-                        
+                        if (tempText.Length < text.Length)
+                        {
+                            discreteStringKeyFrame.Value = tempText + "█";
+                        }
+                        else
+                        {
+                            discreteStringKeyFrame.Value = tempText;
+                        }
+
                     }
-                    //textBlock.Inlines.ElementAt(0).Foreground = new SolidColorBrush(Colors.White);
-                    //   Storyboard.SetTargetName(stringAnimationUsingKeyFrames, text.Name);
                     Storyboard.SetTargetProperty(stringAnimationUsingKeyFrames, new PropertyPath(TextBlock.TextProperty));
                     story.Children.Add(stringAnimationUsingKeyFrames);
 
                     story.Begin(textBlock);
-
-                    
-
-
-                    /*
-                    ColorAnimation animation2;
-                    animation2 = new ColorAnimation
-                    {
-                        To = Colors.Black,
-                        Duration = new Duration(TimeSpan.FromSeconds(3))
-                    };
-
-                    text.Background = new SolidColorBrush(Colors.LightBlue);
-                    text.Background.BeginAnimation(SolidColorBrush.ColorProperty, animation2);
-                    */
-
-
-                    //var StartY = Canvas.GetTop(logPanel);
-                    //if (StartY == double.NaN)
-                    //{
-                    //  StartY = 0;
-                    //}
-
-
-
-
                 }
             });
-
         }
-
 
         private void AnimationY_Completed(object sender, EventArgs e)
         {

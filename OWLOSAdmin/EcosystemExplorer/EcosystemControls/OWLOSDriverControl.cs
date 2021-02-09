@@ -33,7 +33,7 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
                 {
                     propertyControl.Background = (SolidColorBrush)App.Current.Resources["OWLOSSecondaryAlpha2"];
                 }
-                propertiesHolder.Children.Add(propertyControl);
+                itemsHolder.Children.Add(propertyControl);
             });
         }
 

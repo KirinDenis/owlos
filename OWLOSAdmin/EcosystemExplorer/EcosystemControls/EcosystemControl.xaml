@@ -29,7 +29,7 @@
             <Button x:Name="SwitchWindowButton" Width="25" Content="W" Click="SwitchWindowButton_Click" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{DynamicResource OWLOSPrimary}"/>
             <Button x:Name="CloseButton" Width="25" Content="X" Click="CloseButton_Click" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{DynamicResource OWLOSPrimary}"/>
         </StackPanel>
-        <Grid Name="childHolderGrid" TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed" Grid.Row="1">
+        <Grid Name="childHolderGrid" TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed" Grid.Row="1" >
         </Grid>
         <Border Grid.Row="1" BorderThickness="0,0,4,4"  BorderBrush="{DynamicResource OWLOSInfoAlpha3}"  HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="20" Height="20" ClipToBounds="True" SnapsToDevicePixels="True" Cursor="SizeNWSE" Background="#02FDFAFA"/>
     </Grid>

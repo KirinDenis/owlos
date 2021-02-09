@@ -24,7 +24,7 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
                 file.tag = textBlock;
                 file.OnFileSizeChange += File_OnFileSizeChange;
                 file.OnFileDelete += File_OnFileDelete;
-                propertiesHolder.Children.Add(textBlock);
+                itemsHolder.Children.Add(textBlock);
             }
 
             files.OnNewFile += Files_OnNewFile;
@@ -37,7 +37,7 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
 
                 OWLOSFile file = sender as OWLOSFile;
                 TextBlock textBlock = file.tag as TextBlock;
-                propertiesHolder.Children.Remove(textBlock);
+                itemsHolder.Children.Remove(textBlock);
                 textBlock = null;
             });
 
@@ -63,7 +63,7 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
                 textBlock.Text = owlosFile.name + " " + owlosFile.size.ToString();
                 textBlock.Tag = owlosFile;
                 owlosFile.tag = textBlock;
-                propertiesHolder.Children.Add(textBlock);
+                itemsHolder.Children.Add(textBlock);
             });
 
         }

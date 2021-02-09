@@ -237,7 +237,7 @@ namespace OWLOSAdmin.EcosystemExplorer
                     //drag or resize 
                     if ((localPoint.X > resizeArea) && (localPoint.Y > resizeArea) && (Width - localPoint.X > resizeArea) && (Height - localPoint.Y > resizeArea))
                     {
-                        //OWLOSWindow has drag inself
+                        //OWLOSWindow has drag itself
                         if (window == null)
                         {
                             transform.X += (currentPoint.X - anchorPoint.X);
@@ -275,12 +275,15 @@ namespace OWLOSAdmin.EcosystemExplorer
                                                      directlyOverType != typeof(CheckBox) &&
                                                      directlyOverType != typeof(ComboBox) &&
                                                      directlyOverType != typeof(Slider) &&
-                                                     directlyOverType != typeof(ScrollViewer) &&
+                                                     //directlyOverType != typeof(ScrollViewer) &&
                                                      directlyOverType != typeof(ScrollBar) &&
                                                      directlyOverType != typeof(TextBox)))
                     {
                         anchorPoint = e.GetPosition(Parent as Grid);
+
+                        
                         this.CaptureMouse();
+                        
                         isInDrag = true;
                     }
                 }
@@ -320,7 +323,8 @@ namespace OWLOSAdmin.EcosystemExplorer
             {
                 ResizePoint = e.GetPosition(Parent as Grid);
                 EcosystemControlGotFocus(this, null);
-                //  EcosystemControlMouseDown(this, e);
+
+               // EcosystemControlMouseDown(this, e);
 
 
             }
