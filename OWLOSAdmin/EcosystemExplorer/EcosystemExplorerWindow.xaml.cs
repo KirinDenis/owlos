@@ -168,9 +168,12 @@ namespace OWLOSAdmin.EcosystemExplorer
         /// <param name="e"></param>
         private void Admin_NewOWLOSNode(object sender, OWLOSNodeWrapperEventArgs e)
         {
-            OWLOSNodeControl nodeCountrol1 = new OWLOSNodeControl(e.nodeWrapper);
-            nodeGrid.Children.Add(nodeCountrol1.parentControl);
-            nodeCountrol1.parentControl.Show();
+            
+            
+                OWLOSNodeControl nodeCountrol1 = new OWLOSNodeControl(e.nodeWrapper);
+                nodeGrid.Children.Add(nodeCountrol1.parentControl);
+                nodeCountrol1.parentControl.Show();
+            
         }
 
         #region DrawCell
@@ -196,7 +199,7 @@ namespace OWLOSAdmin.EcosystemExplorer
             using (Bitmap smallBlackBitmap = new Bitmap(bitmapSize, bitmapSize))
             using (Bitmap greenBitmapVertical = new Bitmap(bitmapSize, bitmapSize))
             using (Bitmap greenBitmapHorizontal = new Bitmap(bitmapSize, bitmapSize))
-            using (Bitmap redBitmap = new Bitmap(bitmapSize, bitmapSize))
+            using (Bitmap redBitmap = new Bitmap(bitmapSize, bitmapSize))            
             {
                 SolidColorBrush mediaColorBrushGreen = (SolidColorBrush)App.Current.Resources["OWLOSSuccessAlpha2"];
                 System.Drawing.Color colorGreen = System.Drawing.Color.FromArgb(mediaColorBrushGreen.Color.A,
@@ -213,18 +216,18 @@ namespace OWLOSAdmin.EcosystemExplorer
                                                              mediaColorBrushBlack.Color.R,
                                                              mediaColorBrushBlack.Color.G,
                                                              mediaColorBrushBlack.Color.B);
-                System.Drawing.Pen penGreen = new System.Drawing.Pen(colorGreen, 10);
+                System.Drawing.Pen penGreen = new System.Drawing.Pen(colorGreen, 6);
                 System.Drawing.Pen penRed = new System.Drawing.Pen(colorRed, 6);
                 System.Drawing.Pen penBlack = new System.Drawing.Pen(colorBlack, 2);
                 System.Drawing.Pen smallPenBlack = new System.Drawing.Pen(colorBlack, .3f);
-
+                
                 //Подготавливаем почву для рисования линий
                 using (Graphics gSmallBlack = System.Drawing.Graphics.FromImage(smallBlackBitmap))
                 using (Graphics gBlack = System.Drawing.Graphics.FromImage(blackBitmap))
-                using (Graphics gRed = System.Drawing.Graphics.FromImage(redBitmap))
+                using (Graphics gRed = System.Drawing.Graphics.FromImage(redBitmap))                
                 {
                     //Далее сам процесс отрисовки линий и координат
-                    for (int linePosition = 0; linePosition < cellSize; linePosition += cellStep)
+                    for (int linePosition = 0; linePosition < cellSize + cellStep; linePosition += cellStep)
                     {
                         System.Drawing.Pen drawingPen = null;
                         System.Drawing.Graphics graphics = null;
@@ -244,23 +247,25 @@ namespace OWLOSAdmin.EcosystemExplorer
                                 graphics = gBlack;
                             }
                             else
-                               if (linePosition % 1000 == 0)
                             {
-                                textBlock.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSDanger"];
+                                if (linePosition % 1000 == 0)
+                                {
+                                    textBlock.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSDanger"];
 
-                                if (linePosition < bitmapSize)
-                                {
-                                    drawingPen = penRed;
-                                    graphics = gRed;
+                                    if (linePosition < bitmapSize)
+                                    {
+                                        drawingPen = penRed;
+                                        graphics = gRed;
+                                    }
                                 }
-                            }
-                            else
-                            {
-                                textBlock.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSInfo"];
-                                if (linePosition < bitmapSize)
+                                else
                                 {
-                                    drawingPen = penBlack;
-                                    graphics = gBlack;
+                                    textBlock.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSInfo"];
+                                    if (linePosition < bitmapSize)
+                                    {
+                                        drawingPen = penBlack;
+                                        graphics = gBlack;
+                                    }
                                 }
                             }
 
@@ -401,13 +406,22 @@ namespace OWLOSAdmin.EcosystemExplorer
                     //Создаем UI Image где будем отображать BitmapSource big и small lines
                     System.Windows.Controls.Image image = new System.Windows.Controls.Image
                     {
-                        Source = bitmapSource
+                        Source = bitmapSource, 
+                        Width = bitmapSize,
+                        Height = bitmapSize,
+                        VerticalAlignment = VerticalAlignment.Stretch,
+                        HorizontalAlignment = HorizontalAlignment.Stretch
+
                     };
                     horizontalVirtualStackPanel.Children.Add(image);
 
                     System.Windows.Controls.Image smallImage = new System.Windows.Controls.Image
                     {
-                        Source = bsSmallBlack
+                        Source = bsSmallBlack,
+                        Width = bitmapSize,
+                        Height = bitmapSize,
+                        VerticalAlignment = VerticalAlignment.Stretch,
+                        HorizontalAlignment = HorizontalAlignment.Stretch
                     };
                     smallHorizontalVirtualStackPanel.Children.Add(smallImage);
                 }

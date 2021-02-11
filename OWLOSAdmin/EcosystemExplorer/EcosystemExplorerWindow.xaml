@@ -12,7 +12,7 @@
 
 
 
-    <Grid x:Name="contentGrid" Background="{DynamicResource OWLOSAfterDark}" >
+    <Grid x:Name="contentGrid"  >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="40*"/>
             <ColumnDefinition Width="7*"/>
@@ -25,7 +25,7 @@
             <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
 
-        <Grid x:Name="explorerGrid" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,0,0,62" Grid.RowSpan="2" RenderTransformOrigin="0.5,0.5">
+        <Grid x:Name="explorerGrid"  Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,0,0,62" Grid.RowSpan="2" RenderTransformOrigin="0.5,0.5">
             <Grid.RenderTransform>
                 <TransformGroup>
                     <SkewTransform/>
@@ -47,7 +47,7 @@
 
 
 
-            <Grid x:Name="EcosystemExplorerGrid" Grid.Row="1" Grid.Column="0" PreviewMouseMove="EcosystemExplorerGrid_PreviewMouseMove" PreviewMouseDown="EcosystemExplorerGrid_PreviewMouseDown" PreviewMouseUp="EcosystemExplorerGrid_PreviewMouseUp" PreviewMouseWheel="EcosystemExplorerGrid_PreviewMouseWheel" RenderTransformOrigin="0.3,0" >
+            <Grid x:Name="EcosystemExplorerGrid" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" PreviewMouseMove="EcosystemExplorerGrid_PreviewMouseMove" PreviewMouseDown="EcosystemExplorerGrid_PreviewMouseDown" PreviewMouseUp="EcosystemExplorerGrid_PreviewMouseUp" PreviewMouseWheel="EcosystemExplorerGrid_PreviewMouseWheel" RenderTransformOrigin="0.3,0" >
                 <Grid.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform ScaleX="1.8" ScaleY="1.8"/>
@@ -67,7 +67,7 @@
                         </TransformGroup>
                     </Viewbox.RenderTransform>
 
-                    <Grid>
+                    <Grid Background="{DynamicResource OWLOSDark}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="35"/>
                             <RowDefinition Height="100*"/>
@@ -111,10 +111,10 @@
                             </Border>
                         </Grid>
 
-                        <VirtualizingStackPanel x:Name="smallNodeLines" Grid.Column="1" Grid.Row="1" Width="auto" Height="auto" RenderOptions.BitmapScalingMode="Fant"/>
-                        <VirtualizingStackPanel x:Name="nodeLines" Grid.Column="1" Grid.Row="1" Width="auto" Height="auto" RenderOptions.BitmapScalingMode="Fant"/>
+                        <VirtualizingStackPanel x:Name="smallNodeLines" Grid.Column="1" Grid.Row="1" Width="10000" Height="10000" RenderOptions.BitmapScalingMode="Fant" />
+                        <VirtualizingStackPanel x:Name="nodeLines" Grid.Column="1" Grid.Row="1" Width="10000" Height="10000" RenderOptions.BitmapScalingMode="Fant" />
 
-                        <Grid x:Name="nodeGrid" Grid.Column="1" Grid.Row="1" Width="10000" Height="10000" HorizontalAlignment="Left" VerticalAlignment="Top" PreviewMouseDown="nodeGrid_PreviewMouseDown" PreviewMouseLeftButtonDown="nodeGrid_PreviewMouseLeftButtonDown" RenderTransformOrigin="0.5,0.5">
+                        <Grid x:Name="nodeGrid" Grid.Column="1" Grid.Row="1" Width="10000" Height="10000" HorizontalAlignment="Left" VerticalAlignment="Top" PreviewMouseDown="nodeGrid_PreviewMouseDown" PreviewMouseLeftButtonDown="nodeGrid_PreviewMouseLeftButtonDown" RenderTransformOrigin="0.5,0.5" >
 
                         </Grid>
 
@@ -123,6 +123,7 @@
 
 
             </Grid>
+            
 
             <Grid Grid.Row="0" Height="30">
                 <StackPanel Orientation="Horizontal" Margin="10,0,10,0">

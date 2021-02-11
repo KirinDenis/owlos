@@ -249,8 +249,13 @@ namespace OWLOSAdmin.EcosystemExplorer
                     {
                         if (window == null)
                         {
-                            Width = ActualWidth + (currentPoint.X - anchorPoint.X);
-                            Height = ActualHeight + (currentPoint.Y - anchorPoint.Y);
+                            try
+                            {
+                                Width = ActualWidth + (currentPoint.X - anchorPoint.X);
+                                Height = ActualHeight + (currentPoint.Y - anchorPoint.Y);
+                            }
+                            catch
+                            { }
                         }
                     }
 
