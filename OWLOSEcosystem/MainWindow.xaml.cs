@@ -22,6 +22,8 @@ namespace OWLOSEcosystem
     /// </summary>
     public partial class MainWindow : Window
     {
+        private OpenTKWindow window;
+        private double dpi = 1.5f;
         public MainWindow()
         {
             InitializeComponent();
@@ -36,10 +38,74 @@ namespace OWLOSEcosystem
             };
 
             // To create a new window, create a class that extends GameWindow, then call Run() on it.
-            using (var window = new OpenTKWindow(GameWindowSettings.Default, nativeWindowSettings))
+            using (window = new OpenTKWindow(GameWindowSettings.Default, nativeWindowSettings))
             {
+                window.Load += Window_Load;
+                window.FocusedChanged += Window_FocusedChanged;                
+                window.Move += Window_Move;
+                window.Resize += Window_Resize;
+                window.Closed += Window_Closed;
+                window.MouseMove += Window_MouseMove;
+                
                 window.Run();
+
+
             }
+        }
+
+        private void Window_Resize(OpenTK.Windowing.Common.ResizeEventArgs obj)
+        {
+            this.Left = window.Location.X / dpi;
+            this.Top = window.Location.Y / dpi;
+            this.Width = window.Size.X / dpi;
+            this.Height = window.Size.Y / dpi;
+
+        }
+
+        private void Window_Move(OpenTK.Windowing.Common.WindowPositionEventArgs obj)
+        {
+            
+            this.Left = window.Location.X / dpi;
+            this.Top = window.Location.Y / dpi;
+            this.Width = window.Size.X / dpi;
+            this.Height = window.Size.Y / dpi;
+
+        }
+
+        private void Window_FocusedChanged(OpenTK.Windowing.Common.FocusedChangedEventArgs obj)
+        {
+            if (obj.IsFocused)
+            {
+                this.Width = window.Size.X / dpi;
+                this.Height = window.Size.Y / dpi;
+
+            }
+            else
+            {
+                this.Width = 0;
+                this.Height = 0;
+
+            }
+
+        }
+
+        private void Window_Load()
+        {
+            this.Left = window.Location.X / dpi;
+            this.Top = window.Location.Y / dpi;
+            this.Width = window.Size.X / dpi;
+            this.Height = window.Size.Y / dpi;
+            this.Focus();
+        }
+
+        private void Window_MouseMove(OpenTK.Windowing.Common.MouseMoveEventArgs obj)
+        {
+            //
+        }
+
+        private void Window_Closed()
+        {
+            Close();
         }
     }
 }
