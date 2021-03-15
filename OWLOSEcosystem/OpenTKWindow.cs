@@ -3,6 +3,8 @@ using OpenTK.Graphics.OpenGL4;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using OpenTK.Windowing.Desktop;
+using System.Collections.Generic;
+using SGWW;
 
 namespace OWLOSEcosystem
 {
@@ -10,17 +12,6 @@ namespace OWLOSEcosystem
     // OpenGL's initial hurdle is quite large, but once you get past that, things will start making more sense.
     public class OpenTKWindow : GameWindow
     {
-        // Create the vertices for our triangle. These are listed in normalized device coordinates (NDC)
-        // In NDC, (0, 0) is the center of the screen.
-        // Negative X coordinates move to the left, positive X move to the right.
-        // Negative Y coordinates move to the bottom, positive Y move to the top.
-        // OpenGL only supports rendering in 3D, so to create a flat triangle, the Z coordinate will be kept as 0.
-        private readonly float[] _vertices =
-        {
-            -0.5f, -0.5f, 0.0f, // Bottom-left vertex
-             0.5f, -0.5f, 0.0f, // Bottom-right vertex
-             0.0f,  0.5f, 0.0f  // Top vertex
-        };
 
         // These are the handles to OpenGL objects. A handle is an integer representing where the object lives on the
         // graphics card. Consider them sort of like a pointer; we can't do anything with them directly, but we can
@@ -30,6 +21,8 @@ namespace OWLOSEcosystem
         private int _vertexBufferObject;
 
         private int _vertexArrayObject;
+
+        private List<byte[]> obj;
 
         // This class is a wrapper around a shader, which helps us manage it.
         // The shader class's code is in the Common project.
@@ -77,7 +70,12 @@ namespace OWLOSEcosystem
             //     StreamDraw: This buffer will change on every frame.
             //   Writing to the proper memory space is important! Generally, you'll only want StaticDraw,
             //   but be sure to use the right one for your use case.
-            GL.BufferData(BufferTarget.ArrayBuffer, _vertices.Length * sizeof(float), _vertices, BufferUsageHint.StaticDraw);
+            ObjParser objParser = new ObjParser();
+            obj = objParser.GetVBOs(null, "Shaders\\denhouse1.obj");
+
+
+
+            GL.BufferData(BufferTarget.ArrayBuffer, obj[0].Length, obj[0], BufferUsageHint.StaticDraw);
 
             // One notable thing about the buffer we just loaded data into is that it doesn't have any structure to it. It's just a bunch of floats (which are actaully just bytes).
             // The opengl driver doesn't know how this data should be interpreted or how it should be divided up into vertices. To do this opengl introduces the idea of a 
@@ -101,7 +99,7 @@ namespace OWLOSEcosystem
             //   The stride; this is how many bytes are between the last element of one vertex and the first element of the next. 3 * sizeof(float) in this case.
             //   The offset; this is how many bytes it should skip to find the first element of the first vertex. 0 as of right now.
             // Stride and Offset are just sort of glossed over for now, but when we get into texture coordinates they'll be shown in better detail.
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
+            GL.VertexAttribPointer(0, obj[0].Length / 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
 
             // Enable variable 0 in the shader.
             GL.EnableVertexAttribArray(0);
@@ -151,7 +149,7 @@ namespace OWLOSEcosystem
             //     is some variant of a triangle. Since we just want a single triangle, we use Triangles.
             //   Starting index; this is just the start of the data you want to draw. 0 here.
             //   How many vertices you want to draw. 3 for a triangle.
-            GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
+            GL.DrawArrays(PrimitiveType.Triangles, 0, obj[0].Length / 3);
 
             // OpenTK windows are what's known as "double-buffered". In essence, the window manages two buffers.
             // One is rendered to while the other is currently displayed by the window.
