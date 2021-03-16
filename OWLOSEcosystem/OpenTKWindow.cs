@@ -20,21 +20,17 @@ namespace OWLOSEcosystem
 
         // What these objects are will be explained in OnLoad.
         private int _vertexBufferObject;
+        private int _elementBufferObject;
 
         private int _vertexArrayObject;
+        private int _elementArrayObject;
+
+
 
         private List<byte[]> obj;
 
-
-
-        private readonly uint[] _indices =
-        {
-            0, 1, 3,
-            1, 2, 3
-        };
-
-
-
+        private int vertexLocation;
+        private int texCoordLocation;
 
 
 
@@ -51,6 +47,8 @@ namespace OWLOSEcosystem
         private Vector2 _lastPos;
 
         private double _time;
+
+        private Texture _texture;
 
 
         // This class is a wrapper around a shader, which helps us manage it.
@@ -71,6 +69,7 @@ namespace OWLOSEcosystem
             // the largest possible value for that channel.
             // This is a deep green.
             GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+            GL.Enable(EnableCap.DepthTest);
 
             // We need to send our vertices over to the graphics card so OpenGL can use them.
             // To do this, we need to create what's called a Vertex Buffer Object (VBO).
@@ -78,73 +77,90 @@ namespace OWLOSEcosystem
             // This effectively sends all the vertices at the same time.
 
             // First, we need to create a buffer. This function returns a handle to it, but as of right now, it's empty.
-            _vertexBufferObject = GL.GenBuffer();
 
-            // Now, bind the buffer. OpenGL uses one global state, so after calling this,
-            // all future calls that modify the VBO will be applied to this buffer until another buffer is bound instead.
-            // The first argument is an enum, specifying what type of buffer we're binding. A VBO is an ArrayBuffer.
-            // There are multiple types of buffers, but for now, only the VBO is necessary.
-            // The second argument is the handle to our buffer.
-            GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferObject);
-
-            // Finally, upload the vertices to the buffer.
-            // Arguments:
-            //   Which buffer the data should be sent to.
-            //   How much data is being sent, in bytes. You can generally set this to the length of your array, multiplied by sizeof(array type).
-            //   The vertices themselves.
-            //   How the buffer will be used, so that OpenGL can write the data to the proper memory space on the GPU.
-            //   There are three different BufferUsageHints for drawing:
-            //     StaticDraw: This buffer will rarely, if ever, update after being initially uploaded.
-            //     DynamicDraw: This buffer will change frequently after being initially uploaded.
-            //     StreamDraw: This buffer will change on every frame.
-            //   Writing to the proper memory space is important! Generally, you'll only want StaticDraw,
-            //   but be sure to use the right one for your use case.
             ObjParser objParser = new ObjParser();
             obj = objParser.GetVBOs(null, "Shaders\\denhouse1.obj");
+            //obj = objParser.GetVBOs(null, "Shaders\\cube.obj");
 
 
+            int vsize = obj[0].Length;
+            float[] vArray = new float[vsize / 4];
+            //Copy source array data to floatArray (convert bytes to floats)
+            System.Buffer.BlockCopy(obj[0], 0, vArray, 0, (int)vsize);
 
-            GL.BufferData(BufferTarget.ArrayBuffer, obj[0].Length, obj[0], BufferUsageHint.StaticDraw);
+            int tsize = obj[1].Length;
+            float[] tArray = new float[tsize / 4];
+            //Copy source array data to floatArray (convert bytes to floats)
+            System.Buffer.BlockCopy(obj[1], 0, tArray, 0, (int)tsize);
 
-            // One notable thing about the buffer we just loaded data into is that it doesn't have any structure to it. It's just a bunch of floats (which are actaully just bytes).
-            // The opengl driver doesn't know how this data should be interpreted or how it should be divided up into vertices. To do this opengl introduces the idea of a 
-            // Vertex Array Obejct (VAO) which has the job of keeping track of what parts or what buffers correspond to what data. In this example we want to set our VAO up so that 
-            // it tells opengl that we want to interpret 12 bytes as 3 floats and divide the buffer into vertices using that.
-            // To do this we generate and bind a VAO (which looks deceptivly similar to creating and binding a VBO, but they are different!).
+            int rFloatSize = vsize / 4 + tsize / 4;
+            float[] rArray = new float[rFloatSize];
+            uint[] ind = new uint[rFloatSize / 5];
+
+            int vcount = 0;
+            int tcount = 0;
+            uint indCount = 0;
+            for (int i=0; i < rFloatSize; i+=5)
+            {
+                rArray[i + 0] = vArray[vcount + 0];
+                rArray[i + 1] = vArray[vcount + 1];
+                rArray[i + 2] = vArray[vcount + 2];
+                rArray[i + 3] = tArray[tcount + 0];
+                rArray[i + 4] = tArray[tcount + 1];
+                vcount += 3;
+                tcount += 2;
+
+                ind[indCount] = indCount;
+                indCount++;
+            }
+
+
+            // shader.frag has been modified yet again, take a look at it as well.
+            _shader = new Shader("Shaders/shader.vert", "Shaders/shader.frag");
+            _shader.Use();
+
+            //Vertexes --------------------------------
             _vertexArrayObject = GL.GenVertexArray();
             GL.BindVertexArray(_vertexArrayObject);
 
-            // Now, we need to setup how the vertex shader will interpret the VBO data; you can send almost any C datatype (and a few non-C ones too) to it.
-            // While this makes them incredibly flexible, it means we have to specify how that data will be mapped to the shader's input variables.
+            _vertexBufferObject = GL.GenBuffer();
+            GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferObject);
+            GL.BufferData(BufferTarget.ArrayBuffer, rFloatSize * sizeof(float), rArray, BufferUsageHint.StaticDraw);
 
-            // To do this, we use the GL.VertexAttribPointer function
-            // This function has two jobs, to tell opengl about the format of the data, but also to associate the current array buffer with the VAO.
-            // This means that after this call, we have setup this attribute to source data from the current array buffer and interpret it in the way we specified.
-            // Arguments:
-            //   Location of the input variable in the shader. the layout(location = 0) line in the vertex shader explicitly sets it to 0.
-            //   How many elements will be sent to the variable. In this case, 3 floats for every vertex.
-            //   The data type of the elements set, in this case float.
-            //   Whether or not the data should be converted to normalized device coordinates. In this case, false, because that's already done.
-            //   The stride; this is how many bytes are between the last element of one vertex and the first element of the next. 3 * sizeof(float) in this case.
-            //   The offset; this is how many bytes it should skip to find the first element of the first vertex. 0 as of right now.
-            // Stride and Offset are just sort of glossed over for now, but when we get into texture coordinates they'll be shown in better detail.
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
+            _elementBufferObject = GL.GenBuffer();
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, _elementBufferObject);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, rFloatSize / 5 * sizeof(uint), ind, BufferUsageHint.StaticDraw);
 
-
-            // Enable variable 0 in the shader.
-            GL.EnableVertexAttribArray(0);
-
-            // We've got the vertices done, but how exactly should this be converted to pixels for the final image?
-            // Modern OpenGL makes this pipeline very free, giving us a lot of freedom on how vertices are turned to pixels.
-            // The drawback is that we actually need two more programs for this! These are called "shaders".
-            // Shaders are tiny programs that live on the GPU. OpenGL uses them to handle the vertex-to-pixel pipeline.
-            // Check out the Shader class in Common to see how we create our shaders, as well as a more in-depth explanation of how shaders work.
-            // shader.vert and shader.frag contain the actual shader code.
+            // The shaders have been modified to include the texture coordinates, check them out after finishing the OnLoad function.
             _shader = new Shader("Shaders/shader.vert", "Shaders/shader.frag");
-
-            // Now, enable the shader.
-            // Just like the VBO, this is global, so every function that uses a shader will modify this one until a new one is bound instead.
             _shader.Use();
+
+            // Because there's now 5 floats between the start of the first vertex and the start of the second,
+            // we modify this from 3 * sizeof(float) to 5 * sizeof(float).
+            // This will now pass the new vertex array to the buffer.
+            var vertexLocation = _shader.GetAttribLocation("aPosition");
+            GL.EnableVertexAttribArray(vertexLocation);
+            GL.VertexAttribPointer(vertexLocation, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
+
+            // Next, we also setup texture coordinates. It works in much the same way.
+            // We add an offset of 3, since the first vertex coordinate comes after the first vertex
+            // and change the amount of data to 2 because there's only 2 floats for vertex coordinates
+            var texCoordLocation = _shader.GetAttribLocation("aTexCoord");
+            GL.EnableVertexAttribArray(texCoordLocation);
+            GL.VertexAttribPointer(texCoordLocation, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
+
+
+            //_texture = Texture.LoadFromFile("Shaders/den_housetextutre.png");
+            _texture = Texture.LoadFromFile("Shaders/housetex1.png");
+            
+            //_texture = Texture.LoadFromFile("Shaders/skin.png");
+            // Texture units are explained in Texture.cs, at the Use function.
+            // First texture goes in texture unit 0.
+            _texture.Use(TextureUnit.Texture0);
+
+
+           
+
 
             _camera = new Camera(Vector3.UnitZ * 3, Size.X / (float)Size.Y);
 
@@ -162,7 +178,7 @@ namespace OWLOSEcosystem
             // OpenGL provides several different types of data that can be rendered.
             // You can clear multiple buffers by using multiple bit flags.
             // However, we only modify the color, so ColorBufferBit is all we need to clear.
-            GL.Clear(ClearBufferMask.ColorBufferBit);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             // To draw an object in OpenGL, it's typically as simple as binding your shader,
             // setting shader uniforms (not done here, will be shown in a future tutorial)
@@ -179,9 +195,32 @@ namespace OWLOSEcosystem
             _shader.SetMatrix4("view", _camera.GetViewMatrix());
             _shader.SetMatrix4("projection", _camera.GetProjectionMatrix());
 
-
             // Bind the VAO
+
+            //GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferObject);
+            //GL.EnableVertexAttribArray(vertexLocation);
+            //GL.BindVertexArray(_vertexArrayObject);
+            //GL.EnableVertexAttribArray(vertexLocation);
+            //GL.VertexAttribPointer(vertexLocation, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
+
             GL.BindVertexArray(_vertexArrayObject);
+            //GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferObject);
+            //GL.EnableVertexAttribArray(vertexLocation);
+            //GL.VertexAttribPointer(vertexLocation, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
+           // GL.BindBuffer(BufferTarget.ArrayBuffer, 0); // unbind VBO
+           // GL.BindVertexArray(0); // unbind VAO
+
+
+            //GL.BindVertexArray(_elementBufferObject);
+            //GL.BindBuffer(BufferTarget.ElementArrayBuffer, _elementBufferObject);
+            //GL.EnableVertexAttribArray(texCoordLocation);
+            //GL.VertexAttribPointer(texCoordLocation, 2, VertexAttribPointerType.Float, false, 2 * sizeof(float), 0);
+            //GL.BindBuffer(BufferTarget.ArrayBuffer, 0); // unbind VBO
+          //  GL.BindVertexArray(0); // unbind VAO
+
+
+            _texture.Use(TextureUnit.Texture0);
+
 
             // And then call our drawing function.
             // For this tutorial, we'll use GL.DrawArrays, which is a very simple rendering function.
