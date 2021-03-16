@@ -28,7 +28,7 @@ namespace OWLOSEcosystem
         public MainWindow()
         {
             InitializeComponent();
-            GoOpenGL_Click(null, null);
+            //GoOpenGL_Click(null, null);
         }
 
         private void GoOpenGL_Click(object sender, RoutedEventArgs e)

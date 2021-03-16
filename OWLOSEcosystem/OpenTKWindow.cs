@@ -5,6 +5,7 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 using OpenTK.Windowing.Desktop;
 using System.Collections.Generic;
 using SGWW;
+using OpenTK.Mathematics;
 
 namespace OWLOSEcosystem
 {
@@ -23,6 +24,34 @@ namespace OWLOSEcosystem
         private int _vertexArrayObject;
 
         private List<byte[]> obj;
+
+
+
+        private readonly uint[] _indices =
+        {
+            0, 1, 3,
+            1, 2, 3
+        };
+
+
+
+
+
+
+        // I have removed the view and projection matrices as we dont need them here anymore
+        // They can now be found in the new camera class
+
+        // We need an instance of the new camera class so it can manage the view and projection matrix code
+        // We also need a boolean set to true to detect whether or not the mouse has been moved for the first time
+        // Finally we add the last position of the mouse so we can calculate the mouse offset easily
+        private Camera _camera;
+
+        private bool _firstMove = true;
+
+        private Vector2 _lastPos;
+
+        private double _time;
+
 
         // This class is a wrapper around a shader, which helps us manage it.
         // The shader class's code is in the Common project.
@@ -99,7 +128,8 @@ namespace OWLOSEcosystem
             //   The stride; this is how many bytes are between the last element of one vertex and the first element of the next. 3 * sizeof(float) in this case.
             //   The offset; this is how many bytes it should skip to find the first element of the first vertex. 0 as of right now.
             // Stride and Offset are just sort of glossed over for now, but when we get into texture coordinates they'll be shown in better detail.
-            GL.VertexAttribPointer(0, obj[0].Length / 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
+            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
+
 
             // Enable variable 0 in the shader.
             GL.EnableVertexAttribArray(0);
@@ -115,6 +145,10 @@ namespace OWLOSEcosystem
             // Now, enable the shader.
             // Just like the VBO, this is global, so every function that uses a shader will modify this one until a new one is bound instead.
             _shader.Use();
+
+            _camera = new Camera(Vector3.UnitZ * 3, Size.X / (float)Size.Y);
+
+            
 
             // Setup is now complete! Now we move to the OnRenderFrame function to finally draw the triangle.
 
@@ -135,8 +169,16 @@ namespace OWLOSEcosystem
             // binding the VAO,
             // and then calling an OpenGL function to render.
 
+
             // Bind the shader
             _shader.Use();
+
+
+            var model = Matrix4.Identity * Matrix4.CreateRotationX((float)MathHelper.DegreesToRadians(_time));
+            _shader.SetMatrix4("model", model);
+            _shader.SetMatrix4("view", _camera.GetViewMatrix());
+            _shader.SetMatrix4("projection", _camera.GetProjectionMatrix());
+
 
             // Bind the VAO
             GL.BindVertexArray(_vertexArrayObject);
@@ -149,7 +191,8 @@ namespace OWLOSEcosystem
             //     is some variant of a triangle. Since we just want a single triangle, we use Triangles.
             //   Starting index; this is just the start of the data you want to draw. 0 here.
             //   How many vertices you want to draw. 3 for a triangle.
-            GL.DrawArrays(PrimitiveType.Triangles, 0, obj[0].Length / 3);
+            GL.DrawArrays(PrimitiveType.Triangles, 0, obj[0].Length / 4 / 3);
+            
 
             // OpenTK windows are what's known as "double-buffered". In essence, the window manages two buffers.
             // One is rendered to while the other is currently displayed by the window.
@@ -163,6 +206,11 @@ namespace OWLOSEcosystem
 
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
+            if (!IsFocused) // check to see if the window is focused
+            {
+                return;
+            }
+
             var input = KeyboardState;
 
             if (input.IsKeyDown(Keys.Escape))
@@ -170,31 +218,85 @@ namespace OWLOSEcosystem
                 Close();
             }
 
+            const float cameraSpeed = 1.5f;
+            const float sensitivity = 0.2f;
+
+            if (input.IsKeyDown(Keys.W))
+            {
+                _camera.Position += _camera.Front * cameraSpeed * (float)e.Time; // Forward
+            }
+
+            if (input.IsKeyDown(Keys.S))
+            {
+                _camera.Position -= _camera.Front * cameraSpeed * (float)e.Time; // Backwards
+            }
+            if (input.IsKeyDown(Keys.A))
+            {
+                _camera.Position -= _camera.Right * cameraSpeed * (float)e.Time; // Left
+            }
+            if (input.IsKeyDown(Keys.D))
+            {
+                _camera.Position += _camera.Right * cameraSpeed * (float)e.Time; // Right
+            }
+            if (input.IsKeyDown(Keys.Space))
+            {
+                _camera.Position += _camera.Up * cameraSpeed * (float)e.Time; // Up
+            }
+            if (input.IsKeyDown(Keys.LeftShift))
+            {
+                _camera.Position -= _camera.Up * cameraSpeed * (float)e.Time; // Down
+            }
+
+            // Get the mouse state
+            var mouse = MouseState;
+
+            if (_firstMove) // this bool variable is initially set to true
+            {
+                _lastPos = new Vector2(mouse.X, mouse.Y);
+                _firstMove = false;
+            }
+            else
+            {
+                // Calculate the offset of the mouse position
+                var deltaX = mouse.X - _lastPos.X;
+                var deltaY = mouse.Y - _lastPos.Y;
+                _lastPos = new Vector2(mouse.X, mouse.Y);
+
+                // Apply the camera pitch and yaw (we clamp the pitch in the camera class)
+                _camera.Yaw += deltaX * sensitivity;
+                _camera.Pitch -= deltaY * sensitivity; // reversed since y-coordinates range from bottom to top
+            }
+
             base.OnUpdateFrame(e);
+        }
+
+        // In the mouse wheel function we manage all the zooming of the camera
+        // this is simply done by changing the FOV of the camera
+        protected override void OnMouseWheel(MouseWheelEventArgs e)
+        {
+            _camera.Fov -= e.OffsetY;
+            base.OnMouseWheel(e);
         }
 
         protected override void OnResize(ResizeEventArgs e)
         {
-            // When the window gets resized, we have to call GL.Viewport to resize OpenGL's viewport to match the new size.
-            // If we don't, the NDC will no longer be correct.
             GL.Viewport(0, 0, Size.X, Size.Y);
+            // We need to update the aspect ratio once the window has been resized
+            _camera.AspectRatio = Size.X / (float)Size.Y;
             base.OnResize(e);
         }
 
-        // Now, for cleanup. This isn't technically necessary since C# and OpenGL will clean up all resources automatically when
-        // the program closes, but it's very important to know how anyway.
         protected override void OnUnload()
         {
-            // Unbind all the resources by binding the targets to 0/null.
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             GL.BindVertexArray(0);
             GL.UseProgram(0);
 
-            // Delete all the resources.
             GL.DeleteBuffer(_vertexBufferObject);
             GL.DeleteVertexArray(_vertexArrayObject);
 
             GL.DeleteProgram(_shader.Handle);
+
             base.OnUnload();
         }
     }
