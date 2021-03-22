@@ -33,9 +33,10 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
 
             foreach (OWLOSDriverProperty DriverProperty in DriverItemTag.Driver.properties)
             {
-                TextBlock t = new TextBlock();
-                t.Text = DriverProperty.name;
-                DriverPropertiesPanel.Children.Add(t);
+                DriverPropertyControl NewDriverPropertyControl = new DriverPropertyControl();
+                NewDriverPropertyControl.propName.Text = DriverProperty.name;
+                NewDriverPropertyControl.propValue.Text = DriverProperty.value;                
+                DriverPropertiesPanel.Children.Add(NewDriverPropertyControl);
             }
         }
     }

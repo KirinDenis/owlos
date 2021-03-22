@@ -5,14 +5,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:OWLOSAdmin.EcosystemBrowser.BrowserControls"
              mc:Ignorable="d" 
-             Height="35" d:DesignWidth="800" Background="#FF3B4F81">
-    <Grid>
+             Margin="5,0"
+             Height="25" d:DesignWidth="800" Background="#FF3B4F81">
+    <Grid Margin="5,0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100*"/>
             <ColumnDefinition Width="35"/>
         </Grid.ColumnDefinitions>
 
         <TextBlock x:Name="NameTextBlock" Text="123" VerticalAlignment="Center" Foreground="White" MouseDown="NameTextBlock_MouseDown"/>
-        <Button x:Name="CloseButton" Grid.Column="1" Content="X" Foreground="#FFFFE0AC" Click="CloseButton_Click" />
+        <Button x:Name="CloseButton" Grid.Column="1" Content="X" Foreground="#FFFFE0AC" Click="CloseButton_Click" Background="{x:Null}" BorderBrush="{x:Null}" />
     </Grid>
 </UserControl>
