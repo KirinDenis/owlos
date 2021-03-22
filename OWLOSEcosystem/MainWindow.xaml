@@ -5,8 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OWLOSEcosystem"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="800" AllowsTransparency="True" Background="#0F650606" WindowStyle="None" Topmost="True">
+        Title="MainWindow" Height="600" Width="800" AllowsTransparency="True" Background="#0F650606" WindowStyle="None" >
     <Grid>
         <Button Name="GoOpenGL" Width="75" Height="35" Content="Go OpenTK" Click="GoOpenGL_Click" />
+        <Button Name="MakeObj" Width="75" Height="35" Content="MakeObj" Margin="362,346,362,219" Click="MakeObj_Click"  />
     </Grid>
 </Window>

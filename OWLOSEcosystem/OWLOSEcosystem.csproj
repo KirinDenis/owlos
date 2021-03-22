@@ -13,6 +13,8 @@
     <None Remove="Shaders\housetex1.png" />
     <None Remove="Shaders\shader.frag" />
     <None Remove="Shaders\shader.vert" />
+    <None Remove="Shaders\shader2.frag" />
+    <None Remove="Shaders\shader2.vert" />
     <None Remove="Shaders\skin.png" />
   </ItemGroup>
 
@@ -27,6 +29,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Shaders\housetex1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Shaders\shader2.vert">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Shaders\shader2.frag">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Shaders\shader.frag">

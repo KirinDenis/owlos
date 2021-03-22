@@ -24,11 +24,13 @@ namespace OWLOSEcosystem
     public partial class MainWindow : Window
     {
         private OpenTKWindow window;
+        private BuildWindow bwindow;
+
         private double dpi = 1.5f;
         public MainWindow()
         {
             InitializeComponent();
-            //GoOpenGL_Click(null, null);
+            MakeObj_Click(null, null);
         }
 
         private void GoOpenGL_Click(object sender, RoutedEventArgs e)
@@ -108,6 +110,25 @@ namespace OWLOSEcosystem
         private void Window_Closed()
         {
             Close();
+        }
+
+        private void MakeObj_Click(object sender, RoutedEventArgs e)
+        {
+            var nativeWindowSettings = new NativeWindowSettings()
+            {
+                Size = new Vector2i(800, 600),
+                Title = "LearnOpenTK - Creating a Window",
+            };
+
+            // To create a new window, create a class that extends GameWindow, then call Run() on it.
+            using (bwindow = new BuildWindow(GameWindowSettings.Default, nativeWindowSettings))
+            {
+
+                bwindow.Run();
+
+
+            }
+
         }
     }
 }

@@ -5,15 +5,27 @@ using System.Text;
 namespace OWLOSAdmin.Ecosystem.OWLOS
 {
     public enum ConnectionType { RESTfulClient, MQTT, UART }
-    public class OWLOSConnection
+
+    interface IOWLOSConnection
     {
-        public bool enable = true;
+        bool enable { get; set; }
 
-        public string name;
+        string name { get; set; }
 
-        public ConnectionType connectionType;
+        ConnectionType connectionType { get; set; }
 
-        public string connectionString;
-        
+        string connectionString { get; set; }
+
+    }
+    public class OWLOSConnection: IOWLOSConnection
+    {
+        public bool enable { get; set; } = true;
+
+        public string name { get; set; }
+
+        public ConnectionType connectionType { get; set; }
+
+        public string connectionString { get; set; }
+
     }
 }

@@ -15,7 +15,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         public string name = "";
 
-        List<OWLOSDriverProperty> properties = new List<OWLOSDriverProperty>();
+        public List<OWLOSDriverProperty> properties = new List<OWLOSDriverProperty>();
 
         public event PropertyEventHandler OnPropertyCreate;
 
