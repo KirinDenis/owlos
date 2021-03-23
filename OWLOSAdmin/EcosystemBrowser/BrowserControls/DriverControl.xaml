@@ -7,6 +7,23 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <StackPanel x:Name="DriverPropertiesPanel"  Orientation="Vertical" Background="#FFF6F6F6"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="202*"/>
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100*"/>
+                <ColumnDefinition Width="200"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right">
+                <Button Content="Delete driver" Height="25"/>
+            </StackPanel>
+            <TextBox x:Name="DriverPropertySearch" Height="25" Width="150" HorizontalAlignment="Left" TextChanged="DriverPropertySearch_TextChanged" />
+        </Grid>
+        <ScrollViewer Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Grid.Row="1">
+            <StackPanel x:Name="DriverPropertiesPanel"  Orientation="Vertical" />
+        </ScrollViewer>
     </Grid>
 </UserControl>

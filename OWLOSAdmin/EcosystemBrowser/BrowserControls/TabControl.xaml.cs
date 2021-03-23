@@ -30,11 +30,15 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
             {
                 if (value)
                 {
-                    Background = new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0xE0, 0xAC));                    
+                    Background = new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0xE0, 0xAC));
+                    NameTextBlock.Foreground = SystemColors.InfoTextBrush;
+                    CloseButton.Foreground = SystemColors.InfoTextBrush;
                 }
                 else
                 {
                     Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x3B, 0x4F, 0x81));
+                    NameTextBlock.Foreground = SystemColors.HighlightTextBrush;
+                    CloseButton.Foreground = new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0xE0, 0xAC));
                 }
                 _Active = value;
             }
@@ -52,9 +56,22 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
             OnSelect?.Invoke(this, new EventArgs());
         }
 
-        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        private void UserControl_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Background = SystemColors.InactiveCaptionBrush;
+            NameTextBlock.Foreground = SystemColors.InfoTextBrush;
+            CloseButton.Foreground = SystemColors.InfoTextBrush;
+        }
+
+        private void UserControl_MouseLeave(object sender, MouseEventArgs e)
+        {
+            Active = _Active;
+        }
+
+        private void CloseButton_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             OnClose?.Invoke(this, new EventArgs());
+            e.Handled = true;
         }
     }
 }

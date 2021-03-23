@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -23,6 +24,8 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
 
         private NodeDriverItemTag DriverItemTag;
 
+        private int PropertiesCounter = 0;
+
         public DriverControl(PanelControlTag PanelTag, NodeDriverItemTag DriverItemTag)
         {
             InitializeComponent();
@@ -33,11 +36,51 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
 
             foreach (OWLOSDriverProperty DriverProperty in DriverItemTag.Driver.properties)
             {
-                DriverPropertyControl NewDriverPropertyControl = new DriverPropertyControl();
-                NewDriverPropertyControl.propName.Text = DriverProperty.name;
-                NewDriverPropertyControl.propValue.Text = DriverProperty.value;                
-                DriverPropertiesPanel.Children.Add(NewDriverPropertyControl);
+                AddNewProperty(DriverProperty);
             }
+
+            DriverItemTag.Driver.OnPropertyCreate += Driver_OnPropertyCreate;
+        }
+
+        private void Driver_OnPropertyCreate(object sender, OWLOSPropertyWrapperEventArgs e)
+        {
+            AddNewProperty(e.property);
+        }
+
+        private void AddNewProperty(OWLOSDriverProperty DriverProperty)
+        {
+            DriverPropertyControl NewDriverPropertyControl = new DriverPropertyControl(DriverProperty);
+
+            PropertiesCounter++;
+            if ((PropertiesCounter & 1) > 0)
+            {
+                NewDriverPropertyControl.Background = SystemColors.ControlLightLightBrush;
+            }
+
+            DriverPropertiesPanel.Children.Add(NewDriverPropertyControl);
+
+        }
+
+        private void DriverPropertySearch_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string TextMask = ((TextBox)sender).Text;
+
+            foreach(DriverPropertyControl PropertyControl in DriverPropertiesPanel.Children)
+            {
+                //https://stackoverflow.com/questions/11828908/what-is-the-c-sharp-equivalent-of-the-delphi-matchesmask-function
+
+                Match MatchSearch = Regex.Match(PropertyControl.DriverProperty.name,  TextMask + @"([A-Za-z0-9\-]+)", RegexOptions.IgnoreCase);
+
+                if (MatchSearch.Success)
+                {
+                    PropertyControl.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    PropertyControl.Visibility = Visibility.Collapsed;
+                }
+            }
+
         }
     }
 }

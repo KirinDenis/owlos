@@ -5,19 +5,30 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OWLOSAdmin.EcosystemBrowser"
         mc:Ignorable="d"
-        Title="EcosystemBrowserWindow" Height="550" Width="800">
+        Title="Ecosystem BrowserWindow" Height="550" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
             <ColumnDefinition Width="9*"/>
         </Grid.ColumnDefinitions>
 
-        <TreeView x:Name="BrowserTreeView">
-        </TreeView>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="100*"/>
+            </Grid.RowDefinitions>
+            
+            <StackPanel Orientation="Horizontal" Background="#FF5D6B99">
+                <TextBlock Text="Nodes Tree" Foreground="White" VerticalAlignment="Center" Margin="5,0"/>
+            </StackPanel>
+
+            <TreeView Grid.Row="1" x:Name="BrowserTreeView">
+            </TreeView>
+        </Grid>
 
         <Grid x:Name="HolderGrid" Grid.Column="1" Background="#FFE7E8EC">
             <Grid.RowDefinitions>
-                <RowDefinition Height="35"/>
+                <RowDefinition Height="30"/>
                 <RowDefinition Height="100*"/>
             </Grid.RowDefinitions>
             <StackPanel x:Name="BrowserTabsPanes" Orientation="Horizontal" Background="#FF5D6B99">

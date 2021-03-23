@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:OWLOSAdmin.EcosystemBrowser.BrowserControls"
              mc:Ignorable="d" 
-             Height="35" d:DesignWidth="800">
+             Height="29" d:DesignWidth="800">
     <Grid >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="150"/>
@@ -13,25 +13,25 @@
             <ColumnDefinition Width="150"/>
             <ColumnDefinition Width="50"/>
             <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="25"/>
         </Grid.ColumnDefinitions>
         <StackPanel Orientation="Horizontal" Margin="10,0">
             <TextBlock x:Name="propName" Text="name" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"></TextBlock>
-            <Path x:Name="propSpinner" Visibility="Hidden" Stroke="{DynamicResource OWLOSInfoAlpha2}" StrokeThickness="3" Height="20" Width="20" Margin="0,0,0,0" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" />
         </StackPanel>
         <TextBlock x:Name="propValue" Grid.Column="1" Text="value" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
         <Grid Grid.Column="2">
-            <TextBox x:Name="propValueEdit" Visibility="Hidden" Text="123"  HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="{DynamicResource OWLOSDarkAlpha1}" BorderBrush="{DynamicResource OWLOSPrimaryAlpha2}"></TextBox>
-            <PasswordBox x:Name="propPasswordValueEdit" Visibility="Hidden" Password="123"  HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="{DynamicResource OWLOSDark}" BorderBrush="{DynamicResource OWLOSInfoAlpha2}"></PasswordBox>
-            <CheckBox x:Name="propCheckBoxValueEdit" Visibility="Hidden" IsChecked="False"  HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="{DynamicResource OWLOSInfo}" BorderBrush="{DynamicResource OWLOSInfoAlpha2}"></CheckBox>
+            <TextBox x:Name="propValueEdit" Visibility="Hidden" Text="123"  HorizontalAlignment="Stretch" VerticalAlignment="Center" ></TextBox>
+            <PasswordBox x:Name="propPasswordValueEdit" Visibility="Hidden" Password="123"  HorizontalAlignment="Stretch" VerticalAlignment="Center"></PasswordBox>
+            <CheckBox x:Name="propCheckBoxValueEdit" Visibility="Hidden" IsChecked="False"  HorizontalAlignment="Stretch" VerticalAlignment="Center"></CheckBox>
         </Grid>
-        <Button x:Name="getButton" Grid.Column="3" Background="{x:Null}" Margin="2,5,2,5" Cursor="Hand" BorderBrush="{DynamicResource OWLOSInfoAlpha3}">
-            <TextBlock Text="GET" Margin="0,-2,0,0" Foreground="{DynamicResource OWLOSSuccess}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        <Button x:Name="getButton" Grid.Column="3" Background="{x:Null}" Margin="2,5,2,5" Cursor="Hand"  Click="getButton_Click">
+            <TextBlock Text="GET" Margin="0,-2,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" />
         </Button>
-        <Button x:Name="setButton" Visibility="Hidden" Grid.Column="4" Background="{x:Null}" Margin="2,5,2,5" Cursor="Hand" BorderBrush="{DynamicResource OWLOSInfo}" >
-            <TextBlock Text="SET" Margin="0,-2,5,0" Foreground="{DynamicResource OWLOSWarning}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        <Button x:Name="setButton" Visibility="Hidden" Grid.Column="4" Background="{x:Null}" Margin="2,5,2,5" Cursor="Hand" Click="setButton_Click">
+            <TextBlock Text="SET" Margin="0,-2,5,0"  HorizontalAlignment="Center" VerticalAlignment="Center" />
         </Button>
 
-
+        <Path x:Name="propSpinner" Grid.Column="4" Visibility="Hidden" Stroke="{DynamicResource OWLOSInfoAlpha2}" StrokeThickness="3" Height="20" Width="20" Margin="0,0,0,0" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
     </Grid>
 </UserControl>
