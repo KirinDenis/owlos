@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OWLOSAdmin.EcosystemBrowser"
         mc:Ignorable="d"
-        Title="Ecosystem BrowserWindow" Height="550" Width="800">
+        Title="Ecosystem Browser" Height="550" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
@@ -19,7 +19,7 @@
             </Grid.RowDefinitions>
             
             <StackPanel Orientation="Horizontal" Background="#FF5D6B99">
-                <TextBlock Text="Nodes Tree" Foreground="White" VerticalAlignment="Center" Margin="5,0"/>
+                <TextBlock Text="Nodes Tree" Foreground="White" VerticalAlignment="Center" Margin="5,0" MouseDown="TextBlock_MouseDown"/>
             </StackPanel>
 
             <TreeView Grid.Row="1" x:Name="BrowserTreeView">
