@@ -1,4 +1,5 @@
 ﻿using OWLOSAdmin.Ecosystem;
+using OWLOSAdmin.Ecosystem.OWLOS;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -33,6 +34,35 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
             NodesListPanelControl = new PanelControl(PanelTag);
             NodesListPanelControl.ContentHolder.Children.Add(this);
 
+
+        //List<OWLOSNodeWrapper> OWLOSNodeWrappers = new List<OWLOSNodeWrapper>();
+            foreach (OWLOSNodeWrapper NodeWrapper in NodesAdmin.OWLOSNodeWrappers)
+            {
+                NodesListItemControl NewNodesListItemControl = new NodesListItemControl();
+                NewNodesListItemControl.NameTextBox.Text = NodeWrapper.node.Name;
+
+                foreach(OWLOSConnection NodeConnection in  NodeWrapper.node.config.connections)
+                {
+                    NodeConnectionConfigItemControl NodeConnectionControl = new NodeConnectionConfigItemControl();
+                    NodeConnectionControl.EnabledCheckBox.IsChecked = NodeConnection.enable;
+                    NodeConnectionControl.NameTextBox.Text = NodeConnection.name;
+                    NodeConnectionControl.TypeComboBox.SelectedIndex = (int)NodeConnection.connectionType;
+                    NodeConnectionControl.ConnectionStringTextBox.Text = NodeConnection.connectionString;
+                    NewNodesListItemControl.ConnectionsStackPanel.Children.Add(NodeConnectionControl);
+                }                        
+            }
+            
+
+            NodesAdmin.OnNewNode += NodesAdmin_OnNewNode;
+
+        }
+
+        private void NodesAdmin_OnNewNode(object sender, OWLOSNodeWrapperEventArgs e)
+        {
+            OWLOSNodeWrapper NodeWrapper = e.nodeWrapper;
+
+            NodesListItemControl NewNodesListItemControl = new NodesListItemControl();
+            NewNodesListItemControl.NameTextBox.Text = NodeWrapper.node.Name;
         }
     }
 }

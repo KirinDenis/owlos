@@ -38,7 +38,7 @@ namespace OWLOSAdmin.Ecosystem
     public class Admin
     {
         
-        List<OWLOSNodeWrapper> OWLOSNodeWrappers = new List<OWLOSNodeWrapper>();
+        public List<OWLOSNodeWrapper> OWLOSNodeWrappers = new List<OWLOSNodeWrapper>();
 
         public delegate void NewNodeEventHandler(object? sender, OWLOSNodeWrapperEventArgs e);
         public event NewNodeEventHandler OnNewNode;
@@ -101,9 +101,10 @@ namespace OWLOSAdmin.Ecosystem
 
 
                 config.nodesConfig.Add(_OWLOSNodeConfig);
-                Save();
+                
             }
-
+            //Save each time before development - add new fields to JSON
+            Save();
             foreach (OWLOSNodeConfig _OWLOSNodeConfig in config.nodesConfig)
             {
                 OWLOSNodeWrapper nodeWrapper = new OWLOSNodeWrapper();
@@ -139,7 +140,7 @@ namespace OWLOSAdmin.Ecosystem
 
         public void Save()
         {
-            string JSONConfig = JsonConvert.SerializeObject(config);
+            string JSONConfig = JsonConvert.SerializeObject(config, Formatting.Indented);
             File.WriteAllText("config.json", JSONConfig);
         }
 

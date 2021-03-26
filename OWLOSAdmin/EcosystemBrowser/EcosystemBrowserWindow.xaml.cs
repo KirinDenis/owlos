@@ -63,16 +63,25 @@ namespace OWLOSAdmin.EcosystemBrowser
 
             Icon = Icons.GetIcon(316);
 
+            NodesAdmin = new Admin();
+
+
             NodesTreeViewItem = new TreeViewItem();
             NodesTreeViewItem.Header = TreeViewItemHeaderControl.Create(Icons.GetIcon(316), "Nodes");
             NodesTreeViewItem.MouseDoubleClick += NodesTreeViewItem_MouseDoubleClick;
 
             BrowserTreeView.Items.Add(NodesTreeViewItem);
 
-            NodesAdmin = new Admin();
-
             NodesAdmin.OnNewNode += Admin_NewOWLOSNode;
             NodesAdmin.Load();
+
+            ActiveNodesLisControl = new NodesListControl(new PanelControlTag
+            {
+                Name = "Nodes",
+                Node = null,
+                BrowserGrid = BrowserGrid,
+                BrowserTabsPanel = BrowserTabsPanes
+            }, NodesAdmin);
 
 
         }
@@ -85,17 +94,6 @@ namespace OWLOSAdmin.EcosystemBrowser
                 {
                     return;
                 }
-            }
-
-            if (ActiveNodesLisControl == null)
-            {
-                ActiveNodesLisControl = new NodesListControl(new PanelControlTag
-                {
-                    Name = "Nodes",
-                    Node = null,
-                    BrowserGrid = BrowserGrid,
-                    BrowserTabsPanel = BrowserTabsPanes
-                }, NodesAdmin);
             }
 
             ActiveNodesLisControl.NodesListPanelControl.Show();

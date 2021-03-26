@@ -66,13 +66,16 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
     }
 
 
-    public class OWLOSNodeConfig
+    public class OWLOSNodeConfig    
     {
+        public string Name;
+        public DateTime LastConnected;
         public List<OWLOSConnection> connections = new List<OWLOSConnection>();
     }
 
     public class OWLOSNode : IOWLOSAbstractTransport
     {
+        public string Name;
 
         public List<OWLOSDriver> drivers { get; set; } = new List<OWLOSDriver>();
 
@@ -91,7 +94,10 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         public OWLOSNode(OWLOSNodeConfig config)
         {
             this.config = config;
-  
+
+            Name = config.Name;
+
+
 
             foreach (OWLOSConnection connection in config.connections)
             {
