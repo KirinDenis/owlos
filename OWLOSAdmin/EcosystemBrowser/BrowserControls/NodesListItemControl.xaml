@@ -7,10 +7,10 @@
              mc:Ignorable="d" 
              d:DesignWidth="800">
     <StackPanel Orientation="Vertical">
-        <TextBlock x:Name="NameTextBox" Text="123" FontWeight="Bold"/>
+        <TextBlock x:Name="NameTextBox" Text="_Name_Of_Node_" FontWeight="Bold"/>
 
         <StackPanel x:Name="ConnectionsStackPanel">
-            <TextBlock Text="123" FontWeight="Bold"/>
+            
         </StackPanel>
 
     </StackPanel>
