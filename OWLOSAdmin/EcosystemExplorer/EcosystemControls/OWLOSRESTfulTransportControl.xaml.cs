@@ -67,7 +67,7 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
             enabledCheckbox.IsChecked = this.transport.connection.enable;
             nameText.Text = this.transport.connection.name;
             hostText.Text = this.transport._RESTfulClientConnectionDTO.host;
-            portText.Text = this.transport._RESTfulClientConnectionDTO.port.ToString();
+          //  portText.Text = this.transport._RESTfulClientConnectionDTO.port.ToString();
 
             logGrid.Children.Add(logPanel = new OWLOSLogPanelControl());
             recvLogGrid.Children.Add(recvLogPanel = new OWLOSLogPanelControl());

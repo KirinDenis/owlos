@@ -45,6 +45,19 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
                 {
                     serialPort = new SerialPort(_UARTClientConnectionDTO.port);
                 }
+                else
+                {
+                    if (serialPort.IsOpen)
+                    {
+                        serialPort.DiscardInBuffer();
+                        serialPort.DiscardOutBuffer();
+                    }
+                    serialPort.Close();
+                    serialPort.Dispose();
+                    serialPort = null;
+                    serialPort = new SerialPort(_UARTClientConnectionDTO.port);
+
+                }
 
                 serialPort.BaudRate = _UARTClientConnectionDTO.baudRate;
                 serialPort.Parity = _UARTClientConnectionDTO.parity;
@@ -89,15 +102,25 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
                     serialPort.Open();
                     networkStatus = NetworkStatus.Online;
                 }
-                catch
+                catch (Exception exception)
                 {
                     networkStatus = NetworkStatus.Offline;
+                    AddToLog(new LogItem()
+                    {
+                        dateTime = DateTime.Now,
+                        isSend = true,
+                        networkStatus = _networkStatus,
+                        size = 0,
+                        text = exception.Message
+
+                    }); ;
                     return false;
                 }
             }
             return true;
 
         }
+        
 
         public override async Task<bool> GetAllDriversProperties()
         {            
@@ -153,12 +176,33 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
                 return result;
             }
 
+            if (!_connection.enable)
+            {
+                networkStatus = NetworkStatus.Offline;
+                if (serialPort.IsOpen)
+                {
+                    serialPort.Close();
+                }
+                result.error = "Transport is disable on high level";
+                return result;
+            }
+
             try
             {
                 if (OpenPort())
                 {
 
                     serialPort.WriteLine(APIName + "\n\r");
+                    totlaSend += APIName.Length + 2;
+                    AddToLog(new LogItem()
+                    {
+                        dateTime = DateTime.Now,
+                        isSend = true,
+                        networkStatus = NetworkStatus.Online,
+                        size = APIName.Length,
+                        text = APIName
+                    });
+
                     result.error = string.Empty;
                     return result;
                 }
@@ -181,6 +225,16 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             networkStatus = NetworkStatus.Online;
             SerialPort sp = (SerialPort)sender;
             indata += sp.ReadExisting();
+            totlaRecv += indata.Length;
+            AddToLog(new LogItem()
+            {
+                dateTime = DateTime.Now,
+                isSend = false,
+                networkStatus = NetworkStatus.Online,
+                size = indata.Length,
+                text = indata
+            });
+
 
             //clean echo 
             while (indata.IndexOf("\r\n") != -1)

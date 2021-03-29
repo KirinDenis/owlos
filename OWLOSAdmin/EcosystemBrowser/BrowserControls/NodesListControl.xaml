@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:OWLOSAdmin.EcosystemBrowser.BrowserControls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}">
+    <Grid Background="#FFE7E8EC">
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="71*"/>
@@ -14,8 +14,11 @@
         <StackPanel Orientation="Horizontal" Grid.Row="0">
             <Button x:Name="NewConnectionButton" Content="Add" Margin="5" Click="NewConnectionButton_Click"/>
         </StackPanel>
-        <StackPanel x:Name="NodesListStackPanel" Orientation="Vertical" Grid.Row="1">
+
+        <ScrollViewer Grid.Row="1">
+        <StackPanel x:Name="NodesListStackPanel" Orientation="Vertical"  Margin="10" >
 
         </StackPanel>
+        </ScrollViewer>
     </Grid>
 </UserControl>

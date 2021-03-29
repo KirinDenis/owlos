@@ -26,22 +26,14 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
 
 
             //List<OWLOSNodeWrapper> OWLOSNodeWrappers = new List<OWLOSNodeWrapper>();
-            foreach (OWLOSNodeWrapper NodeWrapper in NodesAdmin.OWLOSNodeWrappers)
-            {
-                NodesListItemControl NewNodesListItemControl = new NodesListItemControl();
-                NewNodesListItemControl.NameTextBox.Text = NodeWrapper.node.Name;
-
-                foreach (OWLOSConnection NodeConnection in NodeWrapper.node.config.connections)
+            
+            
+                foreach (OWLOSNodeWrapper NodeWrapper in NodesAdmin.OWLOSNodeWrappers)
                 {
-                    NodeConnectionConfigItemControl NodeConnectionControl = new NodeConnectionConfigItemControl();
-                    NodeConnectionControl.EnabledCheckBox.IsChecked = NodeConnection.enable;
-                    NodeConnectionControl.NameTextBox.Text = NodeConnection.name;
-                    NodeConnectionControl.TypeComboBox.SelectedIndex = (int)NodeConnection.connectionType;
-                    NodeConnectionControl.ConnectionStringTextBox.Text = NodeConnection.connectionString;
-                    NewNodesListItemControl.ConnectionsStackPanel.Children.Add(NodeConnectionControl);
+                    NodesListItemControl NewNodesListItemControl = new NodesListItemControl(NodeWrapper);
+                    NodesListStackPanel.Children.Add(NewNodesListItemControl);
                 }
-                NodesListStackPanel.Children.Add(NewNodesListItemControl);
-            }
+            
 
 
             NodesAdmin.OnNewNode += NodesAdmin_OnNewNode;
@@ -52,15 +44,16 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
         {
             OWLOSNodeWrapper NodeWrapper = e.nodeWrapper;
 
-            NodesListItemControl NewNodesListItemControl = new NodesListItemControl();
-            NewNodesListItemControl.NameTextBox.Text = NodeWrapper.node.Name;
+            //NodesListItemControl NewNodesListItemControl = new NodesListItemControl();
+            //NewNodesListItemControl.NameTextBox.Text = NodeWrapper.node.Name;
         }
 
         private void NewConnectionButton_Click(object sender, RoutedEventArgs e)
         {
-            NodesListItemControl NewNodesListItemControl = new NodesListItemControl();
-            NewNodesListItemControl.NameTextBox.Text = "New Connection";
+            //NodesListItemControl NewNodesListItemControl = new NodesListItemControl();
+            //NewNodesListItemControl.NameTextBox.Text = "New Connection";
 
+            /*
             NodeConnectionConfigItemControl NodeConnectionControl = new NodeConnectionConfigItemControl();
             NodeConnectionControl.EnabledCheckBox.IsChecked = false;
             NodeConnectionControl.NameTextBox.Text = "HTTP(s) RESTful";
@@ -83,6 +76,7 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
             NewNodesListItemControl.ConnectionsStackPanel.Children.Add(NodeConnectionControl);
 
             NodesListStackPanel.Children.Add(NewNodesListItemControl);
+            */
         }
     }
 }

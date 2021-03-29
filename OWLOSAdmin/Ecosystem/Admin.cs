@@ -14,6 +14,11 @@ namespace OWLOSAdmin.Ecosystem
     
     public class OWLOSNodeWrapper
     {
+        public Admin CurrentAdmin;
+        public OWLOSNodeWrapper(Admin CurrentAdmin)
+        {
+            this.CurrentAdmin = CurrentAdmin;
+        }
         public OWLOSTransportOLD transport;
         public OWLOSNode node = null;
         public string RESTfulServerHost = string.Empty;
@@ -64,8 +69,8 @@ namespace OWLOSAdmin.Ecosystem
                 _RESTfulClientConnection.name = "rest";
 
                 RESTfulClientConnectionDTO _RESTfulClientConnectionDTO = new RESTfulClientConnectionDTO();
-                _RESTfulClientConnectionDTO.host = "http://192.168.1.101/";
-                _RESTfulClientConnectionDTO.port = 80;
+                _RESTfulClientConnectionDTO.host = "http://192.168.1.101:80/";
+               // _RESTfulClientConnectionDTO.port = 80;
                 _RESTfulClientConnection.connectionString = JsonConvert.SerializeObject(_RESTfulClientConnectionDTO);
 
                 _OWLOSNodeConfig.connections.Add(_RESTfulClientConnection);
@@ -107,7 +112,7 @@ namespace OWLOSAdmin.Ecosystem
             Save();
             foreach (OWLOSNodeConfig _OWLOSNodeConfig in config.nodesConfig)
             {
-                OWLOSNodeWrapper nodeWrapper = new OWLOSNodeWrapper();
+                OWLOSNodeWrapper nodeWrapper = new OWLOSNodeWrapper(this);
                 nodeWrapper.node = new OWLOSNode(_OWLOSNodeConfig);
                 OWLOSNodeWrappers.Add(nodeWrapper);
                 NewNode(new OWLOSNodeWrapperEventArgs(nodeWrapper));

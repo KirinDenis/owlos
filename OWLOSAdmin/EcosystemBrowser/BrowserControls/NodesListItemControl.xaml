@@ -5,9 +5,24 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:OWLOSAdmin.EcosystemBrowser.BrowserControls"
              mc:Ignorable="d" 
+             Background="#FFE7E8EC"             
              d:DesignWidth="800">
-    <StackPanel Orientation="Vertical">
-        <TextBlock x:Name="NameTextBox" Text="_Name_Of_Node_" FontWeight="Bold"/>
+    <StackPanel Orientation="Vertical" Margin="0,5" Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}">
+        <Grid  Background="{DynamicResource {x:Static SystemColors.ScrollBarBrushKey}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="100*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock x:Name="NameTextBox" Text="_Name_Of_Node_" FontWeight="Bold" Margin="5"/>
+            
+            <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Orientation="Horizontal">
+                <Button x:Name="SaveButton" Content="Save" Margin="5,0" Click="SaveButton_Click" />
+                <Button x:Name="ExportButton" Content="Export" Margin="5,0" />
+                <Button x:Name="DeleteButton" Content="Delete" Margin="5,0"/>
+            </StackPanel>
+        </Grid>
+        
 
         <StackPanel x:Name="ConnectionsStackPanel">
             

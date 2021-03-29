@@ -14,7 +14,6 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
     public class RESTfulClientConnectionDTO
     {
         public string host;
-        public uint port;
     }
 
     public class RESTfulClientTransport : OWLOSTransport
@@ -108,7 +107,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             try
             {
                 HttpClient client = new HttpClient();
-
+                
                 string queryString = _RESTfulClientConnectionDTO.host + APIName + args;
 
                 totlaSend += queryString.Length;
@@ -120,6 +119,8 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
                     size = queryString.Length,                    
                     text = queryString
                 });
+
+
 
                 HttpResponseMessage response = await client.GetAsync(queryString);
 
