@@ -91,6 +91,9 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         private Timer lifeCycleTimer;
 
+        private RESTfulClientTransport _RESTfulClientTransport;
+        private UARTTransport _UARTTransport;
+
         public OWLOSNode(OWLOSNodeConfig config)
         {
             this.config = config;
@@ -104,16 +107,15 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
                 switch (connection.connectionType)
                 {
                     case ConnectionType.RESTfulClient:
-                        RESTfulClientTransport _RESTfulClientTransport = new RESTfulClientTransport(this);
+                        _RESTfulClientTransport = new RESTfulClientTransport(this);
                         _RESTfulClientTransport.connection = connection;
                         transports.Add(_RESTfulClientTransport);
                         break;
                     case ConnectionType.UART:
-                        UARTTransport _UARTTransport = new UARTTransport(this);
+                        _UARTTransport = new UARTTransport(this);
                         _UARTTransport.connection = connection;
                         transports.Add(_UARTTransport);
                         break;
-
                 }
             }
             Start();
@@ -122,7 +124,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         public void Start()
         {
-            lifeCycleTimer = new Timer(10000)
+            lifeCycleTimer = new Timer(1000)
             {
                 AutoReset = true
             };

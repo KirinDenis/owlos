@@ -112,10 +112,10 @@ namespace OWLOSAdmin.Ecosystem
             Save();
             foreach (OWLOSNodeConfig _OWLOSNodeConfig in config.nodesConfig)
             {
-                OWLOSNodeWrapper nodeWrapper = new OWLOSNodeWrapper(this);
-                nodeWrapper.node = new OWLOSNode(_OWLOSNodeConfig);
-                OWLOSNodeWrappers.Add(nodeWrapper);
-                NewNode(new OWLOSNodeWrapperEventArgs(nodeWrapper));
+                    OWLOSNodeWrapper nodeWrapper = new OWLOSNodeWrapper(this);
+                    nodeWrapper.node = new OWLOSNode(_OWLOSNodeConfig);
+                    OWLOSNodeWrappers.Add(nodeWrapper);
+                    NewNode(new OWLOSNodeWrapperEventArgs(nodeWrapper));
 
             }
 
