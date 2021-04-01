@@ -33,8 +33,8 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         public long totlaSend { get; set; }
         public long totlaRecv { get; set; }
         public List<LogItem> logItems { get; }
-        public OWLOSConnection connection { get; set; }
-
+        public OWLOSConnection connection { get; set; }        
+        
         public void AddToLog(LogItem logItem);
 
         delegate void TransportEventHandler(object? sender, NetworkStatus e);

@@ -42,6 +42,7 @@ OWLOS распространяется в надежде, что она буде
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Timers;
 
@@ -91,8 +92,8 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         private Timer lifeCycleTimer;
 
-        private RESTfulClientTransport _RESTfulClientTransport;
-        private UARTTransport _UARTTransport;
+        private readonly RESTfulClientTransport _RESTfulClientTransport;
+        private readonly UARTTransport _UARTTransport;
 
         public OWLOSNode(OWLOSNodeConfig config)
         {
@@ -107,24 +108,49 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
                 switch (connection.connectionType)
                 {
                     case ConnectionType.RESTfulClient:
-                        _RESTfulClientTransport = new RESTfulClientTransport(this);
-                        _RESTfulClientTransport.connection = connection;
+                        _RESTfulClientTransport = new RESTfulClientTransport(this)
+                        {
+                            connection = connection
+                        };
                         transports.Add(_RESTfulClientTransport);
                         break;
+                    case ConnectionType.MQTT:
+                        //_UARTTransport = new UARTTransport(this);
+                        //_UARTTransport.connection = connection;
+                        //transports.Add(_UARTTransport);
+                        break;
                     case ConnectionType.UART:
-                        _UARTTransport = new UARTTransport(this);
-                        _UARTTransport.connection = connection;
+                        _UARTTransport = new UARTTransport(this)
+                        {
+                            connection = connection
+                        };
                         transports.Add(_UARTTransport);
                         break;
                 }
             }
-            Start();
+
+            //Sort connection by priority
+            for (int i = 0; i < transports.Count; i++)
+            {
+                for (int j = 0; j < transports.Count - 1; j++)
+                {
+                    if (transports[j].connection.Priority > transports[j+1].connection.Priority)
+                    {
+                        IOWLOSTransport exchangeTransport = transports[j];
+                        transports[j] = transports[j + 1];
+                        transports[j + 1] = exchangeTransport;
+                    }
+                }
+            }
+
+
+                    Start();
             //    this.wrapper = wrapper;
         }
 
         public void Start()
         {
-            lifeCycleTimer = new Timer(1000)
+            lifeCycleTimer = new Timer(10000)
             {
                 AutoReset = true
             };
@@ -136,6 +162,9 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         private async void OnLifeCycleTimer(object source, ElapsedEventArgs e)
         {
+            for (int i=0; i < transports.Count;)
+
+
             await GetAllDriversProperties();
             await GetAllFiles();
             //await GetAllScripts();
@@ -239,29 +268,54 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         }
 
-        public void newProp(object sender, EventArgs e)
-        {
-
-        }
-
         public async Task<bool> GetAllDriversProperties()
         {
-            bool result = false;
-            foreach (IOWLOSTransport _OWLOSTransport in transports)
+            if (transports[0] != null)
             {
-                result |= await _OWLOSTransport.GetAllDriversProperties();
+                if (await transports[0].GetAllDriversProperties() != true)
+                {
+                    if (transports[1] != null)
+                    {
+                        if (await transports[1].GetAllDriversProperties() != true)
+                        {
+                            if (transports[2] != null)
+                            {
+                                if (await transports[2].GetAllDriversProperties() != true)
+                                {
+                                    return false;
+                                }
+                            }
+
+                        }
+                    }
+                }
             }
-            return result;
+            return true;
         }
 
         public async Task<bool> GetAllFiles()
         {
-            bool result = false;
-            foreach (IOWLOSTransport _OWLOSTransport in transports)
+            if (transports[0] != null)
             {
-                result |= await _OWLOSTransport.GetAllFiles();
+                if (await transports[0].GetAllFiles() != true)
+                {
+                    if (transports[1] != null)
+                    {
+                        if (await transports[1].GetAllFiles() != true)
+                        {
+                            if (transports[2] != null)
+                            {
+                                if (await transports[2].GetAllFiles() != true)
+                                {
+                                    return false;
+                                }
+                            }
+
+                        }
+                    }
+                }
             }
-            return result;
+            return true;
         }
 
 

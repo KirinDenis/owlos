@@ -10,11 +10,10 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
     public class APIQueryInterval
     {
-        public bool Enable { get; set; } = true;
-
-        public uint Priority = 0;
+        public bool Enable { get; set; } = true;        
         public APINameType APIType { get; set; }
         public uint Interval { get; set; }
+        public DateTime LastCall { get; set; }
     }
 
     interface IOWLOSConnection
