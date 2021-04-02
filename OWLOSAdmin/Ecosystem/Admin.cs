@@ -5,13 +5,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.IO.Ports;
-using System.Text;
 
 
 namespace OWLOSAdmin.Ecosystem
 {
-
-    
     public class OWLOSNodeWrapper
     {
         public Admin CurrentAdmin;
@@ -24,15 +21,13 @@ namespace OWLOSAdmin.Ecosystem
         public string RESTfulServerHost = string.Empty;
         public Point explorerPosition;
     }
-    
 
-    
     public class OWLOSNodeWrapperEventArgs : EventArgs
     {
         public OWLOSNodeWrapper nodeWrapper;
         public OWLOSNodeWrapperEventArgs(OWLOSNodeWrapper nodeWrapper)
         {
-            this.nodeWrapper = nodeWrapper;            
+            this.nodeWrapper = nodeWrapper;
         }
     }
 
@@ -42,7 +37,7 @@ namespace OWLOSAdmin.Ecosystem
     }
     public class Admin
     {
-        
+
         public List<OWLOSNodeWrapper> OWLOSNodeWrappers = new List<OWLOSNodeWrapper>();
 
         public delegate void NewNodeEventHandler(object? sender, OWLOSNodeWrapperEventArgs e);
@@ -63,14 +58,22 @@ namespace OWLOSAdmin.Ecosystem
             }
             else //reset config
             {
-                OWLOSNodeConfig _OWLOSNodeConfig = new OWLOSNodeConfig();
-                OWLOSConnection _RESTfulClientConnection = new OWLOSConnection();
-                _RESTfulClientConnection.connectionType = ConnectionType.RESTfulClient;
-                _RESTfulClientConnection.name = "rest";
+                OWLOSNodeConfig _OWLOSNodeConfig = new OWLOSNodeConfig
+                {
+                    Name = "OWLOS Thing"
+                };
 
-                RESTfulClientConnectionDTO _RESTfulClientConnectionDTO = new RESTfulClientConnectionDTO();
-                _RESTfulClientConnectionDTO.host = "http://192.168.1.101:80/";
-               // _RESTfulClientConnectionDTO.port = 80;
+                OWLOSConnection _RESTfulClientConnection = new OWLOSConnection
+                {
+                    connectionType = ConnectionType.RESTfulClient,
+                    name = "rest"
+                };
+
+                RESTfulClientConnectionDTO _RESTfulClientConnectionDTO = new RESTfulClientConnectionDTO
+                {
+                    host = "http://192.168.1.101:80/"
+                };
+                // _RESTfulClientConnectionDTO.port = 80;
                 _RESTfulClientConnection.connectionString = JsonConvert.SerializeObject(_RESTfulClientConnectionDTO);
 
                 _OWLOSNodeConfig.connections.Add(_RESTfulClientConnection);
@@ -86,61 +89,59 @@ namespace OWLOSAdmin.Ecosystem
                 config.nodesConfig.Add(_OWLOSNodeConfig);
                 */
 
-                
-                OWLOSConnection _UARTClientConnection = new OWLOSConnection();
-                _UARTClientConnection = new OWLOSConnection();
-                _UARTClientConnection.connectionType = ConnectionType.UART;
-                _UARTClientConnection.name = "UART";
-                UARTClientConnectionDTO _UARTClientConnectionDTO = new UARTClientConnectionDTO();
-                _UARTClientConnectionDTO.port = "COM7";
-                _UARTClientConnectionDTO.baudRate = 115200;
-                _UARTClientConnectionDTO.parity = Parity.None;
-                _UARTClientConnectionDTO.stopBits = StopBits.One;
-                _UARTClientConnectionDTO.dataBits = 8;
-                _UARTClientConnectionDTO.handshake = Handshake.None;
-                _UARTClientConnectionDTO.RTSEnable = false;
-                _UARTClientConnection.connectionString = JsonConvert.SerializeObject(_UARTClientConnectionDTO);
-                
-                _OWLOSNodeConfig.connections.Add(_UARTClientConnection);
-               
 
+                OWLOSConnection _UARTClientConnection = new OWLOSConnection();
+                _UARTClientConnection = new OWLOSConnection
+                {
+                    connectionType = ConnectionType.UART,
+                    name = "UART"
+                };
+                UARTClientConnectionDTO _UARTClientConnectionDTO = new UARTClientConnectionDTO
+                {
+                    port = "COM7",
+                    baudRate = 115200,
+                    parity = Parity.None,
+                    stopBits = StopBits.One,
+                    dataBits = 8,
+                    handshake = Handshake.None,
+                    RTSEnable = false
+                };
+                _UARTClientConnection.connectionString = JsonConvert.SerializeObject(_UARTClientConnectionDTO);
+
+                _OWLOSNodeConfig.connections.Add(_UARTClientConnection);
+
+                _OWLOSNodeConfig.APIQueryIntervals = new List<APIQueryInterval>() {
+            new APIQueryInterval()
+            {
+                APIType = APINameType.GetAllDriverProperties,
+                Interval = 1
+            },
+            new APIQueryInterval()
+            {
+                APIType = APINameType.GetAllFiles,
+                Interval = 10
+            },
+            new APIQueryInterval()
+            {
+                APIType = APINameType.GetAllScripts,
+                Interval = 20
+            }
+            };
 
                 config.nodesConfig.Add(_OWLOSNodeConfig);
-                
+
             }
             //Save each time before development - add new fields to JSON
             Save();
             foreach (OWLOSNodeConfig _OWLOSNodeConfig in config.nodesConfig)
             {
-                    OWLOSNodeWrapper nodeWrapper = new OWLOSNodeWrapper(this);
-                    nodeWrapper.node = new OWLOSNode(_OWLOSNodeConfig);
-                    OWLOSNodeWrappers.Add(nodeWrapper);
-                    NewNode(new OWLOSNodeWrapperEventArgs(nodeWrapper));
-
+                OWLOSNodeWrapper nodeWrapper = new OWLOSNodeWrapper(this)
+                {
+                    node = new OWLOSNode(_OWLOSNodeConfig)
+                };
+                OWLOSNodeWrappers.Add(nodeWrapper);
+                NewNode(new OWLOSNodeWrapperEventArgs(nodeWrapper));
             }
-
-
-            /*
-            OWLOSNodeWrapper nodeWrapper = new OWLOSNodeWrapper();
-            //nodeWrapper.RESTfulServerHost = "http://192.168.1.101/";            
-            nodeWrapper.node = new OWLOSNode(this);                        
-            //nodeWrapper.transport = new OWLOSTransport(nodeWrapper.node);
-            //nodeWrapper.transport.RESTfulServerHost = nodeWrapper.RESTfulServerHost;
-            //nodeWrapper.transport.Start();
-            OWLOSNodeWrappers.Add(nodeWrapper);
-            NewNode(new OWLOSNodeWrapperEventArgs(nodeWrapper));
-            */
-            
-            /*
-            nodeWrapper = new OWLOSNodeWrapper();
-            nodeWrapper.RESTfulServerHost = "http://192.168.1.12/";
-            nodeWrapper.node = new OWLOSNode(this, nodeWrapper);
-            nodeWrapper.transport = new OWLOSTransport(nodeWrapper.node);
-            nodeWrapper.transport.RESTfulServerHost = nodeWrapper.RESTfulServerHost;
-            nodeWrapper.transport.Start();
-            OWLOSNodeWrappers.Add(nodeWrapper);
-            NewNode(new OWLOSNodeWrapperEventArgs(nodeWrapper));
-            */
         }
 
         public void Save()

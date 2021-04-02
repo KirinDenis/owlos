@@ -1,6 +1,7 @@
 ﻿using OWLOSAdmin.Ecosystem.OWLOS;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -8,6 +9,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -21,6 +23,11 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
     {
         private OWLOSNode Node;
         private OWLOSTransport NodeTransport;
+
+        private int logCount;
+
+        private LogControl OutLogControl;
+        private LogControl InLogControl;
         public NodeConnectionConfigItemControl(OWLOSNode Node, OWLOSTransport NodeTransport)
         {
             InitializeComponent();
@@ -35,14 +42,51 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
             NodeTransport.OnTransportStatusChanger += NodeTransport_OnTransportStatusChanger;
             NodeTransport.OnLogItem += NodeTransport_OnLogItem;
 
+            OutLogControl = new LogControl();
+            OutLogControl.SetValue(Grid.ColumnProperty, 0);
+            OutLogControl.SetValue(Grid.RowProperty, 1);
+            LogGrid.Children.Add(OutLogControl);
+
+            InLogControl = new LogControl();
+            InLogControl.SetValue(Grid.ColumnProperty, 1);
+            InLogControl.SetValue(Grid.RowProperty, 1);
+            LogGrid.Children.Add(InLogControl);
         }
 
         private void NodeTransport_OnLogItem(object sender, LogItem e)
         {
+
             base.Dispatcher.Invoke(() =>
-            {
-                LogTextBlock.Text = e.text;
+            {                
+                if (e.isSend)
+                {
+                    switch (e.networkStatus)
+                    {
+                        case NetworkStatus.Online:
+
+                            OutLogControl.AddToLog(e.text, 0);
+                            break;
+
+                        case NetworkStatus.Offline:
+                            OutLogControl.AddToLog(e.text, 1);
+                            break;
+
+                        case NetworkStatus.Reconnect:
+                            OutLogControl.AddToLog(e.text, 2);
+                            break;
+
+                        case NetworkStatus.Erorr:
+                            OutLogControl.AddToLog(e.text, 3);
+                            break;
+                    }
+                }
+                else
+                {
+                    InLogControl.AddToLog(e.text, 2);
+                }                
+
             });
+
         }
 
         private void NodeTransport_OnTransportStatusChanger(object sender, NetworkStatus e)

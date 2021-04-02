@@ -71,7 +71,11 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
     {
         public string Name;
         public DateTime LastConnected;
+
         public List<OWLOSConnection> connections = new List<OWLOSConnection>();
+        public List<APIQueryInterval> APIQueryIntervals { get; set; }
+
+
     }
 
     public class OWLOSNode : IOWLOSAbstractTransport
@@ -150,7 +154,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         public void Start()
         {
-            lifeCycleTimer = new Timer(10000)
+            lifeCycleTimer = new Timer(1000)
             {
                 AutoReset = true
             };
@@ -162,12 +166,22 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         private async void OnLifeCycleTimer(object source, ElapsedEventArgs e)
         {
-            for (int i=0; i < transports.Count;)
-
-
-            await GetAllDriversProperties();
-            await GetAllFiles();
-            //await GetAllScripts();
+            foreach (APIQueryInterval QueryInterval in config.APIQueryIntervals)
+            {
+                if ((DateTime.Now - QueryInterval.LastCall).TotalSeconds > QueryInterval.Interval)
+                {
+                    QueryInterval.LastCall = DateTime.Now;
+                    switch (QueryInterval.APIType)
+                    {
+                        case APINameType.GetAllDriverProperties:
+                            await GetAllDriversProperties();
+                            break;
+                        case APINameType.GetAllFiles:
+                            await GetAllFiles();
+                            break;
+                    }
+                }
+            }
         }
 
 
@@ -270,15 +284,15 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         public async Task<bool> GetAllDriversProperties()
         {
-            if (transports[0] != null)
+            if ((transports.Count > 0) && (transports[0] != null))
             {
                 if (await transports[0].GetAllDriversProperties() != true)
                 {
-                    if (transports[1] != null)
+                    if ((transports.Count > 1) && (transports[1] != null))
                     {
                         if (await transports[1].GetAllDriversProperties() != true)
                         {
-                            if (transports[2] != null)
+                            if ((transports.Count > 2) && (transports[2] != null))
                             {
                                 if (await transports[2].GetAllDriversProperties() != true)
                                 {
@@ -295,15 +309,15 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         public async Task<bool> GetAllFiles()
         {
-            if (transports[0] != null)
+            if ((transports.Count > 0) && (transports[0] != null))
             {
                 if (await transports[0].GetAllFiles() != true)
                 {
-                    if (transports[1] != null)
+                    if ((transports.Count > 1) && (transports[1] != null))
                     {
                         if (await transports[1].GetAllFiles() != true)
                         {
-                            if (transports[2] != null)
+                            if ((transports.Count > 2) && (transports[2] != null))
                             {
                                 if (await transports[2].GetAllFiles() != true)
                                 {

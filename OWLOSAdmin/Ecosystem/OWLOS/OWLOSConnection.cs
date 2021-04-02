@@ -39,22 +39,5 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         public string connectionString { get; set; }
 
-        public List<APIQueryInterval> APIQueryIntervals { get; set; } = new List<APIQueryInterval>() {
-            new APIQueryInterval()
-            {
-                APIType = APINameType.GetAllDriverProperties,
-                Interval = 1
-            },
-            new APIQueryInterval()
-            {
-                APIType = APINameType.GetAllFiles,
-                Interval = 10
-            },
-            new APIQueryInterval()
-            {
-                APIType = APINameType.GetAllScripts,
-                Interval = 20
-            }
-            };
     }
 }
