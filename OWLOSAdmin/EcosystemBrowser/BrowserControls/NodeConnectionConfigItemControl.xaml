@@ -6,10 +6,10 @@
              xmlns:local="clr-namespace:OWLOSAdmin.EcosystemBrowser.BrowserControls"
              mc:Ignorable="d"              
              d:DesignHeight="90" d:DesignWidth="800">
-    <Grid Margin="5,0">
+    <Grid x:Name="MainGrid" Margin="5,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
-            <RowDefinition Height="50"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="30"/>
             <RowDefinition Height="10"/>
         </Grid.RowDefinitions>
@@ -42,13 +42,13 @@
                 <RowDefinition Height="100*"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0" x:Name="LogTextBlock" VerticalAlignment="Center" Margin="0,7,0,0" Foreground="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" Text="Log" TextWrapping="NoWrap" Height="20"/>
+            <Button Grid.Row="0" x:Name="LogViewButton" VerticalAlignment="Center" Margin="0,7,0,0" Foreground="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" Content="Show log"  Height="20" HorizontalAlignment="Left" Click="LogViewButton_Click"/>
             <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
                 <TextBlock x:Name="SendTextBlock" Text="send:0" VerticalAlignment="Center" Margin="5" Foreground="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}"/>
                 <TextBlock x:Name="RecvTextBlock" Grid.Row="1" Grid.ColumnSpan="2" Text="recv:0" VerticalAlignment="Center" Margin="5" Foreground="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}"/>
             </StackPanel>
 
-            <Grid x:Name="LogGrid" Grid.Row="1" Grid.ColumnSpan="2">
+            <Grid x:Name="LogGrid" Grid.Row="1" Grid.ColumnSpan="2" Visibility="Collapsed">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="50*"/>
                     <ColumnDefinition Width="50*"/>
@@ -61,10 +61,10 @@
                 <TextBlock Text="Send data" VerticalAlignment="Center" Foreground="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}"/>
                 <TextBlock Text="Recv data" VerticalAlignment="Center" Grid.Column="1" Margin="10,0,0,0" Foreground="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}"/>
 
-                <GridSplitter VerticalAlignment="Stretch" Grid.RowSpan="2" Width="3" Margin="-5,0,-5,0" Background="{DynamicResource {x:Static SystemColors.ScrollBarBrushKey}}" Panel.ZIndex="1" HorizontalAlignment="Right"></GridSplitter>
+                <GridSplitter VerticalAlignment="Stretch" Grid.RowSpan="2" Width="3" Margin="-5,0,-5,0" Background="{DynamicResource {x:Static SystemColors.ScrollBarBrushKey}}" Panel.ZIndex="1" HorizontalAlignment="Right" />
             </Grid>
         </Grid>
-        <GridSplitter Grid.Row="1" VerticalAlignment="Bottom" Grid.ColumnSpan="5" Height="3" Margin="0,-5,0,-5" Background="{DynamicResource {x:Static SystemColors.ScrollBarBrushKey}}" Panel.ZIndex="1" HorizontalAlignment="Stretch"></GridSplitter>
+        <GridSplitter x:Name="LogGridSplitter" Grid.Row="1" VerticalAlignment="Bottom" Grid.ColumnSpan="5" Height="3" Margin="0,-5,0,-5" Background="{DynamicResource {x:Static SystemColors.ScrollBarBrushKey}}" Panel.ZIndex="1" HorizontalAlignment="Stretch" Visibility="Hidden"/>
 
         <TextBox x:Name="ConnectionStringTextBox" Grid.Column="1" Margin="5,5,5,5" Grid.Row="2"  Grid.ColumnSpan="4" Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"/>
 

@@ -35,8 +35,8 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
             {
                 List<string> lines = text.Split('\n').ToList();
                 foreach (string line in lines)
-                {
-                    Add(line, code);
+                {                    
+                    Add(line.Replace('\r', ' ').Replace('\t', ' '), code);
                 }
             }
             else
@@ -59,7 +59,7 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
                     textBlock.Name = "text" + logCount.ToString();
 
                     
-                    if (!atAnimation)
+                    //if (!atAnimation)
                     {
                         atAnimation = true;
                         double EndY;
@@ -69,7 +69,7 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
                             if (prev.ActualHeight < 20)
                             {
 
-                                EndY = -(logCount * prev.ActualHeight / 1.0f - GlobalOutLogScrollViewer.ActualHeight);
+                                EndY = -(logCount * prev.ActualHeight / 1.0f - GlobalOutLogScrollViewer.ActualHeight) - 20.0f;
                             }
                             else
                             {
@@ -129,7 +129,7 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
                             textBlock.Foreground = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSWarning"]).Color);
                             break;
                         case 3:
-                            animation.To = ((SolidColorBrush)App.Current.Resources["OWLOSDangerAlpha4"]).Color;
+                            animation.To = Colors.Red; //((SolidColorBrush)App.Current.Resources["OWLOSDangerAlpha4"]).Color;
                             textBlock.Foreground = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSDanger"]).Color);
                             break;
                         default:

@@ -57,33 +57,36 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
         {
 
             base.Dispatcher.Invoke(() =>
-            {                
-                if (e.isSend)
+            {
+                if (LogGrid.Visibility == Visibility.Visible)
                 {
-                    switch (e.networkStatus)
+                    if (e.isSend)
                     {
-                        case NetworkStatus.Online:
+                        switch (e.networkStatus)
+                        {
+                            case NetworkStatus.Online:
 
-                            OutLogControl.AddToLog(e.text, 0);
-                            break;
+                                OutLogControl.AddToLog(e.text, 0);
+                                break;
 
-                        case NetworkStatus.Offline:
-                            OutLogControl.AddToLog(e.text, 1);
-                            break;
+                            case NetworkStatus.Offline:
+                                OutLogControl.AddToLog(e.text, 1);
+                                break;
 
-                        case NetworkStatus.Reconnect:
-                            OutLogControl.AddToLog(e.text, 2);
-                            break;
+                            case NetworkStatus.Reconnect:
+                                OutLogControl.AddToLog(e.text, 2);
+                                break;
 
-                        case NetworkStatus.Erorr:
-                            OutLogControl.AddToLog(e.text, 3);
-                            break;
+                            case NetworkStatus.Erorr:
+                                OutLogControl.AddToLog(e.text, 3);
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        InLogControl.AddToLog(e.text, 2);
                     }
                 }
-                else
-                {
-                    InLogControl.AddToLog(e.text, 2);
-                }                
 
             });
 
@@ -119,6 +122,36 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
                 SendTextBlock.Text = "send: " + NodeTransport.totlaSend.ToString();
                 RecvTextBlock.Text = "recv: " + NodeTransport.totlaRecv.ToString();
             });
+        }
+
+        private void LogViewButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (LogGrid.Visibility != Visibility.Visible)
+            {
+                LogViewButton.Content = "Hide log";
+                LogGrid.Visibility = Visibility.Visible;
+                GridLength NewGridLength; 
+                if (MainGrid.RowDefinitions[1].Tag != null)
+                {
+                    NewGridLength = (GridLength)MainGrid.RowDefinitions[1].Tag;
+                }
+                else
+                {
+                    NewGridLength = new GridLength(350.0f);
+                }
+                
+                MainGrid.RowDefinitions[1].Height = NewGridLength;
+                LogGridSplitter.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                LogViewButton.Content = "Show log";
+                MainGrid.RowDefinitions[1].Tag = MainGrid.RowDefinitions[1].Height;
+                MainGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Auto);
+
+                LogGrid.Visibility = Visibility.Collapsed;
+                LogGridSplitter.Visibility = Visibility.Hidden;
+            }
         }
     }
 }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OWLOSAdmin.EcosystemBrowser"
         mc:Ignorable="d"
-        Title="Ecosystem Browser" Height="550" Width="800">
+        Title="Ecosystem Browser" Height="800" Width="1200" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
