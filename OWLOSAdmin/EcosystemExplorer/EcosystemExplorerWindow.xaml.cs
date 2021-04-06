@@ -44,8 +44,6 @@ using OWLOSAdmin.Ecosystem;
 using OWLOSAdmin.Tools;
 using System;
 using System.Drawing;
-using System.IO;
-using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -771,22 +769,23 @@ namespace OWLOSAdmin.EcosystemExplorer
 
         private void transparentViewImage_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (this.AllowsTransparency)
+            if (AllowsTransparency)
             {
                 EcosystemExplorerWindow ecosystemExplorer = new EcosystemExplorerWindow();
                 ecosystemExplorer.Show();
-                this.Close();
+                Close();
             }
             else
             {
-                
-                EcosystemExplorerWindow ecosystemExplorer = new EcosystemExplorerWindow();
 
-                ecosystemExplorer.AllowsTransparency = true;
-                ecosystemExplorer.WindowStyle = WindowStyle.None;
-                ecosystemExplorer.Background = null;
+                EcosystemExplorerWindow ecosystemExplorer = new EcosystemExplorerWindow
+                {
+                    AllowsTransparency = true,
+                    WindowStyle = WindowStyle.None,
+                    Background = null
+                };
                 ecosystemExplorer.Show();
-                this.Close();
+                Close();
             }
         }
 

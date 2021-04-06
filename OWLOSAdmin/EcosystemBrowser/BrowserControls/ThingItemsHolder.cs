@@ -40,10 +40,6 @@ OWLOS распространяется в надежде, что она буде
 
 using OWLOSAdmin.Ecosystem.OWLOS;
 using OWLOSAdmin.Tools;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -59,7 +55,7 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
     }
     public class ThingItemsHolder
     {
-        private PanelControlTag PanelTag;
+        private readonly PanelControlTag PanelTag;
 
         private ThingControl ThingBrowserControl = null;
         
@@ -73,36 +69,48 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
 
             this.PanelTag = PanelTag;
 
-            ThingBrowserItem = new TreeViewItem();
-            ThingBrowserItem.Header = TreeViewItemHeaderControl.Create(Icons.GetIcon(65), PanelTag.Name);
-            ThingBrowserItem.Tag = this;
+            ThingBrowserItem = new TreeViewItem
+            {
+                Header = TreeViewItemHeaderControl.Create(Icons.GetIcon(65), PanelTag.Name),
+                Tag = this
+            };
             ThingBrowserItem.MouseDoubleClick += ThingBrowserItem_MouseDoubleClick;
 
-            TransportsBrowserItem = new TreeViewItem();
-            TransportsBrowserItem.Header = TreeViewItemHeaderControl.Create(Icons.GetIcon(136), "Transport");
-            TransportsBrowserItem.Tag = this;
+            TransportsBrowserItem = new TreeViewItem
+            {
+                Header = TreeViewItemHeaderControl.Create(Icons.GetIcon(136), "Transport"),
+                Tag = this
+            };
             ThingBrowserItem.Items.Add(TransportsBrowserItem);
 
-            DriversBrowserItem = new TreeViewItem();
-            DriversBrowserItem.Header = TreeViewItemHeaderControl.Create(Icons.GetIcon(919), "Drivers");
-            DriversBrowserItem.Tag = this;
+            DriversBrowserItem = new TreeViewItem
+            {
+                Header = TreeViewItemHeaderControl.Create(Icons.GetIcon(919), "Drivers"),
+                Tag = this
+            };
             ThingBrowserItem.Items.Add(DriversBrowserItem);
 
-            ScriptsBrowserItem = new TreeViewItem();
-            ScriptsBrowserItem.Header = TreeViewItemHeaderControl.Create(Icons.GetIcon(1633), "Scripts");
-            ScriptsBrowserItem.Tag = this;
+            ScriptsBrowserItem = new TreeViewItem
+            {
+                Header = TreeViewItemHeaderControl.Create(Icons.GetIcon(1633), "Scripts"),
+                Tag = this
+            };
             ThingBrowserItem.Items.Add(ScriptsBrowserItem);
 
-            FilesBrowserItem = new TreeViewItem();
-            FilesBrowserItem.Header = TreeViewItemHeaderControl.Create(Icons.GetIcon(471), "Files");
-            FilesBrowserItem.Tag = this;
+            FilesBrowserItem = new TreeViewItem
+            {
+                Header = TreeViewItemHeaderControl.Create(Icons.GetIcon(471), "Files"),
+                Tag = this
+            };
             ThingBrowserItem.Items.Add(FilesBrowserItem);
 
             foreach (IOWLOSTransport ThingTransport in PanelTag.Thing.transports)
             {
-                TreeViewItem ThingTransportItem = new TreeViewItem();
-                ThingTransportItem.Header = ThingTransport.connection.name;
-                ThingTransportItem.Tag = ThingTransport;
+                TreeViewItem ThingTransportItem = new TreeViewItem
+                {
+                    Header = ThingTransport.connection.name,
+                    Tag = ThingTransport
+                };
                 TransportsBrowserItem.Items.Add(ThingTransportItem);
 
             }
@@ -131,17 +139,19 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
 
         private void NewThing_OnNewDriver(object sender, OWLOSDriverWrapperEventArgs e)
         {
-            TreeViewItem ThingDriverItem = new TreeViewItem();            
-            ThingDriverItem.Header = e.driver.name;
-
-
-            ThingDriverItem.Tag = new ThingDriverItemTag
+            TreeViewItem ThingDriverItem = new TreeViewItem
             {
-                Thing = PanelTag.Thing,
-                Driver = e.driver,
-                ParentThingItemsHolder = this                
+                Header = e.driver.name,
+
+
+                Tag = new ThingDriverItemTag
+                {
+                    Thing = PanelTag.Thing,
+                    Driver = e.driver,
+                    ParentThingItemsHolder = this
+                }
             };
-                
+
             ThingDriverItem.MouseDoubleClick += ThingDriverItem_MouseDoubleClick;
 
             DriversBrowserItem.Items.Add(ThingDriverItem);
