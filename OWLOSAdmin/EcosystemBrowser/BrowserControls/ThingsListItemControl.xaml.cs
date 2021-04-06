@@ -119,8 +119,6 @@ namespace OWLOSThingsManager.EcosystemBrowser.BrowserControls
                 ThingTransport.connection = ThingTransport.connection;
             }
             ThingWrapper.CurrentThingsManager.Save();
-            
-            
         }
 
         private void NameTextBox_TextChanged(object sender, TextChangedEventArgs e)

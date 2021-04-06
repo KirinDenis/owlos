@@ -4,35 +4,35 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:OWLOSThingsManager.EcosystemBrowser.BrowserControls"
-             mc:Ignorable="d" 
-             Background="#FFE7E8EC"             
+             mc:Ignorable="d"              
              d:DesignWidth="800">
-    <StackPanel Orientation="Vertical" Margin="0,5" Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}">
+    <StackPanel Orientation="Vertical" Margin="0,2" Background="White">
         <Grid  Background="{DynamicResource {x:Static SystemColors.ScrollBarBrushKey}}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="100*"/>
             </Grid.ColumnDefinitions>
 
-            <TextBox x:Name="NameTextBox" Text="_Name_Of_Thing_" FontWeight="Bold" Margin="5" TextChanged="NameTextBox_TextChanged"/>
+            <TextBox x:Name="NameTextBox" Text="_Name_Of_Thing_" FontWeight="Bold" Margin="5" TextChanged="NameTextBox_TextChanged" Background="{x:Null}" BorderBrush="{x:Null}" />
             
             <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Orientation="Horizontal">
                 <Button x:Name="SaveButton" Content="Save" Margin="5,0" Click="SaveButton_Click" />
-                <Button x:Name="ExportButton" Content="Export" Margin="5,0" />
                 <Button x:Name="DeleteButton" Content="Delete" Margin="5,0" Click="DeleteButton_Click"/>
             </StackPanel>
         </Grid>
 
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="30"/>
+            
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-            <Button x:Name="ShowQueryIntervalsButton" Content="Show query intervals" HorizontalAlignment="Left" />
-            <StackPanel x:Name="QueryIntervalsStackPanel" Grid.Row="1" >
-                
-            </StackPanel>
+            
+            
+            <TabPanel x:Name="QueryIntervalsStackPanel">
+
+            </TabPanel>
         </Grid>
+        <Border Background="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}" Height="1" Grid.Column="0" Grid.Row="3"  Grid.ColumnSpan="6" VerticalAlignment="Bottom" Margin="-5,0"  />
 
         <StackPanel x:Name="ConnectionsStackPanel">
             

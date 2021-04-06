@@ -6,17 +6,17 @@
              xmlns:local="clr-namespace:OWLOSThingsManager.EcosystemBrowser.BrowserControls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Background="#FFE7E8EC">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="71*"/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal" Grid.Row="0">
-            <Button x:Name="NewConnectionButton" Content="Add" Margin="5" Click="NewConnectionButton_Click"/>
+            <Button x:Name="NewConnectionButton" Content="Create connection" Click="NewConnectionButton_Click" VerticalAlignment="Center"/>
         </StackPanel>
 
         <ScrollViewer Grid.Row="1">
-        <StackPanel x:Name="ThingsListStackPanel" Orientation="Vertical"  Margin="10" >
+        <StackPanel x:Name="ThingsListStackPanel" Orientation="Vertical"  Margin="0,5" >
 
         </StackPanel>
         </ScrollViewer>

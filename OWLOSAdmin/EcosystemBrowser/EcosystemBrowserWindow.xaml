@@ -32,9 +32,9 @@
                 <RowDefinition Height="100*"/>
             </Grid.RowDefinitions>
             <StackPanel x:Name="BrowserTabsPanes" Orientation="Horizontal" Background="#FF5D6B99">
-                
             </StackPanel>
-            <Grid x:Name="BrowserGrid" Grid.Row="2">
+            
+            <Grid x:Name="BrowserGrid" Grid.Row="1">
 
             </Grid>
         </Grid>

@@ -12,11 +12,11 @@
             <ColumnDefinition Width="35"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="35"/>
+            
             <RowDefinition Height="50*"/>
         </Grid.RowDefinitions>
 
 
-        <Grid x:Name="ContentHolder" Grid.Row="1" Grid.ColumnSpan="2" Margin="10"/>
+        <Grid x:Name="ContentHolder" Grid.Row="1" Grid.ColumnSpan="2" Margin="2"/>
     </Grid>
 </UserControl>

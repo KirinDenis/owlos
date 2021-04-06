@@ -6,14 +6,14 @@
              xmlns:local="clr-namespace:OWLOSThingsManager.EcosystemBrowser.BrowserControls"
              mc:Ignorable="d" 
              d:DesignHeight="30" d:DesignWidth="800">
-    <Grid>
+    <Grid Margin="12,5">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="175"/>
             <ColumnDefinition Width="75"/>
             <ColumnDefinition Width="50*"/>
         </Grid.ColumnDefinitions>
         <CheckBox x:Name="NameCheckBox" Content="Get all drivers properties" Grid.ColumnSpan="3" VerticalAlignment="Center" Checked="NameCheckBox_Checked" Unchecked="NameCheckBox_Unchecked"/>
         <TextBox x:Name="IntervalTextBox" Text="123" Grid.Column="1" VerticalAlignment="Center" Margin="5,0" TextChanged="IntervalTextBox_TextChanged"/>
-        <TextBlock Text="seconds" Grid.Column="2" VerticalAlignment="Center"/>
+        <TextBlock Text="sec." Grid.Column="2" VerticalAlignment="Center"/>
     </Grid>
 </UserControl>

@@ -17,7 +17,8 @@
             <ColumnDefinition Width="30"/>
             <ColumnDefinition Width="150"/>
             <ColumnDefinition Width="130"/>
-            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="130"/>
             <ColumnDefinition Width="607*"/>
         </Grid.ColumnDefinitions>
 
@@ -29,24 +30,25 @@
             <ComboBoxItem>MQTT</ComboBoxItem>
             <ComboBoxItem>UART</ComboBoxItem>
         </ComboBox>
+        <Button Grid.Column="3" x:Name="LogViewButton" VerticalAlignment="Center" Click="LogViewButton_Click" Margin="5">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock x:Name="ShowLogTextBlock" Text="Show log" VerticalAlignment="Center" Margin="5,0"/>
+                <TextBlock x:Name="SendTextBlock" Text="send:0" VerticalAlignment="Center" Margin="5,0" Foreground="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}"/>
+                <TextBlock x:Name="RecvTextBlock" Text="recv:0" VerticalAlignment="Center" Margin="5,0" Foreground="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}"/>
+            </StackPanel>
+        </Button>
+        <TextBlock x:Name="StatusTextBlock" Grid.Column="4" Grid.Row="0" Text="OFFLINE" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5"/>
 
-        <TextBlock x:Name="StatusTextBlock" Grid.Column="3" Grid.Row="0" Text="OFFLINE" VerticalAlignment="Center" Margin="5"/>
-
-        <Grid Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="4">
+        <Grid Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100*"/>
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="30"/>
+                <RowDefinition Height="0"/>
                 <RowDefinition Height="100*"/>
             </Grid.RowDefinitions>
-
-            <Button Grid.Row="0" x:Name="LogViewButton" VerticalAlignment="Center" Margin="0,7,0,0" Foreground="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" Content="Show log"  Height="20" HorizontalAlignment="Left" Click="LogViewButton_Click"/>
-            <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
-                <TextBlock x:Name="SendTextBlock" Text="send:0" VerticalAlignment="Center" Margin="5" Foreground="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}"/>
-                <TextBlock x:Name="RecvTextBlock" Grid.Row="1" Grid.ColumnSpan="2" Text="recv:0" VerticalAlignment="Center" Margin="5" Foreground="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}"/>
-            </StackPanel>
+            
 
             <Grid x:Name="LogGrid" Grid.Row="1" Grid.ColumnSpan="2" Visibility="Collapsed">
                 <Grid.ColumnDefinitions>
@@ -64,11 +66,11 @@
                 <GridSplitter VerticalAlignment="Stretch" Grid.RowSpan="2" Width="3" Margin="-5,0,-5,0" Background="{DynamicResource {x:Static SystemColors.ScrollBarBrushKey}}" Panel.ZIndex="1" HorizontalAlignment="Right" />
             </Grid>
         </Grid>
-        <GridSplitter x:Name="LogGridSplitter" Grid.Row="1" VerticalAlignment="Bottom" Grid.ColumnSpan="5" Height="3" Margin="0,-5,0,-5" Background="{DynamicResource {x:Static SystemColors.ScrollBarBrushKey}}" Panel.ZIndex="1" HorizontalAlignment="Stretch" Visibility="Hidden"/>
+        <GridSplitter x:Name="LogGridSplitter" Grid.Row="1" VerticalAlignment="Bottom" Grid.ColumnSpan="6" Height="3" Margin="0,-5,0,-5" Background="{DynamicResource {x:Static SystemColors.ScrollBarBrushKey}}" Panel.ZIndex="1" HorizontalAlignment="Stretch" Visibility="Hidden"/>
 
         <TextBox x:Name="ConnectionStringTextBox" Grid.Column="1" Margin="5,5,5,5" Grid.Row="2"  Grid.ColumnSpan="4" Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"/>
 
-        <Border Background="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}" Height="1" Grid.Column="0" Grid.Row="3"  Grid.ColumnSpan="5" VerticalAlignment="Bottom" Margin="-5,0"  />
+        <Border Background="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}" Height="1" Grid.Column="0" Grid.Row="3"  Grid.ColumnSpan="6" VerticalAlignment="Bottom" Margin="-5,0"  />
 
 
     </Grid>

@@ -62,7 +62,7 @@ namespace OWLOSThingsManager.EcosystemBrowser.BrowserControls
             InitializeComponent();
             this.Thing = Thing;
             this.ThingTransport = ThingTransport;
-           
+
             EnabledCheckBox.IsChecked = ThingTransport.connection.enable;
             NameTextBox.Text = ThingTransport.connection.name;
             TypeComboBox.SelectedIndex = (int)ThingTransport.connection.connectionType;
@@ -84,7 +84,6 @@ namespace OWLOSThingsManager.EcosystemBrowser.BrowserControls
 
         private void ThingTransport_OnLogItem(object sender, LogItem e)
         {
-
             base.Dispatcher.Invoke(() =>
             {
                 if (LogGrid.Visibility == Visibility.Visible)
@@ -118,7 +117,6 @@ namespace OWLOSThingsManager.EcosystemBrowser.BrowserControls
                 }
 
             });
-
         }
 
         private void ThingTransport_OnTransportStatusChanger(object sender, NetworkStatus e)
@@ -157,9 +155,9 @@ namespace OWLOSThingsManager.EcosystemBrowser.BrowserControls
         {
             if (LogGrid.Visibility != Visibility.Visible)
             {
-                LogViewButton.Content = "Hide log";
+                ShowLogTextBlock.Text = "Hide log";
                 LogGrid.Visibility = Visibility.Visible;
-                GridLength NewGridLength; 
+                GridLength NewGridLength;
                 if (MainGrid.RowDefinitions[1].Tag != null)
                 {
                     NewGridLength = (GridLength)MainGrid.RowDefinitions[1].Tag;
@@ -168,13 +166,13 @@ namespace OWLOSThingsManager.EcosystemBrowser.BrowserControls
                 {
                     NewGridLength = new GridLength(350.0f);
                 }
-                
+
                 MainGrid.RowDefinitions[1].Height = NewGridLength;
                 LogGridSplitter.Visibility = Visibility.Visible;
             }
             else
             {
-                LogViewButton.Content = "Show log";
+                ShowLogTextBlock.Text = "Show log";
                 MainGrid.RowDefinitions[1].Tag = MainGrid.RowDefinitions[1].Height;
                 MainGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Auto);
 
