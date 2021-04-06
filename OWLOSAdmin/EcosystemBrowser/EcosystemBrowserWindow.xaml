@@ -19,7 +19,7 @@
             </Grid.RowDefinitions>
             
             <StackPanel Orientation="Horizontal" Background="#FF5D6B99">
-                <TextBlock Text="Nodes Tree" Foreground="White" VerticalAlignment="Center" Margin="5,0" MouseDown="TextBlock_MouseDown"/>
+                <TextBlock Text="Things Tree" Foreground="White" VerticalAlignment="Center" Margin="5,0" MouseDown="TextBlock_MouseDown"/>
             </StackPanel>
 
             <TreeView Grid.Row="1" x:Name="BrowserTreeView">

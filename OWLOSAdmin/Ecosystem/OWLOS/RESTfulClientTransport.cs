@@ -31,11 +31,11 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             } 
         }
 
-        private OWLOSNode node = null;
+        private OWLOSThing Thing = null;
 
-        public RESTfulClientTransport(OWLOSNode node)
+        public RESTfulClientTransport(OWLOSThing Thing)
         {
-            this.node = node;
+            this.Thing = Thing;
         }
 
 
@@ -44,7 +44,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             RESTfulClientResultModel getResult = await Get("getalldriversproperties");
             if (string.IsNullOrEmpty(getResult.error))
             {                
-                node.ParseGetAllDriversProperties(getResult.result);
+                Thing.ParseGetAllDriversProperties(getResult.result);
                 return true;
             }
             else
@@ -58,7 +58,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             RESTfulClientResultModel getResult = await Get("getfilelist?path=");
             if (string.IsNullOrEmpty(getResult.error))
             {
-                node.files.ParseGetAllFiles(getResult.result);
+                Thing.files.ParseGetAllFiles(getResult.result);
                 return true;
             }
             else

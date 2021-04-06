@@ -15,21 +15,21 @@ using System.Windows.Shapes;
 namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
 {
     /// <summary>
-    /// Interaction logic for NodeControl.xaml
+    /// Interaction logic for ThingControl.xaml
     /// </summary>
-    public partial class NodeControl : UserControl
+    public partial class ThingControl : UserControl
     {
-        public PanelControl NodePanelControl;
+        public PanelControl ThingPanelControl;
 
         private PanelControlTag PanelTag;
 
-        public NodeControl(PanelControlTag PanelTag)
+        public ThingControl(PanelControlTag PanelTag)
         {
             InitializeComponent();
             this.PanelTag = PanelTag;
 
-            NodePanelControl = new PanelControl(PanelTag);
-            NodePanelControl.ContentHolder.Children.Add(this);
+            ThingPanelControl = new PanelControl(PanelTag);
+            ThingPanelControl.ContentHolder.Children.Add(this);
         }
     }
 }

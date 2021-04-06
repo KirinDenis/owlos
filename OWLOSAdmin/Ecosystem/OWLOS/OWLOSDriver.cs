@@ -11,7 +11,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
     public class OWLOSDriver
     {
-        public OWLOSNode parentNode = null;
+        public OWLOSThing parentThing = null;
 
         public string name = "";
 
@@ -19,9 +19,9 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         public event PropertyEventHandler OnPropertyCreate;
 
-        public OWLOSDriver(OWLOSNode parentNode, string name)
+        public OWLOSDriver(OWLOSThing parentThing, string name)
         {
-            this.parentNode = parentNode;
+            this.parentThing = parentThing;
             this.name = name;
             
         }

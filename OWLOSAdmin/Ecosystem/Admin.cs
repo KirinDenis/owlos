@@ -9,39 +9,39 @@ using System.IO.Ports;
 
 namespace OWLOSAdmin.Ecosystem
 {
-    public class OWLOSNodeWrapper
+    public class OWLOSThingWrapper
     {
         public Admin CurrentAdmin;
-        public OWLOSNodeWrapper(Admin CurrentAdmin)
+        public OWLOSThingWrapper(Admin CurrentAdmin)
         {
             this.CurrentAdmin = CurrentAdmin;
         }
         public OWLOSTransportOLD transport;
-        public OWLOSNode node = null;
+        public OWLOSThing Thing = null;
         public string RESTfulServerHost = string.Empty;
         public Point explorerPosition;
     }
 
-    public class OWLOSNodeWrapperEventArgs : EventArgs
+    public class OWLOSThingWrapperEventArgs : EventArgs
     {
-        public OWLOSNodeWrapper nodeWrapper;
-        public OWLOSNodeWrapperEventArgs(OWLOSNodeWrapper nodeWrapper)
+        public OWLOSThingWrapper ThingWrapper;
+        public OWLOSThingWrapperEventArgs(OWLOSThingWrapper ThingWrapper)
         {
-            this.nodeWrapper = nodeWrapper;
+            this.ThingWrapper = ThingWrapper;
         }
     }
 
     public class AdminConfig
     {
-        public List<OWLOSNodeConfig> nodesConfig = new List<OWLOSNodeConfig>();
+        public List<OWLOSThingConfig> ThingsConfig = new List<OWLOSThingConfig>();
     }
     public class Admin
     {
 
-        public List<OWLOSNodeWrapper> OWLOSNodeWrappers = new List<OWLOSNodeWrapper>();
+        public List<OWLOSThingWrapper> OWLOSThingWrappers = new List<OWLOSThingWrapper>();
 
-        public delegate void NewNodeEventHandler(object? sender, OWLOSNodeWrapperEventArgs e);
-        public event NewNodeEventHandler OnNewNode;
+        public delegate void NewThingEventHandler(object? sender, OWLOSThingWrapperEventArgs e);
+        public event NewThingEventHandler OnNewThing;
 
         public AdminConfig config = new AdminConfig();
 
@@ -58,7 +58,7 @@ namespace OWLOSAdmin.Ecosystem
             }
             else //reset config
             {
-                OWLOSNodeConfig _OWLOSNodeConfig = new OWLOSNodeConfig
+                OWLOSThingConfig _OWLOSThingConfig = new OWLOSThingConfig
                 {
                     Name = "OWLOS Thing"
                 };
@@ -76,7 +76,7 @@ namespace OWLOSAdmin.Ecosystem
                 // _RESTfulClientConnectionDTO.port = 80;
                 _RESTfulClientConnection.connectionString = JsonConvert.SerializeObject(_RESTfulClientConnectionDTO);
 
-                _OWLOSNodeConfig.connections.Add(_RESTfulClientConnection);
+                _OWLOSThingConfig.connections.Add(_RESTfulClientConnection);
 
                 /*
 
@@ -84,9 +84,9 @@ namespace OWLOSAdmin.Ecosystem
                 _RESTfulClientConnection.connectionType = ConnectionType.UART;
                 _RESTfulClientConnection.name = "UART";
                 _RESTfulClientConnection.host = "COM7";
-                _OWLOSNodeConfig.connections.Add(_RESTfulClientConnection);
+                _OWLOSThingConfig.connections.Add(_RESTfulClientConnection);
 
-                config.nodesConfig.Add(_OWLOSNodeConfig);
+                config.ThingsConfig.Add(_OWLOSThingConfig);
                 */
 
 
@@ -108,9 +108,9 @@ namespace OWLOSAdmin.Ecosystem
                 };
                 _UARTClientConnection.connectionString = JsonConvert.SerializeObject(_UARTClientConnectionDTO);
 
-                _OWLOSNodeConfig.connections.Add(_UARTClientConnection);
+                _OWLOSThingConfig.connections.Add(_UARTClientConnection);
 
-                _OWLOSNodeConfig.APIQueryIntervals = new List<APIQueryInterval>() {
+                _OWLOSThingConfig.APIQueryIntervals = new List<APIQueryInterval>() {
             new APIQueryInterval()
             {
                 APIType = APINameType.GetAllDriverProperties,
@@ -128,19 +128,19 @@ namespace OWLOSAdmin.Ecosystem
             }
             };
 
-                config.nodesConfig.Add(_OWLOSNodeConfig);
+                config.ThingsConfig.Add(_OWLOSThingConfig);
 
             }
             //Save each time before development - add new fields to JSON
             Save();
-            foreach (OWLOSNodeConfig _OWLOSNodeConfig in config.nodesConfig)
+            foreach (OWLOSThingConfig _OWLOSThingConfig in config.ThingsConfig)
             {
-                OWLOSNodeWrapper nodeWrapper = new OWLOSNodeWrapper(this)
+                OWLOSThingWrapper ThingWrapper = new OWLOSThingWrapper(this)
                 {
-                    node = new OWLOSNode(_OWLOSNodeConfig)
+                    Thing = new OWLOSThing(_OWLOSThingConfig)
                 };
-                OWLOSNodeWrappers.Add(nodeWrapper);
-                NewNode(new OWLOSNodeWrapperEventArgs(nodeWrapper));
+                OWLOSThingWrappers.Add(ThingWrapper);
+                NewThing(new OWLOSThingWrapperEventArgs(ThingWrapper));
             }
         }
 
@@ -150,9 +150,9 @@ namespace OWLOSAdmin.Ecosystem
             File.WriteAllText("config.json", JSONConfig);
         }
 
-        protected virtual void NewNode(OWLOSNodeWrapperEventArgs e)
+        protected virtual void NewThing(OWLOSThingWrapperEventArgs e)
         {
-            OnNewNode?.Invoke(this, e);
+            OnNewThing?.Invoke(this, e);
         }
 
     }

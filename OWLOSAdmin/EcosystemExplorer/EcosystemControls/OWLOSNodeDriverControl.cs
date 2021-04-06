@@ -51,7 +51,7 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
     /// <summary>
     /// Наружный леписток с именем драйвера и доступом к свойствам драйвера по клику
     /// </summary>
-    public partial class OWLOSNodeDriverControl : OWLOSPetalControl
+    public partial class OWLOSThingDriverControl : OWLOSPetalControl
     {
         /// <summary>
         /// элемент - таблица со свойствами драйвера 
@@ -63,7 +63,7 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
         /// </summary>
         private readonly OWLOSDriver driver = null;
 
-        public OWLOSNodeDriverControl(OWLOSNodeControl parentOWLOSNodeControl, OWLOSDriver driver, double radius, double angel, double length, double width) : base(parentOWLOSNodeControl, radius, angel, length, width)
+        public OWLOSThingDriverControl(OWLOSThingControl parentOWLOSThingControl, OWLOSDriver driver, double radius, double angel, double length, double width) : base(parentOWLOSThingControl, radius, angel, length, width)
         {
             Rotate(angel);
             this.driver = driver;

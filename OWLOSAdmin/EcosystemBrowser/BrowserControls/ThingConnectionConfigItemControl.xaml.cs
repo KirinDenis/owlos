@@ -17,30 +17,30 @@ using System.Windows.Shapes;
 namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
 {
     /// <summary>
-    /// Interaction logic for NodeConnectionConfigItemControl.xaml
+    /// Interaction logic for ThingConnectionConfigItemControl.xaml
     /// </summary>
-    public partial class NodeConnectionConfigItemControl : UserControl
+    public partial class ThingConnectionConfigItemControl : UserControl
     {
-        private OWLOSNode Node;
-        private OWLOSTransport NodeTransport;
+        private OWLOSThing Thing;
+        private OWLOSTransport ThingTransport;
 
         private int logCount;
 
         private LogControl OutLogControl;
         private LogControl InLogControl;
-        public NodeConnectionConfigItemControl(OWLOSNode Node, OWLOSTransport NodeTransport)
+        public ThingConnectionConfigItemControl(OWLOSThing Thing, OWLOSTransport ThingTransport)
         {
             InitializeComponent();
-            this.Node = Node;
-            this.NodeTransport = NodeTransport;
+            this.Thing = Thing;
+            this.ThingTransport = ThingTransport;
            
-            EnabledCheckBox.IsChecked = NodeTransport.connection.enable;
-            NameTextBox.Text = NodeTransport.connection.name;
-            TypeComboBox.SelectedIndex = (int)NodeTransport.connection.connectionType;
-            ConnectionStringTextBox.Text = NodeTransport.connection.connectionString;
+            EnabledCheckBox.IsChecked = ThingTransport.connection.enable;
+            NameTextBox.Text = ThingTransport.connection.name;
+            TypeComboBox.SelectedIndex = (int)ThingTransport.connection.connectionType;
+            ConnectionStringTextBox.Text = ThingTransport.connection.connectionString;
 
-            NodeTransport.OnTransportStatusChanger += NodeTransport_OnTransportStatusChanger;
-            NodeTransport.OnLogItem += NodeTransport_OnLogItem;
+            ThingTransport.OnTransportStatusChanger += ThingTransport_OnTransportStatusChanger;
+            ThingTransport.OnLogItem += ThingTransport_OnLogItem;
 
             OutLogControl = new LogControl();
             OutLogControl.SetValue(Grid.ColumnProperty, 0);
@@ -53,7 +53,7 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
             LogGrid.Children.Add(InLogControl);
         }
 
-        private void NodeTransport_OnLogItem(object sender, LogItem e)
+        private void ThingTransport_OnLogItem(object sender, LogItem e)
         {
 
             base.Dispatcher.Invoke(() =>
@@ -92,7 +92,7 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
 
         }
 
-        private void NodeTransport_OnTransportStatusChanger(object sender, NetworkStatus e)
+        private void ThingTransport_OnTransportStatusChanger(object sender, NetworkStatus e)
         {
             base.Dispatcher.Invoke(() =>
             {
@@ -119,8 +119,8 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
                         break;
                 }
 
-                SendTextBlock.Text = "send: " + NodeTransport.totlaSend.ToString();
-                RecvTextBlock.Text = "recv: " + NodeTransport.totlaRecv.ToString();
+                SendTextBlock.Text = "send: " + ThingTransport.totlaSend.ToString();
+                RecvTextBlock.Text = "recv: " + ThingTransport.totlaRecv.ToString();
             });
         }
 

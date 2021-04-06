@@ -140,7 +140,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             try
             {
                 /*
-                string result = await driver.parentNode.wrapper.transport.GetDriverProperty(driver.name, this.name);
+                string result = await driver.parentThing.wrapper.transport.GetDriverProperty(driver.name, this.name);
 
                 if (result.IndexOf("%error") != 0)
                 {
@@ -173,7 +173,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
             networkStatus = NetworkStatus.Reconnect;
 
-            bool result = await driver.parentNode.SetDriverProperty(driver.name, this.name, _value);
+            bool result = await driver.parentThing.SetDriverProperty(driver.name, this.name, _value);
 
             if (result)
             {
@@ -190,7 +190,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             try
             {
                 /*
-                string result = await driver.parentNode.wrapper.transport.SetDriverProperty(driver.name, this.name, _value);
+                string result = await driver.parentThing.wrapper.transport.SetDriverProperty(driver.name, this.name, _value);
 
                 if (result.IndexOf("%error") != 0)
                 {

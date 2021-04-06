@@ -15,15 +15,15 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
     public class OWLOSTransportOLD
     {
-        private readonly OWLOSNode node = null;
+        private readonly OWLOSThing Thing = null;
         public string RESTfulServerHost = "";
         public int RESTfulServerPort = 80;
         private Timer lifeCycleTimer;
 
 
-        public OWLOSTransportOLD(OWLOSNode node)
+        public OWLOSTransportOLD(OWLOSThing Thing)
         {
-            this.node = node;
+            this.Thing = Thing;
         }
         public void Start()
         {
@@ -67,7 +67,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             {
                 try
                 {
-                 //   await node.parseDrivers(driverPoperties);
+                 //   await Thing.parseDrivers(driverPoperties);
                     return true;
                 }
                 catch { }
@@ -83,7 +83,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             {
                 try
                 {
-                   // await node.parseDrivers(driverPoperties);
+                   // await Thing.parseDrivers(driverPoperties);
                     return true;
                 }
                 catch { }

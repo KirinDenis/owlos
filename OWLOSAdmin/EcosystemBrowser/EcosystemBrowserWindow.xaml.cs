@@ -53,40 +53,40 @@ namespace OWLOSAdmin.EcosystemBrowser
     public partial class EcosystemBrowserWindow : Window
     {
 
-        private TreeViewItem NodesTreeViewItem;
-        private NodesListControl ActiveNodesLisControl;
+        private TreeViewItem ThingsTreeViewItem;
+        private ThingsListControl ActiveThingsLisControl;
 
-        private Admin NodesAdmin = new Admin();
+        private Admin ThingsAdmin = new Admin();
         public EcosystemBrowserWindow()
         {
             InitializeComponent();
 
             Icon = Icons.GetIcon(316);
 
-            NodesAdmin = new Admin();
+            ThingsAdmin = new Admin();
 
 
-            NodesTreeViewItem = new TreeViewItem();
-            NodesTreeViewItem.Header = TreeViewItemHeaderControl.Create(Icons.GetIcon(316), "Nodes");
-            NodesTreeViewItem.MouseDoubleClick += NodesTreeViewItem_MouseDoubleClick;
+            ThingsTreeViewItem = new TreeViewItem();
+            ThingsTreeViewItem.Header = TreeViewItemHeaderControl.Create(Icons.GetIcon(316), "Things");
+            ThingsTreeViewItem.MouseDoubleClick += ThingsTreeViewItem_MouseDoubleClick;
 
-            BrowserTreeView.Items.Add(NodesTreeViewItem);
+            BrowserTreeView.Items.Add(ThingsTreeViewItem);
 
-            NodesAdmin.OnNewNode += Admin_NewOWLOSNode;
-            NodesAdmin.Load();
+            ThingsAdmin.OnNewThing += Admin_NewOWLOSThing;
+            ThingsAdmin.Load();
 
-            ActiveNodesLisControl = new NodesListControl(new PanelControlTag
+            ActiveThingsLisControl = new ThingsListControl(new PanelControlTag
             {
-                Name = "Nodes",
-                Node = null,
+                Name = "Things",
+                Thing = null,
                 BrowserGrid = BrowserGrid,
                 BrowserTabsPanel = BrowserTabsPanes
-            }, NodesAdmin);
+            }, ThingsAdmin);
 
 
         }
 
-        private void NodesTreeViewItem_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void ThingsTreeViewItem_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (sender is TreeViewItem)
             {
@@ -96,20 +96,20 @@ namespace OWLOSAdmin.EcosystemBrowser
                 }
             }
 
-            ActiveNodesLisControl.NodesListPanelControl.Show();
+            ActiveThingsLisControl.ThingsListPanelControl.Show();
         }
 
-        private void Admin_NewOWLOSNode(object sender, OWLOSNodeWrapperEventArgs e)
+        private void Admin_NewOWLOSThing(object sender, OWLOSThingWrapperEventArgs e)
         {
-            OWLOSNode NewNode = e.nodeWrapper.node;
-            NodeItemsHolder NewNodeItemsHolder = new NodeItemsHolder(new PanelControlTag
+            OWLOSThing NewThing = e.ThingWrapper.Thing;
+            ThingItemsHolder NewThingItemsHolder = new ThingItemsHolder(new PanelControlTag
             {
-                Name = "OWLOS Node",
-                Node = NewNode, 
+                Name = "OWLOS Thing",
+                Thing = NewThing, 
                 BrowserGrid = BrowserGrid, 
                 BrowserTabsPanel = BrowserTabsPanes 
             });
-            NodesTreeViewItem.Items.Add(NewNodeItemsHolder.NodeBrowserItem);
+            ThingsTreeViewItem.Items.Add(NewThingItemsHolder.ThingBrowserItem);
             
         }
 

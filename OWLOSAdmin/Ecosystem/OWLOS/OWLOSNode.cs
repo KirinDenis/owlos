@@ -50,7 +50,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 {
     /*
 
-    admin side          |    node side       
+    admin side          |    Thing side       
                         |
                         |
 
@@ -67,7 +67,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
     }
 
 
-    public class OWLOSNodeConfig    
+    public class OWLOSThingConfig    
     {
         public string Name;
         public DateTime LastConnected;
@@ -78,7 +78,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
     }
 
-    public class OWLOSNode : IOWLOSAbstractTransport
+    public class OWLOSThing : IOWLOSAbstractTransport
     {
         public string Name;
 
@@ -92,14 +92,14 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
                
         public List<IOWLOSTransport> transports = new List<IOWLOSTransport>();
 
-        public OWLOSNodeConfig config = null;
+        public OWLOSThingConfig config = null;
 
         private Timer lifeCycleTimer;
 
         private readonly RESTfulClientTransport _RESTfulClientTransport;
         private readonly UARTTransport _UARTTransport;
 
-        public OWLOSNode(OWLOSNodeConfig config)
+        public OWLOSThing(OWLOSThingConfig config)
         {
             this.config = config;
 
@@ -235,7 +235,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
         }
 
-        public async Task ParseNodePublish(string data)
+        public async Task ParseThingPublish(string data)
         {
             data = data.Substring(data.IndexOf(" ") + 1);
             string topic = data.Substring(0, data.IndexOf(" "));
@@ -363,7 +363,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             driver.id = 20;
             driver.id += 50;
             //  driver.set();
-          //  driver.SetMember("topic", "node/kitchen");
+          //  driver.SetMember("topic", "Thing/kitchen");
             String a = driver.topic;
             driver.topic = "1234";
             //driver(2, 3);

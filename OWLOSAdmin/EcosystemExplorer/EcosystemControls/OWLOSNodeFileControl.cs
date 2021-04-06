@@ -51,7 +51,7 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
     /// <summary>
     /// Наружный лепесток с сетевым состоянием
     /// </summary>
-    public partial class OWLOSNodeFileControl : OWLOSPetalControl
+    public partial class OWLOSThingFileControl : OWLOSPetalControl
     {
         /// <summary>
         /// элемент - таблица со свойствами драйвера 
@@ -63,7 +63,7 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
         /// </summary>
         private readonly OWLOSFiles files;
 
-        public OWLOSNodeFileControl(OWLOSNodeControl parentOWLOSNodeControl, OWLOSFiles files, double radius, double angel, double length, double width) : base(parentOWLOSNodeControl, radius, angel, length, width)
+        public OWLOSThingFileControl(OWLOSThingControl parentOWLOSThingControl, OWLOSFiles files, double radius, double angel, double length, double width) : base(parentOWLOSThingControl, radius, angel, length, width)
         {
             Rotate(angel);
             this.files = files;
@@ -74,13 +74,13 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
             fileCountrol.parentControl.Visibility = Visibility.Hidden;
             fileCountrol.parentControl.Hide();
 
-            (parentOWLOSNodeControl.parentControl.Parent as Grid).Children.Add(fileCountrol.parentControl);
+            (parentOWLOSThingControl.parentControl.Parent as Grid).Children.Add(fileCountrol.parentControl);
 
             //Название драйвера, смотрите UserControl_Loaded - пересчет извиба надписи
             petalNameText.Text = "files";
 
             //создаем и настраиваем соеденительную линию
-            relationLine = new EcosystemRelationLine(fileCountrol, fileCountrol.parentControl, connector, fileCountrol, parentOWLOSNodeControl.parentControl.Parent as Grid);
+            relationLine = new EcosystemRelationLine(fileCountrol, fileCountrol.parentControl, connector, fileCountrol, parentOWLOSThingControl.parentControl.Parent as Grid);
 
             petalBackground.PreviewMouseLeftButtonDown += petalBackground_PreviewMouseLeftButtonDown;
         }
@@ -136,8 +136,8 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
                 if (relationLine.curveLine == null)
                 {
                     //вычисляем с какой стороны от hud ноды находится леписток драйвера и вычисляем позицию элемента таблицы относительно hud ноды
-                    double xr = 700 * Math.Cos(angel * Math.PI / 180 - Math.PI / 2) + parentOWLOSNodeControl.parentControl.transform.X;
-                    double yr = 700 * Math.Sin(angel * Math.PI / 180 - Math.PI / 2) + parentOWLOSNodeControl.parentControl.transform.Y;
+                    double xr = 700 * Math.Cos(angel * Math.PI / 180 - Math.PI / 2) + parentOWLOSThingControl.parentControl.transform.X;
+                    double yr = 700 * Math.Sin(angel * Math.PI / 180 - Math.PI / 2) + parentOWLOSThingControl.parentControl.transform.Y;
                     fileCountrol.parentControl.MoveTransform(xr, yr);
 
                     relationLine.DrawRelationLine(((SolidColorBrush)App.Current.Resources["OWLOSWarning"]).Color.ToString(), ((SolidColorBrush)App.Current.Resources["OWLOSWarning"]).Color.ToString());

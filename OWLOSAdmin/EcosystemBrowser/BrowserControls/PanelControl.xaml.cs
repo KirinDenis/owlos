@@ -18,12 +18,12 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
     public class PanelControlTag
     {
         public string Name;
-        public OWLOSNode Node;
+        public OWLOSThing Thing;
         public Grid BrowserGrid;
         public StackPanel BrowserTabsPanel;
     }
     /// <summary>
-    /// Interaction logic for NodeControl.xaml
+    /// Interaction logic for ThingControl.xaml
     /// </summary>
     public partial class PanelControl : UserControl
     {

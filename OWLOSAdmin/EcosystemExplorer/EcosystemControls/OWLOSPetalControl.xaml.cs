@@ -59,7 +59,7 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
         /// <summary>
         /// нода которой принадлежит этот лепесток
         /// </summary>
-        protected OWLOSNodeControl parentOWLOSNodeControl;
+        protected OWLOSThingControl parentOWLOSThingControl;
 
         /// <summary>
         /// графический элемент, указывает конец связывающей линии
@@ -87,17 +87,17 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
 
         protected EcosystemControl relatedPanel = null;
 
-        public OWLOSPetalControl(OWLOSNodeControl parentOWLOSNodeControl, double radius, double angel, double length, double width)
+        public OWLOSPetalControl(OWLOSThingControl parentOWLOSThingControl, double radius, double angel, double length, double width)
         {
 
             InitializeComponent();
 
-            this.parentOWLOSNodeControl = parentOWLOSNodeControl;
+            this.parentOWLOSThingControl = parentOWLOSThingControl;
             this.radius = radius;
             this.angel = angel;
             this.length = length;
 
-            parentOWLOSNodeControl.parentControl.OnPositionChanged += ParentControl_OnPositionChanged;
+            parentOWLOSThingControl.parentControl.OnPositionChanged += ParentControl_OnPositionChanged;
 
             double startAngel = 0;
             petalBackground.Data = HudLibrary.DrawArc(Gold.center, Gold.center, radius, startAngel, length);
@@ -139,12 +139,12 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
 
             //контролируем родительский элемент (hud ноды) если он начнем перемещатся по экосистеме
             //перерисуем соединительную линию
-            (parentOWLOSNodeControl.parentControl.Parent as Grid).Children.Add(relatedPanel);
+            (parentOWLOSThingControl.parentControl.Parent as Grid).Children.Add(relatedPanel);
 
 
             //создаем и настраиваем соеденительную линию
-            //relationLine = new EcosystemRelationLine(relatedPanel, relatedPanel, connector, driverCountrol, parentOWLOSNodeControl.parentControl.Parent as Grid);
-            relationLine = new EcosystemRelationLine(relatedPanel, relatedPanel, connector, relatedPanel, parentOWLOSNodeControl.parentControl.Parent as Grid);
+            //relationLine = new EcosystemRelationLine(relatedPanel, relatedPanel, connector, driverCountrol, parentOWLOSThingControl.parentControl.Parent as Grid);
+            relationLine = new EcosystemRelationLine(relatedPanel, relatedPanel, connector, relatedPanel, parentOWLOSThingControl.parentControl.Parent as Grid);
             
 
             petalBackground.PreviewMouseLeftButtonDown += petalBackground_PreviewMouseLeftButtonDown;
@@ -179,8 +179,8 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
                 if (relationLine.curveLine == null)
                 {
                     //вычисляем с какой стороны от hud ноды находится леписток драйвера и вычисляем позицию элемента таблицы относительно hud ноды
-                    double xr = 1000 * Math.Cos(angel * Math.PI / 180 - Math.PI / 2) + parentOWLOSNodeControl.parentControl.transform.X;
-                    double yr = 1000 * Math.Sin(angel * Math.PI / 180 - Math.PI / 2) + parentOWLOSNodeControl.parentControl.transform.Y;
+                    double xr = 1000 * Math.Cos(angel * Math.PI / 180 - Math.PI / 2) + parentOWLOSThingControl.parentControl.transform.X;
+                    double yr = 1000 * Math.Sin(angel * Math.PI / 180 - Math.PI / 2) + parentOWLOSThingControl.parentControl.transform.Y;
                     relatedPanel.MoveTransform(xr, yr);
 
                     relationLine.DrawRelationLine(((SolidColorBrush)App.Current.Resources["OWLOSWarning"]).Color.ToString(), ((SolidColorBrush)App.Current.Resources["OWLOSWarning"]).Color.ToString());

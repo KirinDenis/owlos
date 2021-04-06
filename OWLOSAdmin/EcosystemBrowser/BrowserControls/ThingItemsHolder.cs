@@ -50,68 +50,68 @@ using System.Windows.Input;
 namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
 {
 
-    public class NodeDriverItemTag
+    public class ThingDriverItemTag
     {
-        public OWLOSNode Node;
+        public OWLOSThing Thing;
         public OWLOSDriver Driver;
-        public NodeItemsHolder ParentNodeItemsHolder;        
+        public ThingItemsHolder ParentThingItemsHolder;        
         public DriverControl DriverBrowserControl = null;
     }
-    public class NodeItemsHolder
+    public class ThingItemsHolder
     {
         private PanelControlTag PanelTag;
 
-        private NodeControl NodeBrowserControl = null;
+        private ThingControl ThingBrowserControl = null;
         
-        public TreeViewItem NodeBrowserItem;
+        public TreeViewItem ThingBrowserItem;
         public TreeViewItem TransportsBrowserItem;
         public TreeViewItem DriversBrowserItem;
         public TreeViewItem ScriptsBrowserItem;
         public TreeViewItem FilesBrowserItem;
-        public NodeItemsHolder(PanelControlTag PanelTag)
+        public ThingItemsHolder(PanelControlTag PanelTag)
         {
 
             this.PanelTag = PanelTag;
 
-            NodeBrowserItem = new TreeViewItem();
-            NodeBrowserItem.Header = TreeViewItemHeaderControl.Create(Icons.GetIcon(65), PanelTag.Name);
-            NodeBrowserItem.Tag = this;
-            NodeBrowserItem.MouseDoubleClick += NodeBrowserItem_MouseDoubleClick;
+            ThingBrowserItem = new TreeViewItem();
+            ThingBrowserItem.Header = TreeViewItemHeaderControl.Create(Icons.GetIcon(65), PanelTag.Name);
+            ThingBrowserItem.Tag = this;
+            ThingBrowserItem.MouseDoubleClick += ThingBrowserItem_MouseDoubleClick;
 
             TransportsBrowserItem = new TreeViewItem();
             TransportsBrowserItem.Header = TreeViewItemHeaderControl.Create(Icons.GetIcon(136), "Transport");
             TransportsBrowserItem.Tag = this;
-            NodeBrowserItem.Items.Add(TransportsBrowserItem);
+            ThingBrowserItem.Items.Add(TransportsBrowserItem);
 
             DriversBrowserItem = new TreeViewItem();
             DriversBrowserItem.Header = TreeViewItemHeaderControl.Create(Icons.GetIcon(919), "Drivers");
             DriversBrowserItem.Tag = this;
-            NodeBrowserItem.Items.Add(DriversBrowserItem);
+            ThingBrowserItem.Items.Add(DriversBrowserItem);
 
             ScriptsBrowserItem = new TreeViewItem();
             ScriptsBrowserItem.Header = TreeViewItemHeaderControl.Create(Icons.GetIcon(1633), "Scripts");
             ScriptsBrowserItem.Tag = this;
-            NodeBrowserItem.Items.Add(ScriptsBrowserItem);
+            ThingBrowserItem.Items.Add(ScriptsBrowserItem);
 
             FilesBrowserItem = new TreeViewItem();
             FilesBrowserItem.Header = TreeViewItemHeaderControl.Create(Icons.GetIcon(471), "Files");
             FilesBrowserItem.Tag = this;
-            NodeBrowserItem.Items.Add(FilesBrowserItem);
+            ThingBrowserItem.Items.Add(FilesBrowserItem);
 
-            foreach (IOWLOSTransport NodeTransport in PanelTag.Node.transports)
+            foreach (IOWLOSTransport ThingTransport in PanelTag.Thing.transports)
             {
-                TreeViewItem NodeTransportItem = new TreeViewItem();
-                NodeTransportItem.Header = NodeTransport.connection.name;
-                NodeTransportItem.Tag = NodeTransport;
-                TransportsBrowserItem.Items.Add(NodeTransportItem);
+                TreeViewItem ThingTransportItem = new TreeViewItem();
+                ThingTransportItem.Header = ThingTransport.connection.name;
+                ThingTransportItem.Tag = ThingTransport;
+                TransportsBrowserItem.Items.Add(ThingTransportItem);
 
             }
 
-            PanelTag.Node.OnNewDriver += NewNode_OnNewDriver;
+            PanelTag.Thing.OnNewDriver += NewThing_OnNewDriver;
 
         }
 
-        private void NodeBrowserItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void ThingBrowserItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (sender is TreeViewItem)
             {
@@ -121,44 +121,44 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
                 }
             }
 
-            if (NodeBrowserControl == null)
+            if (ThingBrowserControl == null)
             {                
-                NodeBrowserControl = new NodeControl(PanelTag);
+                ThingBrowserControl = new ThingControl(PanelTag);
             }
-            NodeBrowserControl.NodePanelControl.Show();
+            ThingBrowserControl.ThingPanelControl.Show();
 
         }
 
-        private void NewNode_OnNewDriver(object sender, OWLOSDriverWrapperEventArgs e)
+        private void NewThing_OnNewDriver(object sender, OWLOSDriverWrapperEventArgs e)
         {
-            TreeViewItem NodeDriverItem = new TreeViewItem();            
-            NodeDriverItem.Header = e.driver.name;
+            TreeViewItem ThingDriverItem = new TreeViewItem();            
+            ThingDriverItem.Header = e.driver.name;
 
 
-            NodeDriverItem.Tag = new NodeDriverItemTag
+            ThingDriverItem.Tag = new ThingDriverItemTag
             {
-                Node = PanelTag.Node,
+                Thing = PanelTag.Thing,
                 Driver = e.driver,
-                ParentNodeItemsHolder = this                
+                ParentThingItemsHolder = this                
             };
                 
-            NodeDriverItem.MouseDoubleClick += NodeDriverItem_MouseDoubleClick;
+            ThingDriverItem.MouseDoubleClick += ThingDriverItem_MouseDoubleClick;
 
-            DriversBrowserItem.Items.Add(NodeDriverItem);
+            DriversBrowserItem.Items.Add(ThingDriverItem);
             
 
         }
 
-        private void NodeDriverItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void ThingDriverItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            NodeDriverItemTag ClickedNodeDriverItemTag = (sender as TreeViewItem).Tag as NodeDriverItemTag;
+            ThingDriverItemTag ClickedThingDriverItemTag = (sender as TreeViewItem).Tag as ThingDriverItemTag;
 
-            if (ClickedNodeDriverItemTag.DriverBrowserControl == null)
+            if (ClickedThingDriverItemTag.DriverBrowserControl == null)
             {
-                PanelTag.Name = ClickedNodeDriverItemTag.Driver.name;
-                ClickedNodeDriverItemTag.DriverBrowserControl = new DriverControl(PanelTag, ClickedNodeDriverItemTag);
+                PanelTag.Name = ClickedThingDriverItemTag.Driver.name;
+                ClickedThingDriverItemTag.DriverBrowserControl = new DriverControl(PanelTag, ClickedThingDriverItemTag);
             }
-            ClickedNodeDriverItemTag.DriverBrowserControl.NodePanelControl.Show();
+            ClickedThingDriverItemTag.DriverBrowserControl.ThingPanelControl.Show();
 
             
         }

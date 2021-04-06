@@ -20,19 +20,19 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
     /// </summary>
     public partial class DriverControl : UserControl
     {
-        public PanelControl NodePanelControl;
+        public PanelControl ThingPanelControl;
 
-        private NodeDriverItemTag DriverItemTag;
+        private ThingDriverItemTag DriverItemTag;
 
         private int PropertiesCounter = 0;
 
-        public DriverControl(PanelControlTag PanelTag, NodeDriverItemTag DriverItemTag)
+        public DriverControl(PanelControlTag PanelTag, ThingDriverItemTag DriverItemTag)
         {
             InitializeComponent();
             this.DriverItemTag = DriverItemTag;
 
-            NodePanelControl = new PanelControl(PanelTag);
-            NodePanelControl.ContentHolder.Children.Add(this);
+            ThingPanelControl = new PanelControl(PanelTag);
+            ThingPanelControl.ContentHolder.Children.Add(this);
 
             foreach (OWLOSDriverProperty DriverProperty in DriverItemTag.Driver.properties)
             {

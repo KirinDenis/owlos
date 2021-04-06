@@ -128,14 +128,14 @@ namespace OWLOSAdmin.EcosystemExplorer
             //Временно для теста нод ----------
             Admin admin = new Admin();
             adminControl = new EcosystemControl(null);
-            nodeGrid.Children.Add(adminControl);
+            ThingGrid.Children.Add(adminControl);
 
-            admin.OnNewNode += Admin_NewOWLOSNode;
+            admin.OnNewThing += Admin_NewOWLOSThing;
             admin.Load();
             //END OF Временно для теста нод ---
 
             //Настраиваем разметы элементы в зависимости от выбраного размера сетки
-            nodeGrid.Width = nodeGrid.Height = cellSize;
+            ThingGrid.Width = ThingGrid.Height = cellSize;
             viewbox.Width = viewbox.Height = cellSize / 10;
 
             autoScrollImage.Tag = 0;
@@ -166,13 +166,13 @@ namespace OWLOSAdmin.EcosystemExplorer
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Admin_NewOWLOSNode(object sender, OWLOSNodeWrapperEventArgs e)
+        private void Admin_NewOWLOSThing(object sender, OWLOSThingWrapperEventArgs e)
         {
             
             
-                OWLOSNodeControl nodeCountrol1 = new OWLOSNodeControl(e.nodeWrapper);
-                nodeGrid.Children.Add(nodeCountrol1.parentControl);
-                nodeCountrol1.parentControl.Show();
+                OWLOSThingControl ThingCountrol1 = new OWLOSThingControl(e.ThingWrapper);
+                ThingGrid.Children.Add(ThingCountrol1.parentControl);
+                ThingCountrol1.parentControl.Show();
             
         }
 
@@ -371,13 +371,13 @@ namespace OWLOSAdmin.EcosystemExplorer
                 {
                     Orientation = Orientation.Horizontal
                 };
-                nodeLines.Children.Add(horizontalVirtualStackPanel);
+                ThingLines.Children.Add(horizontalVirtualStackPanel);
                 //Поле для маленьких линий
                 VirtualizingStackPanel smallHorizontalVirtualStackPanel = new VirtualizingStackPanel
                 {
                     Orientation = Orientation.Horizontal
                 };
-                smallNodeLines.Children.Add(smallHorizontalVirtualStackPanel);
+                smallThingLines.Children.Add(smallHorizontalVirtualStackPanel);
                 for (int posX = 0; posX < bitmapLength; posX++)
                 {
                     BitmapSource bitmapSource;
@@ -476,13 +476,13 @@ namespace OWLOSAdmin.EcosystemExplorer
 
             if (currentZoom < 40)
             {
-                smallNodeLines.Visibility = Visibility.Hidden;
+                smallThingLines.Visibility = Visibility.Hidden;
             }
             else
             {
                 if ((int)drawCellImage.Tag == 1)
                 {
-                    smallNodeLines.Visibility = Visibility.Visible;
+                    smallThingLines.Visibility = Visibility.Visible;
                 }
             }
         }
@@ -614,8 +614,8 @@ namespace OWLOSAdmin.EcosystemExplorer
         /// <param name="e"></param>
         private void EcosystemExplorerGrid_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            //int x = (int)e.GetPosition(nodeGrid).X;
-            //int y = (int)e.GetPosition(nodeGrid).Y;
+            //int x = (int)e.GetPosition(ThingGrid).X;
+            //int y = (int)e.GetPosition(ThingGrid).Y;
 
             if (e.MiddleButton == MouseButtonState.Pressed)
             {
@@ -686,12 +686,12 @@ namespace OWLOSAdmin.EcosystemExplorer
         }
 
 
-        private void nodeGrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        private void ThingGrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             //
         }
 
-        private void nodeGrid_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void ThingGrid_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             //
         }
@@ -749,16 +749,16 @@ namespace OWLOSAdmin.EcosystemExplorer
             if ((int)drawCellImage.Tag == 1)
             {
                 drawCellImage.Tag = 0;
-                verticalNavigationGrid.Visibility = horisontalNavigationGrid.Visibility = smallNodeLines.Visibility = nodeLines.Visibility = Visibility.Hidden;
+                verticalNavigationGrid.Visibility = horisontalNavigationGrid.Visibility = smallThingLines.Visibility = ThingLines.Visibility = Visibility.Hidden;
                                 
             }
             else
             {
                 drawCellImage.Tag = 1;
-                verticalNavigationGrid.Visibility = horisontalNavigationGrid.Visibility =  nodeLines.Visibility = Visibility.Visible;
+                verticalNavigationGrid.Visibility = horisontalNavigationGrid.Visibility =  ThingLines.Visibility = Visibility.Visible;
                 if (currentZoom > 40)
                 {
-                    smallNodeLines.Visibility = Visibility.Visible;
+                    smallThingLines.Visibility = Visibility.Visible;
                 }
             }
 

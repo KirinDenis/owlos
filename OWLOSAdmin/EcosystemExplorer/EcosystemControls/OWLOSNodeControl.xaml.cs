@@ -84,9 +84,9 @@ namespace OWLOSAdmin.EcosystemExplorer
     }
 
     /// <summary>
-    /// Interaction logic for OWLOSNodeControl.xaml
+    /// Interaction logic for OWLOSThingControl.xaml
     /// </summary>
-    public partial class OWLOSNodeControl : UserControl, IEcosystemChildControl
+    public partial class OWLOSThingControl : UserControl, IEcosystemChildControl
     {
 
         public EcosystemControl parentControl { get; set; }
@@ -95,7 +95,7 @@ namespace OWLOSAdmin.EcosystemExplorer
         private double transportRadius = Gold.radius - Gold.radius2 + (Gold.radius2 - Gold.radius3) / 2;
         private double angel1 = 0;
 
-        private OWLOSNodeWrapper nodeWrapper;
+        private OWLOSThingWrapper ThingWrapper;
 
         public int driversCount = 0;
 
@@ -111,7 +111,7 @@ namespace OWLOSAdmin.EcosystemExplorer
         private double PowerAngelLimit = 75;
         private double PowerAngeStart = 105;
 
-        //Node properties 
+        //Thing properties 
         private OWLOSDriverProperty wifiaccesspointavailable = null;
         private OWLOSDriverProperty wifiaccesspointssid = null;
         private OWLOSDriverProperty wifiaccesspointip = null;
@@ -120,13 +120,13 @@ namespace OWLOSAdmin.EcosystemExplorer
         private OWLOSDriverProperty wifissid = null;
         private OWLOSDriverProperty wifiip = null;
         private OWLOSDriverProperty wifiisconnected = null;
-        public OWLOSNodeControl(OWLOSNodeWrapper nodeWrapper)
+        public OWLOSThingControl(OWLOSThingWrapper ThingWrapper)
         {
 
-            this.nodeWrapper = nodeWrapper;
-            if (nodeWrapper != null)
+            this.ThingWrapper = ThingWrapper;
+            if (ThingWrapper != null)
             {
-                nodeWrapper.node.OnNewDriver += Node_OnNewDriver;
+                ThingWrapper.Thing.OnNewDriver += Thing_OnNewDriver;
                 
             }
 
@@ -134,10 +134,10 @@ namespace OWLOSAdmin.EcosystemExplorer
 
             parentControl = new EcosystemControl(this);
 
-            nodeShadowPath.Data =  nodePath.Data = HudLibrary.DrawArc(Gold.center, Gold.center, Gold.radius, 0, 359);
-            nodeShadowPath.StrokeThickness = nodePath.StrokeThickness = Gold.radius7;
-            insideNodePath.Data = HudLibrary.DrawArc(Gold.center, Gold.center, Gold.radius - Gold.radius3, 0, 359);
-            insideNodePath2.Data = HudLibrary.DrawArc(Gold.center, Gold.center, Gold.radius - Gold.radius2, 0, 359);
+            ThingShadowPath.Data =  ThingPath.Data = HudLibrary.DrawArc(Gold.center, Gold.center, Gold.radius, 0, 359);
+            ThingShadowPath.StrokeThickness = ThingPath.StrokeThickness = Gold.radius7;
+            insideThingPath.Data = HudLibrary.DrawArc(Gold.center, Gold.center, Gold.radius - Gold.radius3, 0, 359);
+            insideThingPath2.Data = HudLibrary.DrawArc(Gold.center, Gold.center, Gold.radius - Gold.radius2, 0, 359);
 
             freeHeapPathBack.Data = HudLibrary.DrawArc(Gold.center, Gold.center, Gold.radius - Gold.radius5, 11, freeHeapAngelLimit);
             freeHeapPathBack.StrokeThickness = Gold.radius8;
@@ -170,7 +170,7 @@ namespace OWLOSAdmin.EcosystemExplorer
             transportOwerPathONLINE.VerticalAlignment = VerticalAlignment.Center;
             transportOwerPathONLINE.Width = Gold.size;
             transportOwerPathONLINE.Height = Gold.size;
-            nodeGrid.Children.Add(transportOwerPathONLINE);
+            ThingGrid.Children.Add(transportOwerPathONLINE);
 
             TextBlock transportTextONLINE = new TextBlock();
             transportTextONLINE.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSSuccess"];
@@ -178,7 +178,7 @@ namespace OWLOSAdmin.EcosystemExplorer
             transportTextONLINE.VerticalAlignment = VerticalAlignment.Top;
             transportTextONLINE.FontSize = 12;
             transportTextONLINE.Text = "online";
-            nodeGrid.Children.Add(transportTextONLINE);
+            ThingGrid.Children.Add(transportTextONLINE);
 
             PathTextControl pathTransportTextONLINE = new PathTextControl(Gold.center, Gold.center, radius - Gold.radius2, -7, 5, transportTextONLINE);
 
@@ -192,7 +192,7 @@ namespace OWLOSAdmin.EcosystemExplorer
             transportOwerPathOFFLINE.VerticalAlignment = VerticalAlignment.Center;
             transportOwerPathOFFLINE.Width = Gold.size;
             transportOwerPathOFFLINE.Height = Gold.size;
-            nodeGrid.Children.Add(transportOwerPathOFFLINE);
+            ThingGrid.Children.Add(transportOwerPathOFFLINE);
 
             TextBlock transportTextOFFLINE = new TextBlock();
             transportTextOFFLINE.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSWarning"];
@@ -200,7 +200,7 @@ namespace OWLOSAdmin.EcosystemExplorer
             transportTextOFFLINE.VerticalAlignment = VerticalAlignment.Top;
             transportTextOFFLINE.FontSize = 12;
             transportTextOFFLINE.Text = "offline";
-            nodeGrid.Children.Add(transportTextOFFLINE);
+            ThingGrid.Children.Add(transportTextOFFLINE);
 
             PathTextControl pathTransportTextOFFLINE = new PathTextControl(Gold.center, Gold.center, radius - Gold.radius2, 90-7, 5, transportTextOFFLINE);
             
@@ -216,7 +216,7 @@ namespace OWLOSAdmin.EcosystemExplorer
             transportOwerPathRECONNECT.VerticalAlignment = VerticalAlignment.Center;
             transportOwerPathRECONNECT.Width = Gold.size;
             transportOwerPathRECONNECT.Height = Gold.size;
-            nodeGrid.Children.Add(transportOwerPathRECONNECT);
+            ThingGrid.Children.Add(transportOwerPathRECONNECT);
 
             TextBlock transportTextRECONNECT = new TextBlock();
             transportTextRECONNECT.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSSecondary"];
@@ -224,7 +224,7 @@ namespace OWLOSAdmin.EcosystemExplorer
             transportTextRECONNECT.VerticalAlignment = VerticalAlignment.Top;
             transportTextRECONNECT.FontSize = 12;
             transportTextRECONNECT.Text = "reconnect";
-            nodeGrid.Children.Add(transportTextRECONNECT);
+            ThingGrid.Children.Add(transportTextRECONNECT);
 
             PathTextControl pathTransportTextRECONNECT = new PathTextControl(Gold.center, Gold.center, radius - Gold.radius2, 180 - 7, 5, transportTextRECONNECT);
 
@@ -239,7 +239,7 @@ namespace OWLOSAdmin.EcosystemExplorer
             transportOwerPathERROR.VerticalAlignment = VerticalAlignment.Center;
             transportOwerPathERROR.Width = Gold.size;
             transportOwerPathERROR.Height = Gold.size;
-            nodeGrid.Children.Add(transportOwerPathERROR);
+            ThingGrid.Children.Add(transportOwerPathERROR);
 
             TextBlock transportTextERROR = new TextBlock();
             transportTextERROR.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSDanger"];
@@ -247,31 +247,31 @@ namespace OWLOSAdmin.EcosystemExplorer
             transportTextERROR.VerticalAlignment = VerticalAlignment.Top;
             transportTextERROR.FontSize = 12;
             transportTextERROR.Text = "error";
-            nodeGrid.Children.Add(transportTextERROR);
+            ThingGrid.Children.Add(transportTextERROR);
 
             PathTextControl pathTransportTextERROR = new PathTextControl(Gold.center, Gold.center, radius - Gold.radius2, 270 - 7, 5, transportTextERROR);
             //--- ENDOF transport hud over 
 
 
             double trasnportPathStep = 4.0f;
-            if (nodeWrapper.node != null)
+            if (ThingWrapper.Thing != null)
             {                
-                if (nodeWrapper.node.transports.Count > 0)
+                if (ThingWrapper.Thing.transports.Count > 0)
                 {                   
-                    double oneTransportAngel = (360 / 4) / nodeWrapper.node.transports.Count - trasnportPathStep;
-                    for (int i=0; i < nodeWrapper.node.transports.Count; i ++)
+                    double oneTransportAngel = (360 / 4) / ThingWrapper.Thing.transports.Count - trasnportPathStep;
+                    for (int i=0; i < ThingWrapper.Thing.transports.Count; i ++)
                     {
                         double nextAngel = i * (oneTransportAngel + trasnportPathStep);
-                        nodeGrid.Children.Add(new OWLOSNodeTransportControl(this, nodeWrapper.node.transports[i], transportRadius, nextAngel, oneTransportAngel, Gold.radius5));
+                        ThingGrid.Children.Add(new OWLOSThingTransportControl(this, ThingWrapper.Thing.transports[i], transportRadius, nextAngel, oneTransportAngel, Gold.radius5));
                     }
                 }
             }
 
-            nodeGrid.Children.Add( new OWLOSNodeFileControl(this, nodeWrapper.node.files, Gold.radius - Gold.radius2 + (Gold.radius - Gold.radius2) / 2, 270, 45, Gold.radius5 - Gold.radius8));
-            nodeGrid.Children.Add(new OWLOSNodeFileControl(this, nodeWrapper.node.files, Gold.radius - Gold.radius2 + (Gold.radius - Gold.radius2) / 2 - Gold.radius5, 270, 45, Gold.radius5 - Gold.radius8));
+            ThingGrid.Children.Add( new OWLOSThingFileControl(this, ThingWrapper.Thing.files, Gold.radius - Gold.radius2 + (Gold.radius - Gold.radius2) / 2, 270, 45, Gold.radius5 - Gold.radius8));
+            ThingGrid.Children.Add(new OWLOSThingFileControl(this, ThingWrapper.Thing.files, Gold.radius - Gold.radius2 + (Gold.radius - Gold.radius2) / 2 - Gold.radius5, 270, 45, Gold.radius5 - Gold.radius8));
 
-            nodeGrid.Children.Add(new OWLOSNodeFileControl(this, nodeWrapper.node.files, Gold.radius - Gold.radius2 + (Gold.radius - Gold.radius2) / 2, 315, 45, Gold.radius5 - Gold.radius8));
-            nodeGrid.Children.Add(new OWLOSNodeFileControl(this, nodeWrapper.node.files, Gold.radius - Gold.radius2 + (Gold.radius - Gold.radius2) / 2 - Gold.radius5, 315, 45, Gold.radius5 - Gold.radius8));
+            ThingGrid.Children.Add(new OWLOSThingFileControl(this, ThingWrapper.Thing.files, Gold.radius - Gold.radius2 + (Gold.radius - Gold.radius2) / 2, 315, 45, Gold.radius5 - Gold.radius8));
+            ThingGrid.Children.Add(new OWLOSThingFileControl(this, ThingWrapper.Thing.files, Gold.radius - Gold.radius2 + (Gold.radius - Gold.radius2) / 2 - Gold.radius5, 315, 45, Gold.radius5 - Gold.radius8));
 
         }
 
@@ -307,7 +307,7 @@ namespace OWLOSAdmin.EcosystemExplorer
 
         }
 
-        private void Node_OnNewDriver(object sender, Ecosystem.OWLOS.OWLOSDriverWrapperEventArgs e)
+        private void Thing_OnNewDriver(object sender, Ecosystem.OWLOS.OWLOSDriverWrapperEventArgs e)
         {
             base.Dispatcher.Invoke(() =>
             {
@@ -320,9 +320,9 @@ namespace OWLOSAdmin.EcosystemExplorer
                 {
                     e.driver.OnPropertyCreate += WiFiDriver_OnPropertyCreate;
                 }
-                OWLOSNodeDriverControl _OWLOSNodeDriverControl = new OWLOSNodeDriverControl(this, e.driver, radius + Gold.radius5, driversCount * (Gold.radius5 + Gold.radius8), Gold.radius5, Gold.radius4);
+                OWLOSThingDriverControl _OWLOSThingDriverControl = new OWLOSThingDriverControl(this, e.driver, radius + Gold.radius5, driversCount * (Gold.radius5 + Gold.radius8), Gold.radius5, Gold.radius4);
                 driversCount++;
-                nodeGrid.Children.Add(_OWLOSNodeDriverControl);
+                ThingGrid.Children.Add(_OWLOSThingDriverControl);
             });
 
         }
@@ -463,26 +463,26 @@ namespace OWLOSAdmin.EcosystemExplorer
 
         public void OnParentDrag()
         {
-            nodePath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSDanger"];
-            nodeShadowPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSDangerAlpha2"];
+            ThingPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSDanger"];
+            ThingShadowPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSDangerAlpha2"];
         }
 
         public void OnParentDrop()
         {
-            nodePath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSWarning"];
-            nodeShadowPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSWarningAlpha2"];
+            ThingPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSWarning"];
+            ThingShadowPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSWarningAlpha2"];
         }
 
         public void OnParentGetFocus()
         {
-            nodePath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSWarning"];
-            nodeShadowPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSWarningAlpha2"];
+            ThingPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSWarning"];
+            ThingShadowPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSWarningAlpha2"];
         }
 
         public void OnParentLostFocus()
         {
-            nodePath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSInfo"];
-            nodeShadowPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSInfoAlpha2"];
+            ThingPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSInfo"];
+            ThingShadowPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSInfoAlpha2"];
         }
 
         private async void OnLifeCycleTimer(Object source, ElapsedEventArgs e)

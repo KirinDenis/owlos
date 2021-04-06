@@ -75,13 +75,13 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         private bool once = false;
 
 
-        private readonly OWLOSNode node;
+        private readonly OWLOSThing Thing;
         private string indata = "";
 
-        public UARTTransport(OWLOSNode node)
+        public UARTTransport(OWLOSThing Thing)
         {
 
-            this.node = node;
+            this.Thing = Thing;
         }
 
         private bool OpenPort()
@@ -270,14 +270,14 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
                             if (APIName.ToUpper().Equals("AT+ADP?"))
                             {
-                               Task task = node.ParseGetAllDriversProperties(APIData);
-                             //    node.parseDrivers(APIData);
+                               Task task = Thing.ParseGetAllDriversProperties(APIData);
+                             //    Thing.parseDrivers(APIData);
                             }
                         }
 
                         if (data.IndexOf("PUB: ") == 0 )
                         {
-                            Task task = node.ParseNodePublish(data);
+                            Task task = Thing.ParseThingPublish(data);
                         }    
 
                         i++;

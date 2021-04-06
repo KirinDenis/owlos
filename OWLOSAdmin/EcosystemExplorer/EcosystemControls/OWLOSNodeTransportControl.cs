@@ -51,7 +51,7 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
     /// <summary>
     /// Наружный лепесток с сетевым состоянием
     /// </summary>
-    public partial class OWLOSNodeTransportControl : OWLOSPetalControl
+    public partial class OWLOSThingTransportControl : OWLOSPetalControl
     {
         /// <summary>
         /// элемент - таблица со свойствами драйвера 
@@ -63,7 +63,7 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
         /// </summary>
         private readonly IOWLOSTransport transport;
 
-        public OWLOSNodeTransportControl(OWLOSNodeControl parentOWLOSNodeControl, IOWLOSTransport transport, double radius, double angel, double length, double width) : base(parentOWLOSNodeControl, radius, angel, length, width)
+        public OWLOSThingTransportControl(OWLOSThingControl parentOWLOSThingControl, IOWLOSTransport transport, double radius, double angel, double length, double width) : base(parentOWLOSThingControl, radius, angel, length, width)
         {
             Rotate(angel);
             this.transport = transport;
