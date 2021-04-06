@@ -39,12 +39,12 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 
-using OWLOSAdmin.Ecosystem.OWLOS;
+using OWLOSThingsManager.Ecosystem.OWLOS;
 using System;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
+namespace OWLOSThingsManager.EcosystemBrowser.BrowserControls
 {
 
     public class PanelControlTag

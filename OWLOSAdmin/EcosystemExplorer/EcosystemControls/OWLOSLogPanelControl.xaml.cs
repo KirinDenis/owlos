@@ -47,7 +47,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 
-namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
+namespace OWLOSThingsManager.EcosystemExplorer.EcosystemControls
 {
     /// <summary>
     /// Interaction logic for OWLOSLogPanelControl.xaml

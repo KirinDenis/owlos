@@ -1,5 +1,5 @@
-﻿using OWLOSAdmin.Ecosystem.OWLOS;
-using OWLOSAdmin.EcosystemExplorer.Huds;
+﻿using OWLOSThingsManager.Ecosystem.OWLOS;
+using OWLOSThingsManager.EcosystemExplorer.Huds;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -10,7 +10,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 
-namespace OWLOSAdmin.EcosystemExplorer
+namespace OWLOSThingsManager.EcosystemExplorer
 {
 
     //flags started with "//" chars at end of the string:

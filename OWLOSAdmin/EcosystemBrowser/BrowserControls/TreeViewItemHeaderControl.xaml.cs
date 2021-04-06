@@ -41,7 +41,7 @@ OWLOS распространяется в надежде, что она буде
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
-namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
+namespace OWLOSThingsManager.EcosystemBrowser.BrowserControls
 {
     /// <summary>
     /// Interaction logic for TreeViewItemHeaderControl.xaml

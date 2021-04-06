@@ -40,7 +40,7 @@ OWLOS распространяется в надежде, что она буде
 
 using System.Windows.Controls;
 
-namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
+namespace OWLOSThingsManager.EcosystemBrowser.BrowserControls
 {
     /// <summary>
     /// Interaction logic for ThingControl.xaml

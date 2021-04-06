@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
 
-namespace OWLOSAdmin.EcosystemExplorer.Huds
+namespace OWLOSThingsManager.EcosystemExplorer.Huds
 {
     public static class HudLibrary
     {

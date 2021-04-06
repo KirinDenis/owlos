@@ -10,7 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
+namespace OWLOSThingsManager.EcosystemExplorer.EcosystemControls
 {
     /// <summary>
     /// Interaction logic for OWLOSWindow.xaml

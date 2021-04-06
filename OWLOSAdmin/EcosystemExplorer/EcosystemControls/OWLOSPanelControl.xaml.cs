@@ -42,7 +42,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace OWLOSAdmin.EcosystemExplorer
+namespace OWLOSThingsManager.EcosystemExplorer
 {
     /// <summary>
     /// Interaction logic for LogControl.xaml

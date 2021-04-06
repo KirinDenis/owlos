@@ -38,11 +38,11 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-using OWLOSAdmin.Ecosystem.OWLOS;
+using OWLOSThingsManager.Ecosystem.OWLOS;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
+namespace OWLOSThingsManager.EcosystemBrowser.BrowserControls
 {
     public partial class QueryIntervalControl : UserControl
     {

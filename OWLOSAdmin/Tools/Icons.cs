@@ -45,7 +45,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Media.Imaging;
 
-namespace OWLOSAdmin.Tools
+namespace OWLOSThingsManager.Tools
 {
     public class Icons
     {

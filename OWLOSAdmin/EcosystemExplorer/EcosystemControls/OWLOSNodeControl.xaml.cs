@@ -39,10 +39,10 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-using OWLOSAdmin.Ecosystem;
-using OWLOSAdmin.Ecosystem.OWLOS;
-using OWLOSAdmin.EcosystemExplorer.EcosystemControls;
-using OWLOSAdmin.EcosystemExplorer.Huds;
+using OWLOSThingsManager.Ecosystem;
+using OWLOSThingsManager.Ecosystem.OWLOS;
+using OWLOSThingsManager.EcosystemExplorer.EcosystemControls;
+using OWLOSThingsManager.EcosystemExplorer.Huds;
 using PathText;
 using System;
 using System.Collections.Generic;
@@ -61,7 +61,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace OWLOSAdmin.EcosystemExplorer
+namespace OWLOSThingsManager.EcosystemExplorer
 {
     public static class Gold
     {

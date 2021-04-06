@@ -38,11 +38,11 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-using OWLOSAdmin.Ecosystem;
+using OWLOSThingsManager.Ecosystem;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
+namespace OWLOSThingsManager.EcosystemBrowser.BrowserControls
 {
     /// <summary>
     /// Interaction logic for ThingsListControl.xaml
@@ -50,27 +50,27 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
     public partial class ThingsListControl : UserControl
     {
         private readonly PanelControlTag PanelTag;
-        private readonly Admin ThingsAdmin;
+        private readonly ThingsManager ThingsThingsManager;
         public PanelControl ThingsListPanelControl;
 
-        public ThingsListControl(PanelControlTag PanelTag, Admin ThingsAdmin)
+        public ThingsListControl(PanelControlTag PanelTag, ThingsManager ThingsThingsManager)
         {
             InitializeComponent();
 
             this.PanelTag = PanelTag;
-            this.ThingsAdmin = ThingsAdmin;
+            this.ThingsThingsManager = ThingsThingsManager;
 
             ThingsListPanelControl = new PanelControl(PanelTag);
             ThingsListPanelControl.ContentHolder.Children.Add(this);
 
-            foreach (OWLOSThingWrapper ThingWrapper in ThingsAdmin.OWLOSThingWrappers)
+            foreach (OWLOSThingWrapper ThingWrapper in ThingsThingsManager.OWLOSThingWrappers)
             {
                 ThingsListItemControl NewThingsListItemControl = new ThingsListItemControl(ThingWrapper);
                 ThingsListStackPanel.Children.Add(NewThingsListItemControl);
                 NewThingsListItemControl.OnDelete += NewThingsListItemControl_OnDelete;
             }
 
-            ThingsAdmin.OnNewThing += ThingsAdmin_OnNewThing;
+            ThingsThingsManager.OnNewThing += ThingsThingsManager_OnNewThing;
         }
 
         private void NewThingsListItemControl_OnDelete(object sender, System.EventArgs e)
@@ -78,7 +78,7 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
             ThingsListStackPanel.Children.Remove(sender as ThingsListItemControl);
         }
 
-        private void ThingsAdmin_OnNewThing(object sender, OWLOSThingWrapperEventArgs e)
+        private void ThingsThingsManager_OnNewThing(object sender, OWLOSThingWrapperEventArgs e)
         {
             OWLOSThingWrapper ThingWrapper = e.ThingWrapper;
             ThingsListItemControl NewThingsListItemControl = new ThingsListItemControl(ThingWrapper);
@@ -88,7 +88,7 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
 
         private void NewConnectionButton_Click(object sender, RoutedEventArgs e)
         {
-            ThingsAdmin.CreateThingWrapper();
+            ThingsThingsManager.CreateThingWrapper();
         }
     }
 }

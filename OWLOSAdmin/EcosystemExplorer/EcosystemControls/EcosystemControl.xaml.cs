@@ -1,6 +1,6 @@
-﻿using OWLOSAdmin.Ecosystem;
-using OWLOSAdmin.Ecosystem.OWLOS;
-using OWLOSAdmin.EcosystemExplorer.EcosystemControls;
+﻿using OWLOSThingsManager.Ecosystem;
+using OWLOSThingsManager.Ecosystem.OWLOS;
+using OWLOSThingsManager.EcosystemExplorer.EcosystemControls;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace OWLOSAdmin.EcosystemExplorer
+namespace OWLOSThingsManager.EcosystemExplorer
 {
     /// <summary>
     /// Interaction logic for EcosystemControl.xaml

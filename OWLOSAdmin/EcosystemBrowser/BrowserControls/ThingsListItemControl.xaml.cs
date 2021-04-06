@@ -39,13 +39,13 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 
-using OWLOSAdmin.Ecosystem;
-using OWLOSAdmin.Ecosystem.OWLOS;
+using OWLOSThingsManager.Ecosystem;
+using OWLOSThingsManager.Ecosystem.OWLOS;
 using System;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
+namespace OWLOSThingsManager.EcosystemBrowser.BrowserControls
 {
     /// <summary>
     /// Interaction logic for ThingsListItemControl.xaml
@@ -118,7 +118,7 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
                 //Reset connection settings for current transport
                 ThingTransport.connection = ThingTransport.connection;
             }
-            ThingWrapper.CurrentAdmin.Save();
+            ThingWrapper.CurrentThingsManager.Save();
             
             
         }
@@ -133,7 +133,7 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            if (ThingWrapper.CurrentAdmin.DeleteThingWrapper(ThingWrapper))
+            if (ThingWrapper.CurrentThingsManager.DeleteThingWrapper(ThingWrapper))
             {
                 OnDelete?.Invoke(this, new EventArgs());
             }

@@ -42,7 +42,7 @@ OWLOS распространяется в надежде, что она буде
 using System.Windows;
 using System.Windows.Input;
 
-namespace OWLOSAdmin.Tools
+namespace OWLOSThingsManager.Tools
 {
     /// <summary>
     /// Interaction logic for IconsToolWindow.xaml

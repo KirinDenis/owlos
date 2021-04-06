@@ -39,7 +39,7 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 using Newtonsoft.Json;
-using OWLOSAdmin.Ecosystem.OWLOS;
+using OWLOSThingsManager.Ecosystem.OWLOS;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -47,14 +47,14 @@ using System.IO;
 using System.IO.Ports;
 
 
-namespace OWLOSAdmin.Ecosystem
+namespace OWLOSThingsManager.Ecosystem
 {
     public class OWLOSThingWrapper
     {
-        public Admin CurrentAdmin;
-        public OWLOSThingWrapper(Admin CurrentAdmin)
+        public ThingsManager CurrentThingsManager;
+        public OWLOSThingWrapper(ThingsManager CurrentThingsManager)
         {
-            this.CurrentAdmin = CurrentAdmin;
+            this.CurrentThingsManager = CurrentThingsManager;
         }
         public OWLOSTransportOLD transport;
         public OWLOSThing Thing = null;
@@ -71,11 +71,11 @@ namespace OWLOSAdmin.Ecosystem
         }
     }
 
-    public class AdminConfig
+    public class ThingsManagerConfig
     {
         public List<OWLOSThingConfig> ThingsConfig = new List<OWLOSThingConfig>();
     }
-    public class Admin
+    public class ThingsManager
     {
 
         public List<OWLOSThingWrapper> OWLOSThingWrappers = new List<OWLOSThingWrapper>();
@@ -83,11 +83,11 @@ namespace OWLOSAdmin.Ecosystem
         public delegate void NewThingEventHandler(object? sender, OWLOSThingWrapperEventArgs e);
         public event NewThingEventHandler OnNewThing;
 
-        public AdminConfig config = new AdminConfig();
+        public ThingsManagerConfig config = new ThingsManagerConfig();
 
         public event EventHandler OnDeleteThingWrapper;
 
-        public Admin()
+        public ThingsManager()
         {
         }
 
@@ -96,7 +96,7 @@ namespace OWLOSAdmin.Ecosystem
             if (File.Exists("config.json"))
             {
                 string JSONConfig = File.ReadAllText("config.json");
-                config = JsonConvert.DeserializeObject<AdminConfig>(JSONConfig);
+                config = JsonConvert.DeserializeObject<ThingsManagerConfig>(JSONConfig);
             }
             else //reset config
             {

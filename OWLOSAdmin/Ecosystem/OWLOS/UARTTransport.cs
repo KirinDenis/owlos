@@ -46,7 +46,7 @@ using System.IO.Ports;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace OWLOSAdmin.Ecosystem.OWLOS
+namespace OWLOSThingsManager.Ecosystem.OWLOS
 {
 
     public class UARTClientConnectionDTO

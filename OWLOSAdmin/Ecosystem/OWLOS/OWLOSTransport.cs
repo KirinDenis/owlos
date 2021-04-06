@@ -42,7 +42,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace OWLOSAdmin.Ecosystem.OWLOS
+namespace OWLOSThingsManager.Ecosystem.OWLOS
 {
     public enum NetworkStatus
     {

@@ -39,7 +39,7 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-using OWLOSAdmin.EcosystemExplorer.Huds;
+using OWLOSThingsManager.EcosystemExplorer.Huds;
 using PathText;
 using System;
 using System.Windows;
@@ -49,7 +49,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 
-namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
+namespace OWLOSThingsManager.EcosystemExplorer.EcosystemControls
 {
     /// <summary>
     /// Наружный леписток с именем драйвера и доступом к свойствам драйвера по клику

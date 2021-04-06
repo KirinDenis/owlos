@@ -40,7 +40,7 @@ OWLOS распространяется в надежде, что она буде
 
 using System;
 
-namespace OWLOSAdmin.Ecosystem.OWLOS
+namespace OWLOSThingsManager.Ecosystem.OWLOS
 {
 
     public class OWLOSFile

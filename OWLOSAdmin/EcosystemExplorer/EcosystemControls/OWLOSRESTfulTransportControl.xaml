@@ -1,9 +1,9 @@
-﻿<UserControl x:Class="OWLOSAdmin.EcosystemExplorer.EcosystemControls.OWLOSRESTfulTransportControl"
+﻿<UserControl x:Class="OWLOSThingsManager.EcosystemExplorer.EcosystemControls.OWLOSRESTfulTransportControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:OWLOSAdmin.EcosystemExplorer.EcosystemControls"
+             xmlns:local="clr-namespace:OWLOSThingsManager.EcosystemExplorer.EcosystemControls"
              mc:Ignorable="d" d:DesignWidth="800" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
     <Grid>
         <Grid.RowDefinitions>

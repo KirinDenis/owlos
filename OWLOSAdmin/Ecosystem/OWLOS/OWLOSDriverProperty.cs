@@ -41,7 +41,7 @@ OWLOS распространяется в надежде, что она буде
 using System;
 using System.Threading.Tasks;
 
-namespace OWLOSAdmin.Ecosystem.OWLOS
+namespace OWLOSThingsManager.Ecosystem.OWLOS
 {
 
     public class OWLOSPropertyWrapperEventArgs : EventArgs

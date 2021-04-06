@@ -1,9 +1,9 @@
-﻿<Window x:Class="OWLOSAdmin.EcosystemBrowser.EcosystemBrowserWindow"
+﻿<Window x:Class="OWLOSThingsManager.EcosystemBrowser.EcosystemBrowserWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:OWLOSAdmin.EcosystemBrowser"
+        xmlns:local="clr-namespace:OWLOSThingsManager.EcosystemBrowser"
         mc:Ignorable="d"
         Title="Ecosystem Browser" Height="800" Width="1200" WindowStartupLocation="CenterScreen">
     <Grid>

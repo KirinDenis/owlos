@@ -1,7 +1,7 @@
-﻿using OWLOSAdmin.Ecosystem.OWLOS;
+﻿using OWLOSThingsManager.Ecosystem.OWLOS;
 using System.Windows.Media;
 
-namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
+namespace OWLOSThingsManager.EcosystemExplorer.EcosystemControls
 {
     public class OWLOSTransportControl : OWLOSPanelControl
     {

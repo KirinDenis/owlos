@@ -43,7 +43,7 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace OWLOSAdmin.Ecosystem.OWLOS
+namespace OWLOSThingsManager.Ecosystem.OWLOS
 {
     public class RESTfulClientResultModel
     {

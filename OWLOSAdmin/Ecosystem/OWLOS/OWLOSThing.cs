@@ -45,11 +45,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 
-namespace OWLOSAdmin.Ecosystem.OWLOS
+namespace OWLOSThingsManager.Ecosystem.OWLOS
 {
     /*
 
-    admin side          |    Thing side       
+    ThingsManager side          |    Thing side       
                         |
                         |
 

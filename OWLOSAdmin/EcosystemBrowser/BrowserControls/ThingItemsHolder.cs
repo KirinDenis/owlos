@@ -38,12 +38,12 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-using OWLOSAdmin.Ecosystem.OWLOS;
-using OWLOSAdmin.Tools;
+using OWLOSThingsManager.Ecosystem.OWLOS;
+using OWLOSThingsManager.Tools;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
+namespace OWLOSThingsManager.EcosystemBrowser.BrowserControls
 {
 
     public class ThingDriverItemTag

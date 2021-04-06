@@ -38,14 +38,14 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-using OWLOSAdmin.Ecosystem;
-using OWLOSAdmin.Ecosystem.OWLOS;
-using OWLOSAdmin.EcosystemBrowser.BrowserControls;
-using OWLOSAdmin.Tools;
+using OWLOSThingsManager.Ecosystem;
+using OWLOSThingsManager.Ecosystem.OWLOS;
+using OWLOSThingsManager.EcosystemBrowser.BrowserControls;
+using OWLOSThingsManager.Tools;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace OWLOSAdmin.EcosystemBrowser
+namespace OWLOSThingsManager.EcosystemBrowser
 {
     /// <summary>
     /// Interaction logic for EcosystemBrowserWindow.xaml
@@ -56,14 +56,14 @@ namespace OWLOSAdmin.EcosystemBrowser
         private TreeViewItem ThingsTreeViewItem;
         private ThingsListControl ActiveThingsLisControl;
 
-        private Admin ThingsAdmin = new Admin();
+        private ThingsManager ThingsThingsManager = new ThingsManager();
         public EcosystemBrowserWindow()
         {
             InitializeComponent();
 
             Icon = Icons.GetIcon(316);
 
-            ThingsAdmin = new Admin();
+            ThingsThingsManager = new ThingsManager();
 
 
             ThingsTreeViewItem = new TreeViewItem();
@@ -72,9 +72,9 @@ namespace OWLOSAdmin.EcosystemBrowser
 
             BrowserTreeView.Items.Add(ThingsTreeViewItem);
 
-            ThingsAdmin.OnNewThing += Admin_NewOWLOSThing;
-            ThingsAdmin.OnDeleteThingWrapper += ThingsAdmin_OnDeleteThingWrapper;
-            ThingsAdmin.Load();
+            ThingsThingsManager.OnNewThing += ThingsManager_NewOWLOSThing;
+            ThingsThingsManager.OnDeleteThingWrapper += ThingsThingsManager_OnDeleteThingWrapper;
+            ThingsThingsManager.Load();
 
             ActiveThingsLisControl = new ThingsListControl(new PanelControlTag
             {
@@ -82,12 +82,12 @@ namespace OWLOSAdmin.EcosystemBrowser
                 Thing = null,
                 BrowserGrid = BrowserGrid,
                 BrowserTabsPanel = BrowserTabsPanes
-            }, ThingsAdmin);
+            }, ThingsThingsManager);
 
 
         }
 
-        private void ThingsAdmin_OnDeleteThingWrapper(object sender, System.EventArgs e)
+        private void ThingsThingsManager_OnDeleteThingWrapper(object sender, System.EventArgs e)
         {
             OWLOSThingWrapper ThingWrapper = sender as OWLOSThingWrapper;
             foreach (TreeViewItem TreeItem in ThingsTreeViewItem.Items)
@@ -113,7 +113,7 @@ namespace OWLOSAdmin.EcosystemBrowser
             ActiveThingsLisControl.ThingsListPanelControl.Show();
         }
 
-        private void Admin_NewOWLOSThing(object sender, OWLOSThingWrapperEventArgs e)
+        private void ThingsManager_NewOWLOSThing(object sender, OWLOSThingWrapperEventArgs e)
         {
             OWLOSThing NewThing = e.ThingWrapper.Thing;
             ThingItemsHolder NewThingItemsHolder = new ThingItemsHolder(new PanelControlTag

@@ -43,7 +43,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Timers;
 
-namespace OWLOSAdmin.Ecosystem.OWLOS
+namespace OWLOSThingsManager.Ecosystem.OWLOS
 {
 
     public class TransportType

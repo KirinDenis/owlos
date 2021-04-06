@@ -40,9 +40,9 @@ OWLOS распространяется в надежде, что она буде
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using static OWLOSAdmin.Ecosystem.OWLOS.OWLOSDriverProperty;
+using static OWLOSThingsManager.Ecosystem.OWLOS.OWLOSDriverProperty;
 
-namespace OWLOSAdmin.Ecosystem.OWLOS
+namespace OWLOSThingsManager.Ecosystem.OWLOS
 {
 
 

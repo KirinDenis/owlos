@@ -40,8 +40,8 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 
-using OWLOSAdmin.Ecosystem;
-using OWLOSAdmin.Tools;
+using OWLOSThingsManager.Ecosystem;
+using OWLOSThingsManager.Tools;
 using System;
 using System.Drawing;
 using System.Windows;
@@ -53,7 +53,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Point = System.Windows.Point;
 
-namespace OWLOSAdmin.EcosystemExplorer
+namespace OWLOSThingsManager.EcosystemExplorer
 {
     /// <summary>
     /// OWLOS Ecosystem Explorer 
@@ -105,7 +105,7 @@ namespace OWLOSAdmin.EcosystemExplorer
         /// <summary>
         /// Для тестов ноды 
         /// </summary>
-        public EcosystemControl adminControl;
+        public EcosystemControl ThingsManagerControl;
 
 
         public EcosystemExplorerWindow()
@@ -124,12 +124,12 @@ namespace OWLOSAdmin.EcosystemExplorer
             duplicateWindowImage.Source = Icons.GetIcon(1263);
 
             //Временно для теста нод ----------
-            Admin admin = new Admin();
-            adminControl = new EcosystemControl(null);
-            ThingGrid.Children.Add(adminControl);
+            ThingsManager ThingsManager = new ThingsManager();
+            ThingsManagerControl = new EcosystemControl(null);
+            ThingGrid.Children.Add(ThingsManagerControl);
 
-            admin.OnNewThing += Admin_NewOWLOSThing;
-            admin.Load();
+            ThingsManager.OnNewThing += ThingsManager_NewOWLOSThing;
+            ThingsManager.Load();
             //END OF Временно для теста нод ---
 
             //Настраиваем разметы элементы в зависимости от выбраного размера сетки
@@ -164,7 +164,7 @@ namespace OWLOSAdmin.EcosystemExplorer
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Admin_NewOWLOSThing(object sender, OWLOSThingWrapperEventArgs e)
+        private void ThingsManager_NewOWLOSThing(object sender, OWLOSThingWrapperEventArgs e)
         {
             
             

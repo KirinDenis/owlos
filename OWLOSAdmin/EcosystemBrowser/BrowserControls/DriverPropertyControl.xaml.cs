@@ -38,8 +38,8 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-using OWLOSAdmin.Ecosystem.OWLOS;
-using OWLOSAdmin.EcosystemExplorer.Huds;
+using OWLOSThingsManager.Ecosystem.OWLOS;
+using OWLOSThingsManager.EcosystemExplorer.Huds;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -50,7 +50,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 
-namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
+namespace OWLOSThingsManager.EcosystemBrowser.BrowserControls
 {
 
     //flags started with "//" chars at end of the string:
