@@ -167,6 +167,10 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         {
             foreach (APIQueryInterval QueryInterval in config.APIQueryIntervals)
             {
+                if (!QueryInterval.Enable)
+                {
+                    continue;
+                }
                 if ((DateTime.Now - QueryInterval.LastCall).TotalSeconds > QueryInterval.Interval)
                 {
                     QueryInterval.LastCall = DateTime.Now;

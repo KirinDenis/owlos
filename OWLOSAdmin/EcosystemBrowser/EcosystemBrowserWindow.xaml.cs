@@ -73,6 +73,7 @@ namespace OWLOSAdmin.EcosystemBrowser
             BrowserTreeView.Items.Add(ThingsTreeViewItem);
 
             ThingsAdmin.OnNewThing += Admin_NewOWLOSThing;
+            ThingsAdmin.OnDeleteThingWrapper += ThingsAdmin_OnDeleteThingWrapper;
             ThingsAdmin.Load();
 
             ActiveThingsLisControl = new ThingsListControl(new PanelControlTag
@@ -84,6 +85,19 @@ namespace OWLOSAdmin.EcosystemBrowser
             }, ThingsAdmin);
 
 
+        }
+
+        private void ThingsAdmin_OnDeleteThingWrapper(object sender, System.EventArgs e)
+        {
+            OWLOSThingWrapper ThingWrapper = sender as OWLOSThingWrapper;
+            foreach (TreeViewItem TreeItem in ThingsTreeViewItem.Items)
+            {
+                if ((TreeItem.Tag as ThingItemsHolder).PanelTag.Thing == ThingWrapper.Thing)
+                {
+                    ThingsTreeViewItem.Items.Remove(TreeItem);
+                    break;
+                }
+            }
         }
 
         private void ThingsTreeViewItem_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -104,7 +118,7 @@ namespace OWLOSAdmin.EcosystemBrowser
             OWLOSThing NewThing = e.ThingWrapper.Thing;
             ThingItemsHolder NewThingItemsHolder = new ThingItemsHolder(new PanelControlTag
             {
-                Name = "OWLOS Thing",
+                Name = NewThing.Name,
                 Thing = NewThing, 
                 BrowserGrid = BrowserGrid, 
                 BrowserTabsPanel = BrowserTabsPanes 

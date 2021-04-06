@@ -38,60 +38,64 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
+using OWLOSAdmin.Ecosystem.OWLOS;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 
-namespace OWLOSAdmin.EcosystemExplorer
+namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
 {
-    /// <summary>
-    /// Interaction logic for LogControl.xaml
-    /// </summary>
-    public partial class OWLOSPanelControl : UserControl, IEcosystemChildControl
+    public partial class QueryIntervalControl : UserControl
     {
-        public EcosystemControl parentControl { get; set; }
-
-        
-
-        public OWLOSPanelControl()
+        private readonly APIQueryInterval QueryInterval;
+        public QueryIntervalControl(APIQueryInterval QueryInterval)
         {
             InitializeComponent();
 
-            parentControl = new EcosystemControl(this);
+            this.QueryInterval = QueryInterval;
+
+            switch (QueryInterval.APIType)
+            {
+                case APINameType.GetAllDriverProperties:
+                    NameCheckBox.Content = "get all drivers properties";
+                    break;
+                case APINameType.GetAllFiles:
+                    NameCheckBox.Content = "get all files";
+                    break;
+                case APINameType.GetAllScripts:
+                    NameCheckBox.Content = "get all scripts";
+                    break;
+            }
+
+            NameCheckBox.IsChecked = QueryInterval.Enable;
+            IntervalTextBox.Text = QueryInterval.Interval.ToString();
         }
 
-        public void OnParentGetFocus()
+        private void NameCheckBox_Checked(object sender, RoutedEventArgs e)
         {
-            mainBorder.BorderBrush = (SolidColorBrush)App.Current.Resources["OWLOSWarning"];
+            QueryInterval.Enable = true;
         }
 
-        public void OnParentLostFocus()
+        private void NameCheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
-            mainBorder.BorderBrush = (SolidColorBrush)App.Current.Resources["OWLOSInfoAlpha3"];
+            QueryInterval.Enable = false;
         }
 
-        public void OnParentDrag()
+        private void IntervalTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            //
-        }
+            if (QueryInterval != null)
+            {
+                uint value = QueryInterval.Interval;
 
-        public void OnParentDrop()
-        {
-            //
-        }
+                if (uint.TryParse(IntervalTextBox.Text, out value))
+                {
+                    QueryInterval.Interval = value;
+                }
+                else
+                {
+                    IntervalTextBox.Text = QueryInterval.Interval.ToString();
+                }
+            }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            /*
-            parentControl.window = new OWLOSWindow();
-            (parentControl.Parent as Grid).Children.Remove(parentControl);
-            parentControl.RenderTransform = null;
-            parentControl.HorizontalAlignment = HorizontalAlignment.Stretch;
-            parentControl.VerticalAlignment = VerticalAlignment.Stretch;
-            parentControl.window.MainGrid.Children.Add(parentControl);
-            parentControl.Show();
-            parentControl.window.Show();
-            */
         }
     }
 }

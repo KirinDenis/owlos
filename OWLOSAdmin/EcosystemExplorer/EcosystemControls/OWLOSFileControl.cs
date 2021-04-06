@@ -40,16 +40,14 @@ OWLOS распространяется в надежде, что она буде
 
 using OWLOSAdmin.Ecosystem.OWLOS;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
 {
-   public class OWLOSFileControl: OWLOSPanelControl
+    public class OWLOSFileControl: OWLOSPanelControl
     {
-        private OWLOSFiles files;
+        private readonly OWLOSFiles files;
 
         public OWLOSFileControl(OWLOSFiles files) : base()
         {
@@ -57,10 +55,12 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
             panelName.Text = "files";
             foreach(OWLOSFile file in files.filesList)
             {
-                TextBlock textBlock = new TextBlock();
-                textBlock.Foreground = Foreground = (SolidColorBrush)App.Current.Resources["OWLOSInfo"];
-                textBlock.Text = file.name + " " + file.size.ToString();
-                textBlock.Tag = file;
+                TextBlock textBlock = new TextBlock
+                {
+                    Foreground = Foreground = (SolidColorBrush)App.Current.Resources["OWLOSInfo"],
+                    Text = file.name + " " + file.size.ToString(),
+                    Tag = file
+                };
                 file.tag = textBlock;
                 file.OnFileSizeChange += File_OnFileSizeChange;
                 file.OnFileDelete += File_OnFileDelete;
@@ -98,10 +98,12 @@ namespace OWLOSAdmin.EcosystemExplorer.EcosystemControls
         {
             base.Dispatcher.Invoke(() =>
             {
-                TextBlock textBlock = new TextBlock();
-                textBlock.Foreground = Foreground = (SolidColorBrush)App.Current.Resources["OWLOSInfo"];
-                textBlock.Text = owlosFile.name + " " + owlosFile.size.ToString();
-                textBlock.Tag = owlosFile;
+                TextBlock textBlock = new TextBlock
+                {
+                    Foreground = Foreground = (SolidColorBrush)App.Current.Resources["OWLOSInfo"],
+                    Text = owlosFile.name + " " + owlosFile.size.ToString(),
+                    Tag = owlosFile
+                };
                 owlosFile.tag = textBlock;
                 itemsHolder.Children.Add(textBlock);
             });

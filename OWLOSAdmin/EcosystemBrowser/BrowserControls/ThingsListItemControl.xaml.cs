@@ -41,6 +41,7 @@ OWLOS распространяется в надежде, что она буде
 
 using OWLOSAdmin.Ecosystem;
 using OWLOSAdmin.Ecosystem.OWLOS;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -56,6 +57,8 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
         private readonly ThingConnectionConfigItemControl RESTfulConfigItemControl;
         private readonly ThingConnectionConfigItemControl MQTTConfigItemControl;
         private readonly ThingConnectionConfigItemControl UARTConfigItemControl;
+
+        public event EventHandler OnDelete;
 
         public ThingsListItemControl(OWLOSThingWrapper ThingWrapper)
         {
@@ -81,6 +84,12 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
                         ConnectionsStackPanel.Children.Add(UARTConfigItemControl);
                         break;
                 }
+            }
+
+            foreach (APIQueryInterval CurrentAPIQueryInterval in ThingWrapper.Thing.config.APIQueryIntervals)
+            {
+                QueryIntervalControl NewQueryIntervalControl = new QueryIntervalControl(CurrentAPIQueryInterval);
+                QueryIntervalsStackPanel.Children.Add(NewQueryIntervalControl);
             }
         }
 
@@ -112,6 +121,22 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
             ThingWrapper.CurrentAdmin.Save();
             
             
+        }
+
+        private void NameTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if ((!string.IsNullOrWhiteSpace(NameTextBox.Text)) && (ThingWrapper != null))
+            {
+                ThingWrapper.Thing.config.Name = NameTextBox.Text;
+            }
+        }
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (ThingWrapper.CurrentAdmin.DeleteThingWrapper(ThingWrapper))
+            {
+                OnDelete?.Invoke(this, new EventArgs());
+            }
         }
     }
 }

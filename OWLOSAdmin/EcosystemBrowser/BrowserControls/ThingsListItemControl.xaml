@@ -14,15 +14,25 @@
                 <ColumnDefinition Width="100*"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock x:Name="NameTextBox" Text="_Name_Of_Thing_" FontWeight="Bold" Margin="5"/>
+            <TextBox x:Name="NameTextBox" Text="_Name_Of_Thing_" FontWeight="Bold" Margin="5" TextChanged="NameTextBox_TextChanged"/>
             
             <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Orientation="Horizontal">
                 <Button x:Name="SaveButton" Content="Save" Margin="5,0" Click="SaveButton_Click" />
                 <Button x:Name="ExportButton" Content="Export" Margin="5,0" />
-                <Button x:Name="DeleteButton" Content="Delete" Margin="5,0"/>
+                <Button x:Name="DeleteButton" Content="Delete" Margin="5,0" Click="DeleteButton_Click"/>
             </StackPanel>
         </Grid>
-        
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Button x:Name="ShowQueryIntervalsButton" Content="Show query intervals" HorizontalAlignment="Left" />
+            <StackPanel x:Name="QueryIntervalsStackPanel" Grid.Row="1" >
+                
+            </StackPanel>
+        </Grid>
 
         <StackPanel x:Name="ConnectionsStackPanel">
             

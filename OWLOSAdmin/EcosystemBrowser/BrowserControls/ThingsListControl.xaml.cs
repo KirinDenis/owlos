@@ -63,59 +63,32 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
             ThingsListPanelControl = new PanelControl(PanelTag);
             ThingsListPanelControl.ContentHolder.Children.Add(this);
 
-
-            //List<OWLOSThingWrapper> OWLOSThingWrappers = new List<OWLOSThingWrapper>();
-            
-            
-                foreach (OWLOSThingWrapper ThingWrapper in ThingsAdmin.OWLOSThingWrappers)
-                {
-                    ThingsListItemControl NewThingsListItemControl = new ThingsListItemControl(ThingWrapper);
-                    ThingsListStackPanel.Children.Add(NewThingsListItemControl);
-                }
-            
-
+            foreach (OWLOSThingWrapper ThingWrapper in ThingsAdmin.OWLOSThingWrappers)
+            {
+                ThingsListItemControl NewThingsListItemControl = new ThingsListItemControl(ThingWrapper);
+                ThingsListStackPanel.Children.Add(NewThingsListItemControl);
+                NewThingsListItemControl.OnDelete += NewThingsListItemControl_OnDelete;
+            }
 
             ThingsAdmin.OnNewThing += ThingsAdmin_OnNewThing;
+        }
 
+        private void NewThingsListItemControl_OnDelete(object sender, System.EventArgs e)
+        {
+            ThingsListStackPanel.Children.Remove(sender as ThingsListItemControl);
         }
 
         private void ThingsAdmin_OnNewThing(object sender, OWLOSThingWrapperEventArgs e)
         {
             OWLOSThingWrapper ThingWrapper = e.ThingWrapper;
-
-            //ThingsListItemControl NewThingsListItemControl = new ThingsListItemControl();
-            //NewThingsListItemControl.NameTextBox.Text = ThingWrapper.Thing.Name;
+            ThingsListItemControl NewThingsListItemControl = new ThingsListItemControl(ThingWrapper);
+            NewThingsListItemControl.OnDelete += NewThingsListItemControl_OnDelete;
+            ThingsListStackPanel.Children.Add(NewThingsListItemControl);
         }
 
         private void NewConnectionButton_Click(object sender, RoutedEventArgs e)
         {
-            //ThingsListItemControl NewThingsListItemControl = new ThingsListItemControl();
-            //NewThingsListItemControl.NameTextBox.Text = "New Connection";
-
-            /*
-            ThingConnectionConfigItemControl ThingConnectionControl = new ThingConnectionConfigItemControl();
-            ThingConnectionControl.EnabledCheckBox.IsChecked = false;
-            ThingConnectionControl.NameTextBox.Text = "HTTP(s) RESTful";
-            ThingConnectionControl.TypeComboBox.SelectedIndex = 0;
-            ThingConnectionControl.ConnectionStringTextBox.Text = "{\"host\":\"http://192.168.4.1/\",\"port\":80}";
-            NewThingsListItemControl.ConnectionsStackPanel.Children.Add(ThingConnectionControl);
-
-            ThingConnectionControl = new ThingConnectionConfigItemControl();
-            ThingConnectionControl.EnabledCheckBox.IsChecked = false;
-            ThingConnectionControl.NameTextBox.Text = "MQTT";
-            ThingConnectionControl.TypeComboBox.SelectedIndex = 1;
-            ThingConnectionControl.ConnectionStringTextBox.Text = "{\"host\":\"http://192.168.4.1/\"}";
-            NewThingsListItemControl.ConnectionsStackPanel.Children.Add(ThingConnectionControl);
-
-            ThingConnectionControl = new ThingConnectionConfigItemControl();
-            ThingConnectionControl.EnabledCheckBox.IsChecked = false;
-            ThingConnectionControl.NameTextBox.Text = "UART";
-            ThingConnectionControl.TypeComboBox.SelectedIndex = 2;
-            ThingConnectionControl.ConnectionStringTextBox.Text = "{\"port\":\"COM7\",\"baudRate\":115200,\"parity\":0,\"stopBits\":1,\"dataBits\":8,\"handshake\":0,\"RTSEnable\":false}";
-            NewThingsListItemControl.ConnectionsStackPanel.Children.Add(ThingConnectionControl);
-
-            ThingsListStackPanel.Children.Add(NewThingsListItemControl);
-            */
+            ThingsAdmin.CreateThingWrapper();
         }
     }
 }

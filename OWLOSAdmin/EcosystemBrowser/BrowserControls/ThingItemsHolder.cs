@@ -55,7 +55,7 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
     }
     public class ThingItemsHolder
     {
-        private readonly PanelControlTag PanelTag;
+        public readonly PanelControlTag PanelTag;
 
         private ThingControl ThingBrowserControl = null;
         
