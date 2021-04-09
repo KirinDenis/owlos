@@ -50,27 +50,27 @@ namespace OWLOSThingsManager.EcosystemBrowser.BrowserControls
     public partial class ThingsListControl : UserControl
     {
         private readonly PanelControlTag PanelTag;
-        private readonly ThingsManager ThingsThingsManager;
+        private readonly ThingsManager ThingsManager;
         public PanelControl ThingsListPanelControl;
 
-        public ThingsListControl(PanelControlTag PanelTag, ThingsManager ThingsThingsManager)
+        public ThingsListControl(PanelControlTag PanelTag, ThingsManager ThingsManager)
         {
             InitializeComponent();
 
             this.PanelTag = PanelTag;
-            this.ThingsThingsManager = ThingsThingsManager;
+            this.ThingsManager = ThingsManager;
 
             ThingsListPanelControl = new PanelControl(PanelTag);
             ThingsListPanelControl.ContentHolder.Children.Add(this);
 
-            foreach (OWLOSThingWrapper ThingWrapper in ThingsThingsManager.OWLOSThingWrappers)
+            foreach (OWLOSThingWrapper ThingWrapper in ThingsManager.OWLOSThingWrappers)
             {
                 ThingsListItemControl NewThingsListItemControl = new ThingsListItemControl(ThingWrapper);
                 ThingsListStackPanel.Children.Add(NewThingsListItemControl);
                 NewThingsListItemControl.OnDelete += NewThingsListItemControl_OnDelete;
             }
 
-            ThingsThingsManager.OnNewThing += ThingsThingsManager_OnNewThing;
+            ThingsManager.OnNewThing += ThingsManager_OnNewThing;
         }
 
         private void NewThingsListItemControl_OnDelete(object sender, System.EventArgs e)
@@ -78,7 +78,7 @@ namespace OWLOSThingsManager.EcosystemBrowser.BrowserControls
             ThingsListStackPanel.Children.Remove(sender as ThingsListItemControl);
         }
 
-        private void ThingsThingsManager_OnNewThing(object sender, OWLOSThingWrapperEventArgs e)
+        private void ThingsManager_OnNewThing(object sender, OWLOSThingWrapperEventArgs e)
         {
             OWLOSThingWrapper ThingWrapper = e.ThingWrapper;
             ThingsListItemControl NewThingsListItemControl = new ThingsListItemControl(ThingWrapper);
@@ -88,7 +88,7 @@ namespace OWLOSThingsManager.EcosystemBrowser.BrowserControls
 
         private void NewConnectionButton_Click(object sender, RoutedEventArgs e)
         {
-            ThingsThingsManager.CreateThingWrapper();
+            ThingsManager.CreateThingWrapper();
         }
     }
 }

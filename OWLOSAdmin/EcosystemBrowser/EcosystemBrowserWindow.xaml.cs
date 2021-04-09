@@ -38,6 +38,7 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
+using OWLOSAdmin.EcosystemBrowser;
 using OWLOSThingsManager.Ecosystem;
 using OWLOSThingsManager.Ecosystem.OWLOS;
 using OWLOSThingsManager.EcosystemBrowser.BrowserControls;
@@ -47,24 +48,20 @@ using System.Windows.Controls;
 
 namespace OWLOSThingsManager.EcosystemBrowser
 {
-    /// <summary>
-    /// Interaction logic for EcosystemBrowserWindow.xaml
-    /// </summary>
     public partial class EcosystemBrowserWindow : Window
     {
 
         private TreeViewItem ThingsTreeViewItem;
         private ThingsListControl ActiveThingsLisControl;
 
-        private ThingsManager ThingsThingsManager = new ThingsManager();
+        private ThingsManager ThingsManager = new ThingsManager();
         public EcosystemBrowserWindow()
         {
             InitializeComponent();
 
             Icon = Icons.GetIcon(316);
 
-            ThingsThingsManager = new ThingsManager();
-
+            ThingsManager = new ThingsManager();
 
             ThingsTreeViewItem = new TreeViewItem();
             ThingsTreeViewItem.Header = TreeViewItemHeaderControl.Create(Icons.GetIcon(316), "Things");
@@ -72,9 +69,9 @@ namespace OWLOSThingsManager.EcosystemBrowser
 
             BrowserTreeView.Items.Add(ThingsTreeViewItem);
 
-            ThingsThingsManager.OnNewThing += ThingsManager_NewOWLOSThing;
-            ThingsThingsManager.OnDeleteThingWrapper += ThingsThingsManager_OnDeleteThingWrapper;
-            ThingsThingsManager.Load();
+            ThingsManager.OnNewThing += ThingsManager_NewOWLOSThing;
+            ThingsManager.OnDeleteThingWrapper += ThingsManager_OnDeleteThingWrapper;
+            ThingsManager.Load();
 
             ActiveThingsLisControl = new ThingsListControl(new PanelControlTag
             {
@@ -82,12 +79,12 @@ namespace OWLOSThingsManager.EcosystemBrowser
                 Thing = null,
                 BrowserGrid = BrowserGrid,
                 BrowserTabsPanel = BrowserTabsPanes
-            }, ThingsThingsManager);
+            }, ThingsManager);
 
 
         }
 
-        private void ThingsThingsManager_OnDeleteThingWrapper(object sender, System.EventArgs e)
+        private void ThingsManager_OnDeleteThingWrapper(object sender, System.EventArgs e)
         {
             OWLOSThingWrapper ThingWrapper = sender as OWLOSThingWrapper;
             foreach (TreeViewItem TreeItem in ThingsTreeViewItem.Items)
@@ -130,6 +127,31 @@ namespace OWLOSThingsManager.EcosystemBrowser
         private void TextBlock_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             new IconsToolWindow().Show();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            DialogWindow dialogWindow = new DialogWindow("Are you sure?", "Close OWLOS Ecosystem Browser application?");
+            dialogWindow.Owner = this;
+            bool? result = dialogWindow.ShowDialog();
+            if (result != null)
+            {
+                if (result == true)
+                {
+                    foreach (OWLOSThingWrapper ThingWrapper in ThingsManager.OWLOSThingWrappers)
+                    {
+                        foreach(OWLOSConnection connection in ThingWrapper.Thing.config.connections)
+                        {
+                            connection.enable = false;
+                        }
+                    }
+
+                    e.Cancel = false;
+                    return;
+                }
+            }
+            e.Cancel = true;
+
         }
     }
 }
