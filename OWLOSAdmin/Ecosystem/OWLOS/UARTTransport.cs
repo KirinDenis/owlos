@@ -276,55 +276,57 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
                 text = indata
             });
 
-
-            //clean echo 
-            while (indata.IndexOf("\r\n") != -1)
+            if (_connection.enable)
             {
-                indata = indata.Substring(indata.IndexOf("\r\n") + 2);
-            }
-
-            if (indata.IndexOf("\n\n") != -1)
-            {
-                while (indata.IndexOf("\n\n") != -1)
+                //clean echo 
+                while (indata.IndexOf("\r\n") != -1)
                 {
-                    string _data = indata.Substring(0, indata.IndexOf("\n\n") + 2);
-                    indata = indata.Substring(indata.IndexOf("\n\n") + 2);
-                    List<string> serialRaw = _data.Split('\n').ToList();
-
-
-                    int i = 0;
-                    while (i < serialRaw.Count)
-                    {
-                        string data = serialRaw[i];
-                        if (data.IndexOf("OK: ") == 0)
-                        {
-                            string APIName = data.Substring(4);
-                            string APIData = string.Empty;
-
-                            i++;
-
-                            while ((i < serialRaw.Count - 1) && (!(string.IsNullOrEmpty(serialRaw[i]) && string.IsNullOrEmpty(serialRaw[i + 1]))))
-                            {
-                                APIData += serialRaw[i] + "\n";
-                                i++;
-                            }
-
-                            if (APIName.ToUpper().Equals("AT+ADP?"))
-                            {
-                               Task task = Thing.ParseGetAllDriversProperties(APIData);
-                             //    Thing.parseDrivers(APIData);
-                            }
-                        }
-
-                        if (data.IndexOf("PUB: ") == 0 )
-                        {
-                            Task task = Thing.ParseThingPublish(data);
-                        }    
-
-                        i++;
-                    }
+                    indata = indata.Substring(indata.IndexOf("\r\n") + 2);
                 }
 
+                if (indata.IndexOf("\n\n") != -1)
+                {
+                    while (indata.IndexOf("\n\n") != -1)
+                    {
+                        string _data = indata.Substring(0, indata.IndexOf("\n\n") + 2);
+                        indata = indata.Substring(indata.IndexOf("\n\n") + 2);
+                        List<string> serialRaw = _data.Split('\n').ToList();
+
+
+                        int i = 0;
+                        while (i < serialRaw.Count)
+                        {
+                            string data = serialRaw[i];
+                            if (data.IndexOf("OK: ") == 0)
+                            {
+                                string APIName = data.Substring(4);
+                                string APIData = string.Empty;
+
+                                i++;
+
+                                while ((i < serialRaw.Count - 1) && (!(string.IsNullOrEmpty(serialRaw[i]) && string.IsNullOrEmpty(serialRaw[i + 1]))))
+                                {
+                                    APIData += serialRaw[i] + "\n";
+                                    i++;
+                                }
+
+                                if (APIName.ToUpper().Equals("AT+ADP?"))
+                                {
+                                    Task task = Thing.ParseGetAllDriversProperties(APIData);
+                                    //    Thing.parseDrivers(APIData);
+                                }
+                            }
+
+                            if (data.IndexOf("PUB: ") == 0)
+                            {
+                                Task task = Thing.ParseThingPublish(data);
+                            }
+
+                            i++;
+                        }
+                    }
+
+                }
             }
 
         }

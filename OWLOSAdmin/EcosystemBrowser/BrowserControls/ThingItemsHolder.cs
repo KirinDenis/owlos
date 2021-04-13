@@ -38,6 +38,7 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
+using OWLOSAdmin.EcosystemBrowser.BrowserControls;
 using OWLOSThingsManager.Ecosystem.OWLOS;
 using OWLOSThingsManager.Tools;
 using System.Windows.Controls;
@@ -51,14 +52,15 @@ namespace OWLOSThingsManager.EcosystemBrowser.BrowserControls
         public OWLOSThing Thing;
         public OWLOSDriver Driver;
         public ThingItemsHolder ParentThingItemsHolder;        
-        public DriverControl DriverBrowserControl = null;
+        public DriverControl DriverBrowserControl = null;        
     }
     public class ThingItemsHolder
     {
         public readonly PanelControlTag PanelTag;
 
         private ThingControl ThingBrowserControl = null;
-        
+        public FileControl FileBrowserControl = null;
+
         public TreeViewItem ThingBrowserItem;
         public TreeViewItem TransportsBrowserItem;
         public TreeViewItem DriversBrowserItem;
@@ -102,6 +104,7 @@ namespace OWLOSThingsManager.EcosystemBrowser.BrowserControls
                 Header = TreeViewItemHeaderControl.Create(Icons.GetIcon(471), "Files"),
                 Tag = this
             };
+            FilesBrowserItem.MouseDoubleClick += FilesBrowserItem_MouseDoubleClick;
             ThingBrowserItem.Items.Add(FilesBrowserItem);
 
             foreach (IOWLOSTransport ThingTransport in PanelTag.Thing.transports)
@@ -168,9 +171,20 @@ namespace OWLOSThingsManager.EcosystemBrowser.BrowserControls
                 PanelTag.Name = ClickedThingDriverItemTag.Driver.name;
                 ClickedThingDriverItemTag.DriverBrowserControl = new DriverControl(PanelTag, ClickedThingDriverItemTag);
             }
-            ClickedThingDriverItemTag.DriverBrowserControl.ThingPanelControl.Show();
-
-            
+            ClickedThingDriverItemTag.DriverBrowserControl.ThingPanelControl.Show();            
         }
+
+        private void FilesBrowserItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+        
+            if (FileBrowserControl == null)
+            {
+
+                FileBrowserControl = new FileControl(PanelTag);
+            }
+            FileBrowserControl.ThingPanelControl.Show();
+
+        }
+
     }
 }

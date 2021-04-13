@@ -47,14 +47,7 @@ using System.Timers;
 
 namespace OWLOSThingsManager.Ecosystem.OWLOS
 {
-    /*
-
-    ThingsManager side          |    Thing side       
-                        |
-                        |
-
-    */
-
+ 
     public class OWLOSDriverWrapperEventArgs : EventArgs
     {
         public OWLOSDriverWrapperEventArgs(OWLOSDriver driver)
@@ -65,24 +58,20 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
         public OWLOSDriver driver;
     }
 
-
     public class OWLOSThingConfig    
     {
         public string Name;
+
         public DateTime LastConnected;
 
         public List<OWLOSConnection> connections = new List<OWLOSConnection>();
         public List<APIQueryInterval> APIQueryIntervals { get; set; }
-
-
     }
 
     public class OWLOSThing : IOWLOSAbstractTransport
     {
         public string Name;
-
         public List<OWLOSDriver> drivers { get; set; } = new List<OWLOSDriver>();
-
         public OWLOSFiles files { get; set; } = new OWLOSFiles(); ///parser, events
 
         public delegate void DriverEventHandler(object? sender, OWLOSDriverWrapperEventArgs e);
@@ -280,9 +269,7 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
                         }    
                     }
                 }
-
             }
-
         }
 
         public async Task<bool> GetAllDriversProperties()
@@ -346,17 +333,60 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
             return result;
         }
 
-
         public async Task<bool> SetDriverProperty(string driver, string property, string value)
         {
-            bool result = false;
-            foreach (IOWLOSTransport _OWLOSTransport in transports)
+            if ((transports.Count > 0) && (transports[0] != null))
             {
-                result |= await _OWLOSTransport.SetDriverProperty(driver, property, value);
-            }
-            return result;
+                if (await transports[0].SetDriverProperty(driver, property, value) != true)
+                {
+                    if ((transports.Count > 1) && (transports[1] != null))
+                    {
+                        if (await transports[1].SetDriverProperty(driver, property, value) != true)
+                        {
+                            if ((transports.Count > 2) && (transports[2] != null))
+                            {
+                                if (await transports[2].SetDriverProperty(driver, property, value) != true)
+                                {
+                                    return false;
+                                }
+                            }
 
+                        }
+                    }
+                }
+            }
+            return true;
         }
+
+        public async Task<string> GetDriverProperty(string driver, string property)
+        {
+            string value = "%error";
+            if ((transports.Count > 0) && (transports[0] != null))
+            {
+                value = await transports[0].GetDriverProperty(driver, property);
+                if (value.Equals("%error"))
+                {
+                    if ((transports.Count > 1) && (transports[1] != null))
+                    {
+                        value = await transports[1].GetDriverProperty(driver, property);
+                        if (value.Equals("%error"))
+                        {
+                            if ((transports.Count > 2) && (transports[2] != null))
+                            {
+                                value = await transports[2].GetDriverProperty(driver, property);
+                                if (value.Equals("%error"))
+                                {
+                                    return "%error";
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+            return value;
+        }
+
 
         /*
         public void AddDriver()

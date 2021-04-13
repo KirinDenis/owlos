@@ -114,6 +114,10 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
         {
             throw new NotImplementedException();
         }
+        public virtual async Task<string> GetDriverProperty(string driver, string property)
+        {
+            throw new NotImplementedException();
+        }
 
         public void AddToLog(LogItem logItem)
         {

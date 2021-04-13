@@ -84,7 +84,7 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
             RESTfulClientResultModel getResult = await Get("getalldriversproperties");
             if (string.IsNullOrEmpty(getResult.error))
             {                
-                Thing.ParseGetAllDriversProperties(getResult.result);
+                await Thing.ParseGetAllDriversProperties(getResult.result);
                 return true;
             }
             else
@@ -98,7 +98,7 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
             RESTfulClientResultModel getResult = await Get("getfilelist?path=");
             if (string.IsNullOrEmpty(getResult.error))
             {
-                Thing.files.ParseGetAllFiles(getResult.result);
+                await Thing.files.ParseGetAllFiles(getResult.result);
                 return true;
             }
             else
@@ -107,10 +107,8 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
             }
         }
 
-
         public override async Task<bool> SetDriverProperty(string driver, string property, string value)
         {
-
             RESTfulClientResultModel getResult = await Get("setdriverproperty?id=" + driver + "&property=" + property + "&value=" + property);
             
             if (string.IsNullOrEmpty(getResult.error))
@@ -121,7 +119,20 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
             {
                 return false;
             }
+        }
 
+        public override async Task<string> GetDriverProperty(string driver, string property)
+        {
+            RESTfulClientResultModel getResult = await Get("getdriverproperty?id=" + driver + "&property=" + property);
+
+            if (string.IsNullOrEmpty(getResult.error))
+            {
+                return getResult.result;
+            }
+            else
+            {
+                return "%error";
+            }
         }
 
         protected async Task<RESTfulClientResultModel> Get(string APIName, string args = "")

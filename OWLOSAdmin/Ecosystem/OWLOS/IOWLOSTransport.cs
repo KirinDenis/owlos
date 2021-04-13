@@ -53,6 +53,8 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
         abstract public Task<bool> DownLoadFile(string fileName);
 
         abstract public Task<bool> SetDriverProperty(string driver, string property, string value);
+
+        abstract public Task<string> GetDriverProperty(string driver, string property);
     }
 
     public class LogItem

@@ -98,9 +98,7 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
         public string flags;
 
         public delegate void PropertyEventHandler(object? sender, OWLOSPropertyWrapperEventArgs e);
-
-        
-
+       
         public event PropertyEventHandler OnPropertyChange;
         public event PropertyEventHandler OnPropertySetInside;
         public event PropertyEventHandler OnPropertySetOutside;
@@ -167,20 +165,20 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
 
             try
             {
-                /*
-                string result = await driver.parentThing.wrapper.transport.GetDriverProperty(driver.name, this.name);
+                
+                string result = await driver.parentThing.GetDriverProperty(driver.name, this.name);
 
                 if (result.IndexOf("%error") != 0)
                 {
-                    networkStatus = NetworkStatus.online;
+                    networkStatus = NetworkStatus.Online;
                     value = result;
                     PropertyGetOutside(new OWLOSPropertyWrapperEventArgs(this));
                 }
                 else
                 {
-                    networkStatus = NetworkStatus.erorr;
+                    networkStatus = NetworkStatus.Erorr;
                 }
-                */
+                
 
             }
             catch (Exception) //TODO: last error or on error event

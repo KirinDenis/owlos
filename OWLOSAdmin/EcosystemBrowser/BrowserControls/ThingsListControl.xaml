@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:OWLOSThingsManager.EcosystemBrowser.BrowserControls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
+    <Grid  Background="#FFF6F6F6">
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="71*"/>

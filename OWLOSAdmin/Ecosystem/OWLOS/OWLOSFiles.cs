@@ -128,14 +128,13 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
 
         }
 
-
-        private bool AddFile(String rawFile)
+        private bool AddFile(string rawFile)
         {
             bool addFileResult = true;
 
             string rawFileName = rawFile.Substring(1, rawFile.IndexOf(" ") - 1); ;
 
-            if (!String.IsNullOrEmpty(rawFile))
+            if (!string.IsNullOrEmpty(rawFile))
             {
                 
                 if (int.TryParse(rawFile.Substring(rawFile.IndexOf(" ")), out int rawFileSize)) { 
@@ -155,6 +154,11 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
             }
 
             return addFileResult;
+        }
+
+        public bool DeleteFile(string rawFile)
+        {
+            return false;
         }
 
     }
