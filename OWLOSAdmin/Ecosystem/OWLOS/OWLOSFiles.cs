@@ -38,7 +38,6 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -50,10 +49,16 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
         public List<OWLOSFile> filesList = new List<OWLOSFile>();
         public delegate void NewFileEventHandler(object sender, OWLOSFile owlosFile);
         public event NewFileEventHandler OnNewFile;
+        public OWLOSThing parentThing;
 
+        public OWLOSFiles(OWLOSThing parentThing)
+        {
+            this.parentThing = parentThing;
+        }
 
         public async Task ParseGetAllFiles(string filesData)
-        {
+        {            
+
             List<string> filesRaw = filesData.Split('\n').ToList();
 
             foreach (OWLOSFile owlosExistedFileInitial in filesList)
@@ -100,7 +105,6 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
                     {
                         AddFile(file);
                     }
-
                 }
             }
 
@@ -125,7 +129,6 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
                     break;
                 }
             }
-
         }
 
         private bool AddFile(string rawFile)
@@ -156,9 +159,21 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
             return addFileResult;
         }
 
-        public bool DeleteFile(string rawFile)
+        public async Task<bool> DeleteFile(string rawFile)
         {
-            return false;
+            OWLOSFile file = filesList.FirstOrDefault(f => f.name == rawFile && f.exist);
+
+            if (file != null)
+            {
+                if (await parentThing.DeleteFile(rawFile))
+                {
+                    file.FileDeleteInsideSide();
+                    return true;
+                }
+            }
+
+           return false;
+
         }
 
     }

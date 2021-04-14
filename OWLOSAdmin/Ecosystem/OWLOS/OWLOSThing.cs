@@ -47,7 +47,7 @@ using System.Timers;
 
 namespace OWLOSThingsManager.Ecosystem.OWLOS
 {
- 
+
     public class OWLOSDriverWrapperEventArgs : EventArgs
     {
         public OWLOSDriverWrapperEventArgs(OWLOSDriver driver)
@@ -72,7 +72,7 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
     {
         public string Name;
         public List<OWLOSDriver> drivers { get; set; } = new List<OWLOSDriver>();
-        public OWLOSFiles files { get; set; } = new OWLOSFiles(); ///parser, events
+        public OWLOSFiles files { get; set; }
 
         public delegate void DriverEventHandler(object? sender, OWLOSDriverWrapperEventArgs e);
 
@@ -93,7 +93,7 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
 
             Name = config.Name;
 
-
+            files = new OWLOSFiles(this);
 
             foreach (OWLOSConnection connection in config.connections)
             {
@@ -151,7 +151,6 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
             OnLifeCycleTimer(null, null);
 
         }
-
         private async void OnLifeCycleTimer(object source, ElapsedEventArgs e)
         {
             foreach (APIQueryInterval QueryInterval in config.APIQueryIntervals)
@@ -175,13 +174,10 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
                 }
             }
         }
-
-
         protected virtual void NewDriver(OWLOSDriverWrapperEventArgs e)
         {
             OnNewDriver?.Invoke(this, e);
         }
-
         public async Task ParseGetAllDriversProperties(string driverData)
         {
             List<string> driverRaw = driverData.Split('\n').ToList();
@@ -220,7 +216,6 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
                 }
             }
         }
-
 
         public async Task parseScripts(string scriptData)
         {
@@ -296,43 +291,6 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
             }
             return true;
         }
-
-        public async Task<bool> GetAllFiles()
-        {
-            if ((transports.Count > 0) && (transports[0] != null))
-            {
-                if (await transports[0].GetAllFiles() != true)
-                {
-                    if ((transports.Count > 1) && (transports[1] != null))
-                    {
-                        if (await transports[1].GetAllFiles() != true)
-                        {
-                            if ((transports.Count > 2) && (transports[2] != null))
-                            {
-                                if (await transports[2].GetAllFiles() != true)
-                                {
-                                    return false;
-                                }
-                            }
-
-                        }
-                    }
-                }
-            }
-            return true;
-        }
-
-
-        public async Task<bool> DownLoadFile(string fileName)
-        {
-            bool result = false;
-            foreach (IOWLOSTransport _OWLOSTransport in transports)
-            {
-                result |= await _OWLOSTransport.DownLoadFile(fileName);
-            }
-            return result;
-        }
-
         public async Task<bool> SetDriverProperty(string driver, string property, string value)
         {
             if ((transports.Count > 0) && (transports[0] != null))
@@ -357,7 +315,6 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
             }
             return true;
         }
-
         public async Task<string> GetDriverProperty(string driver, string property)
         {
             string value = "%error";
@@ -379,13 +336,69 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
                                     return "%error";
                                 }
                             }
-
                         }
                     }
                 }
             }
             return value;
         }
+        public async Task<bool> GetAllFiles()
+        {
+            if ((transports.Count > 0) && (transports[0] != null))
+            {
+                if (await transports[0].GetAllFiles() != true)
+                {
+                    if ((transports.Count > 1) && (transports[1] != null))
+                    {
+                        if (await transports[1].GetAllFiles() != true)
+                        {
+                            if ((transports.Count > 2) && (transports[2] != null))
+                            {
+                                if (await transports[2].GetAllFiles() != true)
+                                {
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+        public async Task<bool> DeleteFile(string fileName)
+        {
+            if ((transports.Count > 0) && (transports[0] != null))
+            {
+                if (await transports[0].DeleteFile(fileName) != true)
+                {
+                    if ((transports.Count > 1) && (transports[1] != null))
+                    {
+                        if (await transports[1].DeleteFile(fileName) != true)
+                        {
+                            if ((transports.Count > 2) && (transports[2] != null))
+                            {
+                                if (await transports[2].DeleteFile(fileName) != true)
+                                {
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+
+        public async Task<bool> DownloadFile(string fileName)
+        {
+            bool result = false;
+            foreach (IOWLOSTransport _OWLOSTransport in transports)
+            {
+                result |= await _OWLOSTransport.DownloadFile(fileName);
+            }
+            return result;
+        }
+
 
 
         /*

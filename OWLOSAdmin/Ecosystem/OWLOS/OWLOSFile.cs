@@ -89,6 +89,12 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
             OnFileDelete?.Invoke(this, new EventArgs());
         }
 
+        public void FileDeleteInsideSide()
+        {
+            OnFileDelete?.Invoke(this, new EventArgs());
+        }
+
+
         protected virtual void TransportStatusChange(EventArgs e)
         {
             OnTransportStatusChange?.Invoke(this, e);

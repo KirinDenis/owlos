@@ -47,14 +47,12 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
     public interface IOWLOSAbstractTransport
     {
         abstract public Task<bool> GetAllDriversProperties();
-
-        abstract public Task<bool> GetAllFiles();
-
-        abstract public Task<bool> DownLoadFile(string fileName);
-
         abstract public Task<bool> SetDriverProperty(string driver, string property, string value);
-
         abstract public Task<string> GetDriverProperty(string driver, string property);
+        abstract public Task<bool> GetAllFiles();
+        abstract public Task<bool> DownloadFile(string fileName);
+        abstract public Task<bool> DeleteFile(string fileName);
+
     }
 
     public class LogItem

@@ -104,12 +104,6 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
         {
             throw new NotImplementedException();
         }
-
-        public virtual async Task<bool> GetAllFiles()
-        {
-            throw new NotImplementedException();
-        }
-
         public virtual async Task<bool> SetDriverProperty(string driver, string property, string value)
         {
             throw new NotImplementedException();
@@ -118,16 +112,23 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
         {
             throw new NotImplementedException();
         }
+        public virtual async Task<bool> GetAllFiles()
+        {
+            throw new NotImplementedException();
+        }
+        public Task<bool> DownloadFile(string fileName)
+        {
+            throw new NotImplementedException();
+        }
+        public virtual async Task<bool> DeleteFile(string fileName)
+        {
+            throw new NotImplementedException();
+        }
 
         public void AddToLog(LogItem logItem)
         {
             logItems.Add(logItem);
             OnLogItem?.Invoke(this, logItem);
-        }
-
-        public Task<bool> DownLoadFile(string fileName)
-        {
-            throw new NotImplementedException();
         }
     }
 }

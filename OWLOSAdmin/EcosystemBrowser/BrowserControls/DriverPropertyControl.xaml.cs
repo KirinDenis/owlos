@@ -352,14 +352,28 @@ namespace OWLOSThingsManager.EcosystemBrowser.BrowserControls
             });
         }
 
-        private void getButton_Click(object sender, RoutedEventArgs e)
+        private async void getButton_Click(object sender, RoutedEventArgs e)
         {
-            DriverProperty.GetOutside();
+            await DriverProperty.GetOutside();
         }
 
-        private void setButton_Click(object sender, RoutedEventArgs e)
+        private async void setButton_Click(object sender, RoutedEventArgs e)
         {
-            DriverProperty.SetInside(propValueEdit.Text);
+            if (!flags.isBoolean)
+            {
+                await DriverProperty.SetInside(propValueEdit.Text);
+            }
+            else
+            {
+                if (propCheckBoxValueEdit.IsChecked.Value)
+                {
+                    await DriverProperty.SetInside("1");
+                }
+                else
+                {
+                    await DriverProperty.SetInside("0");
+                }
+            }
         }
 
     }

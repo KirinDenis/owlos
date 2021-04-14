@@ -16,10 +16,19 @@ using System.Windows.Shapes;
 namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
 {
     public class FileItem
-    {        
+    {
+        public ListView ParentListView;
+        public bool IsChecked { get; set; }
         public string FileName { get; set; }
         public int FileSize { get; set; }
         public string LastOperation { get; set; }
+
+        /*
+        public void OwlosFile_OnFileDelete(object sender, EventArgs e)
+        {
+            ParentListView.Items.Remove(this);
+        }
+        */
     }
 
     public partial class FileControl : UserControl
@@ -39,17 +48,21 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
 
             foreach (OWLOSFile File in PanelTag.Thing.files.filesList)
             {
-                FileItem Item = new FileItem()
+                FileItem Item;
+                Item = new FileItem()                
                 {                    
+                    ParentListView = FilesListView,
                     FileName = File.name,
                     FileSize = File.size,
-                    LastOperation = DateTime.Now.ToString()
-                };
+                    LastOperation = DateTime.Now.ToString(),                    
+            };
+                //File.OnFileDelete += Item.OwlosFile_OnFileDelete;
+                PanelTag.Thing.files.OnNewFile += Files_OnNewFile;
 
                 FilesListView.Items.Add(Item);
             }
 
-            PanelTag.Thing.files.OnNewFile += Files_OnNewFile;
+            
 
         }
 
@@ -57,17 +70,28 @@ namespace OWLOSAdmin.EcosystemBrowser.BrowserControls
         {
             FileItem Item = new FileItem()
             {
+                ParentListView = FilesListView,
                 FileName = owlosFile.name,
                 FileSize = owlosFile.size,
                 LastOperation = DateTime.Now.ToString()
             };
 
             FilesListView.Items.Add(Item);
+
+            //owlosFile.OnFileDelete += Item.OwlosFile_OnFileDelete;
         }
 
-        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+
+        private async void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            //PanelTag.Thing.files.
+            foreach(FileItem Item in FilesListView.Items)
+            {
+                if (Item.IsChecked)
+                {
+                    await PanelTag.Thing.files.DeleteFile(Item.FileName);
+                }
+            }
+            
         }
     }
 }

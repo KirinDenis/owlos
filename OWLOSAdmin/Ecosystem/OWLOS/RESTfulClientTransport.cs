@@ -72,13 +72,10 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
         }
 
         private OWLOSThing Thing = null;
-
         public RESTfulClientTransport(OWLOSThing Thing)
         {
             this.Thing = Thing;
         }
-
-
         override public async Task<bool> GetAllDriversProperties()
         {
             RESTfulClientResultModel getResult = await Get("getalldriversproperties");
@@ -92,27 +89,12 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
                 return false;
             }            
         }
-
-        override public async Task<bool> GetAllFiles()
-        {
-            RESTfulClientResultModel getResult = await Get("getfilelist?path=");
-            if (string.IsNullOrEmpty(getResult.error))
-            {
-                await Thing.files.ParseGetAllFiles(getResult.result);
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
         public override async Task<bool> SetDriverProperty(string driver, string property, string value)
         {
-            RESTfulClientResultModel getResult = await Get("setdriverproperty?id=" + driver + "&property=" + property + "&value=" + property);
-            
+            RESTfulClientResultModel getResult = await Get("setdriverproperty?id=" + driver + "&property=" + property + "&value=" + value);
+
             if (string.IsNullOrEmpty(getResult.error))
-            {                
+            {
                 return true;
             }
             else
@@ -120,7 +102,6 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
                 return false;
             }
         }
-
         public override async Task<string> GetDriverProperty(string driver, string property)
         {
             RESTfulClientResultModel getResult = await Get("getdriverproperty?id=" + driver + "&property=" + property);
@@ -134,11 +115,35 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
                 return "%error";
             }
         }
+        override public async Task<bool> GetAllFiles()
+        {
+            RESTfulClientResultModel getResult = await Get("getfilelist?path=");
+            if (string.IsNullOrEmpty(getResult.error))
+            {
+                await Thing.files.ParseGetAllFiles( getResult.result);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        public override async Task<bool> DeleteFile(string fileName)
+        {
+            RESTfulClientResultModel getResult = await Get("deletefile?name=" + fileName);
+
+            if (string.IsNullOrEmpty(getResult.error))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         protected async Task<RESTfulClientResultModel> Get(string APIName, string args = "")
-        {
-
-            
+        {            
             RESTfulClientResultModel result = new RESTfulClientResultModel();
             if (!connection.enable)
             {

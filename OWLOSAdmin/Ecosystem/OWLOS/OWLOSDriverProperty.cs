@@ -205,6 +205,7 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
             {
                 networkStatus = NetworkStatus.Online;
                 PropertySetInside(new OWLOSPropertyWrapperEventArgs(this));
+                value = _value;
                 return string.Empty;
             }
             else

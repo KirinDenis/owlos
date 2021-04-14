@@ -62,7 +62,6 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
             this.name = name;
             
         }
-
         public async Task<bool> SetParsedProperty(string name, string value)
         {
             string _value = value.Substring(0, value.IndexOf("//"));
@@ -83,13 +82,10 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
 
             return true;
         }
-
         protected virtual void PropertyCreate(OWLOSPropertyWrapperEventArgs e)
         {
             OnPropertyCreate?.Invoke(this, e);
         }
-
-
         public int GetPropertiesCount()
         {
             return properties.Count;
@@ -98,7 +94,6 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
         {
             return properties.Find(p => p.name == name);
         }
-
         public bool SetPropertyValue(string name, string value)
         {
             OWLOSDriverProperty property = GetProperty(name);
@@ -106,7 +101,6 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
             {
                 return false;
             }
-
             property.value = value;
             return true;
         }
