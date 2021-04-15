@@ -1,33 +1,39 @@
-![OWLOS в режиме WiFi точки доступа без файлов UI](https://github.com/KirinDenis/owlos/blob/master/OWLOSResource/images/owlos_core3.jpg)
+![OWLOS Core](https://github.com/KirinDenis/owlos/blob/master/OWLOSResource/images/owlos_core3.jpg)
 
 # OWLOS 
-### open source network operating system for managing IoT devices.
-### ESP32&ESP8266
-- doesn't require internet access or additional servers
-- ready to connect with sensors, actuators, LCD, DHT, Stepper and other drivers
+### DIY Open Source OS for building IoT ecosystems
+- built-in sensors, actuators, LCDs, DHTs, Steppers and other drivers
+- built-in script language interpreter 
+- built-in HTTP(S) RESTful server, RESTful client, MQTT client
+- WiFi access point/station modes
+- UART AT+ interface supported
+- flexible assembly configuration (config.h)
+- Web and desktop UX
 - doesn't require programming skills
-- built-in user interface - use web browser to access and manage your OWLOS nodes
-- built-in RESTful server
-- built-in MQTT client
-- at the same time WiFi access point and station, in any combination: 
-	- can be used autonomously
-	- can work on a local network
-	- can work via the Internet 
-- can integrate with other nodes running under OWLOS - organizing an internal network. without using a servers
-- available in source code
+- doesn't require internet and additional servers
+-  Open Source under GPL-3.0 License 
 
 # How to build:
-  - isnstall Arduino Studio 1.8.9. or upper.
-  - isnstall COM port driver if your ESP8266 board use CH340 chip https://wiki.wemos.cc/downloads (you linux install cp210x driver)
-  - at Arduino Studio menu File\Preferenses -> Addition board services -> http://arduino.esp8266.com/stable/package_esp8266com_index.json (NOTE: version 2.5.0)
-  - at Arduino Studio menu Tools\Board->Board Service find and install ESP8266 commnodey (https://github.com/esp8266/Arduino)
-  * see: https://github.com/wemos/Arduino_D1
-  - build and upload OWL firmware on your board.
-  * after uploading:  
-	- connect to WiFi access point owlnode[YOURESPCHIPID]  PWD: 1122334455
-	- browse http://192.168.4.1:8084 to access OWLOS UI LGN: admin PWD: admin
-	
-# Copyright 2019, 2020 by:
+1. install PlatformIO
+2. install COM port drivers for your ESP32
+3.  in PlatformIO open OWLOS workspace 
+4.  setup your build configuration in config.h file
+5. build and upload OWLOS firmware to your ESP32 board
+
+### Special thanks to:
+- [PlatformIO IDE](https://platformio.org/)
+- [ESP32 Arduino Core](https://github.com/espressif/arduino-esp32)
+- [me-no-dev/AsyncTCP (ESP32)](https://github.com/me-no-dev/AsyncTCP)
+- [ESP32 HTTPS Server](https://github.com/fhessel/esp32_https_server)
+- [Async MQTT Client](http://platformio.org/lib/show/346/AsyncMqttClient)
+- [DS3231 Real-Time Clock](http://www.jarzebski.pl/arduino/komponenty/zegar-czasu-rzeczywistego-rtc-ds3231.html)
+- [Adafruit Unified Sensor Library](https://github.com/adafruit/Adafruit_Sensor)
+- [DHT-sensor-library](https://github.com/adafruit/DHT-sensor-library)
+- [LiquidCrystal_I2C](https://gitlab.com/tandembyte/liquidcrystal_i2c)	
+- 
+# Copyright 2019, 2020, 2021 by:
+- Mónica (rovt@ua.fm)
+- Ddone Deedone (https://techadv.xyz/)
 - Serhii Lehkii (sergey@light.kiev.ua)
 - Konstantin Brul (konstabrul@gmail.com)
 - Vitalii Glushchenko (cehoweek@gmail.com)
