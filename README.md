@@ -2,6 +2,7 @@
 
 # OWLOS 
 ### DIY Open Source OS for building IoT ecosystems
+[ESP32, ESP8266]
 - built-in sensors, actuators, LCDs, DHTs, Steppers and other drivers
 - built-in script language interpreter 
 - built-in HTTP(S) RESTful server, RESTful client, MQTT client
@@ -18,10 +19,10 @@
 
 # How to build:
 1. install PlatformIO
-2. install COM port drivers for your ESP32
-3.  in PlatformIO open OWLOS workspace 
-4.  setup your build configuration in config.h file
-5. build and upload OWLOS firmware to your ESP32 board
+2. install COM port drivers for your board
+3. in PlatformIO open OWLOS workspace 
+4. setup your build configuration in config.h file
+5. build and upload OWLOS firmware to your board
 
 ### Special thanks to:
 - [PlatformIO IDE](https://platformio.org/)
