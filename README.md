@@ -1,4 +1,4 @@
-![OWLOS Core](https://github.com/KirinDenis/owlos/blob/master/OWLOSResource/images/owlos_core3.jpg)
+![OWLOS UX](https://github.com/KirinDenis/owlos/raw/master/OWLOSResource/images/owlosux.jpg)
 
 # OWLOS 
 ### DIY Open Source OS for building IoT ecosystems
@@ -19,6 +19,8 @@
 3.  in PlatformIO open OWLOS workspace 
 4.  setup your build configuration in config.h file
 5. build and upload OWLOS firmware to your ESP32 board
+
+![OWLOS SCHEME](https://github.com/KirinDenis/owlos/raw/master/OWLOSResource/images/owlos_scheme.jpg)
 
 ### Special thanks to:
 - [PlatformIO IDE](https://platformio.org/)
