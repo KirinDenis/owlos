@@ -1,0 +1,40 @@
+﻿<UserControl x:Class="OWLOSAdmin.EcosystemBrowser.BrowserControls.FileControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:OWLOSAdmin.EcosystemBrowser.BrowserControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Background="#FFF6F6F6">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="0">
+            <Button x:Name="DowloadButton" Content="Download" VerticalAlignment="Center" Margin="5,0"/>
+            <Button x:Name="UploadButton" Content="Upload" VerticalAlignment="Center" Margin="5,0"/>
+            <Button x:Name="DeleteButton" Content="Delete" VerticalAlignment="Center" Margin="5,0" Click="DeleteButton_Click"/>
+        </StackPanel>
+
+        <!-- https://coderoad.ru/45446916/C-WPF-%D1%81%D0%BE%D0%B7%D0%B4%D0%B0%D0%B9%D1%82%D0%B5-%D1%84%D0%BB%D0%B0%D0%B6%D0%BA%D0%B8-%D0%B4%D0%BB%D1%8F-%D0%BA%D0%B0%D0%B6%D0%B4%D0%BE%D0%B3%D0%BE-%D1%8D%D0%BB%D0%B5%D0%BC%D0%B5%D0%BD%D1%82%D0%B0-%D0%B2-listview !-->
+        <ListView x:Name="FilesListView" Grid.Row="1" >
+            <ListView.View>
+                <GridView>
+                    <GridView.Columns>
+                        <GridViewColumn Header="Name" Width="Auto">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox Content="{Binding FileName}" IsChecked="{Binding IsChecked}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Size" Width="Auto" DisplayMemberBinding="{Binding Path=FileSize}"/>
+                        <GridViewColumn Header="Last operation" Width="Auto" DisplayMemberBinding="{Binding Path=LastOperation}"/>
+                    </GridView.Columns>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </Grid>
+</UserControl>

@@ -1,5 +1,6 @@
-﻿using OWLOSAdmin.Ecosystem;
-using OWLOSAdmin.Ecosystem.OWLOS;
+﻿using OWLOSThingsManager.Ecosystem;
+using OWLOSThingsManager.Ecosystem.OWLOS;
+using OWLOSThingsManager.EcosystemExplorer.EcosystemControls;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,13 +17,37 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace OWLOSAdmin.EcosystemExplorer
+namespace OWLOSThingsManager.EcosystemExplorer
 {
     /// <summary>
     /// Interaction logic for EcosystemControl.xaml
     /// </summary>
     public partial class EcosystemControl : UserControl
     {
+        private OWLOSWindow _window = null;
+        //когда панель принадлежит отдельному окну
+        public OWLOSWindow window
+        {
+            get { return _window; }
+            set
+            {
+                _window = value;
+                if (_window == null)
+                {
+                    OnEcosystem?.Invoke(this, new EventArgs());
+                }
+                else
+                {
+                    OnWindow?.Invoke(this, new EventArgs());
+                }
+            }
+
+        }
+        //когда панель принадлежит окну экосистемы (сюда сохраняестя Parent для экосистемы)
+        public Grid parentGrid = null;
+
+        public Transform storedRenderTransform = null;
+
         private IEcosystemChildControl childControl = null;
 
         private DependencyPropertyDescriptor renderTransform = DependencyPropertyDescriptor.FromProperty(RenderTransformProperty, typeof(UserControl));
@@ -32,15 +57,44 @@ namespace OWLOSAdmin.EcosystemExplorer
         private Point currentPoint;
 
         private Point anchorPoint;
+
+        public double resizeArea = 20.0f;
         public TranslateTransform transform { get; } = new TranslateTransform();
 
-        public event EventHandler OnPositionChanged;
+        
 
         private static EcosystemControl CurrentFocused;
 
         private bool _isFocused;
 
-        public bool isVisible = true;
+        private bool _isVisible = false;
+        public bool isVisible
+        {
+            get { return _isVisible; }
+            set
+            {
+                _isVisible = value;
+                if (value)
+                {
+                    OnShow?.Invoke(this, new EventArgs());
+                }
+                else
+                {
+                    OnHiden?.Invoke(this, new EventArgs());
+                }
+            }
+        }
+
+        private bool lockMove = false;
+
+        private Point ResizePoint;
+
+        public event EventHandler OnPositionChanged;
+        public event EventHandler OnShow;
+        public event EventHandler OnHiden;
+        public event EventHandler OnWindow;
+        public event EventHandler OnEcosystem;
+
         public bool IsFocused
         {
             get { return _isFocused; }
@@ -108,7 +162,7 @@ namespace OWLOSAdmin.EcosystemExplorer
                 }
             }
         }
-       
+
         public EcosystemControl(IEcosystemChildControl childControl)
         {
             InitializeComponent();
@@ -141,7 +195,7 @@ namespace OWLOSAdmin.EcosystemExplorer
             ColorAnimation animation;
             animation = new ColorAnimation();
             animation.To = (new BrushConverter().ConvertFromString("#00FFFFFF") as SolidColorBrush).Color;
-            animation.Duration = new Duration(TimeSpan.FromSeconds(1));            
+            animation.Duration = new Duration(TimeSpan.FromSeconds(1));
             this.OpacityMask = new BrushConverter().ConvertFromString("#FFFFFFFF") as SolidColorBrush;
             this.OpacityMask.BeginAnimation(SolidColorBrush.ColorProperty, animation);
         }
@@ -161,21 +215,53 @@ namespace OWLOSAdmin.EcosystemExplorer
 
         private void EcosystemControlPreviewMouseMove(object sender, MouseEventArgs e)
         {
-            if (isInDrag)
+            if (window == null)
             {
-                //this.Margin = new Thickness(e.GetPosition(Parent as Grid).X - clickLocalPosition.X, e.GetPosition(Parent as Grid).Y - clickLocalPosition.Y, 0, 0);
-                currentPoint = e.GetPosition(Parent as Grid);
+                if (isInDrag)
+                {
+                    //this.Margin = new Thickness(e.GetPosition(Parent as Grid).X - clickLocalPosition.X, e.GetPosition(Parent as Grid).Y - clickLocalPosition.Y, 0, 0);
+                    currentPoint = e.GetPosition(Parent as Grid);
+                    Point localPoint = e.GetPosition(this);
 
-                transform.X += (currentPoint.X - anchorPoint.X);
-                transform.Y += (currentPoint.Y - anchorPoint.Y);
-                this.RenderTransform = transform;
+                    if (double.IsNaN(Width))
+                    {
+                        Width = ActualWidth;
+                    }
 
-                anchorPoint = currentPoint;
+                    if (double.IsNaN(Height))
+                    {
+                        Height = ActualHeight;
+                    }
 
-                //временно
-                //((((Parent as Grid).Parent as Grid).Parent as Viewbox).Parent as ScrollViewer).ScrollToVerticalOffset(transform.Y);
-                //connectionLine.X2 = e.GetPosition(Parent as Grid).X - clickLocalPosition.X;
-                //connectionLine.Y2 = e.GetPosition(Parent as Grid).Y - clickLocalPosition.Y;
+
+                    //drag or resize 
+                    if ((localPoint.X > resizeArea) && (localPoint.Y > resizeArea) && (Width - localPoint.X > resizeArea) && (Height - localPoint.Y > resizeArea))
+                    {
+                        //OWLOSWindow has drag itself
+                        if (window == null)
+                        {
+                            transform.X += (currentPoint.X - anchorPoint.X);
+                            transform.Y += (currentPoint.Y - anchorPoint.Y);
+                            this.RenderTransform = transform;
+                        }
+                    }
+                    else
+                    {
+                        if (window == null)
+                        {
+                            try
+                            {
+                                Width = ActualWidth + (currentPoint.X - anchorPoint.X);
+                                Height = ActualHeight + (currentPoint.Y - anchorPoint.Y);
+                            }
+                            catch
+                            { }
+                        }
+                    }
+
+                    anchorPoint = currentPoint;
+
+                }
             }
         }
 
@@ -183,21 +269,32 @@ namespace OWLOSAdmin.EcosystemExplorer
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                FrameworkElement frameworkElement = Mouse.DirectlyOver as FrameworkElement;
-                Type directlyOverType = frameworkElement?.GetType();
-                if (directlyOverType == null || (directlyOverType.Name != "TextBoxView" &&
-                                                 directlyOverType != typeof(Slider) &&
-                                                 directlyOverType != typeof(Button) &&
-                                                 directlyOverType != typeof(CheckBox) &&
-                                                 directlyOverType != typeof(ComboBox) &&
-                                                 directlyOverType != typeof(Slider) &&
-                                                 directlyOverType != typeof(ScrollViewer) &&
-                                                 directlyOverType != typeof(ScrollBar) &&
-                                                 directlyOverType != typeof(TextBox)))
+                if (window == null)
                 {
-                    anchorPoint = e.GetPosition(Parent as Grid);
-                    this.CaptureMouse();
-                    isInDrag = true;
+
+                    FrameworkElement frameworkElement = Mouse.DirectlyOver as FrameworkElement;
+                    Type directlyOverType = frameworkElement?.GetType();
+                    if (directlyOverType == null || (directlyOverType.Name != "TextBoxView" &&
+                                                     directlyOverType != typeof(Slider) &&
+                                                     directlyOverType != typeof(Button) &&
+                                                     directlyOverType != typeof(CheckBox) &&
+                                                     directlyOverType != typeof(ComboBox) &&
+                                                     directlyOverType != typeof(Slider) &&
+                                                     //directlyOverType != typeof(ScrollViewer) &&
+                                                     directlyOverType != typeof(ScrollBar) &&
+                                                     directlyOverType != typeof(TextBox)))
+                    {
+                        anchorPoint = e.GetPosition(Parent as Grid);
+
+                        
+                        this.CaptureMouse();
+                        
+                        isInDrag = true;
+                    }
+                }
+                else
+                {
+                    window.DragMove();
                 }
             }
 
@@ -229,8 +326,90 @@ namespace OWLOSAdmin.EcosystemExplorer
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
+                ResizePoint = e.GetPosition(Parent as Grid);
                 EcosystemControlGotFocus(this, null);
+
+               // EcosystemControlMouseDown(this, e);
+
+
+            }
+        }
+
+        private void SwitchFromPanelToWindow()
+        {
+            if (window == null)
+            {
+                window = new OWLOSWindow();
+                window.Width = this.ActualWidth;
+                window.Height = this.ActualHeight;
+                storedRenderTransform = RenderTransform;
+                //сразу после этого Parent уходит в null
+                parentGrid = (Parent as Grid);
+                (Parent as Grid).Children.Remove(this);
+                window.MainGrid.Children.Add(this);
+                RenderTransform = null;
+                HorizontalAlignment = HorizontalAlignment.Stretch;
+                VerticalAlignment = VerticalAlignment.Stretch;
+
+
+                Show();
+                window.Show();
+            }
+        }
+
+        private void SwitchFromWindowToPanel()
+        {
+            window.MainGrid.Children.Remove(this);
+            parentGrid.Children.Add(this);
+            RenderTransform = storedRenderTransform;
+            HorizontalAlignment = HorizontalAlignment.Left;
+            VerticalAlignment = VerticalAlignment.Top;
+
+            Show();
+            window.Hide();
+            window = null;
+
+        }
+
+        private void SwitchWindowTransparentButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (window != null)
+            {
+                if (window.Background == null)
+                {
+                    window.Background = (SolidColorBrush)App.Current.Resources["OWLOSDark"];
+                }
+                else
+                {
+                    window.Background = null;
+                }
+            }
+        }
+
+
+        private void SwitchWindowButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (window == null)
+            {
+                SwitchFromPanelToWindow();
+            }
+            else
+            {
+                SwitchFromWindowToPanel();
+            }
+        }
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (window == null)
+            {
+                Hide();
+            }
+            else
+            {
+                SwitchFromWindowToPanel();
+                Hide();
             }
         }
     }
-}
+    }

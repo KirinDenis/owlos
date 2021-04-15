@@ -1,0 +1,13 @@
+﻿<Window x:Class="OWLOSEcosystem.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OWLOSEcosystem"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="600" Width="800" AllowsTransparency="True" Background="#0F650606" WindowStyle="None" >
+    <Grid>
+        <Button Name="GoOpenGL" Width="75" Height="35" Content="Go OpenTK" Click="GoOpenGL_Click" />
+        <Button Name="MakeObj" Width="75" Height="35" Content="MakeObj" Margin="362,346,362,219" Click="MakeObj_Click"  />
+    </Grid>
+</Window>

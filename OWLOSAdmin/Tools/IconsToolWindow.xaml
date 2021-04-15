@@ -1,0 +1,38 @@
+﻿<Window x:Class="OWLOSThingsManager.Tools.IconsToolWindow"        
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OWLOSThingsManager.Tools"
+        mc:Ignorable="d"
+        Background="{DynamicResource OWLOSDark}"        
+        Title="Icons tool" Height="450" Width="800" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100"/>
+            <RowDefinition Height="400*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" >
+            <Image Name="image" Height="64" Width="64" Stretch="Fill">
+                <Image.CacheMode>
+                    <BitmapCache EnableClearType="True" SnapsToDevicePixels="True"/>
+                </Image.CacheMode>
+            </Image>
+            <TextBlock Name="imageTextBlock" Text="move mouse over icons and get icon's numbers here" Margin="20,0,0,0" VerticalAlignment="Center" Foreground="{DynamicResource OWLOSInfo}"/>
+        </StackPanel>
+
+
+        <ScrollViewer Grid.Row="1">
+            <Viewbox>
+                <Grid Name="sourceImageGrid" Height="2880" Width="3200" MouseMove="SourceImage_MouseMove">
+                    <Image Name="sourceImage"  Height="2880" Width="3200" Source="../Resources/drawable/icons.png" >
+                        <Image.CacheMode>
+                            <BitmapCache EnableClearType="True" SnapsToDevicePixels="True"/>
+                        </Image.CacheMode>
+                    </Image>
+                </Grid>
+            </Viewbox>
+        </ScrollViewer>
+    </Grid>
+</Window>

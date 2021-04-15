@@ -16,7 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace OWLOSAdmin
+namespace OWLOSThingsManager
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

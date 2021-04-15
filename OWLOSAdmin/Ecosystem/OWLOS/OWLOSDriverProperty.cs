@@ -1,10 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Cryptography;
-using System.Text;
+﻿/* ----------------------------------------------------------------------------
+Ready IoT Solution - OWLOS
+Copyright 2019, 2020, 2021 by:
+- Vitalii Glushchenko (cehoweek@gmail.com)
+- Denys Melnychuk (meldenvar@gmail.com)
+- Denis Kirin (deniskirinacs@gmail.com)
+
+This file is part of Ready IoT Solution - OWLOS
+
+OWLOS is free software : you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+OWLOS is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with OWLOS. If not, see < https://www.gnu.org/licenses/>.
+
+GitHub: https://github.com/KirinDenis/owlos
+
+(Этот файл — часть Ready IoT Solution - OWLOS.
+
+OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
+ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
+была опубликована Фондом свободного программного обеспечения; версии 3
+лицензии, любой более поздней версии.
+
+OWLOS распространяется в надежде, что она будет полезной, но БЕЗО ВСЯКИХ
+ГАРАНТИЙ; даже без неявной гарантии ТОВАРНОГО ВИДА или ПРИГОДНОСТИ ДЛЯ
+ОПРЕДЕЛЕННЫХ ЦЕЛЕЙ.
+Подробнее см.в Стандартной общественной лицензии GNU.
+
+Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
+этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
+--------------------------------------------------------------------------------------*/
+
+using System;
 using System.Threading.Tasks;
 
-namespace OWLOSAdmin.Ecosystem.OWLOS
+namespace OWLOSThingsManager.Ecosystem.OWLOS
 {
 
     public class OWLOSPropertyWrapperEventArgs : EventArgs
@@ -19,13 +56,10 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
     public class OWLOSDriverProperty
     {
-        protected NetworkStatus _networkStatus = NetworkStatus.offline;
+        protected NetworkStatus _networkStatus = NetworkStatus.Offline;
         public NetworkStatus networkStatus
         {
-            get
-            {
-                return _networkStatus;
-            }
+            get => _networkStatus;
             set
             {
                 _networkStatus = value;
@@ -36,10 +70,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         protected string _name = string.Empty;
         public string name
         {
-            get
-            {
-                return _name;
-            }
+            get => _name;
             set
             {
                 if (string.IsNullOrEmpty(_name)) //can be set only once TODO: error event
@@ -54,10 +85,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         protected string _value = string.Empty;
         public string value
         {
-            get
-            {
-                return _value;
-            }
+            get => _value;
 
             set
             {
@@ -70,9 +98,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         public string flags;
 
         public delegate void PropertyEventHandler(object? sender, OWLOSPropertyWrapperEventArgs e);
-
-        
-
+       
         public event PropertyEventHandler OnPropertyChange;
         public event PropertyEventHandler OnPropertySetInside;
         public event PropertyEventHandler OnPropertySetOutside;
@@ -81,19 +107,17 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         public event PropertyEventHandler OnPropertyGetOutside;
         public event PropertyEventHandler OnPropertyTransportStatusChange;
 
-        private OWLOSDriver driver;
+        private readonly OWLOSDriver driver;
 
         public OWLOSDriverProperty(OWLOSDriver driver, string name, string value, string flags)
         {
             this.driver = driver;
 
             this.name = name;
-            this._value = value;
+            _value = value;
             this.flags = flags;
 
-            
-
-            networkStatus = NetworkStatus.online;
+            networkStatus = NetworkStatus.Online;
 
         }
 
@@ -132,32 +156,34 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         //--------------------------------------------------------------------------------------------------------
         public async Task<string> GetOutside()
         {
-            if (networkStatus == NetworkStatus.reconnect)
+            if (networkStatus == NetworkStatus.Reconnect)
             {
                 return value;
             }
 
-            networkStatus = NetworkStatus.reconnect;
+            networkStatus = NetworkStatus.Reconnect;
 
             try
             {
-                string result = await driver.parentNode.wrapper.transport.GetDriverProperty(driver.name, this.name);
+                
+                string result = await driver.parentThing.GetDriverProperty(driver.name, this.name);
 
                 if (result.IndexOf("%error") != 0)
                 {
-                    networkStatus = NetworkStatus.online;
+                    networkStatus = NetworkStatus.Online;
                     value = result;
                     PropertyGetOutside(new OWLOSPropertyWrapperEventArgs(this));
                 }
                 else
                 {
-                    networkStatus = NetworkStatus.erorr;
+                    networkStatus = NetworkStatus.Erorr;
                 }
+                
 
             }
-            catch (Exception exception) //TODO: last error or on error event
+            catch (Exception) //TODO: last error or on error event
             {
-                networkStatus = NetworkStatus.offline;
+                networkStatus = NetworkStatus.Offline;
             }
 
             return value;
@@ -166,16 +192,32 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         public async Task<string> SetInside(string _value)
         {
 
-            if (networkStatus == NetworkStatus.reconnect)
+            if (networkStatus == NetworkStatus.Reconnect)
             {
                 return "error reconnect";
             }
 
-            networkStatus = NetworkStatus.reconnect;
+            networkStatus = NetworkStatus.Reconnect;
+
+            bool result = await driver.parentThing.SetDriverProperty(driver.name, name, _value);
+
+            if (result)
+            {
+                networkStatus = NetworkStatus.Online;
+                PropertySetInside(new OWLOSPropertyWrapperEventArgs(this));
+                value = _value;
+                return string.Empty;
+            }
+            else
+            {
+                networkStatus = NetworkStatus.Erorr;
+            }
+
 
             try
             {
-                string result = await driver.parentNode.wrapper.transport.SetDriverProperty(driver.name, this.name, _value);
+                /*
+                string result = await driver.parentThing.wrapper.transport.SetDriverProperty(driver.name, this.name, _value);
 
                 if (result.IndexOf("%error") != 0)
                 {
@@ -187,11 +229,11 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
                 {
                     networkStatus = NetworkStatus.erorr;
                 }
-
+                */
             }
-            catch (Exception exception) //TODO: last error or on error event
+            catch (Exception) //TODO: last error or on error event
             {
-                networkStatus = NetworkStatus.offline;
+                networkStatus = NetworkStatus.Offline;
             }
 
             return "error";
@@ -201,7 +243,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         {
             if (value != _value)
             {
-                networkStatus = NetworkStatus.online;
+                networkStatus = NetworkStatus.Online;
                 value = _value;
                 PropertySetOutside(new OWLOSPropertyWrapperEventArgs(this));
             }

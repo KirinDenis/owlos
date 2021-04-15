@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="OWLOSThingsManager.EcosystemBrowser.BrowserControls.DriverControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:OWLOSThingsManager.EcosystemBrowser.BrowserControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="202*"/>
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100*"/>
+                <ColumnDefinition Width="200"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right">
+                <Button Content="Delete driver" Height="25"/>
+            </StackPanel>
+            <TextBox x:Name="DriverPropertySearch" Height="25" Width="150" HorizontalAlignment="Left" TextChanged="DriverPropertySearch_TextChanged" />
+        </Grid>
+        <ScrollViewer Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Grid.Row="1">
+            <StackPanel x:Name="DriverPropertiesPanel"  Orientation="Vertical" />
+        </ScrollViewer>
+    </Grid>
+</UserControl>

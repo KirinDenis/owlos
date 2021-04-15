@@ -2457,6 +2457,10 @@ var FilesList =
                 for (var i = 0; i < this.parsedFilesList.length; i++) {
                     if (this.parsedFilesList[i] === "") continue;
                     var parsedFile = this.parsedFilesList[i].split(" ");
+                    if (parsedFile[0].indexOf("/") == 0)
+                    {
+                        parsedFile[0] = parsedFile[0].substring(1, parsedFile[0].length);
+                    }
                     var tr = tbody.appendChild(document.createElement('tr'));
                     var th = tr.appendChild(document.createElement('th'));
                     th.scope = "row";
@@ -2464,7 +2468,9 @@ var FilesList =
                     filesCount++;
                     var nameTd = tr.appendChild(document.createElement('td'));
                     var downloadHref = nameTd.appendChild(document.createElement('a'));
-                    downloadHref.href = boardhost + "downloadfile?name=" + parsedFile[0];
+                 //Old version   
+                 //   downloadHref.href = boardhost + "downloadfile?name=" + parsedFile[0];
+                    downloadHref.href = boardhost + parsedFile[0];
                     downloadHref.target = "_blank";
                     downloadHref.title = "Download '" + parsedFile[0] + "' file";
                     downloadHref.innerText = parsedFile[0];
@@ -4843,7 +4849,7 @@ var settingsUI = {
 
         for (var nodeKey in configProperties.nodes) {
             var node = configProperties.nodes[nodeKey];
-            if (document.getElementById("nodeNavItem" + node.nodenickname) == undefined) {                
+            if (document.getElementById("nodeNavItem" + node.nodenickname) == undefined) {
                 var nodeNavItem = this.addNodeSidebarItem(node, sideBar.nodeSubItem, "nodeNavItem", "submenu", node.nodenickname, sidebarItemClick, "fa fa-microchip", undefined);
 
                 var nodeNavSubItem = sideBar.createDeepItem(nodeNavItem, node.nodenickname + "submenu");
@@ -4853,14 +4859,14 @@ var settingsUI = {
                 node.nodePropItem = nodePropItem;
                 //node drivers                                 
                 var driversItem = this.addNodeSidebarItem(node, nodeNavSubItem, "driversitem", "driverssubmenu", getLang("drivers"), sidebarItemClick, undefined, "0");
-                var driversSubItem = sideBar.createDeepItem(driversItem, node.nodenickname + "driverssubmenu");                
-                var addDriverItem = this.addNodeSidebarItem(node, driversSubItem, "adddriveritem", "adddriveritem", getLang("adddriver"), settingsUI.addDriverClick, "fa fa-plus", undefined);                
+                var driversSubItem = sideBar.createDeepItem(driversItem, node.nodenickname + "driverssubmenu");
+                var addDriverItem = this.addNodeSidebarItem(node, driversSubItem, "adddriveritem", "adddriveritem", getLang("adddriver"), settingsUI.addDriverClick, "fa fa-plus", undefined);
                 addDriverItem.href.style.color = theme.warning;
 
                 //node scripts                
-                var scriptsItem = this.addNodeSidebarItem(node, nodeNavSubItem, "scriptsitem", "scriptssubmenu", getLang("scripts"), settingsUI.scriptAnchorClick, undefined, undefined);                
-                var scriptsSubItem = sideBar.createDeepItem(scriptsItem, node.nodenickname + "scriptssubmenu");                
-                var addScriptItem = this.addNodeSidebarItem(node, scriptsSubItem, "addscriptitem", "addscriptitem", getLang("createscript"), scriptsUI.createScriptClick, "fa fa-plus", undefined);                
+                var scriptsItem = this.addNodeSidebarItem(node, nodeNavSubItem, "scriptsitem", "scriptssubmenu", getLang("scripts"), settingsUI.scriptAnchorClick, undefined, undefined);
+                var scriptsSubItem = sideBar.createDeepItem(scriptsItem, node.nodenickname + "scriptssubmenu");
+                var addScriptItem = this.addNodeSidebarItem(node, scriptsSubItem, "addscriptitem", "addscriptitem", getLang("createscript"), scriptsUI.createScriptClick, "fa fa-plus", undefined);
                 addScriptItem.href.style.color = theme.warning;
 
                 //node files                 
@@ -4900,15 +4906,15 @@ var settingsUI = {
 
                 // Add Node Status Panel -----------------------------------------------------------------------------
                 var nodeStatusPanel = document.createElement("div");
-                nodeStatusPanel.id = node.nodenickname + "nodestatuspanel";                
-                nodeNavItem.href.nodeStatusPanel = nodeStatusPanel;  
+                nodeStatusPanel.id = node.nodenickname + "nodestatuspanel";
+                nodeNavItem.href.nodeStatusPanel = nodeStatusPanel;
 
-                var deleteNodeButton = headerPanelUI.addButton(node.nodenickname +  "DeleteNodeButton", "fa fa-minus", "delete node: " + node.nodenickname, headerPanelUI.nodePoropertiesPanelButtonRole);
+                var deleteNodeButton = headerPanelUI.addButton(node.nodenickname + "DeleteNodeButton", "fa fa-minus", "delete node: " + node.nodenickname, headerPanelUI.nodePoropertiesPanelButtonRole);
                 deleteNodeButton.node = node;
                 deleteNodeButton.onclick = settingsUI.onDeleteNode;
-                nodePropItem.href.deleteNodeButton = deleteNodeButton;                              
+                nodePropItem.href.deleteNodeButton = deleteNodeButton;
                 nodeNavItem.href.deleteNodeButton = deleteNodeButton;
-        
+
                 nodeNavItem.href.onlinePanel = settingsUI.getStatusWidget(node.nodenickname + "onlineStatus", "Online", nodeStatusPanel);
 
                 node.addNetworkStatusListner(settingsUI.onOnlineStatusChange, nodeNavItem.href.onlinePanel);
@@ -4953,15 +4959,15 @@ var settingsUI = {
                 driverSpan.driversCount++;
                 driverSpan.innerHTML = parseInt(driverSpan.driversCount);
             }
-            
+
             var driverItem = settingsUI.addNodeSidebarItem(node, nodeSubmenuUl, "_" + driver._id, "_" + driver._id, driver._id, sidebarItemClick, "fa fa-sliders-h", undefined);
             driver.driverItem = driverItem;
             driverItem.href.node = node;
-            var deleteDriverButton = headerPanelUI.addButton(node.nodenickname +  "DeleteDriverButton", "fa fa-minus", "delete driver: " + driver._id, headerPanelUI.driverButtonRole);
+            var deleteDriverButton = headerPanelUI.addButton(node.nodenickname + "DeleteDriverButton", "fa fa-minus", "delete driver: " + driver._id, headerPanelUI.driverButtonRole);
             deleteDriverButton.node = node;
             deleteDriverButton.driver = driver;
-            deleteDriverButton.onclick = settingsUI.onDeleteDriver;            
-            driverItem.href.deleteDriverButton = deleteDriverButton;                              
+            deleteDriverButton.onclick = settingsUI.onDeleteDriver;
+            driverItem.href.deleteDriverButton = deleteDriverButton;
 
             var nodePropAnchors = document.getElementById("nodePropNavBar"); //старая навигационная панель для отображения панелей свойств
             var nodesPropsPanel = document.getElementById("nodesPropsPanel");
@@ -5071,29 +5077,43 @@ var settingsUI = {
 
                 }
                 else
-                    if (driver.type.value == NetworkDriverType) {                    
+                    if (driver.type.value == NetworkDriverType) {
 
                         var RESTfulPanel = headerPanelUI.addStatus(node, node.nodenickname + "restfulStatus", "RESTful");
-                        driver.restfulavailable.addValueListner(settingsUI.onRESTfulStatusChange, RESTfulPanel);
+                        driver.httpserveravailable.addValueListner(settingsUI.onRESTfulStatusChange, RESTfulPanel);
 
                         var node = config.getNodeByHost(driver._host);
                         node.addNetworkStatusListner(settingsUI.onRESTfulOnlineStatusChange, RESTfulPanel);
 
-                        var MQTTPanel = headerPanelUI.addStatus(node, node.nodenickname + "mqttStatus", "MQTT");
-                        driver.mqttclientstate.addValueListner(settingsUI.onMQTTStatusChange, MQTTPanel);
 
-                        var OTAPanel = headerPanelUI.addStatus(node, node.nodenickname + "otaStatus", "OTA");
-                        driver.otaavailable.addValueListner(settingsUI.onOTAStatusChange, OTAPanel);
+                        if (driver.mqttclientstate !== undefined) {
+                            var MQTTPanel = headerPanelUI.addStatus(node, node.nodenickname + "mqttStatus", "MQTT");
+                            driver.mqttclientstate.addValueListner(settingsUI.onMQTTStatusChange, MQTTPanel);
+                        }
 
-                        var RESTfulCheckbox = settingsUI.addPropertyCheckbox(networkPropPanel1, driver.restfulavailable, getLang("restfulavailable"), "");
-                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, driver.webserverlogin, getLang("webserverlogin"), ""));
-                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, driver.webserverpwd, getLang("webserverpwd"), ""));
-                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, driver.restfulserverport, getLang("restfulserverport"), ""));
+                        if (driver.otaavailable !== undefined) {
+                            var OTAPanel = headerPanelUI.addStatus(node, node.nodenickname + "otaStatus", "OTA");
+                            driver.otaavailable.addValueListner(settingsUI.onOTAStatusChange, OTAPanel);
+                        }
+
+                        var RESTfulCheckbox = settingsUI.addPropertyCheckbox(networkPropPanel1, driver.httpserveravailable, getLang("httpserveravailable"), "");
+                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, driver.httpserverlogin, getLang("httpserverlogin"), ""));
+                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, driver.httpserverpwd, getLang("httpserverpwd"), ""));
+                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, driver.httpserverport, getLang("httpserverport"), ""));
                         settingsUI.addSpaceView(networkPropPanel1, "2");
-                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, driver.restfulclienturl, getLang("restfulclienturl"), ""));
-                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, driver.restfulclientport, getLang("restfulclientport"), ""));
+
+                        settingsUI.addPropertyCheckbox(networkPropPanel1, driver.httpsserveravailable, getLang("httpsserveravailable"), "");
+                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, driver.httpsserverlogin, getLang("httpsserverlogin"), ""));
+                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, driver.httpsserverpwd, getLang("httpsserverpwd"), ""));
+                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, driver.httpsserverport, getLang("httpsserverport"), ""));                        
+                        settingsUI.addSpaceView(networkPropPanel1, "2");
+
+                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, driver.httpclienturl, getLang("httpclienturl"), ""));
+                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, driver.httpclientport, getLang("httpclientport"), ""));
                         settingsUI.onPropertyCheckboxValueChange(RESTfulCheckbox, RESTfulCheckbox.driverProperty);
 
+                        if (driver.mqttavailable !== undefined)
+                        {
                         var MQTTCheckbox = settingsUI.addPropertyCheckbox(networkPropPanel2, driver.mqttavailable, getLang("mqttavailable"), "");
                         MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel2, driver.mqtturl, getLang("mqtturl"), ""));
                         MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel2, driver.mqttport, getLang("mqttport"), ""));
@@ -5102,12 +5122,16 @@ var settingsUI = {
                         MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel2, driver.mqttlogin, getLang("mqttlogin"), ""));
                         MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel2, driver.mqttpassword, getLang("mqttpassword"), ""));
                         settingsUI.onPropertyCheckboxValueChange(MQTTCheckbox, MQTTCheckbox.driverProperty);
+                        }
 
+                        if (driver.otaavailable !== undefined)
+                        {
                         var OTACheckbox = settingsUI.addPropertyCheckbox(networkPropPanel3, driver.otaavailable, getLang("otaavailable"), "");
                         OTACheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel3, driver.otaid, getLang("otaid"), ""));
                         OTACheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel3, driver.otaport, getLang("otaport"), ""));
                         OTACheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel3, driver.otapassword, getLang("otapassword"), ""));
                         settingsUI.onPropertyCheckboxValueChange(OTACheckbox, OTACheckbox.driverProperty);
+                        }
 
                         settingsUI.addPropertyView(updatePropPanel, driver.firmwareversion, getLang("firmwareversion"));
                         settingsUI.addPropertyView(updatePropPanel, driver.firmwarebuildnumber, getLang("firmwarebuildnumber"));
@@ -5119,44 +5143,44 @@ var settingsUI = {
                         //Панель обновлений
                         var updateWatcherId = node.nodenickname + "updateWatcher";
                         var updateWatcherDiv = document.getElementById(updateWatcherId);
-			if (driver.updateinfo != undefined) {
-                        if (updateWatcherDiv == null) {
-                            updateWatcherDiv = updatePropPanel.appendChild(document.createElement('div'));
-                            updateWatcherDiv.id = updateWatcherId;
-                            updateWatcherDiv.className = "text-primary";
-                            //one listner to two properties
+                        if (driver.updateinfo != undefined) {
+                            if (updateWatcherDiv == null) {
+                                updateWatcherDiv = updatePropPanel.appendChild(document.createElement('div'));
+                                updateWatcherDiv.id = updateWatcherId;
+                                updateWatcherDiv.className = "text-primary";
+                                //one listner to two properties
 
-                            var updateButtonHolder = updatePropPanel.appendChild(document.createElement('div'));
-                            updateButtonHolder.className = "row";
-                            var updateuiButton = updateButtonHolder.appendChild(document.createElement('input'));
-                            updateuiButton.id = node.nodenickname + "updateuibutton";
-                            updateuiButton.className = "btn btn-success btn-sm float-right";
-                            updateuiButton.type = "button";
-                            updateuiButton.setAttribute("data-toggle", "modal");
-                            updateuiButton.setAttribute("data-target", "#resetModal");
-                            updateuiButton.value = getLang("updateuibutton");
-                            updateuiButton.node = node;
-                            updateuiButton.onclick = settingsUI.modalUpdateUIClick;
+                                var updateButtonHolder = updatePropPanel.appendChild(document.createElement('div'));
+                                updateButtonHolder.className = "row";
+                                var updateuiButton = updateButtonHolder.appendChild(document.createElement('input'));
+                                updateuiButton.id = node.nodenickname + "updateuibutton";
+                                updateuiButton.className = "btn btn-success btn-sm float-right";
+                                updateuiButton.type = "button";
+                                updateuiButton.setAttribute("data-toggle", "modal");
+                                updateuiButton.setAttribute("data-target", "#resetModal");
+                                updateuiButton.value = getLang("updateuibutton");
+                                updateuiButton.node = node;
+                                updateuiButton.onclick = settingsUI.modalUpdateUIClick;
 
-                            var updatefirmwareButton = updateButtonHolder.appendChild(document.createElement('input'));
-                            updatefirmwareButton.id = node.nodenickname + "updatefirmwarebutton";
-                            updatefirmwareButton.className = "btn btn-success btn-sm float-right";
-                            updatefirmwareButton.type = "button";
-                            updatefirmwareButton.setAttribute("data-toggle", "modal");
-                            updatefirmwareButton.setAttribute("data-target", "#resetModal");
-                            updatefirmwareButton.value = getLang("updatefirmwarebutton");
-                            updatefirmwareButton.node = node;
-                            updatefirmwareButton.onclick = settingsUI.modalUpdateFirmwareClick;
+                                var updatefirmwareButton = updateButtonHolder.appendChild(document.createElement('input'));
+                                updatefirmwareButton.id = node.nodenickname + "updatefirmwarebutton";
+                                updatefirmwareButton.className = "btn btn-success btn-sm float-right";
+                                updatefirmwareButton.type = "button";
+                                updatefirmwareButton.setAttribute("data-toggle", "modal");
+                                updatefirmwareButton.setAttribute("data-target", "#resetModal");
+                                updatefirmwareButton.value = getLang("updatefirmwarebutton");
+                                updatefirmwareButton.node = node;
+                                updatefirmwareButton.onclick = settingsUI.modalUpdateFirmwareClick;
 
-                            updateuiButton.style.display = "none";
-                            updatefirmwareButton.style.display = "none";
+                                updateuiButton.style.display = "none";
+                                updatefirmwareButton.style.display = "none";
 
-                            updateWatcherDiv.updateuiButton = updateuiButton; // document.getElementById("updateuibutton");
-                            updateWatcherDiv.updatefirmwareButton = updatefirmwareButton;
+                                updateWatcherDiv.updateuiButton = updateuiButton; // document.getElementById("updateuibutton");
+                                updateWatcherDiv.updatefirmwareButton = updatefirmwareButton;
 
-                            driver.updateinfo.addValueListner(settingsUI.onUpdateInfoValueChange, updateWatcherDiv);
-                            driver.updatepossible.addValueListner(settingsUI.onUpdateInfoValueChange, updateWatcherDiv);
-			  }
+                                driver.updateinfo.addValueListner(settingsUI.onUpdateInfoValueChange, updateWatcherDiv);
+                                driver.updatepossible.addValueListner(settingsUI.onUpdateInfoValueChange, updateWatcherDiv);
+                            }
                         }
                     }
         }
@@ -5227,16 +5251,16 @@ var settingsUI = {
 
     modalResetClick: function (event) {
         event.stopPropagation();
-        var driverHost = event.currentTarget.driverHost;    
+        var driverHost = event.currentTarget.driverHost;
         var resetDialog = createModalDialog(getLang("reset"), "");
         resetDialog.formGroup.innerHTML = getLang("areYouSure");
         resetDialog.nodeHost = driverHost;
         resetDialog.onOK = settingsUI.onResetOK;
-        resetDialog.show();        
+        resetDialog.show();
         return false;
     },
 
-    onResetOK: function (resetDialog) {        
+    onResetOK: function (resetDialog) {
         resetNodeOneWayTicket(resetDialog.nodeHost);
 
         sleep(5000).then(function () {
@@ -5610,14 +5634,18 @@ var settingsUI = {
         if (sender.dependetPanels != undefined) {
             for (var i = 0; i < sender.dependetPanels.length; i++) {
                 if (driverProperty.value === '1') {
-                    sender.dependetPanels[i].propText.disabled =
-                        sender.dependetPanels[i].propEdit.disabled =
-                        sender.dependetPanels[i].propSetButton.disabled = false;
+                    if (sender.dependetPanels[i] !== undefined) {
+                        sender.dependetPanels[i].propText.disabled =
+                            sender.dependetPanels[i].propEdit.disabled =
+                            sender.dependetPanels[i].propSetButton.disabled = false;
+                    }
                 }
                 else {
-                    sender.dependetPanels[i].propText.disabled =
-                        sender.dependetPanels[i].propEdit.disabled =
-                        sender.dependetPanels[i].propSetButton.disabled = true;
+                    if (sender.dependetPanels[i] !== undefined) {
+                        sender.dependetPanels[i].propText.disabled =
+                            sender.dependetPanels[i].propEdit.disabled =
+                            sender.dependetPanels[i].propSetButton.disabled = true;
+                    }
                 }
             }
         }
@@ -5651,7 +5679,7 @@ var settingsUI = {
         chekboxDialog.formGroup.innerHTML = getLang("areYouSure");
         chekboxDialog.propCheckbox = propCheckbox;
         chekboxDialog.onOK = settingsUI.applyCheckboxChangeClick;
-        chekboxDialog.show();        
+        chekboxDialog.show();
 
 
         /*
@@ -5679,7 +5707,7 @@ var settingsUI = {
 
     },
 
-    applyCheckboxChangeClick: function (chekboxDialog) {            
+    applyCheckboxChangeClick: function (chekboxDialog) {
         var propCheckbox = chekboxDialog.propCheckbox;
         var propTextDiv = propCheckbox.propTextDiv;
         var driverProperty = propTextDiv.driverProperty;
@@ -6009,21 +6037,21 @@ var settingsUI = {
         deleteDriverDialog.node = node;
         deleteDriverDialog.driver = driver;
         deleteDriverDialog.onOK = settingsUI.onDeleteDriverOK;
-        deleteDriverDialog.show();        
+        deleteDriverDialog.show();
         return false;
     },
 
-   onDeleteDriverOK: function (deleteDriverDialog) {        
-    deleteDriverAsync(deleteDriverDialog.node.host, deleteDriverDialog.driver._id, settingsUI.onDriverDeleteReciever, deleteDriverDialog);
-   },
+    onDeleteDriverOK: function (deleteDriverDialog) {
+        deleteDriverAsync(deleteDriverDialog.node.host, deleteDriverDialog.driver._id, settingsUI.onDriverDeleteReciever, deleteDriverDialog);
+    },
 
 
     onDriverDeleteReciever: function (HTTPResult, deleteDriverDialog) {
         if (HTTPResult == "1") {
             deleteDriverDialog.hide();
-            deleteDriverDialog.driver.driverItem.style.display = "none";              
-            document.getElementById(deleteDriverDialog.driver._nodenickname + "_" + deleteDriverDialog.driver._id).innerHTML = "";                                                         
-        } 
+            deleteDriverDialog.driver.driverItem.style.display = "none";
+            document.getElementById(deleteDriverDialog.driver._nodenickname + "_" + deleteDriverDialog.driver._id).innerHTML = "";
+        }
         else {
             deleteDriverDialog.errorLabel.innerHTML = HTTPResult;
         }
@@ -7776,8 +7804,8 @@ var TableWidget =
                 //иначе текстовое представление - текст может быть очень длинным, ограничиваем в 20 символов
                 var cutValue = driverProperty.value;
 
-                if (cutValue.length > 20) {
-                    cutValue = cutValue.slice(0, 20) + "...";
+                if (cutValue.length > 50) {
+                    cutValue = cutValue.slice(0, 50) + "...";
                 }
 
                 if (driverProperty.type.indexOf("p") != -1) {
@@ -8141,10 +8169,10 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-//var boardhost = "http://81.95.178.177:8084/"; //DEBUG
+var boardhost = "http://81.95.178.177/"; //DEBUG
 //var boardhost = "http://iot.light.kiev.ua:8084/";
 //var boardhost = "http://192.168.1.5:8084/"; //DEBUG as WiFi Access Point
-var boardhost = "http://192.168.1.5/"; //Station mode
+//var boardhost = "http://192.168.1.101/"; //Station mode
 //var boardhost = ""; //UI loading from ESPxxxx
 
 
@@ -9593,7 +9621,7 @@ var drivers = {
                     return;
                 }
                 else {
-                    if (this.networkStatus == NET_ONLINE) {//если текущее состояние "в сети" можем вызывать API
+                    if ((this.networkStatus == NET_ONLINE) || (this.networkStatus == NET_ERROR))  {//если текущее состояние "в сети" или предидущий вызов привел к сбою, но устройство остается в сети можем вызывать API
                         this.networkStatus = NET_RECONNECT; //переключаем сетевое состояние в режим "в работе"
                         this.sendedValue = _value; //сохраняем новое значение(которое пытаемся установить) во временное свойство
                         //мы не проверяем тип свойства - перекладывая это на сторону микроконтроллера - мог ошибится автор UI или автор прошивки.
@@ -9625,14 +9653,18 @@ var drivers = {
                     }
                     else {
                         sender.networkStatus = NET_ERROR; //если HTTPClient сказал OK-200 но Unit не вернул "1" нам не удалось изменить свойство, переходим в статус "ошибка"
+                        //TODO: Store HTTPResult with NetworkStatus
+                        alert(HTTPResult);
                     }
                 }
                 else {
-                    if (!HTTPResult.indexOf("response") != -1) {//если HTTPClient вернул "%error" и в этой строке не было слова "response" - соединение не было установлено, статус "не в сети"
+                    if (HTTPResult.indexOf("response") == -1) {//если HTTPClient вернул "%error" и в этой строке не было слова "response" - соединение не было установлено, статус "не в сети"
                         sender.networkStatus = NET_OFFLINE;
                     }
                     else { //если ответ был, но он не HTTPResult 200 OK - ошибка либо драйвера либо Unit 
                         sender.networkStatus = NET_ERROR;
+                        //TODO: Store HTTPResult with NetworkStatus
+                        alert(HTTPResult);
                     }
                 }
                 if (upperReciever != undefined) { //если были назначены вторичные получатели асинхронного вызова - их вызовут здесь
@@ -9648,7 +9680,7 @@ var drivers = {
                 this.networkStatus = NET_RECONNECT;
                 getDriverPropertyAsyncWithReciever(this.parenthost, this.parentid, this.name, this.getValueReciever, upperReciever, this, upperSender);
             },
-            //асинхронный получатель значения свойства, отличается от "Set", там что примет от HTTPClient новое значение свойства, если не было ошибки сети
+            //асинхронный получатель значения свойства, отличается от "Set", тeм что примет от HTTPClient новое значение свойства, если не было ошибки сети
             getValueReciever: function (HTTPResult, upperReciever, sender, upperSender) {
                 if (!HTTPResult.indexOf("%error") == 0) {
                     sender.networkStatus = NET_ONLINE; //возвращаемся в онлайн, были "в работе"
@@ -12215,22 +12247,22 @@ var WidgetsLayer = {
         id: "light",
         name: getLang("light"),
         widget: LightWidgetWrapper,
-        driversTypes: ";" + LightDriverType + ";",
-        driversProperties: ";light;"
+        driversTypes: ";" + LightDriverType + ";"+ SensorDriverType + ";",
+        driversProperties: ";data;light;"
     },
     SmokeWidget: {
         id: "smoke",
         name: getLang("smoke"),
         widget: SmokeWidgetWrapper,
-        driversTypes: ";" + SmokeDriverType + ";",
-        driversProperties: ";smoke;"
+        driversTypes: ";" + SmokeDriverType + ";"+ SensorDriverType + ";",
+        driversProperties: ";data;smoke;"
     },
     MotionWidget: {
         id: "motion",
         name: getLang("motion"),
         widget: MotionWidgetWrapper,
-        driversTypes: ";" + MotionDriverType + ";",
-        driversProperties: ";motion;"
+        driversTypes: ";" + MotionDriverType + ";"+ SensorDriverType + ";",
+        driversProperties: ";data;motion;"
     },
     SensorWidget: {
         id: "sensor",

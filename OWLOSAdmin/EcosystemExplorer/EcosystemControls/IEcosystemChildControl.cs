@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace OWLOSAdmin.EcosystemExplorer
+namespace OWLOSThingsManager.EcosystemExplorer
 {
     public interface IEcosystemChildControl
     {

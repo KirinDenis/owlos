@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
 
-namespace OWLOSAdmin.EcosystemExplorer.Huds
+namespace OWLOSThingsManager.EcosystemExplorer.Huds
 {
     public static class HudLibrary
     {
@@ -29,7 +29,14 @@ namespace OWLOSAdmin.EcosystemExplorer.Huds
                 NumberDecimalSeparator = "."
             };
 
-            return Geometry.Parse(string.Join(" ", new string[11] { "M", start.X.ToString(nfi), start.Y.ToString(nfi), "A", radius.ToString(nfi), radius.ToString(nfi), "0", largeArcFlag.ToString(nfi), "0", end.X.ToString(nfi), end.Y.ToString(nfi) }));
+            try
+            {
+                return Geometry.Parse(string.Join(" ", new string[11] { "M", start.X.ToString(nfi), start.Y.ToString(nfi), "A", radius.ToString(nfi), radius.ToString(nfi), "0", largeArcFlag.ToString(nfi), "0", end.X.ToString(nfi), end.Y.ToString(nfi) }));
+            }
+            catch
+            {
+                return null;
+            }
         }
 
     }

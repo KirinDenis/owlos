@@ -1,17 +1,18 @@
-﻿<Window x:Class="OWLOSAdmin.EcosystemExplorer.EcosystemExplorerWindow"        
+﻿<Window x:Class="OWLOSThingsManager.EcosystemExplorer.EcosystemExplorerWindow"        
        
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:OWLOSAdmin"
-        FontFamily="file:///D:\Users\Egor\source\repos\KirinDenis\owlos\OWLOSAdmin\Fonts\#omega flight"
+        xmlns:local="clr-namespace:OWLOSThingsManager"        
         mc:Ignorable="d"                
-        Title="Ecosystem Explorer" Height="450" Width="800"  WindowState="Maximized" SnapsToDevicePixels="True" >
+        Title="Ecosystem Explorer" Height="450" Width="800"  WindowState="Maximized" SnapsToDevicePixels="True" Loaded="Window_Loaded" PreviewKeyDown="Window_PreviewKeyDown" Background="{DynamicResource OWLOSDark}" >
 
-    <!-- FontFamily="file:///Fonts\#omega flight"-->
+    <!-- FontFamily="file:///D:\Users\Egor\source\repos\KirinDenis\owlos\OWLOSThingsManager\Fonts\#omega flight"-->
 
-    <Grid x:Name="contentGrid" Background="{DynamicResource OWLOSDark}" >
+
+
+    <Grid x:Name="contentGrid"  >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="40*"/>
             <ColumnDefinition Width="7*"/>
@@ -24,7 +25,7 @@
             <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
 
-        <Grid x:Name="explorerGrid" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,0,0,62" Grid.RowSpan="2" RenderTransformOrigin="0.5,0.5">
+        <Grid x:Name="explorerGrid"  Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,0,0,62" Grid.RowSpan="2" RenderTransformOrigin="0.5,0.5">
             <Grid.RenderTransform>
                 <TransformGroup>
                     <SkewTransform/>
@@ -34,8 +35,8 @@
             </Grid.RenderTransform>
             <Grid.LayoutTransform>
                 <TransformGroup>
-                    <SkewTransform AngleX="-15" AngleY="-10"/>
-                    <RotateTransform Angle="17"/>
+
+
                     <TranslateTransform/>
                 </TransformGroup>
             </Grid.LayoutTransform>
@@ -46,7 +47,7 @@
 
 
 
-            <Grid x:Name="EcosystemExplorerGrid" Grid.Row="1" Grid.Column="0" PreviewMouseMove="EcosystemExplorerGrid_PreviewMouseMove" PreviewMouseDown="EcosystemExplorerGrid_PreviewMouseDown" PreviewMouseUp="EcosystemExplorerGrid_PreviewMouseUp" PreviewMouseWheel="EcosystemExplorerGrid_PreviewMouseWheel" RenderTransformOrigin="0.5,0" >
+            <Grid x:Name="EcosystemExplorerGrid" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" PreviewMouseMove="EcosystemExplorerGrid_PreviewMouseMove" PreviewMouseDown="EcosystemExplorerGrid_PreviewMouseDown" PreviewMouseUp="EcosystemExplorerGrid_PreviewMouseUp" PreviewMouseWheel="EcosystemExplorerGrid_PreviewMouseWheel" RenderTransformOrigin="0.3,0" >
                 <Grid.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform ScaleX="1.8" ScaleY="1.8"/>
@@ -55,12 +56,8 @@
                         <TranslateTransform/>
                     </TransformGroup>
                 </Grid.RenderTransform>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="65*"/>
-                    <ColumnDefinition Width="253*"/>
-                </Grid.ColumnDefinitions>
 
-                <Viewbox x:Name="viewbox"  Width="10025" Height="10025" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.ColumnSpan="2" Margin="0,0,-10000,-10000">
+                <Viewbox x:Name="viewbox"  Width="10025" Height="10025" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="0,0,-10000,-10000">
                     <Viewbox.RenderTransform>
                         <TransformGroup>
                             <ScaleTransform/>
@@ -70,7 +67,7 @@
                         </TransformGroup>
                     </Viewbox.RenderTransform>
 
-                    <Grid Background="{DynamicResource OWLOSSecondary}" >
+                    <Grid Background="{DynamicResource OWLOSDark}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="35"/>
                             <RowDefinition Height="100*"/>
@@ -83,16 +80,7 @@
 
 
 
-                        <Image x:Name="nodeImage" Source="../Resources/drawable/owlos_core4.jpg" Grid.Column="1" Grid.Row="1" Width="10000" Height="10000"/>
-                        <VirtualizingStackPanel x:Name="smallNodeLines" Grid.Column="1" Grid.Row="1" Width="auto" Height="auto" RenderOptions.BitmapScalingMode="Fant"/>
-                        <VirtualizingStackPanel x:Name="nodeLines" Grid.Column="1" Grid.Row="1" Width="auto" Height="auto" RenderOptions.BitmapScalingMode="Fant"/>
-
-
-
-
-                        <Grid x:Name="nodeGrid" Grid.Column="1" Grid.Row="1" Width="10000" Height="10000" Background="{DynamicResource OWLOSDarkAlpha2}" HorizontalAlignment="Left" VerticalAlignment="Top" PreviewMouseDown="nodeGrid_PreviewMouseDown" PreviewMouseLeftButtonDown="nodeGrid_PreviewMouseLeftButtonDown" RenderTransformOrigin="0.5,0.5">
-
-                        </Grid>
+                        <Image x:Name="ThingImage" Grid.Column="1" Grid.Row="1" Width="10000" Height="10000"/>
 
                         <Grid x:Name="verticalNavigationGrid" Grid.Column="0" Grid.Row="1" Background="{DynamicResource OWLOSInfoAlpha2}" Width="37" HorizontalAlignment="Right" Visibility="Hidden" 
                               TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed"
@@ -122,11 +110,20 @@
                                 </Border.Background>
                             </Border>
                         </Grid>
+
+                        <VirtualizingStackPanel x:Name="smallThingLines" Grid.Column="1" Grid.Row="1" Width="10000" Height="10000" RenderOptions.BitmapScalingMode="Fant" />
+                        <VirtualizingStackPanel x:Name="ThingLines" Grid.Column="1" Grid.Row="1" Width="10000" Height="10000" RenderOptions.BitmapScalingMode="Fant" />
+
+                        <Grid x:Name="ThingGrid" Grid.Column="1" Grid.Row="1" Width="10000" Height="10000" HorizontalAlignment="Left" VerticalAlignment="Top" PreviewMouseDown="ThingGrid_PreviewMouseDown" PreviewMouseLeftButtonDown="ThingGrid_PreviewMouseLeftButtonDown" RenderTransformOrigin="0.5,0.5" >
+
+                        </Grid>
+
                     </Grid>
                 </Viewbox>
 
 
             </Grid>
+            
 
             <Grid Grid.Row="0" Height="30">
                 <StackPanel Orientation="Horizontal" Margin="10,0,10,0">
@@ -137,13 +134,14 @@
                         <TextBlock Text="%" VerticalAlignment="Center" Margin="0,0,5,0" Foreground="{DynamicResource OWLOSLight}" />
                     </StackPanel>
 
-                    <Button Name="zoomToOneHImage"  Width="25" Height="25" ToolTip="Zoom to 100%" Margin="5,0,5,0" Content="Zo" Click="zoomToOneHImage_Click" />
-                    <Button Name="zoomToFullImage"  Width="25" Height="25" ToolTip="Zoom to full view" Margin="5,0,5,0" Content="Zf" Click="zoomToFullImage_Click"/>
-                    <Button Name="autoScrollImage" Width="25" Height="25" ToolTip="Auto scroll" Margin="5,0,5,0" Content="AS" Click="autoScrollImage_Click"/>
-                    <Button Name="drawCellImage" Width="25" Height="25" ToolTip="Draw cell" Margin="5,0,5,0"  Content="DC" Click="drawCellImage_Click"/>
-                    <Button Width="25" Height="25" ToolTip="Draw cell" Margin="5,0,5,0"  Content="AN" Click="animante_Click" />
-                    <TextBlock x:Name="test" Text="100" Foreground="{DynamicResource OWLOSLight}" RenderTransformOrigin="1,3"/>
-                    <Button Width="25" Height="25" ToolTip="Draw cell" Margin="5,0,5,0"  Content="PA" Click="Button_Click"  />
+                    <Image Name="zoomToOneHImage"  Width="25" Height="25" ToolTip="Zoom to 100%" Margin="5,0,5,0" MouseDown="zoomToOneHImage_Click" Cursor="Hand" />
+                    <Image  Name="zoomToFullImage"  Width="25" Height="25" ToolTip="Zoom to full view" Margin="5,0,5,0" MouseDown="zoomToFullImage_Click" Cursor="Hand"/>
+                    <Image  Name="autoScrollImage" Width="25" Height="25" ToolTip="Auto scroll" Margin="5,0,5,0" MouseDown="autoScrollImage_Click" Cursor="Hand"/>
+                    <Image Name="drawCellImage" Width="25" Height="25" ToolTip="Draw cell" Margin="5,0,5,0"   MouseDown="drawCellImage_Click" Cursor="Hand"/>
+                    <Image Name="perspectiveViewImage" Width="25" Height="25" ToolTip="3D view" Margin="5,0,5,0"   MouseDown="perspectiveViewImage_Click" Cursor="Hand"/>
+                    <Image Name="iconsViewImage" Width="25" Height="25" ToolTip="Icon collection [development]" Margin="5,0,5,0"   MouseDown="iconsViewImage_Click" Cursor="Hand"/>
+                    <Image Name="transparentViewImage" Width="25" Height="25" ToolTip="Transparent view" Margin="5,0,5,0" Cursor="Hand" MouseDown="transparentViewImage_MouseDown"/>
+                    <Image Name="duplicateWindowImage" Width="25" Height="25" ToolTip="Duplicate window" Margin="5,0,5,0" Cursor="Hand" MouseDown="duplicateWindowImage_MouseDown" />
                 </StackPanel>
             </Grid>
 

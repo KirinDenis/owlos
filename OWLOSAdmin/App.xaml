@@ -1,12 +1,18 @@
-﻿<Application x:Class="OWLOSAdmin.App"
+﻿<Application x:Class="OWLOSThingsManager.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:OWLOSAdmin"
-             StartupUri="EcosystemExplorer/EcosystemExplorerWindow.xaml">
+             xmlns:local="clr-namespace:OWLOSThingsManager"
+             StartupUri="EcosystemBrowser/EcosystemBrowserWindow.xaml">
     <Application.Resources>
-        <ResourceDictionary Source = "Theme/OWLOSDarkTheme.xaml" />
+        
 
-
+        <ResourceDictionary Source = "Theme/OWLOSDarkTheme.xaml">
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Theme/ScrollBar.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 
 </Application>
+<!--- StartupUri="EcosystemBrowser/EcosystemBrowserWindow.xaml"> -->
+<!--- StartupUri="EcosystemExplorer/EcosystemExplorerWindow.xaml"> -->

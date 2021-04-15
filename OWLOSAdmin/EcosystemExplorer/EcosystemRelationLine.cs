@@ -1,4 +1,44 @@
-﻿using System;
+﻿/* ----------------------------------------------------------------------------
+Ready IoT Solution - OWLOS
+Copyright 2019, 2020, 2021 by:
+- Vitalii Glushchenko (cehoweek@gmail.com)
+- Denys Melnychuk (meldenvar@gmail.com)
+- Denis Kirin (deniskirinacs@gmail.com)
+
+This file is part of Ready IoT Solution - OWLOS
+
+OWLOS is free software : you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+OWLOS is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with OWLOS. If not, see < https://www.gnu.org/licenses/>.
+
+GitHub: https://github.com/KirinDenis/owlos
+
+(Этот файл — часть Ready IoT Solution - OWLOS.
+
+OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
+ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
+была опубликована Фондом свободного программного обеспечения; версии 3
+лицензии, любой более поздней версии.
+
+OWLOS распространяется в надежде, что она будет полезной, но БЕЗО ВСЯКИХ
+ГАРАНТИЙ; даже без неявной гарантии ТОВАРНОГО ВИДА или ПРИГОДНОСТИ ДЛЯ
+ОПРЕДЕЛЕННЫХ ЦЕЛЕЙ.
+Подробнее см.в Стандартной общественной лицензии GNU.
+
+Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
+этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
+--------------------------------------------------------------------------------------*/
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -6,7 +46,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace OWLOSAdmin.EcosystemExplorer
+namespace OWLOSThingsManager.EcosystemExplorer
 {
 
     public struct EcosystemPathLine
@@ -35,8 +75,8 @@ namespace OWLOSAdmin.EcosystemExplorer
         private Point[] offsetA = new Point[2];
         private Point[] offsetB = new Point[2];
         
-        public double ellipseWidth = 15;
-        public double ellipseHeight = 15;
+        public double ellipseWidth = 10;
+        public double ellipseHeight = 10;
         private readonly TranslateTransform transform = new TranslateTransform();
         //private DependencyPropertyDescriptor dp = DependencyPropertyDescriptor.FromProperty(
         //Ellipse.RenderTransformProperty,
@@ -91,7 +131,7 @@ namespace OWLOSAdmin.EcosystemExplorer
             Point startPointA = startElement.TranslatePoint(new Point(0, 0), relativeElement);
             //Correct start point A
             //   startPointA = new Point(startPointA.X + startElement.Width, startPointA.Y + startElement.Height / 2);
-            startPointA = new Point(startPointA.X + startElement.Width, startPointA.Y + startElement.Height / 2);
+            startPointA = new Point(startPointA.X + startElement.Width, startPointA.Y - startElement.Height / 2);
             //Set leveling for point B
             Point startPointB = new Point(startPointA.X + 100, startPointA.Y);
             //Do same for end point A & B
@@ -136,6 +176,7 @@ namespace OWLOSAdmin.EcosystemExplorer
 
             // Add the PolyBezierSegment to othe segment collection.
             path_segment_collection.Add(bezier_segment);
+            
 
             return path;
         }
@@ -154,6 +195,7 @@ namespace OWLOSAdmin.EcosystemExplorer
                 relative //Relative
             });
 
+            
             Point correctPointA = new Point(points[0].X + offsetA.X, points[0].Y + offsetA.Y);            
             //new Point(points[0].X + ellipse.Width, points[0].Y + ellipse.Height / 2);
             Point correctPointB = new Point(points[1].X + offsetB.X, points[1].Y + offsetB.Y);
@@ -189,7 +231,8 @@ namespace OWLOSAdmin.EcosystemExplorer
             ellipse.Width = width;
             ellipse.Height = height;
             Matrix matrix = new Matrix();
-            matrix.Translate((relativeLocation.X + target.ActualWidth + ellipse.Width) / 2, relativeLocation.Y + ellipse.Height / 2);
+            //matrix.Translate((relativeLocation.X + target.ActualWidth + ellipse.Width) / 2, relativeLocation.Y + ellipse.Height / 2);
+            matrix.Translate((relativeLocation.X + ellipse.Width), relativeLocation.Y + ellipse.Height / 2);
             ellipse.RenderTransform = new MatrixTransform(matrix);
             //ellipse.Margin = new Thickness(0, (relativeLocation.X + target.ActualWidth + ellipse.Width) / 2, -(relativeLocation.Y + ellipse.Height / 2), 0);
             return ellipse;
@@ -209,7 +252,8 @@ namespace OWLOSAdmin.EcosystemExplorer
 
             curveLine = DrawCurveLine(ellipse, Parent, aControl, lineColor);
             ellipse.Tag = curveLine;
-            panel.Children.Insert(panel.Children.Count - 1, curveLine);
+            //panel.Children.Insert(panel.Children.Count - 1, curveLine);
+            panel.Children.Insert(0, curveLine);
             curveLine.UpdateLayout();
 
             ecosystemPathLine = new EcosystemPathLine(((PathGeometry)curveLine.Data).Figures[0]);
@@ -256,7 +300,8 @@ namespace OWLOSAdmin.EcosystemExplorer
         public void UpdatePositions()
         {
             Point relativeLocation = frameworkElement.TranslatePoint(new Point(0, 0), Parent);
-            transform.X = (relativeLocation.X + frameworkElement.ActualWidth + ellipse.Width) / 2 ;            
+            // transform.X = (relativeLocation.X + frameworkElement.ActualWidth + ellipse.Width) / 2 ;            
+            transform.X = (relativeLocation.X + ellipse.Width);
             transform.Y = relativeLocation.Y + ellipse.Height / 2;
             ellipse.RenderTransform = transform;
 

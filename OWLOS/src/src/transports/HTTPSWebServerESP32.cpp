@@ -677,8 +677,6 @@ void handleCreateScript(HTTPRequest *req, HTTPResponse *res)
       }
       else
       {
-        debugOut("SCRIPT", name.c_str());
-        debugOut("SCRIPT", byteCode);
         String result = scriptsCreate(decode(name.c_str()), decode(byteCode));
 
         if (result.length() != 0)
@@ -818,7 +816,7 @@ void HTTPSWebServerBegin()
   setResourceNode("/reset", "GET", &handleReset);
   setResourceNode("/getfilelist", "GET", &handleGetFileList);
   setResourceNode("/deletefile", "GET", &handleDeleteFile);
-  setResourceNode("/deletefile", "DELETE", &handleDeleteFile);
+  setResourceNode("/deletefile", "DELETE", &handleDeleteFile);  
   setResourceNode("/getnodeproperty", "GET", &handleGetNodeProperty);
   //Set driver property set node property to - ESP, WiFi, Network
   //setResourceNode("/setnodeproperty", "GET", &handleSetNodeProperty);

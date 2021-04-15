@@ -71,7 +71,7 @@ uint32_t espchipid(DEFAULT_ZERO_VALUE);
 uint32_t espfreeheap(DEFAULT_ZERO_VALUE);
 uint16_t espmaxfreeblocksize(DEFAULT_ZERO_VALUE);
 uint8_t espheapfragmentation(DEFAULT_ZERO_VALUE);
-const char *espsdkversion(DEFAULT_EMPTY_STR_VALUE);
+String espsdkversion(DEFAULT_EMPTY_STR_VALUE);
 String espcoreversion(DEFAULT_EMPTY_STR_VALUE);
 String espfullversion(DEFAULT_EMPTY_STR_VALUE);
 uint8_t espbootversion(DEFAULT_ZERO_VALUE);
@@ -142,7 +142,7 @@ String nodeGetAllProperties()
 												  "espheapfragmentation=" +
 		   String(nodeGetESPHeapFragmentation()) + "//ri\n"
 												   "espsdkversion=" +
-		   String(*nodeGetESPSdkVersion()) + "//r\n"
+		   nodeGetESPSdkVersion() + "//r\n"
 											 "espcoreversion=" +
 		   nodeGetESPCoreVersion() + "//r\n"
 									 "espfullversion=" +
@@ -312,7 +312,7 @@ String nodeOnMessage(const String &route, const String &_payload, int8_t transpo
 	}
 	else if (matchRoute(route, topic, "/getespsdkversion"))
 	{
-		return onGetProperty("espsdkversion", String(*nodeGetESPSdkVersion()), transportMask);
+		return onGetProperty("espsdkversion", nodeGetESPSdkVersion(), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setespsdkversion"))
 	{
@@ -690,19 +690,12 @@ bool nodeSetESPRestart(int _esprestart)
 //ESPGetVcc()
 uint16_t nodeGetESPVcc()
 {
-#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
-	if (propertyFileReaded.indexOf("espvcc;") < 0)
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0	
 		return espvcc = ESP.getVcc();
-	else
-		return espvcc;
 #endif
 
-#ifdef ARDUINO_ESP32_RELEASE_1_0_4
-
-	if (propertyFileReaded.indexOf("espvcc;") < 0)
+#ifdef ARDUINO_ESP32_RELEASE_1_0_4		
 		return espvcc = rom_phy_get_vdd33();
-	else
-		return espvcc;
 #endif
 }
 
@@ -785,10 +778,12 @@ bool nodeSetESPHeapFragmentation(int _espheapfragmentation)
 }
 
 //ESPGetSdkVersion
-const char *nodeGetESPSdkVersion()
+String nodeGetESPSdkVersion()
 {
 	if (propertyFileReaded.indexOf("espsdkversion;") < 0)
+	{	
 		return espsdkversion = ESP.getSdkVersion();
+	}
 	else
 		return espsdkversion;
 }

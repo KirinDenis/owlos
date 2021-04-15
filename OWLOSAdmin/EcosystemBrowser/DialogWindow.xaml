@@ -1,0 +1,22 @@
+﻿<Window x:Class="OWLOSAdmin.EcosystemBrowser.DialogWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OWLOSAdmin.EcosystemBrowser"
+        mc:Ignorable="d"
+        Title="Dialog" Height="200" Width="400" WindowStyle="ToolWindow" WindowStartupLocation="CenterOwner" PreviewKeyDown="Window_PreviewKeyDown">
+    <Grid Margin="5,0,5,5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="100*"/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+        <TextBlock x:Name="HeaderTextBlock" Text="Are you sure?" FontWeight="Bold" VerticalAlignment="Center" />
+        <TextBlock x:Name="BodyTextBlock" Text="Close the application?" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right">
+            <Button x:Name="OKButton" Content="OK" Width="100" Margin="5" Click="OKButton_Click"/>
+            <Button x:Name="CancelButton" Content="Cancel" Width="100" Margin="5" Click="CancelButton_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

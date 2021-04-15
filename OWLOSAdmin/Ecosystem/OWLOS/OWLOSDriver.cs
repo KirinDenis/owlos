@@ -1,31 +1,67 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Text;
-using System.Threading.Tasks;
-using static OWLOSAdmin.Ecosystem.OWLOS.OWLOSDriverProperty;
+﻿/* ----------------------------------------------------------------------------
+Ready IoT Solution - OWLOS
+Copyright 2019, 2020, 2021 by:
+- Vitalii Glushchenko (cehoweek@gmail.com)
+- Denys Melnychuk (meldenvar@gmail.com)
+- Denis Kirin (deniskirinacs@gmail.com)
 
-namespace OWLOSAdmin.Ecosystem.OWLOS
+This file is part of Ready IoT Solution - OWLOS
+
+OWLOS is free software : you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+OWLOS is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with OWLOS. If not, see < https://www.gnu.org/licenses/>.
+
+GitHub: https://github.com/KirinDenis/owlos
+
+(Этот файл — часть Ready IoT Solution - OWLOS.
+
+OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
+ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
+была опубликована Фондом свободного программного обеспечения; версии 3
+лицензии, любой более поздней версии.
+
+OWLOS распространяется в надежде, что она будет полезной, но БЕЗО ВСЯКИХ
+ГАРАНТИЙ; даже без неявной гарантии ТОВАРНОГО ВИДА или ПРИГОДНОСТИ ДЛЯ
+ОПРЕДЕЛЕННЫХ ЦЕЛЕЙ.
+Подробнее см.в Стандартной общественной лицензии GNU.
+
+Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
+этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
+--------------------------------------------------------------------------------------*/
+
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using static OWLOSThingsManager.Ecosystem.OWLOS.OWLOSDriverProperty;
+
+namespace OWLOSThingsManager.Ecosystem.OWLOS
 {
 
 
     public class OWLOSDriver
     {
-        public OWLOSNode parentNode = null;
+        public OWLOSThing parentThing = null;
 
         public string name = "";
 
-        List<OWLOSDriverProperty> properties = new List<OWLOSDriverProperty>();
+        public List<OWLOSDriverProperty> properties = new List<OWLOSDriverProperty>();
 
         public event PropertyEventHandler OnPropertyCreate;
 
-        public OWLOSDriver(OWLOSNode parentNode, string name)
+        public OWLOSDriver(OWLOSThing parentThing, string name)
         {
-            this.parentNode = parentNode;
+            this.parentThing = parentThing;
             this.name = name;
             
         }
-
         public async Task<bool> SetParsedProperty(string name, string value)
         {
             string _value = value.Substring(0, value.IndexOf("//"));
@@ -35,7 +71,7 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
             if (property == null)
             {
-                property = new OWLOSDriverProperty(this, name, value, _flags);
+                property = new OWLOSDriverProperty(this, name, _value, _flags);
                 properties.Add(property);
                 PropertyCreate(new OWLOSPropertyWrapperEventArgs(property));
             }
@@ -46,13 +82,10 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
 
             return true;
         }
-
         protected virtual void PropertyCreate(OWLOSPropertyWrapperEventArgs e)
         {
             OnPropertyCreate?.Invoke(this, e);
         }
-
-
         public int GetPropertiesCount()
         {
             return properties.Count;
@@ -61,7 +94,6 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
         {
             return properties.Find(p => p.name == name);
         }
-
         public bool SetPropertyValue(string name, string value)
         {
             OWLOSDriverProperty property = GetProperty(name);
@@ -69,7 +101,6 @@ namespace OWLOSAdmin.Ecosystem.OWLOS
             {
                 return false;
             }
-
             property.value = value;
             return true;
         }

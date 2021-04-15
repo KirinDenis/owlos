@@ -44,7 +44,7 @@ OWLOS распространяется в надежде, что она буде
 #ifndef LCDDRIVER_H
 #define LCDDRIVER_H
 
-#include "../libraries\LiquidCrystal_I2C\LiquidCrystal_I2C.h" //https://www.dfrobot.com/wiki/index.php/I2C/TWI_LCD1602_Module_(Gadgeteer_Compatible)_(SKU:_DFR0063)   http://www.dfrobot.com/wiki/index.php?title=I2C/TWI_LCD1602_Module_(SKU:_DFR0063) Download: http://www.dfrobot.com/image/data/DFR0154/LiquidCrystal_I2Cv1-1.rar
+#include "../libraries/LiquidCrystal_I2C/LiquidCrystal_I2C.h" //https://www.dfrobot.com/wiki/index.php/I2C/TWI_LCD1602_Module_(Gadgeteer_Compatible)_(SKU:_DFR0063)   http://www.dfrobot.com/wiki/index.php?title=I2C/TWI_LCD1602_Module_(SKU:_DFR0063) Download: http://www.dfrobot.com/image/data/DFR0154/LiquidCrystal_I2Cv1-1.rar
 #define SDA_INDEX 0
 #define SCL_INDEX 1
 #define I2CADDR_INDEX 2
