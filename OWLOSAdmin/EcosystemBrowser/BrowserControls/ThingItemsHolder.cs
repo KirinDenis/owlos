@@ -142,22 +142,26 @@ namespace OWLOSThingsManager.EcosystemBrowser.BrowserControls
 
         private void NewThing_OnNewDriver(object sender, OWLOSDriverWrapperEventArgs e)
         {
-            TreeViewItem ThingDriverItem = new TreeViewItem
+            DriversBrowserItem.Dispatcher.Invoke(() =>
             {
-                Header = e.driver.name,
 
-
-                Tag = new ThingDriverItemTag
+                TreeViewItem ThingDriverItem = new TreeViewItem
                 {
-                    Thing = PanelTag.Thing,
-                    Driver = e.driver,
-                    ParentThingItemsHolder = this
-                }
-            };
+                    Header = e.driver.name,
 
-            ThingDriverItem.MouseDoubleClick += ThingDriverItem_MouseDoubleClick;
 
-            DriversBrowserItem.Items.Add(ThingDriverItem);
+                    Tag = new ThingDriverItemTag
+                    {
+                        Thing = PanelTag.Thing,
+                        Driver = e.driver,
+                        ParentThingItemsHolder = this
+                    }
+                };
+
+                ThingDriverItem.MouseDoubleClick += ThingDriverItem_MouseDoubleClick;
+
+                DriversBrowserItem.Items.Add(ThingDriverItem);
+            });
             
 
         }

@@ -267,14 +267,6 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
             SerialPort sp = (SerialPort)sender;
             indata += sp.ReadExisting();
             totlaRecv += indata.Length;
-            AddToLog(new LogItem()
-            {
-                dateTime = DateTime.Now,
-                isSend = false,
-                networkStatus = NetworkStatus.Online,
-                size = indata.Length,
-                text = indata
-            });
 
             if (_connection.enable)
             {
@@ -286,6 +278,16 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
 
                 if (indata.IndexOf("\n\n") != -1)
                 {
+
+                    AddToLog(new LogItem()
+                    {
+                        dateTime = DateTime.Now,
+                        isSend = false,
+                        networkStatus = NetworkStatus.Online,
+                        size = indata.Length,
+                        text = indata
+                    });
+
                     while (indata.IndexOf("\n\n") != -1)
                     {
                         string _data = indata.Substring(0, indata.IndexOf("\n\n") + 2);
