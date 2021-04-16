@@ -312,7 +312,7 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
                                     i++;
                                 }
 
-                                if (APIName.ToUpper().Equals("AT+ADP?"))
+                                if (APIName.ToUpper().IndexOf("AT+ADP?") == 0)
                                 {
                                     Task task = Thing.ParseGetAllDriversProperties(APIData);
                                     //    Thing.parseDrivers(APIData);
