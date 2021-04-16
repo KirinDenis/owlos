@@ -63,6 +63,7 @@
 ### Copyright 2019, 2020, 2021 by
 
 - Mónica (rovt@ua.fm)
+- Yan Sokolov (Dadras279@gmail.com)
 - Ddone Deedone (https://techadv.xyz/)
 - Serhii Lehkii (sergey@light.kiev.ua)
 - Konstantin Brul (konstabrul@gmail.com)
