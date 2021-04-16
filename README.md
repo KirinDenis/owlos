@@ -17,6 +17,15 @@
 
 ![OWLOS SCHEME](https://github.com/KirinDenis/owlos/raw/master/OWLOSResource/images/owlos_scheme.jpg)
 
+### Source Code map
+
+- /OWLOS/           C/C++ firmware source code (ESP32, ESP8266)
+- /OWLOS/data/      JavaScript  stand-alone and embedded UX 
+- /OWLOSAdmin/      .Net Core C# WPF UX
+- /OWLOSEcosystem/  (FFR) .Net Core C# WPF + OpenGL UX
+- /OWLOSResource/   Blenad 3D models, schematic and images resources
+- /OWLOSStarter/    C/C++ for uploading OWLOS firmware bin from GitHub
+
 ### How to build
 
 1. install [PlatformIO IDE](https://platformio.org/)
@@ -28,13 +37,13 @@
 ### WiKi
 
 - ![Home](https://github.com/KirinDenis/owlos/wiki)
+- ![Home RU](https://github.com/KirinDenis/owlos/wiki/Home-RU)
 - ![Оperating modes RU](https://github.com/KirinDenis/owlos/wiki/%D0%9Eperating-modes-RU)
 - ![WiFi modes RU](https://github.com/KirinDenis/owlos/wiki/WiFi-modes-RU)
 - ![UI RU](https://github.com/KirinDenis/owlos/wiki/UI-RU)
 - ![Widgets RU](https://github.com/KirinDenis/owlos/wiki/Widgets-RU) 
 - ![Features EN](https://github.com/KirinDenis/owlos/wiki/Features-EN)
 - ![Features RU](https://github.com/KirinDenis/owlos/wiki/Features-RU)
-- ![Home RU](https://github.com/KirinDenis/owlos/wiki/Home-RU)
 - ![How to install EN](https://github.com/KirinDenis/owlos/wiki/How-to-install-EN)
 - ![How to install RU](https://github.com/KirinDenis/owlos/wiki/How-to-install-RU)
 - ![Supported hardware RU](https://github.com/KirinDenis/owlos/wiki/Supported-hardware-RU)
@@ -62,3 +71,5 @@
 - Vladimir Kovalevich (covalevich@gmail.com)
 - Denys Melnychuk (meldenvar@gmail.com)
 - Denis Kirin (deniskirinacs@gmail.com)
+
+![We on Facebook](https://www.facebook.com/groups/OWLOS)
