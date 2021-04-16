@@ -17,7 +17,7 @@
 
 ![OWLOS SCHEME](https://github.com/KirinDenis/owlos/raw/master/OWLOSResource/images/owlos_scheme.jpg)
 
-## How to build
+### How to build
 
 1. install [PlatformIO IDE](https://platformio.org/)
 2. install COM port drivers for your board
@@ -25,7 +25,21 @@
 4. setup your build configuration in config.h file
 5. build and upload OWLOS firmware to your board
 
-## Special thanks to
+### WiKi
+
+- ![Home](https://github.com/KirinDenis/owlos/wiki)
+- ![Оperating modes RU](https://github.com/KirinDenis/owlos/wiki/%D0%9Eperating-modes-RU)
+- ![WiFi modes RU](https://github.com/KirinDenis/owlos/wiki/WiFi-modes-RU)
+- ![UI RU](https://github.com/KirinDenis/owlos/wiki/UI-RU)
+- ![Widgets RU](https://github.com/KirinDenis/owlos/wiki/Widgets-RU) 
+- ![Features EN](https://github.com/KirinDenis/owlos/wiki/Features-EN)
+- ![Features RU](https://github.com/KirinDenis/owlos/wiki/Features-RU)
+- ![Home RU](https://github.com/KirinDenis/owlos/wiki/Home-RU)
+- ![How to install EN](https://github.com/KirinDenis/owlos/wiki/How-to-install-EN)
+- ![How to install RU](https://github.com/KirinDenis/owlos/wiki/How-to-install-RU)
+- ![Supported hardware RU](https://github.com/KirinDenis/owlos/wiki/Supported-hardware-RU)
+
+### Special thanks to
 
 - [PlatformIO IDE](https://platformio.org/)
 - [ESP32 Arduino Core](https://github.com/espressif/arduino-esp32)
@@ -37,7 +51,7 @@
 - [DHT-sensor-library](https://github.com/adafruit/DHT-sensor-library)
 - [LiquidCrystal_I2C](https://gitlab.com/tandembyte/liquidcrystal_i2c)	
 
-## Copyright 2019, 2020, 2021 by
+### Copyright 2019, 2020, 2021 by
 
 - Mónica (rovt@ua.fm)
 - Ddone Deedone (https://techadv.xyz/)
