@@ -36,17 +36,17 @@
 
 ### WiKi
 
-- ![Home](https://github.com/KirinDenis/owlos/wiki)
-- ![Home RU](https://github.com/KirinDenis/owlos/wiki/Home-RU)
-- ![Оperating modes RU](https://github.com/KirinDenis/owlos/wiki/%D0%9Eperating-modes-RU)
-- ![WiFi modes RU](https://github.com/KirinDenis/owlos/wiki/WiFi-modes-RU)
-- ![UI RU](https://github.com/KirinDenis/owlos/wiki/UI-RU)
-- ![Widgets RU](https://github.com/KirinDenis/owlos/wiki/Widgets-RU) 
-- ![Features EN](https://github.com/KirinDenis/owlos/wiki/Features-EN)
-- ![Features RU](https://github.com/KirinDenis/owlos/wiki/Features-RU)
-- ![How to install EN](https://github.com/KirinDenis/owlos/wiki/How-to-install-EN)
-- ![How to install RU](https://github.com/KirinDenis/owlos/wiki/How-to-install-RU)
-- ![Supported hardware RU](https://github.com/KirinDenis/owlos/wiki/Supported-hardware-RU)
+- [Home](https://github.com/KirinDenis/owlos/wiki)
+- [Home RU](https://github.com/KirinDenis/owlos/wiki/Home-RU)
+- [Оperating modes RU](https://github.com/KirinDenis/owlos/wiki/%D0%9Eperating-modes-RU)
+- [WiFi modes RU](https://github.com/KirinDenis/owlos/wiki/WiFi-modes-RU)
+- [UI RU](https://github.com/KirinDenis/owlos/wiki/UI-RU)
+- [Widgets RU](https://github.com/KirinDenis/owlos/wiki/Widgets-RU) 
+- [Features EN](https://github.com/KirinDenis/owlos/wiki/Features-EN)
+- [Features RU](https://github.com/KirinDenis/owlos/wiki/Features-RU)
+- [How to install EN](https://github.com/KirinDenis/owlos/wiki/How-to-install-EN)
+- [How to install RU](https://github.com/KirinDenis/owlos/wiki/How-to-install-RU)
+- [Supported hardware RU](https://github.com/KirinDenis/owlos/wiki/Supported-hardware-RU)
 
 ### Special thanks to
 
@@ -72,4 +72,4 @@
 - Denys Melnychuk (meldenvar@gmail.com)
 - Denis Kirin (deniskirinacs@gmail.com)
 
-![We on Facebook](https://www.facebook.com/groups/OWLOS)
+[We on Facebook](https://www.facebook.com/groups/OWLOS)
