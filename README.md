@@ -19,12 +19,12 @@
 
 ### Source Code map
 
-- /OWLOS/                  C/C++ firmware source code (ESP32, ESP8266)
-- /OWLOS/data/                 JavaScript  stand-alone and embedded UX 
-- /OWLOSAdmin/                                     .Net Core C# WPF UX
-- /OWLOSEcosystem/                  (FFR) .Net Core C# WPF + OpenGL UX
-- /OWLOSResource/    Blenad 3D models, schematics and images resources
-- /OWLOSStarter/    C/C++ for uploading OWLOS firmware bin from GitHub
+- /OWLOS/..................C/C++ firmware source code (ESP32, ESP8266)
+- /OWLOS/data/.................JavaScript  stand-alone and embedded UX 
+- /OWLOSAdmin/.................................... .Net Core C# WPF UX
+- /OWLOSEcosystem/..................(FFR) .Net Core C# WPF + OpenGL UX
+- /OWLOSResource/....Blenad 3D models, schematics and images resources
+- /OWLOSStarter/....C/C++ for uploading OWLOS firmware bin from GitHub
 
 ### How to build
 
