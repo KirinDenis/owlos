@@ -23,8 +23,8 @@
 - **/OWLOS/data/** JavaScript  stand-alone and embedded UX 
 - **/OWLOSAdmin/** .Net Core C# WPF UX
 - **/OWLOSEcosystem/** (FFR) .Net Core C# WPF + OpenGL UX
-- **/OWLOSResource/** Blenad 3D models, schematics and images resources
-- **/OWLOSStarter/** C/C++ for uploading OWLOS firmware bin from GitHub
+- **/OWLOSResource/** Blendar 3D models, schematics and images resources
+- **/OWLOSStarter/** C/C++ for uploading OWLOS firmware bin from GitHub (HTTP Updater)
 
 ### How to build
 
