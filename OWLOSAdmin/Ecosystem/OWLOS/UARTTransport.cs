@@ -234,6 +234,7 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
                 {
 
                     serialPort.WriteLine(APIName + "\n\r");
+                    
                     totlaSend += APIName.Length + 2;
                     AddToLog(new LogItem()
                     {
