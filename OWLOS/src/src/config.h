@@ -86,7 +86,7 @@ OWLOS распространяется в надежде, что она буде
                 #define DEFAULT_WIFI_ACCESS_POINT_IP  "192.168.4.1"         //файл /owlnode.wifiaccesspointip
 
                 //Включает/Выключает (1/0) WiFi режим станции (подключается к указаной WiFi сети (точки доступа))
-                #define DEFAULT_WIFI_STATION_AVAILABLE 0
+                #define DEFAULT_WIFI_STATION_AVAILABLE 1
 
                 //Название подключаемой точки доступа (WiFi сети)
                 //При запуске OWLOS сделает 10 попыток подключится к DEFAULT_WIFI_STATION_SSID сети, в случае неудачи 
@@ -125,7 +125,7 @@ OWLOS распространяется в надежде, что она буде
 
                 #ifdef ARDUINO_ESP32_RELEASE_1_0_4       
                 //Включает в сборку MQTT клиент
-                 #define USE_MQTT                
+                #define USE_MQTT                
                 #endif                
             #endif
     #else

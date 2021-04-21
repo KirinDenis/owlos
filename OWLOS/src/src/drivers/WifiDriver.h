@@ -4,15 +4,16 @@
 #ifndef WiFi_DRIVER_H
 #define WiFi_DRIVER_H
 
-#include <WiFi.h>
-#include <WiFiClient.h>
-#include <WiFiType.h>
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 #include <ESP8266WiFi.h>
 #endif
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
 #include <rom/rtc.h>
+#include <WiFi.h>
+#include <WiFiClient.h>
+#include <WiFiType.h>
+
 #endif
 
 

@@ -134,7 +134,7 @@ void calculateToken()
 #ifdef NOT_SECURE_TOKEN
 	MD5Builder md5;
 	md5.begin();
-	md5.add(nodeGetHTTPServerServerUsername() + nodeGetHTTPServerServerPassword() + nodeGetESPFlashChipId());
+	md5.add("OWLOSadmin" + nodeGetESPFlashChipId());
 	md5.calculate();
 	token = md5.toString();
 #endif

@@ -277,6 +277,7 @@ bool WiFiReconnect()
   -------------------------------------------------------------------------------------------------------------------------*/
 void Callback(char *_topic, byte *_payload, unsigned int length)
 {
+#ifdef USE_MQTT	
 	if (nodeGetMQTTAvailable() == 1)
 	{
 #ifdef DETAILED_DEBUG
@@ -301,6 +302,7 @@ void Callback(char *_topic, byte *_payload, unsigned int length)
 			driversCallback(String(_topic), String(payload_buff));
 		}
 	}
+	#endif
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
@@ -357,16 +359,21 @@ bool transportReconnect()
 			HTTPSWebServerBegin();
 		}
 
+#ifdef USE_OTA
 		if (nodeGetOTAAvailable() == 1)
 		{
-#ifdef USE_OTA
 			OTABegin();
-#endif
 		}
+#endif
+
+#ifdef USE_MQTT
 		if (nodeGetMQTTAvailable() == 1)
 		{
+
 		}
+#endif		
 	}
+
 	return result;
 }
 
@@ -384,12 +391,12 @@ void transportLoop()
 			HTTPSWebServerLoop();
 		}
 
+#ifdef USE_OTA
 		if (nodeGetOTAAvailable() == 1)
 		{
-#ifdef USE_OTA
 			OTALoop();
-#endif
 		}
+#endif		
 	}
 }
 
