@@ -34,7 +34,8 @@
 4. setup your build configuration in config.h file
 5. build and upload OWLOS firmware to your board
 
-**[More detailed](https://github.com/KirinDenis/owlos/wiki/How-to-install-EN)
+[**More detailed**](https://github.com/KirinDenis/owlos/wiki/How-to-install-EN) instruction here
+
 if your board based on ESP8266 -> [ESP8266 prepared assembly](https://github.com/KirinDenis/owlos/tree/ESP8266_Build)
 
 ### WiKi
