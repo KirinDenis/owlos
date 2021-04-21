@@ -86,6 +86,7 @@ AT+DPM? - получить текущею распиновку по драйве
 
 #ifdef USE_UART
 
+#define SERIAL_RX_BUFFER_SIZE 64
 #define OK_ANSWER "OK: "
 #define PUBLISH_ANSWER "PUB: "
 #define CANCEL_ANSWER "CANCEL: "
@@ -95,6 +96,8 @@ AT+DPM? - получить текущею распиновку по драйве
 
 String SerialInput = "";
 
+bool busy = false;
+
 void UARTSend(String topic, String payload)
 {
     Serial.print(PUBLISH_ANSWER + topic + " " + payload + "\n\n");
@@ -102,15 +105,14 @@ void UARTSend(String topic, String payload)
 
 void UARTSendError(String topic, String payload)
 {
-    Serial.print(ERROR_ANSWER + topic + "\n");    
+    Serial.print(ERROR_ANSWER + topic + "\n");
     Serial.print(payload + "\n\n");
-    
 }
 
 void UARTSendOK(String topic, String payload)
 {
-    Serial.print(OK_ANSWER + topic + "\n");    
-    Serial.print(payload + "\n\n");    
+    Serial.print(OK_ANSWER + topic + "\n");
+    Serial.print(payload + "\n\n");
 }
 
 void UARTRecv(String command)
@@ -197,7 +199,6 @@ void UARTRecv(String command)
                 if (count > 1)
                 {
                     UARTSendOK(token[0] + " " + token[1], filesReadString(token[1]));
-
                 }
                 else
                 {
@@ -330,17 +331,16 @@ void UARTRecv(String command)
             {
                 if (count > 2)
                 {
-                    
+
                     String result = driversGetDriverProperty(token[1], token[2]);
-                    
+
 #ifdef USE_ESP_DRIVER
                     if (result.length() == 0) //then try get this property from node
                     {
                         result = nodeOnMessage(nodeGetTopic() + "/get" + token[2], "", NO_TRANSPORT_MASK);
-                    
                     }
 #endif
-                    
+
                     if (result.length() == 0)
                     {
                         UARTSendError(token[0], "wrong driver id: " + token[1] + " use GetDriversId API to get all drivers list");
@@ -453,17 +453,56 @@ void UARTRecv(String command)
 void UARTRecv()
 {
 
-    if (Serial.available())
+    if (busy)
     {
-        String currentStr = Serial.readString();
-        SerialInput += currentStr;
-        if (SerialInput.indexOf('\r') != -1)
+        SerialInput = "";
+        delay(100);
+    }
+    else
+    {
+        int rxSize = Serial.available();
+        if (rxSize > 0)
         {
-            Serial.flush();
-            SerialInput.replace("\r", "");
-            SerialInput.replace("\n", "");
-            UARTRecv(SerialInput);
-            SerialInput = "";
+            while (rxSize > 0)
+            {
+
+                int c = Serial.read();
+                if (c > 0)
+                {
+                    SerialInput += (char)c;
+                }
+
+                rxSize = Serial.available();
+                if ((rxSize > SERIAL_RX_BUFFER_SIZE / 2) || (SerialInput.length() > SERIAL_RX_BUFFER_SIZE / 2))
+                {
+                    int count = 0;
+                    while ((Serial.available() > 0) && (count < SERIAL_RX_BUFFER_SIZE))
+                    {
+#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
+                        yield(); //reset software watchdog
+#endif
+                        Serial.read();
+                        delay(5);
+                        count++;
+                    }
+                    SerialInput = "";
+                    return;
+                }
+
+                if (SerialInput.indexOf('\r') != -1)
+                {
+                    busy = true;
+
+                    SerialInput.replace("\r", "");
+                    SerialInput.replace("\n", "");
+                    UARTRecv(SerialInput);
+                    SerialInput = "";
+
+                    Serial.flush();
+                    Serial.clearWriteError();
+                    busy = false;
+                }
+            }
         }
     }
 }
