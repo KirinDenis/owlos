@@ -41,7 +41,7 @@ OWLOS распространяется в надежде, что она буде
 
 function defaultWebProp() {
     return {
-        language: "ua",
+        language: "en",
         speak: false,
         voice: 0,
         widgetssize: 150,
@@ -281,7 +281,17 @@ var config = {
                 addToLogNL(getLang("getconfigfailsparse") + exception, 2);
             }
         }
+	if (!result)
+	{
+           result = true;	
+           config.restoreDefault();           	   
+           sender.doOnLoad();           
+
+	}
+
+
         upperAsyncReciever(result);
+
         return result;
     },
     restoreDefault: function () {
@@ -289,7 +299,7 @@ var config = {
         configProperties = defaultWebProp();
         addToLogNL(getLang("restoredefault"), 1);
         config.addDashboard("main");
-        config.addNode(boardhost, "local");
+        config.addNode(boardhost, "OWLOSThing");
         return config.save();
     },
     // асинхронный метод сохранения внесенных изменений в настройки (передача строки разбитой на небольшие части в ноду) 

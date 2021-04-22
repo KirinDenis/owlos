@@ -653,7 +653,7 @@ function getLang(key) {
             }
         }
         else {
-            currentLang = "ua";
+            currentLang = "en";
         }
 
         if (currentLang == "") {

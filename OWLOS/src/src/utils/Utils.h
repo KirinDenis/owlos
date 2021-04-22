@@ -44,7 +44,7 @@ OWLOS распространяется в надежде, что она буде
 #include <Arduino.h>
 
 //#define SERIAL_COLORIZED_OUTPUT
-//#define DEBUG
+#define DEBUG
 #ifdef DEBUG
 	#define DETAILED_DEBUG
 #endif
@@ -53,7 +53,7 @@ OWLOS распространяется в надежде, что она буде
 #define DEBUG_LOG_FILES_SIZE 10240L
 #define DEBUG_LOG_FILE1_NAME "log1"
 #define DEBUG_LOG_FILE2_NAME "log2"
-#define PORTSPEED 921600
+#define PORTSPEED 115200
 #define ONETENTHOFSECOND 100L
 #define ONEHUNDREDTH 10L
 #define ONESECOND 1000L

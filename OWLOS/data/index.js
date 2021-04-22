@@ -71,15 +71,11 @@ function testHTTPS() {
 
 function HTTPSResult (httpResult, node) {
     //HTTPClient добавляет строку "%error" в начало Response если запрос не был завешен HTTPCode=200 или произошел TimeOut
-    if (!httpResult.indexOf("%error") == 0) {
-        
-
+    if (!httpResult.indexOf("%error") == 0) {        
     }
     else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
     }
 }
-
-
 
 
 $(document).ready(function () {
@@ -210,7 +206,8 @@ function onLoadConfig(result) {
             document.getElementById("consolePanel").appendChild(boot);
 
             sidebarItemClick({currentTarget: sideBar.dashboardItem.href});
-            
+
+            setInterval(nodesRefresh, 10000);            
             speak("OWLOS is ready");
         }
         else {
@@ -228,7 +225,7 @@ function onLoadConfig(result) {
 }
 
 function nodesRefresh() {
-    /*
+    
     for (var node in configProperties.nodes) {
         drivers.refresh(configProperties.nodes[node]);
         pins.refresh(configProperties.nodes[node]);
@@ -236,7 +233,6 @@ function nodesRefresh() {
         accessableDrivers.refresh(configProperties.nodes[node]);
         scriptsService.refresh(configProperties.nodes[node]);
     }
-    */
 }
 
 function sleep(time) {
