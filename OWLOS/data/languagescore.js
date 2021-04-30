@@ -641,7 +641,7 @@ var langru = "prepareUnit=Подготовка интерфейса пользо
     "language=russian\n";
 
 
-var currentLang = "";
+var currentLang = "en";
 var lastLang = "";
 
 function getLang(key) {
@@ -653,7 +653,7 @@ function getLang(key) {
             }
         }
         else {
-            currentLang = "ua";
+            currentLang = "en";
         }
 
         if (currentLang == "") {
