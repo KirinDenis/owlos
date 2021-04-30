@@ -41,7 +41,7 @@ OWLOS распространяется в надежде, что она буде
 
 function defaultWebProp() {
     return {
-        language: "ua",
+        language: "en",
         speak: false,
         voice: 0,
         widgetssize: 150,
