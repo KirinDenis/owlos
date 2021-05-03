@@ -1,4 +1,4 @@
-﻿/* ----------------------------------------------------------------------------
+/* ----------------------------------------------------------------------------
 Ready IoT Solution - OWLOS
 Copyright 2019, 2020 by:
 - Konstantin Brul (konstabrul@gmail.com)
@@ -53,7 +53,7 @@ OWLOS распространяется в надежде, что она буде
 #define DEBUG_LOG_FILES_SIZE 10240L
 #define DEBUG_LOG_FILE1_NAME "log1"
 #define DEBUG_LOG_FILE2_NAME "log2"
-#define PORTSPEED 921600
+#define PORTSPEED 115200
 #define ONETENTHOFSECOND 100L
 #define ONEHUNDREDTH 10L
 #define ONESECOND 1000L
@@ -68,17 +68,10 @@ OWLOS распространяется в надежде, что она буде
 #define UART_TRANSPORT_MASK 0b00001000 //debug is transport by this flag
 
 //Not available selector
-#ifdef ARDUINO_ESP8266_RELEASE_2_5_0
-#define NOT_AVAILABLE "nan"
-#define WRONG_PROPERTY_NAME "Drivers: wrong property name"
-#define WRONG_DRIVER_NAME "Drivers: wrong driver name"
-#define WRONG_NODE_PROPERTY_NAME "Node: wrong node property name"
-#else
 #define NOT_AVAILABLE F("nan")
 #define WRONG_PROPERTY_NAME F("Drivers: wrong property name")
 #define WRONG_DRIVER_NAME F("Drivers: wrong driver name")
-#define WRONG_NODE_PROPERTY_NAME F("Node: wrong node property name")
-#endif
+#define WRONG_THING_PROPERTY_NAME F("Thing: wrong thing property name")
 
 #define TEST_DRIVER_TYPE 0
 #define DHT_DRIVER_TYPE 1
@@ -103,5 +96,7 @@ void debugOut(const String &tag, const String &text);
 void writeDebugLogFile(String fileName, int fileSize, String tag, String text);
 bool matchRoute(const char *route, const char *topic, const char *path);
 bool matchRoute(const String &route, const String &topic, const char *path);
+
+String GetFeatures();
 
 #endif
