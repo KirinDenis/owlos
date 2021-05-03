@@ -264,7 +264,7 @@ int updateFirmware()
 		t_httpUpdate_return ret = HTTP_UPDATE_NO_UPDATES;
 		updateFirmwareStatus = UpdateStatusAtProcess;
 
-#ifdef ARDUINO_ESP8266_NODEMCU
+#ifdef ARDUINO_ESP8266_THINGMCU
 		ret = ESPhttpUpdate.update(client, host + "OWLOS.ino.thingmcu.bin");
 #endif
 

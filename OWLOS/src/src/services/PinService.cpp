@@ -870,7 +870,7 @@ int pinNameToValue(String pinName)
 		return D7;
 	if (pinName.equals("D8"))
 		return D8;
-#ifdef ARDUINO_ESP8266_NODEMCU
+#ifdef ARDUINO_ESP8266_THINGMCU
 	if (pinName.equals("D9"))
 		return D9;
 	if (pinName.equals("D10"))

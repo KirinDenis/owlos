@@ -445,7 +445,7 @@ String networkOnMessage(String route, String _payload, int8_t transportMask)
 		return String(thingSetUpdateHost(_payload));
 	}
 #endif		
-	return WRONG_NODE_PROPERTY_NAME;
+	return WRONG_THING_PROPERTY_NAME;
 }
 
 #ifdef USE_HTTP_SERVER

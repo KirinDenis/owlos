@@ -203,13 +203,13 @@ String onGetProperty(String _property, String _payload, int8_t transportMask)
 String thingOnMessage(const String &route, const String &_payload, int8_t transportMask)
 {
 	String result = wifiOnMessage(route, _payload, transportMask);
-	if (!result.equals(WRONG_NODE_PROPERTY_NAME))
+	if (!result.equals(WRONG_THING_PROPERTY_NAME))
 	{
 		return result;
 	}
 
 	result = networkOnMessage(route, _payload, transportMask);
-	if (!result.equals(WRONG_NODE_PROPERTY_NAME))
+	if (!result.equals(WRONG_THING_PROPERTY_NAME))
 	{
 		return result;
 	}

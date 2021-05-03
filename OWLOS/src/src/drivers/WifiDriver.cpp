@@ -267,7 +267,7 @@ String wifiOnMessage(String route, String _payload, int8_t transportMask)
 	{
 		return String(thingGetAllWiFiEncryptionTypes());
 	}
-	return WRONG_NODE_PROPERTY_NAME;
+	return WRONG_THING_PROPERTY_NAME;
 }
 
 //WiFi -----------------------------------------------------------------------------------------
