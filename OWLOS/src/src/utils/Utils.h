@@ -71,7 +71,7 @@ OWLOS распространяется в надежде, что она буде
 #define NOT_AVAILABLE F("nan")
 #define WRONG_PROPERTY_NAME F("Drivers: wrong property name")
 #define WRONG_DRIVER_NAME F("Drivers: wrong driver name")
-#define WRONG_NODE_PROPERTY_NAME F("Node: wrong node property name")
+#define WRONG_NODE_PROPERTY_NAME F("Thing: wrong thing property name")
 
 #define TEST_DRIVER_TYPE 0
 #define DHT_DRIVER_TYPE 1

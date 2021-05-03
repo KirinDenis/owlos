@@ -171,7 +171,7 @@ h.each(n,function(a,b){h.fn.DataTable[a]=b});return h.fn.dataTable});
 /*
  Copyright (C) Federico Zivolo 2017
  Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).
- */(function(e,t){'object'==typeof exports&&'undefined'!=typeof module?module.exports=t():'function'==typeof define&&define.amd?define(t):e.Popper=t()})(this,function(){'use strict';function e(e){return e&&'[object Function]'==={}.toString.call(e)}function t(e,t){if(1!==e.nodeType)return[];var o=getComputedStyle(e,null);return t?o[t]:o}function o(e){return'HTML'===e.nodeName?e:e.parentNode||e.host}function n(e){if(!e)return document.body;switch(e.nodeName){case'HTML':case'BODY':return e.ownerDocument.body;case'#document':return e.body;}var i=t(e),r=i.overflow,p=i.overflowX,s=i.overflowY;return /(auto|scroll)/.test(r+s+p)?e:n(o(e))}function r(e){var o=e&&e.offsetParent,i=o&&o.nodeName;return i&&'BODY'!==i&&'HTML'!==i?-1!==['TD','TABLE'].indexOf(o.nodeName)&&'static'===t(o,'position')?r(o):o:e?e.ownerDocument.documentElement:document.documentElement}function p(e){var t=e.nodeName;return'BODY'!==t&&('HTML'===t||r(e.firstElementChild)===e)}function s(e){return null===e.parentNode?e:s(e.parentNode)}function d(e,t){if(!e||!e.nodeType||!t||!t.nodeType)return document.documentElement;var o=e.compareDocumentPosition(t)&Node.DOCUMENT_POSITION_FOLLOWING,i=o?e:t,n=o?t:e,a=document.createRange();a.setStart(i,0),a.setEnd(n,0);var l=a.commonAncestorContainer;if(e!==l&&t!==l||i.contains(n))return p(l)?l:r(l);var f=s(e);return f.host?d(f.host,t):d(e,s(t).host)}function a(e){var t=1<arguments.length&&void 0!==arguments[1]?arguments[1]:'top',o='top'===t?'scrollTop':'scrollLeft',i=e.nodeName;if('BODY'===i||'HTML'===i){var n=e.ownerDocument.documentElement,r=e.ownerDocument.scrollingElement||n;return r[o]}return e[o]}function l(e,t){var o=2<arguments.length&&void 0!==arguments[2]&&arguments[2],i=a(t,'top'),n=a(t,'left'),r=o?-1:1;return e.top+=i*r,e.bottom+=i*r,e.left+=n*r,e.right+=n*r,e}function f(e,t){var o='x'===t?'Left':'Top',i='Left'==o?'Right':'Bottom';return parseFloat(e['border'+o+'Width'],10)+parseFloat(e['border'+i+'Width'],10)}function m(e,t,o,i){return J(t['offset'+e],t['scroll'+e],o['client'+e],o['offset'+e],o['scroll'+e],ie()?o['offset'+e]+i['margin'+('Height'===e?'Top':'Left')]+i['margin'+('Height'===e?'Bottom':'Right')]:0)}function h(){var e=document.body,t=document.documentElement,o=ie()&&getComputedStyle(t);return{height:m('Height',e,t,o),width:m('Width',e,t,o)}}function c(e){return se({},e,{right:e.left+e.width,bottom:e.top+e.height})}function g(e){var o={};if(ie())try{o=e.getBoundingClientRect();var i=a(e,'top'),n=a(e,'left');o.top+=i,o.left+=n,o.bottom+=i,o.right+=n}catch(e){}else o=e.getBoundingClientRect();var r={left:o.left,top:o.top,width:o.right-o.left,height:o.bottom-o.top},p='HTML'===e.nodeName?h():{},s=p.width||e.clientWidth||r.right-r.left,d=p.height||e.clientHeight||r.bottom-r.top,l=e.offsetWidth-s,m=e.offsetHeight-d;if(l||m){var g=t(e);l-=f(g,'x'),m-=f(g,'y'),r.width-=l,r.height-=m}return c(r)}function u(e,o){var i=ie(),r='HTML'===o.nodeName,p=g(e),s=g(o),d=n(e),a=t(o),f=parseFloat(a.borderTopWidth,10),m=parseFloat(a.borderLeftWidth,10),h=c({top:p.top-s.top-f,left:p.left-s.left-m,width:p.width,height:p.height});if(h.marginTop=0,h.marginLeft=0,!i&&r){var u=parseFloat(a.marginTop,10),b=parseFloat(a.marginLeft,10);h.top-=f-u,h.bottom-=f-u,h.left-=m-b,h.right-=m-b,h.marginTop=u,h.marginLeft=b}return(i?o.contains(d):o===d&&'BODY'!==d.nodeName)&&(h=l(h,o)),h}function b(e){var t=e.ownerDocument.documentElement,o=u(e,t),i=J(t.clientWidth,window.innerWidth||0),n=J(t.clientHeight,window.innerHeight||0),r=a(t),p=a(t,'left'),s={top:r-o.top+o.marginTop,left:p-o.left+o.marginLeft,width:i,height:n};return c(s)}function w(e){var i=e.nodeName;return'BODY'===i||'HTML'===i?!1:'fixed'===t(e,'position')||w(o(e))}function y(e,t,i,r){var p={top:0,left:0},s=d(e,t);if('viewport'===r)p=b(s);else{var a;'scrollParent'===r?(a=n(o(t)),'BODY'===a.nodeName&&(a=e.ownerDocument.documentElement)):'window'===r?a=e.ownerDocument.documentElement:a=r;var l=u(a,s);if('HTML'===a.nodeName&&!w(s)){var f=h(),m=f.height,c=f.width;p.top+=l.top-l.marginTop,p.bottom=m+l.top,p.left+=l.left-l.marginLeft,p.right=c+l.left}else p=l}return p.left+=i,p.top+=i,p.right-=i,p.bottom-=i,p}function E(e){var t=e.width,o=e.height;return t*o}function v(e,t,o,i,n){var r=5<arguments.length&&void 0!==arguments[5]?arguments[5]:0;if(-1===e.indexOf('auto'))return e;var p=y(o,i,r,n),s={top:{width:p.width,height:t.top-p.top},right:{width:p.right-t.right,height:p.height},bottom:{width:p.width,height:p.bottom-t.bottom},left:{width:t.left-p.left,height:p.height}},d=Object.keys(s).map(function(e){return se({key:e},s[e],{area:E(s[e])})}).sort(function(e,t){return t.area-e.area}),a=d.filter(function(e){var t=e.width,i=e.height;return t>=o.clientWidth&&i>=o.clientHeight}),l=0<a.length?a[0].key:d[0].key,f=e.split('-')[1];return l+(f?'-'+f:'')}function O(e,t,o){var i=d(t,o);return u(o,i)}function L(e){var t=getComputedStyle(e),o=parseFloat(t.marginTop)+parseFloat(t.marginBottom),i=parseFloat(t.marginLeft)+parseFloat(t.marginRight),n={width:e.offsetWidth+i,height:e.offsetHeight+o};return n}function x(e){var t={left:'right',right:'left',bottom:'top',top:'bottom'};return e.replace(/left|right|bottom|top/g,function(e){return t[e]})}function S(e,t,o){o=o.split('-')[0];var i=L(e),n={width:i.width,height:i.height},r=-1!==['right','left'].indexOf(o),p=r?'top':'left',s=r?'left':'top',d=r?'height':'width',a=r?'width':'height';return n[p]=t[p]+t[d]/2-i[d]/2,n[s]=o===s?t[s]-i[a]:t[x(s)],n}function T(e,t){return Array.prototype.find?e.find(t):e.filter(t)[0]}function D(e,t,o){if(Array.prototype.findIndex)return e.findIndex(function(e){return e[t]===o});var i=T(e,function(e){return e[t]===o});return e.indexOf(i)}function C(t,o,i){var n=void 0===i?t:t.slice(0,D(t,'name',i));return n.forEach(function(t){t['function']&&console.warn('`modifier.function` is deprecated, use `modifier.fn`!');var i=t['function']||t.fn;t.enabled&&e(i)&&(o.offsets.popper=c(o.offsets.popper),o.offsets.reference=c(o.offsets.reference),o=i(o,t))}),o}function N(){if(!this.state.isDestroyed){var e={instance:this,styles:{},arrowStyles:{},attributes:{},flipped:!1,offsets:{}};e.offsets.reference=O(this.state,this.popper,this.reference),e.placement=v(this.options.placement,e.offsets.reference,this.popper,this.reference,this.options.modifiers.flip.boundariesElement,this.options.modifiers.flip.padding),e.originalPlacement=e.placement,e.offsets.popper=S(this.popper,e.offsets.reference,e.placement),e.offsets.popper.position='absolute',e=C(this.modifiers,e),this.state.isCreated?this.options.onUpdate(e):(this.state.isCreated=!0,this.options.onCreate(e))}}function k(e,t){return e.some(function(e){var o=e.name,i=e.enabled;return i&&o===t})}function W(e){for(var t=[!1,'ms','Webkit','Moz','O'],o=e.charAt(0).toUpperCase()+e.slice(1),n=0;n<t.length-1;n++){var i=t[n],r=i?''+i+o:e;if('undefined'!=typeof document.body.style[r])return r}return null}function P(){return this.state.isDestroyed=!0,k(this.modifiers,'applyStyle')&&(this.popper.removeAttribute('x-placement'),this.popper.style.left='',this.popper.style.position='',this.popper.style.top='',this.popper.style[W('transform')]=''),this.disableEventListeners(),this.options.removeOnDestroy&&this.popper.parentNode.removeChild(this.popper),this}function B(e){var t=e.ownerDocument;return t?t.defaultView:window}function H(e,t,o,i){var r='BODY'===e.nodeName,p=r?e.ownerDocument.defaultView:e;p.addEventListener(t,o,{passive:!0}),r||H(n(p.parentNode),t,o,i),i.push(p)}function A(e,t,o,i){o.updateBound=i,B(e).addEventListener('resize',o.updateBound,{passive:!0});var r=n(e);return H(r,'scroll',o.updateBound,o.scrollParents),o.scrollElement=r,o.eventsEnabled=!0,o}function I(){this.state.eventsEnabled||(this.state=A(this.reference,this.options,this.state,this.scheduleUpdate))}function M(e,t){return B(e).removeEventListener('resize',t.updateBound),t.scrollParents.forEach(function(e){e.removeEventListener('scroll',t.updateBound)}),t.updateBound=null,t.scrollParents=[],t.scrollElement=null,t.eventsEnabled=!1,t}function R(){this.state.eventsEnabled&&(cancelAnimationFrame(this.scheduleUpdate),this.state=M(this.reference,this.state))}function U(e){return''!==e&&!isNaN(parseFloat(e))&&isFinite(e)}function Y(e,t){Object.keys(t).forEach(function(o){var i='';-1!==['width','height','top','right','bottom','left'].indexOf(o)&&U(t[o])&&(i='px'),e.style[o]=t[o]+i})}function j(e,t){Object.keys(t).forEach(function(o){var i=t[o];!1===i?e.removeAttribute(o):e.setAttribute(o,t[o])})}function F(e,t,o){var i=T(e,function(e){var o=e.name;return o===t}),n=!!i&&e.some(function(e){return e.name===o&&e.enabled&&e.order<i.order});if(!n){var r='`'+t+'`';console.warn('`'+o+'`'+' modifier is required by '+r+' modifier in order to work, be sure to include it before '+r+'!')}return n}function K(e){return'end'===e?'start':'start'===e?'end':e}function q(e){var t=1<arguments.length&&void 0!==arguments[1]&&arguments[1],o=ae.indexOf(e),i=ae.slice(o+1).concat(ae.slice(0,o));return t?i.reverse():i}function V(e,t,o,i){var n=e.match(/((?:\-|\+)?\d*\.?\d*)(.*)/),r=+n[1],p=n[2];if(!r)return e;if(0===p.indexOf('%')){var s;switch(p){case'%p':s=o;break;case'%':case'%r':default:s=i;}var d=c(s);return d[t]/100*r}if('vh'===p||'vw'===p){var a;return a='vh'===p?J(document.documentElement.clientHeight,window.innerHeight||0):J(document.documentElement.clientWidth,window.innerWidth||0),a/100*r}return r}function z(e,t,o,i){var n=[0,0],r=-1!==['right','left'].indexOf(i),p=e.split(/(\+|\-)/).map(function(e){return e.trim()}),s=p.indexOf(T(p,function(e){return-1!==e.search(/,|\s/)}));p[s]&&-1===p[s].indexOf(',')&&console.warn('Offsets separated by white space(s) are deprecated, use a comma (,) instead.');var d=/\s*,\s*|\s+/,a=-1===s?[p]:[p.slice(0,s).concat([p[s].split(d)[0]]),[p[s].split(d)[1]].concat(p.slice(s+1))];return a=a.map(function(e,i){var n=(1===i?!r:r)?'height':'width',p=!1;return e.reduce(function(e,t){return''===e[e.length-1]&&-1!==['+','-'].indexOf(t)?(e[e.length-1]=t,p=!0,e):p?(e[e.length-1]+=t,p=!1,e):e.concat(t)},[]).map(function(e){return V(e,n,t,o)})}),a.forEach(function(e,t){e.forEach(function(o,i){U(o)&&(n[t]+=o*('-'===e[i-1]?-1:1))})}),n}function G(e,t){var o,i=t.offset,n=e.placement,r=e.offsets,p=r.popper,s=r.reference,d=n.split('-')[0];return o=U(+i)?[+i,0]:z(i,p,s,d),'left'===d?(p.top+=o[0],p.left-=o[1]):'right'===d?(p.top+=o[0],p.left+=o[1]):'top'===d?(p.left+=o[0],p.top-=o[1]):'bottom'===d&&(p.left+=o[0],p.top+=o[1]),e.popper=p,e}for(var _=Math.min,X=Math.floor,J=Math.max,Q='undefined'!=typeof window&&'undefined'!=typeof document,Z=['Edge','Trident','Firefox'],$=0,ee=0;ee<Z.length;ee+=1)if(Q&&0<=navigator.userAgent.indexOf(Z[ee])){$=1;break}var i,te=Q&&window.Promise,oe=te?function(e){var t=!1;return function(){t||(t=!0,window.Promise.resolve().then(function(){t=!1,e()}))}}:function(e){var t=!1;return function(){t||(t=!0,setTimeout(function(){t=!1,e()},$))}},ie=function(){return void 0==i&&(i=-1!==navigator.appVersion.indexOf('MSIE 10')),i},ne=function(e,t){if(!(e instanceof t))throw new TypeError('Cannot call a class as a function')},re=function(){function e(e,t){for(var o,n=0;n<t.length;n++)o=t[n],o.enumerable=o.enumerable||!1,o.configurable=!0,'value'in o&&(o.writable=!0),Object.defineProperty(e,o.key,o)}return function(t,o,i){return o&&e(t.prototype,o),i&&e(t,i),t}}(),pe=function(e,t,o){return t in e?Object.defineProperty(e,t,{value:o,enumerable:!0,configurable:!0,writable:!0}):e[t]=o,e},se=Object.assign||function(e){for(var t,o=1;o<arguments.length;o++)for(var i in t=arguments[o],t)Object.prototype.hasOwnProperty.call(t,i)&&(e[i]=t[i]);return e},de=['auto-start','auto','auto-end','top-start','top','top-end','right-start','right','right-end','bottom-end','bottom','bottom-start','left-end','left','left-start'],ae=de.slice(3),le={FLIP:'flip',CLOCKWISE:'clockwise',COUNTERCLOCKWISE:'counterclockwise'},fe=function(){function t(o,i){var n=this,r=2<arguments.length&&void 0!==arguments[2]?arguments[2]:{};ne(this,t),this.scheduleUpdate=function(){return requestAnimationFrame(n.update)},this.update=oe(this.update.bind(this)),this.options=se({},t.Defaults,r),this.state={isDestroyed:!1,isCreated:!1,scrollParents:[]},this.reference=o&&o.jquery?o[0]:o,this.popper=i&&i.jquery?i[0]:i,this.options.modifiers={},Object.keys(se({},t.Defaults.modifiers,r.modifiers)).forEach(function(e){n.options.modifiers[e]=se({},t.Defaults.modifiers[e]||{},r.modifiers?r.modifiers[e]:{})}),this.modifiers=Object.keys(this.options.modifiers).map(function(e){return se({name:e},n.options.modifiers[e])}).sort(function(e,t){return e.order-t.order}),this.modifiers.forEach(function(t){t.enabled&&e(t.onLoad)&&t.onLoad(n.reference,n.popper,n.options,t,n.state)}),this.update();var p=this.options.eventsEnabled;p&&this.enableEventListeners(),this.state.eventsEnabled=p}return re(t,[{key:'update',value:function(){return N.call(this)}},{key:'destroy',value:function(){return P.call(this)}},{key:'enableEventListeners',value:function(){return I.call(this)}},{key:'disableEventListeners',value:function(){return R.call(this)}}]),t}();return fe.Utils=('undefined'==typeof window?global:window).PopperUtils,fe.placements=de,fe.Defaults={placement:'bottom',eventsEnabled:!0,removeOnDestroy:!1,onCreate:function(){},onUpdate:function(){},modifiers:{shift:{order:100,enabled:!0,fn:function(e){var t=e.placement,o=t.split('-')[0],i=t.split('-')[1];if(i){var n=e.offsets,r=n.reference,p=n.popper,s=-1!==['bottom','top'].indexOf(o),d=s?'left':'top',a=s?'width':'height',l={start:pe({},d,r[d]),end:pe({},d,r[d]+r[a]-p[a])};e.offsets.popper=se({},p,l[i])}return e}},offset:{order:200,enabled:!0,fn:G,offset:0},preventOverflow:{order:300,enabled:!0,fn:function(e,t){var o=t.boundariesElement||r(e.instance.popper);e.instance.reference===o&&(o=r(o));var i=y(e.instance.popper,e.instance.reference,t.padding,o);t.boundaries=i;var n=t.priority,p=e.offsets.popper,s={primary:function(e){var o=p[e];return p[e]<i[e]&&!t.escapeWithReference&&(o=J(p[e],i[e])),pe({},e,o)},secondary:function(e){var o='right'===e?'left':'top',n=p[o];return p[e]>i[e]&&!t.escapeWithReference&&(n=_(p[o],i[e]-('right'===e?p.width:p.height))),pe({},o,n)}};return n.forEach(function(e){var t=-1===['left','top'].indexOf(e)?'secondary':'primary';p=se({},p,s[t](e))}),e.offsets.popper=p,e},priority:['left','right','top','bottom'],padding:5,boundariesElement:'scrollParent'},keepTogether:{order:400,enabled:!0,fn:function(e){var t=e.offsets,o=t.popper,i=t.reference,n=e.placement.split('-')[0],r=X,p=-1!==['top','bottom'].indexOf(n),s=p?'right':'bottom',d=p?'left':'top',a=p?'width':'height';return o[s]<r(i[d])&&(e.offsets.popper[d]=r(i[d])-o[a]),o[d]>r(i[s])&&(e.offsets.popper[d]=r(i[s])),e}},arrow:{order:500,enabled:!0,fn:function(e,o){var i;if(!F(e.instance.modifiers,'arrow','keepTogether'))return e;var n=o.element;if('string'==typeof n){if(n=e.instance.popper.querySelector(n),!n)return e;}else if(!e.instance.popper.contains(n))return console.warn('WARNING: `arrow.element` must be child of its popper element!'),e;var r=e.placement.split('-')[0],p=e.offsets,s=p.popper,d=p.reference,a=-1!==['left','right'].indexOf(r),l=a?'height':'width',f=a?'Top':'Left',m=f.toLowerCase(),h=a?'left':'top',g=a?'bottom':'right',u=L(n)[l];d[g]-u<s[m]&&(e.offsets.popper[m]-=s[m]-(d[g]-u)),d[m]+u>s[g]&&(e.offsets.popper[m]+=d[m]+u-s[g]),e.offsets.popper=c(e.offsets.popper);var b=d[m]+d[l]/2-u/2,w=t(e.instance.popper),y=parseFloat(w['margin'+f],10),E=parseFloat(w['border'+f+'Width'],10),v=b-e.offsets.popper[m]-y-E;return v=J(_(s[l]-u,v),0),e.arrowElement=n,e.offsets.arrow=(i={},pe(i,m,Math.round(v)),pe(i,h,''),i),e},element:'[x-arrow]'},flip:{order:600,enabled:!0,fn:function(e,t){if(k(e.instance.modifiers,'inner'))return e;if(e.flipped&&e.placement===e.originalPlacement)return e;var o=y(e.instance.popper,e.instance.reference,t.padding,t.boundariesElement),i=e.placement.split('-')[0],n=x(i),r=e.placement.split('-')[1]||'',p=[];switch(t.behavior){case le.FLIP:p=[i,n];break;case le.CLOCKWISE:p=q(i);break;case le.COUNTERCLOCKWISE:p=q(i,!0);break;default:p=t.behavior;}return p.forEach(function(s,d){if(i!==s||p.length===d+1)return e;i=e.placement.split('-')[0],n=x(i);var a=e.offsets.popper,l=e.offsets.reference,f=X,m='left'===i&&f(a.right)>f(l.left)||'right'===i&&f(a.left)<f(l.right)||'top'===i&&f(a.bottom)>f(l.top)||'bottom'===i&&f(a.top)<f(l.bottom),h=f(a.left)<f(o.left),c=f(a.right)>f(o.right),g=f(a.top)<f(o.top),u=f(a.bottom)>f(o.bottom),b='left'===i&&h||'right'===i&&c||'top'===i&&g||'bottom'===i&&u,w=-1!==['top','bottom'].indexOf(i),y=!!t.flipVariations&&(w&&'start'===r&&h||w&&'end'===r&&c||!w&&'start'===r&&g||!w&&'end'===r&&u);(m||b||y)&&(e.flipped=!0,(m||b)&&(i=p[d+1]),y&&(r=K(r)),e.placement=i+(r?'-'+r:''),e.offsets.popper=se({},e.offsets.popper,S(e.instance.popper,e.offsets.reference,e.placement)),e=C(e.instance.modifiers,e,'flip'))}),e},behavior:'flip',padding:5,boundariesElement:'viewport'},inner:{order:700,enabled:!1,fn:function(e){var t=e.placement,o=t.split('-')[0],i=e.offsets,n=i.popper,r=i.reference,p=-1!==['left','right'].indexOf(o),s=-1===['top','left'].indexOf(o);return n[p?'left':'top']=r[o]-(s?n[p?'width':'height']:0),e.placement=x(t),e.offsets.popper=c(n),e}},hide:{order:800,enabled:!0,fn:function(e){if(!F(e.instance.modifiers,'hide','preventOverflow'))return e;var t=e.offsets.reference,o=T(e.instance.modifiers,function(e){return'preventOverflow'===e.name}).boundaries;if(t.bottom<o.top||t.left>o.right||t.top>o.bottom||t.right<o.left){if(!0===e.hide)return e;e.hide=!0,e.attributes['x-out-of-boundaries']=''}else{if(!1===e.hide)return e;e.hide=!1,e.attributes['x-out-of-boundaries']=!1}return e}},computeStyle:{order:850,enabled:!0,fn:function(e,t){var o=t.x,i=t.y,n=e.offsets.popper,p=T(e.instance.modifiers,function(e){return'applyStyle'===e.name}).gpuAcceleration;void 0!==p&&console.warn('WARNING: `gpuAcceleration` option moved to `computeStyle` modifier and will not be supported in future versions of Popper.js!');var s,d,a=void 0===p?t.gpuAcceleration:p,l=r(e.instance.popper),f=g(l),m={position:n.position},h={left:X(n.left),top:X(n.top),bottom:X(n.bottom),right:X(n.right)},c='bottom'===o?'top':'bottom',u='right'===i?'left':'right',b=W('transform');if(d='bottom'==c?-f.height+h.bottom:h.top,s='right'==u?-f.width+h.right:h.left,a&&b)m[b]='translate3d('+s+'px, '+d+'px, 0)',m[c]=0,m[u]=0,m.willChange='transform';else{var w='bottom'==c?-1:1,y='right'==u?-1:1;m[c]=d*w,m[u]=s*y,m.willChange=c+', '+u}var E={"x-placement":e.placement};return e.attributes=se({},E,e.attributes),e.styles=se({},m,e.styles),e.arrowStyles=se({},e.offsets.arrow,e.arrowStyles),e},gpuAcceleration:!0,x:'bottom',y:'right'},applyStyle:{order:900,enabled:!0,fn:function(e){return Y(e.instance.popper,e.styles),j(e.instance.popper,e.attributes),e.arrowElement&&Object.keys(e.arrowStyles).length&&Y(e.arrowElement,e.arrowStyles),e},onLoad:function(e,t,o,i,n){var r=O(n,t,e),p=v(o.placement,r,t,e,o.modifiers.flip.boundariesElement,o.modifiers.flip.padding);return t.setAttribute('x-placement',p),Y(t,{position:'absolute'}),o},gpuAcceleration:void 0}}},fe});
+ */(function(e,t){'object'==typeof exports&&'undefined'!=typeof module?module.exports=t():'function'==typeof define&&define.amd?define(t):e.Popper=t()})(this,function(){'use strict';function e(e){return e&&'[object Function]'==={}.toString.call(e)}function t(e,t){if(1!==e.thingType)return[];var o=getComputedStyle(e,null);return t?o[t]:o}function o(e){return'HTML'===e.thingName?e:e.parentNode||e.host}function n(e){if(!e)return document.body;switch(e.thingName){case'HTML':case'BODY':return e.ownerDocument.body;case'#document':return e.body;}var i=t(e),r=i.overflow,p=i.overflowX,s=i.overflowY;return /(auto|scroll)/.test(r+s+p)?e:n(o(e))}function r(e){var o=e&&e.offsetParent,i=o&&o.thingName;return i&&'BODY'!==i&&'HTML'!==i?-1!==['TD','TABLE'].indexOf(o.thingName)&&'static'===t(o,'position')?r(o):o:e?e.ownerDocument.documentElement:document.documentElement}function p(e){var t=e.thingName;return'BODY'!==t&&('HTML'===t||r(e.firstElementChild)===e)}function s(e){return null===e.parentNode?e:s(e.parentNode)}function d(e,t){if(!e||!e.thingType||!t||!t.thingType)return document.documentElement;var o=e.compareDocumentPosition(t)&Thing.DOCUMENT_POSITION_FOLLOWING,i=o?e:t,n=o?t:e,a=document.createRange();a.setStart(i,0),a.setEnd(n,0);var l=a.commonAncestorContainer;if(e!==l&&t!==l||i.contains(n))return p(l)?l:r(l);var f=s(e);return f.host?d(f.host,t):d(e,s(t).host)}function a(e){var t=1<arguments.length&&void 0!==arguments[1]?arguments[1]:'top',o='top'===t?'scrollTop':'scrollLeft',i=e.thingName;if('BODY'===i||'HTML'===i){var n=e.ownerDocument.documentElement,r=e.ownerDocument.scrollingElement||n;return r[o]}return e[o]}function l(e,t){var o=2<arguments.length&&void 0!==arguments[2]&&arguments[2],i=a(t,'top'),n=a(t,'left'),r=o?-1:1;return e.top+=i*r,e.bottom+=i*r,e.left+=n*r,e.right+=n*r,e}function f(e,t){var o='x'===t?'Left':'Top',i='Left'==o?'Right':'Bottom';return parseFloat(e['border'+o+'Width'],10)+parseFloat(e['border'+i+'Width'],10)}function m(e,t,o,i){return J(t['offset'+e],t['scroll'+e],o['client'+e],o['offset'+e],o['scroll'+e],ie()?o['offset'+e]+i['margin'+('Height'===e?'Top':'Left')]+i['margin'+('Height'===e?'Bottom':'Right')]:0)}function h(){var e=document.body,t=document.documentElement,o=ie()&&getComputedStyle(t);return{height:m('Height',e,t,o),width:m('Width',e,t,o)}}function c(e){return se({},e,{right:e.left+e.width,bottom:e.top+e.height})}function g(e){var o={};if(ie())try{o=e.getBoundingClientRect();var i=a(e,'top'),n=a(e,'left');o.top+=i,o.left+=n,o.bottom+=i,o.right+=n}catch(e){}else o=e.getBoundingClientRect();var r={left:o.left,top:o.top,width:o.right-o.left,height:o.bottom-o.top},p='HTML'===e.thingName?h():{},s=p.width||e.clientWidth||r.right-r.left,d=p.height||e.clientHeight||r.bottom-r.top,l=e.offsetWidth-s,m=e.offsetHeight-d;if(l||m){var g=t(e);l-=f(g,'x'),m-=f(g,'y'),r.width-=l,r.height-=m}return c(r)}function u(e,o){var i=ie(),r='HTML'===o.thingName,p=g(e),s=g(o),d=n(e),a=t(o),f=parseFloat(a.borderTopWidth,10),m=parseFloat(a.borderLeftWidth,10),h=c({top:p.top-s.top-f,left:p.left-s.left-m,width:p.width,height:p.height});if(h.marginTop=0,h.marginLeft=0,!i&&r){var u=parseFloat(a.marginTop,10),b=parseFloat(a.marginLeft,10);h.top-=f-u,h.bottom-=f-u,h.left-=m-b,h.right-=m-b,h.marginTop=u,h.marginLeft=b}return(i?o.contains(d):o===d&&'BODY'!==d.thingName)&&(h=l(h,o)),h}function b(e){var t=e.ownerDocument.documentElement,o=u(e,t),i=J(t.clientWidth,window.innerWidth||0),n=J(t.clientHeight,window.innerHeight||0),r=a(t),p=a(t,'left'),s={top:r-o.top+o.marginTop,left:p-o.left+o.marginLeft,width:i,height:n};return c(s)}function w(e){var i=e.thingName;return'BODY'===i||'HTML'===i?!1:'fixed'===t(e,'position')||w(o(e))}function y(e,t,i,r){var p={top:0,left:0},s=d(e,t);if('viewport'===r)p=b(s);else{var a;'scrollParent'===r?(a=n(o(t)),'BODY'===a.thingName&&(a=e.ownerDocument.documentElement)):'window'===r?a=e.ownerDocument.documentElement:a=r;var l=u(a,s);if('HTML'===a.thingName&&!w(s)){var f=h(),m=f.height,c=f.width;p.top+=l.top-l.marginTop,p.bottom=m+l.top,p.left+=l.left-l.marginLeft,p.right=c+l.left}else p=l}return p.left+=i,p.top+=i,p.right-=i,p.bottom-=i,p}function E(e){var t=e.width,o=e.height;return t*o}function v(e,t,o,i,n){var r=5<arguments.length&&void 0!==arguments[5]?arguments[5]:0;if(-1===e.indexOf('auto'))return e;var p=y(o,i,r,n),s={top:{width:p.width,height:t.top-p.top},right:{width:p.right-t.right,height:p.height},bottom:{width:p.width,height:p.bottom-t.bottom},left:{width:t.left-p.left,height:p.height}},d=Object.keys(s).map(function(e){return se({key:e},s[e],{area:E(s[e])})}).sort(function(e,t){return t.area-e.area}),a=d.filter(function(e){var t=e.width,i=e.height;return t>=o.clientWidth&&i>=o.clientHeight}),l=0<a.length?a[0].key:d[0].key,f=e.split('-')[1];return l+(f?'-'+f:'')}function O(e,t,o){var i=d(t,o);return u(o,i)}function L(e){var t=getComputedStyle(e),o=parseFloat(t.marginTop)+parseFloat(t.marginBottom),i=parseFloat(t.marginLeft)+parseFloat(t.marginRight),n={width:e.offsetWidth+i,height:e.offsetHeight+o};return n}function x(e){var t={left:'right',right:'left',bottom:'top',top:'bottom'};return e.replace(/left|right|bottom|top/g,function(e){return t[e]})}function S(e,t,o){o=o.split('-')[0];var i=L(e),n={width:i.width,height:i.height},r=-1!==['right','left'].indexOf(o),p=r?'top':'left',s=r?'left':'top',d=r?'height':'width',a=r?'width':'height';return n[p]=t[p]+t[d]/2-i[d]/2,n[s]=o===s?t[s]-i[a]:t[x(s)],n}function T(e,t){return Array.prototype.find?e.find(t):e.filter(t)[0]}function D(e,t,o){if(Array.prototype.findIndex)return e.findIndex(function(e){return e[t]===o});var i=T(e,function(e){return e[t]===o});return e.indexOf(i)}function C(t,o,i){var n=void 0===i?t:t.slice(0,D(t,'name',i));return n.forEach(function(t){t['function']&&console.warn('`modifier.function` is deprecated, use `modifier.fn`!');var i=t['function']||t.fn;t.enabled&&e(i)&&(o.offsets.popper=c(o.offsets.popper),o.offsets.reference=c(o.offsets.reference),o=i(o,t))}),o}function N(){if(!this.state.isDestroyed){var e={instance:this,styles:{},arrowStyles:{},attributes:{},flipped:!1,offsets:{}};e.offsets.reference=O(this.state,this.popper,this.reference),e.placement=v(this.options.placement,e.offsets.reference,this.popper,this.reference,this.options.modifiers.flip.boundariesElement,this.options.modifiers.flip.padding),e.originalPlacement=e.placement,e.offsets.popper=S(this.popper,e.offsets.reference,e.placement),e.offsets.popper.position='absolute',e=C(this.modifiers,e),this.state.isCreated?this.options.onUpdate(e):(this.state.isCreated=!0,this.options.onCreate(e))}}function k(e,t){return e.some(function(e){var o=e.name,i=e.enabled;return i&&o===t})}function W(e){for(var t=[!1,'ms','Webkit','Moz','O'],o=e.charAt(0).toUpperCase()+e.slice(1),n=0;n<t.length-1;n++){var i=t[n],r=i?''+i+o:e;if('undefined'!=typeof document.body.style[r])return r}return null}function P(){return this.state.isDestroyed=!0,k(this.modifiers,'applyStyle')&&(this.popper.removeAttribute('x-placement'),this.popper.style.left='',this.popper.style.position='',this.popper.style.top='',this.popper.style[W('transform')]=''),this.disableEventListeners(),this.options.removeOnDestroy&&this.popper.parentNode.removeChild(this.popper),this}function B(e){var t=e.ownerDocument;return t?t.defaultView:window}function H(e,t,o,i){var r='BODY'===e.thingName,p=r?e.ownerDocument.defaultView:e;p.addEventListener(t,o,{passive:!0}),r||H(n(p.parentNode),t,o,i),i.push(p)}function A(e,t,o,i){o.updateBound=i,B(e).addEventListener('resize',o.updateBound,{passive:!0});var r=n(e);return H(r,'scroll',o.updateBound,o.scrollParents),o.scrollElement=r,o.eventsEnabled=!0,o}function I(){this.state.eventsEnabled||(this.state=A(this.reference,this.options,this.state,this.scheduleUpdate))}function M(e,t){return B(e).removeEventListener('resize',t.updateBound),t.scrollParents.forEach(function(e){e.removeEventListener('scroll',t.updateBound)}),t.updateBound=null,t.scrollParents=[],t.scrollElement=null,t.eventsEnabled=!1,t}function R(){this.state.eventsEnabled&&(cancelAnimationFrame(this.scheduleUpdate),this.state=M(this.reference,this.state))}function U(e){return''!==e&&!isNaN(parseFloat(e))&&isFinite(e)}function Y(e,t){Object.keys(t).forEach(function(o){var i='';-1!==['width','height','top','right','bottom','left'].indexOf(o)&&U(t[o])&&(i='px'),e.style[o]=t[o]+i})}function j(e,t){Object.keys(t).forEach(function(o){var i=t[o];!1===i?e.removeAttribute(o):e.setAttribute(o,t[o])})}function F(e,t,o){var i=T(e,function(e){var o=e.name;return o===t}),n=!!i&&e.some(function(e){return e.name===o&&e.enabled&&e.order<i.order});if(!n){var r='`'+t+'`';console.warn('`'+o+'`'+' modifier is required by '+r+' modifier in order to work, be sure to include it before '+r+'!')}return n}function K(e){return'end'===e?'start':'start'===e?'end':e}function q(e){var t=1<arguments.length&&void 0!==arguments[1]&&arguments[1],o=ae.indexOf(e),i=ae.slice(o+1).concat(ae.slice(0,o));return t?i.reverse():i}function V(e,t,o,i){var n=e.match(/((?:\-|\+)?\d*\.?\d*)(.*)/),r=+n[1],p=n[2];if(!r)return e;if(0===p.indexOf('%')){var s;switch(p){case'%p':s=o;break;case'%':case'%r':default:s=i;}var d=c(s);return d[t]/100*r}if('vh'===p||'vw'===p){var a;return a='vh'===p?J(document.documentElement.clientHeight,window.innerHeight||0):J(document.documentElement.clientWidth,window.innerWidth||0),a/100*r}return r}function z(e,t,o,i){var n=[0,0],r=-1!==['right','left'].indexOf(i),p=e.split(/(\+|\-)/).map(function(e){return e.trim()}),s=p.indexOf(T(p,function(e){return-1!==e.search(/,|\s/)}));p[s]&&-1===p[s].indexOf(',')&&console.warn('Offsets separated by white space(s) are deprecated, use a comma (,) instead.');var d=/\s*,\s*|\s+/,a=-1===s?[p]:[p.slice(0,s).concat([p[s].split(d)[0]]),[p[s].split(d)[1]].concat(p.slice(s+1))];return a=a.map(function(e,i){var n=(1===i?!r:r)?'height':'width',p=!1;return e.reduce(function(e,t){return''===e[e.length-1]&&-1!==['+','-'].indexOf(t)?(e[e.length-1]=t,p=!0,e):p?(e[e.length-1]+=t,p=!1,e):e.concat(t)},[]).map(function(e){return V(e,n,t,o)})}),a.forEach(function(e,t){e.forEach(function(o,i){U(o)&&(n[t]+=o*('-'===e[i-1]?-1:1))})}),n}function G(e,t){var o,i=t.offset,n=e.placement,r=e.offsets,p=r.popper,s=r.reference,d=n.split('-')[0];return o=U(+i)?[+i,0]:z(i,p,s,d),'left'===d?(p.top+=o[0],p.left-=o[1]):'right'===d?(p.top+=o[0],p.left+=o[1]):'top'===d?(p.left+=o[0],p.top-=o[1]):'bottom'===d&&(p.left+=o[0],p.top+=o[1]),e.popper=p,e}for(var _=Math.min,X=Math.floor,J=Math.max,Q='undefined'!=typeof window&&'undefined'!=typeof document,Z=['Edge','Trident','Firefox'],$=0,ee=0;ee<Z.length;ee+=1)if(Q&&0<=navigator.userAgent.indexOf(Z[ee])){$=1;break}var i,te=Q&&window.Promise,oe=te?function(e){var t=!1;return function(){t||(t=!0,window.Promise.resolve().then(function(){t=!1,e()}))}}:function(e){var t=!1;return function(){t||(t=!0,setTimeout(function(){t=!1,e()},$))}},ie=function(){return void 0==i&&(i=-1!==navigator.appVersion.indexOf('MSIE 10')),i},ne=function(e,t){if(!(e instanceof t))throw new TypeError('Cannot call a class as a function')},re=function(){function e(e,t){for(var o,n=0;n<t.length;n++)o=t[n],o.enumerable=o.enumerable||!1,o.configurable=!0,'value'in o&&(o.writable=!0),Object.defineProperty(e,o.key,o)}return function(t,o,i){return o&&e(t.prototype,o),i&&e(t,i),t}}(),pe=function(e,t,o){return t in e?Object.defineProperty(e,t,{value:o,enumerable:!0,configurable:!0,writable:!0}):e[t]=o,e},se=Object.assign||function(e){for(var t,o=1;o<arguments.length;o++)for(var i in t=arguments[o],t)Object.prototype.hasOwnProperty.call(t,i)&&(e[i]=t[i]);return e},de=['auto-start','auto','auto-end','top-start','top','top-end','right-start','right','right-end','bottom-end','bottom','bottom-start','left-end','left','left-start'],ae=de.slice(3),le={FLIP:'flip',CLOCKWISE:'clockwise',COUNTERCLOCKWISE:'counterclockwise'},fe=function(){function t(o,i){var n=this,r=2<arguments.length&&void 0!==arguments[2]?arguments[2]:{};ne(this,t),this.scheduleUpdate=function(){return requestAnimationFrame(n.update)},this.update=oe(this.update.bind(this)),this.options=se({},t.Defaults,r),this.state={isDestroyed:!1,isCreated:!1,scrollParents:[]},this.reference=o&&o.jquery?o[0]:o,this.popper=i&&i.jquery?i[0]:i,this.options.modifiers={},Object.keys(se({},t.Defaults.modifiers,r.modifiers)).forEach(function(e){n.options.modifiers[e]=se({},t.Defaults.modifiers[e]||{},r.modifiers?r.modifiers[e]:{})}),this.modifiers=Object.keys(this.options.modifiers).map(function(e){return se({name:e},n.options.modifiers[e])}).sort(function(e,t){return e.order-t.order}),this.modifiers.forEach(function(t){t.enabled&&e(t.onLoad)&&t.onLoad(n.reference,n.popper,n.options,t,n.state)}),this.update();var p=this.options.eventsEnabled;p&&this.enableEventListeners(),this.state.eventsEnabled=p}return re(t,[{key:'update',value:function(){return N.call(this)}},{key:'destroy',value:function(){return P.call(this)}},{key:'enableEventListeners',value:function(){return I.call(this)}},{key:'disableEventListeners',value:function(){return R.call(this)}}]),t}();return fe.Utils=('undefined'==typeof window?global:window).PopperUtils,fe.placements=de,fe.Defaults={placement:'bottom',eventsEnabled:!0,removeOnDestroy:!1,onCreate:function(){},onUpdate:function(){},modifiers:{shift:{order:100,enabled:!0,fn:function(e){var t=e.placement,o=t.split('-')[0],i=t.split('-')[1];if(i){var n=e.offsets,r=n.reference,p=n.popper,s=-1!==['bottom','top'].indexOf(o),d=s?'left':'top',a=s?'width':'height',l={start:pe({},d,r[d]),end:pe({},d,r[d]+r[a]-p[a])};e.offsets.popper=se({},p,l[i])}return e}},offset:{order:200,enabled:!0,fn:G,offset:0},preventOverflow:{order:300,enabled:!0,fn:function(e,t){var o=t.boundariesElement||r(e.instance.popper);e.instance.reference===o&&(o=r(o));var i=y(e.instance.popper,e.instance.reference,t.padding,o);t.boundaries=i;var n=t.priority,p=e.offsets.popper,s={primary:function(e){var o=p[e];return p[e]<i[e]&&!t.escapeWithReference&&(o=J(p[e],i[e])),pe({},e,o)},secondary:function(e){var o='right'===e?'left':'top',n=p[o];return p[e]>i[e]&&!t.escapeWithReference&&(n=_(p[o],i[e]-('right'===e?p.width:p.height))),pe({},o,n)}};return n.forEach(function(e){var t=-1===['left','top'].indexOf(e)?'secondary':'primary';p=se({},p,s[t](e))}),e.offsets.popper=p,e},priority:['left','right','top','bottom'],padding:5,boundariesElement:'scrollParent'},keepTogether:{order:400,enabled:!0,fn:function(e){var t=e.offsets,o=t.popper,i=t.reference,n=e.placement.split('-')[0],r=X,p=-1!==['top','bottom'].indexOf(n),s=p?'right':'bottom',d=p?'left':'top',a=p?'width':'height';return o[s]<r(i[d])&&(e.offsets.popper[d]=r(i[d])-o[a]),o[d]>r(i[s])&&(e.offsets.popper[d]=r(i[s])),e}},arrow:{order:500,enabled:!0,fn:function(e,o){var i;if(!F(e.instance.modifiers,'arrow','keepTogether'))return e;var n=o.element;if('string'==typeof n){if(n=e.instance.popper.querySelector(n),!n)return e;}else if(!e.instance.popper.contains(n))return console.warn('WARNING: `arrow.element` must be child of its popper element!'),e;var r=e.placement.split('-')[0],p=e.offsets,s=p.popper,d=p.reference,a=-1!==['left','right'].indexOf(r),l=a?'height':'width',f=a?'Top':'Left',m=f.toLowerCase(),h=a?'left':'top',g=a?'bottom':'right',u=L(n)[l];d[g]-u<s[m]&&(e.offsets.popper[m]-=s[m]-(d[g]-u)),d[m]+u>s[g]&&(e.offsets.popper[m]+=d[m]+u-s[g]),e.offsets.popper=c(e.offsets.popper);var b=d[m]+d[l]/2-u/2,w=t(e.instance.popper),y=parseFloat(w['margin'+f],10),E=parseFloat(w['border'+f+'Width'],10),v=b-e.offsets.popper[m]-y-E;return v=J(_(s[l]-u,v),0),e.arrowElement=n,e.offsets.arrow=(i={},pe(i,m,Math.round(v)),pe(i,h,''),i),e},element:'[x-arrow]'},flip:{order:600,enabled:!0,fn:function(e,t){if(k(e.instance.modifiers,'inner'))return e;if(e.flipped&&e.placement===e.originalPlacement)return e;var o=y(e.instance.popper,e.instance.reference,t.padding,t.boundariesElement),i=e.placement.split('-')[0],n=x(i),r=e.placement.split('-')[1]||'',p=[];switch(t.behavior){case le.FLIP:p=[i,n];break;case le.CLOCKWISE:p=q(i);break;case le.COUNTERCLOCKWISE:p=q(i,!0);break;default:p=t.behavior;}return p.forEach(function(s,d){if(i!==s||p.length===d+1)return e;i=e.placement.split('-')[0],n=x(i);var a=e.offsets.popper,l=e.offsets.reference,f=X,m='left'===i&&f(a.right)>f(l.left)||'right'===i&&f(a.left)<f(l.right)||'top'===i&&f(a.bottom)>f(l.top)||'bottom'===i&&f(a.top)<f(l.bottom),h=f(a.left)<f(o.left),c=f(a.right)>f(o.right),g=f(a.top)<f(o.top),u=f(a.bottom)>f(o.bottom),b='left'===i&&h||'right'===i&&c||'top'===i&&g||'bottom'===i&&u,w=-1!==['top','bottom'].indexOf(i),y=!!t.flipVariations&&(w&&'start'===r&&h||w&&'end'===r&&c||!w&&'start'===r&&g||!w&&'end'===r&&u);(m||b||y)&&(e.flipped=!0,(m||b)&&(i=p[d+1]),y&&(r=K(r)),e.placement=i+(r?'-'+r:''),e.offsets.popper=se({},e.offsets.popper,S(e.instance.popper,e.offsets.reference,e.placement)),e=C(e.instance.modifiers,e,'flip'))}),e},behavior:'flip',padding:5,boundariesElement:'viewport'},inner:{order:700,enabled:!1,fn:function(e){var t=e.placement,o=t.split('-')[0],i=e.offsets,n=i.popper,r=i.reference,p=-1!==['left','right'].indexOf(o),s=-1===['top','left'].indexOf(o);return n[p?'left':'top']=r[o]-(s?n[p?'width':'height']:0),e.placement=x(t),e.offsets.popper=c(n),e}},hide:{order:800,enabled:!0,fn:function(e){if(!F(e.instance.modifiers,'hide','preventOverflow'))return e;var t=e.offsets.reference,o=T(e.instance.modifiers,function(e){return'preventOverflow'===e.name}).boundaries;if(t.bottom<o.top||t.left>o.right||t.top>o.bottom||t.right<o.left){if(!0===e.hide)return e;e.hide=!0,e.attributes['x-out-of-boundaries']=''}else{if(!1===e.hide)return e;e.hide=!1,e.attributes['x-out-of-boundaries']=!1}return e}},computeStyle:{order:850,enabled:!0,fn:function(e,t){var o=t.x,i=t.y,n=e.offsets.popper,p=T(e.instance.modifiers,function(e){return'applyStyle'===e.name}).gpuAcceleration;void 0!==p&&console.warn('WARNING: `gpuAcceleration` option moved to `computeStyle` modifier and will not be supported in future versions of Popper.js!');var s,d,a=void 0===p?t.gpuAcceleration:p,l=r(e.instance.popper),f=g(l),m={position:n.position},h={left:X(n.left),top:X(n.top),bottom:X(n.bottom),right:X(n.right)},c='bottom'===o?'top':'bottom',u='right'===i?'left':'right',b=W('transform');if(d='bottom'==c?-f.height+h.bottom:h.top,s='right'==u?-f.width+h.right:h.left,a&&b)m[b]='translate3d('+s+'px, '+d+'px, 0)',m[c]=0,m[u]=0,m.willChange='transform';else{var w='bottom'==c?-1:1,y='right'==u?-1:1;m[c]=d*w,m[u]=s*y,m.willChange=c+', '+u}var E={"x-placement":e.placement};return e.attributes=se({},E,e.attributes),e.styles=se({},m,e.styles),e.arrowStyles=se({},e.offsets.arrow,e.arrowStyles),e},gpuAcceleration:!0,x:'bottom',y:'right'},applyStyle:{order:900,enabled:!0,fn:function(e){return Y(e.instance.popper,e.styles),j(e.instance.popper,e.attributes),e.arrowElement&&Object.keys(e.arrowStyles).length&&Y(e.arrowElement,e.arrowStyles),e},onLoad:function(e,t,o,i,n){var r=O(n,t,e),p=v(o.placement,r,t,e,o.modifiers.flip.boundariesElement,o.modifiers.flip.padding);return t.setAttribute('x-placement',p),Y(t,{position:'absolute'}),o},gpuAcceleration:void 0}}},fe});
 //# sourceMappingURL=popper.min.js.map
 
 /*!
@@ -856,13 +856,13 @@ function sidebarItemClick(event) {
     var aHref = event.currentTarget;
     $(aHref).removeClass('active');    
     document.location = aHref.href;
-    var node = aHref.node;
-    if (node != undefined) {
+    var thing = aHref.thing;
+    if (thing != undefined) {
         //любой пункт меню связаный с нодой (узлом)
-        headerPanelUI.showStatusPanel(node);
+        headerPanelUI.showStatusPanel(thing);
         //проверяем не является ли выбранный пункт - пунктом "свойства узла"
-        if (aHref.deleteNodeButton != undefined) {
-            aHref.deleteNodeButton.style.display = "";
+        if (aHref.deleteThingButton != undefined) {
+            aHref.deleteThingButton.style.display = "";
         }
         else
             if (aHref.deleteDriverButton != undefined) {
@@ -919,9 +919,9 @@ function createSidebar() {
         sideBarHeaderInfoRoleSpan: undefined,
 
         dashboardItem: undefined,
-        nodeItem: undefined,
-        nodeSubItem: undefined,
-        addNodeItem: undefined,
+        thingItem: undefined,
+        thingSubItem: undefined,
+        addThingItem: undefined,
         consoleItem: undefined,
 
         createBrand: function (_version) {
@@ -1039,7 +1039,7 @@ function createSidebar() {
             this.sideBar = sideBarContent.appendChild(document.createElement("div"));
             this.sideBar.id = "sideBar";
             this.sideBar.className = "sidebar-item sidebar-menu";
-            //TODO: read version from node
+            //TODO: read version from thing
             this.createBrand("1.8 (RC)");
             this.createUserInfo("Role", "administrator", NET_ONLINE);
 
@@ -1048,18 +1048,18 @@ function createSidebar() {
             //Панель управления 
             this.dashboardItem = this.createItem(sideBarUl, "dashboarditem", "#dashboard", getLang("dashboardTab"), sidebarItemClick, "fa fa-tachometer-alt", configProperties.dashboards[0].widgets.length);
             //настройки  
-            this.nodeItem = this.createItem(sideBarUl, "nodeItem", "#settings", getLang("settingsTab"), function (event) { $(this).removeClass('active'); }, "fa fa-cogs", undefined);
-            this.nodeSubItem = this.createSubItem(this.nodeItem, "settingsSideBarUl");
+            this.thingItem = this.createItem(sideBarUl, "thingItem", "#settings", getLang("settingsTab"), function (event) { $(this).removeClass('active'); }, "fa fa-cogs", undefined);
+            this.thingSubItem = this.createSubItem(this.thingItem, "settingsSideBarUl");
 
-            this.addNodeItem = this.createItem(this.nodeSubItem, "addnodeitem", "#home", getLang("addnode"), settingsUI.addNodeClick, "fa fa-plus", undefined);
-            this.addNodeItem.href.style.color = theme.warning;
+            this.addThingItem = this.createItem(this.thingSubItem, "addthingitem", "#home", getLang("addthing"), settingsUI.addThingClick, "fa fa-plus", undefined);
+            this.addThingItem.href.style.color = theme.warning;
             //панель не видна, она существует для организии SideBar, сами панели со свойствами драйвер сделаны на основе navBar - так сложилось исторически, SideBar только переключает их
-            var nodePropAnchors = document.getElementById("nodePropAnchors");
+            var thingPropAnchors = document.getElementById("thingPropAnchors");
             //NavTabs панель для панелей со свойствами нод
-            var nodePropNavBar = nodePropAnchors.appendChild(document.createElement("ul"));
-            nodePropNavBar.style.height = "0px";
-            nodePropNavBar.id = "nodePropNavBar";
-            nodePropNavBar.className = "nav nav-tabs";
+            var thingPropNavBar = thingPropAnchors.appendChild(document.createElement("ul"));
+            thingPropNavBar.style.height = "0px";
+            thingPropNavBar.id = "thingPropNavBar";
+            thingPropNavBar.className = "nav nav-tabs";
 
             this.consoleItem = this.createItem(sideBarUl, "consoleitem", "#console", getLang("consoleTab"), sidebarItemClick, "fa fa-file-code", undefined);
 
@@ -1344,7 +1344,7 @@ var headerPanelUI = {
     //роли кнопок headerPanel 
     sideBarButtonRole: 0b00000001,
     widgetsPanelButtonRole: 0b00000010,
-    nodePoropertiesPanelButtonRole: 0b00000100,
+    thingPoropertiesPanelButtonRole: 0b00000100,
     driverButtonRole: 0b00001000,
     scriptButtonRole: 0b00010000,
     filesButtonRole: 0b00100000,
@@ -1375,23 +1375,23 @@ var headerPanelUI = {
         return button;
     },
 
-    addStatusPanel: function (node) {
+    addStatusPanel: function (thing) {
         var headerPanelStatuses = document.getElementById("header-panel-statuses");
         if (headerPanelStatuses == undefined) {
             return undefined;
         }
 
         var statusPanel = document.createElement("div");
-        statusPanel.node = node;
+        statusPanel.thing = thing;
         statusPanel.statuses = [];
         statusPanel.style.display = "none";
         headerPanelStatuses.appendChild(statusPanel);
 
-        var nodeHref = document.createElement("a");
-        nodeHref.href = node.host;
-        nodeHref.target = "_blank";
-        nodeHref.innerText = node.nodenickname;
-        statusPanel.appendChild(nodeHref);
+        var thingHref = document.createElement("a");
+        thingHref.href = thing.host;
+        thingHref.target = "_blank";
+        thingHref.innerText = thing.thingnickname;
+        statusPanel.appendChild(thingHref);
 
         var sepparator = document.createElement("text");
         sepparator.className = "text-secondary";
@@ -1410,24 +1410,24 @@ var headerPanelUI = {
     },
 
 
-    getStatusesPanel: function (node) {
+    getStatusesPanel: function (thing) {
         for (var statusPanelIndex in this.statusPanels) {
-            if (this.statusPanels[statusPanelIndex].node === node) {
+            if (this.statusPanels[statusPanelIndex].thing === thing) {
                 return this.statusPanels[statusPanelIndex];
             }
         }
         return undefined;
     },
 
-    showStatusPanel: function (node) {
-        var statusPanel = this.getStatusesPanel(node);
+    showStatusPanel: function (thing) {
+        var statusPanel = this.getStatusesPanel(thing);
         if (statusPanel != undefined) {
             statusPanel.style.display = "block";
         }
     },
 
-    hideStatusPanel: function (node) {
-        var statusPanel = this.getStatusesPanel(node);
+    hideStatusPanel: function (thing) {
+        var statusPanel = this.getStatusesPanel(thing);
         if (statusPanel != undefined) {
             statusPanel.style.display = "none";
         }
@@ -1439,14 +1439,14 @@ var headerPanelUI = {
         }
     },
 
-    addStatus: function (node, id, text) {
-        var statusPanel = this.getStatusesPanel(node);
+    addStatus: function (thing, id, text) {
+        var statusPanel = this.getStatusesPanel(thing);
         if (statusPanel == undefined) {
-            statusPanel = this.addStatusPanel(node);
+            statusPanel = this.addStatusPanel(thing);
         }
 
         var status = document.createElement("text");
-        status.id = node.nickname + id;
+        status.id = thing.nickname + id;
         status.className = "text-secondary";
         status.innerHTML = text;
         statusPanel.appendChild(status);
@@ -1469,25 +1469,25 @@ var headerPanelUI = {
         return undefined;
     },
 
-    getStatus: function (node, id) {
-        return document.getElementById(node.nickname + id)
+    getStatus: function (thing, id) {
+        return document.getElementById(thing.nickname + id)
     },
 
-    setStatusSuccess: function (node, id) {
-        var status = this.getStatus(node, id);
+    setStatusSuccess: function (thing, id) {
+        var status = this.getStatus(thing, id);
         if (status != undefined) {
             status.className = "text-success";
         }
     },
 
-    setStatusUnknown: function (node, id) {
+    setStatusUnknown: function (thing, id) {
         var status = this.getStatus(id);
         if (status != undefined) {
             status.className = "text-secondary";
         }
     },
 
-    setStatusError: function (node, id) {
+    setStatusError: function (thing, id) {
         var status = this.getStatus(id);
         if (status != undefined) {
             status.className = "text-danger";
@@ -1536,9 +1536,9 @@ OWLOS распространяется в надежде, что она буде
 
 var scriptsUI = {
     onScriptNew: function (script) {
-        var scriptsSubmenuUl = document.getElementById(script.node.nodenickname + "scriptssubmenu");
+        var scriptsSubmenuUl = document.getElementById(script.thing.thingnickname + "scriptssubmenu");
         if (scriptsSubmenuUl == undefined) return;
-        var scriptsLi = sideBar.createItem(scriptsSubmenuUl, script.node.nodenickname + "_" + script.name, "#" + script.node.nodenickname + "_" + script.name + "panel", script.name, sidebarItemClick, "fa fa-bolt", undefined);
+        var scriptsLi = sideBar.createItem(scriptsSubmenuUl, script.thing.thingnickname + "_" + script.name, "#" + script.thing.thingnickname + "_" + script.name + "panel", script.name, sidebarItemClick, "fa fa-bolt", undefined);
         switch (parseInt(script.status)) {
             case stopScriptStatus: scriptsLi.href.style.color = ""; break;
             case runScriptStatus: scriptsLi.href.style.color = theme.success; break;
@@ -1549,9 +1549,9 @@ var scriptsUI = {
 
 
         //Script panel 
-        var nodesPropsPanel = document.getElementById("nodesPropsPanel");
-        var scriptTab = nodesPropsPanel.appendChild(document.createElement('div'));
-        scriptTab.id = script.node.nodenickname + "_" + script.name + "panel";
+        var thingsPropsPanel = document.getElementById("thingsPropsPanel");
+        var scriptTab = thingsPropsPanel.appendChild(document.createElement('div'));
+        scriptTab.id = script.thing.thingnickname + "_" + script.name + "panel";
         scriptTab.className = "tab-pane fade md-form";
         scriptsLi.panel = scriptTab;
 
@@ -1569,7 +1569,7 @@ var scriptsUI = {
         byteCodeCardBody.className = "card-body";
         var pre = byteCodeCardBody.appendChild(document.createElement('pre'));
         var textArea = pre.appendChild(document.createElement('textarea'));
-        textArea.id = script.node.nodenickname + "_" + script.name + "textarea";
+        textArea.id = script.thing.thingnickname + "_" + script.name + "textarea";
         textArea.className = "md-textarea text-primary form-control bg-dark";
         textArea.placeholder = getLang("inputcodehere");
         textArea.cols = 80;
@@ -1577,7 +1577,7 @@ var scriptsUI = {
         textArea.value = script.bytecode;
         textArea.onkeydown = scriptsUI.textAreaOnKeyDown;
 
-        var scriptExecuteButton = headerPanelUI.addButton(script.node.nodenickname + "_" + script.name + "executionButton", "fa fa-bolt", getLang("scriptexecute"), headerPanelUI.scriptButtonRole);
+        var scriptExecuteButton = headerPanelUI.addButton(script.thing.thingnickname + "_" + script.name + "executionButton", "fa fa-bolt", getLang("scriptexecute"), headerPanelUI.scriptButtonRole);
         scriptExecuteButton.script = script;
         scriptExecuteButton.textArea = textArea;
         scriptExecuteButton.labels = label;
@@ -1586,9 +1586,9 @@ var scriptsUI = {
 
         textArea.scriptExecuteButton = scriptExecuteButton;        
 
-        var scriptPauseButton = headerPanelUI.addButton(script.node.nodenickname + "_" + script.name + "pauseButton", "fa fa-pause", getLang("scriptpause"), headerPanelUI.scriptButtonRole);
+        var scriptPauseButton = headerPanelUI.addButton(script.thing.thingnickname + "_" + script.name + "pauseButton", "fa fa-pause", getLang("scriptpause"), headerPanelUI.scriptButtonRole);
         scriptPauseButton.script = script;
-        scriptPauseButton.node = script.node; //когда ноду удалят и прийдет ActiveReciever - Script может уже не быть
+        scriptPauseButton.thing = script.thing; //когда ноду удалят и прийдет ActiveReciever - Script может уже не быть
         scriptPauseButton.scriptExecuteButton = scriptExecuteButton;
         scriptPauseButton.textArea = textArea;
         scriptPauseButton.labels = label;
@@ -1597,9 +1597,9 @@ var scriptsUI = {
         
         scriptExecuteButton.scriptPauseButton = scriptPauseButton;
 
-        var scriptDebugButton = headerPanelUI.addButton(script.node.nodenickname + "_" + script.name + "debugButton", "fa fa-bug", getLang("scriptstartdebug"), headerPanelUI.scriptButtonRole);                    
+        var scriptDebugButton = headerPanelUI.addButton(script.thing.thingnickname + "_" + script.name + "debugButton", "fa fa-bug", getLang("scriptstartdebug"), headerPanelUI.scriptButtonRole);                    
         scriptDebugButton.script = script;
-        scriptDebugButton.node = script.node;
+        scriptDebugButton.thing = script.thing;
         scriptDebugButton.scriptExecuteButton = scriptExecuteButton;
         scriptDebugButton.textArea = textArea;
         scriptDebugButton.labels = label;
@@ -1608,9 +1608,9 @@ var scriptsUI = {
         
         scriptsLi.href.scriptDebugButton = scriptDebugButton;
         
-        var scriptDeleteButton = headerPanelUI.addButton(script.node.nodenickname + "_" + script.name + "deleteButton", "fa fa-trash", getLang("scriptdelete"), headerPanelUI.scriptButtonRole);                                            
+        var scriptDeleteButton = headerPanelUI.addButton(script.thing.thingnickname + "_" + script.name + "deleteButton", "fa fa-trash", getLang("scriptdelete"), headerPanelUI.scriptButtonRole);                                            
         scriptDeleteButton.script = script;
-        scriptDeleteButton.node = script.node; //когда ноду удалят и прийдет ActiveReciever - Script может уже не быть
+        scriptDeleteButton.thing = script.thing; //когда ноду удалят и прийдет ActiveReciever - Script может уже не быть
         scriptDeleteButton.scriptExecuteButton = scriptExecuteButton;
         scriptDeleteButton.scriptPauseButton = scriptPauseButton;
         scriptDeleteButton.textArea = textArea;
@@ -1624,7 +1624,7 @@ var scriptsUI = {
         /*
         var scriptExecuteButton = byteCodeCardDiv.appendChild(document.createElement('button'));
         scriptExecuteButton.type = "button";
-        scriptExecuteButton.id = script.node.nodenickname + "_" + script.name + "executionButton";
+        scriptExecuteButton.id = script.thing.thingnickname + "_" + script.name + "executionButton";
         scriptExecuteButton.className = "btn btn-sm btn-success";
         scriptExecuteButton.script = script;
         scriptExecuteButton.textArea = textArea;
@@ -1639,10 +1639,10 @@ var scriptsUI = {
 /*
         var scriptPauseButton = byteCodeCardDiv.appendChild(document.createElement('button'));
         scriptPauseButton.type = "button";
-        scriptPauseButton.id = script.node.nodenickname + "_" + script.name + "pauseButton";
+        scriptPauseButton.id = script.thing.thingnickname + "_" + script.name + "pauseButton";
         scriptPauseButton.className = "btn btn-sm btn-warning";
         scriptPauseButton.script = script;
-        scriptPauseButton.node = script.node; //когда ноду удалят и прийдет ActiveReciever - Script может уже не быть
+        scriptPauseButton.thing = script.thing; //когда ноду удалят и прийдет ActiveReciever - Script может уже не быть
         scriptPauseButton.scriptExecuteButton = scriptExecuteButton;
         scriptPauseButton.textArea = textArea;
         scriptPauseButton.labels = label;
@@ -1656,10 +1656,10 @@ var scriptsUI = {
 
         var scriptDebugButton = byteCodeCardDiv.appendChild(document.createElement('button'));
         scriptDebugButton.type = "button";
-        scriptDebugButton.id = script.node.nodenickname + "_" + script.name + "pauseButton";
+        scriptDebugButton.id = script.thing.thingnickname + "_" + script.name + "pauseButton";
         scriptDebugButton.className = "btn btn-sm btn-warning";
         scriptDebugButton.script = script;
-        scriptDebugButton.node = script.node;
+        scriptDebugButton.thing = script.thing;
         scriptDebugButton.scriptExecuteButton = scriptExecuteButton;
         scriptDebugButton.textArea = textArea;
         scriptDebugButton.labels = label;
@@ -1673,10 +1673,10 @@ var scriptsUI = {
         /*
         var scriptDeleteButton = byteCodeCardDiv.appendChild(document.createElement('button'));
         scriptDeleteButton.type = "button";
-        scriptDeleteButton.id = script.node.nodenickname + "_" + script.name + "deleteButton";
+        scriptDeleteButton.id = script.thing.thingnickname + "_" + script.name + "deleteButton";
         scriptDeleteButton.className = "btn btn-sm btn-danger";
         scriptDeleteButton.script = script;
-        scriptDeleteButton.node = script.node; //когда ноду удалят и прийдет ActiveReciever - Script может уже не быть
+        scriptDeleteButton.thing = script.thing; //когда ноду удалят и прийдет ActiveReciever - Script может уже не быть
         scriptDeleteButton.scriptExecuteButton = scriptExecuteButton;
         scriptDeleteButton.scriptPauseButton = scriptPauseButton;
         scriptDeleteButton.textArea = textArea;
@@ -1691,8 +1691,8 @@ var scriptsUI = {
         */
 
         var label = byteCodeCardDiv.appendChild(document.createElement('label'));
-        label.id = script.node.nodenickname + "_" + script.name + "label";
-        label.for = script.node.nodenickname + "_" + script.name + "textarea";
+        label.id = script.thing.thingnickname + "_" + script.name + "label";
+        label.for = script.thing.thingnickname + "_" + script.name + "textarea";
         scriptExecuteButton.label = label;
 
         var scriptStatusCardDiv = scriptHolder.appendChild(document.createElement('div'));
@@ -1706,13 +1706,13 @@ var scriptsUI = {
         scriptStatusCardBody.className = "card-body";
         var scriptStatusPre = scriptStatusCardBody.appendChild(document.createElement('pre'));
         var statusLabel = scriptStatusPre.appendChild(document.createElement('label'));
-        statusLabel.id = script.node.nodenickname + "_" + script.name + "statuslabel";
+        statusLabel.id = script.thing.thingnickname + "_" + script.name + "statuslabel";
         scriptsUI.buildScriptStatus(script);
 
     },
 
     onScriptChange: function (script) {
-        var scriptsAhref = document.getElementById(script.node.nodenickname + "_" + script.name + "href");
+        var scriptsAhref = document.getElementById(script.thing.thingnickname + "_" + script.name + "href");
         if (scriptsAhref == undefined) return;
         scriptsAhref.textSpan.innerHTML = script.name;
 
@@ -1725,8 +1725,8 @@ var scriptsUI = {
         }
 
 
-        var textArea = document.getElementById(script.node.nodenickname + "_" + script.name + "textarea");
-        var label = document.getElementById(script.node.nodenickname + "_" + script.name + "label");
+        var textArea = document.getElementById(script.thing.thingnickname + "_" + script.name + "textarea");
+        var label = document.getElementById(script.thing.thingnickname + "_" + script.name + "label");
         if (textArea.value !== script.bytecode) {
             if (textArea === document.activeElement) {
                 label.style.color = theme.danger;
@@ -1801,7 +1801,7 @@ var scriptsUI = {
     },
 
     buildScriptStatus: function (script) {
-        var statusLabel = document.getElementById(script.node.nodenickname + "_" + script.name + "statuslabel");
+        var statusLabel = document.getElementById(script.thing.thingnickname + "_" + script.name + "statuslabel");
         statusLabel.innerHTML = "<b>Status: </b>" + script.status + "\n" +
             "<b>debuglinenumber: </b>" + script.debuglinenumber + "\n" +
             "<b>codecount: </b>" + script.codecount + "\n" +
@@ -1812,15 +1812,15 @@ var scriptsUI = {
     },
 
     onScriptDelete: function (script) {
-        var scriptsLi = document.getElementById(script.node.nodenickname + "_" + script.name + "li");
+        var scriptsLi = document.getElementById(script.thing.thingnickname + "_" + script.name + "li");
         scriptsLi.parentElement.removeChild(scriptsLi);
         scriptsLi.innerHTML = "";
 
-        var scriptsPanel = document.getElementById(script.node.nodenickname + "_" + script.name + "panel");
+        var scriptsPanel = document.getElementById(script.thing.thingnickname + "_" + script.name + "panel");
         scriptsPanel.parentElement.removeChild(scriptsPanel);
         scriptsPanel.innerHTML = "";
 
-        var scriptsSubmenuUl = document.getElementById(script.node.nodenickname + "scriptssubmenu");
+        var scriptsSubmenuUl = document.getElementById(script.thing.thingnickname + "scriptssubmenu");
         for (childKey in scriptsSubmenuUl.childNodes) {
             var scriptsLi = scriptsSubmenuUl.childNodes[childKey];
             if (scriptsLi.scriptsAhref != undefined) {
@@ -1834,14 +1834,14 @@ var scriptsUI = {
             }
         }
 
-        var nodePanelHRef = document.getElementById(script.node.nodenickname + "nodePropsHref");
-        var nodePropsPanel = document.getElementById(script.node.nodenickname + "nodePropsPanel");
+        var thingPanelHRef = document.getElementById(script.thing.thingnickname + "thingPropsHref");
+        var thingPropsPanel = document.getElementById(script.thing.thingnickname + "thingPropsPanel");
         var event = {
-            currentTarget: nodePanelHRef
+            currentTarget: thingPanelHRef
         }
         scriptsUI.driverAnchorClick(event);
-        $(nodePanelHRef).toggleClass("active");
-        $(nodePropsPanel).toggleClass("active show");
+        $(thingPanelHRef).toggleClass("active");
+        $(thingPropsPanel).toggleClass("active show");
     },
     //https://stackoverflow.com/questions/6637341/use-tab-to-indent-in-textarea
     textAreaOnKeyDown: function (event) {
@@ -1908,18 +1908,18 @@ var scriptsUI = {
 
         if (!HTTPResult.indexOf("%error") == 0) {
             scriptExecuteButton.className = "btn btn-sm btn-success";
-            script.node.networkStatus = NET_ONLINE;
-            scriptsService.refresh(script.node);
+            script.thing.networkStatus = NET_ONLINE;
+            scriptsService.refresh(script.thing);
             label.style.color = theme.success;
             label.innerText = "execute-OK";
 
         }
         else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
             if (HTTPResult.indexOf("reponse") != -1) {
-                script.node.networkStatus = NET_ERROR;
+                script.thing.networkStatus = NET_ERROR;
             }
             else {
-                script.node.networkStatus = NET_OFFLINE;
+                script.thing.networkStatus = NET_OFFLINE;
             }
             scriptExecuteButton.className = "btn btn-sm btn-danger";
             label.style.color = theme.danger;
@@ -1976,20 +1976,20 @@ var scriptsUI = {
 
         var scriptExecuteButton = sender;
         var label = scriptExecuteButton.label;
-        var node = scriptExecuteButton.node;
+        var thing = scriptExecuteButton.thing;
 
         if (!HTTPResult.indexOf("%error") == 0) {
-            node.networkStatus = NET_ONLINE; //UI редактора скрипта удалит onScriptDelete
-            scriptsService.refresh(node);
+            thing.networkStatus = NET_ONLINE; //UI редактора скрипта удалит onScriptDelete
+            scriptsService.refresh(thing);
         }
         else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
 
 
             if (HTTPResult.indexOf("reponse") != -1) {
-                node.networkStatus = NET_ERROR;
+                thing.networkStatus = NET_ERROR;
             }
             else {
-                node.networkStatus = NET_OFFLINE;
+                thing.networkStatus = NET_OFFLINE;
             }
             scriptExecuteButton.className = "btn btn-sm btn-danger";
             label.style.color = theme.danger;
@@ -2003,7 +2003,7 @@ var scriptsUI = {
         event.stopPropagation();
 
         var newScriptDialog = createModalDialog(getLang("addscriptheader"), "");
-        newScriptDialog.node = scriptsAddAhref.node;
+        newScriptDialog.thing = scriptsAddAhref.thing;
         newScriptDialog.appendInput(createDialogInput("addscriptInput", getLang("addscriptname"), ""));
 
         newScriptDialog.onOK = scriptsUI.createScriptUIClick;
@@ -2014,14 +2014,14 @@ var scriptsUI = {
 
     createScriptUIClick: function (newScriptDialog) {
 
-        var node = newScriptDialog.node;
+        var thing = newScriptDialog.thing;
         var addscriptInput = newScriptDialog.getChild("addscriptInput");
         if (addscriptInput.value === "") {
             newScriptDialog.errorLabel.innerText = getLang("scriptnameempty");
             return;
         }
 
-        var script = createScript(node);
+        var script = createScript(thing);
         script.name = addscriptInput.value;
         scriptsService.createOrReplace(script, scriptsUI.createScriptAsynReciever, newScriptDialog);
 
@@ -2030,19 +2030,19 @@ var scriptsUI = {
     },
 
     createScriptAsynReciever: function (HTTPResult, newScriptDialog) {
-        var node = newScriptDialog.node;
+        var thing = newScriptDialog.thing;
 
         if (!HTTPResult.indexOf("%error") == 0) {
-            node.networkStatus = NET_ONLINE;
+            thing.networkStatus = NET_ONLINE;
             newScriptDialog.hide();
-            scriptsService.refresh(node);
+            scriptsService.refresh(thing);
         }
         else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
             if (HTTPResult.indexOf("reponse") != -1) {
-                node.networkStatus = NET_ERROR;
+                thing.networkStatus = NET_ERROR;
             }
             else {
-                node.networkStatus = NET_OFFLINE;
+                thing.networkStatus = NET_OFFLINE;
             }
             newScriptDialog.errorLabel.innerText = HTTPResult;
         }
@@ -2175,20 +2175,20 @@ var dashboardUI = {
     onAddWidgetClick: function () {
 
         var addWidgetDialog = createModalDialog(getLang("dashboardaddwidget"), "");
-        addWidgetDialog.appendSelect(createDialogSelect("nodeselect", "<strong>" + getLang("nodeselect") + "</strong>"));
+        addWidgetDialog.appendSelect(createDialogSelect("thingselect", "<strong>" + getLang("thingselect") + "</strong>"));
 
-        var nodeSelect = addWidgetDialog.getChild("nodeselect");
-        nodeSelect.onchange = dashboardUI.onNodeSelectChange;
-        nodeSelect.addWidgetDialog = addWidgetDialog;
+        var thingSelect = addWidgetDialog.getChild("thingselect");
+        thingSelect.onchange = dashboardUI.onThingSelectChange;
+        thingSelect.addWidgetDialog = addWidgetDialog;
 
-        for (var node in configProperties.nodes) {
-            var nodeSelectOption = nodeSelect.dialogSelect.appendOption(configProperties.nodes[node].nodenickname);
-            nodeSelectOption.node = configProperties.nodes[node];
+        for (var thing in configProperties.things) {
+            var thingSelectOption = thingSelect.dialogSelect.appendOption(configProperties.things[thing].thingnickname);
+            thingSelectOption.thing = configProperties.things[thing];
         }
 
         addWidgetDialog.appendSelect(createDialogSelect("driverselect", getLang("driverselect")));
         var driverSelect = addWidgetDialog.getChild("driverselect");
-        nodeSelect.driverSelect = driverSelect;
+        thingSelect.driverSelect = driverSelect;
         driverSelect.onchange = dashboardUI.onDriverSelectChange;
 
         addWidgetDialog.appendSelect(createDialogSelect("propselect", getLang("propselect")));
@@ -2200,7 +2200,7 @@ var dashboardUI = {
         var widgetSelect = addWidgetDialog.getChild("widgetselect");
         propSelect.widgetSelect = widgetSelect;
 
-        dashboardUI.onNodeSelectChange(event = { currentTarget: nodeSelect });
+        dashboardUI.onThingSelectChange(event = { currentTarget: thingSelect });
 
         addWidgetDialog.onOK = dashboardUI.doAddWidget;
         addWidgetDialog.show();
@@ -2223,31 +2223,31 @@ var dashboardUI = {
         document.getElementById("noWidgetsPanel").style.display = "none";
         return true;
     },
-    onNodeSelectChange: function (event) {
-        var nodeSelect = event.currentTarget;
-        var nodeSelectOption = nodeSelect.options[nodeSelect.selectedIndex];
-        var node = nodeSelectOption.node;
-        var driverSelect = nodeSelect.driverSelect;
+    onThingSelectChange: function (event) {
+        var thingSelect = event.currentTarget;
+        var thingSelectOption = thingSelect.options[thingSelect.selectedIndex];
+        var thing = thingSelectOption.thing;
+        var driverSelect = thingSelect.driverSelect;
 
         driverSelect.options.length = 0;
-        for (var i = 0; i < node.drivers.length; i++) {
-            if (dashboardUI.secondaryDrivers.indexOf("," + node.drivers[i]._id) == -1) {
-                var driverSelectOption = driverSelect.dialogSelect.appendOption(node.drivers[i]._id, 0);
+        for (var i = 0; i < thing.drivers.length; i++) {
+            if (dashboardUI.secondaryDrivers.indexOf("," + thing.drivers[i]._id) == -1) {
+                var driverSelectOption = driverSelect.dialogSelect.appendOption(thing.drivers[i]._id, 0);
                 driverSelectOption.className = "bold-option";
             }
             else {
-                var driverSelectOption = driverSelect.dialogSelect.appendOption(node.drivers[i]._id, 0);
+                var driverSelectOption = driverSelect.dialogSelect.appendOption(thing.drivers[i]._id, 0);
             }
-            driverSelectOption.driver = node.drivers[i];
+            driverSelectOption.driver = thing.drivers[i];
         }
-        if (node.drivers.length == 0) {
+        if (thing.drivers.length == 0) {
             driverSelect.disabled = true;
-            nodeSelect.addWidgetDialog.errorLabel.innerHTML = getLang("nodeoffline");
+            thingSelect.addWidgetDialog.errorLabel.innerHTML = getLang("thingoffline");
         }
         else {
             driverSelect.disabled = false;
             driverSelect.selectedIndex = 0;
-            nodeSelect.addWidgetDialog.errorLabel.innerHTML = "";
+            thingSelect.addWidgetDialog.errorLabel.innerHTML = "";
         }
         dashboardUI.onDriverSelectChange(event = { currentTarget: driverSelect });
         return false;
@@ -2376,16 +2376,16 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-const nodes = ['bytes', 'kb', 'mb', 'gb', 'tb', 'pb', 'eb', 'zb', 'yb'];
+const things = ['bytes', 'kb', 'mb', 'gb', 'tb', 'pb', 'eb', 'zb', 'yb'];
 
 var FilesList =
 
     function () {
         "use strict";
 
-        function FilesList(filesAnchors, node) {
+        function FilesList(filesAnchors, thing) {
             this.filesAnchors = filesAnchors;
-            this.node = node;
+            this.thing = thing;
             this.parsedFilesList = "";
             this.filesAnchors.innerHTML = "";
             this.requestFilesList();
@@ -2395,7 +2395,7 @@ var FilesList =
 
         _proto.requestFilesList = function requestFilesList() {
             this.parsedFilesList = "";
-            httpGetAsyncWithReciever(this.node.host + "getfilelist?path=", this.requestFilesListResult, this);
+            httpGetAsyncWithReciever(this.thing.host + "getfilelist?path=", this.requestFilesListResult, this);
         };
 
         _proto.requestFilesListResult = function requestFilesListResult(HTTPResult, sender) {
@@ -2410,7 +2410,7 @@ var FilesList =
 
         _proto.drawFilesList = function drawFilesList() {
             if (this.uploadSpan == undefined) {
-                this.filesItem =  document.getElementById("filesitem" + this.node.nodenickname);
+                this.filesItem =  document.getElementById("filesitem" + this.thing.thingnickname);
                 this.uploadSpan = headerPanelUI.addButton("uploadfilebuttoon", "fa fa-file", getLang("upload"), headerPanelUI.filesButtonRole);                                                    
                 this.uploadSpan.href = boardhost + "upload";
                 this.uploadSpan.onclick = this.uploadClick;
@@ -2431,7 +2431,7 @@ var FilesList =
                 this.uploadSpan.className = "btn btn-success btn-sm";
                 var table = this.tableDiv.appendChild(document.createElement('table'));
                 table.className = "table table-striped table-sm";
-                table.id = this.node.nodenickname + "filestable";
+                table.id = this.thing.thingnickname + "filestable";
                 table.cellspacing = "0";
                 var thead = table.appendChild(document.createElement('thead'));
                 var tr = thead.appendChild(document.createElement('tr'));
@@ -2490,7 +2490,7 @@ var FilesList =
                     deleteSpan.filesList = this;
                 }
 
-                $("#" + this.node.nodenickname + "filestable").DataTable({
+                $("#" + this.thing.thingnickname + "filestable").DataTable({
                     "pageLength": 100,
                     "language": {
                         "lengthMenu": getLang("dt_display") + " _MENU_ " + getLang("dt_recordsperpage"),
@@ -2515,7 +2515,7 @@ var FilesList =
             deleteButton.className = "badge badge-warning";
             deleteButton.value = 'do...';
             deleteButton.disable = true;
-            var httpResult = deleteFile(deleteButton.filesList.node.host, deleteButton.filename);
+            var httpResult = deleteFile(deleteButton.filesList.thing.host, deleteButton.filename);
 
             if (httpResult == 1) {
                 deleteButton.filesList.requestFilesList();
@@ -2573,7 +2573,7 @@ var FilesList =
                 n = n / 1024;
             }
 
-            return n.toFixed(n < 10 && l > 0 ? 1 : 0) + ' ' + nodes[l];
+            return n.toFixed(n < 10 && l > 0 ? 1 : 0) + ' ' + things[l];
         };
 
         _proto.inputGroupChange = function inputGroupChange(event) {
@@ -2603,7 +2603,7 @@ var FilesList =
         };
 
         _proto.uploadFileByIndex = function uploadFileByIndex(index) {
-            var endPoint = this.node.host + "uploadfile"; //war mode
+            var endPoint = this.thing.host + "uploadfile"; //war mode
 
             var inputGroup = document.getElementById("inputGroup");
             var inputFile = document.getElementById("inputGroupFile01");
@@ -4837,99 +4837,99 @@ OWLOS распространяется в надежде, что она буде
 var settingsUI = {
 
     //добавляет новый пунк в сайдбар (раздел Узлы(Ноды))
-    addNodeSidebarItem: function (node, _parent, _id, _href, _text, _onclick, _icon, _span) {
-        var newSidebarItem = sideBar.createItem(_parent, _id + node.nodenickname, "#" + node.nodenickname + _href, _text, _onclick, "fa fa-microchip", _span);
-        newSidebarItem.href.node = node;
+    addThingSidebarItem: function (thing, _parent, _id, _href, _text, _onclick, _icon, _span) {
+        var newSidebarItem = sideBar.createItem(_parent, _id + thing.thingnickname, "#" + thing.thingnickname + _href, _text, _onclick, "fa fa-microchip", _span);
+        newSidebarItem.href.thing = thing;
         return newSidebarItem;
     },
 
     onConfigLoad: function (configProperties) {
 
-        if (configProperties.nodes.length == 0) return;
+        if (configProperties.things.length == 0) return;
 
-        for (var nodeKey in configProperties.nodes) {
-            var node = configProperties.nodes[nodeKey];
-            if (document.getElementById("nodeNavItem" + node.nodenickname) == undefined) {
-                var nodeNavItem = this.addNodeSidebarItem(node, sideBar.nodeSubItem, "nodeNavItem", "submenu", node.nodenickname, sidebarItemClick, "fa fa-microchip", undefined);
+        for (var thingKey in configProperties.things) {
+            var thing = configProperties.things[thingKey];
+            if (document.getElementById("thingNavItem" + thing.thingnickname) == undefined) {
+                var thingNavItem = this.addThingSidebarItem(thing, sideBar.thingSubItem, "thingNavItem", "submenu", thing.thingnickname, sidebarItemClick, "fa fa-microchip", undefined);
 
-                var nodeNavSubItem = sideBar.createDeepItem(nodeNavItem, node.nodenickname + "submenu");
+                var thingNavSubItem = sideBar.createDeepItem(thingNavItem, thing.thingnickname + "submenu");
 
-                //node properties subItem 
-                var nodePropItem = this.addNodeSidebarItem(node, nodeNavSubItem, "nodepropitem", "nodePropsPanel", getLang("nodeproperties"), sidebarItemClick, "fa fa-cog", undefined);
-                node.nodePropItem = nodePropItem;
-                //node drivers                                 
-                var driversItem = this.addNodeSidebarItem(node, nodeNavSubItem, "driversitem", "driverssubmenu", getLang("drivers"), sidebarItemClick, undefined, "0");
-                var driversSubItem = sideBar.createDeepItem(driversItem, node.nodenickname + "driverssubmenu");
-                var addDriverItem = this.addNodeSidebarItem(node, driversSubItem, "adddriveritem", "adddriveritem", getLang("adddriver"), settingsUI.addDriverClick, "fa fa-plus", undefined);
+                //thing properties subItem 
+                var thingPropItem = this.addThingSidebarItem(thing, thingNavSubItem, "thingpropitem", "thingPropsPanel", getLang("thingproperties"), sidebarItemClick, "fa fa-cog", undefined);
+                thing.thingPropItem = thingPropItem;
+                //thing drivers                                 
+                var driversItem = this.addThingSidebarItem(thing, thingNavSubItem, "driversitem", "driverssubmenu", getLang("drivers"), sidebarItemClick, undefined, "0");
+                var driversSubItem = sideBar.createDeepItem(driversItem, thing.thingnickname + "driverssubmenu");
+                var addDriverItem = this.addThingSidebarItem(thing, driversSubItem, "adddriveritem", "adddriveritem", getLang("adddriver"), settingsUI.addDriverClick, "fa fa-plus", undefined);
                 addDriverItem.href.style.color = theme.warning;
 
-                //node scripts                
-                var scriptsItem = this.addNodeSidebarItem(node, nodeNavSubItem, "scriptsitem", "scriptssubmenu", getLang("scripts"), settingsUI.scriptAnchorClick, undefined, undefined);
-                var scriptsSubItem = sideBar.createDeepItem(scriptsItem, node.nodenickname + "scriptssubmenu");
-                var addScriptItem = this.addNodeSidebarItem(node, scriptsSubItem, "addscriptitem", "addscriptitem", getLang("createscript"), scriptsUI.createScriptClick, "fa fa-plus", undefined);
+                //thing scripts                
+                var scriptsItem = this.addThingSidebarItem(thing, thingNavSubItem, "scriptsitem", "scriptssubmenu", getLang("scripts"), settingsUI.scriptAnchorClick, undefined, undefined);
+                var scriptsSubItem = sideBar.createDeepItem(scriptsItem, thing.thingnickname + "scriptssubmenu");
+                var addScriptItem = this.addThingSidebarItem(thing, scriptsSubItem, "addscriptitem", "addscriptitem", getLang("createscript"), scriptsUI.createScriptClick, "fa fa-plus", undefined);
                 addScriptItem.href.style.color = theme.warning;
 
-                //node files                 
-                var filesItem = this.addNodeSidebarItem(node, nodeNavSubItem, "filesitem", "_filesfadepanel", getLang("files"), sidebarItemClick, undefined, undefined);
+                //thing files                 
+                var filesItem = this.addThingSidebarItem(thing, thingNavSubItem, "filesitem", "_filesfadepanel", getLang("files"), sidebarItemClick, undefined, undefined);
 
-                //--- nodePropsPanel ---------------------------------------------------------------------------
+                //--- thingPropsPanel ---------------------------------------------------------------------------
                 //панель для панелей с быстрым доступам к основным свойствам ноды
 
-                var nodesPropsPanel = document.getElementById("nodesPropsPanel");
+                var thingsPropsPanel = document.getElementById("thingsPropsPanel");
 
-                //--- nodePropsPanel ---------------------------------------------------------------------------
+                //--- thingPropsPanel ---------------------------------------------------------------------------
                 //панель для панелей с быстрым доступам к основным свойствам ноды
-                var nodePropsPanel = nodesPropsPanel.appendChild(document.createElement('div'));
-                nodePropsPanel.className = "tab-pane fade";
-                nodePropsPanel.id = node.nodenickname + "nodePropsPanel";
-                nodePropItem.href.nodefadepanel = nodePropsPanel;
+                var thingPropsPanel = thingsPropsPanel.appendChild(document.createElement('div'));
+                thingPropsPanel.className = "tab-pane fade";
+                thingPropsPanel.id = thing.thingnickname + "thingPropsPanel";
+                thingPropItem.href.thingfadepanel = thingPropsPanel;
 
-                var nodePropHolderPanel = nodePropsPanel.appendChild(document.createElement('div'));
-                nodePropHolderPanel.id = node.nodenickname + "bodePropHoder";
-                nodePropHolderPanel.className = "row";
+                var thingPropHolderPanel = thingPropsPanel.appendChild(document.createElement('div'));
+                thingPropHolderPanel.id = thing.thingnickname + "bodePropHoder";
+                thingPropHolderPanel.className = "row";
 
-                //подготавливаем панели со свойствами ноды (для каждой ноды своя панель id = node.nodenickname + "nodePropPanel")
+                //подготавливаем панели со свойствами ноды (для каждой ноды своя панель id = thing.thingnickname + "thingPropPanel")
                 //смотрите обработчик события onDriverLoaded() - он запоняет эту панель
-                settingsUI.addCard(nodePropHolderPanel, node.nodenickname + "NetworkNodeProp", getLang("networknodeprop"), 12);
-                var networkNodePropBody = document.getElementById(node.nodenickname + "NetworkNodePropBody");
-                settingsUI.addDiv(networkNodePropBody, node.nodenickname + "NetworkNodePropBody1", 4);
-                $("#" + node.nodenickname + "NetworkNodePropBody1").toggleClass("node-prop-col");
-                settingsUI.addDiv(networkNodePropBody, node.nodenickname + "NetworkNodePropBody2", 4);
-                $("#" + node.nodenickname + "NetworkNodePropBody2").toggleClass("node-prop-col1");
-                settingsUI.addDiv(networkNodePropBody, node.nodenickname + "NetworkNodePropBody3", 4);
-                $("#" + node.nodenickname + "NetworkNodePropBody3").toggleClass("node-prop-col2");
+                settingsUI.addCard(thingPropHolderPanel, thing.thingnickname + "NetworkThingProp", getLang("networkthingprop"), 12);
+                var networkThingPropBody = document.getElementById(thing.thingnickname + "NetworkThingPropBody");
+                settingsUI.addDiv(networkThingPropBody, thing.thingnickname + "NetworkThingPropBody1", 4);
+                $("#" + thing.thingnickname + "NetworkThingPropBody1").toggleClass("thing-prop-col");
+                settingsUI.addDiv(networkThingPropBody, thing.thingnickname + "NetworkThingPropBody2", 4);
+                $("#" + thing.thingnickname + "NetworkThingPropBody2").toggleClass("thing-prop-col1");
+                settingsUI.addDiv(networkThingPropBody, thing.thingnickname + "NetworkThingPropBody3", 4);
+                $("#" + thing.thingnickname + "NetworkThingPropBody3").toggleClass("thing-prop-col2");
 
-                settingsUI.addCard(nodePropHolderPanel, node.nodenickname + "WifiNodeProp", getLang("wifinodeprop"), 4); //WifiNodePropPanel - свойства WiFi                
-                settingsUI.addCard(nodePropHolderPanel, node.nodenickname + "SystemNodeProp", getLang("systemnodeprop"), 4);
-                settingsUI.addCard(nodePropHolderPanel, node.nodenickname + "UpdateNodeProp", getLang("updatenodeprop"), 4);
-                //--- EndOf nodePropsPanel ---------------------------------------------------------------------------
+                settingsUI.addCard(thingPropHolderPanel, thing.thingnickname + "WifiThingProp", getLang("wifithingprop"), 4); //WifiThingPropPanel - свойства WiFi                
+                settingsUI.addCard(thingPropHolderPanel, thing.thingnickname + "SystemThingProp", getLang("systemthingprop"), 4);
+                settingsUI.addCard(thingPropHolderPanel, thing.thingnickname + "UpdateThingProp", getLang("updatethingprop"), 4);
+                //--- EndOf thingPropsPanel ---------------------------------------------------------------------------
 
-                // Add Node Status Panel -----------------------------------------------------------------------------
-                var nodeStatusPanel = document.createElement("div");
-                nodeStatusPanel.id = node.nodenickname + "nodestatuspanel";
-                nodeNavItem.href.nodeStatusPanel = nodeStatusPanel;
+                // Add Thing Status Panel -----------------------------------------------------------------------------
+                var thingStatusPanel = document.createElement("div");
+                thingStatusPanel.id = thing.thingnickname + "thingstatuspanel";
+                thingNavItem.href.thingStatusPanel = thingStatusPanel;
 
-                var deleteNodeButton = headerPanelUI.addButton(node.nodenickname + "DeleteNodeButton", "fa fa-minus", "delete node: " + node.nodenickname, headerPanelUI.nodePoropertiesPanelButtonRole);
-                deleteNodeButton.node = node;
-                deleteNodeButton.onclick = settingsUI.onDeleteNode;
-                nodePropItem.href.deleteNodeButton = deleteNodeButton;
-                nodeNavItem.href.deleteNodeButton = deleteNodeButton;
+                var deleteThingButton = headerPanelUI.addButton(thing.thingnickname + "DeleteThingButton", "fa fa-minus", "delete thing: " + thing.thingnickname, headerPanelUI.thingPoropertiesPanelButtonRole);
+                deleteThingButton.thing = thing;
+                deleteThingButton.onclick = settingsUI.onDeleteThing;
+                thingPropItem.href.deleteThingButton = deleteThingButton;
+                thingNavItem.href.deleteThingButton = deleteThingButton;
 
-                nodeNavItem.href.onlinePanel = settingsUI.getStatusWidget(node.nodenickname + "onlineStatus", "Online", nodeStatusPanel);
+                thingNavItem.href.onlinePanel = settingsUI.getStatusWidget(thing.thingnickname + "onlineStatus", "Online", thingStatusPanel);
 
-                node.addNetworkStatusListner(settingsUI.onOnlineStatusChange, nodeNavItem.href.onlinePanel);
-                nodeNavItem.href.WiFiAPPanel = settingsUI.getStatusWidget(node.nodenickname + "wifiapStatus", "WiFi AP", nodeStatusPanel);
+                thing.addNetworkStatusListner(settingsUI.onOnlineStatusChange, thingNavItem.href.onlinePanel);
+                thingNavItem.href.WiFiAPPanel = settingsUI.getStatusWidget(thing.thingnickname + "wifiapStatus", "WiFi AP", thingStatusPanel);
 
-                nodeNavItem.href.WiFiSTPanel = settingsUI.getStatusWidget(node.nodenickname + "wifistStatus", "WiFi ST", nodeStatusPanel);
-                nodeNavItem.href.RESTfulPanel = settingsUI.getStatusWidget(node.nodenickname + "restfulStatus", "RESTful", nodeStatusPanel);
-                nodeNavItem.href.MQTTPanel = settingsUI.getStatusWidget(node.nodenickname + "mqttStatus", "MQTT", nodeStatusPanel);
-                nodeNavItem.href.OTAPanel = settingsUI.getStatusWidget(node.nodenickname + "otaStatus", "OTA", nodeStatusPanel);
+                thingNavItem.href.WiFiSTPanel = settingsUI.getStatusWidget(thing.thingnickname + "wifistStatus", "WiFi ST", thingStatusPanel);
+                thingNavItem.href.RESTfulPanel = settingsUI.getStatusWidget(thing.thingnickname + "restfulStatus", "RESTful", thingStatusPanel);
+                thingNavItem.href.MQTTPanel = settingsUI.getStatusWidget(thing.thingnickname + "mqttStatus", "MQTT", thingStatusPanel);
+                thingNavItem.href.OTAPanel = settingsUI.getStatusWidget(thing.thingnickname + "otaStatus", "OTA", thingStatusPanel);
 
-                var filesDiv = nodesPropsPanel.appendChild(document.createElement('div'));
+                var filesDiv = thingsPropsPanel.appendChild(document.createElement('div'));
                 filesDiv.className = "tab-pane fade";
-                filesDiv.id = node.nodenickname + "_filesfadepanel";
-                filesItem.href.filesList = new FilesList(filesDiv, node);
-                //--- EndOf Node files panel --------------------------------------------
+                filesDiv.id = thing.thingnickname + "_filesfadepanel";
+                filesItem.href.filesList = new FilesList(filesDiv, thing);
+                //--- EndOf Thing files panel --------------------------------------------
             }
         }
     },
@@ -4938,20 +4938,20 @@ var settingsUI = {
     //---------------------------------------------------------------------------------------------------------------------------------------------------
     //когда очередная нода загружает очередное драйвер - строим индикаторы в верхней панели "Настройки" - Online, WiFi AP, WiFi ST, RESTful, MQTT, OTA
     //и подготавлием панель управления нодой (с кнопками Update, Reset и основными свойствами ноды) - смотрите onConfigChange такая панель создается для каждой
-    //ноды id = node.nodenickname + "nodePropPanel"    
+    //ноды id = thing.thingnickname + "thingPropPanel"    
     onDriverLoaded: function (sender, driver) {
         if ((driver == undefined) || (driver.type == undefined)) return;
         if (driver._new) { //если это драйвер загружено впервые (вновь созданные драйвера так же вызовут этот метод)
 
-            var nodeSubmenuUl = document.getElementById(driver._nodenickname + "driverssubmenu"); //ищем пункт sideBar соответствующий ноде которой принадлежит драйвер
-            if (nodeSubmenuUl == undefined) return; //если такого пункта нет - выходим
+            var thingSubmenuUl = document.getElementById(driver._thingnickname + "driverssubmenu"); //ищем пункт sideBar соответствующий ноде которой принадлежит драйвер
+            if (thingSubmenuUl == undefined) return; //если такого пункта нет - выходим
 
-            var node = config.getNodeByHost(driver._host); //узнаем какой ноде принадлежит драйвер
-            if (node == undefined) return; //выходим если нода не найдена
+            var thing = config.getThingByHost(driver._host); //узнаем какой ноде принадлежит драйвер
+            if (thing == undefined) return; //выходим если нода не найдена
 
             //submenu drivers count 
             driversitemlocalspan
-            var driverSpan = document.getElementById("driversitem" + driver._nodenickname + "span");
+            var driverSpan = document.getElementById("driversitem" + driver._thingnickname + "span");
             if (driverSpan != null) {
                 if (driverSpan.driversCount == undefined) {
                     driverSpan.driversCount = 0;
@@ -4960,46 +4960,46 @@ var settingsUI = {
                 driverSpan.innerHTML = parseInt(driverSpan.driversCount);
             }
 
-            var driverItem = settingsUI.addNodeSidebarItem(node, nodeSubmenuUl, "_" + driver._id, "_" + driver._id, driver._id, sidebarItemClick, "fa fa-sliders-h", undefined);
+            var driverItem = settingsUI.addThingSidebarItem(thing, thingSubmenuUl, "_" + driver._id, "_" + driver._id, driver._id, sidebarItemClick, "fa fa-sliders-h", undefined);
             driver.driverItem = driverItem;
-            driverItem.href.node = node;
-            var deleteDriverButton = headerPanelUI.addButton(node.nodenickname + "DeleteDriverButton", "fa fa-minus", "delete driver: " + driver._id, headerPanelUI.driverButtonRole);
-            deleteDriverButton.node = node;
+            driverItem.href.thing = thing;
+            var deleteDriverButton = headerPanelUI.addButton(thing.thingnickname + "DeleteDriverButton", "fa fa-minus", "delete driver: " + driver._id, headerPanelUI.driverButtonRole);
+            deleteDriverButton.thing = thing;
             deleteDriverButton.driver = driver;
             deleteDriverButton.onclick = settingsUI.onDeleteDriver;
             driverItem.href.deleteDriverButton = deleteDriverButton;
 
-            var nodePropAnchors = document.getElementById("nodePropNavBar"); //старая навигационная панель для отображения панелей свойств
-            var nodesPropsPanel = document.getElementById("nodesPropsPanel");
-            var wifiPropPanel = document.getElementById(node.nodenickname + "WifiNodePropBody"); //панель для cвойств            
-            var systemPropPanel = document.getElementById(node.nodenickname + "SystemNodePropBody");
-            var updatePropPanel = document.getElementById(node.nodenickname + "UpdateNodePropBody");
-            var networkPropPanel1 = document.getElementById(node.nodenickname + "NetworkNodePropBody1");
-            var networkPropPanel2 = document.getElementById(node.nodenickname + "NetworkNodePropBody2");
-            var networkPropPanel3 = document.getElementById(node.nodenickname + "NetworkNodePropBody3");
+            var thingPropAnchors = document.getElementById("thingPropNavBar"); //старая навигационная панель для отображения панелей свойств
+            var thingsPropsPanel = document.getElementById("thingsPropsPanel");
+            var wifiPropPanel = document.getElementById(thing.thingnickname + "WifiThingPropBody"); //панель для cвойств            
+            var systemPropPanel = document.getElementById(thing.thingnickname + "SystemThingPropBody");
+            var updatePropPanel = document.getElementById(thing.thingnickname + "UpdateThingPropBody");
+            var networkPropPanel1 = document.getElementById(thing.thingnickname + "NetworkThingPropBody1");
+            var networkPropPanel2 = document.getElementById(thing.thingnickname + "NetworkThingPropBody2");
+            var networkPropPanel3 = document.getElementById(thing.thingnickname + "NetworkThingPropBody3");
 
-            //добавляем панель с таблицей со свойствами нового "driver" драйвера в панель nodesPropsPanel, якорим навигацию на nodePropAnchors, bootstrap cell size -> 12             
-            driver.driverPropTable = new TableWidget(nodePropAnchors, nodesPropsPanel, driver, 12);
+            //добавляем панель с таблицей со свойствами нового "driver" драйвера в панель thingsPropsPanel, якорим навигацию на thingPropAnchors, bootstrap cell size -> 12             
+            driver.driverPropTable = new TableWidget(thingPropAnchors, thingsPropsPanel, driver, 12);
 
             //если очередное загруженое драйвер WiFi
             if (driver.type.value == WiFiDriverType) {
-                //индикатор(widget) в верхней панеле для WiFi AP и Wifi ST - подключаем их к событиям WiFi текущей node.WifiDriver - теперь WifiDriver будет отправлять событие 
+                //индикатор(widget) в верхней панеле для WiFi AP и Wifi ST - подключаем их к событиям WiFi текущей thing.WifiDriver - теперь WifiDriver будет отправлять событие 
                 //о своем состоянии непосредственно индикаторам 
-                //сколько будет node столько будет индикаторов для их WiFi driver - мы отображаем только индикаторы выбранной в SideBar (текущей) node и ее драйвер
-                //смотрите headerPanelUI.addStatus() метод - если индикатора нет его создадут и подпишут id как node.nodenickname + "wifiapStatus"
+                //сколько будет thing столько будет индикаторов для их WiFi driver - мы отображаем только индикаторы выбранной в SideBar (текущей) thing и ее драйвер
+                //смотрите headerPanelUI.addStatus() метод - если индикатора нет его создадут и подпишут id как thing.thingnickname + "wifiapStatus"
 
                 //#ST_PANEL
                 //WiFi Access Point header status indicator ----------------------------             
-                var WiFiAPPanel = headerPanelUI.addStatus(node, node.nodenickname + "wifiapStatus", "WiFi AP");
+                var WiFiAPPanel = headerPanelUI.addStatus(thing, thing.thingnickname + "wifiapStatus", "WiFi AP");
                 //подписываем свойство драйвера WiFi.wifiaccesspointavailable на обработчик settingsUI.onWiFiAPStatusChange
                 //если WiFi.wifiaccesspointavailable изменит значение, будет вызван settingsUI.onWiFiAPStatusChange
                 driver.wifiaccesspointavailable.addValueListner(settingsUI.onWiFiAPStatusChange, WiFiAPPanel);
                 //EndOf WiFi Access Point header status indicator ----------------------
                 //так же как и WiFi AP
-                //var WiFiSTPanel = settingsUI.getStatusWidget(node.nodenickname + "wifistStatus", "WiFi ST", undefined); //
-                var WiFiSTPanel = headerPanelUI.addStatus(node, node.nodenickname + "wifistStatus", "WiFi ST"); //
+                //var WiFiSTPanel = settingsUI.getStatusWidget(thing.thingnickname + "wifistStatus", "WiFi ST", undefined); //
+                var WiFiSTPanel = headerPanelUI.addStatus(thing, thing.thingnickname + "wifistStatus", "WiFi ST"); //
                 driver.wifistatus.addValueListner(settingsUI.onWiFiSTStatusChange, WiFiSTPanel);
-                //панель со свойствами node - добавляем отображени уровня WiFi сигнала (так же подписываем на событие изменения значения WiFi.wifirssi)
+                //панель со свойствами thing - добавляем отображени уровня WiFi сигнала (так же подписываем на событие изменения значения WiFi.wifirssi)
                 var wifiAPCheckbox = settingsUI.addPropertyCheckbox(wifiPropPanel, driver.wifiaccesspointavailable, getLang("wifiaccesspointavailable"), "");
 
                 wifiAPCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(wifiPropPanel, driver.wifiaccesspointssid, getLang("wifiaccesspointssid"), ""));
@@ -5023,7 +5023,7 @@ var settingsUI = {
             else
                 if (driver.type.value == ESPDriverType) {
 
-                    if (node.host == boardhost) { //the local node 
+                    if (thing.host == boardhost) { //the local thing 
 
 
                         var driverProperty = {
@@ -5079,20 +5079,20 @@ var settingsUI = {
                 else
                     if (driver.type.value == NetworkDriverType) {
 
-                        var RESTfulPanel = headerPanelUI.addStatus(node, node.nodenickname + "restfulStatus", "RESTful");
+                        var RESTfulPanel = headerPanelUI.addStatus(thing, thing.thingnickname + "restfulStatus", "RESTful");
                         driver.httpserveravailable.addValueListner(settingsUI.onRESTfulStatusChange, RESTfulPanel);
 
-                        var node = config.getNodeByHost(driver._host);
-                        node.addNetworkStatusListner(settingsUI.onRESTfulOnlineStatusChange, RESTfulPanel);
+                        var thing = config.getThingByHost(driver._host);
+                        thing.addNetworkStatusListner(settingsUI.onRESTfulOnlineStatusChange, RESTfulPanel);
 
 
                         if (driver.mqttclientstate !== undefined) {
-                            var MQTTPanel = headerPanelUI.addStatus(node, node.nodenickname + "mqttStatus", "MQTT");
+                            var MQTTPanel = headerPanelUI.addStatus(thing, thing.thingnickname + "mqttStatus", "MQTT");
                             driver.mqttclientstate.addValueListner(settingsUI.onMQTTStatusChange, MQTTPanel);
                         }
 
                         if (driver.otaavailable !== undefined) {
-                            var OTAPanel = headerPanelUI.addStatus(node, node.nodenickname + "otaStatus", "OTA");
+                            var OTAPanel = headerPanelUI.addStatus(thing, thing.thingnickname + "otaStatus", "OTA");
                             driver.otaavailable.addValueListner(settingsUI.onOTAStatusChange, OTAPanel);
                         }
 
@@ -5141,7 +5141,7 @@ var settingsUI = {
 
                         //Update watcher panel 
                         //Панель обновлений
-                        var updateWatcherId = node.nodenickname + "updateWatcher";
+                        var updateWatcherId = thing.thingnickname + "updateWatcher";
                         var updateWatcherDiv = document.getElementById(updateWatcherId);
                         if (driver.updateinfo != undefined) {
                             if (updateWatcherDiv == null) {
@@ -5153,23 +5153,23 @@ var settingsUI = {
                                 var updateButtonHolder = updatePropPanel.appendChild(document.createElement('div'));
                                 updateButtonHolder.className = "row";
                                 var updateuiButton = updateButtonHolder.appendChild(document.createElement('input'));
-                                updateuiButton.id = node.nodenickname + "updateuibutton";
+                                updateuiButton.id = thing.thingnickname + "updateuibutton";
                                 updateuiButton.className = "btn btn-success btn-sm float-right";
                                 updateuiButton.type = "button";
                                 updateuiButton.setAttribute("data-toggle", "modal");
                                 updateuiButton.setAttribute("data-target", "#resetModal");
                                 updateuiButton.value = getLang("updateuibutton");
-                                updateuiButton.node = node;
+                                updateuiButton.thing = thing;
                                 updateuiButton.onclick = settingsUI.modalUpdateUIClick;
 
                                 var updatefirmwareButton = updateButtonHolder.appendChild(document.createElement('input'));
-                                updatefirmwareButton.id = node.nodenickname + "updatefirmwarebutton";
+                                updatefirmwareButton.id = thing.thingnickname + "updatefirmwarebutton";
                                 updatefirmwareButton.className = "btn btn-success btn-sm float-right";
                                 updatefirmwareButton.type = "button";
                                 updatefirmwareButton.setAttribute("data-toggle", "modal");
                                 updatefirmwareButton.setAttribute("data-target", "#resetModal");
                                 updatefirmwareButton.value = getLang("updatefirmwarebutton");
-                                updatefirmwareButton.node = node;
+                                updatefirmwareButton.thing = thing;
                                 updatefirmwareButton.onclick = settingsUI.modalUpdateFirmwareClick;
 
                                 updateuiButton.style.display = "none";
@@ -5186,24 +5186,24 @@ var settingsUI = {
         }
     },
 
-    addNodeClick: function (event) {
+    addThingClick: function (event) {
         event.stopPropagation();
-        var newNodeDialog = createModalDialog(getLang("addnodeheader"), "");
-        newNodeDialog.appendInput(createDialogInput("newnodename", getLang("addnodename"), ""));
-        newNodeDialog.appendInput(createDialogInput("newnodehost", getLang("addnodehost"), "http://host:port/ or https://host:port/"));
+        var newThingDialog = createModalDialog(getLang("addthingheader"), "");
+        newThingDialog.appendInput(createDialogInput("newthingname", getLang("addthingname"), ""));
+        newThingDialog.appendInput(createDialogInput("newthinghost", getLang("addthinghost"), "http://host:port/ or https://host:port/"));
 
-        newNodeDialog.onOK = settingsUI.addNodeUIClick;
-        newNodeDialog.show();
+        newThingDialog.onOK = settingsUI.addThingUIClick;
+        newThingDialog.show();
         return false;
     },
 
-    addNodeUIClick: function (newNodeDialog) {
+    addThingUIClick: function (newThingDialog) {
 
-        var inputName = newNodeDialog.getChild("newnodename");
-        var inputHost = newNodeDialog.getChild("newnodehost");
+        var inputName = newThingDialog.getChild("newthingname");
+        var inputHost = newThingDialog.getChild("newthinghost");
 
         if (inputHost.value.length == 0) {
-            newNodeDialog.errorLabel.innerText = getLang("addnodeerror_hostempty");
+            newThingDialog.errorLabel.innerText = getLang("addthingerror_hostempty");
             return false;
         }
 
@@ -5214,7 +5214,7 @@ var settingsUI = {
         var regexp = RegExp("(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})");
 
         if (!inputHost.value.match(regexp)) {
-            newNodeDialog.errorLabel.innerText = getLang("addnodeerror_hostnoturl");
+            newThingDialog.errorLabel.innerText = getLang("addthingerror_hostnoturl");
             return false;
         }
 
@@ -5223,28 +5223,28 @@ var settingsUI = {
         }
 
         //boardhost = input.value;
-        if (config.addNode(inputHost.value, inputName.value)) {
-            addToLogNL("Connection to master node " + boardhost + "...");
+        if (config.addThing(inputHost.value, inputName.value)) {
+            addToLogNL("Connection to master thing " + boardhost + "...");
             //use it as ping            
             return true;
         }
         return false;
     },
 
-    onNetworkChange: function (sender, node) {
-        if (node.networkStatus == NET_ONLINE) {
+    onNetworkChange: function (sender, thing) {
+        if (thing.networkStatus == NET_ONLINE) {
             sender.className = "text-success";
         }
         else
-            if ((node.networkStatus == NET_RECONNECT) || (node.networkStatus == NET_REFRESH)) {
+            if ((thing.networkStatus == NET_RECONNECT) || (thing.networkStatus == NET_REFRESH)) {
                 sender.className = "text-info";
             }
             else
-                if (node.networkStatus == NET_OFFLINE) {
+                if (thing.networkStatus == NET_OFFLINE) {
                     sender.className = "text-secondary";
                 }
                 else  //error
-                    if (node.networkStatus == NET_ERROR) {
+                    if (thing.networkStatus == NET_ERROR) {
                         sender.className = "text-danger";
                     }
     },
@@ -5254,14 +5254,14 @@ var settingsUI = {
         var driverHost = event.currentTarget.driverHost;
         var resetDialog = createModalDialog(getLang("reset"), "");
         resetDialog.formGroup.innerHTML = getLang("areYouSure");
-        resetDialog.nodeHost = driverHost;
+        resetDialog.thingHost = driverHost;
         resetDialog.onOK = settingsUI.onResetOK;
         resetDialog.show();
         return false;
     },
 
     onResetOK: function (resetDialog) {
-        resetNodeOneWayTicket(resetDialog.nodeHost);
+        resetThingOneWayTicket(resetDialog.thingHost);
 
         sleep(5000).then(function () {
             location.reload();
@@ -5274,9 +5274,9 @@ var settingsUI = {
     modalUpdateUIClick: function (event) {
 
         var updateuiButton = event.currentTarget;
-        var node = updateuiButton.node;
+        var thing = updateuiButton.thing;
 
-        makeModalDialog("resetPanel", "update", getLang("updatenode"), getLang("areYouSure"));
+        makeModalDialog("resetPanel", "update", getLang("updatething"), getLang("areYouSure"));
         var modalFooter = document.getElementById("updateModalFooter");
 
         var updateButton = modalFooter.appendChild(document.createElement("button"));
@@ -5284,7 +5284,7 @@ var settingsUI = {
         updateButton.className = "btn btn-sm btn-success";
         updateButton.id = "updateModalButton";
         updateButton.onclick = settingsUI.updateUIClick;
-        updateButton.node = node;
+        updateButton.thing = thing;
         updateButton.innerText = getLang("updateuibutton");
 
         $("#updateModal").modal('show');
@@ -5295,7 +5295,7 @@ var settingsUI = {
     updateUIClick: function (event) {
 
         var updateButton = event.currentTarget;
-        var node = updateButton.node;
+        var thing = updateButton.thing;
         var modalFooter = document.getElementById("updateModalFooter");
         modalFooter.removeChild(event.currentTarget);
 
@@ -5303,27 +5303,27 @@ var settingsUI = {
         modalBody.innerHTML = "";
         var updateLog = modalBody.appendChild(document.createElement("pre"));
         updateLog.innerHTML = "Update UI started, please wait...<br>";
-        updateUIAsync(node.host);
+        updateUIAsync(thing.host);
 
 
-        settingsUI.updateUILogTimer(node, updateLog);
+        settingsUI.updateUILogTimer(thing, updateLog);
         return false;
     },
 
-    updateUILogTimer: function (node, updateLog) {
+    updateUILogTimer: function (thing, updateLog) {
         "use strict";
         sleep(1000).then(function () {
-            getUpdateLogAsyncWithReciever(node.host, settingsUI.updateUILogReciever, node, updateLog, undefined);
+            getUpdateLogAsyncWithReciever(thing.host, settingsUI.updateUILogReciever, thing, updateLog, undefined);
             return false;
         });
 
     },
-    updateUILogReciever: function (HTTPResult, node, sender, upperSender) {
+    updateUILogReciever: function (HTTPResult, thing, sender, upperSender) {
         if (!HTTPResult.indexOf("%error") == 0) {
             sender.innerHTML = "Update log:<br>" + HTTPResult;
 
             if (HTTPResult.indexOf("complete") == -1) {
-                settingsUI.updateUILogTimer(node, sender);
+                settingsUI.updateUILogTimer(thing, sender);
             }
             else {
                 var modalFooter = document.getElementById("updateModalFooter");
@@ -5331,7 +5331,7 @@ var settingsUI = {
                 resetButton.type = "button";
                 resetButton.className = "btn btn-sm btn-danger";
                 resetButton.id = "resetModalButton";
-                resetButton.nodeHost = nodeHost;
+                resetButton.thingHost = thingHost;
                 resetButton.onclick = SettingsIU.resetClick;
                 resetButton.innerText = getLang("reset");
             }
@@ -5344,7 +5344,7 @@ var settingsUI = {
     //--------------------------------------------------------------------------------------------------------------------
     modalUpdateFirmwareClick: function (event) {
         var updateButton = event.currentTarget;
-        var node = updateButton.node;
+        var thing = updateButton.thing;
 
         makeModalDialog("resetPanel", "firmware", getLang("firmware"), getLang("areYouSure"));
         var modalFooter = document.getElementById("firmwareModalFooter");
@@ -5354,7 +5354,7 @@ var settingsUI = {
         updateButton.className = "btn btn-sm btn-success";
         updateButton.id = "firmwareModalButton";
         updateButton.onclick = settingsUI.updateFirmwareClick;
-        updateButton.node = node;
+        updateButton.thing = thing;
         updateButton.innerText = getLang("firmwarebutton");
 
         $("#firmwareModal").modal('show');
@@ -5364,7 +5364,7 @@ var settingsUI = {
 
     updateFirmwareClick: function (event) {
         var updateButton = event.currentTarget;
-        var node = updateButton.node;
+        var thing = updateButton.thing;
 
         var modalFooter = document.getElementById("firmwareModalFooter");
         modalFooter.removeChild(event.currentTarget);
@@ -5373,8 +5373,8 @@ var settingsUI = {
         modalBody.innerHTML = "";
         var updateLog = modalBody.appendChild(document.createElement("div"));
         updateLog.innerHTML = getLang("updatefirmware");
-        updateFirmwareAsync(node.host);
-        getUpdateLogAsyncWithReciever(node.host, settingsUI.updateLogReciever, undefined, updateLog, undefined);
+        updateFirmwareAsync(thing.host);
+        getUpdateLogAsyncWithReciever(thing.host, settingsUI.updateLogReciever, undefined, updateLog, undefined);
 
         "use strict";
 
@@ -5420,7 +5420,7 @@ var settingsUI = {
 
 
     //добавляет строку со названием и значением свойства на panelDiv, driverProperty - отображаемое свойство (подписывается на изменения свойства)
-    //обычно используется для отображения свойств ноды Node/Properties в SideBar разделе Settings
+    //обычно используется для отображения свойств ноды Thing/Properties в SideBar разделе Settings
     addPropertyView: function (panelDiv, driverProperty, text, sufix) {
         if (driverProperty == undefined) return;
         var propElementId = panelDiv.id + driverProperty.parentid + driverProperty.name; //дормируем уникальный ID элемента
@@ -5749,11 +5749,11 @@ var settingsUI = {
         }
     },
 
-    getStatusWidget: function (id, text, nodeStatusPanel) {
+    getStatusWidget: function (id, text, thingStatusPanel) {
         var selectedStatus = document.getElementById(id);
         if (selectedStatus == null) {
-            if (nodeStatusPanel == undefined) return undefined;
-            selectedStatus = nodeStatusPanel.appendChild(document.createElement('span'));
+            if (thingStatusPanel == undefined) return undefined;
+            selectedStatus = thingStatusPanel.appendChild(document.createElement('span'));
             selectedStatus.style.cursor = "pointer";
             selectedStatus.className = "badge badge-secondary";
             selectedStatus.setAttribute("data-toggle", "popover");
@@ -6019,22 +6019,22 @@ var settingsUI = {
         event.stopPropagation();
         sidebarItemClick(event);
         var addDriverAhref = event.currentTarget;
-        driversUI.addDriver(addDriverAhref.node);
+        driversUI.addDriver(addDriverAhref.thing);
     },
 
-    onDeleteNode: function (event) {
+    onDeleteThing: function (event) {
         event.stopPropagation();
     },
 
     onDeleteDriver: function (event) {
         event.stopPropagation();
         var deleteDriverButton = event.currentTarget;
-        var node = deleteDriverButton.node;
+        var thing = deleteDriverButton.thing;
         var driver = deleteDriverButton.driver;
 
         var deleteDriverDialog = createModalDialog(getLang("reset"), "");
         deleteDriverDialog.formGroup.innerHTML = getLang("areYouSure");
-        deleteDriverDialog.node = node;
+        deleteDriverDialog.thing = thing;
         deleteDriverDialog.driver = driver;
         deleteDriverDialog.onOK = settingsUI.onDeleteDriverOK;
         deleteDriverDialog.show();
@@ -6042,7 +6042,7 @@ var settingsUI = {
     },
 
     onDeleteDriverOK: function (deleteDriverDialog) {
-        deleteDriverAsync(deleteDriverDialog.node.host, deleteDriverDialog.driver._id, settingsUI.onDriverDeleteReciever, deleteDriverDialog);
+        deleteDriverAsync(deleteDriverDialog.thing.host, deleteDriverDialog.driver._id, settingsUI.onDriverDeleteReciever, deleteDriverDialog);
     },
 
 
@@ -6050,7 +6050,7 @@ var settingsUI = {
         if (HTTPResult == "1") {
             deleteDriverDialog.hide();
             deleteDriverDialog.driver.driverItem.style.display = "none";
-            document.getElementById(deleteDriverDialog.driver._nodenickname + "_" + deleteDriverDialog.driver._id).innerHTML = "";
+            document.getElementById(deleteDriverDialog.driver._thingnickname + "_" + deleteDriverDialog.driver._id).innerHTML = "";
         }
         else {
             deleteDriverDialog.errorLabel.innerHTML = HTTPResult;
@@ -7566,13 +7566,13 @@ var TableWidget =
     function () {
         "use strict";
 
-        function TableWidget(nodePropAnchors, nodesPropsPanel, driver, size) {
+        function TableWidget(thingPropAnchors, thingsPropsPanel, driver, size) {
             //панели в UI для рендеринга таблиц
-            this.nodePropAnchors = nodePropAnchors; //document.getElementById("nodePropAnchors");
-            this.nodesPropsPanel = nodesPropsPanel; // document.getElementById("nodesPropsPanel");
+            this.thingPropAnchors = thingPropAnchors; //document.getElementById("thingPropAnchors");
+            this.thingsPropsPanel = thingsPropsPanel; // document.getElementById("thingsPropsPanel");
             this.driver = driver;
             this.size = size; //drivers.addNewDriverListner(this.newTable, this); //подписываемся на событие drivers о создании нового драйвера
-            this.newTable(); //this.nodePropAnchors.innerHTML = "";
+            this.newTable(); //this.thingPropAnchors.innerHTML = "";
         } //слушатель (получатель) событие создания нового драйвер (драйвер не содержит свойств на данном этапе)
 
 
@@ -7581,23 +7581,23 @@ var TableWidget =
 
         _proto.newTable = function newTable() {
             //добавляет кнопку в панель быстрого выбора драйвер
-            if (this.nodePropAnchors != undefined) { }
+            if (this.thingPropAnchors != undefined) { }
             //добавлет таблицу для свойств нового драйвера
-            var div = this.nodesPropsPanel.appendChild(document.createElement('div'));
+            var div = this.thingsPropsPanel.appendChild(document.createElement('div'));
 
-            if (this.nodePropAnchors != undefined) {
+            if (this.thingPropAnchors != undefined) {
                 div.className = "driverdiv tab-pane fade"; //if (firstDriver) {
                 //}
             } else {
                 div.className = "col-md-" + this.size + " driverdiv TableWidget";
             }
 
-            div.id = this.driver._nodenickname + "_" + this.driver._id;
+            div.id = this.driver._thingnickname + "_" + this.driver._id;
             //таблица
 
             this.table = div.appendChild(document.createElement('table'));
             this.table.className = "table table-striped table-sm";
-            this.table.id = "drivertable" + this.driver._nodenickname + "_" + this.driver._id;
+            this.table.id = "drivertable" + this.driver._thingnickname + "_" + this.driver._id;
             this.table.cellspacing = "0"; //колонки
 
             var thead = this.table.appendChild(document.createElement('thead'));
@@ -7648,7 +7648,7 @@ var TableWidget =
 
             if (this.driver._new) {
                 // $("#drivertable" + this.driver._id).DataTable({ searching: false, paging: false, info: false });
-                $("#drivertable" + this.driver._nodenickname + "_" + this.driver._id).DataTable({
+                $("#drivertable" + this.driver._thingnickname + "_" + this.driver._id).DataTable({
                     "language": {
                         "lengthMenu": getLang("dt_display") + " _MENU_ " + getLang("dt_recordsperpage"),
                         "info": getLang("dt_showing") + " _START_ " + getLang("dt_to") + " _END_ " + getLang("dt_of") + " _TOTAL_ " + getLang("dt_entries"),
@@ -7671,8 +7671,8 @@ var TableWidget =
             ;
 
         _proto.addProperty = function addProperty(driverProperty) {
-            var node = config.getNodeByHost(driverProperty.parenthost);
-            if (node == undefined) return;
+            var thing = config.getThingByHost(driverProperty.parenthost);
+            if (thing == undefined) return;
             this.tbody.propertyCount++; //инкрементируем счетчик свойств
 
             var tr = this.tbody.appendChild(document.createElement('tr'));
@@ -7737,7 +7737,7 @@ var TableWidget =
 
             driverProperty.addNetworkStatusListner(this.onDriverPropNetworkStatusChange, getSpan); //кнопка так же является получателем изменения статуса свойства драйвера
 
-            node.addNetworkStatusListner(this.onDriverPropNetworkStatusChange, getSpan); //подписка на глобальный сетевой статус
+            thing.addNetworkStatusListner(this.onDriverPropNetworkStatusChange, getSpan); //подписка на глобальный сетевой статус
             //кнопка Set value не создается если свойство ReadOnly
 
             if (driverProperty.type.indexOf("r") == -1) {
@@ -7755,7 +7755,7 @@ var TableWidget =
                 span.onclick = this.setDriverClick;
                 span.innerText = "set";
                 driverProperty.addNetworkStatusListner(this.onDriverPropNetworkStatusChange, span);
-                node.addNetworkStatusListner(this.onDriverPropNetworkStatusChange, span);
+                thing.addNetworkStatusListner(this.onDriverPropNetworkStatusChange, span);
             }
 
             return tr; //FFR: возвращет созданую строку таблицы, пока не используется
@@ -8169,19 +8169,19 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-//var boardhost = "http://81.95.178.177/"; //DEBUG
+var boardhost = "http://81.95.178.177/"; //DEBUG
 //var boardhost = "http://iot.light.kiev.ua:8084/";
 //var boardhost = "http://192.168.1.5:8084/"; //DEBUG as WiFi Access Point
-var boardhost = "http://192.168.1.101/"; //Station mode
+//var boardhost = "http://192.168.1.101/"; //Station mode
 //var boardhost = ""; //UI loading from ESPxxxx
 
 
 function getUnitProperty(host, property) {
-    return httpGetWithErrorReson(host + "getnodeproperty?property=" + escape(property));
+    return httpGetWithErrorReson(host + "getthingproperty?property=" + escape(property));
 }
 
 function setUnitProperty(host, property, value) {
-    return httpGetWithErrorReson(host + "setnodeproperty?property=" + escape(property) + "&value=" + escape(value));
+    return httpGetWithErrorReson(host + "setthingproperty?property=" + escape(property) + "&value=" + escape(value));
 }
 
 function setDriverProperty(host, id, property, value) {
@@ -8214,7 +8214,7 @@ function deleteScriptAsync(host, name, asyncReciever, sender) {
 }
 
 
-function resetNodeOneWayTicket(host) {
+function resetThingOneWayTicket(host) {
     return httpGetAsync(host + "reset");
 }
 
@@ -8496,9 +8496,9 @@ var compilerScriptErrorStatus = 2; //ошибка компиляции скри�
 var runtimeScriptErrorStatus = 3; //ошибка выполнения скрипта (возможно был фатальный сбой, не возобновляейте выполнение такого скрипта, без проверки). 
 
 
-function createScript(_node) {
+function createScript(_thing) {
     return {
-        node: _node,
+        thing: _thing,
         name: "",
         status: "",
         debuglinenumber: "",
@@ -8554,30 +8554,30 @@ var scriptsService = {
     },
 
 
-    refresh: function (node) {
-        node.networkStatus = NET_REFRESH;
+    refresh: function (thing) {
+        thing.networkStatus = NET_REFRESH;
         // асинхронный HTTP запрос
         // this.refreshResult - метод который будет вызван HTTPClient-ом по окончанию асинхронного запроса
         // this - ссылка на экземпляр этого объекта        
-        httpGetAsyncWithReciever(node.host + "getallscripts", scriptsService.refreshResult, node);
+        httpGetAsyncWithReciever(thing.host + "getallscripts", scriptsService.refreshResult, thing);
     },
 
     //вызывается асинхронным HTTPClient по окончанию запроса, указан как параметр в httpGetAsyncWithReciever, смотрите this.refresh()
     //httpResult - результат запроса
     //asyncReciever - ссылка на объект сделавший запрос (этот метод будет вызван в контексте другого потока, для него this. это другой объект - занимательный мир JS)
     //мы не можем использовать this, для обращения к методам этого объекта, поэтому заведомо передали себе ссылку на себя "asyncReciever"
-    refreshResult: function (httpResult, node) {
+    refreshResult: function (httpResult, thing) {
         //HTTPClient добавляет строку "%error" в начало Response если запрос не был завешен HTTPCode=200 или произошел TimeOut
         if (!httpResult.indexOf("%error") == 0) {
-            node.networkStatus = NET_ONLINE;
-            scriptsService.parseScripts(httpResult, node);
+            thing.networkStatus = NET_ONLINE;
+            scriptsService.parseScripts(httpResult, thing);
         }
         else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
             if (httpResult.indexOf("reponse") != -1) {
-                node.networkStatus = NET_ERROR;
+                thing.networkStatus = NET_ERROR;
             }
             else {
-                node.networkStatus = NET_OFFLINE;
+                thing.networkStatus = NET_OFFLINE;
             }
 
         }
@@ -8588,38 +8588,38 @@ var scriptsService = {
         var byteCodeEscape = escape(script.bytecode).replace("+", "%2B").replace(">", "%3E").replace("<", "%3C");
         // %3E >
         // %3C <
-        httpPostAsyncWithErrorReson(script.node.host + "createscript", "?name=" + escape(script.name), byteCodeEscape, asyncReciever, sender);
+        httpPostAsyncWithErrorReson(script.thing.host + "createscript", "?name=" + escape(script.name), byteCodeEscape, asyncReciever, sender);
     },
 
     startDebug: function (script) {
-        httpGet(script.node.host + "startdebugscript?name=" + escape(script.name));
+        httpGet(script.thing.host + "startdebugscript?name=" + escape(script.name));
     },
 
     debugNext: function (script) {
-        var httpResult = httpGet(script.node.host + "debugnextscript?name=" + escape(script.name));
+        var httpResult = httpGet(script.thing.host + "debugnextscript?name=" + escape(script.name));
         if (!httpResult.indexOf("%error") == 0) {
-            script.node.networkStatus = NET_ONLINE;
-            scriptsService.parseScripts(httpResult, script.node);
+            script.thing.networkStatus = NET_ONLINE;
+            scriptsService.parseScripts(httpResult, script.thing);
             return true;
         }
         else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
             if (httpResult.indexOf("reponse") != -1) {
-                script.node.networkStatus = NET_ERROR;
+                script.thing.networkStatus = NET_ERROR;
             }
             else {
-                script.node.networkStatus = NET_OFFLINE;
+                script.thing.networkStatus = NET_OFFLINE;
             }
         }
         return false;
     },
 
     delete: function (script, asyncReciever, sender) {
-        deleteScriptAsync(script.node.host, escape(script.name), asyncReciever, sender);
+        deleteScriptAsync(script.thing.host, escape(script.name), asyncReciever, sender);
     },
 
-    getScript: function (node, name) {
+    getScript: function (thing, name) {
         for (var scriptKey in scriptsService.scripts) {
-            if ((scriptsService.scripts[scriptKey].node === node) && (scriptsService.scripts[scriptKey].name === name)) {
+            if ((scriptsService.scripts[scriptKey].thing === thing) && (scriptsService.scripts[scriptKey].name === name)) {
                 return scriptsService.scripts[scriptKey];
             }
         }
@@ -8628,7 +8628,7 @@ var scriptsService = {
 
     pushScript: function (script) {
         for (var scriptKey in scriptsService.scripts) {
-            if ((scriptsService.scripts[scriptKey].node === script.node) && (scriptsService.scripts[scriptKey].name === script.name)) {
+            if ((scriptsService.scripts[scriptKey].thing === script.thing) && (scriptsService.scripts[scriptKey].name === script.name)) {
                 scriptsService.scripts[scriptKey] = script;
                 scriptsService.doOnChange(scriptsService.scripts[scriptKey]);
                 return;
@@ -8640,10 +8640,10 @@ var scriptsService = {
 
     },
 
-    parseScripts: function (httpResult, node) {
+    parseScripts: function (httpResult, thing) {
 
         for (var scriptKey in scriptsService.scripts) {
-            if ((scriptsService.scripts[scriptKey].node === node)) {
+            if ((scriptsService.scripts[scriptKey].thing === thing)) {
                 scriptsService.scripts[scriptKey].deleted = true; //все удалены перед началом парсинга
             }
         }
@@ -8664,7 +8664,7 @@ var scriptsService = {
                         scriptsService.pushScript(script);
                     }
 
-                    script = createScript(node);
+                    script = createScript(thing);
                     script.name = recievedScripts[i].split(":")[1];
                 }
                 else {
@@ -8689,7 +8689,7 @@ var scriptsService = {
         while (!deleted) {
             deleted = true;
             for (var scriptKey in scriptsService.scripts) { //удаляем удаленные на стороне ноды 
-                if ((scriptsService.scripts[scriptKey].node === node)) {
+                if ((scriptsService.scripts[scriptKey].thing === thing)) {
                     if (scriptsService.scripts[scriptKey].deleted === true) {
                         this.doOnDelete(scriptsService.scripts[scriptKey]);
                         scriptsService.scripts.splice(scriptKey, 1);
@@ -8746,12 +8746,12 @@ OWLOS распространяется в надежде, что она буде
 
 function defaultWebProp() {
     return {
-        language: "ua",
+        language: "en",
         speak: false,
         voice: 0,
         widgetssize: 150,
         dashboards: [],
-        nodes: []
+        things: []
     };
 }
 
@@ -8838,12 +8838,12 @@ var config = {
         config.doOnChange();
     },
 
-    addNode: function (_host, _nodenickname) {
-        if (this.getNodeByHost(_host) != undefined) return false;
-        var node = {
+    addThing: function (_host, _thingnickname) {
+        if (this.getThingByHost(_host) != undefined) return false;
+        var thing = {
             host: _host,
-            nodenickname: _nodenickname,
-            nodeRefreshInterval: 20000,
+            thingnickname: _thingnickname,
+            thingRefreshInterval: 20000,
             //-------------------------------------------------------------------------------------------------------------
             //сетевое состояние модуля - онлайн, офлайн, переподсоединение ("в работе"), ошибка --> по умолчанию онлайн
             //NOTE: у каждого свойства есть свое сетевое состояние и связанные события - это глобальный флаг для всех драйвер и элементов UI
@@ -8868,12 +8868,12 @@ var config = {
                 }
                 this.networkStatusListners.push(event = { event: _event, sender: _sender });
             },
-            nodeRefresh(node) {
-                drivers.refresh(node);
-                pins.refresh(node);
-                driverPins.refresh(node);
-                accessableDrivers.refresh(node);
-                scriptsService.refresh(node);
+            thingRefresh(thing) {
+                drivers.refresh(thing);
+                pins.refresh(thing);
+                driverPins.refresh(thing);
+                accessableDrivers.refresh(thing);
+                scriptsService.refresh(thing);
             },
             drivers: [],
             pins: [],
@@ -8881,16 +8881,16 @@ var config = {
             accessableDrivers: [],
 
         }
-        node.nodeRefresh(node);
-        setInterval(node.nodeRefresh(node), node.nodeRefreshInterval, node);
-        configProperties.nodes.push(node);
+        thing.thingRefresh(thing);
+        setInterval(thing.thingRefresh(thing), thing.thingRefreshInterval, thing);
+        configProperties.things.push(thing);
         config.doOnChange();
         return true;
     },
-    getNodeByHost: function (_host) {
-        for (var node in configProperties.nodes) {
-            if (configProperties.nodes[node].host == _host) {
-                return configProperties.nodes[node];
+    getThingByHost: function (_host) {
+        for (var thing in configProperties.things) {
+            if (configProperties.things[thing].host == _host) {
+                return configProperties.things[thing];
             }
         }
         return undefined;
@@ -8919,16 +8919,16 @@ var config = {
                 }
                 //check 
                 if (sender.getDashboardById("main") != undefined) {
-                    var tempNodes = [];
-                    for (var nodeKey in configProperties.nodes) {
-                        if (configProperties.nodes[nodeKey].nodeRefreshInterval == undefined) {
-                            configProperties.nodes[nodeKey].nodeRefreshInterval = 20000;
+                    var tempThings = [];
+                    for (var thingKey in configProperties.things) {
+                        if (configProperties.things[thingKey].thingRefreshInterval == undefined) {
+                            configProperties.things[thingKey].thingRefreshInterval = 20000;
                         }
-                        var tempNode = {
-                            id: configProperties.nodes[nodeKey].id,
-                            host: configProperties.nodes[nodeKey].host,
-                            nodeRefreshInterval: configProperties.nodes[nodeKey].nodeRefreshInterval,
-                            nodenickname: configProperties.nodes[nodeKey].nodenickname,
+                        var tempThing = {
+                            id: configProperties.things[thingKey].id,
+                            host: configProperties.things[thingKey].host,
+                            thingRefreshInterval: configProperties.things[thingKey].thingRefreshInterval,
+                            thingnickname: configProperties.things[thingKey].thingnickname,
                             _networkStatus: NET_OFFLINE,
                             drivers: [],
                             pins: [],
@@ -8955,23 +8955,23 @@ var config = {
                                 }
                                 this.networkStatusListners.push(event = { event: _event, sender: _sender });
                             },
-                            nodeRefresh(node) {
-                                drivers.refresh(node);
-                                pins.refresh(node);
-                                driverPins.refresh(node);
-                                accessableDrivers.refresh(node);
-                                scriptsService.refresh(node);
+                            thingRefresh(thing) {
+                                drivers.refresh(thing);
+                                pins.refresh(thing);
+                                driverPins.refresh(thing);
+                                accessableDrivers.refresh(thing);
+                                scriptsService.refresh(thing);
                             }
 
                         }
-                        tempNode.nodeRefresh(tempNode);
-                        setInterval(tempNode.nodeRefresh, tempNode.nodeRefreshInterval, tempNode);
-                        tempNodes.push(tempNode);
+                        tempThing.thingRefresh(tempThing);
+                        setInterval(tempThing.thingRefresh, tempThing.thingRefreshInterval, tempThing);
+                        tempThings.push(tempThing);
                     }
-                    configProperties.nodes = tempNodes;
+                    configProperties.things = tempThings;
 
-                    //First node all time is boardhost 
-                    configProperties.nodes[0].host = boardhost;
+                    //First thing all time is boardhost 
+                    configProperties.things[0].host = boardhost;
                     result = true;
 
                     sender.doOnLoad();
@@ -8994,7 +8994,7 @@ var config = {
         configProperties = defaultWebProp();
         addToLogNL(getLang("restoredefault"), 1);
         config.addDashboard("main");
-        config.addNode(boardhost, "local");
+        config.addThing(boardhost, "local");
         return config.save();
     },
     // асинхронный метод сохранения внесенных изменений в настройки (передача строки разбитой на небольшие части в ноду) 
@@ -9008,23 +9008,23 @@ var config = {
             saveButton.hidden = true;
         }
         for (var key in configProperties) {
-            if (key != "nodes") {
+            if (key != "things") {
                 tempProp[key] = configProperties[key];
             }
         }
-        for (var node in configProperties.nodes) {
-            var jsonNode = {
-                id: configProperties.nodes[node].id,
-                host: configProperties.nodes[node].host,
-                nodeRefreshInterval: configProperties.nodes[node].nodeRefreshInterval,
-                nodenickname: configProperties.nodes[node].nodenickname,
+        for (var thing in configProperties.things) {
+            var jsonThing = {
+                id: configProperties.things[thing].id,
+                host: configProperties.things[thing].host,
+                thingRefreshInterval: configProperties.things[thing].thingRefreshInterval,
+                thingnickname: configProperties.things[thing].thingnickname,
                 _networkStatus: NET_OFFLINE,
                 drivers: [],
                 pins: [],
                 driversPins: [],
                 accessableDrivers: []
             }
-            tempProp.nodes.push(jsonNode);
+            tempProp.things.push(jsonThing);
         }
         //конвертирование в формат JSON
         var stringifyConfig = JSON.stringify(tempProp);
@@ -9275,7 +9275,7 @@ OWLOS распространяется в надежде, что она буде
 // Этот класс реализует объектную модель драйвер подключенных к микроконтроллеру.
 // 
 // Перед началом изучения этого класса - вызовите API getalldriversproperties и изучите формат передачи
-// свойств драйвер: http://yournodeurl:yournodeport/getalldriversproperties (например http://192.168.1.10:8084/getalldriversproperties)
+// свойств драйвер: http://yourthingurl:yourthingport/getalldriversproperties (например http://192.168.1.10:8084/getalldriversproperties)
 
 // Примечания:
 // "парсинг" - синтаксический анализ https://ru.wikipedia.org/wiki/%D0%A1%D0%B8%D0%BD%D1%82%D0%B0%D0%BA%D1%81%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9_%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7
@@ -9359,36 +9359,36 @@ var drivers = {
     //запросить свойства драйвер, если удачно - распарсить результат, обновить свойства объектов с драйверами (drivers[])
     //асинхронный
     //вызывается внешним кодом, обычно с интервалом 10-15 секунд (смотрите index.js)
-    refresh: function (node) {
-        node.networkStatus = NET_REFRESH;
+    refresh: function (thing) {
+        thing.networkStatus = NET_REFRESH;
         // асинхронный HTTP запрос
         // this.refreshResult - метод который будет вызван HTTPClient-ом по окончанию асинхронного запроса
         // this - ссылка на экземпляр этого объекта        
-        httpGetAsyncWithReciever(node.host + "getalldriversproperties", this.refreshResult, node);
+        httpGetAsyncWithReciever(thing.host + "getalldriversproperties", this.refreshResult, thing);
     },
 
     //вызывается асинхронным HTTPClient по окончанию запроса, указан как параметр в httpGetAsyncWithReciever, смотрите this.refresh()
     //httpResult - результат запроса
     //asyncReciever - ссылка на объект сделавший запрос (этот метод будет вызван в контексте другого потока, для него this. это другой объект - занимательный мир JS)
     //мы не можем использовать this, для обращения к методам этого объекта, поэтому заведомо передали себе ссылку на себя "asyncReciever"
-    refreshResult: function (httpResult, node) {
+    refreshResult: function (httpResult, thing) {
         //HTTPClient добавляет строку "%error" в начало Response если запрос не был завешен HTTPCode=200 или произошел TimeOut
         if (!httpResult.indexOf("%error") == 0) {
-            node.networkStatus = NET_ONLINE;
+            thing.networkStatus = NET_ONLINE;
             //если запрос был выполнен удачно, парсим новые данные об драйверах, изменяем свойства drivers[] и добавляем новые driver если они появились
             //перед изучением парсинга, посмотрите результат API getalldriversproperties как текст
             //!-> asyncReciever это этот же класс drivers!
-            drivers.parseDrivers(httpResult, node);
+            drivers.parseDrivers(httpResult, thing);
 
         }
         else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
             if (httpResult.indexOf("reponse") != -1) {
-                node.networkStatus = NET_ERROR;
+                thing.networkStatus = NET_ERROR;
             }
             else {
-                node.networkStatus = NET_OFFLINE;
+                thing.networkStatus = NET_OFFLINE;
             }
-            node.parsedDrivers = "";
+            thing.parsedDrivers = "";
         }
     },
     //-------------------------------------------------------------------------------------------------------------
@@ -9421,11 +9421,11 @@ var drivers = {
     },
     //получить объект драйвера по его ID
     getDriverById: function (driverId, host) {
-        var node = config.getNodeByHost(host);
-        if (node == undefined) return undefined;
-        for (var i = 0; i < node.drivers.length; i++) {
-            if (node.drivers[i]._id === driverId) {
-                return node.drivers[i];
+        var thing = config.getThingByHost(host);
+        if (thing == undefined) return undefined;
+        for (var i = 0; i < thing.drivers.length; i++) {
+            if (thing.drivers[i]._id === driverId) {
+                return thing.drivers[i];
             }
         }
         return undefined;
@@ -9434,29 +9434,29 @@ var drivers = {
     //парсинг (синтаксический разбор) свойств драйвер прошедших от микроконтроллер - смотрите refresh()
     //этот метод будет вызываться множество раз, по этой причине он не только создает драйвера и их свойства
     //а так же проверяет было ли драйвер создано и как изменились его свойства после предыдущего парсинга
-    parseDrivers: function (httpResult, node) {
+    parseDrivers: function (httpResult, thing) {
         //первичный парсинг, помещаем строку пришедшую от HTTPClient в массив строк, разделяя по "\n"
-        node.recievedDriversProperties = httpResult.split("\n");
+        thing.recievedDriversProperties = httpResult.split("\n");
 
-        if (node.recievedDriversProperties !== "") {//если первичный парсинг удался
+        if (thing.recievedDriversProperties !== "") {//если первичный парсинг удался
 
             var driver = undefined; //сбрасываем будущий объект со свойствами драйвера 
 
-            for (var i = 0; i < node.recievedDriversProperties.length; i++) {//перечисляем все строки в HTTPResult 
-                if (node.recievedDriversProperties[i] === "") continue; //если строка пуста, берем следующею
+            for (var i = 0; i < thing.recievedDriversProperties.length; i++) {//перечисляем все строки в HTTPResult 
+                if (thing.recievedDriversProperties[i] === "") continue; //если строка пуста, берем следующею
                 //--> разбор драйвер
-                if (node.recievedDriversProperties[i].indexOf("properties for:") == 0) { //если заголовок драйвера найден                    
+                if (thing.recievedDriversProperties[i].indexOf("properties for:") == 0) { //если заголовок драйвера найден                    
 
                     if (driver != undefined) {
                         this.onDriverLoaded(driver);
                     }
                     driver = undefined;
                     //извлекаем ID очередного драйвера
-                    currentId = node.recievedDriversProperties[i].split(":")[1];
+                    currentId = thing.recievedDriversProperties[i].split(":")[1];
                     //пробуем отыскать драйвер с таким ID среди уже существующих 
-                    for (var j = 0; j < node.drivers.length; j++) {
-                        if (node.drivers[j]._id === currentId) { //драйвер с таким ID существует
-                            driver = node.drivers[j]; //указываем существующее драйвер как обрабатываемое в текущей итерации 
+                    for (var j = 0; j < thing.drivers.length; j++) {
+                        if (thing.drivers[j]._id === currentId) { //драйвер с таким ID существует
+                            driver = thing.drivers[j]; //указываем существующее драйвер как обрабатываемое в текущей итерации 
                             driver._new = false;
                             newDriver = false; //указываем для текущее драйвер уже существует
                             break; //прекращаем поиск, драйвер найдено
@@ -9464,7 +9464,7 @@ var drivers = {
                     }
 
                     if (driver == undefined) {//если драйвер с текущем ID еще не существуем 
-                        driver = this.addDriver(currentId, node);
+                        driver = this.addDriver(currentId, thing);
                     }
                 }
                 //--> разбор свойств драйвер
@@ -9486,7 +9486,7 @@ var drivers = {
                     //if not read only - write accessable
 
                     //вторичный парсинг, помещаем строку в массив, разделяя по "=", первый элемент название, второй значение и тип
-                    var parsedProp = node.recievedDriversProperties[i].split("=");
+                    var parsedProp = thing.recievedDriversProperties[i].split("=");
                     if (parsedProp.length < 2) continue; //не удалось распарсить свойство
                     //забираем название свойства
                     var propertyName = parsedProp[0];
@@ -9518,12 +9518,12 @@ var drivers = {
         }
     }, //ENDOF parse drivers
 
-    addDriver: function (currentId, node) {
+    addDriver: function (currentId, thing) {
         driver = { //создаем новый объект представляющий драйвер
             _id: currentId, //навастриваем уникальный ID драйвера, для идентификации объекта с драйверм в будущем
             _new: true,
-            _nodenickname: node.nodenickname,
-            _host: node.host,
+            _thingnickname: thing.thingnickname,
+            _host: thing.host,
             //создаем внутри объекта драйвера, свойства и методы для обслуживания сторонних объектов желающих подписаться на
             //событие - создания нового свойства у драйвера, смотрите newDriverListners[] в классе drivers для большей информации
             //массив подписчиков на newProperty event
@@ -9537,7 +9537,7 @@ var drivers = {
             },
         }; //новый объект для драйвера сформирован
         //добавляем объект драйвер в список драйвер для объекта drivers
-        node.drivers.push(driver);
+        thing.drivers.push(driver);
         //произошло событие newDriver -> вызываем всех его подписчиков(точнее вызываем методы которые подписчики предоставили ранее, смотрите: addNewDriverListner )
         for (var k = 0; k < this.newDriverListners.length; k++) {
             this.newDriverListners[k].event(this.newDriverListners[k].sender, driver);
@@ -9750,11 +9750,11 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 var driversUI = {
-    node: undefined,
+    thing: undefined,
     createDialog: undefined,
 
-    addDriver(node) {
-        driversUI.node = node;
+    addDriver(thing) {
+        driversUI.thing = thing;
 
         driversUI.createDialog = createModalDialog(getLang("createdriverdialog"), "");
         driversUI.createDialog.appendSelect(createDialogSelect("drivertype", getLang("drivertype")));
@@ -9762,9 +9762,9 @@ var driversUI = {
         var driverSelect = driversUI.createDialog.getChild("drivertype");
         driverSelect.onchange = driversUI.onDriverSelectChange;
 
-        for (var i = 0; i < driversUI.node.accessableDrivers.length; i++) {
-            var driverSelectOption = driverSelect.dialogSelect.appendOption(driversUI.node.accessableDrivers[i].name);
-            driverSelectOption.driver = driversUI.node.accessableDrivers[i];
+        for (var i = 0; i < driversUI.thing.accessableDrivers.length; i++) {
+            var driverSelectOption = driverSelect.dialogSelect.appendOption(driversUI.thing.accessableDrivers[i].name);
+            driverSelectOption.driver = driversUI.thing.accessableDrivers[i];
         }
 
         var event = { currentTarget: driverSelect }
@@ -9807,7 +9807,7 @@ var driversUI = {
                 driversUI.createDialog.appendSelect(createDialogSelect("pinselect" + i, "pin " + String(i + 1) + driver["pintypedecoded" + i]));
                 var pinSelect = driversUI.createDialog.getChild("pinselect" + i);
 
-                var pins = getFreePins(driversUI.node, driver["pintype" + i]);
+                var pins = getFreePins(driversUI.thing, driver["pintype" + i]);
                 if (pins.length > 0) {
                     pinSelect.dialogSelect.appendOption(getLang("PleaseSelectPin"));
                     for (var j = 0; j < pins.length; j++) {
@@ -9828,7 +9828,7 @@ var driversUI = {
         }
     },
 
-    doAddDriverClick: function (masterNodeDialog) {
+    doAddDriverClick: function (masterThingDialog) {
         var driverSelect = document.getElementById("drivertype");
         var driverSelectOption = driverSelect.options[driverSelect.selectedIndex];
         var driver = driverSelectOption.driver;
@@ -9849,7 +9849,7 @@ var driversUI = {
         //http://192.168.1.9:8084/adddriver?type=7&id=lcd1&pins=D21,D22,ADDR0x3F,VCC5,GND
         pinsString = "type=" + driver.type + "&id=" + document.getElementById("driverid").value + "&pins=" + pinsString;
         //TODO: decode Type from name 
-        var httpResult = addDriver(driversUI.node.host, pinsString);
+        var httpResult = addDriver(driversUI.thing.host, pinsString);
 
         if (httpResult == 1) {
 
@@ -9866,7 +9866,7 @@ var driversUI = {
             }
             return true;
         }
-        masterNodeDialog.errorLabel.innerText = httpResult;
+        masterThingDialog.errorLabel.innerText = httpResult;
         return false;
     },
 }
@@ -10488,17 +10488,17 @@ OWLOS распространяется в надежде, что она буде
 var langua = "prepareUnit=Підготовка інтерфейсу користувача\n" +
     "dashboardTab=Панель пристроїв\n" +
     "OK=Застосувати\n" +
-    "nodeTab=Модуль\n" +
+    "thingTab=Модуль\n" +
     "settingsTab=Вузли\n" +
     "filesTab=Файли\n" +
     "consoleTab=Консоль\n" +
     "network=Мережа\n" +
-    "node=Модуль\n" +
+    "thing=Модуль\n" +
     "esp=Esp\n" +
     "reset=Скидання\n" +
     "cancel=Скасувати\n" +
     "areYouSure=Ви впевнені?\n" +
-    "resetnode=Перезавантажити модуль\n" +
+    "resetthing=Перезавантажити модуль\n" +
     "autorefreshoff=Автооновлення: вимкн.\n" +
     "autorefreshon=Автообновление: вкл.\n" +
     "name=Ім'я\n" +
@@ -10518,16 +10518,16 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "dt_next=Наступна\n" +
     "dt_previous=Попередня\n" +
     "adddriver=Додати драйвер\n" +
-    "addnode=Додати вузол\n" +
-    "addnodeheader=Додати вузол\n" +
-    "addnodehost=Адреса вузла в мережі\n" +
-    "addnodenickname=Ім'я вузла\n" +
-    "addnodebutton=Додати\n" +
-    "addnodeerror_hostempty=Адреса вузла не може бути порожньою\n" +
-    "addnodeerror_hostnoturl=Адреса вузла не відповідає формату HTTP(S) URL\n" +
-    "addnodeerror_nicknameempty=Iм'я не може бути порожнім\n" +
-    "addnodeerror_cantsaveconfig=Неможливо зберегти налаштування в вузлі\n" +
-    "addnodeerror_cantaddnode=Неможливо додати вузол\n" +
+    "addthing=Додати вузол\n" +
+    "addthingheader=Додати вузол\n" +
+    "addthinghost=Адреса вузла в мережі\n" +
+    "addthingnickname=Ім'я вузла\n" +
+    "addthingbutton=Додати\n" +
+    "addthingerror_hostempty=Адреса вузла не може бути порожньою\n" +
+    "addthingerror_hostnoturl=Адреса вузла не відповідає формату HTTP(S) URL\n" +
+    "addthingerror_nicknameempty=Iм'я не може бути порожнім\n" +
+    "addthingerror_cantsaveconfig=Неможливо зберегти налаштування в вузлі\n" +
+    "addthingerror_cantaddthing=Неможливо додати вузол\n" +
     "upload=Завантажити\n" +
     "files=Файли\n" +
     "uploadfiles=Завантажити файли до вузла\n" +
@@ -10604,7 +10604,7 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "firmwarebuildnumber=Збірка\n" +
     "updateuibutton=Оновити UI\n" +
     "updatefirmwarebutton=Оновити прошивку\n" +
-    "updatenode=Оновлення\n" +
+    "updatething=Оновлення\n" +
     "updateuibutton=Почати оновлення UI\n" +
     "firmwarebutton=Почати оновлення прошивки\n" +
     "updatefirmware=Після закінчення оновлення прошивки, модуль перезавантажиться автоматично. UI перезавантажиться через 30 секунд. Використовуйте монітор порту для більшої інформації\n" +
@@ -10613,10 +10613,10 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "dashboardedit=Режим редагування\n" +
     "dashboardaddwidget=Додати віджет\n" +
     "dashboardaddwidgetbutton=Додати\n" +
-    "nodeslist=Список вузлів/драйверів\n" +
+    "thingslist=Список вузлів/драйверів\n" +
     "driversporplist=Властивості драйвера\n" +
     "widgetslist=Список виджетів для обраної властивості\n" +
-    "networknodeprop=Мережеві налаштування ноди\n" +
+    "networkthingprop=Мережеві налаштування ноди\n" +
     "restfulavailable=Включити підтримку Web (RESTful)\n" +
     "webserverlogin=Логін для Web сервера\n" +
     "webserverpwd=Пароль для Web сервера\n" +
@@ -10633,7 +10633,7 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "otaid=OTA ID\n" +
     "otaport=OTA порт\n" +
     "otapassword=Клієнтський пароль\n" +
-    "wifinodeprop=Налаштування WiFi модуля\n" +
+    "wifithingprop=Налаштування WiFi модуля\n" +
     "wifiaccesspointavailable=Включити режим WiFi точки доступу\n" +
     "wifiaccesspointssid=SSID для точки доступу\n" +
     "wifiappassword=Пароль для точки доступу\n" +
@@ -10641,10 +10641,10 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "wifissid=SSID WiFi роутера\n" +
     "wifipassword=Пароль WiFi роутера\n" +
     "wifiip=Клієнтський IP\n" +
-    "systemnodeprop=Властивості системи\n" +
+    "systemthingprop=Властивості системи\n" +
     "updatehost=URL сервера оновлень\n" +
-    "updatenodeprop=Панель оновлень прошивки\n" +
-    "nodeproperties=Властивості вузла\n" +
+    "updatethingprop=Панель оновлень прошивки\n" +
+    "thingproperties=Властивості вузла\n" +
     "drivers=Драйвери\n" +
     "adddriverdigalog=Додати драйвер до вузлу\n" +
     "drivertype=Тип драйвера\n" +
@@ -10674,7 +10674,7 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "сhangessaved=Зміни збережені \n" +
     "savechangeserror=Помилка. Зміни не збережені. Спробуйте ще раз \n" +
     "savingchanges=Збереження змін\n" +
-    "nodeselect=Виберіть вузол\n" +
+    "thingselect=Виберіть вузол\n" +
     "driverselect=Виберіть драйвер\n" +
     "propselect=Виберіть властивість\n" +
     "widgetselect=Виберіть віджет\n" +
@@ -10684,7 +10684,7 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
     "tooglewidgetsmode=Переключити режим віджетів\n" +
     "addwidget=Додати віджет\n" +
     "createdriverdialog=Додати драйвер\n" +
-    "addnodename=Додати вузол\n" +
+    "addthingname=Додати вузол\n" +
     "size=розмір\n" +
     "radialwidget=Radial\n" +
     "language=ukraine\n";
@@ -10692,21 +10692,21 @@ var langua = "prepareUnit=Підготовка інтерфейсу корист
 
 var langen = "prepareUnit=prepare UI, please wait...\n" +
     "OK=Confirm\n" +
-    "nodeselect=1) Please select node\n" +
-    "driverselect=2) Select driver on selected node\n" +
+    "thingselect=1) Please select thing\n" +
+    "driverselect=2) Select driver on selected thing\n" +
     "propselect=3) Select property of selected driver\n" +
     "widgetselect=4) Select widget to visualize selected driver property\n" +
-    "nodeTab=Node\n" +
-    "settingsTab=Nodes\n" +
+    "thingTab=Thing\n" +
+    "settingsTab=Things\n" +
     "filesTab=Files\n" +
     "consoleTab=Console\n" +
     "network=Network\n" +
-    "node=Node\n" +
+    "thing=Thing\n" +
     "esp=ESP\n" +
     "reset=Reset\n" +
     "cancel=Сancel\n" +
     "areYouSure=Are you sure?\n" +
-    "resetnode=Reset node\n" +
+    "resetthing=Reset thing\n" +
     "autorefreshoff=Auto refresh: OFF\n" +
     "autorefreshon=Auto refresh: ON\n" +
     "name=Name\n" +
@@ -10771,11 +10771,11 @@ var langen = "prepareUnit=prepare UI, please wait...\n" +
     "firmwarebuildnumber=Build\n" +
     "updateuibutton=Update UI\n" +
     "updatefirmwarebutton=Update Firmware\n" +
-    "updatenode=Update\n" +
+    "updatething=Update\n" +
     "updateuibutton=Starting update UI\n" +
     "firmwarebutton=Starting update Firmware\n" +
-    "updatefirmware=After firmware is updating, the node self restarting. Please wait 30 sec, before the page after reloading. See Serial Monitor for more information.\n" +
-    "networknodeprop=Node network properties\n" +
+    "updatefirmware=After firmware is updating, the thing self restarting. Please wait 30 sec, before the page after reloading. See Serial Monitor for more information.\n" +
+    "networkthingprop=Thing network properties\n" +
     "restfulavailable=Enable Web(RESTful) supporting\n" +
     "webserverlogin=Web server login\n" +
     "webserverpwd=Web server password\n" +
@@ -10792,7 +10792,7 @@ var langen = "prepareUnit=prepare UI, please wait...\n" +
     "otaid=OTA ID\n" +
     "otaport=OTA port\n" +
     "otapassword=OTA client password\n" +
-    "wifinodeprop=Node WiFi properties\n" +
+    "wifithingprop=Thing WiFi properties\n" +
     "wifiaccesspointavailable=Enable WiFi Access Point mode \n" +
     "wifiaccesspointssid=WiFi Access Point SSID\n" +
     "wifiappassword=WiFi Access Point password\n" +
@@ -10800,15 +10800,15 @@ var langen = "prepareUnit=prepare UI, please wait...\n" +
     "wifissid=WiFi router SSID\n" +
     "wifipassword=WiFi router password\n" +
     "wifiip=Client IP\n" +
-    "systemnodeprop=Node system properties\n" +
+    "systemthingprop=Thing system properties\n" +
     "updatehost=Update server URL\n" +
-    "updatenodeprop=Node update panel\n" +
-    "nodeproperties=Node properties\n" +
-    "addnodeerror_hostempty=Host can't be empty\n" +
-    "addnodeerror_hostnoturl=Host is not HTTP(S) URL\n" +
-    "addnodeerror_nicknameempty=Name can't be empty\n" +
-    "addnodeerror_cantsaveconfig=Can't save configuration to node\n" +
-    "addnodeerror_cantaddnode=Can't add node\n" +
+    "updatethingprop=Thing update panel\n" +
+    "thingproperties=Thing properties\n" +
+    "addthingerror_hostempty=Host can't be empty\n" +
+    "addthingerror_hostnoturl=Host is not HTTP(S) URL\n" +
+    "addthingerror_nicknameempty=Name can't be empty\n" +
+    "addthingerror_cantsaveconfig=Can't save configuration to thing\n" +
+    "addthingerror_cantaddthing=Can't add thing\n" +
     "drivertype=Driver type\n" +
     "driverid=Driver ID\n" +
     "driveridplaceholder=In small latin letters without spaces\n" +
@@ -10818,11 +10818,11 @@ var langen = "prepareUnit=prepare UI, please wait...\n" +
     "checkchangedialog=Apply this changes\n" +
     "applycheck=Apply\n" +
     "dashboardTab=Dashboard\n" +
-    "addnode=Add node\n" +
-    "addnodeheader=Adding node\n" +
-    "addnodehost=Node network address\n" +
-    "addnodenickname=Node name\n" +
-    "addnodebutton=Add\n" +
+    "addthing=Add thing\n" +
+    "addthingheader=Adding thing\n" +
+    "addthinghost=Thing network address\n" +
+    "addthingnickname=Thing name\n" +
+    "addthingbutton=Add\n" +
     "temperature=Temperature\n" +
     "humidity=Humidity\n" +
     "dht=Temperature & Humidity Sensor(DHT)\n" +
@@ -10858,12 +10858,12 @@ var langen = "prepareUnit=prepare UI, please wait...\n" +
     "dashboardedit=Edit mode\n" +
     "dashboardaddwidget=Add widget\n" +
     "dashboardaddwidgetbutton=Add\n" +
-    "nodeslist=List of nodes/drivers \n" +
+    "thingslist=List of things/drivers \n" +
     "driversporplist=Drivers properties\n" +
     "widgetslist=List of compatible widgets\n" +
     "autoaddwidget=Add widget\n" +
     "drivers=Drivers\n" +
-    "adddriverdigalog=Adding driver to node\n" +
+    "adddriverdigalog=Adding driver to thing\n" +
     "showproperties=Widget properties\n" +
     "setallwidgetspropbutton=Apply to all\n" +
     "setpropbutton=Apply\n" +
@@ -10886,17 +10886,17 @@ var langen = "prepareUnit=prepare UI, please wait...\n" +
     "language=english\n";
 
 var langru = "prepareUnit=Подготовка интерфейса пользователя\n" +
-    "nodeTab=Нода\n" +
+    "thingTab=Нода\n" +
     "settingsTab=Узлы\n" +
     "filesTab=Файлы\n" +
     "consoleTab=Консоль\n" +
     "network=Сетъ\n" +
-    "node=Нода\n" +
+    "thing=Нода\n" +
     "esp=ESP\n" +
     "reset=Сброс\n" +
     "cancel=Отмена\n" +
     "areYouSure=Вы уверены?\n" +
-    "resetnode=Перезагрузить ноду\n" +
+    "resetthing=Перезагрузить ноду\n" +
     "autorefreshoff=Автообновление: выкл.\n" +
     "autorefreshon=Автообновление: вкл\n" +
     "name=Имя\n" +
@@ -10983,7 +10983,7 @@ var langru = "prepareUnit=Подготовка интерфейса пользо
     "firmwarebuildnumber=Сборка\n" +
     "updateuibutton=Обновить UI\n" +
     "updatefirmwarebutton=Обновить прошивку\n" +
-    "updatenode=Обновление\n" +
+    "updatething=Обновление\n" +
     "updateuibutton=Начать обновление UI\n" +
     "firmwarebutton=Начать обновление прошивки\n" +
     "updatefirmware=После окончания обновления прошивки, модуть перезапустится автоматически. UI перезагрузится через 30 секунд. Используйте монитор порта для большей информации\n" +
@@ -11003,7 +11003,7 @@ var langru = "prepareUnit=Подготовка интерфейса пользо
     "otaid=OTA ID\n" +
     "otaport=OTA порт\n" +
     "otapassword=Клиентский пароль\n" +
-    "wifinodeprop=Настройки WiFi модуля\n" +
+    "wifithingprop=Настройки WiFi модуля\n" +
     "wifiaccesspointavailable=Включить режим WiFi точки доступа\n" +
     "wifiaccesspointssid=SSID для точки доступа\n" +
     "wifiappassword=Пароль для точки доступа\n" +
@@ -11011,25 +11011,25 @@ var langru = "prepareUnit=Подготовка интерфейса пользо
     "wifissid=SSID WiFi роутера\n" +
     "wifipassword=Пароль WiFi роутера\n" +
     "wifiip=Клиентский IP\n" +
-    "systemnodeprop=Свойства системы\n" +
+    "systemthingprop=Свойства системы\n" +
     "updatehost=URL сервера обновлений\n" +
-    "updatenodeprop=Панель обновлений прошивки\n" +
-    "addnodeerror_hostempty=Хост не может быть пуст\n" +
-    "addnodeerror_hostnoturl=хост не соответствует HTTP(S) URL\n" +
-    "addnodeerror_nicknameempty=Имя не может быть пустым\n" +
-    "addnodeerror_cantsaveconfig=Невозможно сохранить настройки в узле\n" +
-    "addnodeerror_cantaddnode=Невозможно добавить ноду\n" +
+    "updatethingprop=Панель обновлений прошивки\n" +
+    "addthingerror_hostempty=Хост не может быть пуст\n" +
+    "addthingerror_hostnoturl=хост не соответствует HTTP(S) URL\n" +
+    "addthingerror_nicknameempty=Имя не может быть пустым\n" +
+    "addthingerror_cantsaveconfig=Невозможно сохранить настройки в узле\n" +
+    "addthingerror_cantaddthing=Невозможно добавить ноду\n" +
     "drivertype=Тип драйвера\n" +
     "driverid=ID драйвера\n" +
     "driveridplaceholder=Маленькими латинскими буквами без пробелов\n" +
     "pin=Контактный разьем \n" +
     "adddriverbutton=Добавить\n" +
     "dashboardTab=Панель устройств\n" +
-    "addnode=Добавить узел\n" +
-    "addnodeheader=Добавить узел\n" +
-    "addnodehost=Адрес узла в сети\n" +
-    "addnodenickname=Имя узла\n" +
-    "addnodebutton=Добавить\n" +
+    "addthing=Добавить узел\n" +
+    "addthingheader=Добавить узел\n" +
+    "addthinghost=Адрес узла в сети\n" +
+    "addthingnickname=Имя узла\n" +
+    "addthingbutton=Добавить\n" +
     "dht=Датчик температуры и влажности (DHT)\n" +
     "sensor=Датчик \n" +
     "actuator=Цифровое устройство \n" +
@@ -11042,12 +11042,12 @@ var langru = "prepareUnit=Подготовка интерфейса пользо
     "dashboardedit=Режим редактирования\n" +
     "dashboardaddwidget=Добавить виджет\n" +
     "dashboardaddwidgetbutton=Добавить \n" +
-    "nodeslist=Список узлов/драйверов \n" +
+    "thingslist=Список узлов/драйверов \n" +
     "driver=Драйвер\n" +
     "driversporplist=Свойства драйвера\n" +
     "widgetslist=Список виджетов для выбранного свойства\n" +
-    "networknodeprop=Сетевые настройки узла\n" +
-    "nodeproperties=Свойства узла\n" +
+    "networkthingprop=Сетевые настройки узла\n" +
+    "thingproperties=Свойства узла\n" +
     "drivers=Драйвера\n" +
     "adddriverdigalog=Добавить драйвер к узлу\n" +
     "notused=Не используется\n" +
@@ -11072,7 +11072,7 @@ var langru = "prepareUnit=Подготовка интерфейса пользо
     "сhangessaved=Изменения внесены\n" +
     "savechangeserror=Ошибка сохранения изменений. Поробуйте еще раз\n" +
     "savingchanges=Сохранение изменений\n" +
-    "nodeselect=Select node\n" +
+    "thingselect=Select thing\n" +
     "driverselect=Select driver\n" +
     "propselect=Select property\n" +
     "widgetselect=Select widget\n" +
@@ -11082,12 +11082,12 @@ var langru = "prepareUnit=Подготовка интерфейса пользо
     "tooglewidgetsmode=Toogle widgets mode\n" +
     "addwidget=Add widget\n" +
     "createdriverdialog=Add driver\n" +
-    "addnodename=Add node\n" +
+    "addthingname=Add thing\n" +
     "radialwidget=Radial\n" +
     "language=russian\n";
 
 
-var currentLang = "";
+var currentLang = "en";
 var lastLang = "";
 
 function getLang(key) {
@@ -11099,7 +11099,7 @@ function getLang(key) {
             }
         }
         else {
-            currentLang = "ua";
+            currentLang = "en";
         }
 
         if (currentLang == "") {
@@ -11282,9 +11282,9 @@ var BaseWidgetWrapper =
                     this.widget.driverClass.driverProperty = driverProperty;
                 }
             }
-            this.node = config.getNodeByHost(driver._host); //drivers.addNetworkStatusListner(this.onNetworkStatusChange, this);
+            this.thing = config.getThingByHost(driver._host); //drivers.addNetworkStatusListner(this.onNetworkStatusChange, this);
 
-            this.node.addNetworkStatusListner(this.onNetworkStatusChange, this);
+            this.thing.addNetworkStatusListner(this.onNetworkStatusChange, this);
             if (this.driverProperty != undefined)
             {
                 this.driverProperty.addNetworkStatusListner(this.onNetworkStatusChange, this);
@@ -11862,9 +11862,9 @@ var ActuatorWidgetWrapper =
             if (this.widget != undefined) {
                 this.widget.driverClass.driverProperty = driverProperty;
             }
-            this.node = config.getNodeByHost(driver._host); //drivers.addNetworkStatusListner(this.onNetworkStatusChange, this);
+            this.thing = config.getThingByHost(driver._host); //drivers.addNetworkStatusListner(this.onNetworkStatusChange, this);
 
-            this.node.addNetworkStatusListner(this.onNetworkStatusChange, this);
+            this.thing.addNetworkStatusListner(this.onNetworkStatusChange, this);
             this.driverProperty.addNetworkStatusListner(this.onNetworkStatusChange, this);
             this.driverProperty.addValueListner(this.onValueChange, this);
         };
@@ -12002,8 +12002,8 @@ var LCDWidgetWrapper =
             this.driver["backlight"].addValueListner(this.onLightChange, this);
             this.driverProperty = driverProperty;
             this.widget.driverClass.driverProperty = driverProperty;
-            this.node = config.getNodeByHost(driver._host);
-            this.node.addNetworkStatusListner(this.onNetworkStatusChange, this);
+            this.thing = config.getThingByHost(driver._host);
+            this.thing.addNetworkStatusListner(this.onNetworkStatusChange, this);
             this.driverProperty.addNetworkStatusListner(this.onNetworkStatusChange, this);
             this.driverProperty.addValueListner(this.onValueChange, this);
         };
@@ -12419,7 +12419,7 @@ function boot() {
             };
             jQueryScriptLocal.onerror = function () {//если все совсем, совсем плохо - не интернета, не нужных файлов во flash памяти модуля
                 addToLogEnd("...ERROR", 2);
-                addToLogNL("Error booting node, check local node's files..."); //NOTE: мы оборвем процесс загрузки (((
+                addToLogNL("Error booting thing, check local thing's files..."); //NOTE: мы оборвем процесс загрузки (((
             };
 
             jQueryScriptLocal.src = "jquery.min.js";
@@ -12529,9 +12529,9 @@ function loadingScripts(withInternet) {
                                 loadingScript("index.js"); //ядро OWLOS UI, грузится последним, стартует систему
                                 //}
                                 //--> NOTE: код ниже - обратное сворачивание загрузчкив контента (стек загрузки)
-                                //nodePropertiesScript.src = "nodeproperties.js";
-                                //addToLogNL("loading nodeproperties from " + nodePropertiesScript.src);
-                                //document.getElementsByTagName('head')[0].appendChild(nodePropertiesScript);
+                                //thingPropertiesScript.src = "thingproperties.js";
+                                //addToLogNL("loading thingproperties from " + thingPropertiesScript.src);
+                                //document.getElementsByTagName('head')[0].appendChild(thingPropertiesScript);
                             }
                             //--> NOTE: код ниже - обратное сворачивание загрузчкив контента (стек загрузки)
                             baseWidgetScript.src = "basewidget.js";
@@ -12746,7 +12746,7 @@ OWLOS распространяется в надежде, что она буде
 // Этот класс реализует объектную модель понов микроконтроллера.
 // 
 // Перед началом изучения этого класса - вызовите API getpinmap и изучите формат передачи
-// свойств драйвер: http://yournodeurl:yournodeport/getapinmap (например http://192.168.1.10:8084/getapinmap)
+// свойств драйвер: http://yourthingurl:yourthingport/getapinmap (например http://192.168.1.10:8084/getapinmap)
 
 // Примечания:
 // "парсинг" - синтаксический анализ https://ru.wikipedia.org/wiki/%D0%A1%D0%B8%D0%BD%D1%82%D0%B0%D0%BA%D1%81%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9_%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7
@@ -12784,16 +12784,16 @@ const NO_FAMILY = 0;    //пин не имеет семейства
 const I2C_FAMILY = 1;    //пин входит в семейство I2C
 const VCC_FAMILY = 2;    //пин входит в семейство пинов питания 	   
 
-function getFreePins(node, pinMask) {
+function getFreePins(thing, pinMask) {
     var pins = [];
     //TEMP: ESP8266 VCC5 patch
     if (pinMask == VCC5_MASK) {
         pinMask = pinMask | VCC33_MASK;
     }
-    for (var i = 0; i < node.pins.length; i++) {
-        var valid = (node.pins[i].pintypes & pinMask); // | (node.pins[i].extenedpintypes & pinMask);
+    for (var i = 0; i < thing.pins.length; i++) {
+        var valid = (thing.pins[i].pintypes & pinMask); // | (thing.pins[i].extenedpintypes & pinMask);
         if (valid > 0) {
-            pins.push(node.pins[i]);
+            pins.push(thing.pins[i]);
         }
     }
     return pins;
@@ -12823,45 +12823,45 @@ var pins = {
         pins._ondelete.push(ondelete);
     },
     //вызывается внешним кодом (смотрите index.js)
-    refresh: function (node) {
-        node.networkStatus = NET_REFRESH;
+    refresh: function (thing) {
+        thing.networkStatus = NET_REFRESH;
         // асинхронный HTTP запрос
         // this.refreshResult - метод который будет вызван HTTPClient-ом по окончанию асинхронного запроса
         // this - ссылка на экземпляр этого объекта        
-        httpGetAsyncWithReciever(node.host + "getpinmap", this.refreshResult, node);
+        httpGetAsyncWithReciever(thing.host + "getpinmap", this.refreshResult, thing);
     },
 
     //вызывается асинхронным HTTPClient по окончанию запроса, указан как параметр в httpGetAsyncWithReciever, смотрите this.refresh()
     //httpResult - результат запроса
     //asyncReciever - ссылка на объект сделавший запрос (этот метод будет вызван в контексте другого потока, для него this. это другой объект - занимательный мир JS)
     //мы не можем использовать this, для обращения к методам этого объекта, поэтому заведомо передали себе ссылку на себя "asyncReciever"
-    refreshResult: function (httpResult, node) {
+    refreshResult: function (httpResult, thing) {
         //HTTPClient добавляет строку "%error" в начало Response если запрос не был завешен HTTPCode=200 или произошел TimeOut
         if (!httpResult.indexOf("%error") == 0) {
-            node.networkStatus = NET_ONLINE;
+            thing.networkStatus = NET_ONLINE;
             //если запрос был выполнен удачно, парсим новые данные об драйверах, изменяем свойства drivers[] и добавляем новые driver если они появились
             //перед изучением парсинга, посмотрите результат API getalldriversproperties как текст
             //!-> asyncReciever это этот же класс drivers!
-            pins.parsePins(httpResult, node);
+            pins.parsePins(httpResult, thing);
 
         }
         else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
             if (httpResult.indexOf("reponse") != -1) {
-                node.networkStatus = NET_ERROR;
+                thing.networkStatus = NET_ERROR;
             }
             else {
-                node.networkStatus = NET_OFFLINE;
+                thing.networkStatus = NET_OFFLINE;
             }
-            node.pins = [];
+            thing.pins = [];
         }
     },
     ////получить объект Pin по его GPIO номеру
     getPinByGPIONumber: function (GPIONumber, host) {
-        var node = config.getNodeByHost(host);
-        if (node == undefined) return undefined;
-        for (var i = 0; i < node.pins.length; i++) {
-            if (node.pins[i].gpio === GPIONumber) {
-                return node.pins[i];
+        var thing = config.getThingByHost(host);
+        if (thing == undefined) return undefined;
+        for (var i = 0; i < thing.pins.length; i++) {
+            if (thing.pins[i].gpio === GPIONumber) {
+                return thing.pins[i];
             }
         }
         return undefined;
@@ -12871,11 +12871,11 @@ var pins = {
     //парсинг (синтаксический разбор) свойств пина и информации о подключенных драйверах контактам микроконтроллера - смотрите refresh()
     //этот метод будет вызываться множество раз, по этой причине он не только создает драйвера и их свойства
     //а так же проверяет было ли драйвер создано и как изменились его свойства после предыдущего парсинга
-    parsePins: function (httpResult, node) {
+    parsePins: function (httpResult, thing) {
         //первичный парсинг, помещаем строку пришедшую от HTTPClient в массив строк, разделяя по "\n"
-        if (node.pins != undefined) {
-            for (var pinIndex in node.pins) {
-                node.pins[pinIndex].deleted = true; //все удалены перед началом парсинга      
+        if (thing.pins != undefined) {
+            for (var pinIndex in thing.pins) {
+                thing.pins[pinIndex].deleted = true; //все удалены перед началом парсинга      
             }
         }
         var recievedPinsProperties = httpResult.split("\n");
@@ -12892,7 +12892,7 @@ var pins = {
 
                     //сохраняем собранный pin
                     if (pin != undefined) {
-                        this.addPin(pin, node);
+                        this.addPin(pin, thing);
                         this.doOnNew(pin); //вызов обработчика события OnNew
                         pin = undefined;
                     }
@@ -12900,7 +12900,7 @@ var pins = {
                     //извлекаем Name очередного пина
                     var name = recievedPinsProperties[i].split(":")[1];
 
-                    pin = this.createPin(name, node);
+                    pin = this.createPin(name, thing);
 
                 }
                 //--> разбор свойств pin
@@ -12920,7 +12920,7 @@ var pins = {
 
             //сохраняем собранный pin
             if (pin != undefined) {
-                this.addPin(pin, node);
+                this.addPin(pin, thing);
                 this.doOnNew(pin); //вызов обработчика события OnNew
                 pin = undefined;
             }
@@ -12928,11 +12928,11 @@ var pins = {
             var deleted = false;
             while (!deleted) {
                 deleted = true;
-                for (var pinsIndex in node.pins) { //удаляем удаленные на стороне ноды 
+                for (var pinsIndex in thing.pins) { //удаляем удаленные на стороне ноды 
 
-                    if (node.pins[pinsIndex].deleted === true) {
-                        this.doOnDelete(node.pins[pinsIndex]); //вызов обработчика события OnDelete
-                        node.pins.splice(pinsIndex, 1);
+                    if (thing.pins[pinsIndex].deleted === true) {
+                        this.doOnDelete(thing.pins[pinsIndex]); //вызов обработчика события OnDelete
+                        thing.pins.splice(pinsIndex, 1);
                         deleted = false;
                         break;
                     }
@@ -12941,23 +12941,23 @@ var pins = {
         }
     }, //ENDOF parse pins
 
-    addPin: function (_pin, node) {
+    addPin: function (_pin, thing) {
         var addOrNot = true;
-        if (node.pins.length > 0) {
+        if (thing.pins.length > 0) {
 
-            for (var pinIndex in node.pins) {
+            for (var pinIndex in thing.pins) {
 
-                if ((node.pins[pinIndex].name == _pin.name) && (node.pins[pinIndex].deleted === false)) {
+                if ((thing.pins[pinIndex].name == _pin.name) && (thing.pins[pinIndex].deleted === false)) {
 
                     addOrNot = false;
 
-                    if (node.pins[pinIndex].location != _pin.location) {
+                    if (thing.pins[pinIndex].location != _pin.location) {
 
                         addOrNot = true;
 
-                        for (var newPinIndex in node.pins) {
+                        for (var newPinIndex in thing.pins) {
 
-                            if ((node.pins[newPinIndex].location == _pin.location) && (node.pins[newPinIndex].deleted === false)) {
+                            if ((thing.pins[newPinIndex].location == _pin.location) && (thing.pins[newPinIndex].deleted === false)) {
                                 addOrNot = false;
                             }
 
@@ -12969,15 +12969,15 @@ var pins = {
             }
         }
         if (addOrNot) {
-            node.pins.push(_pin);
+            thing.pins.push(_pin);
         }
     },
 
-    createPin: function (_name, node) {
+    createPin: function (_name, thing) {
         pin = { //создаем новый объект представляющий драйвер
             name: _name, //навастриваем уникальный ID драйвера, для идентификации объекта с драйверм в будущем
-            nodenickname: node.nodenickname,
-            host: node.host,
+            thingnickname: thing.thingnickname,
+            host: thing.host,
             mode: -1,
             pintypes: 0,
             extenedpintypes: 0,
@@ -13022,43 +13022,43 @@ var driverPins = {
         driverPins._ondelete.push(ondelete);
     },
 
-    refresh: function (node) {
-        node.networkStatus = NET_REFRESH;
+    refresh: function (thing) {
+        thing.networkStatus = NET_REFRESH;
         // асинхронный HTTP запрос
         // this.refreshResult - метод который будет вызван HTTPClient-ом по окончанию асинхронного запроса
         // this - ссылка на экземпляр этого объекта        
-        httpGetAsyncWithReciever(node.host + "getdriverpin", this.refreshResult, node);
+        httpGetAsyncWithReciever(thing.host + "getdriverpin", this.refreshResult, thing);
     },
 
     //вызывается асинхронным HTTPClient по окончанию запроса, указан как параметр в httpGetAsyncWithReciever, смотрите this.refresh()
     //httpResult - результат запроса
     //asyncReciever - ссылка на объект сделавший запрос (этот метод будет вызван в контексте другого потока, для него this. это другой объект - занимательный мир JS)
     //мы не можем использовать this, для обращения к методам этого объекта, поэтому заведомо передали себе ссылку на себя "asyncReciever"
-    refreshResult: function (httpResult, node) {
+    refreshResult: function (httpResult, thing) {
         //HTTPClient добавляет строку "%error" в начало Response если запрос не был завешен HTTPCode=200 или произошел TimeOut
         if (!httpResult.indexOf("%error") == 0) {
-            node.networkStatus = NET_ONLINE;
+            thing.networkStatus = NET_ONLINE;
             //если запрос был выполнен удачно, парсим новые данные об драйверах, изменяем свойства drivers[] и добавляем новые driver если они появились
             //перед изучением парсинга, посмотрите результат API getalldriversproperties как текст
             //!-> asyncReciever это этот же класс drivers!
-            driverPins.parseDriverPin(httpResult, node);
+            driverPins.parseDriverPin(httpResult, thing);
 
         }
         else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
             if (httpResult.indexOf("reponse") != -1) {
-                node.networkStatus = NET_ERROR;
+                thing.networkStatus = NET_ERROR;
             }
             else {
-                node.networkStatus = NET_OFFLINE;
+                thing.networkStatus = NET_OFFLINE;
             }
-            node.driversPins = [];
+            thing.driversPins = [];
         }
     },
-    parseDriverPin: function (httpResult, node) {
+    parseDriverPin: function (httpResult, thing) {
 
-        if (node.driversPins.length > 0) {
-            for (var DriverPinIndex in node.driversPins) {
-                node.driversPins[DriverPinIndex].deleted = true; //все удалены перед началом парсинга      
+        if (thing.driversPins.length > 0) {
+            for (var DriverPinIndex in thing.driversPins) {
+                thing.driversPins[DriverPinIndex].deleted = true; //все удалены перед началом парсинга      
             }
         }
         var recievedDriverPins = httpResult.split("\n");
@@ -13070,11 +13070,11 @@ var driverPins = {
                 if (recievedDriverPins[i].indexOf("driverid:") == 0) { //если заголовок драйвера найден                    
                     //Добавляем собранный пин драйвера 
                     if (driverPin != undefined) {
-                        node.driversPins.push(driverPin);
+                        thing.driversPins.push(driverPin);
                         this.doOnNew(driverPin); //вызов обработчика события OnNew
                     }
                     driverId = recievedDriverPins[i].split(":")[1];
-                    driverPin = this.addDriverPin(driverId, node);
+                    driverPin = this.addDriverPin(driverId, thing);
                 }
                 else {
                     if (driverPin == undefined) continue;
@@ -13089,18 +13089,18 @@ var driverPins = {
                 }
             }
             if (driverPin != undefined) {
-                node.driversPins.push(driverPin);
+                thing.driversPins.push(driverPin);
                 this.doOnNew(driverPin); //вызов обработчика события OnNew
             }
         }
         var deleted = false;
         while (!deleted) {
             deleted = true;
-            for (var driverPinsIndex in node.driversPins) { //удаляем удаленные на стороне ноды 
+            for (var driverPinsIndex in thing.driversPins) { //удаляем удаленные на стороне ноды 
 
-                if (node.driversPins[driverPinsIndex].deleted === true) {
-                    this.doOnDelete(node.driversPins[driverPinsIndex]); //вызов обработчика события OnDelete
-                    node.driversPins.splice(driverPinsIndex, 1);
+                if (thing.driversPins[driverPinsIndex].deleted === true) {
+                    this.doOnDelete(thing.driversPins[driverPinsIndex]); //вызов обработчика события OnDelete
+                    thing.driversPins.splice(driverPinsIndex, 1);
                     deleted = false;
                     break;
                 }
@@ -13108,11 +13108,11 @@ var driverPins = {
         }
     },
 
-    addDriverPin: function (_driverId, _node) {
+    addDriverPin: function (_driverId, _thing) {
         driverPin = {
             driverId: _driverId,
             name: "",
-            node: _node,
+            thing: _thing,
             driverpintype: 0,
             driverpintypedecoded: "",
             driverpinindex: -1,
@@ -13131,29 +13131,29 @@ var driverPins = {
 //----------------------------------------------------------------------------------------------------------------------------------
 var accessableDrivers = {
 
-    refresh: function (node) {
-        node.networkStatus = NET_REFRESH;
-        httpGetAsyncWithReciever(node.host + "getdriversaccessable", this.refreshResult, node);
+    refresh: function (thing) {
+        thing.networkStatus = NET_REFRESH;
+        httpGetAsyncWithReciever(thing.host + "getdriversaccessable", this.refreshResult, thing);
     },
 
-    refreshResult: function (httpResult, node) {
+    refreshResult: function (httpResult, thing) {
         //HTTPClient добавляет строку "%error" в начало Response если запрос не был завешен HTTPCode=200 или произошел TimeOut
         if (!httpResult.indexOf("%error") == 0) {
-            node.networkStatus = NET_ONLINE;
-            accessableDrivers.parseAccessableDrivers(httpResult, node);
+            thing.networkStatus = NET_ONLINE;
+            accessableDrivers.parseAccessableDrivers(httpResult, thing);
 
         }
         else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
             if (httpResult.indexOf("reponse") != -1) {
-                node.networkStatus = NET_ERROR;
+                thing.networkStatus = NET_ERROR;
             }
             else {
-                node.networkStatus = NET_OFFLINE;
+                thing.networkStatus = NET_OFFLINE;
             }
-            node.driversPins = [];
+            thing.driversPins = [];
         }
     },
-    parseAccessableDrivers: function (httpResult, node) {
+    parseAccessableDrivers: function (httpResult, thing) {
         var recievedAccessablePins = httpResult.split("\n");
         if (recievedAccessablePins !== "") {
             var _driver = undefined;
@@ -13161,13 +13161,13 @@ var accessableDrivers = {
                 if (recievedAccessablePins[i] === "") continue;
                 if (recievedAccessablePins[i].indexOf("name:") == 0) {
                     if (_driver != undefined) {
-                        node.accessableDrivers.push(_driver);
+                        thing.accessableDrivers.push(_driver);
                     }
 
                     driverName = recievedAccessablePins[i].split(":")[1];
                     _driver = { name: driverName };
 
-                    // _driver = this.addDriver(driverName, node);
+                    // _driver = this.addDriver(driverName, thing);
                 }
                 else {
                     if (_driver == undefined) continue;
@@ -13182,7 +13182,7 @@ var accessableDrivers = {
         }
 
         if (_driver != undefined) {
-            node.accessableDrivers.push(_driver);
+            thing.accessableDrivers.push(_driver);
         }
     }
 }
@@ -13227,8 +13227,8 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-var nodeId;
-var nodesRefreshHandle;
+var thingId;
+var thingsRefreshHandle;
 var autorefreshbutton;
 var refreshbutton;
 
@@ -13253,11 +13253,11 @@ var runOnce = true;
 var sideBar = undefined;
 
 function testHTTPS() {
-    httpGetAsyncWithReciever("https://192.168.1.5/getallnodeproperties", HTTPSResult, null);
+    httpGetAsyncWithReciever("https://192.168.1.5/getallthingproperties", HTTPSResult, null);
     //httpGetAsyncWithReciever("https://192.168.1.5/", HTTPSResult, null);
 }
 
-function HTTPSResult (httpResult, node) {
+function HTTPSResult (httpResult, thing) {
     //HTTPClient добавляет строку "%error" в начало Response если запрос не был завешен HTTPCode=200 или произошел TimeOut
     if (!httpResult.indexOf("%error") == 0) {
         
@@ -13319,13 +13319,13 @@ $(document).ready(function () {
     widgetsTheme.dark = '#272B30';
 
 
-    addToLogNL("Connection to master node " + boardhost + "...");
-    //use it as node ping
-    httpGetAsyncWithReciever(boardhost + "getalldriversproperties", onNodeAnswer, null, null, null, 20000);
+    addToLogNL("Connection to master thing " + boardhost + "...");
+    //use it as thing ping
+    httpGetAsyncWithReciever(boardhost + "getalldriversproperties", onThingAnswer, null, null, null, 20000);
 }
 );
 
-function onNodeAnswer(httpResult) {
+function onThingAnswer(httpResult) {
     if (!httpResult.indexOf("%error") == 0) {
         addToLogNL("get UI configuration...");
         config.load(onLoadConfig);
@@ -13334,20 +13334,20 @@ function onNodeAnswer(httpResult) {
         status_online = NET_OFFLINE;
         speak("ERROR with host: " + boardhost);
         addToLogNL("ERROR with host: " + boardhost, 2);
-        var masterNodeDialog = createModalDialog(getLang("addnodeheader"), "");
-        masterNodeDialog.appendInput(createDialogInput("masterhost", getLang("addnodehost"), "http://host:port/ or https://host:port/"));
-        masterNodeDialog.getChild("masterhost").value = boardhost;
-        masterNodeDialog.onOK = masterNodeDialogOKClick;
-        masterNodeDialog.show();
+        var masterThingDialog = createModalDialog(getLang("addthingheader"), "");
+        masterThingDialog.appendInput(createDialogInput("masterhost", getLang("addthinghost"), "http://host:port/ or https://host:port/"));
+        masterThingDialog.getChild("masterhost").value = boardhost;
+        masterThingDialog.onOK = masterThingDialogOKClick;
+        masterThingDialog.show();
     }
 }
 
-function masterNodeDialogOKClick(masterNodeDialog) {
+function masterThingDialogOKClick(masterThingDialog) {
 
-    var input = masterNodeDialog.getChild("masterhost");
+    var input = masterThingDialog.getChild("masterhost");
 
     if (input.value.length == 0) {
-        masterNodeDialog.errorLabel.innerText = getLang("addnodeerror_hostempty");
+        masterThingDialog.errorLabel.innerText = getLang("addthingerror_hostempty");
         return false;
     }
 
@@ -13358,7 +13358,7 @@ function masterNodeDialogOKClick(masterNodeDialog) {
     var regexp = RegExp("(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})");
 
     if (!input.value.match(regexp)) {
-        masterNodeDialog.errorLabel.innerText = getLang("addnodeerror_hostnoturl");
+        masterThingDialog.errorLabel.innerText = getLang("addthingerror_hostnoturl");
         return false;
     }
 
@@ -13367,9 +13367,9 @@ function masterNodeDialogOKClick(masterNodeDialog) {
     }
 
     boardhost = input.value;
-    addToLogNL("Connection to master node " + boardhost + "...");
+    addToLogNL("Connection to master thing " + boardhost + "...");
     //use it as ping
-    httpGetAsyncWithReciever(boardhost + "getalldriversproperties", onNodeAnswer, null, null, null, 5000);
+    httpGetAsyncWithReciever(boardhost + "getalldriversproperties", onThingAnswer, null, null, null, 5000);
     return true;
 }
 
@@ -13415,14 +13415,14 @@ function onLoadConfig(result) {
     }
 }
 
-function nodesRefresh() {
+function thingsRefresh() {
     /*
-    for (var node in configProperties.nodes) {
-        drivers.refresh(configProperties.nodes[node]);
-        pins.refresh(configProperties.nodes[node]);
-        driverPins.refresh(configProperties.nodes[node]);
-        accessableDrivers.refresh(configProperties.nodes[node]);
-        scriptsService.refresh(configProperties.nodes[node]);
+    for (var thing in configProperties.things) {
+        drivers.refresh(configProperties.things[thing]);
+        pins.refresh(configProperties.things[thing]);
+        driverPins.refresh(configProperties.things[thing]);
+        accessableDrivers.refresh(configProperties.things[thing]);
+        scriptsService.refresh(configProperties.things[thing]);
     }
     */
 }
@@ -13473,8 +13473,8 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-var nodeId;
-var nodesRefreshHandle;
+var thingId;
+var thingsRefreshHandle;
 var autorefreshbutton;
 var refreshbutton;
 
@@ -13499,11 +13499,11 @@ var runOnce = true;
 var sideBar = undefined;
 
 function testHTTPS() {
-    httpGetAsyncWithReciever("https://192.168.1.5/getallnodeproperties", HTTPSResult, null);
+    httpGetAsyncWithReciever("https://192.168.1.5/getallthingproperties", HTTPSResult, null);
     //httpGetAsyncWithReciever("https://192.168.1.5/", HTTPSResult, null);
 }
 
-function HTTPSResult (httpResult, node) {
+function HTTPSResult (httpResult, thing) {
     //HTTPClient добавляет строку "%error" в начало Response если запрос не был завешен HTTPCode=200 или произошел TimeOut
     if (!httpResult.indexOf("%error") == 0) {
         
@@ -13565,13 +13565,13 @@ $(document).ready(function () {
     widgetsTheme.dark = '#272B30';
 
 
-    addToLogNL("Connection to master node " + boardhost + "...");
-    //use it as node ping
-    httpGetAsyncWithReciever(boardhost + "getalldriversproperties", onNodeAnswer, null, null, null, 20000);
+    addToLogNL("Connection to master thing " + boardhost + "...");
+    //use it as thing ping
+    httpGetAsyncWithReciever(boardhost + "getalldriversproperties", onThingAnswer, null, null, null, 20000);
 }
 );
 
-function onNodeAnswer(httpResult) {
+function onThingAnswer(httpResult) {
     if (!httpResult.indexOf("%error") == 0) {
         addToLogNL("get UI configuration...");
         config.load(onLoadConfig);
@@ -13580,20 +13580,20 @@ function onNodeAnswer(httpResult) {
         status_online = NET_OFFLINE;
         speak("ERROR with host: " + boardhost);
         addToLogNL("ERROR with host: " + boardhost, 2);
-        var masterNodeDialog = createModalDialog(getLang("addnodeheader"), "");
-        masterNodeDialog.appendInput(createDialogInput("masterhost", getLang("addnodehost"), "http://host:port/ or https://host:port/"));
-        masterNodeDialog.getChild("masterhost").value = boardhost;
-        masterNodeDialog.onOK = masterNodeDialogOKClick;
-        masterNodeDialog.show();
+        var masterThingDialog = createModalDialog(getLang("addthingheader"), "");
+        masterThingDialog.appendInput(createDialogInput("masterhost", getLang("addthinghost"), "http://host:port/ or https://host:port/"));
+        masterThingDialog.getChild("masterhost").value = boardhost;
+        masterThingDialog.onOK = masterThingDialogOKClick;
+        masterThingDialog.show();
     }
 }
 
-function masterNodeDialogOKClick(masterNodeDialog) {
+function masterThingDialogOKClick(masterThingDialog) {
 
-    var input = masterNodeDialog.getChild("masterhost");
+    var input = masterThingDialog.getChild("masterhost");
 
     if (input.value.length == 0) {
-        masterNodeDialog.errorLabel.innerText = getLang("addnodeerror_hostempty");
+        masterThingDialog.errorLabel.innerText = getLang("addthingerror_hostempty");
         return false;
     }
 
@@ -13604,7 +13604,7 @@ function masterNodeDialogOKClick(masterNodeDialog) {
     var regexp = RegExp("(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})");
 
     if (!input.value.match(regexp)) {
-        masterNodeDialog.errorLabel.innerText = getLang("addnodeerror_hostnoturl");
+        masterThingDialog.errorLabel.innerText = getLang("addthingerror_hostnoturl");
         return false;
     }
 
@@ -13613,9 +13613,9 @@ function masterNodeDialogOKClick(masterNodeDialog) {
     }
 
     boardhost = input.value;
-    addToLogNL("Connection to master node " + boardhost + "...");
+    addToLogNL("Connection to master thing " + boardhost + "...");
     //use it as ping
-    httpGetAsyncWithReciever(boardhost + "getalldriversproperties", onNodeAnswer, null, null, null, 5000);
+    httpGetAsyncWithReciever(boardhost + "getalldriversproperties", onThingAnswer, null, null, null, 5000);
     return true;
 }
 
@@ -13661,14 +13661,14 @@ function onLoadConfig(result) {
     }
 }
 
-function nodesRefresh() {
+function thingsRefresh() {
     /*
-    for (var node in configProperties.nodes) {
-        drivers.refresh(configProperties.nodes[node]);
-        pins.refresh(configProperties.nodes[node]);
-        driverPins.refresh(configProperties.nodes[node]);
-        accessableDrivers.refresh(configProperties.nodes[node]);
-        scriptsService.refresh(configProperties.nodes[node]);
+    for (var thing in configProperties.things) {
+        drivers.refresh(configProperties.things[thing]);
+        pins.refresh(configProperties.things[thing]);
+        driverPins.refresh(configProperties.things[thing]);
+        accessableDrivers.refresh(configProperties.things[thing]);
+        scriptsService.refresh(configProperties.things[thing]);
     }
     */
 }

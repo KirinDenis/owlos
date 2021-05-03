@@ -104,7 +104,7 @@ String updateGetUpdateInfo()
 
 int updateGetUpdatePossible()
 {
-	if (nodeGetUpdateAvailable() != 1)
+	if (thingGetUpdateAvailable() != 1)
 	{
 		updatePossible = UpdateNOT_AVAILABLE;
 	}
@@ -114,7 +114,7 @@ int updateGetUpdatePossible()
 		if (skipLoopCount > UPDATE_SKIP_COUNT)
 		{
 			skipLoopCount = 0;
-			if (!downloadFile(UpdateInfoFile, nodeGetUpdateHost() + UpdateInfoFile))
+			if (!downloadFile(UpdateInfoFile, thingGetUpdateHost() + UpdateInfoFile))
 			{
 				updatePossible = UpdateServerNOT_AVAILABLE;
 			}
@@ -122,7 +122,7 @@ int updateGetUpdatePossible()
 			{
 				//update info downloaded OK
 				updateInfo = filesReadString(UpdateInfoFile);
-				if (nodeGetESPBootMode() > 0) //booting with hardware reset
+				if (thingGetESPBootMode() > 0) //booting with hardware reset
 				{
 					updatePossible = UpdateBoth;
 				}
@@ -149,7 +149,7 @@ int updateGetUpdateUIStatus()
 
 String downloadFileWithLog(String fileName)
 {
-	String host = nodeGetUpdateHost();
+	String host = thingGetUpdateHost();
 	int result = downloadFile(fileName, host + fileName);
 	if (result == 1)
 	{
@@ -255,7 +255,7 @@ int updateFirmware()
 		debugOut(updateid, "Update firmware started\n");
 #endif
 #endif
-		String host = nodeGetUpdateHost();
+		String host = thingGetUpdateHost();
 		WiFiClient client;
 
 #ifdef LED_BUILTIN
@@ -265,7 +265,7 @@ int updateFirmware()
 		updateFirmwareStatus = UpdateStatusAtProcess;
 
 #ifdef ARDUINO_ESP8266_NODEMCU
-		ret = ESPhttpUpdate.update(client, host + "OWLOS.ino.nodemcu.bin");
+		ret = ESPhttpUpdate.update(client, host + "OWLOS.ino.thingmcu.bin");
 #endif
 
 #ifdef ARDUINO_ESP8266_WEMOS_D1R1

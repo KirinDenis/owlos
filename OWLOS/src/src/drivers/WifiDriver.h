@@ -16,70 +16,70 @@
 #endif
 
 
-String nodeGetWiFiProperties();
+String thingGetWiFiProperties();
 String wifiOnMessage(String route, String _payload, int8_t transportMask);
 
-int nodeGetWiFiAccessPointAvailable();
-bool nodeSetWiFiAccessPointAvailable(int _wifiaccesspointavailable);
+int thingGetWiFiAccessPointAvailable();
+bool thingSetWiFiAccessPointAvailable(int _wifiaccesspointavailable);
 
-String nodeGetWiFiAccessPointSSID();
-bool nodeSetWiFiAccessPointSSID(String _wifissid);
+String thingGetWiFiAccessPointSSID();
+bool thingSetWiFiAccessPointSSID(String _wifissid);
 
-String nodeGetWiFiAccessPointPassword();
-bool nodeSetWiFiAccessPointPassword(String _wifipassword);
+String thingGetWiFiAccessPointPassword();
+bool thingSetWiFiAccessPointPassword(String _wifipassword);
 
-String nodeGetWiFiAccessPointIP();
-bool nodeSetWiFiAccessPointIP(String _wifiaccesspointip);
+String thingGetWiFiAccessPointIP();
+bool thingSetWiFiAccessPointIP(String _wifiaccesspointip);
 
-int nodeGetWiFiAvailable();
-bool nodeSetWiFiAvailable(int _wifiavailable);
+int thingGetWiFiAvailable();
+bool thingSetWiFiAvailable(int _wifiavailable);
 
-String nodeGetWiFiSSID();
-bool nodeSetWiFiSSID(String _wifissid);
+String thingGetWiFiSSID();
+bool thingSetWiFiSSID(String _wifissid);
 
-String nodeGetWiFiPassword();
-bool nodeSetWiFiPassword(String _wifipassword);
+String thingGetWiFiPassword();
+bool thingSetWiFiPassword(String _wifipassword);
 
-String nodeGetWiFiIP();
-bool nodeSetWiFiIP(String _wifiip);
+String thingGetWiFiIP();
+bool thingSetWiFiIP(String _wifiip);
 
 // WiFi parameters
-int32_t nodeGetWiFiRSSI();
-bool nodeSetWiFiRSSI(int _currentwifirssi);
+int32_t thingGetWiFiRSSI();
+bool thingSetWiFiRSSI(int _currentwifirssi);
 
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
-WiFiMode_t nodeGetWiFiMode();
-bool nodeSetWiFiMode(WiFiMode_t _wifimode);
+WiFiMode_t thingGetWiFiMode();
+bool thingSetWiFiMode(WiFiMode_t _wifimode);
 #endif
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
-wifi_mode_t nodeGetWiFiMode();
-bool nodeSetWiFiMode(wifi_mode_t _wifimode);
+wifi_mode_t thingGetWiFiMode();
+bool thingSetWiFiMode(wifi_mode_t _wifimode);
 #endif
 
-String nodeGetAllWiFiModes();
+String thingGetAllWiFiModes();
 
-wl_status_t nodeGetWiFiStatus();
-bool nodeSetWiFiStatus(int _wifistatus);
-String nodeGetAllWiFiStatuses();
-String nodeGetWiFiStatusToString();
+wl_status_t thingGetWiFiStatus();
+bool thingSetWiFiStatus(int _wifistatus);
+String thingGetAllWiFiStatuses();
+String thingGetWiFiStatusToString();
 
-int8_t nodeGetScanWiFiNetworks();
-bool nodeSetScanWiFiNetworks(int _scanwifinetworks);
+int8_t thingGetScanWiFiNetworks();
+bool thingSetScanWiFiNetworks(int _scanwifinetworks);
 
-int8_t nodeGetWiFiNetworksCount();
-bool nodeSetWiFiNetworksCount(int _wifinetworkscount);
+int8_t thingGetWiFiNetworksCount();
+bool thingSetWiFiNetworksCount(int _wifinetworkscount);
 
-String nodeGetWiFiNetworksParameters();
-String nodeGetAllWiFiEncryptionTypes();
+String thingGetWiFiNetworksParameters();
+String thingGetAllWiFiEncryptionTypes();
 
-int nodeGetWiFiIsConnected();
-bool nodeSetWiFiIsConnected(int _wifiisconnected);
+int thingGetWiFiIsConnected();
+bool thingSetWiFiIsConnected(int _wifiisconnected);
 
-int nodeGetWiFiIsDisconnected();
-int nodeSetWiFiIsDisconnected();
+int thingGetWiFiIsDisconnected();
+int thingSetWiFiIsDisconnected();
 
-String nodeGetConnectedWiFiSSID();
+String thingGetConnectedWiFiSSID();
 
 #endif
 #endif

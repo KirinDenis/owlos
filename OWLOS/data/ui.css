@@ -37,17 +37,17 @@
     
 }
 
-.node-prop-col {    
+.thing-prop-col {    
     padding-left: 0.1rem;
     padding-right: 2.1rem;
 }
 
-.node-prop-col1 {    
+.thing-prop-col1 {    
     padding-left: 1.2rem;
     padding-right: 1.1rem;
 }
 
-.node-prop-col2 {    
+.thing-prop-col2 {    
     padding-left: 3.0rem;
     
 }
@@ -234,7 +234,7 @@ background-color: rgba(137, 194, 220, 0.1);
     text-align: right;
 }
 
-.nodestatuspanel {
+.thingstatuspanel {
     margin-left: 10px;
     text-align: right;
 }

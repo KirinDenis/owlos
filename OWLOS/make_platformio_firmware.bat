@@ -23,7 +23,7 @@ REM with OWLOS. If not, see < https://www.gnu.org/licenses/>.
 REM GitHub: https://github.com/KirinDenis/owlos
 REM :: UTF-8 CodePage 
 
-copy .pio\build\nodemcu\firmware.bin firmware\OWLOS.ino.nodemcu.bin
+copy .pio\build\thingmcu\firmware.bin firmware\OWLOS.ino.thingmcu.bin
 copy .pio\build\d1\firmware.bin firmware\OWLOS.ino.d1.bin
 copy .pio\build\d1_mini\firmware.bin firmware\OWLOS.ino.d1_mini.bin
 copy .pio\build\esp32\firmware.bin firmware\OWLOS.ino.esp32.bin

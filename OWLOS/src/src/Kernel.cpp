@@ -74,14 +74,14 @@ bool kernelSetup()
 	filesBegin(); //prepare Flash file systeme (see Tools/Flash size item - use 2M Flash Size, is ZERO size by default -> switch to 2M
 
 #ifdef USE_ESP_DRIVER
-	nodeInit();
+	thingInit();
 #endif
 
 #ifdef USE_DRIVERS
 #ifdef USE_ESP_DRIVER
-	driversInit(nodeGetTopic()); //prepare onboard Unit's drivers
+	driversInit(thingGetTopic()); //prepare onboard Unit's drivers
 #else
-	driversInit("owlosnode");
+	driversInit("owlosthing");
 #endif
 #endif
 
@@ -135,13 +135,13 @@ bool kernelLoop()
 		{
 #ifdef DETAILED_DEBUG
 #ifdef DEBUG
-			debugOut(nodeGetUnitId(), "Transport available");
+			debugOut(thingGetUnitId(), "Transport available");
 #endif //if HEAD and MQTT Brokker is available setuping drivers
 #endif
 #ifdef USE_DRIVERS
-			driversBegin(nodeGetTopic()); //initilize drivers network properties, each driver must publish() here TYPE and AVAILABLE status
+			driversBegin(thingGetTopic()); //initilize drivers network properties, each driver must publish() here TYPE and AVAILABLE status
 #endif
-			nodeSubscribe(); //subscribe() all AVAILABLE drivers to here topics (see: driverID), the topic -> UnitTopic+ESPChipID/DriverId
+			thingSubscribe(); //subscribe() all AVAILABLE drivers to here topics (see: driverID), the topic -> UnitTopic+ESPChipID/DriverId
 							 //driversSubscribe();
 		}
 	}

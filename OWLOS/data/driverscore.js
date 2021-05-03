@@ -43,7 +43,7 @@ OWLOS распространяется в надежде, что она буде
 // Этот класс реализует объектную модель драйвер подключенных к микроконтроллеру.
 // 
 // Перед началом изучения этого класса - вызовите API getalldriversproperties и изучите формат передачи
-// свойств драйвер: http://yournodeurl:yournodeport/getalldriversproperties (например http://192.168.1.10:8084/getalldriversproperties)
+// свойств драйвер: http://yourthingurl:yourthingport/getalldriversproperties (например http://192.168.1.10:8084/getalldriversproperties)
 
 // Примечания:
 // "парсинг" - синтаксический анализ https://ru.wikipedia.org/wiki/%D0%A1%D0%B8%D0%BD%D1%82%D0%B0%D0%BA%D1%81%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9_%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7
@@ -127,36 +127,36 @@ var drivers = {
     //запросить свойства драйвер, если удачно - распарсить результат, обновить свойства объектов с драйверами (drivers[])
     //асинхронный
     //вызывается внешним кодом, обычно с интервалом 10-15 секунд (смотрите index.js)
-    refresh: function (node) {
-        node.networkStatus = NET_REFRESH;
+    refresh: function (thing) {
+        thing.networkStatus = NET_REFRESH;
         // асинхронный HTTP запрос
         // this.refreshResult - метод который будет вызван HTTPClient-ом по окончанию асинхронного запроса
         // this - ссылка на экземпляр этого объекта        
-        httpGetAsyncWithReciever(node.host + "getalldriversproperties", this.refreshResult, node);
+        httpGetAsyncWithReciever(thing.host + "getalldriversproperties", this.refreshResult, thing);
     },
 
     //вызывается асинхронным HTTPClient по окончанию запроса, указан как параметр в httpGetAsyncWithReciever, смотрите this.refresh()
     //httpResult - результат запроса
     //asyncReciever - ссылка на объект сделавший запрос (этот метод будет вызван в контексте другого потока, для него this. это другой объект - занимательный мир JS)
     //мы не можем использовать this, для обращения к методам этого объекта, поэтому заведомо передали себе ссылку на себя "asyncReciever"
-    refreshResult: function (httpResult, node) {
+    refreshResult: function (httpResult, thing) {
         //HTTPClient добавляет строку "%error" в начало Response если запрос не был завешен HTTPCode=200 или произошел TimeOut
         if (!httpResult.indexOf("%error") == 0) {
-            node.networkStatus = NET_ONLINE;
+            thing.networkStatus = NET_ONLINE;
             //если запрос был выполнен удачно, парсим новые данные об драйверах, изменяем свойства drivers[] и добавляем новые driver если они появились
             //перед изучением парсинга, посмотрите результат API getalldriversproperties как текст
             //!-> asyncReciever это этот же класс drivers!
-            drivers.parseDrivers(httpResult, node);
+            drivers.parseDrivers(httpResult, thing);
 
         }
         else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
             if (httpResult.indexOf("reponse") != -1) {
-                node.networkStatus = NET_ERROR;
+                thing.networkStatus = NET_ERROR;
             }
             else {
-                node.networkStatus = NET_OFFLINE;
+                thing.networkStatus = NET_OFFLINE;
             }
-            node.parsedDrivers = "";
+            thing.parsedDrivers = "";
         }
     },
     //-------------------------------------------------------------------------------------------------------------
@@ -189,11 +189,11 @@ var drivers = {
     },
     //получить объект драйвера по его ID
     getDriverById: function (driverId, host) {
-        var node = config.getNodeByHost(host);
-        if (node == undefined) return undefined;
-        for (var i = 0; i < node.drivers.length; i++) {
-            if (node.drivers[i]._id === driverId) {
-                return node.drivers[i];
+        var thing = config.getThingByHost(host);
+        if (thing == undefined) return undefined;
+        for (var i = 0; i < thing.drivers.length; i++) {
+            if (thing.drivers[i]._id === driverId) {
+                return thing.drivers[i];
             }
         }
         return undefined;
@@ -202,29 +202,29 @@ var drivers = {
     //парсинг (синтаксический разбор) свойств драйвер прошедших от микроконтроллер - смотрите refresh()
     //этот метод будет вызываться множество раз, по этой причине он не только создает драйвера и их свойства
     //а так же проверяет было ли драйвер создано и как изменились его свойства после предыдущего парсинга
-    parseDrivers: function (httpResult, node) {
+    parseDrivers: function (httpResult, thing) {
         //первичный парсинг, помещаем строку пришедшую от HTTPClient в массив строк, разделяя по "\n"
-        node.recievedDriversProperties = httpResult.split("\n");
+        thing.recievedDriversProperties = httpResult.split("\n");
 
-        if (node.recievedDriversProperties !== "") {//если первичный парсинг удался
+        if (thing.recievedDriversProperties !== "") {//если первичный парсинг удался
 
             var driver = undefined; //сбрасываем будущий объект со свойствами драйвера 
 
-            for (var i = 0; i < node.recievedDriversProperties.length; i++) {//перечисляем все строки в HTTPResult 
-                if (node.recievedDriversProperties[i] === "") continue; //если строка пуста, берем следующею
+            for (var i = 0; i < thing.recievedDriversProperties.length; i++) {//перечисляем все строки в HTTPResult 
+                if (thing.recievedDriversProperties[i] === "") continue; //если строка пуста, берем следующею
                 //--> разбор драйвер
-                if (node.recievedDriversProperties[i].indexOf("properties for:") == 0) { //если заголовок драйвера найден                    
+                if (thing.recievedDriversProperties[i].indexOf("properties for:") == 0) { //если заголовок драйвера найден                    
 
                     if (driver != undefined) {
                         this.onDriverLoaded(driver);
                     }
                     driver = undefined;
                     //извлекаем ID очередного драйвера
-                    currentId = node.recievedDriversProperties[i].split(":")[1];
+                    currentId = thing.recievedDriversProperties[i].split(":")[1];
                     //пробуем отыскать драйвер с таким ID среди уже существующих 
-                    for (var j = 0; j < node.drivers.length; j++) {
-                        if (node.drivers[j]._id === currentId) { //драйвер с таким ID существует
-                            driver = node.drivers[j]; //указываем существующее драйвер как обрабатываемое в текущей итерации 
+                    for (var j = 0; j < thing.drivers.length; j++) {
+                        if (thing.drivers[j]._id === currentId) { //драйвер с таким ID существует
+                            driver = thing.drivers[j]; //указываем существующее драйвер как обрабатываемое в текущей итерации 
                             driver._new = false;
                             newDriver = false; //указываем для текущее драйвер уже существует
                             break; //прекращаем поиск, драйвер найдено
@@ -232,7 +232,7 @@ var drivers = {
                     }
 
                     if (driver == undefined) {//если драйвер с текущем ID еще не существуем 
-                        driver = this.addDriver(currentId, node);
+                        driver = this.addDriver(currentId, thing);
                     }
                 }
                 //--> разбор свойств драйвер
@@ -254,7 +254,7 @@ var drivers = {
                     //if not read only - write accessable
 
                     //вторичный парсинг, помещаем строку в массив, разделяя по "=", первый элемент название, второй значение и тип
-                    var parsedProp = node.recievedDriversProperties[i].split("=");
+                    var parsedProp = thing.recievedDriversProperties[i].split("=");
                     if (parsedProp.length < 2) continue; //не удалось распарсить свойство
                     //забираем название свойства
                     var propertyName = parsedProp[0];
@@ -286,12 +286,12 @@ var drivers = {
         }
     }, //ENDOF parse drivers
 
-    addDriver: function (currentId, node) {
+    addDriver: function (currentId, thing) {
         driver = { //создаем новый объект представляющий драйвер
             _id: currentId, //навастриваем уникальный ID драйвера, для идентификации объекта с драйверм в будущем
             _new: true,
-            _nodenickname: node.nodenickname,
-            _host: node.host,
+            _thingnickname: thing.thingnickname,
+            _host: thing.host,
             //создаем внутри объекта драйвера, свойства и методы для обслуживания сторонних объектов желающих подписаться на
             //событие - создания нового свойства у драйвера, смотрите newDriverListners[] в классе drivers для большей информации
             //массив подписчиков на newProperty event
@@ -305,7 +305,7 @@ var drivers = {
             },
         }; //новый объект для драйвера сформирован
         //добавляем объект драйвер в список драйвер для объекта drivers
-        node.drivers.push(driver);
+        thing.drivers.push(driver);
         //произошло событие newDriver -> вызываем всех его подписчиков(точнее вызываем методы которые подписчики предоставили ранее, смотрите: addNewDriverListner )
         for (var k = 0; k < this.newDriverListners.length; k++) {
             this.newDriverListners[k].event(this.newDriverListners[k].sender, driver);

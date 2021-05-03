@@ -46,9 +46,9 @@ var compilerScriptErrorStatus = 2; //ошибка компиляции скри�
 var runtimeScriptErrorStatus = 3; //ошибка выполнения скрипта (возможно был фатальный сбой, не возобновляейте выполнение такого скрипта, без проверки). 
 
 
-function createScript(_node) {
+function createScript(_thing) {
     return {
-        node: _node,
+        thing: _thing,
         name: "",
         status: "",
         debuglinenumber: "",
@@ -104,30 +104,30 @@ var scriptsService = {
     },
 
 
-    refresh: function (node) {
-        node.networkStatus = NET_REFRESH;
+    refresh: function (thing) {
+        thing.networkStatus = NET_REFRESH;
         // асинхронный HTTP запрос
         // this.refreshResult - метод который будет вызван HTTPClient-ом по окончанию асинхронного запроса
         // this - ссылка на экземпляр этого объекта        
-        httpGetAsyncWithReciever(node.host + "getallscripts", scriptsService.refreshResult, node);
+        httpGetAsyncWithReciever(thing.host + "getallscripts", scriptsService.refreshResult, thing);
     },
 
     //вызывается асинхронным HTTPClient по окончанию запроса, указан как параметр в httpGetAsyncWithReciever, смотрите this.refresh()
     //httpResult - результат запроса
     //asyncReciever - ссылка на объект сделавший запрос (этот метод будет вызван в контексте другого потока, для него this. это другой объект - занимательный мир JS)
     //мы не можем использовать this, для обращения к методам этого объекта, поэтому заведомо передали себе ссылку на себя "asyncReciever"
-    refreshResult: function (httpResult, node) {
+    refreshResult: function (httpResult, thing) {
         //HTTPClient добавляет строку "%error" в начало Response если запрос не был завешен HTTPCode=200 или произошел TimeOut
         if (!httpResult.indexOf("%error") == 0) {
-            node.networkStatus = NET_ONLINE;
-            scriptsService.parseScripts(httpResult, node);
+            thing.networkStatus = NET_ONLINE;
+            scriptsService.parseScripts(httpResult, thing);
         }
         else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
             if (httpResult.indexOf("reponse") != -1) {
-                node.networkStatus = NET_ERROR;
+                thing.networkStatus = NET_ERROR;
             }
             else {
-                node.networkStatus = NET_OFFLINE;
+                thing.networkStatus = NET_OFFLINE;
             }
 
         }
@@ -138,38 +138,38 @@ var scriptsService = {
         var byteCodeEscape = escape(script.bytecode).replace("+", "%2B").replace(">", "%3E").replace("<", "%3C");
         // %3E >
         // %3C <
-        httpPostAsyncWithErrorReson(script.node.host + "createscript", "?name=" + escape(script.name), byteCodeEscape, asyncReciever, sender);
+        httpPostAsyncWithErrorReson(script.thing.host + "createscript", "?name=" + escape(script.name), byteCodeEscape, asyncReciever, sender);
     },
 
     startDebug: function (script) {
-        httpGet(script.node.host + "startdebugscript?name=" + escape(script.name));
+        httpGet(script.thing.host + "startdebugscript?name=" + escape(script.name));
     },
 
     debugNext: function (script) {
-        var httpResult = httpGet(script.node.host + "debugnextscript?name=" + escape(script.name));
+        var httpResult = httpGet(script.thing.host + "debugnextscript?name=" + escape(script.name));
         if (!httpResult.indexOf("%error") == 0) {
-            script.node.networkStatus = NET_ONLINE;
-            scriptsService.parseScripts(httpResult, script.node);
+            script.thing.networkStatus = NET_ONLINE;
+            scriptsService.parseScripts(httpResult, script.thing);
             return true;
         }
         else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
             if (httpResult.indexOf("reponse") != -1) {
-                script.node.networkStatus = NET_ERROR;
+                script.thing.networkStatus = NET_ERROR;
             }
             else {
-                script.node.networkStatus = NET_OFFLINE;
+                script.thing.networkStatus = NET_OFFLINE;
             }
         }
         return false;
     },
 
     delete: function (script, asyncReciever, sender) {
-        deleteScriptAsync(script.node.host, escape(script.name), asyncReciever, sender);
+        deleteScriptAsync(script.thing.host, escape(script.name), asyncReciever, sender);
     },
 
-    getScript: function (node, name) {
+    getScript: function (thing, name) {
         for (var scriptKey in scriptsService.scripts) {
-            if ((scriptsService.scripts[scriptKey].node === node) && (scriptsService.scripts[scriptKey].name === name)) {
+            if ((scriptsService.scripts[scriptKey].thing === thing) && (scriptsService.scripts[scriptKey].name === name)) {
                 return scriptsService.scripts[scriptKey];
             }
         }
@@ -178,7 +178,7 @@ var scriptsService = {
 
     pushScript: function (script) {
         for (var scriptKey in scriptsService.scripts) {
-            if ((scriptsService.scripts[scriptKey].node === script.node) && (scriptsService.scripts[scriptKey].name === script.name)) {
+            if ((scriptsService.scripts[scriptKey].thing === script.thing) && (scriptsService.scripts[scriptKey].name === script.name)) {
                 scriptsService.scripts[scriptKey] = script;
                 scriptsService.doOnChange(scriptsService.scripts[scriptKey]);
                 return;
@@ -190,10 +190,10 @@ var scriptsService = {
 
     },
 
-    parseScripts: function (httpResult, node) {
+    parseScripts: function (httpResult, thing) {
 
         for (var scriptKey in scriptsService.scripts) {
-            if ((scriptsService.scripts[scriptKey].node === node)) {
+            if ((scriptsService.scripts[scriptKey].thing === thing)) {
                 scriptsService.scripts[scriptKey].deleted = true; //все удалены перед началом парсинга
             }
         }
@@ -214,7 +214,7 @@ var scriptsService = {
                         scriptsService.pushScript(script);
                     }
 
-                    script = createScript(node);
+                    script = createScript(thing);
                     script.name = recievedScripts[i].split(":")[1];
                 }
                 else {
@@ -239,7 +239,7 @@ var scriptsService = {
         while (!deleted) {
             deleted = true;
             for (var scriptKey in scriptsService.scripts) { //удаляем удаленные на стороне ноды 
-                if ((scriptsService.scripts[scriptKey].node === node)) {
+                if ((scriptsService.scripts[scriptKey].thing === thing)) {
                     if (scriptsService.scripts[scriptKey].deleted === true) {
                         this.doOnDelete(scriptsService.scripts[scriptKey]);
                         scriptsService.scripts.splice(scriptKey, 1);

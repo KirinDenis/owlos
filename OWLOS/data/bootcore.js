@@ -98,7 +98,7 @@ function boot() {
             };
             jQueryScriptLocal.onerror = function () {//если все совсем, совсем плохо - не интернета, не нужных файлов во flash памяти модуля
                 addToLogEnd("...ERROR", 2);
-                addToLogNL("Error booting node, check local node's files..."); //NOTE: мы оборвем процесс загрузки (((
+                addToLogNL("Error booting thing, check local thing's files..."); //NOTE: мы оборвем процесс загрузки (((
             };
 
             jQueryScriptLocal.src = "jquery.min.js";
@@ -208,9 +208,9 @@ function loadingScripts(withInternet) {
                                 loadingScript("index.js"); //ядро OWLOS UI, грузится последним, стартует систему
                                 //}
                                 //--> NOTE: код ниже - обратное сворачивание загрузчкив контента (стек загрузки)
-                                //nodePropertiesScript.src = "nodeproperties.js";
-                                //addToLogNL("loading nodeproperties from " + nodePropertiesScript.src);
-                                //document.getElementsByTagName('head')[0].appendChild(nodePropertiesScript);
+                                //thingPropertiesScript.src = "thingproperties.js";
+                                //addToLogNL("loading thingproperties from " + thingPropertiesScript.src);
+                                //document.getElementsByTagName('head')[0].appendChild(thingPropertiesScript);
                             }
                             //--> NOTE: код ниже - обратное сворачивание загрузчкив контента (стек загрузки)
                             baseWidgetScript.src = "basewidget.js";

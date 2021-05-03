@@ -196,25 +196,25 @@ else
 #ifdef USE_ESP_DRIVER
 	features += "ESP:yes\n";
 
-	if (nodeGetWiFiAccessPointAvailable())
+	if (thingGetWiFiAccessPointAvailable())
 	{
 		features += "WiFiAP=yes\n"; 	
-		features += "WiFiAPSSID=" + nodeGetWiFiAccessPointSSID() +"\n"; 	
-		features += "WiFiAPSSID=" + nodeGetWiFiAccessPointIP() +"\n"; 	
+		features += "WiFiAPSSID=" + thingGetWiFiAccessPointSSID() +"\n"; 	
+		features += "WiFiAPSSID=" + thingGetWiFiAccessPointIP() +"\n"; 	
 	}
 	else 
 	{
 		features += "WiFiAP=no\n"; 	
 	}
 
-	if (nodeGetWiFiAvailable())				
+	if (thingGetWiFiAvailable())				
 	{
 	  features += "WiFiST=yes\n"; 	
 	  features += "WiFiSTSSID=" DEFAULT_WIFI_STATION_SSID  "\n";
-	  if (nodeGetWiFiIsConnected())
+	  if (thingGetWiFiIsConnected())
 	  {
         features += "WiFiSTConnected=yes\n"; 	
-		features += "WiFiSTIP="+ nodeGetWiFiIP()+"\n"; 	
+		features += "WiFiSTIP="+ thingGetWiFiIP()+"\n"; 	
 	  }
 	  else 
 	  {
@@ -223,21 +223,21 @@ else
 	}
 
 #ifdef USE_HTTPS_SERVER
-	if (nodeGetHTTPServerAvailable())
+	if (thingGetHTTPServerAvailable())
 	{
 		features += "HTTPSecureServer:yes\n";
-		if ((nodeGetWiFiAvailable()) &&  (nodeGetWiFiIsConnected())) 
+		if ((thingGetWiFiAvailable()) &&  (thingGetWiFiIsConnected())) 
 		{				
-		  features += "HTTPSecureServerST=http://" + nodeGetWiFiIP() + ":443\n";
+		  features += "HTTPSecureServerST=http://" + thingGetWiFiIP() + ":443\n";
 		}
 		else 
 		{
 		  features += "HTTPSecureServerST=not connected\n";	
 		}
 
-		if (nodeGetWiFiAccessPointAvailable()) 
+		if (thingGetWiFiAccessPointAvailable()) 
 		{				
-		  features += "HTTPSecureServerAP=http://" + nodeGetWiFiAccessPointIP() + ":443\n";
+		  features += "HTTPSecureServerAP=http://" + thingGetWiFiAccessPointIP() + ":443\n";
 		}
 		else 
 		{
@@ -254,21 +254,21 @@ else
 #endif
 
 #ifdef USE_HTTP_SERVER
-	if (nodeGetHTTPServerAvailable())
+	if (thingGetHTTPServerAvailable())
 	{
 		features += "HTTPServer:yes\n";
-		if ((nodeGetWiFiAvailable()) &&  (nodeGetWiFiIsConnected())) 
+		if ((thingGetWiFiAvailable()) &&  (thingGetWiFiIsConnected())) 
 		{				
-		  features += "HTTPServerST=http://" + nodeGetWiFiIP() + ":" + String(nodeGetHTTPServerPort()) + "\n";
+		  features += "HTTPServerST=http://" + thingGetWiFiIP() + ":" + String(thingGetHTTPServerPort()) + "\n";
 		}
 		else 
 		{
 		  features += "HTTPServerST=not connected\n";	
 		}
 
-		if (nodeGetWiFiAccessPointAvailable()) 
+		if (thingGetWiFiAccessPointAvailable()) 
 		{				
-		  features += "HTTPServerAP=http://" + nodeGetWiFiAccessPointIP() + ":" + String(nodeGetHTTPServerPort()) + "\n";
+		  features += "HTTPServerAP=http://" + thingGetWiFiAccessPointIP() + ":" + String(thingGetHTTPServerPort()) + "\n";
 		}
 		else 
 		{
@@ -291,7 +291,7 @@ else
 
 #ifdef USE_OTA_SERVICE
 	features += "OTA=yes\n";
-	if ((nodeGetWiFiAvailable()) &&  (nodeGetWiFiIsConnected()))
+	if ((thingGetWiFiAvailable()) &&  (thingGetWiFiIsConnected()))
 	{
 		features += "OTAConnected=yes\n";
 	} 
@@ -304,13 +304,13 @@ else
 #endif
 
 #ifdef USE_MQTT
-	if (nodeGetMQTTAvailable())
+	if (thingGetMQTTAvailable())
 	{
-		features += "MQTTBroker:" + nodeGetMQTTURL() + ":" + String(nodeGetMQTTPort()) + "\n";
-		if ((nodeGetWiFiAvailable()) &&  (nodeGetWiFiIsConnected()))
+		features += "MQTTBroker:" + thingGetMQTTURL() + ":" + String(thingGetMQTTPort()) + "\n";
+		if ((thingGetWiFiAvailable()) &&  (thingGetWiFiIsConnected()))
 		{
 		 features += "MQTTBrokerNetwork=yes\n";	
-		 if (nodeGetMQTTClientConnected())
+		 if (thingGetMQTTClientConnected())
 		 {
 		  features += "MQTTBrokerConnected=yes\n";		 
 		 }

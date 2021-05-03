@@ -75,28 +75,28 @@ OWLOS распространяется в надежде, что она буде
 
                 //Для проверки OWLOS в режиме точки доступа:
                 // - включите устройство с OWLOS 
-                // - просканируйте доступные вам WiFi сети, должна быть сеть с названием из DEFAULT_WIFI_ACCESS_POINT_SSID, по умолчанию "owlnode"
+                // - просканируйте доступные вам WiFi сети, должна быть сеть с названием из DEFAULT_WIFI_ACCESS_POINT_SSID, по умолчанию "owlthing"
                 // - соеденитесь с этой сетью использую пароль DEFAULT_WIFI_ACCESS_POINT_PASSWORD
                 // - откройте браузер и перейдите по адресу иказаному в DEFAULT_WIFI_ACCESS_POINT_IP должно открытся страница с приветствием OWLOS.
                 //   ^^^ Разумеется в том случае есть #define USE_HTTP_SERVER включен
 
                 //Включает/Выключает (1/0) WiFi режим точки доступа (другие WiFi устройства могут подключатся к OWLOS если включено).
-                #define DEFAULT_WIFI_ACCESS_POINT_AVAILABLE 0               //файл /owlnode.wifiapavailable
+                #define DEFAULT_WIFI_ACCESS_POINT_AVAILABLE 0               //файл /owlthing.wifiapavailable
 
                 //Если WiFi режим точки доступа включен – название точки доступа (WiFi сети)
-                #define DEFAULT_WIFI_ACCESS_POINT_SSID "owlnode"            //файл /owlnode.wifiaccesspointssid
+                #define DEFAULT_WIFI_ACCESS_POINT_SSID "owlthing"            //файл /owlthing.wifiaccesspointssid
 
                 //Если WiFi режим точки доступа включен – пароль для подключения к точке доступа (для станций, клиентов)
                 //Внимание! -> Измените этот пароль!
-                #define DEFAULT_WIFI_ACCESS_POINT_PASSWORD  "1122334455"    //файл /owlnode.wifiappassword
+                #define DEFAULT_WIFI_ACCESS_POINT_PASSWORD  "1122334455"    //файл /owlthing.wifiappassword
 
                 //Если WiFi режим точки доступа включен – IP адрес точки доступа (OWLOS устройства в ее WiFi сети)
                 //Если вы используете файлы для хранения настроек, это IP адрес будет сброшен в 0.0.0.0 при первом включение. 
                 //В этом случае установите нужный IP адрес (рекомендуем: 192.168.4.1)                
-                #define DEFAULT_WIFI_ACCESS_POINT_IP  "192.168.4.1"         //файл /owlnode.wifiaccesspointip
+                #define DEFAULT_WIFI_ACCESS_POINT_IP  "192.168.4.1"         //файл /owlthing.wifiaccesspointip
 
                 //Включает/Выключает (1/0) WiFi режим станции (подключается к указаной WiFi сети (точки доступа))
-                #define DEFAULT_WIFI_STATION_AVAILABLE 0
+                #define DEFAULT_WIFI_STATION_AVAILABLE 1
 
                 //Название подключаемой точки доступа (WiFi сети)
                 //При запуске OWLOS сделает 10 попыток подключится к DEFAULT_WIFI_STATION_SSID сети, в случае неудачи 
@@ -105,13 +105,13 @@ OWLOS распространяется в надежде, что она буде
                 //OWLOS будет делать попытки соединения постоянно, до перезагрузки. 
                 //Такой способ страхует от неправильного указания названия точки доступа - дело в том что процесс подключения
                 //занимает очень много ресурсов и делает устройство OWLOS медленным. 
-                #define DEFAULT_WIFI_STATION_SSID "" 
+                #define DEFAULT_WIFI_STATION_SSID "Palata#13" 
 
                 //Пароль подключаемой точки доступа. 
-                #define DEFAULT_WIFI_STATION_PASSWORD "" 
+                #define DEFAULT_WIFI_STATION_PASSWORD "qweasdzxc1234" 
 
                 //Название этого устройсва с OWLOS для формирования Topic (уникального пути к устройству в сети)
-                #define DEFAULT_ID "owlnode"
+                #define DEFAULT_ID "owlthing"
 
                 //Topic - путь к устройству в сети по умолчанию
                 #define DEFAULT_TOPIC "owlos/"
@@ -127,7 +127,7 @@ OWLOS распространяется в надежде, что она буде
                 //Включает поиск и установку обновлений OWLOS в сети Internet
                 //Новые версии готовых прошивок находятся здесь: https://github.com/KirinDenis/owlos/tree/master/OWLOS
                 // - OWLOS.ino.esp32.bin для ESP32 
-                // - OWLOS.ino.nodemcu.bin для ESP8266 NodeMcu
+                // - OWLOS.ino.thingmcu.bin для ESP8266 ThingMcu
                 //#define USE_UPDATE_SERVICE
 
                 //Включает OTA (Over The Air) возможность загружать новые прошивки по локальной WiFi сети (без использования UART)

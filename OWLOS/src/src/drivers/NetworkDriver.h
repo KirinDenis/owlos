@@ -44,88 +44,88 @@ OWLOS распространяется в надежде, что она буде
 #ifndef NETWORK_DRIVER_H
 #define NETWORK_DRIVER_H
 
-String nodeGetNetworkProperties();
+String thingGetNetworkProperties();
 String networkOnMessage(String route, String _payload, int8_t transportMask);
 
 #ifdef USE_HTTP_SERVER
-int nodeGetHTTPServerAvailable();
-bool nodeSetHTTPServerAvailable(int _httpavailable);
+int thingGetHTTPServerAvailable();
+bool thingSetHTTPServerAvailable(int _httpavailable);
 
-String nodeGetHTTPServerUsername();
-bool nodeSetHTTPServerUsername(String _httpserverlogin);
+String thingGetHTTPServerUsername();
+bool thingSetHTTPServerUsername(String _httpserverlogin);
 
-String nodeGetHTTPServerPassword();
-bool nodeSetHTTPServerPassword(String _httpserverpwd);
+String thingGetHTTPServerPassword();
+bool thingSetHTTPServerPassword(String _httpserverpwd);
 
-int nodeGetHTTPServerPort();
-bool nodeSetHTTPServerPort(int _httpserverport);
+int thingGetHTTPServerPort();
+bool thingSetHTTPServerPort(int _httpserverport);
 #endif
 
 #ifdef USE_HTTPS_SERVER
-int nodeGetHTTPSServerAvailable();
-bool nodeSetHTTPSServerAvailable(int _httpsavailable);
+int thingGetHTTPSServerAvailable();
+bool thingSetHTTPSServerAvailable(int _httpsavailable);
 
-String nodeGetHTTPSServerUsername();
-bool nodeSetHTTPSServerUsername(String _httpsserverlogin);
+String thingGetHTTPSServerUsername();
+bool thingSetHTTPSServerUsername(String _httpsserverlogin);
 
-String nodeGetHTTPSServerPassword();
-bool nodeSetHTTPSServerPassword(String _httpsserverpwd);
+String thingGetHTTPSServerPassword();
+bool thingSetHTTPSServerPassword(String _httpsserverpwd);
 
-int nodeGetHTTPSServerPort();
-bool nodeSetHTTPSServerPort(int _httpsserverport);
+int thingGetHTTPSServerPort();
+bool thingSetHTTPSServerPort(int _httpsserverport);
 #endif
 
 #ifdef USE_HTTP_CLIENT
-int nodeGetHTTPClientPort();
-bool nodeSetHTTPClientPort(int _httpclientport);
+int thingGetHTTPClientPort();
+bool thingSetHTTPClientPort(int _httpclientport);
 
-String nodeGetHTTPClientURL();
-bool nodeSetHTTPClientURL(String _httpclienturl);
+String thingGetHTTPClientURL();
+bool thingSetHTTPClientURL(String _httpclienturl);
 #endif
 
 #ifdef USE_MQTT
-int nodeGetMQTTAvailable();
-bool nodeSetMQTTAvailable(int _mqttavailable);
+int thingGetMQTTAvailable();
+bool thingSetMQTTAvailable(int _mqttavailable);
 
-int nodeGetMQTTPort();
-bool nodeSetMQTTPort(int _mqttport);
+int thingGetMQTTPort();
+bool thingSetMQTTPort(int _mqttport);
 
-String nodeGetMQTTURL();
-bool nodeSetMQTTURL(String _mqtturl);
+String thingGetMQTTURL();
+bool thingSetMQTTURL(String _mqtturl);
 
-String nodeGetMQTTID();
-bool nodeSetMQTTID(String _mqttid);
+String thingGetMQTTID();
+bool thingSetMQTTID(String _mqttid);
 
-String nodeGetMQTTLogin();
-bool nodeSetMQTTLogin(String _mqttlogin);
+String thingGetMQTTLogin();
+bool thingSetMQTTLogin(String _mqttlogin);
 
-String nodeGetMQTTPassword();
-bool nodeSetMQTTPassword(String _mqttpassword);
+String thingGetMQTTPassword();
+bool thingSetMQTTPassword(String _mqttpassword);
 
-int nodeGetMQTTClientConnected();
-int nodeGetMQTTClientState();
+int thingGetMQTTClientConnected();
+int thingGetMQTTClientState();
 #endif
 
 #ifdef USE_OTA_SERVICE
-int nodeGetOTAAvailable();
-bool nodeSetOTAAvailable(int _otaavailable);
+int thingGetOTAAvailable();
+bool thingSetOTAAvailable(int _otaavailable);
 
-int nodeGetOTAPort();
-bool nodeSetOTAPort(int _otaport);
+int thingGetOTAPort();
+bool thingSetOTAPort(int _otaport);
 
-String nodeGetOTAID();
-bool nodeSetOTAID(String _otaid);
+String thingGetOTAID();
+bool thingSetOTAID(String _otaid);
 
-String nodeGetOTAPassword();
-bool nodeSetOTAPassword(String _otapassword);
+String thingGetOTAPassword();
+bool thingSetOTAPassword(String _otapassword);
 #endif
 
 #ifdef USE_UPDATE_SERVICE
-int nodeGetUpdateAvailable();
-bool nodeSetUpdateAvailable(int _updateavailable);
+int thingGetUpdateAvailable();
+bool thingSetUpdateAvailable(int _updateavailable);
 
-String nodeGetUpdateHost();
-bool nodeSetUpdateHost(String _updatehost);
+String thingGetUpdateHost();
+bool thingSetUpdateHost(String _updatehost);
 #endif
 
 #endif

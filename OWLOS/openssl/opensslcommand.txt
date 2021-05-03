@@ -1,11 +1,11 @@
 genrsa -out key.txt 512
 rsa -in key.txt -out key.txt
-req -sha256 -new -nodes -key key.txt -out cert.csr -subj '/C=UA/ST=K/L=Kiev/O=yourcompanyname [RO]/OU=OWLOS/CN=OWLOS.local' -addext subjectAltName=DNS:OWLOS.local,IP:192.168.4.1
+req -sha256 -new -things -key key.txt -out cert.csr -subj '/C=UA/ST=K/L=Kiev/O=yourcompanyname [RO]/OU=OWLOS/CN=OWLOS.local' -addext subjectAltName=DNS:OWLOS.local,IP:192.168.4.1
 x509 -req -sha256 -days 365 -in cert.csr -signkey key.txt -out cert.txt
 
 genrsa -out key.txt 512
 rsa -in key.txt -out key.txt
-req -sha256 -new -nodes -key key.txt -out cert.csr -subj '/C=UA/ST=K/L=Kiev/O=yourcompanyname [RO]/OU=OWLOS/CN=OWLOS.local' -addext subjectAltName=DNS:OWLOS.local,IP:192.168.4.1
+req -sha256 -new -things -key key.txt -out cert.csr -subj '/C=UA/ST=K/L=Kiev/O=yourcompanyname [RO]/OU=OWLOS/CN=OWLOS.local' -addext subjectAltName=DNS:OWLOS.local,IP:192.168.4.1
 x509 -req -sha256 -days 365 -in cert.csr -signkey key.txt -out cert.txt
 
 
@@ -14,14 +14,14 @@ Copy to OpenSSL command prompt, the cert.txt and key.txt files will be created
 https://slproweb.com/products/Win32OpenSSL.html
 ^^^
 Install OpenSLL for Windows 
-Documentation: https://www.onetransistor.eu/2019/04/https-server-on-esp8266-nodemcu.html
+Documentation: https://www.onetransistor.eu/2019/04/https-server-on-esp8266-thingmcu.html
 ---------
 -subj:
     C - country, short name
     ST - state or province
     L - locality or city
     O - organization
-    OU - organizational node
+    OU - organizational thing
     CN - common name (domain name)
 
 The subjectAltName parameter must contain the domain name(s) where your server is accessible. It can specify also IP addresses like this: subjectAltName=DNS:esp8266.local,IP=192.168.4.1. When requesting a webpage secured with this certificate, the browser will complain it does not know the CA ("ERR_CERT_AUTHORITY_INVALID" is the message displayed by Google Chrome).

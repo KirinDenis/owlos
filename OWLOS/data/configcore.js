@@ -46,7 +46,7 @@ function defaultWebProp() {
         voice: 0,
         widgetssize: 150,
         dashboards: [],
-        nodes: []
+        things: []
     };
 }
 
@@ -133,12 +133,12 @@ var config = {
         config.doOnChange();
     },
 
-    addNode: function (_host, _nodenickname) {
-        if (this.getNodeByHost(_host) != undefined) return false;
-        var node = {
+    addThing: function (_host, _thingnickname) {
+        if (this.getThingByHost(_host) != undefined) return false;
+        var thing = {
             host: _host,
-            nodenickname: _nodenickname,
-            nodeRefreshInterval: 20000,
+            thingnickname: _thingnickname,
+            thingRefreshInterval: 20000,
             //-------------------------------------------------------------------------------------------------------------
             //сетевое состояние модуля - онлайн, офлайн, переподсоединение ("в работе"), ошибка --> по умолчанию онлайн
             //NOTE: у каждого свойства есть свое сетевое состояние и связанные события - это глобальный флаг для всех драйвер и элементов UI
@@ -163,12 +163,12 @@ var config = {
                 }
                 this.networkStatusListners.push(event = { event: _event, sender: _sender });
             },
-            nodeRefresh(node) {
-                drivers.refresh(node);
-                pins.refresh(node);
-                driverPins.refresh(node);
-                accessableDrivers.refresh(node);
-                scriptsService.refresh(node);
+            thingRefresh(thing) {
+                drivers.refresh(thing);
+                pins.refresh(thing);
+                driverPins.refresh(thing);
+                accessableDrivers.refresh(thing);
+                scriptsService.refresh(thing);
             },
             drivers: [],
             pins: [],
@@ -176,16 +176,16 @@ var config = {
             accessableDrivers: [],
 
         }
-        node.nodeRefresh(node);
-        setInterval(node.nodeRefresh(node), node.nodeRefreshInterval, node);
-        configProperties.nodes.push(node);
+        thing.thingRefresh(thing);
+        setInterval(thing.thingRefresh(thing), thing.thingRefreshInterval, thing);
+        configProperties.things.push(thing);
         config.doOnChange();
         return true;
     },
-    getNodeByHost: function (_host) {
-        for (var node in configProperties.nodes) {
-            if (configProperties.nodes[node].host == _host) {
-                return configProperties.nodes[node];
+    getThingByHost: function (_host) {
+        for (var thing in configProperties.things) {
+            if (configProperties.things[thing].host == _host) {
+                return configProperties.things[thing];
             }
         }
         return undefined;
@@ -214,16 +214,16 @@ var config = {
                 }
                 //check 
                 if (sender.getDashboardById("main") != undefined) {
-                    var tempNodes = [];
-                    for (var nodeKey in configProperties.nodes) {
-                        if (configProperties.nodes[nodeKey].nodeRefreshInterval == undefined) {
-                            configProperties.nodes[nodeKey].nodeRefreshInterval = 20000;
+                    var tempThings = [];
+                    for (var thingKey in configProperties.things) {
+                        if (configProperties.things[thingKey].thingRefreshInterval == undefined) {
+                            configProperties.things[thingKey].thingRefreshInterval = 20000;
                         }
-                        var tempNode = {
-                            id: configProperties.nodes[nodeKey].id,
-                            host: configProperties.nodes[nodeKey].host,
-                            nodeRefreshInterval: configProperties.nodes[nodeKey].nodeRefreshInterval,
-                            nodenickname: configProperties.nodes[nodeKey].nodenickname,
+                        var tempThing = {
+                            id: configProperties.things[thingKey].id,
+                            host: configProperties.things[thingKey].host,
+                            thingRefreshInterval: configProperties.things[thingKey].thingRefreshInterval,
+                            thingnickname: configProperties.things[thingKey].thingnickname,
                             _networkStatus: NET_OFFLINE,
                             drivers: [],
                             pins: [],
@@ -250,23 +250,23 @@ var config = {
                                 }
                                 this.networkStatusListners.push(event = { event: _event, sender: _sender });
                             },
-                            nodeRefresh(node) {
-                                drivers.refresh(node);
-                                pins.refresh(node);
-                                driverPins.refresh(node);
-                                accessableDrivers.refresh(node);
-                                scriptsService.refresh(node);
+                            thingRefresh(thing) {
+                                drivers.refresh(thing);
+                                pins.refresh(thing);
+                                driverPins.refresh(thing);
+                                accessableDrivers.refresh(thing);
+                                scriptsService.refresh(thing);
                             }
 
                         }
-                        tempNode.nodeRefresh(tempNode);
-                        setInterval(tempNode.nodeRefresh, tempNode.nodeRefreshInterval, tempNode);
-                        tempNodes.push(tempNode);
+                        tempThing.thingRefresh(tempThing);
+                        setInterval(tempThing.thingRefresh, tempThing.thingRefreshInterval, tempThing);
+                        tempThings.push(tempThing);
                     }
-                    configProperties.nodes = tempNodes;
+                    configProperties.things = tempThings;
 
-                    //First node all time is boardhost 
-                    configProperties.nodes[0].host = boardhost;
+                    //First thing all time is boardhost 
+                    configProperties.things[0].host = boardhost;
                     result = true;
 
                     sender.doOnLoad();
@@ -289,7 +289,7 @@ var config = {
         configProperties = defaultWebProp();
         addToLogNL(getLang("restoredefault"), 1);
         config.addDashboard("main");
-        config.addNode(boardhost, "local");
+        config.addThing(boardhost, "local");
         return config.save();
     },
     // асинхронный метод сохранения внесенных изменений в настройки (передача строки разбитой на небольшие части в ноду) 
@@ -303,23 +303,23 @@ var config = {
             saveButton.hidden = true;
         }
         for (var key in configProperties) {
-            if (key != "nodes") {
+            if (key != "things") {
                 tempProp[key] = configProperties[key];
             }
         }
-        for (var node in configProperties.nodes) {
-            var jsonNode = {
-                id: configProperties.nodes[node].id,
-                host: configProperties.nodes[node].host,
-                nodeRefreshInterval: configProperties.nodes[node].nodeRefreshInterval,
-                nodenickname: configProperties.nodes[node].nodenickname,
+        for (var thing in configProperties.things) {
+            var jsonThing = {
+                id: configProperties.things[thing].id,
+                host: configProperties.things[thing].host,
+                thingRefreshInterval: configProperties.things[thing].thingRefreshInterval,
+                thingnickname: configProperties.things[thing].thingnickname,
                 _networkStatus: NET_OFFLINE,
                 drivers: [],
                 pins: [],
                 driversPins: [],
                 accessableDrivers: []
             }
-            tempProp.nodes.push(jsonNode);
+            tempProp.things.push(jsonThing);
         }
         //конвертирование в формат JSON
         var stringifyConfig = JSON.stringify(tempProp);

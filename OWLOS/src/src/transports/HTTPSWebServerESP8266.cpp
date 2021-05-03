@@ -134,7 +134,7 @@ void calculateToken()
 #ifdef NOT_SECURE_TOKEN
 	MD5Builder md5;
 	md5.begin();
-	md5.add(nodeGetHTTPServerServerUsername() + nodeGetHTTPServerServerPassword() + nodeGetESPFlashChipId());
+	md5.add(thingGetHTTPServerServerUsername() + thingGetHTTPServerServerPassword() + thingGetESPFlashChipId());
 	md5.calculate();
 	token = md5.toString();
 #endif
@@ -159,7 +159,7 @@ bool auth(String username, String password)
 
 	MD5Builder md5;
 	md5.begin();
-	md5.add(username + password + nodeGetESPFlashChipId());
+	md5.add(username + password + thingGetESPFlashChipId());
 	md5.calculate();
 	return token.equals(md5.toString());
 }
@@ -380,16 +380,16 @@ void handleGetUnitProperty(WiFiClient client)
 	{
 		if (argName[0].equals("property"))
 		{
-			String nodeProp = nodeOnMessage(nodeGetTopic() + "/get" + decode(arg[0]), "", NO_TRANSPORT_MASK);
-			if ((nodeProp.length() == 0) || (nodeProp.equals(WRONG_PROPERTY_NAME)))
+			String thingProp = thingOnMessage(thingGetTopic() + "/get" + decode(arg[0]), "", NO_TRANSPORT_MASK);
+			if ((thingProp.length() == 0) || (thingProp.equals(WRONG_PROPERTY_NAME)))
 			{
-				nodeProp = "wrong node property: " + arg[0];
-				send(404, "text/html", nodeProp, client);
+				thingProp = "wrong thing property: " + arg[0];
+				send(404, "text/html", thingProp, client);
 				return;
 			}
 			else
 			{
-				send(200, "text/plain", nodeProp, client);
+				send(200, "text/plain", thingProp, client);
 				return;
 			}
 		}
@@ -403,10 +403,10 @@ void handleSetUnitProperty(WiFiClient client)
 	{
 		if ((argName[0].equals("property")) && (argName[1].equals("value")))
 		{
-			String result = nodeOnMessage(nodeGetTopic() + "/set" + decode(arg[0]), decode(arg[1]), NO_TRANSPORT_MASK);
+			String result = thingOnMessage(thingGetTopic() + "/set" + decode(arg[0]), decode(arg[1]), NO_TRANSPORT_MASK);
 			if ((result.length() == 0) || (result.equals("0")))
 			{
-				result = "wrong node property set: " + arg[0] + "=" + arg[1];
+				result = "wrong thing property set: " + arg[0] + "=" + arg[1];
 				send(404, "text/html", result, client);
 				return;
 			}
@@ -422,7 +422,7 @@ void handleSetUnitProperty(WiFiClient client)
 
 void handleGetAllKernel(WiFiClient client)
 {
-	send(200, "text/plain", nodeGetAllProperties(), client);
+	send(200, "text/plain", thingGetAllProperties(), client);
 	return;
 }
 
@@ -503,18 +503,18 @@ void handleSetDriverProperty(WiFiClient client)
 				driverResult = WRONG_PROPERTY_NAME;
 			}
 
-			String nodeResult = "";
-			if (driverResult.equals(WRONG_PROPERTY_NAME)) //try set node property
+			String thingResult = "";
+			if (driverResult.equals(WRONG_PROPERTY_NAME)) //try set thing property
 			{
 				driverResult = "";
-				nodeResult = nodeOnMessage(nodeGetTopic() + "/set" + decode(arg[1]), decode(arg[2]), NO_TRANSPORT_MASK);
-				if (nodeResult.equals("1"))
+				thingResult = thingOnMessage(thingGetTopic() + "/set" + decode(arg[1]), decode(arg[2]), NO_TRANSPORT_MASK);
+				if (thingResult.equals("1"))
 				{
-					nodeResult = "";
+					thingResult = "";
 				}
-				else if (nodeResult.equals("0"))
+				else if (thingResult.equals("0"))
 				{
-					nodeResult = "Wrong set ESP propertry ";
+					thingResult = "Wrong set ESP propertry ";
 				}
 			}
 
@@ -522,9 +522,9 @@ void handleSetDriverProperty(WiFiClient client)
 			{
 				send(502, "text/html", "wrong driver set property " + arg[0] + "\n" + driverResult, client);
 			}
-			else if (nodeResult.length() != 0)
+			else if (thingResult.length() != 0)
 			{
-				send(502, "text/html", "wrong ESP drivers set property " + arg[0] + "\n" + nodeResult, client);
+				send(502, "text/html", "wrong ESP drivers set property " + arg[0] + "\n" + thingResult, client);
 			}
 			else
 			{
@@ -542,7 +542,7 @@ void handleGetWebProperty(WiFiClient client)
 	{
 		if (argName[0].equals("property"))
 		{
-			//String configProperties = webOnMessage(nodeGetTopic() + "/get" + decode(arg[0)), "");
+			//String configProperties = webOnMessage(thingGetTopic() + "/get" + decode(arg[0)), "");
 
 			File download = SPIFFS.open("/web.config", "r");
 			if (download)
@@ -575,7 +575,7 @@ void handleReset(WiFiClient client)
 {
 
 	send(200, "text/plain", "1", client);
-	nodeSetESPReset(1);
+	thingSetESPReset(1);
 }
 
 //----------------------------------------------------------------------------------------------
@@ -654,9 +654,9 @@ void handleGetDriverProperty(WiFiClient client)
 		if ((argName[0].equals("id")) && (argName[1].equals("property")))
 		{
 			String driverProp = driversGetDriverProperty(arg[0], decode(arg[1]));
-			if (driverProp.length() == 0) //then try get this property from node
+			if (driverProp.length() == 0) //then try get this property from thing
 			{
-				driverProp = nodeOnMessage(nodeGetTopic() + "/get" + decode(arg[1]), "", NO_TRANSPORT_MASK);
+				driverProp = thingOnMessage(thingGetTopic() + "/get" + decode(arg[1]), "", NO_TRANSPORT_MASK);
 			}
 
 			if (driverProp.length() == 0)
@@ -1036,11 +1036,11 @@ debugOut("Upload", "501");
 	{
 		if (argName[0].equals("property"))
 		{
-			String result = webOnMessage(nodeGetTopic() + "/set" + decode(arg[0]), decode(parsePostBody(client)));
+			String result = webOnMessage(thingGetTopic() + "/set" + decode(arg[0]), decode(parsePostBody(client)));
 			if ((result.length() == 0) || (result.equals("0")))
 			{
 
-				send(404, "text/html", "wrong node property set: " + arg[0], client);
+				send(404, "text/html", "wrong thing property set: " + arg[0], client);
 				return;
 			}
 			else
@@ -1307,15 +1307,15 @@ void HTTPSWebServerLoop()
 									{
 										handleDeleteFile(client);
 									}
-									else if (firstLine.indexOf("/getnodeproperty") != -1)
+									else if (firstLine.indexOf("/getthingproperty") != -1)
 									{
 										handleGetUnitProperty(client);
 									}
-									else if (firstLine.indexOf("/setnodeproperty") != -1)
+									else if (firstLine.indexOf("/setthingproperty") != -1)
 									{
 										handleSetUnitProperty(client);
 									}
-									else if (firstLine.indexOf("/getallnodeproperties") != -1)
+									else if (firstLine.indexOf("/getallthingproperties") != -1)
 									{
 										handleGetAllKernel(client);
 									}

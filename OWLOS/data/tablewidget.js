@@ -44,13 +44,13 @@ var TableWidget =
     function () {
         "use strict";
 
-        function TableWidget(nodePropAnchors, nodesPropsPanel, driver, size) {
+        function TableWidget(thingPropAnchors, thingsPropsPanel, driver, size) {
             //панели в UI для рендеринга таблиц
-            this.nodePropAnchors = nodePropAnchors; //document.getElementById("nodePropAnchors");
-            this.nodesPropsPanel = nodesPropsPanel; // document.getElementById("nodesPropsPanel");
+            this.thingPropAnchors = thingPropAnchors; //document.getElementById("thingPropAnchors");
+            this.thingsPropsPanel = thingsPropsPanel; // document.getElementById("thingsPropsPanel");
             this.driver = driver;
             this.size = size; //drivers.addNewDriverListner(this.newTable, this); //подписываемся на событие drivers о создании нового драйвера
-            this.newTable(); //this.nodePropAnchors.innerHTML = "";
+            this.newTable(); //this.thingPropAnchors.innerHTML = "";
         } //слушатель (получатель) событие создания нового драйвер (драйвер не содержит свойств на данном этапе)
 
 
@@ -59,23 +59,23 @@ var TableWidget =
 
         _proto.newTable = function newTable() {
             //добавляет кнопку в панель быстрого выбора драйвер
-            if (this.nodePropAnchors != undefined) { }
+            if (this.thingPropAnchors != undefined) { }
             //добавлет таблицу для свойств нового драйвера
-            var div = this.nodesPropsPanel.appendChild(document.createElement('div'));
+            var div = this.thingsPropsPanel.appendChild(document.createElement('div'));
 
-            if (this.nodePropAnchors != undefined) {
+            if (this.thingPropAnchors != undefined) {
                 div.className = "driverdiv tab-pane fade"; //if (firstDriver) {
                 //}
             } else {
                 div.className = "col-md-" + this.size + " driverdiv TableWidget";
             }
 
-            div.id = this.driver._nodenickname + "_" + this.driver._id;
+            div.id = this.driver._thingnickname + "_" + this.driver._id;
             //таблица
 
             this.table = div.appendChild(document.createElement('table'));
             this.table.className = "table table-striped table-sm";
-            this.table.id = "drivertable" + this.driver._nodenickname + "_" + this.driver._id;
+            this.table.id = "drivertable" + this.driver._thingnickname + "_" + this.driver._id;
             this.table.cellspacing = "0"; //колонки
 
             var thead = this.table.appendChild(document.createElement('thead'));
@@ -126,7 +126,7 @@ var TableWidget =
 
             if (this.driver._new) {
                 // $("#drivertable" + this.driver._id).DataTable({ searching: false, paging: false, info: false });
-                $("#drivertable" + this.driver._nodenickname + "_" + this.driver._id).DataTable({
+                $("#drivertable" + this.driver._thingnickname + "_" + this.driver._id).DataTable({
                     "language": {
                         "lengthMenu": getLang("dt_display") + " _MENU_ " + getLang("dt_recordsperpage"),
                         "info": getLang("dt_showing") + " _START_ " + getLang("dt_to") + " _END_ " + getLang("dt_of") + " _TOTAL_ " + getLang("dt_entries"),
@@ -149,8 +149,8 @@ var TableWidget =
             ;
 
         _proto.addProperty = function addProperty(driverProperty) {
-            var node = config.getNodeByHost(driverProperty.parenthost);
-            if (node == undefined) return;
+            var thing = config.getThingByHost(driverProperty.parenthost);
+            if (thing == undefined) return;
             this.tbody.propertyCount++; //инкрементируем счетчик свойств
 
             var tr = this.tbody.appendChild(document.createElement('tr'));
@@ -215,7 +215,7 @@ var TableWidget =
 
             driverProperty.addNetworkStatusListner(this.onDriverPropNetworkStatusChange, getSpan); //кнопка так же является получателем изменения статуса свойства драйвера
 
-            node.addNetworkStatusListner(this.onDriverPropNetworkStatusChange, getSpan); //подписка на глобальный сетевой статус
+            thing.addNetworkStatusListner(this.onDriverPropNetworkStatusChange, getSpan); //подписка на глобальный сетевой статус
             //кнопка Set value не создается если свойство ReadOnly
 
             if (driverProperty.type.indexOf("r") == -1) {
@@ -233,7 +233,7 @@ var TableWidget =
                 span.onclick = this.setDriverClick;
                 span.innerText = "set";
                 driverProperty.addNetworkStatusListner(this.onDriverPropNetworkStatusChange, span);
-                node.addNetworkStatusListner(this.onDriverPropNetworkStatusChange, span);
+                thing.addNetworkStatusListner(this.onDriverPropNetworkStatusChange, span);
             }
 
             return tr; //FFR: возвращет созданую строку таблицы, пока не используется

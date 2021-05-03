@@ -39,16 +39,16 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-const nodes = ['bytes', 'kb', 'mb', 'gb', 'tb', 'pb', 'eb', 'zb', 'yb'];
+const things = ['bytes', 'kb', 'mb', 'gb', 'tb', 'pb', 'eb', 'zb', 'yb'];
 
 var FilesList =
 
     function () {
         "use strict";
 
-        function FilesList(filesAnchors, node) {
+        function FilesList(filesAnchors, thing) {
             this.filesAnchors = filesAnchors;
-            this.node = node;
+            this.thing = thing;
             this.parsedFilesList = "";
             this.filesAnchors.innerHTML = "";
             this.requestFilesList();
@@ -58,7 +58,7 @@ var FilesList =
 
         _proto.requestFilesList = function requestFilesList() {
             this.parsedFilesList = "";
-            httpGetAsyncWithReciever(this.node.host + "getfilelist?path=", this.requestFilesListResult, this);
+            httpGetAsyncWithReciever(this.thing.host + "getfilelist?path=", this.requestFilesListResult, this);
         };
 
         _proto.requestFilesListResult = function requestFilesListResult(HTTPResult, sender) {
@@ -73,7 +73,7 @@ var FilesList =
 
         _proto.drawFilesList = function drawFilesList() {
             if (this.uploadSpan == undefined) {
-                this.filesItem =  document.getElementById("filesitem" + this.node.nodenickname);
+                this.filesItem =  document.getElementById("filesitem" + this.thing.thingnickname);
                 this.uploadSpan = headerPanelUI.addButton("uploadfilebuttoon", "fa fa-file", getLang("upload"), headerPanelUI.filesButtonRole);                                                    
                 this.uploadSpan.href = boardhost + "upload";
                 this.uploadSpan.onclick = this.uploadClick;
@@ -94,7 +94,7 @@ var FilesList =
                 this.uploadSpan.className = "btn btn-success btn-sm";
                 var table = this.tableDiv.appendChild(document.createElement('table'));
                 table.className = "table table-striped table-sm";
-                table.id = this.node.nodenickname + "filestable";
+                table.id = this.thing.thingnickname + "filestable";
                 table.cellspacing = "0";
                 var thead = table.appendChild(document.createElement('thead'));
                 var tr = thead.appendChild(document.createElement('tr'));
@@ -153,7 +153,7 @@ var FilesList =
                     deleteSpan.filesList = this;
                 }
 
-                $("#" + this.node.nodenickname + "filestable").DataTable({
+                $("#" + this.thing.thingnickname + "filestable").DataTable({
                     "pageLength": 100,
                     "language": {
                         "lengthMenu": getLang("dt_display") + " _MENU_ " + getLang("dt_recordsperpage"),
@@ -178,7 +178,7 @@ var FilesList =
             deleteButton.className = "badge badge-warning";
             deleteButton.value = 'do...';
             deleteButton.disable = true;
-            var httpResult = deleteFile(deleteButton.filesList.node.host, deleteButton.filename);
+            var httpResult = deleteFile(deleteButton.filesList.thing.host, deleteButton.filename);
 
             if (httpResult == 1) {
                 deleteButton.filesList.requestFilesList();
@@ -236,7 +236,7 @@ var FilesList =
                 n = n / 1024;
             }
 
-            return n.toFixed(n < 10 && l > 0 ? 1 : 0) + ' ' + nodes[l];
+            return n.toFixed(n < 10 && l > 0 ? 1 : 0) + ' ' + things[l];
         };
 
         _proto.inputGroupChange = function inputGroupChange(event) {
@@ -266,7 +266,7 @@ var FilesList =
         };
 
         _proto.uploadFileByIndex = function uploadFileByIndex(index) {
-            var endPoint = this.node.host + "uploadfile"; //war mode
+            var endPoint = this.thing.host + "uploadfile"; //war mode
 
             var inputGroup = document.getElementById("inputGroup");
             var inputFile = document.getElementById("inputGroupFile01");

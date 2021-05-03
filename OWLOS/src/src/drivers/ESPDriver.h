@@ -55,111 +55,111 @@ OWLOS распространяется в надежде, что она буде
 #define DEFAULT_ZERO_VALUE 0x00
 #define DEFAULT_EMPTY_STR_VALUE ""
 
-bool nodeInit();
+bool thingInit();
 
-String nodeGetAllProperties();
+String thingGetAllProperties();
 
-void nodeSubscribe();
+void thingSubscribe();
 
-String nodeOnMessage(const String &route, const String &_payload, int8_t transportMask);
+String thingOnMessage(const String &route, const String &_payload, int8_t transportMask);
 
-String nodeGetUnitId();
-bool nodeSetUnitId(String _nodeid);
+String thingGetUnitId();
+bool thingSetUnitId(String _thingid);
 
-String nodeGetTopic();
-bool nodeSetTopic(String _topic);
+String thingGetTopic();
+bool thingSetTopic(String _topic);
 
-String nodeGetFirmwareVersion();
-bool nodeSetFirmwareVersion(String _firmwareversion);
+String thingGetFirmwareVersion();
+bool thingSetFirmwareVersion(String _firmwareversion);
 
-int nodeGetFirmwareBuildNumber();
-bool nodeSetFirmwareBuildNumber(int _firmwarebuildnumber);
+int thingGetFirmwareBuildNumber();
+bool thingSetFirmwareBuildNumber(int _firmwarebuildnumber);
 
 
 /**/
-String nodeGetESPResetInfo();
-bool nodeSetESPResetInfo(String _espresetinfo);
+String thingGetESPResetInfo();
+bool thingSetESPResetInfo(String _espresetinfo);
 
-int nodeGetESPReset();
-bool nodeSetESPReset(int _espreset);
+int thingGetESPReset();
+bool thingSetESPReset(int _espreset);
 
-int nodeGetESPRestart();
-bool nodeSetESPRestart(int _esprestart);
+int thingGetESPRestart();
+bool thingSetESPRestart(int _esprestart);
 
-uint16_t nodeGetESPVcc();
-bool nodeSetESPVcc(int _espvcc);
+uint16_t thingGetESPVcc();
+bool thingSetESPVcc(int _espvcc);
 
-uint32_t nodeGetESPChipId();
-bool nodeSetESPChipId(int _espchipid);
+uint32_t thingGetESPChipId();
+bool thingSetESPChipId(int _espchipid);
 
-uint32_t nodeGetESPFreeHeap();
-bool nodeSetESPFreeHeap(int _espfreeheap);
+uint32_t thingGetESPFreeHeap();
+bool thingSetESPFreeHeap(int _espfreeheap);
 
-uint16_t nodeGetESPMaxFreeBlockSize();
-bool nodeSetESPMaxFreeBlockSize(int _espmaxfreeblocksize);
+uint16_t thingGetESPMaxFreeBlockSize();
+bool thingSetESPMaxFreeBlockSize(int _espmaxfreeblocksize);
 
-uint8_t nodeGetESPHeapFragmentation();
-bool nodeSetESPHeapFragmentation(int _espheapfragmentation);
+uint8_t thingGetESPHeapFragmentation();
+bool thingSetESPHeapFragmentation(int _espheapfragmentation);
 
-String nodeGetESPSdkVersion();
-bool nodeSetESPSdkVersion(String _espsdkversion);
+String thingGetESPSdkVersion();
+bool thingSetESPSdkVersion(String _espsdkversion);
 
-String nodeGetESPCoreVersion();
-bool nodeSetESPCoreVersion(String _espcoreversion);
+String thingGetESPCoreVersion();
+bool thingSetESPCoreVersion(String _espcoreversion);
 
-String nodeGetESPFullVersion();
-bool nodeSetESPFullVersion(String _espfullversion);
+String thingGetESPFullVersion();
+bool thingSetESPFullVersion(String _espfullversion);
 
-uint8_t nodeGetESPBootVersion();
-bool nodeSetESPBootVersion(int _espbootversion);
+uint8_t thingGetESPBootVersion();
+bool thingSetESPBootVersion(int _espbootversion);
 
-uint8_t nodeGetESPBootMode();
-bool nodeSetESPBootMode(int _espbootmode);
+uint8_t thingGetESPBootMode();
+bool thingSetESPBootMode(int _espbootmode);
 
-uint8_t nodeGetESPCpuFreqMHz();
-bool nodeSetESPCpuFreqMHz(int _espcpufreqmhz);
+uint8_t thingGetESPCpuFreqMHz();
+bool thingSetESPCpuFreqMHz(int _espcpufreqmhz);
 
-uint32_t nodeGetESPFlashChipId();
-bool nodeSetESPFlashChipId(int _espflashchipid);
+uint32_t thingGetESPFlashChipId();
+bool thingSetESPFlashChipId(int _espflashchipid);
 
-uint8_t nodeGetESPFlashChipVendorId();
-bool nodeSetESPFlashChipVendorId(int _espflashchipvendorid);
+uint8_t thingGetESPFlashChipVendorId();
+bool thingSetESPFlashChipVendorId(int _espflashchipvendorid);
 
-uint32_t nodeGetESPFlashChipRealSize();
-bool nodeSetESPFlashChipRealSize(int _espflashchiprealsize);
+uint32_t thingGetESPFlashChipRealSize();
+bool thingSetESPFlashChipRealSize(int _espflashchiprealsize);
 
-uint32_t nodeGetESPFlashChipSize();
-bool nodeSetESPFlashChipSize(int _espflashchipsize);
+uint32_t thingGetESPFlashChipSize();
+bool thingSetESPFlashChipSize(int _espflashchipsize);
 
-uint32_t nodeGetESPFlashChipSpeed();
-bool nodeSetESPFlashChipSpeed(int _espflashchipspeed);
+uint32_t thingGetESPFlashChipSpeed();
+bool thingSetESPFlashChipSpeed(int _espflashchipspeed);
 
-uint32_t nodeGetESPSketchSize();
-bool nodeSetESPSketchSize(int _espsketchsize);
+uint32_t thingGetESPSketchSize();
+bool thingSetESPSketchSize(int _espsketchsize);
 
-uint32_t nodeGetESPFreeSketchSpace();
-bool nodeSetESPFreeSketchSpace(int _espfreesketchspace);
+uint32_t thingGetESPFreeSketchSpace();
+bool thingSetESPFreeSketchSpace(int _espfreesketchspace);
 
-FlashMode_t nodeGetESPFlashChipMode();
-bool nodeSetESPFlashChipMode(int _espflashchipmode);
+FlashMode_t thingGetESPFlashChipMode();
+bool thingSetESPFlashChipMode(int _espflashchipmode);
 
-String nodeGetESPSketchMD5();
-bool nodeSetESPSketchMD5(String _espsketchmd5);
+String thingGetESPSketchMD5();
+bool thingSetESPSketchMD5(String _espsketchmd5);
 
-String nodeGetESPResetReason();
-bool nodeSetESPResetReason(String _espresetreason);
+String thingGetESPResetReason();
+bool thingSetESPResetReason(String _espresetreason);
 
-uint32_t nodeGetESPMagicFlashChipSize(uint8_t byte);
-bool nodeSetESPMagicFlashChipSize(int _espmagicflashchipsize);
+uint32_t thingGetESPMagicFlashChipSize(uint8_t byte);
+bool thingSetESPMagicFlashChipSize(int _espmagicflashchipsize);
 
-uint32_t nodeGetESPMagicFlashChipSpeed(uint8_t byte);
-bool nodeSetESPMagicFlashChipSpeed(int _espmagicflashchipspeed);
+uint32_t thingGetESPMagicFlashChipSpeed(uint8_t byte);
+bool thingSetESPMagicFlashChipSpeed(int _espmagicflashchipspeed);
 
-FlashMode_t nodeGetESPMagicFlashChipMode(uint8_t byte);
-bool nodeSetESPMagicFlashChipMode(int _espmagicflashchipmode);
+FlashMode_t thingGetESPMagicFlashChipMode(uint8_t byte);
+bool thingSetESPMagicFlashChipMode(int _espmagicflashchipmode);
 
-String nodeGetBusyPins();
-String nodeGetPinsMap();
+String thingGetBusyPins();
+String thingGetPinsMap();
 
 
 #ifdef ESP_ENABLE_INTERNAL_API

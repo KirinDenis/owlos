@@ -125,20 +125,20 @@ var dashboardUI = {
     onAddWidgetClick: function () {
 
         var addWidgetDialog = createModalDialog(getLang("dashboardaddwidget"), "");
-        addWidgetDialog.appendSelect(createDialogSelect("nodeselect", "<strong>" + getLang("nodeselect") + "</strong>"));
+        addWidgetDialog.appendSelect(createDialogSelect("thingselect", "<strong>" + getLang("thingselect") + "</strong>"));
 
-        var nodeSelect = addWidgetDialog.getChild("nodeselect");
-        nodeSelect.onchange = dashboardUI.onNodeSelectChange;
-        nodeSelect.addWidgetDialog = addWidgetDialog;
+        var thingSelect = addWidgetDialog.getChild("thingselect");
+        thingSelect.onchange = dashboardUI.onThingSelectChange;
+        thingSelect.addWidgetDialog = addWidgetDialog;
 
-        for (var node in configProperties.nodes) {
-            var nodeSelectOption = nodeSelect.dialogSelect.appendOption(configProperties.nodes[node].nodenickname);
-            nodeSelectOption.node = configProperties.nodes[node];
+        for (var thing in configProperties.things) {
+            var thingSelectOption = thingSelect.dialogSelect.appendOption(configProperties.things[thing].thingnickname);
+            thingSelectOption.thing = configProperties.things[thing];
         }
 
         addWidgetDialog.appendSelect(createDialogSelect("driverselect", getLang("driverselect")));
         var driverSelect = addWidgetDialog.getChild("driverselect");
-        nodeSelect.driverSelect = driverSelect;
+        thingSelect.driverSelect = driverSelect;
         driverSelect.onchange = dashboardUI.onDriverSelectChange;
 
         addWidgetDialog.appendSelect(createDialogSelect("propselect", getLang("propselect")));
@@ -150,7 +150,7 @@ var dashboardUI = {
         var widgetSelect = addWidgetDialog.getChild("widgetselect");
         propSelect.widgetSelect = widgetSelect;
 
-        dashboardUI.onNodeSelectChange(event = { currentTarget: nodeSelect });
+        dashboardUI.onThingSelectChange(event = { currentTarget: thingSelect });
 
         addWidgetDialog.onOK = dashboardUI.doAddWidget;
         addWidgetDialog.show();
@@ -173,31 +173,31 @@ var dashboardUI = {
         document.getElementById("noWidgetsPanel").style.display = "none";
         return true;
     },
-    onNodeSelectChange: function (event) {
-        var nodeSelect = event.currentTarget;
-        var nodeSelectOption = nodeSelect.options[nodeSelect.selectedIndex];
-        var node = nodeSelectOption.node;
-        var driverSelect = nodeSelect.driverSelect;
+    onThingSelectChange: function (event) {
+        var thingSelect = event.currentTarget;
+        var thingSelectOption = thingSelect.options[thingSelect.selectedIndex];
+        var thing = thingSelectOption.thing;
+        var driverSelect = thingSelect.driverSelect;
 
         driverSelect.options.length = 0;
-        for (var i = 0; i < node.drivers.length; i++) {
-            if (dashboardUI.secondaryDrivers.indexOf("," + node.drivers[i]._id) == -1) {
-                var driverSelectOption = driverSelect.dialogSelect.appendOption(node.drivers[i]._id, 0);
+        for (var i = 0; i < thing.drivers.length; i++) {
+            if (dashboardUI.secondaryDrivers.indexOf("," + thing.drivers[i]._id) == -1) {
+                var driverSelectOption = driverSelect.dialogSelect.appendOption(thing.drivers[i]._id, 0);
                 driverSelectOption.className = "bold-option";
             }
             else {
-                var driverSelectOption = driverSelect.dialogSelect.appendOption(node.drivers[i]._id, 0);
+                var driverSelectOption = driverSelect.dialogSelect.appendOption(thing.drivers[i]._id, 0);
             }
-            driverSelectOption.driver = node.drivers[i];
+            driverSelectOption.driver = thing.drivers[i];
         }
-        if (node.drivers.length == 0) {
+        if (thing.drivers.length == 0) {
             driverSelect.disabled = true;
-            nodeSelect.addWidgetDialog.errorLabel.innerHTML = getLang("nodeoffline");
+            thingSelect.addWidgetDialog.errorLabel.innerHTML = getLang("thingoffline");
         }
         else {
             driverSelect.disabled = false;
             driverSelect.selectedIndex = 0;
-            nodeSelect.addWidgetDialog.errorLabel.innerHTML = "";
+            thingSelect.addWidgetDialog.errorLabel.innerHTML = "";
         }
         dashboardUI.onDriverSelectChange(event = { currentTarget: driverSelect });
         return false;

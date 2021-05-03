@@ -40,11 +40,11 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 var driversUI = {
-    node: undefined,
+    thing: undefined,
     createDialog: undefined,
 
-    addDriver(node) {
-        driversUI.node = node;
+    addDriver(thing) {
+        driversUI.thing = thing;
 
         driversUI.createDialog = createModalDialog(getLang("createdriverdialog"), "");
         driversUI.createDialog.appendSelect(createDialogSelect("drivertype", getLang("drivertype")));
@@ -52,9 +52,9 @@ var driversUI = {
         var driverSelect = driversUI.createDialog.getChild("drivertype");
         driverSelect.onchange = driversUI.onDriverSelectChange;
 
-        for (var i = 0; i < driversUI.node.accessableDrivers.length; i++) {
-            var driverSelectOption = driverSelect.dialogSelect.appendOption(driversUI.node.accessableDrivers[i].name);
-            driverSelectOption.driver = driversUI.node.accessableDrivers[i];
+        for (var i = 0; i < driversUI.thing.accessableDrivers.length; i++) {
+            var driverSelectOption = driverSelect.dialogSelect.appendOption(driversUI.thing.accessableDrivers[i].name);
+            driverSelectOption.driver = driversUI.thing.accessableDrivers[i];
         }
 
         var event = { currentTarget: driverSelect }
@@ -97,7 +97,7 @@ var driversUI = {
                 driversUI.createDialog.appendSelect(createDialogSelect("pinselect" + i, "pin " + String(i + 1) + driver["pintypedecoded" + i]));
                 var pinSelect = driversUI.createDialog.getChild("pinselect" + i);
 
-                var pins = getFreePins(driversUI.node, driver["pintype" + i]);
+                var pins = getFreePins(driversUI.thing, driver["pintype" + i]);
                 if (pins.length > 0) {
                     pinSelect.dialogSelect.appendOption(getLang("PleaseSelectPin"));
                     for (var j = 0; j < pins.length; j++) {
@@ -118,7 +118,7 @@ var driversUI = {
         }
     },
 
-    doAddDriverClick: function (masterNodeDialog) {
+    doAddDriverClick: function (masterThingDialog) {
         var driverSelect = document.getElementById("drivertype");
         var driverSelectOption = driverSelect.options[driverSelect.selectedIndex];
         var driver = driverSelectOption.driver;
@@ -139,7 +139,7 @@ var driversUI = {
         //http://192.168.1.9:8084/adddriver?type=7&id=lcd1&pins=D21,D22,ADDR0x3F,VCC5,GND
         pinsString = "type=" + driver.type + "&id=" + document.getElementById("driverid").value + "&pins=" + pinsString;
         //TODO: decode Type from name 
-        var httpResult = addDriver(driversUI.node.host, pinsString);
+        var httpResult = addDriver(driversUI.thing.host, pinsString);
 
         if (httpResult == 1) {
 
@@ -156,7 +156,7 @@ var driversUI = {
             }
             return true;
         }
-        masterNodeDialog.errorLabel.innerText = httpResult;
+        masterThingDialog.errorLabel.innerText = httpResult;
         return false;
     },
 }

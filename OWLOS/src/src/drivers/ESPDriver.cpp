@@ -56,7 +56,7 @@ extern "C" int rom_phy_get_vdd33();
 String propertyFileReaded("");
 
 //Unit Private properties
-String nodeid(DEFAULT_ID);	 //current Unit ID for transport (MQTT) topic and other identification inside system
+String thingid(DEFAULT_ID);	 //current Unit ID for transport (MQTT) topic and other identification inside system
 String topic(DEFAULT_TOPIC); //current Unit ROOT topic
 String firmwareversion(FIRMWARE_VERSION);
 int firmwarebuildnumber(FIRMWARE_BUILD_NUMBER);
@@ -96,10 +96,10 @@ FlashMode_t espmagicflashchipmode((FlashMode_t)DEFAULT_ZERO_VALUE);
 OWLOS ESP drivers section (ESP Driver, WiFi Driver, Network Driver
 ------------------------------------------------------------------------------*/
 
-bool nodeInit()
+bool thingInit()
 {
-	nodeGetUnitId();
-	nodeGetTopic();
+	thingGetUnitId();
+	thingGetTopic();
 	return true;
 }
 
@@ -115,64 +115,64 @@ bool nodeInit()
 //if not read only - write accessable
 //this flags needed to UI and SDK builder - determinate API parameters types and SET API available
 
-String nodeGetAllProperties()
+String thingGetAllProperties()
 {
 
-	return nodeGetWiFiProperties() +
-	       nodeGetNetworkProperties() +
+	return thingGetWiFiProperties() +
+	       thingGetNetworkProperties() +
 
 								 "properties for:esp\n"
 								 "id=esp//r\n"
 								 "type=" +
 		   String(ESP_DRIVER_TYPE) + "//r\n"
 							 "espresetinfo=" +
-		   nodeGetESPResetInfo() + "//r\n"
+		   thingGetESPResetInfo() + "//r\n"
 								   "espreset=" +
-		   String(nodeGetESPReset()) + "//sb\n"
+		   String(thingGetESPReset()) + "//sb\n"
 									   "esprestart=" +
-		   String(nodeGetESPRestart()) + "//b\n"
+		   String(thingGetESPRestart()) + "//b\n"
 										 "espvcc=" +
-		   String(nodeGetESPVcc()) + "//r\n"
+		   String(thingGetESPVcc()) + "//r\n"
 									 "espchipid=" +
-		   String(nodeGetESPChipId()) + "//sr\n"
+		   String(thingGetESPChipId()) + "//sr\n"
 										"espfreeheap=" +
-		   String(nodeGetESPFreeHeap()) + "//sri\n"
+		   String(thingGetESPFreeHeap()) + "//sri\n"
 										  "espmaxfreeblocksize=" +
-		   String(nodeGetESPMaxFreeBlockSize()) + "//ri\n"
+		   String(thingGetESPMaxFreeBlockSize()) + "//ri\n"
 												  "espheapfragmentation=" +
-		   String(nodeGetESPHeapFragmentation()) + "//ri\n"
+		   String(thingGetESPHeapFragmentation()) + "//ri\n"
 												   "espsdkversion=" +
-		   nodeGetESPSdkVersion() + "//r\n"
+		   thingGetESPSdkVersion() + "//r\n"
 											 "espcoreversion=" +
-		   nodeGetESPCoreVersion() + "//r\n"
+		   thingGetESPCoreVersion() + "//r\n"
 									 "espfullversion=" +
-		   nodeGetESPFullVersion() + "//r\n"
+		   thingGetESPFullVersion() + "//r\n"
 									 "espbootversion=" +
-		   String(nodeGetESPBootVersion()) + "//r\n"
+		   String(thingGetESPBootVersion()) + "//r\n"
 											 "espbootmode=" +
-		   String(nodeGetESPBootMode()) + "//r\n"
+		   String(thingGetESPBootMode()) + "//r\n"
 										  "espcpufreqmhz=" +
-		   String(nodeGetESPCpuFreqMHz()) + "//r\n"
+		   String(thingGetESPCpuFreqMHz()) + "//r\n"
 											"espflashchipid=" +
-		   String(nodeGetESPFlashChipId()) + "//r\n"
+		   String(thingGetESPFlashChipId()) + "//r\n"
 											 "espflashchipvendorid=" +
-		   String(nodeGetESPFlashChipVendorId()) + "//r\n"
+		   String(thingGetESPFlashChipVendorId()) + "//r\n"
 												   "espflashchiprealsize=" +
-		   String(nodeGetESPFlashChipRealSize()) + "//r\n"
+		   String(thingGetESPFlashChipRealSize()) + "//r\n"
 												   "espflashchipsize=" +
-		   String(nodeGetESPFlashChipSize()) + "//r\n"
+		   String(thingGetESPFlashChipSize()) + "//r\n"
 											   "espflashchipspeed=" +
-		   String(nodeGetESPFlashChipSpeed()) + "//r\n"
+		   String(thingGetESPFlashChipSpeed()) + "//r\n"
 												"espsketchsize=" +
-		   String(nodeGetESPSketchSize()) + "//r\n"
+		   String(thingGetESPSketchSize()) + "//r\n"
 											"espfreesketchspace=" +
-		   String(nodeGetESPFreeSketchSpace()) + "//r\n"
+		   String(thingGetESPFreeSketchSpace()) + "//r\n"
 												 "espflashchipmode=" +
-		   String(nodeGetESPFlashChipMode()) + "//r\n"
+		   String(thingGetESPFlashChipMode()) + "//r\n"
 											   "espsketchmd5=" +
-		   nodeGetESPSketchMD5() + "//r\n"
+		   thingGetESPSketchMD5() + "//r\n"
 								   "espresetreason=" +
-		   nodeGetESPResetReason() + "//sr\n"
+		   thingGetESPResetReason() + "//sr\n"
 									 "espmagicflashchipsize=" +
 		   String(espmagicflashchipsize) + "//r\n"
 										   "espmagicflashchipspeed=" +
@@ -181,7 +181,7 @@ String nodeGetAllProperties()
 		   String(espmagicflashchipmode) + "//r\n";
 }
 
-void nodeSubscribe()
+void thingSubscribe()
 {
 	transportSubscribe(topic + "/#");
 }
@@ -190,7 +190,7 @@ String onGetProperty(String _property, String _payload, int8_t transportMask)
 {
 #ifdef DETAILED_DEBUG
 #ifdef DEBUG
-	debugOut(nodeid, "|-> get property " + _property + " = " + _payload);
+	debugOut(thingid, "|-> get property " + _property + " = " + _payload);
 #endif
 #endif
 	if (transportMask && MQTT_TRANSPORT_MASK != 0)
@@ -200,7 +200,7 @@ String onGetProperty(String _property, String _payload, int8_t transportMask)
 	return _payload;
 }
 
-String nodeOnMessage(const String &route, const String &_payload, int8_t transportMask)
+String thingOnMessage(const String &route, const String &_payload, int8_t transportMask)
 {
 	String result = wifiOnMessage(route, _payload, transportMask);
 	if (!result.equals(WRONG_NODE_PROPERTY_NAME))
@@ -214,253 +214,253 @@ String nodeOnMessage(const String &route, const String &_payload, int8_t transpo
 		return result;
 	}
 
-	if (matchRoute(route, topic, "/getnodeid"))
+	if (matchRoute(route, topic, "/getthingid"))
 	{
-		return onGetProperty("id", nodeGetUnitId(), transportMask);
+		return onGetProperty("id", thingGetUnitId(), transportMask);
 	}
-	else if (matchRoute(route, topic, "/setnodeid"))
+	else if (matchRoute(route, topic, "/setthingid"))
 	{
-		return String(nodeSetUnitId(_payload));
+		return String(thingSetUnitId(_payload));
 	}
 	else if (matchRoute(route, topic, "/gettopic"))
 	{
-		return onGetProperty("topic", nodeGetTopic(), transportMask);
+		return onGetProperty("topic", thingGetTopic(), transportMask);
 	}
 	else if (matchRoute(route, topic, "/settopic"))
 	{
-		return String(nodeSetTopic(_payload));
+		return String(thingSetTopic(_payload));
 	}
 	else if (matchRoute(route, topic, "/getfirmwareversion"))
 	{
-		return onGetProperty("firmwareversion", nodeGetFirmwareVersion(), transportMask);
+		return onGetProperty("firmwareversion", thingGetFirmwareVersion(), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setfirmwareversion"))
 	{
-		return String(nodeSetFirmwareVersion(_payload));
+		return String(thingSetFirmwareVersion(_payload));
 	}
 	else if (matchRoute(route, topic, "/getfirmwarebuildnumber"))
 	{
-		return onGetProperty("firmwarebuildnumber", String(nodeGetFirmwareBuildNumber()), transportMask);
+		return onGetProperty("firmwarebuildnumber", String(thingGetFirmwareBuildNumber()), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setfirmwarebuildnumber"))
 	{
-		return String(nodeSetFirmwareBuildNumber(atoi(_payload.c_str())));
+		return String(thingSetFirmwareBuildNumber(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/getespresetinfo"))
 	{
-		return onGetProperty("espresetinfo", nodeGetESPResetInfo(), transportMask);
+		return onGetProperty("espresetinfo", thingGetESPResetInfo(), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setespresetinfo"))
 	{
-		return String(nodeSetESPResetInfo(_payload));
+		return String(thingSetESPResetInfo(_payload));
 	}
 	else if (matchRoute(route, topic, "/getespreset"))
 	{
-		return onGetProperty("espreset", String(nodeGetESPReset()), transportMask);
+		return onGetProperty("espreset", String(thingGetESPReset()), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setespreset"))
 	{
-		return String(nodeSetESPReset(atoi(_payload.c_str())));
+		return String(thingSetESPReset(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/getesprestart"))
 	{
-		return onGetProperty("esprestart", String(nodeGetESPRestart()), transportMask);
+		return onGetProperty("esprestart", String(thingGetESPRestart()), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setesprestart"))
 	{
-		return String(nodeSetESPRestart(atoi(_payload.c_str())));
+		return String(thingSetESPRestart(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/getespvcc"))
 	{
-		return onGetProperty("espvcc", String(nodeGetESPVcc()), transportMask);
+		return onGetProperty("espvcc", String(thingGetESPVcc()), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setespvcc"))
 	{
-		return String(nodeSetESPVcc(atoi(_payload.c_str())));
+		return String(thingSetESPVcc(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/getespchipid"))
 	{
-		return onGetProperty("espchipid", String(nodeGetESPChipId()), transportMask);
+		return onGetProperty("espchipid", String(thingGetESPChipId()), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setespchipid"))
 	{
-		return String(nodeSetESPChipId(atoi(_payload.c_str())));
+		return String(thingSetESPChipId(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/getespfreeheap"))
 	{
-		return onGetProperty("espfreeheap", String(nodeGetESPFreeHeap()), transportMask);
+		return onGetProperty("espfreeheap", String(thingGetESPFreeHeap()), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setespfreeheap"))
 	{
-		return String(nodeSetESPFreeHeap(atoi(_payload.c_str())));
+		return String(thingSetESPFreeHeap(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/getespmaxfreeblocksize"))
 	{
-		return onGetProperty("espmaxfreeblocksize", String(nodeGetESPMaxFreeBlockSize()), transportMask);
+		return onGetProperty("espmaxfreeblocksize", String(thingGetESPMaxFreeBlockSize()), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setespmaxfreeblocksize"))
 	{
-		return String(nodeSetESPMaxFreeBlockSize(atoi(_payload.c_str())));
+		return String(thingSetESPMaxFreeBlockSize(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/getespheapfragmentation"))
 	{
-		return onGetProperty("espheapfragmentation", String(nodeGetESPHeapFragmentation()), transportMask);
+		return onGetProperty("espheapfragmentation", String(thingGetESPHeapFragmentation()), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setespheapfragmentation"))
 	{
-		return String(nodeSetESPHeapFragmentation(atoi(_payload.c_str())));
+		return String(thingSetESPHeapFragmentation(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/getespsdkversion"))
 	{
-		return onGetProperty("espsdkversion", nodeGetESPSdkVersion(), transportMask);
+		return onGetProperty("espsdkversion", thingGetESPSdkVersion(), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setespsdkversion"))
 	{
-		return String(nodeSetESPSdkVersion(_payload));
+		return String(thingSetESPSdkVersion(_payload));
 	}
 	else if (matchRoute(route, topic, "/getespcoreversion"))
 	{
-		return onGetProperty("espcoreversion", nodeGetESPCoreVersion(), transportMask);
+		return onGetProperty("espcoreversion", thingGetESPCoreVersion(), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setespcoreversion"))
 	{
-		return String(nodeSetESPCoreVersion(_payload));
+		return String(thingSetESPCoreVersion(_payload));
 	}
 	else if (matchRoute(route, topic, "/getespfullversion"))
 	{
-		return onGetProperty("espfullversion", nodeGetESPFullVersion(), transportMask);
+		return onGetProperty("espfullversion", thingGetESPFullVersion(), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setespfullversion"))
 	{
-		return String(nodeSetESPFullVersion(_payload));
+		return String(thingSetESPFullVersion(_payload));
 	}
 	else if (matchRoute(route, topic, "/getespbootversion"))
 	{
-		return onGetProperty("espbootversion", String(nodeGetESPBootVersion()), transportMask);
+		return onGetProperty("espbootversion", String(thingGetESPBootVersion()), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setespbootversion"))
 	{
-		return String(nodeSetESPBootVersion(atoi(_payload.c_str())));
+		return String(thingSetESPBootVersion(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/getespbootmode"))
 	{
-		return onGetProperty("espbootmode", String(nodeGetESPBootMode()), transportMask);
+		return onGetProperty("espbootmode", String(thingGetESPBootMode()), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setespbootmode"))
 	{
-		return String(nodeSetESPBootMode(atoi(_payload.c_str())));
+		return String(thingSetESPBootMode(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/getespcpufreqmhz"))
 	{
-		return onGetProperty("espcpufreqmhz", String(nodeGetESPCpuFreqMHz()), transportMask);
+		return onGetProperty("espcpufreqmhz", String(thingGetESPCpuFreqMHz()), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setespcpufreqmhz"))
 	{
-		return String(nodeSetESPCpuFreqMHz(atoi(_payload.c_str())));
+		return String(thingSetESPCpuFreqMHz(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/getespflashchipid"))
 	{
-		return onGetProperty("espflashchipid", String(nodeGetESPFlashChipId()), transportMask);
+		return onGetProperty("espflashchipid", String(thingGetESPFlashChipId()), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setespflashchipid"))
 	{
-		return String(nodeSetESPFlashChipId(atoi(_payload.c_str())));
+		return String(thingSetESPFlashChipId(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/getespflashchipvendorid"))
 	{
-		return onGetProperty("espflashchipvendorid", String(nodeGetESPFlashChipVendorId()), transportMask);
+		return onGetProperty("espflashchipvendorid", String(thingGetESPFlashChipVendorId()), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setespflashchipvendorid"))
 	{
-		return String(nodeSetESPFlashChipVendorId(atoi(_payload.c_str())));
+		return String(thingSetESPFlashChipVendorId(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/getespflashchiprealsize"))
 	{
-		return onGetProperty("espflashchiprealsize", String(nodeGetESPFlashChipRealSize()), transportMask);
+		return onGetProperty("espflashchiprealsize", String(thingGetESPFlashChipRealSize()), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setespflashchiprealsize"))
 	{
-		return String(nodeSetESPFlashChipRealSize(atoi(_payload.c_str())));
+		return String(thingSetESPFlashChipRealSize(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/getespflashchipsize"))
 	{
-		return onGetProperty("espflashchipsize", String(nodeGetESPFlashChipSize()), transportMask);
+		return onGetProperty("espflashchipsize", String(thingGetESPFlashChipSize()), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setespflashchipsize"))
 	{
-		return String(nodeSetESPFlashChipSize(atoi(_payload.c_str())));
+		return String(thingSetESPFlashChipSize(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/getespflashchipspeed"))
 	{
-		return onGetProperty("espflashchipspeed", String(nodeGetESPFlashChipSpeed()), transportMask);
+		return onGetProperty("espflashchipspeed", String(thingGetESPFlashChipSpeed()), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setespflashchipspeed"))
 	{
-		return String(nodeSetESPFlashChipSpeed(atoi(_payload.c_str())));
+		return String(thingSetESPFlashChipSpeed(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/getespsketchsize"))
 	{
-		return onGetProperty("espsketchsize", String(nodeGetESPSketchSize()), transportMask);
+		return onGetProperty("espsketchsize", String(thingGetESPSketchSize()), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setespsketchsize"))
 	{
-		return String(nodeSetESPSketchSize(atoi(_payload.c_str())));
+		return String(thingSetESPSketchSize(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/getespfreesketchspace"))
 	{
-		return onGetProperty("espfreesketchspace", String(nodeGetESPFreeSketchSpace()), transportMask);
+		return onGetProperty("espfreesketchspace", String(thingGetESPFreeSketchSpace()), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setespfreesketchspace"))
 	{
-		return String(nodeSetESPFreeSketchSpace(atoi(_payload.c_str())));
+		return String(thingSetESPFreeSketchSpace(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/getespflashchipmode"))
 	{
-		return onGetProperty("espflashchipmode", String(nodeGetESPFlashChipMode()), transportMask);
+		return onGetProperty("espflashchipmode", String(thingGetESPFlashChipMode()), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setespflashchipmode"))
 	{
-		return String(nodeSetESPFlashChipMode(atoi(_payload.c_str())));
+		return String(thingSetESPFlashChipMode(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/getespsketchmd5"))
 	{
-		return onGetProperty("espsketchmd5", nodeGetESPSketchMD5(), transportMask);
+		return onGetProperty("espsketchmd5", thingGetESPSketchMD5(), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setespsketchmd5"))
 	{
-		return String(nodeSetESPSketchMD5(_payload));
+		return String(thingSetESPSketchMD5(_payload));
 	}
 	else if (matchRoute(route, topic, "/getespresetreason"))
 	{
-		return onGetProperty("espresetreason", nodeGetESPResetReason(), transportMask);
+		return onGetProperty("espresetreason", thingGetESPResetReason(), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setespresetreason"))
 	{
-		return String(nodeSetESPResetReason(_payload));
+		return String(thingSetESPResetReason(_payload));
 	}
 	else if (matchRoute(route, topic, "/getespmagicflashchipsize"))
 	{
-		return onGetProperty("espmagicflashchipsize", String(nodeGetESPMagicFlashChipSize((uint8_t)atoi(_payload.c_str()))), transportMask);
+		return onGetProperty("espmagicflashchipsize", String(thingGetESPMagicFlashChipSize((uint8_t)atoi(_payload.c_str()))), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setespmagicflashchipsize"))
 	{
-		return String(nodeSetESPMagicFlashChipSize(atoi(_payload.c_str())));
+		return String(thingSetESPMagicFlashChipSize(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/getespmagicflashchipspeed"))
 	{
-		return onGetProperty("espmagicflashchipspeed", String(nodeGetESPMagicFlashChipSpeed((uint8_t)atoi(_payload.c_str()))), transportMask);
+		return onGetProperty("espmagicflashchipspeed", String(thingGetESPMagicFlashChipSpeed((uint8_t)atoi(_payload.c_str()))), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setespmagicflashchipspeed"))
 	{
-		return String(nodeSetESPMagicFlashChipSpeed(atoi(_payload.c_str())));
+		return String(thingSetESPMagicFlashChipSpeed(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/getespmagicflashchipmode"))
 	{
-		return onGetProperty("espmagicflashchipmode", String(nodeGetESPMagicFlashChipMode((uint8_t)atoi(_payload.c_str()))), transportMask);
+		return onGetProperty("espmagicflashchipmode", String(thingGetESPMagicFlashChipMode((uint8_t)atoi(_payload.c_str()))), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setespmagicflashchipmode"))
 	{
-		return String(nodeSetESPMagicFlashChipMode(atoi(_payload.c_str())));
+		return String(thingSetESPMagicFlashChipMode(atoi(_payload.c_str())));
 		//Pins
 	}
 	else 
@@ -475,7 +475,7 @@ bool onInsideChange(String _property, String _value)
 {
 #ifdef DETAILED_DEBUG
 #ifdef DEBUG
-	debugOut(nodeid, "|<- inside change " + _property + " = " + _value);
+	debugOut(thingid, "|<- inside change " + _property + " = " + _value);
 #endif
 #endif
 
@@ -489,7 +489,7 @@ bool onInsideChange(String _property, String _value)
 
 #ifdef DETAILED_DEBUG
 #ifdef DEBUG
-		debugOut(nodeid, "|-> inside change ");
+		debugOut(thingid, "|-> inside change ");
 #endif
 #endif
 		lock = false;
@@ -498,7 +498,7 @@ bool onInsideChange(String _property, String _value)
 	return result;
 }
 //-------------------------------------------------------------------------------------------
-//Internal - get any node property value by name
+//Internal - get any thing property value by name
 //-------------------------------------------------------------------------------------------
 String _getStringPropertyValue(String _property, String _defaultvalue)
 {
@@ -514,13 +514,13 @@ String _getStringPropertyValue(String _property, String _defaultvalue)
 	else
 	{
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
-		nodeOnMessage(topic + "/set" + _property, result, NO_TRANSPORT_MASK);
+		thingOnMessage(topic + "/set" + _property, result, NO_TRANSPORT_MASK);
 #endif
 	}
 	propertyFileReaded += _property + ";";
 #ifdef DETAILED_DEBUG
 #ifdef DEBUG
-	debugOut(nodeid, _property + "=" + result);
+	debugOut(thingid, _property + "=" + result);
 #endif
 #endif
 	return result;
@@ -540,79 +540,79 @@ int _getIntPropertyValue(String _property, int _defaultvalue)
 	else
 	{
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
-		nodeOnMessage(topic + "/set" + _property, String(result), NO_TRANSPORT_MASK);
+		thingOnMessage(topic + "/set" + _property, String(result), NO_TRANSPORT_MASK);
 #endif
 	}
 	propertyFileReaded += _property + ";";
 #ifdef DETAILED_DEBUG
 #ifdef DEBUG
-	debugOut(nodeid, _property + "=" + String(result));
+	debugOut(thingid, _property + "=" + String(result));
 #endif
 #endif
 	return result;
 }
 
 //Getters and Setters section ---------------------------------------------------------------
-String nodeGetUnitId()
+String thingGetUnitId()
 {
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
-	if (propertyFileReaded.indexOf("nodeid;") < 0)
-		return nodeid = _getStringPropertyValue("nodeid", DEFAULT_ID + String(ESP.getChipId(), HEX));
+	if (propertyFileReaded.indexOf("thingid;") < 0)
+		return thingid = _getStringPropertyValue("thingid", DEFAULT_ID + String(ESP.getChipId(), HEX));
 	else
-		return nodeid;
+		return thingid;
 #endif
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
 
-	if (propertyFileReaded.indexOf("nodeid;") < 0)
-		return nodeid = _getStringPropertyValue("nodeid", DEFAULT_ID + String((int)ESP.getEfuseMac(), (unsigned char)HEX));
+	if (propertyFileReaded.indexOf("thingid;") < 0)
+		return thingid = _getStringPropertyValue("thingid", DEFAULT_ID + String((int)ESP.getEfuseMac(), (unsigned char)HEX));
 
 	else
-		return nodeid;
+		return thingid;
 #endif
 }
 
-bool nodeSetUnitId(String _nodeid)
+bool thingSetUnitId(String _thingid)
 {
-	nodeid = _nodeid;
-	return onInsideChange("nodeid", String(nodeid));
+	thingid = _thingid;
+	return onInsideChange("thingid", String(thingid));
 }
 
 //Topic --------------------------------------------------------------------------------------
-String nodeGetTopic()
+String thingGetTopic()
 {
 	if (propertyFileReaded.indexOf("topic;") < 0)
-		return topic = _getStringPropertyValue("topic", DEFAULT_TOPIC + nodeid);
+		return topic = _getStringPropertyValue("topic", DEFAULT_TOPIC + thingid);
 	else
 		return topic;
 }
 
-bool nodeSetTopic(String _topic)
+bool thingSetTopic(String _topic)
 {
 	topic = _topic;
 	return onInsideChange("topic", String(topic));
 }
 
 //GetFirmwareVersion
-String nodeGetFirmwareVersion()
+String thingGetFirmwareVersion()
 {
 	/*  if (propertyFileReaded.indexOf("firmwareversion;") < 0) return firmwareversion = _getStringPropertyValue("firmwareversion", FIRMWARE_VERSION);
 	  else */
 	return firmwareversion;
 }
-bool nodeSetFirmwareVersion(String _firmwareversion)
+bool thingSetFirmwareVersion(String _firmwareversion)
 {
 	return false;
 }
 
 //GetFirmwareBuildNumber
-int nodeGetFirmwareBuildNumber()
+int thingGetFirmwareBuildNumber()
 {
 	/*  if (propertyFileReaded.indexOf("firmwarebuildnumber;") < 0) return firmwarebuildnumber = _getIntPropertyValue("firmwarebuildnumber", FIRMWARE_BUILD_NUMBER);
 	  else */
 	return firmwarebuildnumber;
 }
-bool nodeSetFirmwareBuildNumber(int _firmwarebuildnumber)
+bool thingSetFirmwareBuildNumber(int _firmwarebuildnumber)
 {
 	return false;
 }
@@ -620,7 +620,7 @@ bool nodeSetFirmwareBuildNumber(int _firmwarebuildnumber)
 
 /**/
 //ESPResetInfo()
-String nodeGetESPResetInfo()
+String thingGetESPResetInfo()
 {
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	if (propertyFileReaded.indexOf("espresetinfo;") < 0)
@@ -636,20 +636,20 @@ String nodeGetESPResetInfo()
 		return espresetinfo;
 #endif
 }
-bool nodeSetESPResetInfo(String _espresetinfo)
+bool thingSetESPResetInfo(String _espresetinfo)
 {
 	return false;
 }
 
 //ESPReset()
-int nodeGetESPReset()
+int thingGetESPReset()
 {
 	if (propertyFileReaded.indexOf("espreset;") < 0)
 		return espreset = DEFAULT_ZERO_VALUE;
 	else
 		return espreset;
 }
-bool nodeSetESPReset(int _espreset)
+bool thingSetESPReset(int _espreset)
 {
 	espreset = _espreset;
 	bool result = onInsideChange("espreset", String(espreset));
@@ -668,14 +668,14 @@ bool nodeSetESPReset(int _espreset)
 }
 
 //ESPRestart()
-int nodeGetESPRestart()
+int thingGetESPRestart()
 {
 	if (propertyFileReaded.indexOf("esprestart;") < 0)
 		return esprestart = DEFAULT_ZERO_VALUE;
 	else
 		return esprestart;
 }
-bool nodeSetESPRestart(int _esprestart)
+bool thingSetESPRestart(int _esprestart)
 {
 	esprestart = 1;
 	bool result = onInsideChange("esprestart", String(esprestart));
@@ -688,7 +688,7 @@ bool nodeSetESPRestart(int _esprestart)
 }
 
 //ESPGetVcc()
-uint16_t nodeGetESPVcc()
+uint16_t thingGetESPVcc()
 {
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0	
 		return espvcc = ESP.getVcc();
@@ -699,13 +699,13 @@ uint16_t nodeGetESPVcc()
 #endif
 }
 
-bool nodeSetESPVcc(int _espvcc)
+bool thingSetESPVcc(int _espvcc)
 {
 	return false;
 }
 
 //ESPGetChipId()
-uint32_t nodeGetESPChipId()
+uint32_t thingGetESPChipId()
 {
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	if (propertyFileReaded.indexOf("espchipid;") < 0)
@@ -721,26 +721,26 @@ uint32_t nodeGetESPChipId()
 		return espchipid;
 #endif
 }
-bool nodeSetESPChipId(int _espchipid)
+bool thingSetESPChipId(int _espchipid)
 {
 	return false;
 }
 
 //ESPGetFreeHeap()
-uint32_t nodeGetESPFreeHeap()
+uint32_t thingGetESPFreeHeap()
 {
 	if (propertyFileReaded.indexOf("espfreeheap;") < 0)
 		return espfreeheap = ESP.getFreeHeap();
 	else
 		return espfreeheap;
 }
-bool nodeSetESPFreeHeap(int _espfreeheap)
+bool thingSetESPFreeHeap(int _espfreeheap)
 {
 	return false;
 }
 
 //ESPGetMaxFreeBlockSize
-uint16_t nodeGetESPMaxFreeBlockSize()
+uint16_t thingGetESPMaxFreeBlockSize()
 {
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	if (propertyFileReaded.indexOf("espmaxfreeblocksize;") < 0)
@@ -753,13 +753,13 @@ uint16_t nodeGetESPMaxFreeBlockSize()
 	return -1;
 #endif
 }
-bool nodeSetESPMaxFreeBlockSize(int _espmaxfreeblocksize)
+bool thingSetESPMaxFreeBlockSize(int _espmaxfreeblocksize)
 {
 	return false;
 }
 
 //ESPGetHeapFragmentation
-uint8_t nodeGetESPHeapFragmentation()
+uint8_t thingGetESPHeapFragmentation()
 {
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	if (propertyFileReaded.indexOf("espheapfragmentation;") < 0)
@@ -772,13 +772,13 @@ uint8_t nodeGetESPHeapFragmentation()
 	return -1;
 #endif
 }
-bool nodeSetESPHeapFragmentation(int _espheapfragmentation)
+bool thingSetESPHeapFragmentation(int _espheapfragmentation)
 {
 	return false;
 }
 
 //ESPGetSdkVersion
-String nodeGetESPSdkVersion()
+String thingGetESPSdkVersion()
 {
 	if (propertyFileReaded.indexOf("espsdkversion;") < 0)
 	{	
@@ -787,13 +787,13 @@ String nodeGetESPSdkVersion()
 	else
 		return espsdkversion;
 }
-bool nodeSetESPSdkVersion(String _espsdkversion)
+bool thingSetESPSdkVersion(String _espsdkversion)
 {
 	return false;
 }
 
 //ESPGetCoreVersion
-String nodeGetESPCoreVersion()
+String thingGetESPCoreVersion()
 {
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	if (propertyFileReaded.indexOf("espcoreversion;") < 0)
@@ -806,13 +806,13 @@ String nodeGetESPCoreVersion()
 	return NOT_AVAILABLE;
 #endif
 }
-bool nodeSetESPCoreVersion(String _espcoreversion)
+bool thingSetESPCoreVersion(String _espcoreversion)
 {
 	return false;
 }
 
 //ESPGetFullVersion
-String nodeGetESPFullVersion()
+String thingGetESPFullVersion()
 {
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	if (propertyFileReaded.indexOf("espfullversion;") < 0)
@@ -826,13 +826,13 @@ String nodeGetESPFullVersion()
 #endif
 }
 
-bool nodeSetESPFullVersion(String _espfullversion)
+bool thingSetESPFullVersion(String _espfullversion)
 {
 	return false;
 }
 
 //ESPGetBootVersion
-uint8_t nodeGetESPBootVersion()
+uint8_t thingGetESPBootVersion()
 {
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	if (propertyFileReaded.indexOf("espbootversion;") < 0)
@@ -845,13 +845,13 @@ uint8_t nodeGetESPBootVersion()
 	return -1;
 #endif
 }
-bool nodeSetESPBootVersion(int _espbootversion)
+bool thingSetESPBootVersion(int _espbootversion)
 {
 	return false;
 }
 
 //ESPGetBootMode
-uint8_t nodeGetESPBootMode()
+uint8_t thingGetESPBootMode()
 {
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	if (propertyFileReaded.indexOf("espbootmode;") < 0)
@@ -864,26 +864,26 @@ uint8_t nodeGetESPBootMode()
 	return -1;
 #endif
 }
-bool nodeSetESPBootMode(int _espbootmode)
+bool thingSetESPBootMode(int _espbootmode)
 {
 	return false;
 }
 
 //ESPGetCpuFreqMHz
-uint8_t nodeGetESPCpuFreqMHz()
+uint8_t thingGetESPCpuFreqMHz()
 {
 	if (propertyFileReaded.indexOf("espcpufreqmhz;") < 0)
 		return espcpufreqmhz = ESP.getCpuFreqMHz();
 	else
 		return espcpufreqmhz;
 }
-bool nodeSetESPCpuFreqMHz(int _espcpufreqmhz)
+bool thingSetESPCpuFreqMHz(int _espcpufreqmhz)
 {
 	return false;
 }
 
 //ESPGetFlashChipId
-uint32_t nodeGetESPFlashChipId()
+uint32_t thingGetESPFlashChipId()
 {
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	if (propertyFileReaded.indexOf("espflashchipid;") < 0)
@@ -896,13 +896,13 @@ uint32_t nodeGetESPFlashChipId()
 	return -1;
 #endif
 }
-bool nodeSetESPFlashChipId(int _espflashchipid)
+bool thingSetESPFlashChipId(int _espflashchipid)
 {
 	return false;
 }
 
 //ESPGetFlashChipVendorId
-uint8_t nodeGetESPFlashChipVendorId()
+uint8_t thingGetESPFlashChipVendorId()
 {
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	if (propertyFileReaded.indexOf("espflashchipvendorid;") < 0)
@@ -915,13 +915,13 @@ uint8_t nodeGetESPFlashChipVendorId()
 	return -1;
 #endif
 }
-bool nodeSetESPFlashChipVendorId(int _espflashchipvendorid)
+bool thingSetESPFlashChipVendorId(int _espflashchipvendorid)
 {
 	return false;
 }
 
 //ESPGetFlashChipRealSize
-uint32_t nodeGetESPFlashChipRealSize()
+uint32_t thingGetESPFlashChipRealSize()
 {
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	if (propertyFileReaded.indexOf("espflashchiprealsize;") < 0)
@@ -934,91 +934,91 @@ uint32_t nodeGetESPFlashChipRealSize()
 	return -1;
 #endif
 }
-bool nodeSetESPFlashChipRealSize(int _espflashchiprealsize)
+bool thingSetESPFlashChipRealSize(int _espflashchiprealsize)
 {
 	return false;
 }
 
 //ESPGetFlashChipSize
-uint32_t nodeGetESPFlashChipSize()
+uint32_t thingGetESPFlashChipSize()
 {
 	if (propertyFileReaded.indexOf("espflashchipsize;") < 0)
 		return espflashchipsize = ESP.getFlashChipSize();
 	else
 		return espflashchipsize;
 }
-bool nodeSetESPFlashChipSize(int _espflashchipsize)
+bool thingSetESPFlashChipSize(int _espflashchipsize)
 {
 	return false;
 }
 
 //ESPGetFlashChipSpeed
-uint32_t nodeGetESPFlashChipSpeed()
+uint32_t thingGetESPFlashChipSpeed()
 {
 	if (propertyFileReaded.indexOf("espflashchipspeed;") < 0)
 		return espflashchipspeed = ESP.getFlashChipSpeed();
 	else
 		return espflashchipspeed;
 }
-bool nodeSetESPFlashChipSpeed(int _espflashchipspeed)
+bool thingSetESPFlashChipSpeed(int _espflashchipspeed)
 {
 	return false;
 }
 
 //ESPGetSketchSize
-uint32_t nodeGetESPSketchSize()
+uint32_t thingGetESPSketchSize()
 {
 	if (propertyFileReaded.indexOf("espsketchsize;") < 0)
 		return espsketchsize = ESP.getSketchSize();
 	else
 		return espsketchsize;
 }
-bool nodeSetESPSketchSize(int _espsketchsize)
+bool thingSetESPSketchSize(int _espsketchsize)
 {
 	return false;
 }
 
 //ESPGetFreeSketchSpace
-uint32_t nodeGetESPFreeSketchSpace()
+uint32_t thingGetESPFreeSketchSpace()
 {
 	if (propertyFileReaded.indexOf("espfreesketchspace;") < 0)
 		return espfreesketchspace = ESP.getFreeSketchSpace();
 	else
 		return espfreesketchspace;
 }
-bool nodeSetESPFreeSketchSpace(int _espfreesketchspace)
+bool thingSetESPFreeSketchSpace(int _espfreesketchspace)
 {
 	return false;
 }
 
 //ESPGetFlashChipMode
-FlashMode_t nodeGetESPFlashChipMode()
+FlashMode_t thingGetESPFlashChipMode()
 {
 	if (propertyFileReaded.indexOf("espflashchipmode;") < 0)
 		return espflashchipmode = ESP.getFlashChipMode();
 	else
 		return espflashchipmode;
 }
-bool nodeSetESPFlashChipMode(int _espflashchipmode)
+bool thingSetESPFlashChipMode(int _espflashchipmode)
 {
 	return false;
 }
 
 //ESPGetSketchMD5
-String nodeGetESPSketchMD5()
+String thingGetESPSketchMD5()
 {
 	if (propertyFileReaded.indexOf("espsketchmd5;") < 0)
 		return espsketchmd5 = ESP.getSketchMD5();
 	else
 		return espsketchmd5;
 }
-bool nodeSetESPSketchMD5(String _espsketchmd5)
+bool thingSetESPSketchMD5(String _espsketchmd5)
 {
 	return false;
 }
 
 //ESPGetResetReason
-String nodeGetESPResetReason()
+String thingGetESPResetReason()
 {
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	if (propertyFileReaded.indexOf("espresetreason;") < 0)
@@ -1035,46 +1035,46 @@ String nodeGetESPResetReason()
 
 #endif
 }
-bool nodeSetESPResetReason(String _espresetreason)
+bool thingSetESPResetReason(String _espresetreason)
 {
 	return false;
 }
 
 //ESPGetMagicFlashChipSize
-uint32_t nodeGetESPMagicFlashChipSize(uint8_t byte)
+uint32_t thingGetESPMagicFlashChipSize(uint8_t byte)
 {
 	if (propertyFileReaded.indexOf("espmagicflashchipsize;") < 0)
 		return espmagicflashchipsize = ESP.magicFlashChipSize(byte);
 	else
 		return espmagicflashchipsize;
 }
-bool nodeSetESPMagicFlashChipSize(int _espmagicflashchipsize)
+bool thingSetESPMagicFlashChipSize(int _espmagicflashchipsize)
 {
 	return false;
 }
 
 //ESPGetMagicFlashChipSpeed
-uint32_t nodeGetESPMagicFlashChipSpeed(uint8_t byte)
+uint32_t thingGetESPMagicFlashChipSpeed(uint8_t byte)
 {
 	if (propertyFileReaded.indexOf("espmagicflashchipspeed;") < 0)
 		return espmagicflashchipspeed = ESP.magicFlashChipSpeed(byte);
 	else
 		return espmagicflashchipspeed;
 }
-bool nodeSetESPMagicFlashChipSpeed(int _espmagicflashchipspeed)
+bool thingSetESPMagicFlashChipSpeed(int _espmagicflashchipspeed)
 {
 	return false;
 }
 
 //ESPGetMagicFlashChipMode
-FlashMode_t nodeGetESPMagicFlashChipMode(uint8_t byte)
+FlashMode_t thingGetESPMagicFlashChipMode(uint8_t byte)
 {
 	if (propertyFileReaded.indexOf("espmagicflashchipmode;") < 0)
 		return espmagicflashchipmode = ESP.magicFlashChipMode(byte);
 	else
 		return espmagicflashchipmode;
 }
-bool nodeSetESPMagicFlashChipMode(int _espmagicflashchipmode)
+bool thingSetESPMagicFlashChipMode(int _espmagicflashchipmode)
 {
 	return false;
 }

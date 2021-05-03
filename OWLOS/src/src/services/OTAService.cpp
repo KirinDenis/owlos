@@ -12,11 +12,11 @@
 
 void OTABegin()
 {
-	ArduinoOTA.setPort(nodeGetOTAPort());
+	ArduinoOTA.setPort(thingGetOTAPort());
 
-	ArduinoOTA.setHostname(nodeGetOTAID().c_str());
+	ArduinoOTA.setHostname(thingGetOTAID().c_str());
 
-	ArduinoOTA.setPassword(nodeGetOTAPassword().c_str());
+	ArduinoOTA.setPassword(thingGetOTAPassword().c_str());
 
 	ArduinoOTA.onStart([]() {
 		String type;

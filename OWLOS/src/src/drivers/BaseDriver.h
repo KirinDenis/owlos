@@ -43,7 +43,7 @@ OWLOS распространяется в надежде, что она буде
 #ifndef BASE_H
 #define BASE_H
 
-#pragma once //<- the BaseDriver node must INCLUDE ONCE TO THE PROJECT, else we have REDEFINITION error
+#pragma once //<- the BaseDriver thing must INCLUDE ONCE TO THE PROJECT, else we have REDEFINITION error
 //#include "../config.h"
 #include "../services/PinService.h"
 #include "../services/TransportService.h"
@@ -208,7 +208,7 @@ protected:
 
     //This method calls from properties SET wrappers methods (setNNN()) and publish to transport message (event) on any wrapped property values is changed
     //The sended message topic is Driver compiled topic (Unit/DriverId)/PropertyName
-    //Sample: if available propery is changed at "stepper1" driver on node "node2544" the SET wrapper calls onInsideChange(), and the topic to be somthing like "world0/area1/front1/room1/node2544/stepper1/available"
+    //Sample: if available propery is changed at "stepper1" driver on thing "thing2544" the SET wrapper calls onInsideChange(), and the topic to be somthing like "world0/area1/front1/room1/thing2544/stepper1/available"
     bool onInsideChange(String _property, String _payload);
 };
 #endif

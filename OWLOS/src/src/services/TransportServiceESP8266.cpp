@@ -74,18 +74,18 @@ bool transportBegin()
 #endif
 #endif
 
-	if ((nodeGetWiFiAccessPointAvailable() == 1) && (nodeGetWiFiAvailable() == 1))
+	if ((thingGetWiFiAccessPointAvailable() == 1) && (thingGetWiFiAvailable() == 1))
 	{
-		nodeSetWiFiMode(WIFI_AP_STA);
+		thingSetWiFiMode(WIFI_AP_STA);
 #ifdef DETAILED_DEBUG
 #ifdef DEBUG
 		debugOut(TransportID, "WiFi mode Access Point and Station (both)");
 #endif
 #endif
 	}
-	else if (nodeGetWiFiAccessPointAvailable() == 1)
+	else if (thingGetWiFiAccessPointAvailable() == 1)
 	{
-		nodeSetWiFiMode(WIFI_AP);
+		thingSetWiFiMode(WIFI_AP);
 		wifi_station_disconnect();
 #ifdef DETAILED_DEBUG
 #ifdef DEBUG
@@ -93,9 +93,9 @@ bool transportBegin()
 #endif
 #endif
 	}
-	else if (nodeGetWiFiAvailable() == 1)
+	else if (thingGetWiFiAvailable() == 1)
 	{
-		nodeSetWiFiMode(WIFI_STA);
+		thingSetWiFiMode(WIFI_STA);
 		WiFi.softAPdisconnect(true);
 #ifdef DETAILED_DEBUG
 #ifdef DEBUG
@@ -105,7 +105,7 @@ bool transportBegin()
 	}
 	else
 	{
-		nodeSetWiFiMode(WIFI_OFF);
+		thingSetWiFiMode(WIFI_OFF);
 		WiFi.softAPdisconnect(true);
 		wifi_station_disconnect();
 #ifdef DETAILED_DEBUG
@@ -130,29 +130,29 @@ bool transportAvailable()
 	bool wifiAPResult = false;
 	bool wifiResult = false;
 
-	if ((nodeGetWiFiAccessPointAvailable() == 1) && (WiFiAccessPointConnected == true))
+	if ((thingGetWiFiAccessPointAvailable() == 1) && (WiFiAccessPointConnected == true))
 	{
 		wifiAPResult = true;
 	}
 	else
 	{
-		if (nodeGetWiFiAccessPointAvailable() == 0)
+		if (thingGetWiFiAccessPointAvailable() == 0)
 			wifiAPResult = true;
 	}
 
-	if ((nodeGetWiFiAvailable() == 1) && (WiFi.status() == WL_CONNECTED))
+	if ((thingGetWiFiAvailable() == 1) && (WiFi.status() == WL_CONNECTED))
 	{
 		wifiResult = true;
 	}
 	else
 	{
-		if (nodeGetWiFiAvailable() == 0)
+		if (thingGetWiFiAvailable() == 0)
 			wifiResult = true;
 	}
 
 #ifdef DETAILED_DEBUG
 #ifdef DEBUG
-	debugOut(TransportID, "WiFi AP=" + String(nodeGetWiFiAccessPointAvailable()) + ":" + String(wifiAPResult) + "|" + "WiFi ST=" + String(nodeGetWiFiAvailable()) + ":" + String(wifiResult) + " (" + nodeGetWiFiIP() + ")");
+	debugOut(TransportID, "WiFi AP=" + String(thingGetWiFiAccessPointAvailable()) + ":" + String(wifiAPResult) + "|" + "WiFi ST=" + String(thingGetWiFiAvailable()) + ":" + String(wifiResult) + " (" + thingGetWiFiIP() + ")");
 #endif
 #endif
 	wifiStatus = wifiAPResult & wifiResult;
@@ -163,19 +163,19 @@ bool transportAvailable()
 bool WiFiAccessPointReconnect()
 {
 
-	if (nodeGetWiFiAccessPointAvailable() == 1)
+	if (thingGetWiFiAccessPointAvailable() == 1)
 	{
 		if (WiFiAccessPointConnected)
 			return true;
-		String accessPointIP = nodeGetWiFiAccessPointIP(); //this API set Access Point IP from Unit Property OR set this Property as default IP OR return Utils.NaN
+		String accessPointIP = thingGetWiFiAccessPointIP(); //this API set Access Point IP from Unit Property OR set this Property as default IP OR return Utils.NaN
 		bool softAPResult = false;
-		softAPResult = WiFi.softAP(nodeGetWiFiAccessPointSSID(), nodeGetWiFiAccessPointPassword());
+		softAPResult = WiFi.softAP(thingGetWiFiAccessPointSSID(), thingGetWiFiAccessPointPassword());
 		if (softAPResult)
 		{
 			WiFiAccessPointConnected = true;
 #ifdef DETAILED_DEBUG
 #ifdef DEBUG
-			debugOut(TransportID, "Started as WiFi Access Point: " + nodeGetWiFiAccessPointSSID() + " IP: " + accessPointIP);
+			debugOut(TransportID, "Started as WiFi Access Point: " + thingGetWiFiAccessPointSSID() + " IP: " + accessPointIP);
 #endif
 #endif
 			return true;
@@ -185,7 +185,7 @@ bool WiFiAccessPointReconnect()
 			WiFiAccessPointConnected = false;
 #ifdef DETAILED_DEBUG
 #ifdef DEBUG
-			debugOut(TransportID, "WiFi Access Point not started as " + nodeGetWiFiAccessPointSSID());
+			debugOut(TransportID, "WiFi Access Point not started as " + thingGetWiFiAccessPointSSID());
 #endif
 #endif
 		}
@@ -203,10 +203,10 @@ bool WiFiReconnect()
 	if (WiFi.status() == WL_CONNECTED)
 		return true;
 
-	if (nodeGetWiFiAvailable() == 1)
+	if (thingGetWiFiAvailable() == 1)
 	{
-		String WiFiSSID = nodeGetWiFiSSID();
-		String WiFiPassword = nodeGetWiFiPassword();
+		String WiFiSSID = thingGetWiFiSSID();
+		String WiFiPassword = thingGetWiFiPassword();
 		if (WiFiSSID.length() == 0)
 		{
 #ifdef DETAILED_DEBUG
@@ -224,10 +224,10 @@ bool WiFiReconnect()
 			debugOut(TransportID, "try to connect to - " + WiFiSSID + ":" + WiFiPassword + " wait ");
 #endif
 #endif
-			nodeGetScanWiFiNetworks();
+			thingGetScanWiFiNetworks();
 #ifdef DETAILED_DEBUG
 #ifdef DEBUG
-			debugOut(TransportID, nodeGetWiFiNetworksParameters());
+			debugOut(TransportID, thingGetWiFiNetworksParameters());
 #endif
 #endif
 			if (!_WiFiMulti.existsAP(WiFiSSID.c_str(), WiFiPassword.c_str()))
@@ -260,7 +260,7 @@ bool WiFiReconnect()
 			{
 #ifdef DETAILED_DEBUG
 #ifdef DEBUG
-				debugOut(TransportID, "WiFi connected as Client success, local IP: " + nodeGetWiFiIP());
+				debugOut(TransportID, "WiFi connected as Client success, local IP: " + thingGetWiFiIP());
 #endif
 #endif
 				return true;
@@ -277,7 +277,7 @@ bool WiFiReconnect()
   -------------------------------------------------------------------------------------------------------------------------*/
 void Callback(char *_topic, byte *_payload, unsigned int length)
 {
-	if (nodeGetMQTTAvailable() == 1)
+	if (thingGetMQTTAvailable() == 1)
 	{
 #ifdef DETAILED_DEBUG
 #ifdef DEBUG
@@ -294,7 +294,7 @@ void Callback(char *_topic, byte *_payload, unsigned int length)
 		payload_buff[i] = '\0'; //terminate string with zero
 
 		//first check is Unit property?
-		if (nodeOnMessage(String(_topic), String(payload_buff), MQTT_TRANSPORT_MASK).equals(WRONG_PROPERTY_NAME))
+		if (thingOnMessage(String(_topic), String(payload_buff), MQTT_TRANSPORT_MASK).equals(WRONG_PROPERTY_NAME))
 		{
 			//if not UNIT property
 			//Put recieved message to all drivers, each driver can process any topic recieved by Unit
@@ -315,29 +315,29 @@ bool transportReconnect()
 	lastTryReconnect = millis();
 #ifdef DETAILED_DEBUG
 #ifdef DEBUG
-	debugOut(TransportID, "begin reconnect, WiFi AP=" + String(nodeGetWiFiAccessPointAvailable()) + " WiFi ST=" + String(nodeGetWiFiAvailable()));
+	debugOut(TransportID, "begin reconnect, WiFi AP=" + String(thingGetWiFiAccessPointAvailable()) + " WiFi ST=" + String(thingGetWiFiAvailable()));
 #endif
 #endif
 
 	bool result = false;
 
-	if ((nodeGetWiFiAccessPointAvailable() == 1) && (!WiFiAccessPointConnected))
+	if ((thingGetWiFiAccessPointAvailable() == 1) && (!WiFiAccessPointConnected))
 	{
 		wifiAPResult = WiFiAccessPointReconnect();
 	}
 	else
 	{
-		if (nodeGetWiFiAccessPointAvailable() == 1)
+		if (thingGetWiFiAccessPointAvailable() == 1)
 			wifiAPResult = true;
 	}
 
-	if ((nodeGetWiFiAvailable() == 1) && (_WiFiMulti.run() != WL_CONNECTED))
+	if ((thingGetWiFiAvailable() == 1) && (_WiFiMulti.run() != WL_CONNECTED))
 	{
 		wifiResult = WiFiReconnect();
 	}
 	else
 	{
-		if (nodeGetWiFiAvailable() == 1)
+		if (thingGetWiFiAvailable() == 1)
 			wifiAPResult = true;
 	}
 #ifdef DETAILED_DEBUG
@@ -351,19 +351,19 @@ bool transportReconnect()
 
 	if (result)
 	{
-		if (nodeGetHTTPServerAvailable() == 1)
+		if (thingGetHTTPServerAvailable() == 1)
 		{
-			//nodeGetHTTPServerServerPort()
+			//thingGetHTTPServerServerPort()
 			HTTPSWebServerBegin();
 		}
 
-		if (nodeGetOTAAvailable() == 1)
+		if (thingGetOTAAvailable() == 1)
 		{
 #ifdef USE_OTA
 			OTABegin();
 #endif
 		}
-		if (nodeGetMQTTAvailable() == 1)
+		if (thingGetMQTTAvailable() == 1)
 		{
 		}
 	}
@@ -379,12 +379,12 @@ void transportLoop()
 	if ((wifiAPResult) || (wifiResult))
 	{
 
-		if (nodeGetHTTPServerAvailable() == 1)
+		if (thingGetHTTPServerAvailable() == 1)
 		{
 			HTTPSWebServerLoop();
 		}
 
-		if (nodeGetOTAAvailable() == 1)
+		if (thingGetOTAAvailable() == 1)
 		{
 #ifdef USE_OTA
 			OTALoop();
