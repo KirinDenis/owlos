@@ -151,6 +151,14 @@ void handleNotFound(HTTPRequest *req, HTTPResponse *res)
 }
 
 //HTTPServer APIs ---
+void handleGetFeatures(HTTPRequest *req, HTTPResponse *res)
+{
+  corsCallback(req, res);
+  res->setStatusCode(200);
+  res->print(GetFeatures());
+  return;
+}
+
 void handleNodeGetAllProperties(HTTPRequest *req, HTTPResponse *res)
 {
   corsCallback(req, res);
@@ -811,6 +819,7 @@ void setResourceNode(const std::string &path, const std::string &method, const H
 void HTTPSWebServerBegin()
 {
 
+  setResourceNode("/getfeatures", "GET", &handleGetFeatures);
   setResourceNode("/getallnodeproperties", "GET", &handleNodeGetAllProperties);
   setResourceNode("/getlog", "GET", &handleGetLog);
   setResourceNode("/reset", "GET", &handleReset);

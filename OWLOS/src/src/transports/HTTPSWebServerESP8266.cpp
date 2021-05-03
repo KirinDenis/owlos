@@ -301,6 +301,11 @@ void handleNotFound(WiFiClient client)
 }
 
 //HTTPServer API -----------------------------------------------
+void handleGetFeatures(WiFiClient client)
+{
+	send(200, "text/plain", GetFeatures(), client);
+	return;
+}
 
 void handleGetLog(WiFiClient client)
 {
@@ -1286,7 +1291,11 @@ void HTTPSWebServerLoop()
 								}
 								else if (method.equals("GET"))
 								{
-									if (firstLine.indexOf("/getlog") != -1)
+									if (firstLine.indexOf("/getfeatures") != -1)
+									{
+										handleGetFeatures(client);
+									}
+									else if (firstLine.indexOf("/getlog") != -1)
 									{
 										handleGetLog(client);
 									}

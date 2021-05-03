@@ -181,6 +181,11 @@ void UARTRecv(String command)
             }
             else
 #endif
+                if (token[0].equals("AT+FEA?"))
+            {
+                UARTSendOK(token[0], GetFeatures());
+            }
+            else
                 //GET all drivers properties
                 if (token[0].equals("AT+ADP?"))
             {

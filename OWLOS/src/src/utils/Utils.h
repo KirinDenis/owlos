@@ -97,4 +97,6 @@ void writeDebugLogFile(String fileName, int fileSize, String tag, String text);
 bool matchRoute(const char *route, const char *topic, const char *path);
 bool matchRoute(const String &route, const String &topic, const char *path);
 
+String GetFeatures();
+
 #endif

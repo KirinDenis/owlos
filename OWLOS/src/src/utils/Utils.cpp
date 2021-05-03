@@ -41,6 +41,8 @@ OWLOS распространяется в надежде, что она буде
 
 #include "Utils.h"
 #include "../services/FileService.h"
+#include "../drivers/WifiDriver.h"
+#include "../drivers/NetworkDriver.h"
 
 bool filesAtRecurse = false;
 
@@ -55,13 +57,13 @@ char *stringToChar(String src)
 void debugOut(const String &tag, const String &text)
 {
 #ifdef USE_ESP_DRIVER
-	#ifdef SERIAL_COLORIZED_OUTPUT
-		String _text = text + " \033\033[1;32m [" + String(ESP.getFreeHeap()) + "]";
-	#else
-		String _text = text + " [" + String(ESP.getFreeHeap()) + "]";
-	#endif
+#ifdef SERIAL_COLORIZED_OUTPUT
+	String _text = text + " \033\033[1;32m [" + String(ESP.getFreeHeap()) + "]";
 #else
-    String _text = text;
+	String _text = text + " [" + String(ESP.getFreeHeap()) + "]";
+#endif
+#else
+	String _text = text;
 #endif
 
 #ifdef SERIAL_COLORIZED_OUTPUT
@@ -150,4 +152,247 @@ bool matchRoute(const char *route, const char *topic, const char *path)
 		return false;
 
 	return true;
+}
+
+String GetFeatures()
+{
+
+	String features = "OWLOSfeatures:\n"
+					  "Version=" FIRMWARE_VERSION_NUMVER "\n"
+					  "Build=" +
+					  String(FIRMWARE_BUILD_NUMBER) + "\n" +
+#if defined(ARDUINO_ESP8266_RELEASE_2_5_0)
+					  "Board=ESP8266\n";
+#else
+#if defined(ARDUINO_ESP32_RELEASE_1_0_4)
+					  "Board=ESP32\n";
+#else
+					  "Board=Arduino family\n";
+#endif
+#endif
+
+#ifdef DONT_USE_FILES
+	features += "FileSystem=no\n";
+#else 
+    features += "FileSystem=yes\n";
+#endif
+
+#ifdef DEBUG
+	features += "Debug=yes\n";
+#else 
+    features += "Debug=no\n";
+#endif
+
+if (WRITE_DEBUG_LOG_FILES)
+{
+	features += "Log=yes\n";
+}
+else 
+{
+	features += "Log=no\n";
+}
+
+//--- Use ESP Section
+#ifdef USE_ESP_DRIVER
+	features += "ESP:yes\n";
+
+	if (nodeGetWiFiAccessPointAvailable())
+	{
+		features += "WiFiAP=yes\n"; 	
+		features += "WiFiAPSSID=" + nodeGetWiFiAccessPointSSID() +"\n"; 	
+		features += "WiFiAPSSID=" + nodeGetWiFiAccessPointIP() +"\n"; 	
+	}
+	else 
+	{
+		features += "WiFiAP=no\n"; 	
+	}
+
+	if (nodeGetWiFiAvailable())				
+	{
+	  features += "WiFiST=yes\n"; 	
+	  features += "WiFiSTSSID=" DEFAULT_WIFI_STATION_SSID  "\n";
+	  if (nodeGetWiFiIsConnected())
+	  {
+        features += "WiFiSTConnected=yes\n"; 	
+		features += "WiFiSTIP="+ nodeGetWiFiIP()+"\n"; 	
+	  }
+	  else 
+	  {
+        features += "WiFiSTConnected=no\n"; 	
+	  }
+	}
+
+#ifdef USE_HTTPS_SERVER
+	if (nodeGetHTTPServerAvailable())
+	{
+		features += "HTTPSecureServer:yes\n";
+		if ((nodeGetWiFiAvailable()) &&  (nodeGetWiFiIsConnected())) 
+		{				
+		  features += "HTTPSecureServerST=http://" + nodeGetWiFiIP() + ":443\n";
+		}
+		else 
+		{
+		  features += "HTTPSecureServerST=not connected\n";	
+		}
+
+		if (nodeGetWiFiAccessPointAvailable()) 
+		{				
+		  features += "HTTPSecureServerAP=http://" + nodeGetWiFiAccessPointIP() + ":443\n";
+		}
+		else 
+		{
+		  features += "HTTPSecureServerAP=not connected\n";	
+		}
+
+	}
+	else
+	{
+		features += "HTTPSecureServer:disabled\n";
+	}
+#else
+	features += "HTTPSecureServer:no\n";
+#endif
+
+#ifdef USE_HTTP_SERVER
+	if (nodeGetHTTPServerAvailable())
+	{
+		features += "HTTPServer:yes\n";
+		if ((nodeGetWiFiAvailable()) &&  (nodeGetWiFiIsConnected())) 
+		{				
+		  features += "HTTPServerST=http://" + nodeGetWiFiIP() + ":" + String(nodeGetHTTPServerPort()) + "\n";
+		}
+		else 
+		{
+		  features += "HTTPServerST=not connected\n";	
+		}
+
+		if (nodeGetWiFiAccessPointAvailable()) 
+		{				
+		  features += "HTTPServerAP=http://" + nodeGetWiFiAccessPointIP() + ":" + String(nodeGetHTTPServerPort()) + "\n";
+		}
+		else 
+		{
+		  features += "HTTPServerAP=not connected\n";	
+		}
+	}
+	else
+	{
+		features += "HTTPServer:disabled\n";
+	}
+#else
+	features += "HTTPServer:no\n";
+#endif
+
+#ifdef USE_HTTP_CLIENT
+	features += "HTTPClient=yes\n";
+#else
+	features += "HTTPClient=no\n";
+#endif
+
+#ifdef USE_OTA_SERVICE
+	features += "OTA=yes\n";
+	if ((nodeGetWiFiAvailable()) &&  (nodeGetWiFiIsConnected()))
+	{
+		features += "OTAConnected=yes\n";
+	} 
+	else 
+	{
+		features += "OTAConnected=no\n";
+	}	
+#else
+	features += "OTA=no\n";
+#endif
+
+#ifdef USE_MQTT
+	if (nodeGetMQTTAvailable())
+	{
+		features += "MQTTBroker:" + nodeGetMQTTURL() + ":" + String(nodeGetMQTTPort()) + "\n";
+		if ((nodeGetWiFiAvailable()) &&  (nodeGetWiFiIsConnected()))
+		{
+		 features += "MQTTBrokerNetwork=yes\n";	
+		 if (nodeGetMQTTClientConnected())
+		 {
+		  features += "MQTTBrokerConnected=yes\n";		 
+		 }
+		 else 
+		 {
+		  features += "MQTTBrokerConnected=no\n";		 	 
+		 }
+		}
+		else 
+		{
+		 features += "MQTTBrokerNetwork=no\n";	
+		 features += "MQTTBrokerConnected=no\n";		 	 
+		}
+	}
+	else
+	{
+		features += "MQTTBroker=disabled\n";
+	}
+#else
+	features += "MQTTBroker:no\n";
+#endif
+
+#else
+	features += "ESP:no\n";
+#endif
+	//ENDOF Use ESP Section ---
+
+#ifdef USE_UART
+	features += "UART=" + String(PORTSPEED) + "\n";
+#else
+	features += "UART=no\n";
+#endif
+
+//--- Use Drivers Section
+#ifdef USE_DRIVERS
+	features += "Drivers:yes\n";
+
+#ifdef USE_ACTUATOR_DRIVER
+	features += "Actuator=yes\n";
+#else
+	features += "Actuator=no\n";
+#endif
+
+#ifdef USE_SENSOR_DRIVER
+	features += "Sensor=yes\n";
+#else
+	features += "Sensor=no\n";
+#endif
+
+#ifdef USE_DHT_DRIVER
+	features += "DHT=yes\n";
+#else
+	features += "DHT=no\n";
+#endif
+
+#ifdef USE_LCD_DRIVER
+	features += "LCD=yes\n";
+#else
+	features += "LCD=no\n";
+#endif
+
+#ifdef USE_STEPPER_DRIVER
+	features += "Stepper=yes\n";
+#else
+	features += "Stepper=no\n";
+#endif
+
+#ifdef USE_VALVE_DRIVER
+	features += "Valve=yes\n";
+#else
+	features += "Valve=no\n";
+#endif
+#else
+	features += "Drivers:no\n";
+#endif
+	//ENDOF Use Drivers Section ---
+
+#ifdef USE_SCRIPT
+	features += "Script:yes\n";
+#else
+	features += "Script:no\n";
+#endif
+
+	return features;
 }
