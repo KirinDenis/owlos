@@ -55,7 +55,7 @@ OWLOS распространяется в надежде, что она буде
 
 extern String propertyFileReaded;
 extern String topic;
-extern String nodeid;
+extern String thingid;
 int wifiapavailable(DEFAULT_WIFI_ACCESS_POINT_AVAILABLE);
 String wifiaccesspointssid(DEFAULT_WIFI_ACCESS_POINT_SSID);
 String wifiappassword(DEFAULT_WIFI_ACCESS_POINT_PASSWORD);
@@ -80,44 +80,44 @@ int wifiisconnected(DEFAULT_ZERO_VALUE);
 String connectedwifissid(DEFAULT_EMPTY_STR_VALUE);
 int8_t wifinetworkscount((int8_t)DEFAULT_ZERO_VALUE);
 
-String nodeGetWiFiProperties()
+String thingGetWiFiProperties()
 {
 	return "properties for:wifi\n"
 		   "id=wifi//r\n"
 		   "type=" +
 		   String(WIFI_DRIVER_TYPE) + "//r\n"
 							  "wifiaccesspointavailable=" +
-		   String(nodeGetWiFiAccessPointAvailable()) + "//bs\n"
+		   String(thingGetWiFiAccessPointAvailable()) + "//bs\n"
 													   "wifiaccesspointssid=" +
-		   nodeGetWiFiAccessPointSSID() + "//s\n"
+		   thingGetWiFiAccessPointSSID() + "//s\n"
 										  "wifiappassword=" +
-		   nodeGetWiFiAccessPointPassword() + "//sp\n"
+		   thingGetWiFiAccessPointPassword() + "//sp\n"
 											  "wifiaccesspointip=" +
-		   nodeGetWiFiAccessPointIP() + "//\n"
+		   thingGetWiFiAccessPointIP() + "//\n"
 										"wifiavailable=" +
-		   String(nodeGetWiFiAvailable()) + "//bs\n"
+		   String(thingGetWiFiAvailable()) + "//bs\n"
 											"wifissid=" +
-		   nodeGetWiFiSSID() + "//s\n"
+		   thingGetWiFiSSID() + "//s\n"
 							   "wifipassword=" +
-		   nodeGetWiFiPassword() + "//ps\n"
+		   thingGetWiFiPassword() + "//ps\n"
 								   "wifiip=" +
-		   nodeGetWiFiIP() + "//\n"
+		   thingGetWiFiIP() + "//\n"
 							 "wifiisconnected=" +
-		   String(nodeGetWiFiIsConnected()) + "//bs\n"
+		   String(thingGetWiFiIsConnected()) + "//bs\n"
 											  "connectedwifissid=" +
-		   nodeGetConnectedWiFiSSID() + "//sr\n"
+		   thingGetConnectedWiFiSSID() + "//sr\n"
 										"wifirssi=" +
-		   String(nodeGetWiFiRSSI()) + "//r\n"
+		   String(thingGetWiFiRSSI()) + "//r\n"
 									   "wifimode=" +
-		   String(nodeGetWiFiMode()) + "//r\n" +
-		   nodeGetAllWiFiModes() + "//r\n"
+		   String(thingGetWiFiMode()) + "//r\n" +
+		   thingGetAllWiFiModes() + "//r\n"
 								   "wifistatus=" +
-		   String(nodeGetWiFiStatus()) + "//r\n"
+		   String(thingGetWiFiStatus()) + "//r\n"
 										 "wifistatustostring=" +
-		   String(nodeGetWiFiStatusToString()) + "//r\n" +
-		   nodeGetAllWiFiStatuses() + "//r\n" +
-		   nodeGetWiFiNetworksParameters() + "//r\n" +
-		   nodeGetAllWiFiEncryptionTypes() + "//r\n";
+		   String(thingGetWiFiStatusToString()) + "//r\n" +
+		   thingGetAllWiFiStatuses() + "//r\n" +
+		   thingGetWiFiNetworksParameters() + "//r\n" +
+		   thingGetAllWiFiEncryptionTypes() + "//r\n";
 }
 
 String wifiOnMessage(String route, String _payload, int8_t transportMask)
@@ -125,154 +125,154 @@ String wifiOnMessage(String route, String _payload, int8_t transportMask)
 	
 	if (matchRoute(route, topic, "/getwifiaccesspointavailable"))
 	{
-		return String(onGetProperty("wifiapavailable", String(nodeGetWiFiAccessPointAvailable()), transportMask));
+		return String(onGetProperty("wifiapavailable", String(thingGetWiFiAccessPointAvailable()), transportMask));
 	}
 	else if (matchRoute(route, topic, "/setwifiaccesspointavailable"))
 	{
-		return String(nodeSetWiFiAccessPointAvailable(atoi(_payload.c_str())));
+		return String(thingSetWiFiAccessPointAvailable(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/getwifiaccesspointssid"))
 	{
-		return onGetProperty("wifiaccesspointssid", nodeGetWiFiAccessPointSSID(), transportMask);
+		return onGetProperty("wifiaccesspointssid", thingGetWiFiAccessPointSSID(), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setwifiaccesspointssid"))
 	{
-		return String(nodeSetWiFiAccessPointSSID(_payload));
+		return String(thingSetWiFiAccessPointSSID(_payload));
 	}
 	else if (matchRoute(route, topic, "/getwifiappassword"))
 	{
-		return onGetProperty("wifipassword", nodeGetWiFiAccessPointPassword(), transportMask);
+		return onGetProperty("wifipassword", thingGetWiFiAccessPointPassword(), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setwifiappassword"))
 	{
-		return String(nodeSetWiFiAccessPointPassword(_payload));
+		return String(thingSetWiFiAccessPointPassword(_payload));
 	}
 	else if (matchRoute(route, topic, "/getwifiaccesspointip"))
 	{
-		return onGetProperty("wifiaccesspointip", nodeGetWiFiAccessPointIP(), transportMask);
+		return onGetProperty("wifiaccesspointip", thingGetWiFiAccessPointIP(), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setwifiaccesspointip"))
 	{
-		return String(nodeSetWiFiAccessPointIP(_payload));
+		return String(thingSetWiFiAccessPointIP(_payload));
 	}
 	else if (matchRoute(route, topic, "/getwifiavailable"))
 	{
-		return String(onGetProperty("wifiavailable", String(nodeGetWiFiAvailable()), transportMask));
+		return String(onGetProperty("wifiavailable", String(thingGetWiFiAvailable()), transportMask));
 	}
 	else if (matchRoute(route, topic, "/setwifiavailable"))
 	{
-		return String(nodeSetWiFiAvailable(atoi(_payload.c_str())));
+		return String(thingSetWiFiAvailable(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/getwifissid"))
 	{
-		return onGetProperty("wifissid", nodeGetWiFiSSID(), transportMask);
+		return onGetProperty("wifissid", thingGetWiFiSSID(), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setwifissid"))
 	{
-		return String(nodeSetWiFiSSID(_payload));
+		return String(thingSetWiFiSSID(_payload));
 	}
 	else if (matchRoute(route, topic, "/getwifipassword"))
 	{
-		return onGetProperty("wifipassword", nodeGetWiFiPassword(), transportMask);
+		return onGetProperty("wifipassword", thingGetWiFiPassword(), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setwifipassword"))
 	{
-		return String(nodeSetWiFiPassword(_payload));
+		return String(thingSetWiFiPassword(_payload));
 	}
 	else if (matchRoute(route, topic, "/getwifiip"))
 	{
-		return onGetProperty("wifiip", nodeGetWiFiIP(), transportMask);
+		return onGetProperty("wifiip", thingGetWiFiIP(), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setwifiip"))
 	{
-		return String(nodeSetWiFiIP(_payload));
+		return String(thingSetWiFiIP(_payload));
 	}
 	else if (matchRoute(route, topic, "/getwifiisconnected"))
 	{
-		return onGetProperty("wifiisconnected", String(nodeGetWiFiIsConnected()), transportMask);
+		return onGetProperty("wifiisconnected", String(thingGetWiFiIsConnected()), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setwifiisconnected"))
 	{
-		return String(nodeSetWiFiIsConnected(atoi(_payload.c_str())));
+		return String(thingSetWiFiIsConnected(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/getconnectedwifissid"))
 	{
-		return onGetProperty("connectedwifissid", nodeGetConnectedWiFiSSID(), transportMask);
+		return onGetProperty("connectedwifissid", thingGetConnectedWiFiSSID(), transportMask);
 	}
 	else if (matchRoute(route, topic, "/getwifirssi"))
 	{
-		return onGetProperty("wifirssi", String(nodeGetWiFiRSSI()), transportMask);
+		return onGetProperty("wifirssi", String(thingGetWiFiRSSI()), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setwifirssi"))
 	{
-		return String(nodeSetWiFiRSSI(atoi(_payload.c_str())));
+		return String(thingSetWiFiRSSI(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/getwifimode"))
 	{
-		return onGetProperty("wifimode", String(nodeGetWiFiMode()), transportMask);
+		return onGetProperty("wifimode", String(thingGetWiFiMode()), transportMask);
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	}
 	else if (matchRoute(route, topic, "/setwifimode"))
 	{
-		return String(nodeSetWiFiMode((WiFiMode_t)atoi(_payload.c_str())));
+		return String(thingSetWiFiMode((WiFiMode_t)atoi(_payload.c_str())));
 #endif
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
 	}
 	else if (matchRoute(route, topic, "/setwifimode"))
 	{
-		return String(nodeSetWiFiMode((wifi_mode_t)atoi(_payload.c_str())));
+		return String(thingSetWiFiMode((wifi_mode_t)atoi(_payload.c_str())));
 #endif
 	}
 	else if (matchRoute(route, topic, "/getwifistatus"))
 	{
-		return onGetProperty("wifistatus", String(nodeGetWiFiStatus()), transportMask);
+		return onGetProperty("wifistatus", String(thingGetWiFiStatus()), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setwifistatus"))
 	{
-		return String(nodeSetWiFiStatus(atoi(_payload.c_str())));
+		return String(thingSetWiFiStatus(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/getwifistatustostring"))
 	{
-		return onGetProperty("wifistatustostring", String(nodeGetWiFiStatusToString()), transportMask);
+		return onGetProperty("wifistatustostring", String(thingGetWiFiStatusToString()), transportMask);
 	}
 	else if (matchRoute(route, topic, "/getscanwifinetworks"))
 	{
-		return onGetProperty("wifinetworkscount", String(nodeGetScanWiFiNetworks()), transportMask);
+		return onGetProperty("wifinetworkscount", String(thingGetScanWiFiNetworks()), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setscanwifinetworks"))
 	{
-		return String(nodeSetScanWiFiNetworks(atoi(_payload.c_str())));
+		return String(thingSetScanWiFiNetworks(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/getwifinetworkscount"))
 	{
-		return onGetProperty("wifinetworkscount", String(nodeGetWiFiNetworksCount()), transportMask);
+		return onGetProperty("wifinetworkscount", String(thingGetWiFiNetworksCount()), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setwifinetworkscount"))
 	{
-		return String(nodeSetWiFiNetworksCount(atoi(_payload.c_str())));
+		return String(thingSetWiFiNetworksCount(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/getwifinetworksparameters"))
 	{
-		return nodeGetWiFiNetworksParameters();
+		return thingGetWiFiNetworksParameters();
 	}
 	else if (matchRoute(route, topic, "/getallwifimodes"))
 	{
-		return nodeGetAllWiFiModes();
+		return thingGetAllWiFiModes();
 	}
 	else if (matchRoute(route, topic, "/getallwifistatuses"))
 	{
-		return String(nodeGetAllWiFiStatuses());
+		return String(thingGetAllWiFiStatuses());
 	}
 	else if (matchRoute(route, topic, "/getallwifiencryptiontypes"))
 	{
-		return String(nodeGetAllWiFiEncryptionTypes());
+		return String(thingGetAllWiFiEncryptionTypes());
 	}
-	return WRONG_NODE_PROPERTY_NAME;
+	return WRONG_THING_PROPERTY_NAME;
 }
 
 //WiFi -----------------------------------------------------------------------------------------
 //WiFiAccessPointAvailable
-int nodeGetWiFiAccessPointAvailable()
+int thingGetWiFiAccessPointAvailable()
 {
 	if (propertyFileReaded.indexOf("wifiapavailable;") < 0)
 		return wifiapavailable = _getIntPropertyValue("wifiapavailable", DEFAULT_WIFI_ACCESS_POINT_AVAILABLE);
@@ -280,7 +280,7 @@ int nodeGetWiFiAccessPointAvailable()
 		return wifiapavailable;
 }
 
-bool nodeSetWiFiAccessPointAvailable(int _wifiapavailable)
+bool thingSetWiFiAccessPointAvailable(int _wifiapavailable)
 {
 	//проблема в том что после изменения этого флага - нам надо включить или выключить точку доступа
 	//что перенастроить текущий транспорт. 
@@ -300,7 +300,7 @@ bool nodeSetWiFiAccessPointAvailable(int _wifiapavailable)
 }
 
 //WiFiAccessPointSSID
-String nodeGetWiFiAccessPointSSID()
+String thingGetWiFiAccessPointSSID()
 {
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	if (propertyFileReaded.indexOf("wifiaccesspointssid;") < 0)
@@ -317,13 +317,13 @@ String nodeGetWiFiAccessPointSSID()
 #endif
 }
 
-bool nodeSetWiFiAccessPointSSID(String _wifiaccesspointssid)
+bool thingSetWiFiAccessPointSSID(String _wifiaccesspointssid)
 {
 	wifiaccesspointssid = _wifiaccesspointssid;
 	return onInsideChange("wifiaccesspointssid", String(wifiaccesspointssid));
 }
 //WiFiAccessPointPassword
-String nodeGetWiFiAccessPointPassword()
+String thingGetWiFiAccessPointPassword()
 {
 	if (propertyFileReaded.indexOf("wifiappassword;") < 0)
 		return wifiappassword = _getStringPropertyValue("wifiappassword", DEFAULT_WIFI_ACCESS_POINT_PASSWORD);
@@ -331,20 +331,20 @@ String nodeGetWiFiAccessPointPassword()
 		return wifiappassword;
 }
 
-bool nodeSetWiFiAccessPointPassword(String _wifiappassword)
+bool thingSetWiFiAccessPointPassword(String _wifiappassword)
 {
 	wifiappassword = _wifiappassword;
 	return onInsideChange("wifiappassword", String(wifiappassword));
 }
 //WiFiAccessPointIP
-String nodeGetWiFiAccessPointIP()
+String thingGetWiFiAccessPointIP()
 {
-	if (nodeGetWiFiAccessPointAvailable() == 1)
+	if (thingGetWiFiAccessPointAvailable() == 1)
 	{
 		IPAddress real_wifiaccesspointip = WiFi.softAPIP();
 #ifdef DETAILED_DEBUG
 #ifdef DEBUG
-		debugOut(nodeid, "Current Access Point IP: " + real_wifiaccesspointip.toString());
+		debugOut(thingid, "Current Access Point IP: " + real_wifiaccesspointip.toString());
 #endif
 #endif
 		if (propertyFileReaded.indexOf("wifiaccesspointip;") < 0)
@@ -354,15 +354,15 @@ String nodeGetWiFiAccessPointIP()
 		{
 #ifdef DETAILED_DEBUG
 #ifdef DEBUG
-			debugOut(nodeid, "Current Access Point IP not equals");
+			debugOut(thingid, "Current Access Point IP not equals");
 #endif
 #endif
 
-			if (!nodeSetWiFiAccessPointIP(wifiaccesspointip))
+			if (!thingSetWiFiAccessPointIP(wifiaccesspointip))
 			{
 #ifdef DETAILED_DEBUG
 #ifdef DEBUG
-				debugOut(nodeid, "Can't change Access Point IP to: " + wifiaccesspointip);
+				debugOut(thingid, "Can't change Access Point IP to: " + wifiaccesspointip);
 #endif
 #endif
 
@@ -377,19 +377,19 @@ String nodeGetWiFiAccessPointIP()
 	}
 #ifdef DETAILED_DEBUG
 #ifdef DEBUG
-	debugOut(nodeid, "wifiaccesspointip=" + wifiaccesspointip);
+	debugOut(thingid, "wifiaccesspointip=" + wifiaccesspointip);
 #endif
 #endif
 
 	return wifiaccesspointip;
 }
 
-bool nodeSetWiFiAccessPointIP(String _wifiaccesspointip)
+bool thingSetWiFiAccessPointIP(String _wifiaccesspointip)
 {
 	IPAddress real_wifiaccesspointip;
 #ifdef DETAILED_DEBUG
 #ifdef DEBUG
-	debugOut(nodeid, "Current Access Point IP: " + WiFi.softAPIP().toString());
+	debugOut(thingid, "Current Access Point IP: " + WiFi.softAPIP().toString());
 #endif
 #endif
 
@@ -406,7 +406,7 @@ bool nodeSetWiFiAccessPointIP(String _wifiaccesspointip)
 }
 
 //WiFiAvailable
-int nodeGetWiFiAvailable()
+int thingGetWiFiAvailable()
 {
 	if (propertyFileReaded.indexOf("wifiavailable;") < 0)
 		return wifiavailable = _getIntPropertyValue("wifiavailable", DEFAULT_WIFI_STATION_AVAILABLE);
@@ -414,9 +414,9 @@ int nodeGetWiFiAvailable()
 		return wifiavailable;
 }
 
-bool nodeSetWiFiAvailable(int _wifiavailable)
+bool thingSetWiFiAvailable(int _wifiavailable)
 {
-	//SEE: nodeGetWiFiAPAvailable
+	//SEE: thingGetWiFiAPAvailable
 	int __wifiavailable = wifiavailable; 
 	wifiavailable = _wifiavailable; 
 
@@ -431,7 +431,7 @@ bool nodeSetWiFiAvailable(int _wifiavailable)
 }
 
 //WiFiSSID
-String nodeGetWiFiSSID()
+String thingGetWiFiSSID()
 {
 	if (propertyFileReaded.indexOf("wifissid;") < 0)
 		return wifissid = _getStringPropertyValue("wifissid", DEFAULT_WIFI_STATION_SSID);
@@ -439,13 +439,13 @@ String nodeGetWiFiSSID()
 		return wifissid;
 }
 
-bool nodeSetWiFiSSID(String _wifissid)
+bool thingSetWiFiSSID(String _wifissid)
 {
 	wifissid = _wifissid;
 	return onInsideChange("wifissid", String(wifissid));
 }
 //WiFiPassword
-String nodeGetWiFiPassword()
+String thingGetWiFiPassword()
 {
 	if (propertyFileReaded.indexOf("wifipassword;") < 0)
 		return wifipassword = _getStringPropertyValue("wifipassword", DEFAULT_WIFI_STATION_PASSWORD);
@@ -453,18 +453,18 @@ String nodeGetWiFiPassword()
 		return wifipassword;
 }
 
-bool nodeSetWiFiPassword(String _wifipassword)
+bool thingSetWiFiPassword(String _wifipassword)
 {
 	wifipassword = _wifipassword;
 	return onInsideChange("wifipassword", String(wifipassword));
 }
 //WiFiIP
-String nodeGetWiFiIP()
+String thingGetWiFiIP()
 {
 	wifiip = WiFi.localIP().toString();
 	return wifiip;
 }
-bool nodeSetWiFiIP(String _wifiip)
+bool thingSetWiFiIP(String _wifiip)
 {
 	return false; //local (client) WiFi IP can't be changed manualy
 }
@@ -472,7 +472,7 @@ bool nodeSetWiFiIP(String _wifiip)
 // WiFi parameters
 //WiFiMode
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
-WiFiMode_t nodeGetWiFiMode()
+WiFiMode_t thingGetWiFiMode()
 {
 	WiFiMode_t _wifimode = WiFi.getMode();
 	if (_wifimode != wifimode)
@@ -480,7 +480,7 @@ WiFiMode_t nodeGetWiFiMode()
 	return wifimode = _wifimode;
 }
 
-bool nodeSetWiFiMode(WiFiMode_t _wifimode)
+bool thingSetWiFiMode(WiFiMode_t _wifimode)
 {
 	if (WiFi.mode(_wifimode))
 	{
@@ -492,7 +492,7 @@ bool nodeSetWiFiMode(WiFiMode_t _wifimode)
 #endif
 
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
-wifi_mode_t nodeGetWiFiMode()
+wifi_mode_t thingGetWiFiMode()
 {
 	wifi_mode_t _wifimode = WiFi.getMode();
 	if (_wifimode != wifimode)
@@ -500,7 +500,7 @@ wifi_mode_t nodeGetWiFiMode()
 	return wifimode = _wifimode;
 }
 
-bool nodeSetWiFiMode(wifi_mode_t _wifimode)
+bool thingSetWiFiMode(wifi_mode_t _wifimode)
 {
 	if (WiFi.mode(_wifimode))
 	{
@@ -512,7 +512,7 @@ bool nodeSetWiFiMode(wifi_mode_t _wifimode)
 #endif
 
 // Get all WiFi modes
-String nodeGetAllWiFiModes()
+String thingGetAllWiFiModes()
 {
 	String result = "allwifimodes=";
 	result += "0:WIFI_OFF;1:WIFI_STA;2:WIFI_AP;3:WIFI_AP_STA;";
@@ -520,33 +520,33 @@ String nodeGetAllWiFiModes()
 }
 
 //GetWiFiRSSI
-int32_t nodeGetWiFiRSSI()
+int32_t thingGetWiFiRSSI()
 {
 	int32_t _wifirssi = WiFi.RSSI();
 	if (_wifirssi != wifirssi)
 		onInsideChange("wifirssi", String(_wifirssi));
 	return wifirssi = _wifirssi;
 }
-bool nodeSetWiFiRSSI(int _wifirssi)
+bool thingSetWiFiRSSI(int _wifirssi)
 {
 	return false;
 }
 
 //GetWiFiStatus
-wl_status_t nodeGetWiFiStatus()
+wl_status_t thingGetWiFiStatus()
 {
 	wl_status_t _wifistatus = WiFi.status();
 	if (_wifistatus != wifistatus)
 		onInsideChange("wifistatus", String(_wifistatus));
 	return wifistatus = _wifistatus;
 }
-bool nodeSetWiFiStatus(int _wifistatus)
+bool thingSetWiFiStatus(int _wifistatus)
 {
 	return false;
 }
 
 // Get all WiFi statuses
-String nodeGetAllWiFiStatuses()
+String thingGetAllWiFiStatuses()
 {
 	String result = "allwifistatuses=";
 	result += "0:WL_IDLE_STATUS;";
@@ -560,9 +560,9 @@ String nodeGetAllWiFiStatuses()
 }
 
 // Get WiFi status in String format
-String nodeGetWiFiStatusToString()
+String thingGetWiFiStatusToString()
 {
-	wl_status_t wifistatus = nodeGetWiFiStatus();
+	wl_status_t wifistatus = thingGetWiFiStatus();
 	if (wifistatus == WL_IDLE_STATUS)
 		return "WL_IDLE_STATUS";
 	if (wifistatus == WL_NO_SSID_AVAIL)
@@ -581,7 +581,7 @@ String nodeGetWiFiStatusToString()
 }
 
 //GetScanWiFiNetworks
-int8_t nodeGetScanWiFiNetworks()
+int8_t thingGetScanWiFiNetworks()
 {
 	//TEMP
 	//  if (wifinetworkscount != 0) return wifinetworkscount;
@@ -591,25 +591,25 @@ int8_t nodeGetScanWiFiNetworks()
 	onInsideChange("wifinetworkscount", String(wifinetworkscount));
 	return wifinetworkscount;
 }
-bool nodeSetScanWiFiNetworks(int _scanwifinetworks)
+bool thingSetScanWiFiNetworks(int _scanwifinetworks)
 {
 	return false;
 }
 
 //GetWiFiNetworksCount
-int8_t nodeGetWiFiNetworksCount()
+int8_t thingGetWiFiNetworksCount()
 {
 	return wifinetworkscount;
 }
-bool nodeSetWiFiNetworksCount(int _wifinetworkscount)
+bool thingSetWiFiNetworksCount(int _wifinetworkscount)
 {
 	return false;
 }
 
 //GetWiFiNetworksParameters
-String nodeGetWiFiNetworksParameters()
+String thingGetWiFiNetworksParameters()
 {
-	String result = "wifinetworkscount=" + String(nodeGetWiFiNetworksCount()) + "//r\n";
+	String result = "wifinetworkscount=" + String(thingGetWiFiNetworksCount()) + "//r\n";
 	for (int8_t i = 0; i < wifinetworkscount; i++)
 	{
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
@@ -622,13 +622,13 @@ String nodeGetWiFiNetworksParameters()
 	}
 	return result;
 }
-//bool nodeSetWiFiNetworksParameters(String _wifinetworksparameters)
+//bool thingSetWiFiNetworksParameters(String _wifinetworksparameters)
 //{
 //  return false;
 //}
 
 // Get all WiFi encryption types
-String nodeGetAllWiFiEncryptionTypes()
+String thingGetAllWiFiEncryptionTypes()
 {
 	String result = "allwifiencryptiontypes=";
 	result += "5:ENC_MASK_WEP;";
@@ -640,23 +640,23 @@ String nodeGetAllWiFiEncryptionTypes()
 }
 
 //WiFiIsConnected
-int nodeGetWiFiIsConnected()
+int thingGetWiFiIsConnected()
 {
 	int _wifiisconnected = (int)WiFi.isConnected();
 	if (_wifiisconnected != wifiisconnected)
 		onInsideChange("wifiisconnected", String(_wifiisconnected));
-	nodeGetWiFiStatus();
+	thingGetWiFiStatus();
 	return wifiisconnected = _wifiisconnected;
 }
 
 //https://github.com/KirinDenis/owlos/issues/7
-bool nodeSetWiFiIsConnected(int _connected1disconnected0)
+bool thingSetWiFiIsConnected(int _connected1disconnected0)
 {
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	int _wifiisconnected;
 	if (_connected1disconnected0 == 1) // command to connect
 	{
-		if (WiFi.begin(nodeGetWiFiSSID(), nodeGetWiFiPassword()) == WL_CONNECTED)
+		if (WiFi.begin(thingGetWiFiSSID(), thingGetWiFiPassword()) == WL_CONNECTED)
 			_wifiisconnected = 1; // successful connection
 		else
 			_wifiisconnected = 0;
@@ -671,7 +671,7 @@ bool nodeSetWiFiIsConnected(int _connected1disconnected0)
 	// continue
 	if (wifiisconnected != _wifiisconnected)
 		onInsideChange("wifiisconnected", String(_wifiisconnected));
-	nodeGetWiFiStatus();
+	thingGetWiFiStatus();
 	wifiisconnected = _wifiisconnected;
 	return true;
 #endif
@@ -682,7 +682,7 @@ bool nodeSetWiFiIsConnected(int _connected1disconnected0)
 }
 
 //GetConnectedWiFiSSID
-String nodeGetConnectedWiFiSSID()
+String thingGetConnectedWiFiSSID()
 {
 	String _connectedwifissid = WiFi.SSID();
 	if (!String(_connectedwifissid).equals(connectedwifissid))

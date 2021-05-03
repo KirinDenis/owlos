@@ -91,10 +91,10 @@ void WiFiSTReconnect()
 		return;
 	}
 
-	if (nodeGetWiFiAvailable() == 1)
+	if (thingGetWiFiAvailable() == 1)
 	{
-		String WiFiSSID = nodeGetWiFiSSID();
-		String WiFiPassword = nodeGetWiFiPassword();
+		String WiFiSSID = thingGetWiFiSSID();
+		String WiFiPassword = thingGetWiFiPassword();
 		if (WiFiSSID.length() == 0)
 		{
 #ifdef DETAILED_DEBUG
@@ -189,12 +189,12 @@ void WiFiEvent(WiFiEvent_t event)
 		wifiResult = true;
 #ifdef DETAILED_DEBUG
 #ifdef DEBUG
-		debugOut(TransportID, "WiFi connected as Client success, local IP: " + nodeGetWiFiIP());
+		debugOut(TransportID, "WiFi connected as Client success, local IP: " + thingGetWiFiIP());
 #endif
 #endif
 		xTimerStop(wifiSTReconnectTimer, 0);
 #ifdef USE_MQTT
-		if (nodeGetMQTTAvailable() == 1)
+		if (thingGetMQTTAvailable() == 1)
 		{
 			MQTTBegin();
 			MQTTConnect();
@@ -206,7 +206,7 @@ void WiFiEvent(WiFiEvent_t event)
 #endif
 
 #ifdef USE_OTA_SERVICE
-		if (nodeGetOTAAvailable() == 1)
+		if (thingGetOTAAvailable() == 1)
 		{
 			OTABegin();
 		}
@@ -332,16 +332,16 @@ bool transportBegin()
 #endif
 #endif
 	//WiFi Access Point and Station mode ---
-	if ((nodeGetWiFiAccessPointAvailable() == 1) && (nodeGetWiFiAvailable() == 1))
+	if ((thingGetWiFiAccessPointAvailable() == 1) && (thingGetWiFiAvailable() == 1))
 	{
 		esp_wifi_connect();
-		nodeSetWiFiMode(WIFI_AP_STA);
+		thingSetWiFiMode(WIFI_AP_STA);
 		//enable watch WiFi station timer
 		wifiSTReconnectTimer = xTimerCreate("wifiTimer", pdMS_TO_TICKS(10000), pdTRUE, (void *)0, reinterpret_cast<TimerCallbackFunction_t>(WiFiSTReconnect));
 		WiFiSTReconnect();
 
-		WiFi.softAP(nodeGetWiFiAccessPointSSID().c_str(), nodeGetWiFiAccessPointPassword().c_str());
-		nodeSetWiFiAccessPointIP(WiFi.softAPIP().toString());
+		WiFi.softAP(thingGetWiFiAccessPointSSID().c_str(), thingGetWiFiAccessPointPassword().c_str());
+		thingSetWiFiAccessPointIP(WiFi.softAPIP().toString());
 
 #ifdef DETAILED_DEBUG
 #ifdef DEBUG
@@ -351,18 +351,18 @@ bool transportBegin()
 	}
 	else
 		//WiFi Access Point mode ---
-		if (nodeGetWiFiAccessPointAvailable() == 1)
+		if (thingGetWiFiAccessPointAvailable() == 1)
 	{
 		//STOP all
-		nodeSetWiFiMode(WIFI_OFF);
+		thingSetWiFiMode(WIFI_OFF);
 		esp_wifi_disconnect();
 
 		//esp_wifi_deinit();
 		//START as access point
 		esp_wifi_connect();
-		nodeSetWiFiMode(WIFI_AP);
-		WiFi.softAP(nodeGetWiFiAccessPointSSID().c_str(), nodeGetWiFiAccessPointPassword().c_str());
-		nodeSetWiFiAccessPointIP(WiFi.softAPIP().toString());
+		thingSetWiFiMode(WIFI_AP);
+		WiFi.softAP(thingGetWiFiAccessPointSSID().c_str(), thingGetWiFiAccessPointPassword().c_str());
+		thingSetWiFiAccessPointIP(WiFi.softAPIP().toString());
 
 #ifdef DETAILED_DEBUG
 #ifdef DEBUG
@@ -372,7 +372,7 @@ bool transportBegin()
 	}
 	else
 		//WiFi Station mode ---
-		if (nodeGetWiFiAvailable() == 1)
+		if (thingGetWiFiAvailable() == 1)
 	{
 #ifdef DETAILED_DEBUG
 #ifdef DEBUG
@@ -381,14 +381,14 @@ bool transportBegin()
 #endif
 		esp_wifi_connect();
 		WiFi.softAPdisconnect(false);
-		nodeSetWiFiMode(WIFI_STA);
+		thingSetWiFiMode(WIFI_STA);
 		wifiSTReconnectTimer = xTimerCreate("wifiTimer", pdMS_TO_TICKS(10000), pdTRUE, (void *)0, reinterpret_cast<TimerCallbackFunction_t>(WiFiSTReconnect));
 		WiFiSTReconnect();
 	}
 	//No WiFi mode ---
 	else
 	{
-		nodeSetWiFiMode(WIFI_OFF);
+		thingSetWiFiMode(WIFI_OFF);
 		WiFi.softAPdisconnect(true);
 		esp_wifi_disconnect();
 		//	esp_wifi_stop(); //make crash if wifi not running before
@@ -410,7 +410,7 @@ void transportLoop()
 #endif
 
 #ifdef USE_OTA_SERVICE
-		if (nodeGetOTAAvailable() == 1)
+		if (thingGetOTAAvailable() == 1)
 		{
 			OTALoop();
 		}
@@ -425,7 +425,7 @@ void transportLoop()
 void transportSubscribe(String _topic)
 {
 #ifdef USE_MQTT
-	if (nodeGetMQTTAvailable() == 1)
+	if (thingGetMQTTAvailable() == 1)
 	{
 		MQTTSubscribe(_topic);
 	}
@@ -436,7 +436,7 @@ bool transportPublish(String _topic, String _payload)
 {
 #ifdef USE_MQTT
 
-	if ((nodeGetWiFiAvailable() == 1) && (nodeGetMQTTAvailable() == 1) && (WiFi.isConnected()))
+	if ((thingGetWiFiAvailable() == 1) && (thingGetMQTTAvailable() == 1) && (WiFi.isConnected()))
 	{
 		MQTTPublish(_topic, _payload);
 	}

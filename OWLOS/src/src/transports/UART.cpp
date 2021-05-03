@@ -177,10 +177,15 @@ void UARTRecv(String command)
                 if ((token[0].equals("AT+R")) || (token[0].equals("AT+RESET")))
             {
                 UARTSendOK(token[0], "");
-                nodeSetESPReset(1);
+                thingSetESPReset(1);
             }
             else
 #endif
+                if (token[0].equals("AT+FEA?"))
+            {
+                UARTSendOK(token[0], GetFeatures());
+            }
+            else
                 //GET all drivers properties
                 if (token[0].equals("AT+ADP?"))
             {
@@ -335,9 +340,9 @@ void UARTRecv(String command)
                     String result = driversGetDriverProperty(token[1], token[2]);
 
 #ifdef USE_ESP_DRIVER
-                    if (result.length() == 0) //then try get this property from node
+                    if (result.length() == 0) //then try get this property from thing
                     {
-                        result = nodeOnMessage(nodeGetTopic() + "/get" + token[2], "", NO_TRANSPORT_MASK);
+                        result = thingOnMessage(thingGetTopic() + "/get" + token[2], "", NO_TRANSPORT_MASK);
                     }
 #endif
 
@@ -380,10 +385,10 @@ void UARTRecv(String command)
 #ifdef USE_ESP_DRIVER
                         if ((driverResult.indexOf(WRONG_DRIVER_NAME) > -1) || (driverResult.indexOf(WRONG_PROPERTY_NAME) > -1))
                         {
-                            String result = nodeOnMessage(nodeGetTopic() + "/set" + token[2], token[3], NO_TRANSPORT_MASK);
+                            String result = thingOnMessage(thingGetTopic() + "/set" + token[2], token[3], NO_TRANSPORT_MASK);
                             if ((result.length() == 0) || (result.equals("0")))
                             {
-                                UARTSendError(token[0], driverResult + " [or] wrong node property: " + token[2]);
+                                UARTSendError(token[0], driverResult + " [or] wrong thing property: " + token[2]);
                             }
                             else
                             {

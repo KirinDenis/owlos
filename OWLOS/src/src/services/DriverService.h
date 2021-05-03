@@ -72,7 +72,7 @@ OWLOS распространяется в надежде, что она буде
 #endif
 
 void driversInit(String _topic);
-void driversBegin(String nodeTopic);
+void driversBegin(String thingTopic);
 void driversLoop();
 String driversGetAccessable();
 void driversSubscribe();

@@ -62,13 +62,13 @@ function sidebarItemClick(event) {
     var aHref = event.currentTarget;
     $(aHref).removeClass('active');    
     document.location = aHref.href;
-    var node = aHref.node;
-    if (node != undefined) {
+    var thing = aHref.thing;
+    if (thing != undefined) {
         //любой пункт меню связаный с нодой (узлом)
-        headerPanelUI.showStatusPanel(node);
+        headerPanelUI.showStatusPanel(thing);
         //проверяем не является ли выбранный пункт - пунктом "свойства узла"
-        if (aHref.deleteNodeButton != undefined) {
-            aHref.deleteNodeButton.style.display = "";
+        if (aHref.deleteThingButton != undefined) {
+            aHref.deleteThingButton.style.display = "";
         }
         else
             if (aHref.deleteDriverButton != undefined) {
@@ -125,9 +125,9 @@ function createSidebar() {
         sideBarHeaderInfoRoleSpan: undefined,
 
         dashboardItem: undefined,
-        nodeItem: undefined,
-        nodeSubItem: undefined,
-        addNodeItem: undefined,
+        thingItem: undefined,
+        thingSubItem: undefined,
+        addThingItem: undefined,
         consoleItem: undefined,
 
         createBrand: function (_version) {
@@ -245,7 +245,7 @@ function createSidebar() {
             this.sideBar = sideBarContent.appendChild(document.createElement("div"));
             this.sideBar.id = "sideBar";
             this.sideBar.className = "sidebar-item sidebar-menu";
-            //TODO: read version from node
+            //TODO: read version from thing
             this.createBrand("1.8 (RC)");
             this.createUserInfo("Role", "administrator", NET_ONLINE);
 
@@ -254,18 +254,18 @@ function createSidebar() {
             //Панель управления 
             this.dashboardItem = this.createItem(sideBarUl, "dashboarditem", "#dashboard", getLang("dashboardTab"), sidebarItemClick, "fa fa-tachometer-alt", configProperties.dashboards[0].widgets.length);
             //настройки  
-            this.nodeItem = this.createItem(sideBarUl, "nodeItem", "#settings", getLang("settingsTab"), function (event) { $(this).removeClass('active'); }, "fa fa-cogs", undefined);
-            this.nodeSubItem = this.createSubItem(this.nodeItem, "settingsSideBarUl");
+            this.thingItem = this.createItem(sideBarUl, "thingItem", "#settings", getLang("settingsTab"), function (event) { $(this).removeClass('active'); }, "fa fa-cogs", undefined);
+            this.thingSubItem = this.createSubItem(this.thingItem, "settingsSideBarUl");
 
-            this.addNodeItem = this.createItem(this.nodeSubItem, "addnodeitem", "#home", getLang("addnode"), settingsUI.addNodeClick, "fa fa-plus", undefined);
-            this.addNodeItem.href.style.color = theme.warning;
+            this.addThingItem = this.createItem(this.thingSubItem, "addthingitem", "#home", getLang("addthing"), settingsUI.addThingClick, "fa fa-plus", undefined);
+            this.addThingItem.href.style.color = theme.warning;
             //панель не видна, она существует для организии SideBar, сами панели со свойствами драйвер сделаны на основе navBar - так сложилось исторически, SideBar только переключает их
-            var nodePropAnchors = document.getElementById("nodePropAnchors");
+            var thingPropAnchors = document.getElementById("thingPropAnchors");
             //NavTabs панель для панелей со свойствами нод
-            var nodePropNavBar = nodePropAnchors.appendChild(document.createElement("ul"));
-            nodePropNavBar.style.height = "0px";
-            nodePropNavBar.id = "nodePropNavBar";
-            nodePropNavBar.className = "nav nav-tabs";
+            var thingPropNavBar = thingPropAnchors.appendChild(document.createElement("ul"));
+            thingPropNavBar.style.height = "0px";
+            thingPropNavBar.id = "thingPropNavBar";
+            thingPropNavBar.className = "nav nav-tabs";
 
             this.consoleItem = this.createItem(sideBarUl, "consoleitem", "#console", getLang("consoleTab"), sidebarItemClick, "fa fa-file-code", undefined);
 

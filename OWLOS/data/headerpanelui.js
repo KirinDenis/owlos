@@ -43,7 +43,7 @@ var headerPanelUI = {
     //роли кнопок headerPanel 
     sideBarButtonRole: 0b00000001,
     widgetsPanelButtonRole: 0b00000010,
-    nodePoropertiesPanelButtonRole: 0b00000100,
+    thingPoropertiesPanelButtonRole: 0b00000100,
     driverButtonRole: 0b00001000,
     scriptButtonRole: 0b00010000,
     filesButtonRole: 0b00100000,
@@ -74,23 +74,23 @@ var headerPanelUI = {
         return button;
     },
 
-    addStatusPanel: function (node) {
+    addStatusPanel: function (thing) {
         var headerPanelStatuses = document.getElementById("header-panel-statuses");
         if (headerPanelStatuses == undefined) {
             return undefined;
         }
 
         var statusPanel = document.createElement("div");
-        statusPanel.node = node;
+        statusPanel.thing = thing;
         statusPanel.statuses = [];
         statusPanel.style.display = "none";
         headerPanelStatuses.appendChild(statusPanel);
 
-        var nodeHref = document.createElement("a");
-        nodeHref.href = node.host;
-        nodeHref.target = "_blank";
-        nodeHref.innerText = node.nodenickname;
-        statusPanel.appendChild(nodeHref);
+        var thingHref = document.createElement("a");
+        thingHref.href = thing.host;
+        thingHref.target = "_blank";
+        thingHref.innerText = thing.thingnickname;
+        statusPanel.appendChild(thingHref);
 
         var sepparator = document.createElement("text");
         sepparator.className = "text-secondary";
@@ -109,24 +109,24 @@ var headerPanelUI = {
     },
 
 
-    getStatusesPanel: function (node) {
+    getStatusesPanel: function (thing) {
         for (var statusPanelIndex in this.statusPanels) {
-            if (this.statusPanels[statusPanelIndex].node === node) {
+            if (this.statusPanels[statusPanelIndex].thing === thing) {
                 return this.statusPanels[statusPanelIndex];
             }
         }
         return undefined;
     },
 
-    showStatusPanel: function (node) {
-        var statusPanel = this.getStatusesPanel(node);
+    showStatusPanel: function (thing) {
+        var statusPanel = this.getStatusesPanel(thing);
         if (statusPanel != undefined) {
             statusPanel.style.display = "block";
         }
     },
 
-    hideStatusPanel: function (node) {
-        var statusPanel = this.getStatusesPanel(node);
+    hideStatusPanel: function (thing) {
+        var statusPanel = this.getStatusesPanel(thing);
         if (statusPanel != undefined) {
             statusPanel.style.display = "none";
         }
@@ -138,14 +138,14 @@ var headerPanelUI = {
         }
     },
 
-    addStatus: function (node, id, text) {
-        var statusPanel = this.getStatusesPanel(node);
+    addStatus: function (thing, id, text) {
+        var statusPanel = this.getStatusesPanel(thing);
         if (statusPanel == undefined) {
-            statusPanel = this.addStatusPanel(node);
+            statusPanel = this.addStatusPanel(thing);
         }
 
         var status = document.createElement("text");
-        status.id = node.nickname + id;
+        status.id = thing.nickname + id;
         status.className = "text-secondary";
         status.innerHTML = text;
         statusPanel.appendChild(status);
@@ -168,25 +168,25 @@ var headerPanelUI = {
         return undefined;
     },
 
-    getStatus: function (node, id) {
-        return document.getElementById(node.nickname + id)
+    getStatus: function (thing, id) {
+        return document.getElementById(thing.nickname + id)
     },
 
-    setStatusSuccess: function (node, id) {
-        var status = this.getStatus(node, id);
+    setStatusSuccess: function (thing, id) {
+        var status = this.getStatus(thing, id);
         if (status != undefined) {
             status.className = "text-success";
         }
     },
 
-    setStatusUnknown: function (node, id) {
+    setStatusUnknown: function (thing, id) {
         var status = this.getStatus(id);
         if (status != undefined) {
             status.className = "text-secondary";
         }
     },
 
-    setStatusError: function (node, id) {
+    setStatusError: function (thing, id) {
         var status = this.getStatus(id);
         if (status != undefined) {
             status.className = "text-danger";

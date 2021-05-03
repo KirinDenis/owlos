@@ -42,7 +42,7 @@ OWLOS распространяется в надежде, что она буде
 #include "DriverService.h"
 #ifdef USE_DRIVERS
 
-//ALL DEVICES constructors must be called here, current node topic must be puted as parameter
+//ALL DEVICES constructors must be called here, current thing topic must be puted as parameter
 //#include "PinService.h"
 
 #ifdef USE_ESP_DRIVER
@@ -73,13 +73,13 @@ void driversInit(String _topic)
 #endif
 }
 
-void driversBegin(String nodeTopic)
+void driversBegin(String thingTopic)
 {
 	for (int i = 0; i < DRIVERS_LIMIT; i++)
 	{
 		if (driversList[i] != nullptr)
 		{
-			driversList[i]->begin(nodeTopic);
+			driversList[i]->begin(thingTopic);
 		}
 	}
 }
@@ -291,7 +291,7 @@ String driversGetAllDriversProperties()
 {
 	String result = "";
 #ifdef USE_ESP_DRIVER
-	result = nodeGetAllProperties();
+	result = thingGetAllProperties();
 #endif
 	for (int i = 0; i < DRIVERS_LIMIT; i++)
 	{
@@ -617,9 +617,9 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 
 #ifdef USE_ESP_DRIVER
 	//if driver added at RUNTIME
-	driversList[freeIndex]->begin(nodeGetTopic());
+	driversList[freeIndex]->begin(thingGetTopic());
 #else 	
-    driversList[freeIndex]->begin("owlosnode");
+    driversList[freeIndex]->begin("owlosthing");
 #endif
 #ifdef DETAILED_DEBUG
 #ifdef DEBUG

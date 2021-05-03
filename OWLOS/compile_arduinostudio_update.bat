@@ -39,11 +39,11 @@ REM Вы должны были получить копию Стандартно�
 REM этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 
 
-rem Compile and pack firware for NodeMCU, WeMos D1R1 and WeMos D1R2_mini
+rem Compile and pack firware for ThingMCU, WeMos D1R1 and WeMos D1R2_mini
 rem select path to arduino.exe
 rem setup path for D:\BUILD - binnary store folder
 
-rem NodeMCU ------------------------------------------------------------------------------------------------
+rem ThingMCU ------------------------------------------------------------------------------------------------
 @ECHO OFF
 
 @ECHO GZ and copy JavaScript sources
@@ -127,20 +127,20 @@ REM copy "updateinfo.html" "updateinfo.html"
 
 CD ..
 
-@ECHO NodeMCU compile
+@ECHO ThingMCU compile
 
 RD /S /Q "D:\build\"
-D:\Arduino\arduino --pref build.path="D:\build" --board esp8266:esp8266:nodemcu:xtal=160,vt=flash,exception=disabled,eesz=4M2M,ip=lm2f,dbg=Disabled,lvl=None____,wipe=none,baud=921600 -v --verify "OWLOS.ino"
+D:\Arduino\arduino --pref build.path="D:\build" --board esp8266:esp8266:thingmcu:xtal=160,vt=flash,exception=disabled,eesz=4M2M,ip=lm2f,dbg=Disabled,lvl=None____,wipe=none,baud=921600 -v --verify "OWLOS.ino"
 
-@ECHO wait for NodeMCU binnary
-:waitnodemcu
-IF EXIST "D:\build\OWLOS.ino.bin" GOTO nodemcuready
+@ECHO wait for ThingMCU binnary
+:waitthingmcu
+IF EXIST "D:\build\OWLOS.ino.bin" GOTO thingmcuready
 TIMEOUT /T 5 >nul
 @ECHO .
-GOTO waitnodemcu
+GOTO waitthingmcu
 
-:nodemcuready
-copy "D:\build\OWLOS.ino.bin" "OWLOS.ino.nodemcu.bin"
+:thingmcuready
+copy "D:\build\OWLOS.ino.bin" "OWLOS.ino.thingmcu.bin"
 
 rem WeMos D1 ------------------------------------------------------------------------------------------------
 RD /S /Q "D:\build\"

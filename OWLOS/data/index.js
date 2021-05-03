@@ -39,8 +39,8 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-var nodeId;
-var nodesRefreshHandle;
+var thingId;
+var thingsRefreshHandle;
 var autorefreshbutton;
 var refreshbutton;
 
@@ -65,11 +65,11 @@ var runOnce = true;
 var sideBar = undefined;
 
 function testHTTPS() {
-    httpGetAsyncWithReciever("https://192.168.1.5/getallnodeproperties", HTTPSResult, null);
+    httpGetAsyncWithReciever("https://192.168.1.5/getallthingproperties", HTTPSResult, null);
     //httpGetAsyncWithReciever("https://192.168.1.5/", HTTPSResult, null);
 }
 
-function HTTPSResult (httpResult, node) {
+function HTTPSResult (httpResult, thing) {
     //HTTPClient добавляет строку "%error" в начало Response если запрос не был завешен HTTPCode=200 или произошел TimeOut
     if (!httpResult.indexOf("%error") == 0) {
         
@@ -131,13 +131,13 @@ $(document).ready(function () {
     widgetsTheme.dark = '#272B30';
 
 
-    addToLogNL("Connection to master node " + boardhost + "...");
-    //use it as node ping
-    httpGetAsyncWithReciever(boardhost + "getalldriversproperties", onNodeAnswer, null, null, null, 20000);
+    addToLogNL("Connection to master thing " + boardhost + "...");
+    //use it as thing ping
+    httpGetAsyncWithReciever(boardhost + "getalldriversproperties", onThingAnswer, null, null, null, 20000);
 }
 );
 
-function onNodeAnswer(httpResult) {
+function onThingAnswer(httpResult) {
     if (!httpResult.indexOf("%error") == 0) {
         addToLogNL("get UI configuration...");
         config.load(onLoadConfig);
@@ -146,20 +146,20 @@ function onNodeAnswer(httpResult) {
         status_online = NET_OFFLINE;
         speak("ERROR with host: " + boardhost);
         addToLogNL("ERROR with host: " + boardhost, 2);
-        var masterNodeDialog = createModalDialog(getLang("addnodeheader"), "");
-        masterNodeDialog.appendInput(createDialogInput("masterhost", getLang("addnodehost"), "http://host:port/ or https://host:port/"));
-        masterNodeDialog.getChild("masterhost").value = boardhost;
-        masterNodeDialog.onOK = masterNodeDialogOKClick;
-        masterNodeDialog.show();
+        var masterThingDialog = createModalDialog(getLang("addthingheader"), "");
+        masterThingDialog.appendInput(createDialogInput("masterhost", getLang("addthinghost"), "http://host:port/ or https://host:port/"));
+        masterThingDialog.getChild("masterhost").value = boardhost;
+        masterThingDialog.onOK = masterThingDialogOKClick;
+        masterThingDialog.show();
     }
 }
 
-function masterNodeDialogOKClick(masterNodeDialog) {
+function masterThingDialogOKClick(masterThingDialog) {
 
-    var input = masterNodeDialog.getChild("masterhost");
+    var input = masterThingDialog.getChild("masterhost");
 
     if (input.value.length == 0) {
-        masterNodeDialog.errorLabel.innerText = getLang("addnodeerror_hostempty");
+        masterThingDialog.errorLabel.innerText = getLang("addthingerror_hostempty");
         return false;
     }
 
@@ -170,7 +170,7 @@ function masterNodeDialogOKClick(masterNodeDialog) {
     var regexp = RegExp("(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})");
 
     if (!input.value.match(regexp)) {
-        masterNodeDialog.errorLabel.innerText = getLang("addnodeerror_hostnoturl");
+        masterThingDialog.errorLabel.innerText = getLang("addthingerror_hostnoturl");
         return false;
     }
 
@@ -179,9 +179,9 @@ function masterNodeDialogOKClick(masterNodeDialog) {
     }
 
     boardhost = input.value;
-    addToLogNL("Connection to master node " + boardhost + "...");
+    addToLogNL("Connection to master thing " + boardhost + "...");
     //use it as ping
-    httpGetAsyncWithReciever(boardhost + "getalldriversproperties", onNodeAnswer, null, null, null, 5000);
+    httpGetAsyncWithReciever(boardhost + "getalldriversproperties", onThingAnswer, null, null, null, 5000);
     return true;
 }
 
@@ -227,14 +227,14 @@ function onLoadConfig(result) {
     }
 }
 
-function nodesRefresh() {
+function thingsRefresh() {
     /*
-    for (var node in configProperties.nodes) {
-        drivers.refresh(configProperties.nodes[node]);
-        pins.refresh(configProperties.nodes[node]);
-        driverPins.refresh(configProperties.nodes[node]);
-        accessableDrivers.refresh(configProperties.nodes[node]);
-        scriptsService.refresh(configProperties.nodes[node]);
+    for (var thing in configProperties.things) {
+        drivers.refresh(configProperties.things[thing]);
+        pins.refresh(configProperties.things[thing]);
+        driverPins.refresh(configProperties.things[thing]);
+        accessableDrivers.refresh(configProperties.things[thing]);
+        scriptsService.refresh(configProperties.things[thing]);
     }
     */
 }

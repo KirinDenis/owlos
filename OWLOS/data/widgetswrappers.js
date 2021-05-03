@@ -116,9 +116,9 @@ var BaseWidgetWrapper =
                     this.widget.driverClass.driverProperty = driverProperty;
                 }
             }
-            this.node = config.getNodeByHost(driver._host); //drivers.addNetworkStatusListner(this.onNetworkStatusChange, this);
+            this.thing = config.getThingByHost(driver._host); //drivers.addNetworkStatusListner(this.onNetworkStatusChange, this);
 
-            this.node.addNetworkStatusListner(this.onNetworkStatusChange, this);
+            this.thing.addNetworkStatusListner(this.onNetworkStatusChange, this);
             if (this.driverProperty != undefined)
             {
                 this.driverProperty.addNetworkStatusListner(this.onNetworkStatusChange, this);
@@ -696,9 +696,9 @@ var ActuatorWidgetWrapper =
             if (this.widget != undefined) {
                 this.widget.driverClass.driverProperty = driverProperty;
             }
-            this.node = config.getNodeByHost(driver._host); //drivers.addNetworkStatusListner(this.onNetworkStatusChange, this);
+            this.thing = config.getThingByHost(driver._host); //drivers.addNetworkStatusListner(this.onNetworkStatusChange, this);
 
-            this.node.addNetworkStatusListner(this.onNetworkStatusChange, this);
+            this.thing.addNetworkStatusListner(this.onNetworkStatusChange, this);
             this.driverProperty.addNetworkStatusListner(this.onNetworkStatusChange, this);
             this.driverProperty.addValueListner(this.onValueChange, this);
         };
@@ -836,8 +836,8 @@ var LCDWidgetWrapper =
             this.driver["backlight"].addValueListner(this.onLightChange, this);
             this.driverProperty = driverProperty;
             this.widget.driverClass.driverProperty = driverProperty;
-            this.node = config.getNodeByHost(driver._host);
-            this.node.addNetworkStatusListner(this.onNetworkStatusChange, this);
+            this.thing = config.getThingByHost(driver._host);
+            this.thing.addNetworkStatusListner(this.onNetworkStatusChange, this);
             this.driverProperty.addNetworkStatusListner(this.onNetworkStatusChange, this);
             this.driverProperty.addValueListner(this.onValueChange, this);
         };

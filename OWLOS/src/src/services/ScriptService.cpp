@@ -873,10 +873,10 @@ int runGetProp(int index)
 	String value = NOT_AVAILABLE;
 #endif
 
-	if ((value.length() == 0) || (value == WRONG_PROPERTY_NAME)) //then try get this property from node
+	if ((value.length() == 0) || (value == WRONG_PROPERTY_NAME)) //then try get this property from thing
 	{
 #ifdef USE_ESP_DRIVER
-		value = nodeOnMessage(nodeGetTopic() + "/get" + driverProp, "", NO_TRANSPORT_MASK);
+		value = thingOnMessage(thingGetTopic() + "/get" + driverProp, "", NO_TRANSPORT_MASK);
 #endif
 	}
 
@@ -915,10 +915,10 @@ int runSetProp(int index)
 	String result = "0";
 #endif
 
-	if ((result.length() == 0) || (result == WRONG_PROPERTY_NAME)) //try set node property
+	if ((result.length() == 0) || (result == WRONG_PROPERTY_NAME)) //try set thing property
 	{
 #ifdef USE_ESP_DRIVER
-		result = nodeOnMessage(nodeGetTopic() + "/set" + driverProp, value, NO_TRANSPORT_MASK);
+		result = thingOnMessage(thingGetTopic() + "/set" + driverProp, value, NO_TRANSPORT_MASK);
 #endif
 	}
 

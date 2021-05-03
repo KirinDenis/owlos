@@ -64,7 +64,7 @@ HTTPSServer secureServer = HTTPSServer(&cert);
 
 #ifdef USE_HTTP_SERVER
 // Additionally, we create an HTTPServer for unencrypted traffic
-HTTPServer insecureServer = HTTPServer(nodeGetHTTPServerPort());
+HTTPServer insecureServer = HTTPServer(thingGetHTTPServerPort());
 #endif
 
 
@@ -151,11 +151,19 @@ void handleNotFound(HTTPRequest *req, HTTPResponse *res)
 }
 
 //HTTPServer APIs ---
-void handleNodeGetAllProperties(HTTPRequest *req, HTTPResponse *res)
+void handleGetFeatures(HTTPRequest *req, HTTPResponse *res)
 {
   corsCallback(req, res);
   res->setStatusCode(200);
-  res->print(nodeGetAllProperties());
+  res->print(GetFeatures());
+  return;
+}
+
+void handleThingGetAllProperties(HTTPRequest *req, HTTPResponse *res)
+{
+  corsCallback(req, res);
+  res->setStatusCode(200);
+  res->print(thingGetAllProperties());
   return;
 }
 
@@ -186,7 +194,7 @@ void handleReset(HTTPRequest *req, HTTPResponse *res)
 {
   corsCallback(req, res);
   res->setStatusCode(200);
-  nodeSetESPReset(1);
+  thingSetESPReset(1);
 }
 
 void handleGetFileList(HTTPRequest *req, HTTPResponse *res)
@@ -273,32 +281,32 @@ void handleUploadFile(HTTPRequest *req, HTTPResponse *res)
   delete parser;
 }
 
-void handleGetNodeProperty(HTTPRequest *req, HTTPResponse *res)
+void handleGetThingProperty(HTTPRequest *req, HTTPResponse *res)
 {
   corsCallback(req, res);
   ResourceParameters *params = req->getParams();
   std::string paramVal;
   if (params->getQueryParameter("property", paramVal))
   {
-    String nodeProp = nodeOnMessage(nodeGetTopic() + "/get" + decode(String(paramVal.c_str())), "", NO_TRANSPORT_MASK);
-    if ((nodeProp.length() == 0) || (nodeProp.equals(WRONG_PROPERTY_NAME)))
+    String thingProp = thingOnMessage(thingGetTopic() + "/get" + decode(String(paramVal.c_str())), "", NO_TRANSPORT_MASK);
+    if ((thingProp.length() == 0) || (thingProp.equals(WRONG_PROPERTY_NAME)))
     {
       req->discardRequestBody();
       res->setStatusCode(405);
-      res->setStatusText("wrong node property: " + paramVal);
+      res->setStatusText("wrong thing property: " + paramVal);
       res->setHeader("Content-Type", "text/html");
     }
     else
     {
       res->setStatusCode(200);
-      res->print(nodeProp);
+      res->print(thingProp);
     }
     return;
   }
   handleNotFound(req, res);
 }
 
-void handleSetNodeProperty(HTTPRequest *req, HTTPResponse *res, String driverResult)
+void handleSetThingProperty(HTTPRequest *req, HTTPResponse *res, String driverResult)
 {
   corsCallback(req, res);
   ResourceParameters *params = req->getParams();
@@ -306,12 +314,12 @@ void handleSetNodeProperty(HTTPRequest *req, HTTPResponse *res, String driverRes
   std::string valParam;
   if ((params->getQueryParameter("property", propertyParam)) && (params->getQueryParameter("value", valParam)))
   {
-    String result = nodeOnMessage(nodeGetTopic() + "/set" + decode(String(propertyParam.c_str())), decode(String(valParam.c_str())), NO_TRANSPORT_MASK);
+    String result = thingOnMessage(thingGetTopic() + "/set" + decode(String(propertyParam.c_str())), decode(String(valParam.c_str())), NO_TRANSPORT_MASK);
     if ((result.length() == 0) || (result.equals("0")))
     {
       req->discardRequestBody();
       res->setStatusCode(400);
-      res->setStatusText(String(driverResult + " [or] wrong node property: " + decode(String(valParam.c_str()))).c_str());
+      res->setStatusText(String(driverResult + " [or] wrong thing property: " + decode(String(valParam.c_str()))).c_str());
       res->setHeader("Content-Type", "text/html");
     }
     else
@@ -419,9 +427,9 @@ void handleGetDriverProperty(HTTPRequest *req, HTTPResponse *res)
   if ((params->getQueryParameter("id", idParam)) && (params->getQueryParameter("property", propertyParam)))
   {
     String result = driversGetDriverProperty(decode(String(idParam.c_str())), decode(String(propertyParam.c_str())));
-    if (result.length() == 0) //then try get this property from node
+    if (result.length() == 0) //then try get this property from thing
     {
-      result = nodeOnMessage(nodeGetTopic() + "/get" + decode(String(propertyParam.c_str())), "", NO_TRANSPORT_MASK);
+      result = thingOnMessage(thingGetTopic() + "/get" + decode(String(propertyParam.c_str())), "", NO_TRANSPORT_MASK);
     }
 
     if (result.length() == 0)
@@ -475,7 +483,7 @@ void handleSetDriverProperty(HTTPRequest *req, HTTPResponse *res)
     {
       if ((result.indexOf(WRONG_DRIVER_NAME) > -1) || (result.indexOf(WRONG_PROPERTY_NAME) > -1))
       {
-        handleSetNodeProperty(req, res, result);
+        handleSetThingProperty(req, res, result);
       }
       else
       {
@@ -811,15 +819,16 @@ void setResourceNode(const std::string &path, const std::string &method, const H
 void HTTPSWebServerBegin()
 {
 
-  setResourceNode("/getallnodeproperties", "GET", &handleNodeGetAllProperties);
+  setResourceNode("/getfeatures", "GET", &handleGetFeatures);
+  setResourceNode("/getallthingproperties", "GET", &handleThingGetAllProperties);
   setResourceNode("/getlog", "GET", &handleGetLog);
   setResourceNode("/reset", "GET", &handleReset);
   setResourceNode("/getfilelist", "GET", &handleGetFileList);
   setResourceNode("/deletefile", "GET", &handleDeleteFile);
   setResourceNode("/deletefile", "DELETE", &handleDeleteFile);  
-  setResourceNode("/getnodeproperty", "GET", &handleGetNodeProperty);
-  //Set driver property set node property to - ESP, WiFi, Network
-  //setResourceNode("/setnodeproperty", "GET", &handleSetNodeProperty);
+  setResourceNode("/getthingproperty", "GET", &handleGetThingProperty);
+  //Set driver property set thing property to - ESP, WiFi, Network
+  //setResourceNode("/setthingproperty", "GET", &handleSetThingProperty);
   setResourceNode("/uploadfile", "POST", &handleUploadFile);
 #ifdef USE_DRIVERS
   setResourceNode("/adddriver", "GET", &handleAddDriver);
@@ -861,9 +870,9 @@ void HTTPSWebServerBegin()
 #endif
 #endif
 
-  secureServer._port = nodeGetHTTPSServerPort();
+  secureServer._port = thingGetHTTPSServerPort();
 
-  if (nodeGetHTTPSServerAvailable() == 1)
+  if (thingGetHTTPSServerAvailable() == 1)
   {
     secureServer.start();
   }
@@ -886,9 +895,9 @@ void HTTPSWebServerBegin()
 #endif
 #endif
   
-  insecureServer._port = nodeGetHTTPServerPort();
+  insecureServer._port = thingGetHTTPServerPort();
 
-  if (nodeGetHTTPServerAvailable() == 1)
+  if (thingGetHTTPServerAvailable() == 1)
   {
     insecureServer.start();
   }
@@ -908,7 +917,7 @@ void HTTPSWebServerLoop()
   // We need to call both loop functions here
 #ifdef USE_HTTPS_SERVER
   
-  if (nodeGetHTTPSServerAvailable() == 1)
+  if (thingGetHTTPSServerAvailable() == 1)
   {
     if (secureServer.isRunning())
     {
@@ -932,7 +941,7 @@ void HTTPSWebServerLoop()
 #ifdef USE_HTTP_SERVER
 
   
-  if (nodeGetHTTPServerAvailable() == 1)
+  if (thingGetHTTPServerAvailable() == 1)
   {
     if (insecureServer.isRunning())
     {

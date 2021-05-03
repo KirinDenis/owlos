@@ -51,7 +51,7 @@ OWLOS распространяется в надежде, что она буде
 
 extern String propertyFileReaded;
 extern String topic;
-extern String nodeid;
+extern String thingid;
 
 #ifdef USE_HTTP_SERVER
 #define DEFAULT_HTTP_SERVER_AVAILABLE true
@@ -84,7 +84,7 @@ extern String nodeid;
 #ifdef USE_OTA_SERVICE
 #define DEFAULT_OTA_CLIENT_AVAILABLE false
 #define DEFAULT_OTA_CLIENT_PORT 8266
-#define DEFAULT_OTA_CLIENT_ID "owlnode"
+#define DEFAULT_OTA_CLIENT_ID "owlthing"
 #define DEFAULT_OTA_CLIENT_PASSWORD "owlos"
 #endif
 
@@ -134,73 +134,73 @@ int updateavailable(DEFAULT_UPDATE_AVAILABLE);
 String updatehost(DEFAULT_UPDATE_HOST);
 #endif
 
-String nodeGetNetworkProperties()
+String thingGetNetworkProperties()
 {
     return 		   "properties for:network\n"
 		   "id=network//r\n"
 		   "type=" +
 		   String(NETWORK_DRIVER_TYPE) + "//r\n"
 								 "firmwareversion=" +
-		   nodeGetFirmwareVersion() + "//r\n"
+		   thingGetFirmwareVersion() + "//r\n"
 									  "firmwarebuildnumber=" +
-		   String(nodeGetFirmwareBuildNumber()) + "//ri\n"
-												  "nodeid=" +
-		   nodeGetUnitId() + "//\n"
+		   String(thingGetFirmwareBuildNumber()) + "//ri\n"
+												  "thingid=" +
+		   thingGetUnitId() + "//\n"
 							 "topic=" +
-		   nodeGetTopic() + "//\n"
+		   thingGetTopic() + "//\n"
 
 #ifdef USE_HTTP_SERVER
-			"httpserveravailable=" + String(nodeGetHTTPServerAvailable()) + "//bs\n"
-			"httpserverlogin=" + nodeGetHTTPServerUsername() + "//\n"
-			"httpserverpwd=" + nodeGetHTTPServerPassword() + "//sp\n"
-			"httpserverport=" + String(nodeGetHTTPServerPort()) + "//i\n"
+			"httpserveravailable=" + String(thingGetHTTPServerAvailable()) + "//bs\n"
+			"httpserverlogin=" + thingGetHTTPServerUsername() + "//\n"
+			"httpserverpwd=" + thingGetHTTPServerPassword() + "//sp\n"
+			"httpserverport=" + String(thingGetHTTPServerPort()) + "//i\n"
 #endif			
 
 #ifdef USE_HTTPS_SERVER
-			"httpsserveravailable=" + String(nodeGetHTTPSServerAvailable()) + "//bs\n"
-			"httpsserverlogin=" + nodeGetHTTPSServerUsername() + "//\n"
-			"httpsserverpwd=" + nodeGetHTTPSServerPassword() + "//sp\n"
-			"httpsserverport=" + String(nodeGetHTTPSServerPort()) + "//i\n"
+			"httpsserveravailable=" + String(thingGetHTTPSServerAvailable()) + "//bs\n"
+			"httpsserverlogin=" + thingGetHTTPSServerUsername() + "//\n"
+			"httpsserverpwd=" + thingGetHTTPSServerPassword() + "//sp\n"
+			"httpsserverport=" + String(thingGetHTTPSServerPort()) + "//i\n"
 #endif						
 
 #ifdef USE_HTTP_CLIENT
-												"httpclientport=" + String(nodeGetHTTPClientPort()) + "//i\n"
-												"httpclienturl=" +nodeGetHTTPClientURL() + "//\n"
+												"httpclientport=" + String(thingGetHTTPClientPort()) + "//i\n"
+												"httpclienturl=" +thingGetHTTPClientURL() + "//\n"
 #endif												
 
 #ifdef USE_MQTT
 									   "mqttavailable=" +
-		   String(nodeGetMQTTAvailable()) + "//bs\n"
+		   String(thingGetMQTTAvailable()) + "//bs\n"
 											"mqttport=" +
-		   String(nodeGetMQTTPort()) + "//i\n"
+		   String(thingGetMQTTPort()) + "//i\n"
 									   "mqtturl=" +
-		   nodeGetMQTTURL() + "//\n"
+		   thingGetMQTTURL() + "//\n"
 							  "mqttid=" +
-		   nodeGetMQTTID() + "//\n"
+		   thingGetMQTTID() + "//\n"
 							 "mqttlogin=" +
-		   nodeGetMQTTLogin() + "//\n"
+		   thingGetMQTTLogin() + "//\n"
 								"mqttpassword=" +
-		   nodeGetMQTTPassword() + "//p\n"
+		   thingGetMQTTPassword() + "//p\n"
 								   "mqttclientconnected=" +
-		   String(nodeGetMQTTClientConnected()) + "//bs\n"
+		   String(thingGetMQTTClientConnected()) + "//bs\n"
 												  "mqttclientstate=" +
-		   String(nodeGetMQTTClientState()) + "//i\n"
+		   String(thingGetMQTTClientState()) + "//i\n"
 #endif
 
 #ifdef USE_OTA_SERVICE
 											  "otaavailable=" +
-		   String(nodeGetOTAAvailable()) + "//bs\n"
+		   String(thingGetOTAAvailable()) + "//bs\n"
 										   "otaport=" +
-		   String(nodeGetOTAPort()) + "//i\n"
+		   String(thingGetOTAPort()) + "//i\n"
 									  "otaid=" +
-		   nodeGetOTAID() + "//\n"
+		   thingGetOTAID() + "//\n"
 							"otapassword=" +
-		   nodeGetOTAPassword() + "//p\n"
+		   thingGetOTAPassword() + "//p\n"
 #endif		   
 
 #ifdef USE_UPDATE_SERVICE
 								  "updateavailable=" +
-		   String(nodeGetUpdateAvailable()) + "//bs\n"
+		   String(thingGetUpdateAvailable()) + "//bs\n"
 
 											  "updatepossible=" +
 		   String(updateGetUpdatePossible()) + "//ir\n"
@@ -212,7 +212,7 @@ String nodeGetNetworkProperties()
 		   String(updateGetUpdateFirmwareStatus()) + "//ir\n"
 
 													 "updatehost=" +
-		   nodeGetUpdateHost() + "//s\n"
+		   thingGetUpdateHost() + "//s\n"
 #endif		   
 ;
 
@@ -223,35 +223,35 @@ String networkOnMessage(String route, String _payload, int8_t transportMask)
 #ifdef USE_HTTP_SERVER	
     if (matchRoute(route, topic, "/gethttpserveravailable"))
 	{
-		return onGetProperty("httpserveravailable", String(nodeGetHTTPServerAvailable()), transportMask);
+		return onGetProperty("httpserveravailable", String(thingGetHTTPServerAvailable()), transportMask);
 	}
 	else if (matchRoute(route, topic, "/sethttpserveravailable"))
 	{
-		return String(nodeSetHTTPServerAvailable(atoi(_payload.c_str())));
+		return String(thingSetHTTPServerAvailable(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/gethttpserverlogin"))
 	{
-		return onGetProperty("httpserverlogin", nodeGetHTTPServerUsername(), transportMask);
+		return onGetProperty("httpserverlogin", thingGetHTTPServerUsername(), transportMask);
 	}
 	else if (matchRoute(route, topic, "/sethttpserverlogin"))
 	{
-		return String(nodeSetHTTPServerUsername(_payload));
+		return String(thingSetHTTPServerUsername(_payload));
 	}
 	else if (matchRoute(route, topic, "/gethttpserverpwd"))
 	{
-		return onGetProperty("httpserverpwd", nodeGetHTTPServerPassword(), transportMask);
+		return onGetProperty("httpserverpwd", thingGetHTTPServerPassword(), transportMask);
 	}
 	else if (matchRoute(route, topic, "/sethttpserverpwd"))
 	{
-		return String(nodeSetHTTPServerPassword(_payload));
+		return String(thingSetHTTPServerPassword(_payload));
 	}
 	else if (matchRoute(route, topic, "/gethttpserverport"))
 	{
-		return onGetProperty("httpserverport", String(nodeGetHTTPServerPort()), transportMask);
+		return onGetProperty("httpserverport", String(thingGetHTTPServerPort()), transportMask);
 	}
 	else if (matchRoute(route, topic, "/sethttpserverport"))
 	{
-		return String(nodeSetHTTPServerPort(atoi(_payload.c_str())));
+		return String(thingSetHTTPServerPort(atoi(_payload.c_str())));
 	}
 	//HTTPS ---
     else 
@@ -260,35 +260,35 @@ String networkOnMessage(String route, String _payload, int8_t transportMask)
 #ifdef USE_HTTPS_SERVER
 	if (matchRoute(route, topic, "/gethttpsserveravailable"))
 	{
-		return onGetProperty("httpsserveravailable", String(nodeGetHTTPSServerAvailable()), transportMask);
+		return onGetProperty("httpsserveravailable", String(thingGetHTTPSServerAvailable()), transportMask);
 	}
 	else if (matchRoute(route, topic, "/sethttpsserveravailable"))
 	{
-		return String(nodeSetHTTPSServerAvailable(atoi(_payload.c_str())));
+		return String(thingSetHTTPSServerAvailable(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/gethttpsserverlogin"))
 	{
-		return onGetProperty("httpsserverlogin", nodeGetHTTPSServerUsername(), transportMask);
+		return onGetProperty("httpsserverlogin", thingGetHTTPSServerUsername(), transportMask);
 	}
 	else if (matchRoute(route, topic, "/sethttpsserverlogin"))
 	{
-		return String(nodeSetHTTPSServerUsername(_payload));
+		return String(thingSetHTTPSServerUsername(_payload));
 	}
 	else if (matchRoute(route, topic, "/gethttpsserverpwd"))
 	{
-		return onGetProperty("httpsserverpwd", nodeGetHTTPSServerPassword(), transportMask);
+		return onGetProperty("httpsserverpwd", thingGetHTTPSServerPassword(), transportMask);
 	}
 	else if (matchRoute(route, topic, "/sethttpsserverpwd"))
 	{
-		return String(nodeSetHTTPSServerPassword(_payload));
+		return String(thingSetHTTPSServerPassword(_payload));
 	}
 	else if (matchRoute(route, topic, "/gethttpsserverport"))
 	{
-		return onGetProperty("httpsserverport", String(nodeGetHTTPSServerPort()), transportMask);
+		return onGetProperty("httpsserverport", String(thingGetHTTPSServerPort()), transportMask);
 	}
 	else if (matchRoute(route, topic, "/sethttpsserverport"))
 	{
-		return String(nodeSetHTTPSServerPort(atoi(_payload.c_str())));
+		return String(thingSetHTTPSServerPort(atoi(_payload.c_str())));
 	}
 	else 
 #endif	
@@ -296,19 +296,19 @@ String networkOnMessage(String route, String _payload, int8_t transportMask)
 #ifdef USE_HTTP_CLIENT	
 	if (matchRoute(route, topic, "/gethttpclientport"))
 	{
-		return onGetProperty("httpclientport", String(nodeGetHTTPClientPort()), transportMask);
+		return onGetProperty("httpclientport", String(thingGetHTTPClientPort()), transportMask);
 	}
 	else if (matchRoute(route, topic, "/sethttpclientport"))
 	{
-		return String(nodeSetHTTPClientPort(atoi(_payload.c_str())));
+		return String(thingSetHTTPClientPort(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/gethttpclienturl"))
 	{
-		return onGetProperty("httpclienturl", nodeGetHTTPClientURL(), transportMask);
+		return onGetProperty("httpclienturl", thingGetHTTPClientURL(), transportMask);
 	}
 	else if (matchRoute(route, topic, "/sethttpclienturl"))
 	{
-		return String(nodeSetHTTPClientURL(_payload));
+		return String(thingSetHTTPClientURL(_payload));
 	}
 	else 
 #endif	
@@ -316,59 +316,59 @@ String networkOnMessage(String route, String _payload, int8_t transportMask)
 #ifdef USE_MQTT
 	if (matchRoute(route, topic, "/getmqttavailable"))
 	{
-		return onGetProperty("mqttavailable", String(nodeGetMQTTAvailable()), transportMask);
+		return onGetProperty("mqttavailable", String(thingGetMQTTAvailable()), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setmqttavailable"))
 	{
-		return String(nodeSetMQTTAvailable(atoi(_payload.c_str())));
+		return String(thingSetMQTTAvailable(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/getmqttport"))
 	{
-		return onGetProperty("mqttport", String(nodeGetMQTTPort()), transportMask);
+		return onGetProperty("mqttport", String(thingGetMQTTPort()), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setmqttport"))
 	{
-		return String(nodeSetMQTTPort(atoi(_payload.c_str())));
+		return String(thingSetMQTTPort(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/getmqtturl"))
 	{
-		return onGetProperty("mqtturl", nodeGetMQTTURL(), transportMask);
+		return onGetProperty("mqtturl", thingGetMQTTURL(), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setmqtturl"))
 	{
-		return String(nodeSetMQTTURL(_payload));
+		return String(thingSetMQTTURL(_payload));
 	}
 	else if (matchRoute(route, topic, "/getmqttid"))
 	{
-		return onGetProperty("mqttid", nodeGetMQTTID(), transportMask);
+		return onGetProperty("mqttid", thingGetMQTTID(), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setmqttid"))
 	{
-		return String(nodeSetMQTTID(_payload));
+		return String(thingSetMQTTID(_payload));
 	}
 	else if (matchRoute(route, topic, "/getmqttlogin"))
 	{
-		return onGetProperty("mqttlogin", nodeGetMQTTLogin(), transportMask);
+		return onGetProperty("mqttlogin", thingGetMQTTLogin(), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setmqttlogin"))
 	{
-		return String(nodeSetMQTTLogin(_payload));
+		return String(thingSetMQTTLogin(_payload));
 	}
 	else if (matchRoute(route, topic, "/getmqttpassword"))
 	{
-		return onGetProperty("mqttpassword", nodeGetMQTTPassword(), transportMask);
+		return onGetProperty("mqttpassword", thingGetMQTTPassword(), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setmqttpassword"))
 	{
-		return String(nodeSetMQTTPassword(_payload));
+		return String(thingSetMQTTPassword(_payload));
 	}
 	else if (matchRoute(route, topic, "/getmqttclientconnected"))
 	{
-		return String(nodeGetMQTTClientConnected());
+		return String(thingGetMQTTClientConnected());
 	}
 	else if (matchRoute(route, topic, "/getmqttclientstate"))
 	{
-		return String(nodeGetMQTTClientState());
+		return String(thingGetMQTTClientState());
 	}
 	else 
 #endif	
@@ -376,35 +376,35 @@ String networkOnMessage(String route, String _payload, int8_t transportMask)
 #ifdef USE_OTA_SERVICE
 	if (matchRoute(route, topic, "/getotaavailable"))
 	{
-		return onGetProperty("otaavailable", String(nodeGetOTAAvailable()), transportMask);
+		return onGetProperty("otaavailable", String(thingGetOTAAvailable()), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setotaavailable"))
 	{
-		return String(nodeSetOTAAvailable(atoi(_payload.c_str())));
+		return String(thingSetOTAAvailable(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/getotaport"))
 	{
-		return onGetProperty("otaport", String(nodeGetOTAPort()), transportMask);
+		return onGetProperty("otaport", String(thingGetOTAPort()), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setotaport"))
 	{
-		return String(nodeSetOTAPort(atoi(_payload.c_str())));
+		return String(thingSetOTAPort(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/getotaid"))
 	{
-		return onGetProperty("otaid", nodeGetOTAID(), transportMask);
+		return onGetProperty("otaid", thingGetOTAID(), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setotaid"))
 	{
-		return String(nodeSetOTAID(_payload));
+		return String(thingSetOTAID(_payload));
 	}
 	else if (matchRoute(route, topic, "/getotapassword"))
 	{
-		return onGetProperty("otapassword", nodeGetOTAPassword(), transportMask);
+		return onGetProperty("otapassword", thingGetOTAPassword(), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setotapassword"))
 	{
-		return String(nodeSetOTAPassword(_payload));
+		return String(thingSetOTAPassword(_payload));
 		//ESP class parameters
 	}
 	else 
@@ -412,12 +412,12 @@ String networkOnMessage(String route, String _payload, int8_t transportMask)
 #ifdef USE_UPDATE_SERVICE
 	if (matchRoute(route, topic, "/getupdateavailable"))
 	{
-		return onGetProperty("updateavailable", String(nodeGetUpdateAvailable()), transportMask);
+		return onGetProperty("updateavailable", String(thingGetUpdateAvailable()), transportMask);
 	}
 
 	else if (matchRoute(route, topic, "/setupdateavailable"))
 	{
-		return String(nodeSetUpdateAvailable(atoi(_payload.c_str())));
+		return String(thingSetUpdateAvailable(atoi(_payload.c_str())));
 	}
 	else if (matchRoute(route, topic, "/getupdatepossible"))
 	{
@@ -438,19 +438,19 @@ String networkOnMessage(String route, String _payload, int8_t transportMask)
 
 	else if (matchRoute(route, topic, "/getupdatehost"))
 	{
-		return onGetProperty("updatehost", nodeGetUpdateHost(), transportMask);
+		return onGetProperty("updatehost", thingGetUpdateHost(), transportMask);
 	}
 	else if (matchRoute(route, topic, "/setupdatehost"))
 	{
-		return String(nodeSetUpdateHost(_payload));
+		return String(thingSetUpdateHost(_payload));
 	}
 #endif		
-	return WRONG_NODE_PROPERTY_NAME;
+	return WRONG_THING_PROPERTY_NAME;
 }
 
 #ifdef USE_HTTP_SERVER
 //HTTPServerAvailable()
-int nodeGetHTTPServerAvailable()
+int thingGetHTTPServerAvailable()
 {
 	if (propertyFileReaded.indexOf("httpserveravailable;") < 0)
 	{
@@ -461,42 +461,42 @@ int nodeGetHTTPServerAvailable()
 		return httpserveravailable;
 	}
 }
-bool nodeSetHTTPServerAvailable(int _httpserveravailable)
+bool thingSetHTTPServerAvailable(int _httpserveravailable)
 {
 	httpserveravailable = _httpserveravailable;
 	return onInsideChange("httpserveravailable", String(httpserveravailable));
 }
 
 //HTTPSServerUsername
-String nodeGetHTTPServerUsername()
+String thingGetHTTPServerUsername()
 {
 	if (propertyFileReaded.indexOf("httpserverlogin;") < 0)
 		return httpserverlogin = _getStringPropertyValue("httpserverlogin", DEFAULT_HTTP_SERVER_USERNAME);
 	else
 		return httpserverlogin;
 }
-bool nodeSetHTTPServerUsername(String _httpserverlogin)
+bool thingSetHTTPServerUsername(String _httpserverlogin)
 {
 	httpserverlogin = _httpserverlogin;
 	return onInsideChange("httpserverlogin", String(httpserverlogin));
 }
 
 //HTTPSServerPassword
-String nodeGetHTTPServerPassword()
+String thingGetHTTPServerPassword()
 {
 	if (propertyFileReaded.indexOf("httpserverpwd;") < 0)
 		return httpserverpwd = _getStringPropertyValue("httpserverpwd", DEFAULT_HTTP_SERVER_PASSWORD);
 	else
 		return httpserverpwd;
 }
-bool nodeSetHTTPServerPassword(String _httpserverpwd)
+bool thingSetHTTPServerPassword(String _httpserverpwd)
 {
 	httpserverpwd = _httpserverpwd;
 	return onInsideChange("httpserverpwd", String(httpserverpwd));
 }
 
 //HTTPSServerPort()
-int nodeGetHTTPServerPort()
+int thingGetHTTPServerPort()
 {	
 	if (propertyFileReaded.indexOf("httpserverport;") < 0)
 	{	
@@ -507,7 +507,7 @@ int nodeGetHTTPServerPort()
 		return httpserverport;
 	}
 }
-bool nodeSetHTTPServerPort(int _httpserverport)
+bool thingSetHTTPServerPort(int _httpserverport)
 {
 	httpserverport = _httpserverport;
 	return onInsideChange("httpserverport", String(httpserverport));
@@ -516,7 +516,7 @@ bool nodeSetHTTPServerPort(int _httpserverport)
 
 #ifdef USE_HTTPS_SERVER
 //HTTPSServerAvailable() ---
-int nodeGetHTTPSServerAvailable()
+int thingGetHTTPSServerAvailable()
 {
 	if (propertyFileReaded.indexOf("httpsserveravailable;") < 0)
 	{
@@ -527,42 +527,42 @@ int nodeGetHTTPSServerAvailable()
 		return httpsserveravailable;
 	}
 }
-bool nodeSetHTTPSServerAvailable(int _httpsserveravailable)
+bool thingSetHTTPSServerAvailable(int _httpsserveravailable)
 {
 	httpsserveravailable = _httpsserveravailable;
 	return onInsideChange("httpsserveravailable", String(httpsserveravailable));
 }
 
 //HTTPSServerUsername
-String nodeGetHTTPSServerUsername()
+String thingGetHTTPSServerUsername()
 {
 	if (propertyFileReaded.indexOf("httpsserverlogin;") < 0)
 		return httpsserverlogin = _getStringPropertyValue("httpsserverlogin", DEFAULT_HTTPS_SERVER_USERNAME);
 	else
 		return httpsserverlogin;
 }
-bool nodeSetHTTPSServerUsername(String _httpsserverlogin)
+bool thingSetHTTPSServerUsername(String _httpsserverlogin)
 {
 	httpsserverlogin = _httpsserverlogin;
 	return onInsideChange("httpsserverlogin", String(httpsserverlogin));
 }
 
 //HTTPSServerPassword
-String nodeGetHTTPSServerPassword()
+String thingGetHTTPSServerPassword()
 {
 	if (propertyFileReaded.indexOf("httpsserverpwd;") < 0)
 		return httpsserverpwd = _getStringPropertyValue("httpsserverpwd", DEFAULT_HTTPS_SERVER_PASSWORD);
 	else
 		return httpsserverpwd;
 }
-bool nodeSetHTTPSServerPassword(String _httpsserverpwd)
+bool thingSetHTTPSServerPassword(String _httpsserverpwd)
 {
 	httpsserverpwd = _httpsserverpwd;
 	return onInsideChange("httpsserverpwd", String(httpsserverpwd));
 }
 
 //HTTPServerPort()
-int nodeGetHTTPSServerPort()
+int thingGetHTTPSServerPort()
 {
 	if (propertyFileReaded.indexOf("httpsserverport;") < 0)
 	{
@@ -573,7 +573,7 @@ int nodeGetHTTPSServerPort()
 		return httpsserverport;
 	}
 }
-bool nodeSetHTTPSServerPort(int _httpsserverport)
+bool thingSetHTTPSServerPort(int _httpsserverport)
 {
 	httpsserverport = _httpsserverport;
 	return onInsideChange("httpsserverport", String(httpsserverport));
@@ -582,28 +582,28 @@ bool nodeSetHTTPSServerPort(int _httpsserverport)
 
 #ifdef USE_HTTP_CLIENT
 //HTTPClientPort()
-int nodeGetHTTPClientPort()
+int thingGetHTTPClientPort()
 {
 	if (propertyFileReaded.indexOf("httpclientport;") < 0)
 		return httpclientport = _getIntPropertyValue("httpclientport", DEFAULT_HTTP_CLIENT_PORT);
 	else
 		return httpclientport;
 }
-bool nodeSetHTTPClientPort(int _httpclientport)
+bool thingSetHTTPClientPort(int _httpclientport)
 {
 	httpclientport = _httpclientport;
 	return onInsideChange("httpclientport", String(httpclientport));
 }
 
 //HTTPClientURL()
-String nodeGetHTTPClientURL()
+String thingGetHTTPClientURL()
 {
 	if (propertyFileReaded.indexOf("httpclienturl;") < 0)
 		return httpclienturl = _getStringPropertyValue("httpclienturl", DEFAULT_HTTP_CLIENT_URL);
 	else
 		return httpclienturl;
 }
-bool nodeSetHTTPClientURL(String _httpclienturl)
+bool thingSetHTTPClientURL(String _httpclienturl)
 {
 	httpclienturl = _httpclienturl;
 	return onInsideChange("httpclienturl", String(httpclienturl));
@@ -612,7 +612,7 @@ bool nodeSetHTTPClientURL(String _httpclienturl)
 
 #ifdef USE_MQTT
 //MQTTAvailable()
-int nodeGetMQTTAvailable()
+int thingGetMQTTAvailable()
 {
 	if (propertyFileReaded.indexOf("mqttavailable;") < 0)
 	{
@@ -623,42 +623,42 @@ int nodeGetMQTTAvailable()
 		return mqttavailable;
 	}
 }
-bool nodeSetMQTTAvailable(int _mqttavailable)
+bool thingSetMQTTAvailable(int _mqttavailable)
 {
 	mqttavailable = _mqttavailable;
 	return onInsideChange("mqttavailable", String(mqttavailable));
 }
 
 //MQTTPort()
-int nodeGetMQTTPort()
+int thingGetMQTTPort()
 {
 	if (propertyFileReaded.indexOf("mqttport;") < 0)
 		return mqttport = _getIntPropertyValue("mqttport", DEFAULT_MQTT_CLIENT_PORT);
 	else
 		return mqttport;
 }
-bool nodeSetMQTTPort(int _mqttport)
+bool thingSetMQTTPort(int _mqttport)
 {
 	mqttport = _mqttport;
 	return onInsideChange("mqttport", String(mqttport));
 }
 
 //MQTTURL()
-String nodeGetMQTTURL()
+String thingGetMQTTURL()
 {
 	if (propertyFileReaded.indexOf("mqtturl;") < 0)
 		return mqtturl = _getStringPropertyValue("mqtturl", DEFAULT_MQTT_CLIENT_URL);
 	else
 		return mqtturl;
 }
-bool nodeSetMQTTURL(String _mqtturl)
+bool thingSetMQTTURL(String _mqtturl)
 {
 	mqtturl = _mqtturl;
 	return onInsideChange("mqtturl", String(mqtturl));
 }
 
 //MQTTID()
-String nodeGetMQTTID()
+String thingGetMQTTID()
 {
 	if (propertyFileReaded.indexOf("mqttid;") < 0)
 		return mqttid = _getStringPropertyValue("mqttid", DEFAULT_MQTT_CLIENT_ID);
@@ -666,14 +666,14 @@ String nodeGetMQTTID()
 		return mqttid;
 }
 
-bool nodeSetMQTTID(String _mqttid)
+bool thingSetMQTTID(String _mqttid)
 {
 	mqttid = _mqttid;
 	return onInsideChange("mqttid", String(mqttid));
 }
 
 //MQTTLogin()
-String nodeGetMQTTLogin()
+String thingGetMQTTLogin()
 {
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	if (propertyFileReaded.indexOf("mqttlogin;") < 0)
@@ -689,35 +689,35 @@ String nodeGetMQTTLogin()
 		return mqttlogin;
 #endif
 }
-bool nodeSetMQTTLogin(String _mqttlogin)
+bool thingSetMQTTLogin(String _mqttlogin)
 {
 	mqttlogin = _mqttlogin;
 	return onInsideChange("mqttlogin", String(mqttlogin));
 }
 
 //MQTTPassword()
-String nodeGetMQTTPassword()
+String thingGetMQTTPassword()
 {
 	if (propertyFileReaded.indexOf("mqttpassword;") < 0)
 		return mqttpassword = _getStringPropertyValue("mqttpassword", DEFAULT_MQTT_CLIENT_PASSWORD);
 	else
 		return mqttpassword;
 }
-bool nodeSetMQTTPassword(String _mqttpassword)
+bool thingSetMQTTPassword(String _mqttpassword)
 {
 	mqttpassword = _mqttpassword;
 	return onInsideChange("mqttpassword", String(mqttpassword));
 }
 
 //MQTTClientConnected
-int nodeGetMQTTClientConnected()
+int thingGetMQTTClientConnected()
 {
 	//	return (int)(getMQTTClient()->connected());
 	return 1;
 }
 
 //MQTTClientState
-int nodeGetMQTTClientState()
+int thingGetMQTTClientState()
 {
 	//	return getMQTTClient()->state();
 	return 1;
@@ -726,7 +726,7 @@ int nodeGetMQTTClientState()
 
 #ifdef USE_OTA_SERVICE
 //OTAAvailable()
-int nodeGetOTAAvailable()
+int thingGetOTAAvailable()
 {
 	if (propertyFileReaded.indexOf("otaavailable;") < 0)
 	{
@@ -738,28 +738,28 @@ int nodeGetOTAAvailable()
 		return otaavailable;
 	}
 }
-bool nodeSetOTAAvailable(int _otaavailable)
+bool thingSetOTAAvailable(int _otaavailable)
 {
 	otaavailable = _otaavailable;
 	return onInsideChange("otaavailable", String(otaavailable));
 }
 
 //OTAPort()
-int nodeGetOTAPort()
+int thingGetOTAPort()
 {
 	if (propertyFileReaded.indexOf("otaport;") < 0)
 		return otaport = _getIntPropertyValue("otaport", DEFAULT_OTA_CLIENT_PORT);
 	else
 		return otaport;
 }
-bool nodeSetOTAPort(int _otaport)
+bool thingSetOTAPort(int _otaport)
 {
 	otaport = _otaport;
 	return onInsideChange("otaport", String(otaport));
 }
 
 //OTAID()
-String nodeGetOTAID()
+String thingGetOTAID()
 {
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 	if (propertyFileReaded.indexOf("otaid;") < 0)
@@ -775,21 +775,21 @@ String nodeGetOTAID()
 		return otaid;
 #endif
 }
-bool nodeSetOTAID(String _otaid)
+bool thingSetOTAID(String _otaid)
 {
 	otaid = _otaid;
 	return onInsideChange("otaid", String(otaid));
 }
 
 //OTAPassword()
-String nodeGetOTAPassword()
+String thingGetOTAPassword()
 {
 	if (propertyFileReaded.indexOf("otapassword;") < 0)
 		return otapassword = _getStringPropertyValue("otapassword", DEFAULT_OTA_CLIENT_PASSWORD);
 	else
 		return otapassword;
 }
-bool nodeSetOTAPassword(String _otapassword)
+bool thingSetOTAPassword(String _otapassword)
 {
 	otapassword = _otapassword;
 	return onInsideChange("otapassword", String(otapassword));
@@ -798,7 +798,7 @@ bool nodeSetOTAPassword(String _otapassword)
 
 #ifdef USE_UPDATE_SERVICE
 //UpdateAvailable()
-int nodeGetUpdateAvailable()
+int thingGetUpdateAvailable()
 {
 	if (propertyFileReaded.indexOf("updateavailable;") < 0)
 	{
@@ -809,21 +809,21 @@ int nodeGetUpdateAvailable()
 		return updateavailable;
 	}
 }
-bool nodeSetUpdateAvailable(int _updateavailable)
+bool thingSetUpdateAvailable(int _updateavailable)
 {
 	updateavailable = _updateavailable;
 	return onInsideChange("updateavailable", String(updateavailable));
 }
 
 //UpdateHost
-String nodeGetUpdateHost()
+String thingGetUpdateHost()
 {
 	if (propertyFileReaded.indexOf("updatehost;") < 0)
 		return updatehost = _getStringPropertyValue("updatehost", DEFAULT_UPDATE_HOST);
 	else
 		return updatehost;
 }
-bool nodeSetUpdateHost(String _updatehost)
+bool thingSetUpdateHost(String _updatehost)
 {
 	updatehost = _updatehost;
 	return onInsideChange("updatehost", updatehost);

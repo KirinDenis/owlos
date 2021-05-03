@@ -41,9 +41,9 @@ OWLOS распространяется в надежде, что она буде
 
 var scriptsUI = {
     onScriptNew: function (script) {
-        var scriptsSubmenuUl = document.getElementById(script.node.nodenickname + "scriptssubmenu");
+        var scriptsSubmenuUl = document.getElementById(script.thing.thingnickname + "scriptssubmenu");
         if (scriptsSubmenuUl == undefined) return;
-        var scriptsLi = sideBar.createItem(scriptsSubmenuUl, script.node.nodenickname + "_" + script.name, "#" + script.node.nodenickname + "_" + script.name + "panel", script.name, sidebarItemClick, "fa fa-bolt", undefined);
+        var scriptsLi = sideBar.createItem(scriptsSubmenuUl, script.thing.thingnickname + "_" + script.name, "#" + script.thing.thingnickname + "_" + script.name + "panel", script.name, sidebarItemClick, "fa fa-bolt", undefined);
         switch (parseInt(script.status)) {
             case stopScriptStatus: scriptsLi.href.style.color = ""; break;
             case runScriptStatus: scriptsLi.href.style.color = theme.success; break;
@@ -54,9 +54,9 @@ var scriptsUI = {
 
 
         //Script panel 
-        var nodesPropsPanel = document.getElementById("nodesPropsPanel");
-        var scriptTab = nodesPropsPanel.appendChild(document.createElement('div'));
-        scriptTab.id = script.node.nodenickname + "_" + script.name + "panel";
+        var thingsPropsPanel = document.getElementById("thingsPropsPanel");
+        var scriptTab = thingsPropsPanel.appendChild(document.createElement('div'));
+        scriptTab.id = script.thing.thingnickname + "_" + script.name + "panel";
         scriptTab.className = "tab-pane fade md-form";
         scriptsLi.panel = scriptTab;
 
@@ -74,7 +74,7 @@ var scriptsUI = {
         byteCodeCardBody.className = "card-body";
         var pre = byteCodeCardBody.appendChild(document.createElement('pre'));
         var textArea = pre.appendChild(document.createElement('textarea'));
-        textArea.id = script.node.nodenickname + "_" + script.name + "textarea";
+        textArea.id = script.thing.thingnickname + "_" + script.name + "textarea";
         textArea.className = "md-textarea text-primary form-control bg-dark";
         textArea.placeholder = getLang("inputcodehere");
         textArea.cols = 80;
@@ -82,7 +82,7 @@ var scriptsUI = {
         textArea.value = script.bytecode;
         textArea.onkeydown = scriptsUI.textAreaOnKeyDown;
 
-        var scriptExecuteButton = headerPanelUI.addButton(script.node.nodenickname + "_" + script.name + "executionButton", "fa fa-bolt", getLang("scriptexecute"), headerPanelUI.scriptButtonRole);
+        var scriptExecuteButton = headerPanelUI.addButton(script.thing.thingnickname + "_" + script.name + "executionButton", "fa fa-bolt", getLang("scriptexecute"), headerPanelUI.scriptButtonRole);
         scriptExecuteButton.script = script;
         scriptExecuteButton.textArea = textArea;
         scriptExecuteButton.labels = label;
@@ -91,9 +91,9 @@ var scriptsUI = {
 
         textArea.scriptExecuteButton = scriptExecuteButton;        
 
-        var scriptPauseButton = headerPanelUI.addButton(script.node.nodenickname + "_" + script.name + "pauseButton", "fa fa-pause", getLang("scriptpause"), headerPanelUI.scriptButtonRole);
+        var scriptPauseButton = headerPanelUI.addButton(script.thing.thingnickname + "_" + script.name + "pauseButton", "fa fa-pause", getLang("scriptpause"), headerPanelUI.scriptButtonRole);
         scriptPauseButton.script = script;
-        scriptPauseButton.node = script.node; //когда ноду удалят и прийдет ActiveReciever - Script может уже не быть
+        scriptPauseButton.thing = script.thing; //когда ноду удалят и прийдет ActiveReciever - Script может уже не быть
         scriptPauseButton.scriptExecuteButton = scriptExecuteButton;
         scriptPauseButton.textArea = textArea;
         scriptPauseButton.labels = label;
@@ -102,9 +102,9 @@ var scriptsUI = {
         
         scriptExecuteButton.scriptPauseButton = scriptPauseButton;
 
-        var scriptDebugButton = headerPanelUI.addButton(script.node.nodenickname + "_" + script.name + "debugButton", "fa fa-bug", getLang("scriptstartdebug"), headerPanelUI.scriptButtonRole);                    
+        var scriptDebugButton = headerPanelUI.addButton(script.thing.thingnickname + "_" + script.name + "debugButton", "fa fa-bug", getLang("scriptstartdebug"), headerPanelUI.scriptButtonRole);                    
         scriptDebugButton.script = script;
-        scriptDebugButton.node = script.node;
+        scriptDebugButton.thing = script.thing;
         scriptDebugButton.scriptExecuteButton = scriptExecuteButton;
         scriptDebugButton.textArea = textArea;
         scriptDebugButton.labels = label;
@@ -113,9 +113,9 @@ var scriptsUI = {
         
         scriptsLi.href.scriptDebugButton = scriptDebugButton;
         
-        var scriptDeleteButton = headerPanelUI.addButton(script.node.nodenickname + "_" + script.name + "deleteButton", "fa fa-trash", getLang("scriptdelete"), headerPanelUI.scriptButtonRole);                                            
+        var scriptDeleteButton = headerPanelUI.addButton(script.thing.thingnickname + "_" + script.name + "deleteButton", "fa fa-trash", getLang("scriptdelete"), headerPanelUI.scriptButtonRole);                                            
         scriptDeleteButton.script = script;
-        scriptDeleteButton.node = script.node; //когда ноду удалят и прийдет ActiveReciever - Script может уже не быть
+        scriptDeleteButton.thing = script.thing; //когда ноду удалят и прийдет ActiveReciever - Script может уже не быть
         scriptDeleteButton.scriptExecuteButton = scriptExecuteButton;
         scriptDeleteButton.scriptPauseButton = scriptPauseButton;
         scriptDeleteButton.textArea = textArea;
@@ -129,7 +129,7 @@ var scriptsUI = {
         /*
         var scriptExecuteButton = byteCodeCardDiv.appendChild(document.createElement('button'));
         scriptExecuteButton.type = "button";
-        scriptExecuteButton.id = script.node.nodenickname + "_" + script.name + "executionButton";
+        scriptExecuteButton.id = script.thing.thingnickname + "_" + script.name + "executionButton";
         scriptExecuteButton.className = "btn btn-sm btn-success";
         scriptExecuteButton.script = script;
         scriptExecuteButton.textArea = textArea;
@@ -144,10 +144,10 @@ var scriptsUI = {
 /*
         var scriptPauseButton = byteCodeCardDiv.appendChild(document.createElement('button'));
         scriptPauseButton.type = "button";
-        scriptPauseButton.id = script.node.nodenickname + "_" + script.name + "pauseButton";
+        scriptPauseButton.id = script.thing.thingnickname + "_" + script.name + "pauseButton";
         scriptPauseButton.className = "btn btn-sm btn-warning";
         scriptPauseButton.script = script;
-        scriptPauseButton.node = script.node; //когда ноду удалят и прийдет ActiveReciever - Script может уже не быть
+        scriptPauseButton.thing = script.thing; //когда ноду удалят и прийдет ActiveReciever - Script может уже не быть
         scriptPauseButton.scriptExecuteButton = scriptExecuteButton;
         scriptPauseButton.textArea = textArea;
         scriptPauseButton.labels = label;
@@ -161,10 +161,10 @@ var scriptsUI = {
 
         var scriptDebugButton = byteCodeCardDiv.appendChild(document.createElement('button'));
         scriptDebugButton.type = "button";
-        scriptDebugButton.id = script.node.nodenickname + "_" + script.name + "pauseButton";
+        scriptDebugButton.id = script.thing.thingnickname + "_" + script.name + "pauseButton";
         scriptDebugButton.className = "btn btn-sm btn-warning";
         scriptDebugButton.script = script;
-        scriptDebugButton.node = script.node;
+        scriptDebugButton.thing = script.thing;
         scriptDebugButton.scriptExecuteButton = scriptExecuteButton;
         scriptDebugButton.textArea = textArea;
         scriptDebugButton.labels = label;
@@ -178,10 +178,10 @@ var scriptsUI = {
         /*
         var scriptDeleteButton = byteCodeCardDiv.appendChild(document.createElement('button'));
         scriptDeleteButton.type = "button";
-        scriptDeleteButton.id = script.node.nodenickname + "_" + script.name + "deleteButton";
+        scriptDeleteButton.id = script.thing.thingnickname + "_" + script.name + "deleteButton";
         scriptDeleteButton.className = "btn btn-sm btn-danger";
         scriptDeleteButton.script = script;
-        scriptDeleteButton.node = script.node; //когда ноду удалят и прийдет ActiveReciever - Script может уже не быть
+        scriptDeleteButton.thing = script.thing; //когда ноду удалят и прийдет ActiveReciever - Script может уже не быть
         scriptDeleteButton.scriptExecuteButton = scriptExecuteButton;
         scriptDeleteButton.scriptPauseButton = scriptPauseButton;
         scriptDeleteButton.textArea = textArea;
@@ -196,8 +196,8 @@ var scriptsUI = {
         */
 
         var label = byteCodeCardDiv.appendChild(document.createElement('label'));
-        label.id = script.node.nodenickname + "_" + script.name + "label";
-        label.for = script.node.nodenickname + "_" + script.name + "textarea";
+        label.id = script.thing.thingnickname + "_" + script.name + "label";
+        label.for = script.thing.thingnickname + "_" + script.name + "textarea";
         scriptExecuteButton.label = label;
 
         var scriptStatusCardDiv = scriptHolder.appendChild(document.createElement('div'));
@@ -211,13 +211,13 @@ var scriptsUI = {
         scriptStatusCardBody.className = "card-body";
         var scriptStatusPre = scriptStatusCardBody.appendChild(document.createElement('pre'));
         var statusLabel = scriptStatusPre.appendChild(document.createElement('label'));
-        statusLabel.id = script.node.nodenickname + "_" + script.name + "statuslabel";
+        statusLabel.id = script.thing.thingnickname + "_" + script.name + "statuslabel";
         scriptsUI.buildScriptStatus(script);
 
     },
 
     onScriptChange: function (script) {
-        var scriptsAhref = document.getElementById(script.node.nodenickname + "_" + script.name + "href");
+        var scriptsAhref = document.getElementById(script.thing.thingnickname + "_" + script.name + "href");
         if (scriptsAhref == undefined) return;
         scriptsAhref.textSpan.innerHTML = script.name;
 
@@ -230,8 +230,8 @@ var scriptsUI = {
         }
 
 
-        var textArea = document.getElementById(script.node.nodenickname + "_" + script.name + "textarea");
-        var label = document.getElementById(script.node.nodenickname + "_" + script.name + "label");
+        var textArea = document.getElementById(script.thing.thingnickname + "_" + script.name + "textarea");
+        var label = document.getElementById(script.thing.thingnickname + "_" + script.name + "label");
         if (textArea.value !== script.bytecode) {
             if (textArea === document.activeElement) {
                 label.style.color = theme.danger;
@@ -306,7 +306,7 @@ var scriptsUI = {
     },
 
     buildScriptStatus: function (script) {
-        var statusLabel = document.getElementById(script.node.nodenickname + "_" + script.name + "statuslabel");
+        var statusLabel = document.getElementById(script.thing.thingnickname + "_" + script.name + "statuslabel");
         statusLabel.innerHTML = "<b>Status: </b>" + script.status + "\n" +
             "<b>debuglinenumber: </b>" + script.debuglinenumber + "\n" +
             "<b>codecount: </b>" + script.codecount + "\n" +
@@ -317,15 +317,15 @@ var scriptsUI = {
     },
 
     onScriptDelete: function (script) {
-        var scriptsLi = document.getElementById(script.node.nodenickname + "_" + script.name + "li");
+        var scriptsLi = document.getElementById(script.thing.thingnickname + "_" + script.name + "li");
         scriptsLi.parentElement.removeChild(scriptsLi);
         scriptsLi.innerHTML = "";
 
-        var scriptsPanel = document.getElementById(script.node.nodenickname + "_" + script.name + "panel");
+        var scriptsPanel = document.getElementById(script.thing.thingnickname + "_" + script.name + "panel");
         scriptsPanel.parentElement.removeChild(scriptsPanel);
         scriptsPanel.innerHTML = "";
 
-        var scriptsSubmenuUl = document.getElementById(script.node.nodenickname + "scriptssubmenu");
+        var scriptsSubmenuUl = document.getElementById(script.thing.thingnickname + "scriptssubmenu");
         for (childKey in scriptsSubmenuUl.childNodes) {
             var scriptsLi = scriptsSubmenuUl.childNodes[childKey];
             if (scriptsLi.scriptsAhref != undefined) {
@@ -339,14 +339,14 @@ var scriptsUI = {
             }
         }
 
-        var nodePanelHRef = document.getElementById(script.node.nodenickname + "nodePropsHref");
-        var nodePropsPanel = document.getElementById(script.node.nodenickname + "nodePropsPanel");
+        var thingPanelHRef = document.getElementById(script.thing.thingnickname + "thingPropsHref");
+        var thingPropsPanel = document.getElementById(script.thing.thingnickname + "thingPropsPanel");
         var event = {
-            currentTarget: nodePanelHRef
+            currentTarget: thingPanelHRef
         }
         scriptsUI.driverAnchorClick(event);
-        $(nodePanelHRef).toggleClass("active");
-        $(nodePropsPanel).toggleClass("active show");
+        $(thingPanelHRef).toggleClass("active");
+        $(thingPropsPanel).toggleClass("active show");
     },
     //https://stackoverflow.com/questions/6637341/use-tab-to-indent-in-textarea
     textAreaOnKeyDown: function (event) {
@@ -413,18 +413,18 @@ var scriptsUI = {
 
         if (!HTTPResult.indexOf("%error") == 0) {
             scriptExecuteButton.className = "btn btn-sm btn-success";
-            script.node.networkStatus = NET_ONLINE;
-            scriptsService.refresh(script.node);
+            script.thing.networkStatus = NET_ONLINE;
+            scriptsService.refresh(script.thing);
             label.style.color = theme.success;
             label.innerText = "execute-OK";
 
         }
         else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
             if (HTTPResult.indexOf("reponse") != -1) {
-                script.node.networkStatus = NET_ERROR;
+                script.thing.networkStatus = NET_ERROR;
             }
             else {
-                script.node.networkStatus = NET_OFFLINE;
+                script.thing.networkStatus = NET_OFFLINE;
             }
             scriptExecuteButton.className = "btn btn-sm btn-danger";
             label.style.color = theme.danger;
@@ -481,20 +481,20 @@ var scriptsUI = {
 
         var scriptExecuteButton = sender;
         var label = scriptExecuteButton.label;
-        var node = scriptExecuteButton.node;
+        var thing = scriptExecuteButton.thing;
 
         if (!HTTPResult.indexOf("%error") == 0) {
-            node.networkStatus = NET_ONLINE; //UI редактора скрипта удалит onScriptDelete
-            scriptsService.refresh(node);
+            thing.networkStatus = NET_ONLINE; //UI редактора скрипта удалит onScriptDelete
+            scriptsService.refresh(thing);
         }
         else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
 
 
             if (HTTPResult.indexOf("reponse") != -1) {
-                node.networkStatus = NET_ERROR;
+                thing.networkStatus = NET_ERROR;
             }
             else {
-                node.networkStatus = NET_OFFLINE;
+                thing.networkStatus = NET_OFFLINE;
             }
             scriptExecuteButton.className = "btn btn-sm btn-danger";
             label.style.color = theme.danger;
@@ -508,7 +508,7 @@ var scriptsUI = {
         event.stopPropagation();
 
         var newScriptDialog = createModalDialog(getLang("addscriptheader"), "");
-        newScriptDialog.node = scriptsAddAhref.node;
+        newScriptDialog.thing = scriptsAddAhref.thing;
         newScriptDialog.appendInput(createDialogInput("addscriptInput", getLang("addscriptname"), ""));
 
         newScriptDialog.onOK = scriptsUI.createScriptUIClick;
@@ -519,14 +519,14 @@ var scriptsUI = {
 
     createScriptUIClick: function (newScriptDialog) {
 
-        var node = newScriptDialog.node;
+        var thing = newScriptDialog.thing;
         var addscriptInput = newScriptDialog.getChild("addscriptInput");
         if (addscriptInput.value === "") {
             newScriptDialog.errorLabel.innerText = getLang("scriptnameempty");
             return;
         }
 
-        var script = createScript(node);
+        var script = createScript(thing);
         script.name = addscriptInput.value;
         scriptsService.createOrReplace(script, scriptsUI.createScriptAsynReciever, newScriptDialog);
 
@@ -535,19 +535,19 @@ var scriptsUI = {
     },
 
     createScriptAsynReciever: function (HTTPResult, newScriptDialog) {
-        var node = newScriptDialog.node;
+        var thing = newScriptDialog.thing;
 
         if (!HTTPResult.indexOf("%error") == 0) {
-            node.networkStatus = NET_ONLINE;
+            thing.networkStatus = NET_ONLINE;
             newScriptDialog.hide();
-            scriptsService.refresh(node);
+            scriptsService.refresh(thing);
         }
         else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
             if (HTTPResult.indexOf("reponse") != -1) {
-                node.networkStatus = NET_ERROR;
+                thing.networkStatus = NET_ERROR;
             }
             else {
-                node.networkStatus = NET_OFFLINE;
+                thing.networkStatus = NET_OFFLINE;
             }
             newScriptDialog.errorLabel.innerText = HTTPResult;
         }

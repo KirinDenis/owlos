@@ -55,27 +55,27 @@ OWLOS распространяется в надежде, что она буде
 
 
 2.	OWLOS выстраивает полный путь к каждому свойству, каждого драйвера используя путь из NetworkDriver.topic. 
-Например если топик “owlnode3415” и  есть драйвер актуатора с Id – led24 то путь к его управляющему свойству 
-data будет “owlnode3415/led24/data”.
+Например если топик “owlthing3415” и  есть драйвер актуатора с Id – led24 то путь к его управляющему свойству 
+data будет “owlthing3415/led24/data”.
 Таким образом если у вас несколько OWLOS устройств с одинаковыми Id драйверов, адресация для MQTT Broker может выглядеть так:
--	owlnode3415/led24/data
+-	owlthing3415/led24/data
 -	kitchen/led24/data
 -	room1/led24/data
 
-3.	OWLOS подписывается (Subscribe) на все свойства всех своих драйверов, используя путь (топик “owlnode3415/#”)
+3.	OWLOS подписывается (Subscribe) на все свойства всех своих драйверов, используя путь (топик “owlthing3415/#”)
 
 4.	Для каждого свойства предусмотрено ТРИ топика, два для управления и один для мониторинга. На примере led24.data:
--	owlnode3415/led24/data – высылается OWLOS к MQTT Broker когда значение свойства изменило свое значение. 
+-	owlthing3415/led24/data – высылается OWLOS к MQTT Broker когда значение свойства изменило свое значение. 
     Все подписанты этого топика получат данные о том что это свойство изменилось. 
--	owlnode3415/led24/setdata – префикс “set” позволяет установить значение свойства драйвера. Так как OWLOS является 
-    подписантом корневого топика “owlnode3415/#” все топики нижнего уровня будут получены (другими словами OWLOS является 
+-	owlthing3415/led24/setdata – префикс “set” позволяет установить значение свойства драйвера. Так как OWLOS является 
+    подписантом корневого топика “owlthing3415/#” все топики нижнего уровня будут получены (другими словами OWLOS является 
     подписантом самой-себя). Любой клиент MQTT Broker к которому подключена OWLOS может изменять значения ее свойств 
     (разумеется если эти свойства доступны для записи). 
     ВАЖНО – новое значение свойства необходимо помещать в payload.
--	owlnode3415/led24/getdata – префикс “get” используется для опроса свойства OWLOS. Дело в том, что OWLOS отправляет 
+-	owlthing3415/led24/getdata – префикс “get” используется для опроса свойства OWLOS. Дело в том, что OWLOS отправляет 
     (publish) только значения тех свойств значения которых изменились. При этом очень часто возникает необходимость получить 
     значение свойства (даже если оно не было изменено). Сообщение отправленное с префиксом “get” заставит OWLOS отправить 
-    в ответ (Publish) значение этого свойства со «стандартным» топиком owlnode3415/led24/data. 
+    в ответ (Publish) значение этого свойства со «стандартным» топиком owlthing3415/led24/data. 
 */
 
 #include "MQTTClient.h"
@@ -102,7 +102,7 @@ void onMqttConnect(bool sessionPresent)
     debugOut("MQTT", "OnConnected to MQTT, Session present: " + String(sessionPresent));
 #endif
 #ifdef USE_ESP_DRIVER
-    nodeSubscribe();
+    thingSubscribe();
 #endif
 }
 
@@ -192,7 +192,7 @@ void onMqttMessage(char *topic, char *payload, AsyncMqttClientMessageProperties 
 #endif
 #ifdef USE_ESP_DRIVER
     //first check is Unit property?
-    if (nodeOnMessage(_topic, _payload, MQTT_TRANSPORT_MASK).equals(WRONG_NODE_PROPERTY_NAME))
+    if (thingOnMessage(_topic, _payload, MQTT_TRANSPORT_MASK).equals(WRONG_THING_PROPERTY_NAME))
     {
         //if not UNIT property
         //Put recieved message to all drivers, each driver can process any topic recieved by Unit
@@ -286,15 +286,15 @@ bool MQTTBegin()
     mqttClient.onMessage(onMqttMessage);
     mqttClient.onPublish(onMqttPublish);
 
-    mqttClient.setClientId(stringToChar(nodeGetMQTTID()));
-    mqttClient.setCredentials(stringToChar(nodeGetMQTTLogin()), stringToChar(nodeGetMQTTPassword()));
-    mqttClient.setServer(stringToChar(nodeGetMQTTURL()), 1883);
+    mqttClient.setClientId(stringToChar(thingGetMQTTID()));
+    mqttClient.setCredentials(stringToChar(thingGetMQTTLogin()), stringToChar(thingGetMQTTPassword()));
+    mqttClient.setServer(stringToChar(thingGetMQTTURL()), 1883);
 
 #ifdef DEBUG
-    debugOut("MQTT", "Client Id:" + nodeGetMQTTID());
+    debugOut("MQTT", "Client Id:" + thingGetMQTTID());
 #endif
 #ifdef DEBUG
-    debugOut("MQTT", "URL:" + nodeGetMQTTURL() + ":" + String(nodeGetMQTTPort()));
+    debugOut("MQTT", "URL:" + thingGetMQTTURL() + ":" + String(thingGetMQTTPort()));
 #endif
     return true;
 }
