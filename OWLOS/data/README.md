@@ -5,10 +5,12 @@ Pack and uploading JavaScript files into the microcontroller flash file system a
 
 Or open index.html in your browser and type IP address of OWLOS microcontroller.
 
-In both cases, pay attention to the restclientcore.js file the boardhost variable - it contains the default IP address of OWLOS microcontroller. 
-Please see:
+In both cases, pay attention to the restclientcore.js file contains the boardhost variable - the default IP address of OWLOS microcontroller. 
+
+### Please see:
 [How to install](https://github.com/KirinDenis/owlos/wiki/How-to-install-EN) (5.x) 
-[Video instruction here](https://www.youtube.com/watch?v=wqaX4ojn0hw)
+
+[Video instruction](https://www.youtube.com/watch?v=wqaX4ojn0hw)
 
 ### Files map:
 - *core.js - UI core files (use them as a basis for developing your own UI)
