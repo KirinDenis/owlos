@@ -1,9 +1,10 @@
-# OWLOS UX
-DIY Open Source OS for building IoT ecosystems
+![OWLOS Web UX](https://github.com/KirinDenis/owlos/raw/master/OWLOSResource/images/owlos_webux.jpg)
 
-Pack and uploading JavaScript files into the microcontroller flash file system and use it independently (autonomous).
+# OWLOS Web UX
 
-Or open index.html in your browser and type IP address of OWLOS microcontroller.
+Open index.html in your browser and type IP address of OWLOS microcontroller.
+
+Or, pack and uploading JavaScript files into the microcontroller flash file system and use it independently (autonomous).
 
 In both cases, pay attention to the restclientcore.js file contains the boardhost variable - the default IP address of OWLOS microcontroller. 
 
