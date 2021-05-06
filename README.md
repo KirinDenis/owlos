@@ -15,7 +15,7 @@
 - doesn't require internet and additional servers
 - Open Source under GPL-3.0 License 
 
-![OWLOS SCHEME](https://github.com/KirinDenis/owlos/raw/master/OWLOSResource/images/owlos_scheme.jpg)
+![OWLOS SCHEME](https://github.com/KirinDenis/owlos/raw/master/OWLOSResource/images/owlos-scheme.png)
 
 ### Source Code map
 
