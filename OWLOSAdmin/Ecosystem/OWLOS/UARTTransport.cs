@@ -161,7 +161,20 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
             return true;
 
         }
-        
+
+        public override async Task<bool> GetFeatures()
+        {
+            networkStatus = NetworkStatus.Reconnect;
+            RESTfulClientResultModel getResult = await Get("AT+FEA?");
+            if (string.IsNullOrEmpty(getResult.error))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         public override async Task<bool> GetAllDriversProperties()
         {            

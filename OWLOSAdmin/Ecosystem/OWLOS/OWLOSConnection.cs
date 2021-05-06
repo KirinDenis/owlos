@@ -44,7 +44,7 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
 {
     public enum ConnectionType { RESTfulClient, MQTT, UART }
 
-    public enum APINameType { GetAllDriverProperties, GetAllFiles, GetAllScripts}
+    public enum APINameType { GetAllDriverProperties, GetAllFiles, GetAllScripts, GetFeatures}
 
     public class APIQueryInterval
     {

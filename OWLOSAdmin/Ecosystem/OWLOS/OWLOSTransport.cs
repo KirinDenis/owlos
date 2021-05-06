@@ -100,6 +100,10 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
         public long totlaRecv { get; set; }
         public List<LogItem> logItems { get; } = new List<LogItem>();
 
+        public virtual async Task<bool> GetFeatures()
+        {
+            throw new NotImplementedException();
+        }
         public virtual async Task<bool> GetAllDriversProperties()
         {
             throw new NotImplementedException();

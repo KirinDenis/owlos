@@ -46,6 +46,7 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
 {
     public interface IOWLOSAbstractTransport
     {
+        abstract public Task<bool> GetFeatures();
         abstract public Task<bool> GetAllDriversProperties();
         abstract public Task<bool> SetDriverProperty(string driver, string property, string value);
         abstract public Task<string> GetDriverProperty(string driver, string property);

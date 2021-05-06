@@ -76,6 +76,21 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
         {
             this.Thing = Thing;
         }
+
+        override public async Task<bool> GetFeatures()
+        {
+            RESTfulClientResultModel getResult = await Get("getfeatures");
+            if (string.IsNullOrEmpty(getResult.error))
+            {
+                await Thing.ParseGetFeatures(getResult.result);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         override public async Task<bool> GetAllDriversProperties()
         {
             RESTfulClientResultModel getResult = await Get("getalldriversproperties");

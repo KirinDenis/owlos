@@ -58,7 +58,7 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
         public OWLOSDriver driver;
     }
 
-    public class OWLOSThingConfig    
+    public class OWLOSThingConfig
     {
         public string Name;
 
@@ -71,13 +71,15 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
     public class OWLOSThing : IOWLOSAbstractTransport
     {
         public string Name;
+
+        public OWLOSFeatures Features = new OWLOSFeatures();
         public List<OWLOSDriver> drivers { get; set; } = new List<OWLOSDriver>();
         public OWLOSFiles files { get; set; }
 
         public delegate void DriverEventHandler(object? sender, OWLOSDriverWrapperEventArgs e);
 
         public event DriverEventHandler OnNewDriver;
-               
+
         public List<IOWLOSTransport> transports = new List<IOWLOSTransport>();
 
         public OWLOSThingConfig config = null;
@@ -107,9 +109,7 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
                         transports.Add(_RESTfulClientTransport);
                         break;
                     case ConnectionType.MQTT:
-                        //_UARTTransport = new UARTTransport(this);
-                        //_UARTTransport.connection = connection;
-                        //transports.Add(_UARTTransport);
+                        //TODO:
                         break;
                     case ConnectionType.UART:
                         _UARTTransport = new UARTTransport(this)
@@ -126,7 +126,7 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
             {
                 for (int j = 0; j < transports.Count - 1; j++)
                 {
-                    if (transports[j].connection.Priority > transports[j+1].connection.Priority)
+                    if (transports[j].connection.Priority > transports[j + 1].connection.Priority)
                     {
                         IOWLOSTransport exchangeTransport = transports[j];
                         transports[j] = transports[j + 1];
@@ -136,12 +136,14 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
             }
 
 
-                    Start();
+            Start();
             //    this.wrapper = wrapper;
         }
 
-        public void Start()
+        public async void Start()
         {
+            await GetFeatures();
+
             lifeCycleTimer = new Timer(1000)
             {
                 AutoReset = true
@@ -164,6 +166,9 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
                     QueryInterval.LastCall = DateTime.Now;
                     switch (QueryInterval.APIType)
                     {
+                        case APINameType.GetFeatures:
+                            await GetFeatures();
+                            break;
                         case APINameType.GetAllDriverProperties:
                             await GetAllDriversProperties();
                             break;
@@ -178,6 +183,12 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
         {
             OnNewDriver?.Invoke(this, e);
         }
+
+        public async Task ParseGetFeatures(string featuresSource)
+        {
+            await Features.ParseFeatures(featuresSource);
+        }
+
         public async Task ParseGetAllDriversProperties(string driverData)
         {
             List<string> driverRaw = driverData.Split('\n').ToList();
@@ -231,13 +242,13 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
             List<string> tokenizeTopic = topic.Split('/').ToList();
             if (tokenizeTopic.Count > 2)
             {
-                
+
                 string driverName = tokenizeTopic[tokenizeTopic.Count - 2];
                 string property = tokenizeTopic[tokenizeTopic.Count - 1];
 
                 //find driver
                 OWLOSDriver driver = drivers.Find(d => d.name == driverName);
-                
+
                 if (driver != null)
                 {
                     await driver.SetParsedProperty(property, value);
@@ -260,12 +271,38 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
                                         await driver.SetParsedProperty(property, value);
                                     }
                                 }
-                            }    
-                        }    
+                            }
+                        }
                     }
                 }
             }
         }
+
+        public async Task<bool> GetFeatures()
+        {
+            if ((transports.Count > 0) && (transports[0] != null))
+            {
+                if (await transports[0].GetFeatures() != true)
+                {
+                    if ((transports.Count > 1) && (transports[1] != null))
+                    {
+                        if (await transports[1].GetFeatures() != true)
+                        {
+                            if ((transports.Count > 2) && (transports[2] != null))
+                            {
+                                if (await transports[2].GetFeatures() != true)
+                                {
+                                    return false;
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+
 
         public async Task<bool> GetAllDriversProperties()
         {
