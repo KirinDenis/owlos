@@ -38,66 +38,51 @@ OWLOS распространяется в надежде, что она буде
 Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
-#ifndef UTILS_H
-#define UTILS_H
+#include "BaseDriver.h"
+#ifdef USE_SAMPLE_DRIVER
 
-#include <Arduino.h>
+#ifndef SAMPLEDRIVER_H
+#define SAMPLEDRIVER_H
 
-//#define SERIAL_COLORIZED_OUTPUT
-//#define DEBUG
-#ifdef DEBUG
-	#define DETAILED_DEBUG
+class _SampleDriver : public BaseDriver
+{
+public:
+	static int getPinsCount()
+	{
+		return 2;
+	}
+
+	static uint16_t getPinType(int pinIndex)
+	{
+		switch (pinIndex)
+		{
+		case PIN0_INDEX:
+			return DIGITAL_O_MASK | ANALOG_O_MASK;
+		case PIN1_INDEX:
+			return GND_MASK;
+
+		default:
+			return NO_MASK;
+		}
+	}
+
+	bool init();
+	void del();
+	bool begin(String _topic);
+	bool query();
+	String getAllProperties();
+	bool publish();
+	String onMessage(String route, String _payload, int8_t transportMask);
+
+	int getProp1();
+	bool setProp1(int _data, bool doEvent);
+
+	int getProp2();
+	bool setProp2(int _data, bool doEvent);
+
+private:	
+	int prop1 = 0;
+	int prop2 = 0;
+};
 #endif
-
-#define WRITE_DEBUG_LOG_FILES false
-#define DEBUG_LOG_FILES_SIZE 10240L
-#define DEBUG_LOG_FILE1_NAME "log1"
-#define DEBUG_LOG_FILE2_NAME "log2"
-#define PORTSPEED 115200
-#define ONETENTHOFSECOND 100L
-#define ONEHUNDREDTH 10L
-#define ONESECOND 1000L
-#define TENSECOND 10000L
-#define ONEMINUTE 60000L
-
-//Transport masks
-#define NO_TRANSPORT_MASK 0b00000000
-#define MQTT_TRANSPORT_MASK 0b00000001
-#define RESTFUL_TRANSPORT_MASK 0b00000010
-#define GSM_TRANSPORT_MASK 0b00000100
-#define UART_TRANSPORT_MASK 0b00001000 //debug is transport by this flag
-
-//Not available selector
-#define NOT_AVAILABLE F("nan")
-#define WRONG_PROPERTY_NAME F("Drivers: wrong property name")
-#define WRONG_DRIVER_NAME F("Drivers: wrong driver name")
-#define WRONG_THING_PROPERTY_NAME F("Thing: wrong thing property name")
-
-#define TEST_DRIVER_TYPE 0
-#define DHT_DRIVER_TYPE 1
-#define LIGHT_DRIVER_TYPE 2
-#define SMOKE_DRIVER_TYPE 3
-#define MOTION_DRIVER_TYPE 4
-#define SENSOR_DRIVER_TYPE 5
-#define STEPPER_DRIVER_TYPE 6
-#define LCD_DRIVER_TYPE 7
-#define ACTUATOR_DRIVER_TYPE 8
-#define OPTO_DRIVER_TYPE 9
-#define VALVE_DRIVER_TYPE 10
-#define WIFI_DRIVER_TYPE 11
-#define NETWORK_DRIVER_TYPE 12
-#define ESP_DRIVER_TYPE 13
-#define CONFIG_DRIVER_TYPE 14
-#define SAMPLE_DRIVER_TYPE 15
-
-char *stringToChar(String src);
-#ifdef DEBUG
-void debugOut(const String &tag, const String &text);
-#endif
-void writeDebugLogFile(String fileName, int fileSize, String tag, String text);
-bool matchRoute(const char *route, const char *topic, const char *path);
-bool matchRoute(const String &route, const String &topic, const char *path);
-
-String GetFeatures();
-
 #endif
