@@ -120,6 +120,7 @@ namespace OWLOSThingsManager.EcosystemBrowser
                 BrowserGrid = BrowserGrid, 
                 BrowserTabsPanel = BrowserTabsPanes 
             });
+
             ThingsTreeViewItem.Items.Add(NewThingItemsHolder.ThingBrowserItem);
             
         }

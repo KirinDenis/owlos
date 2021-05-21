@@ -58,6 +58,31 @@ namespace OWLOSThingsManager.EcosystemBrowser.BrowserControls
 
             ThingPanelControl = new PanelControl(PanelTag);
             ThingPanelControl.ContentHolder.Children.Add(this);
+
+            if (PanelTag.Thing.Features != null)
+            {
+                if (!string.IsNullOrEmpty(PanelTag.Thing.Features.Board))
+                {
+                    BoardTextBlock.Text = PanelTag.Thing.Features.Board;
+                }
+
+                if (!string.IsNullOrEmpty(PanelTag.Thing.Features.Version))
+                {
+                    VersionBuildTextBlock.Text = string.Format("OWLOS firmaware version: {0} (build: {1})", PanelTag.Thing.Features.Version, PanelTag.Thing.Features.Build);
+                }
+
+                if (!string.IsNullOrEmpty(PanelTag.Thing.Features.Debug))
+                {
+                    DebugTextBlock.Text = string.Format("Debug: {0}", PanelTag.Thing.Features.Debug);
+                }
+
+                if (!string.IsNullOrEmpty(PanelTag.Thing.Features.Log))
+                {
+                    LogTextBlock.Text = string.Format("Log: {0}", PanelTag.Thing.Features.Log);
+                }
+
+
+            }
         }
     }
 }
