@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\OWLOSAdmin\EcosystemExplorer\Huds\Gold.cs" Link="Huds\Gold.cs" />
+    <Compile Include="..\OWLOSAdmin\EcosystemExplorer\Huds\HudLibrary.cs" Link="Huds\HudLibrary.cs" />
+    <Compile Include="..\OWLOSAdmin\EcosystemExplorer\Huds\PathText.cs" Link="Huds\PathText.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Theme\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Include="..\OWLOSAdmin\Theme\OWLOSDarkTheme.xaml" Link="Theme\OWLOSDarkTheme.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+</Project>
