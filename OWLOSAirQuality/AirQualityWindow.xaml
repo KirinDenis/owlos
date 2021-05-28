@@ -9,7 +9,10 @@
     <Grid>
 
         <Viewbox x:Name="MainViewBox">
-            <Grid x:Name="HudGrid"></Grid>
+            <Grid x:Name="HudGrid">
+                
+
+            </Grid>
             
         </Viewbox>
 

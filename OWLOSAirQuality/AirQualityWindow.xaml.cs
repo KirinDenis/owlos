@@ -39,9 +39,12 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 using OWLOSAdmin.EcosystemExplorer.Huds;
+using OWLOSAirQuality.Huds;
 using OWLOSThingsManager.EcosystemExplorer.Huds;
+using System;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 
 namespace OWLOSAirQuality
@@ -66,11 +69,11 @@ namespace OWLOSAirQuality
             insideThingPath2 = new Path();
             freeHeapPathBack = new Path();
 
-            ThingShadowPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSSecondaryAlpha2"];
-            ThingPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSSecondary"];
+            ThingShadowPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSPrimaryAlpha2"];
+            ThingPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSPrimary"];
             insideThingPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSSecondary"];
-            insideThingPath2.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSSecondaryAlpha2"];
-            freeHeapPathBack.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSSecondary"];
+            insideThingPath2.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSPrimaryAlpha2"];
+            freeHeapPathBack.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSPrimary"];
 
             HudGrid.Children.Add(ThingShadowPath);
             HudGrid.Children.Add(ThingPath);
@@ -97,6 +100,25 @@ namespace OWLOSAirQuality
             transportOwerPathRECONNECT.Height = Gold.size;
             HudGrid.Children.Add(transportOwerPathRECONNECT);
 
+            Random random = new Random();
+            for (int i = 0; i < 10; i++)
+            {
+                PentalControl pental = new PentalControl(Gold.radius - random.Next((int)Gold.radius), random.Next(270), random.Next(80), random.Next(10) + 20, i.ToString());
+                HudGrid.Children.Add(pental);
+                pental.AnimatedRotation(-5000 + random.Next(10000), 30000 + random.Next(100000));
+
+                pental.petalBackground.Stroke = new SolidColorBrush(Color.FromArgb((byte)random.Next(255), (byte)random.Next(255), (byte)random.Next(255), (byte)random.Next(255)));
+
+            }
+
+
+
+            //Storyboard.SetTarget(rotateAnimation, pental);
+            //Storyboard.SetTargetProperty(rotateAnimation, new PropertyPath("(UIElement.RenderTransform).(RotateTransform.Angle)"));
+
+
+            //storyboard.Children.Add(rotateAnimation);
+            //storyboard.Begin();
 
 
 

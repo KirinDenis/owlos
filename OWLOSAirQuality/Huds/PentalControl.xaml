@@ -1,0 +1,19 @@
+﻿<UserControl x:Class="OWLOSAirQuality.Huds.PentalControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:OWLOSAirQuality.Huds"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded">
+    <Grid x:Name="petalMainGrid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" RenderTransformOrigin="0.5,0.5" Width="700" Height="700" Margin="0,0,0,0" Cursor="Hand">
+
+
+        <Path Name="petalBorder1" Stroke="{DynamicResource OWLOSInfo}" Data="M 100 100 A 200 200 0 0 0 450 40" StrokeThickness="1" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700"  />
+        <Path Name="petalBorder2" Stroke="{DynamicResource OWLOSInfo}" Data="M 100 100 A 200 200 0 0 0 450 40" StrokeThickness="1" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700"  />
+
+        <Path Name="petalBackground" Stroke="{DynamicResource OWLOSInfoAlpha4}" Data="M 487 55 A 325 325 0 0 0 350 25" StrokeThickness="20" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="700" Height="700"  MouseEnter="petalBackground_MouseEnter" MouseLeave="petalBackground_MouseLeave" />
+        <TextBlock x:Name="petalNameText" Text="ActuatorDriver1234567890ActuaA" Foreground="{DynamicResource OWLOSLight}" HorizontalAlignment="Left"  RenderTransformOrigin="0.5,0.5" Width="137" TextAlignment="Center" VerticalAlignment="Top" Height="11" Margin="353,23,0,0" />
+
+    </Grid>
+</UserControl>
