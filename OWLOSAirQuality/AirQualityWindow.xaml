@@ -7,6 +7,7 @@
         mc:Ignorable="d"
         Title="OWLOS Air Quality" Height="450" Width="800" Background="{DynamicResource OWLOSDark}">
     <Grid>
+        
 
         <Viewbox x:Name="MainViewBox">
             <Grid x:Name="HudGrid">
@@ -15,6 +16,12 @@
             </Grid>
             
         </Viewbox>
+
+            <Grid.Effect>
+                
+                    <BlurEffect Radius="0.7"></BlurEffect>
+                
+            </Grid.Effect>
 
     </Grid>
 </Window>

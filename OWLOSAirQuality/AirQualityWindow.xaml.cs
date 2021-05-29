@@ -46,6 +46,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using System.Timers;
 
 namespace OWLOSAirQuality
 {
@@ -58,7 +59,11 @@ namespace OWLOSAirQuality
         private readonly Path insideThingPath;
         private readonly Path insideThingPath2;
         private readonly Path freeHeapPathBack;
-        
+
+        private Timer lifeCycleTimer;
+
+        private ConsoleControl console;
+
         public AirQualityWindow()
         {
             InitializeComponent();
@@ -80,7 +85,7 @@ namespace OWLOSAirQuality
             HudGrid.Children.Add(insideThingPath);
             HudGrid.Children.Add(insideThingPath2);
             HudGrid.Children.Add(freeHeapPathBack);
-          
+
             ThingShadowPath.Data = ThingPath.Data = HudLibrary.DrawArc(Gold.center, Gold.center, Gold.radius, 0, 359);
             ThingShadowPath.StrokeThickness = ThingPath.StrokeThickness = Gold.radius7;
             insideThingPath.Data = HudLibrary.DrawArc(Gold.center, Gold.center, Gold.radius - Gold.radius3, 0, 359);
@@ -101,9 +106,10 @@ namespace OWLOSAirQuality
             HudGrid.Children.Add(transportOwerPathRECONNECT);
 
             Random random = new Random();
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 1; i++)
             {
-                PentalControl pental = new PentalControl(Gold.radius - random.Next((int)Gold.radius), random.Next(270), random.Next(80), random.Next(10) + 20, i.ToString());
+                int w = 40 + random.Next(40);
+                PentalControl pental = new PentalControl(Gold.radius - random.Next((int)Gold.radius), w + random.Next(270), w, random.Next(10) + 20, i.ToString());
                 HudGrid.Children.Add(pental);
                 pental.AnimatedRotation(-5000 + random.Next(10000), 30000 + random.Next(100000));
 
@@ -111,6 +117,8 @@ namespace OWLOSAirQuality
 
             }
 
+            console = new ConsoleControl();
+            HudGrid.Children.Add(console);
 
 
             //Storyboard.SetTarget(rotateAnimation, pental);
@@ -120,8 +128,20 @@ namespace OWLOSAirQuality
             //storyboard.Children.Add(rotateAnimation);
             //storyboard.Begin();
 
+            lifeCycleTimer = new Timer(1000)
+            {
+                AutoReset = true
+            };
+            lifeCycleTimer.Elapsed += new ElapsedEventHandler(OnLifeCycleTimer);
+            lifeCycleTimer.Start();
+            OnLifeCycleTimer(null, null);
 
 
+        }
+
+        private async void OnLifeCycleTimer(object source, ElapsedEventArgs e)
+        {
+            console.AddToconsole("123123123", 4);
         }
     }
 }
