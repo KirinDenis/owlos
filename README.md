@@ -59,6 +59,7 @@ if your board based on ESP8266 -> [ESP8266 prepared assembly](https://github.com
 - [me-no-dev/AsyncTCP (ESP32)](https://github.com/me-no-dev/AsyncTCP)
 - [ESP32 HTTPS Server](https://github.com/fhessel/esp32_https_server)
 - [Async MQTT Client](http://platformio.org/lib/show/346/AsyncMqttClient)
+- [Pro Sidebar](https://github.com/azouaoui-med/pro-sidebar-template)
 - [DS3231 Real-Time Clock](http://www.jarzebski.pl/arduino/komponenty/zegar-czasu-rzeczywistego-rtc-ds3231.html)
 - [Adafruit Unified Sensor Library](https://github.com/adafruit/Adafruit_Sensor)
 - [DHT-sensor-library](https://github.com/adafruit/DHT-sensor-library)
