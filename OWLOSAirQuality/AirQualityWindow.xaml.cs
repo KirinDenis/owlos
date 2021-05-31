@@ -60,9 +60,14 @@ namespace OWLOSAirQuality
         private readonly Path insideThingPath2;
         private readonly Path freeHeapPathBack;
 
+        private readonly PentalControl secondPental;
+        private readonly PentalControl minutePental;
+
         private Timer lifeCycleTimer;
 
         private ConsoleControl console;
+
+        private DateControl dateControl;
 
         public AirQualityWindow()
         {
@@ -82,12 +87,12 @@ namespace OWLOSAirQuality
 
             HudGrid.Children.Add(ThingShadowPath);
             HudGrid.Children.Add(ThingPath);
-            HudGrid.Children.Add(insideThingPath);
-            HudGrid.Children.Add(insideThingPath2);
-            HudGrid.Children.Add(freeHeapPathBack);
+            //HudGrid.Children.Add(insideThingPath);
+            //HudGrid.Children.Add(insideThingPath2);
+            //HudGrid.Children.Add(freeHeapPathBack);
 
             ThingShadowPath.Data = ThingPath.Data = HudLibrary.DrawArc(Gold.center, Gold.center, Gold.radius, 0, 359);
-            ThingShadowPath.StrokeThickness = ThingPath.StrokeThickness = Gold.radius7;
+            ThingShadowPath.StrokeThickness = ThingPath.StrokeThickness = 4;
             insideThingPath.Data = HudLibrary.DrawArc(Gold.center, Gold.center, Gold.radius - Gold.radius3, 0, 359);
             insideThingPath2.Data = HudLibrary.DrawArc(Gold.center, Gold.center, Gold.radius - Gold.radius2, 0, 359);
             freeHeapPathBack.Data = HudLibrary.DrawArc(Gold.center, Gold.center, Gold.radius - Gold.radius5, 11, 200);
@@ -105,8 +110,12 @@ namespace OWLOSAirQuality
             transportOwerPathRECONNECT.Height = Gold.size;
             HudGrid.Children.Add(transportOwerPathRECONNECT);
 
+
+            //console = new ConsoleControl();
+            //HudGrid.Children.Add(console);
+
             Random random = new Random();
-            for (int i = 0; i < 1; i++)
+            for (int i = 0; i < 0; i++)
             {
                 int w = 40 + random.Next(40);
                 PentalControl pental = new PentalControl(Gold.radius - random.Next((int)Gold.radius), w + random.Next(270), w, random.Next(10) + 20, i.ToString());
@@ -117,8 +126,30 @@ namespace OWLOSAirQuality
 
             }
 
-            console = new ConsoleControl();
-            HudGrid.Children.Add(console);
+
+            dateControl = new DateControl(HudGrid, Gold.radius, DateTime.Now);
+
+            for (int i = 0; i < 24; i++)
+            {
+                PentalControl pental1 = new PentalControl(Gold.radius - 56, i * (360 / 24), 7, 10, (i + 1).ToString());
+                HudGrid.Children.Add(pental1);
+            }
+
+            for (int i = 0; i < 60; i++)
+            {
+                PentalControl pental1 = new PentalControl(Gold.radius - 75, i * (360 / 60), 7, 10, (i + 1).ToString());
+                pental1.petalBackground.Stroke = null;
+                HudGrid.Children.Add(pental1);
+
+            }
+
+            secondPental = new PentalControl(Gold.radius - 75, 0* (360 / 60), 7, 10, "");
+            secondPental.petalBackground.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSWarning"];
+            HudGrid.Children.Add(secondPental);
+
+            minutePental = new PentalControl(Gold.radius - 75, 0 * (360 / 60), 7, 10, "");
+            minutePental.petalBackground.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSSuccess"];
+            HudGrid.Children.Add(minutePental);
 
 
             //Storyboard.SetTarget(rotateAnimation, pental);
@@ -141,7 +172,14 @@ namespace OWLOSAirQuality
 
         private async void OnLifeCycleTimer(object source, ElapsedEventArgs e)
         {
-            console.AddToconsole("123123123", 4);
+            //console.AddToconsole("123123123", 4);
+
+            base.Dispatcher.Invoke(() =>
+            {
+                dateControl.SetDate(DateTime.Now);
+                secondPental.Rotate(DateTime.Now.Second * (360 / 60));
+                minutePental.Rotate(DateTime.Now.Minute * (360 / 60));
+            });
         }
     }
 }
