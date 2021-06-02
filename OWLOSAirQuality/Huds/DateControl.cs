@@ -11,10 +11,13 @@ namespace OWLOSAirQuality.Huds
     {
 
         private List<PentalControl> yearsPentals = new List<PentalControl>();
-
+        private PentalControl[] monthPentals = new PentalControl[12];
+        private PentalControl[] datePentals = new PentalControl[31];
         private Grid HudGrid;
         private double radius;
         private int currentYear;
+        private int currentMonth;
+        private int currentDate;
         public DateControl(Grid HudGrid, double radius, DateTime Date)
         {
             this.HudGrid = HudGrid;
@@ -23,17 +26,26 @@ namespace OWLOSAirQuality.Huds
             currentYear = Date.Year;
             DrawYears();
             //ENDOF Draw years 
+            DrawMonth();
+            DrawDays();
+        }
 
-            for (int i = 0; i < 12; i++)
-            {
-                PentalControl pental1 = new PentalControl(Gold.radius - 10, i * 10, 5, 10, (i + 1).ToString());
-                HudGrid.Children.Add(pental1);
-
-            }
-
+        private void DrawDays()
+        {
             for (int i = 0; i < 31; i++)
             {
                 PentalControl pental1 = new PentalControl(Gold.radius - 25, i * 10, 7, 10, (i + 1).ToString());
+                datePentals[i] = pental1;
+                HudGrid.Children.Add(pental1);
+            }
+        }
+
+        private void DrawMonth()
+        {
+            for (int i = 0; i < 12; i++)
+            {
+                PentalControl pental1 = new PentalControl(Gold.radius - 10, i * 10, 5, 10, (i + 1).ToString());
+                monthPentals[i] = pental1;
                 HudGrid.Children.Add(pental1);
             }
         }
@@ -67,6 +79,42 @@ namespace OWLOSAirQuality.Huds
 
                 yearsPentals.Clear();
                 DrawYears();
+            }
+
+            if (Date.Month != currentMonth)
+            {
+                currentMonth = Date.Month;
+                for (int i = 0; i < 12; i++)
+                {
+                    if (currentMonth == (i + 1))
+                    {
+                        monthPentals[i].petalBackground.Stroke =
+                            (SolidColorBrush) App.Current.Resources["OWLOSWarning"];
+                    }
+                    else
+                    {
+                        monthPentals[i].petalBackground.Stroke =
+                            (SolidColorBrush)App.Current.Resources["OWLOSSecondaryAlpha2"];
+                    }
+                }
+            }
+
+            if (Date.Day != currentDate)
+            {
+                currentDate = Date.Day;
+                for (int i = 0; i < 31; i++)
+                {
+                    if (currentDate == (i + 1))
+                    {
+                        datePentals[i].petalBackground.Stroke =
+                            (SolidColorBrush)App.Current.Resources["OWLOSWarning"];
+                    }
+                    else
+                    {
+                        datePentals[i].petalBackground.Stroke =
+                            (SolidColorBrush)App.Current.Resources["OWLOSSecondaryAlpha2"];
+                    }
+                }
             }
         }
     }
