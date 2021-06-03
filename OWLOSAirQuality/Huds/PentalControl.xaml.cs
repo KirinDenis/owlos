@@ -58,10 +58,13 @@ namespace OWLOSAirQuality.Huds
     public partial class PentalControl : UserControl
     {
 
+        public PathTextControl pathText;
         /// <summary>
         /// радиальный размер элемента, управляется элементом ноды
         /// </summary>
         protected double radius = 0;
+
+        
 
         /// <summary>
         /// угол поворота элемента относительно hud-а ноды
@@ -137,7 +140,7 @@ namespace OWLOSAirQuality.Huds
         {
             if (!onceLoaded)
             {
-                PathTextControl pathText = new PathTextControl(350, 350, radius + 10, 0, length, petalNameText);
+                pathText = new PathTextControl(350, 350, radius + 10, 0, length, petalNameText);
                 onceLoaded = true;
             }
         }

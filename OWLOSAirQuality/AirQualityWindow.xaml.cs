@@ -56,6 +56,7 @@ namespace OWLOSAirQuality
 
         private readonly Path ThingShadowPath;
         private readonly Path ThingPath;
+        private readonly Path DatePath;
         private readonly Path insideThingPath;
         private readonly Path insideThingPath2;
         private readonly Path freeHeapPathBack;
@@ -75,29 +76,36 @@ namespace OWLOSAirQuality
 
             ThingShadowPath = new Path();
             ThingPath = new Path();
+            DatePath = new Path();
             insideThingPath = new Path();
             insideThingPath2 = new Path();
             freeHeapPathBack = new Path();
 
             ThingShadowPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSPrimaryAlpha2"];
             ThingPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSPrimary"];
+            DatePath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSPrimary"];
             insideThingPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSSecondary"];
             insideThingPath2.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSPrimaryAlpha2"];
             freeHeapPathBack.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSPrimary"];
 
             HudGrid.Children.Add(ThingShadowPath);
             HudGrid.Children.Add(ThingPath);
+            HudGrid.Children.Add(DatePath);
+
             //HudGrid.Children.Add(insideThingPath);
             //HudGrid.Children.Add(insideThingPath2);
             //HudGrid.Children.Add(freeHeapPathBack);
 
             ThingShadowPath.Data = ThingPath.Data = HudLibrary.DrawArc(Gold.center, Gold.center, Gold.radius, 0, 359);
             ThingShadowPath.StrokeThickness = ThingPath.StrokeThickness = 4;
+            DatePath.Data = HudLibrary.DrawArc(Gold.center, Gold.center, Gold.radius - Gold.radius4, 0, 180);
+
             insideThingPath.Data = HudLibrary.DrawArc(Gold.center, Gold.center, Gold.radius - Gold.radius3, 0, 359);
             insideThingPath2.Data = HudLibrary.DrawArc(Gold.center, Gold.center, Gold.radius - Gold.radius2, 0, 359);
             freeHeapPathBack.Data = HudLibrary.DrawArc(Gold.center, Gold.center, Gold.radius - Gold.radius5, 11, 200);
             freeHeapPathBack.StrokeThickness = Gold.radius8;
 
+            /*
             //Transport Hud over markers RECONNECT ---
             Path transportOwerPathRECONNECT = new Path();
             transportOwerPathRECONNECT.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSSecondaryAlpha2"];
@@ -109,7 +117,7 @@ namespace OWLOSAirQuality
             transportOwerPathRECONNECT.Width = Gold.size;
             transportOwerPathRECONNECT.Height = Gold.size;
             HudGrid.Children.Add(transportOwerPathRECONNECT);
-
+            */
 
             //console = new ConsoleControl();
             //HudGrid.Children.Add(console);
@@ -131,14 +139,20 @@ namespace OWLOSAirQuality
 
             for (int i = 0; i < 24; i++)
             {
-                PentalControl pental1 = new PentalControl(Gold.radius - 56, i * (360 / 24), 7, 10, (i + 1).ToString());
+                PentalControl pental1 = new PentalControl(Gold.radius - 56,  4 + i * (360 / 24), 7, 10, (i + 1).ToString());
+                pental1.petalBackground.Stroke = null;
+                pental1.petalBorder1.Stroke = null;
+                pental1.petalBorder2.Stroke = null;
                 HudGrid.Children.Add(pental1);
             }
 
             for (int i = 0; i < 60; i++)
             {
-                PentalControl pental1 = new PentalControl(Gold.radius - 75, i * (360 / 60), 7, 10, (i + 1).ToString());
+                PentalControl pental1 = new PentalControl(Gold.radius - 75, -5 + i * (360 / 60), 7, 10, (i + 1).ToString());
                 pental1.petalBackground.Stroke = null;
+                pental1.petalBackground.Stroke = null;
+                pental1.petalBorder1.Stroke = null;
+                pental1.petalBorder2.Stroke = null;
                 HudGrid.Children.Add(pental1);
 
             }

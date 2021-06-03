@@ -20,6 +20,24 @@ namespace PathText
         private readonly double fromAngel;
         private readonly double toAngel;
 
+        public SolidColorBrush Foreground
+        {
+            get
+            {
+                return sourceTextBlock.Foreground as SolidColorBrush;
+            }
+            set
+            {
+                if (textBlock != null)
+                {
+                    for (int i = 0; i < textBlock.Length; i++)
+                    {
+                        textBlock[i].Foreground = value;
+                    }
+                }
+            }
+        }
+
         public PathTextControl(double x, double y, double radius, double fromAngel, double toAngel, TextBlock sourceTextBlock)
         {
 
