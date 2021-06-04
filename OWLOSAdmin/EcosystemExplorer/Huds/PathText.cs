@@ -157,8 +157,13 @@ namespace PathText
 
                 textBlock[i].RenderTransform = group;
 
+                double charWidth = textBlock[i].DesiredSize.Width;
+                if (textBlock[i].Text.ToLower().Equals("m"))
+                {
+                    charWidth *= 0.5f;
+                }
 
-                rt.Angle = angel + 97.0f - (textBlock[i].DesiredSize.Width);
+                rt.Angle = angel + 97.0f - charWidth;
                 angel += textBlock[i].DesiredSize.Width / (radius / 60.0f);
             }
         }

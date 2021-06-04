@@ -55,7 +55,7 @@ namespace OWLOSAirQuality.Huds
     /// <summary>
     /// Наружный леписток с именем драйвера и доступом к свойствам драйвера по клику
     /// </summary>
-    public partial class PentalControl : UserControl
+    public partial class PetalControl : UserControl
     {
 
         public PathTextControl pathText;
@@ -77,7 +77,7 @@ namespace OWLOSAirQuality.Huds
 
 
 
-        public PentalControl(double radius, double angel, double length, double width, string text)
+        public PetalControl(double radius, double angel, double length, double width, string text)
         {
 
             InitializeComponent();

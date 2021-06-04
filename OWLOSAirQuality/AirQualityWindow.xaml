@@ -6,6 +6,9 @@
         xmlns:local="clr-namespace:OWLOSAirQuality"
         mc:Ignorable="d"
         Title="OWLOS Air Quality" Height="450" Width="800" Background="{DynamicResource OWLOSDark}">
+
+    <!--  FontFamily="file:///D:\Users\Egor\source\repos\KirinDenis\owlos\OWLOSAdmin\Fonts\#omega flight" -->
+    
     <Grid>
         
 

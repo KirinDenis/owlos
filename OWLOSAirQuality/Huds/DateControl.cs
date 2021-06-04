@@ -1,55 +1,72 @@
 ﻿using OWLOSAdmin.EcosystemExplorer.Huds;
-
+using OWLOSThingsManager.EcosystemExplorer.Huds;
 using System;
 using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace OWLOSAirQuality.Huds
 {
     public class DateControl
     {
 
-        private readonly List<PentalControl> yearsPentals = new List<PentalControl>();
-        private readonly PentalControl[] monthPentals = new PentalControl[12];
-        private readonly PentalControl[] dayPentals = new PentalControl[31];
+        private PetalControl yearPetal;
+        private readonly PetalControl[] monthPetals = new PetalControl[12];
+        private readonly PetalControl[] dayPetals = new PetalControl[31];
         private readonly Grid HudGrid;
         private readonly double radius;
-        private int currentYear;
-        private int currentMonth;
-        private int currentDay;
+        private int currentYear = -1;
+        private int currentMonth = -1;
+        private int currentDay = -1;
         public DateControl(Grid HudGrid, double radius, DateTime Date)
         {
             this.HudGrid = HudGrid;
             this.radius = radius;
+
+
+            PetalControl yearPetalName = new PetalControl(radius - 10, -10, 20, 20, "year");
+            yearPetalName.petalBackground.Stroke = null;
+            yearPetalName.petalBorder1.Stroke = null;
+            yearPetalName.petalBorder2.Stroke = null;
+            yearPetalName.petalNameText.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSLight"];
+            HudGrid.Children.Add(yearPetalName);
+
+            PetalControl monthPetalName = new PetalControl(radius - 10, 9, 20, 20, "month");
+            monthPetalName.petalBackground.Stroke = null;
+            monthPetalName.petalBorder1.Stroke = null;
+            monthPetalName.petalBorder2.Stroke = null;
+            monthPetalName.petalNameText.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSLight"];
+            HudGrid.Children.Add(monthPetalName);
+
+            PetalControl dayPetalName = new PetalControl(radius - 25, -10.5f, 20, 20, "day");
+            dayPetalName.petalBackground.Stroke = null;
+            dayPetalName.petalBorder1.Stroke = null;
+            dayPetalName.petalBorder2.Stroke = null;
+            dayPetalName.petalNameText.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSLight"];
+            HudGrid.Children.Add(dayPetalName);
+
+
             //Draw years 
             currentYear = Date.Year;
             DrawYears();
-            //ENDOF Draw years 
-            DrawMonth();
-            DrawDays();
+            
+            CreateMonth();
+            CreateDays();
         }
-
 
         private void DrawYears()
         {
-            yearsPentals.Add(new PentalControl(radius + 12, 0, 20, 20, (currentYear - 1).ToString() + "     "));
-            yearsPentals[0].petalBackground.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSSecondaryAlpha2"];
+            yearPetal = new PetalControl(radius - 10, -1, 20, 20, currentYear.ToString());
+            yearPetal.petalBackground.Stroke = null;
+            yearPetal.petalBorder1.Stroke = null;
+            yearPetal.petalBorder2.Stroke = null;
+            yearPetal.petalNameText.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSWarning"];
 
-
-            yearsPentals.Add(new PentalControl(radius + 12, 25, 20, 20, (currentYear).ToString() + "     "));
-            yearsPentals[1].petalBackground.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSWarning"]; ;
-
-            yearsPentals.Add(new PentalControl(radius + 12, 50, 20, 20, (currentYear + 1).ToString() + "     "));
-            yearsPentals[2].petalBackground.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSSecondaryAlpha2"]; ;
-
-            HudGrid.Children.Add(yearsPentals[0]);
-            HudGrid.Children.Add(yearsPentals[1]);
-            HudGrid.Children.Add(yearsPentals[2]);
-
+            HudGrid.Children.Add(yearPetal);
         }
 
-        private void DrawMonth()
+        private void CreateMonth()
         {            
             for (int i = 0; i < 12; i++)
             {
@@ -70,47 +87,53 @@ namespace OWLOSAirQuality.Huds
                     case 11: currentMonthName = "December"; break;
                 }
 
-                monthPentals[i] = new PentalControl(Gold.radius - 10, i *  15, currentMonthName.Length * 2,  15 , currentMonthName);
-                monthPentals[i].petalBackground.Stroke = null;
-                monthPentals[i].petalBorder1.Stroke = null;
-                monthPentals[i].petalBorder2.Stroke = null;
-                monthPentals[i].petalNameText.Foreground = null;
-                HudGrid.Children.Add(monthPentals[i]);                
+                monthPetals[i] = new PetalControl(Gold.radius - 10, 22 + i *  15, currentMonthName.Length * 2,  15 , currentMonthName);
+                monthPetals[i].petalBackground.Stroke = null;
+                monthPetals[i].petalBorder1.Stroke = null;
+                monthPetals[i].petalBorder2.Stroke = null;
+                monthPetals[i].petalNameText.Foreground = null;
+                HudGrid.Children.Add(monthPetals[i]);                
             }
+
+            Path MonthPath = new Path();
+            MonthPath.Data = HudLibrary.DrawArc(Gold.center, Gold.center, Gold.radius - 17 , 30, 205);
+            MonthPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSInfoAlpha2"];
+            HudGrid.Children.Add(MonthPath);
+
         }
 
-        private void DrawDays()
+        private void CreateDays()
         {
             for (int i = 0; i < 31; i++)
             {
-                dayPentals[i] = new PentalControl(Gold.radius - 25, i * 5, 7, 5, (i + 1).ToString());
-                dayPentals[i].petalBackground.Stroke = null;
-                dayPentals[i].petalBorder1.Stroke = null;
-                dayPentals[i].petalBorder2.Stroke = null;
-                dayPentals[i].petalNameText.Foreground = null;
-                HudGrid.Children.Add(dayPentals[i]);
+                dayPetals[i] = new PetalControl(Gold.radius - 25, - 3 + i * 5, 7, 5, (i + 1).ToString());
+                dayPetals[i].petalBackground.Stroke = null;
+                dayPetals[i].petalBorder1.Stroke = null;
+                dayPetals[i].petalBorder2.Stroke = null;
+                dayPetals[i].petalNameText.Foreground = null;
+                HudGrid.Children.Add(dayPetals[i]);
             }
-        }
 
+            Path dayPath = new Path();
+            dayPath.Data = HudLibrary.DrawArc(Gold.center, Gold.center, Gold.radius - 25 - 7, 8, 160);
+            dayPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSInfoAlpha2"];
+            HudGrid.Children.Add(dayPath);
+
+        }
 
         public void SetDate(DateTime Date)
         {
             if (Date.Year != currentYear)
             {
                 currentYear = Date.Year;
-
-                HudGrid.Children.Remove(yearsPentals[0]);
-                HudGrid.Children.Remove(yearsPentals[1]);
-                HudGrid.Children.Remove(yearsPentals[2]);
-
-                yearsPentals.Clear();
+                HudGrid.Children.Remove(yearPetal);
                 DrawYears();
             }
 
             if (Date.Month != currentMonth)
             {
                 //check if month petal path text is ready
-                if (monthPentals[0].pathText == null)
+                if (monthPetals[0].pathText == null)
                 {
                     return;
                 }
@@ -123,7 +146,7 @@ namespace OWLOSAirQuality.Huds
 
                     if (currentMonth == (i + 1))
                     {
-                        monthPentals[i].pathText.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSWarning"];
+                        monthPetals[i].pathText.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSWarning"];
                     }
                     else
                     {
@@ -131,12 +154,12 @@ namespace OWLOSAirQuality.Huds
                         if (currentMonth > (i + 1))
                         {
                             currentMonthColor.A -= (byte)((currentMonth - i) * hideStep);
-                            monthPentals[i].pathText.Foreground = new SolidColorBrush(currentMonthColor);
+                            monthPetals[i].pathText.Foreground = new SolidColorBrush(currentMonthColor);
                         }
                         else
                         {
                             currentMonthColor.A -= (byte)((i - currentMonth) * hideStep);
-                            monthPentals[i].pathText.Foreground = new SolidColorBrush(currentMonthColor);
+                            monthPetals[i].pathText.Foreground = new SolidColorBrush(currentMonthColor);
                         }
                     }
                 }
@@ -145,7 +168,7 @@ namespace OWLOSAirQuality.Huds
             if (Date.Day != currentDay)
             {
                 //check if day petal path text is ready
-                if (dayPentals[0].pathText == null)
+                if (dayPetals[0].pathText == null)
                 {
                     return;
                 }
@@ -158,7 +181,7 @@ namespace OWLOSAirQuality.Huds
 
                     if (currentDay == (i + 1))
                     {
-                        dayPentals[i].pathText.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSWarning"];
+                        dayPetals[i].pathText.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSWarning"];
                     }
                     else
                     {
@@ -166,12 +189,12 @@ namespace OWLOSAirQuality.Huds
                         if (currentDay > (i + 1))
                         {
                             currentDayColor.A -= (byte)((currentDay - i) * hideStep);
-                            dayPentals[i].pathText.Foreground = new SolidColorBrush(currentDayColor);
+                            dayPetals[i].pathText.Foreground = new SolidColorBrush(currentDayColor);
                         }
                         else
                         {
                             currentDayColor.A -= (byte)((i - currentDay) * hideStep);
-                            dayPentals[i].pathText.Foreground = new SolidColorBrush(currentDayColor);
+                            dayPetals[i].pathText.Foreground = new SolidColorBrush(currentDayColor);
                         }
                     }
                 }
