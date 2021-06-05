@@ -34,7 +34,7 @@ namespace OWLOSAirQuality.Huds
         {
             for (int i = 0; i < 24; i++)
             {
-                hourPetals[i] = new PetalControl(Gold.radius - 45, -12 + i * (360 / 24), 7, 10, (i).ToString());
+                hourPetals[i] = new PetalControl(Gold.radius - 25, -12 + i * (360 / 24), 7, 10, (i).ToString());
                 hourPetals[i].petalBackground.Stroke = null;
                 hourPetals[i].petalBorder1.Stroke = null;
                 hourPetals[i].petalBorder2.Stroke = null;
@@ -43,13 +43,13 @@ namespace OWLOSAirQuality.Huds
             }
 
             Path hourPath = new Path();
-            hourPath.Data = HudLibrary.DrawArc(Gold.center, Gold.center, Gold.radius - 45 - 7, 0, 359);
+            hourPath.Data = HudLibrary.DrawArc(Gold.center, Gold.center, Gold.radius - 25 - 7, 0, 359);
             hourPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSInfoAlpha2"];
             HudGrid.Children.Add(hourPath);
 
             for (int i = 0; i < 60; i++)
             {
-                minuteAndSecondsPetals[i] = new PetalControl(Gold.radius - 60, -12 + i * (360 / 60), 7, 10, (i).ToString());
+                minuteAndSecondsPetals[i] = new PetalControl(Gold.radius - 40, -12 + i * (360 / 60), 7, 10, (i).ToString());
                 minuteAndSecondsPetals[i].petalBackground.Stroke = null;
                 minuteAndSecondsPetals[i].petalBorder1.Stroke = null;
                 minuteAndSecondsPetals[i].petalBorder2.Stroke = null;

@@ -133,8 +133,11 @@ namespace OWLOSAirQuality
             }
 
             
-            dateControl = new DateControl(HudGrid, Gold.radius, DateTime.Now);
-            timeControl = new TimeControl(HudGrid, Gold.radius, DateTime.Now);
+            dateControl = new DateControl(DateTimeGrid, Gold.radius, DateTime.Now);
+            timeControl = new TimeControl(DateTimeGrid, Gold.radius, DateTime.Now);
+
+
+
 
             /*
             for (int i = 0; i < 24; i++)
@@ -194,6 +197,62 @@ namespace OWLOSAirQuality
                 dateControl.SetDate(DateTime.Now);
                 timeControl.SetTime(DateTime.Now);
             });
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            DoubleAnimation rotateAnimation = new DoubleAnimation()
+            {
+                From = 1.0f,
+                To = 1.23f,
+                Duration = new Duration(TimeSpan.FromMilliseconds(1000)),
+                AutoReverse = false
+            };
+
+            DateTimeGrid.RenderTransform = new ScaleTransform();
+            DateTimeGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleXProperty, rotateAnimation);
+            DateTimeGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleYProperty, rotateAnimation);
+
+            MeteoGrid.RenderTransform = new ScaleTransform();
+            MeteoGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleXProperty, rotateAnimation);
+            MeteoGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleYProperty, rotateAnimation);
+
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            DoubleAnimation rotateAnimation = new DoubleAnimation()
+            {
+                From = 1.23,
+                To = 1.0f,
+                Duration = new Duration(TimeSpan.FromMilliseconds(1000)),
+                AutoReverse = false
+            };
+
+            DateTimeGrid.RenderTransform = new ScaleTransform();
+            DateTimeGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleXProperty, rotateAnimation);
+            DateTimeGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleYProperty, rotateAnimation);
+
+            MeteoGrid.RenderTransform = new ScaleTransform();
+            MeteoGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleXProperty, rotateAnimation);
+            MeteoGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleYProperty, rotateAnimation);
+
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            DoubleAnimation rotateAnimation = new DoubleAnimation()
+            {
+                From = 1.0,
+                To = 0.0f,
+                Duration = new Duration(TimeSpan.FromMilliseconds(1000)),
+                AutoReverse = false
+            };
+
+            DateTimeGrid.RenderTransform = new ScaleTransform();
+            DateTimeGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleXProperty, rotateAnimation);
+            DateTimeGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleYProperty, rotateAnimation);
+
         }
     }
 }

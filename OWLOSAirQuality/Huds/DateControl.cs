@@ -39,7 +39,7 @@ namespace OWLOSAirQuality.Huds
             monthPetalName.petalNameText.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSLight"];
             HudGrid.Children.Add(monthPetalName);
 
-            PetalControl dayPetalName = new PetalControl(radius - 25, -10.5f, 20, 20, "day");
+            PetalControl dayPetalName = new PetalControl(radius - 10, 189, 20, 20, "day");
             dayPetalName.petalBackground.Stroke = null;
             dayPetalName.petalBorder1.Stroke = null;
             dayPetalName.petalBorder2.Stroke = null;
@@ -87,7 +87,7 @@ namespace OWLOSAirQuality.Huds
                     case 11: currentMonthName = "December"; break;
                 }
 
-                monthPetals[i] = new PetalControl(Gold.radius - 10, 22 + i *  15, currentMonthName.Length * 2,  15 , currentMonthName);
+                monthPetals[i] = new PetalControl(Gold.radius - 10, 22 + i *  14, currentMonthName.Length * 2,  15 , currentMonthName);
                 monthPetals[i].petalBackground.Stroke = null;
                 monthPetals[i].petalBorder1.Stroke = null;
                 monthPetals[i].petalBorder2.Stroke = null;
@@ -96,7 +96,7 @@ namespace OWLOSAirQuality.Huds
             }
 
             Path MonthPath = new Path();
-            MonthPath.Data = HudLibrary.DrawArc(Gold.center, Gold.center, Gold.radius - 17 , 30, 205);
+            MonthPath.Data = HudLibrary.DrawArc(Gold.center, Gold.center, Gold.radius - 17 , 30, 195);
             MonthPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSInfoAlpha2"];
             HudGrid.Children.Add(MonthPath);
 
@@ -106,7 +106,7 @@ namespace OWLOSAirQuality.Huds
         {
             for (int i = 0; i < 31; i++)
             {
-                dayPetals[i] = new PetalControl(Gold.radius - 25, - 3 + i * 5, 7, 5, (i + 1).ToString());
+                dayPetals[i] = new PetalControl(Gold.radius - 10, 195  + i * 5, 7, 5, (i + 1).ToString());
                 dayPetals[i].petalBackground.Stroke = null;
                 dayPetals[i].petalBorder1.Stroke = null;
                 dayPetals[i].petalBorder2.Stroke = null;
@@ -115,7 +115,7 @@ namespace OWLOSAirQuality.Huds
             }
 
             Path dayPath = new Path();
-            dayPath.Data = HudLibrary.DrawArc(Gold.center, Gold.center, Gold.radius - 25 - 7, 8, 160);
+            dayPath.Data = HudLibrary.DrawArc(Gold.center, Gold.center, Gold.radius - 10 - 7, 206, 359);
             dayPath.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSInfoAlpha2"];
             HudGrid.Children.Add(dayPath);
 

@@ -5,26 +5,35 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OWLOSAirQuality"
         mc:Ignorable="d"
-        Title="OWLOS Air Quality" Height="450" Width="800" Background="{DynamicResource OWLOSDark}">
+        Title="OWLOS Air Quality" Height="450" Width="800" Background="#FF01131B">
 
     <!--  FontFamily="file:///D:\Users\Egor\source\repos\KirinDenis\owlos\OWLOSAdmin\Fonts\#omega flight" -->
-    
-    <Grid>
-        
 
+    <Grid>
+
+        
         <Viewbox x:Name="MainViewBox">
             <Grid x:Name="HudGrid">
-                
 
+                <Grid x:Name="MeteoGrid" RenderTransformOrigin="0.5,0.5">
+                    <Image Width="350" Height="350" Source="/Theme/tempdata.png" />
+                </Grid>
+                <Grid x:Name="DateTimeGrid" RenderTransformOrigin="0.5,0.5">
+                </Grid>
             </Grid>
-            
         </Viewbox>
 
-            <Grid.Effect>
-                
-                    <BlurEffect Radius="0.7"></BlurEffect>
-                
-            </Grid.Effect>
+        <StackPanel VerticalAlignment="Top" Orientation="Horizontal">
+            <Button Content="big"  Height="20"  Click="Button_Click"/>
+            <Button Content="normal"  Height="20" Click="Button_Click_1" />
+            <Button Content="hide"  Height="20" Click="Button_Click_2"  />
+        </StackPanel>
+
+        <Grid.Effect>
+
+            <BlurEffect Radius="1.7"></BlurEffect>
+
+        </Grid.Effect>
 
     </Grid>
 </Window>
