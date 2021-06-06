@@ -32,6 +32,62 @@
     <SolidColorBrush x:Key = "OWLOSDarkAlpha3" Color ="#F01a2632" />
         -->
 
+    <Color x:Key = "OWLOSPrimaryColor">#FF6faeca</Color>
+    <SolidColorBrush x:Key = "OWLOSPrimary" Color ="#FF6faeca" />
+    <SolidColorBrush x:Key = "OWLOSPrimaryAlpha1" Color ="#106faeca" />
+    <SolidColorBrush x:Key = "OWLOSPrimaryAlpha2" Color ="#C06faeca" />
+    <SolidColorBrush x:Key = "OWLOSPrimaryAlpha3" Color ="#DF6faeca" />
+
+    <Color x:Key = "OWLOSSecondaryColor">#FF213944</Color>
+    <SolidColorBrush x:Key = "OWLOSSecondary" Color ="#FF213944" />
+    <SolidColorBrush x:Key = "OWLOSSecondaryAlpha1" Color ="#10213944" />
+    <SolidColorBrush x:Key = "OWLOSSecondaryAlpha2" Color ="#C0213944" />
+    <SolidColorBrush x:Key = "OWLOSSecondaryAlpha3" Color ="#DF213944" />
+
+    <Color x:Key = "OWLOSSuccessColor">#FF43ca15</Color>
+    <SolidColorBrush x:Key = "OWLOSSuccess" Color ="#FF43ca15" />
+    <SolidColorBrush x:Key = "OWLOSSuccessAlpha1" Color ="#1043ca15" />
+    <SolidColorBrush x:Key = "OWLOSSuccessAlpha2" Color ="#5043ca15" />
+    <SolidColorBrush x:Key = "OWLOSSuccessAlpha3" Color ="#F043ca15" />
+    <SolidColorBrush x:Key = "OWLOSSuccessAlpha4" Color ="#A043ca15" />
+
+    <Color x:Key = "OWLOSInfoColor">#FF3c83a4</Color>
+    <SolidColorBrush x:Key = "OWLOSInfo" Color ="#FF3c83a4" />
+    <Color x:Key = "OWLOSInfoColorAlpha1">#103c83a4</Color>
+    <Color x:Key = "OWLOSInfoColorAlpha2">#353c83a4</Color>
+    <Color x:Key = "OWLOSInfoColorAlpha3">#F03c83a4</Color>
+    <Color x:Key = "OWLOSInfoColorAlpha4">#A03c83a4</Color>
+    <SolidColorBrush x:Key = "OWLOSInfoAlpha1" Color ="#103c83a4" />
+    <SolidColorBrush x:Key = "OWLOSInfoAlpha2" Color ="#353c83a4" />
+    <SolidColorBrush x:Key = "OWLOSInfoAlpha3" Color ="#F03c83a4" />
+    <SolidColorBrush x:Key = "OWLOSInfoAlpha4" Color ="#A03c83a4" />
+
+    <Color x:Key = "OWLOSWarningColor">#FFdd7815</Color>
+    <SolidColorBrush x:Key = "OWLOSWarning" Color ="#FFdd7815" />
+    <SolidColorBrush x:Key = "OWLOSWarningAlpha4" Color ="#a0dd7815" />
+
+    <Color x:Key = "OWLOSDangerColor" A ="#50" R="#dd" G="#78" B="#15" />
+    <SolidColorBrush x:Key = "OWLOSWarningAlpha1" Color ="#10dd7815" />
+    <SolidColorBrush x:Key = "OWLOSWarningAlpha2" Color ="#50dd7815" />
+    <SolidColorBrush x:Key = "OWLOSWarningAlpha3" Color ="#F0dd7815" />
+
+    <Color x:Key = "OWLOSDangergColor">#FFdd2415</Color>
+    <SolidColorBrush x:Key = "OWLOSDanger" Color ="#FFdd2415" />
+    <SolidColorBrush x:Key = "OWLOSDangerAlpha1" Color ="#10dd2415" />
+    <SolidColorBrush x:Key = "OWLOSDangerAlpha2" Color ="#50dd2415" />
+    <SolidColorBrush x:Key = "OWLOSDangerAlpha3" Color ="#F0dd2415" />
+    <SolidColorBrush x:Key = "OWLOSDangerAlpha4" Color ="#a0dd2415" />
+
+    <Color x:Key = "OWLOSLightColor">#FFf4f9f4</Color>
+    <SolidColorBrush x:Key = "OWLOSLight" Color ="#FFf4f9f4" />
+
+    <Color x:Key = "OWLOSDarkColor">#FF141515</Color>
+    <SolidColorBrush x:Key = "OWLOSDark" Color ="#FF141515" />
+    <SolidColorBrush x:Key = "OWLOSDarkAlpha1" Color ="#10141515" />
+    <SolidColorBrush x:Key = "OWLOSDarkAlpha2" Color ="#C0141515" />
+    <SolidColorBrush x:Key = "OWLOSDarkAlpha3" Color ="#F0141515" />
+
+    <!-- 
     <Color x:Key = "OWLOSPrimaryColor">#FF62add0</Color>
     <SolidColorBrush x:Key = "OWLOSPrimary" Color ="#FF62add0" />
     <SolidColorBrush x:Key = "OWLOSPrimaryAlpha1" Color ="#1062add0" />
@@ -51,16 +107,16 @@
     <SolidColorBrush x:Key = "OWLOSSuccessAlpha3" Color ="#F03BC43B" />
     <SolidColorBrush x:Key = "OWLOSSuccessAlpha4" Color ="#A03BC43B" />
 
-    <Color x:Key = "OWLOSInfoColor">#FF3589b1</Color>
-    <SolidColorBrush x:Key = "OWLOSInfo" Color ="#FF3589b1" />
-    <Color x:Key = "OWLOSInfoColorAlpha1">#103589b1</Color>
-    <Color x:Key = "OWLOSInfoColorAlpha2">#353589b1</Color>
-    <Color x:Key = "OWLOSInfoColorAlpha3">#F03589b1</Color>
-    <Color x:Key = "OWLOSInfoColorAlpha4">#A03589b1</Color>
-    <SolidColorBrush x:Key = "OWLOSInfoAlpha1" Color ="#103589b1" />
-    <SolidColorBrush x:Key = "OWLOSInfoAlpha2" Color ="#353589b1" />
-    <SolidColorBrush x:Key = "OWLOSInfoAlpha3" Color ="#F03589b1" />
-    <SolidColorBrush x:Key = "OWLOSInfoAlpha4" Color ="#A03589b1" />
+    <Color x:Key = "OWLOSInfoColor">#FF3c83a4</Color>
+    <SolidColorBrush x:Key = "OWLOSInfo" Color ="#FF3c83a4" />
+    <Color x:Key = "OWLOSInfoColorAlpha1">#103c83a4</Color>
+    <Color x:Key = "OWLOSInfoColorAlpha2">#353c83a4</Color>
+    <Color x:Key = "OWLOSInfoColorAlpha3">#F03c83a4</Color>
+    <Color x:Key = "OWLOSInfoColorAlpha4">#A03c83a4</Color>
+    <SolidColorBrush x:Key = "OWLOSInfoAlpha1" Color ="#103c83a4" />
+    <SolidColorBrush x:Key = "OWLOSInfoAlpha2" Color ="#353c83a4" />
+    <SolidColorBrush x:Key = "OWLOSInfoAlpha3" Color ="#F03c83a4" />
+    <SolidColorBrush x:Key = "OWLOSInfoAlpha4" Color ="#A03c83a4" />
 
     <Color x:Key = "OWLOSWarningColor">#FFc4803b</Color>
     <SolidColorBrush x:Key = "OWLOSWarning" Color ="#FFc4803b" />
@@ -99,7 +155,7 @@
     <Style x:Key="OWLOSWindowStyle2">
         <Setter Property="TextElement.FontFamily" Value="OmegaFlightTTF" />
     </Style>
-    
+    -->
 
     <!-- ScrollBar-->
     <!--Control colors.-->

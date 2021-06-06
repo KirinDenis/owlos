@@ -136,7 +136,8 @@ namespace OWLOSAirQuality
             dateControl = new DateControl(DateTimeGrid, Gold.radius, DateTime.Now);
             timeControl = new TimeControl(DateTimeGrid, Gold.radius, DateTime.Now);
 
-
+            WeatherControl weatherControl = new WeatherControl();
+            WeatherGrid.Children.Add(weatherControl);
 
 
             /*
@@ -213,9 +214,9 @@ namespace OWLOSAirQuality
             DateTimeGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleXProperty, rotateAnimation);
             DateTimeGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleYProperty, rotateAnimation);
 
-            MeteoGrid.RenderTransform = new ScaleTransform();
-            MeteoGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleXProperty, rotateAnimation);
-            MeteoGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleYProperty, rotateAnimation);
+            WeatherGrid.RenderTransform = new ScaleTransform();
+            WeatherGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleXProperty, rotateAnimation);
+            WeatherGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleYProperty, rotateAnimation);
 
         }
 
@@ -233,9 +234,9 @@ namespace OWLOSAirQuality
             DateTimeGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleXProperty, rotateAnimation);
             DateTimeGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleYProperty, rotateAnimation);
 
-            MeteoGrid.RenderTransform = new ScaleTransform();
-            MeteoGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleXProperty, rotateAnimation);
-            MeteoGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleYProperty, rotateAnimation);
+            WeatherGrid.RenderTransform = new ScaleTransform();
+            WeatherGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleXProperty, rotateAnimation);
+            WeatherGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleYProperty, rotateAnimation);
 
         }
 

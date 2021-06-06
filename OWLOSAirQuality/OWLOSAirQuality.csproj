@@ -7,19 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Theme\tempdata.png" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Include="..\OWLOSAdmin\EcosystemExplorer\Huds\Gold.cs" Link="Huds\Gold.cs" />
     <Compile Include="..\OWLOSAdmin\EcosystemExplorer\Huds\HudLibrary.cs" Link="Huds\HudLibrary.cs" />
     <Compile Include="..\OWLOSAdmin\EcosystemExplorer\Huds\PathText.cs" Link="Huds\PathText.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Theme\tempdata.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
