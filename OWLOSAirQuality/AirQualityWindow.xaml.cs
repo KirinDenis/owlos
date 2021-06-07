@@ -139,6 +139,17 @@ namespace OWLOSAirQuality
             WeatherControl weatherControl = new WeatherControl();
             WeatherGrid.Children.Add(weatherControl);
 
+            Random r = new Random();
+            double[] data = new double[20];
+            for (int i = 0; i < data.Length; i++)
+            {
+                data[i] = r.NextDouble() * 100.0f;
+            }
+
+            GraphControl graph = new GraphControl(data);
+            HudGrid.Children.Add(graph);
+
+
 
             /*
             for (int i = 0; i < 24; i++)
