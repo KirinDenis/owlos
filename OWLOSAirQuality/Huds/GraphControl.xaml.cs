@@ -1,17 +1,9 @@
 ﻿using OWLOSAdmin.EcosystemExplorer.Huds;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
+using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 
 namespace OWLOSAirQuality.Huds
@@ -32,26 +24,34 @@ namespace OWLOSAirQuality.Huds
               x = r * cos(a) + offsetX;  
               y = r * sin(a) + offsetY;  
             */
+            Random rnd = new Random();
+
             double angel = 0.0f;
             Color currentColor = (App.Current.Resources["OWLOSPrimary"] as SolidColorBrush).Color;
             for (int i = 0; i < data.Length; i++)
             {
+
+                currentColor.R -= (byte)rnd.Next(100);
+                currentColor.G -= (byte)rnd.Next(100);
+                currentColor.B -= (byte)rnd.Next(100);
+                currentColor.A = 100;
+
                 Rectangle r = new Rectangle();
-                r.Width = 20;
+                r.Width = 10;
                 r.Height = data[i];
                 r.HorizontalAlignment = HorizontalAlignment.Center;
                 r.VerticalAlignment = VerticalAlignment.Center;
 
-                currentColor.A -= (byte)(i * 5);
+                //currentColor.A -= (byte)(i * 5);
                 r.Fill = new SolidColorBrush(currentColor);
 
-                double x ;
-                double y ;
+                double x;
+                double y;
 
-                angel += Math.PI / 20.0f;
+                angel = i * (Math.PI / 80) - Math.PI / 2.0f;
 
-                x = 200 * Math.Cos(angel) ;
-                y = 200 * Math.Sin(angel) ;
+                x = (Gold.radius + data[i] / 2.0f + 30.0f) * Math.Cos(angel) + 5.0f;
+                y = (Gold.radius + data[i] / 2.0f + 30.0f) * Math.Sin(angel) + 20.0f;
 
                 TransformGroup group = new TransformGroup();
 
@@ -63,25 +63,27 @@ namespace OWLOSAirQuality.Huds
                     Y = y
                 };
 
+
+
+                DoubleAnimation scaleAnimation = new DoubleAnimation()
+                {
+                    From = 0.0,
+                    To = -rnd.NextDouble() * 2.0f,
+                    Duration = new Duration(TimeSpan.FromMilliseconds(rnd.Next(5000))),
+                    AutoReverse = true,
+                    RepeatBehavior = RepeatBehavior.Forever
+                };
+
+                ScaleTransform sc = new ScaleTransform();
+                sc.BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnimation);
+
+
+                group.Children.Add(sc);
                 group.Children.Add(rt);
                 group.Children.Add(tt);
-
-                rt.Angle += 97.0f;
+                rt.Angle += (angel / (Math.PI / 180.0f)) + 90.0f;
 
                 r.RenderTransform = group;
-                
-
-                /*
-                RotateTransform rotateTransform = new RotateTransform
-                {
-                    Angle = angel
-                };
-                r.RenderTransform = rotateTransform;
-
-               
-                r.Margin = new Thickness(x, y,0,0);
-                */
-
 
 
                 GraphGrid.Children.Add(r);
