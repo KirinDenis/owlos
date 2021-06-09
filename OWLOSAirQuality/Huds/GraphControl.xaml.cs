@@ -13,10 +13,28 @@ namespace OWLOSAirQuality.Huds
     /// </summary>
     public partial class GraphControl : UserControl
     {
-        public GraphControl(double[] data)
-        {
-            InitializeComponent();
+        private double[] _data = null;
 
+        public double[] data
+        {
+            get { return _data; }
+            set
+            {
+                if ((value != null) && (value.Length > 0))
+                {
+                    _data = value;
+                    Draw();
+                }
+            }
+        }
+
+        public GraphControl()
+        {
+            InitializeComponent();            
+        }
+
+        private void Draw()
+        {
             /*
               x = xTransform +  offsetX;  
               y = yTransform +  offsetY;  
@@ -31,19 +49,21 @@ namespace OWLOSAirQuality.Huds
             for (int i = 0; i < data.Length; i++)
             {
 
-                currentColor.R -= (byte)rnd.Next(100);
-                currentColor.G -= (byte)rnd.Next(100);
-                currentColor.B -= (byte)rnd.Next(100);
-                currentColor.A = 100;
+                //currentColor.R -= (byte)rnd.Next(100);
+                //currentColor.G -= (byte)rnd.Next(100);
+                //currentColor.B -= (byte)rnd.Next(100);
+                //currentColor.A = 100;
 
-                Rectangle r = new Rectangle();
-                r.Width = 10;
-                r.Height = data[i];
-                r.HorizontalAlignment = HorizontalAlignment.Center;
-                r.VerticalAlignment = VerticalAlignment.Center;
+                Rectangle r = new Rectangle
+                {
+                    Width = 10,
+                    Height = data[i],
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
 
-                //currentColor.A -= (byte)(i * 5);
-                r.Fill = new SolidColorBrush(currentColor);
+                    //currentColor.A -= (byte)(i * 5);
+                    Fill = new SolidColorBrush(currentColor)
+                };
 
                 double x;
                 double y;
@@ -51,7 +71,7 @@ namespace OWLOSAirQuality.Huds
                 angel = i * (Math.PI / 80) - Math.PI / 2.0f;
 
                 x = (Gold.radius + data[i] / 2.0f + 30.0f) * Math.Cos(angel) + 5.0f;
-                y = (Gold.radius + data[i] / 2.0f + 30.0f) * Math.Sin(angel) + 20.0f;
+                y = (Gold.radius + data[i] / 2.0f + 30.0f) * Math.Sin(angel) + 10.0f;
 
                 TransformGroup group = new TransformGroup();
 
@@ -74,11 +94,11 @@ namespace OWLOSAirQuality.Huds
                     RepeatBehavior = RepeatBehavior.Forever
                 };
 
-                ScaleTransform sc = new ScaleTransform();
-                sc.BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnimation);
+                //ScaleTransform sc = new ScaleTransform();
+                //sc.BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnimation);
 
 
-                group.Children.Add(sc);
+                //group.Children.Add(sc);
                 group.Children.Add(rt);
                 group.Children.Add(tt);
                 rt.Angle += (angel / (Math.PI / 180.0f)) + 90.0f;
@@ -87,6 +107,7 @@ namespace OWLOSAirQuality.Huds
 
 
                 GraphGrid.Children.Add(r);
+
             }
         }
     }
