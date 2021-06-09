@@ -68,6 +68,9 @@ namespace OWLOSAirQuality
         private DateControl dateControl;
         private TimeControl timeControl;
 
+        private double gA = 0;
+        private GraphControl graph;
+
         public AirQualityWindow()
         {
             InitializeComponent();
@@ -145,11 +148,10 @@ namespace OWLOSAirQuality
             {
                 // data[i] = r.NextDouble() * 50.0f;
 
-                //data[i] = i / 5;
-                data[i] = 20;
+                data[i] = i / 5;                
             }
 
-            GraphControl graph = new GraphControl();
+            graph = new GraphControl();
             WeatherGrid.Children.Add(graph);
 
             graph.data = data;
@@ -234,6 +236,8 @@ namespace OWLOSAirQuality
             WeatherGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleXProperty, rotateAnimation);
             WeatherGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleYProperty, rotateAnimation);
 
+            gA += 40;
+            graph.angle = gA;
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)

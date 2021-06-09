@@ -14,7 +14,6 @@ namespace OWLOSAirQuality.Huds
     public partial class GraphControl : UserControl
     {
         private double[] _data = null;
-
         public double[] data
         {
             get { return _data; }
@@ -27,6 +26,23 @@ namespace OWLOSAirQuality.Huds
                 }
             }
         }
+
+        private double _angle = 0.0f;
+        private double _length = 180.0f;
+
+        public double angle
+        {
+            get { return _angle; }
+            set 
+            { 
+                if ((value > -1) && (value < 360))
+                {
+                    _angle = value;
+                    Draw();
+                }
+            }
+        }
+
 
         public GraphControl()
         {
@@ -42,6 +58,10 @@ namespace OWLOSAirQuality.Huds
               x = r * cos(a) + offsetX;  
               y = r * sin(a) + offsetY;  
             */
+
+
+            GraphGrid.Children.Clear();
+
             Random rnd = new Random();
 
             double angel = 0.0f;
@@ -68,7 +88,7 @@ namespace OWLOSAirQuality.Huds
                 double x;
                 double y;
 
-                angel = i * (Math.PI / 80) - Math.PI / 2.0f;
+                angel = (i + _angle) * (Math.PI / 80) - Math.PI / 2.0f;
 
                 x = (Gold.radius + data[i] / 2.0f + 30.0f) * Math.Cos(angel) + 5.0f;
                 y = (Gold.radius + data[i] / 2.0f + 30.0f) * Math.Sin(angel) + 10.0f;
