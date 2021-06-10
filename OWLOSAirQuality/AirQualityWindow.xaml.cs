@@ -69,7 +69,14 @@ namespace OWLOSAirQuality
         private TimeControl timeControl;
 
         private double gA = 0;
-        private GraphControl graph;
+        private GraphControl graph1;
+        private GraphControl graph2;
+        private GraphControl graph3;
+        private GraphControl graph4;
+
+        private Random r;
+
+        private double[] data3;
 
         public AirQualityWindow()
         {
@@ -142,59 +149,64 @@ namespace OWLOSAirQuality
             WeatherControl weatherControl = new WeatherControl();
             WeatherGrid.Children.Add(weatherControl);
 
-            Random r = new Random();
-            double[] data = new double[150];
+            r = new Random();
+            double[] data = new double[45];
             for (int i = 0; i < data.Length; i++)
             {
-                // data[i] = r.NextDouble() * 50.0f;
-
                 data[i] = i / 5;                
             }
 
-            graph = new GraphControl();
-            WeatherGrid.Children.Add(graph);
-
-            graph.data = data;
-
-
-
-            /*
-            for (int i = 0; i < 24; i++)
+            data3 = new double[45];
+            for (int i = 0; i < data3.Length; i++)
             {
-                PetalControl petal1 = new PetalControl(Gold.radius - 56,  4 + i * (360 / 24), 7, 10, (i + 1).ToString());
-                petal1.petalBackground.Stroke = null;
-                petal1.petalBorder1.Stroke = null;
-                petal1.petalBorder2.Stroke = null;
-                HudGrid.Children.Add(petal1);
+                data3[i] = r.NextDouble() * 30.0f;
+                /*
+                if ((i & 1) > 0)
+                {
+                    data3[i] = 30;                
+                }
+                else
+                {
+                    data3[i] = 0;
+                }
+                */
             }
 
-            for (int i = 0; i < 60; i++)
-            {
-                PetalControl petal1 = new PetalControl(Gold.radius - 75, -5 + i * (360 / 60), 7, 10, (i + 1).ToString());
-                petal1.petalBackground.Stroke = null;
-                petal1.petalBackground.Stroke = null;
-                petal1.petalBorder1.Stroke = null;
-                petal1.petalBorder2.Stroke = null;
-                HudGrid.Children.Add(petal1);
+            graph1 = new GraphControl();
+            graph1.raysAnimationSpeed = 200;
+            WeatherGrid.Children.Add(graph1);
+            graph1.data = data;
 
+            double[] data2 = new double[90];
+            for (int i = 0; i < data2.Length; i++)
+            {
+                // data[i] = r.NextDouble() * 50.0f;
+
+                data2[i] = i / 5;
             }
 
-            secondPetal = new PetalControl(Gold.radius - 75, 0* (360 / 60), 7, 10, "");
-            secondPetal.petalBackground.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSWarning"];
-            HudGrid.Children.Add(secondPetal);
+            graph2 = new GraphControl();
+            graph2.angle = 90;
+            graph2.raysStep = 1.0f;
+            WeatherGrid.Children.Add(graph2);
+            graph2.data = data2;
 
-            minutePetal = new PetalControl(Gold.radius - 75, 0 * (360 / 60), 7, 10, "");
-            minutePetal.petalBackground.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSSuccess"];
-            HudGrid.Children.Add(minutePetal);
-            */
+            graph3 = new GraphControl();
+            graph3.angle = 180;
+            graph3.raysAnimationSpeed = 10;
+            graph3.ColorGradient1= (App.Current.Resources["OWLOSSuccessAlpha1"] as SolidColorBrush).Color;
+            graph3.ColorGradient2 = (App.Current.Resources["OWLOSSuccess"] as SolidColorBrush).Color;
+            WeatherGrid.Children.Add(graph3);
+            graph3.data = data3;
+
+            graph4 = new GraphControl();
+            graph4.angle = 270;
+            graph4.ColorGradient1 = (App.Current.Resources["OWLOSWarningAlpha1"] as SolidColorBrush).Color;
+            graph4.ColorGradient2 = (App.Current.Resources["OWLOSDanger"] as SolidColorBrush).Color;
+            WeatherGrid.Children.Add(graph4);
+            graph4.data = data3;
 
 
-            //Storyboard.SetTarget(rotateAnimation, petal);
-            //Storyboard.SetTargetProperty(rotateAnimation, new PropertyPath("(UIElement.RenderTransform).(RotateTransform.Angle)"));
-
-
-            //storyboard.Children.Add(rotateAnimation);
-            //storyboard.Begin();
 
             lifeCycleTimer = new Timer(1000)
             {
@@ -215,6 +227,15 @@ namespace OWLOSAirQuality
             {
                 dateControl.SetDate(DateTime.Now);
                 timeControl.SetTime(DateTime.Now);
+
+                double a = data3[0];
+                for (int i = 0; i < data3.Length-1; i++)
+                {
+                    data3[i] = data3[i + 1];
+                }
+                data3[data3.Length - 1] = a;
+                graph3.data = data3;
+                graph4.data = data3;
             });
         }
 
@@ -236,8 +257,6 @@ namespace OWLOSAirQuality
             WeatherGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleXProperty, rotateAnimation);
             WeatherGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleYProperty, rotateAnimation);
 
-            gA += 40;
-            graph.angle = gA;
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -273,6 +292,39 @@ namespace OWLOSAirQuality
             DateTimeGrid.RenderTransform = new ScaleTransform();
             DateTimeGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleXProperty, rotateAnimation);
             DateTimeGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleYProperty, rotateAnimation);
+
+        }
+
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            double[] data = new double[45];
+            for (int i = 0; i < data.Length; i++)
+            {
+                data[i] = r.NextDouble() * 30.0f;
+
+                //data[i] = i / 5;
+            }
+
+            double[] data2 = new double[90];
+            for (int i = 0; i < data2.Length; i++)
+            {
+                 data2[i] = r.NextDouble() * 30.0f;
+
+                //data2[i] = i / 5;
+            }
+
+            double a = data3[0];
+            for (int i = 0; i < data3.Length-1; i++)
+            {
+                data3[i] = data3[i + 1];
+            }
+            data3[data3.Length - 1] = a;
+
+
+            graph1.data = data;
+            graph2.data = data2;
+            graph3.data = data3;
+            graph4.data = data3;
 
         }
     }

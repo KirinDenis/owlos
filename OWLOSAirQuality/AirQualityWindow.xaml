@@ -26,6 +26,7 @@
             <Button Content="big"  Height="20"  Click="Button_Click"/>
             <Button Content="normal"  Height="20" Click="Button_Click_1" />
             <Button Content="hide"  Height="20" Click="Button_Click_2"  />
+            <Button Content="re_graph"  Height="20" Click="Button_Click_3"  />
         </StackPanel>
 
         <Grid.Effect>
