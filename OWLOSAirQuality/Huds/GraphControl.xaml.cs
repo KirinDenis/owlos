@@ -132,8 +132,12 @@ namespace OWLOSAirQuality.Huds
 
                     double angel = (i / raysStep + _angle) * (Math.PI / 180) - Math.PI / 2.0f;
 
-                    x = (Gold.radius + data[i] / 2.0f + 0.0f) * Math.Cos(angel) + 7.0f;
-                    y = (Gold.radius + data[i] / 2.0f + 0.0f) * Math.Sin(angel) + 0.0f;
+                    //x = (Gold.radius + data[i] / 2.0f + 0.0f) * Math.Cos(angel) + 7.0f;
+                    //y = (Gold.radius + data[i] / 2.0f + 0.0f) * Math.Sin(angel) + 0.0f;
+
+                    x = (Gold.radius  + 0.0f) * Math.Cos(angel) + 7.0f;
+                    y = (Gold.radius  + 0.0f) * Math.Sin(angel) + 0.0f;
+
 
                     TransformGroup group = new TransformGroup();
 
@@ -172,7 +176,8 @@ namespace OWLOSAirQuality.Huds
                 {
                     TransformGroup group = rays[i].RenderTransform as TransformGroup;
                     ScaleTransform sc = group.Children[0] as ScaleTransform;
-                   
+
+                    
                     DoubleAnimation scaleAnimation = new DoubleAnimation()
                     {
                         From = (double)rays[i].Tag,

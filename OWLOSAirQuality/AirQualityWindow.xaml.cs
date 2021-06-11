@@ -160,6 +160,7 @@ namespace OWLOSAirQuality
             for (int i = 0; i < data3.Length; i++)
             {
                 data3[i] = r.NextDouble() * 30.0f;
+                
                 /*
                 if ((i & 1) > 0)
                 {
@@ -193,7 +194,7 @@ namespace OWLOSAirQuality
 
             graph3 = new GraphControl();
             graph3.angle = 180;
-            graph3.raysAnimationSpeed = 10;
+            graph3.raysAnimationSpeed = 200;
             graph3.ColorGradient1= (App.Current.Resources["OWLOSSuccessAlpha1"] as SolidColorBrush).Color;
             graph3.ColorGradient2 = (App.Current.Resources["OWLOSSuccess"] as SolidColorBrush).Color;
             WeatherGrid.Children.Add(graph3);
