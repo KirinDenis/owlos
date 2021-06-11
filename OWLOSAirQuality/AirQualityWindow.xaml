@@ -1,0 +1,38 @@
+﻿<Window x:Class="OWLOSAirQuality.AirQualityWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OWLOSAirQuality"
+        mc:Ignorable="d"
+        Title="OWLOS Air Quality" Height="800" Width="800" Background="{DynamicResource OWLOSDark}">
+
+    <!--  FontFamily="file:///D:\Users\Egor\source\repos\KirinDenis\owlos\OWLOSAdmin\Fonts\#omega flight" -->
+
+    <Grid>
+        <Viewbox x:Name="MainViewBox">
+            <Grid x:Name="HudGrid">
+
+
+                <Grid x:Name="WeatherGrid" RenderTransformOrigin="0.5,0.5">
+                    
+                </Grid>
+                <Grid x:Name="DateTimeGrid" RenderTransformOrigin="0.5,0.5">
+                </Grid>
+            </Grid>
+        </Viewbox>
+
+        <StackPanel VerticalAlignment="Top" Orientation="Horizontal">
+            <Button Content="big"  Height="20"  Click="Button_Click"/>
+            <Button Content="normal"  Height="20" Click="Button_Click_1" />
+            <Button Content="hide"  Height="20" Click="Button_Click_2"  />
+            <Button Content="re_graph"  Height="20" Click="Button_Click_3"  />
+        </StackPanel>
+
+        <Grid.Effect>
+
+            <BlurEffect Radius="1.7"></BlurEffect>
+
+        </Grid.Effect>
+    </Grid>
+</Window>

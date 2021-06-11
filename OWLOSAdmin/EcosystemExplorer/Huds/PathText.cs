@@ -20,6 +20,24 @@ namespace PathText
         private readonly double fromAngel;
         private readonly double toAngel;
 
+        public SolidColorBrush Foreground
+        {
+            get
+            {
+                return sourceTextBlock.Foreground as SolidColorBrush;
+            }
+            set
+            {
+                if (textBlock != null)
+                {
+                    for (int i = 0; i < textBlock.Length; i++)
+                    {
+                        textBlock[i].Foreground = value;
+                    }
+                }
+            }
+        }
+
         public PathTextControl(double x, double y, double radius, double fromAngel, double toAngel, TextBlock sourceTextBlock)
         {
 
@@ -139,8 +157,13 @@ namespace PathText
 
                 textBlock[i].RenderTransform = group;
 
+                double charWidth = textBlock[i].DesiredSize.Width;
+                if (textBlock[i].Text.ToLower().Equals("m"))
+                {
+                    charWidth *= 0.5f;
+                }
 
-                rt.Angle = angel + 97.0f - (textBlock[i].DesiredSize.Width);
+                rt.Angle = angel + 97.0f - charWidth;
                 angel += textBlock[i].DesiredSize.Width / (radius / 60.0f);
             }
         }
