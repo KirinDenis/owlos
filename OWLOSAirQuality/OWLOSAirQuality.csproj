@@ -10,12 +10,34 @@
     <Compile Include="..\OWLOSAdmin\EcosystemExplorer\Huds\Gold.cs" Link="Huds\Gold.cs" />
     <Compile Include="..\OWLOSAdmin\EcosystemExplorer\Huds\HudLibrary.cs" Link="Huds\HudLibrary.cs" />
     <Compile Include="..\OWLOSAdmin\EcosystemExplorer\Huds\PathText.cs" Link="Huds\PathText.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOSThingsManager.cs" Link="OWLOS\OWLOSThingsManager.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\IOWLOSTransport.cs" Link="OWLOS\IOWLOSTransport.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\OWLOSConnection.cs" Link="OWLOS\OWLOSConnection.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\OWLOSDriver.cs" Link="OWLOS\OWLOSDriver.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\OWLOSDriverProperty.cs" Link="OWLOS\OWLOSDriverProperty.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\OWLOSFeatures.cs" Link="OWLOS\OWLOSFeatures.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\OWLOSFile.cs" Link="OWLOS\OWLOSFile.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\OWLOSFiles.cs" Link="OWLOS\OWLOSFiles.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\OWLOSThing.cs" Link="OWLOS\OWLOSThing.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\OWLOSTransport.cs" Link="OWLOS\OWLOSTransport.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\OWLOSTransportOLD.cs" Link="OWLOS\OWLOSTransportOLD.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\RESTfulClientTransport.cs" Link="OWLOS\RESTfulClientTransport.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\UARTTransport.cs" Link="OWLOS\UARTTransport.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <Page Include="..\OWLOSAdmin\Theme\OWLOSDarkTheme.xaml" Link="Theme\OWLOSDarkTheme.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="OWLOS\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="System.IO.Ports" Version="4.7.0" />
   </ItemGroup>
 
 </Project>
