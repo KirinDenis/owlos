@@ -49,6 +49,25 @@ using System.IO.Ports;
 
 namespace OWLOSThingsManager.Ecosystem
 {
+    public class OWLOSThreadThingManager
+    {
+        public static ThingsManager thingsManager = null;
+        public static void Start()
+        {
+            thingsManager = new ThingsManager();
+            thingsManager.OnNewThing += ThingsManager_OnNewThing;
+            thingsManager.Load();
+        }
+
+        private static void ThingsManager_OnNewThing(object sender, OWLOSThingWrapperEventArgs e)
+        {
+            if (e.ThingWrapper != null)
+            {
+
+            }
+        }
+    }
+
     public class OWLOSThingWrapper
     {
         public ThingsManager CurrentThingsManager;

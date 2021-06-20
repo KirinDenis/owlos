@@ -1,0 +1,5 @@
+﻿https://www.c-sharpcorner.com/article/using-asp-net-core-3-0-identity-with-mysql/
+
+dotnet ef migrations add CreateIdentitySchema --project OWLOSEcosystemService
+dotnet ef migrations script -o CreateTables.sql //?
+dotnet ef update database --project OWLOSEcosystemService
