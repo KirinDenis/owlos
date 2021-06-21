@@ -75,7 +75,7 @@ extern String thingid;
 #ifdef USE_MQTT
 #define DEFAULT_MQTT_CLIENT_AVAILABLE true
 #define DEFAULT_MQTT_CLIENT_PORT 1883
-#define DEFAULT_MQTT_CLIENT_URL "owlos.net"
+#define DEFAULT_MQTT_CLIENT_URL "owlos.org"
 #define DEFAULT_MQTT_CLIENT_ID ""
 #define DEFAULT_MQTT_CLIENT_LOGIN ""
 #define DEFAULT_MQTT_CLIENT_PASSWORD ""
