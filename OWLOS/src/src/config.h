@@ -105,10 +105,10 @@ OWLOS распространяется в надежде, что она буде
                 //OWLOS будет делать попытки соединения постоянно, до перезагрузки. 
                 //Такой способ страхует от неправильного указания названия точки доступа - дело в том что процесс подключения
                 //занимает очень много ресурсов и делает устройство OWLOS медленным. 
-                #define DEFAULT_WIFI_STATION_SSID "Palata#13" 
+                #define DEFAULT_WIFI_STATION_SSID "" 
 
                 //Пароль подключаемой точки доступа. 
-                #define DEFAULT_WIFI_STATION_PASSWORD "qweasdzxc1234" 
+                #define DEFAULT_WIFI_STATION_PASSWORD "" 
 
                 //Название этого устройсва с OWLOS для формирования Topic (уникального пути к устройству в сети)
                 #define DEFAULT_ID "owlthing"
