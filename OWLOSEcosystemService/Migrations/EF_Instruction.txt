@@ -1,5 +1,7 @@
 ﻿https://www.c-sharpcorner.com/article/using-asp-net-core-3-0-identity-with-mysql/
 
+//создать .CS файлы миграции (не используйте если не создавали новых энтити)
 dotnet ef migrations add CreateIdentitySchema --project OWLOSEcosystemService
-dotnet ef migrations script -o CreateTables.sql //?
-dotnet ef update database --project OWLOSEcosystemService
+
+//накатить миграцию в базу (ИСПОЛЬЗУЙТЫ после Pull всегда что бы создать новые таблицы в базе)
+dotnet ef database update --project OWLOSEcosystemService

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OWLOSEcosystemService.Data;
+using OWLOSEcosystemService.Models.Things;
 using OWLOSEcosystemService.Services.Things;
 using OWLOSThingsManager.Ecosystem;
 using System.Threading;
@@ -14,6 +15,7 @@ namespace OWLOSEcosystemService
 {
     public class Startup
     {
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
