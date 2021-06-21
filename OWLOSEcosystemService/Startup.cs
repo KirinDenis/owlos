@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OWLOSEcosystemService.Data;
+using OWLOSEcosystemService.Services.Things;
 using OWLOSThingsManager.Ecosystem;
 using System.Threading;
 
@@ -31,8 +32,11 @@ namespace OWLOSEcosystemService
 
             services.AddControllersWithViews();
 
-            Thread thread1 = new Thread(OWLOSThreadThingManager.Start);
+            //TODO MORE CIVILIZATE HERE
+            Thread thread1 = new Thread(ThingsServices.Start);
             thread1.Start();
+
+            services.AddSwaggerGen();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,6 +56,16 @@ namespace OWLOSEcosystemService
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
+
             app.UseRouting();
 
             app.UseAuthentication();
@@ -59,9 +73,8 @@ namespace OWLOSEcosystemService
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
+                //endpoints.MapControllerRoute(name: "things", pattern: "Things/{*GetThings}", defaults: new { controller = "Things", action = "GetThings" });
                 endpoints.MapRazorPages();
             });
         }
