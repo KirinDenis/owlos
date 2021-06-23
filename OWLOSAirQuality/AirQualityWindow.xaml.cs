@@ -1,11 +1,11 @@
 ﻿/* ----------------------------------------------------------------------------
-Ready IoT Solution - OWLOS
+OWLOS DIY Open Source OS for building IoT ecosystems
 Copyright 2019, 2020, 2021 by:
 - Vitalii Glushchenko (cehoweek@gmail.com)
 - Denys Melnychuk (meldenvar@gmail.com)
 - Denis Kirin (deniskirinacs@gmail.com)
 
-This file is part of Ready IoT Solution - OWLOS
+This file is part of OWLOS DIY Open Source OS for building IoT ecosystems
 
 OWLOS is free software : you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software
@@ -22,7 +22,7 @@ with OWLOS. If not, see < https://www.gnu.org/licenses/>.
 
 GitHub: https://github.com/KirinDenis/owlos
 
-(Этот файл — часть Ready IoT Solution - OWLOS.
+(Этот файл — часть OWLOS DIY Open Source OS for building IoT ecosystems.
 
 OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
 ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
@@ -47,6 +47,8 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Timers;
+using OWLOSThingsManager.Ecosystem;
+using OWLOSThingsManager.Ecosystem.OWLOS;
 
 namespace OWLOSAirQuality
 {
@@ -131,8 +133,8 @@ namespace OWLOSAirQuality
             HudGrid.Children.Add(transportOwerPathRECONNECT);
             */
 
-            //console = new ConsoleControl();
-            //HudGrid.Children.Add(console);
+            console = new ConsoleControl();
+            ConsoleGrid.Children.Add(console);
 
             Random random = new Random();
             for (int i = 0; i < 0; i++)
@@ -216,6 +218,9 @@ namespace OWLOSAirQuality
             {
                 data4[i] = r.NextDouble() * 10.0f;
             }
+            ThingsManager thingsManager = new ThingsManager();
+            thingsManager.OnNewThing += ThingsManager_OnNewThing;
+            thingsManager.Load();
 
             //data4 = new double[1];
             //data4[0] = 86.0;
@@ -233,8 +238,40 @@ namespace OWLOSAirQuality
             lifeCycleTimer.Elapsed += new ElapsedEventHandler(OnLifeCycleTimer);
             lifeCycleTimer.Start();
             OnLifeCycleTimer(null, null);
+        }
+
+        private void ThingsManager_OnNewThing(object sender, OWLOSThingWrapperEventArgs e)
+        {             
+            if (e.ThingWrapper != null)
+            {
+                e.ThingWrapper.Thing.OnNewDriver += Thing_OnNewDriver;
+
+                if (e.ThingWrapper.Thing.transports.Count > 0)
+                {
+                    
+                    for (int i = 0; i < e.ThingWrapper.Thing.transports.Count; i++)
+                    {
+
+                        e.ThingWrapper.Thing.transports[i].OnLogItem += AirQualityWindow_OnLogItem;
+                    }
+                }
 
 
+            }
+
+        }
+
+        private void AirQualityWindow_OnLogItem(object sender, LogItem e)
+        {
+            if (e.isSend)
+            {
+                console.AddToconsole(e.text, (int)e.networkStatus);
+            }
+        }
+
+        private void Thing_OnNewDriver(object sender, OWLOSDriverWrapperEventArgs e)
+        {
+          //
         }
 
         private async void OnLifeCycleTimer(object source, ElapsedEventArgs e)

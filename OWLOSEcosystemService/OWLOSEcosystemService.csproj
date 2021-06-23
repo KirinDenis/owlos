@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <UserSecretsId>aspnet-OWLOSEcosystemService-83DC8282-4A4B-415A-A7DA-BE9AC8135BD6</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOSThingsManager.cs" Link="OWLOS\OWLOSThingsManager.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\IOWLOSTransport.cs" Link="OWLOS\IOWLOSTransport.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\OWLOSConnection.cs" Link="OWLOS\OWLOSConnection.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\OWLOSDriver.cs" Link="OWLOS\OWLOSDriver.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\OWLOSDriverProperty.cs" Link="OWLOS\OWLOSDriverProperty.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\OWLOSFeatures.cs" Link="OWLOS\OWLOSFeatures.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\OWLOSFile.cs" Link="OWLOS\OWLOSFile.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\OWLOSFiles.cs" Link="OWLOS\OWLOSFiles.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\OWLOSThing.cs" Link="OWLOS\OWLOSThing.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\OWLOSTransport.cs" Link="OWLOS\OWLOSTransport.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\OWLOSTransportOLD.cs" Link="OWLOS\OWLOSTransportOLD.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\RESTfulClientTransport.cs" Link="OWLOS\RESTfulClientTransport.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\UARTTransport.cs" Link="OWLOS\UARTTransport.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.7">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="5.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.4" />
+    <PackageReference Include="System.IO.Ports" Version="4.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="OWLOSEcosystem\" />
+    <Folder Include="OWLOS\" />
+  </ItemGroup>
+
+</Project>
