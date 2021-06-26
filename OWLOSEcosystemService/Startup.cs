@@ -1,3 +1,5 @@
+﻿using Mapster;
+using MapsterMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -6,10 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OWLOSEcosystemService.Data;
-using OWLOSEcosystemService.Models.Things;
 using OWLOSEcosystemService.Services.Things;
-using OWLOSThingsManager.Ecosystem;
-using System.Threading;
 
 namespace OWLOSEcosystemService
 {
@@ -29,16 +28,21 @@ namespace OWLOSEcosystemService
             string connectionString = Configuration.GetConnectionString("DefaultConnection");
 
             services.AddDbContext<ApplicationDbContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddControllersWithViews();
 
-            //TODO MORE CIVILIZATE HERE
-            Thread thread1 = new Thread(ThingsServices.Start);
-            thread1.Start();
-
             services.AddSwaggerGen();
+
+            TypeAdapterConfig config = new TypeAdapterConfig();
+            // Or
+            // var config = TypeAdapterConfig.GlobalSettings;
+            services.AddSingleton(config);
+            services.AddScoped<IMapper, ServiceMapper>();
+
+            //Thing service 
+            services.AddSingleton< IThingsService, ThingsService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -65,8 +69,9 @@ namespace OWLOSEcosystemService
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "OWLOS Air Quality APIs");
             });
+
 
             app.UseRouting();
 

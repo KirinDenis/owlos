@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace OWLOSEcosystemService.Models.Things
+﻿namespace OWLOSEcosystemService.Models.Things
 {
     public class ThingConnectionPropertiesModel
-    {
-        [Key]
-        public uint Id { get; set; }
-        public Guid UserId { get; set; }
+    {        
+        public uint Id { get; set; }     
         public string Name { get; set; }
         public string Description { get; set; }
         public bool HTTPEnable { get; set; }
