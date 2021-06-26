@@ -75,10 +75,14 @@ namespace OWLOSAirQuality
         private GraphControl graph2;
         private GraphControl graph3;
         private GraphControl graph4;
+        
+        private PercentageControl graph5;
 
         private Random r;
 
         private double[] data3;
+
+        private double[] data4;
 
         public AirQualityWindow()
         {
@@ -197,7 +201,7 @@ namespace OWLOSAirQuality
             graph3 = new GraphControl();
             graph3.angle = 180;
             graph3.raysAnimationSpeed = 200;
-            graph3.ColorGradient1= (App.Current.Resources["OWLOSSuccessAlpha1"] as SolidColorBrush).Color;
+            graph3.ColorGradient1 = (App.Current.Resources["OWLOSSuccessAlpha1"] as SolidColorBrush).Color;
             graph3.ColorGradient2 = (App.Current.Resources["OWLOSSuccess"] as SolidColorBrush).Color;
             WeatherGrid.Children.Add(graph3);
             graph3.data = data3;
@@ -209,9 +213,23 @@ namespace OWLOSAirQuality
             WeatherGrid.Children.Add(graph4);
             graph4.data = data3;
 
+            data4 = new double[10];
+            for (int i = 0; i < data4.Length; i++)
+            {
+                data4[i] = r.NextDouble() * 10.0f;
+            }
             ThingsManager thingsManager = new ThingsManager();
             thingsManager.OnNewThing += ThingsManager_OnNewThing;
             thingsManager.Load();
+
+            //data4 = new double[1];
+            //data4[0] = 86.0;
+
+            graph5 = new PercentageControl(Gold.radius - 70);
+            graph5.angle = 0;
+            //WeatherGrid.Children.Add(graph5);
+            HudGrid.Children.Add(graph5);
+            graph5.data = data4;
 
             lifeCycleTimer = new Timer(1000)
             {
@@ -266,7 +284,7 @@ namespace OWLOSAirQuality
                 timeControl.SetTime(DateTime.Now);
 
                 double a = data3[0];
-                for (int i = 0; i < data3.Length-1; i++)
+                for (int i = 0; i < data3.Length - 1; i++)
                 {
                     data3[i] = data3[i + 1];
                 }
