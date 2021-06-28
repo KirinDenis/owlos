@@ -37,15 +37,25 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
+using MapsterMapper;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using OWLOSEcosystemService.Data;
 using OWLOSEcosystemService.DTO.Things;
 using OWLOSEcosystemService.Models.Things;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace OWLOSEcosystemService.Repository.Things
 {
     public class ThingsRepository: IThingsRepository
     {
+        private readonly IMapper _mapper;
+
+        public ThingsRepository(IMapper mapper)
+        {
+            _mapper = mapper;
+        }
+
         public ThingsResultModel NewThingConnection(ThingConnectionPropertiesDTO ConnectionPropertiesDTO)
         {
             ThingsResultModel resultModel = new ThingsResultModel();
@@ -67,5 +77,26 @@ namespace OWLOSEcosystemService.Repository.Things
 
             return resultModel;
         }
+
+        public List<ThingConnectionPropertiesDTO> GetAllThingsConnections()
+        {
+            List<ThingConnectionPropertiesDTO> result = new List<ThingConnectionPropertiesDTO>();
+
+            using (ApplicationDbContext db = new ApplicationDbContext())
+            {
+
+                ThingConnectionPropertiesDTO ConnectionPropertiesDTO = new ThingConnectionPropertiesDTO();
+                var ConnectionPropertiesEntity2 = db.Add(ConnectionPropertiesDTO);
+
+                List<ThingConnectionPropertiesDTO> ConnectionPropertiesEntity = db.Set<ThingConnectionPropertiesDTO>().ToList();
+
+                result = _mapper.Map<List<ThingConnectionPropertiesDTO>>(ConnectionPropertiesEntity);
+                
+            }
+
+            return result;
+        }
+
     }
 }
+

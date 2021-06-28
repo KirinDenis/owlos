@@ -65,7 +65,7 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
         public DateTime LastConnected;
 
         public List<OWLOSConnection> connections = new List<OWLOSConnection>();
-        public List<APIQueryInterval> APIQueryIntervals { get; set; }
+        public List<APIQueryInterval> APIQueryIntervals { get; set; } = new List<APIQueryInterval>();
     }
 
     public class OWLOSThing : IOWLOSAbstractTransport

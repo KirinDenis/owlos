@@ -39,11 +39,14 @@ OWLOS распространяется в надежде, что она буде
 
 using OWLOSEcosystemService.DTO.Things;
 using OWLOSEcosystemService.Models.Things;
+using System.Collections.Generic;
 
 namespace OWLOSEcosystemService.Repository.Things
 {
     public interface IThingsRepository
     {
         ThingsResultModel NewThingConnection(ThingConnectionPropertiesDTO ConnectionPropertiesDTO);
+
+        List<ThingConnectionPropertiesDTO> GetAllThingsConnections();
     }
 }

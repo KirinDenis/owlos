@@ -37,12 +37,18 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
+using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using OWLOSEcosystemService.Data;
 using OWLOSEcosystemService.DTO.Things;
 using OWLOSEcosystemService.Models.Things;
 using OWLOSEcosystemService.Repository.Things;
 using OWLOSThingsManager.Ecosystem;
 using OWLOSThingsManager.Ecosystem.OWLOS;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace OWLOSEcosystemService.Services.Things
@@ -51,15 +57,17 @@ namespace OWLOSEcosystemService.Services.Things
     {
         #region IThingService
         private readonly IThingsRepository _thingsRepository;
+        private readonly IMapper _mapper;
 
         private readonly Thread _thingsManagerTread;
 
         public ThingsService()
         {
-            _thingsRepository =  new ThingsRepository();
+            _mapper = new Mapper();
+            _thingsRepository =  new ThingsRepository(_mapper);
 
-            _thingsManagerTread = new Thread(ThingsService.Start);
-            _thingsManagerTread.Start();
+            _thingsManagerTread = new Thread(new ParameterizedThreadStart(ThingsService.Start));
+            _thingsManagerTread.Start(this);
         }
 
         public ThingsResultModel NewThingConnection(ThingConnectionPropertiesDTO ConnectionPropertiesDTO)
@@ -74,16 +82,103 @@ namespace OWLOSEcosystemService.Services.Things
 
             return _thingsRepository.NewThingConnection(ConnectionPropertiesDTO);
         }
+
+        /// <summary>
+        /// Only for internal use, not defined at interface, get all connection with out authorized user
+        /// </summary>
+        /// <returns></returns>
+        public List<ThingConnectionPropertiesDTO> GetAllThingsConnections()
+        {
+            return _thingsRepository.GetAllThingsConnections();
+        }
         #endregion
 
 
         #region ThingsThreadManager
-        public static ThingsManager thingsManager = null;
-        public static void Start()
+        private static ThingsManager thingsManager = null;
+        public static void Start(object thingsService)
         {
+            ThingsService _thingsService =  thingsService as ThingsService;
+
             thingsManager = new ThingsManager();
             thingsManager.OnNewThing += ThingsManager_OnNewThing;
-            thingsManager.Load();
+            //thingsManager.Load();
+
+            
+
+            IMapper _mapper = new Mapper();
+            IThingsRepository _thingsRepository = new ThingsRepository(_mapper);
+
+            //   List<ThingConnectionPropertiesDTO> connectionList = _thingsRepository.GetAllThingsConnections();
+
+
+            List<ThingConnectionPropertiesDTO> result = new List<ThingConnectionPropertiesDTO>();
+
+            using (ThingsDbContext db = new ThingsDbContext())
+            {
+
+                ThingConnectionPropertiesDTO ConnectionPropertiesDTO = new ThingConnectionPropertiesDTO();
+                var ConnectionPropertiesEntity2 = db.Add(ConnectionPropertiesDTO);
+
+                List<ThingConnectionPropertiesDTO> ConnectionPropertiesEntity = db.Set<ThingConnectionPropertiesDTO>().ToList();
+
+                result = _mapper.Map<List<ThingConnectionPropertiesDTO>>(ConnectionPropertiesEntity);
+
+            }
+
+            foreach(ThingConnectionPropertiesDTO connection in result)
+            {
+                OWLOSThingConfig _OWLOSThingConfig = new OWLOSThingConfig();
+                _OWLOSThingConfig.Name = connection.Name;
+                OWLOSConnection _connection = new OWLOSConnection();
+                
+                
+                _connection.connectionType = ConnectionType.RESTfulClient;
+                _connection.enable = connection.HTTPEnable;
+                _connection.connectionString = JsonConvert.SerializeObject(new RESTfulClientConnectionDTO()
+                {
+                    host = connection.HTTPHost + ":" + connection.HTTPPort
+                });
+
+
+                _OWLOSThingConfig.connections.Add(_connection);
+                _OWLOSThingConfig.APIQueryIntervals.Add(new APIQueryInterval()
+                {
+                    APIType = APINameType.GetAllDriverProperties,
+                    Enable = true,
+                    Interval = 5
+                });
+
+                thingsManager.CreateThingWrapper(_OWLOSThingConfig);
+
+
+            }
+
+
+            /*
+            if (File.Exists("config.json"))
+            {
+                string JSONConfig = File.ReadAllText("config.json");
+                config = JsonConvert.DeserializeObject<ThingsManagerConfig>(JSONConfig);
+            }
+            else //reset config
+            {
+                CreateThingConnection();
+            }
+            //Save each time before development - add new fields to JSON
+            Save();
+            foreach (OWLOSThingConfig _OWLOSThingConfig in config.ThingsConfig)
+            {
+                OWLOSThingWrapper ThingWrapper = new OWLOSThingWrapper(this)
+                {
+                    Thing = new OWLOSThing(_OWLOSThingConfig)
+                };
+                OWLOSThingWrappers.Add(ThingWrapper);
+                NewThing(new OWLOSThingWrapperEventArgs(ThingWrapper));
+            }
+            */
+
+
         }
 
         public static List<ThingPropertiesModel> GetThings()

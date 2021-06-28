@@ -203,6 +203,20 @@ namespace OWLOSThingsManager.Ecosystem
             return ThingWrapper;
         }
 
+        public OWLOSThingWrapper CreateThingWrapper(OWLOSThingConfig _OWLOSThingConfig)
+        {
+            
+            OWLOSThingWrapper ThingWrapper = new OWLOSThingWrapper(this)
+            {
+                Thing = new OWLOSThing(_OWLOSThingConfig)
+            };
+            OWLOSThingWrappers.Add(ThingWrapper);
+            NewThing(new OWLOSThingWrapperEventArgs(ThingWrapper));
+
+            return ThingWrapper;
+        }
+
+
         public bool DeleteThingWrapper(OWLOSThingWrapper ThingWrapper)
         {
             foreach (OWLOSConnection connection in ThingWrapper.Thing.config.connections)
