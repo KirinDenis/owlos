@@ -71,9 +71,19 @@ namespace OWLOSEcosystemService.Controllers
         [Route("Things")]
         [Route("Things/Get")]
         [HttpGet]
-        public List<ThingPropertiesModel> Get()
+        public IActionResult Get()
         {
-            return ThingsService.GetThings();
+            List<ThingWrapperModel> result = _thingsService.GetThingsWrappers(); 
+
+            if (result.Count != 0)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                //TODO: Dictionary for messaging
+                return Forbid("Things core not ready or no one thing at ecosystem");
+            }            
         }
 
         /// <summary>

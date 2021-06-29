@@ -60,7 +60,7 @@ namespace OWLOSEcosystemService.Repository.Things
         {
             ThingsResultModel resultModel = new ThingsResultModel();
 
-            using (ApplicationDbContext db = new ApplicationDbContext())
+            using (ThingsDbContext db = new ThingsDbContext())
             {
                 EntityEntry<ThingConnectionPropertiesDTO> ConnectionPropertiesEntity = db.Add(ConnectionPropertiesDTO);
                 db.SaveChanges();
@@ -82,7 +82,7 @@ namespace OWLOSEcosystemService.Repository.Things
         {
             List<ThingConnectionPropertiesDTO> result = new List<ThingConnectionPropertiesDTO>();
 
-            using (ApplicationDbContext db = new ApplicationDbContext())
+            using (ThingsDbContext db = new ThingsDbContext())
             {
 
                 ThingConnectionPropertiesDTO ConnectionPropertiesDTO = new ThingConnectionPropertiesDTO();
@@ -91,7 +91,7 @@ namespace OWLOSEcosystemService.Repository.Things
                 List<ThingConnectionPropertiesDTO> ConnectionPropertiesEntity = db.Set<ThingConnectionPropertiesDTO>().ToList();
 
                 result = _mapper.Map<List<ThingConnectionPropertiesDTO>>(ConnectionPropertiesEntity);
-                
+
             }
 
             return result;

@@ -43,30 +43,9 @@ using OWLOSEcosystemService.DTO.Things;
 
 namespace OWLOSEcosystemService.Data
 {
-
-    public class ThingsDbContext : DbContext
-    {
-
-        public static DbContextOptions options = null;
-
-        public DbSet<ThingConnectionPropertiesDTO> ThingConnectionProperties { get; set; }
-        public ThingsDbContext(DbContextOptions options)
-        {                        
-            ThingsDbContext.options = options;
-        }
-
-        public ThingsDbContext() : base(ThingsDbContext.options)
-        {
-
-        }
-
-    }
-
     public class ApplicationDbContext : IdentityDbContext
     {
         private static DbContextOptions<ApplicationDbContext> options = null;
-
-        public DbSet<ThingConnectionPropertiesDTO> ThingConnectionProperties { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
             ApplicationDbContext.options = options;

@@ -38,17 +38,13 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 using MapsterMapper;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using OWLOSEcosystemService.Data;
 using OWLOSEcosystemService.DTO.Things;
 using OWLOSEcosystemService.Models.Things;
 using OWLOSEcosystemService.Repository.Things;
 using OWLOSThingsManager.Ecosystem;
 using OWLOSThingsManager.Ecosystem.OWLOS;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 
 namespace OWLOSEcosystemService.Services.Things
@@ -66,21 +62,167 @@ namespace OWLOSEcosystemService.Services.Things
             _mapper = new Mapper();
             _thingsRepository =  new ThingsRepository(_mapper);
 
+
+            thingsManager = new ThingsManager();
+            thingsManager.OnNewThing += ThingsManager_OnNewThing;
+
             _thingsManagerTread = new Thread(new ParameterizedThreadStart(ThingsService.Start));
             _thingsManagerTread.Start(this);
         }
 
-        public ThingsResultModel NewThingConnection(ThingConnectionPropertiesDTO ConnectionPropertiesDTO)
+        public ThingsResultModel NewThingConnection(ThingConnectionPropertiesDTO connectionPropertiesDTO)
         {
             ThingsResultModel resultModel = new ThingsResultModel();
 
-            if ((ConnectionPropertiesDTO == null) || string.IsNullOrEmpty(ConnectionPropertiesDTO.Name))
+            if ((connectionPropertiesDTO == null) || string.IsNullOrEmpty(connectionPropertiesDTO.Name))
             {
                 resultModel.Result = "Bad connection properties model";
                 return resultModel;
             }
 
-            return _thingsRepository.NewThingConnection(ConnectionPropertiesDTO);
+            if ((connectionPropertiesDTO.HTTPEnable) && (!string.IsNullOrEmpty(connectionPropertiesDTO.HTTPHost)))
+            {
+                connectionPropertiesDTO.HTTPHost = connectionPropertiesDTO.HTTPHost.Trim();
+                if (connectionPropertiesDTO.HTTPHost.ToLower().IndexOf("http://") != 0)
+                {
+                    connectionPropertiesDTO.HTTPHost = "http://" + connectionPropertiesDTO.HTTPHost;
+                }
+            }
+
+            resultModel = _thingsRepository.NewThingConnection(connectionPropertiesDTO);
+
+            if (!resultModel.Error)
+            {
+                AddThingToEcosystem(connectionPropertiesDTO);
+            }
+
+            return resultModel;
+        }
+       
+        public List<ThingWrapperModel> GetThingsWrappers()
+        {
+            List<ThingWrapperModel> result = new List<ThingWrapperModel>();
+
+            int temporaryIdCount = 1;
+
+            foreach (OWLOSThingWrapper wrapper in thingsManager.OWLOSThingWrappers)
+            {
+                //clear transports logs
+                ThingWrapperModel thingWrapperModel = new ThingWrapperModel()
+                {
+                    Id = temporaryIdCount,
+                    Name = wrapper.Thing.Name,
+                    Features = wrapper.Thing.Features,
+                    Config = wrapper.Thing.config
+                };
+
+                thingWrapperModel.HTTP = new RESTfulClientTransport(null);
+                thingWrapperModel.HTTP.totlaSend = wrapper.Thing._RESTfulClientTransport.totlaSend;
+                thingWrapperModel.HTTP.totlaRecv = wrapper.Thing._RESTfulClientTransport.totlaRecv;
+                thingWrapperModel.HTTP.connection = wrapper.Thing._RESTfulClientTransport.connection;
+
+                thingWrapperModel.UART = new UARTTransport(null);
+                thingWrapperModel.UART.totlaSend = wrapper.Thing._UARTTransport.totlaSend;
+                thingWrapperModel.UART.totlaRecv = wrapper.Thing._UARTTransport.totlaRecv;
+                thingWrapperModel.UART.connection = wrapper.Thing._UARTTransport.connection;
+
+                result.Add(thingWrapperModel);
+
+                temporaryIdCount++;
+            }
+
+            return result;
+        }
+
+
+        private bool AddThingToEcosystem(ThingConnectionPropertiesDTO connectionPropertiesDTO)
+        {
+            OWLOSThingConfig _OWLOSThingConfig = new OWLOSThingConfig
+            {
+                Name = connectionPropertiesDTO.Name
+            };
+
+            OWLOSConnection _connection = new OWLOSConnection
+            {
+                connectionType = ConnectionType.RESTfulClient,
+                enable = connectionPropertiesDTO.HTTPEnable,
+                Priority = 0,
+                name = "HTTPClient",
+                connectionString = JsonConvert.SerializeObject(new RESTfulClientConnectionDTO()
+                {
+                    host = connectionPropertiesDTO.HTTPHost + ":" + connectionPropertiesDTO.HTTPPort + "/"
+                })
+            };
+            _OWLOSThingConfig.connections.Add(_connection);
+
+            _connection = new OWLOSConnection
+            {
+                connectionType = ConnectionType.UART,
+                enable = connectionPropertiesDTO.UARTEnable,
+                Priority = 1,
+                name = "UART",
+                connectionString = JsonConvert.SerializeObject(new UARTClientConnectionDTO()
+                {
+                    port = connectionPropertiesDTO.UARTPort,
+                    baudRate = connectionPropertiesDTO.UARTBaudRate,
+                    parity = System.IO.Ports.Parity.None,
+                    stopBits = System.IO.Ports.StopBits.One,
+                    dataBits = 8,
+                    handshake = System.IO.Ports.Handshake.None,
+                    RTSEnable = false
+                })
+            };
+
+            if (string.IsNullOrEmpty(connectionPropertiesDTO.UARTPort) || connectionPropertiesDTO.UARTBaudRate == 0)
+            {
+                _connection.enable = false;
+            }
+
+
+            _OWLOSThingConfig.connections.Add(_connection);
+
+            _connection = new OWLOSConnection
+            {
+                connectionType = ConnectionType.MQTT,
+                enable = false,
+                Priority = 2,
+                name = "MQTTClient",
+                connectionString = string.Empty
+            };
+            _OWLOSThingConfig.connections.Add(_connection);
+
+            //Get All drivers properties enabled only
+            _OWLOSThingConfig.APIQueryIntervals.Add(new APIQueryInterval()
+            {
+                APIType = APINameType.GetAllDriverProperties,
+                Enable = true,
+                Interval = 60
+            });
+
+            _OWLOSThingConfig.APIQueryIntervals.Add(new APIQueryInterval()
+            {
+                APIType = APINameType.GetAllFiles,
+                Enable = false,
+                Interval = 60 * 24
+            });
+
+            _OWLOSThingConfig.APIQueryIntervals.Add(new APIQueryInterval()
+            {
+                APIType = APINameType.GetAllScripts,
+                Enable = false,
+                Interval = 60 * 24
+            });
+
+            _OWLOSThingConfig.APIQueryIntervals.Add(new APIQueryInterval()
+            {
+                APIType = APINameType.GetFeatures,
+                Enable = false,
+                Interval = 60 * 24
+            });
+
+            thingsManager.CreateThingWrapper(_OWLOSThingConfig);
+
+            return true;
         }
 
         /// <summary>
@@ -96,112 +238,29 @@ namespace OWLOSEcosystemService.Services.Things
 
         #region ThingsThreadManager
         private static ThingsManager thingsManager = null;
+
+        /// <summary>
+        /// OWLOS Things Manager threading entry point 
+        /// </summary>
+        /// <param name="thingsService">dynamic ThengService object pointer</param>
         public static void Start(object thingsService)
         {
             ThingsService _thingsService =  thingsService as ThingsService;
 
-            thingsManager = new ThingsManager();
-            thingsManager.OnNewThing += ThingsManager_OnNewThing;
-            //thingsManager.Load();
-
-            
-
+                       
             IMapper _mapper = new Mapper();
-            IThingsRepository _thingsRepository = new ThingsRepository(_mapper);
+            
+            List<ThingConnectionPropertiesDTO> connectionsProperties = _thingsService.GetAllThingsConnections();
 
-            //   List<ThingConnectionPropertiesDTO> connectionList = _thingsRepository.GetAllThingsConnections();
-
-
-            List<ThingConnectionPropertiesDTO> result = new List<ThingConnectionPropertiesDTO>();
-
-            using (ThingsDbContext db = new ThingsDbContext())
+            //Run all available Things Wrappers 
+            foreach(ThingConnectionPropertiesDTO connectionPropertiesDTO in connectionsProperties)
             {
-
-                ThingConnectionPropertiesDTO ConnectionPropertiesDTO = new ThingConnectionPropertiesDTO();
-                var ConnectionPropertiesEntity2 = db.Add(ConnectionPropertiesDTO);
-
-                List<ThingConnectionPropertiesDTO> ConnectionPropertiesEntity = db.Set<ThingConnectionPropertiesDTO>().ToList();
-
-                result = _mapper.Map<List<ThingConnectionPropertiesDTO>>(ConnectionPropertiesEntity);
-
+                _thingsService.AddThingToEcosystem(connectionPropertiesDTO);
+                //sleep 2 seconds for new thing lifetime query timer 
+                Thread.Sleep(10000);
             }
-
-            foreach(ThingConnectionPropertiesDTO connection in result)
-            {
-                OWLOSThingConfig _OWLOSThingConfig = new OWLOSThingConfig();
-                _OWLOSThingConfig.Name = connection.Name;
-                OWLOSConnection _connection = new OWLOSConnection();
-                
-                
-                _connection.connectionType = ConnectionType.RESTfulClient;
-                _connection.enable = connection.HTTPEnable;
-                _connection.connectionString = JsonConvert.SerializeObject(new RESTfulClientConnectionDTO()
-                {
-                    host = connection.HTTPHost + ":" + connection.HTTPPort
-                });
-
-
-                _OWLOSThingConfig.connections.Add(_connection);
-                _OWLOSThingConfig.APIQueryIntervals.Add(new APIQueryInterval()
-                {
-                    APIType = APINameType.GetAllDriverProperties,
-                    Enable = true,
-                    Interval = 5
-                });
-
-                thingsManager.CreateThingWrapper(_OWLOSThingConfig);
-
-
-            }
-
-
-            /*
-            if (File.Exists("config.json"))
-            {
-                string JSONConfig = File.ReadAllText("config.json");
-                config = JsonConvert.DeserializeObject<ThingsManagerConfig>(JSONConfig);
-            }
-            else //reset config
-            {
-                CreateThingConnection();
-            }
-            //Save each time before development - add new fields to JSON
-            Save();
-            foreach (OWLOSThingConfig _OWLOSThingConfig in config.ThingsConfig)
-            {
-                OWLOSThingWrapper ThingWrapper = new OWLOSThingWrapper(this)
-                {
-                    Thing = new OWLOSThing(_OWLOSThingConfig)
-                };
-                OWLOSThingWrappers.Add(ThingWrapper);
-                NewThing(new OWLOSThingWrapperEventArgs(ThingWrapper));
-            }
-            */
-
-
         }
 
-        public static List<ThingPropertiesModel> GetThings()
-        {
-            List<ThingPropertiesModel> result = new List<ThingPropertiesModel>();
-
-            int temporaryIdCount = 1;
-
-            foreach (OWLOSThingWrapper wrapper in thingsManager.OWLOSThingWrappers)
-            {
-                result.Add(new ThingPropertiesModel()
-                { 
-                    Id = temporaryIdCount,
-                    Name = wrapper.Thing.Name,
-                    Features = wrapper.Thing.Features,
-                    Transports = wrapper.Thing.transports,
-                    Config = wrapper.Thing.config
-                });
-                temporaryIdCount++;
-            }
-
-            return result;
-        }
 
         public static string GetThingsDrivers()
         {

@@ -84,7 +84,14 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
 
                 if (serialPort == null)
                 {
-                    serialPort = new SerialPort(_UARTClientConnectionDTO.port);
+                    if (string.IsNullOrEmpty(_UARTClientConnectionDTO.port))
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        serialPort = new SerialPort(_UARTClientConnectionDTO.port);
+                    }
                 }
                 else
                 {
@@ -224,8 +231,8 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
 
 
             RESTfulClientResultModel result = new RESTfulClientResultModel();
-            //  if ((_connection == null) || (string.IsNullOrEmpty(_UARTClientConnectionDTO.port)))
-            if ((_connection == null))
+            if ((_connection == null) || (string.IsNullOrEmpty(_UARTClientConnectionDTO.port)))
+            //if ((_connection == null))
             {
                 return result;
             }

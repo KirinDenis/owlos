@@ -86,8 +86,8 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
 
         private Timer lifeCycleTimer;
 
-        private readonly RESTfulClientTransport _RESTfulClientTransport;
-        private readonly UARTTransport _UARTTransport;
+        public readonly RESTfulClientTransport _RESTfulClientTransport;
+        public readonly UARTTransport _UARTTransport;
 
         public OWLOSThing(OWLOSThingConfig config)
         {

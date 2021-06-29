@@ -37,25 +37,26 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-using System;
-using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
+using OWLOSEcosystemService.DTO.Things;
 
-namespace OWLOSEcosystemService.DTO.Things
+namespace OWLOSEcosystemService.Data
 {
-    public class ThingConnectionPropertiesDTO
+    public class ThingsDbContext : DbContext
     {
-        [Key]
-        public uint Id { get; set; }
-        public Guid UserId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public bool HTTPEnable { get; set; }
-        public uint HTTPStatus { get; set; }
-        public string HTTPHost { get; set; }
-        public uint HTTPPort { get; set; }
-        public bool UARTEnable { get; set; }
-        public uint UARTStatus { get; set; }
-        public string UARTPort { get; set; }
-        public int UARTBaudRate { get; set; }
+
+        public static DbContextOptions options = null;
+
+        public DbSet<ThingConnectionPropertiesDTO> ThingConnectionProperties { get; set; }
+        public ThingsDbContext(DbContextOptions options)
+        {
+            ThingsDbContext.options = options;
+        }
+
+        public ThingsDbContext() : base(ThingsDbContext.options)
+        {
+
+        }
+
     }
 }
