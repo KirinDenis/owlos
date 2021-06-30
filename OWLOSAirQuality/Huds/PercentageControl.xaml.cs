@@ -68,10 +68,11 @@ namespace OWLOSAirQuality.Huds
             double startAngle = angle;
             double endAngle;
             int hideStep = 125 / data.Length;
+            PetalControl[] percentPetals = new PetalControl[data.Length];
             Color currentColor = (App.Current.Resources["OWLOSPrimary"] as SolidColorBrush).Color;
             for (int i = 0; i < data.Length; i++) 
             {
-                endAngle = startAngle + data[i] / 100.0 * 360.0;
+                endAngle = startAngle + data[i] / 100.0f * 360.0f;
                 Path p = new Path();
                 p.StrokeThickness = 40;
                 p.Data = HudLibrary.DrawArc(Gold.center, Gold.center, radius, startAngle, endAngle);
@@ -83,7 +84,17 @@ namespace OWLOSAirQuality.Huds
                 //p.Stroke = (SolidColorBrush)App.Current.Resources["OWLOSInfoAlpha2"];
                 currentColor.A -= (byte)(hideStep);
                 p.Stroke = new SolidColorBrush(currentColor);
+                //var pt = new PathText();
                 percentangeMainGrid.Children.Add(p);
+
+                //percentPetals[i] = new PetalControl(radius, 22 + i * 14, 4 * 2, 15, data[i].ToString());
+                percentPetals[i] = new PetalControl(radius, (endAngle - startAngle)/2 + startAngle - 12, 10 * 2, 15, data[i].ToString("G4"));
+                percentPetals[i].petalBackground.Stroke = null;
+                percentPetals[i].petalBorder1.Stroke = null;
+                percentPetals[i].petalBorder2.Stroke = null;
+                percentPetals[i].petalNameText.Foreground = (SolidColorBrush)App.Current.Resources["OWLOSWarning"];
+                percentangeMainGrid.Children.Add(percentPetals[i]);
+
                 startAngle = endAngle;
             }
         }

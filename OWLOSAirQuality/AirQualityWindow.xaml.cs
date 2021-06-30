@@ -213,14 +213,12 @@ namespace OWLOSAirQuality
             WeatherGrid.Children.Add(graph4);
             graph4.data = data3;
 
-            data4 = new double[10];
+            data4 = new double[5];
             for (int i = 0; i < data4.Length; i++)
             {
-                data4[i] = r.NextDouble() * 10.0f;
+                data4[i] = r.NextDouble() * 10.0f + 5.0f;
+                //data4[i] = i * 5.0f + 5.0f;
             }
-            ThingsManager thingsManager = new ThingsManager();
-            thingsManager.OnNewThing += ThingsManager_OnNewThing;
-            thingsManager.Load();
 
             //data4 = new double[1];
             //data4[0] = 86.0;
@@ -230,6 +228,10 @@ namespace OWLOSAirQuality
             //WeatherGrid.Children.Add(graph5);
             HudGrid.Children.Add(graph5);
             graph5.data = data4;
+
+            ThingsManager thingsManager = new ThingsManager();
+            thingsManager.OnNewThing += ThingsManager_OnNewThing;
+            thingsManager.Load();
 
             lifeCycleTimer = new Timer(1000)
             {
