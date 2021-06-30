@@ -53,17 +53,35 @@ namespace OWLOSEcosystemService.Controllers
 
     public class ThingsController : Controller
     {
+        #region Controller
         private readonly ILogger<HomeController> _logger;
         private readonly IMapper _mapper;
         private readonly IThingsService _thingsService;
-        
+
         public ThingsController(ILogger<HomeController> logger, IMapper mapper, IThingsService thingsService)
         {
             _logger = logger;
             _mapper = mapper;
             _thingsService = thingsService;
         }
-        
+
+        private Guid GetUserId()
+        {
+            if ((User?.Identity as ClaimsIdentity)?.Claims != null)
+            {
+                IEnumerable<Claim> claims = (User?.Identity as ClaimsIdentity)?.Claims;
+
+                if (claims.Count() > 0)
+                {
+                    return new Guid(claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
+                }
+            }
+
+            return Guid.Empty;
+        }
+        #endregion
+
+        #region Get
         /// <summary>
         /// Returns list of all things
         /// </summary>
@@ -73,7 +91,7 @@ namespace OWLOSEcosystemService.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            List<ThingWrapperModel> result = _thingsService.GetThingsWrappers(); 
+            List<ThingWrapperModel> result = _thingsService.GetThingsWrappers();
 
             if (result.Count != 0)
             {
@@ -83,9 +101,53 @@ namespace OWLOSEcosystemService.Controllers
             {
                 //TODO: Dictionary for messaging
                 return Forbid("Things core not ready or no one thing at ecosystem");
-            }            
+            }
         }
 
+        /// <summary>
+        /// Get user things connections 
+        /// </summary>        
+        /// <returns></returns>
+        [Route("Things/GetThingsConnections")]
+        [HttpGet]
+        public IActionResult GetThingsConnections()
+        {
+            Guid UserId = GetUserId();
+
+            if (UserId != Guid.Empty)
+            {
+                return Ok(_thingsService.GetThingsConnections(UserId));
+            }
+            return Unauthorized("Wrong claims or not authorize, please SignIn");
+        }
+
+        /// <summary>
+        /// Get user thing connection 
+        /// </summary>        
+        /// <returns></returns>
+        [Route("Things/GetThingConnection")]
+        [HttpGet]
+        public IActionResult GetThingConnection(int ThingId)
+        {
+            Guid UserId = GetUserId();
+
+            if (UserId != Guid.Empty)
+            {
+                ThingConnectionPropertiesDTO result = _thingsService.GetThingConnection(UserId, ThingId);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return BadRequest(new ThingsResultModel());
+                }
+            }
+            return Unauthorized("Wrong claims or not authorize, please SignIn");
+        }
+        #endregion
+
+        #region Post
         /// <summary>
         /// Create a new thing connection 
         /// </summary>
@@ -95,38 +157,64 @@ namespace OWLOSEcosystemService.Controllers
         [HttpPost]
         public IActionResult NewThingConnection(ThingConnectionPropertiesModel ConnectionPropertiesModel)
         {
-            if ((User?.Identity as ClaimsIdentity)?.Claims != null)
+            Guid UserId = GetUserId();
+
+            if (UserId != Guid.Empty)
             {
-                IEnumerable<Claim> claims = (User?.Identity as ClaimsIdentity)?.Claims;
+                ThingConnectionPropertiesDTO ConnectionPropertiesDTO = _mapper.Map<ThingConnectionPropertiesDTO>(ConnectionPropertiesModel);
 
-                if (claims.Count() > 0)
+                ConnectionPropertiesDTO.UserId = UserId;
+
+                ThingsResultModel resultModel = _thingsService.NewThingConnection(ConnectionPropertiesDTO);
+
+                if (!resultModel.Error)
                 {
-
-                    Guid UserId = new Guid(claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
-
-                    if (UserId != Guid.Empty)
-                    {
-
-                        ThingConnectionPropertiesDTO ConnectionPropertiesDTO = _mapper.Map<ThingConnectionPropertiesDTO>(ConnectionPropertiesModel);
-
-                        ConnectionPropertiesDTO.UserId = UserId;
-
-                        ThingsResultModel resultModel = _thingsService.NewThingConnection(ConnectionPropertiesDTO);
-
-                        if (!resultModel.Error)
-                        {
-                            return Ok(resultModel.Result); 
-                        }
-                        else
-                        {
-                            return BadRequest(resultModel.Result);
-                        }
-                    }
-                    return Forbid("Bad claims or not authorize, please try SignIn again");
-                }                                
-                return Unauthorized("Wrong claims or not authorize, please try SignIn again");                                
-            }                        
-            return Unauthorized("Not authorize");            
+                    return Ok(resultModel.Result);
+                }
+                else
+                {
+                    return BadRequest(resultModel.Result);
+                }
+            }
+            return Unauthorized("Wrong claims or not authorize, please SignIn");
         }
+        #endregion
+
+        #region Put
+        /// <summary>
+        /// Update exists thing connection properties
+        /// </summary>
+        /// <param name="ConnectionPropertiesModel">connection properties to update</param>
+        /// <returns></returns>
+        [Route("Things/UpdateThingConnection")]
+        [HttpPost]
+        public IActionResult UpdateThingConnection(ThingConnectionPropertiesModel ConnectionPropertiesModel)
+        {
+            Guid UserId = GetUserId();
+
+            if (UserId != Guid.Empty)
+            {
+                ThingConnectionPropertiesDTO ConnectionPropertiesDTO = _mapper.Map<ThingConnectionPropertiesDTO>(ConnectionPropertiesModel);
+
+                ConnectionPropertiesDTO.UserId = UserId;
+
+                ThingsResultModel resultModel = _thingsService.UpdateThingConnection(ConnectionPropertiesDTO);
+
+                if (!resultModel.Error)
+                {
+                    return Ok(resultModel.Result);
+                }
+                else
+                {
+                    return BadRequest(resultModel.Result);
+                }
+            }
+            return Unauthorized("Wrong claims or not authorize, please SignIn");
+        }
+
+
+
+        #endregion
+
     }
 }

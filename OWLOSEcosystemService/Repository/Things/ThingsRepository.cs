@@ -42,18 +42,43 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using OWLOSEcosystemService.Data;
 using OWLOSEcosystemService.DTO.Things;
 using OWLOSEcosystemService.Models.Things;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace OWLOSEcosystemService.Repository.Things
 {
-    public class ThingsRepository: IThingsRepository
+    public class ThingsRepository : IThingsRepository
     {
         private readonly IMapper _mapper;
 
         public ThingsRepository(IMapper mapper)
         {
             _mapper = mapper;
+        }
+
+        public List<ThingConnectionPropertiesDTO> GetThingsConnections(Guid UserId)
+        {
+            List<ThingConnectionPropertiesDTO> result = new List<ThingConnectionPropertiesDTO>();
+
+            using (ThingsDbContext db = new ThingsDbContext())
+            {
+                List<ThingConnectionPropertiesDTO> ConnectionsPropertiesEntity = db.ThingConnectionProperties.Where<ThingConnectionPropertiesDTO>(c => c.UserId.Equals(UserId)).ToList();
+                result = _mapper.Map<List<ThingConnectionPropertiesDTO>>(ConnectionsPropertiesEntity);
+            }
+            return result;
+        }
+
+        public ThingConnectionPropertiesDTO GetThingConnection(Guid UserId, int ThingId)
+        {
+            ThingConnectionPropertiesDTO result = null;
+
+            using (ThingsDbContext db = new ThingsDbContext())
+            {
+                ThingConnectionPropertiesDTO ConnectionPropertiesEntity = db.ThingConnectionProperties.FirstOrDefault<ThingConnectionPropertiesDTO>(c => c.UserId.Equals(UserId) && c.Id == ThingId);
+                result = _mapper.Map<ThingConnectionPropertiesDTO>(ConnectionPropertiesEntity);
+            }
+            return result;
         }
 
         public ThingsResultModel NewThingConnection(ThingConnectionPropertiesDTO ConnectionPropertiesDTO)
@@ -78,25 +103,41 @@ namespace OWLOSEcosystemService.Repository.Things
             return resultModel;
         }
 
+        public ThingsResultModel UpdateThingConnection(ThingConnectionPropertiesDTO ConnectionPropertiesDTO)
+        {
+            ThingsResultModel resultModel = new ThingsResultModel();
+
+            using (ThingsDbContext db = new ThingsDbContext())
+            {
+                EntityEntry<ThingConnectionPropertiesDTO> ConnectionPropertiesEntity = db.Update(ConnectionPropertiesDTO);
+                db.SaveChanges();
+                if (ConnectionPropertiesEntity != null)
+                {
+                    resultModel.Error = false;
+                    resultModel.Result = ConnectionPropertiesEntity.Entity.Id.ToString();
+                }
+                else
+                {
+                    resultModel.Result = "repository problem, result entity is null";
+                }
+            }
+
+            return resultModel;
+
+        }
+
+
         public List<ThingConnectionPropertiesDTO> GetAllThingsConnections()
         {
             List<ThingConnectionPropertiesDTO> result = new List<ThingConnectionPropertiesDTO>();
 
             using (ThingsDbContext db = new ThingsDbContext())
             {
-
-                ThingConnectionPropertiesDTO ConnectionPropertiesDTO = new ThingConnectionPropertiesDTO();
-                var ConnectionPropertiesEntity2 = db.Add(ConnectionPropertiesDTO);
-
                 List<ThingConnectionPropertiesDTO> ConnectionPropertiesEntity = db.Set<ThingConnectionPropertiesDTO>().ToList();
-
                 result = _mapper.Map<List<ThingConnectionPropertiesDTO>>(ConnectionPropertiesEntity);
-
             }
-
             return result;
         }
-
     }
 }
 

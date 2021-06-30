@@ -44,6 +44,7 @@ using OWLOSEcosystemService.Models.Things;
 using OWLOSEcosystemService.Repository.Things;
 using OWLOSThingsManager.Ecosystem;
 using OWLOSThingsManager.Ecosystem.OWLOS;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -98,7 +99,22 @@ namespace OWLOSEcosystemService.Services.Things
 
             return resultModel;
         }
-       
+
+        public ThingsResultModel UpdateThingConnection(ThingConnectionPropertiesDTO ConnectionPropertiesDTO)
+        {
+            return _thingsRepository.UpdateThingConnection(ConnectionPropertiesDTO);
+        }
+
+        public List<ThingConnectionPropertiesDTO> GetThingsConnections(Guid UserId)
+        {
+            return _thingsRepository.GetThingsConnections(UserId);
+        }
+
+        public ThingConnectionPropertiesDTO GetThingConnection(Guid UserId, int ThingId)
+        {
+            return _thingsRepository.GetThingConnection(UserId, ThingId);
+        }
+
         public List<ThingWrapperModel> GetThingsWrappers()
         {
             List<ThingWrapperModel> result = new List<ThingWrapperModel>();
