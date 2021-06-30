@@ -30,6 +30,8 @@ namespace OWLOSEcosystemService
             services.AddDbContext<ApplicationDbContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
 
+            services.AddDbContext<ThingsDbContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
             DbContextOptionsBuilder op = new DbContextOptionsBuilder();
             op.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
             new ThingsDbContext(op.Options);

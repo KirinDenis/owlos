@@ -50,7 +50,7 @@ using System.Threading;
 
 namespace OWLOSEcosystemService.Services.Things
 {
-    public class ThingsService: IThingsService
+    public partial class ThingsService : IThingsService
     {
         #region IThingService
         private readonly IThingsRepository _thingsRepository;
@@ -94,6 +94,7 @@ namespace OWLOSEcosystemService.Services.Things
 
             if (!resultModel.Error)
             {
+                connectionPropertiesDTO.Id = uint.Parse(resultModel.Result);
                 AddThingToEcosystem(connectionPropertiesDTO);
             }
 
@@ -115,6 +116,26 @@ namespace OWLOSEcosystemService.Services.Things
             return _thingsRepository.GetThingConnection(UserId, ThingId);
         }
 
+        public ThingsResultModel DeleteThingConnection(Guid UserId, int ThingId)
+        {
+            ThingsResultModel result = _thingsRepository.DeleteThingConnection(UserId, ThingId);
+
+            if (!result.Error)
+            {
+                result.Error = true;
+                foreach (OWLOSThingWrapper wrapper in thingsManager.OWLOSThingWrappers)
+                {
+                    if ((wrapper.Thing.config.UserId.Equals(UserId)) && (wrapper.Thing.config.DbId == ThingId))
+                    {
+                        thingsManager.DeleteThingWrapper(wrapper);
+                        result.Error = false;
+                        break;
+                    }
+                }                    
+            }
+            return result;
+        }
+
         public List<ThingWrapperModel> GetThingsWrappers()
         {
             List<ThingWrapperModel> result = new List<ThingWrapperModel>();
@@ -128,7 +149,10 @@ namespace OWLOSEcosystemService.Services.Things
                 {
                     Id = temporaryIdCount,
                     Name = wrapper.Thing.Name,
-                    Features = wrapper.Thing.Features,
+                    DbId = wrapper.Thing.config.DbId,
+                    UserId = wrapper.Thing.config.UserId,
+                    LastConnected = wrapper.Thing.config.LastConnected,
+                    Features = wrapper.Thing.Features,                        
                     Config = wrapper.Thing.config
                 };
 
@@ -146,16 +170,16 @@ namespace OWLOSEcosystemService.Services.Things
 
                 temporaryIdCount++;
             }
-
             return result;
         }
-
-
+       
         private bool AddThingToEcosystem(ThingConnectionPropertiesDTO connectionPropertiesDTO)
         {
             OWLOSThingConfig _OWLOSThingConfig = new OWLOSThingConfig
             {
-                Name = connectionPropertiesDTO.Name
+                Name = connectionPropertiesDTO.Name,
+                DbId = connectionPropertiesDTO.Id, 
+                UserId = connectionPropertiesDTO.UserId
             };
 
             OWLOSConnection _connection = new OWLOSConnection
@@ -251,7 +275,6 @@ namespace OWLOSEcosystemService.Services.Things
         }
         #endregion
 
-
         #region ThingsThreadManager
         private static ThingsManager thingsManager = null;
 
@@ -262,7 +285,6 @@ namespace OWLOSEcosystemService.Services.Things
         public static void Start(object thingsService)
         {
             ThingsService _thingsService =  thingsService as ThingsService;
-
                        
             IMapper _mapper = new Mapper();
             
@@ -276,7 +298,6 @@ namespace OWLOSEcosystemService.Services.Things
                 Thread.Sleep(10000);
             }
         }
-
 
         public static string GetThingsDrivers()
         {

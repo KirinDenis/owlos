@@ -121,12 +121,31 @@ namespace OWLOSEcosystemService.Repository.Things
                     resultModel.Result = "repository problem, result entity is null";
                 }
             }
-
             return resultModel;
-
         }
 
+        public ThingsResultModel DeleteThingConnection(Guid UserId, int ThingId)
+        {
+            ThingsResultModel resultModel = new ThingsResultModel();
 
+            using (ThingsDbContext db = new ThingsDbContext())
+            {
+                ThingConnectionPropertiesDTO ConnectionPropertiesEntity = db.ThingConnectionProperties.FirstOrDefault<ThingConnectionPropertiesDTO>(c => c.UserId.Equals(UserId) && c.Id == ThingId);
+                if (ConnectionPropertiesEntity != null)
+                {
+                    db.Remove(ConnectionPropertiesEntity);
+                    db.SaveChanges();
+                    resultModel.Error = false;
+                    resultModel.Result = ThingId.ToString();
+                }
+                else
+                {
+                    resultModel.Result = "repository problem, result entity is null";
+                }
+            }
+            return resultModel;
+        }
+       
         public List<ThingConnectionPropertiesDTO> GetAllThingsConnections()
         {
             List<ThingConnectionPropertiesDTO> result = new List<ThingConnectionPropertiesDTO>();
@@ -137,6 +156,29 @@ namespace OWLOSEcosystemService.Repository.Things
                 result = _mapper.Map<List<ThingConnectionPropertiesDTO>>(ConnectionPropertiesEntity);
             }
             return result;
+        }
+
+        public ThingsResultModel AddAirQuality(Guid UserId, int ThingId, ThingAirQualityModel AirQualityModel)
+        {
+
+            ThingsResultModel resultModel = new ThingsResultModel();
+
+            using (ThingsDbContext db = new ThingsDbContext())
+            {
+                EntityEntry<ThingAirQualityModel> AirQualityEntity = db.Add(AirQualityModel);
+                db.SaveChanges();
+                if (AirQualityEntity != null)
+                {
+                    resultModel.Error = false;                    
+                }
+                else
+                {
+                    resultModel.Result = "repository problem, result entity is null";
+                }
+            }
+
+            return resultModel;
+
         }
     }
 }
