@@ -37,25 +37,23 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
 using OWLOSEcosystemService.DTO.Things;
+using OWLOSEcosystemService.Models.Things;
+using System;
+using System.Collections.Generic;
 
-namespace OWLOSEcosystemService.Data
+namespace OWLOSEcosystemService.Repository.Things
 {
-    public class ApplicationDbContext : IdentityDbContext
-    {
-        private static DbContextOptions<ApplicationDbContext> options = null;
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-        {
-            ApplicationDbContext.options = options;
-            
-        }
+    public interface IThingsRepository
+    {        
+        List<ThingConnectionPropertiesDTO> GetThingsConnections(Guid UserId);
 
-        public ApplicationDbContext(): base(ApplicationDbContext.options)
-        {
-            
-        }
+        ThingConnectionPropertiesDTO GetThingConnection(Guid UserId, int ThingId);
 
+        ThingsResultModel NewThingConnection(ThingConnectionPropertiesDTO ConnectionPropertiesDTO);
+
+        ThingsResultModel UpdateThingConnection(ThingConnectionPropertiesDTO ConnectionPropertiesDTO);
+
+        List<ThingConnectionPropertiesDTO> GetAllThingsConnections();
     }
 }

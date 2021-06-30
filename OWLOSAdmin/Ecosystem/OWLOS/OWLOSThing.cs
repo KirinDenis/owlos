@@ -65,7 +65,7 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
         public DateTime LastConnected;
 
         public List<OWLOSConnection> connections = new List<OWLOSConnection>();
-        public List<APIQueryInterval> APIQueryIntervals { get; set; }
+        public List<APIQueryInterval> APIQueryIntervals { get; set; } = new List<APIQueryInterval>();
     }
 
     public class OWLOSThing : IOWLOSAbstractTransport
@@ -86,8 +86,8 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
 
         private Timer lifeCycleTimer;
 
-        private readonly RESTfulClientTransport _RESTfulClientTransport;
-        private readonly UARTTransport _UARTTransport;
+        public readonly RESTfulClientTransport _RESTfulClientTransport;
+        public readonly UARTTransport _UARTTransport;
 
         public OWLOSThing(OWLOSThingConfig config)
         {
