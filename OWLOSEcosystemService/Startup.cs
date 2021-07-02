@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OWLOSEcosystemService.Data;
 using OWLOSEcosystemService.Services.Things;
-
+//artic
 namespace OWLOSEcosystemService
 {
     public class Startup
