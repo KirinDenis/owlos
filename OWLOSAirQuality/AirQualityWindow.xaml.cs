@@ -77,6 +77,7 @@ namespace OWLOSAirQuality
         private GraphControl graph4;
         
         private PercentageControl graph5;
+        private IconsControl icons1;
 
         private Random r;
 
@@ -220,14 +221,18 @@ namespace OWLOSAirQuality
                 //data4[i] = i * 5.0f + 5.0f;
             }
 
-            //data4 = new double[1];
-            //data4[0] = 86.0;
+            data4 = new double[1];
+            data4[0] = 86.0;
 
             graph5 = new PercentageControl(Gold.radius - 70);
             graph5.angle = 0;
             //WeatherGrid.Children.Add(graph5);
             HudGrid.Children.Add(graph5);
             graph5.data = data4;
+
+            icons1 = new IconsControl();
+            HudGrid.Children.Add(icons1);
+            icons1.Animate();
 
             ThingsManager thingsManager = new ThingsManager();
             thingsManager.OnNewThing += ThingsManager_OnNewThing;
