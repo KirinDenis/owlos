@@ -46,6 +46,7 @@ namespace OWLOSEcosystemService.Services.Things
 {
     public interface IThingsService
     {
+        #region Thing
         List<ThingConnectionPropertiesDTO> GetThingsConnections(Guid UserId);
 
         ThingConnectionPropertiesDTO GetThingConnection(Guid UserId, int ThingId);
@@ -54,6 +55,13 @@ namespace OWLOSEcosystemService.Services.Things
 
         ThingsResultModel UpdateThingConnection(ThingConnectionPropertiesDTO ConnectionPropertiesDTO);
 
+        ThingsResultModel DeleteThingConnection(Guid UserId, int ThingId);
+
         List<ThingWrapperModel> GetThingsWrappers();
+        #endregion
+
+        #region AirQuality
+        ThingAirQualityModel GetAirQuality(Guid UserId, int ThingId);
+        #endregion
     }
 }

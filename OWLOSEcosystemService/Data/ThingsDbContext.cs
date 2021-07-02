@@ -39,6 +39,7 @@ OWLOS распространяется в надежде, что она буде
 
 using Microsoft.EntityFrameworkCore;
 using OWLOSEcosystemService.DTO.Things;
+using OWLOSEcosystemService.Models.Things;
 
 namespace OWLOSEcosystemService.Data
 {
@@ -48,7 +49,8 @@ namespace OWLOSEcosystemService.Data
         public static DbContextOptions options = null;
 
         public DbSet<ThingConnectionPropertiesDTO> ThingConnectionProperties { get; set; }
-        public ThingsDbContext(DbContextOptions options)
+        public DbSet<ThingAirQualityModel> ThingAirQuality { get; set; }
+        public ThingsDbContext(DbContextOptions options) : base(options)
         {
             ThingsDbContext.options = options;
         }

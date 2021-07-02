@@ -62,6 +62,10 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
     {
         public string Name;
 
+        public uint DbId;
+
+        public Guid UserId;
+
         public DateTime LastConnected;
 
         public List<OWLOSConnection> connections = new List<OWLOSConnection>();

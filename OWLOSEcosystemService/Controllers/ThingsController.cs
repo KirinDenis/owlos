@@ -83,11 +83,10 @@ namespace OWLOSEcosystemService.Controllers
 
         #region Get
         /// <summary>
-        /// Returns list of all things
+        /// Returns list of all things wrappers (DEBUG ONLY)
         /// </summary>
-        /// <returns>List of things</returns>
-        [Route("Things")]
-        [Route("Things/Get")]
+        /// <returns>List of things</returns>        
+        [Route("Things/GetAllThingsWrappers")]
         [HttpGet]
         public IActionResult Get()
         {
@@ -145,6 +144,32 @@ namespace OWLOSEcosystemService.Controllers
             }
             return Unauthorized("Wrong claims or not authorize, please SignIn");
         }
+
+        /// <summary>
+        /// Get user thing air quality
+        /// </summary>        
+        /// <returns></returns>
+        [Route("Things/GetAirQuality")]
+        [HttpGet]
+        public IActionResult GetAirQuality(int ThingId)
+        {
+            Guid UserId = GetUserId();
+
+            if (UserId != Guid.Empty)
+            {
+                ThingAirQualityModel result = _thingsService.GetAirQuality(UserId, ThingId);
+                if ((result != null) && (!result.Status.Equals("NOT_FOUND")))
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return BadRequest("Thing not found");
+                }
+            }
+            return Unauthorized("Wrong claims or not authorize, please SignIn");
+        }
+
         #endregion
 
         #region Post
@@ -187,7 +212,7 @@ namespace OWLOSEcosystemService.Controllers
         /// <param name="ConnectionPropertiesModel">connection properties to update</param>
         /// <returns></returns>
         [Route("Things/UpdateThingConnection")]
-        [HttpPost]
+        [HttpPut]
         public IActionResult UpdateThingConnection(ThingConnectionPropertiesModel ConnectionPropertiesModel)
         {
             Guid UserId = GetUserId();
@@ -211,9 +236,35 @@ namespace OWLOSEcosystemService.Controllers
             }
             return Unauthorized("Wrong claims or not authorize, please SignIn");
         }
+        #endregion
 
+        #region Delete
+        /// <summary>
+        /// Delete exists thing connection properties
+        /// </summary>        
+        /// <returns></returns>
+        [Route("Things/DeleteThingConnection")]
+        [HttpDelete]
+        public IActionResult DeleteThingConnection(int ThingId)
+        {
+            Guid UserId = GetUserId();
 
+            if (UserId != Guid.Empty)
+            {
+                                
+                ThingsResultModel resultModel = _thingsService.DeleteThingConnection(UserId, ThingId);
 
+                if (!resultModel.Error)
+                {
+                    return Ok(resultModel.Result);
+                }
+                else
+                {
+                    return BadRequest(resultModel.Result);
+                }
+            }
+            return Unauthorized("Wrong claims or not authorize, please SignIn");
+        }
         #endregion
 
     }
