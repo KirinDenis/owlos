@@ -207,25 +207,38 @@ namespace OWLOSEcosystemService.Controllers
         }
 
         /// <summary>
-        /// Get Air Quality data from client Thing 
-        /// </summary>
-        /// <param name="AirQualityData">Air Quality data</param>
+        /// Receive Air Quality data from client Thing 
+        /// </summary>       
         /// <returns></returns>
         [Route("Things/AirQuality")]
-        [HttpPost]
-        
-        public async Task<IActionResult> AirQuality([FromForm]string AirQualityData)
+        [HttpPost]        
+        public async Task<IActionResult> AirQuality()
         {
-       //     HttpContext.Request.Body.Seek(0, SeekOrigin.Begin);
-
-            using (StreamReader stream = new StreamReader(HttpContext.Request.Body))
+            try
             {
-                string body = await stream.ReadToEndAsync();
+                string body = string.Empty;
+                using (StreamReader stream = new StreamReader(HttpContext.Request.Body))
+                {
+                    body = await stream.ReadToEndAsync();                    
+                }
 
-                _logger.LogDebug("Air Quality from client", body);
+                if (!string.IsNullOrEmpty(body))
+                {
+                    string result = _thingsService.ReceiveAirQualityData(body);
+                    if (string.IsNullOrEmpty(result))
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                        return BadRequest(result);
+                    }
+                }
+                return BadRequest("Air Quality data is empty or incorrect");
             }
-            
-            return Ok();
+            catch { }
+
+            return BadRequest("Air Quality data parsing problem");
         }
 
         #endregion

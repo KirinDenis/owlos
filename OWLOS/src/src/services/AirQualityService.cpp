@@ -7,7 +7,7 @@
 #include "TransportService.h"
 
 String _topic;
-int QueryInterval = 1000;
+int QueryInterval = 60 *  1000;
 unsigned long lastPublishMillis = 0;
 
 //--------------------------------------------------------------
@@ -33,17 +33,16 @@ void AirQualityLoop()
       //TODO: Query 
       lastPublishMillis = millis();
 
-      String AirQualityPropertiesMode = "name:"+ _topic +"\n" 
-      "token:todoToken\n" 
+      String AirQualityPropertiesMode = "token:todoToken\n" 
       "queryTime:" + String(lastPublishMillis) + "\n";
 
       if (_DHTDriver != nullptr)
       {
           AirQualityPropertiesMode += "DHT22:yes\n";
-          AirQualityPropertiesMode += "temp:" +  _DHTDriver->getStoredTemperature() + "\n";
-          AirQualityPropertiesMode += "hum:" +  _DHTDriver->getStoredHumidity() + "\n";
-          AirQualityPropertiesMode += "heat:" +  _DHTDriver->getStoredHeatIndex() + "\n";
-          AirQualityPropertiesMode += "c:" +  _DHTDriver->getStoredCelsius() + "\n";
+          AirQualityPropertiesMode += "DHT22temp:" +  _DHTDriver->getStoredTemperature() + "\n";
+          AirQualityPropertiesMode += "DHT22hum:" +  _DHTDriver->getStoredHumidity() + "\n";
+          AirQualityPropertiesMode += "DHT22heat:" +  _DHTDriver->getStoredHeatIndex() + "\n";
+          AirQualityPropertiesMode += "DHT22c:" +  _DHTDriver->getStoredCelsius() + "\n";
       }
       else 
       {

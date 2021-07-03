@@ -2,7 +2,9 @@
 using OWLOSThingsManager.Ecosystem;
 using OWLOSThingsManager.Ecosystem.OWLOS;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 namespace OWLOSEcosystemService.Services.Things
 {
@@ -77,9 +79,105 @@ namespace OWLOSEcosystemService.Services.Things
                     break;
                 }
             }
-
-
             return result;
+        }
+
+        public string ReceiveAirQualityData(string data)
+        {
+
+            List<string> dataRaw = data.Split('\n').ToList();
+
+            if (dataRaw.Count < 3)
+            {
+                return "Bad data raw format";
+            }
+
+            if (!dataRaw[0].StartsWith("topic:"))
+            {
+                return "Bad data raw format, wrong topic key";
+            }
+
+            if (!dataRaw[1].StartsWith("token:"))
+            {
+                return "Bad data raw format, wrong token key";
+            }
+
+            string topic = dataRaw[0].Substring(dataRaw[0].IndexOf(":") + 1);
+            string token = dataRaw[1].Substring(dataRaw[1].IndexOf(":") + 1);
+
+            if (!_thingsRepository.CheckToken(token))
+            {
+                return "Bad token";
+            }
+
+            //TODO: Sensors personal trap and query topics processing
+
+            if (topic.IndexOf("AirQuality") != -1)
+            {
+                ThingAirQualityModel airQualityModel = new ThingAirQualityModel();
+
+                NumberStyles styles = NumberStyles.Float;
+                IFormatProvider provider = CultureInfo.CreateSpecificCulture("en-EN");
+
+                foreach (string dataProp in dataRaw)
+                {
+                    if (string.IsNullOrEmpty(dataProp))
+                    {
+                        continue;
+                    }
+
+                    if (dataProp.IndexOf(":") != -1)
+                    {
+                        string key = dataProp.Substring(0, dataProp.IndexOf(":"));
+                        string value = dataProp.Substring(dataProp.IndexOf(":") + 1);
+                        if (key.Equals("DHT22"))
+                        {
+                            if (value.Equals("yes"))
+                            {
+                                airQualityModel.DHTSensor.Exists = true;
+                            }
+                            else
+                            {
+                                airQualityModel.DHTSensor.Exists = true;
+                            }
+                        }
+
+                        if (key.Equals("DHT22temp"))
+                        {
+                            airQualityModel.DHTSensor.Temperature = double.Parse(value, styles, provider);
+                        }
+
+                        if (key.Equals("DHT22hum"))
+                        {
+                            airQualityModel.DHTSensor.Humidity = double.Parse(value, styles, provider);
+                        }
+
+                        if (key.Equals("DHT22heat"))
+                        {
+                            airQualityModel.DHTSensor.HeatIndex = double.Parse(value, styles, provider);
+                        }
+
+                        if (key.Equals("DHT22c"))
+                        {
+                            if (value.Equals("1"))
+                            {
+                                airQualityModel.DHTSensor.Celsius = true;
+                            }
+                            else
+                            {
+                                airQualityModel.DHTSensor.Celsius = false;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        return "Data format parsing problem, wrong key:value syntax";
+                    }
+                }
+                _thingsRepository.AddAirQuality(Guid.Parse(token), 1, airQualityModel);
+            }
+
+           return string.Empty;
         }
     }
 }

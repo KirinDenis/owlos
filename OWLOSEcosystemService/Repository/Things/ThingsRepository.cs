@@ -178,7 +178,12 @@ namespace OWLOSEcosystemService.Repository.Things
             }
 
             return resultModel;
+        }
 
+        public bool CheckToken(string token)
+        {
+            //TODO Check token value 
+            return true;
         }
     }
 }
