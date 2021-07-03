@@ -78,6 +78,11 @@ public:
 	float DHTgetHumidity();
 	float DHTgetHeatIndex(bool _celsius);
 
+	String getStoredTemperature();
+    String getStoredHumidity();
+    String getStoredHeatIndex();
+    String getStoredCelsius();
+
 	bool begin(String _Topic);
 	bool query();
 	String getAllProperties();

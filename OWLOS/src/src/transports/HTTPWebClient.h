@@ -46,5 +46,7 @@ OWLOS распространяется в надежде, что она буде
 
 bool downloadFile(String fileName, String url);
 
+void HTTPWebClientPublish(String _topic, String _payload);
+
 #endif
 #endif

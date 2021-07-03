@@ -45,8 +45,10 @@ using OWLOSEcosystemService.Models.Things;
 using OWLOSEcosystemService.Services.Things;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace OWLOSEcosystemService.Controllers
 {
@@ -203,6 +205,29 @@ namespace OWLOSEcosystemService.Controllers
             }
             return Unauthorized("Wrong claims or not authorize, please SignIn");
         }
+
+        /// <summary>
+        /// Get Air Quality data from client Thing 
+        /// </summary>
+        /// <param name="AirQualityData">Air Quality data</param>
+        /// <returns></returns>
+        [Route("Things/AirQuality")]
+        [HttpPost]
+        
+        public async Task<IActionResult> AirQuality([FromForm]string AirQualityData)
+        {
+       //     HttpContext.Request.Body.Seek(0, SeekOrigin.Begin);
+
+            using (StreamReader stream = new StreamReader(HttpContext.Request.Body))
+            {
+                string body = await stream.ReadToEndAsync();
+
+                _logger.LogDebug("Air Quality from client", body);
+            }
+            
+            return Ok();
+        }
+
         #endregion
 
         #region Put

@@ -44,7 +44,7 @@ OWLOS распространяется в надежде, что она буде
 #define CONFIG_H
 
 #define FIRMWARE_VERSION_NUMVER "1.12"
-#define FIRMWARE_BUILD_NUMBER 114
+#define FIRMWARE_BUILD_NUMBER 115
 #define FIRMWARE_VERSION "OWLOS version 1.12 (RC)"
 
 
@@ -122,7 +122,7 @@ OWLOS распространяется в надежде, что она буде
                 //Включает в сборку OWLOS HTTP Server 
                 #define USE_HTTP_SERVER  
 
-                //#define USE_HTTP_CLIENT
+                #define USE_HTTP_CLIENT
 
                 //Включает поиск и установку обновлений OWLOS в сети Internet
                 //Новые версии готовых прошивок находятся здесь: https://github.com/KirinDenis/owlos/tree/master/OWLOS
@@ -133,7 +133,7 @@ OWLOS распространяется в надежде, что она буде
                 //Включает OTA (Over The Air) возможность загружать новые прошивки по локальной WiFi сети (без использования UART)
                 //#define USE_OTA_SERVICE
 
-                #ifdef ARDUINO_ESP32_RELEASE_1_0_4       
+                #ifdef ARDUINO_ESP32_RELEASE_1_0_4                      
                 //Включает в сборку MQTT клиент
                 #define USE_MQTT                
                 #endif                
@@ -151,7 +151,7 @@ OWLOS распространяется в надежде, что она буде
 #define USE_DRIVERS    
     #ifdef USE_DRIVERS
         //Универсальный драйвер исполнительных устройств (цифровых и аналоговых)(с подержкой ШИМ)    
-        #define USE_ACTUATOR_DRIVER
+        //#define USE_ACTUATOR_DRIVER
 
         //Универсальный драйвер сенсоров (датчиков)(цифровых и аналоговых)
         #define USE_SENSOR_DRIVER
@@ -160,7 +160,7 @@ OWLOS распространяется в надежде, что она буде
          #define USE_DHT_DRIVER
 
         //Драйвер I2C LCD дисплеев, поддерживает более одного дисплея на шине I2C
-        #define USE_LCD_DRIVER
+        //#define USE_LCD_DRIVER
 
         //Драйвер шаговых двигателей
         //#define USE_STEPPER_DRIVER
@@ -175,4 +175,4 @@ OWLOS распространяется в надежде, что она буде
 
 
 //Включить поддержку скриптов
-#define USE_SCRIPT
+//#define USE_SCRIPT

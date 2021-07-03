@@ -21,6 +21,7 @@ namespace OWLOSEcosystemService
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.UseUrls("http://192.168.1.100:5000", "https://192.168.1.100:5004");
                 });
     }
 }

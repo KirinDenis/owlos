@@ -51,6 +51,9 @@ OWLOS распространяется в надежде, что она буде
 #include "../services/DriverService.h"
 #include "../transports/HTTPSWebServer.h"
 
+#ifdef USE_HTTP_CLIENT
+#include "../transports/HTTPWebClient.h"
+#endif
 #ifdef USE_MQTT
 #include "../transports/MQTTClient.h"
 #endif
@@ -420,6 +423,7 @@ void transportLoop()
 #ifdef USE_UART
 	UARTRecv();
 #endif
+
 }
 
 void transportSubscribe(String _topic)
@@ -446,6 +450,13 @@ bool transportPublish(String _topic, String _payload)
 #ifdef USE_UART
 	UARTSend(_topic, _payload);
 #endif
+
+#ifdef USE_HTTP_CLIENT
+ 	if ((thingGetWiFiAvailable() == 1) && (WiFi.isConnected()))
+ 	{
+  	   HTTPWebClientPublish(_topic, _payload);
+ 	}
+#endif  
 
 	return true;
 }
