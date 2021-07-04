@@ -241,6 +241,29 @@ namespace OWLOSEcosystemService.Controllers
             return BadRequest("Air Quality data parsing problem");
         }
 
+        /// <summary>
+        /// Decode thing token
+        /// </summary>       
+        /// <returns></returns>
+        [Route("Things/DecodeThingToken")]
+        [HttpPost]
+        public IActionResult DecodeThingToken(string token)
+        {
+            return Ok(_thingsService.DecodeThingToken(token));
+        }
+
+        /// <summary>
+        /// Decode thing token
+        /// </summary>       
+        /// <returns></returns>
+        [Route("Things/GetThingToken")]
+        [HttpGet]
+        public IActionResult CreateThingToken(ThingTokenDTO thingTokenDTO)
+        {
+            return Ok(_thingsService.CreateThingToken(thingTokenDTO));
+        }
+
+
         #endregion
 
         #region Put

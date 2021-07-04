@@ -65,5 +65,11 @@ namespace OWLOSEcosystemService.Services.Things
 
         string ReceiveAirQualityData(string data);
         #endregion
+
+        #region TokenRegion
+        string CreateThingToken(ThingTokenDTO thingTokenDTO);
+
+        ThingTokenDTO DecodeThingToken(string thingToken);
+        #endregion
     }
 }

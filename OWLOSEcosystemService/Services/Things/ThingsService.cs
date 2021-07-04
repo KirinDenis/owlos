@@ -90,6 +90,16 @@ namespace OWLOSEcosystemService.Services.Things
                 }
             }
 
+            ThingTokenDTO thingToken = new ThingTokenDTO();
+
+            thingToken.UserId = connectionPropertiesDTO.UserId;
+            thingToken.ThingName = connectionPropertiesDTO.Name;
+            thingToken.CreationDateTime = DateTime.Now;
+
+            string token = CreateThingToken(thingToken);
+
+            ThingTokenDTO thingToken1 = DecodeThingToken(token);
+
             resultModel = _thingsRepository.NewThingConnection(connectionPropertiesDTO);
 
             if (!resultModel.Error)
