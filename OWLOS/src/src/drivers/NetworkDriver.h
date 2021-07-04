@@ -76,11 +76,26 @@ bool thingSetHTTPSServerPort(int _httpsserverport);
 #endif
 
 #ifdef USE_HTTP_CLIENT
+int thingGetHTTPClientAvailable();
+bool thingSetHTTPClientAvailable(int _httpclientavailable);
+
+int thingGetHTTPClientQueryInterval();
+bool thingSetHTTPClientQueryInterval(int _httpclientqueryinterval);
+
+int thingGetHTTPClientAirQualityOnly();
+bool thingSetHTTPClientAirQualityOnly(int _httpclientairqualityonly);
+
+String thingGetHTTPClientToken();
+bool thingSetHTTPClientToken(String _httpclienttoken);
+
 int thingGetHTTPClientPort();
 bool thingSetHTTPClientPort(int _httpclientport);
 
 String thingGetHTTPClientURL();
 bool thingSetHTTPClientURL(String _httpclienturl);
+
+int thingGetHTTPClientUseHTTPS();
+bool thingSetHTTPClientUseHTTPS(int _httpclientusehttps);
 #endif
 
 #ifdef USE_MQTT

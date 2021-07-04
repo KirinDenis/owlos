@@ -43,6 +43,7 @@ OWLOS распространяется в надежде, что она буде
 #ifdef USE_ESP_DRIVER
 
 #include "../drivers/ESPDriver.h"
+#include "../drivers/NetworkDriver.h"
 #include "../services/FileService.h"
 
 #define id "webproperties"

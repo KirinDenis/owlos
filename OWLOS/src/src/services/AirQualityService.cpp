@@ -2,12 +2,13 @@
 #define AIRQUALITY_SERVICE
 
 #include "../config.h"
+#include "../drivers/NetworkDriver.h"
 #include "AirQualityService.h"
 #include "DriverService.h"
 #include "TransportService.h"
 
 String _topic;
-int QueryInterval = 60 *  1000;
+
 unsigned long lastPublishMillis = 0;
 
 //--------------------------------------------------------------
@@ -28,13 +29,12 @@ void AirQualityBegin(String __topic)
 
 void AirQualityLoop()
 {
-  if (millis() > lastPublishMillis + QueryInterval)  
+  if (millis() > lastPublishMillis + thingGetHTTPClientQueryInterval())  
   {
       //TODO: Query 
       lastPublishMillis = millis();
 
-      String AirQualityPropertiesMode = "token:todoToken\n" 
-      "queryTime:" + String(lastPublishMillis) + "\n";
+      String AirQualityPropertiesMode = "airqualityonly:" + String(thingGetHTTPClientAirQualityOnly()) + "\nqueryTime:" + String(lastPublishMillis) + "\n";
 
       if (_DHTDriver != nullptr)
       {

@@ -54,70 +54,48 @@ OWLOS распространяется в надежде, что она буде
 #include <WiFiMulti.h>
 #include "../libraries/HTTPClient/HTTPClient.h"
 #include <HTTPUpdate.h>
+#include <WiFiClientSecure.h>
 #endif
 
 #include <FS.h>
 
+#include "../drivers/NetworkDriver.h"
 #include "../utils/Utils.h"
 #include "../services/FileService.h"
 
 #define webclientid "WebClient"
-HTTPClient http;
 
-const char *ca = \ 
-"-----BEGIN CERTIFICATE-----\n"
-				 \  
-"MIIEkjCCA3qgAwIBAgIQCgFBQgAAAVOFc2oLheynCDANBgkqhkiG9w0BAQsFADA/\n"
-				 \  
-"MSQwIgYDVQQKExtEaWdpdGFsIFNpZ25hdHVyZSBUcnVzdCBDby4xFzAVBgNVBAMT\n"
-				 \  
-"DkRTVCBSb290IENBIFgzMB4XDTE2MDMxNzE2NDA0NloXDTIxMDMxNzE2NDA0Nlow\n"
-				 \  
-"SjELMAkGA1UEBhMCVVMxFjAUBgNVBAoTDUxldCdzIEVuY3J5cHQxIzAhBgNVBAMT\n"
-				 \  
-"GkxldCdzIEVuY3J5cHQgQXV0aG9yaXR5IFgzMIIBIjANBgkqhkiG9w0BAQEFAAOC\n"
-				 \  
-"AQ8AMIIBCgKCAQEAnNMM8FrlLke3cl03g7NoYzDq1zUmGSXhvb418XCSL7e4S0EF\n"
-				 \  
-"q6meNQhY7LEqxGiHC6PjdeTm86dicbp5gWAf15Gan/PQeGdxyGkOlZHP/uaZ6WA8\n"
-				 \  
-"SMx+yk13EiSdRxta67nsHjcAHJyse6cF6s5K671B5TaYucv9bTyWaN8jKkKQDIZ0\n"
-				 \  
-"Z8h/pZq4UmEUEz9l6YKHy9v6Dlb2honzhT+Xhq+w3Brvaw2VFn3EK6BlspkENnWA\n"
-				 \  
-"a6xK8xuQSXgvopZPKiAlKQTGdMDQMc2PMTiVFrqoM7hD8bEfwzB/onkxEz0tNvjj\n"
-				 \  
-"/PIzark5McWvxI0NHWQWM6r6hCm21AvA2H3DkwIDAQABo4IBfTCCAXkwEgYDVR0T\n"
-				 \  
-"AQH/BAgwBgEB/wIBADAOBgNVHQ8BAf8EBAMCAYYwfwYIKwYBBQUHAQEEczBxMDIG\n"
-				 \  
-"CCsGAQUFBzABhiZodHRwOi8vaXNyZy50cnVzdGlkLm9jc3AuaWRlbnRydXN0LmNv\n"
-				 \  
-"bTA7BggrBgEFBQcwAoYvaHR0cDovL2FwcHMuaWRlbnRydXN0LmNvbS9yb290cy9k\n"
-				 \  
-"c3Ryb290Y2F4My5wN2MwHwYDVR0jBBgwFoAUxKexpHsscfrb4UuQdf/EFWCFiRAw\n"
-				 \  
-"VAYDVR0gBE0wSzAIBgZngQwBAgEwPwYLKwYBBAGC3xMBAQEwMDAuBggrBgEFBQcC\n"
-				 \  
-"ARYiaHR0cDovL2Nwcy5yb290LXgxLmxldHNlbmNyeXB0Lm9yZzA8BgNVHR8ENTAz\n"
-				 \  
-"MDGgL6AthitodHRwOi8vY3JsLmlkZW50cnVzdC5jb20vRFNUUk9PVENBWDNDUkwu\n"
-				 \  
-"Y3JsMB0GA1UdDgQWBBSoSmpjBH3duubRObemRWXv86jsoTANBgkqhkiG9w0BAQsF\n"
-				 \  
-"AAOCAQEA3TPXEfNjWDjdGBX7CVW+dla5cEilaUcne8IkCJLxWh9KEik3JHRRHGJo\n"
-				 \  
-"uM2VcGfl96S8TihRzZvoroed6ti6WqEBmtzw3Wodatg+VyOeph4EYpr/1wXKtx8/\n"
-				 \  
-"wApIvJSwtmVi4MFU5aMqrSDE6ea73Mj2tcMyo5jMd6jmeWUHK8so/joWUoHOUgwu\n"
-				 \  
-"X4Po1QYz+3dszkDqMp4fklxBwXRsW10KXzPMTZ+sOPAveyxindmjkW8lGy+QsRlG\n"
-				 \  
-"PfZ+G6Z6h7mjem0Y+iWlkYcV4PIWL1iwBi8saCbGS5jN2p8M+X+Q7UNKEkROb3N6\n"
-				 \  
-"KOqkqm57TH2H3eDJAkSnh6/DNFu0Qg==\n"
-				 \  
-"-----END CERTIFICATE-----\n";
+HTTPClient http;
+WiFiClientSecure *secureClient = nullptr;
+
+
+//https://techtutorialsx.com/2017/11/18/esp32-arduino-https-get-request/
+//^^^About cetifivation ESP32 HTTP Client
+
+//https://github.com/espressif/arduino-esp32/blob/master/libraries/HTTPClient/examples/BasicHttpsClient/BasicHttpsClient.ino
+// This is GandiStandardSSLCA2.pem, the root Certificate Authority that signed
+// the server certifcate for the demo server https://jigsaw.w3.org in this
+// example. This certificate is valid until Sep 11 23:59:59 2024 GMT
+const char *rootCACertificate =
+	"-----BEGIN CERTIFICATE-----\n"
+"MIIDDDCCAfSgAwIBAgIIVb+tdeqOFs0wDQYJKoZIhvcNAQELBQAwFDESMBAGA1UE\n"
+"AxMJbG9jYWxob3N0MB4XDTIxMDYyMDE2NDMxMFoXDTIyMDYyMDE2NDMxMFowFDES\n"
+"MBAGA1UEAxMJbG9jYWxob3N0MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC\n"
+"AQEApVOsURJIWkNfXyyBnTQM//r7XpWIXnrxC+iBV7zs8UXIwrTAmkW89gFO/6kz\n"
+"Ed4gymMr+iIdoBtQjz2oaQbHR1jVoiq7cM1EL6Ume6xTW8BHQaLhJkwH50kB1CES\n"
+"9vX38b7Tj7nSDALeljIvtgmnK/vwC32Sr+xxHWhIgpMJiy5y1l8FYCBaY+PD4gMq\n"
+"WYgVX22efploP14OcgcZrrlSSKg3hqEyLdayi6gJja7e7aBBDztZ3ag+yVMfr6st\n"
+"8SzN0CZlSMXE2fLwTHcUCZY2CmAUBml6SIFo7eZQyLS8rdbxbkRQp0gpHioThdxV\n"
+"mEFmYCfHLFMWiLbR0BoQX4+huQIDAQABo2IwYDAMBgNVHRMBAf8EAjAAMA4GA1Ud\n"
+"DwEB/wQEAwIFoDAWBgNVHSUBAf8EDDAKBggrBgEFBQcDATAXBgNVHREBAf8EDTAL\n"
+"gglsb2NhbGhvc3QwDwYKKwYBBAGCN1QBAQQBAjANBgkqhkiG9w0BAQsFAAOCAQEA\n"
+"EszVECtO2KDCnPz07zAPdkGI9/UtrhDNN1a+qK5swp7uJAz62lM/cZOGrNbQqgPF\n"
+"wkXxOT0xC3VwM5iDA0iDpTMHNP4GNMXLgOibxCyljRfHaG9OfbOBhzoHcEU0lQA/\n"
+"KSrAdOnM59JkM2eP0HWzLXAyDJLjlhLAXc7A8kkholUT/K+ilJxBmXT9w2xGaG8K\n"
+"kWWXfhQJU//etfwRf/L4G9K0f2acqrAxhwUC2dGSxouDsNWlmIcWfvJbGFKMwp1o\n"
+"ZCBv/I3IEGQYW1TgawUzVi3rDot9w3VCk2383NYf3MIjNAq6YQDgb3k/Bb+lWBVF\n"
+"SLgwDhZsbgYy/9Tb1ZKktw==\n"
+	"-----END CERTIFICATE-----\n";
 
 bool downloadFile(String fileName, String url)
 {
@@ -132,8 +110,7 @@ bool downloadFile(String fileName, String url)
 	if (!filesBegin())
 	{
 		//An Error has occurred while mounting file system
-		return result;
-		;
+		return result;		
 	}
 
 	http.begin(url);
@@ -211,15 +188,77 @@ bool downloadFile(String fileName, String url)
 	return result;
 }
 
+//FROM: https://github.com/espressif/arduino-esp32/blob/master/libraries/HTTPClient/examples/BasicHttpsClient/BasicHttpsClient.ino
+//BasicHTTPSClient.ino
+void setClock()
+{
+	configTime(0, 0, "pool.ntp.org");
+
+#ifdef DEBUG
+	debugOut(webclientid, "Waiting for NTP time sync: ");
+#endif
+
+	time_t nowSecs = time(nullptr);
+	while (nowSecs < 8 * 3600 * 2)
+	{
+		delay(500);
+#ifdef DEBUG
+		debugOut(webclientid, ".");
+#endif
+		yield(); //конем косточку WDT
+		nowSecs = time(nullptr);
+	}
+
+	Serial.println();
+	struct tm timeinfo;
+	gmtime_r(&nowSecs, &timeinfo);
+#ifdef DEBUG
+	debugOut(webclientid, asctime(&timeinfo));
+#endif	
+}
+
 void HTTPWebClientPublish(String _topic, String _payload)
 {
-	http.begin("https://192.168.1.100:5004/Things/AirQuality/");
+	if (thingGetHTTPClientAvailable() == 1)
+	{
+		if ((thingGetHTTPClientAirQualityOnly() == 0) || (_payload.indexOf("airqualityonly") != -1))
+		{
+			_payload = "topic:" + _topic + "\n" +
+					   "token:" + thingGetHTTPClientToken() + "\n" + _payload;
 
-	_payload = "topic:" + _topic + "\n" +
-	"token:6b7f8fc5-8534-4c5a-9649-1d1049ffff4a\n" + _payload; //TODO: Inser Token from Ecosystem, now used UserId
-
-	int httpCode = http.POST(_payload);
-	http.end();
+			if (thingGetHTTPClientUseHTTPS() == 1)
+			{
+				if (!secureClient)
+				{
+					setClock();					
+					secureClient = new WiFiClientSecure;
+				}
+				if (secureClient)
+				{					
+					secureClient->setCACert(rootCACertificate);
+					http.begin(thingGetHTTPClientURL() + ":" + String(thingGetHTTPClientPort()) + "/Things/AirQuality/", rootCACertificate);
+				}
+				else
+				{				
+#ifdef DEBUG
+					debugOut(webclientid, "HTTP Client HTTPS Secure client problem");
+#endif
+					return;
+				}
+			}
+			else
+			{
+				http.begin(thingGetHTTPClientURL() + ":" + String(thingGetHTTPClientPort()) + "/Things/AirQuality/");
+			}
+#ifdef DEBUG
+			int httpCode = http.POST(_payload);
+			debugOut(webclientid, "HTTP Client result code =" + String(httpCode));
+#else
+			http.POST(_payload);			
+#endif
+			http.end();
+		}
+	}
 }
 
 #endif
