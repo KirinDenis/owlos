@@ -8,9 +8,6 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid x:Name="iconsMainGrid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" RenderTransformOrigin="0.5,0.5" Width="700" Height="700" Margin="0,0,0,0" Cursor="Hand">
         <Grid x:Name="Sun" Visibility="Visible" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="700" Height="700">
-            <Grid.RenderTransform>
-                <ScaleTransform ScaleX="0.3" ScaleY="0.3" CenterX="350" CenterY="350"/>
-            </Grid.RenderTransform>
             <Path Stroke="{DynamicResource OWLOSInfo}" Data="M104.101,206.144c0-3.866-3.134-7-7-7H7c-3.866,0-7,3.134-7,7s3.134,7,7,7h90.101
 		C100.967,213.144,104.101,210.01,104.101,206.144z"/>
             <Path Stroke="{DynamicResource OWLOSInfo}" Data="M405.288,199.144h-90.093c-3.866,0-7,3.134-7,7s3.134,7,7,7h90.093c3.866,0,7-3.134,7-7S409.154,199.144,405.288,199.144z"
@@ -79,10 +76,7 @@
 		c0.056,0,0.113-0.001,0.169-0.002c3.865-0.092,6.924-3.299,6.832-7.164c-0.003-0.148-0.191-14.891,13.692-23.432
 		c3.293-2.025,4.319-6.337,2.294-9.63C180.06,169.667,175.749,168.638,172.456,170.666z"/>
         </Grid>
-        <Grid Name="Clouds" Visibility="Hidden" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="700" Height="700">
-            <Grid.RenderTransform>
-                <ScaleTransform ScaleX="0.3" ScaleY="0.3" CenterX="350" CenterY="350"/>
-            </Grid.RenderTransform>
+        <Grid x:Name="Clouds" Visibility="Visible" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="700" Height="700">
             <Path Stroke="{DynamicResource OWLOSInfo}" Data="M489.579,254.766c-12.942-16.932-30.829-29.887-50.839-36.933c-0.828-48.454-40.501-87.618-89.148-87.618
 				c-7.618,0-15.213,0.993-22.647,2.958c-12.102-15.076-27.37-27.615-44.441-36.457c-19.642-10.173-40.881-15.331-63.127-15.331
 				c-74.705,0-135.736,59.676-137.931,133.859C33.885,227.82,0,271.349,0,321.107c0,60.383,49.125,109.508,109.508,109.508h292.983
@@ -95,5 +89,6 @@
 				C496.445,372.913,454.297,415.061,402.491,415.061z"/>
             <Path Stroke="{DynamicResource OWLOSInfo}" Data="M135.62,193.401h15.555c0-26.66,21.69-48.35,48.351-48.35v-15.555C164.289,129.495,135.62,158.163,135.62,193.401z"/>
         </Grid>
+        
     </Grid>
 </UserControl>

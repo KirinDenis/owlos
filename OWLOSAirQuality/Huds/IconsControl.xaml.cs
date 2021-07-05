@@ -21,6 +21,12 @@ namespace OWLOSAirQuality.Huds
     /// </summary>
     public partial class IconsControl : UserControl
     {
+        // Текущее значение иконки (Солнце/Облако/Облако с дождем/Дождь)
+        private int _state { get; set; }
+        
+        public int From { get; set; }
+        public int To { get; set; }
+
         public IconsControl()
         {
             InitializeComponent();
@@ -37,15 +43,65 @@ namespace OWLOSAirQuality.Huds
             //    currentColor.A -= (byte)(hideStep);
             //    this.Sun.Background = new SolidColorBrush(currentColor);
             //}
+            TransformGroup transformGroup = new TransformGroup();
+
+            ScaleTransform scaleTransform = new ScaleTransform();
+            scaleTransform.ScaleX = 0.3;
+            scaleTransform.ScaleY = 0.3;
+            //scaleTransform.CenterX = 350;
+            //scaleTransform.CenterY = 350;
+            scaleTransform.CenterX = 525;
+            scaleTransform.CenterY = 525;
+            transformGroup.Children.Add(scaleTransform);
+
             DoubleAnimation rotateAnimation = new DoubleAnimation()
             {
                 From = 0,
-                To = 360,
-                Duration = new Duration(TimeSpan.FromMilliseconds(5000))
+                To = 360,                
+                Duration = new Duration(TimeSpan.FromMilliseconds(10000))
             };
 
-            Sun.RenderTransform = new RotateTransform();
-            Sun.RenderTransform.BeginAnimation(RotateTransform.AngleProperty, rotateAnimation);
+            RotateTransform rotateTransform = new RotateTransform();
+            rotateTransform.Angle = 180;
+            rotateTransform.CenterX = 350;
+            rotateTransform.CenterY = 350;
+            transformGroup.Children.Add(rotateTransform);
+
+            //Sun.RenderTransform = rotateTransform;
+            Sun.RenderTransform = transformGroup;
+            //Sun.Visibility = Visibility.Hidden;
+
+            Storyboard story = new Storyboard();
+            story.Children.Add(rotateAnimation);
+            Storyboard.SetTarget(rotateAnimation, Sun);
+            Storyboard.SetTargetProperty(rotateAnimation, new PropertyPath("(UIElement.RenderTransform).(TransformGroup.Children)[1].(RotateTransform.Angle)"));
+            story.Begin();
+
+            TransformGroup transformGroupClouds = new TransformGroup();
+            transformGroupClouds.Children.Add(scaleTransform);
+
+            DoubleAnimation rotateAnimationClouds = new DoubleAnimation()
+            {
+                From = 0,
+                To = 360,
+                Duration = new Duration(TimeSpan.FromMilliseconds(10000))
+            };
+
+            RotateTransform rotateTransformClouds = new RotateTransform();
+            rotateTransformClouds.Angle = 90;
+            rotateTransformClouds.CenterX = 350;
+            rotateTransformClouds.CenterY = 350;
+
+            transformGroupClouds.Children.Add(rotateTransformClouds);
+            Clouds.RenderTransform = transformGroupClouds;
+
+            Storyboard storyClouds = new Storyboard();
+            storyClouds.Children.Add(rotateAnimationClouds);
+            Storyboard.SetTarget(rotateAnimationClouds, Clouds);
+            Storyboard.SetTargetProperty(rotateAnimationClouds, new PropertyPath("(UIElement.RenderTransform).(TransformGroup.Children)[1].(RotateTransform.Angle)"));
+            storyClouds.Begin();
+
+            //Sun.RenderTransform.BeginAnimation(RotateTransform.AngleProperty, rotateAnimation);
 
         }
     }
