@@ -82,13 +82,13 @@ namespace OWLOSAirQuality.Huds
 
             DoubleAnimation rotateAnimationClouds = new DoubleAnimation()
             {
-                From = 0,
-                To = 360,
+                From = 90,
+                To = 450,
                 Duration = new Duration(TimeSpan.FromMilliseconds(10000))
             };
 
             RotateTransform rotateTransformClouds = new RotateTransform();
-            rotateTransformClouds.Angle = 90;
+            rotateTransformClouds.Angle = 45;
             rotateTransformClouds.CenterX = 350;
             rotateTransformClouds.CenterY = 350;
 
@@ -103,6 +103,45 @@ namespace OWLOSAirQuality.Huds
 
             //Sun.RenderTransform.BeginAnimation(RotateTransform.AngleProperty, rotateAnimation);
 
+            // Cloudy
+            TransformGroup transformGroupCloudy = new TransformGroup();
+            transformGroupCloudy.Children.Add(scaleTransform);
+
+            DoubleAnimation rotateAnimationCloudy = new DoubleAnimation()
+            {
+                From = 180,
+                To = 540,
+                Duration = new Duration(TimeSpan.FromMilliseconds(10000))
+            };
+
+            RotateTransform rotateTransformCloudy = new RotateTransform();
+            rotateTransformCloudy.Angle = 90;
+            rotateTransformCloudy.CenterX = 350;
+            rotateTransformCloudy.CenterY = 350;
+
+            transformGroupCloudy.Children.Add(rotateTransformCloudy);
+            Cloudy.RenderTransform = transformGroupCloudy;
+
+            DoubleAnimation opacityAnimationCloudy = new DoubleAnimation()
+            {
+                From = 1,
+                To = 0,
+                Duration = new Duration(TimeSpan.FromMilliseconds(10000)),
+                AutoReverse = false
+            };
+
+            Storyboard storyCloudy = new Storyboard();
+            storyCloudy.Children.Add(rotateAnimationCloudy);
+            Storyboard.SetTarget(rotateAnimationCloudy, Cloudy);
+            Storyboard.SetTargetProperty(rotateAnimationCloudy, new PropertyPath("(UIElement.RenderTransform).(TransformGroup.Children)[1].(RotateTransform.Angle)"));
+            Storyboard.SetTarget(opacityAnimationCloudy, Cloudy);
+            Storyboard.SetTargetProperty(opacityAnimationCloudy, new PropertyPath("(UIElement.RenderTransform).(TransformGroup.Children)[1].(Brush.Opacity)"));
+
+            storyCloudy.Begin();
+
+            
+
+            // END Cloudy
         }
     }
 }
