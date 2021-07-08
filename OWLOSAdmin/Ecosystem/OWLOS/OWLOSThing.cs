@@ -62,7 +62,7 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
     {
         public string Name;
 
-        public uint DbId;
+        public int DbId;
 
         public Guid UserId;
 

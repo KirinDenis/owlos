@@ -1,10 +1,16 @@
 ﻿https://www.c-sharpcorner.com/article/using-asp-net-core-3-0-identity-with-mysql/
 
 //создать .CS файлы миграции (не используйте если не создавали новых энтити)
-//dotnet ef migrations add CreateIdentitySchema --project OWLOSEcosystemService
+
+
+dotnet ef migrations add InitialCreate --project OWLOSEcosystemService --context ApplicationDbContext
+dotnet ef migrations add InitialCreate --project OWLOSEcosystemService --context ThingsDbContext
 
 dotnet ef migrations add CreateIdentitySchema --project OWLOSEcosystemService --context ApplicationDbContext
-dotnet ef migrations add CreateIdentitySchema --project OWLOSEcosystemService --context ThingsDbContext
+dotnet ef migrations add CreateThingsSchema --project OWLOSEcosystemService --context ThingsDbContext
+
+//создавайте мигрейшены если меняете структуры таблиц или создате новые таблицы
+dotnet ef migrations add AlterConnectionTable --project OWLOSEcosystemService --context ThingsDbContext
 
 //накатить миграцию в базу (ИСПОЛЬЗУЙТЕ после Pull всегда что бы создать новые таблицы в базе)
 dotnet ef database update --project OWLOSEcosystemService --context ApplicationDbContext

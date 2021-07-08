@@ -213,50 +213,6 @@ namespace OWLOSEcosystemService.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("OWLOSEcosystemService.DTO.Things.ThingConnectionPropertiesDTO", b =>
-                {
-                    b.Property<uint>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int unsigned");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("longtext");
-
-                    b.Property<bool>("HTTPEnable")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("HTTPHost")
-                        .HasColumnType("longtext");
-
-                    b.Property<uint>("HTTPPort")
-                        .HasColumnType("int unsigned");
-
-                    b.Property<uint>("HTTPStatus")
-                        .HasColumnType("int unsigned");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("longtext");
-
-                    b.Property<uint>("UARTBaudRate")
-                        .HasColumnType("int unsigned");
-
-                    b.Property<bool>("UARTEnable")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("UARTPort")
-                        .HasColumnType("longtext");
-
-                    b.Property<uint>("UARTStatus")
-                        .HasColumnType("int unsigned");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("char(36)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ThingConnectionProperties");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)

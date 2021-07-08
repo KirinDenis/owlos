@@ -177,7 +177,7 @@ String thingGetNetworkProperties()
 			"httpclientavailable=" + String(thingGetHTTPClientAvailable()) + "//b\n"
 			"httpclientinterval=" + String(thingGetHTTPClientQueryInterval()) + "//i\n"
 			"httpclientaionly=" + String(thingGetHTTPClientAirQualityOnly()) + "//bs\n"
-			"httpclienttoke=" + thingGetHTTPClientToken() + "//s\n"
+			"httpclienttoken=" + thingGetHTTPClientToken() + "//s\n"
 			"httpclientport=" + String(thingGetHTTPClientPort()) + "//i\n"
 			"httpclienturl=" + thingGetHTTPClientURL() + "//\n"
 			"httpclientcert=" + String(thingGetHTTPClientUseHTTPS()) + "//b\n"

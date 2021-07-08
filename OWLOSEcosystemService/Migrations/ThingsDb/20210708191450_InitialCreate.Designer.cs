@@ -9,8 +9,8 @@ using OWLOSEcosystemService.Data;
 namespace OWLOSEcosystemService.Migrations.ThingsDb
 {
     [DbContext(typeof(ThingsDbContext))]
-    [Migration("20210630201247_CreateIdentitySchema")]
-    partial class CreateIdentitySchema
+    [Migration("20210708191450_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,9 +21,9 @@ namespace OWLOSEcosystemService.Migrations.ThingsDb
 
             modelBuilder.Entity("OWLOSEcosystemService.DTO.Things.ThingConnectionPropertiesDTO", b =>
                 {
-                    b.Property<uint>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int unsigned");
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
@@ -41,6 +41,9 @@ namespace OWLOSEcosystemService.Migrations.ThingsDb
                         .HasColumnType("int unsigned");
 
                     b.Property<string>("Name")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Token")
                         .HasColumnType("longtext");
 
                     b.Property<int>("UARTBaudRate")

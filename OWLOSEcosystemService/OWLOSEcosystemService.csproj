@@ -38,6 +38,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Migrations\ThingsDb\" />
     <Folder Include="OWLOSEcosystem\" />
     <Folder Include="OWLOS\" />
   </ItemGroup>

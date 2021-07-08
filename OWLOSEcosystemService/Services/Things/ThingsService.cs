@@ -90,21 +90,23 @@ namespace OWLOSEcosystemService.Services.Things
                 }
             }
 
-            ThingTokenDTO thingToken = new ThingTokenDTO();
-
-            thingToken.UserId = connectionPropertiesDTO.UserId;
-            thingToken.ThingName = connectionPropertiesDTO.Name;
-            thingToken.CreationDateTime = DateTime.Now;
-
-            string token = CreateThingToken(thingToken);
-
-            ThingTokenDTO thingToken1 = DecodeThingToken(token);
-
             resultModel = _thingsRepository.NewThingConnection(connectionPropertiesDTO);
 
             if (!resultModel.Error)
             {
-                connectionPropertiesDTO.Id = uint.Parse(resultModel.Result);
+                ThingTokenDTO thingToken = new ThingTokenDTO();
+
+                thingToken.UserId = connectionPropertiesDTO.UserId;
+                thingToken.ThingId = int.Parse(resultModel.Result);
+                thingToken.CreationDateTime = DateTime.Now;
+
+                connectionPropertiesDTO.Token = CreateThingToken(thingToken);
+
+                _thingsRepository.UpdateThingConnection(connectionPropertiesDTO);
+
+                
+
+                connectionPropertiesDTO.Id = int.Parse(resultModel.Result);
                 AddThingToEcosystem(connectionPropertiesDTO);
             }
 

@@ -9,7 +9,7 @@ using OWLOSEcosystemService.Data;
 namespace OWLOSEcosystemService.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210620171321_InitialCreate")]
+    [Migration("20210708191431_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

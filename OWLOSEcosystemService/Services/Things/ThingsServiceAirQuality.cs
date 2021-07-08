@@ -1,4 +1,5 @@
-﻿using OWLOSEcosystemService.Models.Things;
+﻿using OWLOSEcosystemService.DTO.Things;
+using OWLOSEcosystemService.Models.Things;
 using OWLOSThingsManager.Ecosystem;
 using OWLOSThingsManager.Ecosystem.OWLOS;
 using System;
@@ -105,10 +106,15 @@ namespace OWLOSEcosystemService.Services.Things
             string topic = dataRaw[0].Substring(dataRaw[0].IndexOf(":") + 1);
             string token = dataRaw[1].Substring(dataRaw[1].IndexOf(":") + 1);
 
-            if (!_thingsRepository.CheckToken(token))
+
+            ThingTokenDTO thingTokenDTO = DecodeThingToken(token);
+
+            if (!_thingsRepository.CheckToken(thingTokenDTO))
             {
                 return "Bad token";
             }
+
+
 
             //TODO: Sensors personal trap and query topics processing
 
@@ -174,10 +180,30 @@ namespace OWLOSEcosystemService.Services.Things
                         return "Data format parsing problem, wrong key:value syntax";
                     }
                 }
-                _thingsRepository.AddAirQuality(Guid.Parse(token), 1, airQualityModel);
+                return AirQualityToThing(thingTokenDTO.UserId, thingTokenDTO.ThingId, airQualityModel);
             }
 
            return string.Empty;
+        }
+
+        private string AirQualityToThing(Guid UserId, int thingId, ThingAirQualityModel airQualityModel)
+        {
+            OWLOSThingWrapper thingWrapper = thingsManager.GetThingWrapperById(thingId);
+            if ((thingWrapper != null) && (thingWrapper.Thing != null))
+            {
+                OWLOSDriver dhtDriver = thingWrapper.Thing.drivers.FirstOrDefault<OWLOSDriver>(d => d.name.Equals("dht22"));
+                if (dhtDriver != null)
+                {
+                    OWLOSDriverProperty property = dhtDriver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("temperature"));
+                    property.SetOutside(airQualityModel.DHTSensor.Temperature.ToString());
+                }   
+                else
+                {
+                    return "Thing not ready or not initialized";
+                }
+
+            }
+            return string.Empty;
         }
     }
 }
