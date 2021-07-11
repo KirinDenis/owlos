@@ -159,7 +159,7 @@ namespace OWLOSEcosystemService.Controllers
 
             if (UserId != Guid.Empty)
             {
-                ThingAirQualityModel result = _thingsService.GetAirQuality(UserId, ThingId);
+                ThingAirQualityModel result = _thingsService.GetThingAirQualityModel(UserId, ThingId);
                 if ((result != null) && (!result.Status.Equals("NOT_FOUND")))
                 {
                     return Ok(result);
@@ -224,7 +224,7 @@ namespace OWLOSEcosystemService.Controllers
 
                 if (!string.IsNullOrEmpty(body))
                 {
-                    string result = _thingsService.ReceiveAirQualityData(body);
+                    string result = _thingsService.AirQualityDataToThing(body);
                     if (string.IsNullOrEmpty(result))
                     {
                         return Ok();

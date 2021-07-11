@@ -61,9 +61,10 @@ namespace OWLOSEcosystemService.Services.Things
         #endregion
 
         #region AirQuality
-        ThingAirQualityModel GetAirQuality(Guid UserId, int ThingId);
+        ThingAirQualityModel GetThingAirQualityModel(Guid UserId, int ThingId);
 
-        string ReceiveAirQualityData(string data);
+        string AirQualityDataToThing(string data);
+        
         #endregion
 
         #region TokenRegion

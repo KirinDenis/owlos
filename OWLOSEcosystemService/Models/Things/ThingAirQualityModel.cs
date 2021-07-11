@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace OWLOSEcosystemService.Models.Things
 {
-
+    public enum ThingAirQualityStatus {Online, Offline, OnlineWithError, Error}
     public class ThingSensor
     {
         [Key]
@@ -18,7 +18,6 @@ namespace OWLOSEcosystemService.Models.Things
     {
         [Key]
         public int id { get; set; }
-
         public bool Exists { get; set; } = false;
         public bool Celsius { get; set; } = true;
         public double Temperature { get; set; } 
@@ -33,11 +32,12 @@ namespace OWLOSEcosystemService.Models.Things
     {
         [Key]
         public int id { get; set; }
-        public string Status { get; set; } = "NOT_FOUND";
+        public ThingAirQualityStatus Status { get; set; } = ThingAirQualityStatus.Error;
         public DateTime QueryTime { get; set; }
         public ThingDHTSensor DHTSensor { get; set; } = new ThingDHTSensor();
         public ThingSensor LightSensor { get; set; } = new ThingSensor();
+        public ThingSensor ResistorSensor { get; set; } = new ThingSensor();
         public ThingSensor MQ7Sensor { get; set; } = new ThingSensor();
-        public ThingSensor TestAnalogSensor { get; set; } = new ThingSensor();
+        public ThingSensor MotionSensor { get; set; } = new ThingSensor();
     }
 }
