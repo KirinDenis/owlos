@@ -180,10 +180,21 @@ namespace OWLOSEcosystemService.Repository.Things
             return resultModel;
         }
 
-        public bool CheckToken(string token)
+        public bool CheckToken(ThingTokenDTO thingTokenDTO)
         {
-            //TODO Check token value 
-            return true;
+            if (thingTokenDTO == null)
+            {
+                return false;
+            }
+
+            if (GetThingConnection(thingTokenDTO.UserId, thingTokenDTO.ThingId) != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

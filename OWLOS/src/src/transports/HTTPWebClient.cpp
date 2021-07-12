@@ -254,7 +254,11 @@ void HTTPWebClientPublish(String _topic, String _payload)
 			int httpCode = http.POST(_payload);
 			debugOut(webclientid, "HTTP Client result code =" + String(httpCode));
 #else
-			http.POST(_payload);			
+			int httpCode = http.POST(_payload);
+			//TODO: remove it before release
+			Serial.println(thingGetHTTPClientURL() + ":" + String(thingGetHTTPClientPort()) + "/Things/AirQuality/");
+			Serial.println(String(httpCode));
+
 #endif
 			http.end();
 		}

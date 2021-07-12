@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OWLOSEcosystemService.Data;
 
 namespace OWLOSEcosystemService.Migrations.ThingsDb
 {
     [DbContext(typeof(ThingsDbContext))]
-    partial class ThingsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210708191523_CreateThingsSchema")]
+    partial class CreateThingsSchema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -79,16 +81,13 @@ namespace OWLOSEcosystemService.Migrations.ThingsDb
                     b.Property<int?>("MQ7Sensorid")
                         .HasColumnType("int");
 
-                    b.Property<int?>("MotionSensorid")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("QueryTime")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int?>("ResistorSensorid")
-                        .HasColumnType("int");
+                    b.Property<string>("Status")
+                        .HasColumnType("longtext");
 
-                    b.Property<int>("Status")
+                    b.Property<int?>("TestAnalogSensorid")
                         .HasColumnType("int");
 
                     b.HasKey("id");
@@ -99,9 +98,7 @@ namespace OWLOSEcosystemService.Migrations.ThingsDb
 
                     b.HasIndex("MQ7Sensorid");
 
-                    b.HasIndex("MotionSensorid");
-
-                    b.HasIndex("ResistorSensorid");
+                    b.HasIndex("TestAnalogSensorid");
 
                     b.ToTable("ThingAirQuality");
                 });
@@ -175,23 +172,17 @@ namespace OWLOSEcosystemService.Migrations.ThingsDb
                         .WithMany()
                         .HasForeignKey("MQ7Sensorid");
 
-                    b.HasOne("OWLOSEcosystemService.Models.Things.ThingSensor", "MotionSensor")
+                    b.HasOne("OWLOSEcosystemService.Models.Things.ThingSensor", "TestAnalogSensor")
                         .WithMany()
-                        .HasForeignKey("MotionSensorid");
-
-                    b.HasOne("OWLOSEcosystemService.Models.Things.ThingSensor", "ResistorSensor")
-                        .WithMany()
-                        .HasForeignKey("ResistorSensorid");
+                        .HasForeignKey("TestAnalogSensorid");
 
                     b.Navigation("DHTSensor");
 
                     b.Navigation("LightSensor");
 
-                    b.Navigation("MotionSensor");
-
                     b.Navigation("MQ7Sensor");
 
-                    b.Navigation("ResistorSensor");
+                    b.Navigation("TestAnalogSensor");
                 });
 #pragma warning restore 612, 618
         }

@@ -6,7 +6,7 @@ namespace OWLOSEcosystemService.DTO.Things
     {
         public Guid UserId { get; set; }
 
-        public string ThingName { get; set; }
+        public int ThingId { get; set; }
 
         public DateTime CreationDateTime { get; set; }
     }

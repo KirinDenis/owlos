@@ -232,6 +232,21 @@ namespace OWLOSThingsManager.Ecosystem
             return true;
         }
 
+        public OWLOSThingWrapper GetThingWrapperById(int thingId)
+        {
+            foreach (OWLOSThingWrapper thingWrapper in OWLOSThingWrappers)
+            {
+                if (thingWrapper.Thing.config.DbId == thingId)
+                {
+                    return thingWrapper;
+                }
+
+            }
+
+            return null;
+        }
+
+
         protected virtual void NewThing(OWLOSThingWrapperEventArgs e)
         {
             OnNewThing?.Invoke(this, e);

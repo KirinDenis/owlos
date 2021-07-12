@@ -165,17 +165,17 @@ namespace OWLOSEcosystemService.Services.Things
 
         public string CreateThingToken(ThingTokenDTO thingTokenDTO)
         {
-            byte[] sign = Encoding.UTF8.GetBytes("OWLOSThingToken");
-            byte[] userId = Encoding.UTF8.GetBytes(thingTokenDTO.UserId.ToString());
-            byte[] thingName = Encoding.UTF8.GetBytes(thingTokenDTO.ThingName);
+            byte[] sign = Encoding.UTF8.GetBytes("OWLOSThingToken" + ";");
+            byte[] userId = Encoding.UTF8.GetBytes(thingTokenDTO.UserId.ToString() + ";");
+            byte[] thingId = Encoding.UTF8.GetBytes(thingTokenDTO.ThingId.ToString() + ";");
             byte[] currentTime = BitConverter.GetBytes(thingTokenDTO.CreationDateTime.ToBinary());
             
-            byte[] cryptSource = new byte[sign.Length + userId.Length + thingName.Length + currentTime.Length];
+            byte[] cryptSource = new byte[sign.Length + userId.Length + thingId.Length + currentTime.Length];
 
             Buffer.BlockCopy(sign, 0, cryptSource, 0, sign.Length);
             Buffer.BlockCopy(userId, 0, cryptSource, sign.Length, userId.Length);
-            Buffer.BlockCopy(thingName, 0, cryptSource, sign.Length + userId.Length, thingName.Length);
-            Buffer.BlockCopy(currentTime, 0, cryptSource, sign.Length + userId.Length + thingName.Length, currentTime.Length);
+            Buffer.BlockCopy(thingId, 0, cryptSource, sign.Length + userId.Length, thingId.Length);
+            Buffer.BlockCopy(currentTime, 0, cryptSource, sign.Length + userId.Length + thingId.Length, currentTime.Length);
 
             return Convert.ToBase64String(Encoding.UTF8.GetBytes(EncryptStringAES(Convert.ToBase64String(cryptSource.ToArray()), "tokenCode")));            
         }
@@ -197,8 +197,15 @@ namespace OWLOSEcosystemService.Services.Things
                 if (decodedToken.Contains("OWLOSThingToken"))
                 {
                     ThingTokenDTO result = new ThingTokenDTO();
-                    result.ThingName = decodedToken;
-                    return result;
+                    List<string> tokenRaw = decodedToken.Split(';').ToList();
+
+                    result.UserId = Guid.Parse(tokenRaw[1]);
+                    result.ThingId = int.Parse(tokenRaw[2]);
+
+                    if (result.UserId != Guid.Empty)
+                    {
+                        return result;
+                    }
                 }
             }
             catch { }

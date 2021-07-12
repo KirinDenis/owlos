@@ -60,6 +60,6 @@ namespace OWLOSEcosystemService.Repository.Things
 
         ThingsResultModel AddAirQuality(Guid UserId, int ThingId, ThingAirQualityModel AirQualityModel);
 
-        bool CheckToken(string token);
+        bool CheckToken(ThingTokenDTO thingTokenDTO);
     }
 }

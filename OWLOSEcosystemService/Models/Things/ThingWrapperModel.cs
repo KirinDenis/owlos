@@ -9,7 +9,7 @@ namespace OWLOSEcosystemService.Models.Things
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public uint DbId { get; set; }
+        public int DbId { get; set; }
 
         public Guid UserId { get; set; }
 
