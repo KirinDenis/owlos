@@ -503,6 +503,9 @@ namespace OWLOSEcosystemService.Services.Things
                 //ENDOF Motion ---
 
             }
+            //TEMPORARY
+            airQualityModel.QueryTime = DateTime.Now;
+            _thingsRepository.AddAirQuality(UserId, thingId, airQualityModel);
             return string.Empty;
         }
     }

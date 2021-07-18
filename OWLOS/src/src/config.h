@@ -47,6 +47,7 @@ OWLOS распространяется в надежде, что она буде
 #define FIRMWARE_BUILD_NUMBER 115
 #define FIRMWARE_VERSION "OWLOS version 1.12 (RC)"
 
+#define LONG_VERSION
 
 // ВАЖНО:
 // DONT_USE_FILES флаг запрещает ESP драйверу сохранять значения свойств в файловой системе. 
@@ -135,7 +136,7 @@ OWLOS распространяется в надежде, что она буде
 
                 #ifdef ARDUINO_ESP32_RELEASE_1_0_4                      
                 //Включает в сборку MQTT клиент
-                #define USE_MQTT                
+                //#define USE_MQTT                
                 #endif                
             #endif
     #else
@@ -143,7 +144,7 @@ OWLOS распространяется в надежде, что она буде
     #endif
     
 
-#define USE_UART
+//#define USE_UART
 
 #include "utils/Utils.h"
 

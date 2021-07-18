@@ -50,6 +50,7 @@ OWLOS распространяется в надежде, что она буде
 #include "services/DriverService.h"
 #include "services/FileService.h"
 #include "services/ScriptService.h"
+#include "services/UXService.h"
 #include "services/AirQualityService.h"
 
 /*-----------------------------------------------------------------------------
@@ -84,6 +85,7 @@ bool kernelSetup()
 #else
 	driversInit("owlosthing");
 #endif
+    UXServiceInit(); 
     AirQualityBegin(thingGetTopic());
 #endif
 
@@ -167,6 +169,7 @@ bool kernelLoop()
 	//give CPU time quantum to each driver. Like are sample -> temperature sensor can check physical sensor value
 #ifdef USE_DRIVERS
 	driversLoop(); //the driverLoop() more actual for sensors drivers, the actuator drivers wait until Sub()->OnMessage() happens, see Main::Callback(...) function
+	UXServiceLoop();
 	AirQualityLoop();
 #endif
 

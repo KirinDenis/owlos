@@ -69,6 +69,7 @@ bool thingSetUnitId(String _thingid);
 String thingGetTopic();
 bool thingSetTopic(String _topic);
 
+#ifdef LONG_VERSION
 String thingGetFirmwareVersion();
 bool thingSetFirmwareVersion(String _firmwareversion);
 
@@ -157,6 +158,7 @@ bool thingSetESPMagicFlashChipSpeed(int _espmagicflashchipspeed);
 
 FlashMode_t thingGetESPMagicFlashChipMode(uint8_t byte);
 bool thingSetESPMagicFlashChipMode(int _espmagicflashchipmode);
+#endif
 
 String thingGetBusyPins();
 String thingGetPinsMap();

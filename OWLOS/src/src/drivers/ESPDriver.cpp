@@ -125,6 +125,7 @@ String thingGetAllProperties()
 								 "id=esp//r\n"
 								 "type=" +
 		   String(ESP_DRIVER_TYPE) + "//r\n"
+#ifdef LONG_VERSION		   
 							 "espresetinfo=" +
 		   thingGetESPResetInfo() + "//r\n"
 								   "espreset=" +
@@ -178,7 +179,10 @@ String thingGetAllProperties()
 										   "espmagicflashchipspeed=" +
 		   String(espmagicflashchipspeed) + "//r\n"
 											"espmagicflashchipmode=" +
-		   String(espmagicflashchipmode) + "//r\n";
+		   String(espmagicflashchipmode) + "//r\n"
+#endif		   
+		   ;
+
 }
 
 void thingSubscribe()
@@ -213,7 +217,7 @@ String thingOnMessage(const String &route, const String &_payload, int8_t transp
 	{
 		return result;
 	}
-
+#ifdef LONG_VERSION
 	if (matchRoute(route, topic, "/getthingid"))
 	{
 		return onGetProperty("id", thingGetUnitId(), transportMask);
@@ -466,6 +470,7 @@ String thingOnMessage(const String &route, const String &_payload, int8_t transp
 	else 
 		
 		return result;
+#endif
 	return "";
 }
 
@@ -593,6 +598,7 @@ bool thingSetTopic(String _topic)
 	return onInsideChange("topic", String(topic));
 }
 
+#ifdef LONG_VERSION
 //GetFirmwareVersion
 String thingGetFirmwareVersion()
 {
@@ -1078,5 +1084,6 @@ bool thingSetESPMagicFlashChipMode(int _espmagicflashchipmode)
 {
 	return false;
 }
+#endif
 
 #endif

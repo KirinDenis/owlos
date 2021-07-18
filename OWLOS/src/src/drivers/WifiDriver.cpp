@@ -468,6 +468,13 @@ bool thingSetWiFiIP(String _wifiip)
 {
 	return false; //local (client) WiFi IP can't be changed manualy
 }
+//WiFiGateWayIP
+String thingGetWiFiGateWayIP()
+{
+	wifiip = WiFi.gatewayIP().toString();
+	return wifiip;
+}
+
 
 // WiFi parameters
 //WiFiMode
@@ -521,7 +528,7 @@ String thingGetAllWiFiModes()
 
 //GetWiFiRSSI
 int32_t thingGetWiFiRSSI()
-{
+{	
 	int32_t _wifirssi = WiFi.RSSI();
 	if (_wifirssi != wifirssi)
 		onInsideChange("wifirssi", String(_wifirssi));
