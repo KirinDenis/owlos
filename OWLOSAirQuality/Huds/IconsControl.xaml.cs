@@ -21,9 +21,39 @@ namespace OWLOSAirQuality.Huds
     /// </summary>
     public partial class IconsControl : UserControl
     {
+
+        //private double _angle = 0.0f;
+        //private readonly double _length = 180.0f;
+
+        //public double angle
+        //{
+        //    get => _angle;
+        //    set
+        //    {
+        //        if ((value > -1) && (value < 360))
+        //        {
+        //            _angle = value;
+        //            // Draw();
+        //        }
+        //    }
+        //}
         // Текущее значение иконки (Солнце/Облако/Облако с дождем/Дождь)
-        private int _state { get; set; }
+        private int _state = 1;
         
+        public int state
+        {
+            get => _state;
+            set
+            {
+                if((value>=1) && (value<=4))
+                {
+                    _state = value;
+                    Animate();
+                }
+            }
+
+        }
+
         public int From { get; set; }
         public int To { get; set; }
 
@@ -43,6 +73,25 @@ namespace OWLOSAirQuality.Huds
             //    currentColor.A -= (byte)(hideStep);
             //    this.Sun.Background = new SolidColorBrush(currentColor);
             //}
+
+
+            DoubleAnimation opacityAnimationFadeIn = new DoubleAnimation()
+            {
+                From = 1,
+                To = 0,
+                Duration = new Duration(TimeSpan.FromMilliseconds(10000)),
+                AutoReverse = false
+            };
+
+            DoubleAnimation opacityAnimationFadeOut = new DoubleAnimation()
+            {
+                From = 0,
+                To = 1,
+                Duration = new Duration(TimeSpan.FromMilliseconds(10000)),
+                AutoReverse = false
+            };
+
+
             TransformGroup transformGroup = new TransformGroup();
 
             ScaleTransform scaleTransform = new ScaleTransform();
@@ -75,6 +124,22 @@ namespace OWLOSAirQuality.Huds
             story.Children.Add(rotateAnimation);
             Storyboard.SetTarget(rotateAnimation, Sun);
             Storyboard.SetTargetProperty(rotateAnimation, new PropertyPath("(UIElement.RenderTransform).(TransformGroup.Children)[1].(RotateTransform.Angle)"));
+
+            if(state==1)
+            {
+                story.Children.Add(opacityAnimationFadeOut);
+                Storyboard.SetTarget(opacityAnimationFadeOut, Sun);
+                Storyboard.SetTargetProperty(opacityAnimationFadeOut, new PropertyPath("Opacity"));
+            }
+            else
+            {
+                story.Children.Add(opacityAnimationFadeIn);
+                Storyboard.SetTarget(opacityAnimationFadeIn, Sun);
+                Storyboard.SetTargetProperty(opacityAnimationFadeIn, new PropertyPath("Opacity"));
+            }
+            
+
+
             story.Begin();
 
             TransformGroup transformGroupClouds = new TransformGroup();
@@ -99,6 +164,20 @@ namespace OWLOSAirQuality.Huds
             storyClouds.Children.Add(rotateAnimationClouds);
             Storyboard.SetTarget(rotateAnimationClouds, Clouds);
             Storyboard.SetTargetProperty(rotateAnimationClouds, new PropertyPath("(UIElement.RenderTransform).(TransformGroup.Children)[1].(RotateTransform.Angle)"));
+
+            if(state==2)
+            {
+                storyClouds.Children.Add(opacityAnimationFadeOut);
+                Storyboard.SetTarget(opacityAnimationFadeOut, Clouds);
+                Storyboard.SetTargetProperty(opacityAnimationFadeOut, new PropertyPath("Opacity"));
+            }
+            else
+            {
+                storyClouds.Children.Add(opacityAnimationFadeIn);
+                Storyboard.SetTarget(opacityAnimationFadeIn, Clouds);
+                Storyboard.SetTargetProperty(opacityAnimationFadeIn, new PropertyPath("Opacity"));
+            }
+
             storyClouds.Begin();
 
             //Sun.RenderTransform.BeginAnimation(RotateTransform.AngleProperty, rotateAnimation);
@@ -122,26 +201,73 @@ namespace OWLOSAirQuality.Huds
             transformGroupCloudy.Children.Add(rotateTransformCloudy);
             Cloudy.RenderTransform = transformGroupCloudy;
 
-            DoubleAnimation opacityAnimationCloudy = new DoubleAnimation()
-            {
-                From = 1,
-                To = 0,
-                Duration = new Duration(TimeSpan.FromMilliseconds(10000)),
-                AutoReverse = false
-            };
-
             Storyboard storyCloudy = new Storyboard();
             storyCloudy.Children.Add(rotateAnimationCloudy);
             Storyboard.SetTarget(rotateAnimationCloudy, Cloudy);
             Storyboard.SetTargetProperty(rotateAnimationCloudy, new PropertyPath("(UIElement.RenderTransform).(TransformGroup.Children)[1].(RotateTransform.Angle)"));
-            Storyboard.SetTarget(opacityAnimationCloudy, Cloudy);
-            Storyboard.SetTargetProperty(opacityAnimationCloudy, new PropertyPath("(UIElement.RenderTransform).(TransformGroup.Children)[1].(Brush.Opacity)"));
+           
+            if(state==3)
+            {
+                storyCloudy.Children.Add(opacityAnimationFadeOut);
+                Storyboard.SetTarget(opacityAnimationFadeOut, Cloudy);
+                Storyboard.SetTargetProperty(opacityAnimationFadeOut, new PropertyPath("Opacity"));
+            }
+            else
+            {
+                storyCloudy.Children.Add(opacityAnimationFadeIn);
+                Storyboard.SetTarget(opacityAnimationFadeIn, Cloudy);
+                Storyboard.SetTargetProperty(opacityAnimationFadeIn, new PropertyPath("Opacity"));
+            }
 
             storyCloudy.Begin();
 
-            
-
             // END Cloudy
+
+            /// Stormy begin
+            /// 
+            TransformGroup transformGroupStormy = new TransformGroup();
+            transformGroupStormy.Children.Add(scaleTransform);
+
+            DoubleAnimation rotateAnimationStormy = new DoubleAnimation()
+            {
+                From = 270,
+                To = 630,
+                Duration = new Duration(TimeSpan.FromMilliseconds(10000))
+            };
+
+            RotateTransform rotateTransformStormy = new RotateTransform();
+            rotateTransformStormy.Angle = 90;
+            rotateTransformStormy.CenterX = 350;
+            rotateTransformStormy.CenterY = 350;
+
+            transformGroupStormy.Children.Add(rotateTransformStormy);
+            Stormy.RenderTransform = transformGroupStormy;
+
+            Storyboard storyStormy = new Storyboard();
+            storyStormy.Children.Add(rotateAnimationStormy);
+            Storyboard.SetTarget(rotateAnimationStormy, Stormy);
+            Storyboard.SetTargetProperty(rotateAnimationStormy, new PropertyPath("(UIElement.RenderTransform).(TransformGroup.Children)[1].(RotateTransform.Angle)"));
+
+            if(state==4)
+            {
+                storyStormy.Children.Add(opacityAnimationFadeOut);
+                Storyboard.SetTarget(opacityAnimationFadeOut, Stormy);
+                Storyboard.SetTargetProperty(opacityAnimationFadeOut, new PropertyPath("Opacity"));
+            }
+            else
+            {
+                storyStormy.Children.Add(opacityAnimationFadeIn);
+                Storyboard.SetTarget(opacityAnimationFadeIn, Stormy);
+                Storyboard.SetTargetProperty(opacityAnimationFadeIn, new PropertyPath("Opacity"));
+            }
+
+
+            storyStormy.Begin();
+
+
+
+
+            // END Stormy
         }
     }
 }

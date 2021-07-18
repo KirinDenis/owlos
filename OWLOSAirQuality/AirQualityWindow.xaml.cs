@@ -232,7 +232,9 @@ namespace OWLOSAirQuality
 
             icons1 = new IconsControl();
             HudGrid.Children.Add(icons1);
-            icons1.Animate();
+            icons1.state = 3;
+            //icons1.Animate();
+
 
             ThingsManager thingsManager = new ThingsManager();
             thingsManager.OnNewThing += ThingsManager_OnNewThing;
