@@ -68,7 +68,88 @@ TFT_eSPI tft = TFT_eSPI(); // Invoke custom library with default width and heigh
 #define GOLD_14 1
 
 #define CALIBRATION_FILE "/TFTCalibration"
+/* ------------------------------------------------------
+Класс рисует один item 
+Вводная:
+- 4 колонки на весь экран
+- Gold8 высота одной строчки
+- align 
+  |col1          |col2       |col3          |col4       |
+  |Left          |      Right|Left          |      Right|
+         
+*/
+class TextItemClass
+{
+private:
+    bool leftAlign = true;
+    int size = 1;
+    int fgColor = TFT_WHITE;
+    int bgColor = TFT_BLACK;
+    String text = "";
 
+    void drawText()
+    {
+        if (leftAlign)
+        {
+            tft.drawString(text, x, y, size);
+        }
+        else
+        {
+            tft.drawRightString(text, x, y, size);
+        }
+    }
+
+public:
+    int x;
+    int y;
+    //column - 1,2,3,4
+    //         0,2 - align left  (0, width / 2)
+    //         1,3 - align right (width / 2, width)
+    //row --> row * Glod8 = y
+    TextItemClass(int column, int row)
+    {
+        if ((column == 0) || (column == 2))
+        {
+            x = column * (WIDTH / 2) + GOLD_9;            
+        }
+        else
+        {
+            leftAlign = false;
+            if (column == 1)
+            {
+                x = WIDTH / 2;
+            }
+            else
+            {
+                x = WIDTH;
+            }
+            x -= GOLD_9;
+        }
+        y = row * GOLD_8 + GOLD_11;
+    }
+
+    void draw(String _text, int _fgColor, int _bgColor, int _size)
+    {
+        //если текст не совпадает - закрываем предидущий текст цветом предидущего фона
+        if ((!_text.equals(text)) || (_size != size))
+        {
+            tft.setTextColor(bgColor, bgColor);
+            drawText();
+        }
+        //если один из параметров текстра изменился, перерисовываем с новыми параметрами
+        if ((!_text.equals(text)) || (fgColor != _fgColor) || (bgColor != _bgColor) || (_size != size))
+        {
+            text = _text;
+            fgColor = _fgColor;
+            bgColor = _bgColor;
+            size = _size;
+            tft.setTextColor(fgColor, bgColor);
+            drawText();
+        }
+    }
+};
+
+//--------------------------------------------------------------------------------------------------
 void drawArc(int x, int y, int radiusFrom, int radiusTo, double angleFrom, double angleTo, int color)
 {
     double xp1, yp1, xp2, yp2;
@@ -144,9 +225,45 @@ void drawWifiIcon(int x, int y, int dBm)
     }
     drawArc(x, y, radius - 22, radius - 21, angleFrom, angleTo, color);
 
-    tft.setTextColor(TFT_WHITE, TFT_BLACK);
-    tft.drawString(String(dBm) + " dBn", x + GOLD_9, y + GOLD_11, 1);
+    //tft.setTextColor(TFT_WHITE, TFT_BLACK);
+    //tft.drawString(String(dBm) + " dBn", x + GOLD_9, y + GOLD_11, 1);
 }
+
+
+//------------------------------------------------------------------------------------------------------
+//TextItems
+TextItemClass stHeaderItem(0, 0);
+TextItemClass stSSIDItem(1, 1);
+TextItemClass stGWIPItem(1, 2);
+TextItemClass stIPItem(1, 3);
+TextItemClass stdBmItem(0, 2);
+TextItemClass stStatusItem(0, 3);
+
+void initDrawNetworkStatus()
+{
+    tft.fillRect(0, 0, WIDTH / 2, GOLD_8, TFT_DARKGREY);
+    tft.fillRect(WIDTH / 2, 0, WIDTH / 2, GOLD_8, TFT_DARKGREY);
+    tft.drawFastVLine(WIDTH / 2, 0, GOLD_8, TFT_BLACK);
+    tft.drawFastVLine(WIDTH / 2, GOLD_8, GOLD_5, TFT_DARKGREY);
+
+    int hOffset = GOLD_5 + GOLD_8;
+    tft.fillRect(0, hOffset, WIDTH, GOLD_8, TFT_DARKGREY);
+    tft.drawFastVLine(WIDTH / 2, hOffset, GOLD_8, TFT_BLACK);
+    tft.drawFastVLine(WIDTH / 2, hOffset + GOLD_8, GOLD_12 + GOLD_8 + GOLD_8 + GOLD_8 + GOLD_8, TFT_DARKGREY);
+
+    hOffset += GOLD_12 + GOLD_8 + GOLD_8 + GOLD_8 + GOLD_8 + GOLD_8;
+    tft.fillRect(0, hOffset, WIDTH, GOLD_8, TFT_DARKGREY);
+    hOffset += GOLD_12 + GOLD_8 + GOLD_8;
+    tft.fillRect(0, hOffset, WIDTH, GOLD_8, TFT_DARKGREY);
+    hOffset += GOLD_12 + GOLD_8 + GOLD_8;
+    tft.fillRect(0, hOffset, WIDTH, GOLD_8, TFT_DARKGREY);    
+
+    stGWIPItem.y += GOLD_10;
+    stdBmItem.x += GOLD_7;
+    stdBmItem.y += GOLD_10;
+}
+
+
 
 void drawNetworkStatus(int stAvailable, int stStatus, int stdBm, String stSSID, String stIp, String GWIp)
 {
@@ -159,25 +276,22 @@ void drawNetworkStatus(int stAvailable, int stStatus, int stdBm, String stSSID, 
         statusColor = TFT_RED;
         textColor = TFT_DARKGREY;
     }
-
-    tft.fillRect(0, 0, WIDTH / 2, GOLD_8, TFT_DARKGREY);
-    tft.setTextColor(statusColor, TFT_DARKGREY);
-    tft.drawString("WiFi Access Point", GOLD_9, GOLD_11, 1);
+     
+    stHeaderItem.draw("WiFi Access Point", statusColor, TFT_DARKGREY, 1);
 
     drawWifiIcon(GOLD_7, GOLD_7 + GOLD_8, stdBm);
-
-    tft.setTextColor(textColor, TFT_BLACK);
+    
     if (stSSID.length() < 10)
     {
-        tft.drawRightString(stSSID, WIDTH / 2 - GOLD_9, GOLD_12 + GOLD_8, 4);
+        stSSIDItem.draw(stSSID, textColor, TFT_BLACK, 4);        
     }
     else
     {
-        tft.drawRightString(stSSID, WIDTH / 2 - GOLD_9, GOLD_12 + GOLD_8, 2);
+        stSSIDItem.draw(stSSID, textColor, TFT_BLACK, 2);
     }
-    
-    tft.drawRightString("[GW:" + GWIp + "]", WIDTH / 2 - GOLD_9, GOLD_12 + GOLD_7 + GOLD_8, 1);
-    tft.drawRightString(stIp, WIDTH / 2 - GOLD_9, GOLD_6 + GOLD_8, 2);
+
+    stGWIPItem.draw("[GW:" + GWIp + "]", textColor, TFT_BLACK, 1);
+    stIPItem.draw(stIp, textColor, TFT_BLACK, 2);
 
     /*
  	 "0:WL_IDLE_STATUS;"; //default
@@ -187,8 +301,7 @@ void drawNetworkStatus(int stAvailable, int stStatus, int stdBm, String stSSID, 
 	 "4:WL_CONNECT_FAILED;";
 	 "5:WL_CONNECTION_LOST;";
 	 "6:WL_DISCONNECTED;";
-*/
-
+    */
     statusColor = TFT_DARKGREY;
     String statusText = "IDLE";
 
@@ -222,13 +335,14 @@ void drawNetworkStatus(int stAvailable, int stStatus, int stdBm, String stSSID, 
         statusColor = TFT_DARKGREY;
         statusText = "DISCONNECTED";
     }
+        
+    stdBmItem.draw(String(stdBm) + " dBn", statusColor, TFT_BLACK, 1);
+    stStatusItem.draw(statusText, statusColor, TFT_BLACK, 2);
 
-    tft.setTextColor(statusColor, TFT_BLACK);
-    tft.drawString(statusText, GOLD_9, GOLD_6 + GOLD_8, 2);
-
+/*
     //-----------------------------------
     //WiFi Access Point
-    tft.fillRect(WIDTH / 2, 0, WIDTH / 2, GOLD_8, TFT_DARKGREY);
+
     tft.setTextColor(TFT_BLACK, TFT_DARKGREY);
     tft.drawString("WiFi Station", WIDTH / 2 + GOLD_9, GOLD_11, 1);
 
@@ -247,14 +361,10 @@ void drawNetworkStatus(int stAvailable, int stStatus, int stdBm, String stSSID, 
 
     //------------------------------------
 
-    tft.drawFastVLine(WIDTH / 2, 0, GOLD_8, TFT_BLACK);
-    tft.drawFastVLine(WIDTH / 2, GOLD_8, GOLD_5, TFT_DARKGREY);
-    //tft.drawFastHLine(0, GOLD_5 + GOLD_8, WIDTH, TFT_WHITE);
-
     //------------------------------------
     //HTTP Server
     int hOffset = GOLD_5 + GOLD_8;
-    tft.fillRect(0, hOffset, WIDTH, GOLD_8, TFT_DARKGREY);
+
     tft.setTextColor(TFT_GREEN, TFT_DARKGREY);
     tft.drawString("HTTP(S) Server", GOLD_9, hOffset + GOLD_11, 1);
 
@@ -299,12 +409,9 @@ void drawNetworkStatus(int stAvailable, int stStatus, int stdBm, String stSSID, 
     tft.drawRightString("send: --- recv: ---", WIDTH / 2 + WIDTH / 2 - GOLD_9, hOffset + GOLD_12 + GOLD_8 + GOLD_8 + GOLD_8 + GOLD_8, 2);
 
     //------------------------------------
-    tft.drawFastVLine(WIDTH / 2, hOffset, GOLD_8, TFT_BLACK);
-    tft.drawFastVLine(WIDTH / 2, hOffset + GOLD_8, GOLD_12 + GOLD_8 + GOLD_8 + GOLD_8 + GOLD_8, TFT_DARKGREY);
-    //------------------------------------
     //HTTP(S) Client
     hOffset += GOLD_12 + GOLD_8 + GOLD_8 + GOLD_8 + GOLD_8 + GOLD_8;
-    tft.fillRect(0, hOffset, WIDTH, GOLD_8, TFT_DARKGREY);
+
     tft.setTextColor(TFT_GREEN, TFT_DARKGREY);
     tft.drawString("HTTP(S) Client", GOLD_9, hOffset + GOLD_11, 1);
 
@@ -322,7 +429,7 @@ void drawNetworkStatus(int stAvailable, int stStatus, int stdBm, String stSSID, 
 
     //MQTT Client
     hOffset += GOLD_12 + GOLD_8 + GOLD_8;
-    tft.fillRect(0, hOffset, WIDTH, GOLD_8, TFT_DARKGREY);
+
     tft.setTextColor(TFT_GREEN, TFT_DARKGREY);
     tft.drawString("MQTT Client", GOLD_9, hOffset + GOLD_11, 1);
 
@@ -340,7 +447,7 @@ void drawNetworkStatus(int stAvailable, int stStatus, int stdBm, String stSSID, 
 
     //UART 1
     hOffset += GOLD_12 + GOLD_8 + GOLD_8;
-    tft.fillRect(0, hOffset, WIDTH, GOLD_8, TFT_DARKGREY);
+
     tft.setTextColor(TFT_GREEN, TFT_DARKGREY);
     tft.drawString("UART 1 (RX/TX)", GOLD_9, hOffset + GOLD_11, 1);
 
@@ -352,6 +459,7 @@ void drawNetworkStatus(int stAvailable, int stStatus, int stdBm, String stSSID, 
 
     tft.setTextColor(TFT_DARKGREY, TFT_BLACK);
     tft.drawRightString("send: 103Kb recv: 12Kb", WIDTH / 2 + WIDTH / 2 - GOLD_9, hOffset + GOLD_12 + GOLD_8, 2);
+*/
 }
 
 //------------------------------------------------------------------------------------------
@@ -364,7 +472,7 @@ bool UXServiceInit()
     tft.setRotation(1);
     tft.fillScreen(TFT_BLACK);
 
-    uint16_t calibrationData[5];    
+    uint16_t calibrationData[5];
 
     if (filesExists(CALIBRATION_FILE "0"))
     {
@@ -386,6 +494,7 @@ bool UXServiceInit()
         filesWriteInt(CALIBRATION_FILE "4", calibrationData[4]);
     }
 
+    initDrawNetworkStatus();
     drawNetworkStatus(thingGetWiFiAvailable(), thingGetWiFiStatus(), thingGetWiFiRSSI(), thingGetWiFiSSID(), thingGetWiFiIP(), String(thingGetWiFiIsConnected()));
     return true;
 }
