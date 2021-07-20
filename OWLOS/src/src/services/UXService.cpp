@@ -279,6 +279,8 @@ void drawNetworkStatus(int stAvailable, int stStatus, int stdBm, String stSSID, 
      
     stHeaderItem.draw("WiFi Access Point", statusColor, TFT_DARKGREY, 1);
 
+    stdBm = stdBm - (stdBm % 10);
+
     drawWifiIcon(GOLD_7, GOLD_7 + GOLD_8, stdBm);
     
     if (stSSID.length() < 10)
@@ -335,7 +337,7 @@ void drawNetworkStatus(int stAvailable, int stStatus, int stdBm, String stSSID, 
         statusColor = TFT_DARKGREY;
         statusText = "DISCONNECTED";
     }
-        
+
     stdBmItem.draw(String(stdBm) + " dBn", statusColor, TFT_BLACK, 1);
     stStatusItem.draw(statusText, statusColor, TFT_BLACK, 2);
 
