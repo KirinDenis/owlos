@@ -118,7 +118,7 @@ OWLOS распространяется в надежде, что она буде
                 #define DEFAULT_TOPIC "owlos/"
 
                 //Включает в сборку OWLOS HTTPS Server (обратите внимание на необходимость перегенерации сертификата)
-                //#define USE_HTTPS_SERVER
+                #define USE_HTTPS_SERVER
 
                 //Включает в сборку OWLOS HTTP Server 
                 #define USE_HTTP_SERVER  
@@ -129,14 +129,14 @@ OWLOS распространяется в надежде, что она буде
                 //Новые версии готовых прошивок находятся здесь: https://github.com/KirinDenis/owlos/tree/master/OWLOS
                 // - OWLOS.ino.esp32.bin для ESP32 
                 // - OWLOS.ino.thingmcu.bin для ESP8266 ThingMcu
-                //#define USE_UPDATE_SERVICE
+                #define USE_UPDATE_SERVICE
 
                 //Включает OTA (Over The Air) возможность загружать новые прошивки по локальной WiFi сети (без использования UART)
-                //#define USE_OTA_SERVICE
+                #define USE_OTA_SERVICE
 
                 #ifdef ARDUINO_ESP32_RELEASE_1_0_4                      
                 //Включает в сборку MQTT клиент
-                //#define USE_MQTT                
+                #define USE_MQTT                
                 #endif                
             #endif
     #else
@@ -144,7 +144,7 @@ OWLOS распространяется в надежде, что она буде
     #endif
     
 
-//#define USE_UART
+#define USE_UART
 
 #include "utils/Utils.h"
 
@@ -152,7 +152,7 @@ OWLOS распространяется в надежде, что она буде
 #define USE_DRIVERS    
     #ifdef USE_DRIVERS
         //Универсальный драйвер исполнительных устройств (цифровых и аналоговых)(с подержкой ШИМ)    
-        //#define USE_ACTUATOR_DRIVER
+        #define USE_ACTUATOR_DRIVER
 
         //Универсальный драйвер сенсоров (датчиков)(цифровых и аналоговых)
         #define USE_SENSOR_DRIVER
@@ -161,19 +161,19 @@ OWLOS распространяется в надежде, что она буде
          #define USE_DHT_DRIVER
 
         //Драйвер I2C LCD дисплеев, поддерживает более одного дисплея на шине I2C
-        //#define USE_LCD_DRIVER
+        #define USE_LCD_DRIVER
 
         //Драйвер шаговых двигателей
-        //#define USE_STEPPER_DRIVER
+        #define USE_STEPPER_DRIVER
         
         //Драйвер запорных арматур (закрыть, открыть, положени)
-        //#define USE_VALVE_DRIVER
+        #define USE_VALVE_DRIVER
 
         //Заготовка для написания дополнительных драйверов (демонтрация)
-        //#define USE_SAMPLE_DRIVER
+        #define USE_SAMPLE_DRIVER
     #endif
 #endif
 
 
 //Включить поддержку скриптов
-//#define USE_SCRIPT
+#define USE_SCRIPT
