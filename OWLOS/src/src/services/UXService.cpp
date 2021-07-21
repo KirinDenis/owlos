@@ -341,7 +341,6 @@ void drawNetworkStatus(int stAvailable, int stStatus, int stdBm, String stSSID, 
     stdBmItem.draw(String(stdBm) + " dBn", statusColor, TFT_BLACK, 1);
     stStatusItem.draw(statusText, statusColor, TFT_BLACK, 2);
 
-/*
     //-----------------------------------
     //WiFi Access Point
 
@@ -361,6 +360,7 @@ void drawNetworkStatus(int stAvailable, int stStatus, int stdBm, String stSSID, 
     tft.setTextColor(TFT_DARKGREY, TFT_BLACK);
     tft.drawRightString("192.168.4.1", WIDTH / 2 + WIDTH / 2 - GOLD_9, GOLD_6 + GOLD_8, 2);
 
+/*
     //------------------------------------
 
     //------------------------------------
