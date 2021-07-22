@@ -40,6 +40,7 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 #include "HTTPWebClient.h"
 
+#ifdef USE_HTTP_CLIENT
 #ifdef USE_ESP_DRIVER
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
 #include <ESP8266WiFi.h>
@@ -68,6 +69,9 @@ OWLOS распространяется в надежде, что она буде
 HTTPClient http;
 WiFiClientSecure *secureClient = nullptr;
 
+int HTTPClientStatus = -2;
+int HTTPClientSend = 0;
+int HTTPClientRecv = 0;
 
 //https://techtutorialsx.com/2017/11/18/esp32-arduino-https-get-request/
 //^^^About cetifivation ESP32 HTTP Client
@@ -250,14 +254,16 @@ void HTTPWebClientPublish(String _topic, String _payload)
 			{
 				http.begin(thingGetHTTPClientURL() + ":" + String(thingGetHTTPClientPort()) + "/Things/AirQuality/");
 			}
-#ifdef DEBUG
-			int httpCode = http.POST(_payload);
-			debugOut(webclientid, "HTTP Client result code =" + String(httpCode));
+
+			HTTPClientSend += _payload.length();
+			HTTPClientStatus = http.POST(_payload);
+			if (HTTPClientStatus != -1)
+			{
+			  HTTPClientRecv +=  http.getSize();
+			}
+#ifdef DEBUG			
+			debugOut(webclientid, "HTTP Client result code =" + String(HTTPClientStatus));
 #else
-			int httpCode = http.POST(_payload);
-			//TODO: remove it before release
-			Serial.println(thingGetHTTPClientURL() + ":" + String(thingGetHTTPClientPort()) + "/Things/AirQuality/");
-			Serial.println(String(httpCode));
 
 #endif
 			http.end();
@@ -265,4 +271,20 @@ void HTTPWebClientPublish(String _topic, String _payload)
 	}
 }
 
+int HTTPClientGetStatus()
+{
+	return HTTPClientStatus;
+}
+
+int HTTPClientGetSend()
+{
+	return HTTPClientSend;
+}
+
+int HTTPClientGetRecv()
+{
+	return HTTPClientRecv;
+}
+
+#endif
 #endif

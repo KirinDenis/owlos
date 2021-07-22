@@ -46,6 +46,8 @@ OWLOS распространяется в надежде, что она буде
 #ifdef USE_UART
 void UARTSend(String _topic, String _payload);
 void UARTRecv();
+int UARTGetSend();
+int UARTGetRecv();
 #endif
 
 #endif

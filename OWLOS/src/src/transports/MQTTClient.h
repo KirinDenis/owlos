@@ -50,5 +50,9 @@ bool MQTTBegin();
 void MQTTPublish(String _topic, String _payload);
 void MQTTSubscribe(String _topic);
 
+int MQTTGetConnected();
+int MQTTGetSend();
+int MQTTGetRecv();
+
 #endif
 #endif

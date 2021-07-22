@@ -46,6 +46,19 @@ OWLOS распространяется в надежде, что она буде
 #include "../drivers/WifiDriver.h"
 #include "../drivers/NetworkDriver.h"
 
+#ifdef USE_HTTP_CLIENT
+#include "../transports/HTTPWebClient.h"
+#endif
+
+#ifdef USE_MQTT
+#include "../transports/MQTTClient.h"
+#endif
+
+#ifdef USE_UART
+#include "../transports/UART.h"
+#endif
+
+
 TFT_eSPI tft = TFT_eSPI(); // Invoke custom library with default width and height
 
 #define CENTRE 240
@@ -108,9 +121,13 @@ public:
     //row --> row * Glod8 = y
     TextItemClass(int column, int row)
     {
-        if ((column == 0) || (column == 2))
+        if (column == 0)
         {
-            x = column * (WIDTH / 2) + GOLD_9;            
+            x = GOLD_9;
+        }
+        else if (column == 2)
+        {
+            x = (WIDTH / 2) + GOLD_9;
         }
         else
         {
@@ -229,7 +246,6 @@ void drawWifiIcon(int x, int y, int dBm)
     //tft.drawString(String(dBm) + " dBn", x + GOLD_9, y + GOLD_11, 1);
 }
 
-
 //------------------------------------------------------------------------------------------------------
 //TextItems
 TextItemClass stHeaderItem(0, 0);
@@ -239,6 +255,44 @@ TextItemClass stIPItem(1, 3);
 TextItemClass stdBmItem(0, 2);
 TextItemClass stStatusItem(0, 3);
 
+TextItemClass apHeaderItem(2, 0);
+TextItemClass apSSIDItem(3, 1);
+TextItemClass apIPItem(3, 3);
+TextItemClass apStatusItem(2, 3);
+
+//HTTP(S) Server Items
+TextItemClass hsHeaderItem(0, 4);
+TextItemClass hsStStatusItem(0, 5);
+TextItemClass hsStIPItem(1, 5);
+TextItemClass hssStStatusItem(0, 6);
+TextItemClass hssStIPItem(1, 6);
+TextItemClass hsApStatusItem(2, 5);
+TextItemClass hsApIPItem(3, 5);
+TextItemClass hssApStatusItem(2, 6);
+TextItemClass hssApIPItem(3, 6);
+
+//HTTP Client
+TextItemClass hcHeaderItem(0, 7);
+TextItemClass hcStatusItem(0, 8);
+TextItemClass hcServerIPItem(1, 8);
+TextItemClass hcSendItem(2, 8);
+TextItemClass hcRecvItem(3, 8);
+
+//MQTT Client
+TextItemClass mqttHeaderItem(0, 9);
+TextItemClass mqttStatusItem(0, 10);
+TextItemClass mqttServerIPItem(1, 10);
+TextItemClass mqttSendItem(2, 10);
+TextItemClass mqttRecvItem(3, 10);
+
+//UART Client
+TextItemClass uartHeaderItem(0, 11);
+TextItemClass uartStatusItem(0, 12);
+TextItemClass uartSpeedItem(1, 12);
+TextItemClass uartSendItem(2, 12);
+TextItemClass uartRecvItem(3, 12);
+
+
 void initDrawNetworkStatus()
 {
     tft.fillRect(0, 0, WIDTH / 2, GOLD_8, TFT_DARKGREY);
@@ -246,29 +300,32 @@ void initDrawNetworkStatus()
     tft.drawFastVLine(WIDTH / 2, 0, GOLD_8, TFT_BLACK);
     tft.drawFastVLine(WIDTH / 2, GOLD_8, GOLD_5, TFT_DARKGREY);
 
-    int hOffset = GOLD_5 + GOLD_8;
+    int hOffset = GOLD_8 * 4 + GOLD_11;
     tft.fillRect(0, hOffset, WIDTH, GOLD_8, TFT_DARKGREY);
     tft.drawFastVLine(WIDTH / 2, hOffset, GOLD_8, TFT_BLACK);
-    tft.drawFastVLine(WIDTH / 2, hOffset + GOLD_8, GOLD_12 + GOLD_8 + GOLD_8 + GOLD_8 + GOLD_8, TFT_DARKGREY);
+    tft.drawFastVLine(WIDTH / 2, hOffset + GOLD_8, GOLD_8 * 2, TFT_DARKGREY);
 
-    hOffset += GOLD_12 + GOLD_8 + GOLD_8 + GOLD_8 + GOLD_8 + GOLD_8;
+    hOffset += GOLD_8 * 3;
     tft.fillRect(0, hOffset, WIDTH, GOLD_8, TFT_DARKGREY);
-    hOffset += GOLD_12 + GOLD_8 + GOLD_8;
+    hOffset +=  GOLD_8 * 2;
     tft.fillRect(0, hOffset, WIDTH, GOLD_8, TFT_DARKGREY);
-    hOffset += GOLD_12 + GOLD_8 + GOLD_8;
-    tft.fillRect(0, hOffset, WIDTH, GOLD_8, TFT_DARKGREY);    
+    hOffset += GOLD_8 * 2;
+    tft.fillRect(0, hOffset, WIDTH, GOLD_8, TFT_DARKGREY);
 
     stGWIPItem.y += GOLD_10;
     stdBmItem.x += GOLD_7;
     stdBmItem.y += GOLD_10;
+
+    hsHeaderItem.y += GOLD_11;
+    hcHeaderItem.y += GOLD_11;
+    mqttHeaderItem.y += GOLD_11;
+    uartHeaderItem.y += GOLD_11;
 }
 
-
-
-void drawNetworkStatus(int stAvailable, int stStatus, int stdBm, String stSSID, String stIp, String GWIp)
+//-----------------------------------
+//WiFi Station
+void drawSTNetworkStatus(int stAvailable, int stStatus, int stdBm, String stSSID, String stIp, String apGWIp)
 {
-    //-----------------------------------
-    //WiFi Station
     int statusColor = TFT_GREEN;
     int textColor = TFT_WHITE;
     if (stAvailable != 1)
@@ -276,23 +333,23 @@ void drawNetworkStatus(int stAvailable, int stStatus, int stdBm, String stSSID, 
         statusColor = TFT_RED;
         textColor = TFT_DARKGREY;
     }
-     
-    stHeaderItem.draw("WiFi Access Point", statusColor, TFT_DARKGREY, 1);
+
+    stHeaderItem.draw("WiFi Station", statusColor, TFT_DARKGREY, 1);
 
     stdBm = stdBm - (stdBm % 10);
 
     drawWifiIcon(GOLD_7, GOLD_7 + GOLD_8, stdBm);
-    
+
     if (stSSID.length() < 10)
     {
-        stSSIDItem.draw(stSSID, textColor, TFT_BLACK, 4);        
+        stSSIDItem.draw(stSSID, textColor, TFT_BLACK, 4);
     }
     else
     {
         stSSIDItem.draw(stSSID, textColor, TFT_BLACK, 2);
     }
 
-    stGWIPItem.draw("[GW:" + GWIp + "]", textColor, TFT_BLACK, 1);
+    stGWIPItem.draw("[GW:" + apGWIp + "]", textColor, TFT_BLACK, 1);
     stIPItem.draw(stIp, textColor, TFT_BLACK, 2);
 
     /*
@@ -304,164 +361,282 @@ void drawNetworkStatus(int stAvailable, int stStatus, int stdBm, String stSSID, 
 	 "5:WL_CONNECTION_LOST;";
 	 "6:WL_DISCONNECTED;";
     */
-    statusColor = TFT_DARKGREY;
-    String statusText = "IDLE";
 
-    if (stStatus == 1)
+    String statusText = "";
+    switch (stStatus)
     {
+    case 1:
         statusColor = TFT_RED;
         statusText = "NO SSID AVAIL";
-    }
-    else if (stStatus == 2)
-    {
+        break;
+
+    case 2:
         statusColor = TFT_GREEN;
         statusText = "SCAN COMPLETED";
-    }
-    else if (stStatus == 3)
-    {
+        break;
+
+    case 3:
         statusColor = TFT_GREEN;
         statusText = "CONNECTED";
-    }
-    else if (stStatus == 4)
-    {
+        break;
+
+    case 4:
         statusColor = TFT_RED;
         statusText = "CONNECT FAILED";
-    }
-    else if (stStatus == 5)
-    {
+        break;
+
+    case 5:
         statusColor = TFT_DARKGREY;
         statusText = "CONNECTION LOST";
-    }
-    else if (stStatus == 6)
-    {
+        break;
+
+    case 6:
         statusColor = TFT_DARKGREY;
         statusText = "DISCONNECTED";
+        break;
+
+    default:
+        statusColor = TFT_DARKGREY;
+        statusText = "IDLE";
+        break;
     }
 
     stdBmItem.draw(String(stdBm) + " dBn", statusColor, TFT_BLACK, 1);
     stStatusItem.draw(statusText, statusColor, TFT_BLACK, 2);
+}
 
-    //-----------------------------------
-    //WiFi Access Point
+//-----------------------------------
+//WiFi Access Point
+void drawAPNetworkStatus(int apAvailable, String apSSID, String apIp)
+{
+    int statusColor = TFT_GREEN;
+    int textColor = TFT_WHITE;
+    if (apAvailable != 1)
+    {
+        statusColor = TFT_RED;
+        textColor = TFT_DARKGREY;
+        apStatusItem.draw("OFFLINE", statusColor, TFT_BLACK, 2);
+    }
+    else
+    {
+        apStatusItem.draw("ONLINE", statusColor, TFT_BLACK, 2);
+    }
 
-    tft.setTextColor(TFT_BLACK, TFT_DARKGREY);
-    tft.drawString("WiFi Station", WIDTH / 2 + GOLD_9, GOLD_11, 1);
+    apHeaderItem.draw("WiFi Access Point", statusColor, TFT_DARKGREY, 1);
 
-    drawWifiIcon(WIDTH / 2 + GOLD_7, GOLD_7 + GOLD_8, -90);
+    if (apSSID.length() < 10)
+    {
+        apSSIDItem.draw(apSSID, textColor, TFT_BLACK, 4);
+    }
+    else
+    {
+        apSSIDItem.draw(apSSID, textColor, TFT_BLACK, 2);
+    }
+    apIPItem.draw(apIp, textColor, TFT_BLACK, 2);
+}
 
-    tft.setTextColor(TFT_DARKGREY, TFT_BLACK);
-    tft.drawRightString("OWLOSTHING_A25", WIDTH / 2 + WIDTH / 2 - GOLD_9, GOLD_12 + GOLD_8, 2);
+//HTTP(S) Server
+//------------------------------------
+void drawHTTPServerStatus(int hsStAvailable, int hssStAvailable, int hsApAvailable, int hssApAvailable, String hsStAddress, String hssStAddress, String hsApAddress, String hssApAddress)
+{
+    if ((hsStAvailable != 1) && (hssStAvailable != 1) && (hsApAvailable != 1) && (hssApAvailable != 1))
+    {
+        hsHeaderItem.draw("Embeded HTTP(S) Server", TFT_RED, TFT_DARKGREY, 1);
+    }
+    else
+    {
+        hsHeaderItem.draw("Embeded HTTP(S) Server", TFT_GREEN, TFT_DARKGREY, 1);
+    }
 
-    tft.drawRightString("[WSP2]", WIDTH / 2 + WIDTH / 2 - GOLD_9, GOLD_12 + GOLD_7 + GOLD_8, 1);
+    if (hsStAvailable != 1)
+    {
+        hsStStatusItem.draw("disabled", TFT_DARKGREY, TFT_BLACK, 2);
+        hsStIPItem.draw("", TFT_DARKGREY, TFT_BLACK, 2);
+    }
+    else
+    {
+        hsStStatusItem.draw("available", TFT_GREEN, TFT_BLACK, 2);
+        hsStIPItem.draw(hsStAddress, TFT_WHITE, TFT_BLACK, 2);
+    }
 
-    tft.setTextColor(TFT_RED, TFT_BLACK);
-    tft.drawString("Disabled", WIDTH / 2 + GOLD_9, GOLD_6 + GOLD_8, 2);
+    if (hssStAvailable != 1)
+    {
+        hssStStatusItem.draw("disabled", TFT_DARKGREY, TFT_BLACK, 2);
+        hssStIPItem.draw("", TFT_DARKGREY, TFT_BLACK, 2);
+    }
+    else
+    {
+        hssStStatusItem.draw("available", TFT_GREEN, TFT_BLACK, 2);
+        hssStIPItem.draw(hssStAddress, TFT_WHITE, TFT_BLACK, 2);
+    }
 
-    tft.setTextColor(TFT_DARKGREY, TFT_BLACK);
-    tft.drawRightString("192.168.4.1", WIDTH / 2 + WIDTH / 2 - GOLD_9, GOLD_6 + GOLD_8, 2);
+    if (hsApAvailable != 1)
+    {
+        hsApStatusItem.draw("disabled", TFT_DARKGREY, TFT_BLACK, 2);
+        hsApIPItem.draw("", TFT_DARKGREY, TFT_BLACK, 2);
+    }
+    else
+    {
+        hsApStatusItem.draw("available", TFT_GREEN, TFT_BLACK, 2);
+        hsApIPItem.draw(hsApAddress, TFT_WHITE, TFT_BLACK, 2);
+    }
 
-/*
-    //------------------------------------
+    if (hssApAvailable != 1)
+    {
+        hssApStatusItem.draw("disabled", TFT_DARKGREY, TFT_BLACK, 2);
+        hssApIPItem.draw("", TFT_DARKGREY, TFT_BLACK, 2);
+    }
+    else
+    {
+        hssApStatusItem.draw("available", TFT_GREEN, TFT_BLACK, 2);
+        hssApIPItem.draw(hssStAddress, TFT_WHITE, TFT_BLACK, 2);
+    }
+}
 
-    //------------------------------------
-    //HTTP Server
-    int hOffset = GOLD_5 + GOLD_8;
+//HTTP(S) Client
+//------------------------------------
+void drawHTTPClientStatus(int hcAvailable, int hcStatus, String hcServerIP, int hcSend, int hcRecv)
+{
+    if (hcAvailable != 1)
+    {
+        hcHeaderItem.draw("HTTP(S) Client", TFT_RED, TFT_DARKGREY, 1);
+    }
+    else
+    {
+        hcHeaderItem.draw("HTTP(S) Client", TFT_GREEN, TFT_DARKGREY, 1);
+    }
 
-    tft.setTextColor(TFT_GREEN, TFT_DARKGREY);
-    tft.drawString("HTTP(S) Server", GOLD_9, hOffset + GOLD_11, 1);
+    if (hcStatus == -1)
+    {
+        hcStatusItem.draw("ERROR", TFT_DARKGREY, TFT_BLACK, 2);
+    }
+    else 
+    if (hcStatus == -2)
+    {
+        hcStatusItem.draw("IDLE", TFT_DARKGREY, TFT_BLACK, 2);
+    }
+    else 
+    if ((hcStatus >= 200) && (hcStatus < 400))
+    {
+        hcStatusItem.draw(String(hcStatus), TFT_GREEN, TFT_BLACK, 2);
+    }
+    else
+    {
+        hcStatusItem.draw(String(hcStatus), TFT_RED, TFT_BLACK, 2);
+    }
 
-    //HTTP Station
-    tft.setTextColor(TFT_GREEN, TFT_BLACK);
-    tft.drawString("Enabled", GOLD_9, hOffset + GOLD_12 + GOLD_8, 2);
+    hcServerIPItem.draw(hcServerIP, TFT_WHITE, TFT_BLACK, 2);
+    hcSendItem.draw("send:" + String(hcSend), TFT_DARKGREY, TFT_BLACK, 2);
+    hcRecvItem.draw("recv:" + String(hcRecv), TFT_DARKGREY, TFT_BLACK, 2);
+}
 
-    tft.setTextColor(TFT_WHITE, TFT_BLACK);
-    tft.drawRightString("http://192.168.1.101:80", WIDTH / 2 - GOLD_9, hOffset + GOLD_12 + GOLD_8, 2);
+//MQTT Client
+//------------------------------------
+void drawMQTTClientStatus(int mqttAvailable, int mqttStatus, String mqttServerIP, int mqttSend, int mqttRecv)
+{
+    if (mqttAvailable != 1)
+    {
+        mqttHeaderItem.draw("MQTT Client", TFT_RED, TFT_DARKGREY, 1);
+    }
+    else
+    {
+        mqttHeaderItem.draw("MQTT Client", TFT_GREEN, TFT_DARKGREY, 1);
+    }
 
-    tft.setTextColor(TFT_DARKGREY, TFT_BLACK);
-    tft.drawRightString("send: 203Kb recv: 10Kb", WIDTH / 2 - GOLD_9, hOffset + GOLD_12 + GOLD_8 + GOLD_8, 2);
+    if (mqttStatus != 1)
+    {
+      mqttStatusItem.draw("ERROR", TFT_RED, TFT_BLACK, 2);
+    }
+    else 
+    {
+      mqttStatusItem.draw("CONNECTED", TFT_GREEN, TFT_BLACK, 2);  
+    }
 
-    //HTTPS Station
-    tft.setTextColor(TFT_RED, TFT_BLACK);
-    tft.drawString("Disable", GOLD_9, hOffset + GOLD_12 + GOLD_8 + GOLD_8 + GOLD_8, 2);
+    mqttServerIPItem.draw(mqttServerIP, TFT_WHITE, TFT_BLACK, 2);
+    mqttSendItem.draw("send:" + String(mqttSend), TFT_DARKGREY, TFT_BLACK, 2);
+    mqttRecvItem.draw("recv:" + String(mqttRecv), TFT_DARKGREY, TFT_BLACK, 2);
+}
 
-    tft.setTextColor(0xAAAA, TFT_BLACK);
-    tft.drawRightString("https://192.168.1.101:443", WIDTH / 2 - GOLD_9, hOffset + GOLD_12 + GOLD_8 + GOLD_8 + GOLD_8, 2);
+//UART Client
+//------------------------------------
+void drawUARTClientStatus(int uartAvailable, int uartStatus, int uartSpeed,  int uartSend, int uartRecv)
+{
+    
+    if (uartAvailable != 1)
+    {
+        uartHeaderItem.draw("UART", TFT_RED, TFT_DARKGREY, 1);
+    }
+    else
+    {
+        uartHeaderItem.draw("UART", TFT_GREEN, TFT_DARKGREY, 1);
+    }
 
-    tft.setTextColor(TFT_DARKGREY, TFT_BLACK);
-    tft.drawRightString("send: --- recv: ---", WIDTH / 2 - GOLD_9, hOffset + GOLD_12 + GOLD_8 + GOLD_8 + GOLD_8 + GOLD_8, 2);
+    if (uartStatus != 1)
+    {
+      uartStatusItem.draw("---", TFT_DARKGREY, TFT_BLACK, 2);
+    }
+    else 
+    {
+      uartStatusItem.draw("AVAILABLE", TFT_GREEN, TFT_BLACK, 2);  
+    }
 
-    //HTTP Access Point
-    tft.setTextColor(TFT_RED, TFT_BLACK);
-    tft.drawString("N/A", WIDTH / 2 + GOLD_9, hOffset + GOLD_12 + GOLD_8, 2);
+    uartSpeedItem.draw(String(uartSpeed), TFT_WHITE, TFT_BLACK, 2);
+    uartSendItem.draw("send:" + String(uartSend), TFT_DARKGREY, TFT_BLACK, 2);
+    uartRecvItem.draw("recv:" + String(uartRecv), TFT_DARKGREY, TFT_BLACK, 2);
+}
 
-    tft.setTextColor(0xAAAA, TFT_BLACK);
-    tft.drawRightString("http://192.168.4.1:80", WIDTH / 2 + WIDTH / 2 - GOLD_9, hOffset + GOLD_12 + GOLD_8, 2);
 
-    tft.setTextColor(TFT_DARKGREY, TFT_BLACK);
-    tft.drawRightString("send: --- recv: ---", WIDTH / 2 + WIDTH / 2 - GOLD_9, hOffset + GOLD_12 + GOLD_8 + GOLD_8, 2);
+//------------------------------------------------------------------------------------------
+//Draw Transport Statuses
+void drawTransportStatuses()
+{
+    drawSTNetworkStatus(thingGetWiFiAvailable(), thingGetWiFiStatus(), thingGetWiFiRSSI(), thingGetWiFiSSID(), thingGetWiFiIP(), String(thingGetWiFiIsConnected()));
+    drawAPNetworkStatus(thingGetWiFiAccessPointAvailable(), thingGetWiFiAccessPointSSID(), thingGetWiFiAccessPointIP());
 
-    //HTTPS Access Point
-    tft.setTextColor(TFT_RED, TFT_BLACK);
-    tft.drawString("N/A", WIDTH / 2 + GOLD_9, hOffset + GOLD_12 + GOLD_8 + GOLD_8 + GOLD_8, 2);
+#ifdef USE_HTTP_SERVER
+    int useHTTPServer = 1;
+#else
+    int useHTTPServer = 0;
+#endif
 
-    tft.setTextColor(0xAAAA, TFT_BLACK);
-    tft.drawRightString("https://192.168.4.1:443", WIDTH / 2 + WIDTH / 2 - GOLD_9, hOffset + GOLD_12 + GOLD_8 + GOLD_8 + GOLD_8, 2);
+#ifdef USE_HTTPS_SERVER
+    int useHTTPSServer = 1;
+#else
+    int useHTTPSServer = 0;
+#endif
 
-    tft.setTextColor(TFT_DARKGREY, TFT_BLACK);
-    tft.drawRightString("send: --- recv: ---", WIDTH / 2 + WIDTH / 2 - GOLD_9, hOffset + GOLD_12 + GOLD_8 + GOLD_8 + GOLD_8 + GOLD_8, 2);
+    drawHTTPServerStatus(useHTTPServer && thingGetWiFiAvailable() && thingGetWiFiIsConnected(),
+                         useHTTPSServer && thingGetWiFiAvailable() && thingGetWiFiIsConnected(),
+                         useHTTPServer && thingGetWiFiAccessPointAvailable(),
+                         useHTTPSServer && thingGetWiFiAccessPointAvailable(),
+                         "http://" + thingGetWiFiIP() + ":" + String(thingGetHTTPServerPort()),
+                         "http://" + thingGetWiFiIP() + ":443\n",
+                         "https://" + thingGetWiFiAccessPointIP() + ":" + String(thingGetHTTPServerPort()),
+                         "https://" + thingGetWiFiAccessPointIP() + ":443\n");
 
-    //------------------------------------
-    //HTTP(S) Client
-    hOffset += GOLD_12 + GOLD_8 + GOLD_8 + GOLD_8 + GOLD_8 + GOLD_8;
+#ifdef USE_HTTP_CLIENT
+    int useHTTPClient = thingGetHTTPClientAvailable() && thingGetWiFiAvailable() && thingGetWiFiIsConnected();
 
-    tft.setTextColor(TFT_GREEN, TFT_DARKGREY);
-    tft.drawString("HTTP(S) Client", GOLD_9, hOffset + GOLD_11, 1);
+    String hcServerIP = thingGetHTTPClientURL() + ":" + String(thingGetHTTPClientPort());
+    drawHTTPClientStatus(useHTTPClient, HTTPClientGetStatus(), hcServerIP, HTTPClientGetSend(), HTTPClientGetRecv());
+#else
+    drawHTTPClientStatus(0, -1, "", 0, 0);
+#endif
 
-    tft.setTextColor(TFT_GREEN, TFT_BLACK);
-    tft.drawString("Enabled", GOLD_9, hOffset + GOLD_12 + GOLD_8, 2);
+#ifdef USE_MQTT
+    int useMQTTClient = thingGetMQTTAvailable() && thingGetWiFiAvailable() && thingGetWiFiIsConnected();        
+    drawMQTTClientStatus(useMQTTClient, thingGetMQTTClientConnected(), thingGetMQTTURL() + ":" + String(thingGetMQTTPort()), MQTTGetSend(), MQTTGetRecv());
+#else
+    drawMQTTClientStatus(0, -1, "", 0, 0);
+#endif
 
-    tft.setTextColor(TFT_WHITE, TFT_BLACK);
-    tft.drawRightString("https://owlos.org:443", WIDTH / 2 - GOLD_9, hOffset + GOLD_12 + GOLD_8, 2);
+#ifdef USE_UART    
+    drawUARTClientStatus(1, Serial.available(), Serial.baudRate() , UARTGetSend(), UARTGetRecv());
+#else
+    drawUARTClientStatus(0, -1, Serial.baudRate(), 0, 0);
+#endif
 
-    tft.setTextColor(TFT_GREEN, TFT_BLACK);
-    tft.drawString("connect", WIDTH / 2 + GOLD_9, hOffset + GOLD_12 + GOLD_8, 2);
 
-    tft.setTextColor(TFT_DARKGREY, TFT_BLACK);
-    tft.drawRightString("send: 103Kb recv: 12Kb", WIDTH / 2 + WIDTH / 2 - GOLD_9, hOffset + GOLD_12 + GOLD_8, 2);
-
-    //MQTT Client
-    hOffset += GOLD_12 + GOLD_8 + GOLD_8;
-
-    tft.setTextColor(TFT_GREEN, TFT_DARKGREY);
-    tft.drawString("MQTT Client", GOLD_9, hOffset + GOLD_11, 1);
-
-    tft.setTextColor(TFT_GREEN, TFT_BLACK);
-    tft.drawString("Enabled", GOLD_9, hOffset + GOLD_12 + GOLD_8, 2);
-
-    tft.setTextColor(TFT_WHITE, TFT_BLACK);
-    tft.drawRightString("owlos.org:1883", WIDTH / 2 - GOLD_9, hOffset + GOLD_12 + GOLD_8, 2);
-
-    tft.setTextColor(TFT_GREEN, TFT_BLACK);
-    tft.drawString("connect", WIDTH / 2 + GOLD_9, hOffset + GOLD_12 + GOLD_8, 2);
-
-    tft.setTextColor(TFT_DARKGREY, TFT_BLACK);
-    tft.drawRightString("send: 103Kb recv: 12Kb", WIDTH / 2 + WIDTH / 2 - GOLD_9, hOffset + GOLD_12 + GOLD_8, 2);
-
-    //UART 1
-    hOffset += GOLD_12 + GOLD_8 + GOLD_8;
-
-    tft.setTextColor(TFT_GREEN, TFT_DARKGREY);
-    tft.drawString("UART 1 (RX/TX)", GOLD_9, hOffset + GOLD_11, 1);
-
-    tft.setTextColor(TFT_GREEN, TFT_BLACK);
-    tft.drawString("Enabled", GOLD_9, hOffset + GOLD_12 + GOLD_8, 2);
-
-    tft.setTextColor(TFT_WHITE, TFT_BLACK);
-    tft.drawRightString("9600 bad", WIDTH / 2 - GOLD_9, hOffset + GOLD_12 + GOLD_8, 2);
-
-    tft.setTextColor(TFT_DARKGREY, TFT_BLACK);
-    tft.drawRightString("send: 103Kb recv: 12Kb", WIDTH / 2 + WIDTH / 2 - GOLD_9, hOffset + GOLD_12 + GOLD_8, 2);
-*/
 }
 
 //------------------------------------------------------------------------------------------
@@ -497,21 +672,14 @@ bool UXServiceInit()
     }
 
     initDrawNetworkStatus();
-    drawNetworkStatus(thingGetWiFiAvailable(), thingGetWiFiStatus(), thingGetWiFiRSSI(), thingGetWiFiSSID(), thingGetWiFiIP(), String(thingGetWiFiIsConnected()));
+    drawTransportStatuses();
+
     return true;
 }
 
-int hs1 = 200;
-int hr1 = 10;
-
-int hs2 = 10;
-int hr2 = 0;
-
 void UXServiceLoop()
 {
-    //void drawNetworkStatus(bool stAvailable, int stdBm, String stSSID, String stSec, String stIp, String stStatus)
-    thingGetConnectedWiFiSSID();
-    drawNetworkStatus(thingGetWiFiAvailable(), thingGetWiFiStatus(), thingGetWiFiRSSI(), thingGetWiFiSSID(), thingGetWiFiIP(), thingGetWiFiGateWayIP());
+    drawTransportStatuses();
 }
 
 #endif

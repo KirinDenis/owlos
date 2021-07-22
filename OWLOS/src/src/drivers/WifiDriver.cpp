@@ -341,7 +341,7 @@ String thingGetWiFiAccessPointIP()
 {
 	if (thingGetWiFiAccessPointAvailable() == 1)
 	{
-		IPAddress real_wifiaccesspointip = WiFi.softAPIP();
+		IPAddress real_wifiaccesspointip = WiFi.softAPIP();		
 #ifdef DETAILED_DEBUG
 #ifdef DEBUG
 		debugOut(thingid, "Current Access Point IP: " + real_wifiaccesspointip.toString());

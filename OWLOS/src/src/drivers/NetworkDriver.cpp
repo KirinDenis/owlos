@@ -49,6 +49,10 @@ OWLOS распространяется в надежде, что она буде
 #include "../services/UpdateService.h"
 #include "../services/TransportService.h"
 
+#ifdef USE_MQTT
+#include "../transports/MQTTClient.h"
+#endif
+
 extern String propertyFileReaded;
 extern String topic;
 extern String thingid;
@@ -197,9 +201,7 @@ String thingGetNetworkProperties()
 								"mqttpassword=" +
 		   thingGetMQTTPassword() + "//p\n"
 								   "mqttclientconnected=" +
-		   String(thingGetMQTTClientConnected()) + "//bs\n"
-												  "mqttclientstate=" +
-		   String(thingGetMQTTClientState()) + "//i\n"
+		   String(thingGetMQTTClientConnected()) + "//bs\n"												 
 #endif
 
 #ifdef USE_OTA_SERVICE
@@ -420,10 +422,6 @@ String networkOnMessage(String route, String _payload, int8_t transportMask)
 	else if (matchRoute(route, topic, "/getmqttclientconnected"))
 	{
 		return String(thingGetMQTTClientConnected());
-	}
-	else if (matchRoute(route, topic, "/getmqttclientstate"))
-	{
-		return String(thingGetMQTTClientState());
 	}
 	else 
 #endif	
@@ -838,16 +836,9 @@ bool thingSetMQTTPassword(String _mqttpassword)
 //MQTTClientConnected
 int thingGetMQTTClientConnected()
 {
-	//	return (int)(getMQTTClient()->connected());
-	return 1;
+	return MQTTGetConnected();	
 }
 
-//MQTTClientState
-int thingGetMQTTClientState()
-{
-	//	return getMQTTClient()->state();
-	return 1;
-}
 #endif
 
 #ifdef USE_OTA_SERVICE

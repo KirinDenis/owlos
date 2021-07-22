@@ -95,6 +95,9 @@ AsyncMqttClient mqttClient;
 TimerHandle_t mqttReconnectTimer;
 TimerHandle_t wifiReconnectTimer;
 
+int MQTTSend = 0;
+int MQTTRecv = 0;
+
 void onMqttConnect(bool sessionPresent)
 {
     xTimerStop(mqttReconnectTimer, 0);
@@ -185,6 +188,8 @@ void onMqttMessage(char *topic, char *payload, AsyncMqttClientMessageProperties 
     //cut payload buffer
     String _payload = String(payload).substring(index, len);
     String _topic = String(topic);
+
+    MQTTRecv += _payload.length() + _topic.length();
 #ifdef DETAILED_DEBUG
 #ifdef DEBUG
     debugOut("MQTT", "OnPublish received: " + _topic + " payload: " + _payload);
@@ -224,6 +229,7 @@ void MQTTPublish(String _topic, String _payload)
 #else
         mqttClient.publish(_topic.c_str(), 0, true, _payload.c_str());
 #endif
+     MQTTSend += _payload.length() + _topic.length();
     }
     //TODO: say about ignore publish to hight level
 }
@@ -298,5 +304,21 @@ bool MQTTBegin()
 #endif
     return true;
 }
+
+int MQTTGetConnected()
+{
+    return WiFi.isConnected() && mqttClient.connected();
+}
+
+int MQTTGetSend()
+{
+    return MQTTSend;
+}
+
+int MQTTGetRecv()
+{
+    return MQTTRecv;
+}
+
 
 #endif

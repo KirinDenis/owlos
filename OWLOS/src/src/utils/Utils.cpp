@@ -237,7 +237,7 @@ else
 
 		if (thingGetWiFiAccessPointAvailable()) 
 		{				
-		  features += "HTTPSecureServerAP=http://" + thingGetWiFiAccessPointIP() + ":443\n";
+		  features += "HTTPSecureServerAP=https://" + thingGetWiFiAccessPointIP() + ":443\n";
 		}
 		else 
 		{
@@ -268,7 +268,7 @@ else
 
 		if (thingGetWiFiAccessPointAvailable()) 
 		{				
-		  features += "HTTPServerAP=http://" + thingGetWiFiAccessPointIP() + ":" + String(thingGetHTTPServerPort()) + "\n";
+		  features += "HTTPServerAP=https://" + thingGetWiFiAccessPointIP() + ":" + String(thingGetHTTPServerPort()) + "\n";
 		}
 		else 
 		{

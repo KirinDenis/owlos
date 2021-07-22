@@ -42,11 +42,18 @@ OWLOS распространяется в надежде, что она буде
 #define HTTPWEBCLIENT_H
 
 #include "../config.h"
+
+#ifdef USE_HTTP_CLIENT
 #ifdef USE_ESP_DRIVER
 
 bool downloadFile(String fileName, String url);
 
 void HTTPWebClientPublish(String _topic, String _payload);
 
+int HTTPClientGetStatus();
+int HTTPClientGetSend();
+int HTTPClientGetRecv();
+
+#endif
 #endif
 #endif

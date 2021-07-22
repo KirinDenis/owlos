@@ -98,25 +98,34 @@ String SerialInput = "";
 
 bool busy = false;
 
+int UARTSendCount = 0;
+int UARTRecvCount = 0;
+
 void UARTSend(String topic, String payload)
 {
     Serial.print(PUBLISH_ANSWER + topic + " " + payload + "\n\n");
+
+    UARTSendCount += topic.length() + payload.length();
 }
 
 void UARTSendError(String topic, String payload)
 {
     Serial.print(ERROR_ANSWER + topic + "\n");
     Serial.print(payload + "\n\n");
+    UARTSendCount += topic.length() + payload.length();
 }
 
 void UARTSendOK(String topic, String payload)
 {
     Serial.print(OK_ANSWER + topic + "\n");
     Serial.print(payload + "\n\n");
+    UARTSendCount += topic.length() + payload.length();
 }
 
 void UARTRecv(String command)
 {
+
+    UARTRecvCount += command.length();
 
     if (command.length() > 0)
     {
@@ -510,6 +519,16 @@ void UARTRecv()
             }
         }
     }
+}
+
+int UARTGetSend()
+{
+    return UARTSendCount;
+}
+
+int UARTGetRecv()
+{
+    return UARTRecvCount;
 }
 
 #endif
