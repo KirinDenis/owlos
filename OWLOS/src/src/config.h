@@ -43,9 +43,9 @@ OWLOS распространяется в надежде, что она буде
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#define FIRMWARE_VERSION_NUMVER "1.12"
-#define FIRMWARE_BUILD_NUMBER 115
-#define FIRMWARE_VERSION "OWLOS version 1.12 (RC)"
+#define FIRMWARE_VERSION_NUMVER "1.14"
+#define FIRMWARE_BUILD_NUMBER 118
+#define FIRMWARE_VERSION "OWLOS v.1.14 (RC)"
 
 #define LONG_VERSION
 

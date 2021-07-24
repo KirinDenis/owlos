@@ -317,7 +317,7 @@ else
 		 else 
 		 {
 		  features += "MQTTBrokerConnected=no\n";		 	 
-		 }
+	 }
 		}
 		else 
 		{
