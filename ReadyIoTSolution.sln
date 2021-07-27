@@ -135,6 +135,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "drivers", "drivers", "{E4AC
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "services", "services", "{B8F9C798-24FF-4E00-B903-228234AAE229}"
 	ProjectSection(SolutionItems) = preProject
+		OWLOS\src\src\services\AirQualityService.cpp = OWLOS\src\src\services\AirQualityService.cpp
+		OWLOS\src\src\services\AirQualityService.h = OWLOS\src\src\services\AirQualityService.h
 		OWLOS\src\src\services\DriverService.cpp = OWLOS\src\src\services\DriverService.cpp
 		OWLOS\src\src\services\DriverService.h = OWLOS\src\src\services\DriverService.h
 		OWLOS\src\src\services\FileService.cpp = OWLOS\src\src\services\FileService.cpp
@@ -151,6 +153,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "services", "services", "{B8
 		OWLOS\src\src\services\TransportServiceESP8266.cpp = OWLOS\src\src\services\TransportServiceESP8266.cpp
 		OWLOS\src\src\services\UpdateService.cpp = OWLOS\src\src\services\UpdateService.cpp
 		OWLOS\src\src\services\UpdateService.h = OWLOS\src\src\services\UpdateService.h
+		OWLOS\src\src\services\UXService.cpp = OWLOS\src\src\services\UXService.cpp
+		OWLOS\src\src\services\UXService.h = OWLOS\src\src\services\UXService.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "transports", "transports", "{6A416E69-AA4F-41A2-9C9E-6FD7D55E306A}"
@@ -200,7 +204,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OWLOSAirQuality", "OWLOSAir
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OWLOSEcosystemService", "OWLOSEcosystemService", "{48C7ADF5-6E59-4C83-BC7C-ADD8F0BAF208}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OWLOSEcosystemService", "OWLOSEcosystemService\OWLOSEcosystemService.csproj", "{5E9F4817-4357-45C7-A609-FB0F7B27AF99}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OWLOSEcosystemService", "OWLOSEcosystemService\OWLOSEcosystemService.csproj", "{5E9F4817-4357-45C7-A609-FB0F7B27AF99}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ux", "ux", "{A02B92C5-8DF8-4F3F-A6B4-17F5EAF70204}"
+	ProjectSection(SolutionItems) = preProject
+		OWLOS\src\src\ux\colors.h = OWLOS\src\src\ux\colors.h
+		OWLOS\src\src\ux\TransportUX.cpp = OWLOS\src\src\ux\TransportUX.cpp
+		OWLOS\src\src\ux\TransportUX.h = OWLOS\src\src\ux\TransportUX.h
+		OWLOS\src\src\ux\UXCore.cpp = OWLOS\src\src\ux\UXCore.cpp
+		OWLOS\src\src\ux\UXCore.h = OWLOS\src\src\ux\UXCore.h
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -243,6 +256,7 @@ Global
 		{379A52EF-78CA-4396-9008-55FBA4CF3BFB} = {6C1C1756-D7E4-4399-AF22-7D43AAE2F9E7}
 		{54C74D64-182E-4C4C-9224-E0CE742278FE} = {D9F00E20-1C24-467A-AAE5-E5B645A3194B}
 		{5E9F4817-4357-45C7-A609-FB0F7B27AF99} = {48C7ADF5-6E59-4C83-BC7C-ADD8F0BAF208}
+		{A02B92C5-8DF8-4F3F-A6B4-17F5EAF70204} = {379A52EF-78CA-4396-9008-55FBA4CF3BFB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9A146DA9-5CF0-425C-A7F4-C00482E8A430}
