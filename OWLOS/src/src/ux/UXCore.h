@@ -36,6 +36,8 @@
 #define OWLOSLightColor rgb32_to_rgb16(0xf4f9f4)
 #define OWLOSDarkColor rgb32_to_rgb16(0x141515)
 
+#define TRANSPORT_MODE 0x01
+#define SENSORS_MODE 0x02
 
 /* ------------------------------------------------------
 Класс рисует один item 

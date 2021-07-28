@@ -4,6 +4,9 @@
 
 TFT_eSPI tft = TFT_eSPI(); // Invoke custom library with default width and height
 
+
+int currentMode = TRANSPORT_MODE;
+
 //column - 1,2,3,4
 //         0,2 - align left  (0, width / 2)
 //         1,3 - align right (width / 2, width)

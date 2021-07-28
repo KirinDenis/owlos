@@ -48,10 +48,7 @@ extern TFT_eSPI tft;
 
 #define CALIBRATION_FILE "/TFTCalibration"
 
-#define TRANSPORT_MODE 0x01
-#define SENSORS_MODE 0x02
-
-int currentMode = TRANSPORT_MODE;
+extern int currentMode;
 
 //------------------------------------------------------------------------------------------
 //Init

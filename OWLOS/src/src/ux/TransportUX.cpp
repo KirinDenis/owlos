@@ -27,6 +27,13 @@ extern TFT_eSPI tft;
 
 unsigned long lastSavedTickCount = 0;
 
+extern int currentMode;
+
+void SensorButtonTouch()
+{
+    currentMode = SENSORS_MODE;
+}
+
 //-----------------------------------------------------------------------------------------
 //Button Class
 class ButtonClass
@@ -46,6 +53,7 @@ public:
     int y;
     int text_x;
     int text_y;
+    void (*OnTouchEvent)();
 
 #define BUTTON_TOUCH_NOTDEFINE 0
 #define BUTTON_TOUCH_YES 1
@@ -89,6 +97,7 @@ public:
                     tft.fillRect(x, y, WIDTH / 4 - GOLD_11, GOLD_7, selectColor);
                     tft.setTextColor(fgColor, selectColor);
                     tft.drawString(text, text_x, text_y, 2);
+                    (*OnTouchEvent)();
                 }
                 touch = BUTTON_TOUCH_YES;
             }
@@ -218,6 +227,8 @@ void initDrawTransportStatus()
     systemHeaderLoopItem.draw("loop", OWLOSWarningColor, OWLOSSecondaryColor, 1);
     systemHeaderLifeTimeItem.draw("life time", OWLOSWarningColor, OWLOSSecondaryColor, 1);
     systemHeaderHeapItem.draw("heap", OWLOSWarningColor, OWLOSSecondaryColor, 1);
+
+    button4.OnTouchEvent = SensorButtonTouch;
 
     button1.draw();
     button2.draw();
