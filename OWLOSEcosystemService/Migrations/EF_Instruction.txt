@@ -1,4 +1,10 @@
-﻿https://www.c-sharpcorner.com/article/using-asp-net-core-3-0-identity-with-mysql/
+﻿
+Install EF
+https://docs.microsoft.com/en-us/ef/core/cli/dotnet
+
+https://docs.microsoft.com/en-us/ef/core/cli/powershell
+
+https://www.c-sharpcorner.com/article/using-asp-net-core-3-0-identity-with-mysql/
 
 //создать .CS файлы миграции (не используйте если не создавали новых энтити)
 
