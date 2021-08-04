@@ -71,6 +71,10 @@ OWLOS распространяется в надежде, что она буде
 #include "../drivers/ValveDriver.h"
 #endif
 
+#ifdef USE_BMP280_DRIVER
+#include "../drivers/BMP280Driver.h"
+#endif
+
 void driversInit(String _topic);
 void driversBegin(String thingTopic);
 void driversLoop();

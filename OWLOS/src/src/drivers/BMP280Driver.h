@@ -1,9 +1,6 @@
 ﻿/* ----------------------------------------------------------------------------
 OWLOS DIY Open Source OS for building IoT ecosystems
-Copyright 2019, 2020 by:
-- Konstantin Brul (konstabrul@gmail.com)
-- Vitalii Glushchenko (cehoweek@gmail.com)
-- Denys Melnychuk (meldenvar@gmail.com)
+Copyright 2021 by:
 - Denis Kirin (deniskirinacs@gmail.com)
 
 This file is part of OWLOS DIY Open Source OS for building IoT ecosystems
@@ -39,19 +36,19 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 #include "BaseDriver.h"
-#ifdef USE_LCD_DRIVER
+#ifdef USE_BMP280_DRIVER
 
-#ifndef LCDDRIVER_H
-#define LCDDRIVER_H
+#ifndef BMP280DRIVER_H
+#define BMP280DRIVER_H
 
-#include "../libraries/LiquidCrystal_I2C/LiquidCrystal_I2C.h" //https://www.dfrobot.com/wiki/index.php/I2C/TWI_LCD1602_Module_(Gadgeteer_Compatible)_(SKU:_DFR0063)   http://www.dfrobot.com/wiki/index.php?title=I2C/TWI_LCD1602_Module_(SKU:_DFR0063) Download: http://www.dfrobot.com/image/data/DFR0154/LiquidCrystal_I2Cv1-1.rar
+#include "../libraries/Adafruit_BMP280/Adafruit_BMP280.h" 
 #define SDA_INDEX 0
 #define SCL_INDEX 1
 #define I2CADDR_INDEX 2
-#define _VCC5_INDEX 3
-#define _GND_INDEX 4
+#define I2C_VCC5_INDEX 3
+#define I2C_GND_INDEX 4
 
-class LCDDriver : public BaseDriver
+class BMP280Driver : public BaseDriver
 {
 public:
 	static int getPinsCount()
@@ -69,9 +66,9 @@ public:
 			return SCL_MASK;
 		case I2CADDR_INDEX:
 			return I2CADDR_MASK;
-		case _VCC5_INDEX:
+		case I2C_VCC5_INDEX:
 			return VCC5_MASK | VCC33_MASK;
-		case _GND_INDEX:
+		case I2C_GND_INDEX:
 			return GND_MASK;
 		default:
 			return NO_MASK;
@@ -83,54 +80,14 @@ public:
 	bool begin(String _topic);
 	String getAllProperties();
 	String onMessage(String route, String _payload, int8_t transportMask);
-
-	int getCols();
-	bool setCols(int _cols, bool doEvent);
-
-	int getRows();
-	bool setRows(int _rows, bool doEvent);
-
-	String getText();
-	bool setText(String _text, bool doEvent);
-	bool setTextByRows(String _text, bool doEvent);
-
-	int getDisplay();
-	bool setDisplay(int _display, bool doEvent);
-
-	int getBacklight();
-	bool setBacklight(int _backlight, bool doEvent);
-
-	int getBlink();
-	bool setBlink(int _blink, bool doEvent);
-
-	int getCursor();
-	bool setCursor(int _cursor, bool doEvent);
-
-	int getAutoscroll();
-	bool setAutoscroll(int _autoscroll, bool doEvent);
-
-	int getClear();
-	bool setClear(int _clear, bool doEvent);
-
-	int getX();
-	bool setX(int _x, bool doEvent);
-
-	int getY();
-	bool setY(int _y, bool doEvent);
-
+    String getPressure();
+	String getAltitude();
+	String getTemperature();
 private:
-	LiquidCrystal_I2C *lcd = nullptr;
-	int cols = 20;
-	int rows = 4;
-	int display = 1;
-	int backlight = 1;
-	int cursor = 0;
-	int blink = 0;
-	int autoscroll = 0;
-	int clear = 0;
-	int x = 0;
-	int y = 0;
-	String text = "";
+	Adafruit_BMP280 *bmp280 = nullptr;
+	String pressure = "nan";
+	String altitude = "nan";
+	String temperature = "nan";
 };
 #endif
 #endif

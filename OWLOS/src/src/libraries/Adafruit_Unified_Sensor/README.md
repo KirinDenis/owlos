@@ -4,9 +4,9 @@ Many small embedded systems exist to collect data from sensors, analyse the data
 
 One of the many challenges of embedded systems design is the fact that parts you used today may be out of production tomorrow, or system requirements may change and you may need to choose a different sensor down the road.
 
-Creating new drivers is a relatively easy task, but integrating them into existing systems is both error prone and time consuming since sensors rarely use the exact same nodes of measurement.
+Creating new drivers is a relatively easy task, but integrating them into existing systems is both error prone and time consuming since sensors rarely use the exact same units of measurement.
 
-By reducing all data to a single **sensors\_event\_t** 'type' and settling on specific, **standardised SI nodes** for each sensor family the same sensor types return values that are comparable with any other similar sensor.  This enables you to switch sensor models with very little impact on the rest of the system, which can help mitigate some of the risks and problems of sensor availability and code reuse.
+By reducing all data to a single **sensors\_event\_t** 'type' and settling on specific, **standardised SI units** for each sensor family the same sensor types return values that are comparable with any other similar sensor.  This enables you to switch sensor models with very little impact on the rest of the system, which can help mitigate some of the risks and problems of sensor availability and code reuse.
 
 The unified sensor abstraction layer is also useful for data-logging and data-transmission since you only have one well-known type to log or transmit over the air or wire.
 
@@ -54,9 +54,9 @@ Any driver that supports the Adafruit unified sensor abstraction layer will impl
 
 **Sensor Types (sensors\_type\_t)**
 
-These pre-defined sensor types are used to properly handle the two related typedefs below, and allows us determine what types of nodes the sensor uses, etc.
+These pre-defined sensor types are used to properly handle the two related typedefs below, and allows us determine what types of units the sensor uses, etc.
 
-```
+```c++
 /** Sensor types */
 typedef enum
 {
@@ -82,7 +82,7 @@ typedef enum
 
 This typedef describes the specific capabilities of this sensor, and allows us to know what sensor we are using beneath the abstraction layer.
 
-```
+```c++
 /* Sensor details (40 bytes) */
 /** struct sensor_s is used to describe basic information about a specific sensor. */
 typedef struct
@@ -104,16 +104,16 @@ The individual fields are intended to be used as follows:
 - **version**: The version of the sensor HW and the driver to allow us to differentiate versions of the board or driver
 - **sensor\_id**: A unique sensor identifier that is used to differentiate this specific sensor instance from any others that are present on the system or in the sensor network
 - **type**: The sensor type, based on **sensors\_type\_t** in sensors.h
-- **max\_value**: The maximum value that this sensor can return (in the appropriate SI node)
-- **min\_value**: The minimum value that this sensor can return (in the appropriate SI node)
-- **resolution**: The smallest difference between two values that this sensor can report (in the appropriate SI node)
+- **max\_value**: The maximum value that this sensor can return (in the appropriate SI unit)
+- **min\_value**: The minimum value that this sensor can return (in the appropriate SI unit)
+- **resolution**: The smallest difference between two values that this sensor can report (in the appropriate SI unit)
 - **min\_delay**: The minimum delay in microseconds between two sensor events, or '0' if there is no constant sensor rate
 
 **Sensor Data/Events (sensors\_event\_t)**
 
-This typedef is used to return sensor data from any sensor supported by the abstraction layer, using standard SI nodes and scales.
+This typedef is used to return sensor data from any sensor supported by the abstraction layer, using standard SI units and scales.
 
-```
+```c++
 /* Sensor event (36 bytes) */
 /** struct sensor_event_s is used to provide a single sensor event in a common format. */
 typedef struct
@@ -153,19 +153,19 @@ It includes the following fields:
 
 In addition to the two standard types and the sensor type enum, all drivers based on Adafruit_Sensor must also implement the following two functions:
 
-```
+```c++
 bool getEvent(sensors_event_t*);
 ```
 Calling this function will populate the supplied sensors\_event\_t reference with the latest available sensor data.  You should call this function as often as you want to update your data.
 
-```
+```c++
 void getSensor(sensor_t*);
 ```
 Calling this function will provide some basic information about the sensor (the sensor name, driver version, min and max values, etc.
 
 **Standardised SI values for sensors\_event\_t**
 
-A key part of the abstraction layer is the standardisation of values on SI nodes of a particular scale, which is accomplished via the data[4] union in sensors\_event\_t above.  This 16 byte union includes fields for each main sensor type, and uses the following SI nodes and scales:
+A key part of the abstraction layer is the standardisation of values on SI units of a particular scale, which is accomplished via the data[4] union in sensors\_event\_t above.  This 16 byte union includes fields for each main sensor type, and uses the following SI units and scales:
 
 - **acceleration**: values are in **meter per second per second** (m/s^2)
 - **magnetic**: values are in **micro-Tesla** (uT)
@@ -173,7 +173,7 @@ A key part of the abstraction layer is the standardisation of values on SI nodes
 - **gyro**: values are in **rad/s**
 - **temperature**: values in **degrees centigrade** (Celsius) 
 - **distance**: values are in **centimeters**
-- **light**: values are in **SI lux** nodes
+- **light**: values are in **SI lux** units
 - **pressure**: values are in **hectopascal** (hPa)
 - **relative\_humidity**: values are in **percent**
 - **current**: values are in **milliamps** (mA)
@@ -188,7 +188,7 @@ Every compliant sensor can now be read using a single, well-known 'type' (sensor
 
 An example of reading the [TSL2561](https://github.com/adafruit/Adafruit_TSL2561) light sensor can be seen below:
 
-```
+```c++
  Adafruit_TSL2561 tsl = Adafruit_TSL2561(TSL2561_ADDR_FLOAT, 12345);
  ...
  /* Get a new sensor event */ 
@@ -210,7 +210,7 @@ An example of reading the [TSL2561](https://github.com/adafruit/Adafruit_TSL2561
 
 Similarly, we can get the basic technical capabilities of this sensor with the following code:
 
-```
+```c++
  sensor_t sensor;
  
  sensor_t sensor;

@@ -54,7 +54,7 @@ unsigned long lastPublishMillis = 0;
 //DHT22 IO23
 
 #define DHT22_Driver_Id "dht22"
-#define DHT22_Driver_Pind "IO23,VCC33,GND"
+#define DHT22_Driver_Pind "IO32,VCC33,GND"
 
 #define Light_Driver_Id "light"
 #define Light_Driver_Pind "IO33,VCC33,GND"
@@ -65,14 +65,14 @@ unsigned long lastPublishMillis = 0;
 #define MQ7_Driver_Id "mq7"
 #define MQ7_Driver_Pind "IO35,VCC33,GND"
 
-#define Motion_Driver_Id "motion"
-#define Motion_Driver_Pind "IO22,VCC33,GND"
-
+#define BMP280_Driver_Id "bmp280"
+#define BMP280_Driver_Pind "IO21,IO22,ADDR0x76,VCC33,GND"
+                             
 DHTDriver *_DHTDriver = nullptr;
 SensorDriver *_LightDriver = nullptr;
 SensorDriver *_ResistorDriver = nullptr;
 SensorDriver *_MQ7Driver = nullptr;
-SensorDriver *_MotionDriver = nullptr;
+BMP280Driver *_BMP280Driver = nullptr;
 
 void AirQualityBegin(String __topic)
 {
@@ -81,17 +81,18 @@ void AirQualityBegin(String __topic)
     driversAdd(DHT_DRIVER_TYPE, DHT22_Driver_Id, DHT22_Driver_Pind);
     _DHTDriver = (DHTDriver*)driversGetDriver(DHT22_Driver_Id);
 
-    driversAdd(SENSOR_DRIVER_TYPE, Light_Driver_Id, Light_Driver_Pind);
-    _LightDriver = (SensorDriver*)driversGetDriver(Light_Driver_Id);
+//    driversAdd(SENSOR_DRIVER_TYPE, Light_Driver_Id, Light_Driver_Pind);
+//    _LightDriver = (SensorDriver*)driversGetDriver(Light_Driver_Id);
 
-    driversAdd(SENSOR_DRIVER_TYPE, Resistor_Driver_Id, Resistor_Driver_Pind);    
-    _ResistorDriver = (SensorDriver*)driversGetDriver(Resistor_Driver_Id);
+    //driversAdd(SENSOR_DRIVER_TYPE, Resistor_Driver_Id, Resistor_Driver_Pind);    
+    //_ResistorDriver = (SensorDriver*)driversGetDriver(Resistor_Driver_Id);
 
-    driversAdd(SENSOR_DRIVER_TYPE, MQ7_Driver_Id, MQ7_Driver_Pind);    
-    _MQ7Driver = (SensorDriver*)driversGetDriver(MQ7_Driver_Id);
+    //driversAdd(SENSOR_DRIVER_TYPE, MQ7_Driver_Id, MQ7_Driver_Pind);    
+    //_MQ7Driver = (SensorDriver*)driversGetDriver(MQ7_Driver_Id);
 
-    driversAdd(SENSOR_DRIVER_TYPE, Motion_Driver_Id, Motion_Driver_Pind);    
-    _MotionDriver = (SensorDriver*)driversGetDriver(Motion_Driver_Id);
+    driversAdd(BMP280_DRIVER_TYPE, BMP280_Driver_Id, BMP280_Driver_Pind);    
+    _BMP280Driver = (BMP280Driver*)driversGetDriver(BMP280_Driver_Id);
+    
 }
 
 void AirQualityLoop()
@@ -152,15 +153,14 @@ void AirQualityLoop()
           AirQualityPropertiesMode += "MQ7:no\n";
       }
 
-      if (_MotionDriver != nullptr)
+      if (_BMP280Driver != nullptr)
       {
-          AirQualityPropertiesMode += "Motion:yes\n";
-          AirQualityPropertiesMode += "Motiondata:" +  String(_MotionDriver->getData()) + "\n";
-          AirQualityPropertiesMode += "Motiondatah:" +  _MotionDriver->getHistoryData() + "\n";
+          AirQualityPropertiesMode += "BMP280:yes\n";
+          AirQualityPropertiesMode += "BMP280pressure:" +  String(_BMP280Driver->getPressure()) + "\n";          
       }
       else 
       {
-          AirQualityPropertiesMode += "Motion:no\n";
+          AirQualityPropertiesMode += "BMP280:no\n";
       }
 
 

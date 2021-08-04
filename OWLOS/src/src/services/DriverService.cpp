@@ -1,6 +1,6 @@
 ﻿/* ----------------------------------------------------------------------------
 OWLOS DIY Open Source OS for building IoT ecosystems
-Copyright 2019, 2020 by:
+Copyright 2019, 2020, 2021 by:
 - Konstantin Brul (konstabrul@gmail.com)
 - Vitalii Glushchenko (cehoweek@gmail.com)
 - Denys Melnychuk (meldenvar@gmail.com)
@@ -580,6 +580,52 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 	}
 	else
 #endif
+#ifdef USE_BMP280_DRIVER
+		if (type == BMP280_DRIVER_TYPE)
+	{
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
+		debugOut("pin", String(pinCount));
+#endif
+#endif
+		if (pinCount != BMP280Driver::getPinsCount())
+		{
+			return "BMP280Driver's pins quantity does not match, must be " + String(BMP280Driver::getPinsCount());
+		}
+		
+		result = 
+		checkDriverPin(_pins[SDA_INDEX], BMP280Driver::getPinType(SDA_INDEX)) + 
+		checkDriverPin(_pins[SCL_INDEX], BMP280Driver::getPinType(SCL_INDEX)) + 		
+		_checkDriverPin(_pins[I2CADDR_INDEX], BMP280Driver::getPinType(I2CADDR_INDEX), _pins[SDA_INDEX]) + 
+		checkDriverPin(_pins[I2C_VCC5_INDEX], BMP280Driver::getPinType(I2C_VCC5_INDEX)) + 				
+		checkDriverPin(_pins[I2C_GND_INDEX], BMP280Driver::getPinType(I2C_GND_INDEX));		
+
+
+		if (result.length() != 0)
+		{
+#ifdef DEBUG			
+			debugOut("BMP280", String(result));
+#endif			
+			return result;
+		}
+		
+		result = setDriverPin(_pins[SDA_INDEX], id, SDA_INDEX, BMP280Driver::getPinType(SDA_INDEX)) + setDriverPin(_pins[SCL_INDEX], id, SCL_INDEX, BMP280Driver::getPinType(SCL_INDEX)) + _setDriverPin(_pins[I2CADDR_INDEX], id, I2CADDR_INDEX, BMP280Driver::getPinType(I2CADDR_INDEX), _pins[SDA_INDEX]) + setDriverPin(_pins[_VCC5_INDEX], id, _VCC5_INDEX, BMP280Driver::getPinType(_VCC5_INDEX)) + setDriverPin(_pins[_GND_INDEX], id, _GND_INDEX, BMP280Driver::getPinType(_GND_INDEX));
+
+		if (result.length() != 0)
+		{
+#ifdef DEBUG			
+			debugOut("BMP280", result);
+#endif						
+			return result;
+		}
+		
+		BMP280Driver *bmp280Driver = new BMP280Driver;
+		bmp280Driver->id = id;
+		bmp280Driver->init();
+		driversList[freeIndex] = bmp280Driver;
+	}
+	else
+#endif
 
 #ifdef USE_DHT_DRIVER
 		if (type == DHT_DRIVER_TYPE)
@@ -594,7 +640,10 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 			return "DHTDriver's pins quantity does not match, must be " + String(DHTDriver::getPinsCount());
 		}
 
-		result = checkDriverPin(_pins[PIN0_INDEX], DHTDriver::getPinType(PIN0_INDEX)) + checkDriverPin(_pins[PIN1_INDEX], DHTDriver::getPinType(PIN1_INDEX)) + checkDriverPin(_pins[PIN2_INDEX], DHTDriver::getPinType(PIN2_INDEX));
+		result = 
+		checkDriverPin(_pins[PIN0_INDEX], DHTDriver::getPinType(PIN0_INDEX)) + 
+		checkDriverPin(_pins[PIN1_INDEX], DHTDriver::getPinType(PIN1_INDEX)) + 
+		checkDriverPin(_pins[PIN2_INDEX], DHTDriver::getPinType(PIN2_INDEX));
 
 		if (result.length() != 0)
 			return result;
@@ -618,8 +667,8 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 #ifdef USE_ESP_DRIVER
 	//if driver added at RUNTIME
 	driversList[freeIndex]->begin(thingGetTopic());
-#else 	
-    driversList[freeIndex]->begin("owlosthing");
+#else
+	driversList[freeIndex]->begin("owlosthing");
 #endif
 #ifdef DETAILED_DEBUG
 #ifdef DEBUG

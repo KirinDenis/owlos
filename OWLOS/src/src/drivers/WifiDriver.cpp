@@ -530,8 +530,10 @@ String thingGetAllWiFiModes()
 int32_t thingGetWiFiRSSI()
 {	
 	int32_t _wifirssi = WiFi.RSSI();
+#ifdef WIFI_RSSI_PUBLISH	
 	if (_wifirssi != wifirssi)
 		onInsideChange("wifirssi", String(_wifirssi));
+#endif		
 	return wifirssi = _wifirssi;
 }
 bool thingSetWiFiRSSI(int _wifirssi)

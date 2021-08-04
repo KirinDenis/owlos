@@ -89,6 +89,7 @@ OWLOS распространяется в надежде, что она буде
 #define ESP_DRIVER_TYPE 13
 #define CONFIG_DRIVER_TYPE 14
 #define SAMPLE_DRIVER_TYPE 15
+#define BMP280_DRIVER_TYPE 16
 
 char *stringToChar(String src);
 #ifdef DEBUG
