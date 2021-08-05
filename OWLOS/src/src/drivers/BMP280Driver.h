@@ -78,16 +78,37 @@ public:
 	bool init();
 
 	bool begin(String _topic);
+	bool query();
 	String getAllProperties();
 	String onMessage(String route, String _payload, int8_t transportMask);
     String getPressure();
 	String getAltitude();
 	String getTemperature();
+
+	String getPressureHistoryData();
+	bool setPressureHistoryData(float _historydata);
+
+	String getAltitudeHistoryData();
+	bool setAltitudeHistoryData(float _historydata);
+
+	String getTemperatureHistoryData();
+	bool setTemperatureHistoryData(float _historydata);
+
 private:
 	Adafruit_BMP280 *bmp280 = nullptr;
 	String pressure = "nan";
 	String altitude = "nan";
 	String temperature = "nan";
+
+	int pressureHistoryCount = 0;
+	float *pressureHistoryData = new float[historySize]();
+
+	int altitudeHistoryCount = 0;
+	float *altitudeHistoryData = new float[historySize]();
+
+	int temperatureHistoryCount = 0;
+	float *temperatureHistoryData = new float[historySize]();
+
 };
 #endif
 #endif

@@ -56,23 +56,15 @@ unsigned long lastPublishMillis = 0;
 #define DHT22_Driver_Id "dht22"
 #define DHT22_Driver_Pind "IO32,VCC33,GND"
 
-#define Light_Driver_Id "light"
-#define Light_Driver_Pind "IO33,VCC33,GND"
-
-#define Resistor_Driver_Id "resistor"
-#define Resistor_Driver_Pind "IO32,VCC33,GND"
-
-#define MQ7_Driver_Id "mq7"
-#define MQ7_Driver_Pind "IO35,VCC33,GND"
-
 #define BMP280_Driver_Id "bmp280"
 #define BMP280_Driver_Pind "IO21,IO22,ADDR0x76,VCC33,GND"
+
+#define ADS1X15_Driver_Id "ads1x15"
+#define ADS1X15_Driver_Pind "IO21,IO22,ADDR0x48,VCC33,GND"
                              
 DHTDriver *_DHTDriver = nullptr;
-SensorDriver *_LightDriver = nullptr;
-SensorDriver *_ResistorDriver = nullptr;
-SensorDriver *_MQ7Driver = nullptr;
 BMP280Driver *_BMP280Driver = nullptr;
+ADS1X15Driver *_ADS1X15Driver = nullptr;
 
 void AirQualityBegin(String __topic)
 {
@@ -81,17 +73,11 @@ void AirQualityBegin(String __topic)
     driversAdd(DHT_DRIVER_TYPE, DHT22_Driver_Id, DHT22_Driver_Pind);
     _DHTDriver = (DHTDriver*)driversGetDriver(DHT22_Driver_Id);
 
-//    driversAdd(SENSOR_DRIVER_TYPE, Light_Driver_Id, Light_Driver_Pind);
-//    _LightDriver = (SensorDriver*)driversGetDriver(Light_Driver_Id);
-
-    //driversAdd(SENSOR_DRIVER_TYPE, Resistor_Driver_Id, Resistor_Driver_Pind);    
-    //_ResistorDriver = (SensorDriver*)driversGetDriver(Resistor_Driver_Id);
-
-    //driversAdd(SENSOR_DRIVER_TYPE, MQ7_Driver_Id, MQ7_Driver_Pind);    
-    //_MQ7Driver = (SensorDriver*)driversGetDriver(MQ7_Driver_Id);
-
     driversAdd(BMP280_DRIVER_TYPE, BMP280_Driver_Id, BMP280_Driver_Pind);    
     _BMP280Driver = (BMP280Driver*)driversGetDriver(BMP280_Driver_Id);
+
+    driversAdd(ADS1X15_DRIVER_TYPE, ADS1X15_Driver_Id, ADS1X15_Driver_Pind);    
+    _ADS1X15Driver = (ADS1X15Driver*)driversGetDriver(ADS1X15_Driver_Id);
     
 }
 
@@ -120,48 +106,33 @@ void AirQualityLoop()
           AirQualityPropertiesMode += "DHT22:no\n";
       }
 
-      if (_LightDriver != nullptr)
-      {
-          AirQualityPropertiesMode += "Light:yes\n";
-          AirQualityPropertiesMode += "Lightdata:" +  String(_LightDriver->getData()) + "\n";
-          AirQualityPropertiesMode += "Lightdatah:" +  _LightDriver->getHistoryData() + "\n";
-      }
-      else 
-      {
-          AirQualityPropertiesMode += "Light:no\n";
-      }
-
-      if (_ResistorDriver != nullptr)
-      {
-          AirQualityPropertiesMode += "Resistor:yes\n";
-          AirQualityPropertiesMode += "Resistordata:" +  String(_ResistorDriver->getData()) + "\n";
-          AirQualityPropertiesMode += "Resistordatah:" +  _ResistorDriver->getHistoryData() + "\n";
-      }
-      else 
-      {
-          AirQualityPropertiesMode += "Resistor:no\n";
-      }
-
-      if (_MQ7Driver != nullptr)
-      {
-          AirQualityPropertiesMode += "MQ7:yes\n";
-          AirQualityPropertiesMode += "MQ7data:" +  String(_MQ7Driver->getData()) + "\n";
-          AirQualityPropertiesMode += "MQ7datah:" +  _MQ7Driver->getHistoryData() + "\n";
-      }
-      else 
-      {
-          AirQualityPropertiesMode += "MQ7:no\n";
-      }
-
       if (_BMP280Driver != nullptr)
       {
           AirQualityPropertiesMode += "BMP280:yes\n";
           AirQualityPropertiesMode += "BMP280pressure:" +  String(_BMP280Driver->getPressure()) + "\n";          
+          AirQualityPropertiesMode += "BMP280pressureh:" +  String(_BMP280Driver->getPressureHistoryData()) + "\n";
+          AirQualityPropertiesMode += "BMP280altitude:" +  String(_BMP280Driver->getAltitude()) + "\n";
+          AirQualityPropertiesMode += "BMP280altitudeh:" +  String(_BMP280Driver->getAltitudeHistoryData()) + "\n";
+          AirQualityPropertiesMode += "BMP280temperature:" +  String(_BMP280Driver->getTemperature()) + "\n";
+          AirQualityPropertiesMode += "BMP280temperatureh:" +  String(_BMP280Driver->getTemperatureHistoryData()) + "\n";
       }
       else 
       {
           AirQualityPropertiesMode += "BMP280:no\n";
       }
+
+      if (_ADS1X15Driver != nullptr)
+      {
+          AirQualityPropertiesMode += "ADS1X15:yes\n";
+          AirQualityPropertiesMode += "ADS1X15chanel_0:" +  String(_ADS1X15Driver->getChanel_0()) + "\n";          
+          AirQualityPropertiesMode += "ADS1X15chanel_0_volts:" +  String(_ADS1X15Driver->getChanel_0_Volts()) + "\n";
+          AirQualityPropertiesMode += "ADS1X15chanel_0h:" +  String(_ADS1X15Driver->getChanel_0_HistoryData()) + "\n";
+      }
+      else 
+      {
+          AirQualityPropertiesMode += "ADS1X15:no\n";
+      }
+
 
 
       transportPublish(_topic, AirQualityPropertiesMode);

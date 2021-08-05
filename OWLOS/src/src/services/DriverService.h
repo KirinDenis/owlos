@@ -75,6 +75,11 @@ OWLOS распространяется в надежде, что она буде
 #include "../drivers/BMP280Driver.h"
 #endif
 
+#ifdef USE_ADS1X15_DRIVER
+#include "../drivers/ADS1X15Driver.h"
+#endif
+
+
 void driversInit(String _topic);
 void driversBegin(String thingTopic);
 void driversLoop();

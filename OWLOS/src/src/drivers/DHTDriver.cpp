@@ -325,25 +325,25 @@ String DHTDriver::onMessage(String route, String _payload, int8_t transportMask)
 	return result;
 }
 
-//Stored properties values getter 
+//Stored properties values getter
 String DHTDriver::getStoredTemperature()
 {
-  return temperature;
+	return temperature;
 }
 
 String DHTDriver::getStoredHumidity()
 {
-  return humidity;
+	return humidity;
 }
 
 String DHTDriver::getStoredHeatIndex()
 {
-  return heatIndex;
+	return heatIndex;
 }
 
 String DHTDriver::getStoredCelsius()
 {
-  return String(celsius);
+	return String(celsius);
 }
 
 //получить значение свойства драйвера определяющее тип сенсора

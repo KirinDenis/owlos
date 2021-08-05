@@ -44,7 +44,7 @@ OWLOS распространяется в надежде, что она буде
 #define CONFIG_H
 
 #define FIRMWARE_VERSION_NUMVER "1.14"
-#define FIRMWARE_BUILD_NUMBER 119
+#define FIRMWARE_BUILD_NUMBER 120
 #define FIRMWARE_VERSION "OWLOS v.1.14 (RC)"
 
 #define LONG_VERSION
@@ -163,8 +163,11 @@ OWLOS распространяется в надежде, что она буде
         //Драйвер сенсора BMP280
         #define USE_BMP280_DRIVER
 
+        //Драйвер сенсора ADS1X15
+        #define USE_ADS1X15_DRIVER
+
         //Драйвер I2C LCD дисплеев, поддерживает более одного дисплея на шине I2C
-        #define USE_LCD_DRIVER
+        //#define USE_LCD_DRIVER
 
         //Драйвер шаговых двигателей
         //#define USE_STEPPER_DRIVER

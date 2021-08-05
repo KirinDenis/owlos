@@ -173,6 +173,28 @@ String driversGetAccessable()
 	}
 #endif
 
+#ifdef USE_BMP280_DRIVER
+	result += "name:BMP280Driver\n";
+	result += "type=" + String(BMP280_DRIVER_TYPE) + "\n";
+	result += "pinscount=" + String(BMP280Driver::getPinsCount()) + "\n";
+	for (int i = 0; i < BMP280Driver::getPinsCount(); i++)
+	{
+		result += "pintype" + String(i) + "=" + BMP280Driver::getPinType(i) + "\n";
+		result += "pintypedecoded" + String(i) + "=" + decodePinTypes(BMP280Driver::getPinType(i)) + "\n";
+	}
+#endif
+
+#ifdef USE_ADS1X15_DRIVER
+	result += "name:ADS1X15Driver\n";
+	result += "type=" + String(ADS1X15_DRIVER_TYPE) + "\n";
+	result += "pinscount=" + String(ADS1X15Driver::getPinsCount()) + "\n";
+	for (int i = 0; i < ADS1X15Driver::getPinsCount(); i++)
+	{
+		result += "pintype" + String(i) + "=" + ADS1X15Driver::getPinType(i) + "\n";
+		result += "pintypedecoded" + String(i) + "=" + decodePinTypes(ADS1X15Driver::getPinType(i)) + "\n";
+	}
+#endif
+
 #ifdef USE_DHT_DRIVER
 	result += "name:DHTDriver\n";
 	result += "type=" + String(DHT_DRIVER_TYPE) + "\n";
@@ -609,7 +631,12 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 			return result;
 		}
 		
-		result = setDriverPin(_pins[SDA_INDEX], id, SDA_INDEX, BMP280Driver::getPinType(SDA_INDEX)) + setDriverPin(_pins[SCL_INDEX], id, SCL_INDEX, BMP280Driver::getPinType(SCL_INDEX)) + _setDriverPin(_pins[I2CADDR_INDEX], id, I2CADDR_INDEX, BMP280Driver::getPinType(I2CADDR_INDEX), _pins[SDA_INDEX]) + setDriverPin(_pins[_VCC5_INDEX], id, _VCC5_INDEX, BMP280Driver::getPinType(_VCC5_INDEX)) + setDriverPin(_pins[_GND_INDEX], id, _GND_INDEX, BMP280Driver::getPinType(_GND_INDEX));
+		result = setDriverPin(_pins[SDA_INDEX], 
+		id, SDA_INDEX, BMP280Driver::getPinType(SDA_INDEX)) + setDriverPin(_pins[SCL_INDEX], 
+		id, SCL_INDEX, BMP280Driver::getPinType(SCL_INDEX)) + _setDriverPin(_pins[I2CADDR_INDEX], 
+		id, I2CADDR_INDEX, BMP280Driver::getPinType(I2CADDR_INDEX), _pins[SDA_INDEX]) + setDriverPin(_pins[I2C_VCC5_INDEX], 
+		id, I2C_VCC5_INDEX, BMP280Driver::getPinType(I2C_VCC5_INDEX)) + setDriverPin(_pins[I2C_GND_INDEX], 
+		id, I2C_GND_INDEX, BMP280Driver::getPinType(I2C_GND_INDEX));
 
 		if (result.length() != 0)
 		{
@@ -626,6 +653,59 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 	}
 	else
 #endif
+
+#ifdef USE_ADS1X15_DRIVER
+		if (type == ADS1X15_DRIVER_TYPE)
+	{
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
+		debugOut("pin", String(pinCount));
+#endif
+#endif
+		if (pinCount != ADS1X15Driver::getPinsCount())
+		{
+			return "ADS1X15Driver's pins quantity does not match, must be " + String(ADS1X15Driver::getPinsCount());
+		}
+		
+		result = 
+		checkDriverPin(_pins[SDA_INDEX], ADS1X15Driver::getPinType(SDA_INDEX)) + 
+		checkDriverPin(_pins[SCL_INDEX], ADS1X15Driver::getPinType(SCL_INDEX)) + 		
+		_checkDriverPin(_pins[I2CADDR_INDEX], ADS1X15Driver::getPinType(I2CADDR_INDEX), _pins[SDA_INDEX]) + 
+		checkDriverPin(_pins[I2C_VCC5_INDEX], ADS1X15Driver::getPinType(I2C_VCC5_INDEX)) + 				
+		checkDriverPin(_pins[I2C_GND_INDEX], ADS1X15Driver::getPinType(I2C_GND_INDEX));		
+
+
+		if (result.length() != 0)
+		{
+#ifdef DEBUG			
+			debugOut("ADS1X15", String(result));
+#endif			
+			return result;
+		}
+		
+		result = setDriverPin(_pins[SDA_INDEX], 
+		id, SDA_INDEX, ADS1X15Driver::getPinType(SDA_INDEX)) + setDriverPin(_pins[SCL_INDEX], 
+		id, SCL_INDEX, ADS1X15Driver::getPinType(SCL_INDEX)) + _setDriverPin(_pins[I2CADDR_INDEX], 
+		id, I2CADDR_INDEX, BMP280Driver::getPinType(I2CADDR_INDEX), _pins[SDA_INDEX]) + setDriverPin(_pins[I2C_VCC5_INDEX], 
+		id, I2C_VCC5_INDEX, ADS1X15Driver::getPinType(I2C_VCC5_INDEX)) + setDriverPin(_pins[I2C_GND_INDEX], 
+		id, I2C_GND_INDEX, ADS1X15Driver::getPinType(I2C_GND_INDEX));
+
+		if (result.length() != 0)
+		{
+#ifdef DEBUG			
+			debugOut("ADS1X15", result);
+#endif						
+			return result;
+		}
+		
+		ADS1X15Driver *ads1x15Driver = new ADS1X15Driver;
+		ads1x15Driver->id = id;
+		ads1x15Driver->init();
+		driversList[freeIndex] = ads1x15Driver;
+	}
+	else
+#endif
+
 
 #ifdef USE_DHT_DRIVER
 		if (type == DHT_DRIVER_TYPE)

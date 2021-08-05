@@ -1,9 +1,6 @@
 ﻿/* ----------------------------------------------------------------------------
 OWLOS DIY Open Source OS for building IoT ecosystems
-Copyright 2019, 2020 by:
-- Konstantin Brul (konstabrul@gmail.com)
-- Vitalii Glushchenko (cehoweek@gmail.com)
-- Denys Melnychuk (meldenvar@gmail.com)
+Copyright 2021 by:
 - Denis Kirin (deniskirinacs@gmail.com)
 
 This file is part of OWLOS DIY Open Source OS for building IoT ecosystems
@@ -38,68 +35,97 @@ OWLOS распространяется в надежде, что она буде
 Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
-#ifndef UTILS_H
-#define UTILS_H
+#include "BaseDriver.h"
+#ifdef USE_ADS1X15_DRIVER
 
-#include <Arduino.h>
+#ifndef ADS1X15DRIVER_H
+#define ADS1X15DRIVER_H
 
-//#define SERIAL_COLORIZED_OUTPUT
-//#define DEBUG
-#ifdef DEBUG
-	#define DETAILED_DEBUG
+#include "../libraries/Adafruit_ADS1015/Adafruit_ADS1X15.h"
+
+#define SDA_INDEX 0
+#define SCL_INDEX 1
+#define I2CADDR_INDEX 2
+#define I2C_VCC5_INDEX 3
+#define I2C_GND_INDEX 4
+
+class ADS1X15Driver : public BaseDriver
+{
+public:
+	static int getPinsCount()
+	{
+		return 5;
+	}
+
+	static uint16_t getPinType(int pinIndex)
+	{
+		switch (pinIndex)
+		{
+		case SDA_INDEX:
+			return SDA_MASK;
+		case SCL_INDEX:
+			return SCL_MASK;
+		case I2CADDR_INDEX:
+			return I2CADDR_MASK;
+		case I2C_VCC5_INDEX:
+			return VCC5_MASK | VCC33_MASK;
+		case I2C_GND_INDEX:
+			return GND_MASK;
+		default:
+			return NO_MASK;
+		}
+	}
+
+	bool init();
+
+	bool begin(String _topic);
+	bool query();
+	String getAllProperties();
+	String onMessage(String route, String _payload, int8_t transportMask);
+
+	String getChanel_0();
+	String getChanel_0_Volts();
+	String getChanel_0_HistoryData();
+	bool setChanel_0_HistoryData(float _historydata);
+
+	String getChanel_1();
+	String getChanel_1_Volts();
+	String getChanel_1_HistoryData();
+	bool setChanel_1_HistoryData(float _historydata);
+
+	String getChanel_2();
+	String getChanel_2_Volts();
+	String getChanel_2_HistoryData();
+	bool setChanel_2_HistoryData(float _historydata);
+
+	String getChanel_3();
+	String getChanel_3_Volts();
+	String getChanel_3_HistoryData();
+	bool setChanel_3_HistoryData(float _historydata);
+
+private:
+	Adafruit_ADS1X15 *ads1x15 = nullptr;
+
+	String chanel_0 = "nan";
+	String chanel_0_volts = "nan";
+	String chanel_1 = "nan";
+	String chanel_1_volts = "nan";
+	String chanel_2 = "nan";
+	String chanel_2_volts = "nan";
+	String chanel_3 = "nan";
+	String chanel_3_volts = "nan";
+
+	int chanel_0_HistoryCount = 0;
+	float *chanel_0_HistoryData = new float[historySize]();
+
+	int chanel_1_HistoryCount = 0;
+	float *chanel_1_HistoryData = new float[historySize]();
+
+	int chanel_2_HistoryCount = 0;
+	float *chanel_2_HistoryData = new float[historySize]();
+
+	int chanel_3_HistoryCount = 0;
+	float *chanel_3_HistoryData = new float[historySize]();
+};
 #endif
-
-#define WRITE_DEBUG_LOG_FILES false
-#define DEBUG_LOG_FILES_SIZE 10240L
-#define DEBUG_LOG_FILE1_NAME "log1"
-#define DEBUG_LOG_FILE2_NAME "log2"
-#define PORTSPEED 115200
-#define ONETENTHOFSECOND 100L
-#define ONEHUNDREDTH 10L
-#define ONESECOND 1000L
-#define TENSECOND 10000L
-#define ONEMINUTE 60000L
-
-//Transport masks
-#define NO_TRANSPORT_MASK 0b00000000
-#define MQTT_TRANSPORT_MASK 0b00000001
-#define RESTFUL_TRANSPORT_MASK 0b00000010
-#define GSM_TRANSPORT_MASK 0b00000100
-#define UART_TRANSPORT_MASK 0b00001000 //debug is transport by this flag
-
-//Not available selector
-#define NOT_AVAILABLE F("nan")
-#define WRONG_PROPERTY_NAME F("Drivers: wrong property name")
-#define WRONG_DRIVER_NAME F("Drivers: wrong driver name")
-#define WRONG_THING_PROPERTY_NAME F("Thing: wrong thing property name")
-
-#define TEST_DRIVER_TYPE 0
-#define DHT_DRIVER_TYPE 1
-#define LIGHT_DRIVER_TYPE 2
-#define SMOKE_DRIVER_TYPE 3
-#define MOTION_DRIVER_TYPE 4
-#define SENSOR_DRIVER_TYPE 5
-#define STEPPER_DRIVER_TYPE 6
-#define LCD_DRIVER_TYPE 7
-#define ACTUATOR_DRIVER_TYPE 8
-#define OPTO_DRIVER_TYPE 9
-#define VALVE_DRIVER_TYPE 10
-#define WIFI_DRIVER_TYPE 11
-#define NETWORK_DRIVER_TYPE 12
-#define ESP_DRIVER_TYPE 13
-#define CONFIG_DRIVER_TYPE 14
-#define SAMPLE_DRIVER_TYPE 15
-#define BMP280_DRIVER_TYPE 16
-#define ADS1X15_DRIVER_TYPE 17
-
-char *stringToChar(String src);
-#ifdef DEBUG
-void debugOut(const String &tag, const String &text);
-#endif
-void writeDebugLogFile(String fileName, int fileSize, String tag, String text);
-bool matchRoute(const char *route, const char *topic, const char *path);
-bool matchRoute(const String &route, const String &topic, const char *path);
-
-String GetFeatures();
-
 #endif
