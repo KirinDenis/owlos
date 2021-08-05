@@ -114,7 +114,7 @@ bool ADS1X15Driver::query()
 			setChanel_0_HistoryData(atof(getChanel_0().c_str()));
 			setChanel_1_HistoryData(atof(getChanel_1().c_str()));			
 			setChanel_2_HistoryData(atof(getChanel_2().c_str()));			
-			setChanel_3_HistoryData(atof(getChanel_2().c_str()));
+			setChanel_3_HistoryData(atof(getChanel_3().c_str()));
 		}
 		return true;
 	}
