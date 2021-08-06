@@ -61,10 +61,14 @@ unsigned long lastPublishMillis = 0;
 
 #define ADS1X15_Driver_Id "ads1x15"
 #define ADS1X15_Driver_Pind "IO21,IO22,ADDR0x48,VCC33,GND"
+
+#define CCS811_Driver_Id "ccs811"
+#define CCS811_Driver_Pind "IO21,IO22,ADDR0x5A,VCC33,GND"
                              
 DHTDriver *_DHTDriver = nullptr;
 BMP280Driver *_BMP280Driver = nullptr;
 ADS1X15Driver *_ADS1X15Driver = nullptr;
+CCS811Driver *_CCS811Driver = nullptr;
 
 void AirQualityBegin(String __topic)
 {
@@ -78,7 +82,10 @@ void AirQualityBegin(String __topic)
 
     driversAdd(ADS1X15_DRIVER_TYPE, ADS1X15_Driver_Id, ADS1X15_Driver_Pind);    
     _ADS1X15Driver = (ADS1X15Driver*)driversGetDriver(ADS1X15_Driver_Id);
-    
+
+    driversAdd(CCS811_DRIVER_TYPE, CCS811_Driver_Id, CCS811_Driver_Pind);    
+    _CCS811Driver = (CCS811Driver*)driversGetDriver(CCS811_Driver_Id);
+
 }
 
 void AirQualityLoop()
@@ -133,7 +140,20 @@ void AirQualityLoop()
           AirQualityPropertiesMode += "ADS1X15:no\n";
       }
 
+      if (_CCS811Driver != nullptr)
+      {
+           _CCS811Driver->readData();
 
+          AirQualityPropertiesMode += "CCS811:yes\n";
+          AirQualityPropertiesMode += "CCS811CO2:" +  String(_CCS811Driver->getCO2()) + "\n";          
+          AirQualityPropertiesMode += "CCS811TVOC:" +  String(_CCS811Driver->getTVOC()) + "\n";          
+          AirQualityPropertiesMode += "CCS811resistence:" +  String(_CCS811Driver->getResistence()) + "\n";          
+          AirQualityPropertiesMode += "CCS811temp:" +  String(_CCS811Driver->getTemperature()) + "\n";          
+      }
+      else 
+      {
+          AirQualityPropertiesMode += "ADS1X15:no\n";
+      }
 
       transportPublish(_topic, AirQualityPropertiesMode);
   }

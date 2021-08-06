@@ -195,6 +195,17 @@ String driversGetAccessable()
 	}
 #endif
 
+#ifdef USE_CCS811_DRIVER
+	result += "name:CCS811Driver\n";
+	result += "type=" + String(CCS811_DRIVER_TYPE) + "\n";
+	result += "pinscount=" + String(CCS811Driver::getPinsCount()) + "\n";
+	for (int i = 0; i < CCS811Driver::getPinsCount(); i++)
+	{
+		result += "pintype" + String(i) + "=" + CCS811Driver::getPinType(i) + "\n";
+		result += "pintypedecoded" + String(i) + "=" + decodePinTypes(CCS811Driver::getPinType(i)) + "\n";
+	}
+#endif
+
 #ifdef USE_DHT_DRIVER
 	result += "name:DHTDriver\n";
 	result += "type=" + String(DHT_DRIVER_TYPE) + "\n";
@@ -702,6 +713,58 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 		ads1x15Driver->id = id;
 		ads1x15Driver->init();
 		driversList[freeIndex] = ads1x15Driver;
+	}
+	else
+#endif
+
+#ifdef USE_CCS811_DRIVER
+		if (type == CCS811_DRIVER_TYPE)
+	{
+#ifdef DETAILED_DEBUG
+#ifdef DEBUG
+		debugOut("pin", String(pinCount));
+#endif
+#endif
+		if (pinCount != CCS811Driver::getPinsCount())
+		{
+			return "CCS811Driver's pins quantity does not match, must be " + String(CCS811Driver::getPinsCount());
+		}
+		
+		result = 
+		checkDriverPin(_pins[SDA_INDEX], CCS811Driver::getPinType(SDA_INDEX)) + 
+		checkDriverPin(_pins[SCL_INDEX], CCS811Driver::getPinType(SCL_INDEX)) + 		
+		_checkDriverPin(_pins[I2CADDR_INDEX], CCS811Driver::getPinType(I2CADDR_INDEX), _pins[SDA_INDEX]) + 
+		checkDriverPin(_pins[I2C_VCC5_INDEX], CCS811Driver::getPinType(I2C_VCC5_INDEX)) + 				
+		checkDriverPin(_pins[I2C_GND_INDEX], CCS811Driver::getPinType(I2C_GND_INDEX));		
+
+
+		if (result.length() != 0)
+		{
+#ifdef DEBUG			
+			debugOut("CCS811", String(result));
+#endif			
+			return result;
+		}
+		
+		result = setDriverPin(_pins[SDA_INDEX], 
+		id, SDA_INDEX, CCS811Driver::getPinType(SDA_INDEX)) + setDriverPin(_pins[SCL_INDEX], 
+		id, SCL_INDEX, CCS811Driver::getPinType(SCL_INDEX)) + _setDriverPin(_pins[I2CADDR_INDEX], 
+		id, I2CADDR_INDEX, BMP280Driver::getPinType(I2CADDR_INDEX), _pins[SDA_INDEX]) + setDriverPin(_pins[I2C_VCC5_INDEX], 
+		id, I2C_VCC5_INDEX, CCS811Driver::getPinType(I2C_VCC5_INDEX)) + setDriverPin(_pins[I2C_GND_INDEX], 
+		id, I2C_GND_INDEX, CCS811Driver::getPinType(I2C_GND_INDEX));
+
+		if (result.length() != 0)
+		{
+#ifdef DEBUG			
+			debugOut("CCS811", result);
+#endif						
+			return result;
+		}
+		
+		CCS811Driver *ccs811Driver = new CCS811Driver;
+		ccs811Driver->id = id;
+		ccs811Driver->init();
+		driversList[freeIndex] = ccs811Driver;
 	}
 	else
 #endif

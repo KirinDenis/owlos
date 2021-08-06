@@ -166,6 +166,9 @@ OWLOS распространяется в надежде, что она буде
         //Драйвер сенсора ADS1X15
         #define USE_ADS1X15_DRIVER
 
+        //Драйвер сенсора CCS811
+        #define USE_CCS811_DRIVER
+
         //Драйвер I2C LCD дисплеев, поддерживает более одного дисплея на шине I2C
         //#define USE_LCD_DRIVER
 

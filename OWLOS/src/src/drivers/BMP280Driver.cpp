@@ -1,6 +1,7 @@
 ﻿/* ----------------------------------------------------------------------------
 OWLOS DIY Open Source OS for building IoT ecosystems
 Copyright 2021 by:
+- Boris Pavlov (hiroyashy@gmail.com)
 - Denis Kirin (deniskirinacs@gmail.com)
 
 This file is part of OWLOS DIY Open Source OS for building IoT ecosystems

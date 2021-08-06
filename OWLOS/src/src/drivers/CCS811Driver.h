@@ -37,19 +37,19 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 #include "BaseDriver.h"
-#ifdef USE_BMP280_DRIVER
+#ifdef USE_CCS811_DRIVER
 
-#ifndef BMP280DRIVER_H
-#define BMP280DRIVER_H
+#ifndef CCS811DRIVER_H
+#define CCS811DRIVER_H
 
-#include "../libraries/Adafruit_BMP280/Adafruit_BMP280.h" 
+#include "../libraries/SparkFunCCS811/SparkFunCCS811.h" 
 #define SDA_INDEX 0
 #define SCL_INDEX 1
 #define I2CADDR_INDEX 2
 #define I2C_VCC5_INDEX 3
 #define I2C_GND_INDEX 4
 
-class BMP280Driver : public BaseDriver
+class CCS811Driver : public BaseDriver
 {
 public:
 	static int getPinsCount()
@@ -82,34 +82,43 @@ public:
 	bool query();
 	String getAllProperties();
 	String onMessage(String route, String _payload, int8_t transportMask);
-    String getPressure();
-	String getAltitude();
-	String getTemperature();
 
-	String getPressureHistoryData();
-	bool setPressureHistoryData(float _historydata);
+	bool readData();
 
-	String getAltitudeHistoryData();
-	bool setAltitudeHistoryData(float _historydata);
+    String getCO2();
+	String getCO2HistoryData();
+	bool setCO2HistoryData(float _historydata);
 
+    String getTVOC();
+	String getTVOCHistoryData();
+	bool setTVOCHistoryData(float _historydata);
+
+    String getResistence();
+	String getResistenceHistoryData();
+	bool setResistenceHistoryData(float _historydata);
+
+    String getTemperature();
 	String getTemperatureHistoryData();
 	bool setTemperatureHistoryData(float _historydata);
-
+		     
 private:
-	Adafruit_BMP280 *bmp280 = nullptr;
-	String pressure = "nan";
-	String altitude = "nan";
+	CCS811 *ccs811 = nullptr;
+	String CO2 = "nan";
+	String TVOC = "nan";
+	String resistence = "nan";
 	String temperature = "nan";
 
-	int pressureHistoryCount = 0;
-	float *pressureHistoryData = new float[historySize]();
+	int CO2HistoryCount = 0;
+	float *CO2HistoryData = new float[historySize]();
 
-	int altitudeHistoryCount = 0;
-	float *altitudeHistoryData = new float[historySize]();
+	int TVOCHistoryCount = 0;
+	float *TVOCHistoryData = new float[historySize]();
+
+	int resistenceHistoryCount = 0;
+	float *resistenceHistoryData = new float[historySize]();
 
 	int temperatureHistoryCount = 0;
 	float *temperatureHistoryData = new float[historySize]();
-
 };
 #endif
 #endif

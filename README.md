@@ -75,6 +75,7 @@ if your board based on ESP8266 -> [ESP8266 prepared assembly](https://github.com
 - Vitalii Glushchenko (cehoweek@gmail.com)
 - Stanislav Kvashchuk (skat@ukr.net)
 - Vladimir Kovalevich (covalevich@gmail.com)
+- Boris Pavlov (hiroyashy@gmail.com)
 - Denys Melnychuk (meldenvar@gmail.com)
 - Denis Kirin (deniskirinacs@gmail.com)
 

@@ -150,7 +150,8 @@ static const char OWLOSCopyLeft[] PROGMEM = "&#x1F30D;<a href='https://github.co
 											"	Vitalii Glushchenko (cehoweek@gmail.com)\n"
 											"	Stanislav Kvashchuk (skat@ukr.net)\n"
 											"	Vladimir Kovalevich (covalevich@gmail.com)\n"
-											"	Denys Melnychuk (meldenvar@gmail.com)\n"
+											"	Boris Pavlov (hiroyashy@gmail.com)\n"
+											"	Denys Melnychuk (meldenvar@gmail.com)\n"											
 											"	Denis Kirin (deniskirinacs@gmail.com)\n<br>"
 											"&#x1F4E1;Firmware Features:\n";
 

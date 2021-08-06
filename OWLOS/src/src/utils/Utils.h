@@ -91,6 +91,7 @@ OWLOS распространяется в надежде, что она буде
 #define SAMPLE_DRIVER_TYPE 15
 #define BMP280_DRIVER_TYPE 16
 #define ADS1X15_DRIVER_TYPE 17
+#define CCS811_DRIVER_TYPE 18
 
 char *stringToChar(String src);
 #ifdef DEBUG

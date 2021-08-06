@@ -79,6 +79,9 @@ OWLOS распространяется в надежде, что она буде
 #include "../drivers/ADS1X15Driver.h"
 #endif
 
+#ifdef USE_CCS811_DRIVER
+#include "../drivers/CCS811Driver.h"
+#endif
 
 void driversInit(String _topic);
 void driversBegin(String thingTopic);
