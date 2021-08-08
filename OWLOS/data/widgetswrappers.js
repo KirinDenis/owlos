@@ -449,7 +449,7 @@ var LightWidgetWrapper =
             if (this.driverProperty == undefined) return;
 
             if (this.driverProperty.networkStatus == NET_ONLINE) {
-                var percent = Math.round(this.driverProperty.value / (1024.0 / 100.0));
+                var percent = Math.round((32768.0 - this.driverProperty.value) / (32768.0 / 100.0));
 
                 if (percent < 35) {
                     this.widget.refresh(percent, getLang("low"), this.driver._id, this.driver.historydata.value);
@@ -500,11 +500,11 @@ var SmokeWidgetWrapper =
             if (this.driverProperty == undefined) return;
 
             if (this.driverProperty.networkStatus == NET_ONLINE) {
-                var percent = Math.round(this.driverProperty.value / (1024.0 / 100.0));
+                var percent = Math.round(this.driverProperty.value / (32768.0 / 100.0));
 
-                if (this.driverProperty.value < 50) {
+                if (percent < 20) {
                     this.widget.refresh(percent, getLang("smokelow"), this.driver._id, this.driver.historydata.value);
-                } else if (this.driverProperty.value < configProperties.widgetssize) {
+                } else if (percent < 40) {
                     this.widget.refresh(percent, getLang("smokenorm"), this.driver._id, this.driver.historydata.value);
                 } else {
                     this.widget.refresh(percent, getLang("smokehigh"), this.driver._id, this.driver.historydata.value);
@@ -1075,21 +1075,21 @@ var WidgetsLayer = {
         name: getLang("historydatagraph"),
         widget: HistoryDataGraphWidgetWrapper,
         driversTypes: "any",
-        driversProperties: ";historydata;historyfile;temperaturehistorydata;humidityhistorydata;heatindexhistorydata;pressurehistorydata;altitudehistorydata;temperaturehistorydata;chanel_0_historydata;chanel_1_historydata;chanel_2_historydata;chanel_3_historydata;"
+        driversProperties: ";historydata;historyfile;temperaturehistorydata;humidityhistorydata;heatindexhistorydata;pressurehistorydata;altitudehistorydata;temperaturehistorydata;chanel_0_historydata;chanel_1_historydata;chanel_2_historydata;chanel_3_historydata;co2historydata;tvochistorydata;resistencehistorydata;temperaturehistorydata;"
     },
     LightWidget: {
         id: "light",
         name: getLang("light"),
         widget: LightWidgetWrapper,
         driversTypes: ";" + LightDriverType + ";"+ SensorDriverType + ";",
-        driversProperties: ";data;light;"
+        driversProperties: ";data;light;chanel_0;chanel_1;chanel_2;chanel_3"
     },
     SmokeWidget: {
         id: "smoke",
         name: getLang("smoke"),
         widget: SmokeWidgetWrapper,
         driversTypes: ";" + SmokeDriverType + ";"+ SensorDriverType + ";",
-        driversProperties: ";data;smoke;"
+        driversProperties: ";data;smoke;chanel_0;chanel_1;chanel_2;chanel_3"
     },
     MotionWidget: {
         id: "motion",

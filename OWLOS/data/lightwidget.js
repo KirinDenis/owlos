@@ -128,7 +128,9 @@ var LightWidget =
                         break;
                 }
             }
-
+ 
+            
+             
             if (this._data > 30) {
                 this.levelArc[0].draw(270, 360 + 90);
             }

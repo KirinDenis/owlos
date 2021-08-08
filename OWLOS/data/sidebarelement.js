@@ -246,8 +246,8 @@ function createSidebar() {
             this.sideBar.id = "sideBar";
             this.sideBar.className = "sidebar-item sidebar-menu";
             //TODO: read version from thing
-            this.createBrand("1.8 (RC)");
-            this.createUserInfo("Role", "administrator", NET_ONLINE);
+            this.createBrand("1.14 (RC)");
+            this.createUserInfo("Air", "Quality", NET_ONLINE);
 
             //Main menu 
             var sideBarUl = this.sideBar.appendChild(document.createElement("ul"));
@@ -269,7 +269,7 @@ function createSidebar() {
 
             this.consoleItem = this.createItem(sideBarUl, "consoleitem", "#console", getLang("consoleTab"), sidebarItemClick, "fa fa-file-code", undefined);
 
-            $(".page-wrapper").toggleClass("toggled"); //открыть по умолчанию панель меню
+            //$(".page-wrapper").toggleClass("toggled"); //открыть по умолчанию панель меню
             jQuery(function ($) {
 
                 // Dropdown menu

@@ -141,6 +141,8 @@ var settingsUI = {
     },
 
 
+
+
     //---------------------------------------------------------------------------------------------------------------------------------------------------
     //когда очередная нода загружает очередное драйвер - строим индикаторы в верхней панели "Настройки" - Online, WiFi AP, WiFi ST, RESTful, MQTT, OTA
     //и подготавлием панель управления нодой (с кнопками Update, Reset и основными свойствами ноды) - смотрите onConfigChange такая панель создается для каждой
@@ -223,8 +225,6 @@ var settingsUI = {
                 settingsUI.onPropertyCheckboxValueChange(wifiSTCheckbox, wifiSTCheckbox.driverProperty);
 
                 settingsUI.addPropertyView(wifiPropPanel, driver.wifirssi, getLang("wifirssi"), "dBm");
-
-
             }
             else
                 if (driver.type.value == ESPDriverType) {
@@ -311,32 +311,30 @@ var settingsUI = {
                         settingsUI.addPropertyCheckbox(networkPropPanel1, driver.httpsserveravailable, getLang("httpsserveravailable"), "");
                         RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, driver.httpsserverlogin, getLang("httpsserverlogin"), ""));
                         RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, driver.httpsserverpwd, getLang("httpsserverpwd"), ""));
-                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, driver.httpsserverport, getLang("httpsserverport"), ""));                        
+                        RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, driver.httpsserverport, getLang("httpsserverport"), ""));
                         settingsUI.addSpaceView(networkPropPanel1, "2");
 
                         RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, driver.httpclienturl, getLang("httpclienturl"), ""));
                         RESTfulCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel1, driver.httpclientport, getLang("httpclientport"), ""));
                         settingsUI.onPropertyCheckboxValueChange(RESTfulCheckbox, RESTfulCheckbox.driverProperty);
 
-                        if (driver.mqttavailable !== undefined)
-                        {
-                        var MQTTCheckbox = settingsUI.addPropertyCheckbox(networkPropPanel2, driver.mqttavailable, getLang("mqttavailable"), "");
-                        MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel2, driver.mqtturl, getLang("mqtturl"), ""));
-                        MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel2, driver.mqttport, getLang("mqttport"), ""));
-                        settingsUI.addSpaceView(networkPropPanel2, "3");
-                        MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel2, driver.mqttid, getLang("mqttid"), ""));
-                        MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel2, driver.mqttlogin, getLang("mqttlogin"), ""));
-                        MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel2, driver.mqttpassword, getLang("mqttpassword"), ""));
-                        settingsUI.onPropertyCheckboxValueChange(MQTTCheckbox, MQTTCheckbox.driverProperty);
+                        if (driver.mqttavailable !== undefined) {
+                            var MQTTCheckbox = settingsUI.addPropertyCheckbox(networkPropPanel2, driver.mqttavailable, getLang("mqttavailable"), "");
+                            MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel2, driver.mqtturl, getLang("mqtturl"), ""));
+                            MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel2, driver.mqttport, getLang("mqttport"), ""));
+                            settingsUI.addSpaceView(networkPropPanel2, "3");
+                            MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel2, driver.mqttid, getLang("mqttid"), ""));
+                            MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel2, driver.mqttlogin, getLang("mqttlogin"), ""));
+                            MQTTCheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel2, driver.mqttpassword, getLang("mqttpassword"), ""));
+                            settingsUI.onPropertyCheckboxValueChange(MQTTCheckbox, MQTTCheckbox.driverProperty);
                         }
 
-                        if (driver.otaavailable !== undefined)
-                        {
-                        var OTACheckbox = settingsUI.addPropertyCheckbox(networkPropPanel3, driver.otaavailable, getLang("otaavailable"), "");
-                        OTACheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel3, driver.otaid, getLang("otaid"), ""));
-                        OTACheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel3, driver.otaport, getLang("otaport"), ""));
-                        OTACheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel3, driver.otapassword, getLang("otapassword"), ""));
-                        settingsUI.onPropertyCheckboxValueChange(OTACheckbox, OTACheckbox.driverProperty);
+                        if (driver.otaavailable !== undefined) {
+                            var OTACheckbox = settingsUI.addPropertyCheckbox(networkPropPanel3, driver.otaavailable, getLang("otaavailable"), "");
+                            OTACheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel3, driver.otaid, getLang("otaid"), ""));
+                            OTACheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel3, driver.otaport, getLang("otaport"), ""));
+                            OTACheckbox.dependetPanels.push(settingsUI.addPropertyEdit(networkPropPanel3, driver.otapassword, getLang("otapassword"), ""));
+                            settingsUI.onPropertyCheckboxValueChange(OTACheckbox, OTACheckbox.driverProperty);
                         }
 
                         settingsUI.addPropertyView(updatePropPanel, driver.firmwareversion, getLang("firmwareversion"));
@@ -389,6 +387,227 @@ var settingsUI = {
                             }
                         }
                     }
+                    else
+                    //Air Quality widgets -----------------------
+                    {
+                        document.getElementById("noWidgetsPanel").style.display = "none";
+                        var driversWidgetsPanel = document.getElementById("driversWidgetsPanel");
+                        var driverProp;
+                        var widgetLayer;
+                        if (driver._id === "dht22") {
+
+                            driverProp = driver["temperature"];
+                            widgetLayer = WidgetsLayer["TemperatureWidget"];
+                            new widgetLayer.widget(driversWidgetsPanel, driver, driverProp).onload = function (widgetWrapper) {
+                                config.addWidget("main", driver._id, driverProp.name, widgetLayer.id, widgetWrapper.widget.id, widgetWrapper.widget.properties);
+                                widgetWrapper.widget.properties.headertext.value = "DHT22 Temperature";
+                                widgetWrapper.widget.drawText();
+                                //block edit-delete    
+                                //widgetWrapper.widget.onchange = config.onWidgetChange;
+                                //widgetWrapper.widget.ondelete = config.onWidgetDelete;
+                            }
+
+                            driverProp = driver["temperaturehistorydata"];
+                            widgetLayer = WidgetsLayer["HistoryDataGraphWidget"];
+                            new widgetLayer.widget(driversWidgetsPanel, driver, driverProp).onload = function (widgetWrapper) {
+                                config.addWidget("main", driver._id, driverProp.name, widgetLayer.id, widgetWrapper.widget.id, widgetWrapper.widget.properties);
+                                widgetWrapper.widget.properties.headertext.value = "DHT22 Temperature";
+                                widgetWrapper.widget.drawText();
+                            }
+
+                            driverProp = driver["humidity"];
+                            widgetLayer = WidgetsLayer["RadialWidget"];
+                            new widgetLayer.widget(driversWidgetsPanel, driver, driverProp).onload = function (widgetWrapper) {
+
+                                config.addWidget("main", driver._id, driverProp.name, widgetLayer.id, widgetWrapper.widget.id, widgetWrapper.widget.properties);
+                                widgetWrapper.widget.properties.headertext.value = "DHT22 Humidity";
+                                widgetWrapper.widget.drawText();
+                            }
+
+                            driverProp = driver["humidityhistorydata"];
+                            widgetLayer = WidgetsLayer["HistoryDataGraphWidget"];
+                            new widgetLayer.widget(driversWidgetsPanel, driver, driverProp).onload = function (widgetWrapper) {
+                                config.addWidget("main", driver._id, driverProp.name, widgetLayer.id, widgetWrapper.widget.id, widgetWrapper.widget.properties);
+                                widgetWrapper.widget.properties.headertext.value = "DHT22 Humidity";
+                                widgetWrapper.widget.drawText();
+                            }
+
+
+                            driverProp = driver["heatindex"];
+                            widgetLayer = WidgetsLayer["RadialWidget"];
+                            new widgetLayer.widget(driversWidgetsPanel, driver, driverProp).onload = function (widgetWrapper) {
+
+                                config.addWidget("main", driver._id, driverProp.name, widgetLayer.id, widgetWrapper.widget.id, widgetWrapper.widget.properties);
+                                widgetWrapper.widget.properties.headertext.value = "DHT22 HeatIndex";
+                                widgetWrapper.widget.drawText();
+                            }
+
+                            driverProp = driver["heatindexhistorydata"];
+                            widgetLayer = WidgetsLayer["HistoryDataGraphWidget"];
+                            new widgetLayer.widget(driversWidgetsPanel, driver, driverProp).onload = function (widgetWrapper) {
+                                config.addWidget("main", driver._id, driverProp.name, widgetLayer.id, widgetWrapper.widget.id, widgetWrapper.widget.properties);
+                                widgetWrapper.widget.properties.headertext.value = "DHT22 HeatIndex";
+                                widgetWrapper.widget.drawText();
+                            }
+                        }
+                        if (driver._id === "bmp280") 
+                        {
+                            driverProp = driver["pressure"];
+                            widgetLayer = WidgetsLayer["ValueWidget"];
+                            new widgetLayer.widget(driversWidgetsPanel, driver, driverProp).onload = function (widgetWrapper) {
+                                config.addWidget("main", driver._id, driverProp.name, widgetLayer.id, widgetWrapper.widget.id, widgetWrapper.widget.properties);
+                                widgetWrapper.widget.properties.headertext.value = "BMP280 pressure(Pa)";
+                                widgetWrapper.widget.drawText();
+                            }
+
+                            driverProp = driver["pressurehistorydata"];
+                            widgetLayer = WidgetsLayer["HistoryDataGraphWidget"];
+                            new widgetLayer.widget(driversWidgetsPanel, driver, driverProp).onload = function (widgetWrapper) {
+                                config.addWidget("main", driver._id, driverProp.name, widgetLayer.id, widgetWrapper.widget.id, widgetWrapper.widget.properties);
+                                widgetWrapper.widget.properties.headertext.value = "BMP280 pressure(Pa)";
+                                widgetWrapper.widget.drawText();
+                            }
+
+                            driverProp = driver["altitude"];
+                            widgetLayer = WidgetsLayer["ValueWidget"];
+                            new widgetLayer.widget(driversWidgetsPanel, driver, driverProp).onload = function (widgetWrapper) {
+                                config.addWidget("main", driver._id, driverProp.name, widgetLayer.id, widgetWrapper.widget.id, widgetWrapper.widget.properties);
+                                widgetWrapper.widget.properties.headertext.value = "BMP280 altitude(m)";
+                                widgetWrapper.widget.drawText();
+                            }
+
+                            driverProp = driver["altitudehistorydata"];
+                            widgetLayer = WidgetsLayer["HistoryDataGraphWidget"];
+                            new widgetLayer.widget(driversWidgetsPanel, driver, driverProp).onload = function (widgetWrapper) {
+                                config.addWidget("main", driver._id, driverProp.name, widgetLayer.id, widgetWrapper.widget.id, widgetWrapper.widget.properties);
+                                widgetWrapper.widget.properties.headertext.value = "BMP280 altitude(m)";
+                                widgetWrapper.widget.drawText();
+                            }
+
+                            driverProp = driver["temperature"];
+                            widgetLayer = WidgetsLayer["TemperatureWidget"];
+                            new widgetLayer.widget(driversWidgetsPanel, driver, driverProp).onload = function (widgetWrapper) {
+                                config.addWidget("main", driver._id, driverProp.name, widgetLayer.id, widgetWrapper.widget.id, widgetWrapper.widget.properties);
+                                widgetWrapper.widget.properties.headertext.value = "BMP280 Temperature";
+                                widgetWrapper.widget.drawText();
+                            }
+
+                            driverProp = driver["temperaturehistorydata"];
+                            widgetLayer = WidgetsLayer["HistoryDataGraphWidget"];
+                            new widgetLayer.widget(driversWidgetsPanel, driver, driverProp).onload = function (widgetWrapper) {
+                                config.addWidget("main", driver._id, driverProp.name, widgetLayer.id, widgetWrapper.widget.id, widgetWrapper.widget.properties);
+                                widgetWrapper.widget.properties.headertext.value = "BMP280 Temperature";
+                                widgetWrapper.widget.drawText();
+                            }
+                        }
+
+                        if (driver._id === "ads1x15") {
+
+                            driverProp = driver["chanel_3"];
+                            widgetLayer = WidgetsLayer["LightWidget"];
+                            new widgetLayer.widget(driversWidgetsPanel, driver, driverProp).onload = function (widgetWrapper) {
+                                config.addWidget("main", driver._id, driverProp.name, widgetLayer.id, widgetWrapper.widget.id, widgetWrapper.widget.properties);
+                                widgetWrapper.widget.properties.headertext.value = "Light";
+                                widgetWrapper.widget.drawText();
+                            }
+
+                            driverProp = driver["chanel_3_historydata"];
+                            widgetLayer = WidgetsLayer["HistoryDataGraphWidget"];
+                            new widgetLayer.widget(driversWidgetsPanel, driver, driverProp).onload = function (widgetWrapper) {
+                                config.addWidget("main", driver._id, driverProp.name, widgetLayer.id, widgetWrapper.widget.id, widgetWrapper.widget.properties);
+                                widgetWrapper.widget.properties.headertext.value = "Light";
+                                widgetWrapper.widget.drawText();
+                            }
+                            
+                            driverProp = driver["chanel_2"];
+                            widgetLayer = WidgetsLayer["SmokeWidget"];
+                            new widgetLayer.widget(driversWidgetsPanel, driver, driverProp).onload = function (widgetWrapper) {
+                                config.addWidget("main", driver._id, driverProp.name, widgetLayer.id, widgetWrapper.widget.id, widgetWrapper.widget.properties);
+                                widgetWrapper.widget.properties.headertext.value = "MQ 7";
+                                widgetWrapper.widget.drawText();
+                            }
+
+                            driverProp = driver["chanel_2_historydata"];
+                            widgetLayer = WidgetsLayer["HistoryDataGraphWidget"];
+                            new widgetLayer.widget(driversWidgetsPanel, driver, driverProp).onload = function (widgetWrapper) {
+                                config.addWidget("main", driver._id, driverProp.name, widgetLayer.id, widgetWrapper.widget.id, widgetWrapper.widget.properties);
+                                widgetWrapper.widget.properties.headertext.value = "MQ 7 Carbon Monoxide";
+                                widgetWrapper.widget.drawText();
+                            }
+
+                            driverProp = driver["chanel_1"];
+                            widgetLayer = WidgetsLayer["SmokeWidget"];
+                            new widgetLayer.widget(driversWidgetsPanel, driver, driverProp).onload = function (widgetWrapper) {
+                                config.addWidget("main", driver._id, driverProp.name, widgetLayer.id, widgetWrapper.widget.id, widgetWrapper.widget.properties);
+                                widgetWrapper.widget.properties.headertext.value = "MQ 135";
+                                widgetWrapper.widget.drawText();
+                            }
+
+                            driverProp = driver["chanel_1_historydata"];
+                            widgetLayer = WidgetsLayer["HistoryDataGraphWidget"];
+                            new widgetLayer.widget(driversWidgetsPanel, driver, driverProp).onload = function (widgetWrapper) {
+                                config.addWidget("main", driver._id, driverProp.name, widgetLayer.id, widgetWrapper.widget.id, widgetWrapper.widget.properties);
+                                widgetWrapper.widget.properties.headertext.value = "MQ 135 Gas";
+                                widgetWrapper.widget.drawText();
+                            }
+                        }
+
+                        if (driver._id === "ccs811") {
+
+                            driverProp = driver["co2"];
+                            widgetLayer = WidgetsLayer["ValueWidget"];
+                            new widgetLayer.widget(driversWidgetsPanel, driver, driverProp).onload = function (widgetWrapper) {
+                                config.addWidget("main", driver._id, driverProp.name, widgetLayer.id, widgetWrapper.widget.id, widgetWrapper.widget.properties);
+                                widgetWrapper.widget.properties.headertext.value = "CO2";
+                                widgetWrapper.widget.drawText();
+                            }
+
+                            driverProp = driver["co2historydata"];
+                            widgetLayer = WidgetsLayer["HistoryDataGraphWidget"];
+                            new widgetLayer.widget(driversWidgetsPanel, driver, driverProp).onload = function (widgetWrapper) {
+                                config.addWidget("main", driver._id, driverProp.name, widgetLayer.id, widgetWrapper.widget.id, widgetWrapper.widget.properties);
+                                widgetWrapper.widget.properties.headertext.value = "CO2";
+                                widgetWrapper.widget.drawText();
+                            }
+
+                            driverProp = driver["tvoc"];
+                            widgetLayer = WidgetsLayer["RadialWidget"];
+                            new widgetLayer.widget(driversWidgetsPanel, driver, driverProp).onload = function (widgetWrapper) {
+                                config.addWidget("main", driver._id, driverProp.name, widgetLayer.id, widgetWrapper.widget.id, widgetWrapper.widget.properties);
+                                widgetWrapper.widget.properties.headertext.value = "TVOC";
+                                widgetWrapper.widget.drawText();
+                            }
+
+                            driverProp = driver["tvochistorydata"];
+                            widgetLayer = WidgetsLayer["HistoryDataGraphWidget"];
+                            new widgetLayer.widget(driversWidgetsPanel, driver, driverProp).onload = function (widgetWrapper) {
+                                config.addWidget("main", driver._id, driverProp.name, widgetLayer.id, widgetWrapper.widget.id, widgetWrapper.widget.properties);
+                                widgetWrapper.widget.properties.headertext.value = "TVOC";
+                                widgetWrapper.widget.drawText();
+                            }
+
+                            driverProp = driver["resistence"];
+                            widgetLayer = WidgetsLayer["ValueWidget"];
+                            new widgetLayer.widget(driversWidgetsPanel, driver, driverProp).onload = function (widgetWrapper) {
+                                config.addWidget("main", driver._id, driverProp.name, widgetLayer.id, widgetWrapper.widget.id, widgetWrapper.widget.properties);
+                                widgetWrapper.widget.properties.headertext.value = "Resistence";
+                                widgetWrapper.widget.drawText();
+                            }
+
+                            driverProp = driver["resistencehistorydata"];
+                            widgetLayer = WidgetsLayer["HistoryDataGraphWidget"];
+                            new widgetLayer.widget(driversWidgetsPanel, driver, driverProp).onload = function (widgetWrapper) {
+                                config.addWidget("main", driver._id, driverProp.name, widgetLayer.id, widgetWrapper.widget.id, widgetWrapper.widget.properties);
+                                widgetWrapper.widget.properties.headertext.value = "Resistence";
+                                widgetWrapper.widget.drawText();
+                            }
+
+
+                        }
+
+
+                    }
+
         }
     },
 

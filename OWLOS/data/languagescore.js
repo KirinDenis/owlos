@@ -396,9 +396,9 @@ var langen = "prepareUnit=prepare UI, please wait...\n" +
     "norm=Avarage\n" +
     "high=High\n" +
     "low=Low\n" +
-    "smokelow=Low smoke\n" +
-    "smokenorm=Average smoke\n" +
-    "smokehigh=High smoke\n" +
+    "smokelow=Low\n" +
+    "smokenorm=Average\n" +
+    "smokehigh=High\n" +
     "yesmotion=Motion\n" +
     "nomotion=No motion\n" +
     "lcd=Liquid crystal display\n" +

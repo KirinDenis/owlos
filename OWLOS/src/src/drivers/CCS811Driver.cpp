@@ -129,7 +129,7 @@ String CCS811Driver::getAllProperties()
 	"tvoc=" + TVOC + "//sr\n" 
 	"tvochistorydata=" + getTVOCHistoryData() + "//r\n"
 	"resistence=" + resistence + "//sr\n" 
-	"resistancehistorydata=" + getResistenceHistoryData() + "//r\n"
+	"resistencehistorydata=" + getResistenceHistoryData() + "//r\n"
 	"temperature=" + temperature + "//sr\n" 
 	"temperaturehistorydata=" + getTemperatureHistoryData() + "//r\n";
 }
@@ -170,14 +170,14 @@ String CCS811Driver::onMessage(String route, String _payload, int8_t transportMa
 		return onGetProperty("tvochistorydata", String(getTVOCHistoryData()), transportMask);
 	}
 	else 
-	if (matchRoute(route, topic, "/getresistance"))
+	if (matchRoute(route, topic, "/getresistence"))
 	{
-		result = onGetProperty("resistance", resistence, transportMask);
+		result = onGetProperty("resistence", resistence, transportMask);
 	}
 	else 
-	if (matchRoute(route, topic, "/getresistancehistorydata"))
+	if (matchRoute(route, topic, "/getresistencehistorydata"))
 	{
-		return onGetProperty("resistancehistorydata", String(getResistenceHistoryData()), transportMask);
+		return onGetProperty("resistencehistorydata", String(getResistenceHistoryData()), transportMask);
 	}
 	else 
 	if (matchRoute(route, topic, "/gettemperature"))
