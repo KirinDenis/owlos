@@ -39,9 +39,9 @@ OWLOS распространяется в надежде, что она буде
 #ifndef UX_SERVICE
 #define UX_SERVICE
 
-#include "../ux/UXCore.h"
-#include "../ux/TransportUX.h"
-#include "../ux/SensorUX.h"
+#include "../ux/UXUtils.h"
+#include "../ux/Screens/TransportScreen.h"
+#include "../ux/Screens/SensorScreen.h"
 #include "FileService.h"
 
 extern TFT_eSPI tft;
@@ -49,6 +49,7 @@ extern TFT_eSPI tft;
 #define CALIBRATION_FILE "/TFTCalibration"
 
 extern int currentMode;
+int previosMode;
 
 //------------------------------------------------------------------------------------------
 //Init
@@ -81,7 +82,12 @@ bool UXServiceInit()
         filesWriteInt(CALIBRATION_FILE "4", calibrationData[4]);
     }
 
-    initDrawTransportStatus();
+    currentMode = TRANSPORT_MODE;
+    previosMode = TRANSPORT_MODE;
+
+    initTransportStatuses();
+    initSensorStatuses();
+    refreshTransportStatuses();
     drawTransportStatuses();
 
     return true;
@@ -89,34 +95,37 @@ bool UXServiceInit()
 
 void UXServiceLoop()
 {
-    /*
-    uint16_t x, y;
-    if (tft.getTouch(&x, &y))
+    if (currentMode != previosMode)
     {
-        if ((x > 400) && (y > 300))
+        Serial.println("!-------" + String(currentMode));
+        switch (currentMode)
         {
-            if (currentMode == TRANSPORT_MODE)
-            {
-                currentMode = SENSORS_MODE;
-                initDrawSensorStatus();
-            }
-            else
-            {
-                currentMode = TRANSPORT_MODE;
-                initDrawTransportStatus();
-            }
+        case TRANSPORT_MODE:
+            refreshTransportStatuses();
+            break;
+
+        case SENSORS_MODE:
+            refreshSensorStatuses();
+            break;
+        default:
+            break;
         }
     }
-    */
 
-    if (currentMode == TRANSPORT_MODE)
+    switch (currentMode)
     {
+    case TRANSPORT_MODE:
         drawTransportStatuses();
-    }
-    else
-    {
+        break;
+
+    case SENSORS_MODE:
         drawSensorStatuses();
+        break;
+    default:
+        break;
     }
+
+    previosMode = currentMode;
 }
 
 #endif

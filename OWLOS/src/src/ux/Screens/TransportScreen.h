@@ -1,7 +1,8 @@
 #ifndef TRANSPORTUX_H
 #define TRANSPORTUX_H
 
-void initDrawTransportStatus();
+void initTransportStatuses();
+void refreshTransportStatuses();
 void drawTransportStatuses();
 
 #endif

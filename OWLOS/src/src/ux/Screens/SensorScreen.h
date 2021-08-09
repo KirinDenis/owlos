@@ -1,7 +1,8 @@
 #ifndef SENSORUX_H
 #define SENSORORTUX_H
 
-void initDrawSensorStatus();
+void initSensorStatuses();
+void refreshSensorStatuses();     
 void drawSensorStatuses();
 
 #endif

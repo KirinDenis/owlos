@@ -44,7 +44,7 @@ OWLOS распространяется в надежде, что она буде
 #define CONFIG_H
 
 #define FIRMWARE_VERSION_NUMVER "1.14"
-#define FIRMWARE_BUILD_NUMBER 121
+#define FIRMWARE_BUILD_NUMBER 122
 #define FIRMWARE_VERSION "OWLOS v.1.14 (RC)"
 
 #define LONG_VERSION
@@ -136,7 +136,7 @@ OWLOS распространяется в надежде, что она буде
 
                 #ifdef ARDUINO_ESP32_RELEASE_1_0_4                      
                 //Включает в сборку MQTT клиент
-                #define USE_MQTT                
+                //#define USE_MQTT                
                 #endif                
             #endif
     #else
@@ -144,7 +144,7 @@ OWLOS распространяется в надежде, что она буде
     #endif
     
 
-#define USE_UART
+//#define USE_UART
 
 #include "utils/Utils.h"
 
@@ -152,10 +152,10 @@ OWLOS распространяется в надежде, что она буде
 #define USE_DRIVERS    
     #ifdef USE_DRIVERS
         //Универсальный драйвер исполнительных устройств (цифровых и аналоговых)(с подержкой ШИМ)    
-        #define USE_ACTUATOR_DRIVER
+        //#define USE_ACTUATOR_DRIVER
 
         //Универсальный драйвер сенсоров (датчиков)(цифровых и аналоговых)
-        #define USE_SENSOR_DRIVER
+        //#define USE_SENSOR_DRIVER
 
         //Драйвер цифровых серсоров температуры и влажности (Digital Humidity and Temperature) - DHT11, DTH22 и прочих
         #define USE_DHT_DRIVER
@@ -182,7 +182,6 @@ OWLOS распространяется в надежде, что она буде
         //#define USE_SAMPLE_DRIVER
     #endif
 #endif
-
 
 //Включить поддержку скриптов
 //#define USE_SCRIPT

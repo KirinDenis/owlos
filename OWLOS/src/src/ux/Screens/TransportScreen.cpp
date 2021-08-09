@@ -1,19 +1,23 @@
-#include "UXCore.h"
+//#include "../UXUtils.h"
+#include "../Controls/TextControl.h"
+#include "../Controls/ButtonControl.h"
 
-#include "../drivers/WifiDriver.h"
-#include "../drivers/NetworkDriver.h"
-#include "../drivers/ESPDriver.h"
+#include "../../drivers/WifiDriver.h"
+#include "../../drivers/NetworkDriver.h"
+#include "../../drivers/ESPDriver.h"
+
+#include "SensorScreen.h"
 
 #ifdef USE_HTTP_CLIENT
-#include "../transports/HTTPWebClient.h"
+#include "../../transports/HTTPWebClient.h"
 #endif
 
 #ifdef USE_MQTT
-#include "../transports/MQTTClient.h"
+#include "../../transports/MQTTClient.h"
 #endif
 
 #ifdef USE_UART
-#include "../transports/UART.h"
+#include "../../transports/UART.h"
 #endif
 
 extern TFT_eSPI tft;
@@ -30,159 +34,91 @@ unsigned long lastSavedTickCount = 0;
 extern int currentMode;
 
 void SensorButtonTouch()
-{
-    currentMode = SENSORS_MODE;
+{        
+    if (currentMode == TRANSPORT_MODE)
+    {
+       currentMode = SENSORS_MODE;
+       refreshSensorStatuses();
+    }   
 }
-
-//-----------------------------------------------------------------------------------------
-//Button Class
-class ButtonClass
-{
-protected:
-    bool leftAlign = true;
-    int fgColor = OWLOSLightColor;
-    int bgColor = OWLOSInfoColor;
-    int selectColor = OWLOSWarningColor;
-    String text = "";
-    TextItemClass *stHeaderItem;
-
-    void drawButton();
-
-public:
-    int x;
-    int y;
-    int text_x;
-    int text_y;
-    void (*OnTouchEvent)();
-
-#define BUTTON_TOUCH_NOTDEFINE 0
-#define BUTTON_TOUCH_YES 1
-#define BUTTON_TOUCH_NO 2
-
-    int touch = BUTTON_TOUCH_NOTDEFINE;
-    //column - 1,2,3,4
-    //         0,2 - align left  (0, width / 2)
-    //         1,3 - align right (width / 2, width)
-    //row --> row * Glod8 = y
-    ButtonClass(String _text, int _fgColor, int _bgColor, int _selectColor, int column, int row)
-    {
-        text = _text;
-        fgColor = _fgColor;
-        bgColor = _bgColor;
-        selectColor = _selectColor;
-        
-
-        x = (column - 1) * (WIDTH / 4) + GOLD_11;
-        y = row * GOLD_8 + GOLD_11;
-
-        //tft.fillRect(x, y, WIDTH / 4, GOLD_8 * 2, bgColor);
-
-        //stHeaderItem = new TextItemClass(column, row);
-        text_x = x + (WIDTH / 4 - tft.textWidth(_text, 2)) / 2;
-        text_y = y + GOLD_7 / 4;
-        //tft.setTextColor(fgColor, bgColor);
-        //tft.drawString(text, text_x, text_y, 2);
-        //stHeaderItem->draw(_text, fgColor, bgColor, 2);
-        //draw();
-    }
-    void draw()
-    {
-        uint16_t tx, ty;
-        if (tft.getTouch(&tx, &ty))
-        {
-            if ((tx > x) && (tx < x + WIDTH / 4) && (ty > y) && (ty < ty + GOLD_8 * 2))
-            {
-                if (touch != BUTTON_TOUCH_YES)
-                {
-                    tft.fillRect(x, y, WIDTH / 4 - GOLD_11, GOLD_7, selectColor);
-                    tft.setTextColor(fgColor, selectColor);
-                    tft.drawString(text, text_x, text_y, 2);
-                    (*OnTouchEvent)();
-                }
-                touch = BUTTON_TOUCH_YES;
-            }
-        }
-        else
-        {
-            if (touch != BUTTON_TOUCH_NO)
-            {
-                tft.fillRect(x, y, WIDTH / 4 - GOLD_11, GOLD_7, bgColor);
-                tft.setTextColor(fgColor, bgColor);
-                tft.drawString(text, text_x, text_y, 2);
-            }
-            touch = BUTTON_TOUCH_NO;
-        }
-    }
-};
 
 //------------------------------------------------------------------------------------------------------
 //TextItems
-TextItemClass stHeaderItem(0, 0);
-TextItemClass stSSIDItem(1, 1);
-TextItemClass stGWIPItem(1, 2);
-TextItemClass stIPItem(1, 3);
-TextItemClass stdBmItem(0, 2);
-TextItemClass stStatusItem(0, 3);
+TextControlClass stHeaderItem(0, 0);
+TextControlClass stSSIDItem(1, 1);
+TextControlClass stGWIPItem(1, 2);
+TextControlClass stIPItem(1, 3);
+TextControlClass stdBmItem(0, 2);
+TextControlClass stStatusItem(0, 3);
 
-TextItemClass apHeaderItem(2, 0);
-TextItemClass apSSIDItem(3, 1);
-TextItemClass apIPItem(3, 3);
-TextItemClass apStatusItem(2, 3);
+TextControlClass apHeaderItem(2, 0);
+TextControlClass apSSIDItem(3, 1);
+TextControlClass apIPItem(3, 3);
+TextControlClass apStatusItem(2, 3);
 
 //HTTP(S) Server Items
-TextItemClass hsHeaderItem(0, 4);
-TextItemClass hsStStatusItem(0, 5);
-TextItemClass hsStIPItem(1, 5);
-TextItemClass hssStStatusItem(0, 6);
-TextItemClass hssStIPItem(1, 6);
-TextItemClass hsApStatusItem(2, 5);
-TextItemClass hsApIPItem(3, 5);
-TextItemClass hssApStatusItem(2, 6);
-TextItemClass hssApIPItem(3, 6);
+TextControlClass hsHeaderItem(0, 4);
+TextControlClass hsStStatusItem(0, 5);
+TextControlClass hsStIPItem(1, 5);
+TextControlClass hssStStatusItem(0, 6);
+TextControlClass hssStIPItem(1, 6);
+TextControlClass hsApStatusItem(2, 5);
+TextControlClass hsApIPItem(3, 5);
+TextControlClass hssApStatusItem(2, 6);
+TextControlClass hssApIPItem(3, 6);
 
 //HTTP Client
-TextItemClass hcHeaderItem(0, 7);
-TextItemClass hcHeaderSendItem(2, 7);
-TextItemClass hcHeaderRecvItem(3, 7);
-TextItemClass hcStatusItem(0, 8);
-TextItemClass hcServerIPItem(1, 8);
-TextItemClass hcSendItem(2, 8);
-TextItemClass hcRecvItem(3, 8);
+TextControlClass hcHeaderItem(0, 7);
+TextControlClass hcHeaderSendItem(2, 7);
+TextControlClass hcHeaderRecvItem(3, 7);
+TextControlClass hcStatusItem(0, 8);
+TextControlClass hcServerIPItem(1, 8);
+TextControlClass hcSendItem(2, 8);
+TextControlClass hcRecvItem(3, 8);
 
 //MQTT Client
-TextItemClass mqttHeaderItem(0, 9);
-TextItemClass mqttHeaderSendItem(2, 9);
-TextItemClass mqttHeaderRecvItem(3, 9);
-TextItemClass mqttStatusItem(0, 10);
-TextItemClass mqttServerIPItem(1, 10);
-TextItemClass mqttSendItem(2, 10);
-TextItemClass mqttRecvItem(3, 10);
+TextControlClass mqttHeaderItem(0, 9);
+TextControlClass mqttHeaderSendItem(2, 9);
+TextControlClass mqttHeaderRecvItem(3, 9);
+TextControlClass mqttStatusItem(0, 10);
+TextControlClass mqttServerIPItem(1, 10);
+TextControlClass mqttSendItem(2, 10);
+TextControlClass mqttRecvItem(3, 10);
 
 //UART Client
-TextItemClass uartHeaderItem(0, 11);
-TextItemClass uartHeaderSendItem(2, 11);
-TextItemClass uartHeaderRecvItem(3, 11);
-TextItemClass uartStatusItem(0, 12);
-TextItemClass uartSpeedItem(1, 12);
-TextItemClass uartSendItem(2, 12);
-TextItemClass uartRecvItem(3, 12);
+TextControlClass uartHeaderItem(0, 11);
+TextControlClass uartHeaderSendItem(2, 11);
+TextControlClass uartHeaderRecvItem(3, 11);
+TextControlClass uartStatusItem(0, 12);
+TextControlClass uartSpeedItem(1, 12);
+TextControlClass uartSendItem(2, 12);
+TextControlClass uartRecvItem(3, 12);
 
-TextItemClass systemHeaderItem(0, 13);
-TextItemClass systemHeaderLoopItem(1, 13);
-TextItemClass systemHeaderLifeTimeItem(2, 13);
-TextItemClass systemHeaderHeapItem(3, 13);
+TextControlClass systemHeaderItem(0, 13);
+TextControlClass systemHeaderLoopItem(1, 13);
+TextControlClass systemHeaderLifeTimeItem(2, 13);
+TextControlClass systemHeaderHeapItem(3, 13);
 
-TextItemClass systemIdItem(0, 14);
-TextItemClass systemLoopItem(1, 14);
-TextItemClass systemLifeTimeItem(2, 14);
-TextItemClass systemHeapItem(3, 14);
+TextControlClass systemIdItem(0, 14);
+TextControlClass systemLoopItem(1, 14);
+TextControlClass systemLifeTimeItem(2, 14);
+TextControlClass systemHeapItem(3, 14);
 
-ButtonClass button1("home", OWLOSLightColor, OWLOSSuccessColor, OWLOSWarningColor, 1, 16);
-ButtonClass button2("system", OWLOSLightColor, OWLOSInfoColor, OWLOSWarningColor, 2, 16);
-ButtonClass button3("log", OWLOSLightColor, OWLOSInfoColor, OWLOSWarningColor, 3, 16);
-ButtonClass button4("sensors", OWLOSLightColor, OWLOSInfoColor, OWLOSWarningColor, 4, 16);
+ButtonControlClass button1("home", OWLOSLightColor, OWLOSSuccessColor, OWLOSWarningColor, 1, 16);
+ButtonControlClass button2("system", OWLOSLightColor, OWLOSInfoColor, OWLOSWarningColor, 2, 16);
+ButtonControlClass button3("log", OWLOSLightColor, OWLOSInfoColor, OWLOSWarningColor, 3, 16);
+ButtonControlClass SensorsButton("sensors", OWLOSLightColor, OWLOSInfoColor, OWLOSWarningColor, 4, 16);
 
-void initDrawTransportStatus()
+void initTransportStatuses()
+{
+    stGWIPItem.y += GOLD_10;
+    stdBmItem.x += GOLD_7;
+    stdBmItem.y += GOLD_10;
+    hsHeaderItem.y += GOLD_11;    
+    SensorsButton.OnTouchEvent = SensorButtonTouch;
+}
+
+void refreshTransportStatuses()
 {
     tft.fillScreen(OWLOSDarkColor);
     tft.fillRect(0, 0, WIDTH / 2, GOLD_8, OWLOSSecondaryColor);
@@ -204,11 +140,6 @@ void initDrawTransportStatus()
     hOffset += GOLD_8 * 2;
     tft.fillRect(0, hOffset, WIDTH, GOLD_8, OWLOSSecondaryColor);
 
-    stGWIPItem.y += GOLD_10;
-    stdBmItem.x += GOLD_7;
-    stdBmItem.y += GOLD_10;
-
-    hsHeaderItem.y += GOLD_11;
 
     hcHeaderRecvItem.y = hcHeaderSendItem.y = hcHeaderItem.y += GOLD_11;
     hcHeaderSendItem.draw("send", OWLOSWarningColor, OWLOSSecondaryColor, 1);
@@ -227,14 +158,74 @@ void initDrawTransportStatus()
     systemHeaderLoopItem.draw("loop", OWLOSWarningColor, OWLOSSecondaryColor, 1);
     systemHeaderLifeTimeItem.draw("life time", OWLOSWarningColor, OWLOSSecondaryColor, 1);
     systemHeaderHeapItem.draw("heap", OWLOSWarningColor, OWLOSSecondaryColor, 1);
+    
+    //TextItems
+    stHeaderItem.refresh();
+    stSSIDItem.refresh();
+    stGWIPItem.refresh();
+    stIPItem.refresh();
+    stdBmItem.refresh();
+    stStatusItem.refresh();
 
-    button4.OnTouchEvent = SensorButtonTouch;
+    apHeaderItem.refresh();
+    apSSIDItem.refresh();
+    apIPItem.refresh();
+    apStatusItem.refresh();
+
+    //HTTP(S) Server Items
+    hsHeaderItem.refresh();
+    hsStStatusItem.refresh();
+    hsStIPItem.refresh();
+    hssStStatusItem.refresh();
+    hssStIPItem.refresh();
+    hsApStatusItem.refresh();
+    hsApIPItem.refresh();
+    hssApStatusItem.refresh();
+    hssApIPItem.refresh();
+
+    //HTTP Client
+    hcHeaderItem.refresh();
+    hcHeaderSendItem.refresh();
+    hcHeaderRecvItem.refresh();
+    hcStatusItem.refresh();
+    hcServerIPItem.refresh();
+    hcSendItem.refresh();
+    hcRecvItem.refresh();
+
+    //MQTT Client
+    mqttHeaderItem.refresh();
+    mqttHeaderSendItem.refresh();
+    mqttHeaderRecvItem.refresh();
+    mqttStatusItem.refresh();
+    mqttServerIPItem.refresh();
+    mqttSendItem.refresh();
+    mqttRecvItem.refresh();
+
+    //UART Client
+    uartHeaderItem.refresh();
+    uartHeaderSendItem.refresh();
+    uartHeaderRecvItem.refresh();
+    uartStatusItem.refresh();
+    uartSpeedItem.refresh();
+    uartSendItem.refresh();
+    uartRecvItem.refresh();
+
+    systemHeaderItem.refresh();
+    systemHeaderLoopItem.refresh();
+    systemHeaderLifeTimeItem.refresh();
+    systemHeaderHeapItem.refresh();
+
+    systemIdItem.refresh();
+    systemLoopItem.refresh();
+    systemLifeTimeItem.refresh();
+    systemHeapItem.refresh();
 
     button1.draw();
     button2.draw();
     button3.draw();
-    button4.draw();
+    SensorsButton.draw();
 }
+
 //-----------------------------------
 String convertingByteToString(int bytesCount)
 {
@@ -601,5 +592,5 @@ void drawTransportStatuses()
     button1.draw();
     button2.draw();
     button3.draw();
-    button4.draw();
+    SensorsButton.draw();
 }
