@@ -82,13 +82,17 @@ bool UXServiceInit()
         filesWriteInt(CALIBRATION_FILE "4", calibrationData[4]);
     }
 
-    currentMode = TRANSPORT_MODE;
-    previosMode = TRANSPORT_MODE;
+    currentMode = SENSORS_MODE;
+    previosMode = SENSORS_MODE;
 
     initTransportStatuses();
     initSensorStatuses();
-    refreshTransportStatuses();
-    drawTransportStatuses();
+
+    //refreshTransportStatuses();
+    //drawTransportStatuses();
+
+    refreshSensorStatuses();
+    drawSensorStatuses();
 
     return true;
 }
