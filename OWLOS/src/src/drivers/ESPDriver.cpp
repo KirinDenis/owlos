@@ -193,7 +193,7 @@ void thingSubscribe()
 String onGetProperty(String _property, String _payload, int8_t transportMask)
 {
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 	debugOut(thingid, "|-> get property " + _property + " = " + _payload);
 #endif
 #endif
@@ -479,7 +479,7 @@ bool lock = false;
 bool onInsideChange(String _property, String _value)
 {
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 	debugOut(thingid, "|<- inside change " + _property + " = " + _value);
 #endif
 #endif
@@ -493,7 +493,7 @@ bool onInsideChange(String _property, String _value)
 		result = transportPublish(topic + "/" + _property, _value);
 
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 		debugOut(thingid, "|-> inside change ");
 #endif
 #endif
@@ -524,7 +524,7 @@ String _getStringPropertyValue(String _property, String _defaultvalue)
 	}
 	propertyFileReaded += _property + ";";
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 	debugOut(thingid, _property + "=" + result);
 #endif
 #endif
@@ -550,7 +550,7 @@ int _getIntPropertyValue(String _property, int _defaultvalue)
 	}
 	propertyFileReaded += _property + ";";
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 	debugOut(thingid, _property + "=" + String(result));
 #endif
 #endif

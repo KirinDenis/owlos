@@ -53,6 +53,11 @@ OWLOS распространяется в надежде, что она буде
 #include "services/UXService.h"
 #include "services/AirQualityService.h"
 
+#ifdef LOGO_SCREEN_UX
+#include "ux/Screens/LogoScreen.h"
+#endif
+
+
 /*-----------------------------------------------------------------------------
 OWLOS Kernel setup section 
 ------------------------------------------------------------------------------*/
@@ -65,7 +70,7 @@ bool kernelSetup()
 
 #if defined(ARDUINO_ESP8266_RELEASE_2_5_0) || defined(ARDUINO_ESP32_RELEASE_1_0_4) || defined(USE_ARDUINO_BOARDS)
 #ifdef DEBUG
-	debugOut("OWLOS kernel setup", "started...");
+	debugOut("OWLOS", "Kernel starting...");
 #endif //if Utils.h "Debug=true" start writing log to Serial
 
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
@@ -74,6 +79,15 @@ bool kernelSetup()
 #endif
 
 	filesBegin(); //prepare Flash file systeme (see Tools/Flash size item - use 2M Flash Size, is ZERO size by default -> switch to 2M
+	
+	UXServiceInit(); //Init Air Quality UX
+#ifdef LOGO_SCREEN_UX		
+	logoScreenRefresh();
+#endif	
+	
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
+	debugOut("OWLOS", "Air Quality started");
+#endif
 
 #ifdef USE_ESP_DRIVER
 	thingInit();
@@ -85,7 +99,6 @@ bool kernelSetup()
 #else
 	driversInit("owlosthing");
 #endif
-    UXServiceInit(); 
     AirQualityBegin(thingGetTopic());
 #endif
 

@@ -51,11 +51,12 @@ extern TFT_eSPI tft;
 extern int currentMode;
 int previosMode;
 
+bool SetupComplete = false;
+
 //------------------------------------------------------------------------------------------
 //Init
 bool UXServiceInit()
 {
-
     // Setup the LCD
     tft.init();
     tft.setRotation(1);
@@ -82,8 +83,8 @@ bool UXServiceInit()
         filesWriteInt(CALIBRATION_FILE "4", calibrationData[4]);
     }
 
-    currentMode = SENSORS_MODE;
-    previosMode = SENSORS_MODE;
+    currentMode = LOG_MODE;
+    previosMode = LOG_MODE;
 
     initTransportStatuses();
     initSensorStatuses();
@@ -91,14 +92,23 @@ bool UXServiceInit()
     //refreshTransportStatuses();
     //drawTransportStatuses();
 
-    refreshSensorStatuses();
-    drawSensorStatuses();
+    //refreshSensorStatuses();
+    //drawSensorStatuses();
 
     return true;
 }
 
 void UXServiceLoop()
 {
+    if (!SetupComplete)
+    {
+        SetupComplete = true;
+        currentMode = SENSORS_MODE;
+        previosMode = SENSORS_MODE;
+        refreshSensorStatuses();
+        drawSensorStatuses();
+    }
+
     if (currentMode != previosMode)
     {
         Serial.println("!-------" + String(currentMode));

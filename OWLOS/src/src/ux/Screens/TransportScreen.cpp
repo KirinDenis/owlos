@@ -115,6 +115,12 @@ void initTransportStatuses()
     stdBmItem.x += GOLD_7;
     stdBmItem.y += GOLD_10;
     hsHeaderItem.y += GOLD_11;    
+
+    hcHeaderRecvItem.y = hcHeaderSendItem.y = hcHeaderItem.y += GOLD_11;
+    mqttHeaderRecvItem.y = mqttHeaderSendItem.y = mqttHeaderItem.y += GOLD_11;
+    uartHeaderRecvItem.y = uartHeaderSendItem.y = uartHeaderItem.y += GOLD_11;
+    systemHeaderItem.y = systemHeaderLoopItem.y = systemHeaderLifeTimeItem.y = systemHeaderHeapItem.y += GOLD_11;
+
     SensorsButton.OnTouchEvent = SensorButtonTouch;
 }
 
@@ -126,7 +132,7 @@ void refreshTransportStatuses()
     tft.drawFastVLine(WIDTH / 2, 0, GOLD_8, OWLOSDarkColor);
     tft.drawFastVLine(WIDTH / 2, GOLD_8, GOLD_5, OWLOSSecondaryColor);
 
-    int hOffset = GOLD_8 * 4 + GOLD_11;
+    int hOffset = GOLD_8 * 4 + GOLD_11;    
     tft.fillRect(0, hOffset, WIDTH, GOLD_8, OWLOSSecondaryColor);
     tft.drawFastVLine(WIDTH / 2, hOffset, GOLD_8, OWLOSDarkColor);
     tft.drawFastVLine(WIDTH / 2, hOffset + GOLD_8, GOLD_8 * 2, OWLOSSecondaryColor);
@@ -140,20 +146,16 @@ void refreshTransportStatuses()
     hOffset += GOLD_8 * 2;
     tft.fillRect(0, hOffset, WIDTH, GOLD_8, OWLOSSecondaryColor);
 
-
-    hcHeaderRecvItem.y = hcHeaderSendItem.y = hcHeaderItem.y += GOLD_11;
+    
     hcHeaderSendItem.draw("send", OWLOSWarningColor, OWLOSSecondaryColor, 1);
     hcHeaderRecvItem.draw("recv", OWLOSWarningColor, OWLOSSecondaryColor, 1);
 
-    mqttHeaderRecvItem.y = mqttHeaderSendItem.y = mqttHeaderItem.y += GOLD_11;
     mqttHeaderSendItem.draw("send", OWLOSWarningColor, OWLOSSecondaryColor, 1);
     mqttHeaderRecvItem.draw("recv", OWLOSWarningColor, OWLOSSecondaryColor, 1);
 
-    uartHeaderRecvItem.y = uartHeaderSendItem.y = uartHeaderItem.y += GOLD_11;
     uartHeaderSendItem.draw("send", OWLOSWarningColor, OWLOSSecondaryColor, 1);
     uartHeaderRecvItem.draw("recv", OWLOSWarningColor, OWLOSSecondaryColor, 1);
 
-    systemHeaderItem.y = systemHeaderLoopItem.y = systemHeaderLifeTimeItem.y = systemHeaderHeapItem.y += GOLD_11;
     systemHeaderItem.draw("System", OWLOSLightColor, OWLOSSecondaryColor, 1);
     systemHeaderLoopItem.draw("loop", OWLOSWarningColor, OWLOSSecondaryColor, 1);
     systemHeaderLifeTimeItem.draw("life time", OWLOSWarningColor, OWLOSSecondaryColor, 1);
@@ -220,10 +222,10 @@ void refreshTransportStatuses()
     systemLifeTimeItem.refresh();
     systemHeapItem.refresh();
 
-    button1.draw();
-    button2.draw();
-    button3.draw();
-    SensorsButton.draw();
+    button1.refresh();
+    button2.refresh();
+    button3.refresh();
+    SensorsButton.refresh();
 }
 
 //-----------------------------------

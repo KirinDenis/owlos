@@ -44,7 +44,7 @@ OWLOS распространяется в надежде, что она буде
 #include <Arduino.h>
 
 //#define SERIAL_COLORIZED_OUTPUT
-//#define DEBUG
+#define DEBUG
 #ifdef DEBUG
 	#define DETAILED_DEBUG
 #endif
@@ -94,7 +94,7 @@ OWLOS распространяется в надежде, что она буде
 #define CCS811_DRIVER_TYPE 18
 
 char *stringToChar(String src);
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 void debugOut(const String &tag, const String &text);
 #endif
 void writeDebugLogFile(String fileName, int fileSize, String tag, String text);

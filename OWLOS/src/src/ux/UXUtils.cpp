@@ -15,6 +15,7 @@ void drawArc(int x, int y, int radiusFrom, int radiusTo, double angleFrom, doubl
     for (double radius = radiusFrom; radius < radiusTo; radius += 0.5)
     {
         xp2 = -1;
+        yp2 = -1;
         for (double angle = angleFrom; angle < angleTo; angle += 0.05)
         {
             xp1 = radius * sin(angle) + x;

@@ -32,7 +32,7 @@ public:
     //         1,3 - align right (width / 2, width)
     //row --> row * Glod8 = y
     ButtonControlClass(String _text, int _fgColor, int _bgColor, int _selectColor, int column, int row);
-
+    void refresh();
     void draw();
 };
 

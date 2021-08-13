@@ -56,7 +56,7 @@ bool ADS1X15Driver::init()
 	if (pinDriverInfo != nullptr)
 	{
 //если пользователь задал адрес, инкапсулируем класс обслуживающий ADS1X15 и пробуем работать с через указанный порт
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 		debugOut("ADS1X15", String(pinDriverInfo->driverI2CAddr));
 		debugOut("ADS1X15","Getting single-ended readings from AIN0..3");
   		debugOut("ADS1X15","ADC Range: +/- 6.144V (1 bit = 3mV/ADS1015, 0.1875mV/ADS1115)");
@@ -78,7 +78,7 @@ bool ADS1X15Driver::init()
 		{
 			available = true;
 		}
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 	else 
 	{
 		debugOut("ADS1X15", "Begin problem");
@@ -86,7 +86,7 @@ bool ADS1X15Driver::init()
 #endif
 
 	}
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 	else 
 	{
 		debugOut("ADS1X15", "Pins problem");
@@ -235,7 +235,7 @@ String ADS1X15Driver::getChanel_0()
 		setAvailable(false);
 		chanel_0 = "nan";
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 		debugOut(id, "ADS1X15 object not ready");
 #endif
 #endif
@@ -252,7 +252,7 @@ String ADS1X15Driver::getChanel_0()
 		chanel_0 = "nan";
 		chanel_0_volts = "nan";
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 		debugOut(id, "ADS1X15 going to NOT available now, check sensor");
 #endif
 #endif
@@ -263,8 +263,8 @@ String ADS1X15Driver::getChanel_0()
 		chanel_0_volts = String(ads1x15->computeVolts(_chanel_0));
 	}
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
-	debugOut(id, "ADS1X15 pressure=" + pressure);
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
+	debugOut(id, "ADS1X15 chanel_0_volts=" + chanel_0_volts);
 #endif
 #endif
 	return chanel_0;
@@ -320,7 +320,7 @@ String ADS1X15Driver::getChanel_1()
 		setAvailable(false);
 		chanel_1 = "nan";
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 		debugOut(id, "ADS1X15 object not ready");
 #endif
 #endif
@@ -337,7 +337,7 @@ String ADS1X15Driver::getChanel_1()
 		chanel_1 = "nan";
 		chanel_1_volts = "nan";
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 		debugOut(id, "ADS1X15 going to NOT available now, check sensor");
 #endif
 #endif
@@ -348,8 +348,8 @@ String ADS1X15Driver::getChanel_1()
 		chanel_1_volts = String(ads1x15->computeVolts(_chanel_1));
 	}
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
-	debugOut(id, "ADS1X15 pressure=" + pressure);
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
+	debugOut(id, "ADS1X15 chanel_1_volts=" + chanel_1_volts);
 #endif
 #endif
 	return chanel_1;
@@ -405,7 +405,7 @@ String ADS1X15Driver::getChanel_2()
 		setAvailable(false);
 		chanel_2 = "nan";
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 		debugOut(id, "ADS1X15 object not ready");
 #endif
 #endif
@@ -422,7 +422,7 @@ String ADS1X15Driver::getChanel_2()
 		chanel_2 = "nan";
 		chanel_2_volts = "nan";
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 		debugOut(id, "ADS1X15 going to NOT available now, check sensor");
 #endif
 #endif
@@ -433,8 +433,8 @@ String ADS1X15Driver::getChanel_2()
 		chanel_2_volts = String(ads1x15->computeVolts(_chanel_2));
 	}
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
-	debugOut(id, "ADS1X15 pressure=" + pressure);
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
+	debugOut(id, "ADS1X15 chanel_2_volts=" + chanel_2_volts);
 #endif
 #endif
 	return chanel_2;
@@ -490,7 +490,7 @@ String ADS1X15Driver::getChanel_3()
 		setAvailable(false);
 		chanel_3 = "nan";
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 		debugOut(id, "ADS1X15 object not ready");
 #endif
 #endif
@@ -507,7 +507,7 @@ String ADS1X15Driver::getChanel_3()
 		chanel_3 = "nan";
 		chanel_3_volts = "nan";
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 		debugOut(id, "ADS1X15 going to NOT available now, check sensor");
 #endif
 #endif
@@ -518,8 +518,8 @@ String ADS1X15Driver::getChanel_3()
 		chanel_3_volts = String(ads1x15->computeVolts(_chanel_3));
 	}
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
-	debugOut(id, "ADS1X15 pressure=" + pressure);
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
+	debugOut(id, "ADS1X15 chanel_3_volts=" + chanel_3_volts);
 #endif
 #endif
 	return chanel_3;

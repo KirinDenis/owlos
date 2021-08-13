@@ -65,7 +65,7 @@ void driversInit(String _topic)
 	__topic = _topic;
 	initPins();
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 	debugOut("driverconfig", driversLoadFromConfig());
 #endif
 #else
@@ -380,7 +380,7 @@ bool driversSaveList()
 String driversLoadFromConfig()
 {
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 	debugOut("driverconfig", "load");
 #endif
 #endif
@@ -396,7 +396,7 @@ String driversLoadFromConfig()
 	String line;
 
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 	debugOut("driverconfig", "do parse");
 #endif
 #endif
@@ -406,7 +406,7 @@ String driversLoadFromConfig()
 
 		line = driverList.substring(0, linePos);
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 		debugOut("driverconfig_load line_", line);
 #endif
 #endif
@@ -448,10 +448,10 @@ String driversLoadFromConfig()
 String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 {
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 	debugOut("driversadd_id", id);
 #endif
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 	debugOut("driversadd_pins", pins);
 #endif
 #endif
@@ -477,7 +477,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 		if (_pins[pinCount].length() == 0)
 			break;
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 		debugOut("pin", _pins[pinCount]);
 #endif
 #endif
@@ -514,7 +514,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 	if (type == ACTUATOR_DRIVER_TYPE)
 	{
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 		debugOut("pin", String(pinCount));
 #endif
 #endif
@@ -526,7 +526,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 		result = checkDriverPin(_pins[PIN0_INDEX], ActuatorDriver::getPinType(PIN0_INDEX)) + checkDriverPin(_pins[PIN1_INDEX], ActuatorDriver::getPinType(PIN1_INDEX));
 
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 		debugOut("DCResult", result);
 #endif
 #endif
@@ -551,7 +551,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 		if ((type == SENSOR_DRIVER_TYPE) || (type == LIGHT_DRIVER_TYPE) || (type == SMOKE_DRIVER_TYPE) || (type == MOTION_DRIVER_TYPE))
 	{
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 		debugOut("pin", String(pinCount));
 #endif
 #endif
@@ -563,7 +563,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 		result = checkDriverPin(_pins[PIN0_INDEX], SensorDriver::getPinType(PIN0_INDEX)) + checkDriverPin(_pins[PIN1_INDEX], SensorDriver::getPinType(PIN1_INDEX)) + checkDriverPin(_pins[PIN2_INDEX], SensorDriver::getPinType(PIN2_INDEX));
 
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 		debugOut("DCResult", result);
 #endif
 #endif
@@ -587,7 +587,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 		if (type == LCD_DRIVER_TYPE)
 	{
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 		debugOut("pin", String(pinCount));
 #endif
 #endif
@@ -617,7 +617,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 		if (type == BMP280_DRIVER_TYPE)
 	{
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 		debugOut("pin", String(pinCount));
 #endif
 #endif
@@ -636,7 +636,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 
 		if (result.length() != 0)
 		{
-#ifdef DEBUG			
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)			
 			debugOut("BMP280", String(result));
 #endif			
 			return result;
@@ -651,7 +651,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 
 		if (result.length() != 0)
 		{
-#ifdef DEBUG			
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)			
 			debugOut("BMP280", result);
 #endif						
 			return result;
@@ -669,7 +669,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 		if (type == ADS1X15_DRIVER_TYPE)
 	{
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 		debugOut("pin", String(pinCount));
 #endif
 #endif
@@ -688,7 +688,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 
 		if (result.length() != 0)
 		{
-#ifdef DEBUG			
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)			
 			debugOut("ADS1X15", String(result));
 #endif			
 			return result;
@@ -703,7 +703,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 
 		if (result.length() != 0)
 		{
-#ifdef DEBUG			
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)			
 			debugOut("ADS1X15", result);
 #endif						
 			return result;
@@ -721,7 +721,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 		if (type == CCS811_DRIVER_TYPE)
 	{
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 		debugOut("pin", String(pinCount));
 #endif
 #endif
@@ -740,7 +740,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 
 		if (result.length() != 0)
 		{
-#ifdef DEBUG			
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)			
 			debugOut("CCS811", String(result));
 #endif			
 			return result;
@@ -755,7 +755,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 
 		if (result.length() != 0)
 		{
-#ifdef DEBUG			
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)			
 			debugOut("CCS811", result);
 #endif						
 			return result;
@@ -774,7 +774,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 		if (type == DHT_DRIVER_TYPE)
 	{
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 		debugOut("pin", String(pinCount));
 #endif
 #endif
@@ -814,7 +814,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 	driversList[freeIndex]->begin("owlosthing");
 #endif
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 	debugOut("driversadd", "OK");
 #endif
 #endif
@@ -849,7 +849,7 @@ String driversChangePin(String pinName, String driverId, int driverPinIndex)
 String driversDelete(String id)
 {
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 	debugOut("driversdelete", id);
 #endif
 #endif

@@ -56,7 +56,7 @@ bool CCS811Driver::init()
 	if (pinDriverInfo != nullptr)
 	{
 //если пользователь задал адрес, инкапсулируем класс обслуживающий CCS811 и пробуем работать с через указанный порт
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 		debugOut("CCS811", String(pinDriverInfo->driverI2CAddr));
 #endif
 		ccs811 = new CCS811(pinDriverInfo->driverI2CAddr);
@@ -64,7 +64,7 @@ bool CCS811Driver::init()
 		{
 			available = true;
 		}
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 	else 
 	{
 		debugOut("CCS811", "Begin problem");
@@ -72,7 +72,7 @@ bool CCS811Driver::init()
 #endif
 
 	}
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 	else 
 	{
 		debugOut("CCS811", "Pins problem");
@@ -206,7 +206,7 @@ bool CCS811Driver::readData()
 	{
 		setAvailable(false);
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 		debugOut(id, "CCS811 object not ready");
 #endif
 #endif

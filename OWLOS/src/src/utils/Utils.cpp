@@ -44,6 +44,11 @@ OWLOS распространяется в надежде, что она буде
 #include "../drivers/WifiDriver.h"
 #include "../drivers/NetworkDriver.h"
 
+#ifdef LOGO_SCREEN_UX
+#include "../ux/Screens/LogoScreen.h"
+#endif
+
+
 bool filesAtRecurse = false;
 
 char *stringToChar(String src)
@@ -53,9 +58,14 @@ char *stringToChar(String src)
 	return data;
 }
 
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 void debugOut(const String &tag, const String &text)
 {
+#ifdef LOGO_SCREEN_UX
+  logoScreenAddText(tag, text);
+#endif
+
+#ifdef DEBUG
 #ifdef USE_ESP_DRIVER
 #ifdef SERIAL_COLORIZED_OUTPUT
 	String _text = text + " \033\033[1;32m [" + String(ESP.getFreeHeap()) + "]";
@@ -104,6 +114,7 @@ void debugOut(const String &tag, const String &text)
 		}
 		filesAtRecurse = false;
 	}
+#endif	
 }
 #endif
 

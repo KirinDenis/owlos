@@ -43,6 +43,9 @@ TextControlClass MQ135Item(2, 6);
 TextControlClass MQ135ValueItem(3, 6);
 TextControlClass ResistenceItem(0, 7);
 TextControlClass ResistenceValueItem(1, 7);
+TextControlClass LightItem(2, 7);
+TextControlClass LightValueItem(3, 7);
+
 
 extern ButtonControlClass button1;
 extern ButtonControlClass button2;
@@ -60,7 +63,9 @@ void TransportButtonTouch()
 
 void initSensorStatuses()
 {
+    GasHeaderItem.y += GOLD_11;    
     transportButton.OnTouchEvent = TransportButtonTouch;
+    
 }
 
 void refreshSensorStatuses()
@@ -101,11 +106,13 @@ void refreshSensorStatuses()
     MQ135ValueItem.refresh();
     ResistenceItem.refresh();
     ResistenceValueItem.refresh();
+    LightItem.refresh();
+    LightValueItem.refresh();
 
-    button1.draw();
-    button2.draw();
-    button3.draw();
-    transportButton.draw();
+    button1.refresh();
+    button2.refresh();
+    button3.refresh();
+    transportButton.refresh();
 }
 
 //-------------------------------------------------
@@ -184,19 +191,32 @@ void drawGasStatus()
     int textColor = OWLOSLightColor;
 
     if ((_CCS811Driver != nullptr) && (_ADS1X15Driver != nullptr))
-    {
-        GasHeaderItem.draw("CO2, Gas", statusColor, OWLOSSecondaryColor, 1);
-        CO2Item.draw("CO2", OWLOSPrimaryColor, OWLOSDarkColor, 2);
-        CO2ValueItem.draw(_CCS811Driver->getCO2(), textColor, OWLOSDarkColor, 2);
-        TVOCItem.draw("TVOC", OWLOSPrimaryColor, OWLOSDarkColor, 2);
-        TVOCValueItem.draw(_CCS811Driver->getTVOC(), textColor, OWLOSDarkColor, 2);
-        MQ7Item.draw("MQ 7", OWLOSPrimaryColor, OWLOSDarkColor, 2);
-        MQ7ValueItem.draw(_ADS1X15Driver->getChanel_2_Volts(), textColor, OWLOSDarkColor, 2);
-        MQ135Item.draw("MQ 135", OWLOSPrimaryColor, OWLOSDarkColor, 2);
-        MQ135ValueItem.draw(_ADS1X15Driver->getChanel_3_Volts(), textColor, OWLOSDarkColor, 2);
-        ResistenceItem.draw("Resistence", OWLOSPrimaryColor, OWLOSDarkColor, 2);
-        ResistenceValueItem.draw(_CCS811Driver->getResistence(), textColor, OWLOSDarkColor, 2);
+    {            
+        CO2ValueItem.draw(_CCS811Driver->getCO2(), textColor, OWLOSDarkColor, 2);        
+        TVOCValueItem.draw(_CCS811Driver->getTVOC(), textColor, OWLOSDarkColor, 2);        
+        MQ7ValueItem.draw(_ADS1X15Driver->getChanel_2_Volts(), textColor, OWLOSDarkColor, 2);        
+        MQ135ValueItem.draw(_ADS1X15Driver->getChanel_1_Volts(), textColor, OWLOSDarkColor, 2);        
+        ResistenceValueItem.draw(_CCS811Driver->getResistence(), textColor, OWLOSDarkColor, 2);        
+        LightValueItem.draw(_ADS1X15Driver->getChanel_3_Volts(), textColor, OWLOSDarkColor, 2);
     }
+    else 
+    {
+        CO2ValueItem.draw("---", textColor, OWLOSDarkColor, 2);        
+        TVOCValueItem.draw("---", textColor, OWLOSDarkColor, 2);        
+        MQ7ValueItem.draw("---", textColor, OWLOSDarkColor, 2);        
+        MQ135ValueItem.draw("---", textColor, OWLOSDarkColor, 2);        
+        ResistenceValueItem.draw("---", textColor, OWLOSDarkColor, 2);        
+        LightValueItem.draw("---", textColor, OWLOSDarkColor, 2);
+    }
+        GasHeaderItem.draw("CO2, Gas, Light", statusColor, OWLOSSecondaryColor, 1);
+        CO2Item.draw("CO2", OWLOSPrimaryColor, OWLOSDarkColor, 2);
+        TVOCItem.draw("TVOC", OWLOSPrimaryColor, OWLOSDarkColor, 2);        
+        MQ7Item.draw("MQ 7", OWLOSPrimaryColor, OWLOSDarkColor, 2);        
+        MQ135Item.draw("MQ 135", OWLOSPrimaryColor, OWLOSDarkColor, 2);        
+        ResistenceItem.draw("Resistence", OWLOSPrimaryColor, OWLOSDarkColor, 2);        
+        LightItem.draw("Light", OWLOSPrimaryColor, OWLOSDarkColor, 2);
+        
+
 }
 
 //------------------------------------------------------------------------------------------

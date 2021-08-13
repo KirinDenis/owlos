@@ -59,7 +59,7 @@ bool BMP280Driver::init()
 	if (pinDriverInfo != nullptr)
 	{
 //если пользователь задал адрес, инкапсулируем класс обслуживающий BMP280 и пробуем работать с через указанный порт
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 		debugOut("BMP280", String(pinDriverInfo->driverI2CAddr));
 #endif
 		bmp280 = new Adafruit_BMP280();
@@ -73,7 +73,7 @@ bool BMP280Driver::init()
 								Adafruit_BMP280::STANDBY_MS_500); /* Standby time. */
 			available = true;
 		}
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 	else 
 	{
 		debugOut("BMP280", "Begin problem");
@@ -81,7 +81,7 @@ bool BMP280Driver::init()
 #endif
 
 	}
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 	else 
 	{
 		debugOut("BMP280", "Pins problem");
@@ -185,7 +185,7 @@ String BMP280Driver::getPressure()
 		setAvailable(false);
 		pressure = "nan";
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 		debugOut(id, "BMP280 object not ready");
 #endif
 #endif
@@ -199,7 +199,7 @@ String BMP280Driver::getPressure()
 		setAvailable(false);
 		pressure = "nan";
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 		debugOut(id, "BMP280 going to NOT available now, check sensor");
 #endif
 #endif
@@ -209,7 +209,7 @@ String BMP280Driver::getPressure()
 		pressure = String(_pressure);
 	}
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 	debugOut(id, "BMP280 pressure=" + pressure);
 #endif
 #endif
@@ -225,7 +225,7 @@ String BMP280Driver::getAltitude()
 		setAvailable(false);
 		altitude = "nan";
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 		debugOut(id, "BMP280 object not ready");
 #endif
 #endif
@@ -239,7 +239,7 @@ String BMP280Driver::getAltitude()
 		setAvailable(false);
 		altitude = "nan";
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 		debugOut(id, "BMP280 going to NOT available now, check sensor");
 #endif
 #endif
@@ -249,7 +249,7 @@ String BMP280Driver::getAltitude()
 		altitude = String(_altitude);
 	}
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 	debugOut(id, "BMP280 altitude=" + altitude);
 #endif
 #endif
@@ -265,7 +265,7 @@ String BMP280Driver::getTemperature()
 		setAvailable(false);
 		temperature = "nan";
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 		debugOut(id, "BMP280 object not ready");
 #endif
 #endif
@@ -279,7 +279,7 @@ String BMP280Driver::getTemperature()
 		setAvailable(false);
 		temperature = "nan";
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 		debugOut(id, "BMP280 going to NOT available now, check sensor");
 #endif
 #endif
@@ -289,7 +289,7 @@ String BMP280Driver::getTemperature()
 		temperature = String(_temperature);
 	}
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 	debugOut(id, "BMP280 temperature=" + temperature);
 #endif
 #endif

@@ -20,12 +20,19 @@ ButtonControlClass::ButtonControlClass(String _text, int _fgColor, int _bgColor,
     text_y = y + GOLD_7 / 4;
 }
 
+void ButtonControlClass::refresh()
+{
+    tft.fillRect(x, y, WIDTH / 4 - GOLD_11, GOLD_7, bgColor);
+    tft.setTextColor(fgColor, bgColor);
+    tft.drawString(text, text_x, text_y, 2);
+}
+
 void ButtonControlClass::draw()
 {
     uint16_t tx, ty;
     if (tft.getTouch(&tx, &ty))
     {
-        if ((tx > x) && (tx < x + WIDTH / 4) && (ty > y) && (ty < ty + GOLD_8 * 2))
+        if ((tx > x) && (tx < x + WIDTH / 4) && (ty > y) && (ty < y + GOLD_8 * 2))
         {
             if (touch != BUTTON_TOUCH_YES)
             {
@@ -41,9 +48,7 @@ void ButtonControlClass::draw()
     {
         if (touch != BUTTON_TOUCH_NO)
         {
-            tft.fillRect(x, y, WIDTH / 4 - GOLD_11, GOLD_7, bgColor);
-            tft.setTextColor(fgColor, bgColor);
-            tft.drawString(text, text_x, text_y, 2);
+            refresh();
         }
         touch = BUTTON_TOUCH_NO;
     }

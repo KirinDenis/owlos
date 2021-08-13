@@ -85,7 +85,6 @@ void AirQualityBegin(String __topic)
 
     driversAdd(CCS811_DRIVER_TYPE, CCS811_Driver_Id, CCS811_Driver_Pind);    
     _CCS811Driver = (CCS811Driver*)driversGetDriver(CCS811_Driver_Id);
-
 }
 
 void AirQualityLoop()

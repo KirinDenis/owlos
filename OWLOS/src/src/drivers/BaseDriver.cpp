@@ -81,7 +81,7 @@ bool BaseDriver::begin(const String _topic)
 {
 	topic = _topic + '/' + id;
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 	debugOut(id, "available with topic " + topic);
 #endif
 #endif
@@ -125,7 +125,7 @@ String BaseDriver::getAllProperties()
 		}
 		else
 		{
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 			debugOut("PIN", "NULL");
 #endif
 		}
@@ -303,7 +303,7 @@ String BaseDriver::onMessage(const String route, const String _payload, int8_t t
 String BaseDriver::onGetProperty(String _property, String _payload, int8_t transportMask)
 {
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 	debugOut(id, "|-> get property " + _property + " = " + _payload);
 #endif
 #endif
@@ -320,7 +320,7 @@ String BaseDriver::onGetProperty(String _property, String _payload, int8_t trans
 bool BaseDriver::onInsideChange(String _property, String _payload /*, int8_t transportMask*/)
 {
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 	debugOut(id, "|<- inside change " + _property + " = " + _payload);
 #endif
 #endif
@@ -335,7 +335,7 @@ bool BaseDriver::onInsideChange(String _property, String _payload /*, int8_t tra
 	/*
 	bool result = true;
 	  #ifdef
-	  DETAILED_DEBUG #ifdef DEBUG
+	  DETAILED_DEBUG #if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 debugOut(id, "|<- inside change " + _property + " = " +  _payload);
 #endif
 	  #endif
@@ -354,7 +354,7 @@ int BaseDriver::getAvailable()
 		available = filesReadInt(id + ".available");
 	}
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 	debugOut(id, "available=" + String(available));
 #endif
 #endif
@@ -371,7 +371,7 @@ bool BaseDriver::setAvailable(int _available)
 int BaseDriver::getType()
 {
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 	debugOut(id, "type=" + type);
 #endif
 #endif
@@ -392,7 +392,7 @@ float BaseDriver::getTrap()
 		trap = filesReadFloat(id + ".trap");
 	}
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 	debugOut(id, "trap=" + String(trap));
 #endif
 #endif
@@ -413,7 +413,7 @@ int BaseDriver::getQueryInterval()
 		queryInterval = filesReadInt(id + ".queryinterval");
 	}
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 	debugOut(id, "queryinterval=" + String(queryInterval));
 #endif
 #endif
@@ -434,7 +434,7 @@ int BaseDriver::getPublishInterval()
 		publishInterval = filesReadInt(id + ".publishinterval");
 	}
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 	debugOut(id, "publishinterval=" + String(publishInterval));
 #endif
 #endif
