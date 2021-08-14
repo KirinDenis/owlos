@@ -145,12 +145,13 @@ public:
     String readHistoryFile();
     bool writeHistoryFile(float _historydata);
 
-protected:
-    int parsePinNumber(String _topic, String getPinStr);
     //TRUE(1)
     //FALSE(0)
     //FALSE by default
     int available = 0;
+
+protected:
+    int parsePinNumber(String _topic, String getPinStr);
 
     //Current driver type code, see Utils.h for driver's types codes
     int type;
@@ -192,7 +193,7 @@ protected:
     unsigned long lastHistoryFileWriteMillis = 0;
 
     //Set count how often the query() method "core section" must be called  (NOTE: for stabale works queryInterval property MUST BE BIGGER THAN publishInterval property)
-    unsigned long queryInterval = ONESECOND;
+    unsigned long queryInterval = ONESECOND * 10;
 
     //Set count how often the publish() method "core section" must be called
     unsigned long publishInterval = ONESECOND * 600;

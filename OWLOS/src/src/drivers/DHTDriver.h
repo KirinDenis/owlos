@@ -109,15 +109,18 @@ public:
 	String readTemperatureHistoryFile();
 	bool writeTemperatureHistoryFile(float _historydata);
 
+    bool celsius = true;
+	String temperature = "nan";
+	String humidity = "nan";
+	String heatIndex = "nan";
+
+
 private:
 	bool DHTSetuped = false;
 	bool DHTSetupResult = false;
 	DHT *dht = nullptr;
 	int dhttype = DHT22; //default DHT22
-	bool celsius = true;
-	String temperature = "nan";
-	String humidity = "nan";
-	String heatIndex = "nan";
+	
 	int temperatureHistoryCount = 0;
 	int humidityHistoryCount = 0;
 	int heatIndexHistoryCount = 0;

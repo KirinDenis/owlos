@@ -100,13 +100,14 @@ public:
     String getTemperature();
 	String getTemperatureHistoryData();
 	bool setTemperatureHistoryData(float _historydata);
-		     
-private:
-	CCS811 *ccs811 = nullptr;
+
 	String CO2 = "nan";
 	String TVOC = "nan";
 	String resistence = "nan";
 	String temperature = "nan";
+
+private:
+	CCS811 *ccs811 = nullptr;
 
 	int CO2HistoryCount = 0;
 	float *CO2HistoryData = new float[historySize]();

@@ -99,13 +99,13 @@ void AirQualityLoop()
       if (_DHTDriver != nullptr)
       {
           AirQualityPropertiesMode += "DHT22:yes\n";
-          AirQualityPropertiesMode += "DHT22temp:" +  _DHTDriver->getStoredTemperature() + "\n";
+          AirQualityPropertiesMode += "DHT22temp:" +  _DHTDriver->temperature + "\n";
           AirQualityPropertiesMode += "DHT22temph:" +  _DHTDriver->getTemperatureHistoryData() + "\n";
-          AirQualityPropertiesMode += "DHT22hum:" +  _DHTDriver->getStoredHumidity() + "\n";
+          AirQualityPropertiesMode += "DHT22hum:" +  _DHTDriver->humidity + "\n";
           AirQualityPropertiesMode += "DHT22humh:" +  _DHTDriver->getHumidityHistoryData() + "\n";
-          AirQualityPropertiesMode += "DHT22heat:" +  _DHTDriver->getStoredHeatIndex() + "\n";
+          AirQualityPropertiesMode += "DHT22heat:" +  _DHTDriver->heatIndex + "\n";
           AirQualityPropertiesMode += "DHT22heath:" +  _DHTDriver->getHeatIndexHistoryData() + "\n";
-          AirQualityPropertiesMode += "DHT22c:" +  _DHTDriver->getStoredCelsius() + "\n";
+          AirQualityPropertiesMode += "DHT22c:" +  String(_DHTDriver->celsius) + "\n";
       }
       else 
       {
@@ -115,11 +115,11 @@ void AirQualityLoop()
       if (_BMP280Driver != nullptr)
       {
           AirQualityPropertiesMode += "BMP280:yes\n";
-          AirQualityPropertiesMode += "BMP280pressure:" +  String(_BMP280Driver->getPressure()) + "\n";          
+          AirQualityPropertiesMode += "BMP280pressure:" +  String(_BMP280Driver->pressure) + "\n";          
           AirQualityPropertiesMode += "BMP280pressureh:" +  String(_BMP280Driver->getPressureHistoryData()) + "\n";
-          AirQualityPropertiesMode += "BMP280altitude:" +  String(_BMP280Driver->getAltitude()) + "\n";
+          AirQualityPropertiesMode += "BMP280altitude:" +  String(_BMP280Driver->altitude) + "\n";
           AirQualityPropertiesMode += "BMP280altitudeh:" +  String(_BMP280Driver->getAltitudeHistoryData()) + "\n";
-          AirQualityPropertiesMode += "BMP280temperature:" +  String(_BMP280Driver->getTemperature()) + "\n";
+          AirQualityPropertiesMode += "BMP280temperature:" +  String(_BMP280Driver->temperature) + "\n";
           AirQualityPropertiesMode += "BMP280temperatureh:" +  String(_BMP280Driver->getTemperatureHistoryData()) + "\n";
       }
       else 
@@ -130,8 +130,8 @@ void AirQualityLoop()
       if (_ADS1X15Driver != nullptr)
       {
           AirQualityPropertiesMode += "ADS1X15:yes\n";
-          AirQualityPropertiesMode += "ADS1X15chanel_0:" +  String(_ADS1X15Driver->getChanel_0()) + "\n";          
-          AirQualityPropertiesMode += "ADS1X15chanel_0_volts:" +  String(_ADS1X15Driver->getChanel_0_Volts()) + "\n";
+          AirQualityPropertiesMode += "ADS1X15chanel_0:" +  String(_ADS1X15Driver->chanel_0) + "\n";          
+          AirQualityPropertiesMode += "ADS1X15chanel_0_volts:" +  String(_ADS1X15Driver->chanel_0_volts) + "\n";
           AirQualityPropertiesMode += "ADS1X15chanel_0h:" +  String(_ADS1X15Driver->getChanel_0_HistoryData()) + "\n";
       }
       else 
@@ -144,10 +144,10 @@ void AirQualityLoop()
            _CCS811Driver->readData();
 
           AirQualityPropertiesMode += "CCS811:yes\n";
-          AirQualityPropertiesMode += "CCS811CO2:" +  String(_CCS811Driver->getCO2()) + "\n";          
-          AirQualityPropertiesMode += "CCS811TVOC:" +  String(_CCS811Driver->getTVOC()) + "\n";          
-          AirQualityPropertiesMode += "CCS811resistence:" +  String(_CCS811Driver->getResistence()) + "\n";          
-          AirQualityPropertiesMode += "CCS811temp:" +  String(_CCS811Driver->getTemperature()) + "\n";          
+          AirQualityPropertiesMode += "CCS811CO2:" +  String(_CCS811Driver->CO2) + "\n";          
+          AirQualityPropertiesMode += "CCS811TVOC:" +  String(_CCS811Driver->TVOC) + "\n";          
+          AirQualityPropertiesMode += "CCS811resistence:" +  String(_CCS811Driver->resistence) + "\n";          
+          AirQualityPropertiesMode += "CCS811temp:" +  String(_CCS811Driver->temperature) + "\n";          
       }
       else 
       {

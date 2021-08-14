@@ -6,6 +6,8 @@ extern int currentMode;
 
 int logCount = 0;
 
+bool lockScreen = false;
+
 void logoScreenInit()
 {
 }
@@ -23,8 +25,9 @@ void logoScreenDraw()
 
 void logoScreenAddText(String tag, String text)
 {
-  if (currentMode == LOG_MODE)
+  if ((currentMode == LOG_MODE) && (!lockScreen))
   {
+    lockScreen = true;
     logCount += tft.fontHeight(1);
     if (logCount > HEIGHT)
     {
@@ -36,6 +39,7 @@ void logoScreenAddText(String tag, String text)
     tft.setTextColor(OWLOSLightColor, OWLOSDarkColor);
     tft.print(tag + " ");
     tft.setTextColor(OWLOSPrimaryColor, OWLOSDarkColor);
-    tft.println(text);
+    tft.println(text);    
+    lockScreen = false;
   }
 }

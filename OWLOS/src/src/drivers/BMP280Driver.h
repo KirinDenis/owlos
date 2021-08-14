@@ -95,11 +95,13 @@ public:
 	String getTemperatureHistoryData();
 	bool setTemperatureHistoryData(float _historydata);
 
-private:
-	Adafruit_BMP280 *bmp280 = nullptr;
 	String pressure = "nan";
 	String altitude = "nan";
 	String temperature = "nan";
+
+
+private:
+	Adafruit_BMP280 *bmp280 = nullptr;
 
 	int pressureHistoryCount = 0;
 	float *pressureHistoryData = new float[historySize]();

@@ -46,7 +46,7 @@ OWLOS распространяется в надежде, что она буде
 //#define SERIAL_COLORIZED_OUTPUT
 #define DEBUG
 #ifdef DEBUG
-	#define DETAILED_DEBUG
+//	#define DETAILED_DEBUG
 #endif
 
 #define WRITE_DEBUG_LOG_FILES false

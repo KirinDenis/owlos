@@ -104,9 +104,6 @@ public:
 	String getChanel_3_HistoryData();
 	bool setChanel_3_HistoryData(float _historydata);
 
-private:
-	Adafruit_ADS1X15 *ads1x15 = nullptr;
-
 	String chanel_0 = "nan";
 	String chanel_0_volts = "nan";
 	String chanel_1 = "nan";
@@ -115,6 +112,9 @@ private:
 	String chanel_2_volts = "nan";
 	String chanel_3 = "nan";
 	String chanel_3_volts = "nan";
+
+private:
+	Adafruit_ADS1X15 *ads1x15 = nullptr;
 
 	int chanel_0_HistoryCount = 0;
 	float *chanel_0_HistoryData = new float[historySize]();
