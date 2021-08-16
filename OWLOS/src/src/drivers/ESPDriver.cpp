@@ -100,6 +100,10 @@ bool thingInit()
 {
 	thingGetUnitId();
 	thingGetTopic();
+#if defined(DEBUG) || defined(LOGO_SCREEN_UX)
+	debugOut("Thing", "id " + thingGetUnitId() , DEBUG_INFO);
+	debugOut("Thing", "topic " + thingGetTopic() , DEBUG_INFO);
+#endif
 	return true;
 }
 

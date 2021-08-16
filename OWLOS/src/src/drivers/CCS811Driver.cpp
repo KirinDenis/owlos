@@ -55,30 +55,29 @@ bool CCS811Driver::init()
 	DriverPin *pinDriverInfo = getDriverPinByDriverId(id, I2CADDR_INDEX);
 	if (pinDriverInfo != nullptr)
 	{
-//если пользователь задал адрес, инкапсулируем класс обслуживающий CCS811 и пробуем работать с через указанный порт
-#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
-		debugOut("CCS811", String(pinDriverInfo->driverI2CAddr));
-#endif
+		//если пользователь задал адрес, инкапсулируем класс обслуживающий CCS811 и пробуем работать с через указанный порт
 		ccs811 = new CCS811(pinDriverInfo->driverI2CAddr);
 		if (ccs811->begin())
 		{
+#if defined(DEBUG) || defined(LOGO_SCREEN_UX)
+			debugOut("CCS811", "OK", DEBUG_SUCCESS);
+#endif
 			available = true;
 		}
-#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
-	else 
+#if defined(DEBUG) || defined(LOGO_SCREEN_UX)
+		else
+		{
+			debugOut("CCS811", "Begin problem", DEBUG_DANGER);
+		}
+#endif
+	}
+#if defined(DEBUG) || defined(LOGO_SCREEN_UX)
+	else
 	{
-		debugOut("CCS811", "Begin problem");
+		debugOut("CCS811", "Pins problem", DEBUG_WARNING);
 	}
 #endif
 
-	}
-#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
-	else 
-	{
-		debugOut("CCS811", "Pins problem");
-	}
-#endif
-	
 	return available;
 }
 
@@ -101,18 +100,18 @@ bool CCS811Driver::query()
 			lastHistoryMillis = millis();
 			if (readData())
 			{
-			  setCO2HistoryData(atof(CO2.c_str()));
-			  setTVOCHistoryData(atof(TVOC.c_str()));
-			  setResistenceHistoryData(atof(resistence.c_str()));
-			  setTemperatureHistoryData(atof(temperature.c_str()));
+				setCO2HistoryData(atof(CO2.c_str()));
+				setTVOCHistoryData(atof(TVOC.c_str()));
+				setResistenceHistoryData(atof(resistence.c_str()));
+				setTemperatureHistoryData(atof(temperature.c_str()));
 			}
-			else 
+			else
 			{
-			  setCO2HistoryData(NAN);
-			  setTVOCHistoryData(NAN);
-			  setResistenceHistoryData(NAN);
-			  setTemperatureHistoryData(NAN);
-			}						
+				setCO2HistoryData(NAN);
+				setTVOCHistoryData(NAN);
+				setResistenceHistoryData(NAN);
+				setTemperatureHistoryData(NAN);
+			}
 		}
 		return true;
 	}
@@ -124,14 +123,21 @@ String CCS811Driver::getAllProperties()
 {
 	readData();
 	return BaseDriver::getAllProperties() +
-	"co2=" + CO2 + "//sr\n" 
-	"co2historydata=" + getCO2HistoryData() + "//r\n"
-	"tvoc=" + TVOC + "//sr\n" 
-	"tvochistorydata=" + getTVOCHistoryData() + "//r\n"
-	"resistence=" + resistence + "//sr\n" 
-	"resistencehistorydata=" + getResistenceHistoryData() + "//r\n"
-	"temperature=" + temperature + "//sr\n" 
-	"temperaturehistorydata=" + getTemperatureHistoryData() + "//r\n";
+		   "co2=" + CO2 + "//sr\n"
+						  "co2historydata=" +
+		   getCO2HistoryData() + "//r\n"
+								 "tvoc=" +
+		   TVOC + "//sr\n"
+				  "tvochistorydata=" +
+		   getTVOCHistoryData() + "//r\n"
+								  "resistence=" +
+		   resistence + "//sr\n"
+						"resistencehistorydata=" +
+		   getResistenceHistoryData() + "//r\n"
+										"temperature=" +
+		   temperature + "//sr\n"
+						 "temperaturehistorydata=" +
+		   getTemperatureHistoryData() + "//r\n";
 }
 //управление свойствами CCS811 драйвера
 String CCS811Driver::onMessage(String route, String _payload, int8_t transportMask)
@@ -149,43 +155,36 @@ String CCS811Driver::onMessage(String route, String _payload, int8_t transportMa
 	if (!result.equals(WRONG_PROPERTY_NAME))
 		return result;
 
-    readData();
+	readData();
 	if (matchRoute(route, topic, "/getco2"))
 	{
 		result = onGetProperty("co2", CO2, transportMask);
 	}
-	else 
-	if (matchRoute(route, topic, "/getco2historydata"))
+	else if (matchRoute(route, topic, "/getco2historydata"))
 	{
 		return onGetProperty("co2historydata", String(getCO2HistoryData()), transportMask);
 	}
-	else 
-	if (matchRoute(route, topic, "/gettvoc"))
+	else if (matchRoute(route, topic, "/gettvoc"))
 	{
 		result = onGetProperty("tvoc", TVOC, transportMask);
 	}
-	else 
-	if (matchRoute(route, topic, "/gettvochistorydata"))
+	else if (matchRoute(route, topic, "/gettvochistorydata"))
 	{
 		return onGetProperty("tvochistorydata", String(getTVOCHistoryData()), transportMask);
 	}
-	else 
-	if (matchRoute(route, topic, "/getresistence"))
+	else if (matchRoute(route, topic, "/getresistence"))
 	{
 		result = onGetProperty("resistence", resistence, transportMask);
 	}
-	else 
-	if (matchRoute(route, topic, "/getresistencehistorydata"))
+	else if (matchRoute(route, topic, "/getresistencehistorydata"))
 	{
 		return onGetProperty("resistencehistorydata", String(getResistenceHistoryData()), transportMask);
 	}
-	else 
-	if (matchRoute(route, topic, "/gettemperature"))
+	else if (matchRoute(route, topic, "/gettemperature"))
 	{
 		result = onGetProperty("temperature", temperature, transportMask);
 	}
-	else 
-	if (matchRoute(route, topic, "/gettemperaturehistorydata"))
+	else if (matchRoute(route, topic, "/gettemperaturehistorydata"))
 	{
 		return onGetProperty("temperaturehistorydata", String(getTemperatureHistoryData()), transportMask);
 	}
@@ -197,41 +196,39 @@ String CCS811Driver::onMessage(String route, String _payload, int8_t transportMa
 bool CCS811Driver::readData()
 {
 
-	    CO2 = "nan";
-	    TVOC = "nan";
-	    resistence = "nan";
-	    temperature = "nan";
+	CO2 = "nan";
+	TVOC = "nan";
+	resistence = "nan";
+	temperature = "nan";
 
-	if (ccs811 == nullptr)//compile boolean expression must be enabled  
+	if (ccs811 == nullptr) //compile boolean expression must be enabled
 	{
 		setAvailable(false);
 #ifdef DETAILED_DEBUG
-#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
+#if defined(DEBUG) || defined(LOGO_SCREEN_UX)
 		debugOut(id, "CCS811 object not ready");
 #endif
 #endif
 		return false;
 	}
 
-    if (ccs811 ->dataAvailable())
+	if (ccs811->dataAvailable())
 	{
-	//пробуем получить значение от сенсора	
-	ccs811->readAlgorithmResults();
+		//пробуем получить значение от сенсора
+		ccs811->readAlgorithmResults();
 
-	CO2 = String(ccs811->getCO2());
-	TVOC = String(ccs811->getTVOC()); 
+		CO2 = String(ccs811->getCO2());
+		TVOC = String(ccs811->getTVOC());
 
-    ccs811->readNTC();
+		ccs811->readNTC();
 
-	resistence = String(ccs811->getResistance()); 
-	temperature = String(ccs811->getTemperature()); 
-	return true;
+		resistence = String(ccs811->getResistance());
+		temperature = String(ccs811->getTemperature());
+		return true;
 	}
 
-    return false;
-	
+	return false;
 }
-
 
 //CO2 ------------------------------------------------
 String CCS811Driver::getCO2()

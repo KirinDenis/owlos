@@ -55,7 +55,7 @@ OWLOS распространяется в надежде, что она буде
 bool DHTDriver::DHTsetup(int dhttype)
 {
 #ifdef DETAILED_DEBUG
-#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
+#if defined(DEBUG) || defined(LOGO_SCREEN_UX)
 	debugOut(id, "setup");
 #endif
 #endif
@@ -75,16 +75,26 @@ bool DHTDriver::DHTsetup(int dhttype)
 		//пробуем прочесть значение температуры
 		float _temperature = dht->readTemperature();
 #ifdef DETAILED_DEBUG
-#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
+#if defined(DEBUG) || defined(LOGO_SCREEN_UX)
 		debugOut(id, "DHT temperature " + String(_temperature));
 #endif
 #endif
 		//если DHT сломан, не присоединен, ошиблись с PIN _temperature = NAN, ниже проверка на NAN (неопределенное состояние float переменной )
 		if (_temperature == _temperature)
+		{
+#if defined(DEBUG) || defined(LOGO_SCREEN_UX)
+			debugOut(id, "OK", DEBUG_SUCCESS);
+#endif
 			DHTSetupResult = true; //float NAN at C/C++ check as float == float
+		}
 		else
+		{
+#if defined(DEBUG) || defined(LOGO_SCREEN_UX)
+			debugOut(id, "Error", DEBUG_DANGER);
+#endif
 			DHTSetupResult = false; //сенсор не доступен
 									//сообщаем на верх о результате
+		}
 		return DHTSetupResult;
 	}
 	return false;
@@ -155,7 +165,7 @@ bool DHTDriver::begin(String _topic)
 		{
 			available = true; //сенсор доступен
 #ifdef DETAILED_DEBUG
-#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
+#if defined(DEBUG) || defined(LOGO_SCREEN_UX)
 			debugOut(id, "Physical DHT sensor available");
 #endif
 #endif
@@ -164,7 +174,7 @@ bool DHTDriver::begin(String _topic)
 		{
 			available = false; //сенсор не доступен
 #ifdef DETAILED_DEBUG
-#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
+#if defined(DEBUG) || defined(LOGO_SCREEN_UX)
 			debugOut(id, "Physical DHT sensor NOT available");
 #endif
 #endif
@@ -354,7 +364,7 @@ int DHTDriver::getDHTType()
 		dhttype = filesReadInt(id + ".dhttype");
 	}
 #ifdef DETAILED_DEBUG
-#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
+#if defined(DEBUG) || defined(LOGO_SCREEN_UX)
 	debugOut(id, "dhttype=" + String(dhttype));
 #endif
 #endif
@@ -390,7 +400,7 @@ bool DHTDriver::getCelsius()
 		celsius = filesReadInt(id + ".celsius");
 	}
 #ifdef DETAILED_DEBUG
-#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
+#if defined(DEBUG) || defined(LOGO_SCREEN_UX)
 	debugOut(id, "celsius=" + String(celsius));
 #endif
 #endif
@@ -436,7 +446,7 @@ String DHTDriver::getTemperature()
 		setAvailable(false);
 		temperature = "nan";
 #ifdef DETAILED_DEBUG
-#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
+#if defined(DEBUG) || defined(LOGO_SCREEN_UX)
 		debugOut(id, "DHT object not ready");
 #endif
 #endif
@@ -450,7 +460,7 @@ String DHTDriver::getTemperature()
 		setAvailable(false);
 		temperature = "nan";
 #ifdef DETAILED_DEBUG
-#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
+#if defined(DEBUG) || defined(LOGO_SCREEN_UX)
 		debugOut(id, "Going to NOT available now, check sensor");
 #endif
 #endif
@@ -460,7 +470,7 @@ String DHTDriver::getTemperature()
 		temperature = String(_temperature);
 	}
 #ifdef DETAILED_DEBUG
-#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
+#if defined(DEBUG) || defined(LOGO_SCREEN_UX)
 	debugOut(id, "temperature=" + temperature);
 #endif
 #endif
@@ -475,7 +485,7 @@ String DHTDriver::getHumidity()
 		setAvailable(false);
 		humidity = "nan";
 #ifdef DETAILED_DEBUG
-#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
+#if defined(DEBUG) || defined(LOGO_SCREEN_UX)
 		debugOut(id, "DHT object not ready");
 #endif
 #endif
@@ -488,7 +498,7 @@ String DHTDriver::getHumidity()
 		setAvailable(false);
 		humidity = "nan";
 #ifdef DETAILED_DEBUG
-#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
+#if defined(DEBUG) || defined(LOGO_SCREEN_UX)
 		debugOut(id, "Going to NOT available now, check sensor");
 #endif
 #endif
@@ -498,7 +508,7 @@ String DHTDriver::getHumidity()
 		humidity = String(_humidity);
 	}
 #ifdef DETAILED_DEBUG
-#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
+#if defined(DEBUG) || defined(LOGO_SCREEN_UX)
 	debugOut(id, "humidity=" + humidity);
 #endif
 #endif
@@ -513,7 +523,7 @@ String DHTDriver::getHeatIndex()
 		setAvailable(false);
 		heatIndex = "nan";
 #ifdef DETAILED_DEBUG
-#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
+#if defined(DEBUG) || defined(LOGO_SCREEN_UX)
 		debugOut(id, "DHT object not ready");
 #endif
 #endif
@@ -526,7 +536,7 @@ String DHTDriver::getHeatIndex()
 		setAvailable(false);
 		heatIndex = "nan";
 #ifdef DETAILED_DEBUG
-#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
+#if defined(DEBUG) || defined(LOGO_SCREEN_UX)
 		debugOut(id, "Going to NOT available now, check sensor");
 #endif
 #endif
@@ -536,7 +546,7 @@ String DHTDriver::getHeatIndex()
 		heatIndex = String(_heatIndex);
 	}
 #ifdef DETAILED_DEBUG
-#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
+#if defined(DEBUG) || defined(LOGO_SCREEN_UX)
 	debugOut(id, "humidity=" + humidity);
 #endif
 #endif

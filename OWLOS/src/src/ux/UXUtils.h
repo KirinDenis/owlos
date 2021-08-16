@@ -12,7 +12,7 @@
 #define WIDTH 480
 #define HEIGHT 320
 
-#define GOLD_1 (uint16_t)WIDTH
+#define GOLD_1 (uint16_t) WIDTH
 #define GOLD_2 (uint16_t)297
 #define GOLD_3 (uint16_t)184
 #define GOLD_4 (uint16_t)114
@@ -43,5 +43,6 @@
 
 void drawArc(int x, int y, int radiusFrom, int radiusTo, double angleFrom, double angleTo, int color);
 void drawWifiIcon(int x, int y, int dBm);
+String millisToDate(unsigned long _millis);
 
 #endif

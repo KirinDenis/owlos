@@ -36,14 +36,11 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-#ifndef LOGSCREEN_H
-#define LOGSCREEN_H
+#ifndef SENSORSCREEN_H
+#define SENSORSCREEN_H
 
-#include "../UXUtils.h"
-
-void logScreenInit();
-void logScreenRefresh();
-void logScreenDraw();
-void logScreenAddText(String tag, String text, int code);
+void sensorsScreenInit();
+void sensorsScreenRefresh();
+void sensorsScreenDraw();
 
 #endif

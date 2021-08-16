@@ -56,6 +56,7 @@ bool ADS1X15Driver::init()
 	if (pinDriverInfo != nullptr)
 	{
 //если пользователь задал адрес, инкапсулируем класс обслуживающий ADS1X15 и пробуем работать с через указанный порт
+#ifdef DETAILED_DEBUG
 #if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 		debugOut("ADS1X15", String(pinDriverInfo->driverI2CAddr));
 		debugOut("ADS1X15","Getting single-ended readings from AIN0..3");
@@ -71,17 +72,18 @@ bool ADS1X15Driver::init()
   // ads.setGain(GAIN_FOUR);       // 4x gain   +/- 1.024V  1 bit = 0.5mV    0.03125mV
   // ads.setGain(GAIN_EIGHT);      // 8x gain   +/- 0.512V  1 bit = 0.25mV   0.015625mV
   // ads.setGain(GAIN_SIXTEEN);    // 16x gain  +/- 0.256V  1 bit = 0.125mV  0.0078125mV
-
+#endif
 #endif
 		ads1x15 = new Adafruit_ADS1X15();
 		if (ads1x15->begin(pinDriverInfo->driverI2CAddr))
 		{
+			debugOut("ADS1X15", "OK", DEBUG_SUCCESS);
 			available = true;
 		}
 #if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 	else 
 	{
-		debugOut("ADS1X15", "Begin problem");
+		debugOut("ADS1X15", "Begin problem", DEBUG_DANGER);
 	}
 #endif
 
@@ -89,7 +91,7 @@ bool ADS1X15Driver::init()
 #if defined (DEBUG) || defined (LOGO_SCREEN_UX)
 	else 
 	{
-		debugOut("ADS1X15", "Pins problem");
+		debugOut("ADS1X15", "Pins problem", DEBUG_WARNING);
 	}
 #endif	
 	return available;

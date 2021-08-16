@@ -245,7 +245,7 @@ void HTTPWebClientPublish(String _topic, String _payload)
 				else
 				{				
 #ifdef DEBUG
-					debugOut(webclientid, "HTTP Client HTTPS Secure client problem");
+					debugOut(webclientid, "HTTP Client HTTPS Secure client problem", DEBUG_DANGER);
 #endif
 					return;
 				}
@@ -262,9 +262,22 @@ void HTTPWebClientPublish(String _topic, String _payload)
 			  HTTPClientRecv +=  http.getSize();
 			}
 #ifdef DEBUG			
-			debugOut(webclientid, "HTTP Client result code =" + String(HTTPClientStatus));
+		  if ((HTTPClientStatus >= 200) && (HTTPClientStatus <= 300))
+		  {
+			debugOut(webclientid, thingGetHTTPClientURL() + ":" + String(thingGetHTTPClientPort()) + " OK", DEBUG_SUCCESS);
+		  }
+		  else 
+		  {
+			  if (HTTPClientStatus == -1)
+			  {
+			    debugOut(webclientid, thingGetHTTPClientURL() + ":" + String(thingGetHTTPClientPort()) + " socket error", DEBUG_DANGER);	  
+			  }
+			  else 
+			  {
+				debugOut(webclientid, thingGetHTTPClientURL() + ":" + String(thingGetHTTPClientPort()) + " result " + String(HTTPClientStatus), DEBUG_WARNING);	    
+			  }
+		  }
 #else
-
 #endif
 			http.end();
 		}

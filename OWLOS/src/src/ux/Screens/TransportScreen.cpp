@@ -1,4 +1,41 @@
-//#include "../UXUtils.h"
+/* ----------------------------------------------------------------------------
+OWLOS DIY Open Source OS for building IoT ecosystems
+Copyright 2021 by:
+- Denis Kirin (deniskirinacs@gmail.com)
+
+This file is part of OWLOS DIY Open Source OS for building IoT ecosystems
+
+OWLOS is free software : you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+OWLOS is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with OWLOS. If not, see < https://www.gnu.org/licenses/>.
+
+GitHub: https://github.com/KirinDenis/owlos
+
+(Этот файл — часть OWLOS DIY Open Source OS for building IoT ecosystems.
+
+OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
+ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
+была опубликована Фондом свободного программного обеспечения; версии 3
+лицензии, любой более поздней версии.
+
+OWLOS распространяется в надежде, что она будет полезной, но БЕЗО ВСЯКИХ
+ГАРАНТИЙ; даже без неявной гарантии ТОВАРНОГО ВИДА или ПРИГОДНОСТИ ДЛЯ
+ОПРЕДЕЛЕННЫХ ЦЕЛЕЙ.
+Подробнее см.в Стандартной общественной лицензии GNU.
+
+Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
+этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
+--------------------------------------------------------------------------------------*/
+
 #include "../Controls/TextControl.h"
 #include "../Controls/ButtonControl.h"
 
@@ -6,7 +43,7 @@
 #include "../../drivers/NetworkDriver.h"
 #include "../../drivers/ESPDriver.h"
 
-#include "SensorScreen.h"
+#include "SensorsScreen.h"
 
 #ifdef USE_HTTP_CLIENT
 #include "../../transports/HTTPWebClient.h"
@@ -30,7 +67,6 @@ extern TFT_eSPI tft;
 #define DISABLED_STATUS "[disabled]"
 
 unsigned long lastSavedTickCount = 0;
-
 
 //------------------------------------------------------------------------------------------------------
 //TextItems
@@ -99,22 +135,20 @@ extern ButtonControlClass sensorsButton;
 extern ButtonControlClass transportButton;
 extern ButtonControlClass logButton;
 
-void initTransportStatuses()
+void transportScreenInit()
 {
     stGWIPItem.y += GOLD_10;
     stdBmItem.x += GOLD_7;
     stdBmItem.y += GOLD_10;
-    hsHeaderItem.y += GOLD_11;    
+    hsHeaderItem.y += GOLD_11;
 
     hcHeaderRecvItem.y = hcHeaderSendItem.y = hcHeaderItem.y += GOLD_11;
     mqttHeaderRecvItem.y = mqttHeaderSendItem.y = mqttHeaderItem.y += GOLD_11;
     uartHeaderRecvItem.y = uartHeaderSendItem.y = uartHeaderItem.y += GOLD_11;
     systemHeaderItem.y = systemHeaderLoopItem.y = systemHeaderLifeTimeItem.y = systemHeaderHeapItem.y += GOLD_11;
-
-    
 }
 
-void refreshTransportStatuses()
+void transportScreenRefresh()
 {
     tft.fillScreen(OWLOSDarkColor);
     tft.fillRect(0, 0, WIDTH / 2, GOLD_8, OWLOSSecondaryColor);
@@ -122,7 +156,7 @@ void refreshTransportStatuses()
     tft.drawFastVLine(WIDTH / 2, 0, GOLD_8, OWLOSDarkColor);
     tft.drawFastVLine(WIDTH / 2, GOLD_8, GOLD_5, OWLOSSecondaryColor);
 
-    int hOffset = GOLD_8 * 4 + GOLD_11;    
+    int hOffset = GOLD_8 * 4 + GOLD_11;
     tft.fillRect(0, hOffset, WIDTH, GOLD_8, OWLOSSecondaryColor);
     tft.drawFastVLine(WIDTH / 2, hOffset, GOLD_8, OWLOSDarkColor);
     tft.drawFastVLine(WIDTH / 2, hOffset + GOLD_8, GOLD_8 * 2, OWLOSSecondaryColor);
@@ -136,7 +170,6 @@ void refreshTransportStatuses()
     hOffset += GOLD_8 * 2;
     tft.fillRect(0, hOffset, WIDTH, GOLD_8, OWLOSSecondaryColor);
 
-    
     hcHeaderSendItem.draw("send", OWLOSWarningColor, OWLOSSecondaryColor, 1);
     hcHeaderRecvItem.draw("recv", OWLOSWarningColor, OWLOSSecondaryColor, 1);
 
@@ -150,7 +183,7 @@ void refreshTransportStatuses()
     systemHeaderLoopItem.draw("loop", OWLOSWarningColor, OWLOSSecondaryColor, 1);
     systemHeaderLifeTimeItem.draw("life time", OWLOSWarningColor, OWLOSSecondaryColor, 1);
     systemHeaderHeapItem.draw("heap", OWLOSWarningColor, OWLOSSecondaryColor, 1);
-    
+
     //TextItems
     stHeaderItem.refresh();
     stSSIDItem.refresh();
@@ -213,7 +246,7 @@ void refreshTransportStatuses()
     systemHeapItem.refresh();
 
     homeButton.refresh();
-    sensorsButton.refresh();    
+    sensorsButton.refresh();
     transportButton.refresh();
     logButton.refresh();
 }
@@ -507,15 +540,7 @@ void drawSystemStatus(String id, int loop, unsigned long lifeTime, int heap)
     systemIdItem.draw(id, OWLOSLightColor, OWLOSDarkColor, 2);
     systemLoopItem.draw(String(loop) + " ms", OWLOSPrimaryColor, OWLOSDarkColor, 2);
 
-    lifeTime = lifeTime / 1000; //to seconds
-    int days = (lifeTime / (24 * 60 * 60));
-    lifeTime = lifeTime - days * (24 * 60 * 60);
-    byte hours = lifeTime / (60 * 60);
-    lifeTime = lifeTime - hours * (60 * 60);
-    byte minutes = lifeTime / 60;
-    byte seconds = lifeTime - minutes * 60;
-
-    String lifeTimeString = String(days) + "d." + String(hours) + ":" + String(minutes) + ":" + String(seconds);
+    String lifeTimeString = millisToDate(lifeTime);
 
     systemLifeTimeItem.draw(lifeTimeString, OWLOSPrimaryColor, OWLOSDarkColor, 2);
     systemHeapItem.draw(convertingByteToString(heap), OWLOSPrimaryColor, OWLOSDarkColor, 2);
@@ -523,7 +548,7 @@ void drawSystemStatus(String id, int loop, unsigned long lifeTime, int heap)
 
 //------------------------------------------------------------------------------------------
 //Draw Transport Statuses
-void drawTransportStatuses()
+void transportScreenDraw()
 {
     drawSTNetworkStatus(thingGetWiFiAvailable(), thingGetWiFiStatus(), thingGetWiFiRSSI(), thingGetWiFiSSID(), thingGetWiFiIP(), String(thingGetWiFiGateWayIP()));
     drawAPNetworkStatus(thingGetWiFiAccessPointAvailable(), thingGetWiFiAccessPointSSID(), thingGetWiFiAccessPointIP());

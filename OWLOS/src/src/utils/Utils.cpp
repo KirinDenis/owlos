@@ -59,10 +59,10 @@ char *stringToChar(String src)
 }
 
 #if defined (DEBUG) || defined (LOGO_SCREEN_UX)
-void debugOut(const String &tag, const String &text)
+void debugOut(const String &tag, const String &text, int code)
 {
 #ifdef LOGO_SCREEN_UX
-  logScreenAddText(tag, text);
+  logScreenAddText(tag, text, code);
 #endif
 
 #ifdef DEBUG
@@ -115,6 +115,11 @@ void debugOut(const String &tag, const String &text)
 		filesAtRecurse = false;
 	}
 #endif	
+}
+
+void debugOut(const String &tag, const String &text)
+{
+	debugOut(tag, text, DEBUG_INFO);
 }
 #endif
 

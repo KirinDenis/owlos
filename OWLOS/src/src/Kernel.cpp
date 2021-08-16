@@ -57,7 +57,6 @@ OWLOS распространяется в надежде, что она буде
 #include "ux/Screens/LogScreen.h"
 #endif
 
-
 /*-----------------------------------------------------------------------------
 OWLOS Kernel setup section 
 ------------------------------------------------------------------------------*/
@@ -79,14 +78,14 @@ bool kernelSetup()
 #endif
 
 	filesBegin(); //prepare Flash file systeme (see Tools/Flash size item - use 2M Flash Size, is ZERO size by default -> switch to 2M
-	
+
 	UXServiceInit(); //Init Air Quality UX
-#ifdef LOGO_SCREEN_UX		
+#ifdef LOGO_SCREEN_UX
 	logScreenRefresh();
-#endif	
-	
-#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
-	debugOut("OWLOS", "Air Quality started");
+#endif
+
+#if defined(DEBUG) || defined(LOGO_SCREEN_UX)
+	debugOut("OWLOS", "Air Quality started", DEBUG_SUCCESS);
 #endif
 
 #ifdef USE_ESP_DRIVER
@@ -99,13 +98,12 @@ bool kernelSetup()
 #else
 	driversInit("owlosthing");
 #endif
-    AirQualityBegin(thingGetTopic());
+	AirQualityBegin(thingGetTopic());
 #endif
 
 #ifdef USE_SCRIPT
 	scriptsLoad();
 #endif
-
 
 	//Setup network stack - WiFi -> after MQTT -- if both available Transport accessable, if not Unit try reconnect forever (every 5 sec by default)
 	//Ther is not connected at begin(), see Main::Loop() transportReconnect() function using
@@ -159,7 +157,7 @@ bool kernelLoop()
 			driversBegin(thingGetTopic()); //initilize drivers network properties, each driver must publish() here TYPE and AVAILABLE status
 #endif
 			thingSubscribe(); //subscribe() all AVAILABLE drivers to here topics (see: driverID), the topic -> UnitTopic+ESPChipID/DriverId
-							 //driversSubscribe();
+							  //driversSubscribe();
 		}
 	}
 	else //if network (Transport) to be available

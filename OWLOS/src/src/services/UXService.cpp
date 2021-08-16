@@ -41,7 +41,7 @@ OWLOS распространяется в надежде, что она буде
 
 #include "../ux/UXUtils.h"
 #include "../ux/Screens/HomeScreen.h"
-#include "../ux/Screens/SensorScreen.h"
+#include "../ux/Screens/SensorsScreen.h"
 #include "../ux/Screens/TransportScreen.h"
 #include "../ux/Screens/LogScreen.h"
 
@@ -90,8 +90,8 @@ bool UXServiceInit()
     previosMode = LOG_MODE;
 
     homeScreenInit();
-    initTransportStatuses();
-    initSensorStatuses();
+    transportScreenInit();
+    sensorsScreenInit();
 
     //refreshTransportStatuses();
     //drawTransportStatuses();
@@ -109,13 +109,14 @@ void UXServiceLoop()
         SetupComplete = true;
         currentMode = SENSORS_MODE;
         previosMode = SENSORS_MODE;
-        refreshSensorStatuses();
-        drawSensorStatuses();
+        SensorButtonTouch();
+        sensorsScreenRefresh();
+        sensorsScreenDraw();
     }
 
     if (currentMode != previosMode)
     {
-        Serial.println("!-------" + String(currentMode));
+
         switch (currentMode)
         {
 
@@ -123,13 +124,12 @@ void UXServiceLoop()
             homeScreenRefresh();
             break;
 
-
         case SENSORS_MODE:
-            refreshSensorStatuses();
+            sensorsScreenRefresh();
             break;
 
         case TRANSPORT_MODE:
-            refreshTransportStatuses();
+            transportScreenRefresh();
             break;
 
         case LOG_MODE:
@@ -147,13 +147,12 @@ void UXServiceLoop()
         homeScreenDraw();
         break;
 
-
     case SENSORS_MODE:
-        drawSensorStatuses();
+        sensorsScreenDraw();
         break;
 
     case TRANSPORT_MODE:
-        drawTransportStatuses();
+        transportScreenDraw();
         break;
 
     case LOG_MODE:
