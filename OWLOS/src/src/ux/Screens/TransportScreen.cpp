@@ -31,16 +31,6 @@ extern TFT_eSPI tft;
 
 unsigned long lastSavedTickCount = 0;
 
-extern int currentMode;
-
-void SensorButtonTouch()
-{        
-    if (currentMode == TRANSPORT_MODE)
-    {
-       currentMode = SENSORS_MODE;
-       refreshSensorStatuses();
-    }   
-}
 
 //------------------------------------------------------------------------------------------------------
 //TextItems
@@ -104,10 +94,10 @@ TextControlClass systemLoopItem(1, 14);
 TextControlClass systemLifeTimeItem(2, 14);
 TextControlClass systemHeapItem(3, 14);
 
-ButtonControlClass button1("home", OWLOSLightColor, OWLOSSuccessColor, OWLOSWarningColor, 1, 16);
-ButtonControlClass button2("system", OWLOSLightColor, OWLOSInfoColor, OWLOSWarningColor, 2, 16);
-ButtonControlClass button3("log", OWLOSLightColor, OWLOSInfoColor, OWLOSWarningColor, 3, 16);
-ButtonControlClass SensorsButton("sensors", OWLOSLightColor, OWLOSInfoColor, OWLOSWarningColor, 4, 16);
+extern ButtonControlClass homeButton;
+extern ButtonControlClass sensorsButton;
+extern ButtonControlClass transportButton;
+extern ButtonControlClass logButton;
 
 void initTransportStatuses()
 {
@@ -121,7 +111,7 @@ void initTransportStatuses()
     uartHeaderRecvItem.y = uartHeaderSendItem.y = uartHeaderItem.y += GOLD_11;
     systemHeaderItem.y = systemHeaderLoopItem.y = systemHeaderLifeTimeItem.y = systemHeaderHeapItem.y += GOLD_11;
 
-    SensorsButton.OnTouchEvent = SensorButtonTouch;
+    
 }
 
 void refreshTransportStatuses()
@@ -222,10 +212,10 @@ void refreshTransportStatuses()
     systemLifeTimeItem.refresh();
     systemHeapItem.refresh();
 
-    button1.refresh();
-    button2.refresh();
-    button3.refresh();
-    SensorsButton.refresh();
+    homeButton.refresh();
+    sensorsButton.refresh();    
+    transportButton.refresh();
+    logButton.refresh();
 }
 
 //-----------------------------------
@@ -591,8 +581,8 @@ void drawTransportStatuses()
 
     drawSystemStatus(FIRMWARE_VERSION, loopPeriod, lastSavedTickCount, thingGetESPFreeHeap());
 
-    button1.draw();
-    button2.draw();
-    button3.draw();
-    SensorsButton.draw();
+    homeButton.draw();
+    sensorsButton.draw();
+    transportButton.draw();
+    logButton.draw();
 }

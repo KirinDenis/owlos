@@ -45,7 +45,7 @@ OWLOS распространяется в надежде, что она буде
 #include "../drivers/NetworkDriver.h"
 
 #ifdef LOGO_SCREEN_UX
-#include "../ux/Screens/LogoScreen.h"
+#include "../ux/Screens/LogScreen.h"
 #endif
 
 
@@ -62,7 +62,7 @@ char *stringToChar(String src)
 void debugOut(const String &tag, const String &text)
 {
 #ifdef LOGO_SCREEN_UX
-  logoScreenAddText(tag, text);
+  logScreenAddText(tag, text);
 #endif
 
 #ifdef DEBUG

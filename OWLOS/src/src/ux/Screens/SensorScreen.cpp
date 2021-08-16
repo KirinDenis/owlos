@@ -46,24 +46,15 @@ TextControlClass ResistenceValueItem(1, 7);
 TextControlClass LightItem(2, 7);
 TextControlClass LightValueItem(3, 7);
 
-extern ButtonControlClass button1;
-extern ButtonControlClass button2;
-extern ButtonControlClass button3;
-ButtonControlClass transportButton("transport", OWLOSLightColor, OWLOSInfoColor, OWLOSWarningColor, 4, 16);
+extern ButtonControlClass homeButton;
+extern ButtonControlClass sensorsButton;
+extern ButtonControlClass transportButton;
+extern ButtonControlClass logButton;
 
-void TransportButtonTouch()
-{
-    if (currentMode == SENSORS_MODE)
-    {
-        currentMode = TRANSPORT_MODE;
-        refreshTransportStatuses();
-    }
-}
 
 void initSensorStatuses()
 {
     GasHeaderItem.y += GOLD_11;
-    transportButton.OnTouchEvent = TransportButtonTouch;
 }
 
 void refreshSensorStatuses()
@@ -107,10 +98,10 @@ void refreshSensorStatuses()
     LightItem.refresh();
     LightValueItem.refresh();
 
-    button1.refresh();
-    button2.refresh();
-    button3.refresh();
+    homeButton.refresh();
+    sensorsButton.refresh();    
     transportButton.refresh();
+    logButton.refresh();
 }
 
 //-------------------------------------------------
@@ -223,8 +214,8 @@ void drawSensorStatuses()
     drawBMP280Status();
     drawGasStatus();
 
-    button1.draw();
-    button2.draw();
-    button3.draw();
+    homeButton.draw();
+    sensorsButton.draw();
     transportButton.draw();
+    logButton.draw();
 }

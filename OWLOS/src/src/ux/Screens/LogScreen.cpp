@@ -1,4 +1,6 @@
-#include "LogoScreen.h"
+#include "LogScreen.h"
+
+#include "../Controls/ButtonControl.h"
 
 extern TFT_eSPI tft;
 
@@ -8,22 +10,38 @@ int logCount = 0;
 
 bool lockScreen = false;
 
-void logoScreenInit()
+
+extern ButtonControlClass homeButton;
+extern ButtonControlClass sensorsButton;
+extern ButtonControlClass transportButton;
+extern ButtonControlClass logButton;
+
+void logScreenInit()
 {
 }
 
-void logoScreenRefresh()
+void logScreenRefresh()
 {
   tft.fillScreen(OWLOSDarkColor);
   tft.setCursor(0, 0);
   logCount = 0;
+
+    homeButton.refresh();
+    sensorsButton.refresh();    
+    transportButton.refresh();
+    logButton.refresh();
+
 }
 
-void logoScreenDraw()
+void logScreenDraw()
 {
+    homeButton.draw();
+    sensorsButton.draw();
+    transportButton.draw();
+    logButton.draw();
 }
 
-void logoScreenAddText(String tag, String text)
+void logScreenAddText(String tag, String text)
 {
   if ((currentMode == LOG_MODE) && (!lockScreen))
   {
@@ -31,7 +49,7 @@ void logoScreenAddText(String tag, String text)
     logCount += tft.fontHeight(1);
     if (logCount > HEIGHT)
     {
-      logoScreenRefresh();
+      logScreenRefresh();
     }
 
     tft.setTextColor(OWLOSInfoColor, OWLOSDarkColor);

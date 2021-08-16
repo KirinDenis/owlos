@@ -40,8 +40,11 @@ OWLOS распространяется в надежде, что она буде
 #define UX_SERVICE
 
 #include "../ux/UXUtils.h"
-#include "../ux/Screens/TransportScreen.h"
+#include "../ux/Screens/HomeScreen.h"
 #include "../ux/Screens/SensorScreen.h"
+#include "../ux/Screens/TransportScreen.h"
+#include "../ux/Screens/LogScreen.h"
+
 #include "FileService.h"
 
 extern TFT_eSPI tft;
@@ -86,6 +89,7 @@ bool UXServiceInit()
     currentMode = LOG_MODE;
     previosMode = LOG_MODE;
 
+    homeScreenInit();
     initTransportStatuses();
     initSensorStatuses();
 
@@ -114,13 +118,24 @@ void UXServiceLoop()
         Serial.println("!-------" + String(currentMode));
         switch (currentMode)
         {
-        case TRANSPORT_MODE:
-            refreshTransportStatuses();
+
+        case HOME_MODE:
+            homeScreenRefresh();
             break;
+
 
         case SENSORS_MODE:
             refreshSensorStatuses();
             break;
+
+        case TRANSPORT_MODE:
+            refreshTransportStatuses();
+            break;
+
+        case LOG_MODE:
+            logScreenRefresh();
+            break;
+
         default:
             break;
         }
@@ -128,13 +143,23 @@ void UXServiceLoop()
 
     switch (currentMode)
     {
-    case TRANSPORT_MODE:
-        drawTransportStatuses();
+    case HOME_MODE:
+        homeScreenDraw();
         break;
+
 
     case SENSORS_MODE:
         drawSensorStatuses();
         break;
+
+    case TRANSPORT_MODE:
+        drawTransportStatuses();
+        break;
+
+    case LOG_MODE:
+        logScreenDraw();
+        break;
+
     default:
         break;
     }

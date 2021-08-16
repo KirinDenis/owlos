@@ -30,6 +30,7 @@
 #define TRANSPORT_MODE 0x01
 #define SENSORS_MODE 0x02
 #define LOG_MODE 0x03
+#define HOME_MODE 0x04
 
 #define OWLOSPrimaryColor rgb32_to_rgb16(0x6faeca)
 #define OWLOSSecondaryColor rgb32_to_rgb16(0x213944)

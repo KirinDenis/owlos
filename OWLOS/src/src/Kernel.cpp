@@ -54,7 +54,7 @@ OWLOS распространяется в надежде, что она буде
 #include "services/AirQualityService.h"
 
 #ifdef LOGO_SCREEN_UX
-#include "ux/Screens/LogoScreen.h"
+#include "ux/Screens/LogScreen.h"
 #endif
 
 
@@ -82,7 +82,7 @@ bool kernelSetup()
 	
 	UXServiceInit(); //Init Air Quality UX
 #ifdef LOGO_SCREEN_UX		
-	logoScreenRefresh();
+	logScreenRefresh();
 #endif	
 	
 #if defined (DEBUG) || defined (LOGO_SCREEN_UX)
