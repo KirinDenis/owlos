@@ -36,40 +36,16 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-#ifndef BUTTONCONTROL_H
-#define BUTTONCONTROL_H
+#ifndef EDITCONTROL_H
+#define EDITCONTROL_H
 
-#include <Arduino.h>
+//#include <Arduino.h>
 #include "../UXColors.h"
 #include "../UXUtils.h"
 
-//Button Class
-class ButtonControlClass
-{
-protected:
-    bool leftAlign = true;
-    int fgColor = OWLOSLightColor;
-    int bgColor = OWLOSInfoColor;
-    int touchColor = OWLOSWarningColor;
-    int selectColor = OWLOSDarkColor;
-    String text = "";
+void EditControlInit();
+void EditControlRefresh();
+void EditControlDraw();
 
-public:
-    int x;
-    int y;
-    int text_x;
-    int text_y;
-    int touch = BUTTON_TOUCH_NOTDEFINE;
-    bool selected = false;
-
-    void (*OnTouchEvent)();
-    //column - 1,2,3,4
-    //         0,2 - align left  (0, width / 2)
-    //         1,3 - align right (width / 2, width)
-    //row --> row * Glod8 = y
-    ButtonControlClass(String _text, int _fgColor, int _bgColor, int _touchColor, int column, int row);
-    void refresh();
-    void draw();
-};
 
 #endif

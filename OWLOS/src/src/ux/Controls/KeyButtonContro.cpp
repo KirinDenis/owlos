@@ -36,40 +36,87 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-#ifndef BUTTONCONTROL_H
-#define BUTTONCONTROL_H
+#include "KeyButtonControl.h"
+extern TFT_eSPI tft;
 
-#include <Arduino.h>
-#include "../UXColors.h"
-#include "../UXUtils.h"
+uint16_t tx, ty;
+bool inTouch = false;
 
-//Button Class
-class ButtonControlClass
+KeyButtonControlClass::KeyButtonControlClass(String _text, int _fgColor, int _bgColor, int _touchColor, int _x, int _y, int _width, int _height)
+:ButtonControlClass(_text, _fgColor, _bgColor, _touchColor, 0, 0)
 {
-protected:
-    bool leftAlign = true;
-    int fgColor = OWLOSLightColor;
-    int bgColor = OWLOSInfoColor;
-    int touchColor = OWLOSWarningColor;
-    int selectColor = OWLOSDarkColor;
-    String text = "";
+    //text = _text;
+    //fgColor = _fgColor;
+    //bgColor = _bgColor;
+    //touchColor = _touchColor;
 
-public:
-    int x;
-    int y;
-    int text_x;
-    int text_y;
-    int touch = BUTTON_TOUCH_NOTDEFINE;
-    bool selected = false;
+    x = _x;
+    y = _y;
+    width = _width;
+    height = _height;
 
-    void (*OnTouchEvent)();
-    //column - 1,2,3,4
-    //         0,2 - align left  (0, width / 2)
-    //         1,3 - align right (width / 2, width)
-    //row --> row * Glod8 = y
-    ButtonControlClass(String _text, int _fgColor, int _bgColor, int _touchColor, int column, int row);
-    void refresh();
-    void draw();
-};
+    text_x = x + (width - tft.textWidth(_text, 2)) / 2;
+    text_y = y + (height - tft.fontHeight(2)) / 2;
+}
 
-#endif
+void KeyButtonControlClass::refresh()
+{
+    if (!selected)
+    {
+        tft.fillRect(x, y, width, height, bgColor);
+        tft.setTextColor(fgColor, bgColor);
+    }
+    else
+    {
+        tft.fillRect(x, y, width, height, selectColor);
+        tft.setTextColor(fgColor, selectColor);
+        //tft.drawFastHLine(x, y + GOLD_7, width - GOLD_11, bgColor);
+    }
+    tft.drawString(text, text_x, text_y, 2);
+}
+
+void KeyButtonControlClass::draw()
+{
+    if ((tx == 0) || (ty == 0))
+    {
+        inTouch = tft.getTouch(&tx, &ty);
+    }
+    //Serial.println(tx) ;
+    //Serial.println(ty) ;
+    //Serial.println(inTouch);
+    //Serial.println(text);
+    //Serial.println("----");
+
+    if (inTouch)
+    {
+        if ((tx > x) && (tx < x + width) && (ty > y) && (ty < y + height))
+        {
+            if (touch != BUTTON_TOUCH_YES)
+            {
+                if (!selected)
+                {
+                    tft.fillRect(x, y, width, height, touchColor);
+                    tft.setTextColor(fgColor, touchColor);
+                }
+                else
+                {
+                    tft.fillRect(x, y, width, height, selectColor);
+                    tft.setTextColor(fgColor, selectColor);
+                    tft.drawFastHLine(x, y + GOLD_7, width - GOLD_11, bgColor);
+                }
+                tft.drawString(text, text_x, text_y, 2);
+                (*OnKeyTouchEvent)(text);
+            }
+            touch = BUTTON_TOUCH_YES;
+        }
+    }
+    else
+    {
+        if (touch != BUTTON_TOUCH_NO)
+        {
+            refresh();
+        }
+        touch = BUTTON_TOUCH_NO;
+    }
+
+}

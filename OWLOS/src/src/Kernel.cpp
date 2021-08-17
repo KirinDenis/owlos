@@ -57,6 +57,8 @@ OWLOS распространяется в надежде, что она буде
 #include "ux/Screens/LogScreen.h"
 #endif
 
+#include "ux/Controls/EditControl.h"
+
 /*-----------------------------------------------------------------------------
 OWLOS Kernel setup section 
 ------------------------------------------------------------------------------*/
@@ -81,8 +83,12 @@ bool kernelSetup()
 
 	UXServiceInit(); //Init Air Quality UX
 #ifdef LOGO_SCREEN_UX
-	logScreenRefresh();
+//	logScreenRefresh();
+    EditControlInit();
+	EditControlRefresh();
+	return true;
 #endif
+
 
 #if defined(DEBUG) || defined(LOGO_SCREEN_UX)
 	debugOut("OWLOS", "Air Quality started", DEBUG_SUCCESS);
@@ -139,6 +145,9 @@ bool kernelLoop()
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
 	filesLoop();
 #endif
+    EditControlDraw();
+	delay(100);
+	return true;
 	//check WiFi and MQTT stack are available
 	//first time Main::loop() calling the transport is not available
 #ifdef USE_ESP_DRIVER

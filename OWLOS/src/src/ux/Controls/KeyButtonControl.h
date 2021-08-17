@@ -36,38 +36,26 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-#ifndef BUTTONCONTROL_H
-#define BUTTONCONTROL_H
+#ifndef KEYBUTTONCONTROL_H
+#define KEYBUTTONCONTROL_H
 
 #include <Arduino.h>
 #include "../UXColors.h"
 #include "../UXUtils.h"
 
-//Button Class
-class ButtonControlClass
+#include "ButtonControl.h"
+
+//Key Button Class
+class KeyButtonControlClass : public ButtonControlClass
 {
 protected:
-    bool leftAlign = true;
-    int fgColor = OWLOSLightColor;
-    int bgColor = OWLOSInfoColor;
-    int touchColor = OWLOSWarningColor;
-    int selectColor = OWLOSDarkColor;
-    String text = "";
-
+    int width;
+    int height;
 public:
-    int x;
-    int y;
-    int text_x;
-    int text_y;
-    int touch = BUTTON_TOUCH_NOTDEFINE;
-    bool selected = false;
 
-    void (*OnTouchEvent)();
-    //column - 1,2,3,4
-    //         0,2 - align left  (0, width / 2)
-    //         1,3 - align right (width / 2, width)
-    //row --> row * Glod8 = y
-    ButtonControlClass(String _text, int _fgColor, int _bgColor, int _touchColor, int column, int row);
+    void (*OnKeyTouchEvent)(String key);
+
+    KeyButtonControlClass(String _text, int _fgColor, int _bgColor, int _touchColor, int _x, int _y, int _width, int _height);
     void refresh();
     void draw();
 };

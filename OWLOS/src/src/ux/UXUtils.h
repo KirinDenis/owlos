@@ -32,6 +32,10 @@
 #define LOG_MODE 0x03
 #define HOME_MODE 0x04
 
+#define BUTTON_TOUCH_NOTDEFINE 0
+#define BUTTON_TOUCH_YES 1
+#define BUTTON_TOUCH_NO 2
+
 #define OWLOSPrimaryColor rgb32_to_rgb16(0x6faeca)
 #define OWLOSSecondaryColor rgb32_to_rgb16(0x213944)
 #define OWLOSSuccessColor rgb32_to_rgb16(0x43ca15)
