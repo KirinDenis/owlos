@@ -62,7 +62,7 @@ public:
     int touch = BUTTON_TOUCH_NOTDEFINE;
     bool selected = false;
 
-    void (*OnTouchEvent)();
+    void (*OnTouchEvent)() = nullptr;
     //column - 1,2,3,4
     //         0,2 - align left  (0, width / 2)
     //         1,3 - align right (width / 2, width)

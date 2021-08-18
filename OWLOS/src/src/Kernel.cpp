@@ -146,7 +146,7 @@ bool kernelLoop()
 	filesLoop();
 #endif
     EditControlDraw();
-	delay(100);
+	delay(20);
 	return true;
 	//check WiFi and MQTT stack are available
 	//first time Main::loop() calling the transport is not available

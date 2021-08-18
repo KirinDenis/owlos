@@ -43,7 +43,7 @@ uint16_t tx, ty;
 bool inTouch = false;
 
 KeyButtonControlClass::KeyButtonControlClass(String _text, int _fgColor, int _bgColor, int _touchColor, int _x, int _y, int _width, int _height)
-:ButtonControlClass(_text, _fgColor, _bgColor, _touchColor, 0, 0)
+    : ButtonControlClass(_text, _fgColor, _bgColor, _touchColor, 0, 0)
 {
     //text = _text;
     //fgColor = _fgColor;
@@ -105,7 +105,14 @@ void KeyButtonControlClass::draw()
                     tft.drawFastHLine(x, y + GOLD_7, width - GOLD_11, bgColor);
                 }
                 tft.drawString(text, text_x, text_y, 2);
-                (*OnKeyTouchEvent)(text);
+                if (OnKeyTouchEvent != nullptr)
+                {
+                    (*OnKeyTouchEvent)(text);
+                }
+                if (OnTouchEvent != nullptr)
+                {
+                    (*OnTouchEvent)();
+                }
             }
             touch = BUTTON_TOUCH_YES;
         }
@@ -118,5 +125,9 @@ void KeyButtonControlClass::draw()
         }
         touch = BUTTON_TOUCH_NO;
     }
+}
 
+void KeyButtonControlClass::setText(String _text)
+{
+    text = _text;
 }

@@ -52,12 +52,13 @@ protected:
     int width;
     int height;
 public:
-
-    void (*OnKeyTouchEvent)(String key);
+    void (*OnTouchEvent)() = nullptr;
+    void (*OnKeyTouchEvent)(String key) = nullptr;
 
     KeyButtonControlClass(String _text, int _fgColor, int _bgColor, int _touchColor, int _x, int _y, int _width, int _height);
     void refresh();
     void draw();
+    void setText(String _text);
 };
 
 #endif

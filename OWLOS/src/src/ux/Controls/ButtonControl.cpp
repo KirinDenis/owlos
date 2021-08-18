@@ -95,7 +95,10 @@ void ButtonControlClass::draw()
                     tft.drawFastHLine(x, y + GOLD_7, WIDTH / 4 - GOLD_11, bgColor);
                 }
                 tft.drawString(text, text_x, text_y, 2);
-                (*OnTouchEvent)();
+                if (OnTouchEvent != nullptr)
+                {
+                    (*OnTouchEvent)();
+                }
             }
             touch = BUTTON_TOUCH_YES;
         }
