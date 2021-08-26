@@ -50,7 +50,7 @@ OWLOS распространяется в надежде, что она буде
 #define LONG_VERSION
 
 //Air Quality defines 
-#define LOGO_SCREEN_UX
+#define LOG_SCREEN_UX
 
 // ВАЖНО:
 // DONT_USE_FILES флаг запрещает ESP драйверу сохранять значения свойств в файловой системе. 

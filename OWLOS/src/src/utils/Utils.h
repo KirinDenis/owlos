@@ -98,7 +98,7 @@ OWLOS распространяется в надежде, что она буде
 #define CCS811_DRIVER_TYPE 18
 
 char *stringToChar(String src);
-#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 void debugOut(const String &tag, const String &text);
 void debugOut(const String &tag, const String &text, int code);
 #endif

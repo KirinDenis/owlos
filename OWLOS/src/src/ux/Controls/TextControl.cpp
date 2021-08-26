@@ -90,6 +90,40 @@ void TextControlClass::refresh()
 
 void TextControlClass::draw(String _text, int _fgColor, int _bgColor, int _size)
 {
+    if (OnTouchEvent != nullptr)
+    {
+        uint16_t tx, ty;
+        if (tft.getTouch(&tx, &ty))
+        {
+            Serial.println("Touch");
+            Serial.println(tx);
+            Serial.println(ty);
+            Serial.println(x);
+            Serial.println(y);
+            Serial.println("---");
+            Serial.println(x + tft.textWidth(text));
+            Serial.println(y + tft.fontHeight(size));
+            if (leftAlign)
+            {
+                if ((tx > x) && (tx < x + tft.textWidth(text)) && (ty > y) && (ty < y + tft.fontHeight(size)))
+                {
+                    Serial.println("Touch OK");
+                    (*OnTouchEvent)();
+                    return;
+                }
+            }
+            else
+            {
+                if ((tx < x) && (tx > x - tft.textWidth(text)) && (ty > y) && (ty < y + tft.fontHeight(size)))
+                {
+                    Serial.println("Touch OK");
+                    (*OnTouchEvent)();
+                    return;
+                }
+            }
+        }
+    }
+
     //если текст не совпадает - закрываем предидущий текст цветом предидущего фона
     if ((!_text.equals(text)) || (_size != size))
     {

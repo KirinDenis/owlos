@@ -53,7 +53,7 @@ OWLOS распространяется в надежде, что она буде
 #include "services/UXService.h"
 #include "services/AirQualityService.h"
 
-#ifdef LOGO_SCREEN_UX
+#ifdef LOG_SCREEN_UX
 #include "ux/Screens/LogScreen.h"
 #endif
 
@@ -82,15 +82,12 @@ bool kernelSetup()
 	filesBegin(); //prepare Flash file systeme (see Tools/Flash size item - use 2M Flash Size, is ZERO size by default -> switch to 2M
 
 	UXServiceInit(); //Init Air Quality UX
-#ifdef LOGO_SCREEN_UX
-//	logScreenRefresh();
-    EditControlInit();
-	EditControlRefresh();
-	return true;
+#ifdef LOG_SCREEN_UX
+	logScreenRefresh();
 #endif
 
 
-#if defined(DEBUG) || defined(LOGO_SCREEN_UX)
+#if defined(DEBUG) || defined(LOG_SCREEN_UX)
 	debugOut("OWLOS", "Air Quality started", DEBUG_SUCCESS);
 #endif
 
@@ -144,10 +141,7 @@ bool kernelLoop()
 #if defined(ARDUINO_ESP8266_RELEASE_2_5_0) || defined(ARDUINO_ESP32_RELEASE_1_0_4)
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
 	filesLoop();
-#endif
-    EditControlDraw();
-	delay(20);
-	return true;
+#endif    	
 	//check WiFi and MQTT stack are available
 	//first time Main::loop() calling the transport is not available
 #ifdef USE_ESP_DRIVER

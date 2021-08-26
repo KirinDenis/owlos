@@ -44,7 +44,7 @@ OWLOS распространяется в надежде, что она буде
 #include "../drivers/WifiDriver.h"
 #include "../drivers/NetworkDriver.h"
 
-#ifdef LOGO_SCREEN_UX
+#ifdef LOG_SCREEN_UX
 #include "../ux/Screens/LogScreen.h"
 #endif
 
@@ -58,10 +58,10 @@ char *stringToChar(String src)
 	return data;
 }
 
-#if defined (DEBUG) || defined (LOGO_SCREEN_UX)
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 void debugOut(const String &tag, const String &text, int code)
 {
-#ifdef LOGO_SCREEN_UX
+#ifdef LOG_SCREEN_UX
   logScreenAddText(tag, text, code);
 #endif
 

@@ -38,6 +38,7 @@ OWLOS распространяется в надежде, что она буде
 
 #include "../Controls/TextControl.h"
 #include "../Controls/ButtonControl.h"
+#include "../Controls/EditControl.h"
 
 #include "../../drivers/WifiDriver.h"
 #include "../../drivers/NetworkDriver.h"
@@ -58,6 +59,8 @@ OWLOS распространяется в надежде, что она буде
 #endif
 
 extern TFT_eSPI tft;
+
+extern int currentMode;
 
 #define CONNECTED_STATUS "[connected]"
 #define ONLINE_STATUS "[online]"
@@ -135,18 +138,9 @@ extern ButtonControlClass sensorsButton;
 extern ButtonControlClass transportButton;
 extern ButtonControlClass logButton;
 
-void transportScreenInit()
-{
-    stGWIPItem.y += GOLD_10;
-    stdBmItem.x += GOLD_7;
-    stdBmItem.y += GOLD_10;
-    hsHeaderItem.y += GOLD_11;
+extern ButtonControlClass OKButton;
+extern ButtonControlClass CancelButton;
 
-    hcHeaderRecvItem.y = hcHeaderSendItem.y = hcHeaderItem.y += GOLD_11;
-    mqttHeaderRecvItem.y = mqttHeaderSendItem.y = mqttHeaderItem.y += GOLD_11;
-    uartHeaderRecvItem.y = uartHeaderSendItem.y = uartHeaderItem.y += GOLD_11;
-    systemHeaderItem.y = systemHeaderLoopItem.y = systemHeaderLifeTimeItem.y = systemHeaderHeapItem.y += GOLD_11;
-}
 
 void transportScreenRefresh()
 {
@@ -251,31 +245,56 @@ void transportScreenRefresh()
     logButton.refresh();
 }
 
-//-----------------------------------
-String convertingByteToString(int bytesCount)
+//Touch events handlers ------------------------------------------------------------
+void SSIDEditOK()
 {
-    if (bytesCount > 1024 * 1024 * 1024)
-    {
-        return String(bytesCount / (1024 * 1024 * 1024)) + " Gb";
-    }
-    else if (bytesCount > 1024 * 1024)
-    {
-        return String(bytesCount / (1024 * 1024)) + " Mb";
-    }
-    else if (bytesCount > 1024)
-    {
-        return String(bytesCount / (1024)) + " Kb";
-    }
-    else
-    {
-        return String(bytesCount) + " B";
-    }
+   currentMode = TRANSPORT_MODE;        
+   transportScreenRefresh();
+
+   String newSSID = EditControlGetText();
+   thingSetWiFiSSID(newSSID);
+}
+
+void SSIDEditCancel()
+{
+   currentMode = TRANSPORT_MODE;        
+   transportScreenRefresh();
+}
+
+void SSIDOnTouch()
+{    
+    OKButton.OnTouchEvent = SSIDEditOK;
+    CancelButton.OnTouchEvent = SSIDEditCancel;
+
+    EditControlRefresh();
+    currentMode = EDITCONTROL_MODE;        
+}
+
+//----------------------------------------------------------------------------------
+void transportScreenInit()
+{
+    stGWIPItem.y += GOLD_10;
+    stdBmItem.x += GOLD_7;
+    stdBmItem.y += GOLD_10;
+    hsHeaderItem.y += GOLD_11;
+
+    hcHeaderRecvItem.y = hcHeaderSendItem.y = hcHeaderItem.y += GOLD_11;
+    mqttHeaderRecvItem.y = mqttHeaderSendItem.y = mqttHeaderItem.y += GOLD_11;
+    uartHeaderRecvItem.y = uartHeaderSendItem.y = uartHeaderItem.y += GOLD_11;
+    systemHeaderItem.y = systemHeaderLoopItem.y = systemHeaderLifeTimeItem.y = systemHeaderHeapItem.y += GOLD_11;
+
+    stSSIDItem.OnTouchEvent = SSIDOnTouch;
 }
 
 //-----------------------------------
 //WiFi Station
 void drawSTNetworkStatus(int stAvailable, int stStatus, int stdBm, String stSSID, String stIp, String apGWIp)
 {
+    if (currentMode != TRANSPORT_MODE)
+    {
+        return;    
+    }
+
     int statusColor = OWLOSLightColor;
     int textColor = OWLOSLightColor;
     if (stAvailable != 1)
@@ -297,6 +316,11 @@ void drawSTNetworkStatus(int stAvailable, int stStatus, int stdBm, String stSSID
     else
     {
         stSSIDItem.draw(stSSID, textColor, OWLOSDarkColor, 2);
+    }
+    //if stSSIDItem.OnTouchEvent
+    if (currentMode != TRANSPORT_MODE)
+    {
+        return;    
     }
 
     stGWIPItem.draw("[GW:" + apGWIp + "]", textColor, OWLOSDarkColor, 1);
@@ -359,6 +383,11 @@ void drawSTNetworkStatus(int stAvailable, int stStatus, int stdBm, String stSSID
 //WiFi Access Point
 void drawAPNetworkStatus(int apAvailable, String apSSID, String apIp)
 {
+    if (currentMode != TRANSPORT_MODE)
+    {
+        return;    
+    }
+
     int statusColor = OWLOSLightColor;
     int textColor = OWLOSLightColor;
     if (apAvailable != 1)
@@ -389,6 +418,11 @@ void drawAPNetworkStatus(int apAvailable, String apSSID, String apIp)
 //------------------------------------
 void drawHTTPServerStatus(int hsStAvailable, int hssStAvailable, int hsApAvailable, int hssApAvailable, String hsStAddress, String hssStAddress, String hsApAddress, String hssApAddress)
 {
+    if (currentMode != TRANSPORT_MODE)
+    {
+        return;    
+    }
+
     if ((hsStAvailable != 1) && (hssStAvailable != 1) && (hsApAvailable != 1) && (hssApAvailable != 1))
     {
         hsHeaderItem.draw("Embeded HTTP(S) Server", OWLOSDangerColor, OWLOSSecondaryColor, 1);
@@ -447,6 +481,11 @@ void drawHTTPServerStatus(int hsStAvailable, int hssStAvailable, int hsApAvailab
 //------------------------------------
 void drawHTTPClientStatus(int hcAvailable, int hcStatus, String hcServerIP, int hcSend, int hcRecv)
 {
+    if (currentMode != TRANSPORT_MODE)
+    {
+        return;    
+    }
+
     if (hcAvailable != 1)
     {
         hcHeaderItem.draw("HTTP(S) Client", OWLOSDangerColor, OWLOSSecondaryColor, 1);
@@ -474,14 +513,19 @@ void drawHTTPClientStatus(int hcAvailable, int hcStatus, String hcServerIP, int 
     }
 
     hcServerIPItem.draw(hcServerIP, OWLOSLightColor, OWLOSDarkColor, 2);
-    hcSendItem.draw(convertingByteToString(hcSend), OWLOSPrimaryColor, OWLOSDarkColor, 2);
-    hcRecvItem.draw(convertingByteToString(hcRecv), OWLOSPrimaryColor, OWLOSDarkColor, 2);
+    hcSendItem.draw(bytesToString(hcSend), OWLOSPrimaryColor, OWLOSDarkColor, 2);
+    hcRecvItem.draw(bytesToString(hcRecv), OWLOSPrimaryColor, OWLOSDarkColor, 2);
 }
 
 //MQTT Client
 //------------------------------------
 void drawMQTTClientStatus(int mqttAvailable, int mqttStatus, String mqttServerIP, int mqttSend, int mqttRecv)
 {
+    if (currentMode != TRANSPORT_MODE)
+    {
+        return;    
+    }
+
     if (mqttAvailable != 1)
     {
         mqttHeaderItem.draw("MQTT Client", OWLOSDangerColor, OWLOSSecondaryColor, 1);
@@ -501,14 +545,18 @@ void drawMQTTClientStatus(int mqttAvailable, int mqttStatus, String mqttServerIP
     }
 
     mqttServerIPItem.draw(mqttServerIP, OWLOSLightColor, OWLOSDarkColor, 2);
-    mqttSendItem.draw(convertingByteToString(mqttSend), OWLOSPrimaryColor, OWLOSDarkColor, 2);
-    mqttRecvItem.draw(convertingByteToString(mqttRecv), OWLOSPrimaryColor, OWLOSDarkColor, 2);
+    mqttSendItem.draw(bytesToString(mqttSend), OWLOSPrimaryColor, OWLOSDarkColor, 2);
+    mqttRecvItem.draw(bytesToString(mqttRecv), OWLOSPrimaryColor, OWLOSDarkColor, 2);
 }
 
 //UART Client
 //------------------------------------
 void drawUARTClientStatus(int uartAvailable, int uartStatus, int uartSpeed, int uartSend, int uartRecv)
 {
+    if (currentMode != TRANSPORT_MODE)
+    {
+        return;    
+    }
 
     if (uartAvailable != 1)
     {
@@ -529,21 +577,26 @@ void drawUARTClientStatus(int uartAvailable, int uartStatus, int uartSpeed, int 
     }
 
     uartSpeedItem.draw(String(uartSpeed), OWLOSLightColor, OWLOSDarkColor, 2);
-    uartSendItem.draw(convertingByteToString(uartSend), OWLOSPrimaryColor, OWLOSDarkColor, 2);
-    uartRecvItem.draw(convertingByteToString(uartRecv), OWLOSPrimaryColor, OWLOSDarkColor, 2);
+    uartSendItem.draw(bytesToString(uartSend), OWLOSPrimaryColor, OWLOSDarkColor, 2);
+    uartRecvItem.draw(bytesToString(uartRecv), OWLOSPrimaryColor, OWLOSDarkColor, 2);
 }
 
 //System
 //------------------------------------
 void drawSystemStatus(String id, int loop, unsigned long lifeTime, int heap)
 {
+    if (currentMode != TRANSPORT_MODE)
+    {
+        return;    
+    }
+
     systemIdItem.draw(id, OWLOSLightColor, OWLOSDarkColor, 2);
     systemLoopItem.draw(String(loop) + " ms", OWLOSPrimaryColor, OWLOSDarkColor, 2);
 
     String lifeTimeString = millisToDate(lifeTime);
 
     systemLifeTimeItem.draw(lifeTimeString, OWLOSPrimaryColor, OWLOSDarkColor, 2);
-    systemHeapItem.draw(convertingByteToString(heap), OWLOSPrimaryColor, OWLOSDarkColor, 2);
+    systemHeapItem.draw(bytesToString(heap), OWLOSPrimaryColor, OWLOSDarkColor, 2);
 }
 
 //------------------------------------------------------------------------------------------

@@ -154,3 +154,24 @@ String millisToDate(unsigned long _millis)
 
     return String(days) + "d." + _hours + ":" + _minutes + ":" + _seconds;
 }
+
+//-----------------------------------
+String bytesToString(int bytesCount)
+{
+    if (bytesCount > 1024 * 1024 * 1024)
+    {
+        return String(bytesCount / (1024 * 1024 * 1024)) + " Gb";
+    }
+    else if (bytesCount > 1024 * 1024)
+    {
+        return String(bytesCount / (1024 * 1024)) + " Mb";
+    }
+    else if (bytesCount > 1024)
+    {
+        return String(bytesCount / (1024)) + " Kb";
+    }
+    else
+    {
+        return String(bytesCount) + " B";
+    }
+}

@@ -31,6 +31,7 @@
 #define SENSORS_MODE 0x02
 #define LOG_MODE 0x03
 #define HOME_MODE 0x04
+#define EDITCONTROL_MODE 0x05
 
 #define BUTTON_TOUCH_NOTDEFINE 0
 #define BUTTON_TOUCH_YES 1
@@ -48,5 +49,6 @@
 void drawArc(int x, int y, int radiusFrom, int radiusTo, double angleFrom, double angleTo, int color);
 void drawWifiIcon(int x, int y, int dBm);
 String millisToDate(unsigned long _millis);
+String bytesToString(int bytesCount);
 
 #endif

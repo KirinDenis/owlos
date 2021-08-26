@@ -45,6 +45,8 @@ OWLOS распространяется в надежде, что она буде
 #include "../ux/Screens/TransportScreen.h"
 #include "../ux/Screens/LogScreen.h"
 
+#include "../ux/Controls/EditControl.h"
+
 #include "FileService.h"
 
 extern TFT_eSPI tft;
@@ -93,6 +95,10 @@ bool UXServiceInit()
     transportScreenInit();
     sensorsScreenInit();
 
+    EditControlInit();
+
+    //	EditControlRefresh();
+
     //refreshTransportStatuses();
     //drawTransportStatuses();
 
@@ -136,6 +142,10 @@ void UXServiceLoop()
             logScreenRefresh();
             break;
 
+        case EDITCONTROL_MODE:
+            EditControlRefresh();
+            break;
+
         default:
             break;
         }
@@ -157,6 +167,10 @@ void UXServiceLoop()
 
     case LOG_MODE:
         logScreenDraw();
+        break;
+
+    case EDITCONTROL_MODE:
+        EditControlDraw();
         break;
 
     default:

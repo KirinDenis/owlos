@@ -46,6 +46,6 @@ OWLOS распространяется в надежде, что она буде
 void EditControlInit();
 void EditControlRefresh();
 void EditControlDraw();
-
+String EditControlGetText();
 
 #endif

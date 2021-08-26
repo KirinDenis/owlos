@@ -64,6 +64,8 @@ protected:
   void draw();
 
 public:
+  void (*OnTouchEvent)() = nullptr;
+  
   int x;
   int y;
   //column - 1,2,3,4
