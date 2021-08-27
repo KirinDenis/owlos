@@ -57,6 +57,7 @@ class TextControlClass
 {
 protected:
   bool leftAlign = true;
+  bool inTouch = false;
   int size = 1;
   int fgColor = OWLOSLightColor;
   int bgColor = OWLOSDarkColor;

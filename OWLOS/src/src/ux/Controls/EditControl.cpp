@@ -215,10 +215,9 @@ void EditControlInit()
 }
 
 void EditControlRefresh()
-{
-    text = "";
-    cursorPosition = 0;
-
+{    
+    cursorPosition = text.length() + 1;
+    
     tft.fillScreen(OWLOSDarkColor);
     tft.setTextColor(OWLOSInfoColor, OWLOSDarkColor);
     tft.drawString(textLabel, GOLD_9, GOLD_8, 2);
@@ -226,6 +225,14 @@ void EditControlRefresh()
 
     OKButton.refresh();
     CancelButton.refresh();
+
+    for (int i = 0; i < KEYS_COUNT; i++)
+    {
+        if (keysList[i] != nullptr)
+        {
+            keysList[i]->refresh();
+        }
+    }
 }
 
 void EditControlDraw()
@@ -276,4 +283,14 @@ void EditControlDraw()
 String EditControlGetText()
 {
     return text;
+}
+
+void EditControlSetText(String _text)
+{
+  text = _text;  
+}
+
+void EditControlSetLable(String _textLabel)
+{
+  textLabel = _textLabel;
 }

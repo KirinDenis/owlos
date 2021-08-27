@@ -47,5 +47,7 @@ void EditControlInit();
 void EditControlRefresh();
 void EditControlDraw();
 String EditControlGetText();
+void EditControlSetText(String _text);
+void EditControlSetLable(String _textLabel);
 
 #endif

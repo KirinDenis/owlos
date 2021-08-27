@@ -95,31 +95,57 @@ void TextControlClass::draw(String _text, int _fgColor, int _bgColor, int _size)
         uint16_t tx, ty;
         if (tft.getTouch(&tx, &ty))
         {
-            Serial.println("Touch");
-            Serial.println(tx);
-            Serial.println(ty);
-            Serial.println(x);
-            Serial.println(y);
-            Serial.println("---");
-            Serial.println(x + tft.textWidth(text));
-            Serial.println(y + tft.fontHeight(size));
+            if (!inTouch)
+            {
+                inTouch = true;
+                /*
+                if (leftAlign)
+                {
+                    tft.fillRect(x, y, tft.textWidth(text, size), tft.fontHeight(size), OWLOSDangerColor);
+                }
+                else
+                {
+                    tft.fillRect(x - tft.textWidth(text, size), y, tft.textWidth(text, size), tft.fontHeight(size), OWLOSDangerColor);
+                }
+                */
+                _bgColor = OWLOSDangerColor;
+              //  refresh();
+            }
+
             if (leftAlign)
             {
-                if ((tx > x) && (tx < x + tft.textWidth(text)) && (ty > y) && (ty < y + tft.fontHeight(size)))
+                if ((tx > x) && (tx < x + tft.textWidth(text, size)) && (ty > y) && (ty < y + tft.fontHeight(size)))
                 {
-                    Serial.println("Touch OK");
                     (*OnTouchEvent)();
                     return;
                 }
             }
             else
             {
-                if ((tx < x) && (tx > x - tft.textWidth(text)) && (ty > y) && (ty < y + tft.fontHeight(size)))
+                if ((tx < x) && (tx > x - tft.textWidth(text, size)) && (ty > y) && (ty < y + tft.fontHeight(size)))
                 {
-                    Serial.println("Touch OK");
+
                     (*OnTouchEvent)();
                     return;
                 }
+            }
+        }
+        else
+        {
+            if (inTouch)
+            {
+                inTouch = false;
+                /*
+                if (leftAlign)
+                {
+                    tft.drawRect(x, y, tft.textWidth(text, size), tft.fontHeight(size), bgColor);
+                }
+                else
+                {
+                    tft.drawRect(x - tft.textWidth(text, size), y, tft.textWidth(text, size), tft.fontHeight(size), bgColor);
+                }
+                refresh();
+                */
             }
         }
     }

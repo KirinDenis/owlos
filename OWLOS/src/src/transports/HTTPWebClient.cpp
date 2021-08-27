@@ -66,12 +66,18 @@ OWLOS распространяется в надежде, что она буде
 
 #define webclientid "WebClient"
 
+#define HTTP_CLIENT_TIMEOUT 500
+
 HTTPClient http;
 WiFiClientSecure *secureClient = nullptr;
 
 int HTTPClientStatus = -2;
 int HTTPClientSend = 0;
 int HTTPClientRecv = 0;
+
+#define TIME_OUT_SKIP_COUNT 10
+int TimeOut_Skip = 0;
+bool TimeOut_Skip_Flag = false;
 
 //https://techtutorialsx.com/2017/11/18/esp32-arduino-https-get-request/
 //^^^About cetifivation ESP32 HTTP Client
@@ -82,23 +88,23 @@ int HTTPClientRecv = 0;
 // example. This certificate is valid until Sep 11 23:59:59 2024 GMT
 const char *rootCACertificate =
 	"-----BEGIN CERTIFICATE-----\n"
-"MIIDDDCCAfSgAwIBAgIIVb+tdeqOFs0wDQYJKoZIhvcNAQELBQAwFDESMBAGA1UE\n"
-"AxMJbG9jYWxob3N0MB4XDTIxMDYyMDE2NDMxMFoXDTIyMDYyMDE2NDMxMFowFDES\n"
-"MBAGA1UEAxMJbG9jYWxob3N0MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC\n"
-"AQEApVOsURJIWkNfXyyBnTQM//r7XpWIXnrxC+iBV7zs8UXIwrTAmkW89gFO/6kz\n"
-"Ed4gymMr+iIdoBtQjz2oaQbHR1jVoiq7cM1EL6Ume6xTW8BHQaLhJkwH50kB1CES\n"
-"9vX38b7Tj7nSDALeljIvtgmnK/vwC32Sr+xxHWhIgpMJiy5y1l8FYCBaY+PD4gMq\n"
-"WYgVX22efploP14OcgcZrrlSSKg3hqEyLdayi6gJja7e7aBBDztZ3ag+yVMfr6st\n"
-"8SzN0CZlSMXE2fLwTHcUCZY2CmAUBml6SIFo7eZQyLS8rdbxbkRQp0gpHioThdxV\n"
-"mEFmYCfHLFMWiLbR0BoQX4+huQIDAQABo2IwYDAMBgNVHRMBAf8EAjAAMA4GA1Ud\n"
-"DwEB/wQEAwIFoDAWBgNVHSUBAf8EDDAKBggrBgEFBQcDATAXBgNVHREBAf8EDTAL\n"
-"gglsb2NhbGhvc3QwDwYKKwYBBAGCN1QBAQQBAjANBgkqhkiG9w0BAQsFAAOCAQEA\n"
-"EszVECtO2KDCnPz07zAPdkGI9/UtrhDNN1a+qK5swp7uJAz62lM/cZOGrNbQqgPF\n"
-"wkXxOT0xC3VwM5iDA0iDpTMHNP4GNMXLgOibxCyljRfHaG9OfbOBhzoHcEU0lQA/\n"
-"KSrAdOnM59JkM2eP0HWzLXAyDJLjlhLAXc7A8kkholUT/K+ilJxBmXT9w2xGaG8K\n"
-"kWWXfhQJU//etfwRf/L4G9K0f2acqrAxhwUC2dGSxouDsNWlmIcWfvJbGFKMwp1o\n"
-"ZCBv/I3IEGQYW1TgawUzVi3rDot9w3VCk2383NYf3MIjNAq6YQDgb3k/Bb+lWBVF\n"
-"SLgwDhZsbgYy/9Tb1ZKktw==\n"
+	"MIIDDDCCAfSgAwIBAgIIVb+tdeqOFs0wDQYJKoZIhvcNAQELBQAwFDESMBAGA1UE\n"
+	"AxMJbG9jYWxob3N0MB4XDTIxMDYyMDE2NDMxMFoXDTIyMDYyMDE2NDMxMFowFDES\n"
+	"MBAGA1UEAxMJbG9jYWxob3N0MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC\n"
+	"AQEApVOsURJIWkNfXyyBnTQM//r7XpWIXnrxC+iBV7zs8UXIwrTAmkW89gFO/6kz\n"
+	"Ed4gymMr+iIdoBtQjz2oaQbHR1jVoiq7cM1EL6Ume6xTW8BHQaLhJkwH50kB1CES\n"
+	"9vX38b7Tj7nSDALeljIvtgmnK/vwC32Sr+xxHWhIgpMJiy5y1l8FYCBaY+PD4gMq\n"
+	"WYgVX22efploP14OcgcZrrlSSKg3hqEyLdayi6gJja7e7aBBDztZ3ag+yVMfr6st\n"
+	"8SzN0CZlSMXE2fLwTHcUCZY2CmAUBml6SIFo7eZQyLS8rdbxbkRQp0gpHioThdxV\n"
+	"mEFmYCfHLFMWiLbR0BoQX4+huQIDAQABo2IwYDAMBgNVHRMBAf8EAjAAMA4GA1Ud\n"
+	"DwEB/wQEAwIFoDAWBgNVHSUBAf8EDDAKBggrBgEFBQcDATAXBgNVHREBAf8EDTAL\n"
+	"gglsb2NhbGhvc3QwDwYKKwYBBAGCN1QBAQQBAjANBgkqhkiG9w0BAQsFAAOCAQEA\n"
+	"EszVECtO2KDCnPz07zAPdkGI9/UtrhDNN1a+qK5swp7uJAz62lM/cZOGrNbQqgPF\n"
+	"wkXxOT0xC3VwM5iDA0iDpTMHNP4GNMXLgOibxCyljRfHaG9OfbOBhzoHcEU0lQA/\n"
+	"KSrAdOnM59JkM2eP0HWzLXAyDJLjlhLAXc7A8kkholUT/K+ilJxBmXT9w2xGaG8K\n"
+	"kWWXfhQJU//etfwRf/L4G9K0f2acqrAxhwUC2dGSxouDsNWlmIcWfvJbGFKMwp1o\n"
+	"ZCBv/I3IEGQYW1TgawUzVi3rDot9w3VCk2383NYf3MIjNAq6YQDgb3k/Bb+lWBVF\n"
+	"SLgwDhZsbgYy/9Tb1ZKktw==\n"
 	"-----END CERTIFICATE-----\n";
 
 bool downloadFile(String fileName, String url)
@@ -114,7 +120,7 @@ bool downloadFile(String fileName, String url)
 	if (!filesBegin())
 	{
 		//An Error has occurred while mounting file system
-		return result;		
+		return result;
 	}
 
 	http.begin(url);
@@ -218,7 +224,7 @@ void setClock()
 	gmtime_r(&nowSecs, &timeinfo);
 #ifdef DEBUG
 	debugOut(webclientid, asctime(&timeinfo));
-#endif	
+#endif
 }
 
 void HTTPWebClientPublish(String _topic, String _payload)
@@ -230,20 +236,36 @@ void HTTPWebClientPublish(String _topic, String _payload)
 			_payload = "topic:" + _topic + "\n" +
 					   "token:" + thingGetHTTPClientToken() + "\n" + _payload;
 
+			http.setTimeout(HTTP_CLIENT_TIMEOUT);
+
+			if (TimeOut_Skip_Flag)
+			{
+				TimeOut_Skip++;
+				if (TimeOut_Skip < TIME_OUT_SKIP_COUNT)
+				{
+					debugOut(webclientid, "HTTP Client skip session, time out ", DEBUG_WARNING);
+					return;
+				}
+				//try again
+				TimeOut_Skip = 0;
+			}
+			//store time on begin session
+			long BeginTime = millis();
+
 			if (thingGetHTTPClientUseHTTPS() == 1)
 			{
 				if (!secureClient)
 				{
-					setClock();					
+					setClock();
 					secureClient = new WiFiClientSecure;
 				}
 				if (secureClient)
-				{					
+				{
 					secureClient->setCACert(rootCACertificate);
 					http.begin(thingGetHTTPClientURL() + ":" + String(thingGetHTTPClientPort()) + "/Things/AirQuality/", rootCACertificate);
 				}
 				else
-				{				
+				{
 #ifdef DEBUG
 					debugOut(webclientid, "HTTP Client HTTPS Secure client problem", DEBUG_DANGER);
 #endif
@@ -259,24 +281,35 @@ void HTTPWebClientPublish(String _topic, String _payload)
 			HTTPClientStatus = http.POST(_payload);
 			if (HTTPClientStatus != -1)
 			{
-			  HTTPClientRecv +=  http.getSize();
+				HTTPClientRecv += http.getSize();
 			}
-#ifdef DEBUG			
-		  if ((HTTPClientStatus >= 200) && (HTTPClientStatus <= 300))
-		  {
-			debugOut(webclientid, thingGetHTTPClientURL() + ":" + String(thingGetHTTPClientPort()) + " OK", DEBUG_SUCCESS);
-		  }
-		  else 
-		  {
-			  if (HTTPClientStatus == -1)
-			  {
-			    debugOut(webclientid, thingGetHTTPClientURL() + ":" + String(thingGetHTTPClientPort()) + " socket error", DEBUG_DANGER);	  
-			  }
-			  else 
-			  {
-				debugOut(webclientid, thingGetHTTPClientURL() + ":" + String(thingGetHTTPClientPort()) + " result " + String(HTTPClientStatus), DEBUG_WARNING);	    
-			  }
-		  }
+#ifdef DEBUG
+			if ((HTTPClientStatus >= 200) && (HTTPClientStatus <= 300))
+			{
+				TimeOut_Skip_Flag = false;
+				debugOut(webclientid, thingGetHTTPClientURL() + ":" + String(thingGetHTTPClientPort()) + " OK", DEBUG_SUCCESS);
+			}
+			else
+			{
+				if (HTTPClientStatus == -1)
+				{
+					if (millis() - BeginTime > HTTP_CLIENT_TIMEOUT)
+					{
+						if (!TimeOut_Skip_Flag)
+						{
+							TimeOut_Skip_Flag = true;
+							TimeOut_Skip = 0;
+							debugOut(webclientid, "HTTP Client time out, skip session enabled", DEBUG_WARNING);
+						}
+					}
+					debugOut(webclientid, thingGetHTTPClientURL() + ":" + String(thingGetHTTPClientPort()) + " socket error", DEBUG_DANGER);
+				}
+				else
+				{
+					TimeOut_Skip_Flag = false;
+					debugOut(webclientid, thingGetHTTPClientURL() + ":" + String(thingGetHTTPClientPort()) + " result " + String(HTTPClientStatus), DEBUG_WARNING);
+				}
+			}
 #else
 #endif
 			http.end();

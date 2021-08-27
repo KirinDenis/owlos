@@ -246,26 +246,75 @@ void transportScreenRefresh()
 }
 
 //Touch events handlers ------------------------------------------------------------
-void SSIDEditOK()
+//SSIDEDIT 
+void EditCancel()
+{
+   currentMode = TRANSPORT_MODE;        
+   transportScreenRefresh();
+}
+//SSIDEDIT 
+void WiFiPasswordEditOK()
 {
    currentMode = TRANSPORT_MODE;        
    transportScreenRefresh();
 
+   String newPassword = EditControlGetText();
+   thingSetWiFiPassword(newPassword);
+}
+//SSIDEDIT 
+void WiFiSSIDEditOK()
+{   
    String newSSID = EditControlGetText();
    thingSetWiFiSSID(newSSID);
+
+   OKButton.OnTouchEvent = WiFiPasswordEditOK;
+
+   EditControlSetText(thingGetWiFiPassword());
+   EditControlSetLable("Enter new WiFi password:");
+   EditControlRefresh();
+}
+//SSIDEDIT 
+void SSIDOnTouch()
+{    
+    OKButton.OnTouchEvent = WiFiSSIDEditOK;
+    CancelButton.OnTouchEvent = EditCancel;
+
+    EditControlSetText(thingGetWiFiSSID());
+    EditControlSetLable("Enter new WiFi SSID:");
+    EditControlRefresh();
+    currentMode = EDITCONTROL_MODE;        
 }
 
-void SSIDEditCancel()
+//HTTPCLIENTEDIT
+void HTTPClientPortEditOK()
 {
    currentMode = TRANSPORT_MODE;        
    transportScreenRefresh();
+
+   int port = atoi(EditControlGetText().c_str());
+   thingSetHTTPClientPort(port);
+
 }
 
-void SSIDOnTouch()
-{    
-    OKButton.OnTouchEvent = SSIDEditOK;
-    CancelButton.OnTouchEvent = SSIDEditCancel;
+void HTTPClientURLEditOK()
+{      
+   thingSetHTTPClientURL(EditControlGetText());
 
+   OKButton.OnTouchEvent = HTTPClientPortEditOK;
+
+   EditControlSetText(String(thingGetHTTPClientPort()));
+   EditControlSetLable("Enter new HTTP Client port:");
+   EditControlRefresh();
+   currentMode = EDITCONTROL_MODE;        
+}
+
+void HTTPClientOnTouch()
+{    
+    OKButton.OnTouchEvent = HTTPClientURLEditOK;
+    CancelButton.OnTouchEvent = EditCancel;
+
+    EditControlSetText(thingGetHTTPClientURL());
+    EditControlSetLable("Enter new HTTP Client URL:");
     EditControlRefresh();
     currentMode = EDITCONTROL_MODE;        
 }
@@ -284,6 +333,7 @@ void transportScreenInit()
     systemHeaderItem.y = systemHeaderLoopItem.y = systemHeaderLifeTimeItem.y = systemHeaderHeapItem.y += GOLD_11;
 
     stSSIDItem.OnTouchEvent = SSIDOnTouch;
+    hcServerIPItem.OnTouchEvent = HTTPClientOnTouch;
 }
 
 //-----------------------------------
@@ -309,15 +359,8 @@ void drawSTNetworkStatus(int stAvailable, int stStatus, int stdBm, String stSSID
 
     drawWifiIcon(GOLD_7, GOLD_7 + GOLD_8, stdBm);
 
-    if (stSSID.length() < 10)
-    {
-        stSSIDItem.draw(stSSID, textColor, OWLOSDarkColor, 4);
-    }
-    else
-    {
-        stSSIDItem.draw(stSSID, textColor, OWLOSDarkColor, 2);
-    }
-    //if stSSIDItem.OnTouchEvent
+    stSSIDItem.draw(stSSID, textColor, OWLOSDarkColor, 2);
+    
     if (currentMode != TRANSPORT_MODE)
     {
         return;    

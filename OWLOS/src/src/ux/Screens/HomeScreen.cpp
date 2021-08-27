@@ -118,6 +118,7 @@ void homeScreenInit()
     sensorsButton.OnTouchEvent = SensorButtonTouch;
     transportButton.OnTouchEvent = TransportButtonTouch;
     logButton.OnTouchEvent = LogButtonTouch;
+    sensorsButton.selected = true;
 }
 
 void homeScreenRefresh()
