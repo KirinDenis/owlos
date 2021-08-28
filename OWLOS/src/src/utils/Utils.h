@@ -44,14 +44,16 @@ OWLOS распространяется в надежде, что она буде
 #include <Arduino.h>
 
 //#define SERIAL_COLORIZED_OUTPUT
-#define DEBUG
+//#define DEBUG
 #ifdef DEBUG
 //	#define DETAILED_DEBUG
+#endif
+
     #define DEBUG_INFO      0x00
     #define DEBUG_SUCCESS   0x01
     #define DEBUG_WARNING   0x02
     #define DEBUG_DANGER    0x04
-#endif
+
 
 #define WRITE_DEBUG_LOG_FILES false
 #define DEBUG_LOG_FILES_SIZE 10240L
@@ -102,6 +104,7 @@ char *stringToChar(String src);
 void debugOut(const String &tag, const String &text);
 void debugOut(const String &tag, const String &text, int code);
 #endif
+
 void writeDebugLogFile(String fileName, int fileSize, String tag, String text);
 bool matchRoute(const char *route, const char *topic, const char *path);
 bool matchRoute(const String &route, const String &topic, const char *path);

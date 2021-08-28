@@ -59,7 +59,7 @@ public:
     int y;
     int text_x;
     int text_y;
-    int touch = BUTTON_TOUCH_NOTDEFINE;
+    int inTouch = BUTTON_TOUCH_NOTDEFINE;
     bool selected = false;
 
     void (*OnTouchEvent)() = nullptr;

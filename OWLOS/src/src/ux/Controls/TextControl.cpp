@@ -40,6 +40,9 @@ OWLOS распространяется в надежде, что она буде
 
 extern TFT_eSPI tft;
 
+extern uint16_t touchX, touchY;
+extern bool touch;
+
 //column - 1,2,3,4
 //         0,2 - align left  (0, width / 2)
 //         1,3 - align right (width / 2, width)
@@ -92,29 +95,17 @@ void TextControlClass::draw(String _text, int _fgColor, int _bgColor, int _size)
 {
     if (OnTouchEvent != nullptr)
     {
-        uint16_t tx, ty;
-        if (tft.getTouch(&tx, &ty))
+        if (touch)
         {
             if (!inTouch)
             {
                 inTouch = true;
-                /*
-                if (leftAlign)
-                {
-                    tft.fillRect(x, y, tft.textWidth(text, size), tft.fontHeight(size), OWLOSDangerColor);
-                }
-                else
-                {
-                    tft.fillRect(x - tft.textWidth(text, size), y, tft.textWidth(text, size), tft.fontHeight(size), OWLOSDangerColor);
-                }
-                */
                 _bgColor = OWLOSDangerColor;
-              //  refresh();
             }
 
             if (leftAlign)
             {
-                if ((tx > x) && (tx < x + tft.textWidth(text, size)) && (ty > y) && (ty < y + tft.fontHeight(size)))
+                if ((touchX > x) && (touchX < x + tft.textWidth(text, size)) && (touchY > y) && (touchY < y + tft.fontHeight(size)))
                 {
                     (*OnTouchEvent)();
                     return;
@@ -122,7 +113,7 @@ void TextControlClass::draw(String _text, int _fgColor, int _bgColor, int _size)
             }
             else
             {
-                if ((tx < x) && (tx > x - tft.textWidth(text, size)) && (ty > y) && (ty < y + tft.fontHeight(size)))
+                if ((touchX < x) && (touchX > x - tft.textWidth(text, size)) && (touchY > y) && (touchY < y + tft.fontHeight(size)))
                 {
 
                     (*OnTouchEvent)();
@@ -135,17 +126,6 @@ void TextControlClass::draw(String _text, int _fgColor, int _bgColor, int _size)
             if (inTouch)
             {
                 inTouch = false;
-                /*
-                if (leftAlign)
-                {
-                    tft.drawRect(x, y, tft.textWidth(text, size), tft.fontHeight(size), bgColor);
-                }
-                else
-                {
-                    tft.drawRect(x - tft.textWidth(text, size), y, tft.textWidth(text, size), tft.fontHeight(size), bgColor);
-                }
-                refresh();
-                */
             }
         }
     }

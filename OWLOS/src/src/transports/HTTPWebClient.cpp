@@ -1,6 +1,6 @@
 ﻿/* ----------------------------------------------------------------------------
 OWLOS DIY Open Source OS for building IoT ecosystems
-Copyright 2019, 2020 by:
+Copyright 2019, 2020, 2021 by:
 - Konstantin Brul (konstabrul@gmail.com)
 - Vitalii Glushchenko (cehoweek@gmail.com)
 - Denys Melnychuk (meldenvar@gmail.com)
@@ -75,7 +75,7 @@ int HTTPClientStatus = -2;
 int HTTPClientSend = 0;
 int HTTPClientRecv = 0;
 
-#define TIME_OUT_SKIP_COUNT 10
+#define TIME_OUT_SKIP_COUNT 1
 int TimeOut_Skip = 0;
 bool TimeOut_Skip_Flag = false;
 
@@ -255,14 +255,14 @@ void HTTPWebClientPublish(String _topic, String _payload)
 			if (thingGetHTTPClientUseHTTPS() == 1)
 			{
 				if (!secureClient)
-				{
+				{				
 					setClock();
-					secureClient = new WiFiClientSecure;
+					secureClient = new WiFiClientSecure;					
 				}
+				else 
 				if (secureClient)
-				{
-					secureClient->setCACert(rootCACertificate);
-					http.begin(thingGetHTTPClientURL() + ":" + String(thingGetHTTPClientPort()) + "/Things/AirQuality/", rootCACertificate);
+				{			
+					secureClient->setCACert(rootCACertificate);					
 				}
 				else
 				{
@@ -272,10 +272,9 @@ void HTTPWebClientPublish(String _topic, String _payload)
 					return;
 				}
 			}
-			else
-			{
-				http.begin(thingGetHTTPClientURL() + ":" + String(thingGetHTTPClientPort()) + "/Things/AirQuality/");
-			}
+									
+			http.begin(thingGetHTTPClientURL() + ":" + String(thingGetHTTPClientPort()) + "/Things/AirQuality/");
+			
 
 			HTTPClientSend += _payload.length();
 			HTTPClientStatus = http.POST(_payload);
@@ -283,7 +282,7 @@ void HTTPWebClientPublish(String _topic, String _payload)
 			{
 				HTTPClientRecv += http.getSize();
 			}
-#ifdef DEBUG
+#ifdef LOG_SCREEN_UX
 			if ((HTTPClientStatus >= 200) && (HTTPClientStatus <= 300))
 			{
 				TimeOut_Skip_Flag = false;

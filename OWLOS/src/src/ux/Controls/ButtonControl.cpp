@@ -39,6 +39,8 @@ OWLOS распространяется в надежде, что она буде
 #include "ButtonControl.h"
 extern TFT_eSPI tft;
 
+extern uint16_t touchX, touchY;
+extern bool touch;
 //Button Class
 //column - 1,2,3,4
 //         0,2 - align left  (0, width / 2)
@@ -76,12 +78,12 @@ void ButtonControlClass::refresh()
 
 void ButtonControlClass::draw()
 {
-    uint16_t tx, ty;
-    if (tft.getTouch(&tx, &ty))
+    
+    if (touch)
     {
-        if ((tx > x) && (tx < x + WIDTH / 4) && (ty > y) && (ty < y + GOLD_8 * 2))
+        if ((touchX > x) && (touchX < x + WIDTH / 4) && (touchY > y) && (touchY < y + GOLD_8 * 2))
         {
-            if (touch != BUTTON_TOUCH_YES)
+            if (inTouch != BUTTON_TOUCH_YES)
             {
                 if (!selected)
                 {
@@ -100,15 +102,15 @@ void ButtonControlClass::draw()
                     (*OnTouchEvent)();
                 }
             }
-            touch = BUTTON_TOUCH_YES;
+            inTouch = BUTTON_TOUCH_YES;
         }
     }
     else
     {
-        if (touch != BUTTON_TOUCH_NO)
+        if (inTouch != BUTTON_TOUCH_NO)
         {
             refresh();
         }
-        touch = BUTTON_TOUCH_NO;
+        inTouch = BUTTON_TOUCH_NO;
     }
 }

@@ -39,8 +39,8 @@ OWLOS распространяется в надежде, что она буде
 #include "KeyButtonControl.h"
 extern TFT_eSPI tft;
 
-uint16_t tx, ty;
-bool inTouch = false;
+extern uint16_t touchX, touchY;
+extern bool touch;
 
 KeyButtonControlClass::KeyButtonControlClass(String _text, int _fgColor, int _bgColor, int _touchColor, int _x, int _y, int _width, int _height)
     : ButtonControlClass(_text, _fgColor, _bgColor, _touchColor, 0, 0)
@@ -77,21 +77,12 @@ void KeyButtonControlClass::refresh()
 
 void KeyButtonControlClass::draw()
 {
-    if ((tx == 0) || (ty == 0))
-    {
-        inTouch = tft.getTouch(&tx, &ty);
-    }
-    //Serial.println(tx) ;
-    //Serial.println(ty) ;
-    //Serial.println(inTouch);
-    //Serial.println(text);
-    //Serial.println("----");
 
-    if (inTouch)
+    if (touch)
     {
-        if ((tx > x) && (tx < x + width) && (ty > y) && (ty < y + height))
+        if ((touchX > x) && (touchX < x + width) && (touchY > y) && (touchY < y + height))
         {
-            if (touch != BUTTON_TOUCH_YES)
+            if (inTouch != BUTTON_TOUCH_YES)
             {
                 if (!selected)
                 {
@@ -114,16 +105,16 @@ void KeyButtonControlClass::draw()
                     (*OnTouchEvent)();
                 }
             }
-            touch = BUTTON_TOUCH_YES;
+            inTouch = BUTTON_TOUCH_YES;
         }
     }
     else
     {
-        if (touch != BUTTON_TOUCH_NO)
+        if (inTouch != BUTTON_TOUCH_NO)
         {
             refresh();
         }
-        touch = BUTTON_TOUCH_NO;
+        inTouch = BUTTON_TOUCH_NO;
     }
 }
 

@@ -58,6 +58,8 @@ int previosMode;
 
 bool SetupComplete = false;
 
+uint16_t touchX, touchY;
+bool touch = false;
 //------------------------------------------------------------------------------------------
 //Init
 bool UXServiceInit()
@@ -119,6 +121,17 @@ void UXServiceLoop()
         sensorsScreenRefresh();
         sensorsScreenDraw();
     }
+
+
+    if (tft.getTouch(&touchX, &touchY))
+    {
+        touch = true;
+    }
+    else 
+    {
+        touch = false;
+    }
+
 
     if (currentMode != previosMode)
     {

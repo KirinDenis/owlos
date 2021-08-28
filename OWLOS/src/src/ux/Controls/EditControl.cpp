@@ -53,10 +53,10 @@ OWLOS распространяется в надежде, что она буде
 
 extern TFT_eSPI tft;
 
-extern int currentMode;
+extern uint16_t touchX, touchY;
+extern bool touch;
 
-extern uint16_t tx, ty;
-extern bool inTouch;
+extern int currentMode;
 
 bool cursorBlink = false;
 int cursorPosition = 0;
@@ -260,16 +260,12 @@ void EditControlDraw()
         lastBlink = millis();
     }
 
-    tx = 0;
-    ty = 0;
-    inTouch = false;
-
     for (int i = 0; i < KEYS_COUNT; i++)
     {
         if (keysList[i] != nullptr)
         {
             keysList[i]->draw();
-            if (keysList[i]->touch == BUTTON_TOUCH_YES)
+            if (keysList[i]->inTouch == BUTTON_TOUCH_YES)
             {
                 break;
             }
