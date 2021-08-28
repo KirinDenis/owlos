@@ -75,7 +75,7 @@ int HTTPClientStatus = -2;
 int HTTPClientSend = 0;
 int HTTPClientRecv = 0;
 
-#define TIME_OUT_SKIP_COUNT 1
+#define TIME_OUT_SKIP_COUNT 10
 int TimeOut_Skip = 0;
 bool TimeOut_Skip_Flag = false;
 
