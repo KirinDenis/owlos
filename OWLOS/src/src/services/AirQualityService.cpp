@@ -130,9 +130,12 @@ void AirQualityLoop()
       if (_ADS1X15Driver != nullptr)
       {
           AirQualityPropertiesMode += "ADS1X15:yes\n";
-          AirQualityPropertiesMode += "ADS1X15chanel_0:" +  String(_ADS1X15Driver->chanel_0) + "\n";          
-          AirQualityPropertiesMode += "ADS1X15chanel_0_volts:" +  String(_ADS1X15Driver->chanel_0_volts) + "\n";
-          AirQualityPropertiesMode += "ADS1X15chanel_0h:" +  String(_ADS1X15Driver->getChanel_0_HistoryData()) + "\n";
+          AirQualityPropertiesMode += "ADS1X15MQ135:" +  String(_ADS1X15Driver->chanel_1) + "\n"; //Chanel 1 MQ135                   
+          AirQualityPropertiesMode += "ADS1X15MQ135h:" +  String(_ADS1X15Driver->getChanel_1_HistoryData()) + "\n";
+          AirQualityPropertiesMode += "ADS1X15MQ7:" +  String(_ADS1X15Driver->chanel_2) + "\n"; //Chanel 2 MQ7                   
+          AirQualityPropertiesMode += "ADS1X15MQ7h:" +  String(_ADS1X15Driver->getChanel_2_HistoryData()) + "\n";
+          AirQualityPropertiesMode += "ADS1X15Light:" +  String(_ADS1X15Driver->chanel_3) + "\n"; //Chanel 3 Light
+          AirQualityPropertiesMode += "ADS1X15Lighth:" +  String(_ADS1X15Driver->getChanel_3_HistoryData()) + "\n";
       }
       else 
       {
@@ -145,13 +148,17 @@ void AirQualityLoop()
 
           AirQualityPropertiesMode += "CCS811:yes\n";
           AirQualityPropertiesMode += "CCS811CO2:" +  String(_CCS811Driver->CO2) + "\n";          
+          AirQualityPropertiesMode += "CCS811CO2h:" +  String(_CCS811Driver->getCO2HistoryData()) + "\n"; 
           AirQualityPropertiesMode += "CCS811TVOC:" +  String(_CCS811Driver->TVOC) + "\n";          
+          AirQualityPropertiesMode += "CCS811TVOCh:" +  String(_CCS811Driver->getTVOCHistoryData()) + "\n";          
           AirQualityPropertiesMode += "CCS811resistence:" +  String(_CCS811Driver->resistence) + "\n";          
+          AirQualityPropertiesMode += "CCS811resistenceh:" +  String(_CCS811Driver->getResistenceHistoryData()) + "\n";          
           AirQualityPropertiesMode += "CCS811temp:" +  String(_CCS811Driver->temperature) + "\n";          
+          AirQualityPropertiesMode += "CCS811temph:" +  String(_CCS811Driver->getTemperatureHistoryData()) + "\n";          
       }
       else 
       {
-          AirQualityPropertiesMode += "ADS1X15:no\n";
+          AirQualityPropertiesMode += "CCS811:no\n";
       }
 
       transportPublish(_topic, AirQualityPropertiesMode);

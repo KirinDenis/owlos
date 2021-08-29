@@ -68,7 +68,7 @@ namespace OWLOSEcosystemService.Services.Things
         #endregion
 
         #region TokenRegion
-        string CreateThingToken(ThingTokenDTO thingTokenDTO);
+        Guid GetThingToken(ThingTokenDTO thingTokenDTO);
 
         ThingTokenDTO DecodeThingToken(string thingToken);
         #endregion

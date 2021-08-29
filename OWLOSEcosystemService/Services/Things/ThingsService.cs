@@ -90,6 +90,8 @@ namespace OWLOSEcosystemService.Services.Things
                 }
             }
 
+            connectionPropertiesDTO.Token = CreateThingToken();
+
             resultModel = _thingsRepository.NewThingConnection(connectionPropertiesDTO);
 
             if (!resultModel.Error)
@@ -97,10 +99,9 @@ namespace OWLOSEcosystemService.Services.Things
                 ThingTokenDTO thingToken = new ThingTokenDTO();
 
                 thingToken.UserId = connectionPropertiesDTO.UserId;
-                thingToken.ThingId = int.Parse(resultModel.Result);
-                thingToken.CreationDateTime = DateTime.Now;
+                thingToken.ThingId = int.Parse(resultModel.Result);                
 
-                connectionPropertiesDTO.Token = CreateThingToken(thingToken);
+                connectionPropertiesDTO.Token = GetThingToken(thingToken);
 
                 _thingsRepository.UpdateThingConnection(connectionPropertiesDTO);
 
@@ -272,8 +273,26 @@ namespace OWLOSEcosystemService.Services.Things
                 Interval = 60 * 24
             });
 
-            thingsManager.CreateThingWrapper(_OWLOSThingConfig);
+            OWLOSThingWrapper thingWrapper =  thingsManager.CreateThingWrapper(_OWLOSThingConfig);
+            if (thingWrapper == null)
+            {
+                return false;
+            }
 
+            //This for AirQuality only code, so add drivers manual
+            OWLOSDriver driver = new OWLOSDriver(thingWrapper.Thing, "dht22");
+            driver.properties.Add(new OWLOSDriverProperty(driver, "available", "nan", "b"));
+            driver.properties.Add(new OWLOSDriverProperty(driver, "temperature", "nan", "rf"));
+
+            driver.properties.Add(new OWLOSDriverProperty(driver, "temperaturehistorydata", "nan", "r"));
+
+            driver.properties.Add(new OWLOSDriverProperty(driver, "humidity", "nan", "rf"));
+            driver.properties.Add(new OWLOSDriverProperty(driver, "humidityhistorydata", "nan", "r"));
+            driver.properties.Add(new OWLOSDriverProperty(driver, "heatindex", "nan", "rf"));
+            driver.properties.Add(new OWLOSDriverProperty(driver, "heatindexhistorydata", "nan", "r"));
+            driver.properties.Add(new OWLOSDriverProperty(driver, "celsius", "nan", "rf"));
+
+            thingWrapper.Thing.drivers.Add(driver);
             return true;
         }
 

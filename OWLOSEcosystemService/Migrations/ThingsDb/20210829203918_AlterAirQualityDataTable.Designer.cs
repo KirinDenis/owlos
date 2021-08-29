@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OWLOSEcosystemService.Data;
 
 namespace OWLOSEcosystemService.Migrations.ThingsDb
 {
     [DbContext(typeof(ThingsDbContext))]
-    partial class ThingsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210829203918_AlterAirQualityDataTable")]
+    partial class AlterAirQualityDataTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

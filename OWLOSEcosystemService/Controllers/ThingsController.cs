@@ -207,6 +207,31 @@ namespace OWLOSEcosystemService.Controllers
         }
 
         /// <summary>
+        /// Decode thing token
+        /// </summary>       
+        /// <returns></returns>
+        [Route("Things/GetThingToken")]
+        [HttpGet]
+        public IActionResult GetThingToken(int thingId)
+        {
+            ThingTokenDTO thingTokenDTO = new ThingTokenDTO()
+            {
+                UserId = GetUserId(),
+                ThingId = thingId
+            };
+
+            Guid token = _thingsService.GetThingToken(thingTokenDTO);
+            if (token != Guid.Empty)
+            {
+                return Ok(token);
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        /// <summary>
         /// Receive Air Quality data from client Thing 
         /// </summary>       
         /// <returns></returns>
@@ -240,29 +265,6 @@ namespace OWLOSEcosystemService.Controllers
 
             return BadRequest("Air Quality data parsing problem");
         }
-
-        /// <summary>
-        /// Decode thing token
-        /// </summary>       
-        /// <returns></returns>
-        [Route("Things/DecodeThingToken")]
-        [HttpPost]
-        public IActionResult DecodeThingToken(string token)
-        {
-            return Ok(_thingsService.DecodeThingToken(token));
-        }
-
-        /// <summary>
-        /// Decode thing token
-        /// </summary>       
-        /// <returns></returns>
-        [Route("Things/GetThingToken")]
-        [HttpGet]
-        public IActionResult CreateThingToken(ThingTokenDTO thingTokenDTO)
-        {
-            return Ok(_thingsService.CreateThingToken(thingTokenDTO));
-        }
-
 
         #endregion
 

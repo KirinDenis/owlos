@@ -8,6 +8,5 @@ namespace OWLOSEcosystemService.DTO.Things
 
         public int ThingId { get; set; }
 
-        public DateTime CreationDateTime { get; set; }
     }
 }

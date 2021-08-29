@@ -46,7 +46,7 @@ namespace OWLOSEcosystemService.DTO.Things
     {
         [Key]
         public int Id { get; set; }
-        public string Token { get; set; }
+        public Guid Token { get; set; }
         public Guid UserId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }

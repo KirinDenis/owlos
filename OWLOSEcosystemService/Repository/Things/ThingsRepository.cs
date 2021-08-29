@@ -180,20 +180,37 @@ namespace OWLOSEcosystemService.Repository.Things
             return resultModel;
         }
 
-        public bool CheckToken(ThingTokenDTO thingTokenDTO)
+        public Guid GetThingToken(ThingTokenDTO thingTokenDTO)
         {
             if (thingTokenDTO == null)
             {
-                return false;
+                return Guid.Empty;
             }
 
-            if (GetThingConnection(thingTokenDTO.UserId, thingTokenDTO.ThingId) != null)
+            ThingConnectionPropertiesDTO thingConnectionPropertiesDTO  = GetThingConnection(thingTokenDTO.UserId, thingTokenDTO.ThingId);
+
+            if (thingConnectionPropertiesDTO != null)
             {
-                return true;
+                return thingConnectionPropertiesDTO.Token;
             }
             else
             {
-                return false;
+                return Guid.Empty;
+            }
+        }
+
+
+        public ThingConnectionPropertiesDTO GetThingConnectionByToken(Guid tokenGuid)
+        {
+            if (tokenGuid == Guid.Empty)
+            {
+                return null;
+            }
+
+            using (ThingsDbContext db = new ThingsDbContext())
+            {
+                ThingConnectionPropertiesDTO ConnectionPropertiesEntity = db.ThingConnectionProperties.FirstOrDefault<ThingConnectionPropertiesDTO>(c => c.Token.Equals(tokenGuid));
+                return ConnectionPropertiesEntity;
             }
         }
     }
