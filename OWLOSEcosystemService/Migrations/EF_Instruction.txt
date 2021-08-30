@@ -15,16 +15,17 @@ dotnet ef migrations add InitialCreate --project OWLOSEcosystemService --context
 //создавайте мигрейшены если меняете структуры таблиц или создате новые таблицы
 dotnet ef migrations add CreateIdentitySchema --project OWLOSEcosystemService --context ApplicationDbContext
 dotnet ef migrations add CreateThingsSchema --project OWLOSEcosystemService --context ThingsDbContext
-
 dotnet ef migrations add AlterConnectionTable --project OWLOSEcosystemService --context ThingsDbContext
-
 dotnet ef migrations add ThingConnectionTokenGuid --project OWLOSEcosystemService --context ThingsDbContext
 dotnet ef migrations add AlterAirQualityDataTable --project OWLOSEcosystemService --context ThingsDbContext
+dotnet ef migrations add AlterAirQualityDataTableDTOToModel --project OWLOSEcosystemService --context ThingsDbContext
 
 //----------------------------------------------------------------------------------------------------------------
 //накатить миграцию в базу (ИСПОЛЬЗУЙТЕ после Pull всегда что бы создать новые таблицы в базе)
-dotnet ef database update --project OWLOSEcosystemService --context ApplicationDbContext
-dotnet ef database update --project OWLOSEcosystemService --context ThingsDbContext
+dotnet ef database update InitialCreate --project OWLOSEcosystemService --context ApplicationDbContext
+dotnet ef database update InitialCreate  --project OWLOSEcosystemService --context ThingsDbContext
 
+dotnet ef database update CreateThingsSchema --project OWLOSEcosystemService --context ThingsDbContext
 dotnet ef database update AlterAirQualityTable --project OWLOSEcosystemService --context ThingsDbContext
 dotnet ef database update AlterAirQualityDataTable --project OWLOSEcosystemService --context ThingsDbContext
+dotnet ef database update AlterAirQualityDataTableDTOToModel --project OWLOSEcosystemService --context ThingsDbContext

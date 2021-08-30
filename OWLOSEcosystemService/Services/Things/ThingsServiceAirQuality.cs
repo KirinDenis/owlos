@@ -10,6 +10,46 @@ using System.Reflection;
 
 namespace OWLOSEcosystemService.Services.Things
 {
+    /*
+     !Глобально для системы выбирается квант времени, например - одна минута!
+
+
+    OWLOS Thing 
+    - Раз в минуту собирает показания сенсоров. 
+    - Фиксирует millis() (TickCount)
+    - Ведет History в течении десяти минут.
+    - Фиксирует время history если есть источник времени (интернет или часы реального времемни)
+    - Если нет часов, при перезагрузке сбрасывает накопленную истотию. 
+
+    - Пропбует отправить раз в минуту собранные данные серверу без истории
+    -- Если данные удалось отпавить ждет следующей сессии минуту. 
+    -- Если данные не удалось отправить пропускает 1 сессий, в следующий раз пробует отправить 
+       данные с иторией за десять последних минут. 
+       --- если сново не удалось, начинает повторять попытки пропуская по дной сессии (раз в две минуты)
+
+
+    OWLOS Ecosystem Service
+    На стороне транспорта (Контроллера):
+    - ожидает данных от клиента. 
+    - когда данные пришли, фиксирует в объектной модели:
+    -- дату и время получения данных.
+    -- TickCount контролеера когда эти данные получены. 
+    -- Если хистори данные получены - сохраняет их. 
+    -- Если не получены и время по сравнению с предидущем запросом минута + 10 секунд - дописывает историю в объектную модель. 
+    -- Если истоиря пришла от OWLOS Thing сохраняется она. 
+
+    На стороне потока:
+    - раз в минуту опрашивает каждый контроллер в объекной моделе. 
+    - оценивает был ли контроллер Online в течении последней минуты. 
+    -- если был онлайн и предидущая запись онлайн добавляет данные в репозиторий, с флагом контроллер онлайн. 
+    -- если был онлайн и предидущая запись оффлайн добавляет данные в репозиторий, с флагом контроллер онлайн. 
+       --- проверят время последнего запросов и сравнивает тик какунты с полседним успешным запросом - пробует 
+       восстановить оффлайн данные по показаниям из истории. 
+    -- если был оффлайн, добавляет данные о том что оффлайн. 
+
+     */
+
+
     public partial class ThingsService : IThingsService
     {
         private const string DHT22SensorName = "dht22";
@@ -23,9 +63,9 @@ namespace OWLOSEcosystemService.Services.Things
         /// <param name="UserId"></param>
         /// <param name="ThingId"></param>
         /// <returns></returns>
-        public ThingAirQualityModel GetThingAirQualityModel(Guid UserId, int ThingId)
+        public ThingAirQualityDTO GetThingAirQualityDTO(Guid UserId, int ThingId)
         {
-            ThingAirQualityModel result = new ThingAirQualityModel();
+            ThingAirQualityDTO result = new ThingAirQualityDTO();
 
             foreach (OWLOSThingWrapper thingWrapper in thingsManager.OWLOSThingWrappers)
             {
@@ -54,7 +94,7 @@ namespace OWLOSEcosystemService.Services.Things
         }
 
 
-        private bool AirQualityPropKeyToModel(string dataProp, ThingAirQualityModel airQualityModel)
+        private bool AirQualityPropKeyToModel(string dataProp, ThingAirQualityDTO airQualityModel)
         {
             if (dataProp.IndexOf(":") != -1)
             {
@@ -145,25 +185,24 @@ namespace OWLOSEcosystemService.Services.Things
             {
                 return "Bad token";
             }
-
             
 
             if (topic.IndexOf("AirQuality") != -1)
             {
-                ThingAirQualityModel airQualityModel = new ThingAirQualityModel
+                ThingAirQualityDTO airQualityModel = new ThingAirQualityDTO
                 {
                     Status = ThingAirQualityStatus.OnlineWithError
                 };
 
-                NumberStyles styles = NumberStyles.Float;
-                IFormatProvider provider = CultureInfo.CreateSpecificCulture("en-EN");                
+                airQualityModel.QueryTime = DateTime.Now;
+                airQualityModel.TickCount = long.Parse(dataRaw[3].Substring(dataRaw[3].IndexOf(":") + 1));
 
                 foreach (string dataProp in dataRaw)
                 {
                     if (string.IsNullOrEmpty(dataProp))
                     {
                         continue;
-                    }
+                    }                    
 
                     try
                     {
@@ -191,7 +230,7 @@ namespace OWLOSEcosystemService.Services.Things
         /// <param name="thingId"></param>
         /// <param name="airQualityModel"></param>
         /// <returns></returns>
-        private string SetAirQualityModelToThing(Guid UserId, int thingId, ThingAirQualityModel airQualityModel)
+        private string SetAirQualityModelToThing(Guid UserId, int thingId, ThingAirQualityDTO airQualityModel)
         {
             OWLOSThingWrapper thingWrapper = thingsManager.GetThingWrapperById(thingId);
             if ((thingWrapper != null) && (thingWrapper.Thing != null))

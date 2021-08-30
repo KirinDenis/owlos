@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace OWLOSEcosystemService.Migrations.ThingsDb
+namespace OWLOSEcosystemService.Migrations
 {
-    public partial class CreateThingsSchema : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

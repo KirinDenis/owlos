@@ -94,7 +94,7 @@ void AirQualityLoop()
       //TODO: Query 
       lastPublishMillis = millis();
 
-      String AirQualityPropertiesMode = "airqualityonly:" + String(thingGetHTTPClientAirQualityOnly()) + "\nqueryTime:" + String(lastPublishMillis) + "\n";
+      String AirQualityPropertiesMode = "airqualityonly:" + String(thingGetHTTPClientAirQualityOnly()) + "\nTickCount:" + String(lastPublishMillis) + "\n";
 
       if (_DHTDriver != nullptr)
       {

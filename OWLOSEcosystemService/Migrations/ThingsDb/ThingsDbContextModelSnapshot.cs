@@ -76,20 +76,11 @@ namespace OWLOSEcosystemService.Migrations.ThingsDb
                     b.Property<float>("ADS1X15Light")
                         .HasColumnType("float");
 
-                    b.Property<string>("ADS1X15Lighth")
-                        .HasColumnType("longtext");
-
                     b.Property<float>("ADS1X15MQ135")
                         .HasColumnType("float");
 
-                    b.Property<string>("ADS1X15MQ135h")
-                        .HasColumnType("longtext");
-
                     b.Property<float>("ADS1X15MQ7")
                         .HasColumnType("float");
-
-                    b.Property<string>("ADS1X15MQ7h")
-                        .HasColumnType("longtext");
 
                     b.Property<bool>("BMP280")
                         .HasColumnType("tinyint(1)");
@@ -97,20 +88,11 @@ namespace OWLOSEcosystemService.Migrations.ThingsDb
                     b.Property<float>("BMP280altitude")
                         .HasColumnType("float");
 
-                    b.Property<string>("BMP280altitudeh")
-                        .HasColumnType("longtext");
-
                     b.Property<float>("BMP280pressure")
                         .HasColumnType("float");
 
-                    b.Property<string>("BMP280pressureh")
-                        .HasColumnType("longtext");
-
                     b.Property<float>("BMP280temperature")
                         .HasColumnType("float");
-
-                    b.Property<string>("BMP280temperatureh")
-                        .HasColumnType("longtext");
 
                     b.Property<bool>("CCS811")
                         .HasColumnType("tinyint(1)");
@@ -118,26 +100,14 @@ namespace OWLOSEcosystemService.Migrations.ThingsDb
                     b.Property<float>("CCS811CO2")
                         .HasColumnType("float");
 
-                    b.Property<string>("CCS811CO2h")
-                        .HasColumnType("longtext");
-
                     b.Property<float>("CCS811TVOC")
                         .HasColumnType("float");
-
-                    b.Property<string>("CCS811TVOCh")
-                        .HasColumnType("longtext");
 
                     b.Property<float>("CCS811resistence")
                         .HasColumnType("float");
 
-                    b.Property<string>("CCS811resistenceh")
-                        .HasColumnType("longtext");
-
                     b.Property<float>("CCS811temp")
                         .HasColumnType("float");
-
-                    b.Property<string>("CCS811temph")
-                        .HasColumnType("longtext");
 
                     b.Property<bool>("DHT22")
                         .HasColumnType("tinyint(1)");
@@ -148,20 +118,8 @@ namespace OWLOSEcosystemService.Migrations.ThingsDb
                     b.Property<float>("DHT22heat")
                         .HasColumnType("float");
 
-                    b.Property<string>("DHT22heath")
-                        .HasColumnType("longtext");
-
                     b.Property<float>("DHT22hum")
                         .HasColumnType("float");
-
-                    b.Property<string>("DHT22humh")
-                        .HasColumnType("longtext");
-
-                    b.Property<float>("DHT22temp")
-                        .HasColumnType("float");
-
-                    b.Property<string>("DHT22temph")
-                        .HasColumnType("longtext");
 
                     b.Property<DateTime>("QueryTime")
                         .HasColumnType("datetime(6)");

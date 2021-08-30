@@ -159,7 +159,7 @@ namespace OWLOSEcosystemService.Controllers
 
             if (UserId != Guid.Empty)
             {
-                ThingAirQualityModel result = _thingsService.GetThingAirQualityModel(UserId, ThingId);
+                ThingAirQualityDTO result = _thingsService.GetThingAirQualityDTO(UserId, ThingId);
                 if ((result != null) && (!result.Status.Equals("NOT_FOUND")))
                 {
                     return Ok(result);
