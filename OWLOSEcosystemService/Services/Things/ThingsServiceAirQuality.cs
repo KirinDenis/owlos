@@ -65,28 +65,20 @@ namespace OWLOSEcosystemService.Services.Things
         /// <returns></returns>
         public ThingAirQualityDTO GetThingAirQualityDTO(Guid UserId, int ThingId)
         {
-            ThingAirQualityDTO result = new ThingAirQualityDTO();
+            ThingAirQualityDTO result = null;
 
             foreach (OWLOSThingWrapper thingWrapper in thingsManager.OWLOSThingWrappers)
             {
                 if ((thingWrapper.Thing.config.UserId.Equals(UserId)) && (thingWrapper.Thing.config.DbId == ThingId))
                 {
-                    result.Status = ThingAirQualityStatus.Offline;
-
-                    if ((thingWrapper.Thing.drivers == null) || (thingWrapper.Thing.drivers.Count == 0))
+                    
+                    if ((thingWrapper.Thing.drivers == null) || (thingWrapper.Thing.drivers.Count == 0) || (thingWrapper.Thing.lastAirQulityRecievedData == null))
                     {
                         break;
                     }
 
-                    NumberStyles styles = NumberStyles.Float;
-                    IFormatProvider provider = CultureInfo.CreateSpecificCulture("en-EN");
+                    result = thingWrapper.Thing.lastAirQulityRecievedData as ThingAirQualityDTO;
 
-                    result.Status = ThingAirQualityStatus.Online;
-                    result.QueryTime = DateTime.Now;
-
-                    //--- DHT22
-                    OWLOSDriver driver = thingWrapper.Thing.drivers.FirstOrDefault<OWLOSDriver>(d => d.name.Equals(DHT22SensorName));
-                    //_thingsRepository.AddAirQuality(UserId, ThingId, result);
                     break;
                 }
             }
@@ -94,16 +86,16 @@ namespace OWLOSEcosystemService.Services.Things
         }
 
 
-        private bool AirQualityPropKeyToModel(string dataProp, ThingAirQualityDTO airQualityModel)
+        private bool AirQualityPropKeyToModel(string dataProp, ThingAirQualityDTO airQualityDTO)
         {
             if (dataProp.IndexOf(":") != -1)
             {
                 string key = dataProp.Substring(0, dataProp.IndexOf(":"));
                 string value = dataProp.Substring(dataProp.IndexOf(":") + 1);
 
-                Type airQualityModelType = airQualityModel.GetType();
+                Type airQualityDTOType = airQualityDTO.GetType();
 
-                PropertyInfo propertyInfo = airQualityModelType.GetProperty(key);
+                PropertyInfo propertyInfo = airQualityDTOType.GetProperty(key);
 
                 if (propertyInfo == null)
                 {
@@ -114,35 +106,43 @@ namespace OWLOSEcosystemService.Services.Things
                 {
                     if (value.ToLower().Equals("yes") || value.ToLower().Equals("true"))
                     {
-                        propertyInfo.SetValue(airQualityModel, true, null);
+                        propertyInfo.SetValue(airQualityDTO, true, null);
                     }
                     else
                     {
-                        propertyInfo.SetValue(airQualityModel, false, null);
+                        propertyInfo.SetValue(airQualityDTO, false, null);
                     }
                     return true;
                 }
-                else 
+                else
                 if (propertyInfo.PropertyType == typeof(float))
                 {
-                    float floatValue;                    
+                    float floatValue;
                     if (float.TryParse(value, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out floatValue))
                     {
-                        propertyInfo.SetValue(airQualityModel, floatValue, null);
+                        propertyInfo.SetValue(airQualityDTO, floatValue, null);
                         return true;
                     }
                     else
                     {
-                        propertyInfo.SetValue(airQualityModel, float.NaN, null);
+                        propertyInfo.SetValue(airQualityDTO, float.NaN, null);
                         return true;
                     }
                 }
                 else //string 
                 {
-                    propertyInfo.SetValue(airQualityModel, value, null);
+                    propertyInfo.SetValue(airQualityDTO, value, null);
+                    //check is exists history
+                    if (key.IndexOf("HD") != -1)
+                    {
+                        if ((!string.IsNullOrEmpty(value)) && (value.IndexOf(";") != -1))
+                        {
+                            airQualityDTO.hasHistory = true;
+                        }
+                    }
                     return true;
                 }
-             }
+            }
             return false;
         }
 
@@ -185,56 +185,132 @@ namespace OWLOSEcosystemService.Services.Things
             {
                 return "Bad token";
             }
-            
+
 
             if (topic.IndexOf("AirQuality") != -1)
             {
-                ThingAirQualityDTO airQualityModel = new ThingAirQualityDTO
+                ThingAirQualityDTO airQualityDTO = new ThingAirQualityDTO
                 {
                     Status = ThingAirQualityStatus.OnlineWithError
                 };
 
-                airQualityModel.QueryTime = DateTime.Now;
-                airQualityModel.TickCount = long.Parse(dataRaw[3].Substring(dataRaw[3].IndexOf(":") + 1));
+                airQualityDTO.userId = thingConnectionProperties.UserId;
+                airQualityDTO.thingId = thingConnectionProperties.Id;
+
+                airQualityDTO.QueryTime = DateTime.Now;
+                airQualityDTO.TickCount = long.Parse(dataRaw[3].Substring(dataRaw[3].IndexOf(":") + 1));
 
                 foreach (string dataProp in dataRaw)
                 {
                     if (string.IsNullOrEmpty(dataProp))
                     {
                         continue;
-                    }                    
+                    }
 
                     try
                     {
-                        if (!AirQualityPropKeyToModel(dataProp, airQualityModel))
+                        if (!AirQualityPropKeyToModel(dataProp, airQualityDTO))
                         {
                             result += "bad key-value: " + dataProp + "\n";
                         }
                     }
                     catch (Exception e)
                     {
-                        result += "bad key-value: " + dataProp + " " + e.Message+ "\n";
+                        result += "bad key-value: " + dataProp + " " + e.Message + "\n";
                     }
                 }
-                airQualityModel.Status = ThingAirQualityStatus.Online;
-                return SetAirQualityModelToThing(thingConnectionProperties.UserId, thingConnectionProperties.Id, airQualityModel);
+                airQualityDTO.Status = ThingAirQualityStatus.Online;
+                return SetAirQualityModelToThing(thingConnectionProperties.UserId, thingConnectionProperties.Id, airQualityDTO);
             }
 
             return result;
         }
 
+        private void HistoryDataToDriverHistoryProperty(OWLOSDriverProperty property, string value, string historyValue, HistoryAction historyAction)
+        {
+            switch (historyAction)
+            {
+                case HistoryAction.Clean: property.SetOutside(string.Empty); break;
+                case HistoryAction.Replace: property.SetOutside(historyValue); break;
+                case HistoryAction.Аdd:
+                    
+                    List<string> valuesList = property.value.Split(';').ToList();
+                    //by default 30 values with data and first value is counter 
+                    if (valuesList.Count >= 31)
+                    {
+                        valuesList.RemoveAt(1);
+                        valuesList.Add(value);
+                    }
+                    else
+                    {
+                        if (valuesList.Count == 31) //empty history
+                        {
+                            valuesList.Add("1");
+                            valuesList.Add(value);
+                        }
+                        else
+                        {
+                            valuesList[0] = (valuesList.Count + 1).ToString();
+                            valuesList.Add(value);
+                        }
+                    }
+                    string newHistory = string.Empty;
+                    foreach(string newValue in valuesList)
+                    {
+                        newHistory += newValue + ";";
+                    }
+                    property.SetOutside(newHistory);
+                    break;
+                default: break; //default nothing
+            }
+        }
+
         /// <summary>
-        /// 
+        /// Analise previously thing statuses and data and update thing object model properties
         /// </summary>
         /// <param name="UserId"></param>
         /// <param name="thingId"></param>
-        /// <param name="airQualityModel"></param>
+        /// <param name="airQualityDTO"></param>
         /// <returns></returns>
-        private string SetAirQualityModelToThing(Guid UserId, int thingId, ThingAirQualityDTO airQualityModel)
+        private string SetAirQualityModelToThing(Guid UserId, int thingId, ThingAirQualityDTO airQualityDTO)
         {
             OWLOSThingWrapper thingWrapper = thingsManager.GetThingWrapperById(thingId);
             if ((thingWrapper != null) && (thingWrapper.Thing != null))
             {
+                //thing found
+                //Analise last network status and timing 
+                HistoryAction historyAction = HistoryAction.Nothing;
+
+                if (airQualityDTO.hasHistory)
+                {
+                    //if history is present and thing controller lost tick count or last session time up to 9 minutes
+                    if ((airQualityDTO.TickCount < thingWrapper.Thing.thingTickCount) || (airQualityDTO.QueryTime.Subtract(thingWrapper.Thing.lastSessionTime).TotalMinutes > 9))
+                    {
+                        historyAction = HistoryAction.Replace;
+                    }
+                    //else - default - do nothing ? or replace?
+                }
+                else
+                {
+                    //if history NOT present and thing controller lost tick count or last session time up to 9 minutes
+                    if ((airQualityDTO.TickCount < thingWrapper.Thing.thingTickCount) || (airQualityDTO.QueryTime.Subtract(thingWrapper.Thing.lastSessionTime).TotalMinutes > 9))
+                    {
+                        //controller is reboot and we have no history 
+                        historyAction = HistoryAction.Clean;
+                    }
+                    else
+                    {
+                        historyAction = HistoryAction.Аdd;
+                    }
+                }
+
+                //update thing object model statuses 
+                thingWrapper.Thing.networkStatus = NetworkStatus.Online;
+                thingWrapper.Thing.lastSessionTime = airQualityDTO.QueryTime;
+                thingWrapper.Thing.thingTickCount = airQualityDTO.TickCount;
+
+                thingWrapper.Thing.lastAirQulityRecievedData = airQualityDTO;
+
                 //--- DHT22 
                 OWLOSDriver dhtDriver = thingWrapper.Thing.drivers.FirstOrDefault<OWLOSDriver>(d => d.name.Equals(DHT22SensorName));
                 if (dhtDriver != null)
@@ -243,25 +319,25 @@ namespace OWLOSEcosystemService.Services.Things
                     property.SetOutside("1");
 
                     property = dhtDriver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("temperature"));
-                    property.SetOutside(airQualityModel.DHT22temp.ToString());
+                    property.SetOutside(airQualityDTO.DHT22temp.ToString());
 
                     property = dhtDriver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("temperaturehistorydata"));
-                    property.SetOutside(airQualityModel.DHT22temph);
+                    HistoryDataToDriverHistoryProperty(property, airQualityDTO.DHT22temp.ToString(), airQualityDTO.DHT22tempHD, historyAction);
 
                     property = dhtDriver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("humidity"));
-                    property.SetOutside(airQualityModel.DHT22hum.ToString());
+                    property.SetOutside(airQualityDTO.DHT22hum.ToString());
 
                     property = dhtDriver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("humidityhistorydata"));
-                    property.SetOutside(airQualityModel.DHT22humh);
-
+                    HistoryDataToDriverHistoryProperty(property, airQualityDTO.DHT22hum.ToString(), airQualityDTO.DHT22humHD, historyAction);
+                    
                     property = dhtDriver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("heatindex"));
-                    property.SetOutside(airQualityModel.DHT22heat.ToString());
+                    property.SetOutside(airQualityDTO.DHT22heat.ToString());
 
                     property = dhtDriver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("heatindexhistorydata"));
-                    property.SetOutside(airQualityModel.DHT22heath);
+                    HistoryDataToDriverHistoryProperty(property, airQualityDTO.DHT22heat.ToString(), airQualityDTO.DHT22heatHD, historyAction);
 
                     property = dhtDriver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("celsius"));
-                    if (airQualityModel.DHT22c)
+                    if (airQualityDTO.DHT22c)
                     {
                         property.SetOutside("1");
                     }
@@ -279,8 +355,8 @@ namespace OWLOSEcosystemService.Services.Things
 
             }
             //TEMPORARY
-            airQualityModel.QueryTime = DateTime.Now;
-            _thingsRepository.AddAirQuality(UserId, thingId, airQualityModel);
+            airQualityDTO.QueryTime = DateTime.Now;
+            
             return string.Empty;
         }
     }

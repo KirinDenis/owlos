@@ -58,7 +58,7 @@ namespace OWLOSEcosystemService.Repository.Things
 
         ThingsResultModel DeleteThingConnection(Guid UserId, int ThingId);
 
-        ThingsResultModel AddAirQuality(Guid UserId, int ThingId, ThingAirQualityDTO AirQualityModel);
+        ThingsResultModel AddAirQuality(ThingAirQualityDTO AirQualityDTO);
 
         Guid GetThingToken(ThingTokenDTO thingTokenDTO);
 

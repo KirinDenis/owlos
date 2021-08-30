@@ -158,14 +158,17 @@ namespace OWLOSEcosystemService.Repository.Things
             return result;
         }
 
-        public ThingsResultModel AddAirQuality(Guid UserId, int ThingId, ThingAirQualityDTO AirQualityModel)
+        public ThingsResultModel AddAirQuality(ThingAirQualityDTO AirQualityDTO)
         {
 
             ThingsResultModel resultModel = new ThingsResultModel();
 
             using (ThingsDbContext db = new ThingsDbContext())
             {
-                EntityEntry<ThingAirQualityDTO> AirQualityEntity = db.Add(AirQualityModel);
+                ThingAirQualityModel AirQualityModel = _mapper.Map<ThingAirQualityModel>(AirQualityDTO);
+
+
+                EntityEntry<ThingAirQualityModel> AirQualityEntity = db.Add(AirQualityModel);
                 db.SaveChanges();
                 if (AirQualityEntity != null)
                 {

@@ -53,7 +53,7 @@ namespace OWLOSEcosystemService.Services.Things
     public partial class ThingsService : IThingsService
     {
         #region IThingService
-        private readonly IThingsRepository _thingsRepository;
+        private static IThingsRepository _thingsRepository;
         private readonly IMapper _mapper;
 
         private readonly Thread _thingsManagerTread;
@@ -61,7 +61,7 @@ namespace OWLOSEcosystemService.Services.Things
         public ThingsService()
         {
             _mapper = new Mapper();
-            _thingsRepository =  new ThingsRepository(_mapper);
+            ThingsService._thingsRepository =  new ThingsRepository(_mapper);
 
 
             thingsManager = new ThingsManager();
@@ -352,7 +352,19 @@ namespace OWLOSEcosystemService.Services.Things
         {
             if (e.ThingWrapper != null)
             {
+                e.ThingWrapper.Thing.OnDataStore += Thing_OnDataStore;
+            }
+        }
 
+        //Temporary
+        private static void Thing_OnDataStore(object sender)
+        {
+            OWLOSThing thing = sender as OWLOSThing; 
+            if (thing.lastAirQulityRecievedData != null)
+            {
+                ThingAirQualityDTO thingAirQualityDTO = thing.lastAirQulityRecievedData as ThingAirQualityDTO;
+                _thingsRepository.AddAirQuality(thingAirQualityDTO);
+                
             }
         }
         #endregion

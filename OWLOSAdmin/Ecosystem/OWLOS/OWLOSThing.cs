@@ -91,7 +91,26 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
         private Timer lifeCycleTimer;
 
         public readonly RESTfulClientTransport _RESTfulClientTransport;
+
         public readonly UARTTransport _UARTTransport;
+
+        //AirQuality global network status and timings 
+
+        //Global thing network status 
+        public NetworkStatus networkStatus = NetworkStatus.Offline;
+        //Last session time (current time and offline when create
+        public DateTime lastSessionTime = DateTime.Now;
+        //Thing tick count when last session 
+        public long thingTickCount = 0;
+
+        //FOR DEBUG
+        public object lastAirQulityRecievedData = null;
+
+        //Time last outside store data 
+        public DateTime lastDataStoreTime = DateTime.Now;
+
+        public delegate void DataStoreEventHandler(object? sender);
+        public event DataStoreEventHandler OnDataStore;
 
         public OWLOSThing(OWLOSThingConfig config)
         {
@@ -159,6 +178,12 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
         }
         private async void OnLifeCycleTimer(object source, ElapsedEventArgs e)
         {
+            if((DateTime.Now - lastDataStoreTime).TotalSeconds > 60)
+            {
+                lastDataStoreTime = DateTime.Now;
+                DataStore();
+            }
+
             foreach (APIQueryInterval QueryInterval in config.APIQueryIntervals)
             {
                 if (!QueryInterval.Enable)
@@ -183,6 +208,13 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
                 }
             }
         }
+
+        protected virtual void DataStore()
+        {
+            OnDataStore?.Invoke(this);
+        }
+
+
         protected virtual void NewDriver(OWLOSDriverWrapperEventArgs e)
         {
             OnNewDriver?.Invoke(this, e);

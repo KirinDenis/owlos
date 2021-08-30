@@ -45,7 +45,7 @@ using static OWLOSThingsManager.Ecosystem.OWLOS.OWLOSDriverProperty;
 namespace OWLOSThingsManager.Ecosystem.OWLOS
 {
 
-
+    enum HistoryAction {Nothing, Аdd, Replace, Clean }
     public class OWLOSDriver
     {
         public OWLOSThing parentThing = null;
