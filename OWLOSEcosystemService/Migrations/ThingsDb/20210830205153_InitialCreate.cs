@@ -20,6 +20,7 @@ namespace OWLOSEcosystemService.Migrations.ThingsDb
                     Status = table.Column<int>(type: "int", nullable: false),
                     QueryTime = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     DHT22 = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    DHT22temp = table.Column<float>(type: "float", nullable: false),
                     DHT22hum = table.Column<float>(type: "float", nullable: false),
                     DHT22heat = table.Column<float>(type: "float", nullable: false),
                     DHT22c = table.Column<bool>(type: "tinyint(1)", nullable: false),

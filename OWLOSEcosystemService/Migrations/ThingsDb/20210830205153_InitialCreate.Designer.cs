@@ -9,7 +9,7 @@ using OWLOSEcosystemService.Data;
 namespace OWLOSEcosystemService.Migrations.ThingsDb
 {
     [DbContext(typeof(ThingsDbContext))]
-    [Migration("20210830162543_InitialCreate")]
+    [Migration("20210830205153_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -121,6 +121,9 @@ namespace OWLOSEcosystemService.Migrations.ThingsDb
                         .HasColumnType("float");
 
                     b.Property<float>("DHT22hum")
+                        .HasColumnType("float");
+
+                    b.Property<float>("DHT22temp")
                         .HasColumnType("float");
 
                     b.Property<DateTime>("QueryTime")

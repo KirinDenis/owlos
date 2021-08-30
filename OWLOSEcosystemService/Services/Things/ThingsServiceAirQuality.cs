@@ -194,7 +194,7 @@ namespace OWLOSEcosystemService.Services.Things
                     Status = ThingAirQualityStatus.OnlineWithError
                 };
 
-                airQualityDTO.userId = thingConnectionProperties.UserId;
+                airQualityDTO.Id = thingConnectionProperties.UserId;
                 airQualityDTO.thingId = thingConnectionProperties.Id;
 
                 airQualityDTO.QueryTime = DateTime.Now;

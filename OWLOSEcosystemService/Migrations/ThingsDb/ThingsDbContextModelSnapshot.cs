@@ -121,6 +121,9 @@ namespace OWLOSEcosystemService.Migrations.ThingsDb
                     b.Property<float>("DHT22hum")
                         .HasColumnType("float");
 
+                    b.Property<float>("DHT22temp")
+                        .HasColumnType("float");
+
                     b.Property<DateTime>("QueryTime")
                         .HasColumnType("datetime(6)");
 

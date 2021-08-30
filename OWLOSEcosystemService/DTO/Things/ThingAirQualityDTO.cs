@@ -9,7 +9,7 @@ namespace OWLOSEcosystemService.DTO.Things
     public class ThingAirQualityDTO
     {
         [Key]
-        public Guid userId { get; set; }
+        public Guid Id { get; set; }
         public int thingId { get; set; }
         public ThingAirQualityStatus Status { get; set; } = ThingAirQualityStatus.Error;
         public DateTime QueryTime { get; set; }

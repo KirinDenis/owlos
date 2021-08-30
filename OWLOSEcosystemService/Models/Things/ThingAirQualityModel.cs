@@ -12,6 +12,7 @@ namespace OWLOSEcosystemService.Models.Things
         public ThingAirQualityStatus Status { get; set; } = ThingAirQualityStatus.Error;
         public DateTime QueryTime { get; set; }
         public bool DHT22 { get; set; }
+        public float DHT22temp { get; set; }
         public float DHT22hum { get; set; }
         public float DHT22heat { get; set; }
         public bool DHT22c { get; set; }
