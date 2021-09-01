@@ -369,7 +369,7 @@ namespace OWLOSEcosystemService.Services.Things
                 ThingAirQualityDTO thingAirQualityDTO = null; 
 
                 //if thing never connected or last session (connection) time up to 70 seconds
-                if ((thing.lastSessionTime != null) && (DateTime.Now.Subtract((DateTime)thing.lastSessionTime).TotalSeconds > 70))
+                if ((thing.lastSessionTime != null) && (DateTime.Now.Subtract((DateTime)thing.lastSessionTime).TotalSeconds > 10)) //10 sec for debugging
                 {
                     thingAirQualityDTO = new ThingAirQualityDTO();  //Empty data with error
                 }
@@ -377,12 +377,13 @@ namespace OWLOSEcosystemService.Services.Things
                 {
                     //transfer data 
                     thingAirQualityDTO = thing.lastAirQulityRecievedData as ThingAirQualityDTO;
-                    thingAirQualityDTO.QueryTime = DateTime.Now;
+                    
                 }
 
                 //reset stored data 
-                thing.lastAirQulityRecievedData = new ThingAirQualityDTO();                
-                
+                thing.lastAirQulityRecievedData = new ThingAirQualityDTO();
+                thingAirQualityDTO.QueryTime = DateTime.Now;
+
                 _thingsRepository.AddAirQuality(thingAirQualityDTO);
                 
             }

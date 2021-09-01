@@ -120,7 +120,14 @@ namespace OWLOSEcosystemService.Services.Things
                     float floatValue;
                     if (float.TryParse(value, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out floatValue))
                     {
-                        propertyInfo.SetValue(airQualityDTO, floatValue, null);
+                        if ((!float.IsNaN(floatValue)) && (!float.IsInfinity(floatValue)))
+                        {
+                            propertyInfo.SetValue(airQualityDTO, floatValue, null);
+                        }
+                        else
+                        {
+                            propertyInfo.SetValue(airQualityDTO, null, null);
+                        }
                         return true;
                     }
                     else

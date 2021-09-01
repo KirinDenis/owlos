@@ -99,7 +99,8 @@ void AirQualityLoop()
       if (_DHTDriver != nullptr)
       {
           AirQualityPropertiesMode += "DHT22:yes\n";
-          AirQualityPropertiesMode += "DHT22temp:" +  _DHTDriver->temperature + "\n";
+        //  AirQualityPropertiesMode += "DHT22temp:" +  _DHTDriver->temperature + "\n";
+          AirQualityPropertiesMode += "DHT22temp:NaN\n";
           AirQualityPropertiesMode += "DHT22tempHD:" +  _DHTDriver->getTemperatureHistoryData() + "\n";
           AirQualityPropertiesMode += "DHT22hum:" +  _DHTDriver->humidity + "\n";
           AirQualityPropertiesMode += "DHT22humHD:" +  _DHTDriver->getHumidityHistoryData() + "\n";
