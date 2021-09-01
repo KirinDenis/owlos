@@ -356,13 +356,33 @@ namespace OWLOSEcosystemService.Services.Things
             }
         }
 
-        //Temporary
+        /// <summary>
+        /// Thing store data and Analise network status 
+        /// </summary>
+        /// <param name="sender"></param>
         private static void Thing_OnDataStore(object sender)
         {
             OWLOSThing thing = sender as OWLOSThing; 
             if (thing.lastAirQulityRecievedData != null)
             {
-                ThingAirQualityDTO thingAirQualityDTO = thing.lastAirQulityRecievedData as ThingAirQualityDTO;
+                //TODO remove the code to repository (thing - is argument)
+                ThingAirQualityDTO thingAirQualityDTO = null; 
+
+                //if thing never connected or last session (connection) time up to 70 seconds
+                if ((thing.lastSessionTime != null) && (DateTime.Now.Subtract((DateTime)thing.lastSessionTime).TotalSeconds > 70))
+                {
+                    thingAirQualityDTO = new ThingAirQualityDTO();  //Empty data with error
+                }
+                else
+                {
+                    //transfer data 
+                    thingAirQualityDTO = thing.lastAirQulityRecievedData as ThingAirQualityDTO;
+                    thingAirQualityDTO.QueryTime = DateTime.Now;
+                }
+
+                //reset stored data 
+                thing.lastAirQulityRecievedData = new ThingAirQualityDTO();                
+                
                 _thingsRepository.AddAirQuality(thingAirQualityDTO);
                 
             }

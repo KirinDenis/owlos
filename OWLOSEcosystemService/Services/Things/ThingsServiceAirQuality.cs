@@ -115,7 +115,7 @@ namespace OWLOSEcosystemService.Services.Things
                     return true;
                 }
                 else
-                if (propertyInfo.PropertyType == typeof(float))
+                if ((propertyInfo.PropertyType == typeof(float)) || (propertyInfo.PropertyType == typeof(float?)))
                 {
                     float floatValue;
                     if (float.TryParse(value, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out floatValue))
@@ -125,7 +125,37 @@ namespace OWLOSEcosystemService.Services.Things
                     }
                     else
                     {
-                        propertyInfo.SetValue(airQualityDTO, float.NaN, null);
+                        propertyInfo.SetValue(airQualityDTO, null, null);
+                        return true;
+                    }
+                }
+                else
+                if (propertyInfo.PropertyType == typeof(long))
+                {
+                    long longValue;
+                    if (long.TryParse(value, out longValue))
+                    {
+                        propertyInfo.SetValue(airQualityDTO, longValue, null);
+                        return true;
+                    }
+                    else
+                    {
+                        propertyInfo.SetValue(airQualityDTO, null, null);
+                        return true;
+                    }
+                }
+                else
+                if (propertyInfo.PropertyType == typeof(int))
+                {
+                    int intValue;
+                    if (int.TryParse(value, out intValue))
+                    {
+                        propertyInfo.SetValue(airQualityDTO, intValue, null);
+                        return true;
+                    }
+                    else
+                    {
+                        propertyInfo.SetValue(airQualityDTO, null, null);
                         return true;
                     }
                 }
@@ -194,8 +224,8 @@ namespace OWLOSEcosystemService.Services.Things
                     Status = ThingAirQualityStatus.OnlineWithError
                 };
 
-                airQualityDTO.Id = thingConnectionProperties.UserId;
-                airQualityDTO.thingId = thingConnectionProperties.Id;
+                airQualityDTO.UserId = thingConnectionProperties.UserId;
+                airQualityDTO.ThingId = thingConnectionProperties.Id;
 
                 airQualityDTO.QueryTime = DateTime.Now;
                 airQualityDTO.TickCount = long.Parse(dataRaw[3].Substring(dataRaw[3].IndexOf(":") + 1));
@@ -284,7 +314,14 @@ namespace OWLOSEcosystemService.Services.Things
                 if (airQualityDTO.hasHistory)
                 {
                     //if history is present and thing controller lost tick count or last session time up to 9 minutes
-                    if ((airQualityDTO.TickCount < thingWrapper.Thing.thingTickCount) || (airQualityDTO.QueryTime.Subtract(thingWrapper.Thing.lastSessionTime).TotalMinutes > 9))
+                    if (thingWrapper.Thing.lastSessionTime != null)
+                    {
+                        if ((airQualityDTO.TickCount < thingWrapper.Thing.thingTickCount) || (airQualityDTO.QueryTime?.Subtract(((DateTime)thingWrapper.Thing.lastSessionTime)).TotalMinutes > 9))
+                        {
+                            historyAction = HistoryAction.Replace;
+                        }
+                    }
+                    else //it is first session 
                     {
                         historyAction = HistoryAction.Replace;
                     }
@@ -293,15 +330,19 @@ namespace OWLOSEcosystemService.Services.Things
                 else
                 {
                     //if history NOT present and thing controller lost tick count or last session time up to 9 minutes
-                    if ((airQualityDTO.TickCount < thingWrapper.Thing.thingTickCount) || (airQualityDTO.QueryTime.Subtract(thingWrapper.Thing.lastSessionTime).TotalMinutes > 9))
+                    if (thingWrapper.Thing.lastSessionTime != null)
                     {
-                        //controller is reboot and we have no history 
-                        historyAction = HistoryAction.Clean;
+                        if ((airQualityDTO.TickCount < thingWrapper.Thing.thingTickCount) || (airQualityDTO.QueryTime?.Subtract((DateTime)thingWrapper.Thing.lastSessionTime).TotalMinutes > 9))
+                        {
+                            //controller is reboot and we have no history 
+                            historyAction = HistoryAction.Clean;
+                        }
+                        else
+                        {
+                            historyAction = HistoryAction.Аdd;
+                        }
                     }
-                    else
-                    {
-                        historyAction = HistoryAction.Аdd;
-                    }
+                    //else nothing to do with local copy of history
                 }
 
                 //update thing object model statuses 
@@ -337,7 +378,7 @@ namespace OWLOSEcosystemService.Services.Things
                     HistoryDataToDriverHistoryProperty(property, airQualityDTO.DHT22heat.ToString(), airQualityDTO.DHT22heatHD, historyAction);
 
                     property = dhtDriver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("celsius"));
-                    if (airQualityDTO.DHT22c)
+                    if ((airQualityDTO.DHT22c != null) && ((bool)airQualityDTO.DHT22c))
                     {
                         property.SetOutside("1");
                     }

@@ -99,9 +99,9 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
         //Global thing network status 
         public NetworkStatus networkStatus = NetworkStatus.Offline;
         //Last session time (current time and offline when create
-        public DateTime lastSessionTime = DateTime.Now;
+        public DateTime? lastSessionTime = null;
         //Thing tick count when last session 
-        public long thingTickCount = 0;
+        public long? thingTickCount = null;
 
         //FOR DEBUG
         public object lastAirQulityRecievedData = null;
@@ -178,7 +178,7 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
         }
         private async void OnLifeCycleTimer(object source, ElapsedEventArgs e)
         {
-            if((DateTime.Now - lastDataStoreTime).TotalSeconds > 60)
+            if((DateTime.Now - lastDataStoreTime).TotalSeconds > 5)
             {
                 lastDataStoreTime = DateTime.Now;
                 DataStore();

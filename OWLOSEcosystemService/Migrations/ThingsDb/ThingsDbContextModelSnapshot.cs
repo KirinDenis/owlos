@@ -73,40 +73,40 @@ namespace OWLOSEcosystemService.Migrations.ThingsDb
                     b.Property<bool>("ADS1X15")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<float>("ADS1X15Light")
+                    b.Property<float?>("ADS1X15Light")
                         .HasColumnType("float");
 
-                    b.Property<float>("ADS1X15MQ135")
+                    b.Property<float?>("ADS1X15MQ135")
                         .HasColumnType("float");
 
-                    b.Property<float>("ADS1X15MQ7")
+                    b.Property<float?>("ADS1X15MQ7")
                         .HasColumnType("float");
 
                     b.Property<bool>("BMP280")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<float>("BMP280altitude")
+                    b.Property<float?>("BMP280altitude")
                         .HasColumnType("float");
 
-                    b.Property<float>("BMP280pressure")
+                    b.Property<float?>("BMP280pressure")
                         .HasColumnType("float");
 
-                    b.Property<float>("BMP280temperature")
+                    b.Property<float?>("BMP280temperature")
                         .HasColumnType("float");
 
                     b.Property<bool>("CCS811")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<float>("CCS811CO2")
+                    b.Property<float?>("CCS811CO2")
                         .HasColumnType("float");
 
-                    b.Property<float>("CCS811TVOC")
+                    b.Property<float?>("CCS811TVOC")
                         .HasColumnType("float");
 
-                    b.Property<float>("CCS811resistence")
+                    b.Property<float?>("CCS811resistence")
                         .HasColumnType("float");
 
-                    b.Property<float>("CCS811temp")
+                    b.Property<float?>("CCS811temp")
                         .HasColumnType("float");
 
                     b.Property<bool>("DHT22")
@@ -115,20 +115,23 @@ namespace OWLOSEcosystemService.Migrations.ThingsDb
                     b.Property<bool>("DHT22c")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<float>("DHT22heat")
+                    b.Property<float?>("DHT22heat")
                         .HasColumnType("float");
 
-                    b.Property<float>("DHT22hum")
+                    b.Property<float?>("DHT22hum")
                         .HasColumnType("float");
 
-                    b.Property<float>("DHT22temp")
+                    b.Property<float?>("DHT22temp")
                         .HasColumnType("float");
 
-                    b.Property<DateTime>("QueryTime")
+                    b.Property<DateTime?>("QueryTime")
                         .HasColumnType("datetime(6)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
+
+                    b.Property<long?>("TickCount")
+                        .HasColumnType("bigint");
 
                     b.HasKey("id");
 

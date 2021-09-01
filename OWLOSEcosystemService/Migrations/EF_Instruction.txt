@@ -25,3 +25,4 @@ dotnet ef migrations add InitialCreate --project OWLOSEcosystemService --context
 dotnet ef database update InitialCreate --project OWLOSEcosystemService --context ApplicationDbContext
 dotnet ef database update InitialCreate  --project OWLOSEcosystemService --context ThingsDbContext
 
+
