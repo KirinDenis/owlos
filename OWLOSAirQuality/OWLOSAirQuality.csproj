@@ -4,6 +4,38 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <AssemblyVersion>1.2.0.0</AssemblyVersion>
+    <FileVersion>1.2.0.0</FileVersion>
+    <Version>1.2.0</Version>
+    <Authors>Mónica (rovt@ua.fm) Yan Sokolov (Dadras279@gmail.com) Serhii Demyanov (demianfog@gmail.com) Serhii Lehkii (sergey@light.kiev.ua) Konstantin Brul (konstabrul@gmail.com) Vitalii Glushchenko (cehoweek@gmail.com) Stanislav Kvashchuk (skat@ukr.net) Boris Pavlov (hiroyashy@gmail.com) Denys Melnychuk (meldenvar@gmail.com) Denis Kirin (deniskirinacs@gmail.com)</Authors>
+    <Company>OWLOS</Company>
+    <Product>OWLOS Air Quality Desktop UX</Product>
+    <Description>OWLOS
+DIY Open Source OS for building IoT ecosystems
+
+[ESP32, ESP8266]
+
+    built-in sensors, actuators, LCDs, DHTs, Steppers and other drivers
+    built-in script language interpreter
+    built-in HTTP(S) RESTful server, RESTful client, MQTT client
+    WiFi access point/station modes
+    OTA supported
+    UART AT+ interface supported
+    flexible assembly configuration (config.h)
+    Web and desktop UX
+    doesn't require programming skills
+    doesn't require internet and additional servers
+    Open Source under GPL-3.0 License
+</Description>
+    <Copyright>Copyright 2019, 2020, 2021 by Mónica (rovt@ua.fm) Yan Sokolov (Dadras279@gmail.com) Serhii Demyanov (demianfog@gmail.com) Serhii Lehkii (sergey@light.kiev.ua) Konstantin Brul (konstabrul@gmail.com) Vitalii Glushchenko (cehoweek@gmail.com) Stanislav Kvashchuk (skat@ukr.net) Boris Pavlov (hiroyashy@gmail.com) Denys Melnychuk (meldenvar@gmail.com) Denis Kirin (deniskirinacs@gmail.com)</Copyright>
+    <PackageProjectUrl>https://owlos.org</PackageProjectUrl>
+    <PackageReleaseNotes>OWLOS Air Quality</PackageReleaseNotes>
+    <PackageIcon>owlos_logo_2.jpg</PackageIcon>
+    <RepositoryUrl>https://github.com/KirinDenis/owlos</RepositoryUrl>
+    <RepositoryType>GIT</RepositoryType>
+    <PackageTags>OWLOS IoT Ecosystem</PackageTags>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <ItemGroup>
@@ -38,6 +70,17 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="System.IO.Ports" Version="4.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\OWLOSResource\images\owlos_logo_2.jpg">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -4,11 +4,23 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
+    <Authors>Mónica (rovt@ua.fm) Yan Sokolov (Dadras279@gmail.com) Serhii Demyanov (demianfog@gmail.com) Serhii Lehkii (sergey@light.kiev.ua) Konstantin Brul (konstabrul@gmail.com) Vitalii Glushchenko (cehoweek@gmail.com) Stanislav Kvashchuk (skat@ukr.net) Boris Pavlov (hiroyashy@gmail.com) Denys Melnychuk (meldenvar@gmail.com) Denis Kirin (deniskirinacs@gmail.com)</Authors>
+    <Company>OWLSO</Company>
+    <Product>OWLOS Admin module</Product>
+    <PackageProjectUrl>https://owlos.org</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/KirinDenis/owlos</RepositoryUrl>
+    <Version>1.1.0</Version>
+    <Copyright>Mónica (rovt@ua.fm) Yan Sokolov (Dadras279@gmail.com) Serhii Demyanov (demianfog@gmail.com) Serhii Lehkii (sergey@light.kiev.ua) Konstantin Brul (konstabrul@gmail.com) Vitalii Glushchenko (cehoweek@gmail.com) Stanislav Kvashchuk (skat@ukr.net) Boris Pavlov (hiroyashy@gmail.com) Denys Melnychuk (meldenvar@gmail.com) Denis Kirin (deniskirinacs@gmail.com)</Copyright>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Resources\drawable\icons.png" />
     <None Remove="Resources\drawable\owlos_core4.jpg" />
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

@@ -3,6 +3,37 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>aspnet-OWLOSEcosystemService-83DC8282-4A4B-415A-A7DA-BE9AC8135BD6</UserSecretsId>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Version>1.2.0</Version>
+    <PackageProjectUrl>https://owlos.org</PackageProjectUrl>
+    <Description>OWLOS
+DIY Open Source OS for building IoT ecosystems
+
+[ESP32, ESP8266]
+
+    built-in sensors, actuators, LCDs, DHTs, Steppers and other drivers
+    built-in script language interpreter
+    built-in HTTP(S) RESTful server, RESTful client, MQTT client
+    WiFi access point/station modes
+    OTA supported
+    UART AT+ interface supported
+    flexible assembly configuration (config.h)
+    Web and desktop UX
+    doesn't require programming skills
+    doesn't require internet and additional servers
+    Open Source under GPL-3.0 License
+</Description>
+    <Copyright>Denis Kirin (deniskirinacs@gmail.com) Denys Melnychuk (meldenvar@gmail.com) Vitalii Glushchenko (cehoweek@gmail.com) Stanislav Kvashchuk (skat@ukr.net)</Copyright>
+    <RepositoryUrl>https://github.com/KirinDenis/owlos</RepositoryUrl>
+    <RepositoryType>GIT</RepositoryType>
+    <PackageTags>IoT OWLOS Ecosystem ESP32</PackageTags>
+    <PackageReleaseNotes>OWLOS Air Quality</PackageReleaseNotes>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageIcon>owlos_logo_2.jpg</PackageIcon>
+    <NeutralLanguage>en</NeutralLanguage>
+    <Authors>Mónica (rovt@ua.fm) Yan Sokolov (Dadras279@gmail.com) Serhii Demyanov (demianfog@gmail.com) Serhii Lehkii (sergey@light.kiev.ua) Konstantin Brul (konstabrul@gmail.com) Vitalii Glushchenko (cehoweek@gmail.com) Stanislav Kvashchuk (skat@ukr.net) Boris Pavlov (hiroyashy@gmail.com) Denys Melnychuk (meldenvar@gmail.com) Denis Kirin (deniskirinacs@gmail.com)</Authors>
+    <Company>OWLOS</Company>
+    <Product>OWLOS Ecosystem Service</Product>
   </PropertyGroup>
 
   <ItemGroup>
@@ -41,6 +72,17 @@
     <Folder Include="Migrations\ThingsDb\" />
     <Folder Include="OWLOSEcosystem\" />
     <Folder Include="OWLOS\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\OWLOSResource\images\owlos_logo_2.jpg">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
