@@ -57,7 +57,7 @@ namespace OWLOSEcosystemService.Data
 
         public ThingsDbContext() : base(ThingsDbContext.options)
         {
-
+            
         }
 
     }

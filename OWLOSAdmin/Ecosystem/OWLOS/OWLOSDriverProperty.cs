@@ -249,6 +249,19 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
             }
         }
 
+        public void SetOutside(bool _value)
+        {
+            string strValue = _value ? "1" : "0";
+            
+            if ( !strValue.Equals(value))
+            {
+                networkStatus = NetworkStatus.Online;
+                value = strValue;
+                PropertySetOutside(new OWLOSPropertyWrapperEventArgs(this));
+            }
+        }
+
+
     }
 
 }

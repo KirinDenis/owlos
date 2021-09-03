@@ -40,9 +40,11 @@ OWLOS распространяется в надежде, что она буде
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using OWLOSEcosystemService.DTO.Things;
 using OWLOSEcosystemService.Models.Things;
 using OWLOSEcosystemService.Services.Things;
+using OWLOSThingsManager.Ecosystem.OWLOS;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -171,6 +173,36 @@ namespace OWLOSEcosystemService.Controllers
             }
             return Unauthorized("Wrong claims or not authorize, please SignIn");
         }
+
+        /// <summary>
+        /// Get all drivers properties
+        /// </summary>        
+        /// <returns></returns>
+        [Route("Things/GetThingAllDriversProperties")]
+        [HttpGet]
+        public IActionResult GetThingAllDriversProperties(int ThingId)
+        {
+            Guid UserId = GetUserId();
+
+            if (UserId != Guid.Empty)
+            {
+
+                List<ThingDriverPropertiesDTO> drivers = _thingsService.GetThingAllDriversProperties(UserId, ThingId);
+                if (drivers != null)
+                {
+                    return Ok(drivers);
+                }
+                else
+                {
+                    return BadRequest("Thing not found");
+                }
+            }
+            else
+            {
+                return Unauthorized("Wrong claims or not authorize, please SignIn");
+            }
+        }
+
 
         #endregion
 

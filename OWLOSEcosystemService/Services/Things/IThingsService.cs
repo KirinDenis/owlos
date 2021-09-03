@@ -39,6 +39,7 @@ OWLOS распространяется в надежде, что она буде
 
 using OWLOSEcosystemService.DTO.Things;
 using OWLOSEcosystemService.Models.Things;
+using OWLOSThingsManager.Ecosystem.OWLOS;
 using System;
 using System.Collections.Generic;
 
@@ -58,6 +59,8 @@ namespace OWLOSEcosystemService.Services.Things
         ThingsResultModel DeleteThingConnection(Guid UserId, int ThingId);
 
         List<ThingWrapperModel> GetThingsWrappers();
+
+        List<ThingDriverPropertiesDTO> GetThingAllDriversProperties(Guid UserId, int ThingId);
         #endregion
 
         #region AirQuality

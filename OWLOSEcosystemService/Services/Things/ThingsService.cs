@@ -96,10 +96,11 @@ namespace OWLOSEcosystemService.Services.Things
 
             if (!resultModel.Error)
             {
-                ThingTokenDTO thingToken = new ThingTokenDTO();
-
-                thingToken.UserId = connectionPropertiesDTO.UserId;
-                thingToken.ThingId = int.Parse(resultModel.Result);                
+                ThingTokenDTO thingToken = new ThingTokenDTO
+                {
+                    UserId = connectionPropertiesDTO.UserId,
+                    ThingId = int.Parse(resultModel.Result)
+                };
 
                 connectionPropertiesDTO.Token = GetThingToken(thingToken);
 
@@ -169,15 +170,19 @@ namespace OWLOSEcosystemService.Services.Things
                     Config = wrapper.Thing.config
                 };
 
-                thingWrapperModel.HTTP = new RESTfulClientTransport(null);
-                thingWrapperModel.HTTP.totlaSend = wrapper.Thing._RESTfulClientTransport.totlaSend;
-                thingWrapperModel.HTTP.totlaRecv = wrapper.Thing._RESTfulClientTransport.totlaRecv;
-                thingWrapperModel.HTTP.connection = wrapper.Thing._RESTfulClientTransport.connection;
+                thingWrapperModel.HTTP = new RESTfulClientTransport(null)
+                {
+                    totlaSend = wrapper.Thing._RESTfulClientTransport.totlaSend,
+                    totlaRecv = wrapper.Thing._RESTfulClientTransport.totlaRecv,
+                    connection = wrapper.Thing._RESTfulClientTransport.connection
+                };
 
-                thingWrapperModel.UART = new UARTTransport(null);
-                thingWrapperModel.UART.totlaSend = wrapper.Thing._UARTTransport.totlaSend;
-                thingWrapperModel.UART.totlaRecv = wrapper.Thing._UARTTransport.totlaRecv;
-                thingWrapperModel.UART.connection = wrapper.Thing._UARTTransport.connection;
+                thingWrapperModel.UART = new UARTTransport(null)
+                {
+                    totlaSend = wrapper.Thing._UARTTransport.totlaSend,
+                    totlaRecv = wrapper.Thing._UARTTransport.totlaRecv,
+                    connection = wrapper.Thing._UARTTransport.connection
+                };
 
                 result.Add(thingWrapperModel);
 
@@ -283,14 +288,50 @@ namespace OWLOSEcosystemService.Services.Things
             OWLOSDriver driver = new OWLOSDriver(thingWrapper.Thing, "dht22");
             driver.properties.Add(new OWLOSDriverProperty(driver, "available", "nan", "b"));
             driver.properties.Add(new OWLOSDriverProperty(driver, "temperature", "nan", "rf"));
-
             driver.properties.Add(new OWLOSDriverProperty(driver, "temperaturehistorydata", "nan", "r"));
-
             driver.properties.Add(new OWLOSDriverProperty(driver, "humidity", "nan", "rf"));
             driver.properties.Add(new OWLOSDriverProperty(driver, "humidityhistorydata", "nan", "r"));
             driver.properties.Add(new OWLOSDriverProperty(driver, "heatindex", "nan", "rf"));
             driver.properties.Add(new OWLOSDriverProperty(driver, "heatindexhistorydata", "nan", "r"));
             driver.properties.Add(new OWLOSDriverProperty(driver, "celsius", "nan", "rf"));
+            thingWrapper.Thing.drivers.Add(driver);
+
+            driver = new OWLOSDriver(thingWrapper.Thing, "bmp280");
+            driver.properties.Add(new OWLOSDriverProperty(driver, "available", "nan", "b"));
+            driver.properties.Add(new OWLOSDriverProperty(driver, "pressure", "nan", "rf"));
+            driver.properties.Add(new OWLOSDriverProperty(driver, "pressurehistorydata", "nan", "r"));
+            driver.properties.Add(new OWLOSDriverProperty(driver, "altitude", "nan", "rf"));
+            driver.properties.Add(new OWLOSDriverProperty(driver, "altitudehistorydata", "nan", "r"));
+            driver.properties.Add(new OWLOSDriverProperty(driver, "temperature", "nan", "rf"));
+            driver.properties.Add(new OWLOSDriverProperty(driver, "temperaturehistorydata", "nan", "r"));
+            thingWrapper.Thing.drivers.Add(driver);
+
+            driver = new OWLOSDriver(thingWrapper.Thing, "ads1x15");
+            driver.properties.Add(new OWLOSDriverProperty(driver, "available", "nan", "b"));
+            driver.properties.Add(new OWLOSDriverProperty(driver, "chanel_0", "nan", "rf"));
+            driver.properties.Add(new OWLOSDriverProperty(driver, "chanel_0_volts", "nan", "rf"));
+            driver.properties.Add(new OWLOSDriverProperty(driver, "chanel_0_historydata", "nan", "r"));
+            driver.properties.Add(new OWLOSDriverProperty(driver, "chanel_1", "nan", "rf"));
+            driver.properties.Add(new OWLOSDriverProperty(driver, "chanel_1_volts", "nan", "rf"));
+            driver.properties.Add(new OWLOSDriverProperty(driver, "chanel_1_historydata", "nan", "r"));
+            driver.properties.Add(new OWLOSDriverProperty(driver, "chanel_2", "nan", "rf"));
+            driver.properties.Add(new OWLOSDriverProperty(driver, "chanel_2_volts", "nan", "rf"));
+            driver.properties.Add(new OWLOSDriverProperty(driver, "chanel_2_historydata", "nan", "r"));
+            driver.properties.Add(new OWLOSDriverProperty(driver, "chanel_3", "nan", "rf"));
+            driver.properties.Add(new OWLOSDriverProperty(driver, "chanel_3_volts", "nan", "rf"));
+            driver.properties.Add(new OWLOSDriverProperty(driver, "chanel_3_historydata", "nan", "r"));
+            thingWrapper.Thing.drivers.Add(driver);
+
+            driver = new OWLOSDriver(thingWrapper.Thing, "ccs811");
+            driver.properties.Add(new OWLOSDriverProperty(driver, "available", "nan", "b"));
+            driver.properties.Add(new OWLOSDriverProperty(driver, "co2", "nan", "rf"));
+            driver.properties.Add(new OWLOSDriverProperty(driver, "co2historydata", "nan", "r"));
+            driver.properties.Add(new OWLOSDriverProperty(driver, "tvoc", "nan", "rf"));
+            driver.properties.Add(new OWLOSDriverProperty(driver, "tvochistorydata", "nan", "r"));
+            driver.properties.Add(new OWLOSDriverProperty(driver, "resistence", "nan", "rf"));
+            driver.properties.Add(new OWLOSDriverProperty(driver, "resistencehistorydata", "nan", "r"));
+            driver.properties.Add(new OWLOSDriverProperty(driver, "temperature", "nan", "rf"));
+            driver.properties.Add(new OWLOSDriverProperty(driver, "temperaturehistorydata", "nan", "r"));
 
             thingWrapper.Thing.drivers.Add(driver);
             return true;
@@ -304,6 +345,45 @@ namespace OWLOSEcosystemService.Services.Things
         {
             return _thingsRepository.GetAllThingsConnections();
         }
+
+        /// <summary>
+        /// Get thing all drivers properties
+        /// </summary>
+        /// <param name="UserId"></param>
+        /// <param name="ThingId"></param>
+        /// <returns></returns>
+        public List<ThingDriverPropertiesDTO> GetThingAllDriversProperties(Guid UserId, int ThingId)
+        {
+            List<ThingDriverPropertiesDTO> driversPropertiesDTO = new List<ThingDriverPropertiesDTO>();
+
+            foreach (OWLOSThingWrapper wrapper in thingsManager.OWLOSThingWrappers)
+            {
+                if ((wrapper.Thing.config.UserId.Equals(UserId)) && (wrapper.Thing.config.DbId == ThingId))
+                {                    
+                    foreach(OWLOSDriver driver in wrapper.Thing.drivers)
+                    {
+                        ThingDriverPropertiesDTO thingDriverPropertiesDTO = new ThingDriverPropertiesDTO
+                        {
+                            name = driver.name,
+                            properties = new List<ThingDriverPropertyDTO>()
+                        };
+                        driversPropertiesDTO.Add(thingDriverPropertiesDTO);
+
+                        foreach (OWLOSDriverProperty property in driver.properties)
+                        {
+                            thingDriverPropertiesDTO.properties.Add(new ThingDriverPropertyDTO()
+                            {
+                                name = property.name,
+                                value = property.value
+                            });
+                        }                            
+                    }
+                    return driversPropertiesDTO;
+                }
+            }
+            return null;
+        }
+
         #endregion
 
         #region ThingsThreadManager
@@ -376,8 +456,7 @@ namespace OWLOSEcosystemService.Services.Things
                 else
                 {
                     //transfer data 
-                    thingAirQualityDTO = thing.lastAirQulityRecievedData as ThingAirQualityDTO;
-                    
+                    thingAirQualityDTO = thing.lastAirQulityRecievedData as ThingAirQualityDTO;                    
                 }
 
                 //reset stored data 

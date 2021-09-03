@@ -55,7 +55,7 @@ namespace OWLOSEcosystemService.Services.Things
         private const string DHT22SensorName = "dht22";
         private const string BMP280SensorName = "bmp280";
         private const string ADS1X15SensorName = "ads1x15";
-        private const string CSS811SensorName = "css811";
+        private const string CCS811SensorName = "ccs811";
 
         /// <summary>
         /// 
@@ -102,7 +102,7 @@ namespace OWLOSEcosystemService.Services.Things
                     return false;
                 }
 
-                if (propertyInfo.PropertyType == typeof(bool))
+                if ((propertyInfo.PropertyType == typeof(bool)) || (propertyInfo.PropertyType == typeof(bool?)))
                 {
                     if (value.ToLower().Equals("yes") || value.ToLower().Equals("true"))
                     {
@@ -137,7 +137,7 @@ namespace OWLOSEcosystemService.Services.Things
                     }
                 }
                 else
-                if (propertyInfo.PropertyType == typeof(long))
+                if ((propertyInfo.PropertyType == typeof(long)) || (propertyInfo.PropertyType == typeof(long?)))
                 {
                     long longValue;
                     if (long.TryParse(value, out longValue))
@@ -152,7 +152,7 @@ namespace OWLOSEcosystemService.Services.Things
                     }
                 }
                 else
-                if (propertyInfo.PropertyType == typeof(int))
+                if ((propertyInfo.PropertyType == typeof(int)) || (propertyInfo.PropertyType == typeof(int?)))
                 {
                     int intValue;
                     if (int.TryParse(value, out intValue))
@@ -311,6 +311,8 @@ namespace OWLOSEcosystemService.Services.Things
         /// <returns></returns>
         private string SetAirQualityModelToThing(Guid UserId, int thingId, ThingAirQualityDTO airQualityDTO)
         {
+            string result = string.Empty;
+
             OWLOSThingWrapper thingWrapper = thingsManager.GetThingWrapperById(thingId);
             if ((thingWrapper != null) && (thingWrapper.Thing != null))
             {
@@ -359,50 +361,152 @@ namespace OWLOSEcosystemService.Services.Things
 
                 thingWrapper.Thing.lastAirQulityRecievedData = airQualityDTO;
 
-                //--- DHT22 
-                OWLOSDriver dhtDriver = thingWrapper.Thing.drivers.FirstOrDefault<OWLOSDriver>(d => d.name.Equals(DHT22SensorName));
-                if (dhtDriver != null)
-                {
-                    OWLOSDriverProperty property = dhtDriver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("available"));
-                    property.SetOutside("1");
+                //--- DHT22 Sensor Driver
+                OWLOSDriver DHT22Driver = thingWrapper.Thing.drivers.FirstOrDefault<OWLOSDriver>(d => d.name.Equals(DHT22SensorName));
+                if (DHT22Driver != null)
+                {                    
+                    OWLOSDriverProperty property = DHT22Driver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("available"));
+                    property.SetOutside(airQualityDTO.DHT22);
 
-                    property = dhtDriver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("temperature"));
+                    property = DHT22Driver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("temperature"));
                     property.SetOutside(airQualityDTO.DHT22temp.ToString());
 
-                    property = dhtDriver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("temperaturehistorydata"));
+                    property = DHT22Driver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("temperaturehistorydata"));
                     HistoryDataToDriverHistoryProperty(property, airQualityDTO.DHT22temp.ToString(), airQualityDTO.DHT22tempHD, historyAction);
 
-                    property = dhtDriver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("humidity"));
+                    property = DHT22Driver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("humidity"));
                     property.SetOutside(airQualityDTO.DHT22hum.ToString());
 
-                    property = dhtDriver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("humidityhistorydata"));
+                    property = DHT22Driver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("humidityhistorydata"));
                     HistoryDataToDriverHistoryProperty(property, airQualityDTO.DHT22hum.ToString(), airQualityDTO.DHT22humHD, historyAction);
                     
-                    property = dhtDriver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("heatindex"));
+                    property = DHT22Driver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("heatindex"));
                     property.SetOutside(airQualityDTO.DHT22heat.ToString());
 
-                    property = dhtDriver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("heatindexhistorydata"));
+                    property = DHT22Driver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("heatindexhistorydata"));
                     HistoryDataToDriverHistoryProperty(property, airQualityDTO.DHT22heat.ToString(), airQualityDTO.DHT22heatHD, historyAction);
 
-                    property = dhtDriver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("celsius"));
-                    if ((airQualityDTO.DHT22c != null) && ((bool)airQualityDTO.DHT22c))
+                    property = DHT22Driver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("celsius"));
+                    if (airQualityDTO.DHT22c != null)
                     {
-                        property.SetOutside("1");
-                    }
-                    else
-                    {
-                        property.SetOutside("0");
-                    }
+                        property.SetOutside((bool)airQualityDTO.DHT22c);
+                    }                    
                 }
                 else
                 {
-                    return "Wrong DHT22 Sensor. Thing not ready or not initialized.";
+                    result += "No DHT22 present at server side./n";
                 }
-                //ENDOF DHT22
+                //ENDOF DHT22 ---
 
+                //--- BMP280 Sensor Driver
+                OWLOSDriver BMP280driver = thingWrapper.Thing.drivers.FirstOrDefault<OWLOSDriver>(d => d.name.Equals(BMP280SensorName));
+                if (DHT22Driver != null)
+                {
+                    OWLOSDriverProperty property = BMP280driver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("available"));
+                    property.SetOutside(airQualityDTO.BMP280);
 
+                    property = BMP280driver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("pressure"));
+                    property.SetOutside(airQualityDTO.BMP280pressure.ToString());
+
+                    property = BMP280driver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("pressurehistorydata"));
+                    HistoryDataToDriverHistoryProperty(property, airQualityDTO.BMP280pressure.ToString(), airQualityDTO.BMP280pressureHD, historyAction);
+
+                    property = BMP280driver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("altitude"));
+                    property.SetOutside(airQualityDTO.BMP280altitude.ToString());
+
+                    property = BMP280driver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("altitudehistorydata"));
+                    HistoryDataToDriverHistoryProperty(property, airQualityDTO.BMP280altitude.ToString(), airQualityDTO.BMP280altitudeHD, historyAction);
+
+                    property = BMP280driver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("temperature"));
+                    property.SetOutside(airQualityDTO.BMP280temperature.ToString());
+
+                    property = BMP280driver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("temperaturehistorydata"));
+                    HistoryDataToDriverHistoryProperty(property, airQualityDTO.BMP280temperature.ToString(), airQualityDTO.BMP280temperatureHD, historyAction);
+                }
+                else
+                {
+                    result += "No BMP280 present at server side./n";
+                }
+                //ENDOF BMP280 ---
+
+                //--- ADS1X15 Sensor Driver
+                OWLOSDriver ADS1X15driver = thingWrapper.Thing.drivers.FirstOrDefault<OWLOSDriver>(d => d.name.Equals(ADS1X15SensorName));
+                if (ADS1X15driver != null)
+                {
+                    OWLOSDriverProperty property = ADS1X15driver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("available"));
+                    property.SetOutside(airQualityDTO.ADS1X15);
+
+                    property = ADS1X15driver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("chanel_1"));
+                    property.SetOutside(airQualityDTO.ADS1X15MQ135.ToString());
+
+                    property = ADS1X15driver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("chanel_1_volts"));
+                    property.SetOutside("NaN");
+
+                    property = ADS1X15driver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("chanel_1_historydata"));
+                    HistoryDataToDriverHistoryProperty(property, airQualityDTO.ADS1X15MQ135.ToString(), airQualityDTO.ADS1X15MQ135HD, historyAction);
+
+                    property = ADS1X15driver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("chanel_2"));
+                    property.SetOutside(airQualityDTO.ADS1X15MQ7.ToString());
+
+                    property = ADS1X15driver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("chanel_2_volts"));
+                    property.SetOutside("NaN");
+
+                    property = ADS1X15driver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("chanel_2_historydata"));
+                    HistoryDataToDriverHistoryProperty(property, airQualityDTO.ADS1X15MQ7.ToString(), airQualityDTO.ADS1X15MQ7HD, historyAction);
+
+                    property = ADS1X15driver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("chanel_3"));
+                    property.SetOutside(airQualityDTO.ADS1X15Light.ToString());
+
+                    property = ADS1X15driver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("chanel_3_volts"));
+                    property.SetOutside("NaN");
+
+                    property = ADS1X15driver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("chanel_3_historydata"));
+                    HistoryDataToDriverHistoryProperty(property, airQualityDTO.ADS1X15Light.ToString(), airQualityDTO.ADS1X15LightHD, historyAction);
+                }
+                else
+                {
+                    result += "No ADS1X15 present at server side./n";
+                }
+                //ENDOF ADS1X15 ---
+
+                //--- CCS811 Sensor Driver
+                OWLOSDriver CCS811driver = thingWrapper.Thing.drivers.FirstOrDefault<OWLOSDriver>(d => d.name.Equals(CCS811SensorName));
+                if (CCS811driver != null)
+                {
+                    OWLOSDriverProperty property = CCS811driver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("available"));
+                    property.SetOutside(airQualityDTO.CCS811);
+
+                    property = CCS811driver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("co2"));
+                    property.SetOutside(airQualityDTO.CCS811CO2.ToString());
+
+                    property = CCS811driver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("co2historydata"));
+                    HistoryDataToDriverHistoryProperty(property, airQualityDTO.CCS811CO2.ToString(), airQualityDTO.CCS811CO2HD, historyAction);
+
+                    property = CCS811driver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("tvoc"));
+                    property.SetOutside(airQualityDTO.CCS811TVOC.ToString());
+
+                    property = CCS811driver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("tvochistorydata"));
+                    HistoryDataToDriverHistoryProperty(property, airQualityDTO.CCS811TVOC.ToString(), airQualityDTO.CCS811TVOCHD, historyAction);
+
+                    property = CCS811driver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("resistence"));
+                    property.SetOutside(airQualityDTO.CCS811resistence.ToString());
+
+                    property = CCS811driver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("resistencehistorydata"));
+                    HistoryDataToDriverHistoryProperty(property, airQualityDTO.CCS811resistence.ToString(), airQualityDTO.CCS811resistenceHD, historyAction);
+
+                    property = CCS811driver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("temperature"));
+                    property.SetOutside(airQualityDTO.CCS811temp.ToString());
+
+                    property = CCS811driver.properties.FirstOrDefault<OWLOSDriverProperty>(p => p.name.Equals("temperaturehistorydata"));
+                    HistoryDataToDriverHistoryProperty(property, airQualityDTO.CCS811temp.ToString(), airQualityDTO.CCS811tempHD, historyAction);                                        
+                }
+                else
+                {
+                    result += "No CCS811 present at server side./n";
+                }
+                //ENDOF CCS811 ---
             }
-            //TEMPORARY
+
             airQualityDTO.QueryTime = DateTime.Now;
             
             return string.Empty;
