@@ -47,13 +47,17 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Timers;
-using OWLOSThingsManager.Ecosystem;
-using OWLOSThingsManager.Ecosystem.OWLOS;
+using OWLOSAirQuality.OWLOSEcosystemService;
+using OWLOSEcosystemService.DTO.Things;
+using Newtonsoft.Json;
 
 namespace OWLOSAirQuality
 {
     public partial class AirQualityWindow : Window
     {
+
+        private OWLOSEcosystemClient ecosystemServiceClient;
+
         private double transportRadius = Gold.radius - Gold.radius2 + (Gold.radius2 - Gold.radius3) / 2;
 
         private readonly Path ThingShadowPath;
@@ -235,11 +239,12 @@ namespace OWLOSAirQuality
             icons1.state = 3;
             //icons1.Animate();
 
+            ecosystemServiceClient = new OWLOSEcosystemClient();
 
-            ThingsManager thingsManager = new ThingsManager();
-            thingsManager.OnNewThing += ThingsManager_OnNewThing;
-            thingsManager.Load();
-
+           // ThingsManager thingsManager = new ThingsManager();
+          //  thingsManager.OnNewThing += ThingsManager_OnNewThing;
+           // thingsManager.Load();
+           
             lifeCycleTimer = new Timer(1000)
             {
                 AutoReset = true
@@ -249,6 +254,7 @@ namespace OWLOSAirQuality
             OnLifeCycleTimer(null, null);
         }
 
+        /*
         private void ThingsManager_OnNewThing(object sender, OWLOSThingWrapperEventArgs e)
         {             
             if (e.ThingWrapper != null)
@@ -270,6 +276,7 @@ namespace OWLOSAirQuality
 
         }
 
+        
         private void AirQualityWindow_OnLogItem(object sender, LogItem e)
         {
             if (e.isSend)
@@ -282,11 +289,23 @@ namespace OWLOSAirQuality
         {
           //
         }
+        */
 
         private async void OnLifeCycleTimer(object source, ElapsedEventArgs e)
         {
-            //console.AddToconsole("123123123", 4);            
 
+            AirQualityClientResulDTO airQualityClientResulDTO = await ecosystemServiceClient.GetThingAirQuality("VVRQUndWTzI4dW5YR1Jxb0IyQVpXUU9oaUdURWNBdmlMTHdpSWtMSUxnSVFBQUFBZHc5VllNalU1Sk0rMGNQano5Q0JKVE5oSm94OFNkNHJyNlhHcXRRRHpDZWU1ck1SV0hWQi9CYXM0dngwL0RPemYxTzZ4NWtjc1dCeGpsV3NTTldNWFlIc3hqWlVyd1MzcDBWbnd6OHhuZzJ1eXc2OCtCMm04SlphN1lOcVUxZ2NVMWVmVXdtL3g1SXFTQ3I2YXdhZERnPT0=");
+
+            if ((string.IsNullOrEmpty(airQualityClientResulDTO.error)) && (airQualityClientResulDTO.result != null))
+            {
+                ThingAirQualityDTO thingAirQualityDTO = JsonConvert.DeserializeObject<ThingAirQualityDTO>(airQualityClientResulDTO.result as string); 
+                console.AddToconsole(JsonConvert.SerializeObject(thingAirQualityDTO), 4);
+            }
+            else
+            {
+                console.AddToconsole(airQualityClientResulDTO.error, 1);
+            }
+            
             base.Dispatcher.Invoke(() =>
             {
                 dateControl.SetDate(DateTime.Now);

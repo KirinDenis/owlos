@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:OWLOSAirQuality.Huds"
              mc:Ignorable="d" 
-             Height="400" Width="400" Background="{DynamicResource OWLOSDark}" VerticalAlignment="Center" HorizontalAlignment="Center">
+             Height="400" Width="400" VerticalAlignment="Center" HorizontalAlignment="Center">
     <Grid>
         <TextBlock x:Name="TemperatureTextBox" Text="27°C" Foreground="{DynamicResource OWLOSPrimary}" FontSize="48" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="50,50,0,0"  />
         <TextBlock x:Name="HumidityTextBox" Text="32%" Foreground="{DynamicResource OWLOSPrimary}" FontSize="48" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="250,50,0,0"  />

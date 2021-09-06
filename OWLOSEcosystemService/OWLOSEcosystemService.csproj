@@ -37,6 +37,13 @@ DIY Open Source OS for building IoT ecosystems
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="OWLOSEcosystem\**" />
+    <Content Remove="OWLOSEcosystem\**" />
+    <EmbeddedResource Remove="OWLOSEcosystem\**" />
+    <None Remove="OWLOSEcosystem\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOSThingsManager.cs" Link="OWLOS\OWLOSThingsManager.cs" />
     <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\IOWLOSTransport.cs" Link="OWLOS\IOWLOSTransport.cs" />
     <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\OWLOSConnection.cs" Link="OWLOS\OWLOSConnection.cs" />
@@ -70,7 +77,6 @@ DIY Open Source OS for building IoT ecosystems
 
   <ItemGroup>
     <Folder Include="Migrations\ThingsDb\" />
-    <Folder Include="OWLOSEcosystem\" />
     <Folder Include="OWLOS\" />
   </ItemGroup>
 
@@ -83,6 +89,10 @@ DIY Open Source OS for building IoT ecosystems
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OWLOSDTOs\OWLOSDTOs.csproj" />
   </ItemGroup>
 
 </Project>

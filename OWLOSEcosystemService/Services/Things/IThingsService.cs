@@ -67,10 +67,15 @@ namespace OWLOSEcosystemService.Services.Things
         ThingAirQualityDTO GetThingAirQualityDTO(Guid UserId, int ThingId);
 
         string AirQualityDataToThing(string data);
-        
+
         #endregion
 
         #region TokenRegion
+
+        string GetUserToken(ThingTokenDTO thingTokenDTO);
+
+        ThingTokenDTO DecodeUserToken(string thingToken);
+
         Guid GetThingToken(ThingTokenDTO thingTokenDTO);
 
         ThingTokenDTO DecodeThingToken(string thingToken);

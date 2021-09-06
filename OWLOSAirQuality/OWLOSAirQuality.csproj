@@ -42,7 +42,6 @@ DIY Open Source OS for building IoT ecosystems
     <Compile Include="..\OWLOSAdmin\EcosystemExplorer\Huds\Gold.cs" Link="Huds\Gold.cs" />
     <Compile Include="..\OWLOSAdmin\EcosystemExplorer\Huds\HudLibrary.cs" Link="Huds\HudLibrary.cs" />
     <Compile Include="..\OWLOSAdmin\EcosystemExplorer\Huds\PathText.cs" Link="Huds\PathText.cs" />
-    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOSThingsManager.cs" Link="OWLOS\OWLOSThingsManager.cs" />
     <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\IOWLOSTransport.cs" Link="OWLOS\IOWLOSTransport.cs" />
     <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\OWLOSConnection.cs" Link="OWLOS\OWLOSConnection.cs" />
     <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\OWLOSDriver.cs" Link="OWLOS\OWLOSDriver.cs" />
@@ -64,10 +63,6 @@ DIY Open Source OS for building IoT ecosystems
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="OWLOS\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="System.IO.Ports" Version="4.7.0" />
   </ItemGroup>
@@ -81,6 +76,14 @@ DIY Open Source OS for building IoT ecosystems
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OWLOSDTOs\OWLOSDTOs.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="OWLOS\" />
   </ItemGroup>
 
 </Project>

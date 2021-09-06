@@ -7,8 +7,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using OWLOSEcosystemService.Data;
 using OWLOSEcosystemService.Services.Things;
+using System;
 //artic
 namespace OWLOSEcosystemService
 {
@@ -38,7 +40,27 @@ namespace OWLOSEcosystemService
 
             services.AddControllersWithViews();
 
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "OWLOS Air Quality API",
+                    Version = "v1",
+                    Description = "An API to perform OWLOS Air Quality",                    
+                    Contact = new OpenApiContact
+                    {
+                        Name = "OWLOS",
+                        Email = "deniskirinacs@gmail.com",
+                        Url = new Uri("https://github.com/KirinDenis/owlos"),
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "GPL-3.0 License",
+                        Url = new Uri("https://github.com/KirinDenis/owlos/blob/master/LICENSE"),
+                    }
+                });
+
+            });
 
             TypeAdapterConfig config = new TypeAdapterConfig();
             // Or
@@ -76,6 +98,7 @@ namespace OWLOSEcosystemService
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "OWLOS Air Quality APIs");
+                //c.SupportedSubmitMethods(new Swashbuckle.AspNetCore.SwaggerUI.SubmitMethod[] { });
             });
 
 

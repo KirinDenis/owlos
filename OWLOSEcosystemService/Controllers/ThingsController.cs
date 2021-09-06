@@ -40,11 +40,9 @@ OWLOS распространяется в надежде, что она буде
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using OWLOSEcosystemService.DTO.Things;
 using OWLOSEcosystemService.Models.Things;
 using OWLOSEcosystemService.Services.Things;
-using OWLOSThingsManager.Ecosystem.OWLOS;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -155,13 +153,17 @@ namespace OWLOSEcosystemService.Controllers
         /// <returns></returns>
         [Route("Things/GetAirQuality")]
         [HttpGet]
-        public IActionResult GetAirQuality(int ThingId)
+        public IActionResult GetAirQuality(string token)
         {
-            Guid UserId = GetUserId();
-
-            if (UserId != Guid.Empty)
+            ThingTokenDTO thingTokenDTO = _thingsService.DecodeUserToken(token);
+            if (thingTokenDTO == null)
             {
-                ThingAirQualityDTO result = _thingsService.GetThingAirQualityDTO(UserId, ThingId);
+                return BadRequest("Bad token");
+            }
+           
+            if (thingTokenDTO.UserId != Guid.Empty)
+            {
+                ThingAirQualityDTO result = _thingsService.GetThingAirQualityDTO(thingTokenDTO.UserId, thingTokenDTO.ThingId);
                 if ((result != null) && (!result.Status.Equals("NOT_FOUND")))
                 {
                     return Ok(result);
@@ -239,7 +241,33 @@ namespace OWLOSEcosystemService.Controllers
         }
 
         /// <summary>
-        /// Decode thing token
+        /// Get user token
+        /// </summary>       
+        /// <returns></returns>
+        [Route("Things/GetUserToken")]
+        [HttpGet]
+        public IActionResult GetUserToken(int thingId)
+        {
+            ThingTokenDTO thingTokenDTO = new ThingTokenDTO()
+            {
+                UserId = GetUserId(),
+                ThingId = thingId
+            };
+
+            string token = _thingsService.GetUserToken(thingTokenDTO);
+            if (!string.IsNullOrEmpty(token))
+            {
+                return Ok(token);
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+
+        /// <summary>
+        /// Get thing token
         /// </summary>       
         /// <returns></returns>
         [Route("Things/GetThingToken")]
