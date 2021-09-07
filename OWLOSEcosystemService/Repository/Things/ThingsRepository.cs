@@ -1,6 +1,6 @@
 ﻿/* ----------------------------------------------------------------------------
 OWLOS DIY Open Source OS for building IoT ecosystems
-Copyright 2019, 2020 by:
+Copyright 2019, 2020, 2021 by:
 - Denys Melnychuk (meldenvar@gmail.com)
 - Denis Kirin (deniskirinacs@gmail.com)
 
@@ -42,6 +42,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using OWLOSEcosystemService.Data;
 using OWLOSEcosystemService.DTO.Things;
 using OWLOSEcosystemService.Models.Things;
+using OWLOSThingsManager.Ecosystem.OWLOS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,6 +58,7 @@ namespace OWLOSEcosystemService.Repository.Things
             _mapper = mapper;
         }
 
+        #region Connections
         public List<ThingConnectionPropertiesDTO> GetThingsConnections(Guid UserId)
         {
             List<ThingConnectionPropertiesDTO> result = new List<ThingConnectionPropertiesDTO>();
@@ -145,7 +147,7 @@ namespace OWLOSEcosystemService.Repository.Things
             }
             return resultModel;
         }
-       
+
         public List<ThingConnectionPropertiesDTO> GetAllThingsConnections()
         {
             List<ThingConnectionPropertiesDTO> result = new List<ThingConnectionPropertiesDTO>();
@@ -157,32 +159,9 @@ namespace OWLOSEcosystemService.Repository.Things
             }
             return result;
         }
+        #endregion
 
-        public ThingsResultModel AddAirQuality(ThingAirQualityDTO AirQualityDTO)
-        {
-
-            ThingsResultModel resultModel = new ThingsResultModel();
-
-            using (ThingsDbContext db = new ThingsDbContext())
-            {
-                ThingAirQualityModel AirQualityModel = _mapper.Map<ThingAirQualityModel>(AirQualityDTO);
-
-
-                EntityEntry<ThingAirQualityModel> AirQualityEntity = db.Add(AirQualityModel);
-                db.SaveChanges();
-                if (AirQualityEntity != null)
-                {
-                    resultModel.Error = false;                    
-                }
-                else
-                {
-                    resultModel.Result = "repository problem, result entity is null";
-                }
-            }
-
-            return resultModel;
-        }
-
+        #region Token
         public Guid GetThingToken(ThingTokenDTO thingTokenDTO)
         {
             if (thingTokenDTO == null)
@@ -190,7 +169,7 @@ namespace OWLOSEcosystemService.Repository.Things
                 return Guid.Empty;
             }
 
-            ThingConnectionPropertiesDTO thingConnectionPropertiesDTO  = GetThingConnection(thingTokenDTO.UserId, thingTokenDTO.ThingId);
+            ThingConnectionPropertiesDTO thingConnectionPropertiesDTO = GetThingConnection(thingTokenDTO.UserId, thingTokenDTO.ThingId);
 
             if (thingConnectionPropertiesDTO != null)
             {
@@ -201,7 +180,6 @@ namespace OWLOSEcosystemService.Repository.Things
                 return Guid.Empty;
             }
         }
-
 
         public ThingConnectionPropertiesDTO GetThingConnectionByToken(Guid tokenGuid)
         {
@@ -216,6 +194,115 @@ namespace OWLOSEcosystemService.Repository.Things
                 return ConnectionPropertiesEntity;
             }
         }
+        #endregion
+
+        #region AirQuality
+        public ThingsResultModel AddAirQuality(OWLOSThing thing)
+        {
+            ThingsResultModel resultModel = new ThingsResultModel();
+
+            if ((thing == null) || (thing.config == null) || (thing.config.UserId == Guid.Empty))
+            {
+                resultModel.Error = true;
+                resultModel.Result = "Bad thing";
+                return resultModel;
+            }
+
+            ThingConnectionPropertiesDTO thingConnectionPropertiesDTO = GetThingConnection(thing.config.UserId, thing.config.ThingId);
+
+            if (thingConnectionPropertiesDTO == null)
+            {
+                resultModel.Error = true;
+                resultModel.Result = "Bad user id or thing id";
+                return resultModel;
+            }
+            
+            ThingAirQualityDTO thingAirQualityDTO = null;
+
+            //if thing never connected or last session (connection) time up to 70 seconds
+            if ((thing.lastAirQulityRecievedData == null) || (thing.lastSessionTime == null) || (DateTime.Now.Subtract((DateTime)thing.lastSessionTime).TotalSeconds > 10)) //10 sec for debugging
+            {
+                thingAirQualityDTO = new ThingAirQualityDTO();  //Empty data with error
+            }
+            else
+            {
+                //transfer data 
+                thingAirQualityDTO = thing.lastAirQulityRecievedData as ThingAirQualityDTO;
+            }
+
+            //reset stored data 
+            //thing.lastAirQulityRecievedData = new ThingAirQualityDTO();
+            thingAirQualityDTO.QueryTime = DateTime.Now;
+
+           
+            using (ThingsDbContext db = new ThingsDbContext())
+            {
+                ThingAirQualityModel AirQualityModel = _mapper.Map<ThingAirQualityModel>(thingAirQualityDTO);
+
+                AirQualityModel.ThingId = thing.config.ThingId;
+
+                EntityEntry<ThingAirQualityModel> AirQualityEntity = db.Add(AirQualityModel);
+                db.SaveChanges();
+                if (AirQualityEntity != null)
+                {
+                    resultModel.Error = false;
+                }
+                else
+                {
+                    resultModel.Result = "repository problem, result entity is null";
+                }
+            }
+
+            return resultModel;
+        }
+
+        public ThingAirQualityDTO GetLastThingAQ(Guid UserId, int ThingId)
+        {
+            ThingConnectionPropertiesDTO thingConnectionPropertiesDTO = GetThingConnection(UserId, ThingId);
+
+            if (thingConnectionPropertiesDTO == null)
+            {
+                throw new AccessViolationException("Not user and thing related to current token");
+            }
+
+            using (ThingsDbContext db = new ThingsDbContext())
+            {
+                DateTime? dateTime = db.ThingAirQuality.Where<ThingAirQualityModel>(c => c.ThingId == ThingId).Max(x => x.QueryTime);
+                ThingAirQualityModel AirQualityModel = db.ThingAirQuality.FirstOrDefault<ThingAirQualityModel>(c => c.QueryTime == dateTime);
+                
+                if (AirQualityModel != null)
+                {
+                    return _mapper.Map<ThingAirQualityDTO>(AirQualityModel);
+                }
+            }
+            return null;
+        }
+
+        public  List<ThingAirQualityDTO> GetLastHourThingAQ(Guid UserId, int ThingId)
+        {
+            ThingConnectionPropertiesDTO thingConnectionPropertiesDTO = GetThingConnection(UserId, ThingId);
+
+            if (thingConnectionPropertiesDTO == null)
+            {
+                throw new AccessViolationException("Not user and thing related to current token");
+            }
+
+            using (ThingsDbContext db = new ThingsDbContext())
+            {
+                //FFR: with filter if it needed -> var a  = db.ThingAirQuality.Where(c => c.ThingId == ThingId && c.QueryTime >= (DateTime.Now.AddHours(-1))).Select(c => new { c.DHT22temp }).ToList();
+
+                List<ThingAirQualityModel> AirQualityModels = db.ThingAirQuality.Where(c => c.ThingId == ThingId && c.QueryTime >= (DateTime.Now.AddHours(-1))).ToList();
+
+                if (AirQualityModels != null)                
+                {
+                    return _mapper.Map<List<ThingAirQualityDTO>>(AirQualityModels);                    
+                }
+            }
+            return null;
+        }
+
+
+        #endregion
     }
 }
 

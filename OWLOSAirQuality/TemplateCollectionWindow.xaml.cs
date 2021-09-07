@@ -53,7 +53,7 @@ using Newtonsoft.Json;
 
 namespace OWLOSAirQuality
 {
-    public partial class AirQualityWindow : Window
+    public partial class TemplateCollectionWindow : Window
     {
 
         private OWLOSEcosystemClient ecosystemServiceClient;
@@ -89,7 +89,7 @@ namespace OWLOSAirQuality
 
         private double[] data4;
 
-        public AirQualityWindow()
+        public TemplateCollectionWindow()
         {
             InitializeComponent();
 
@@ -267,7 +267,7 @@ namespace OWLOSAirQuality
                     for (int i = 0; i < e.ThingWrapper.Thing.transports.Count; i++)
                     {
 
-                        e.ThingWrapper.Thing.transports[i].OnLogItem += AirQualityWindow_OnLogItem;
+                        e.ThingWrapper.Thing.transports[i].OnLogItem += TemplateCollectionWindow_OnLogItem;
                     }
                 }
 
@@ -277,7 +277,7 @@ namespace OWLOSAirQuality
         }
 
         
-        private void AirQualityWindow_OnLogItem(object sender, LogItem e)
+        private void TemplateCollectionWindow_OnLogItem(object sender, LogItem e)
         {
             if (e.isSend)
             {
@@ -294,6 +294,7 @@ namespace OWLOSAirQuality
         private async void OnLifeCycleTimer(object source, ElapsedEventArgs e)
         {
 
+            /*
             AirQualityClientResulDTO airQualityClientResulDTO = await ecosystemServiceClient.GetThingAirQuality("VVRQUndWTzI4dW5YR1Jxb0IyQVpXUU9oaUdURWNBdmlMTHdpSWtMSUxnSVFBQUFBZHc5VllNalU1Sk0rMGNQano5Q0JKVE5oSm94OFNkNHJyNlhHcXRRRHpDZWU1ck1SV0hWQi9CYXM0dngwL0RPemYxTzZ4NWtjc1dCeGpsV3NTTldNWFlIc3hqWlVyd1MzcDBWbnd6OHhuZzJ1eXc2OCtCMm04SlphN1lOcVUxZ2NVMWVmVXdtL3g1SXFTQ3I2YXdhZERnPT0=");
 
             if ((string.IsNullOrEmpty(airQualityClientResulDTO.error)) && (airQualityClientResulDTO.result != null))
@@ -305,6 +306,7 @@ namespace OWLOSAirQuality
             {
                 console.AddToconsole(airQualityClientResulDTO.error, 1);
             }
+            */
             
             base.Dispatcher.Invoke(() =>
             {

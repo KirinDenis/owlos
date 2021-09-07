@@ -92,6 +92,10 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
                 {
                     string key = featureProp.Substring(0, featureProp.IndexOf("="));
                     string value = featureProp.Substring(featureProp.IndexOf("=") + 1);
+                    if (Features.FirstOrDefault(c => c.Key.Equals(key)).Key == null)
+                    {
+                       continue;
+                    }
                     Features.Add(key, value);
                 }
                 else

@@ -130,6 +130,9 @@ namespace OWLOSEcosystemService.Migrations.ThingsDb
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<int>("ThingId")
+                        .HasColumnType("int");
+
                     b.Property<long?>("TickCount")
                         .HasColumnType("bigint");
 

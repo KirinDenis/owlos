@@ -17,6 +17,7 @@ namespace OWLOSEcosystemService.Migrations.ThingsDb
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    ThingId = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     QueryTime = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     TickCount = table.Column<long>(type: "bigint", nullable: true),

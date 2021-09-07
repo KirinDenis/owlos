@@ -81,7 +81,7 @@ namespace OWLOSThingsManager.Ecosystem
 
         public List<OWLOSThingWrapper> OWLOSThingWrappers = new List<OWLOSThingWrapper>();
 
-        public delegate void NewThingEventHandler(object? sender, OWLOSThingWrapperEventArgs e);
+        public delegate void NewThingEventHandler(object sender, OWLOSThingWrapperEventArgs e);
         public event NewThingEventHandler OnNewThing;
 
         public ThingsManagerConfig config = new ThingsManagerConfig();
@@ -236,7 +236,7 @@ namespace OWLOSThingsManager.Ecosystem
         {
             foreach (OWLOSThingWrapper thingWrapper in OWLOSThingWrappers)
             {
-                if (thingWrapper.Thing.config.DbId == thingId)
+                if (thingWrapper.Thing.config.ThingId == thingId)
                 {
                     return thingWrapper;
                 }

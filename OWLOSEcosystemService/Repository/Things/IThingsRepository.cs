@@ -39,29 +39,34 @@ OWLOS распространяется в надежде, что она буде
 
 using OWLOSEcosystemService.DTO.Things;
 using OWLOSEcosystemService.Models.Things;
+using OWLOSThingsManager.Ecosystem.OWLOS;
 using System;
 using System.Collections.Generic;
 
 namespace OWLOSEcosystemService.Repository.Things
 {
     public interface IThingsRepository
-    {        
+    {
+        #region Connection
         List<ThingConnectionPropertiesDTO> GetThingsConnections(Guid UserId);
-
         ThingConnectionPropertiesDTO GetThingConnection(Guid UserId, int ThingId);
-
         ThingsResultModel NewThingConnection(ThingConnectionPropertiesDTO ConnectionPropertiesDTO);
-
         ThingsResultModel UpdateThingConnection(ThingConnectionPropertiesDTO ConnectionPropertiesDTO);
-
         List<ThingConnectionPropertiesDTO> GetAllThingsConnections();
-
         ThingsResultModel DeleteThingConnection(Guid UserId, int ThingId);
+        #endregion
 
-        ThingsResultModel AddAirQuality(ThingAirQualityDTO AirQualityDTO);
-
+        #region Token
         Guid GetThingToken(ThingTokenDTO thingTokenDTO);
-
         public ThingConnectionPropertiesDTO GetThingConnectionByToken(Guid tokenGuid);
+        #endregion
+
+        #region AirQuality
+        ThingsResultModel AddAirQuality(OWLOSThing thing);
+        ThingAirQualityDTO GetLastThingAQ(Guid UserId, int ThingId);
+        List<ThingAirQualityDTO> GetLastHourThingAQ(Guid UserId, int ThingId);
+        #endregion
+
+
     }
 }

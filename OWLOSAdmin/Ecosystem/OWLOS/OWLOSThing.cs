@@ -62,7 +62,7 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
     {
         public string Name;
 
-        public int DbId;
+        public int ThingId;
 
         public Guid UserId;
 
@@ -80,7 +80,7 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
         public List<OWLOSDriver> drivers { get; set; } = new List<OWLOSDriver>();
         public OWLOSFiles files { get; set; }
 
-        public delegate void DriverEventHandler(object? sender, OWLOSDriverWrapperEventArgs e);
+        public delegate void DriverEventHandler(object sender, OWLOSDriverWrapperEventArgs e);
 
         public event DriverEventHandler OnNewDriver;
 
@@ -109,7 +109,7 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
         //Time last outside store data 
         public DateTime lastDataStoreTime = DateTime.Now;
 
-        public delegate void DataStoreEventHandler(object? sender);
+        public delegate void DataStoreEventHandler(object sender);
         public event DataStoreEventHandler OnDataStore;
 
         public OWLOSThing(OWLOSThingConfig config)

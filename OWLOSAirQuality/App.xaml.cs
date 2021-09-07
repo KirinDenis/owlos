@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OWLOSAirQuality.OWLOSEcosystemService;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -13,5 +14,11 @@ namespace OWLOSAirQuality
     /// </summary>
     public partial class App : Application
     {
+        protected OWLOSEcosystem ecosystem;
+        
+        void App_Startup(object sender, StartupEventArgs e)
+        {
+            ecosystem = new OWLOSEcosystem();
+        }
     }
 }

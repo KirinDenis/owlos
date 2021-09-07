@@ -23,13 +23,11 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
         public long totlaRecv = 0;
         public bool enabled = true;
         public NetworkStatus networkStatus;
-        protected string host = "https://192.168.1.100:5004/Things/";
-
-
-        public async Task<AirQualityClientResulDTO> GetThingAirQuality(string token)
+        
+        public async Task<AirQualityClientResulDTO> GetThingAirQuality(string thingHost, string thingToken)
         {
             //ThingAirQualityDTO
-            return await Get("GetAirQuality", "?token=" + token);
+            return await Get(thingHost, "GetLastThingAQ", "?token=" + thingToken);
                         
         }
 
@@ -45,7 +43,7 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
        //     Console.WriteLine($"Errors: {sslErrors}");
             return true; // sslErrors == SslPolicyErrors.None;
         }
-        protected async Task<AirQualityClientResulDTO> Get(string APIName, string args = "")
+        protected async Task<AirQualityClientResulDTO> Get(string thingHost, string APIName, string args = "")
         {
             AirQualityClientResulDTO result = new AirQualityClientResulDTO();
             if (!enabled)
@@ -57,7 +55,7 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
 
             networkStatus = NetworkStatus.Reconnect;
 
-            if (string.IsNullOrEmpty(host))
+            if (string.IsNullOrEmpty(thingHost))
             {
                 networkStatus = NetworkStatus.Offline;
                 return result;
@@ -75,7 +73,7 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
 
                 HttpClient client = new HttpClient(handler);
 
-                string queryString = host + APIName + args;
+                string queryString = thingHost + APIName + args;
 
                 totlaSend += queryString.Length;
                 /*

@@ -58,18 +58,18 @@ namespace OWLOSEcosystemService.Services.Things
         private const string CCS811SensorName = "ccs811";
 
         /// <summary>
-        /// 
+        /// Get user thing's last received air quality from thing (object model, with out repository)
         /// </summary>
         /// <param name="UserId"></param>
         /// <param name="ThingId"></param>
         /// <returns></returns>
-        public ThingAirQualityDTO GetThingAirQualityDTO(Guid UserId, int ThingId)
+        public ThingAirQualityDTO GetDirectLastThingAQ(Guid UserId, int ThingId)
         {
             ThingAirQualityDTO result = null;
 
             foreach (OWLOSThingWrapper thingWrapper in thingsManager.OWLOSThingWrappers)
             {
-                if ((thingWrapper.Thing.config.UserId.Equals(UserId)) && (thingWrapper.Thing.config.DbId == ThingId))
+                if ((thingWrapper.Thing.config.UserId.Equals(UserId)) && (thingWrapper.Thing.config.ThingId == ThingId))
                 {
                     
                     if ((thingWrapper.Thing.drivers == null) || (thingWrapper.Thing.drivers.Count == 0) || (thingWrapper.Thing.lastAirQulityRecievedData == null))
@@ -83,6 +83,16 @@ namespace OWLOSEcosystemService.Services.Things
                 }
             }
             return result;
+        }
+
+        public ThingAirQualityDTO GetLastThingAQ(Guid UserId, int ThingId)
+        {
+            return _thingsRepository.GetLastThingAQ(UserId, ThingId);
+        }
+
+        public List<ThingAirQualityDTO> GetLastHourThingAQ(Guid UserId, int ThingId)
+        {
+            return _thingsRepository.GetLastHourThingAQ(UserId, ThingId);
         }
 
 

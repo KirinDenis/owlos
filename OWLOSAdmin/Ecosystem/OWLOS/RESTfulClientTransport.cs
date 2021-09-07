@@ -177,9 +177,19 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
 
             try
             {
-                HttpClient client = new HttpClient();
+                HttpClientHandler handler = new HttpClientHandler();
+                HttpClient client = new HttpClient(handler);
                 
                 string queryString = _RESTfulClientConnectionDTO.host + APIName + args;
+
+                //Kastler SSL raise exception if port is 80
+                if (queryString.IndexOf(":80/") != -1)
+                {
+                    queryString = queryString.Replace("https://", "http://");
+                }
+
+                //precedent user host typing fixes
+                queryString = queryString.Replace("/:", ":");
 
                 totlaSend += queryString.Length;
                 AddToLog(new LogItem()
@@ -190,10 +200,13 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
                     size = queryString.Length,                    
                     text = queryString
                 });
-
+                
                 HttpResponseMessage response = await client.GetAsync(queryString);
 
-                response.EnsureSuccessStatusCode();
+                if (response.IsSuccessStatusCode)
+                {
+                    response.EnsureSuccessStatusCode();
+                }
                 result.result = await response.Content.ReadAsStringAsync();
 
                 totlaRecv += result.result.Length;

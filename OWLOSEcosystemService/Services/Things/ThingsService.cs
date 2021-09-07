@@ -139,7 +139,7 @@ namespace OWLOSEcosystemService.Services.Things
                 result.Error = true;
                 foreach (OWLOSThingWrapper wrapper in thingsManager.OWLOSThingWrappers)
                 {
-                    if ((wrapper.Thing.config.UserId.Equals(UserId)) && (wrapper.Thing.config.DbId == ThingId))
+                    if ((wrapper.Thing.config.UserId.Equals(UserId)) && (wrapper.Thing.config.ThingId == ThingId))
                     {
                         thingsManager.DeleteThingWrapper(wrapper);
                         result.Error = false;
@@ -163,7 +163,7 @@ namespace OWLOSEcosystemService.Services.Things
                 {
                     Id = temporaryIdCount,
                     Name = wrapper.Thing.Name,
-                    DbId = wrapper.Thing.config.DbId,
+                    DbId = wrapper.Thing.config.ThingId,
                     UserId = wrapper.Thing.config.UserId,
                     LastConnected = wrapper.Thing.config.LastConnected,
                     Features = wrapper.Thing.Features,                        
@@ -196,7 +196,7 @@ namespace OWLOSEcosystemService.Services.Things
             OWLOSThingConfig _OWLOSThingConfig = new OWLOSThingConfig
             {
                 Name = connectionPropertiesDTO.Name,
-                DbId = connectionPropertiesDTO.Id, 
+                ThingId = connectionPropertiesDTO.Id, 
                 UserId = connectionPropertiesDTO.UserId
             };
 
@@ -358,7 +358,7 @@ namespace OWLOSEcosystemService.Services.Things
 
             foreach (OWLOSThingWrapper wrapper in thingsManager.OWLOSThingWrappers)
             {
-                if ((wrapper.Thing.config.UserId.Equals(UserId)) && (wrapper.Thing.config.DbId == ThingId))
+                if ((wrapper.Thing.config.UserId.Equals(UserId)) && (wrapper.Thing.config.ThingId == ThingId))
                 {                    
                     foreach(OWLOSDriver driver in wrapper.Thing.drivers)
                     {
@@ -437,35 +437,12 @@ namespace OWLOSEcosystemService.Services.Things
         }
 
         /// <summary>
-        /// Thing store data and Analise network status 
+        /// Analise and store thing's air quality data to repository
         /// </summary>
-        /// <param name="sender"></param>
+        /// <param name="sender">OWLOSThing sender object with air quality data</param>
         private static void Thing_OnDataStore(object sender)
-        {
-            OWLOSThing thing = sender as OWLOSThing; 
-            if (thing.lastAirQulityRecievedData != null)
-            {
-                //TODO remove the code to repository (thing - is argument)
-                ThingAirQualityDTO thingAirQualityDTO = null; 
-
-                //if thing never connected or last session (connection) time up to 70 seconds
-                if ((thing.lastSessionTime != null) && (DateTime.Now.Subtract((DateTime)thing.lastSessionTime).TotalSeconds > 10)) //10 sec for debugging
-                {
-                    thingAirQualityDTO = new ThingAirQualityDTO();  //Empty data with error
-                }
-                else
-                {
-                    //transfer data 
-                    thingAirQualityDTO = thing.lastAirQulityRecievedData as ThingAirQualityDTO;                    
-                }
-
-                //reset stored data 
-                thing.lastAirQulityRecievedData = new ThingAirQualityDTO();
-                thingAirQualityDTO.QueryTime = DateTime.Now;
-
-                _thingsRepository.AddAirQuality(thingAirQualityDTO);
-                
-            }
+        {            
+            _thingsRepository.AddAirQuality((OWLOSThing)sender);
         }
         #endregion
     }

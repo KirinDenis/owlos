@@ -9,7 +9,7 @@ using OWLOSEcosystemService.Data;
 namespace OWLOSEcosystemService.Migrations.ThingsDb
 {
     [DbContext(typeof(ThingsDbContext))]
-    [Migration("20210901211742_InitialCreate")]
+    [Migration("20210907112448_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -130,6 +130,9 @@ namespace OWLOSEcosystemService.Migrations.ThingsDb
                         .HasColumnType("datetime(6)");
 
                     b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ThingId")
                         .HasColumnType("int");
 
                     b.Property<long?>("TickCount")

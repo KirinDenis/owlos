@@ -78,9 +78,9 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
         
         public void AddToLog(LogItem logItem);
 
-        delegate void TransportEventHandler(object? sender, NetworkStatus e);
+        delegate void TransportEventHandler(object sender, NetworkStatus e);
 
-        delegate void LogEventHandler(object? sender, LogItem e);
+        delegate void LogEventHandler(object sender, LogItem e);
 
         event TransportEventHandler OnTransportStatusChanger;
 

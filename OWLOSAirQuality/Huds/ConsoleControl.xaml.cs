@@ -85,6 +85,13 @@ namespace OWLOSAirQuality.Huds
 
                 if (!string.IsNullOrEmpty(text))
                 {
+                    if (consoleCount > 10)
+                    {
+                        consolePanel.Children.Clear();
+                        consoleCount = 0;
+                    }
+
+
                     TextBlock textBlock = new TextBlock();
                     consolePanel.Children.Add(textBlock);
                     consoleCount++;

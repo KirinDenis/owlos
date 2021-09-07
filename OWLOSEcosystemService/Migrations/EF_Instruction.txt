@@ -26,3 +26,6 @@ dotnet ef database update InitialCreate --project OWLOSEcosystemService --contex
 dotnet ef database update InitialCreate  --project OWLOSEcosystemService --context ThingsDbContext
 
 
+
+
+

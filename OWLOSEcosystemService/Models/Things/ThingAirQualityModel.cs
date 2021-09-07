@@ -9,6 +9,8 @@ namespace OWLOSEcosystemService.Models.Things
     {
         [Key]
         public int id { get; set; }
+
+        public int ThingId { get; set; }
         public ThingAirQualityStatus Status { get; set; } = ThingAirQualityStatus.Error;
         public DateTime? QueryTime { get; set; } = null;
         public long? TickCount { get; set; } = null;
