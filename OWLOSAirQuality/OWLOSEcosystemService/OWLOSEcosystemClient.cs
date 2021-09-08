@@ -24,12 +24,24 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
         public bool enabled = true;
         public NetworkStatus networkStatus;
         
-        public async Task<AirQualityClientResulDTO> GetThingAirQuality(string thingHost, string thingToken)
+        public async Task<AirQualityClientResulDTO> GetLastThingAQ(string thingHost, string thingToken)
         {
             //ThingAirQualityDTO
-            return await Get(thingHost, "GetLastThingAQ", "?token=" + thingToken);
-                        
+            return await Get(thingHost, "GetLastThingAQ", "?token=" + thingToken);                        
         }
+
+        public async Task<AirQualityClientResulDTO> GetLastHourThingAQ(string thingHost, string thingToken)
+        {
+            //ThingAirQualityDTO
+            return await Get(thingHost, "GetLastHourThingAQ", "?token=" + thingToken);
+        }
+
+        public async Task<AirQualityClientResulDTO> GetLastDayThingAQ(string thingHost, string thingToken)
+        {
+            //ThingAirQualityDTO
+            return await Get(thingHost, "GetLastDayThingAQ", "?token=" + thingToken);
+        }
+
 
         private static bool ServerCertificateCustomValidation(HttpRequestMessage requestMessage, X509Certificate2 certificate, X509Chain chain, SslPolicyErrors sslErrors)
         {

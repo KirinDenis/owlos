@@ -14,11 +14,16 @@ namespace OWLOSAirQuality
     /// </summary>
     public partial class App : Application
     {
-        protected OWLOSEcosystem ecosystem;
+        public static OWLOSEcosystem ecosystem;
         
         void App_Startup(object sender, StartupEventArgs e)
         {
             ecosystem = new OWLOSEcosystem();
+        }
+
+        public OWLOSEcosystem GetEcosystem()
+        {
+            return ecosystem;
         }
     }
 }

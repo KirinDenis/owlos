@@ -300,7 +300,26 @@ namespace OWLOSEcosystemService.Repository.Things
             }
             return null;
         }
+        public List<ThingAirQualityDTO> GetLastDayThingAQ(Guid UserId, int ThingId)
+        {
+            ThingConnectionPropertiesDTO thingConnectionPropertiesDTO = GetThingConnection(UserId, ThingId);
 
+            if (thingConnectionPropertiesDTO == null)
+            {
+                throw new AccessViolationException("Not user and thing related to current token");
+            }
+
+            using (ThingsDbContext db = new ThingsDbContext())
+            {                
+                List<ThingAirQualityModel> AirQualityModels = db.ThingAirQuality.Where(c => c.ThingId == ThingId && c.QueryTime >= (DateTime.Now.AddDays(-1))).ToList();
+
+                if (AirQualityModels != null)
+                {
+                    return _mapper.Map<List<ThingAirQualityDTO>>(AirQualityModels);
+                }
+            }
+            return null;
+        }
 
         #endregion
     }

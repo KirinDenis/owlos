@@ -63,8 +63,9 @@ namespace OWLOSEcosystemService.Repository.Things
 
         #region AirQuality
         ThingsResultModel AddAirQuality(OWLOSThing thing);
-        ThingAirQualityDTO GetLastThingAQ(Guid UserId, int ThingId);
+        ThingAirQualityDTO GetLastThingAQ(Guid UserId, int ThingId);        
         List<ThingAirQualityDTO> GetLastHourThingAQ(Guid UserId, int ThingId);
+        List<ThingAirQualityDTO> GetLastDayThingAQ(Guid UserId, int ThingId);
         #endregion
 
 

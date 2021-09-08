@@ -95,6 +95,10 @@ namespace OWLOSEcosystemService.Services.Things
             return _thingsRepository.GetLastHourThingAQ(UserId, ThingId);
         }
 
+        public List<ThingAirQualityDTO> GetLastDayThingAQ(Guid UserId, int ThingId)
+        {
+            return _thingsRepository.GetLastDayThingAQ(UserId, ThingId);
+        }
 
         private bool AirQualityPropKeyToModel(string dataProp, ThingAirQualityDTO airQualityDTO)
         {

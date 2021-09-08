@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace OWLOSEcosystemService.DTO.Things
 {
-    public enum ThingAirQualityStatus { Online, Offline, OnlineWithError, Error }
+    public enum ThingAirQualityStatus { Online, Offline, OnlineWithError, Error, ServerNotConnected, ServerError }
 
 
     public class ThingAirQualityDTO
@@ -12,6 +12,7 @@ namespace OWLOSEcosystemService.DTO.Things
         public int ThingId { get; set; }     
         public ThingAirQualityStatus Status { get; set; } = ThingAirQualityStatus.Error;
         public DateTime? QueryTime { get; set; } = null;
+        public DateTime? ClientTime { get; set; } = null;
         public long? TickCount { get; set; } = null;
 
         public bool hasHistory = false;

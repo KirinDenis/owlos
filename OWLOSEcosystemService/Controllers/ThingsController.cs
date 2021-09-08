@@ -241,6 +241,29 @@ namespace OWLOSEcosystemService.Controllers
             return BadRequest("Thing air quality data not found");
         }
 
+        /// <summary>
+        /// Get user thing's last day received air quality
+        /// </summary>        
+        /// <param name="token">token of user thing</param>
+        /// <returns></returns>
+        [Route("Things/GetLastDayThingAQ")]
+        [HttpGet]
+        public IActionResult GetLastDayThingAQ(string token)
+        {
+            ThingTokenDTO thingTokenDTO = DecodeToken(token);
+
+            if (thingTokenDTO == null)
+            {
+                return Forbid("Bad token");
+            }
+
+            List<ThingAirQualityDTO> result = _thingsService.GetLastDayThingAQ(thingTokenDTO.UserId, thingTokenDTO.ThingId);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return BadRequest("Thing air quality data not found");
+        }
 
         /// <summary>
         /// Get all drivers properties
