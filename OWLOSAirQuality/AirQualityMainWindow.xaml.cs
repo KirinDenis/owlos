@@ -42,7 +42,7 @@ namespace OWLOSAirQuality
             {
                 if (ac != null)
                 {
-                    report += ac.ClientTime.ToString() + " " + ac.DHT22temp + " | ";                    
+                    report += ac.QueryTime.ToString() + " " + ac.DHT22temp + " | ";                    
                 }
             }
             base.Dispatcher.Invoke(() =>
