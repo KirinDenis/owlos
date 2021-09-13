@@ -23,7 +23,12 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
         public long totlaRecv = 0;
         public bool enabled = true;
         public NetworkStatus networkStatus;
-        
+
+
+        public event IOWLOSTransport.TransportEventHandler OnTransportStatusChanger;
+
+        public event IOWLOSTransport.LogEventHandler OnLogItem;
+
         public async Task<AirQualityClientResulDTO> GetLastThingAQ(string thingHost, string thingToken)
         {
             //ThingAirQualityDTO
@@ -88,57 +93,63 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
                 string queryString = thingHost + APIName + args;
 
                 totlaSend += queryString.Length;
-                /*
+                
                 AddToLog(new LogItem()
                 {
                     dateTime = DateTime.Now,
                     isSend = true,
                     networkStatus = NetworkStatus.Reconnect,
                     size = queryString.Length,
-                    text = queryString
+                    text = thingHost
                 });
-                */
+                
 
                 HttpResponseMessage response = await client.GetAsync(queryString);
 
                 response.EnsureSuccessStatusCode();
                 result.result = await response.Content.ReadAsStringAsync();
 
-                
-                //totlaRecv += result. TODO Size 
 
-                /*
+                totlaRecv += result.result.ToString().Length;
+                               
+                result.error = string.Empty;
+                networkStatus = NetworkStatus.Online;
+
                 AddToLog(new LogItem()
                 {
                     dateTime = DateTime.Now,
                     isSend = false,
-                    networkStatus = NetworkStatus.Reconnect,
-                    size = result.result.Length,
-                    text = result.result
+                    networkStatus = NetworkStatus.Online,
+                    size = result.result.ToString().Length,
+                    text = thingHost
                 });
-                */
-                result.error = string.Empty;
-                networkStatus = NetworkStatus.Online;
+
             }
             catch (Exception exception)
             {
                 networkStatus = NetworkStatus.Erorr;
                 result.error = exception.Message;
 
-                /*
+                
                 AddToLog(new LogItem()
                 {
                     dateTime = DateTime.Now,
                     isSend = true,
-                    networkStatus = _networkStatus,
+                    networkStatus = NetworkStatus.Erorr,
                     size = 0,
-                    text = exception.Message
+                    text = thingHost + " " + exception.Message
 
                 });
-                */
+                
             }
             return result;
         }
+
+        protected void AddToLog(LogItem logItem)
+        {         
+            OnLogItem?.Invoke(this, logItem);
+        }
+
 
     }
 }

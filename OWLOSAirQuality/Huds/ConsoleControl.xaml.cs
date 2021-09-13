@@ -50,6 +50,8 @@ using System.Windows.Media.Animation;
 
 namespace OWLOSAirQuality.Huds
 {
+
+    public enum ConsoleMessageCode { Success, Warning, Danger, Info };
     public partial class ConsoleControl : UserControl
     {
         private int consoleCount = 0;
@@ -61,23 +63,46 @@ namespace OWLOSAirQuality.Huds
             InitializeComponent();
         }
 
-        public void AddToconsole(string text, int code)
+        public void AddToconsole(string text, ConsoleMessageCode code)
         {
             if (!string.IsNullOrEmpty(text))
             {
                 List<string> lines = text.Split('\n').ToList();
                 foreach (string line in lines)
                 {
-                    Add(line, code);
+                    if (line.Length > 50)
+                    {
+                        int count = 0;
+                        bool noDate = false;
+                        string _line = string.Empty;
+                        for (int i=0; i < line.Length; i++)
+                        {
+                            _line += line[i];
+                            count++;
+                            if (count > 50)
+                            {
+                                Add(_line, code, noDate);
+                                count = 0;
+                                noDate = true;
+                                _line = string.Empty;
+                                
+                            }
+                        }
+                        Add(_line, code, noDate); //tail
+                    }
+                    else
+                    {
+                        Add(line, code);
+                    }
                 }
             }
             else
             {
-                Add("--> NULL line to console", 3);
+                Add("--> NULL line to console", ConsoleMessageCode.Warning);
             }
         }
 
-        private void Add(string text, int code)
+        private void Add(string text, ConsoleMessageCode code, bool noDate = false)
         {
 
             base.Dispatcher.Invoke(() =>
@@ -85,18 +110,23 @@ namespace OWLOSAirQuality.Huds
 
                 if (!string.IsNullOrEmpty(text))
                 {
-                    if (consoleCount > 10)
+                    
+                    if (consolePanel.Children.Count > 1000)
                     {
-                        consolePanel.Children.Clear();
-                        consoleCount = 0;
+                        
+                        while (consolePanel.Children.Count > 900)
+                        {
+                            consolePanel.Children.RemoveAt(0);
+                        }
+                        consoleCount = consolePanel.Children.Count;
+                        System.GC.Collect();
                     }
-
-
+                    
                     TextBlock textBlock = new TextBlock();
                     consolePanel.Children.Add(textBlock);
                     consoleCount++;
                     textBlock.Name = "text" + consoleCount.ToString();
-
+                    
                     if (!atAnimation)
                     {
                         atAnimation = true;
@@ -106,12 +136,11 @@ namespace OWLOSAirQuality.Huds
                         {
                             if (prev.ActualHeight < 20)
                             {
-
                                 EndY = -(consoleCount * prev.ActualHeight / 1.0f - consoleScrollView.ActualHeight);
                             }
                             else
                             {
-                                EndY = -(consoleCount * prev.ActualHeight / 4.0f - consoleScrollView.ActualHeight);
+                                EndY = -(consoleCount * prev.ActualHeight / 2.0f - consoleScrollView.ActualHeight);
                             }
                         }
                         else
@@ -132,26 +161,27 @@ namespace OWLOSAirQuality.Huds
 
                     ColorAnimation animation = new ColorAnimation
                     {
-                        Duration = new Duration(TimeSpan.FromSeconds(10))
+                        Duration = new Duration(TimeSpan.FromSeconds(5))
                     };
 
                     switch (code)
                     {
-                        case 0:
-                            animation.To = ((SolidColorBrush)App.Current.Resources["OWLOSSuccessAlpha4"]).Color;
-                            textBlock.Foreground = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSSuccess"]).Color);
+                        
+                        case ConsoleMessageCode.Success:
+                            animation.To = ((SolidColorBrush)App.Current.Resources["OWLOSPrimaryAlpha3"]).Color;
+                            textBlock.Foreground = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSPrimary"]).Color);
                             break;
-                        case 1:
+                        case ConsoleMessageCode.Warning:
                             animation.To = ((SolidColorBrush)App.Current.Resources["OWLOSWarningAlpha4"]).Color;
                             textBlock.Foreground = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSWarning"]).Color);
                             break;
-                        case 3:
+                        case ConsoleMessageCode.Danger:
                             animation.To = ((SolidColorBrush)App.Current.Resources["OWLOSDangerAlpha4"]).Color;
                             textBlock.Foreground = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSDanger"]).Color);
                             break;
                         default:
-                            animation.To = ((SolidColorBrush)App.Current.Resources["OWLOSInfoAlpha4"]).Color;
-                            textBlock.Foreground = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSLight"]).Color);
+                            animation.To = ((SolidColorBrush)App.Current.Resources["OWLOSInfoAlpha2"]).Color;
+                            textBlock.Foreground = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSInfo"]).Color);
                             break;
 
                     }
@@ -167,12 +197,21 @@ namespace OWLOSAirQuality.Huds
 
                     StringAnimationUsingKeyFrames stringAnimationUsingKeyFrames = new StringAnimationUsingKeyFrames
                     {
-                        Duration = new Duration(TimeSpan.FromSeconds(1))
+                        Duration = new Duration(TimeSpan.FromSeconds(2))
                     };
 
 
                     string tempText = string.Empty;
-                    text = DateTime.Now + " " + text;
+
+                    if (!noDate)
+                    {
+                        text = DateTime.Now + " " + text.Trim();
+                    }
+                    else
+                    {
+                        text = new string(' ', DateTime.Now.ToString().Length) + text.Trim();                                                
+                    }
+
                     foreach (char c in text)
                     {
                         DiscreteStringKeyFrame discreteStringKeyFrame = new DiscreteStringKeyFrame

@@ -1,4 +1,5 @@
-﻿using OWLOSAirQuality.OWLOSEcosystemService;
+﻿using OWLOSAirQuality.Huds;
+using OWLOSAirQuality.OWLOSEcosystemService;
 using OWLOSEcosystemService.DTO.Things;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,8 @@ namespace OWLOSAirQuality
     /// </summary>
     public partial class AirQualityMainWindow : Window
     {
+        private ConsoleControl logConsole;
+        private ConsoleControl logConsole2;
         public AirQualityMainWindow()
         {
             InitializeComponent();
@@ -31,25 +34,44 @@ namespace OWLOSAirQuality
                 AutoReset = true
             };
             lifeCycleTimer.Elapsed += new ElapsedEventHandler(OnLifeCycleTimer);
-            lifeCycleTimer.Start();           
+            lifeCycleTimer.Start();
+
+            logConsole = new ConsoleControl();
+            ConsoleGrid.Children.Add(logConsole);
+
+            logConsole2 = new ConsoleControl();
+            ConsoleGrid2.Children.Add(logConsole2);
+
+
+
+            OWLOSEcosystem ecosystem = App.ecosystem;
+
+            ecosystem.OnLog += Ecosystem_OnLog;
+        }
+
+        private void Ecosystem_OnLog(object sender, OWLOSLogEventArgs e)
+        {
+            logConsole.AddToconsole(e.Message, e.EventType);
         }
 
         private async void OnLifeCycleTimer(object source, ElapsedEventArgs e)
         {
+            
             string report = string.Empty;
             OWLOSEcosystem ecosystem = App.ecosystem;
             foreach(ThingAirQualityDTO ac in ecosystem.dailyAirQulity)
             {
                 if (ac != null)
                 {
-                    report += ac.QueryTime.ToString() + " " + ac.DHT22temp + " | ";                    
+                    report += ac.QueryTime.ToString() + " " + ac.DHT22temp + " \n ";                    
                 }
             }
             base.Dispatcher.Invoke(() =>
             {
-
-                text.Text = report;
+                logConsole2.AddToconsole(report, ConsoleMessageCode.Info);
+                //text.Text = report;
             });
+            
         }
     }
 }

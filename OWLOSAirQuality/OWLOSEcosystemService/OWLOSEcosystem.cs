@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using OWLOSAirQuality.Huds;
 using OWLOSEcosystemService.DTO.Things;
 using OWLOSThingsManager.Ecosystem.OWLOS;
 using System;
@@ -7,6 +8,19 @@ using System.Timers;
 
 namespace OWLOSAirQuality.OWLOSEcosystemService
 {
+
+    public class OWLOSLogEventArgs : EventArgs
+    {
+        public string Message;
+        public ConsoleMessageCode EventType;
+        
+        public OWLOSLogEventArgs(string Message, ConsoleMessageCode EventType)
+        {
+            this.Message = Message;
+            this.EventType = EventType;
+        }
+    }
+
     public class OWLOSEcosystem
     {
         private readonly OWLOSEcosystemClient ecosystemServiceClient;
@@ -25,9 +39,15 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
 
         public ThingAirQualityDTO[] dailyAirQulity = new ThingAirQualityDTO[dailyAirQulitySize];
 
+        //events 
+        public delegate void OWLOSLogEventHandler(object? sender, OWLOSLogEventArgs e);
+        public event OWLOSLogEventHandler OnLog;
+
         public OWLOSEcosystem()
         {
             ecosystemServiceClient = new OWLOSEcosystemClient();
+
+            ecosystemServiceClient.OnLogItem += EcosystemServiceClient_OnLogItem;
 
 
             lifeCycleTimer = new Timer(quaryInterval)
@@ -40,6 +60,7 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
 
         }
 
+
         private async void OnLifeCycleTimer(object source, ElapsedEventArgs e)
         {
             if (lifeCycleBlocked)
@@ -49,11 +70,19 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
 
             lifeCycleBlocked = true;
 
+            Log(new OWLOSLogEventArgs("QUERY total [" + ecosystemServiceClient.totlaSend.ToString() + "]", ConsoleMessageCode.Info));
+
             AirQualityClientResulDTO airQualityClientResulDTO = await ecosystemServiceClient.GetLastDayThingAQ(thingHost, thingToken);
             if ((string.IsNullOrEmpty(airQualityClientResulDTO.error)) && (airQualityClientResulDTO.result != null))
             {
                 List<ThingAirQualityDTO> thingAirQualityDTO = JsonConvert.DeserializeObject<List<ThingAirQualityDTO>>(airQualityClientResulDTO.result as string);
                 StoreDailyAirQualityData(thingAirQualityDTO);
+
+                Log(new OWLOSLogEventArgs("RECV total [" + ecosystemServiceClient.totlaRecv.ToString() + "]" , ConsoleMessageCode.Success));
+            }
+            else
+            {
+                Log(new OWLOSLogEventArgs("ERROR", ConsoleMessageCode.Danger));
             }
 
 /*
@@ -191,7 +220,7 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
 
     protected DateTime RoundDateTimeToOneMinute(DateTime dateTime)
         {
-            return new DateTime((dateTime.Ticks + TimeSpan.FromMinutes(1).Ticks - 1) / TimeSpan.FromMinutes(1).Ticks * TimeSpan.FromMinutes(1).Ticks, dateTime.Kind);
+            return new DateTime((dateTime.Ticks + TimeSpan.FromMinutes(1).Ticks - 1) / TimeSpan.FromMinutes(1).Ticks * TimeSpan.FromMinutes(1).Ticks, dateTime.Kind).AddMinutes(-1);
         }
 
     protected void StoreDailyAirQualityData(List<ThingAirQualityDTO> thingAirQualityDTOs)
@@ -386,6 +415,35 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
         }
 
         //--- AIR QUALITY DATA
+
+        private void EcosystemServiceClient_OnLogItem(object sender, OWLOSThingsManager.Ecosystem.OWLOS.LogItem e)
+        {
+            switch (e.networkStatus)
+            {
+                case NetworkStatus.Online:
+                    Log(new OWLOSLogEventArgs("REST client: " + e.text + " " + e.size, ConsoleMessageCode.Success));
+                    break;
+                case NetworkStatus.Offline:
+                    Log(new OWLOSLogEventArgs("REST client: " + e.text, ConsoleMessageCode.Warning));
+                    break;
+                case NetworkStatus.Reconnect:
+                    Log(new OWLOSLogEventArgs("REST client: " + e.text + " " + e.size, ConsoleMessageCode.Info));
+                    break;
+                default:
+                    Log(new OWLOSLogEventArgs("REST client: " + e.text, ConsoleMessageCode.Danger));
+                    break;
+            }
+        }
+
+
+        //Events ---
+        protected virtual void Log(OWLOSLogEventArgs e)
+        {
+            OnLog?.Invoke(this, e);
+        }
+
+
+        //--- ENDOF Events 
 
 
     }

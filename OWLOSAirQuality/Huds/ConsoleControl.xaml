@@ -6,8 +6,8 @@
              xmlns:local="clr-namespace:OWLOSAirQuality.Huds"
              mc:Ignorable="d"              
              d:DesignHeight="450" d:DesignWidth="800" >
-    <Grid>
-        <ScrollViewer Name="consoleScrollView" Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}}" VerticalScrollBarVisibility="Hidden" >
+    <Grid >
+        <ScrollViewer Name="consoleScrollView" Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}}" VerticalScrollBarVisibility="Hidden">
             <VirtualizingStackPanel Name="consolePanel" ScrollViewer.CanContentScroll="True" >
             </VirtualizingStackPanel>
         </ScrollViewer>

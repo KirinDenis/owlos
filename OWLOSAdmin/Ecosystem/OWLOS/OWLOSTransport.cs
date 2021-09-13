@@ -131,6 +131,12 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
 
         public void AddToLog(LogItem logItem)
         {
+            if (logItems.Count > 1000)
+            {
+                logItems.Clear();
+                System.GC.Collect();
+            }
+
             logItems.Add(logItem);
             OnLogItem?.Invoke(this, logItem);
         }
