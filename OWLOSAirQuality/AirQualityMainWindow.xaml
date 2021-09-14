@@ -5,18 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OWLOSAirQuality"
         mc:Ignorable="d"
-        Title="OWLOS Air Quality" Width="1200" Height="800" Background="{DynamicResource OWLOSDark}">
+        FontFamily="file:///D:\Users\Egor\source\repos\KirinDenis\owlos\OWLOSAdmin\Fonts\#omega flight" 
+        Title="OWLOS Air Quality" Width="1920" Height="1080" Background="{DynamicResource OWLOSDark}">
     <Grid>
-        <TextBlock x:Name="text" TextWrapping="WrapWithOverflow" />
+        <TextBlock x:Name="text" TextWrapping="WrapWithOverflow"/>
 
         <Viewbox x:Name="MainViewBox">
 
-            <Grid x:Name="MainGrid"  Width="1200" Height="800">
+            <Grid x:Name="MainGrid"  Width="1920" Height="1080">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="80*"/>
                     <ColumnDefinition Width="20*"/>
-                    <ColumnDefinition Width="40*"/>
-                    <ColumnDefinition Width="20*"/>
-                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="10"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="20*"/>
@@ -25,11 +26,11 @@
                     <RowDefinition Height="20"/>
                 </Grid.RowDefinitions>
 
-                <Grid x:Name="ConsoleGrid" Grid.ColumnSpan="3" Grid.Row="2" >
+                <Grid x:Name="ConsoleGrid" Grid.Column="2" Grid.Row="0" Grid.RowSpan="3" >
                 </Grid>
 
-                <Grid x:Name="ConsoleGrid2" Grid.ColumnSpan="3" Grid.Row="1" >
-                </Grid>
+
+                <WrapPanel x:Name="ValuesGrid" Grid.Column="1" Grid.Row="1" ></WrapPanel>
 
 
                 <Grid x:Name="HudGrid" Grid.Column="1" Grid.Row="1">

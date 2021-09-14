@@ -15,6 +15,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using static OWLOSEcosystemService.DTO.Things.ThingAirQuality;
 
 namespace OWLOSAirQuality
 {
@@ -23,8 +24,11 @@ namespace OWLOSAirQuality
     /// </summary>
     public partial class AirQualityMainWindow : Window
     {
+        private OWLOSEcosystem ecosystem;
         private ConsoleControl logConsole;
-        private ConsoleControl logConsole2;
+        
+
+        private ACValueControl DHT22TempValueControl = null;
         public AirQualityMainWindow()
         {
             InitializeComponent();
@@ -36,18 +40,56 @@ namespace OWLOSAirQuality
             lifeCycleTimer.Elapsed += new ElapsedEventHandler(OnLifeCycleTimer);
             lifeCycleTimer.Start();
 
+            //controls
+
             logConsole = new ConsoleControl();
             ConsoleGrid.Children.Add(logConsole);
 
-            logConsole2 = new ConsoleControl();
-            ConsoleGrid2.Children.Add(logConsole2);
+
+            /*
+            for (int i = 0; i < 20; i++)
+            {
+                ValueControl v1 = new ValueControl();
+                ValuesGrid.Children.Add(v1);
+            }
+            */
 
 
-
-            OWLOSEcosystem ecosystem = App.ecosystem;
-
+            //events     
+            ecosystem = App.ecosystem;
             ecosystem.OnLog += Ecosystem_OnLog;
+            ecosystem.OnACDataReady += Ecosystem_OnACDataReady;
         }
+
+        private void Ecosystem_OnACDataReady(object sender, EventArgs e)
+        {
+            if (ecosystem.dailyAirQulity[OWLOSEcosystem.dailyAirQulitySize-1].DHT22temp != null)
+            {
+                if (DHT22TempValueControl == null)
+                {
+                    for (int i = 0; i < 20; i++)
+                    {
+                        try
+                        {
+                            ThingAirQuality acData = ecosystem.dailyAirQulity[OWLOSEcosystem.dailyAirQulitySize - 1 - i * 10];
+                            if (acData != null)
+                            {
+                                DHT22TempValueControl = new ACValueControl("Temperature", "Celsius", "DHT22 sensor");
+                                acData.OnDHT22TempChanged += DHT22TempValueControl.OnValueChanged;
+                                ValuesGrid.Children.Add(DHT22TempValueControl);
+                            }
+
+                            //DHT22TempValueControl = new ACValueControl();
+                            //ValuesGrid.Children.Add(DHT22TempValueControl);
+                            //ecosystem.dailyAirQulity[OWLOSEcosystem.dailyAirQulitySize - 1 - i * 10].OnDHT22TempChanged += AirQualityMainWindow_OnDHT22TempChanged;
+                            //DHT22TempValueControl.ValueTextBlock.Text = ecosystem.dailyAirQulity[OWLOSEcosystem.dailyAirQulitySize - 1 - i * 1000].DHT22temp?.ToString();
+                        }
+                        catch { }
+                    }
+                }
+            }
+        }
+
 
         private void Ecosystem_OnLog(object sender, OWLOSLogEventArgs e)
         {
@@ -57,6 +99,7 @@ namespace OWLOSAirQuality
         private async void OnLifeCycleTimer(object source, ElapsedEventArgs e)
         {
             
+            /*
             string report = string.Empty;
             OWLOSEcosystem ecosystem = App.ecosystem;
             foreach(ThingAirQualityDTO ac in ecosystem.dailyAirQulity)
@@ -71,7 +114,7 @@ namespace OWLOSAirQuality
                 logConsole2.AddToconsole(report, ConsoleMessageCode.Info);
                 //text.Text = report;
             });
-            
+            */
         }
     }
 }

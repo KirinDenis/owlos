@@ -35,13 +35,17 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
 
         protected Timer lifeCycleTimer;
 
-        protected const int dailyAirQulitySize = 60 * 24;
+        public const int dailyAirQulitySize = 60 * 24;
 
-        public ThingAirQualityDTO[] dailyAirQulity = new ThingAirQualityDTO[dailyAirQulitySize];
+        public ThingAirQuality[] dailyAirQulity = new ThingAirQuality[dailyAirQulitySize];
 
         //events 
         public delegate void OWLOSLogEventHandler(object? sender, OWLOSLogEventArgs e);
         public event OWLOSLogEventHandler OnLog;
+        
+        public delegate void ACDataReadyEventHandler(object? sender, EventArgs e);
+        public event ACDataReadyEventHandler OnACDataReady;
+
 
         public OWLOSEcosystem()
         {
@@ -75,8 +79,8 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
             AirQualityClientResulDTO airQualityClientResulDTO = await ecosystemServiceClient.GetLastDayThingAQ(thingHost, thingToken);
             if ((string.IsNullOrEmpty(airQualityClientResulDTO.error)) && (airQualityClientResulDTO.result != null))
             {
-                List<ThingAirQualityDTO> thingAirQualityDTO = JsonConvert.DeserializeObject<List<ThingAirQualityDTO>>(airQualityClientResulDTO.result as string);
-                StoreDailyAirQualityData(thingAirQualityDTO);
+                List<ThingAirQuality> thingAirQuality = JsonConvert.DeserializeObject<List<ThingAirQuality>>(airQualityClientResulDTO.result as string);
+                StoreDailyAirQualityData(thingAirQuality);
 
                 Log(new OWLOSLogEventArgs("RECV total [" + ecosystemServiceClient.totlaRecv.ToString() + "]" , ConsoleMessageCode.Success));
             }
@@ -91,12 +95,12 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
                 AirQualityClientResulDTO airQualityClientResulDTO = await ecosystemServiceClient.GetLastDayThingAQ(thingHost, thingToken);
                 if ((string.IsNullOrEmpty(airQualityClientResulDTO.error)) && (airQualityClientResulDTO.result != null))
                 {
-                    List<ThingAirQualityDTO> thingAirQualityDTO = JsonConvert.DeserializeObject<List<ThingAirQualityDTO>>(airQualityClientResulDTO.result as string);
-                    StoreDailyAirQualityData(thingAirQualityDTO);                    
+                    List<ThingAirQuality> thingAirQuality = JsonConvert.DeserializeObject<List<ThingAirQuality>>(airQualityClientResulDTO.result as string);
+                    StoreDailyAirQualityData(thingAirQuality);                    
                 }
                 else
                 {
-                    StoreCurrentAirQualityData(new ThingAirQualityDTO()
+                    StoreCurrentAirQualityData(new ThingAirQuality()
                     {
                         ClientTime = DateTime.Now,
                         Status = ThingAirQualityStatus.ServerNotConnected
@@ -109,13 +113,13 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
                 AirQualityClientResulDTO airQualityClientResulDTO = await ecosystemServiceClient.GetLastThingAQ(thingHost, thingToken);
                 if ((string.IsNullOrEmpty(airQualityClientResulDTO.error)) && (airQualityClientResulDTO.result != null))
                 {
-                    ThingAirQualityDTO thingAirQualityDTO = JsonConvert.DeserializeObject<ThingAirQualityDTO>(airQualityClientResulDTO.result as string);
-                    StoreCurrentAirQualityData(thingAirQualityDTO);
+                    ThingAirQuality thingAirQuality = JsonConvert.DeserializeObject<ThingAirQuality>(airQualityClientResulDTO.result as string);
+                    StoreCurrentAirQualityData(thingAirQuality);
 
                 }
                 else
                 {
-                    StoreCurrentAirQualityData(new ThingAirQualityDTO()
+                    StoreCurrentAirQualityData(new ThingAirQuality()
                     {
                         ClientTime = DateTime.Now,
                         Status = ThingAirQualityStatus.ServerNotConnected
@@ -129,91 +133,96 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
 
 
         //AIR QUALITY DATA ---
-        protected void JoinACData(int ACIndex, ThingAirQualityDTO thingAirQualityDTO)
+        protected void JoinACData(int ACIndex, ThingAirQuality thingAirQuality)
         {
+            if ((ACIndex < 0) || (ACIndex >= dailyAirQulitySize))
+            {
+                return;
+            }
+
             if (dailyAirQulity[ACIndex] == null)
             {
-                dailyAirQulity[ACIndex] = thingAirQualityDTO;
+                dailyAirQulity[ACIndex] = thingAirQuality;
             }
             else
             {
-                dailyAirQulity[ACIndex].QueryTime = thingAirQualityDTO.QueryTime;
-                dailyAirQulity[ACIndex].Status = thingAirQualityDTO.Status;
-                dailyAirQulity[ACIndex].TickCount = thingAirQualityDTO.TickCount;
+                dailyAirQulity[ACIndex].QueryTime = thingAirQuality.QueryTime;
+                dailyAirQulity[ACIndex].Status = thingAirQuality.Status;
+                dailyAirQulity[ACIndex].TickCount = thingAirQuality.TickCount;
 
-                dailyAirQulity[ACIndex].DHT22 = thingAirQualityDTO.DHT22;
-                if ((dailyAirQulity[ACIndex].DHT22temp != null) && (thingAirQualityDTO.DHT22temp != null))
+                dailyAirQulity[ACIndex].DHT22 = thingAirQuality.DHT22;
+                if ((dailyAirQulity[ACIndex].DHT22temp != null) && (thingAirQuality.DHT22temp != null))
                 {
-                    dailyAirQulity[ACIndex].DHT22temp = (float)Math.Round((float)(dailyAirQulity[ACIndex].DHT22temp + thingAirQualityDTO.DHT22temp) * 100.0f / 2.0f, MidpointRounding.ToEven) / 100.0f;
+                    dailyAirQulity[ACIndex].DHT22temp = (float)Math.Round((float)(dailyAirQulity[ACIndex].DHT22temp + thingAirQuality.DHT22temp) * 100.0f / 2.0f, MidpointRounding.ToEven) / 100.0f;
                 }
 
-                if ((dailyAirQulity[ACIndex].DHT22hum != null) && (thingAirQualityDTO.DHT22hum != null))
+                if ((dailyAirQulity[ACIndex].DHT22hum != null) && (thingAirQuality.DHT22hum != null))
                 {
-                    dailyAirQulity[ACIndex].DHT22hum = (float)Math.Round((float)(dailyAirQulity[ACIndex].DHT22hum + thingAirQualityDTO.DHT22hum) / 2.0f, MidpointRounding.ToEven);
+                    dailyAirQulity[ACIndex].DHT22hum = (float)Math.Round((float)(dailyAirQulity[ACIndex].DHT22hum + thingAirQuality.DHT22hum) / 2.0f, MidpointRounding.ToEven);
                 }
 
-                if ((dailyAirQulity[ACIndex].DHT22heat != null) && (thingAirQualityDTO.DHT22heat != null))
+                if ((dailyAirQulity[ACIndex].DHT22heat != null) && (thingAirQuality.DHT22heat != null))
                 {
-                    dailyAirQulity[ACIndex].DHT22heat = (float)Math.Round((float)(dailyAirQulity[ACIndex].DHT22heat + thingAirQualityDTO.DHT22heat) / 2.0f, MidpointRounding.ToEven);
+                    dailyAirQulity[ACIndex].DHT22heat = (float)Math.Round((float)(dailyAirQulity[ACIndex].DHT22heat + thingAirQuality.DHT22heat) / 2.0f, MidpointRounding.ToEven);
                 }
 
-                dailyAirQulity[ACIndex].DHT22c = thingAirQualityDTO.DHT22c;
+                dailyAirQulity[ACIndex].DHT22c = thingAirQuality.DHT22c;
 
 
-                dailyAirQulity[ACIndex].BMP280 = thingAirQualityDTO.BMP280;
+                dailyAirQulity[ACIndex].BMP280 = thingAirQuality.BMP280;
 
-                if ((dailyAirQulity[ACIndex].BMP280pressure != null) && (thingAirQualityDTO.BMP280pressure != null))
+                if ((dailyAirQulity[ACIndex].BMP280pressure != null) && (thingAirQuality.BMP280pressure != null))
                 {
-                    dailyAirQulity[ACIndex].BMP280pressure = (float)Math.Round((float)(dailyAirQulity[ACIndex].BMP280pressure + thingAirQualityDTO.BMP280pressure) / 2.0f, MidpointRounding.ToEven);
+                    dailyAirQulity[ACIndex].BMP280pressure = (float)Math.Round((float)(dailyAirQulity[ACIndex].BMP280pressure + thingAirQuality.BMP280pressure) / 2.0f, MidpointRounding.ToEven);
                 }
 
-                if ((dailyAirQulity[ACIndex].BMP280altitude != null) && (thingAirQualityDTO.BMP280altitude != null))
+                if ((dailyAirQulity[ACIndex].BMP280altitude != null) && (thingAirQuality.BMP280altitude != null))
                 {
-                    dailyAirQulity[ACIndex].BMP280altitude = (float)Math.Round((float)(dailyAirQulity[ACIndex].BMP280altitude + thingAirQualityDTO.BMP280altitude) / 2.0f, MidpointRounding.ToEven);
+                    dailyAirQulity[ACIndex].BMP280altitude = (float)Math.Round((float)(dailyAirQulity[ACIndex].BMP280altitude + thingAirQuality.BMP280altitude) / 2.0f, MidpointRounding.ToEven);
                 }
 
-                if ((dailyAirQulity[ACIndex].BMP280temperature != null) && (thingAirQualityDTO.BMP280temperature != null))
+                if ((dailyAirQulity[ACIndex].BMP280temperature != null) && (thingAirQuality.BMP280temperature != null))
                 {
-                    dailyAirQulity[ACIndex].BMP280temperature = (float)Math.Round((float)(dailyAirQulity[ACIndex].BMP280temperature + thingAirQualityDTO.BMP280temperature) / 2.0f, MidpointRounding.ToEven);
+                    dailyAirQulity[ACIndex].BMP280temperature = (float)Math.Round((float)(dailyAirQulity[ACIndex].BMP280temperature + thingAirQuality.BMP280temperature) / 2.0f, MidpointRounding.ToEven);
                 }
 
-                dailyAirQulity[ACIndex].ADS1X15 = thingAirQualityDTO.ADS1X15;
+                dailyAirQulity[ACIndex].ADS1X15 = thingAirQuality.ADS1X15;
 
-                if ((dailyAirQulity[ACIndex].ADS1X15MQ135 != null) && (thingAirQualityDTO.ADS1X15MQ135 != null))
+                if ((dailyAirQulity[ACIndex].ADS1X15MQ135 != null) && (thingAirQuality.ADS1X15MQ135 != null))
                 {
-                    dailyAirQulity[ACIndex].ADS1X15MQ135 = (float)Math.Round((float)(dailyAirQulity[ACIndex].ADS1X15MQ135 + thingAirQualityDTO.ADS1X15MQ135) / 2.0f, MidpointRounding.ToEven);
+                    dailyAirQulity[ACIndex].ADS1X15MQ135 = (float)Math.Round((float)(dailyAirQulity[ACIndex].ADS1X15MQ135 + thingAirQuality.ADS1X15MQ135) / 2.0f, MidpointRounding.ToEven);
                 }
 
-                if ((dailyAirQulity[ACIndex].ADS1X15MQ7 != null) && (thingAirQualityDTO.ADS1X15MQ7 != null))
+                if ((dailyAirQulity[ACIndex].ADS1X15MQ7 != null) && (thingAirQuality.ADS1X15MQ7 != null))
                 {
-                    dailyAirQulity[ACIndex].ADS1X15MQ7 = (float)Math.Round((float)(dailyAirQulity[ACIndex].ADS1X15MQ7 + thingAirQualityDTO.ADS1X15MQ7) / 2.0f, MidpointRounding.ToEven);
+                    dailyAirQulity[ACIndex].ADS1X15MQ7 = (float)Math.Round((float)(dailyAirQulity[ACIndex].ADS1X15MQ7 + thingAirQuality.ADS1X15MQ7) / 2.0f, MidpointRounding.ToEven);
                 }
 
-                if ((dailyAirQulity[ACIndex].ADS1X15Light != null) && (thingAirQualityDTO.ADS1X15Light != null))
+                if ((dailyAirQulity[ACIndex].ADS1X15Light != null) && (thingAirQuality.ADS1X15Light != null))
                 {
-                    dailyAirQulity[ACIndex].ADS1X15Light = (float)Math.Round((float)(dailyAirQulity[ACIndex].ADS1X15Light + thingAirQualityDTO.ADS1X15Light) / 2.0f, MidpointRounding.ToEven);
+                    dailyAirQulity[ACIndex].ADS1X15Light = (float)Math.Round((float)(dailyAirQulity[ACIndex].ADS1X15Light + thingAirQuality.ADS1X15Light) / 2.0f, MidpointRounding.ToEven);
                 }
 
-                dailyAirQulity[ACIndex].CCS811 = thingAirQualityDTO.CCS811;
+                dailyAirQulity[ACIndex].CCS811 = thingAirQuality.CCS811;
 
-                if ((dailyAirQulity[ACIndex].CCS811CO2 != null) && (thingAirQualityDTO.CCS811CO2 != null))
+                if ((dailyAirQulity[ACIndex].CCS811CO2 != null) && (thingAirQuality.CCS811CO2 != null))
                 {
-                    dailyAirQulity[ACIndex].CCS811CO2 = (float)Math.Round((float)(dailyAirQulity[ACIndex].CCS811CO2 + thingAirQualityDTO.CCS811CO2) / 2.0f, MidpointRounding.ToEven);
+                    dailyAirQulity[ACIndex].CCS811CO2 = (float)Math.Round((float)(dailyAirQulity[ACIndex].CCS811CO2 + thingAirQuality.CCS811CO2) / 2.0f, MidpointRounding.ToEven);
                 }
 
-                if ((dailyAirQulity[ACIndex].CCS811TVOC != null) && (thingAirQualityDTO.CCS811TVOC != null))
+                if ((dailyAirQulity[ACIndex].CCS811TVOC != null) && (thingAirQuality.CCS811TVOC != null))
                 {
-                    dailyAirQulity[ACIndex].CCS811TVOC = (float)Math.Round((float)(dailyAirQulity[ACIndex].CCS811TVOC + thingAirQualityDTO.CCS811TVOC) / 2.0f, MidpointRounding.ToEven);
+                    dailyAirQulity[ACIndex].CCS811TVOC = (float)Math.Round((float)(dailyAirQulity[ACIndex].CCS811TVOC + thingAirQuality.CCS811TVOC) / 2.0f, MidpointRounding.ToEven);
                 }
 
-                if ((dailyAirQulity[ACIndex].CCS811resistence != null) && (thingAirQualityDTO.CCS811resistence != null))
+                if ((dailyAirQulity[ACIndex].CCS811resistence != null) && (thingAirQuality.CCS811resistence != null))
                 {
-                    dailyAirQulity[ACIndex].CCS811resistence = (float)Math.Round((float)(dailyAirQulity[ACIndex].CCS811resistence + thingAirQualityDTO.CCS811resistence) / 2.0f, MidpointRounding.ToEven);
+                    dailyAirQulity[ACIndex].CCS811resistence = (float)Math.Round((float)(dailyAirQulity[ACIndex].CCS811resistence + thingAirQuality.CCS811resistence) / 2.0f, MidpointRounding.ToEven);
                 }
 
-                if ((dailyAirQulity[ACIndex].CCS811temp != null) && (thingAirQualityDTO.CCS811temp != null))
+                if ((dailyAirQulity[ACIndex].CCS811temp != null) && (thingAirQuality.CCS811temp != null))
                 {
-                    dailyAirQulity[ACIndex].CCS811temp = (float)Math.Round((float)(dailyAirQulity[ACIndex].CCS811temp + thingAirQualityDTO.CCS811temp) / 2.0f, MidpointRounding.ToEven);
+                    dailyAirQulity[ACIndex].CCS811temp = (float)Math.Round((float)(dailyAirQulity[ACIndex].CCS811temp + thingAirQuality.CCS811temp) / 2.0f, MidpointRounding.ToEven);
                 }
             }
         }
@@ -223,19 +232,19 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
             return new DateTime((dateTime.Ticks + TimeSpan.FromMinutes(1).Ticks - 1) / TimeSpan.FromMinutes(1).Ticks * TimeSpan.FromMinutes(1).Ticks, dateTime.Kind).AddMinutes(-1);
         }
 
-    protected void StoreDailyAirQualityData(List<ThingAirQualityDTO> thingAirQualityDTOs)
+    protected void StoreDailyAirQualityData(List<ThingAirQuality> thingAirQualitys)
         {
             //DateTime currentDate = DateTime.Now;
-            DateTime currentDate = (DateTime)thingAirQualityDTOs[thingAirQualityDTOs.Count - 1].QueryTime;
+            DateTime currentDate = (DateTime)thingAirQualitys[thingAirQualitys.Count - 1].QueryTime;
 
             currentDate = RoundDateTimeToOneMinute(currentDate);
 
-            //thingAirQualityDTOs[thingAirQualityDTOs.Count - 1].QueryTime = currentDate;
-            // int timeCorrection = (int)currentDate.Subtract((DateTime)thingAirQualityDTOs[thingAirQualityDTOs.Count - 1].QueryTime).TotalSeconds;
+            //thingAirQualitys[thingAirQualitys.Count - 1].QueryTime = currentDate;
+            // int timeCorrection = (int)currentDate.Subtract((DateTime)thingAirQualitys[thingAirQualitys.Count - 1].QueryTime).TotalSeconds;
             int timeCorrection = 0;
             
 
-            foreach (ThingAirQualityDTO currentAC in thingAirQualityDTOs)
+            foreach (ThingAirQuality currentAC in thingAirQualitys)
             {
                 currentAC.QueryTime = RoundDateTimeToOneMinute((DateTime)currentAC.QueryTime);
 
@@ -253,8 +262,10 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
 
             }
 
+            OnACDataReady?.Invoke(this, new EventArgs());
+
             /*
-            int lastDayIndex = thingAirQualityDTO.Count - 1;
+            int lastDayIndex = thingAirQuality.Count - 1;
             DateTime currentDate = DateTime.Now;
 
             //is minutes counter - last date (minute) at and of array
@@ -264,7 +275,7 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
             for (i = dailyAirQulitySize - 1; i > -1; i--)
             {
 
-                dailyAirQulity[i] = new ThingAirQualityDTO()
+                dailyAirQulity[i] = new ThingAirQuality()
                 {
                     Status = ThingAirQualityStatus.ServerError
                 };
@@ -272,9 +283,9 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
 
                 if (lastDayIndex >= 0)
                 {
-                    if (thingAirQualityDTO[lastDayIndex].QueryTime != null)
+                    if (thingAirQuality[lastDayIndex].QueryTime != null)
                     {
-                        DateTime selectedACCDateTime = (DateTime)thingAirQualityDTO[lastDayIndex].QueryTime;
+                        DateTime selectedACCDateTime = (DateTime)thingAirQuality[lastDayIndex].QueryTime;
                         if ((selectedACCDateTime < currentDate.AddMinutes(-minutesCount)) && (selectedACCDateTime > currentDate.AddMinutes(-(minutesCount + 1))))
                         {
                             if (lastDayIndex > 0)
@@ -286,10 +297,10 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
                                     {
                                         break;
                                     }
-                                    selectedACCDateTime = (DateTime)thingAirQualityDTO[lastDayIndex].QueryTime;
+                                    selectedACCDateTime = (DateTime)thingAirQuality[lastDayIndex].QueryTime;
                                 }
                             }
-                            dailyAirQulity[i] = thingAirQualityDTO[lastDayIndex];
+                            dailyAirQulity[i] = thingAirQuality[lastDayIndex];
                         }
                     }
                 }
@@ -300,22 +311,22 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
             */
         }
 
-        protected void StoreCurrentAirQualityData(ThingAirQualityDTO thingAirQualityDTO)
+        protected void StoreCurrentAirQualityData(ThingAirQuality thingAirQuality)
         {
             return;
 
-            ThingAirQualityDTO[] newDailyAirQulity = new ThingAirQualityDTO[dailyAirQulitySize];
+            ThingAirQuality[] newDailyAirQulity = new ThingAirQuality[dailyAirQulitySize];
 
             DateTime currentDate = DateTime.Now;
 
             /*
-            if (thingAirQualityDTO.QueryTime != null)
+            if (thingAirQuality.QueryTime != null)
             {
-                currentDate = (DateTime)thingAirQualityDTO.QueryTime;
+                currentDate = (DateTime)thingAirQuality.QueryTime;
             }
             */
 
-            newDailyAirQulity[dailyAirQulitySize - 1] = thingAirQualityDTO;
+            newDailyAirQulity[dailyAirQulitySize - 1] = thingAirQuality;
             newDailyAirQulity[dailyAirQulitySize - 1].ClientTime = DateTime.Now;
 
             for (int i = dailyAirQulitySize - 1; i > -1; i--)
@@ -354,7 +365,7 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
             {
                 if (newDailyAirQulity[i] == null)
                 {
-                    newDailyAirQulity[i] = new ThingAirQualityDTO()
+                    newDailyAirQulity[i] = new ThingAirQuality()
                     {
                         ClientTime = DateTime.Now,
                         Status = ThingAirQualityStatus.ServerNotConnected
@@ -367,7 +378,7 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
             for (int i = dailyAirQulitySize - 2; i > -1; i--)
             {
 
-                newDailyAirQulity[i] = new ThingAirQualityDTO()
+                newDailyAirQulity[i] = new ThingAirQuality()
                 {
                     ClientTime = currentDate.AddMinutes(-minutesCount),
                     Status = ThingAirQualityStatus.ServerNotConnected
@@ -380,7 +391,7 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
                         DateTime selectedACCDateTime = (DateTime)dailyAirQulity[lastDayIndex].QueryTime;
                         if ((selectedACCDateTime < currentDate.AddMinutes(-minutesCount)) && (selectedACCDateTime > currentDate.AddMinutes(-(minutesCount + 1))))
                         {
-                            ThingAirQualityDTO lastFound = dailyAirQulity[lastDayIndex];
+                            ThingAirQuality lastFound = dailyAirQulity[lastDayIndex];
                             if (lastDayIndex > 0)
                             {
                                 while ((selectedACCDateTime < currentDate.AddMinutes(-minutesCount)) && (selectedACCDateTime > currentDate.AddMinutes(-(minutesCount + 1))))
