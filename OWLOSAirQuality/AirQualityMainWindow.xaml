@@ -4,9 +4,10 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OWLOSAirQuality"
-        mc:Ignorable="d"
-        FontFamily="file:///D:\Users\Egor\source\repos\KirinDenis\owlos\OWLOSAdmin\Fonts\#omega flight" 
-        Title="OWLOS Air Quality" Width="1920" Height="1080" Background="{DynamicResource OWLOSDark}">
+        mc:Ignorable="d"        
+        Title="OWLOS Air Quality" Width="1920" Height="1080" Background="{DynamicResource OWLOSDark}" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+
+    <!-- FontFamily="file:///D:\Users\Egor\source\repos\KirinDenis\owlos\OWLOSAdmin\Fonts\#omega flight" -->
     <Grid>
         <TextBlock x:Name="text" TextWrapping="WrapWithOverflow"/>
 
@@ -30,7 +31,7 @@
                 </Grid>
 
 
-                <WrapPanel x:Name="ValuesGrid" Grid.Column="1" Grid.Row="1" ></WrapPanel>
+                <WrapPanel x:Name="ValuesGrid" Grid.Column="1" Grid.Row="1" Grid.RowSpan="3"></WrapPanel>
 
 
                 <Grid x:Name="HudGrid" Grid.Column="1" Grid.Row="1">

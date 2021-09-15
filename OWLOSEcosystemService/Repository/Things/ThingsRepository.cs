@@ -306,7 +306,8 @@ namespace OWLOSEcosystemService.Repository.Things
 
             if (thingConnectionPropertiesDTO == null)
             {
-                throw new AccessViolationException("Not user and thing related to current token");
+                //throw new AccessViolationException("Not user and thing related to current token");
+                return null;
             }
 
             using (ThingsDbContext db = new ThingsDbContext())

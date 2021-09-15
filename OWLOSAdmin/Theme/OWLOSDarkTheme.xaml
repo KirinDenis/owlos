@@ -40,7 +40,7 @@
 
     <Color x:Key = "OWLOSSecondaryColor">#FF6494a4</Color>
     <SolidColorBrush x:Key = "OWLOSSecondary" Color ="#FF6494a4" />
-    <SolidColorBrush x:Key = "OWLOSSecondaryAlpha1" Color ="#106494a4" />
+    <SolidColorBrush x:Key = "OWLOSSecondaryAlpha1" Color ="#406494a4" />
     <SolidColorBrush x:Key = "OWLOSSecondaryAlpha2" Color ="#C06494a4" />
     <SolidColorBrush x:Key = "OWLOSSecondaryAlpha3" Color ="#DF6494a4" />
 

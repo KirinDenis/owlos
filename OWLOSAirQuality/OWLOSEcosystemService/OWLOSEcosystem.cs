@@ -1,4 +1,43 @@
-﻿using Newtonsoft.Json;
+﻿/* ----------------------------------------------------------------------------
+OWLOS DIY Open Source OS for building IoT ecosystems
+Copyright 2019, 2020 by:
+- Denis Kirin (deniskirinacs@gmail.com)
+
+This file is part of OWLOS DIY Open Source OS for building IoT ecosystems
+
+OWLOS is free software : you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+OWLOS is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with OWLOS. If not, see < https://www.gnu.org/licenses/>.
+
+GitHub: https://github.com/KirinDenis/owlos
+
+(Этот файл — часть OWLOS DIY Open Source OS for building IoT ecosystems.
+
+OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
+ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
+была опубликована Фондом свободного программного обеспечения; версии 3
+лицензии, любой более поздней версии.
+
+OWLOS распространяется в надежде, что она будет полезной, но БЕЗО ВСЯКИХ
+ГАРАНТИЙ; даже без неявной гарантии ТОВАРНОГО ВИДА или ПРИГОДНОСТИ ДЛЯ
+ОПРЕДЕЛЕННЫХ ЦЕЛЕЙ.
+Подробнее см.в Стандартной общественной лицензии GNU.
+
+Вы должны были получить копию Стандартной общественной лицензии GNU вместе с
+этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
+--------------------------------------------------------------------------------------*/
+
+
+using Newtonsoft.Json;
 using OWLOSAirQuality.Huds;
 using OWLOSEcosystemService.DTO.Things;
 using OWLOSThingsManager.Ecosystem.OWLOS;
@@ -27,7 +66,7 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
 
         public string thingHost = "https://192.168.1.100:5004/Things/";
 
-        public string thingToken = "VVRQUndWTzI4dW5YR1Jxb0IyQVpXUU9oaUdURWNBdmlMTHdpSWtMSUxnSVFBQUFBZHc5VllNalU1Sk0rMGNQano5Q0JKVE5oSm94OFNkNHJyNlhHcXRRRHpDZWU1ck1SV0hWQi9CYXM0dngwL0RPemYxTzZ4NWtjc1dCeGpsV3NTTldNWFlIc3hqWlVyd1MzcDBWbnd6OHhuZzJ1eXc2OCtCMm04SlphN1lOcVUxZ2NVMWVmVXdtL3g1SXFTQ3I2YXdhZERnPT0=";
+        public string thingToken = "M3ZDcS9NSiswMmxUWCs4Nmo1dUdUNEhlMEpETURjOUtpaXlIU3ZBb3k2RVFBQUFBc3hsREhxQVZiQkZqbGgyc2wrdlBWVXh2c0hYNitSTFRNS05jVWZLeEFraVNHSVZtaHdSWkk0UU8yYzhDalJJQ1daeEJsWnFGZElNaGJ6QUcrTXVjandjZThWZWxTMTFxcmNpaEc3QlhkRUxXYW13ZjhwWHY2THRxOHBkRVpBL1g2dHRkVFdyOXU1ZTZzVUt1RkU5SG9nPT0=";
 
         public int quaryInterval = 1000;
 
@@ -49,6 +88,14 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
 
         public OWLOSEcosystem()
         {
+            //initialize daily data 
+            for (int i = 0; i < dailyAirQulitySize; i++)
+            {
+                JoinACData(i, new ThingAirQuality());
+            }
+
+            OnACDataReady?.Invoke(this, new EventArgs());
+
             ecosystemServiceClient = new OWLOSEcosystemClient();
 
             ecosystemServiceClient.OnLogItem += EcosystemServiceClient_OnLogItem;
@@ -151,77 +198,133 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
                 dailyAirQulity[ACIndex].TickCount = thingAirQuality.TickCount;
 
                 dailyAirQulity[ACIndex].DHT22 = thingAirQuality.DHT22;
-                if ((dailyAirQulity[ACIndex].DHT22temp != null) && (thingAirQuality.DHT22temp != null))
+
+                //если появились новые данные в этом минутном интервале
+                if (thingAirQuality.DHT22temp != null)
                 {
+                    //если данных небыло 
+                    if (dailyAirQulity[ACIndex].DHT22temp == null)
+                    {
+                        //считаем что показания были равны нулю
+                        dailyAirQulity[ACIndex].DHT22temp = 0.0f;
+                    }
+                    //вычисляем среднее значение между запоненым значением и новым значением
                     dailyAirQulity[ACIndex].DHT22temp = (float)Math.Round((float)(dailyAirQulity[ACIndex].DHT22temp + thingAirQuality.DHT22temp) * 100.0f / 2.0f, MidpointRounding.ToEven) / 100.0f;
                 }
 
-                if ((dailyAirQulity[ACIndex].DHT22hum != null) && (thingAirQuality.DHT22hum != null))
+                if (thingAirQuality.DHT22hum != null)
                 {
-                    dailyAirQulity[ACIndex].DHT22hum = (float)Math.Round((float)(dailyAirQulity[ACIndex].DHT22hum + thingAirQuality.DHT22hum) / 2.0f, MidpointRounding.ToEven);
+                    if (dailyAirQulity[ACIndex].DHT22hum == null)
+                    {
+                        dailyAirQulity[ACIndex].DHT22hum = 0;
+                    }
+                    dailyAirQulity[ACIndex].DHT22hum = (float)Math.Round((float)(dailyAirQulity[ACIndex].DHT22hum + thingAirQuality.DHT22hum) * 100.0f / 2.0f, MidpointRounding.ToEven) / 100.0f;
                 }
 
-                if ((dailyAirQulity[ACIndex].DHT22heat != null) && (thingAirQuality.DHT22heat != null))
+                if (thingAirQuality.DHT22heat != null)
                 {
-                    dailyAirQulity[ACIndex].DHT22heat = (float)Math.Round((float)(dailyAirQulity[ACIndex].DHT22heat + thingAirQuality.DHT22heat) / 2.0f, MidpointRounding.ToEven);
+                    if (dailyAirQulity[ACIndex].DHT22heat == null)
+                    {
+                        dailyAirQulity[ACIndex].DHT22heat = 0;
+                    }
+                    dailyAirQulity[ACIndex].DHT22heat = (float)Math.Round((float)(dailyAirQulity[ACIndex].DHT22heat + thingAirQuality.DHT22heat) * 100.0f / 2.0f, MidpointRounding.ToEven) / 100.0f;
                 }
 
                 dailyAirQulity[ACIndex].DHT22c = thingAirQuality.DHT22c;
 
-
                 dailyAirQulity[ACIndex].BMP280 = thingAirQuality.BMP280;
 
-                if ((dailyAirQulity[ACIndex].BMP280pressure != null) && (thingAirQuality.BMP280pressure != null))
+                if (thingAirQuality.BMP280pressure != null)
                 {
+                    if (dailyAirQulity[ACIndex].BMP280pressure == null)
+                    {
+                        dailyAirQulity[ACIndex].BMP280pressure = 0;
+                    }
                     dailyAirQulity[ACIndex].BMP280pressure = (float)Math.Round((float)(dailyAirQulity[ACIndex].BMP280pressure + thingAirQuality.BMP280pressure) / 2.0f, MidpointRounding.ToEven);
                 }
 
-                if ((dailyAirQulity[ACIndex].BMP280altitude != null) && (thingAirQuality.BMP280altitude != null))
+                if (thingAirQuality.BMP280altitude != null)
                 {
-                    dailyAirQulity[ACIndex].BMP280altitude = (float)Math.Round((float)(dailyAirQulity[ACIndex].BMP280altitude + thingAirQuality.BMP280altitude) / 2.0f, MidpointRounding.ToEven);
+                    if (dailyAirQulity[ACIndex].BMP280altitude == null)
+                    {
+                        dailyAirQulity[ACIndex].BMP280altitude = 0;
+                    }
+                    dailyAirQulity[ACIndex].BMP280altitude = (float)Math.Round((float)(dailyAirQulity[ACIndex].BMP280altitude + thingAirQuality.BMP280altitude) * 100.0f / 2.0f, MidpointRounding.ToEven) / 100.0f;
                 }
 
-                if ((dailyAirQulity[ACIndex].BMP280temperature != null) && (thingAirQuality.BMP280temperature != null))
+                if (thingAirQuality.BMP280temperature != null)
                 {
-                    dailyAirQulity[ACIndex].BMP280temperature = (float)Math.Round((float)(dailyAirQulity[ACIndex].BMP280temperature + thingAirQuality.BMP280temperature) / 2.0f, MidpointRounding.ToEven);
+                    if (dailyAirQulity[ACIndex].BMP280temperature == null)
+                    {
+                        dailyAirQulity[ACIndex].BMP280temperature = 0;
+                    }
+                    dailyAirQulity[ACIndex].BMP280temperature = (float)Math.Round((float)(dailyAirQulity[ACIndex].BMP280temperature + thingAirQuality.BMP280temperature) * 100.0f / 2.0f, MidpointRounding.ToEven)/ 100.0f;
                 }
 
                 dailyAirQulity[ACIndex].ADS1X15 = thingAirQuality.ADS1X15;
 
-                if ((dailyAirQulity[ACIndex].ADS1X15MQ135 != null) && (thingAirQuality.ADS1X15MQ135 != null))
+                if (thingAirQuality.ADS1X15MQ135 != null)
                 {
+                    if (dailyAirQulity[ACIndex].ADS1X15MQ135 == null)
+                    {
+                        dailyAirQulity[ACIndex].ADS1X15MQ135 = 0;
+                    }
                     dailyAirQulity[ACIndex].ADS1X15MQ135 = (float)Math.Round((float)(dailyAirQulity[ACIndex].ADS1X15MQ135 + thingAirQuality.ADS1X15MQ135) / 2.0f, MidpointRounding.ToEven);
                 }
 
-                if ((dailyAirQulity[ACIndex].ADS1X15MQ7 != null) && (thingAirQuality.ADS1X15MQ7 != null))
+                if (thingAirQuality.ADS1X15MQ7 != null)
                 {
+                    if (dailyAirQulity[ACIndex].ADS1X15MQ7 == null)
+                    {
+                        dailyAirQulity[ACIndex].ADS1X15MQ7 = 0;
+                    }
                     dailyAirQulity[ACIndex].ADS1X15MQ7 = (float)Math.Round((float)(dailyAirQulity[ACIndex].ADS1X15MQ7 + thingAirQuality.ADS1X15MQ7) / 2.0f, MidpointRounding.ToEven);
                 }
 
-                if ((dailyAirQulity[ACIndex].ADS1X15Light != null) && (thingAirQuality.ADS1X15Light != null))
+                if (thingAirQuality.ADS1X15Light != null)
                 {
+                    if (dailyAirQulity[ACIndex].ADS1X15Light == null)
+                    {
+                        dailyAirQulity[ACIndex].ADS1X15Light = 0;
+                    }
                     dailyAirQulity[ACIndex].ADS1X15Light = (float)Math.Round((float)(dailyAirQulity[ACIndex].ADS1X15Light + thingAirQuality.ADS1X15Light) / 2.0f, MidpointRounding.ToEven);
                 }
 
                 dailyAirQulity[ACIndex].CCS811 = thingAirQuality.CCS811;
 
-                if ((dailyAirQulity[ACIndex].CCS811CO2 != null) && (thingAirQuality.CCS811CO2 != null))
+                if (thingAirQuality.CCS811CO2 != null)
                 {
+                    if (dailyAirQulity[ACIndex].CCS811CO2 == null)
+                    {
+                        dailyAirQulity[ACIndex].CCS811CO2 = 0;
+                    }
                     dailyAirQulity[ACIndex].CCS811CO2 = (float)Math.Round((float)(dailyAirQulity[ACIndex].CCS811CO2 + thingAirQuality.CCS811CO2) / 2.0f, MidpointRounding.ToEven);
                 }
 
-                if ((dailyAirQulity[ACIndex].CCS811TVOC != null) && (thingAirQuality.CCS811TVOC != null))
+                if (thingAirQuality.CCS811TVOC != null)
                 {
+                    if (dailyAirQulity[ACIndex].CCS811TVOC == null)
+                    {
+                        dailyAirQulity[ACIndex].CCS811TVOC = 0;
+                    }
                     dailyAirQulity[ACIndex].CCS811TVOC = (float)Math.Round((float)(dailyAirQulity[ACIndex].CCS811TVOC + thingAirQuality.CCS811TVOC) / 2.0f, MidpointRounding.ToEven);
                 }
 
-                if ((dailyAirQulity[ACIndex].CCS811resistence != null) && (thingAirQuality.CCS811resistence != null))
+                if (thingAirQuality.CCS811resistence != null)
                 {
-                    dailyAirQulity[ACIndex].CCS811resistence = (float)Math.Round((float)(dailyAirQulity[ACIndex].CCS811resistence + thingAirQuality.CCS811resistence) / 2.0f, MidpointRounding.ToEven);
+                    if (dailyAirQulity[ACIndex].CCS811resistence == null)
+                    {
+                        dailyAirQulity[ACIndex].CCS811resistence = 0;
+                    }
+                    dailyAirQulity[ACIndex].CCS811resistence = (float)Math.Round((float)(dailyAirQulity[ACIndex].CCS811resistence + thingAirQuality.CCS811resistence) * 100.0f / 2.0f, MidpointRounding.ToEven) / 100.0f;
                 }
 
-                if ((dailyAirQulity[ACIndex].CCS811temp != null) && (thingAirQuality.CCS811temp != null))
+                if (thingAirQuality.CCS811temp != null)
                 {
+                    if (dailyAirQulity[ACIndex].CCS811temp == null)
+                    {
+                        dailyAirQulity[ACIndex].CCS811temp = 0;
+                    }
                     dailyAirQulity[ACIndex].CCS811temp = (float)Math.Round((float)(dailyAirQulity[ACIndex].CCS811temp + thingAirQuality.CCS811temp) / 2.0f, MidpointRounding.ToEven);
                 }
             }
@@ -250,12 +353,22 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
 
                 int ACTime = (int)currentDate.Subtract((DateTime)currentAC.QueryTime).TotalSeconds + timeCorrection;
 
-                int ACIndex = dailyAirQulitySize - (ACTime / 60) - 1;
+                int ACIndex = dailyAirQulitySize - (ACTime / 60);
 
-                
+                if (ACIndex > dailyAirQulitySize - 1)
+                {
+                    ACIndex = dailyAirQulitySize - 1;
+                }
 
-                JoinACData(ACIndex, currentAC);
-                
+                if (ACIndex == dailyAirQulitySize - 1)
+                {
+                    //DEBUG
+                    JoinACData(ACIndex, currentAC);
+                }
+
+                //JoinACData(ACIndex, currentAC);
+
+
                 //TimeSpan span = currentDate.Subtract((DateTime)storedQueryTime);
                 //int offset = dailyAirQulitySize - (int)(span.TotalSeconds / 60) - 1;
                 //if ((offset >= 0) && (offset <= dailyAirQulitySize - 1))
