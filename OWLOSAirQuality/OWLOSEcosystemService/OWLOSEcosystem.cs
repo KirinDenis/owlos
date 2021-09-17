@@ -178,9 +178,63 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
             lifeCycleBlocked = false;
         }
 
+        /// <summary>
+        /// Return one hour history data 
+        /// </summary>
+        /// <param name="hourOffset">current date time - ohurOffset, if zero is current hour history</param>
+        /// <returns>ThingAirQualityHistoryData with history data arrays for each sensor (copy of dailyData)</returns>
+        public ThingAirQualityHistoryData GetOneHourData(int hourOffset)
+        {
+            ThingAirQualityHistoryData result = new ThingAirQualityHistoryData();
 
-        //AIR QUALITY DATA ---
-        protected void JoinACData(int ACIndex, ThingAirQuality thingAirQuality)
+            //public Guid UserId { get; set; } ?? waiting until not null?
+            //public int ThingId { get; set; }
+
+            result.Statuses = new ThingAirQualityStatus[60];
+            result.QueryTime = new DateTime?[60];
+            result.ClientTime = new DateTime?[60];
+            result.TickCount = new long?[60];
+            result.DHT22 = new bool[60];
+            result.DHT22temp = new float?[60];
+            result.DHT22hum = new float?[60];
+            result.DHT22heat = new float?[60];
+            result.BMP280pressure = new float?[60];
+            result.BMP280altitude = new float?[60];
+            result.ADS1X15MQ135 = new float?[60];
+            result.ADS1X15MQ7 = new float?[60];
+            result.ADS1X15Light = new float?[60];
+            result.CCS811CO2 = new float?[60];
+            result.CCS811TVOC = new float?[60];
+            result.CCS811resistence = new float?[60];
+
+
+            int resultIndex = 0;
+            for (int i = dailyAirQulitySize - (hourOffset + 1) * 60; i < dailyAirQulitySize - (hourOffset * 60); i++)
+            {
+                result.Statuses[resultIndex] = dailyAirQulity[i].Status;
+                result.QueryTime[resultIndex] = dailyAirQulity[i].QueryTime;
+                result.ClientTime[resultIndex] = dailyAirQulity[i].ClientTime;
+                result.TickCount[resultIndex] = dailyAirQulity[i].TickCount;
+                result.DHT22[resultIndex] = dailyAirQulity[i].DHT22;
+                result.DHT22temp[resultIndex] = dailyAirQulity[i].DHT22temp;
+                result.DHT22hum[resultIndex] = dailyAirQulity[i].DHT22hum;
+                result.DHT22heat[resultIndex] = dailyAirQulity[i].DHT22heat;
+                result.BMP280pressure[resultIndex] = dailyAirQulity[i].BMP280pressure;
+                result.BMP280altitude[resultIndex] = dailyAirQulity[i].BMP280altitude;
+                result.ADS1X15MQ135[resultIndex] = dailyAirQulity[i].ADS1X15MQ135;
+                result.ADS1X15MQ7[resultIndex] = dailyAirQulity[i].ADS1X15MQ7;
+                result.ADS1X15Light[resultIndex] = dailyAirQulity[i].ADS1X15Light;
+                result.CCS811CO2[resultIndex] = dailyAirQulity[i].CCS811CO2;
+                result.CCS811TVOC[resultIndex] = dailyAirQulity[i].CCS811TVOC;
+                result.CCS811resistence[resultIndex] = dailyAirQulity[i].CCS811resistence;
+                resultIndex++;
+            }
+
+            return result;
+        }
+
+            //AIR QUALITY DATA ---
+            protected void JoinACData(int ACIndex, ThingAirQuality thingAirQuality)
         {
             if ((ACIndex < 0) || (ACIndex >= dailyAirQulitySize))
             {
@@ -360,11 +414,13 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
                     ACIndex = dailyAirQulitySize - 1;
                 }
 
-                if (ACIndex == dailyAirQulitySize - 1)
-                {
+                //if (ACIndex == dailyAirQulitySize - 1)
+                //{
                     //DEBUG
-                    JoinACData(ACIndex, currentAC);
-                }
+                  //  JoinACData(ACIndex, currentAC);
+                //}
+
+                JoinACData(ACIndex, currentAC);
 
                 //JoinACData(ACIndex, currentAC);
 
@@ -558,6 +614,7 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
                     break;
             }
         }
+
 
 
         //Events ---

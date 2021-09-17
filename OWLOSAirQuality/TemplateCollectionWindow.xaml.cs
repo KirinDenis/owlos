@@ -75,10 +75,10 @@ namespace OWLOSAirQuality
         private TimeControl timeControl;
 
         private double gA = 0;
-        private GraphControl graph1;
-        private GraphControl graph2;
-        private GraphControl graph3;
-        private GraphControl graph4;
+        private HudGraphControl graph1;
+        private HudGraphControl graph2;
+        private HudGraphControl graph3;
+        private HudGraphControl graph4;
         
         private PercentageControl graph5;
         private IconsControl icons1;
@@ -184,7 +184,7 @@ namespace OWLOSAirQuality
                 */
             }
 
-            graph1 = new GraphControl();
+            graph1 = new HudGraphControl();
             graph1.raysAnimationSpeed = 200;
             WeatherGrid.Children.Add(graph1);
             graph1.data = data;
@@ -197,13 +197,13 @@ namespace OWLOSAirQuality
                 data2[i] = i / 5;
             }
 
-            graph2 = new GraphControl();
+            graph2 = new HudGraphControl();
             graph2.angle = 90;
             graph2.raysStep = 1.0f;
             WeatherGrid.Children.Add(graph2);
             graph2.data = data2;
 
-            graph3 = new GraphControl();
+            graph3 = new HudGraphControl();
             graph3.angle = 180;
             graph3.raysAnimationSpeed = 200;
             graph3.ColorGradient1 = (App.Current.Resources["OWLOSSuccessAlpha1"] as SolidColorBrush).Color;
@@ -211,7 +211,7 @@ namespace OWLOSAirQuality
             WeatherGrid.Children.Add(graph3);
             graph3.data = data3;
 
-            graph4 = new GraphControl();
+            graph4 = new HudGraphControl();
             graph4.angle = 270;
             graph4.ColorGradient1 = (App.Current.Resources["OWLOSWarningAlpha1"] as SolidColorBrush).Color;
             graph4.ColorGradient2 = (App.Current.Resources["OWLOSDanger"] as SolidColorBrush).Color;

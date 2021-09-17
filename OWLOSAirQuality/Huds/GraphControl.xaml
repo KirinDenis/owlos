@@ -5,9 +5,28 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:OWLOSAirQuality.Huds"
              mc:Ignorable="d" 
-             Height="200" Width="200"   VerticalAlignment="Center" HorizontalAlignment="Center" RenderTransformOrigin="0.5,0.5">
+             Height="200" Width="400">
+    <Grid>
 
-    <Grid x:Name="GraphGrid">
+        <Canvas>
+            <Rectangle Stroke="{DynamicResource OWLOSSecondary}" Canvas.Left="0" Canvas.Top="55" Width="400" Height="200" StrokeThickness="0.4"/>
+
+
+        </Canvas>
+
+
+        <TextBlock x:Name="NameTextBlock" Text="DHT22 Temperature" HorizontalAlignment="Left" Margin="20,65" VerticalAlignment="Top" FontSize="16" Foreground="{DynamicResource OWLOSInfo}"/>
+        
+        <Path x:Name="GraphPath" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Data="" Stroke="{DynamicResource OWLOSSecondary}" >
+            <Path.Fill>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="{DynamicResource OWLOSInfoColorAlpha2}" Offset="0"/>
+                    <GradientStop Color="{DynamicResource OWLOSInfoColorAlpha1}" Offset="1"/>
+                </LinearGradientBrush>
+            </Path.Fill>
+        </Path>
+
+
+
     </Grid>
-    
 </UserControl>

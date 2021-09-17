@@ -44,11 +44,44 @@ namespace OWLOSEcosystemService.DTO.Things
     public class ACValueEventArgs : EventArgs
     {
         public float? value;
-        
+
         public ACValueEventArgs(float? value)
         {
-            this.value = value;            
+            this.value = value;
         }
+    }
+
+    public class ThingAirQualityHistoryData
+    {
+        public Guid UserId { get; set; }
+        public int ThingId { get; set; }
+        public ThingAirQualityStatus[] Statuses { get; set; } = null;
+        public DateTime?[] QueryTime { get; set; }
+        public DateTime?[] ClientTime { get; set; }
+        public long?[] TickCount { get; set; }
+        public bool[] DHT22 { get; set; }
+        
+        public float?[] DHT22temp { get; set; } = null;
+
+        public float?[] DHT22hum { get; set; } = null;
+
+        public float?[] DHT22heat { get; set; } = null;
+
+        public float?[] BMP280pressure { get; set; } = null;
+
+        public float?[] BMP280altitude { get; set; } = null;
+
+        public float?[] ADS1X15MQ135 { get; set; } = null;
+
+        public float?[] ADS1X15MQ7 { get; set; } = null;
+
+        public float?[] ADS1X15Light { get; set; } = null;
+
+        public float?[] CCS811CO2 { get; set; } = null;
+
+        public float?[] CCS811TVOC { get; set; } = null;
+
+        public float?[] CCS811resistence { get; set; } = null;
     }
 
     public class ThingAirQuality
@@ -82,8 +115,8 @@ namespace OWLOSEcosystemService.DTO.Things
         public event OnDHT22tempValueChangeEventHandler OnDHT22tempChanged;
         //--- ENDOF DHT22 Temperature
 
-        public string? DHT22tempHD { get; set; } = string.Empty;
-        
+        public float[] DHT22tempHD { get; set; } = null;
+
         //DHT22 Humidity ---
         private float? _DHT22hum { get; set; } = null;
         public float? DHT22hum
@@ -128,7 +161,7 @@ namespace OWLOSEcosystemService.DTO.Things
         public bool? DHT22c { get; set; } = null;
 
         public bool BMP280 { get; set; } = false;
-        
+
         //BMP280 pressure ---
         private float? _BMP280pressure { get; set; } = null;
         public float? BMP280pressure
@@ -149,7 +182,7 @@ namespace OWLOSEcosystemService.DTO.Things
         //--- ENDOF BMP280 pressure
 
         public string? BMP280pressureHD { get; set; }
-        
+
         //BMP280 altitude ---
         private float? _BMP280altitude { get; set; } = null;
         public float? BMP280altitude
@@ -193,7 +226,7 @@ namespace OWLOSEcosystemService.DTO.Things
         public string? BMP280temperatureHD { get; set; }
 
         public bool ADS1X15 { get; set; } = false;
-        
+
         //ADS1X15 MQ135 (A2) ---
         private float? _ADS1X15MQ135 { get; set; } = null;
         public float? ADS1X15MQ135
@@ -258,7 +291,7 @@ namespace OWLOSEcosystemService.DTO.Things
         public string? ADS1X15LightHD { get; set; }
 
         public bool CCS811 { get; set; } = false;
-        
+
         //CCS811 CO2 ---
         private float? _CCS811CO2 { get; set; } = null;
         public float? CCS811CO2
@@ -279,7 +312,7 @@ namespace OWLOSEcosystemService.DTO.Things
         //--- ENDOF CCS811 CO2
 
         public string? CCS811CO2HD { get; set; }
-        
+
         //CCS811 TVOC (Volatile Organic Compounds) ---
         private float? _CCS811TVOC { get; set; } = null;
         public float? CCS811TVOC
@@ -300,7 +333,7 @@ namespace OWLOSEcosystemService.DTO.Things
         //--- ENDOF CCS811 TVOC (Volatile Organic Compounds)
 
         public string? CCS811TVOCHD { get; set; }
-        
+
         //CCS811 Resistance (Volatile Organic Compounds) ---
         private float? _CCS811resistence { get; set; } = null;
         public float? CCS811resistence
@@ -348,7 +381,7 @@ namespace OWLOSEcosystemService.DTO.Things
     public class ThingAirQualityDTO
     {
         public Guid UserId { get; set; }
-        public int ThingId { get; set; }     
+        public int ThingId { get; set; }
         public ThingAirQualityStatus Status { get; set; } = ThingAirQualityStatus.Error;
         public DateTime? QueryTime { get; set; } = null;
         public DateTime? ClientTime { get; set; } = null;

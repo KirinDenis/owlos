@@ -9,7 +9,7 @@
 
     <!-- FontFamily="file:///D:\Users\Egor\source\repos\KirinDenis\owlos\OWLOSAdmin\Fonts\#omega flight" -->
     <Grid>
-        <TextBlock x:Name="text" TextWrapping="WrapWithOverflow"/>
+        <TextBlock x:Name="text" TextWrapping="WrapWithOverflow" />
 
         <Viewbox x:Name="MainViewBox">
 
@@ -31,7 +31,10 @@
                 </Grid>
 
 
-                <WrapPanel x:Name="ValuesGrid" Grid.Column="1" Grid.Row="1" Grid.RowSpan="3"></WrapPanel>
+
+                <WrapPanel x:Name="ValuesGrid" Grid.Column="1" Grid.Row="0" Grid.RowSpan="3"></WrapPanel>
+
+                <WrapPanel x:Name="GraphGrid" Grid.Column="1" Grid.Row="1" Grid.RowSpan="3"></WrapPanel>
 
 
                 <Grid x:Name="HudGrid" Grid.Column="1" Grid.Row="1">

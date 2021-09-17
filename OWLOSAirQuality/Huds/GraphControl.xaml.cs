@@ -2,7 +2,6 @@
 OWLOS DIY Open Source OS for building IoT ecosystems
 Copyright 2019, 2020 by:
 - Konstantin Brul (konstabrul@gmail.com)
-- Sergii Karpeko
 - Vitalii Glushchenko (cehoweek@gmail.com)
 - Denys Melnychuk (meldenvar@gmail.com)
 - Denis Kirin (deniskirinacs@gmail.com)
@@ -40,13 +39,19 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
-using OWLOSAdmin.EcosystemExplorer.Huds;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace OWLOSAirQuality.Huds
@@ -56,140 +61,100 @@ namespace OWLOSAirQuality.Huds
     /// </summary>
     public partial class GraphControl : UserControl
     {
-        private double[] _data = null;
-        public double[] data
-        {
-            get => _data;
-            set
-            {
-                if ((value != null) && (value.Length > 0))
-                {
-                    _data = value;
-                    Draw();
-                }
-            }
-        }
-
-        private double _angle = 0.0f;
-        private readonly double _length = 180.0f;
-
-        public double angle
-        {
-            get => _angle;
-            set
-            {
-                if ((value > -1) && (value < 360))
-                {
-                    _angle = value;
-                    // Draw();
-                }
-            }
-        }
-
-        private List<Rectangle> rays = null;
-
-        public double rayWidth = 5.0f;
-
-        public double raysStep = 0.5f;
-
-        public int raysAnimationSpeed = 2000;
-
-        public Color ColorGradient1 = (App.Current.Resources["OWLOSPrimaryAlpha1"] as SolidColorBrush).Color; 
-
-        public Color ColorGradient2 = (App.Current.Resources["OWLOSPrimary"] as SolidColorBrush).Color;
-
-
+        public float?[]  data = { 1, 2, 3, 4, 5.4f, 1, 2, 1, 2.4f, 3, 0.4f, 5, 1, 2, 2, 1, 2, 3, 4, 5, 1, 2, 2, 1, 2, 3, 4, 5, 1, 2, 2, 1, 2, 3, 4, 5, 1, 2 };
+        private float graphPlotHight = 100;
+        private float graphTopY = 100;
+        private float graphStartX = 0;
         public GraphControl()
         {
             InitializeComponent();
+            Draw();
         }
 
-        private void Draw()
+        public void Draw()
         {
-            
-            if (rays == null)
+            float maxLocalValue = float.NaN;
+            float minLocalValue = float.NaN;
+
+            for (var mLocal = 0; mLocal < data.Length; mLocal++)
             {
-                GraphGrid.Children.Clear();
-                rays = new List<Rectangle>();
-
-                for (int i = 0; i < data.Length; i++)
+                if (data[mLocal] == null)
                 {
-                    Rectangle r = new Rectangle
-                    {
-                        Width = rayWidth,
-                        Height = 1.0f,
-                        Tag = (double)-1.0f,
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        VerticalAlignment = VerticalAlignment.Center,
-
-                        //currentColor.A -= (byte)(i * 5);
-                        //Fill = new SolidColorBrush(currentColor)
-                        Fill = new LinearGradientBrush(ColorGradient1, ColorGradient2, new Point(0.5, 0), new Point(0.5, 1))
-                    };
-
-                    double x;
-                    double y;
-
-                    double angel = (i / raysStep + _angle) * (Math.PI / 180) - Math.PI / 2.0f;
-
-                    //x = (Gold.radius + data[i] / 2.0f + 0.0f) * Math.Cos(angel) + 7.0f;
-                    //y = (Gold.radius + data[i] / 2.0f + 0.0f) * Math.Sin(angel) + 0.0f;
-
-                    x = (Gold.radius  + 0.0f) * Math.Cos(angel) + 7.0f;
-                    y = (Gold.radius  + 0.0f) * Math.Sin(angel) + 0.0f;
-
-
-                    TransformGroup group = new TransformGroup();
-
-                    RotateTransform rt = new RotateTransform();
-
-                    TranslateTransform tt = new TranslateTransform
-                    {
-                        X = x,
-                        Y = y
-                    };
-
-                    DoubleAnimation scaleAnimation = new DoubleAnimation()
-                    {
-                        From = (double)r.Tag,
-                        To = -data[i],
-                        Duration = new Duration(TimeSpan.FromMilliseconds(raysAnimationSpeed)),                    
-                    };
-
-                    r.Tag = -data[i];
-                    ScaleTransform sc = new ScaleTransform();
-                    sc.BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnimation);
-
-                    group.Children.Add(sc);
-                    group.Children.Add(rt);
-                    group.Children.Add(tt);
-                    rt.Angle += (angel / (Math.PI / 180.0f)) + 90.0f;
-                    r.RenderTransform = group;
-                    
-                    rays.Add(r);
-                    GraphGrid.Children.Add(rays[i]);
+                    continue;
                 }
+
+                if (float.IsNaN(maxLocalValue) || data[mLocal] > maxLocalValue)
+                {
+                    maxLocalValue = (float) data[mLocal];
+                }
+
+                if (float.IsNaN(minLocalValue) || data[mLocal] < minLocalValue)
+                {
+                    minLocalValue = (float)data[mLocal];
+                }
+            }
+
+            if (float.IsNaN(maxLocalValue))
+            {
+                maxLocalValue = 0.0f;
+            }
+
+            if (float.IsNaN(minLocalValue))
+            {
+                minLocalValue = 0.0f;
+            }
+
+            int stepLocal = 10;
+            int halfStepLocal = stepLocal / 3; //If min == max then we decrease small value and increase big value by 10%
+
+            if (maxLocalValue == minLocalValue)
+            {
+                maxLocalValue += (float)(maxLocalValue * 0.1);
+                minLocalValue -= (float)(minLocalValue * 0.1);
             }
             else
             {
-                for (int i = 0; i < data.Length; i++)
-                {
-                    TransformGroup group = rays[i].RenderTransform as TransformGroup;
-                    ScaleTransform sc = group.Children[0] as ScaleTransform;
+                var middleLocalValue = (maxLocalValue - minLocalValue) / 2;
+                maxLocalValue += middleLocalValue;
+                minLocalValue -= middleLocalValue;
+            }
 
-                    
-                    DoubleAnimation scaleAnimation = new DoubleAnimation()
-                    {
-                        From = (double)rays[i].Tag,
-                        To = -data[i],
-                        Duration = new Duration(TimeSpan.FromMilliseconds(raysAnimationSpeed)),                        
-                        
-                    };
-                    
-                    rays[i].Tag = -data[i];                    
-                    sc.BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnimation);
+            var proportionLocal = graphPlotHight / (maxLocalValue - minLocalValue); //normalize Y
+
+            for (var lLocal = 0; lLocal < data.Length; lLocal++)
+            {
+                data[lLocal] = graphTopY + (graphPlotHight - (data[lLocal] - minLocalValue) * proportionLocal);
+            }
+
+            var topOffsetLocal = graphPlotHight + graphTopY;
+            string dLocal = "M " + graphStartX + ", " + topOffsetLocal;
+
+            for (var nLocal = 0; nLocal < data.Length; nLocal++)
+            {
+                if (nLocal == 0)
+                {
+                    dLocal += " C " + graphStartX + ", " + data[nLocal]?.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " " + graphStartX + ", " + topOffsetLocal + " " + graphStartX + ", " + data[nLocal]?.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " ";
+                }
+                else
+                {
+                    var s1 = graphStartX + nLocal * stepLocal - halfStepLocal * 2;
+                    var s2 = graphStartX + nLocal * stepLocal - halfStepLocal;
+                    var s3 = graphStartX + nLocal * stepLocal;
+                    dLocal += " C " + s1 + ", " + data[nLocal - 1]?.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " " + s2 + ", " + data[nLocal]?.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " " + s3 + ", " + data[nLocal]?.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " ";
                 }
             }
+
+            dLocal += " C " + graphStartX + stepLocal * (data.Length - 1) + "," + topOffsetLocal + " " + graphStartX + stepLocal * (data.Length - 1) + "," + topOffsetLocal + " " + graphStartX + stepLocal * (data.Length - 1) + "," + topOffsetLocal + " ";
+
+            try
+            {
+                GraphPath.Data = Geometry.Parse(dLocal);
+            }
+            catch (Exception e)
+            {
+                //string s = e.Message;
+            }
+
         }
     }
 }
