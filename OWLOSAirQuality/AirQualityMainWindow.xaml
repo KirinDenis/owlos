@@ -34,7 +34,9 @@
 
                 <WrapPanel x:Name="ValuesGrid" Grid.Column="1" Grid.Row="0" Grid.RowSpan="3"></WrapPanel>
 
-                <WrapPanel x:Name="GraphGrid" Grid.Column="1" Grid.Row="1" Grid.RowSpan="3"></WrapPanel>
+                <WrapPanel x:Name="GraphGrid" Grid.Column="1" Grid.Row="2" Grid.RowSpan="3"></WrapPanel>
+
+
 
 
                 <Grid x:Name="HudGrid" Grid.Column="1" Grid.Row="1">

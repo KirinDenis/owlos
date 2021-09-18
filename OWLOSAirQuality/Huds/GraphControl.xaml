@@ -5,27 +5,58 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:OWLOSAirQuality.Huds"
              mc:Ignorable="d" 
-             Height="200" Width="400">
-    <Grid>
+             Margin="5"
+             Height="450" Width="800" Focusable="True" IsTabStop="True" Loaded="UserControl_Loaded">
+    <Grid x:Name="MainGrid">
+
 
         <Canvas>
-            <Rectangle Stroke="{DynamicResource OWLOSSecondary}" Canvas.Left="0" Canvas.Top="55" Width="400" Height="200" StrokeThickness="0.4"/>
+            <!--
+            <Rectangle Stroke="{DynamicResource OWLOSSecondary}" Canvas.Left="0" Canvas.Top="0" Width="300" Height="150" StrokeThickness="0.1"/>
 
+            <Line x:Name="SelSQ1" Stroke="{DynamicResource OWLOSInfo}" X1="-1" Y1="0" X2="10" Y2="0" StrokeThickness="3" Visibility="Hidden" />
+            <Line x:Name="SelSQ2" Stroke="{DynamicResource OWLOSInfo}" X1="0" Y1="0" X2="0" Y2="10" StrokeThickness="3" Visibility="Hidden"/>
+
+            <Line x:Name="SelSQ3" Stroke="{DynamicResource OWLOSInfo}" X1="151" Y1="0" X2="140" Y2="0" StrokeThickness="3" Visibility="Hidden"/>
+            <Line x:Name="SelSQ4" Stroke="{DynamicResource OWLOSInfo}" X1="150" Y1="0" X2="150" Y2="10" StrokeThickness="3" Visibility="Hidden"/>
+
+            <Line x:Name="SelSQ5" Stroke="{DynamicResource OWLOSInfo}" X1="-1" Y1="150" X2="10" Y2="150" StrokeThickness="3" Visibility="Hidden"/>
+            <Line x:Name="SelSQ6" Stroke="{DynamicResource OWLOSInfo}" X1="0" Y1="150" X2="0" Y2="140" StrokeThickness="3" Visibility="Hidden"/>
+
+            <Line x:Name="SelSQ7" Stroke="{DynamicResource OWLOSInfo}" X1="151" Y1="150" X2="140" Y2="150" StrokeThickness="3" Visibility="Hidden"/>
+            <Line x:Name="SelSQ8" Stroke="{DynamicResource OWLOSInfo}" X1="150" Y1="150" X2="150" Y2="140" StrokeThickness="3" Visibility="Hidden"/>
+
+            <Rectangle x:Name="BoxRectangle" Stroke="{DynamicResource OWLOSSecondary}" Canvas.Left="5" Canvas.Top="5" Width="290" Height="140" StrokeThickness="1"/>
+
+            <Polygon Points="6, 6, 6, 20, 20, 6" Stroke="{DynamicResource OWLOSSecondary}" Fill="{DynamicResource OWLOSSecondary}" />
+        
+            <Line Stroke="{DynamicResource OWLOSSecondary}" X1="298" Y1="142" X2="298" Y2="130" StrokeThickness="3" />
+            <Line Stroke="{DynamicResource OWLOSSecondary}" X1="298" Y1="142" X2="285" Y2="142" StrokeThickness="3" />
+            -->
 
         </Canvas>
 
 
-        <TextBlock x:Name="NameTextBlock" Text="DHT22 Temperature" HorizontalAlignment="Left" Margin="20,65" VerticalAlignment="Top" FontSize="16" Foreground="{DynamicResource OWLOSInfo}"/>
-        
-        <Path x:Name="GraphPath" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Data="" Stroke="{DynamicResource OWLOSSecondary}" >
-            <Path.Fill>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="{DynamicResource OWLOSInfoColorAlpha2}" Offset="0"/>
-                    <GradientStop Color="{DynamicResource OWLOSInfoColorAlpha1}" Offset="1"/>
-                </LinearGradientBrush>
-            </Path.Fill>
-        </Path>
+        <TextBlock x:Name="NameTextBlock" Text="DHT22 Temperature" HorizontalAlignment="Left" Margin="20,15" VerticalAlignment="Top" FontSize="16" Foreground="{DynamicResource OWLOSInfo}"/>
 
+
+        <Grid x:Name="GraphGrid" Margin="20,20">
+            <Path x:Name="GraphPath" Margin="20,20" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Data="" Stroke="{DynamicResource OWLOSSecondary}" MouseMove="GraphPath_MouseMove">
+                <Path.Fill>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="{DynamicResource OWLOSInfoColorAlpha2}" Offset="0"/>
+                        <GradientStop Color="{DynamicResource OWLOSInfoColorAlpha1}" Offset="1"/>
+                    </LinearGradientBrush>
+                </Path.Fill>
+            </Path>
+            <Canvas VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                <Ellipse x:Name="ValuePointer" VerticalAlignment="Center" HorizontalAlignment="Center" Stroke="{DynamicResource OWLOSSecondary}" Margin="5,12" Width="20" Height="20" Canvas.Left="10" Canvas.Top="10" StrokeThickness="1" />
+                <Ellipse x:Name="CenterValuePointer" VerticalAlignment="Center" HorizontalAlignment="Center" Stroke="{DynamicResource OWLOSInfoAlpha3}" Margin="14,20" Width="3" Height="3" Canvas.Left="10" Canvas.Top="10" StrokeThickness="2" />
+            </Canvas>
+            <TextBlock x:Name="SelectedValueTextBlock" Text="DHT22 Temperature" HorizontalAlignment="Right" VerticalAlignment="Top" TextAlignment="Left" Margin="50,15" Foreground="{DynamicResource OWLOSPrimary}"/>
+            <TextBlock x:Name="TopValueTextBlock" Text="top:" HorizontalAlignment="Right" VerticalAlignment="Top" TextAlignment="Left" Margin="50,35" Foreground="{DynamicResource OWLOSWarning}"/>
+            <TextBlock x:Name="MinValueTextBlock" Text="min:" HorizontalAlignment="Right" VerticalAlignment="Top" TextAlignment="Left" Margin="50,55" Foreground="{DynamicResource OWLOSInfo}"/>
+        </Grid>
 
 
     </Grid>

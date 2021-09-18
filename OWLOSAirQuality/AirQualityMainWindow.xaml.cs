@@ -215,7 +215,8 @@ namespace OWLOSAirQuality
                             DHT22tempGraphControl = new GraphControl();
                             DHT22tempGraphControl.NameTextBlock.Text = "DHT22 Temperature";
                             GraphGrid.Children.Add(DHT22tempGraphControl);
-                                                        
+                                     
+                            /*
                             DHT22humGraphControl = new GraphControl();
                             DHT22humGraphControl.NameTextBlock.Text = "DHT22 Humidity";
                             GraphGrid.Children.Add(DHT22humGraphControl);
@@ -255,7 +256,7 @@ namespace OWLOSAirQuality
                             CCS811resistenceGraphControl = new GraphControl();
                             CCS811resistenceGraphControl.NameTextBlock.Text = "Resistance";
                             GraphGrid.Children.Add(CCS811resistenceGraphControl);
-
+                            */
                         }
 
                         //DHT22TempValueControl = new ACValueControl();
@@ -296,6 +297,7 @@ namespace OWLOSAirQuality
                 DHT22tempGraphControl.data = thingAirQualities.DHT22temp;
                 DHT22tempGraphControl.Draw();
 
+                /*
                 DHT22humGraphControl.data = thingAirQualities.DHT22hum;
                 DHT22humGraphControl.Draw();
 
@@ -325,6 +327,7 @@ namespace OWLOSAirQuality
 
                 CCS811resistenceGraphControl.data = thingAirQualities.CCS811resistence;
                 CCS811resistenceGraphControl.Draw();
+                */
             });
 
 
