@@ -39,8 +39,6 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -48,22 +46,19 @@ using System.Windows.Shapes;
 
 namespace OWLOSThingsManager.EcosystemExplorer
 {
-
-    public struct EcosystemPathLine
+    public struct PathLine
     {
         public PathFigure Figure { get; set; }
         public PointCollection PointCollection { get; set; }
-
-        public EcosystemPathLine(PathFigure figure)
+        public PathLine(PathFigure figure)
         {
             Figure = figure;
             PointCollection = ((PolyBezierSegment)figure.Segments[0]).Points;
         }
     }
-
     public class RelationLineControl
     {
-        private EcosystemPathLine ecosystemPathLine;
+        private PathLine pathLine;
         private FrameworkElement aControl;
         private FrameworkElement bControl;
         private FrameworkElement frameworkElement;
@@ -72,19 +67,12 @@ namespace OWLOSThingsManager.EcosystemExplorer
         public Path curveLine;
         private Grid Parent;
         private bool IsDisposed = false;
-        private Point[] offsetA = new Point[2];
-        private Point[] offsetB = new Point[2];
-        
+        private readonly Point[] offsetA = new Point[2];
+        private readonly Point[] offsetB = new Point[2];
         public double ellipseWidth = 10;
         public double ellipseHeight = 10;
         private readonly TranslateTransform transform = new TranslateTransform();
-        //private DependencyPropertyDescriptor dp = DependencyPropertyDescriptor.FromProperty(
-        //Ellipse.RenderTransformProperty,
-        //typeof(Ellipse));
-
-        public RelationLineControl(Grid parent, FrameworkElement aWorldObjectControl, FrameworkElement bWorldObjectControl,
-            FrameworkElement frameworkElement, Panel panel,
-            Point[] offsetA = null, Point[] offsetB = null)
+        public RelationLineControl(Grid parent, FrameworkElement aWorldObjectControl, FrameworkElement bWorldObjectControl, FrameworkElement frameworkElement, Panel panel, Point[] offsetA = null, Point[] offsetB = null)
         {
             Parent = parent;
             aControl = aWorldObjectControl;
@@ -111,26 +99,20 @@ namespace OWLOSThingsManager.EcosystemExplorer
                 this.offsetB[0] = new Point(0, 0);
                 this.offsetB[1] = new Point(0, 0);
             }
-
-
         }
-
         public void Hide()
         {
             curveLine.Visibility = Visibility.Hidden;
         }
-
         public void Show()
         {
             curveLine.Visibility = Visibility.Visible;
         }
-
         public Path DrawCurveLine(FrameworkElement startElement, FrameworkElement relativeElement, FrameworkElement target, SolidColorBrush lineColor)
         {
             //Create curve line
             Point startPointA = startElement.TranslatePoint(new Point(0, 0), relativeElement);
-            //Correct start point A
-            //   startPointA = new Point(startPointA.X + startElement.Width, startPointA.Y + startElement.Height / 2);
+            //Correct start point A           
             startPointA = new Point(startPointA.X + startElement.Width, startPointA.Y - startElement.Height / 2);
             //Set leveling for point B
             Point startPointB = new Point(startPointA.X + 100, startPointA.Y);
@@ -139,15 +121,15 @@ namespace OWLOSThingsManager.EcosystemExplorer
             Point endPointB = new Point(endPointA.X - 100, endPointA.Y);
             return CreateCurveLine(new[] { startPointA, startPointB, endPointB, endPointA }, lineColor);
         }
-
         private Path CreateCurveLine(Point[] points, SolidColorBrush lineColor)
         {
             // Create a Path to hold the geometry.
-            Path path = new Path();
-            path.CacheMode = null;
-            path.Stroke = lineColor; 
-            path.StrokeThickness = 0.5f;
-
+            Path path = new Path
+            {
+                CacheMode = null,
+                Stroke = lineColor,
+                StrokeThickness = 0.5f
+            };
             // Add a PathGeometry.
             PathGeometry path_geometry = new PathGeometry();
             path.Data = path_geometry;
@@ -171,16 +153,15 @@ namespace OWLOSThingsManager.EcosystemExplorer
             }
 
             // Make a PolyBezierSegment from the points.
-            PolyBezierSegment bezier_segment = new PolyBezierSegment();
-            bezier_segment.Points = point_collection;
+            PolyBezierSegment bezier_segment = new PolyBezierSegment
+            {
+                Points = point_collection
+            };
 
-            // Add the PolyBezierSegment to othe segment collection.
+            // Add the PolyBezierSegment to other segment collection.
             path_segment_collection.Add(bezier_segment);
-            
-
             return path;
         }
-
         public Point[] GetPositionFromTarget(FrameworkElement target, FrameworkElement relative, Point point1, Point point2, Point offsetA = default(Point), Point offsetB = default(Point))
         {
             Point[] points =
@@ -195,17 +176,12 @@ namespace OWLOSThingsManager.EcosystemExplorer
                 relative //Relative
             });
 
-            
             Point correctPointA = new Point(points[0].X + offsetA.X, points[0].Y + offsetA.Y);            
-            //new Point(points[0].X + ellipse.Width, points[0].Y + ellipse.Height / 2);
-            Point correctPointB = new Point(points[1].X + offsetB.X, points[1].Y + offsetB.Y);
-            //new Point(points[1].X + 100, points[1].Y);
+            Point correctPointB = new Point(points[1].X + offsetB.X, points[1].Y + offsetB.Y);            
             points[0] = correctPointA;
             points[1] = correctPointB;
             return points;
         }
-
-
         public void SetPoint(ref Point[] points, UIElement[] elements)
         {
             UIElement target = elements[0];
@@ -213,77 +189,76 @@ namespace OWLOSThingsManager.EcosystemExplorer
             points[0] = newPoint;
             double offsetX = newPoint.X - points[1].X;
             double offsetY = newPoint.Y - points[1].Y;
-
             Point oldPointB = points[1];
-
             Point newPointB = new Point(oldPointB.X + offsetX, oldPointB.Y + offsetY);
             points[1] = newPointB;
         }
-
         public Ellipse DrawPointer(FrameworkElement target, FrameworkElement relativeTarget, double width, double height, SolidColorBrush color)
-        {
-
-            Point relativeLocation = target.TranslatePoint(new Point(target.ActualWidth, 0), relativeTarget);
-            Ellipse ellipse = new Ellipse();
-            ellipse.VerticalAlignment = VerticalAlignment.Top;
-            ellipse.HorizontalAlignment = HorizontalAlignment.Right;
-            ellipse.Fill = color;
-            //Grid.SetRow(ellipse, 1);
-            ellipse.Width = width;
-            ellipse.Height = height;
-            Matrix matrix = new Matrix();
-           // matrix.Translate((relativeLocation.X + target.ActualWidth + ellipse.Width) / 2, relativeLocation.Y + ellipse.Height / 2);
-            matrix.Translate((relativeLocation.X + ellipse.Width), relativeLocation.Y + ellipse.Height / 2);
-            ellipse.RenderTransform = new MatrixTransform(matrix);
-            ellipse.Margin = target.Margin;            
+        {         
+            if (ellipse == null)
+            {
+                ellipse = new Ellipse
+                {
+                    VerticalAlignment = VerticalAlignment.Top,
+                    HorizontalAlignment = HorizontalAlignment.Right,
+                    Fill = color,         
+                    Width = width,
+                    Height = height,
+                    Margin = new Thickness(target.Margin.Left - 200.0f, target.Margin.Top, target.Margin.Right + 200.0f, target.Margin.Bottom)
+                };
+            }
             return ellipse;
         }
-
-
-
         public bool DrawRelationLine(SolidColorBrush ellipseColor, SolidColorBrush lineColor)
         {
-            if (IsDisposed) throw new ObjectDisposedException("Can't get access to disposed object.");
-            if (ellipse != null) return false;
-            if (curveLine != null) return false;
+            if (IsDisposed)
+            {
+                throw new ObjectDisposedException("Can't get access to disposed object.");
+            }
+
+            if (ellipse != null)
+            {
+                return false;
+            }
+
+            if (curveLine != null)
+            {
+                return false;
+            }
 
             ellipse = DrawPointer(aControl, Parent, ellipseWidth, ellipseHeight, ellipseColor);
             Parent.Children.Add(ellipse);
             ellipse.UpdateLayout();
 
             curveLine = DrawCurveLine(ellipse, Parent, aControl, lineColor);
-            ellipse.Tag = curveLine;
-            //panel.Children.Insert(panel.Children.Count - 1, curveLine);
+            ellipse.Tag = curveLine;         
             panel.Children.Insert(0, curveLine);
             curveLine.UpdateLayout();
 
-            ecosystemPathLine = new EcosystemPathLine(((PathGeometry)curveLine.Data).Figures[0]);
-
+            pathLine = new PathLine(((PathGeometry)curveLine.Data).Figures[0]);
             UpdatePositions();
-
-            //aControl.OnPositionChanged += Control_OnEventTriggered;
-            //bControl.OnPositionChanged += Control_OnEventTriggered;
             aControl.SizeChanged += Control_OnEventTriggered;
             bControl.SizeChanged += Control_OnEventTriggered;
-
             return true;
         }
-
         public void RemoveRelationLine()
         {
-            if (IsDisposed) throw new ObjectDisposedException("Can't get access to disposed object.");
-
+            if (IsDisposed)
+            {
+                throw new ObjectDisposedException("Can't get access to disposed object.");
+            }
             Parent.Children.Remove(ellipse);
             panel.Children.Remove(curveLine);
         }
-
         public void Dispose()
         {
-            if (IsDisposed) throw new ObjectDisposedException("Can't get access to disposed object.");
-
+            if (IsDisposed)
+            {
+                throw new ObjectDisposedException("Can't get access to disposed object.");
+            }
             IsDisposed = true;
             RemoveRelationLine();
-            ecosystemPathLine = default(EcosystemPathLine);
+            pathLine = default(PathLine);
             aControl = null;
             bControl = null;
             frameworkElement = null;
@@ -292,43 +267,31 @@ namespace OWLOSThingsManager.EcosystemExplorer
             curveLine = null;
             Parent = null;
         }
-
         private void Control_OnEventTriggered(object sender, EventArgs e)
         {
             UpdatePositions();
         }
-
         public void UpdatePositions()
         {
             Point relativeLocation = frameworkElement.TranslatePoint(new Point(0, 0), Parent);
-            // transform.X = (relativeLocation.X + frameworkElement.ActualWidth + ellipse.Width) / 2 ;            
             transform.X = (relativeLocation.X + ellipse.Width);
             transform.Y = relativeLocation.Y + ellipse.Height / 2;
             ellipse.RenderTransform = transform;
-
             //Reset points curveLine
             UpdatePointA();
             UpdatePointB();
         }
-
-
         private void UpdatePointA()
         {
-
-            Point[] points = GetPositionFromTarget( ellipse, panel, ecosystemPathLine.Figure.StartPoint,
-                ecosystemPathLine.PointCollection[0], offsetA[0], offsetA[1]);            
-            ecosystemPathLine.Figure.StartPoint = points[0];            
-            ecosystemPathLine.PointCollection[0] = points[1];
+            Point[] points = GetPositionFromTarget(ellipse, panel, pathLine.Figure.StartPoint, pathLine.PointCollection[0], offsetA[0], offsetA[1]);
+            pathLine.Figure.StartPoint = points[0];
+            pathLine.PointCollection[0] = points[1];
         }
-
-
         private void UpdatePointB()
         {
-            Point[] points = GetPositionFromTarget(bControl, panel, ecosystemPathLine.PointCollection[2],
-                ecosystemPathLine.PointCollection[1], offsetB[0], offsetB[1]);          
-            ecosystemPathLine.PointCollection[2] = points[0];
-            ecosystemPathLine.PointCollection[1] = points[1];
+            Point[] points = GetPositionFromTarget(bControl, panel, pathLine.PointCollection[2], pathLine.PointCollection[1], offsetB[0], offsetB[1]);
+            pathLine.PointCollection[2] = points[0];
+            pathLine.PointCollection[1] = points[1];
         }
-
     }
 }

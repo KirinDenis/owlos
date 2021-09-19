@@ -39,81 +39,165 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
+using OWLOSEcosystemService.DTO.Things;
 using OWLOSThingsManager.EcosystemExplorer;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace OWLOSAirQuality.Huds
 {
+    public class GraphDrawInfo
+    {
+        public string result = string.Empty;
+
+        public float maxLocalValue = float.NaN;
+        public int maxLocalValueIndex = -1;
+        
+        public float minLocalValue = float.NaN;
+        public int minLocalValueIndex = -1;
+        
+        public float?[] processedDataToDraw;
+        public float?[] processedDataX;
+    }
+
     /// <summary>
     /// Interaction logic for GraphControl.xaml
     /// </summary>
     public partial class GraphControl : UserControl
     {
-        public float?[] data = {};
-        public float?[] graphData;
-        private float graphPlotHight = 75;
-        private float graphTopY = 75;
-        private float graphStartX = 0;
-        private int stepLocal = 0;
+        private float?[] data;
+        private float?[] graphData;
+        private DateTime?[] queryTime;
+        private ThingAirQualityStatus[] networkStatuses;
 
-        private RelationLineControl relationLineControl;
+        private readonly float graphPlotHight = 75;
+        private readonly float graphTopY = 75;
+        private readonly float graphStartX = 0;
+        private readonly int stepLocal = 0;
+
+        private RelationLineControl selectLineControl;
+        private RelationLineControl topLineControl;
+        private RelationLineControl minLineControl;
         public GraphControl()
         {
             InitializeComponent();
-
-            
-            
-
         }
 
-        public void Draw()
+        public void Update(float?[] data, DateTime?[] queryTime, ThingAirQualityStatus[] networkStatuses)
         {
-            float maxLocalValue = float.NaN;
-            float minLocalValue = float.NaN;
+            this.data = data;
+            this.queryTime = queryTime;
+            this.networkStatuses = networkStatuses;
 
+            bool isNulls = false;
             graphData = new float?[data.Length];
-
-            data.CopyTo(graphData, 0);            
-
-            for (var mLocal = 0; mLocal < graphData.Length; mLocal++)
+            data.CopyTo(graphData, 0);
+            for (int i=0; i < graphData.Length; i++)
             {
-                if (graphData[mLocal] == null)
+                if ((graphData[i] == null) || (float.IsNaN((float)graphData[i])))
+                {
+                    graphData[i] = 0.0f;
+                    isNulls = true;
+                }
+            }
+
+            GraphDrawInfo graphDataInfo = Draw(graphData, GraphPath);
+
+            if (string.IsNullOrEmpty(graphDataInfo.result))
+            {
+                graphData = graphDataInfo.processedDataToDraw;
+
+                TopValueTextBlock.Text = "top: " + data[graphDataInfo.maxLocalValueIndex].ToString() + " " + DateTime.Now.AddMinutes(-(60 - graphDataInfo.maxLocalValueIndex)) + "   ";
+                TopValuePointer.SetValue(Canvas.LeftProperty, (double)graphDataInfo.processedDataX[graphDataInfo.maxLocalValueIndex]);
+                TopValuePointer.SetValue(Canvas.TopProperty, (double)graphData[graphDataInfo.maxLocalValueIndex]);
+                TopCenterValuePointer.SetValue(Canvas.LeftProperty, (double)graphDataInfo.processedDataX[graphDataInfo.maxLocalValueIndex]);
+                TopCenterValuePointer.SetValue(Canvas.TopProperty, (double)graphData[graphDataInfo.maxLocalValueIndex]);
+
+                topLineControl.DrawRelationLine(App.Current.Resources["OWLOSWarningAlpha3"] as SolidColorBrush, App.Current.Resources["OWLOSWarning"] as SolidColorBrush);
+                topLineControl.UpdatePositions();
+
+                MinValueTextBlock.Text = "min: " + data[graphDataInfo.minLocalValueIndex].ToString() + " " + DateTime.Now.AddMinutes(-(60 - graphDataInfo.minLocalValueIndex)) + "   ";
+                MinValuePointer.SetValue(Canvas.LeftProperty, (double)graphDataInfo.processedDataX[graphDataInfo.minLocalValueIndex]);
+                MinValuePointer.SetValue(Canvas.TopProperty, (double)graphData[graphDataInfo.minLocalValueIndex]);
+                MinCenterValuePointer.SetValue(Canvas.LeftProperty, (double)graphDataInfo.processedDataX[graphDataInfo.minLocalValueIndex]);
+                MinCenterValuePointer.SetValue(Canvas.TopProperty, (double)graphData[graphDataInfo.minLocalValueIndex]);
+
+                minLineControl.DrawRelationLine(App.Current.Resources["OWLOSInfoAlpha3"] as SolidColorBrush, App.Current.Resources["OWLOSInfo"] as SolidColorBrush);
+                minLineControl.UpdatePositions();
+            }
+
+            if (isNulls)
+            {
+                float?[] statusesData = new float?[data.Length];
+                for (int i = 0; i < networkStatuses.Length; i++)
+                {
+                    switch (networkStatuses[i])
+                    {
+                        case ThingAirQualityStatus.Online:
+                            statusesData[i] = 0;
+                            break;
+                        case ThingAirQualityStatus.Offline:
+                            statusesData[i] = -1;
+                            break;
+
+                        case ThingAirQualityStatus.OnlineWithError:
+                            statusesData[i] = -2;
+                            break;
+                        case ThingAirQualityStatus.Error:
+                            statusesData[i] = -3;
+                            break;
+                        case ThingAirQualityStatus.ServerNotConnected:
+                            statusesData[i] = -4;
+                            break;
+                        default:
+                            statusesData[i] = -5;
+                            break;
+                    }
+                }
+                Draw(statusesData, StatusGraphPath, false);
+            }
+        }
+
+        private GraphDrawInfo Draw(float?[] dataToDraw, Path path, bool dataCorrection = true)
+        {
+            GraphDrawInfo graphDrawInfo = new GraphDrawInfo();
+
+            graphDrawInfo.processedDataX = new float?[dataToDraw.Length];
+            graphDrawInfo.processedDataToDraw = new float?[dataToDraw.Length];
+            dataToDraw.CopyTo(graphDrawInfo.processedDataToDraw, 0);            
+
+            for (int mLocal = 0; mLocal < graphDrawInfo.processedDataToDraw.Length; mLocal++)
+            {
+                if (graphDrawInfo.processedDataToDraw[mLocal] == null)
                 {
                     continue;
                 }
 
-                if (float.IsNaN(maxLocalValue) || graphData[mLocal] > maxLocalValue)
+                if (float.IsNaN(graphDrawInfo.maxLocalValue) || graphDrawInfo.processedDataToDraw[mLocal] > graphDrawInfo.maxLocalValue)
                 {
-                    maxLocalValue = (float)graphData[mLocal];
+                    graphDrawInfo.maxLocalValue = (float)graphDrawInfo.processedDataToDraw[mLocal];
+                    graphDrawInfo.maxLocalValueIndex = mLocal;
                 }
 
-                if (float.IsNaN(minLocalValue) || graphData[mLocal] < minLocalValue)
+                if (float.IsNaN(graphDrawInfo.minLocalValue) || graphDrawInfo.processedDataToDraw[mLocal] < graphDrawInfo.minLocalValue)
                 {
-                    minLocalValue = (float)graphData[mLocal];
+                    graphDrawInfo.minLocalValue = (float)graphDrawInfo.processedDataToDraw[mLocal];
+                    graphDrawInfo.minLocalValueIndex = mLocal;
                 }
             }
 
-            if (float.IsNaN(maxLocalValue))
+            if (float.IsNaN(graphDrawInfo.maxLocalValue))
             {
-                maxLocalValue = 0.0f;
+                graphDrawInfo.maxLocalValue = 0.0f;
             }
 
-            if (float.IsNaN(minLocalValue))
+            if (float.IsNaN(graphDrawInfo.minLocalValue))
             {
-                minLocalValue = 0.0f;
+                graphDrawInfo.minLocalValue = 0.0f;
             }
 
             int stepLocal = GraphPath.ActualWidth != 0? (int)GraphPath.ActualWidth / data.Length : (int)GraphPath.Width / data.Length;
@@ -121,53 +205,64 @@ namespace OWLOSAirQuality.Huds
             
             int halfStepLocal = stepLocal / 3; //If min == max then we decrease small value and increase big value by 10%
 
-            if (maxLocalValue == minLocalValue)
+            if (graphDrawInfo.maxLocalValue == graphDrawInfo.minLocalValue)
             {
-                maxLocalValue += (float)(maxLocalValue * 0.1);
-                minLocalValue -= (float)(minLocalValue * 0.1);
+                graphDrawInfo.maxLocalValue += (float)(graphDrawInfo.maxLocalValue * 0.1);
+                graphDrawInfo.minLocalValue -= (float)(graphDrawInfo.minLocalValue * 0.1);
             }
             else
             {
-                var middleLocalValue = (maxLocalValue - minLocalValue) / 2;
-                maxLocalValue += middleLocalValue;
-                minLocalValue -= middleLocalValue;
+                float middleLocalValue = (graphDrawInfo.maxLocalValue - graphDrawInfo.minLocalValue) / 2;
+                graphDrawInfo.maxLocalValue += middleLocalValue;
+                graphDrawInfo.minLocalValue -= middleLocalValue;
             }
 
-            var proportionLocal = graphPlotHight / (maxLocalValue - minLocalValue); //normalize Y
+            float proportionLocal = graphPlotHight / (graphDrawInfo.maxLocalValue - graphDrawInfo.minLocalValue); //normalize Y
 
-            for (var lLocal = 0; lLocal < graphData.Length; lLocal++)
+            for (int lLocal = 0; lLocal < graphDrawInfo.processedDataToDraw.Length; lLocal++)
             {
-                graphData[lLocal] = graphTopY + (graphPlotHight - (graphData[lLocal] - minLocalValue) * proportionLocal);
-            }
-
-            var topOffsetLocal = graphPlotHight + graphTopY;
-            string dLocal = "M " + graphStartX + ", " + topOffsetLocal;
-
-            for (var nLocal = 0; nLocal < graphData.Length; nLocal++)
-            {
-                if (nLocal == 0)
+                if (dataCorrection)
                 {
-                    dLocal += " C " + graphStartX + ", " + graphData[nLocal]?.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " " + graphStartX + ", " + topOffsetLocal + " " + graphStartX + ", " + graphData[nLocal]?.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " ";
+                    graphDrawInfo.processedDataToDraw[lLocal] = graphTopY + (graphPlotHight - (graphDrawInfo.processedDataToDraw[lLocal] - graphDrawInfo.minLocalValue) * proportionLocal);
                 }
                 else
                 {
-                    var s1 = graphStartX + nLocal * stepLocal - halfStepLocal * 2;
-                    var s2 = graphStartX + nLocal * stepLocal - halfStepLocal;
-                    var s3 = graphStartX + nLocal * stepLocal;
-                    dLocal += " C " + s1 + ", " + graphData[nLocal - 1]?.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " " + s2 + ", " + graphData[nLocal]?.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " " + s3 + ", " + graphData[nLocal]?.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " ";
+                    graphDrawInfo.processedDataToDraw[lLocal] = graphTopY +  graphPlotHight + (graphDrawInfo.processedDataToDraw[lLocal] * 3.0f);
                 }
             }
 
-            dLocal += " C " + graphStartX + stepLocal * (graphData.Length - 1) + "," + topOffsetLocal + " " + graphStartX + stepLocal * (graphData.Length - 1) + "," + topOffsetLocal + " " + graphStartX + stepLocal * (graphData.Length - 1) + "," + topOffsetLocal + " ";
+            float topOffsetLocal = graphPlotHight + graphTopY;
+            string dLocal = "M " + graphStartX + ", " + topOffsetLocal;
+
+            for (int nLocal = 0; nLocal < graphDrawInfo.processedDataToDraw.Length; nLocal++)
+            {
+                if (nLocal == 0)
+                {
+                    dLocal += " C " + graphStartX + ", " + graphDrawInfo.processedDataToDraw[nLocal]?.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " " + graphStartX + ", " + topOffsetLocal + " " + graphStartX + ", " + graphDrawInfo.processedDataToDraw[nLocal]?.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " ";
+                }
+                else
+                {
+                    float s1 = graphStartX + nLocal * stepLocal - halfStepLocal * 2;
+                    float s2 = graphStartX + nLocal * stepLocal - halfStepLocal;
+                    float s3 = graphStartX + nLocal * stepLocal;
+                    dLocal += " C " + s1 + ", " + graphDrawInfo.processedDataToDraw[nLocal - 1]?.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " " + s2 + ", " + graphDrawInfo.processedDataToDraw[nLocal]?.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " " + s3 + ", " + graphDrawInfo.processedDataToDraw[nLocal]?.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " ";
+                }
+
+                graphDrawInfo.processedDataX[nLocal] = graphStartX + nLocal * stepLocal;
+            }
+
+            dLocal += " C " + graphStartX + stepLocal * (graphDrawInfo.processedDataToDraw.Length - 1) + "," + topOffsetLocal + " " + graphStartX + stepLocal * (graphDrawInfo.processedDataToDraw.Length - 1) + "," + topOffsetLocal + " " + graphStartX + stepLocal * (graphDrawInfo.processedDataToDraw.Length - 1) + "," + topOffsetLocal + " ";
 
             try
             {
-                GraphPath.Data = Geometry.Parse(dLocal);
+                path.Data = Geometry.Parse(dLocal);
             }
             catch (Exception e)
             {
-                //string s = e.Message;
+                graphDrawInfo.result = e.Message;
             }
+
+            return graphDrawInfo;
 
         }
 
@@ -181,18 +276,19 @@ namespace OWLOSAirQuality.Huds
             CenterValuePointer.SetValue(Canvas.LeftProperty, position.X);
             CenterValuePointer.SetValue(Canvas.TopProperty, (double)graphData[index]);
 
-            relationLineControl.DrawRelationLine(App.Current.Resources["OWLOSInfoAlpha1"] as SolidColorBrush, App.Current.Resources["OWLOSInfo"] as SolidColorBrush);
-            relationLineControl.UpdatePositions();
-
+            selectLineControl.DrawRelationLine(App.Current.Resources["OWLOSSuccessAlpha3"] as SolidColorBrush, App.Current.Resources["OWLOSSuccess"] as SolidColorBrush);
+            selectLineControl.UpdatePositions();
         }
 
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
 
-            relationLineControl = new RelationLineControl(GraphGrid, SelectedValueTextBlock, CenterValuePointer, GraphGrid, GraphGrid);
-            relationLineControl.DrawRelationLine(App.Current.Resources["OWLOSInfoAlpha1"] as SolidColorBrush, App.Current.Resources["OWLOSInfo"] as SolidColorBrush);
-            relationLineControl.UpdatePositions();
+            selectLineControl = new RelationLineControl(GraphGrid, SelectedValueTextBlock, CenterValuePointer, GraphGrid, GraphGrid);
+            topLineControl = new RelationLineControl(GraphGrid, TopValueTextBlock, TopCenterValuePointer, GraphGrid, GraphGrid);
+            minLineControl = new RelationLineControl(GraphGrid, MinValueTextBlock, MinCenterValuePointer, GraphGrid, GraphGrid);
+            //relationLineControl.DrawRelationLine(App.Current.Resources["OWLOSInfoAlpha1"] as SolidColorBrush, App.Current.Resources["OWLOSInfo"] as SolidColorBrush);
+            //relationLineControl.UpdatePositions();
 
 
 

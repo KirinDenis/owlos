@@ -216,7 +216,7 @@ namespace OWLOSAirQuality
                             DHT22tempGraphControl.NameTextBlock.Text = "DHT22 Temperature";
                             GraphGrid.Children.Add(DHT22tempGraphControl);
                                      
-                            /*
+                            
                             DHT22humGraphControl = new GraphControl();
                             DHT22humGraphControl.NameTextBlock.Text = "DHT22 Humidity";
                             GraphGrid.Children.Add(DHT22humGraphControl);
@@ -233,6 +233,18 @@ namespace OWLOSAirQuality
                             BMP280altitudeGraphControl.NameTextBlock.Text = "BMP280 Altitude";
                             GraphGrid.Children.Add(BMP280altitudeGraphControl);
 
+                            CCS811CO2GraphControl = new GraphControl();
+                            CCS811CO2GraphControl.NameTextBlock.Text = "CO2";
+                            GraphGrid.Children.Add(CCS811CO2GraphControl);
+
+                          //  CCS811TVOCGraphControl = new GraphControl();
+                         //   CCS811TVOCGraphControl.NameTextBlock.Text = "TVOC";
+                          //  GraphGrid.Children.Add(CCS811TVOCGraphControl);
+
+
+
+                            /*
+
                             ADS1X15MQ135GraphControl = new GraphControl();
                             ADS1X15MQ135GraphControl.NameTextBlock.Text = "MQ135";
                             GraphGrid.Children.Add(ADS1X15MQ135GraphControl);
@@ -245,13 +257,6 @@ namespace OWLOSAirQuality
                             ADS1X15LightGraphControl.NameTextBlock.Text = "Light";
                             GraphGrid.Children.Add(ADS1X15LightGraphControl);
 
-                            CCS811CO2GraphControl = new GraphControl();
-                            CCS811CO2GraphControl.NameTextBlock.Text = "CO2";
-                            GraphGrid.Children.Add(CCS811CO2GraphControl);
-
-                            CCS811TVOCGraphControl = new GraphControl();
-                            CCS811TVOCGraphControl.NameTextBlock.Text = "TVOC";
-                            GraphGrid.Children.Add(CCS811TVOCGraphControl);
 
                             CCS811resistenceGraphControl = new GraphControl();
                             CCS811resistenceGraphControl.NameTextBlock.Text = "Resistance";
@@ -294,8 +299,16 @@ namespace OWLOSAirQuality
 
             base.Dispatcher.Invoke(() =>
             {
-                DHT22tempGraphControl.data = thingAirQualities.DHT22temp;
-                DHT22tempGraphControl.Draw();
+                
+                DHT22tempGraphControl.Update(thingAirQualities.DHT22temp, thingAirQualities.QueryTime, thingAirQualities.Statuses);
+                DHT22humGraphControl.Update(thingAirQualities.DHT22hum, thingAirQualities.QueryTime, thingAirQualities.Statuses);
+                DHT22heatGraphControl.Update(thingAirQualities.DHT22heat, thingAirQualities.QueryTime, thingAirQualities.Statuses);
+
+                BMP280pressureGraphControl.Update(thingAirQualities.BMP280pressure, thingAirQualities.QueryTime, thingAirQualities.Statuses);
+                BMP280altitudeGraphControl.Update(thingAirQualities.BMP280altitude, thingAirQualities.QueryTime, thingAirQualities.Statuses);
+
+                CCS811CO2GraphControl.Update(thingAirQualities.CCS811CO2, thingAirQualities.QueryTime, thingAirQualities.Statuses);
+               // CCS811TVOCGraphControl.Update(thingAirQualities.CCS811TVOC, thingAirQualities.QueryTime, thingAirQualities.Statuses);
 
                 /*
                 DHT22humGraphControl.data = thingAirQualities.DHT22hum;
