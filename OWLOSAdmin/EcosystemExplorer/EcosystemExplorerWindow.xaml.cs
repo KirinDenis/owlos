@@ -796,6 +796,11 @@ namespace OWLOSThingsManager.EcosystemExplorer
 
         }
 
+        private void zoomToOneHImage_Click(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
 
         /// <summary>
         /// Переключатель плоский или наклоный просмотр сетки
