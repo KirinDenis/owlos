@@ -64,14 +64,23 @@
 
     <Color x:Key = "OWLOSWarningColor">#FFf8b36d</Color>
     <SolidColorBrush x:Key = "OWLOSWarning" Color ="#FFf8b36d" />
+    <Color x:Key = "OWLOSWarningColorAlpha1">#10f8b36d</Color>
+    <Color x:Key = "OWLOSWarningColorAlpha2">#31f8b36d</Color>
+    <Color x:Key = "OWLOSWarningColorAlpha3">#f0f8b36d</Color>
+    <Color x:Key = "OWLOSWarningColorAlpha4">#a0f8b36d</Color>
+    <SolidColorBrush x:Key = "OWLOSWarningAlpha1" Color ="#10f8b36d" />
+    <SolidColorBrush x:Key = "OWLOSWarningAlpha2" Color ="#31f8b36d" />
+    <SolidColorBrush x:Key = "OWLOSWarningAlpha3" Color ="#f0f8b36d" />
     <SolidColorBrush x:Key = "OWLOSWarningAlpha4" Color ="#a0f8b36d" />
 
+    <!--
     <Color x:Key = "OWLOSDangerColor" A ="#50" R="#dd" G="#78" B="#15" />
     <SolidColorBrush x:Key = "OWLOSWarningAlpha1" Color ="#10f8b36d" />
     <SolidColorBrush x:Key = "OWLOSWarningAlpha2" Color ="#50f8b36d" />
     <SolidColorBrush x:Key = "OWLOSWarningAlpha3" Color ="#F0f8b36d" />
+    -->
 
-    <Color x:Key = "OWLOSDangergColor">#FFf86d6d</Color>
+    <Color x:Key = "OWLOSDangerColor">#FFf86d6d</Color>
     <SolidColorBrush x:Key = "OWLOSDanger" Color ="#FFf86d6d" />
     <SolidColorBrush x:Key = "OWLOSDangerAlpha1" Color ="#10f86d6d" />
     <SolidColorBrush x:Key = "OWLOSDangerAlpha2" Color ="#50f86d6d" />

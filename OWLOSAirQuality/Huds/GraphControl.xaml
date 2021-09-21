@@ -54,8 +54,8 @@
             <Path x:Name="StatusGraphPath" Margin="20,20" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Data="" Stroke="{DynamicResource OWLOSWarning}">
                 <Path.Fill>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                        <GradientStop Color="{DynamicResource OWLOSWarningColor}" Offset="0"/>
-                        <GradientStop Color="{DynamicResource OWLOSWarningColor}" Offset="1"/>
+                        <GradientStop Color="{DynamicResource OWLOSWarningColorAlpha1}" Offset="0"/>
+                        <GradientStop Color="{DynamicResource OWLOSWarningColorAlpha2}" Offset="1"/>
                     </LinearGradientBrush>
                 </Path.Fill>
             </Path>

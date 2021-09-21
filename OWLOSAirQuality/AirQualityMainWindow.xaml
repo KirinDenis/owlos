@@ -56,7 +56,7 @@
                         </TransformGroup>
                     </Grid.RenderTransform>
 
-                    <Viewbox x:Name="viewbox"  Width="10025" Height="10025" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="0,0,-10000,-10000">
+                    <Viewbox x:Name="viewbox"  Width="10920" Height="10080" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="0,0,-10000,-10000">
                         <Viewbox.RenderTransform>
                             <TransformGroup>
                                 <ScaleTransform/>

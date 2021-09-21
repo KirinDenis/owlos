@@ -102,6 +102,10 @@ namespace OWLOSAirQuality.Huds
                 {
                     graphData[i] = 0.0f;
                     isNulls = true;
+                    if (networkStatuses[i] == ThingAirQualityStatus.Online)
+                    {
+                        networkStatuses[i] = ThingAirQualityStatus.OnlineWithError;
+                    }
                 }
             }
 
@@ -132,13 +136,15 @@ namespace OWLOSAirQuality.Huds
 
             if (isNulls)
             {
-                float?[] statusesData = new float?[data.Length];
-                for (int i = 0; i < networkStatuses.Length; i++)
+                float?[] statusesData = new float?[data.Length + 2];
+                statusesData[0] = -5;
+                statusesData[data.Length + 1] = -5;
+                for (int i = 1; i < networkStatuses.Length+1; i++)
                 {
-                    switch (networkStatuses[i])
+                    switch (networkStatuses[i-1])
                     {
                         case ThingAirQualityStatus.Online:
-                            statusesData[i] = 0;
+                            statusesData[i] = -5;
                             break;
                         case ThingAirQualityStatus.Offline:
                             statusesData[i] = -1;
@@ -154,7 +160,7 @@ namespace OWLOSAirQuality.Huds
                             statusesData[i] = -4;
                             break;
                         default:
-                            statusesData[i] = -5;
+                            statusesData[i] = -0;
                             break;
                     }
                 }
@@ -217,7 +223,12 @@ namespace OWLOSAirQuality.Huds
                 graphDrawInfo.minLocalValue -= middleLocalValue;
             }
 
-            float proportionLocal = graphPlotHight / (graphDrawInfo.maxLocalValue - graphDrawInfo.minLocalValue); //normalize Y
+            float normalizeY = graphDrawInfo.maxLocalValue - graphDrawInfo.minLocalValue;
+            float proportionLocal = graphPlotHight;
+            if (normalizeY != 0)
+            {
+                proportionLocal = proportionLocal / normalizeY;
+            }
 
             for (int lLocal = 0; lLocal < graphDrawInfo.processedDataToDraw.Length; lLocal++)
             {
@@ -227,7 +238,7 @@ namespace OWLOSAirQuality.Huds
                 }
                 else
                 {
-                    graphDrawInfo.processedDataToDraw[lLocal] = graphTopY +  graphPlotHight + (graphDrawInfo.processedDataToDraw[lLocal] * 3.0f);
+                    graphDrawInfo.processedDataToDraw[lLocal] = graphTopY + (graphPlotHight - (graphDrawInfo.processedDataToDraw[lLocal] - graphDrawInfo.minLocalValue) * 4.0f);
                 }
             }
 
@@ -242,9 +253,21 @@ namespace OWLOSAirQuality.Huds
                 }
                 else
                 {
-                    float s1 = graphStartX + nLocal * stepLocal - halfStepLocal * 2;
-                    float s2 = graphStartX + nLocal * stepLocal - halfStepLocal;
-                    float s3 = graphStartX + nLocal * stepLocal;
+                    float s1 = float.NaN;
+                    float s2 = float.NaN;
+                    float s3 = float.NaN;
+                    if (dataCorrection)
+                    {
+                        s1 = graphStartX + nLocal * stepLocal - halfStepLocal * 2;
+                        s2 = graphStartX + nLocal * stepLocal - halfStepLocal;
+                        s3 = graphStartX + nLocal * stepLocal;
+                    }
+                    else
+                    {
+                        s1 = graphStartX + (nLocal - 1) * stepLocal - halfStepLocal * 2;
+                        s2 = graphStartX + (nLocal - 1) * stepLocal - halfStepLocal;
+                        s3 = graphStartX + (nLocal - 1) * stepLocal;
+                    }
                     dLocal += " C " + s1 + ", " + graphDrawInfo.processedDataToDraw[nLocal - 1]?.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " " + s2 + ", " + graphDrawInfo.processedDataToDraw[nLocal]?.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " " + s3 + ", " + graphDrawInfo.processedDataToDraw[nLocal]?.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " ";
                 }
 
