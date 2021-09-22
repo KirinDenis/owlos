@@ -1,0 +1,12 @@
+﻿<Window x:Class="OWLOSAirQuality.Frames.GraphFrame"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OWLOSAirQuality.Frames"
+        mc:Ignorable="d"
+        Title="GraphFrame" Width="1920" Height="1080">
+    <Grid x:Name="MainGrid" Width="1920" Height="1080">
+        <WrapPanel x:Name="GraphGrid" Grid.Column="1" Grid.Row="0"></WrapPanel>
+    </Grid>
+</Window>

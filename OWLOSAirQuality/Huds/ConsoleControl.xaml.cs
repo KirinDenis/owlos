@@ -58,6 +58,8 @@ namespace OWLOSAirQuality.Huds
         private double saveY = 0;
         private bool atAnimation = false;
 
+        public bool checkTextWidth = false;
+
         public ConsoleControl()
         {
             InitializeComponent();
@@ -70,7 +72,7 @@ namespace OWLOSAirQuality.Huds
                 List<string> lines = text.Split('\n').ToList();
                 foreach (string line in lines)
                 {
-                    if (line.Length > 50)
+                    if ((line.Length > 350) && (checkTextWidth))
                     {
                         int count = 0;
                         bool noDate = false;
@@ -79,7 +81,7 @@ namespace OWLOSAirQuality.Huds
                         {
                             _line += line[i];
                             count++;
-                            if (count > 50)
+                            if (count > 350)
                             {
                                 Add(_line, code, noDate);
                                 count = 0;
