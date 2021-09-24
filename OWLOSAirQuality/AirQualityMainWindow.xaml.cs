@@ -46,6 +46,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
 
 namespace OWLOSAirQuality
 {
@@ -100,20 +101,22 @@ namespace OWLOSAirQuality
         private Point lastPoint;
 
 
+        private HudFrame hudFrame;
 
+        private GraphFrame graphFrame;
 
         public AirQualityMainWindow()
         {
             InitializeComponent();
 
-            /*
-            Timer lifeCycleTimer = new Timer(10000)
+            
+            Timer lifeCycleTimer = new Timer(100)
             {
                 AutoReset = true
             };
             lifeCycleTimer.Elapsed += new ElapsedEventHandler(OnLifeCycleTimer);
             lifeCycleTimer.Start();
-            */
+            
 
             //controls
 
@@ -136,15 +139,15 @@ namespace OWLOSAirQuality
             autoScrollImage.Tag = 0;
             drawCellImage.Tag = 1;
 
-            HudFrame hudFrame = new HudFrame();
+            hudFrame = new HudFrame();
             hudFrame.MainGrid.Children.Remove(hudFrame.HudHolderGrid);
             hudFrame.Close();
             this.MainGrid.Children.Add(hudFrame.HudHolderGrid);
 
-            GraphFrame graphFrame = new GraphFrame();
-            graphFrame.MainGrid.Children.Remove(graphFrame.GraphGrid);
+            graphFrame = new GraphFrame();
+            graphFrame.MainGrid.Children.Remove(graphFrame.GraphHoderGrid);
             graphFrame.Close();
-            this.MainGrid.Children.Add(graphFrame.GraphGrid);
+            this.MainGrid.Children.Add(graphFrame.GraphHoderGrid);
 
             ValueFrame valueFrame = new ValueFrame();
             valueFrame.MainGrid.Children.Remove(valueFrame.ValuesGrid);
@@ -157,6 +160,43 @@ namespace OWLOSAirQuality
             this.MainGrid.Children.Add(logFrame.LogGrid);
 
 
+        }
+
+        private async void OnLifeCycleTimer(object source, ElapsedEventArgs e)
+        {
+
+            /*
+            AirQualityClientResulDTO airQualityClientResulDTO = await ecosystemServiceClient.GetThingAirQuality("VVRQUndWTzI4dW5YR1Jxb0IyQVpXUU9oaUdURWNBdmlMTHdpSWtMSUxnSVFBQUFBZHc5VllNalU1Sk0rMGNQano5Q0JKVE5oSm94OFNkNHJyNlhHcXRRRHpDZWU1ck1SV0hWQi9CYXM0dngwL0RPemYxTzZ4NWtjc1dCeGpsV3NTTldNWFlIc3hqWlVyd1MzcDBWbnd6OHhuZzJ1eXc2OCtCMm04SlphN1lOcVUxZ2NVMWVmVXdtL3g1SXFTQ3I2YXdhZERnPT0=");
+
+            if ((string.IsNullOrEmpty(airQualityClientResulDTO.error)) && (airQualityClientResulDTO.result != null))
+            {
+                ThingAirQualityDTO thingAirQualityDTO = JsonConvert.DeserializeObject<ThingAirQualityDTO>(airQualityClientResulDTO.result as string); 
+                console.AddToconsole(JsonConvert.SerializeObject(thingAirQualityDTO), 4);
+            }
+            else
+            {
+                console.AddToconsole(airQualityClientResulDTO.error, 1);
+            }
+            */
+
+            /*
+            base.Dispatcher.Invoke(() =>
+            {
+
+                if (this.MainGrid.ActualWidth != 0)
+                {
+                    RenderTargetBitmap bitmap =
+                        new RenderTargetBitmap((int)this.MainGrid.ActualWidth,
+                            (int)this.MainGrid.ActualHeight,
+                                  128, 128, PixelFormats.Pbgra32);
+                    bitmap.Render(this.MainGrid);
+
+                    FrameMain_00.DisplayImage.Source = bitmap;
+                }
+                
+
+            });
+            */
         }
 
 
@@ -179,6 +219,7 @@ namespace OWLOSAirQuality
             {
                 viewbox.Width = viewbox.Height = EcosystemExplorerGrid.ActualWidth / 4;
             }
+
 
         }
 

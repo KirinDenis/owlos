@@ -7,6 +7,8 @@
         mc:Ignorable="d"
         Title="GraphFrame" Width="1920" Height="1080">
     <Grid x:Name="MainGrid" Width="1920" Height="1080">
-        <WrapPanel x:Name="GraphGrid" Grid.Column="1" Grid.Row="0"></WrapPanel>
+        <Grid x:Name="GraphHoderGrid" Grid.Column="1" Grid.Row="0">
+        <WrapPanel x:Name="GraphGrid"></WrapPanel>
+       </Grid>
     </Grid>
 </Window>

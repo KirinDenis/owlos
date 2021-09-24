@@ -47,9 +47,12 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Timers;
+
 using OWLOSAirQuality.OWLOSEcosystemService;
 using OWLOSEcosystemService.DTO.Things;
 using Newtonsoft.Json;
+using System.Windows.Media.Imaging;
+
 
 namespace OWLOSAirQuality.Frames
 {
@@ -317,6 +320,11 @@ namespace OWLOSAirQuality.Frames
                 data3[data3.Length - 1] = a;
                 graph3.data = data3;
                 graph4.data = data3;
+
+
+                //---------------------------------
+
+            
             });
         }
 

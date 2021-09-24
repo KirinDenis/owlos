@@ -9,38 +9,38 @@
     <Grid x:Name="MainGrid" Width="1920" Height="1080">
         <Grid x:Name="HudHolderGrid" >
             <StackPanel VerticalAlignment="Top" Orientation="Horizontal" Grid.ColumnSpan="3">
-            <Button Content="big"  Height="20"  Click="Button_Click"/>
-            <Button Content="normal"  Height="20" Click="Button_Click_1" />
-            <Button Content="hide"  Height="20" Click="Button_Click_2"  />
-            <Button Content="re_graph"  Height="20" Click="Button_Click_3"  />
-        </StackPanel>
+                <Button Content="big"  Height="20"  Click="Button_Click"/>
+                <Button Content="normal"  Height="20" Click="Button_Click_1" />
+                <Button Content="hide"  Height="20" Click="Button_Click_2"  />
+                <Button Content="re_graph"  Height="20" Click="Button_Click_3"  />
+            </StackPanel>
 
 
-        <Viewbox x:Name="MainViewBox" >
+            <Viewbox x:Name="MainViewBox" >
 
-            <Grid x:Name="HudMainGrid">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="20"/>
-                    <RowDefinition Height="60*"/>
-                    <RowDefinition Height="20"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="20*"/>
-                    <ColumnDefinition Width="60*"/>
-                    <ColumnDefinition Width="20"/>
-                </Grid.ColumnDefinitions>
+                <Grid x:Name="HudMainGrid">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="60*"/>
+                        <RowDefinition Height="20"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20*"/>
+                        <ColumnDefinition Width="60*"/>
+                        <ColumnDefinition Width="20"/>
+                    </Grid.ColumnDefinitions>
 
 
-                <Grid x:Name="HudGrid" Grid.Column="1" Grid.Row="1">
-                    <Grid x:Name="WeatherGrid" RenderTransformOrigin="0.5,0.5">
+                    <Grid x:Name="HudGrid" Grid.Column="1" Grid.Row="1">
+                        <Grid x:Name="WeatherGrid" RenderTransformOrigin="0.5,0.5">
+                        </Grid>
+                        <Grid x:Name="DateTimeGrid" RenderTransformOrigin="0.5,0.5">
+                        </Grid>
                     </Grid>
-                    <Grid x:Name="DateTimeGrid" RenderTransformOrigin="0.5,0.5">
-                    </Grid>
+
                 </Grid>
+            </Viewbox>
 
-            </Grid>
-        </Viewbox>
-
-    </Grid>
+        </Grid>
     </Grid>
 </Window>
