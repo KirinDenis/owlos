@@ -37,16 +37,13 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 using OWLOSAirQuality.Frames;
-using OWLOSAirQuality.Huds;
 using OWLOSAirQuality.OWLOSEcosystemService;
-using OWLOSEcosystemService.DTO.Things;
 using System;
 using System.Timers;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
 
 namespace OWLOSAirQuality
 {
@@ -56,7 +53,7 @@ namespace OWLOSAirQuality
     public partial class AirQualityMainWindow : Window
     {
         private readonly OWLOSEcosystem ecosystem;        
-        private bool timerBusy = false;
+        private readonly bool timerBusy = false;
 
         /// <summary>
         /// Width and Height of cell
@@ -101,9 +98,12 @@ namespace OWLOSAirQuality
         private Point lastPoint;
 
 
-        private HudFrame hudFrame;
+        private readonly HudFrame hudFrame;
 
-        private GraphFrame graphFrame;
+        private readonly GraphFrame graphFrame;
+
+        private bool Zoomed = false;
+        private Thickness StoredZoomThickness;
 
         public AirQualityMainWindow()
         {
@@ -136,31 +136,106 @@ namespace OWLOSAirQuality
             
             
 
-            autoScrollImage.Tag = 0;
-            drawCellImage.Tag = 1;
 
             hudFrame = new HudFrame();
             hudFrame.MainGrid.Children.Remove(hudFrame.HudHolderGrid);
             hudFrame.Close();
-            this.MainGrid.Children.Add(hudFrame.HudHolderGrid);
+            MainGrid.Children.Add(hudFrame.HudHolderGrid);
 
             graphFrame = new GraphFrame();
             graphFrame.MainGrid.Children.Remove(graphFrame.GraphHoderGrid);
             graphFrame.Close();
-            this.MainGrid.Children.Add(graphFrame.GraphHoderGrid);
+            MainGrid.Children.Add(graphFrame.GraphHoderGrid);
 
             ValueFrame valueFrame = new ValueFrame();
-            valueFrame.MainGrid.Children.Remove(valueFrame.ValuesGrid);
+            valueFrame.MainGrid.Children.Remove(valueFrame.ValueHolderGrid);
             valueFrame.Close();
-            this.MainGrid.Children.Add(valueFrame.ValuesGrid);
+            MainGrid.Children.Add(valueFrame.ValueHolderGrid);
 
             LogFrame logFrame = new LogFrame();
-            logFrame.MainGrid.Children.Remove(logFrame.LogGrid);
+            logFrame.MainGrid.Children.Remove(logFrame.LogHolderGrid);
             logFrame.Close();
-            this.MainGrid.Children.Add(logFrame.LogGrid);
+            MainGrid.Children.Add(logFrame.LogHolderGrid);
+
+            Frame_00.OnSelect += Frame_00_OnSelect;
+            Frame_10.OnSelect += Frame_10_OnSelect;
+            Frame_20.OnSelect += Frame_20_OnSelect;
+
+            Frame_01.OnSelect += Frame_01_OnSelect;
+            Frame_11.OnSelect += Frame_11_OnSelect;
+            Frame_21.OnSelect += Frame_21_OnSelect;
+
+            ZoomFrame.OnSelect += ZoomFrame_OnSelect;
 
 
         }
+
+        private void ZoomFrame_OnSelect(object sender, EventArgs e)
+        {
+            if (Zoomed)
+            {
+                Zoomed = false;
+                StoredZoomThickness = viewbox.Margin;
+                NavigateFrame(new Thickness(0, 0, 0, 0));
+                viewbox.Width = 1920;
+                viewbox.Height = 1080;
+            }
+            else
+            {
+                Zoomed = true;
+                NavigateFrame(new Thickness(0, 0, 0, 0));
+                viewbox.Width = 5760;
+                viewbox.Height = 3240;                
+            }
+        }
+
+        private void NavigateFrame(Thickness ToThickness)
+        {
+            Storyboard storyboard = new Storyboard();
+            ThicknessAnimation thicknessAnimation = new ThicknessAnimation();
+            thicknessAnimation.BeginTime = new TimeSpan(0);
+            thicknessAnimation.SetValue(Storyboard.TargetNameProperty, "viewbox");
+            Storyboard.SetTargetProperty(thicknessAnimation, new PropertyPath(MarginProperty));
+
+            thicknessAnimation.From = new Thickness(viewbox.Margin.Left, viewbox.Margin.Top, viewbox.Margin.Right, viewbox.Margin.Top);
+            thicknessAnimation.To = ToThickness; 
+            thicknessAnimation.Duration = new Duration(TimeSpan.FromSeconds(1));
+
+            storyboard.Children.Add(thicknessAnimation);
+            storyboard.Begin(this);
+
+        }
+        private void Frame_00_OnSelect(object sender, EventArgs e)
+        {
+            NavigateFrame(new Thickness(0, 0, 0, 0));
+        }
+
+        private void Frame_10_OnSelect(object sender, EventArgs e)
+        {
+            NavigateFrame(new Thickness(-1920, 0, 0, 0));
+        }
+
+        private void Frame_20_OnSelect(object sender, EventArgs e)
+        {
+            NavigateFrame(new Thickness(-1920 * 2, 0, 0, 0));            
+        }
+
+        private void Frame_01_OnSelect(object sender, EventArgs e)
+        {
+            NavigateFrame(new Thickness(0, -1080, 0, 0));
+        }
+
+        private void Frame_11_OnSelect(object sender, EventArgs e)
+        {
+            NavigateFrame(new Thickness(-1920, -1080, 0, 0));
+        }
+
+        private void Frame_21_OnSelect(object sender, EventArgs e)
+        {
+            NavigateFrame(new Thickness(-1920 * 2, -1080, 0, 0));
+        }
+
+
 
         private async void OnLifeCycleTimer(object source, ElapsedEventArgs e)
         {
@@ -255,240 +330,6 @@ namespace OWLOSAirQuality
 
             lastPoint = point;
 
-        }
-
-        private void EcosystemExplorerGrid_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            if (e.MiddleButton == MouseButtonState.Pressed)
-            {
-                downPoint = e.GetPosition(EcosystemExplorerGrid);
-                hOffset = viewbox.Margin.Left;
-                vOffset = viewbox.Margin.Top;
-                EcosystemExplorerGrid.Cursor = Cursors.SizeAll;
-            }
-            else
-            if (e.RightButton == MouseButtonState.Pressed)
-            {
-                MouseWheelEventArgs mouseWheelEventArgs = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, 300);
-                EcosystemExplorerGrid_PreviewMouseWheel(sender, mouseWheelEventArgs);
-            }
-
-        }
-
-        private void EcosystemExplorerGrid_PreviewMouseMove(object sender, MouseEventArgs e)
-        {
-            //int x = (int)e.GetPosition(ThingGrid).X;
-            //int y = (int)e.GetPosition(ThingGrid).Y;
-
-            if (e.MiddleButton == MouseButtonState.Pressed)
-            {
-                System.Windows.Point point = e.GetPosition(EcosystemExplorerGrid);
-                point.X = hOffset - (downPoint.X - point.X);
-                point.Y = vOffset - (downPoint.Y - point.Y);
-
-                MoveWorld(point);
-            }
-
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                if ((int)autoScrollImage.Tag == 1)
-                {
-                    System.Windows.Point point = e.GetPosition(EcosystemExplorerGrid);
-
-                    if (point.X < 40)
-                    {
-                        point.X = viewbox.Margin.Left + 2;
-                        point.Y = viewbox.Margin.Top;
-                        MoveWorld(point);
-                    }
-                    else
-                        if (point.X > EcosystemExplorerGrid.ActualWidth - 40)
-                    {
-                        point.X = viewbox.Margin.Left - 2;
-                        point.Y = viewbox.Margin.Top;
-                        MoveWorld(point);
-                    }
-                    else
-                        if (point.Y < 40)
-                    {
-                        point.X = viewbox.Margin.Left;
-                        point.Y = viewbox.Margin.Top + 2;
-                        MoveWorld(point);
-                    }
-                    else
-                        if (point.Y > EcosystemExplorerGrid.ActualHeight - 40)
-                    {
-                        point.X = viewbox.Margin.Left;
-                        point.Y = viewbox.Margin.Top - 2;
-                        MoveWorld(point);
-                    }
-                }
-            }
-
-        }
-
-        private void EcosystemExplorerGrid_PreviewMouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (e.MiddleButton != MouseButtonState.Pressed)
-            {
-                EcosystemExplorerGrid.Cursor = null;
-            }
-
-        }
-
-        private void EcosystemExplorerGrid_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            //в зависемости от текущего масштаба вычисляем делту колеса мыши
-            double tempZoom = (viewbox.ActualWidth + e.Delta * zoomFactor) / (cellSize / 100);
-            double zoom = tempZoom * (cellSize / 100);
-
-            if ((zoom > EcosystemExplorerGrid.ActualWidth / 4) && (zoom > EcosystemExplorerGrid.ActualHeight / 4))
-            {
-                //из e. события запрашиваем координаты указателя мыши относительно EcosystemExplorerGrid
-                System.Windows.Point point = e.GetPosition(EcosystemExplorerGrid);
-                double aspect = zoom / viewbox.ActualWidth;
-
-                //пересчитываем относительный сдвиг - вверх
-                point.X -= (Math.Abs(viewbox.Margin.Left) + point.X) * aspect;
-                point.Y -= (Math.Abs(viewbox.Margin.Top) + point.Y) * aspect;
-
-                //ecosystemExplorerTextBlock.Text = point.X.ToString() + ":" + point.Y.ToString();
-                currentZoom = tempZoom;
-                zoomTextBox.Text = currentZoom.ToString("F");
-                Zoom(point);
-            }
-            if (e.RoutedEvent != null)
-            {
-                e.Handled = true;
-            }
-        }
-
-        private void zoomToOneHImage_Click(object sender, RoutedEventArgs e)
-        {
-            currentZoom = 70.0f;
-            double zoom = currentZoom * (cellSize / 100);
-            Zoom(new Point(EcosystemExplorerGrid.ActualWidth / 2 - zoom / 2, EcosystemExplorerGrid.ActualHeight / 2 - zoom / 2));
-        }
-
-        private void zoomToFullImage_Click(object sender, RoutedEventArgs e)
-        {
-            currentZoom = 20.0f;
-            double zoom = currentZoom * (cellSize / 100);
-            Zoom(new Point(EcosystemExplorerGrid.ActualWidth / 2 - zoom / 2, EcosystemExplorerGrid.ActualHeight / 2 - zoom / 2));
-
-        }
-
-        /// <summary>
-        /// Переключатель - выбирает режимы при котором сетка движется автоматически, если пользователь зацепил объект мышью
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void autoScrollImage_Click(object sender, RoutedEventArgs e)
-        {
-            if ((int)autoScrollImage.Tag == 1)
-            {
-                autoScrollImage.Tag = 0;
-                // autoScrollImage.Source = Icons.GetIcon(431);
-            }
-            else
-            {
-                autoScrollImage.Tag = 1;
-                //  autoScrollImage.Source = Icons.GetIcon(432);
-            }
-
-        }
-
-        /// <summary>
-        /// Включает - выключает прорисовку сетки
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void drawCellImage_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void iconsViewImage_Click(object sender, RoutedEventArgs e)
-        {
-            //new IconsToolWindow().Show();
-        }
-
-        private void transparentViewImage_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (AllowsTransparency)
-            {
-                AirQualityMainWindow ecosystemExplorer = new AirQualityMainWindow();
-                ecosystemExplorer.Show();
-                Close();
-            }
-            else
-            {
-
-                AirQualityMainWindow ecosystemExplorer = new AirQualityMainWindow
-                {
-                    AllowsTransparency = true,
-                    WindowStyle = WindowStyle.None,
-                    Background = null
-                };
-                ecosystemExplorer.Show();
-                Close();
-            }
-        }
-
-        private void duplicateWindowImage_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            AirQualityMainWindow ecosystemExplorer = new AirQualityMainWindow();
-            ecosystemExplorer.Show();
-
-        }
-
-        private void zoomToOneHImage_Click(object sender, MouseButtonEventArgs e)
-        {
-
-        }
-
-
-        /// <summary>
-        /// Переключатель плоский или наклоный просмотр сетки
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void perspectiveViewImage_Click(object sender, RoutedEventArgs e)
-        {
-
-            DoubleAnimation skewGrassX;
-            DoubleAnimation skewGrassY;
-            DoubleAnimation rotate;
-
-            if ((explorerGrid.Tag == null) || (explorerGrid.Tag.ToString().Equals("1")))
-            {
-                skewGrassX = new DoubleAnimation(-15.0f, new Duration(TimeSpan.FromMilliseconds(2000)));
-                skewGrassY = new DoubleAnimation(-10.0f, new Duration(TimeSpan.FromMilliseconds(2000)));
-                rotate = new DoubleAnimation(17.0f, new Duration(TimeSpan.FromMilliseconds(2000)));
-                explorerGrid.Tag = "0";
-            }
-            else
-            {
-                skewGrassX = new DoubleAnimation(-15.0f, 0.0f, new Duration(TimeSpan.FromMilliseconds(2000)));
-                skewGrassY = new DoubleAnimation(-10.0f, 0.0f, new Duration(TimeSpan.FromMilliseconds(2000)));
-                rotate = new DoubleAnimation(17.0f, 0.0f, new Duration(TimeSpan.FromMilliseconds(2000)));
-                explorerGrid.Tag = "1";
-            }
-
-            SkewTransform skewTransformX = new SkewTransform();
-            SkewTransform skewTransformY = new SkewTransform();
-            RotateTransform rotateTransform = new RotateTransform();
-
-            TransformGroup transformGroup = new TransformGroup();
-            transformGroup.Children.Add(skewTransformX);
-            transformGroup.Children.Add(skewTransformY);
-            transformGroup.Children.Add(rotateTransform);
-
-            explorerGrid.LayoutTransform = transformGroup;
-
-            skewTransformX.BeginAnimation(SkewTransform.AngleXProperty, skewGrassX);
-            skewTransformY.BeginAnimation(SkewTransform.AngleYProperty, skewGrassY);
-            rotateTransform.BeginAnimation(RotateTransform.AngleProperty, rotate);
         }
 
     }

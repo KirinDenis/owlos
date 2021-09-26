@@ -3,27 +3,17 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:huds="clr-namespace:OWLOSAirQuality.Huds"
-        Title="OWLOS Air Quality" Width="1920" Height="1080" Background="{DynamicResource OWLOSDark}" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+        Title="OWLOS Air Quality" Width="1920" Height="1080" Background="{DynamicResource OWLOSSecondaryAlpha1}" WindowStartupLocation="CenterScreen" WindowState="Maximized">
 
     <!-- FontFamily="file:///D:\Users\Egor\source\repos\KirinDenis\owlos\OWLOSAdmin\Fonts\#omega flight" -->
-    <Grid>
+    <Grid >
         <TextBlock x:Name="text" TextWrapping="WrapWithOverflow" />
         <Viewbox>
-            <Grid x:Name="contentGrid" Width="2199" Height="1164" >
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="279"/>
-                    <ColumnDefinition Width="1920"/>
-                
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="172"/>
-                    <RowDefinition Height="1185"/>
-
-                </Grid.RowDefinitions>
+            <Grid x:Name="contentGrid" Width="1920" Height="1080" >
 
 
 
-                <Grid x:Name="explorerGrid"  Grid.Row="1" Grid.Column="1" RenderTransformOrigin="0.5,0.5" Background="green">
+                <Grid x:Name="explorerGrid"   RenderTransformOrigin="0.5,0.5" >
                 <Grid.RenderTransform>
                     <TransformGroup>
                         <SkewTransform/>
@@ -39,7 +29,7 @@
 
 
 
-                <Grid x:Name="EcosystemExplorerGrid" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" PreviewMouseMove="EcosystemExplorerGrid_PreviewMouseMove" PreviewMouseDown="EcosystemExplorerGrid_PreviewMouseDown" PreviewMouseUp="EcosystemExplorerGrid_PreviewMouseUp" PreviewMouseWheel="EcosystemExplorerGrid_PreviewMouseWheel" RenderTransformOrigin="0.3,0" >
+                <Grid x:Name="EcosystemExplorerGrid" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.3,0" >
                     <Grid.RenderTransform>
                         <TransformGroup>
                             <ScaleTransform ScaleX="1" ScaleY="1"/>
@@ -49,7 +39,7 @@
                         </TransformGroup>
                     </Grid.RenderTransform>
 
-                        <Viewbox x:Name="viewbox"  Width="5760" Height="3555" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="-1920,0,0,0">
+                        <Viewbox x:Name="viewbox"  Width="5760" Height="3240" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="0,0,0,0">
                         <Viewbox.RenderTransform>
                             <TransformGroup>
                                 <ScaleTransform/>
@@ -59,7 +49,7 @@
                             </TransformGroup>
                         </Viewbox.RenderTransform>
 
-                        <Grid x:Name="MainGrid"  Width="5760" Height="3555" Background="{DynamicResource OWLOSDark}">
+                            <Grid x:Name="MainGrid"  Width="5760" Height="3240">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="1920"/>
                                 <ColumnDefinition Width="1920"/>
@@ -68,10 +58,8 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="1080"/>
                                 <RowDefinition Height="1080"/>
-                            </Grid.RowDefinitions>
-
-
-
+                                    <RowDefinition Height="1080"/>
+                                </Grid.RowDefinitions>
 
                             
                         </Grid>
@@ -79,39 +67,23 @@
                 </Grid>
             </Grid>
 
-                <Grid x:Name="StatusGrid" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" >
 
-                </Grid>
+                <Grid x:Name="NavigationGrid" HorizontalAlignment="Right" VerticalAlignment="Bottom">
 
-                <Grid x:Name="NavigationGrid" Grid.Row="0" Grid.Column="1" >
-
-                    <WrapPanel x:Name="SelectFramePanel">
-                        <huds:SelectFrameControl x:Name="FrameMain_00" ></huds:SelectFrameControl>
+                    <WrapPanel x:Name="SelectFramePanel" Width="230" HorizontalAlignment="Left">
+                        <huds:SelectFrameControl x:Name="Frame_00" FrameName="Main"></huds:SelectFrameControl>
+                        <huds:SelectFrameControl x:Name="Frame_10" FrameName="Graphs"></huds:SelectFrameControl>
+                        <huds:SelectFrameControl x:Name="Frame_20" FrameName="Values"></huds:SelectFrameControl>
+                        <huds:SelectFrameControl x:Name="Frame_01" FrameName="Console"></huds:SelectFrameControl>
+                        <huds:SelectFrameControl x:Name="Frame_11" FrameName="Gas"></huds:SelectFrameControl>
+                        <huds:SelectFrameControl x:Name="Frame_21" FrameName="Total"></huds:SelectFrameControl>
+                        <huds:SelectFrameControl x:Name="ZoomFrame" FrameName="Zoom"></huds:SelectFrameControl>
                     </WrapPanel>
 
-                    <StackPanel Orientation="Horizontal" Margin="10,0,10,0">
-                        <TextBlock Name="EcosystemExplorerTextBlock" Text="OWLOS Ecosystem"  Margin="0,0,2,0" VerticalAlignment="Center" Foreground="{DynamicResource OWLOSInfo}"  Visibility="Hidden" />
-                        <StackPanel Orientation="Horizontal"  VerticalAlignment="Center">
-                            <TextBlock Text="zoom:" VerticalAlignment="Center" Margin="0,0,0,0" Foreground="{DynamicResource OWLOSInfo}" Visibility="Hidden" />
-                            <TextBox Name="zoomTextBox" Text="100" Background="{x:Null}" VerticalAlignment="Center" BorderBrush="{x:Null}" FontWeight="Bold" Foreground="{DynamicResource OWLOSLight}" SnapsToDevicePixels="True" Visibility="Hidden" />
-                            <TextBlock Text="%" VerticalAlignment="Center" Margin="0,0,5,0" Foreground="{DynamicResource OWLOSLight}" Visibility="Hidden" />
-                        </StackPanel>
-
-                        <Image Name="zoomToOneHImage"  Width="25" Height="25" ToolTip="Zoom to 100%" Margin="5,0,5,0" MouseDown="zoomToOneHImage_Click" Cursor="Hand" />
-                        <Image  Name="zoomToFullImage"  Width="25" Height="25" ToolTip="Zoom to full view" Margin="5,0,5,0" MouseDown="zoomToFullImage_Click" Cursor="Hand"/>
-                        <Image  Name="autoScrollImage" Width="25" Height="25" ToolTip="Auto scroll" Margin="5,0,5,0" MouseDown="autoScrollImage_Click" Cursor="Hand"/>
-                        <Image Name="drawCellImage" Width="25" Height="25" ToolTip="Draw cell" Margin="5,0,5,0"   MouseDown="drawCellImage_Click" Cursor="Hand"/>
-                        <Image Name="perspectiveViewImage" Width="25" Height="25" ToolTip="3D view" Margin="5,0,5,0"   MouseDown="perspectiveViewImage_Click" Cursor="Hand"/>
-                        <Image Name="iconsViewImage" Width="25" Height="25" ToolTip="Icon collection [development]" Margin="5,0,5,0"   MouseDown="iconsViewImage_Click" Cursor="Hand"/>
-                        <Image Name="transparentViewImage" Width="25" Height="25" ToolTip="Transparent view" Margin="5,0,5,0" Cursor="Hand" MouseDown="transparentViewImage_MouseDown"/>
-                        <Image Name="duplicateWindowImage" Width="25" Height="25" ToolTip="Duplicate window" Margin="5,0,5,0" Cursor="Hand" MouseDown="duplicateWindowImage_MouseDown" />
-                    </StackPanel>
-
+                    <WrapPanel x:Name="ControlFramePanel" Width="230" HorizontalAlignment="Left">
+                        
+                    </WrapPanel>
                 </Grid>
-
-
-
-
             </Grid>
         </Viewbox>
     </Grid>

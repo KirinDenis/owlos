@@ -5,36 +5,28 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"       
              xmlns:local="clr-namespace:OWLOSAirQuality.Huds"
              mc:Ignorable="d" 
-             Height="200" Width="690">
+             
+             Margin="2"
+             Height="70" Width="70" Focusable="True" LostFocus="UserControl_LostFocus" IsTabStop="True" PreviewMouseDown="UserControl_PreviewMouseDown" GotFocus="UserControl_GotFocus" Background="#01000000" MouseEnter="UserControl_MouseEnter" MouseLeave="UserControl_MouseLeave">
     <Grid>
         <Canvas>
-            <Rectangle Stroke="{DynamicResource OWLOSSecondary}" Canvas.Left="0" Canvas.Top="0" Width="200" Height="150" StrokeThickness="0.1"/>
-            
-            <Line x:Name="SelSQ1" Stroke="{DynamicResource OWLOSInfo}" X1="-1" Y1="0" X2="10" Y2="0" StrokeThickness="3" Visibility="Hidden" />
-            <Line x:Name="SelSQ2" Stroke="{DynamicResource OWLOSInfo}" X1="0" Y1="0" X2="0" Y2="10" StrokeThickness="3" Visibility="Hidden"/>
+            <Rectangle Stroke="{DynamicResource OWLOSSecondary}" Canvas.Left="0" Canvas.Top="0" Width="70" Height="70" StrokeThickness="0.1"/>
 
-            <Line x:Name="SelSQ3" Stroke="{DynamicResource OWLOSInfo}" X1="151" Y1="0" X2="140" Y2="0" StrokeThickness="3" Visibility="Hidden"/>
-            <Line x:Name="SelSQ4" Stroke="{DynamicResource OWLOSInfo}" X1="150" Y1="0" X2="150" Y2="10" StrokeThickness="3" Visibility="Hidden"/>
+            <Line x:Name="SelSQ1" Stroke="{DynamicResource OWLOSInfo}" X1="-1" Y1="0" X2="10" Y2="0" StrokeThickness="2" Visibility="Hidden" />
+            <Line x:Name="SelSQ2" Stroke="{DynamicResource OWLOSInfo}" X1="0" Y1="0" X2="0" Y2="10" StrokeThickness="2" Visibility="Hidden"/>
 
-            <Line x:Name="SelSQ5" Stroke="{DynamicResource OWLOSInfo}" X1="-1" Y1="150" X2="10" Y2="150" StrokeThickness="3" Visibility="Hidden"/>
-            <Line x:Name="SelSQ6" Stroke="{DynamicResource OWLOSInfo}" X1="0" Y1="150" X2="0" Y2="140" StrokeThickness="3" Visibility="Hidden"/>
+            <Line x:Name="SelSQ3" Stroke="{DynamicResource OWLOSInfo}" X1="71" Y1="0" X2="60" Y2="0" StrokeThickness="2" Visibility="Hidden"/>
+            <Line x:Name="SelSQ4" Stroke="{DynamicResource OWLOSInfo}" X1="70" Y1="0" X2="70" Y2="10" StrokeThickness="2" Visibility="Hidden"/>
 
-            <Line x:Name="SelSQ7" Stroke="{DynamicResource OWLOSInfo}" X1="151" Y1="150" X2="140" Y2="150" StrokeThickness="3" Visibility="Hidden"/>
-            <Line x:Name="SelSQ8" Stroke="{DynamicResource OWLOSInfo}" X1="150" Y1="150" X2="150" Y2="140" StrokeThickness="3" Visibility="Hidden"/>
+            <Line x:Name="SelSQ5" Stroke="{DynamicResource OWLOSInfo}" X1="-1" Y1="70" X2="10" Y2="70" StrokeThickness="2" Visibility="Hidden"/>
+            <Line x:Name="SelSQ6" Stroke="{DynamicResource OWLOSInfo}" X1="0" Y1="70" X2="0" Y2="60" StrokeThickness="2" Visibility="Hidden"/>
 
-            <Rectangle x:Name="BoxRectangle" Stroke="{DynamicResource OWLOSSecondary}" Canvas.Left="5" Canvas.Top="5" Width="200" Height="140" StrokeThickness="2"/>
+            <Line x:Name="SelSQ7" Stroke="{DynamicResource OWLOSInfo}" X1="71" Y1="70" X2="60" Y2="70" StrokeThickness="2" Visibility="Hidden"/>
+            <Line x:Name="SelSQ8" Stroke="{DynamicResource OWLOSInfo}" X1="70" Y1="70" X2="70" Y2="60" StrokeThickness="2" Visibility="Hidden"/>
 
-            <Polygon Points="6, 6, 6, 20, 20, 6" Stroke="{DynamicResource OWLOSSecondary}" Fill="{DynamicResource OWLOSSecondary}" />
-
-            <Line Stroke="{DynamicResource OWLOSSecondary}" X1="142" Y1="142" X2="142" Y2="130" StrokeThickness="3" />
-            <Line Stroke="{DynamicResource OWLOSSecondary}" X1="145" Y1="142" X2="130" Y2="142" StrokeThickness="3" />
-
+            <Rectangle x:Name="BoxRectangle" Stroke="{DynamicResource OWLOSSecondary}" Canvas.Left="5" Canvas.Top="5" Width="60" Height="60" StrokeThickness="2"/>
         </Canvas>
 
-        <Image x:Name="DisplayImage" Stretch="Uniform">
-            <Image.Effect>
-                <BlurEffect Radius="1"/>
-            </Image.Effect>
-        </Image>
+        <TextBlock x:Name="_FrameName" Text="" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center" Foreground="{DynamicResource OWLOSSecondary}" />
     </Grid>
 </UserControl>

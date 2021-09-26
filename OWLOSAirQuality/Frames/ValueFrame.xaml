@@ -3,10 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:OWLOSAirQuality.Frames"
+        xmlns:local="clr-namespace:OWLOSAirQuality.Frames" xmlns:huds="clr-namespace:OWLOSAirQuality.Huds"
         mc:Ignorable="d"
         Title="Value Frame" Width="1920" Height="1080">
     <Grid x:Name="MainGrid" Width="1920" Height="1080">
-        <WrapPanel x:Name="ValuesGrid" Grid.Column="2" Grid.Row="0"></WrapPanel>
+        <Grid x:Name="ValueHolderGrid" Grid.Column="2" Grid.Row="0">
+            <huds:FrameBackgroundControl />
+            <WrapPanel x:Name="ValuesGrid" Margin="20,100"></WrapPanel>
+        </Grid>
     </Grid>
 </Window>
