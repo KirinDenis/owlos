@@ -227,15 +227,15 @@ namespace OWLOSAirQuality.Frames
             data4 = new double[1];
             data4[0] = 86.0;
 
-            graph5 = new PercentageControl(Gold.radius - 70);
-            graph5.angle = 0;
+          //  graph5 = new PercentageControl(Gold.radius - 70);
+          //  graph5.angle = 0;
             //WeatherGrid.Children.Add(graph5);
-            HudGrid.Children.Add(graph5);
-            graph5.data = data4;
+         //   HudGrid.Children.Add(graph5);
+           // graph5.data = data4;
 
-            icons1 = new IconsControl();
-            HudGrid.Children.Add(icons1);
-            icons1.state = 3;
+         //   icons1 = new IconsControl();
+         //   HudGrid.Children.Add(icons1);
+        //   icons1.state = 3;
             //icons1.Animate();
 
 

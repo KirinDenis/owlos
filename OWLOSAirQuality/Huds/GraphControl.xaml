@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:OWLOSAirQuality.Huds"
              mc:Ignorable="d" 
              
-             Height="220" Width="730" Focusable="True" IsTabStop="True" Loaded="UserControl_Loaded">
+             Height="220" Width="300" Focusable="True" IsTabStop="True" Loaded="UserControl_Loaded">
     <Grid x:Name="MainGrid">
 
 
@@ -33,7 +33,7 @@
             <Line Stroke="{DynamicResource OWLOSSecondary}" X1="298" Y1="142" X2="298" Y2="130" StrokeThickness="3" />
             <Line Stroke="{DynamicResource OWLOSSecondary}" X1="298" Y1="142" X2="285" Y2="142" StrokeThickness="3" />
             -->
-            <Rectangle x:Name="BoxRectangle" Stroke="{DynamicResource OWLOSSecondary}" Canvas.Left="25" Canvas.Top="5" Width="670" Height="185" StrokeThickness="2"/>
+            <Rectangle x:Name="BoxRectangle" Stroke="{DynamicResource OWLOSSecondary}" Canvas.Left="25" Canvas.Top="5" Width="280" Height="185" StrokeThickness="2"/>
 
         </Canvas>
 

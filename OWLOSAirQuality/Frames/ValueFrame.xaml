@@ -9,7 +9,7 @@
     <Grid x:Name="MainGrid" Width="1920" Height="1080">
         <Grid x:Name="ValueHolderGrid" Grid.Column="2" Grid.Row="0">
             <huds:FrameBackgroundControl />
-            <WrapPanel x:Name="ValuesGrid" Margin="20,100"></WrapPanel>
+            <WrapPanel x:Name="ValuesGrid" Margin="158,119" Width="1832" Height="998"></WrapPanel>
         </Grid>
     </Grid>
 </Window>

@@ -9,16 +9,104 @@
     <Grid>
 
         <Canvas>
-            <Rectangle Fill="{DynamicResource OWLOSInfо}" Canvas.Left="20" Canvas.Top="0" Width="1880" Height="40" />
-            <Rectangle Fill="{DynamicResource OWLOSSecondaryAlpha1}" Canvas.Left="20" Canvas.Top="20" Width="1880" Height="80" StrokeThickness="2"/>
-            <Rectangle Fill="{DynamicResource OWLOSSecondaryAlpha1}" Canvas.Left="20" Canvas.Top="100" Width="15" Height="890" StrokeThickness="2"/>
-            <Rectangle Fill="{DynamicResource OWLOSSecondaryAlpha1}" Canvas.Left="1885" Canvas.Top="100" Width="15" Height="890" StrokeThickness="2"/>
-            <Rectangle Fill="{DynamicResource OWLOSSecondaryAlpha1}" Canvas.Left="20" Canvas.Top="990" Width="1880" Height="60" StrokeThickness="2"/>
-            <Rectangle Stroke="{DynamicResource OWLOSSecondaryAlpha1}" Canvas.Left="10" Canvas.Top="10" Width="1900" Height="1050" StrokeThickness="2"/>
+            <Rectangle Fill="{DynamicResource OWLOSInfo}" Canvas.Left="41" Canvas.Top="41" Width="1838" Height="10" />
+            
+            <Rectangle Fill="{DynamicResource OWLOSSecondaryAlpha1}" Canvas.Left="41" Canvas.Top="51" Width="1838" Height="66" />
+            <Rectangle Fill="{DynamicResource OWLOSSecondaryAlpha1}" Canvas.Left="41" Canvas.Top="117" Width="16" Height="816" />
+            <Rectangle Fill="{DynamicResource OWLOSSecondaryAlpha1}" Canvas.Left="1863" Canvas.Top="117" Width="16" Height="816" />
+            <Rectangle Fill="{DynamicResource OWLOSSecondaryAlpha1}" Canvas.Left="41" Canvas.Top="933" Width="1838" Height="106" />
+            
+            <Rectangle Stroke="{DynamicResource OWLOSSecondaryAlpha1}" Canvas.Left="16" Canvas.Top="16" Width="1894" Height="1048" StrokeThickness="2"/>
+            
+            <Rectangle Stroke="{DynamicResource OWLOSSecondary}" Canvas.Left="0" Canvas.Top="0" Width="1920" Height="1080" StrokeThickness="2"/>
+            
+            <Line Stroke="{DynamicResource OWLOSInfo}" X1="-10" Y1="0" X2="10" Y2="0" StrokeThickness="3"/>
+            <Line Stroke="{DynamicResource OWLOSInfo}" X1="0" Y1="-10" X2="0" Y2="10" StrokeThickness="5"/>
+
+            <Line Stroke="{DynamicResource OWLOSInfo}" X1="1910" Y1="0" X2="1930" Y2="0" StrokeThickness="3"/>
+            <Line Stroke="{DynamicResource OWLOSInfo}" X1="1920" Y1="-10" X2="1920" Y2="10" StrokeThickness="5"/>
+
+            <Line Stroke="{DynamicResource OWLOSInfo}" X1="57" Y1="117" X2="1863" Y2="117" StrokeThickness="1"/>
+
+
         </Canvas>
 
-        <TextBlock Text="Main" Foreground="{DynamicResource OWLOSLight}" FontSize="52" Margin="40,20" />
-        <TextBlock Text="Air Quality" Foreground="{DynamicResource OWLOSInfo}" FontSize="52" Margin="180,20" />
+        
+        <StackPanel Margin="57,51" Orientation="Horizontal" Height="66" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="HUD ::" Foreground="{DynamicResource OWLOSLight}" FontSize="42"  />
+                <TextBlock Text="Air Quality" Foreground="{DynamicResource OWLOSInfo}" FontSize="42" Margin="10,0"  />
+             </StackPanel>
+            <StackPanel Margin="16,10">
+                <TextBlock Text=" x 1 min. " Foreground="{DynamicResource OWLOSLight}" FontSize="10" Background="{DynamicResource OWLOSDanger}" HorizontalAlignment="Left"  />
+                <TextBlock Text="last query status is normal" FontSize="10" Foreground="{DynamicResource OWLOSInfo}" HorizontalAlignment="Left"  />
+                <TextBlock Text="http://192.168.1.101:4005" FontSize="10" Foreground="{DynamicResource OWLOSLight}" HorizontalAlignment="Center"  />
+            </StackPanel>
+            <StackPanel Margin="41,16" Orientation="Horizontal">
+
+                <TextBlock Text="|   Temperature   " FontSize="16" Foreground="{DynamicResource OWLOSPrimary}" HorizontalAlignment="Left"  VerticalAlignment="Bottom" />
+                <TextBlock Text="|   Pressure   " FontSize="16" Foreground="{DynamicResource OWLOSInfo}" HorizontalAlignment="Left"  VerticalAlignment="Bottom" />
+                <TextBlock Text="|   CO2   " FontSize="16" Foreground="{DynamicResource OWLOSInfo}" HorizontalAlignment="Left"  VerticalAlignment="Bottom" />
+                <TextBlock Text="|   Gas   |" FontSize="16" Foreground="{DynamicResource OWLOSInfo}" HorizontalAlignment="Left"  VerticalAlignment="Bottom" />
+            </StackPanel>
+        </StackPanel>
+
+        
+        <StackPanel Margin="57,51" Height="66" HorizontalAlignment="Right" VerticalAlignment="Top" Orientation="Horizontal">
+            <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Margin="66,16,66,0">
+                <TextBox Text="search" Width="172"  Background="#45000000" Foreground="{DynamicResource OWLOSLight}" BorderBrush="{DynamicResource OWLOSSecondary}" HorizontalAlignment="Right" />
+            </StackPanel>
+
+            <StackPanel  HorizontalAlignment="Right" VerticalAlignment="Top">
+            <StackPanel Margin="16,10,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
+                <TextBlock Text="     " Foreground="{DynamicResource OWLOSInfo}" FontSize="16" Background="{DynamicResource OWLOSInfo}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="16,0,0,0"/>
+                <TextBlock Text="     " Foreground="{DynamicResource OWLOSInfo}" FontSize="16" Background="{DynamicResource OWLOSInfo}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="16,0,16,0"/>
+                <TextBlock Text="     " Foreground="{DynamicResource OWLOSInfo}" FontSize="16" Background="{DynamicResource OWLOSInfo}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="0,0"/>
+            </StackPanel>
+
+            <StackPanel Margin="0,0" Orientation="Horizontal" HorizontalAlignment="Right">
+                <TextBlock Text="controls" FontSize="16" Foreground="{DynamicResource OWLOSSecondary}" HorizontalAlignment="Right" />
+            </StackPanel>
+
+        </StackPanel>
+
+        </StackPanel>
+
+        <StackPanel Margin="57,25" Orientation="Horizontal" Height="106" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+            <StackPanel>
+                <TextBlock Text="\Thing 1" Foreground="{DynamicResource OWLOSLight}" FontSize="25"  />
+                <TextBlock Text="Air Quality" Foreground="{DynamicResource OWLOSInfo}" />
+                <TextBlock Text=" x 1 min. " Foreground="{DynamicResource OWLOSDanger}" FontSize="10" HorizontalAlignment="Left"  />
+                <TextBlock Text="100.4K b" Foreground="{DynamicResource OWLOSInfo}" />
+            </StackPanel>
+            <StackPanel Margin="16,10">
+                <TextBlock Text=" x 1 min. " Foreground="{DynamicResource OWLOSLight}" FontSize="10" Background="{DynamicResource OWLOSDanger}" HorizontalAlignment="Left"  />
+                <TextBlock Text="last query status is normal" FontSize="10" Foreground="{DynamicResource OWLOSInfo}" HorizontalAlignment="Left"  />
+                <TextBlock Text="http://192.168.1.101:4005" FontSize="10" Foreground="{DynamicResource OWLOSLight}" HorizontalAlignment="Center"  />
+            </StackPanel>
+            <StackPanel Margin="41,16" Orientation="Horizontal">
+
+            </StackPanel>
+        </StackPanel>
+
+        <StackPanel Margin="57,25" Orientation="Horizontal" Height="106" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+            <StackPanel>
+                <TextBlock Text="Air Quality" Foreground="{DynamicResource OWLOSInfo}" HorizontalAlignment="Right"/>
+                <TextBlock Text=" x 1 min. " Foreground="{DynamicResource OWLOSDanger}" FontSize="10" HorizontalAlignment="Right" />
+                <TextBlock Text="100.4K b" Foreground="{DynamicResource OWLOSInfo}" HorizontalAlignment="Right" />
+            </StackPanel>
+            <StackPanel Margin="16,10">
+                <TextBlock Text=" x 1 min. " Foreground="{DynamicResource OWLOSLight}" FontSize="10" Background="{DynamicResource OWLOSInfo}" HorizontalAlignment="Left"  />
+                <TextBlock Text="last query status is normal" FontSize="10" Foreground="{DynamicResource OWLOSInfo}" HorizontalAlignment="Left"  />
+                <TextBlock Text="http://192.168.1.101:4005" FontSize="10" Foreground="{DynamicResource OWLOSLight}" HorizontalAlignment="Center"  />
+            </StackPanel>
+            <StackPanel Margin="41,16" Orientation="Horizontal">
+
+            </StackPanel>
+        </StackPanel>
+
+
+
 
     </Grid>
 </UserControl>

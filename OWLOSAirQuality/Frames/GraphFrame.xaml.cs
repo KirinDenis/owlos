@@ -90,6 +90,59 @@ namespace OWLOSAirQuality.Frames
             CCS811CO2GraphControl.NameTextBlock.Text = "CO2";
             GraphGrid.Children.Add(CCS811CO2GraphControl);
 
+            //DOUBLE 
+            DHT22tempGraphControl = new GraphControl();
+            DHT22tempGraphControl.NameTextBlock.Text = "DHT22 Temperature";
+            GraphGrid.Children.Add(DHT22tempGraphControl);
+
+
+            DHT22humGraphControl = new GraphControl();
+            DHT22humGraphControl.NameTextBlock.Text = "DHT22 Humidity";
+            GraphGrid.Children.Add(DHT22humGraphControl);
+
+            DHT22heatGraphControl = new GraphControl();
+            DHT22heatGraphControl.NameTextBlock.Text = "DHT22 Heat Index";
+            GraphGrid.Children.Add(DHT22heatGraphControl);
+
+            BMP280pressureGraphControl = new GraphControl();
+            BMP280pressureGraphControl.NameTextBlock.Text = "BMP280 Pressure";
+            GraphGrid.Children.Add(BMP280pressureGraphControl);
+
+            BMP280altitudeGraphControl = new GraphControl();
+            BMP280altitudeGraphControl.NameTextBlock.Text = "BMP280 Altitude";
+            GraphGrid.Children.Add(BMP280altitudeGraphControl);
+
+            CCS811CO2GraphControl = new GraphControl();
+            CCS811CO2GraphControl.NameTextBlock.Text = "CO2";
+            GraphGrid.Children.Add(CCS811CO2GraphControl);
+
+            DHT22tempGraphControl = new GraphControl();
+            DHT22tempGraphControl.NameTextBlock.Text = "DHT22 Temperature";
+            GraphGrid.Children.Add(DHT22tempGraphControl);
+
+
+            DHT22humGraphControl = new GraphControl();
+            DHT22humGraphControl.NameTextBlock.Text = "DHT22 Humidity";
+            GraphGrid.Children.Add(DHT22humGraphControl);
+
+            DHT22heatGraphControl = new GraphControl();
+            DHT22heatGraphControl.NameTextBlock.Text = "DHT22 Heat Index";
+            GraphGrid.Children.Add(DHT22heatGraphControl);
+
+            BMP280pressureGraphControl = new GraphControl();
+            BMP280pressureGraphControl.NameTextBlock.Text = "BMP280 Pressure";
+            GraphGrid.Children.Add(BMP280pressureGraphControl);
+
+            BMP280altitudeGraphControl = new GraphControl();
+            BMP280altitudeGraphControl.NameTextBlock.Text = "BMP280 Altitude";
+            GraphGrid.Children.Add(BMP280altitudeGraphControl);
+
+            CCS811CO2GraphControl = new GraphControl();
+            CCS811CO2GraphControl.NameTextBlock.Text = "CO2";
+            GraphGrid.Children.Add(CCS811CO2GraphControl);
+
+
+
             //  CCS811TVOCGraphControl = new GraphControl();
             //   CCS811TVOCGraphControl.NameTextBlock.Text = "TVOC";
             //  GraphGrid.Children.Add(CCS811TVOCGraphControl);

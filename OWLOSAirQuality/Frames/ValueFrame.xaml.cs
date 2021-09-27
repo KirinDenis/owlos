@@ -130,6 +130,186 @@ namespace OWLOSAirQuality.Frames
                             acData.OnCCS811tempChanged += CCS811tempValueControl.OnValueChanged;
                             ValuesGrid.Children.Add(CCS811tempValueControl);
 
+                            //Double 
+
+                            DHT22tempValueControl = new ACValueControl(acData.DHT22temp, "DHT22", "Celsius", "Temperature");
+                            acData.OnDHT22tempChanged += DHT22tempValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(DHT22tempValueControl);
+
+                            DHT22humValueControl = new ACValueControl(acData.DHT22hum, "DHT22", "%", "Humidity");
+                            acData.OnDHT22humChanged += DHT22humValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(DHT22humValueControl);
+
+                            DHT22heatValueControl = new ACValueControl(acData.DHT22heat, "DHT22", "", "Heat Index");
+                            acData.OnDHT22heatChanged += DHT22heatValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(DHT22heatValueControl);
+
+
+                            BMP280pressureValueControl = new ACValueControl(acData.BMP280pressure, "BMP280", "kPa", "Pressure");
+                            acData.OnBMP280pressureChanged += BMP280pressureValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(BMP280pressureValueControl);
+
+
+                            BMP280altitudeValueControl = new ACValueControl(acData.BMP280altitude, "BMP280", "Meters", "Altitude");
+                            acData.OnBMP280altitudeChanged += BMP280altitudeValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(BMP280altitudeValueControl);
+
+
+                            BMP280temperatureValueControl = new ACValueControl(acData.BMP280temperature, "BMP280", "Celsius", "Temperature");
+                            acData.OnBMP280temperatureChanged += BMP280temperatureValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(BMP280temperatureValueControl);
+
+                            ADS1X15MQ135ValueControl = new ACValueControl(acData.ADS1X15MQ135, "ADS1X15", "CO2|CO|Alcohol|Smoke|Dust", "MQ135");
+                            acData.OnADS1X15MQ135Changed += ADS1X15MQ135ValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(ADS1X15MQ135ValueControl);
+
+                            ADS1X15MQ7ValueControl = new ACValueControl(acData.ADS1X15MQ7, "ADS1X15", "CO", "MQ7");
+                            acData.OnADS1X15MQ7Changed += ADS1X15MQ7ValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(ADS1X15MQ7ValueControl);
+
+                            ADS1X15LightValueControl = new ACValueControl(acData.ADS1X15Light, "ADS1X15", "level", "Light");
+                            acData.OnADS1X15LightChanged += ADS1X15LightValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(ADS1X15LightValueControl);
+
+                            CCS811CO2ValueControl = new ACValueControl(acData.CCS811CO2, "CCS811", "PPM", "CO2");
+                            acData.OnCCS811CO2Changed += CCS811CO2ValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(CCS811CO2ValueControl);
+
+                            CCS811TVOCValueControl = new ACValueControl(acData.CCS811TVOC, "CCS811", "PPM", "TVOC");
+                            acData.OnCCS811TVOCChanged += CCS811TVOCValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(CCS811TVOCValueControl);
+
+                            CCS811resistenceValueControl = new ACValueControl(acData.CCS811resistence, "CCS811", "", "Resistance");
+                            acData.OnCCS811resistenceChanged += CCS811resistenceValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(CCS811resistenceValueControl);
+
+                            CCS811tempValueControl = new ACValueControl(acData.CCS811temp, "CCS811", "Fahrenheit ", "Temperature");
+                            acData.OnCCS811tempChanged += CCS811tempValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(CCS811tempValueControl);
+
+                            DHT22tempValueControl = new ACValueControl(acData.DHT22temp, "DHT22", "Celsius", "Temperature");
+                            acData.OnDHT22tempChanged += DHT22tempValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(DHT22tempValueControl);
+
+                            DHT22humValueControl = new ACValueControl(acData.DHT22hum, "DHT22", "%", "Humidity");
+                            acData.OnDHT22humChanged += DHT22humValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(DHT22humValueControl);
+
+                            DHT22heatValueControl = new ACValueControl(acData.DHT22heat, "DHT22", "", "Heat Index");
+                            acData.OnDHT22heatChanged += DHT22heatValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(DHT22heatValueControl);
+
+
+                            BMP280pressureValueControl = new ACValueControl(acData.BMP280pressure, "BMP280", "kPa", "Pressure");
+                            acData.OnBMP280pressureChanged += BMP280pressureValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(BMP280pressureValueControl);
+
+
+                            BMP280altitudeValueControl = new ACValueControl(acData.BMP280altitude, "BMP280", "Meters", "Altitude");
+                            acData.OnBMP280altitudeChanged += BMP280altitudeValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(BMP280altitudeValueControl);
+
+
+                            BMP280temperatureValueControl = new ACValueControl(acData.BMP280temperature, "BMP280", "Celsius", "Temperature");
+                            acData.OnBMP280temperatureChanged += BMP280temperatureValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(BMP280temperatureValueControl);
+
+                            ADS1X15MQ135ValueControl = new ACValueControl(acData.ADS1X15MQ135, "ADS1X15", "CO2|CO|Alcohol|Smoke|Dust", "MQ135");
+                            acData.OnADS1X15MQ135Changed += ADS1X15MQ135ValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(ADS1X15MQ135ValueControl);
+
+                            ADS1X15MQ7ValueControl = new ACValueControl(acData.ADS1X15MQ7, "ADS1X15", "CO", "MQ7");
+                            acData.OnADS1X15MQ7Changed += ADS1X15MQ7ValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(ADS1X15MQ7ValueControl);
+
+                            ADS1X15LightValueControl = new ACValueControl(acData.ADS1X15Light, "ADS1X15", "level", "Light");
+                            acData.OnADS1X15LightChanged += ADS1X15LightValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(ADS1X15LightValueControl);
+
+                            CCS811CO2ValueControl = new ACValueControl(acData.CCS811CO2, "CCS811", "PPM", "CO2");
+                            acData.OnCCS811CO2Changed += CCS811CO2ValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(CCS811CO2ValueControl);
+
+                            CCS811TVOCValueControl = new ACValueControl(acData.CCS811TVOC, "CCS811", "PPM", "TVOC");
+                            acData.OnCCS811TVOCChanged += CCS811TVOCValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(CCS811TVOCValueControl);
+
+                            CCS811resistenceValueControl = new ACValueControl(acData.CCS811resistence, "CCS811", "", "Resistance");
+                            acData.OnCCS811resistenceChanged += CCS811resistenceValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(CCS811resistenceValueControl);
+
+                            CCS811tempValueControl = new ACValueControl(acData.CCS811temp, "CCS811", "Fahrenheit ", "Temperature");
+                            acData.OnCCS811tempChanged += CCS811tempValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(CCS811tempValueControl);
+
+                            DHT22tempValueControl = new ACValueControl(acData.DHT22temp, "DHT22", "Celsius", "Temperature");
+                            acData.OnDHT22tempChanged += DHT22tempValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(DHT22tempValueControl);
+
+                            DHT22humValueControl = new ACValueControl(acData.DHT22hum, "DHT22", "%", "Humidity");
+                            acData.OnDHT22humChanged += DHT22humValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(DHT22humValueControl);
+
+                            DHT22heatValueControl = new ACValueControl(acData.DHT22heat, "DHT22", "", "Heat Index");
+                            acData.OnDHT22heatChanged += DHT22heatValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(DHT22heatValueControl);
+
+
+                            BMP280pressureValueControl = new ACValueControl(acData.BMP280pressure, "BMP280", "kPa", "Pressure");
+                            acData.OnBMP280pressureChanged += BMP280pressureValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(BMP280pressureValueControl);
+
+
+                            BMP280altitudeValueControl = new ACValueControl(acData.BMP280altitude, "BMP280", "Meters", "Altitude");
+                            acData.OnBMP280altitudeChanged += BMP280altitudeValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(BMP280altitudeValueControl);
+
+
+                            BMP280temperatureValueControl = new ACValueControl(acData.BMP280temperature, "BMP280", "Celsius", "Temperature");
+                            acData.OnBMP280temperatureChanged += BMP280temperatureValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(BMP280temperatureValueControl);
+
+                            ADS1X15MQ135ValueControl = new ACValueControl(acData.ADS1X15MQ135, "ADS1X15", "CO2|CO|Alcohol|Smoke|Dust", "MQ135");
+                            acData.OnADS1X15MQ135Changed += ADS1X15MQ135ValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(ADS1X15MQ135ValueControl);
+
+                            ADS1X15MQ7ValueControl = new ACValueControl(acData.ADS1X15MQ7, "ADS1X15", "CO", "MQ7");
+                            acData.OnADS1X15MQ7Changed += ADS1X15MQ7ValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(ADS1X15MQ7ValueControl);
+
+                            ADS1X15LightValueControl = new ACValueControl(acData.ADS1X15Light, "ADS1X15", "level", "Light");
+                            acData.OnADS1X15LightChanged += ADS1X15LightValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(ADS1X15LightValueControl);
+
+                            CCS811CO2ValueControl = new ACValueControl(acData.CCS811CO2, "CCS811", "PPM", "CO2");
+                            acData.OnCCS811CO2Changed += CCS811CO2ValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(CCS811CO2ValueControl);
+
+                            CCS811TVOCValueControl = new ACValueControl(acData.CCS811TVOC, "CCS811", "PPM", "TVOC");
+                            acData.OnCCS811TVOCChanged += CCS811TVOCValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(CCS811TVOCValueControl);
+
+                            CCS811resistenceValueControl = new ACValueControl(acData.CCS811resistence, "CCS811", "", "Resistance");
+                            acData.OnCCS811resistenceChanged += CCS811resistenceValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(CCS811resistenceValueControl);
+
+                            CCS811tempValueControl = new ACValueControl(acData.CCS811temp, "CCS811", "Fahrenheit ", "Temperature");
+                            acData.OnCCS811tempChanged += CCS811tempValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(CCS811tempValueControl);
+
+                            CCS811CO2ValueControl = new ACValueControl(acData.CCS811CO2, "CCS811", "PPM", "CO2");
+                            acData.OnCCS811CO2Changed += CCS811CO2ValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(CCS811CO2ValueControl);
+
+                            CCS811TVOCValueControl = new ACValueControl(acData.CCS811TVOC, "CCS811", "PPM", "TVOC");
+                            acData.OnCCS811TVOCChanged += CCS811TVOCValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(CCS811TVOCValueControl);
+
+
+                            BMP280altitudeValueControl = new ACValueControl(acData.BMP280altitude, "BMP280", "Meters", "Altitude");
+                            acData.OnBMP280altitudeChanged += BMP280altitudeValueControl.OnValueChanged;
+                            ValuesGrid.Children.Add(BMP280altitudeValueControl);
+
 
                         }
 

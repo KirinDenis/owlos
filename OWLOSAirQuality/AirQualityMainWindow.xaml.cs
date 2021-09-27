@@ -41,6 +41,7 @@ using OWLOSAirQuality.OWLOSEcosystemService;
 using System;
 using System.Timers;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -134,8 +135,7 @@ namespace OWLOSAirQuality
             //events     
             ecosystem = App.ecosystem;
             
-            
-
+           
 
             hudFrame = new HudFrame();
             hudFrame.MainGrid.Children.Remove(hudFrame.HudHolderGrid);
@@ -146,6 +146,7 @@ namespace OWLOSAirQuality
             graphFrame.MainGrid.Children.Remove(graphFrame.GraphHoderGrid);
             graphFrame.Close();
             MainGrid.Children.Add(graphFrame.GraphHoderGrid);
+
 
             ValueFrame valueFrame = new ValueFrame();
             valueFrame.MainGrid.Children.Remove(valueFrame.ValueHolderGrid);
@@ -166,6 +167,43 @@ namespace OWLOSAirQuality
             Frame_21.OnSelect += Frame_21_OnSelect;
 
             ZoomFrame.OnSelect += ZoomFrame_OnSelect;
+
+
+            //Double 
+            valueFrame = new ValueFrame();
+            valueFrame.MainGrid.Children.Remove(valueFrame.ValueHolderGrid);
+            valueFrame.Close();
+            valueFrame.ValueHolderGrid.SetValue(Grid.ColumnProperty, 1);
+            valueFrame.ValueHolderGrid.SetValue(Grid.RowProperty, 1);
+            MainGrid.Children.Add(valueFrame.ValueHolderGrid);
+
+            valueFrame = new ValueFrame();
+            valueFrame.MainGrid.Children.Remove(valueFrame.ValueHolderGrid);
+            valueFrame.Close();
+            valueFrame.ValueHolderGrid.SetValue(Grid.ColumnProperty, 0);
+            valueFrame.ValueHolderGrid.SetValue(Grid.RowProperty, 2);
+            MainGrid.Children.Add(valueFrame.ValueHolderGrid);
+
+            valueFrame = new ValueFrame();
+            valueFrame.MainGrid.Children.Remove(valueFrame.ValueHolderGrid);
+            valueFrame.Close();
+            valueFrame.ValueHolderGrid.SetValue(Grid.ColumnProperty, 2);
+            valueFrame.ValueHolderGrid.SetValue(Grid.RowProperty, 2);
+            MainGrid.Children.Add(valueFrame.ValueHolderGrid);
+
+            logFrame = new LogFrame();
+            logFrame.MainGrid.Children.Remove(logFrame.LogHolderGrid);
+            logFrame.Close();
+            logFrame.LogHolderGrid.SetValue(Grid.ColumnProperty, 1);
+            logFrame.LogHolderGrid.SetValue(Grid.RowProperty, 2);
+            MainGrid.Children.Add(logFrame.LogHolderGrid);
+
+            graphFrame = new GraphFrame();
+            graphFrame.MainGrid.Children.Remove(graphFrame.GraphHoderGrid);
+            graphFrame.Close();
+            graphFrame.GraphHoderGrid.SetValue(Grid.ColumnProperty, 2);
+            graphFrame.GraphHoderGrid.SetValue(Grid.RowProperty, 1);
+            MainGrid.Children.Add(graphFrame.GraphHoderGrid);
 
 
         }

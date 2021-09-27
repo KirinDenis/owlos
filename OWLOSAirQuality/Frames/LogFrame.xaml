@@ -9,7 +9,7 @@
     <Grid x:Name="MainGrid" Width="1920" Height="1080">
         <Grid x:Name="LogHolderGrid" Grid.Column="0" Grid.Row="1">
         <huds:FrameBackgroundControl />
-            <Grid x:Name="LogGrid" Margin="40,100"></Grid>
+            <Grid x:Name="LogGrid" Margin="58,119" Width="1832" Height="998"></Grid>
         </Grid>
     </Grid>
 </Window>
