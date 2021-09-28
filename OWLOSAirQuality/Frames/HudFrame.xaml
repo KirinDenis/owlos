@@ -8,13 +8,14 @@
         Title="HudFrame" Width="1920" Height="1080">
     <Grid x:Name="MainGrid" Width="1920" Height="1080">
         <Grid x:Name="HudHolderGrid" >
-            <huds:FrameBackgroundControl />
-            <StackPanel VerticalAlignment="Top" Orientation="Horizontal" Grid.ColumnSpan="3" Margin="58,119">
-                <Button Content="big"  Height="20"  Click="Button_Click"/>
-                <Button Content="normal"  Height="20" Click="Button_Click_1" />
-                <Button Content="hide"  Height="20" Click="Button_Click_2"  />
-                <Button Content="re_graph"  Height="20" Click="Button_Click_3"  />
+            <huds:FrameBackgroundControl TitleFrame="HUD" DescriptionFrame="Air Quality" QueryInterval="x1 sec"/>
+
+            <StackPanel Margin="557,66" Orientation="Horizontal" VerticalAlignment="Top">
+                <huds:MenuItemControl x:Name="ShowBiggerMenu" Caption="BIG" Description="show bigger"/>
+                <huds:MenuItemControl x:Name="ShowNormalMenu" Caption="NORMAL" Description="show normal" Selected="True"/>
+                <huds:MenuItemControl x:Name="HiderMenu" Caption="HIDE" Description="hide control"/>
             </StackPanel>
+
 
 
             <Viewbox x:Name="MainViewBox" Width="1832" Height="998">

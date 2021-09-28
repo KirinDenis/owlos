@@ -251,6 +251,64 @@ namespace OWLOSAirQuality.Frames
             lifeCycleTimer.Elapsed += new ElapsedEventHandler(OnLifeCycleTimer);
             lifeCycleTimer.Start();
             OnLifeCycleTimer(null, null);
+
+            ShowBiggerMenu.OnSelect += ShowBiggerMenu_OnSelect;
+            ShowNormalMenu.OnSelect += ShowNormalMenu_OnSelect;
+            HiderMenu.OnSelect += HiderMenu_OnSelect;
+        }
+
+        private void HiderMenu_OnSelect(object sender, EventArgs e)
+        {
+            DoubleAnimation rotateAnimation = new DoubleAnimation()
+            {
+                From = 1.0,
+                To = 0.0f,
+                Duration = new Duration(TimeSpan.FromMilliseconds(1000)),
+                AutoReverse = false
+            };
+
+            DateTimeGrid.RenderTransform = new ScaleTransform();
+            DateTimeGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleXProperty, rotateAnimation);
+            DateTimeGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleYProperty, rotateAnimation);
+
+        }
+
+        private void ShowNormalMenu_OnSelect(object sender, EventArgs e)
+        {
+            DoubleAnimation rotateAnimation = new DoubleAnimation()
+            {
+                From = 1.23,
+                To = 1.0f,
+                Duration = new Duration(TimeSpan.FromMilliseconds(1000)),
+                AutoReverse = false
+            };
+
+            DateTimeGrid.RenderTransform = new ScaleTransform();
+            DateTimeGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleXProperty, rotateAnimation);
+            DateTimeGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleYProperty, rotateAnimation);
+
+            WeatherGrid.RenderTransform = new ScaleTransform();
+            WeatherGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleXProperty, rotateAnimation);
+            WeatherGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleYProperty, rotateAnimation);
+        }
+
+        private void ShowBiggerMenu_OnSelect(object sender, EventArgs e)
+        {
+            DoubleAnimation rotateAnimation = new DoubleAnimation()
+            {
+                From = 1.0f,
+                To = 1.23f,
+                Duration = new Duration(TimeSpan.FromMilliseconds(1000)),
+                AutoReverse = false
+            };
+
+            DateTimeGrid.RenderTransform = new ScaleTransform();
+            DateTimeGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleXProperty, rotateAnimation);
+            DateTimeGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleYProperty, rotateAnimation);
+
+            WeatherGrid.RenderTransform = new ScaleTransform();
+            WeatherGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleXProperty, rotateAnimation);
+            WeatherGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleYProperty, rotateAnimation);
         }
 
         /*
@@ -328,61 +386,6 @@ namespace OWLOSAirQuality.Frames
             });
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            DoubleAnimation rotateAnimation = new DoubleAnimation()
-            {
-                From = 1.0f,
-                To = 1.23f,
-                Duration = new Duration(TimeSpan.FromMilliseconds(1000)),
-                AutoReverse = false
-            };
-
-            DateTimeGrid.RenderTransform = new ScaleTransform();
-            DateTimeGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleXProperty, rotateAnimation);
-            DateTimeGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleYProperty, rotateAnimation);
-
-            WeatherGrid.RenderTransform = new ScaleTransform();
-            WeatherGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleXProperty, rotateAnimation);
-            WeatherGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleYProperty, rotateAnimation);
-
-        }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            DoubleAnimation rotateAnimation = new DoubleAnimation()
-            {
-                From = 1.23,
-                To = 1.0f,
-                Duration = new Duration(TimeSpan.FromMilliseconds(1000)),
-                AutoReverse = false
-            };
-
-            DateTimeGrid.RenderTransform = new ScaleTransform();
-            DateTimeGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleXProperty, rotateAnimation);
-            DateTimeGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleYProperty, rotateAnimation);
-
-            WeatherGrid.RenderTransform = new ScaleTransform();
-            WeatherGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleXProperty, rotateAnimation);
-            WeatherGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleYProperty, rotateAnimation);
-
-        }
-
-        private void Button_Click_2(object sender, RoutedEventArgs e)
-        {
-            DoubleAnimation rotateAnimation = new DoubleAnimation()
-            {
-                From = 1.0,
-                To = 0.0f,
-                Duration = new Duration(TimeSpan.FromMilliseconds(1000)),
-                AutoReverse = false
-            };
-
-            DateTimeGrid.RenderTransform = new ScaleTransform();
-            DateTimeGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleXProperty, rotateAnimation);
-            DateTimeGrid.RenderTransform.BeginAnimation(ScaleTransform.ScaleYProperty, rotateAnimation);
-
-        }
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {

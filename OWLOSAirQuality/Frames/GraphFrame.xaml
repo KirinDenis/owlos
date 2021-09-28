@@ -8,7 +8,7 @@
         Title="GraphFrame" Width="1920" Height="1080">
     <Grid x:Name="MainGrid" Width="1920" Height="1080">
         <Grid x:Name="GraphHoderGrid" Grid.Column="1" Grid.Row="0">
-            <huds:FrameBackgroundControl />
+            <huds:FrameBackgroundControl TitleFrame="GRAPH" DescriptionFrame="Air Quality" QueryInterval="x10 sec"/>
             <WrapPanel x:Name="GraphGrid" Margin="58,119" Width="1832" Height="998"></WrapPanel>
        </Grid>
     </Grid>

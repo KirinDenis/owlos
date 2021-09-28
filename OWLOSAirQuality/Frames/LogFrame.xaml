@@ -8,7 +8,7 @@
         Title="Log Frame" Width="1920" Height="1080">
     <Grid x:Name="MainGrid" Width="1920" Height="1080">
         <Grid x:Name="LogHolderGrid" Grid.Column="0" Grid.Row="1">
-        <huds:FrameBackgroundControl />
+            <huds:FrameBackgroundControl TitleFrame="LOG" DescriptionFrame="Air Quality" QueryInterval="x1 sec"/>
             <Grid x:Name="LogGrid" Margin="58,119" Width="1832" Height="998"></Grid>
         </Grid>
     </Grid>
