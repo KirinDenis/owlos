@@ -36,7 +36,9 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
+using OWLOSEcosystemService.DTO.Things;
 using System;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -49,79 +51,54 @@ namespace OWLOSAirQuality.Huds
     /// </summary>
     public partial class ValueControl : UserControl
     {
-
-        public string value
+        public string Caption
         {
-            get => ValueTextBlock?.Text;
+            get => _Caption != null ? _Caption.Text : string.Empty;
             set
             {
-                if (ValueTextBlock?.Text != null)
+                if (_Caption != null)
                 {
-                    if (!string.IsNullOrEmpty(value))
-                    {
-                        ValueTextBlock.Text = value;
-                    }
-                    else
-                    {
-                        ValueTextBlock.Text = "--";
-                    }
+                    _Caption.Text = value;
                 }
             }
         }
 
-        public string valueName
+        public string Value
         {
-            get => NameTextBlock?.Text;
+            get => _Value != null ? _Value.Text : string.Empty;
             set
             {
-                if (NameTextBlock?.Text != null)
+                if (_Value != null)
                 {
                     if (!string.IsNullOrEmpty(value))
                     {
-                        NameTextBlock.Text = value;
+                        _Value.Text = value;
+                        return;
                     }
-                    else
-                    {
-                        NameTextBlock.Text = "--";
-                    }
+                }
+                _Value.Text = "--";
+            }
+        }
+        public string UnitOfMeasure
+        {
+            get => _UnitOfMeasure != null ? _UnitOfMeasure.Text : string.Empty;
+            set
+            {
+                if (_UnitOfMeasure != null)
+                {
+                    _UnitOfMeasure.Text = value;
                 }
             }
         }
 
-        public string valueDescription
+        public string Description
         {
-            get => ValueDescriptionTextBlock?.Text;
+            get => _Description != null ? _Description.Text : string.Empty;
             set
             {
-                if (ValueDescriptionTextBlock?.Text != null)
+                if (_Description != null)
                 {
-                    if (!string.IsNullOrEmpty(value))
-                    {
-                        ValueDescriptionTextBlock.Text = value;
-                    }
-                    else
-                    {
-                        ValueDescriptionTextBlock.Text = "--";
-                    }
-                }
-            }
-        }
-
-        public string description
-        {
-            get => DescriptionTextBlock?.Text;
-            set
-            {
-                if (DescriptionTextBlock?.Text != null)
-                {
-                    if (!string.IsNullOrEmpty(value))
-                    {
-                        DescriptionTextBlock.Text = value;
-                    }
-                    else
-                    {
-                        DescriptionTextBlock.Text = "--";
-                    }
+                    _Description.Text = value;
                 }
             }
         }
@@ -130,10 +107,7 @@ namespace OWLOSAirQuality.Huds
 
         public bool focused
         {
-            get
-            {
-                return _focused;
-            }
+            get => _focused;
 
             set
             {
@@ -150,9 +124,79 @@ namespace OWLOSAirQuality.Huds
             }
         }
 
+        protected float? originalValue = float.NaN;
+
         public ValueControl()
         {
             InitializeComponent();
+        }
+
+        protected void SetValue(float? _originalValue)
+        {
+            if ((_originalValue != null) && (!float.IsNaN((float)_originalValue)))
+            {
+                if (float.IsNaN((float)originalValue))
+                {
+                    Value = originalValue.ToString();
+                }
+                else
+                {
+                    //Animate color
+
+                    base.Dispatcher.Invoke(() =>
+                    {
+                        ColorAnimation animation;
+                        animation = new ColorAnimation
+                        {
+                            To = ((SolidColorBrush)App.Current.Resources["OWLOSLight"]).Color,
+                            Duration = new Duration(TimeSpan.FromSeconds(1)),
+                            AutoReverse = true
+                        };
+                        try
+                        {
+                            _Value.Foreground = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSWarning"]).Color);
+                            _Value.Foreground.BeginAnimation(SolidColorBrush.ColorProperty, animation);
+                        }
+                        catch { }
+                    });
+
+                    //Animate value
+                    float step = ((float)_originalValue - (float)originalValue) / 10.0f;
+                    Timer valueTimer = new Timer(100);
+                    valueTimer.Elapsed += new ElapsedEventHandler((object source, ElapsedEventArgs e) =>
+                    {
+                        originalValue += step;
+                        try
+                        {
+                            Dispatcher.Invoke(() =>
+                            {
+                                if (_originalValue >= originalValue)
+                                {
+                                    _Value.Text = ((int)_originalValue).ToString();
+                                    valueTimer.Stop();
+                                    return;
+                                }
+                                _Value.Text = ((int)_originalValue).ToString();
+                            });
+                        }
+                        catch { }
+                    });
+                    valueTimer.Start();
+                }
+                originalValue = _originalValue;
+            }
+            else
+            {
+                Value = "NaN";
+            }
+        }
+
+        public void OnValueChanged(object sender, ValueEventArgs e)
+        {
+            base.Dispatcher.Invoke(() =>
+            {
+                SetValue(e.value);
+            });
         }
 
         private void UserControl_GotFocus(object sender, System.Windows.RoutedEventArgs e)
@@ -193,6 +237,54 @@ namespace OWLOSAirQuality.Huds
             };
             BoxRectangle.Fill = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSSecondaryAlpha1"]).Color);
             BoxRectangle.Fill.BeginAnimation(SolidColorBrush.ColorProperty, animation);
+        }
+
+        private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            try //XAML editor value change can be randomness
+            {
+                Canvas.SetLeft(BoxRectangle, 6.0f);
+                Canvas.SetTop(BoxRectangle, 6.0f);
+                BoxRectangle.Width = e.NewSize.Width - 6 * 2;
+                BoxRectangle.Height = e.NewSize.Height - 6 * 2;
+
+                SmallBoxRectangle.Width = e.NewSize.Width;
+                SmallBoxRectangle.Height = e.NewSize.Height;
+
+                SelSQ3.X1 = e.NewSize.Width + 1;
+                SelSQ3.X2 = e.NewSize.Width - 10;
+
+                SelSQ4.X1 = e.NewSize.Width;
+                SelSQ4.X2 = e.NewSize.Width;
+
+                SelSQ5.Y1 = e.NewSize.Height;
+                SelSQ5.Y2 = e.NewSize.Height;
+
+                SelSQ6.Y1 = e.NewSize.Height;
+                SelSQ6.Y2 = e.NewSize.Height - 10;
+
+                SelSQ7.X1 = e.NewSize.Width + 1;
+                SelSQ7.X2 = e.NewSize.Width - 10;
+                SelSQ7.Y1 = e.NewSize.Height;
+                SelSQ7.Y2 = e.NewSize.Height;
+
+                SelSQ8.X1 = e.NewSize.Width;
+                SelSQ8.X2 = e.NewSize.Width;
+                SelSQ8.Y1 = e.NewSize.Height;
+                SelSQ8.Y2 = e.NewSize.Height - 10;
+
+                RSLine1.X1 = e.NewSize.Width - 8;
+                RSLine1.X2 = e.NewSize.Width - 8;
+                RSLine1.Y1 = e.NewSize.Height - 8;
+                RSLine1.Y2 = e.NewSize.Height - 20;
+
+                RSLine2.X1 = e.NewSize.Width - 6;
+                RSLine2.X2 = e.NewSize.Width - 20;
+                RSLine2.Y1 = e.NewSize.Height - 8;
+                RSLine2.Y2 = e.NewSize.Height - 8;
+
+            }
+            catch { }
         }
     }
 }

@@ -41,11 +41,11 @@ using System;
 namespace OWLOSEcosystemService.DTO.Things
 {
     public enum ThingAirQualityStatus { Online, Offline, OnlineWithError, Error, ServerNotConnected, ServerError }
-    public class ACValueEventArgs : EventArgs
+    public class ValueEventArgs : EventArgs
     {
         public float? value;
 
-        public ACValueEventArgs(float? value)
+        public ValueEventArgs(float? value)
         {
             this.value = value;
         }
@@ -105,13 +105,13 @@ namespace OWLOSEcosystemService.DTO.Things
             {
                 if (_DHT22temp != value)
                 {
-                    OnDHT22tempChanged?.Invoke(this, new ACValueEventArgs(value));
+                    OnDHT22tempChanged?.Invoke(this, new ValueEventArgs(value));
                 }
                 _DHT22temp = value;
             }
         }
 
-        public delegate void OnDHT22tempValueChangeEventHandler(object? sender, ACValueEventArgs e);
+        public delegate void OnDHT22tempValueChangeEventHandler(object? sender, ValueEventArgs e);
         public event OnDHT22tempValueChangeEventHandler OnDHT22tempChanged;
         //--- ENDOF DHT22 Temperature
 
@@ -126,13 +126,13 @@ namespace OWLOSEcosystemService.DTO.Things
             {
                 if (_DHT22hum != value)
                 {
-                    OnDHT22humChanged?.Invoke(this, new ACValueEventArgs(value));
+                    OnDHT22humChanged?.Invoke(this, new ValueEventArgs(value));
                 }
                 _DHT22hum = value;
             }
         }
 
-        public delegate void OnDHT22humValueChangeEventHandler(object? sender, ACValueEventArgs e);
+        public delegate void OnDHT22humValueChangeEventHandler(object? sender, ValueEventArgs e);
         public event OnDHT22humValueChangeEventHandler OnDHT22humChanged;
         //--- ENDOF DHT22 Humidity
 
@@ -147,13 +147,13 @@ namespace OWLOSEcosystemService.DTO.Things
             {
                 if (_DHT22heat != value)
                 {
-                    OnDHT22heatChanged?.Invoke(this, new ACValueEventArgs(value));
+                    OnDHT22heatChanged?.Invoke(this, new ValueEventArgs(value));
                 }
                 _DHT22heat = value;
             }
         }
 
-        public delegate void OnDHT22heatValueChangeEventHandler(object? sender, ACValueEventArgs e);
+        public delegate void OnDHT22heatValueChangeEventHandler(object? sender, ValueEventArgs e);
         public event OnDHT22heatValueChangeEventHandler OnDHT22heatChanged;
         //--- ENDOF DHT22 Heat Index
 
@@ -171,13 +171,13 @@ namespace OWLOSEcosystemService.DTO.Things
             {
                 if (_BMP280pressure != value)
                 {
-                    OnBMP280pressureChanged?.Invoke(this, new ACValueEventArgs(value));
+                    OnBMP280pressureChanged?.Invoke(this, new ValueEventArgs(value));
                 }
                 _BMP280pressure = value;
             }
         }
 
-        public delegate void OnBMP280pressureValueChangeEventHandler(object? sender, ACValueEventArgs e);
+        public delegate void OnBMP280pressureValueChangeEventHandler(object? sender, ValueEventArgs e);
         public event OnBMP280pressureValueChangeEventHandler OnBMP280pressureChanged;
         //--- ENDOF BMP280 pressure
 
@@ -192,13 +192,13 @@ namespace OWLOSEcosystemService.DTO.Things
             {
                 if (_BMP280altitude != value)
                 {
-                    OnBMP280altitudeChanged?.Invoke(this, new ACValueEventArgs(value));
+                    OnBMP280altitudeChanged?.Invoke(this, new ValueEventArgs(value));
                 }
                 _BMP280altitude = value;
             }
         }
 
-        public delegate void OnBMP280altitudeValueChangeEventHandler(object? sender, ACValueEventArgs e);
+        public delegate void OnBMP280altitudeValueChangeEventHandler(object? sender, ValueEventArgs e);
         public event OnBMP280altitudeValueChangeEventHandler OnBMP280altitudeChanged;
         //--- ENDOF BMP280 altitude
 
@@ -213,13 +213,13 @@ namespace OWLOSEcosystemService.DTO.Things
             {
                 if (_BMP280temperature != value)
                 {
-                    OnBMP280temperatureChanged?.Invoke(this, new ACValueEventArgs(value));
+                    OnBMP280temperatureChanged?.Invoke(this, new ValueEventArgs(value));
                 }
                 _BMP280temperature = value;
             }
         }
 
-        public delegate void OnBMP280temperatureValueChangeEventHandler(object? sender, ACValueEventArgs e);
+        public delegate void OnBMP280temperatureValueChangeEventHandler(object? sender, ValueEventArgs e);
         public event OnBMP280temperatureValueChangeEventHandler OnBMP280temperatureChanged;
         //--- ENDOF BMP280 temperature
 
@@ -236,13 +236,13 @@ namespace OWLOSEcosystemService.DTO.Things
             {
                 if (_ADS1X15MQ135 != value)
                 {
-                    OnADS1X15MQ135Changed?.Invoke(this, new ACValueEventArgs(value));
+                    OnADS1X15MQ135Changed?.Invoke(this, new ValueEventArgs(value));
                 }
                 _ADS1X15MQ135 = value;
             }
         }
 
-        public delegate void OnADS1X15MQ135ValueChangeEventHandler(object? sender, ACValueEventArgs e);
+        public delegate void OnADS1X15MQ135ValueChangeEventHandler(object? sender, ValueEventArgs e);
         public event OnADS1X15MQ135ValueChangeEventHandler OnADS1X15MQ135Changed;
         //--- ENDOF ADS1X15 MQ135 (A2)
 
@@ -257,13 +257,13 @@ namespace OWLOSEcosystemService.DTO.Things
             {
                 if (_ADS1X15MQ7 != value)
                 {
-                    OnADS1X15MQ7Changed?.Invoke(this, new ACValueEventArgs(value));
+                    OnADS1X15MQ7Changed?.Invoke(this, new ValueEventArgs(value));
                 }
                 _ADS1X15MQ7 = value;
             }
         }
 
-        public delegate void OnADS1X15MQ7ValueChangeEventHandler(object? sender, ACValueEventArgs e);
+        public delegate void OnADS1X15MQ7ValueChangeEventHandler(object? sender, ValueEventArgs e);
         public event OnADS1X15MQ7ValueChangeEventHandler OnADS1X15MQ7Changed;
         //--- ENDOF ADS1X15 MQ7 (A1)
 
@@ -278,13 +278,13 @@ namespace OWLOSEcosystemService.DTO.Things
             {
                 if (_ADS1X15Light != value)
                 {
-                    OnADS1X15LightChanged?.Invoke(this, new ACValueEventArgs(value));
+                    OnADS1X15LightChanged?.Invoke(this, new ValueEventArgs(value));
                 }
                 _ADS1X15Light = value;
             }
         }
 
-        public delegate void OnADS1X15LightValueChangeEventHandler(object? sender, ACValueEventArgs e);
+        public delegate void OnADS1X15LightValueChangeEventHandler(object? sender, ValueEventArgs e);
         public event OnADS1X15LightValueChangeEventHandler OnADS1X15LightChanged;
         //--- ENDOF ADS1X15 Light (A0)
 
@@ -301,13 +301,13 @@ namespace OWLOSEcosystemService.DTO.Things
             {
                 if (_CCS811CO2 != value)
                 {
-                    OnCCS811CO2Changed?.Invoke(this, new ACValueEventArgs(value));
+                    OnCCS811CO2Changed?.Invoke(this, new ValueEventArgs(value));
                 }
                 _CCS811CO2 = value;
             }
         }
 
-        public delegate void OnCCS811CO2ValueChangeEventHandler(object? sender, ACValueEventArgs e);
+        public delegate void OnCCS811CO2ValueChangeEventHandler(object? sender, ValueEventArgs e);
         public event OnCCS811CO2ValueChangeEventHandler OnCCS811CO2Changed;
         //--- ENDOF CCS811 CO2
 
@@ -322,13 +322,13 @@ namespace OWLOSEcosystemService.DTO.Things
             {
                 if (_CCS811TVOC != value)
                 {
-                    OnCCS811TVOCChanged?.Invoke(this, new ACValueEventArgs(value));
+                    OnCCS811TVOCChanged?.Invoke(this, new ValueEventArgs(value));
                 }
                 _CCS811TVOC = value;
             }
         }
 
-        public delegate void OnCCS811TVOCValueChangeEventHandler(object? sender, ACValueEventArgs e);
+        public delegate void OnCCS811TVOCValueChangeEventHandler(object? sender, ValueEventArgs e);
         public event OnCCS811TVOCValueChangeEventHandler OnCCS811TVOCChanged;
         //--- ENDOF CCS811 TVOC (Volatile Organic Compounds)
 
@@ -343,13 +343,13 @@ namespace OWLOSEcosystemService.DTO.Things
             {
                 if (_CCS811resistence != value)
                 {
-                    OnCCS811resistenceChanged?.Invoke(this, new ACValueEventArgs(value));
+                    OnCCS811resistenceChanged?.Invoke(this, new ValueEventArgs(value));
                 }
                 _CCS811resistence = value;
             }
         }
 
-        public delegate void OnCCS811resistenceValueChangeEventHandler(object? sender, ACValueEventArgs e);
+        public delegate void OnCCS811resistenceValueChangeEventHandler(object? sender, ValueEventArgs e);
         public event OnCCS811resistenceValueChangeEventHandler OnCCS811resistenceChanged;
         //--- ENDOF CCS811 TVOC (Volatile Organic Compounds)
 
@@ -364,13 +364,13 @@ namespace OWLOSEcosystemService.DTO.Things
             {
                 if (_CCS811temp != value)
                 {
-                    OnCCS811tempChanged?.Invoke(this, new ACValueEventArgs(value));
+                    OnCCS811tempChanged?.Invoke(this, new ValueEventArgs(value));
                 }
                 _CCS811temp = value;
             }
         }
 
-        public delegate void OnCCS811tempValueChangeEventHandler(object? sender, ACValueEventArgs e);
+        public delegate void OnCCS811tempValueChangeEventHandler(object? sender, ValueEventArgs e);
         public event OnCCS811tempValueChangeEventHandler OnCCS811tempChanged;
         //--- ENDOF CCS811 Temperature
 

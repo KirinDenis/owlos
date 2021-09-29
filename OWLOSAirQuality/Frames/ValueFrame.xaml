@@ -3,13 +3,70 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:OWLOSAirQuality.Frames" xmlns:huds="clr-namespace:OWLOSAirQuality.Huds"
+        xmlns:local="clr-namespace:OWLOSAirQuality.Frames" 
+        xmlns:huds="clr-namespace:OWLOSAirQuality.Huds"
         mc:Ignorable="d"
-        Title="Value Frame" Width="1920" Height="1080">
+        Title="Value Frame" Width="1920" Height="1080" Background="black">
     <Grid x:Name="MainGrid" Width="1920" Height="1080">
         <Grid x:Name="ValueHolderGrid" Grid.Column="2" Grid.Row="0">
-            <huds:FrameBackgroundControl TitleFrame="VALUE" DescriptionFrame="Air Quality" QueryInterval="x10 sec"/>
-            <WrapPanel x:Name="ValuesGrid" Margin="158,119" Width="1832" Height="998"></WrapPanel>
+            <huds:FrameBackgroundControl TitleFrame="SENSORS VALUES" DescriptionFrame="Air Quality" QueryInterval="x10 sec"/>
+            <Grid x:Name="ValuesGrid" Margin="60,121,60,146">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="33*"/>
+                    <ColumnDefinition Width="33*"/>
+                    <ColumnDefinition Width="33*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="33*"/>
+                    <RowDefinition Height="56*"/>
+                    <RowDefinition Height="10*"/>
+                </Grid.RowDefinitions>
+
+
+                <Grid x:Name="DHT22Grid">
+                    <Border BorderBrush="{DynamicResource OWLOSSecondaryAlpha1}" BorderThickness="0,0,1,2" />
+                    <TextBlock Text="DHT22 Sensor" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" FontSize="25" Foreground="{DynamicResource OWLOSPrimary}" Grid.ColumnSpan="2"/>
+                    <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <huds:ValueControl x:Name="DHT22tempValueControl" Width="172" Height="172" Caption="DHT22" UnitOfMeasure="Celsius" Description="Temperature" />
+                        <huds:ValueControl x:Name="DHT22humValueControl" Width="172" Height="172" Caption="DHT22" UnitOfMeasure="%" Description="Humidity" />
+                        <huds:ValueControl x:Name="DHT22heatValueControl" Width="172" Height="172" Caption="DHT22" UnitOfMeasure="" Description="Heat Index" />
+                    </WrapPanel>
+                </Grid>
+
+                <Grid x:Name="BMP280Grid" Grid.Column="1" Grid.Row="0">
+                    <Border BorderBrush="{DynamicResource OWLOSSecondaryAlpha1}" BorderThickness="0,0,1,2" />
+                    <TextBlock Text="BMP280 Sensor" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" FontSize="25" Foreground="{DynamicResource OWLOSPrimary}" Grid.ColumnSpan="2"/>
+                    <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <huds:ValueControl x:Name="BMP280pressureValueControl" Width="172" Height="172" Caption="BMP280" UnitOfMeasure="kPa" Description="Pressure" />
+                        <huds:ValueControl x:Name="BMP280altitudeValueControl" Width="172" Height="172" Caption="BMP280" UnitOfMeasure="Meters" Description="Altitude" />
+                        <huds:ValueControl x:Name="BMP280temperatureValueControl" Width="172" Height="172" Caption="BMP280" UnitOfMeasure="Celsius" Description="Temperature" />
+                    </WrapPanel>
+                </Grid>
+
+                <Grid x:Name="ADS1X15Grid" Grid.Column="2" Grid.Row="0">
+                    <Border BorderBrush="{DynamicResource OWLOSSecondaryAlpha1}" BorderThickness="0,0,0,2" />
+                    
+                    
+
+                        <TextBlock Text="ADS1X15 Sensor" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" FontSize="25" Foreground="{DynamicResource OWLOSPrimary}" Grid.ColumnSpan="2"/>
+                    <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+
+                        <huds:ValueControl x:Name="ADS1X15MQ135ValueControl" Width="172" Height="172" Caption="ADS1X15" UnitOfMeasure="CO2|CO|Alcohol|Smoke|Dust" Description="MQ135" />
+                        <huds:ValueControl x:Name="ADS1X15MQ7ValueControl" Width="172" Height="172" Caption="ADS1X15" UnitOfMeasure="CO" Description="MQ7" />
+                        <huds:ValueControl x:Name="ADS1X15LightValueControl" Width="172" Height="172" Caption="ADS1X15" UnitOfMeasure="level" Description="Light" />
+                    </WrapPanel>
+                </Grid>
+
+                <WrapPanel Grid.Row="1">
+                    <huds:ValueControl x:Name="CCS811CO2ValueControl" Width="172" Height="172" Caption="CCS811" UnitOfMeasure="PPM" Description="CO2" />
+                    <huds:ValueControl x:Name="CCS811TVOCValueControl" Width="172" Height="172" Caption="CCS811" UnitOfMeasure="PPM" Description="TVOC" />
+                    <huds:ValueControl x:Name="CCS811resistenceValueControl" Width="172" Height="172" Caption="CCS811" UnitOfMeasure="" Description="Resistance" />
+                    <huds:ValueControl x:Name="CCS811tempValueControl" Width="172" Height="172" Caption="CCS811" UnitOfMeasure="Fahrenheit" Description="Temperature" />
+                </WrapPanel>
+
+                <huds:CrossControl HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="-7" Grid.Column="0" Grid.Row="0"></huds:CrossControl>
+                <huds:CrossControl HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="-7" Grid.Column="1" Grid.Row="0"></huds:CrossControl>
+            </Grid>
         </Grid>
     </Grid>
 </Window>
