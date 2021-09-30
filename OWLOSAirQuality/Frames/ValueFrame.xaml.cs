@@ -59,32 +59,34 @@ namespace OWLOSAirQuality.Frames
         }
 
         private void Ecosystem_OnACDataReady(object sender, EventArgs e)
-        {                       
-                if (!SensorsJoined)
+        {
+            if (!SensorsJoined)
+            {
+                try
                 {
-                    try
+                    ThingAirQuality acData = ecosystem.dailyAirQulity[OWLOSEcosystem.dailyAirQulitySize - 1];
+                    if (acData != null)
                     {
-                        ThingAirQuality acData = ecosystem.dailyAirQulity[OWLOSEcosystem.dailyAirQulitySize - 1];
-                        if (acData != null)
-                        {                          
-                            acData.OnDHT22tempChanged += DHT22tempValueControl.OnValueChanged;                                                   
-                            acData.OnDHT22humChanged += DHT22humValueControl.OnValueChanged;                                                   
-                            acData.OnDHT22heatChanged += DHT22heatValueControl.OnValueChanged;                          
-                            acData.OnBMP280pressureChanged += BMP280pressureValueControl.OnValueChanged;
-                            acData.OnBMP280altitudeChanged += BMP280altitudeValueControl.OnValueChanged;
-                            acData.OnBMP280temperatureChanged += BMP280temperatureValueControl.OnValueChanged;
-                            acData.OnADS1X15MQ135Changed += ADS1X15MQ135ValueControl.OnValueChanged;
-                            acData.OnADS1X15MQ7Changed += ADS1X15MQ7ValueControl.OnValueChanged;
-                            acData.OnADS1X15LightChanged += ADS1X15LightValueControl.OnValueChanged;
-                            acData.OnCCS811CO2Changed += CCS811CO2ValueControl.OnValueChanged;
-                            acData.OnCCS811TVOCChanged += CCS811TVOCValueControl.OnValueChanged;
-                            acData.OnCCS811resistenceChanged += CCS811resistenceValueControl.OnValueChanged;
-                            acData.OnCCS811tempChanged += CCS811tempValueControl.OnValueChanged;
+                        acData.OnDHT22tempChanged += DHT22tempValueControl.OnValueChanged;
+                        acData.OnDHT22humChanged += DHT22humValueControl.OnValueChanged;
+                        acData.OnDHT22heatChanged += DHT22heatValueControl.OnValueChanged;
+                        acData.OnBMP280pressureChanged += BMP280pressureValueControl.OnValueChanged;
+
+                        acData.OnBMP280altitudeChanged += BMP280altitudeValueControl.OnValueChanged;
+                        acData.OnBMP280temperatureChanged += BMP280temperatureValueControl.OnValueChanged;
+
+                        acData.OnADS1X15MQ135Changed += ADS1X15MQ135ValueControl.OnValueChanged;
+                        acData.OnADS1X15MQ7Changed += ADS1X15MQ7ValueControl.OnValueChanged;
+                        acData.OnADS1X15LightChanged += ADS1X15LightValueControl.OnValueChanged;
+                        acData.OnCCS811CO2Changed += CCS811CO2ValueControl.OnValueChanged;
+                        acData.OnCCS811TVOCChanged += CCS811TVOCValueControl.OnValueChanged;
+                        acData.OnCCS811resistenceChanged += CCS811resistenceValueControl.OnValueChanged;
+                        acData.OnCCS811tempChanged += CCS811tempValueControl.OnValueChanged;
                         SensorsJoined = true;
-                        }
                     }
-                    catch { }
-                }            
+                }
+                catch { }
+            }
         }
     }
 }

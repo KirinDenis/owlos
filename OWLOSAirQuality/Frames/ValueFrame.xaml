@@ -45,24 +45,25 @@
 
                 <Grid x:Name="ADS1X15Grid" Grid.Column="2" Grid.Row="0">
                     <Border BorderBrush="{DynamicResource OWLOSSecondaryAlpha1}" BorderThickness="0,0,0,2" />
-                    
-                    
-
                         <TextBlock Text="ADS1X15 Sensor" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" FontSize="25" Foreground="{DynamicResource OWLOSPrimary}" Grid.ColumnSpan="2"/>
                     <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-
-                        <huds:ValueControl x:Name="ADS1X15MQ135ValueControl" Width="172" Height="172" Caption="ADS1X15" UnitOfMeasure="CO2|CO|Alcohol|Smoke|Dust" Description="MQ135" />
-                        <huds:ValueControl x:Name="ADS1X15MQ7ValueControl" Width="172" Height="172" Caption="ADS1X15" UnitOfMeasure="CO" Description="MQ7" />
-                        <huds:ValueControl x:Name="ADS1X15LightValueControl" Width="172" Height="172" Caption="ADS1X15" UnitOfMeasure="level" Description="Light" />
+                        <huds:ValueControl x:Name="ADS1X15MQ135ValueControl" Width="172" Height="172" Caption="ADS1X15" UnitOfMeasure="CO2|CO|Alcohol|Smoke|Dust" Description="MQ135" HighWarningTrap="6000" HighDangerTrap="11000" />
+                        <huds:ValueControl x:Name="ADS1X15MQ7ValueControl" Width="172" Height="172" Caption="ADS1X15" UnitOfMeasure="CO" Description="MQ7"  HighWarningTrap="6000" HighDangerTrap="11000"/>
+                        <huds:ValueControl x:Name="ADS1X15LightValueControl" Width="172" Height="172" Caption="ADS1X15" UnitOfMeasure="level" Description="Light" HighWarningTrap="6000" HighDangerTrap="11000"/>
                     </WrapPanel>
                 </Grid>
 
-                <WrapPanel Grid.Row="1">
-                    <huds:ValueControl x:Name="CCS811CO2ValueControl" Width="172" Height="172" Caption="CCS811" UnitOfMeasure="PPM" Description="CO2" />
-                    <huds:ValueControl x:Name="CCS811TVOCValueControl" Width="172" Height="172" Caption="CCS811" UnitOfMeasure="PPM" Description="TVOC" />
+                <Grid x:Name="CCS811Grid" Grid.Column="0" Grid.Row="1">
+                    <Border BorderBrush="{DynamicResource OWLOSSecondaryAlpha1}" BorderThickness="0,0,2,2" />
+                    <TextBlock Text="CCS811 Sensor" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" FontSize="25" Foreground="{DynamicResource OWLOSPrimary}" Grid.ColumnSpan="2"/>
+
+                    <WrapPanel Width="365" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <huds:ValueControl x:Name="CCS811CO2ValueControl" Width="172" Height="172" Caption="CCS811" UnitOfMeasure="Parts Per Million (PPM)" Description="CO2" HighWarningTrap="1000" HighDangerTrap="2000"/>
+                        <huds:ValueControl x:Name="CCS811TVOCValueControl" Width="172" Height="172" Caption="CCS811" UnitOfMeasure="Parts Per Billion [PPB]" Description="TVOC" HighWarningTrap="250" HighDangerTrap="500"/>
                     <huds:ValueControl x:Name="CCS811resistenceValueControl" Width="172" Height="172" Caption="CCS811" UnitOfMeasure="" Description="Resistance" />
                     <huds:ValueControl x:Name="CCS811tempValueControl" Width="172" Height="172" Caption="CCS811" UnitOfMeasure="Fahrenheit" Description="Temperature" />
                 </WrapPanel>
+                </Grid>
 
                 <huds:CrossControl HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="-7" Grid.Column="0" Grid.Row="0"></huds:CrossControl>
                 <huds:CrossControl HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="-7" Grid.Column="1" Grid.Row="0"></huds:CrossControl>

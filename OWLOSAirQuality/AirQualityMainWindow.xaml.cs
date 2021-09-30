@@ -111,7 +111,7 @@ namespace OWLOSAirQuality
             InitializeComponent();
 
             
-            Timer lifeCycleTimer = new Timer(100)
+            Timer lifeCycleTimer = new Timer(60 * 1000)
             {
                 AutoReset = true
             };

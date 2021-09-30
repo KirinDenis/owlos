@@ -60,7 +60,7 @@ namespace OWLOSEcosystemService.DTO.Things
         public DateTime?[] ClientTime { get; set; }
         public long?[] TickCount { get; set; }
         public bool[] DHT22 { get; set; }
-        
+
         public float?[] DHT22temp { get; set; } = null;
 
         public float?[] DHT22hum { get; set; } = null;
@@ -95,6 +95,34 @@ namespace OWLOSEcosystemService.DTO.Things
 
         public bool hasHistory = false;
         public bool DHT22 { get; set; } = false;
+        //Service ---
+        protected bool _LockChangedEvent = true;
+
+        public bool LockChangedEvent
+        {
+            get => _LockChangedEvent;
+
+            set
+            {
+                _LockChangedEvent = value;
+                if (!_LockChangedEvent)
+                {
+                    OnDHT22tempChanged?.Invoke(this, new ValueEventArgs(DHT22temp));
+                    OnDHT22humChanged?.Invoke(this, new ValueEventArgs(DHT22hum));
+                    OnDHT22heatChanged?.Invoke(this, new ValueEventArgs(DHT22heat));
+                    OnBMP280pressureChanged?.Invoke(this, new ValueEventArgs(BMP280pressure));
+                    OnBMP280altitudeChanged?.Invoke(this, new ValueEventArgs(BMP280altitude));
+                    OnADS1X15MQ135Changed?.Invoke(this, new ValueEventArgs(ADS1X15MQ135));
+                    OnADS1X15MQ7Changed?.Invoke(this, new ValueEventArgs(ADS1X15MQ7));
+                    OnADS1X15LightChanged?.Invoke(this, new ValueEventArgs(ADS1X15Light));
+                    OnCCS811CO2Changed?.Invoke(this, new ValueEventArgs(CCS811CO2));
+                    OnCCS811TVOCChanged?.Invoke(this, new ValueEventArgs(CCS811TVOC));
+                    OnCCS811resistenceChanged?.Invoke(this, new ValueEventArgs(CCS811resistence));
+                }
+            }
+        }
+
+        //--- ENDOF Service
 
         //DHT22 Temperature ---
         private float? _DHT22temp { get; set; } = null;
@@ -103,7 +131,7 @@ namespace OWLOSEcosystemService.DTO.Things
             get => _DHT22temp;
             set
             {
-                if (_DHT22temp != value)
+                if ((_DHT22temp != value) && (!LockChangedEvent))
                 {
                     OnDHT22tempChanged?.Invoke(this, new ValueEventArgs(value));
                 }
@@ -124,7 +152,7 @@ namespace OWLOSEcosystemService.DTO.Things
             get => _DHT22hum;
             set
             {
-                if (_DHT22hum != value)
+                if ((_DHT22hum != value) && (!LockChangedEvent))
                 {
                     OnDHT22humChanged?.Invoke(this, new ValueEventArgs(value));
                 }
@@ -145,7 +173,7 @@ namespace OWLOSEcosystemService.DTO.Things
             get => _DHT22heat;
             set
             {
-                if (_DHT22heat != value)
+                if ((_DHT22heat != value) && (!LockChangedEvent))
                 {
                     OnDHT22heatChanged?.Invoke(this, new ValueEventArgs(value));
                 }
@@ -169,7 +197,7 @@ namespace OWLOSEcosystemService.DTO.Things
             get => _BMP280pressure;
             set
             {
-                if (_BMP280pressure != value)
+                if ((_BMP280pressure != value) && (!LockChangedEvent))
                 {
                     OnBMP280pressureChanged?.Invoke(this, new ValueEventArgs(value));
                 }
@@ -190,7 +218,7 @@ namespace OWLOSEcosystemService.DTO.Things
             get => _BMP280altitude;
             set
             {
-                if (_BMP280altitude != value)
+                if ((_BMP280altitude != value) && (!LockChangedEvent))
                 {
                     OnBMP280altitudeChanged?.Invoke(this, new ValueEventArgs(value));
                 }
@@ -211,7 +239,7 @@ namespace OWLOSEcosystemService.DTO.Things
             get => _BMP280temperature;
             set
             {
-                if (_BMP280temperature != value)
+                if ((_BMP280temperature != value) && (!LockChangedEvent))
                 {
                     OnBMP280temperatureChanged?.Invoke(this, new ValueEventArgs(value));
                 }
@@ -234,7 +262,7 @@ namespace OWLOSEcosystemService.DTO.Things
             get => _ADS1X15MQ135;
             set
             {
-                if (_ADS1X15MQ135 != value)
+                if ((_ADS1X15MQ135 != value) && (!LockChangedEvent))
                 {
                     OnADS1X15MQ135Changed?.Invoke(this, new ValueEventArgs(value));
                 }
@@ -255,7 +283,7 @@ namespace OWLOSEcosystemService.DTO.Things
             get => _ADS1X15MQ7;
             set
             {
-                if (_ADS1X15MQ7 != value)
+                if ((_ADS1X15MQ7 != value) && (!LockChangedEvent))
                 {
                     OnADS1X15MQ7Changed?.Invoke(this, new ValueEventArgs(value));
                 }
@@ -276,7 +304,7 @@ namespace OWLOSEcosystemService.DTO.Things
             get => _ADS1X15Light;
             set
             {
-                if (_ADS1X15Light != value)
+                if ((_ADS1X15Light != value) && (!LockChangedEvent))
                 {
                     OnADS1X15LightChanged?.Invoke(this, new ValueEventArgs(value));
                 }
@@ -299,7 +327,7 @@ namespace OWLOSEcosystemService.DTO.Things
             get => _CCS811CO2;
             set
             {
-                if (_CCS811CO2 != value)
+                if ((_CCS811CO2 != value) && (!LockChangedEvent))
                 {
                     OnCCS811CO2Changed?.Invoke(this, new ValueEventArgs(value));
                 }
@@ -320,7 +348,7 @@ namespace OWLOSEcosystemService.DTO.Things
             get => _CCS811TVOC;
             set
             {
-                if (_CCS811TVOC != value)
+                if ((_CCS811TVOC != value) && (!LockChangedEvent))
                 {
                     OnCCS811TVOCChanged?.Invoke(this, new ValueEventArgs(value));
                 }
@@ -341,7 +369,7 @@ namespace OWLOSEcosystemService.DTO.Things
             get => _CCS811resistence;
             set
             {
-                if (_CCS811resistence != value)
+                if ((_CCS811resistence != value) && (!LockChangedEvent))
                 {
                     OnCCS811resistenceChanged?.Invoke(this, new ValueEventArgs(value));
                 }
@@ -362,7 +390,7 @@ namespace OWLOSEcosystemService.DTO.Things
             get => _CCS811temp;
             set
             {
-                if (_CCS811temp != value)
+                if ((_CCS811temp != value) && (!LockChangedEvent))
                 {
                     OnCCS811tempChanged?.Invoke(this, new ValueEventArgs(value));
                 }

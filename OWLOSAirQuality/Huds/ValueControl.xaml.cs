@@ -37,6 +37,7 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 using OWLOSEcosystemService.DTO.Things;
+using OWLOSThingsManager.Ecosystem.OWLOS;
 using System;
 using System.Timers;
 using System.Windows;
@@ -70,13 +71,62 @@ namespace OWLOSAirQuality.Huds
             {
                 if (_Value != null)
                 {
+                    SolidColorBrush trapFill = null; 
+                    
+
                     if (!string.IsNullOrEmpty(value))
                     {
                         _Value.Text = value;
-                        return;
+                        if (_Value.Text.Length > 5)
+                        {
+                            _Value.FontSize = 32;
+                        }
+                        else
+                        {
+                            _Value.FontSize = 42;
+                        }
+
+                        if (!float.IsNaN((float)OriginalValue))
+                        {
+                            if (!float.IsNaN(LowWarningTrap))
+                            {
+                                if (OriginalValue <= LowWarningTrap)
+                                {
+                                    trapFill = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSWarningAlpha2"]).Color);
+                                }
+                            }
+
+                            if (!float.IsNaN(LowDangerTrap))
+                            {
+                                if (OriginalValue <= LowDangerTrap)
+                                {
+                                    trapFill = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSDangerAlpha2"]).Color);
+                                }
+                            }
+
+                            if (!float.IsNaN(HighWarningTrap))
+                            {
+                                if (OriginalValue >= HighWarningTrap)
+                                {
+                                    trapFill = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSWarningAlpha2"]).Color);
+                                }
+                            }
+
+                            if (!float.IsNaN(HighDangerTrap))
+                            {
+                                if (OriginalValue >= HighDangerTrap)
+                                {
+                                    trapFill = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSDangerAlpha2"]).Color);
+                                }
+                            }
+                        }
+                        BoxTrapRectangle.Fill = trapFill;
                     }
+                    return;                            
                 }
+                _Value.FontSize = 42;
                 _Value.Text = "--";
+                Status = NetworkStatus.Offline;
             }
         }
         public string UnitOfMeasure
@@ -103,16 +153,59 @@ namespace OWLOSAirQuality.Huds
             }
         }
 
-        protected bool _focused = false;
-
-        public bool focused
+        protected float _LowWarningTrap = float.NaN;
+        public float LowWarningTrap
         {
-            get => _focused;
+            get => _LowWarningTrap;
+            set
+            {
+                _LowWarningTrap = value;
+                Value = Value;
+            }
+        }
+
+        protected float _HighWarningTrap = float.NaN;
+        public float HighWarningTrap
+        {
+            get => _HighWarningTrap;
+            set
+            {
+                _HighWarningTrap = value;
+                Value = Value;
+            }
+        }
+
+        protected float _LowDangerTrap = float.NaN;
+        public float LowDangerTrap
+        {
+            get => _LowDangerTrap;
+            set
+            {
+                _LowDangerTrap = value;
+                Value = Value;
+            }
+        }
+
+        protected float _HighDangerTrap = float.NaN;
+        public float HighDangerTrap
+        {
+            get => _HighDangerTrap;
+            set
+            {
+                _HighDangerTrap = value;
+                Value = Value;
+            }
+        }
+
+        protected bool _Focused = false;
+        public bool Focused
+        {
+            get => _Focused;
 
             set
             {
-                _focused = value;
-                if (_focused)
+                _Focused = value;
+                if (_Focused)
                 {
                     SelSQ1.Visibility = SelSQ2.Visibility = SelSQ3.Visibility = SelSQ4.Visibility = SelSQ5.Visibility = SelSQ6.Visibility = SelSQ7.Visibility = SelSQ8.Visibility = System.Windows.Visibility.Visible;
                 }
@@ -124,20 +217,66 @@ namespace OWLOSAirQuality.Huds
             }
         }
 
-        protected float? originalValue = float.NaN;
+        protected NetworkStatus _Status = NetworkStatus.Offline;
+        public NetworkStatus Status
+        {
+            get => _Status;
+
+            set
+            {                                
+                _Status = value;
+
+                if (_Value != null)
+                {
+                    switch (_Status)
+                    {
+                        case NetworkStatus.Online:
+                            _Value.Foreground = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSLight"]).Color);
+                            _StatusText.Background = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSSuccessAlpha2"]).Color);
+                            _StatusText.Text = "ONLINE";
+                            BoxRectangle.Stroke = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSSecondary"]).Color);
+                            break;
+                        case NetworkStatus.Offline:
+                            _Value.Foreground = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSInfo"]).Color);
+                            _StatusText.Background = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSWarningAlpha2"]).Color);
+                            _StatusText.Text = "OFFLINE";
+                            BoxRectangle.Stroke= new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSSecondaryAlpha3"]).Color);                             
+                            break;
+                        case NetworkStatus.Reconnect:
+                            _Value.Foreground = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSPrimary"]).Color);
+                            _StatusText.Background = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSInfoAlpha2"]).Color);
+                            _StatusText.Text = "RECONNECT";
+                            BoxRectangle.Stroke = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSSecondary"]).Color);
+                            break;
+                        default:
+                            _Value.Foreground = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSDanger"]).Color);
+                            _StatusText.Background = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSDangerAlpha2"]).Color);
+                            _StatusText.Text = "ERROR";
+                            BoxRectangle.Stroke = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSDangerAlpha1"]).Color);
+                            break;
+                    }
+
+                }
+            }
+        }
+
+        protected float? OriginalValue = float.NaN;
 
         public ValueControl()
         {
             InitializeComponent();
+            Status = NetworkStatus.Offline;
         }
 
-        protected void SetValue(float? _originalValue)
+        protected void SetValue(float? _OriginalValue)
         {
-            if ((_originalValue != null) && (!float.IsNaN((float)_originalValue)))
+            if ((_OriginalValue != null) && (!float.IsNaN((float)_OriginalValue)))
             {
-                if (float.IsNaN((float)originalValue))
+
+                if ((OriginalValue == null) || (float.IsNaN((float)OriginalValue)))
                 {
-                    Value = originalValue.ToString();
+                    Value = (OriginalValue = _OriginalValue).ToString();
+                    Status = NetworkStatus.Online;
                 }
                 else
                 {
@@ -148,46 +287,47 @@ namespace OWLOSAirQuality.Huds
                         ColorAnimation animation;
                         animation = new ColorAnimation
                         {
-                            To = ((SolidColorBrush)App.Current.Resources["OWLOSLight"]).Color,
+                            To = ((SolidColorBrush)App.Current.Resources["OWLOSWarning"]).Color,
                             Duration = new Duration(TimeSpan.FromSeconds(1)),
                             AutoReverse = true
                         };
                         try
                         {
-                            _Value.Foreground = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSWarning"]).Color);
+                            _Value.Foreground = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSLight"]).Color);
                             _Value.Foreground.BeginAnimation(SolidColorBrush.ColorProperty, animation);
                         }
                         catch { }
                     });
 
                     //Animate value
-                    float step = ((float)_originalValue - (float)originalValue) / 10.0f;
+                    float step = ((float)_OriginalValue - (float)OriginalValue) / 10.0f;
                     Timer valueTimer = new Timer(100);
                     valueTimer.Elapsed += new ElapsedEventHandler((object source, ElapsedEventArgs e) =>
                     {
-                        originalValue += step;
+                        OriginalValue += step;
                         try
                         {
                             Dispatcher.Invoke(() =>
                             {
-                                if (_originalValue >= originalValue)
+                                if (_OriginalValue >= OriginalValue)
                                 {
-                                    _Value.Text = ((int)_originalValue).ToString();
+                                    Value = (OriginalValue = _OriginalValue).ToString();
+                                    Status = NetworkStatus.Online;
                                     valueTimer.Stop();
                                     return;
                                 }
-                                _Value.Text = ((int)_originalValue).ToString();
+                                _Value.Text = ((float)OriginalValue).ToString();
                             });
                         }
                         catch { }
                     });
                     valueTimer.Start();
-                }
-                originalValue = _originalValue;
+                }                                
             }
             else
             {
                 Value = "NaN";
+                Status = NetworkStatus.Erorr;
             }
         }
 
@@ -201,17 +341,17 @@ namespace OWLOSAirQuality.Huds
 
         private void UserControl_GotFocus(object sender, System.Windows.RoutedEventArgs e)
         {
-            focused = true;
+            Focused = true;
         }
 
         private void UserControl_LostFocus(object sender, System.Windows.RoutedEventArgs e)
         {
-            focused = false;
+            Focused = false;
         }
 
         private void UserControl_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            focused = Focus();
+            Focused = Focus();
         }
 
         private void UserControl_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
@@ -245,8 +385,11 @@ namespace OWLOSAirQuality.Huds
             {
                 Canvas.SetLeft(BoxRectangle, 6.0f);
                 Canvas.SetTop(BoxRectangle, 6.0f);
-                BoxRectangle.Width = e.NewSize.Width - 6 * 2;
-                BoxRectangle.Height = e.NewSize.Height - 6 * 2;
+                Canvas.SetLeft(BoxTrapRectangle, 6.0f);
+                Canvas.SetTop(BoxTrapRectangle, 6.0f);
+
+                BoxTrapRectangle.Width = BoxRectangle.Width = e.NewSize.Width - 6 * 2;
+                BoxTrapRectangle.Height = BoxRectangle.Height = e.NewSize.Height - 6 * 2;                
 
                 SmallBoxRectangle.Width = e.NewSize.Width;
                 SmallBoxRectangle.Height = e.NewSize.Height;

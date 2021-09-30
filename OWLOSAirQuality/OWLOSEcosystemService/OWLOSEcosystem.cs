@@ -68,7 +68,7 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
 
         public string thingToken = "M3ZDcS9NSiswMmxUWCs4Nmo1dUdUNEhlMEpETURjOUtpaXlIU3ZBb3k2RVFBQUFBc3hsREhxQVZiQkZqbGgyc2wrdlBWVXh2c0hYNitSTFRNS05jVWZLeEFraVNHSVZtaHdSWkk0UU8yYzhDalJJQ1daeEJsWnFGZElNaGJ6QUcrTXVjandjZThWZWxTMTFxcmNpaEc3QlhkRUxXYW13ZjhwWHY2THRxOHBkRVpBL1g2dHRkVFdyOXU1ZTZzVUt1RkU5SG9nPT0=";
 
-        public int quaryInterval = 1000;
+        public int quaryInterval = 10000;
 
         protected bool lifeCycleBlocked = false;
 
@@ -416,10 +416,10 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
 
                 //if (ACIndex == dailyAirQulitySize - 1)
                 //{
-                    //DEBUG
-                  //  JoinACData(ACIndex, currentAC);
+                //DEBUG
+                //  JoinACData(ACIndex, currentAC);
                 //}
-
+                dailyAirQulity[ACIndex].LockChangedEvent = true;
                 JoinACData(ACIndex, currentAC);
 
                 //JoinACData(ACIndex, currentAC);
@@ -432,6 +432,12 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
             }
 
             OnACDataReady?.Invoke(this, new EventArgs());
+
+            foreach(ThingAirQuality thingAirQuality in dailyAirQulity)
+            {
+                thingAirQuality.LockChangedEvent = false;
+            }
+
 
             /*
             int lastDayIndex = thingAirQuality.Count - 1;
