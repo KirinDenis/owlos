@@ -64,9 +64,14 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
     {
         private readonly OWLOSEcosystemClient ecosystemServiceClient;
 
-        public string thingHost = "https://192.168.1.100:5004/Things/";
+        //        public string thingHost = "https://192.168.1.100:5004/Things/";
 
-        public string thingToken = "M3ZDcS9NSiswMmxUWCs4Nmo1dUdUNEhlMEpETURjOUtpaXlIU3ZBb3k2RVFBQUFBc3hsREhxQVZiQkZqbGgyc2wrdlBWVXh2c0hYNitSTFRNS05jVWZLeEFraVNHSVZtaHdSWkk0UU8yYzhDalJJQ1daeEJsWnFGZElNaGJ6QUcrTXVjandjZThWZWxTMTFxcmNpaEc3QlhkRUxXYW13ZjhwWHY2THRxOHBkRVpBL1g2dHRkVFdyOXU1ZTZzVUt1RkU5SG9nPT0=";
+        //        public string thingToken = "M3ZDcS9NSiswMmxUWCs4Nmo1dUdUNEhlMEpETURjOUtpaXlIU3ZBb3k2RVFBQUFBc3hsREhxQVZiQkZqbGgyc2wrdlBWVXh2c0hYNitSTFRNS05jVWZLeEFraVNHSVZtaHdSWkk0UU8yYzhDalJJQ1daeEJsWnFGZElNaGJ6QUcrTXVjandjZThWZWxTMTFxcmNpaEc3QlhkRUxXYW13ZjhwWHY2THRxOHBkRVpBL1g2dHRkVFdyOXU1ZTZzVUt1RkU5SG9nPT0=";
+
+        public string thingHost = "http://airquality.owlos.org/Things/";
+
+        public string thingToken = "WG8xNTc1T29ONTFDbkdUd1NUOU1xVWRqVHhzbGIwOVJFN2xibU5RNnJpMFFBQUFBY3I4SERwTlVKWENsMjF4a1lWZG9OSlJBTDl0aDAwTWUzMk9ub2JYN2YvQUZmMWdESVZ1akE4c3NTUHcwbHkxWVc3bWd0N1JXcVVWTEZYQzRPajYwdTBIdFBVVHBFb0VjeXhyeGZCZWNDRVhmWWpzSTZDamxsdjAzR0dWY0JFL3dRSHZkL2llWE4wcmE4eFJsVFlFdmtRPT0%3D";
+
 
         public int quaryInterval = 10000;
 
