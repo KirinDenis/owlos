@@ -65,6 +65,8 @@
                 </WrapPanel>
                 </Grid>
 
+                <huds:GraphControl x:Name="ValueGraph" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1"/>
+
                 <huds:CrossControl HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="-7" Grid.Column="0" Grid.Row="0"></huds:CrossControl>
                 <huds:CrossControl HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="-7" Grid.Column="1" Grid.Row="0"></huds:CrossControl>
             </Grid>

@@ -4,9 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:OWLOSAirQuality.Huds"
-             mc:Ignorable="d" 
-             
-             Height="220" Width="300" Focusable="True" IsTabStop="True" Loaded="UserControl_Loaded">
+             mc:Ignorable="d"              
+             Focusable="True" IsTabStop="True" Loaded="UserControl_Loaded">
     <Grid x:Name="MainGrid">
 
 
@@ -32,8 +31,9 @@
         
             <Line Stroke="{DynamicResource OWLOSSecondary}" X1="298" Y1="142" X2="298" Y2="130" StrokeThickness="3" />
             <Line Stroke="{DynamicResource OWLOSSecondary}" X1="298" Y1="142" X2="285" Y2="142" StrokeThickness="3" />
-            -->
+            
             <Rectangle x:Name="BoxRectangle" Stroke="{DynamicResource OWLOSSecondary}" Canvas.Left="25" Canvas.Top="5" Width="280" Height="185" StrokeThickness="2"/>
+            -->
 
         </Canvas>
 
@@ -41,7 +41,8 @@
         <TextBlock x:Name="NameTextBlock" Text="Graph" HorizontalAlignment="Left" Margin="40,15" VerticalAlignment="Top" FontSize="16" Foreground="{DynamicResource OWLOSInfo}"/>
 
 
-        <Grid x:Name="GraphGrid" Margin="20,20">
+        <Grid x:Name="GraphGrid" Margin="20,20" >
+
             <Path x:Name="GraphPath" Margin="20,20" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Data="" Stroke="{DynamicResource OWLOSSecondary}" MouseMove="GraphPath_MouseMove">
                 <Path.Fill>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -50,6 +51,7 @@
                     </LinearGradientBrush>
                 </Path.Fill>
             </Path>
+            
 
             <Path x:Name="StatusGraphPath" Margin="20,20" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Data="" Stroke="{DynamicResource OWLOSWarning}">
                 <Path.Fill>

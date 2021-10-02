@@ -74,8 +74,8 @@ namespace OWLOSAirQuality.Huds
         private DateTime?[] queryTime;
         private ThingAirQualityStatus[] networkStatuses;
 
-        private readonly float graphPlotHight = 75;
-        private readonly float graphTopY = 75;
+        private float graphPlotHight = 75;
+        private float graphTopY = 75;
         private readonly float graphStartX = 0;
         private readonly int stepLocal = 0;
 
@@ -174,8 +174,10 @@ namespace OWLOSAirQuality.Huds
 
             graphDrawInfo.processedDataX = new float?[dataToDraw.Length];
             graphDrawInfo.processedDataToDraw = new float?[dataToDraw.Length];
-            dataToDraw.CopyTo(graphDrawInfo.processedDataToDraw, 0);            
+            dataToDraw.CopyTo(graphDrawInfo.processedDataToDraw, 0);
 
+            graphPlotHight = graphTopY = (int)(path.ActualHeight / 2.0f);
+            
             for (int mLocal = 0; mLocal < graphDrawInfo.processedDataToDraw.Length; mLocal++)
             {
                 if (graphDrawInfo.processedDataToDraw[mLocal] == null)
@@ -224,12 +226,12 @@ namespace OWLOSAirQuality.Huds
             }
 
             float normalizeY = graphDrawInfo.maxLocalValue - graphDrawInfo.minLocalValue;
-            float proportionLocal = graphPlotHight;
+            float proportionLocal = graphPlotHight * 1.5f;
             if (normalizeY != 0)
             {
                 proportionLocal = proportionLocal / normalizeY;
             }
-
+           
             for (int lLocal = 0; lLocal < graphDrawInfo.processedDataToDraw.Length; lLocal++)
             {
                 if (dataCorrection)
@@ -242,7 +244,8 @@ namespace OWLOSAirQuality.Huds
                 }
             }
 
-            float topOffsetLocal = graphPlotHight + graphTopY;
+            //  float topOffsetLocal = graphPlotHight + graphTopY;
+            float topOffsetLocal = (int)path.ActualHeight;
             string dLocal = "M " + graphStartX + ", " + topOffsetLocal;
 
             for (int nLocal = 0; nLocal < graphDrawInfo.processedDataToDraw.Length; nLocal++)

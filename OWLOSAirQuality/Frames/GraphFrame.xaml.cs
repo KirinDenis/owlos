@@ -186,6 +186,8 @@ namespace OWLOSAirQuality.Frames
 
             ThingAirQualityHistoryData thingAirQualities = ecosystem.GetOneHourData(0);
 
+            
+
             base.Dispatcher.Invoke(() =>
             {
 

@@ -208,6 +208,7 @@ namespace OWLOSAirQuality.Huds
                 if (_Focused)
                 {
                     SelSQ1.Visibility = SelSQ2.Visibility = SelSQ3.Visibility = SelSQ4.Visibility = SelSQ5.Visibility = SelSQ6.Visibility = SelSQ7.Visibility = SelSQ8.Visibility = System.Windows.Visibility.Visible;
+                    OnSelect?.Invoke(this, new EventArgs());
                 }
                 else
                 {
@@ -261,6 +262,9 @@ namespace OWLOSAirQuality.Huds
         }
 
         protected float? OriginalValue = float.NaN;
+
+        public delegate void OnSelectEventHandler(object? sender, EventArgs e);
+        public event OnSelectEventHandler OnSelect;
 
         public ValueControl()
         {

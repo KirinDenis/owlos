@@ -36,9 +36,11 @@ OWLOS распространяется в надежде, что она буде
 этой программой. Если это не так, см. <https://www.gnu.org/licenses/>.)
 --------------------------------------------------------------------------------------*/
 
+using OWLOSAirQuality.Huds;
 using OWLOSAirQuality.OWLOSEcosystemService;
 using OWLOSEcosystemService.DTO.Things;
 using System;
+using System.Timers;
 using System.Windows;
 
 namespace OWLOSAirQuality.Frames
@@ -51,11 +53,36 @@ namespace OWLOSAirQuality.Frames
         private readonly OWLOSEcosystem ecosystem;
 
         private bool SensorsJoined = false;
+
+        private bool timerBusy = false;
+
+        private ValueControl CurrentValueControl;
         public ValueFrame()
         {
             InitializeComponent();
             ecosystem = App.ecosystem;
             ecosystem.OnACDataReady += Ecosystem_OnACDataReady;
+
+            Timer lifeCycleTimer = new Timer(10000)
+            {
+                AutoReset = true
+            };
+            lifeCycleTimer.Elapsed += new ElapsedEventHandler(OnLifeCycleTimer);
+            lifeCycleTimer.Start();
+
+            CurrentValueControl = DHT22tempValueControl;
+
+            DHT22tempValueControl.OnSelect += ValueControl_OnSelect;
+            DHT22humValueControl.OnSelect += ValueControl_OnSelect;
+            DHT22heatValueControl.OnSelect += ValueControl_OnSelect;
+
+            OnLifeCycleTimer(null, null);
+        }
+
+        private void ValueControl_OnSelect(object sender, EventArgs e)
+        {
+            CurrentValueControl = (ValueControl)sender;
+            OnLifeCycleTimer(null, null);
         }
 
         private void Ecosystem_OnACDataReady(object sender, EventArgs e)
@@ -88,5 +115,44 @@ namespace OWLOSAirQuality.Frames
                 catch { }
             }
         }
-    }
+
+        private async void OnLifeCycleTimer(object source, ElapsedEventArgs e)
+        {
+            if (timerBusy)
+            {
+                return;
+            }
+            timerBusy = true;
+
+            if (ecosystem == null)
+            {
+                timerBusy = false;
+                return;
+            }
+
+            if (CurrentValueControl != null)
+            {
+                ThingAirQualityHistoryData thingAirQualities = ecosystem.GetOneHourData(0);
+                base.Dispatcher.Invoke(() =>
+                {
+                    if (CurrentValueControl == DHT22humValueControl)
+                    {
+                        ValueGraph.Update(thingAirQualities.DHT22hum, thingAirQualities.QueryTime, thingAirQualities.Statuses);
+                    }
+                    else
+                    if (CurrentValueControl == DHT22heatValueControl)
+                    {
+                        ValueGraph.Update(thingAirQualities.DHT22heat, thingAirQualities.QueryTime, thingAirQualities.Statuses);
+                    }
+                    else
+                    {
+                        ValueGraph.Update(thingAirQualities.DHT22temp, thingAirQualities.QueryTime, thingAirQualities.Statuses);
+                    }
+
+                });
+            }
+
+            timerBusy = false;
+         }
+     }
 }
