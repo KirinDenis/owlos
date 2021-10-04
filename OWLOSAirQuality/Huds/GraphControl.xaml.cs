@@ -343,6 +343,28 @@ namespace OWLOSAirQuality.Huds
             MinLine.Y1 = MinLine.Y2 = realMinInPixels;
             //--- ENDOF NAVIGATION LINES
 
+            //DATEAXESVALUES ---
+
+            DateTime dateTime = DateTime.Now.AddMinutes(-60);
+            int minutesStep = 5;
+            for (int i = 0; i < 60; i+= minutesStep)
+            {
+                TextBlock textBlock = new TextBlock();
+                textBlock.HorizontalAlignment = HorizontalAlignment.Left;
+                textBlock.VerticalAlignment = VerticalAlignment.Top;
+                textBlock.Margin = new Thickness(76 + i * stepLocal, realMinInPixels + 35, 0, 0);
+                textBlock.Foreground = App.Current.Resources["OWLOSSecondary"] as SolidColorBrush;
+                textBlock.RenderTransform = new RotateTransform(90.0f);
+                textBlock.Text = dateTime.ToString();
+                GraphGrid.Children.Add(textBlock);
+                ValuesTextBoxes.Add(textBlock);
+
+                dateTime = dateTime.AddMinutes(minutesStep);
+            }
+
+            //--- DATEAXESVALUES
+
+
             return graphDrawInfo;
         }
 

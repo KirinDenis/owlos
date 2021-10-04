@@ -90,39 +90,5 @@
         </Grid>
         <TextBlock x:Name="UnitOfMeasure" Text="Celsius" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="16,116,6,0" Foreground="{DynamicResource OWLOSInfo}"/>
 
-        <TextBlock Text="04.10.2021 14:16:03" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="110,400,0,0" Foreground="{DynamicResource OWLOSSecondary}" RenderTransformOrigin="0,0">
-            <TextBlock.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform/>
-                    <SkewTransform/>
-                    <RotateTransform Angle="90"/>
-                    <TranslateTransform/>
-                </TransformGroup>
-            </TextBlock.RenderTransform>
-        </TextBlock>
-
-        <TextBlock Text="04.10.2021 14:26:03" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="140,400,0,0" Foreground="{DynamicResource OWLOSSecondary}" RenderTransformOrigin="0,0">
-            <TextBlock.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform/>
-                    <SkewTransform/>
-                    <RotateTransform Angle="90"/>
-                    <TranslateTransform/>
-                </TransformGroup>
-            </TextBlock.RenderTransform>
-        </TextBlock>
-
-        <TextBlock Text="04.10.2021 14:36:03" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="170,400,0,0" Foreground="{DynamicResource OWLOSSecondary}" RenderTransformOrigin="0,0">
-            <TextBlock.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform/>
-                    <SkewTransform/>
-                    <RotateTransform Angle="90"/>
-                    <TranslateTransform/>
-                </TransformGroup>
-            </TextBlock.RenderTransform>
-        </TextBlock>
-
-
     </Grid>
 </UserControl>
