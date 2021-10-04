@@ -42,6 +42,7 @@ OWLOS распространяется в надежде, что она буде
 using OWLOSEcosystemService.DTO.Things;
 using OWLOSThingsManager.EcosystemExplorer;
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -69,6 +70,19 @@ namespace OWLOSAirQuality.Huds
     /// </summary>
     public partial class GraphControl : UserControl
     {
+
+        public string Caption
+        {
+            get => _Caption != null ? _Caption.Text : string.Empty;
+            set
+            {
+                if (_Caption != null)
+                {
+                    _Caption.Text = value;
+                }
+            }
+        }
+
         private float?[] data;
         private float?[] graphData;
         private DateTime?[] queryTime;
@@ -82,6 +96,8 @@ namespace OWLOSAirQuality.Huds
         private RelationLineControl selectLineControl;
         private RelationLineControl topLineControl;
         private RelationLineControl minLineControl;
+
+        private List<TextBlock> ValuesTextBoxes = new List<TextBlock>();
         public GraphControl()
         {
             InitializeComponent();
@@ -172,10 +188,17 @@ namespace OWLOSAirQuality.Huds
         {
             GraphDrawInfo graphDrawInfo = new GraphDrawInfo();
 
+            for(int i=0; i < ValuesTextBoxes.Count; i++)
+            {                
+                GraphGrid.Children.Remove(ValuesTextBoxes[i]);
+                ValuesTextBoxes[i] = null;
+            }
+
+            ValuesTextBoxes.Clear();
+
             graphDrawInfo.processedDataX = new float?[dataToDraw.Length];
             graphDrawInfo.processedDataToDraw = new float?[dataToDraw.Length];
             dataToDraw.CopyTo(graphDrawInfo.processedDataToDraw, 0);
-
             graphPlotHight = graphTopY = (int)(path.ActualHeight / 2.0f);
             
             for (int mLocal = 0; mLocal < graphDrawInfo.processedDataToDraw.Length; mLocal++)
@@ -208,6 +231,7 @@ namespace OWLOSAirQuality.Huds
                 graphDrawInfo.minLocalValue = 0.0f;
             }
 
+            
             int stepLocal = GraphPath.ActualWidth != 0? (int)GraphPath.ActualWidth / data.Length : (int)GraphPath.Width / data.Length;
 
             
@@ -226,12 +250,12 @@ namespace OWLOSAirQuality.Huds
             }
 
             float normalizeY = graphDrawInfo.maxLocalValue - graphDrawInfo.minLocalValue;
-            float proportionLocal = graphPlotHight * 1.5f;
+            float proportionLocal = graphPlotHight * 2.0f;
             if (normalizeY != 0)
             {
                 proportionLocal = proportionLocal / normalizeY;
             }
-           
+
             for (int lLocal = 0; lLocal < graphDrawInfo.processedDataToDraw.Length; lLocal++)
             {
                 if (dataCorrection)
@@ -245,7 +269,7 @@ namespace OWLOSAirQuality.Huds
             }
 
             //  float topOffsetLocal = graphPlotHight + graphTopY;
-            float topOffsetLocal = (int)path.ActualHeight;
+            float topOffsetLocal = (int)graphDrawInfo.processedDataToDraw[graphDrawInfo.minLocalValueIndex];// (int)path.ActualHeight;
             string dLocal = "M " + graphStartX + ", " + topOffsetLocal;
 
             for (int nLocal = 0; nLocal < graphDrawInfo.processedDataToDraw.Length; nLocal++)
@@ -286,10 +310,40 @@ namespace OWLOSAirQuality.Huds
             catch (Exception e)
             {
                 graphDrawInfo.result = e.Message;
+                return graphDrawInfo;
             }
 
-            return graphDrawInfo;
+            //LOCATETEXTBLOCKS When we know top and min values, we can locate values text blocks on left side of the graph ---
+            //ten text blocks
+            float realTopInPixels = (float)graphDrawInfo.processedDataToDraw[graphDrawInfo.maxLocalValueIndex]; //in pixels from top
+            float realMinInPixels = (float)graphDrawInfo.processedDataToDraw[graphDrawInfo.minLocalValueIndex]; //in pixels from top
+            float textBlockTopPosition = realTopInPixels;
+            float textBlockYStep = (realMinInPixels - realTopInPixels) / 10.0f; //pixels step
 
+            float topValue = (float)dataToDraw[graphDrawInfo.maxLocalValueIndex]; 
+            float minValue = (float)dataToDraw[graphDrawInfo.minLocalValueIndex]; 
+
+            float textBlockValueStepDown = (topValue - minValue) / 10.0f;
+
+            for (int i = 0; i < 11; i++)
+            {
+                TextBlock textBlock = new TextBlock();
+                textBlock.HorizontalAlignment = HorizontalAlignment.Left;
+                textBlock.VerticalAlignment = VerticalAlignment.Top;
+                textBlock.Margin = new Thickness(6, textBlockTopPosition + (textBlockYStep * i) + 12, 0, 0);
+                textBlock.Foreground = App.Current.Resources["OWLOSSecondary"] as SolidColorBrush;
+                textBlock.Text = (topValue - (textBlockValueStepDown * i)).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+                GraphGrid.Children.Add(textBlock);
+                ValuesTextBoxes.Add(textBlock);
+            }
+            //--- ENDOF LOCATETEXTBLOCKS
+
+            //NAVIGATION LINES ---
+            TopLine.Y1 = TopLine.Y2 = realTopInPixels;
+            MinLine.Y1 = MinLine.Y2 = realMinInPixels;
+            //--- ENDOF NAVIGATION LINES
+
+            return graphDrawInfo;
         }
 
         private void GraphPath_MouseMove(object sender, MouseEventArgs e)
@@ -297,7 +351,7 @@ namespace OWLOSAirQuality.Huds
             Point position = e.GetPosition(GraphPath);
             int index = (int)(position.X / (GraphPath.ActualWidth / data.Length));
             SelectedValueTextBlock.Text = "sel: " + data[index].ToString() + " " + DateTime.Now.AddMinutes(-(60-index)) + "   ";
-            ValuePointer.SetValue(Canvas.LeftProperty, position.X);
+            ValuePointer.SetValue(Canvas.LeftProperty, (double)(int)(position.X / 60 * 60));
             ValuePointer.SetValue(Canvas.TopProperty, (double)graphData[index]);
             CenterValuePointer.SetValue(Canvas.LeftProperty, position.X);
             CenterValuePointer.SetValue(Canvas.TopProperty, (double)graphData[index]);

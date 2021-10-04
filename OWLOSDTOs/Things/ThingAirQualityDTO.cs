@@ -69,7 +69,9 @@ namespace OWLOSEcosystemService.DTO.Things
 
         public float?[] BMP280pressure { get; set; } = null;
 
-        public float?[] BMP280altitude { get; set; } = null;
+        public float?[] BMP280altitude{ get; set; } = null;
+
+        public float?[] BMP280temperature { get; set; } = null;
 
         public float?[] ADS1X15MQ135 { get; set; } = null;
 
@@ -82,6 +84,8 @@ namespace OWLOSEcosystemService.DTO.Things
         public float?[] CCS811TVOC { get; set; } = null;
 
         public float?[] CCS811resistence { get; set; } = null;
+
+        public float?[] CCS811temperature { get; set; } = null;
     }
 
     public class ThingAirQuality

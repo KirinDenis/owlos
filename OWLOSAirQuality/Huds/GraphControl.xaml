@@ -38,25 +38,25 @@
         </Canvas>
 
 
-        <TextBlock x:Name="NameTextBlock" Text="Graph" HorizontalAlignment="Left" Margin="40,15" VerticalAlignment="Top" FontSize="16" Foreground="{DynamicResource OWLOSInfo}"/>
+        <TextBlock x:Name="_Caption" Text="" HorizontalAlignment="Left" Margin="40,15" VerticalAlignment="Top" FontSize="16" Foreground="{DynamicResource OWLOSInfo}"/>
 
 
         <Grid x:Name="GraphGrid" Margin="20,20" >
 
-            <Path x:Name="GraphPath" Margin="20,20" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Data="" Stroke="{DynamicResource OWLOSSecondary}" MouseMove="GraphPath_MouseMove">
+            <Path x:Name="GraphPath" Margin="66,20" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Data="" Stroke="{DynamicResource OWLOSInfo}" MouseMove="GraphPath_MouseMove">
                 <Path.Fill>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                         <GradientStop Color="{DynamicResource OWLOSInfoColorAlpha2}" Offset="0"/>
-                        <GradientStop Color="{DynamicResource OWLOSInfoColorAlpha1}" Offset="1"/>
+                        <GradientStop  Offset="0.78"/>
                     </LinearGradientBrush>
                 </Path.Fill>
             </Path>
-            
 
-            <Path x:Name="StatusGraphPath" Margin="20,20" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Data="" Stroke="{DynamicResource OWLOSWarning}">
+
+            <Path x:Name="StatusGraphPath" Margin="66,20" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Data="" Stroke="{DynamicResource OWLOSWarning}">
                 <Path.Fill>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                        <GradientStop Color="{DynamicResource OWLOSWarningColorAlpha1}" Offset="0"/>
+                        <GradientStop Color="{DynamicResource OWLOSWarningColorAlpha4}" Offset="0"/>
                         <GradientStop Color="{DynamicResource OWLOSWarningColorAlpha2}" Offset="1"/>
                     </LinearGradientBrush>
                 </Path.Fill>
@@ -64,21 +64,64 @@
 
             <Canvas VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
 
-                <Ellipse x:Name="ValuePointer" VerticalAlignment="Center" HorizontalAlignment="Center" Stroke="{DynamicResource OWLOSSuccess}" Margin="5,12" Width="20" Height="20" Canvas.Left="10" Canvas.Top="10" StrokeThickness="1" />
-                <Ellipse x:Name="CenterValuePointer" VerticalAlignment="Center" HorizontalAlignment="Center" Stroke="{DynamicResource OWLOSSuccessAlpha3}" Margin="14,20" Width="3" Height="3" Canvas.Left="10" Canvas.Top="10" StrokeThickness="2" />
+                <Ellipse x:Name="ValuePointer" VerticalAlignment="Center" HorizontalAlignment="Center" Stroke="{DynamicResource OWLOSSuccess}" Margin="55,12" Width="20" Height="20" Canvas.Left="10" Canvas.Top="10" StrokeThickness="1" />
+                <Ellipse x:Name="CenterValuePointer" VerticalAlignment="Center" HorizontalAlignment="Center" Stroke="{DynamicResource OWLOSSuccessAlpha3}" Margin="64,20" Width="3" Height="3" Canvas.Left="10" Canvas.Top="10" StrokeThickness="2" />
 
-                <Ellipse x:Name="TopValuePointer" VerticalAlignment="Center" HorizontalAlignment="Center" Stroke="{DynamicResource OWLOSWarning}" Margin="5,12" Width="20" Height="20" Canvas.Left="10" Canvas.Top="10" StrokeThickness="1" />
-                <Ellipse x:Name="TopCenterValuePointer" VerticalAlignment="Center" HorizontalAlignment="Center" Stroke="{DynamicResource OWLOSWarningAlpha3}" Margin="14,20" Width="3" Height="3" Canvas.Left="10" Canvas.Top="10" StrokeThickness="2" />
+                <Ellipse x:Name="TopValuePointer" VerticalAlignment="Center" HorizontalAlignment="Center" Stroke="{DynamicResource OWLOSWarning}" Margin="55,12" Width="20" Height="20" Canvas.Left="10" Canvas.Top="10" StrokeThickness="1" />
+                <Ellipse x:Name="TopCenterValuePointer" VerticalAlignment="Center" HorizontalAlignment="Center" Stroke="{DynamicResource OWLOSWarningAlpha3}" Margin="64,20" Width="3" Height="3" Canvas.Left="10" Canvas.Top="10" StrokeThickness="2" />
 
-                <Ellipse x:Name="MinValuePointer" VerticalAlignment="Center" HorizontalAlignment="Center" Stroke="{DynamicResource OWLOSInfo}" Margin="5,12" Width="20" Height="20" Canvas.Left="10" Canvas.Top="10" StrokeThickness="1" />
-                <Ellipse x:Name="MinCenterValuePointer" VerticalAlignment="Center" HorizontalAlignment="Center" Stroke="{DynamicResource OWLOSInfoAlpha3}" Margin="14,20" Width="3" Height="3" Canvas.Left="10" Canvas.Top="10" StrokeThickness="2" />
+                <Ellipse x:Name="MinValuePointer" VerticalAlignment="Center" HorizontalAlignment="Center" Stroke="{DynamicResource OWLOSInfo}" Margin="55,12" Width="20" Height="20" Canvas.Left="10" Canvas.Top="10" StrokeThickness="1" />
+                <Ellipse x:Name="MinCenterValuePointer" VerticalAlignment="Center" HorizontalAlignment="Center" Stroke="{DynamicResource OWLOSInfoAlpha3}" Margin="64,20" Width="3" Height="3" Canvas.Left="10" Canvas.Top="10" StrokeThickness="2" />
 
+                <Line x:Name="LeftXCoordLine" X1="66" Y1="130" X2="66" Y2="367" Stroke="{DynamicResource OWLOSSecondary}" StrokeThickness="1"></Line>
+                
+                
+
+                <Line x:Name="TopLine" X1="66" Y1="290" X2="1070" Y2="290" Stroke="{DynamicResource OWLOSWarningAlpha2}" Margin="0,20"></Line>
+                <Line x:Name="MinLine" X1="66" Y1="350" X2="1070" Y2="350" Stroke="{DynamicResource OWLOSSecondary}" Margin="0,20"></Line>
 
             </Canvas>
-            <TextBlock x:Name="SelectedValueTextBlock" Text="DHT22 Temperature" HorizontalAlignment="Right" VerticalAlignment="Top" TextAlignment="Left" Margin="25,0" Foreground="{DynamicResource OWLOSSuccess}"/>
+
+            <TextBlock x:Name="SelectedValueTextBlock" Text="select:" HorizontalAlignment="Right" VerticalAlignment="Top" TextAlignment="Left" Margin="25,0" Foreground="{DynamicResource OWLOSSuccess}"/>
             <TextBlock x:Name="TopValueTextBlock" Text="top:" HorizontalAlignment="Right" VerticalAlignment="Top" TextAlignment="Left" Margin="25,20" Foreground="{DynamicResource OWLOSWarning}"/>
             <TextBlock x:Name="MinValueTextBlock" Text="min:" HorizontalAlignment="Right" VerticalAlignment="Top" TextAlignment="Left" Margin="25,40" Foreground="{DynamicResource OWLOSInfo}"/>
+
+
         </Grid>
+        <TextBlock x:Name="UnitOfMeasure" Text="Celsius" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="16,116,6,0" Foreground="{DynamicResource OWLOSInfo}"/>
+
+        <TextBlock Text="04.10.2021 14:16:03" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="110,400,0,0" Foreground="{DynamicResource OWLOSSecondary}" RenderTransformOrigin="0,0">
+            <TextBlock.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="90"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </TextBlock.RenderTransform>
+        </TextBlock>
+
+        <TextBlock Text="04.10.2021 14:26:03" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="140,400,0,0" Foreground="{DynamicResource OWLOSSecondary}" RenderTransformOrigin="0,0">
+            <TextBlock.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="90"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </TextBlock.RenderTransform>
+        </TextBlock>
+
+        <TextBlock Text="04.10.2021 14:36:03" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="170,400,0,0" Foreground="{DynamicResource OWLOSSecondary}" RenderTransformOrigin="0,0">
+            <TextBlock.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="90"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </TextBlock.RenderTransform>
+        </TextBlock>
 
 
     </Grid>

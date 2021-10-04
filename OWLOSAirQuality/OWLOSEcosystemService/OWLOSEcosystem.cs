@@ -205,12 +205,14 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
             result.DHT22heat = new float?[60];
             result.BMP280pressure = new float?[60];
             result.BMP280altitude = new float?[60];
+            result.BMP280temperature = new float?[60];
             result.ADS1X15MQ135 = new float?[60];
             result.ADS1X15MQ7 = new float?[60];
             result.ADS1X15Light = new float?[60];
             result.CCS811CO2 = new float?[60];
             result.CCS811TVOC = new float?[60];
             result.CCS811resistence = new float?[60];
+            result.CCS811temperature = new float?[60];
 
 
             int resultIndex = 0;
@@ -226,12 +228,14 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
                 result.DHT22heat[resultIndex] = dailyAirQulity[i].DHT22heat;
                 result.BMP280pressure[resultIndex] = dailyAirQulity[i].BMP280pressure;
                 result.BMP280altitude[resultIndex] = dailyAirQulity[i].BMP280altitude;
+                result.BMP280temperature[resultIndex] = dailyAirQulity[i].BMP280temperature;
                 result.ADS1X15MQ135[resultIndex] = dailyAirQulity[i].ADS1X15MQ135;
                 result.ADS1X15MQ7[resultIndex] = dailyAirQulity[i].ADS1X15MQ7;
                 result.ADS1X15Light[resultIndex] = dailyAirQulity[i].ADS1X15Light;
                 result.CCS811CO2[resultIndex] = dailyAirQulity[i].CCS811CO2;
                 result.CCS811TVOC[resultIndex] = dailyAirQulity[i].CCS811TVOC;
                 result.CCS811resistence[resultIndex] = dailyAirQulity[i].CCS811resistence;
+                result.CCS811temperature[resultIndex] = dailyAirQulity[i].CCS811temp;
                 resultIndex++;
             }
 

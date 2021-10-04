@@ -53,8 +53,8 @@
                     </WrapPanel>
                 </Grid>
 
-                <Grid x:Name="CCS811Grid" Grid.Column="0" Grid.Row="1">
-                    <Border BorderBrush="{DynamicResource OWLOSSecondaryAlpha1}" BorderThickness="0,0,2,2" />
+                <Grid x:Name="CCS811Grid" Grid.Column="0" Grid.Row="1" Grid.RowSpan="2">
+                    <Border BorderBrush="{DynamicResource OWLOSSecondaryAlpha1}" BorderThickness="0,0,2,0" />
                     <TextBlock Text="CCS811 Sensor" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" FontSize="25" Foreground="{DynamicResource OWLOSPrimary}" Grid.ColumnSpan="2"/>
 
                     <WrapPanel Width="365" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -65,7 +65,13 @@
                 </WrapPanel>
                 </Grid>
 
-                <huds:GraphControl x:Name="ValueGraph" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1"/>
+                <Grid x:Name="ValueGraphGrid" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" Grid.RowSpan="2" >
+                    <StackPanel Orientation="Horizontal" Margin="6,6,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top">
+                        <TextBlock x:Name="ValueGraphCaption" Text="DHT22 Sensor" HorizontalAlignment="Left"  VerticalAlignment="Bottom" FontSize="25" Foreground="{DynamicResource OWLOSPrimary}" />
+                        <TextBlock x:Name="ValueGraphDescription" Text="temperature" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="6,0,0,4" FontSize="16" Foreground="{DynamicResource OWLOSWarning}" />
+                    </StackPanel>
+                    <huds:GraphControl x:Name="ValueGraph" />
+                </Grid>
 
                 <huds:CrossControl HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="-7" Grid.Column="0" Grid.Row="0"></huds:CrossControl>
                 <huds:CrossControl HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="-7" Grid.Column="1" Grid.Row="0"></huds:CrossControl>

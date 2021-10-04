@@ -23,7 +23,7 @@
 
             <Line x:Name="SelSQ7" Stroke="{DynamicResource OWLOSInfo}" X1="151" Y1="150" X2="140" Y2="150" StrokeThickness="3" Visibility="Hidden"/>
             <Line x:Name="SelSQ8" Stroke="{DynamicResource OWLOSInfo}" X1="150" Y1="150" X2="150" Y2="140" StrokeThickness="3" Visibility="Hidden"/>
-            
+
             <Rectangle x:Name="BoxRectangle" Stroke="{DynamicResource OWLOSSecondaryAlpha1}" Canvas.Left="5" Canvas.Top="5" Width="140" Height="140" StrokeThickness="2"/>
 
             <Rectangle x:Name="BoxTrapRectangle" Fill="#00000000" Canvas.Left="5" Canvas.Top="5" Width="172" Height="172" />
@@ -37,11 +37,11 @@
 
         <Viewbox VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
             <Grid x:Name="ValueGrid" Height="172" Width="172">
-                    <TextBlock x:Name="_Caption" Text="--" HorizontalAlignment="Left" Margin="25,16" VerticalAlignment="Top" FontSize="16" Foreground="{DynamicResource OWLOSInfo}"/>
+                <TextBlock x:Name="_Caption" Text="--" HorizontalAlignment="Left" Margin="25,16" VerticalAlignment="Top" FontSize="16" Foreground="{DynamicResource OWLOSInfo}"/>
                 <TextBlock x:Name="_StatusText" Text="offline" HorizontalAlignment="Right" Margin="25,25" Padding="6,0" FontSize="8" VerticalAlignment="Top" Foreground="{DynamicResource OWLOSDark}" Background="{DynamicResource OWLOSWarningAlpha3}" />
-                    <TextBlock x:Name="_Value" Text="--" HorizontalAlignment="Left" Margin="25,41" VerticalAlignment="Top" FontSize="42" Foreground="{DynamicResource OWLOSLight}"/>
-                    <TextBlock x:Name="_UnitOfMeasure" Text="" TextWrapping="WrapWithOverflow" TextAlignment="Right" Margin="25,96,25,0" HorizontalAlignment="Right" VerticalAlignment="Top" Foreground="{DynamicResource OWLOSSecondary}"/>
-                    <TextBlock x:Name="_Description" Text="" HorizontalAlignment="Left" Margin="25,16" VerticalAlignment="Bottom" Foreground="{DynamicResource OWLOSWarning}"/>
+                <TextBlock x:Name="_Value" Text="--" HorizontalAlignment="Left" Margin="25,41" VerticalAlignment="Top" FontSize="42" Foreground="{DynamicResource OWLOSLight}"/>
+                <TextBlock x:Name="_UnitOfMeasure" Text="" TextWrapping="WrapWithOverflow" TextAlignment="Right" Margin="25,96,25,0" HorizontalAlignment="Right" VerticalAlignment="Top" Foreground="{DynamicResource OWLOSSecondary}"/>
+                <TextBlock x:Name="_Description" Text="" HorizontalAlignment="Left" Margin="25,16" VerticalAlignment="Bottom" Foreground="{DynamicResource OWLOSWarning}"/>
             </Grid>
         </Viewbox>
 

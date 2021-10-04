@@ -170,6 +170,7 @@ namespace OWLOSAirQuality
 
 
             //Double 
+            /*
             valueFrame = new ValueFrame();
             valueFrame.MainGrid.Children.Remove(valueFrame.ValueHolderGrid);
             valueFrame.Close();
@@ -177,6 +178,7 @@ namespace OWLOSAirQuality
             valueFrame.ValueHolderGrid.SetValue(Grid.RowProperty, 1);
             MainGrid.Children.Add(valueFrame.ValueHolderGrid);
 
+            
             valueFrame = new ValueFrame();
             valueFrame.MainGrid.Children.Remove(valueFrame.ValueHolderGrid);
             valueFrame.Close();
@@ -190,6 +192,7 @@ namespace OWLOSAirQuality
             valueFrame.ValueHolderGrid.SetValue(Grid.ColumnProperty, 2);
             valueFrame.ValueHolderGrid.SetValue(Grid.RowProperty, 2);
             MainGrid.Children.Add(valueFrame.ValueHolderGrid);
+            */
 
             logFrame = new LogFrame();
             logFrame.MainGrid.Children.Remove(logFrame.LogHolderGrid);

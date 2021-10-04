@@ -64,7 +64,7 @@ namespace OWLOSAirQuality.Frames
 
 
             //Graph controls 
-
+            /*
             DHT22tempGraphControl = new GraphControl();
             DHT22tempGraphControl.NameTextBlock.Text = "DHT22 Temperature";
             GraphGrid.Children.Add(DHT22tempGraphControl);
@@ -140,7 +140,7 @@ namespace OWLOSAirQuality.Frames
             CCS811CO2GraphControl = new GraphControl();
             CCS811CO2GraphControl.NameTextBlock.Text = "CO2";
             GraphGrid.Children.Add(CCS811CO2GraphControl);
-
+            */
 
 
             //  CCS811TVOCGraphControl = new GraphControl();
@@ -191,6 +191,7 @@ namespace OWLOSAirQuality.Frames
             base.Dispatcher.Invoke(() =>
             {
 
+                /*
                 DHT22tempGraphControl.Update(thingAirQualities.DHT22temp, thingAirQualities.QueryTime, thingAirQualities.Statuses);
                 DHT22humGraphControl.Update(thingAirQualities.DHT22hum, thingAirQualities.QueryTime, thingAirQualities.Statuses);
                 DHT22heatGraphControl.Update(thingAirQualities.DHT22heat, thingAirQualities.QueryTime, thingAirQualities.Statuses);
@@ -199,6 +200,7 @@ namespace OWLOSAirQuality.Frames
                 BMP280altitudeGraphControl.Update(thingAirQualities.BMP280altitude, thingAirQualities.QueryTime, thingAirQualities.Statuses);
 
                 CCS811CO2GraphControl.Update(thingAirQualities.CCS811CO2, thingAirQualities.QueryTime, thingAirQualities.Statuses);
+                */
                 // CCS811TVOCGraphControl.Update(thingAirQualities.CCS811TVOC, thingAirQualities.QueryTime, thingAirQualities.Statuses);
 
                 /*

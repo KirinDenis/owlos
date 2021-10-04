@@ -76,12 +76,31 @@ namespace OWLOSAirQuality.Frames
             DHT22humValueControl.OnSelect += ValueControl_OnSelect;
             DHT22heatValueControl.OnSelect += ValueControl_OnSelect;
 
+            BMP280pressureValueControl.OnSelect += ValueControl_OnSelect;
+            BMP280altitudeValueControl.OnSelect += ValueControl_OnSelect;
+            BMP280temperatureValueControl.OnSelect += ValueControl_OnSelect;
+
+            ADS1X15MQ135ValueControl.OnSelect += ValueControl_OnSelect;
+            ADS1X15MQ7ValueControl.OnSelect += ValueControl_OnSelect;
+            ADS1X15LightValueControl.OnSelect += ValueControl_OnSelect;
+
+            CCS811CO2ValueControl.OnSelect += ValueControl_OnSelect;
+            CCS811TVOCValueControl.OnSelect += ValueControl_OnSelect;
+            CCS811resistenceValueControl.OnSelect += ValueControl_OnSelect;
+            CCS811tempValueControl.OnSelect += ValueControl_OnSelect;
+
             OnLifeCycleTimer(null, null);
         }
 
         private void ValueControl_OnSelect(object sender, EventArgs e)
         {
             CurrentValueControl = (ValueControl)sender;
+
+            ValueGraph.UnitOfMeasure.Text = CurrentValueControl.UnitOfMeasure;
+            ValueGraphCaption.Text = CurrentValueControl.Caption;
+            ValueGraphDescription.Text = CurrentValueControl.Description;
+            
+
             OnLifeCycleTimer(null, null);
         }
 
@@ -97,14 +116,15 @@ namespace OWLOSAirQuality.Frames
                         acData.OnDHT22tempChanged += DHT22tempValueControl.OnValueChanged;
                         acData.OnDHT22humChanged += DHT22humValueControl.OnValueChanged;
                         acData.OnDHT22heatChanged += DHT22heatValueControl.OnValueChanged;
-                        acData.OnBMP280pressureChanged += BMP280pressureValueControl.OnValueChanged;
 
+                        acData.OnBMP280pressureChanged += BMP280pressureValueControl.OnValueChanged;
                         acData.OnBMP280altitudeChanged += BMP280altitudeValueControl.OnValueChanged;
                         acData.OnBMP280temperatureChanged += BMP280temperatureValueControl.OnValueChanged;
 
                         acData.OnADS1X15MQ135Changed += ADS1X15MQ135ValueControl.OnValueChanged;
                         acData.OnADS1X15MQ7Changed += ADS1X15MQ7ValueControl.OnValueChanged;
                         acData.OnADS1X15LightChanged += ADS1X15LightValueControl.OnValueChanged;
+
                         acData.OnCCS811CO2Changed += CCS811CO2ValueControl.OnValueChanged;
                         acData.OnCCS811TVOCChanged += CCS811TVOCValueControl.OnValueChanged;
                         acData.OnCCS811resistenceChanged += CCS811resistenceValueControl.OnValueChanged;
@@ -143,6 +163,56 @@ namespace OWLOSAirQuality.Frames
                     if (CurrentValueControl == DHT22heatValueControl)
                     {
                         ValueGraph.Update(thingAirQualities.DHT22heat, thingAirQualities.QueryTime, thingAirQualities.Statuses);
+                    }
+                    else
+                    if (CurrentValueControl == BMP280pressureValueControl)
+                    {
+                        ValueGraph.Update(thingAirQualities.BMP280pressure, thingAirQualities.QueryTime, thingAirQualities.Statuses);
+                    }                    
+                    else
+                    if (CurrentValueControl == BMP280altitudeValueControl)
+                    {
+                        ValueGraph.Update(thingAirQualities.BMP280altitude, thingAirQualities.QueryTime, thingAirQualities.Statuses);
+                    }
+                    else
+                    if (CurrentValueControl == BMP280temperatureValueControl)
+                    {
+                        ValueGraph.Update(thingAirQualities.BMP280temperature, thingAirQualities.QueryTime, thingAirQualities.Statuses);
+                    }
+                    else
+                    if (CurrentValueControl == ADS1X15MQ135ValueControl)
+                    {
+                        ValueGraph.Update(thingAirQualities.ADS1X15MQ135, thingAirQualities.QueryTime, thingAirQualities.Statuses);
+                    }
+                    else
+                    if (CurrentValueControl == ADS1X15MQ7ValueControl)
+                    {
+                        ValueGraph.Update(thingAirQualities.ADS1X15MQ7, thingAirQualities.QueryTime, thingAirQualities.Statuses);
+                    }
+                    else
+                    if (CurrentValueControl == ADS1X15LightValueControl)
+                    {
+                        ValueGraph.Update(thingAirQualities.ADS1X15Light, thingAirQualities.QueryTime, thingAirQualities.Statuses);
+                    }
+                    else
+                    if (CurrentValueControl == CCS811CO2ValueControl)
+                    {
+                        ValueGraph.Update(thingAirQualities.CCS811CO2, thingAirQualities.QueryTime, thingAirQualities.Statuses);
+                    }
+                    else
+                    if (CurrentValueControl == CCS811TVOCValueControl)
+                    {
+                        ValueGraph.Update(thingAirQualities.CCS811TVOC, thingAirQualities.QueryTime, thingAirQualities.Statuses);
+                    }
+                    else
+                    if (CurrentValueControl == CCS811resistenceValueControl)
+                    {
+                        ValueGraph.Update(thingAirQualities.CCS811resistence, thingAirQualities.QueryTime, thingAirQualities.Statuses);
+                    }
+                    else
+                    if (CurrentValueControl == CCS811tempValueControl)
+                    {
+                        ValueGraph.Update(thingAirQualities.CCS811temperature, thingAirQualities.QueryTime, thingAirQualities.Statuses);
                     }
                     else
                     {
