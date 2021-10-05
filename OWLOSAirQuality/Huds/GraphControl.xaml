@@ -41,9 +41,33 @@
         <TextBlock x:Name="_Caption" Text="" HorizontalAlignment="Left" Margin="40,15" VerticalAlignment="Top" FontSize="16" Foreground="{DynamicResource OWLOSInfo}"/>
 
 
-        <Grid x:Name="GraphGrid" Margin="20,20" >
+        <Grid x:Name="GraphGrid" Margin="20,20" PreviewMouseMove="GraphGrid_PreviewMouseMove" Background="#01000000" >
 
-            <Path x:Name="GraphPath" Margin="66,20" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Data="" Stroke="{DynamicResource OWLOSInfo}" MouseMove="GraphPath_MouseMove">
+            <Canvas VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                <Rectangle x:Name="TopDangerTrapRect" Canvas.Top="135" Canvas.Left="66" Width="1010" Height="40">
+                    <Rectangle.Fill>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="{DynamicResource OWLOSDangerColorAlpha2}" Offset="0"/>
+                            <GradientStop Color="{DynamicResource OWLOSDangerColorAlpha1}" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Rectangle.Fill>
+                </Rectangle>
+                <Line x:Name="TopDangerTrapLine" X1="66" Y1="175" X2="1100" Y2="175" Stroke="{DynamicResource OWLOSDangerAlpha4}" StrokeDashArray="6 10" StrokeThickness="1"></Line>
+
+                <Rectangle x:Name="TopWarningTrapRect" Canvas.Top="175" Canvas.Left="66" Width="1010" Height="40">
+                    <Rectangle.Fill>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="{DynamicResource OWLOSWarningColorAlpha1}" Offset="0"/>
+                            <GradientStop Color="{DynamicResource OWLOSDangerColorAlpha1}" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Rectangle.Fill>
+                </Rectangle>
+                <Line x:Name="TopWarningTrapLine" X1="66" Y1="214" X2="1100" Y2="214" Stroke="{DynamicResource OWLOSWarningAlpha4}" StrokeDashArray="6 10" StrokeThickness="1"></Line>
+
+
+            </Canvas>
+
+                <Path x:Name="GraphPath" Margin="66,20" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Data="" Stroke="{DynamicResource OWLOSInfo}" MouseMove="GraphPath_MouseMove">
                 <Path.Fill>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                         <GradientStop Color="{DynamicResource OWLOSInfoColorAlpha2}" Offset="0"/>
@@ -64,8 +88,8 @@
 
             <Canvas VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
 
-                <Ellipse x:Name="ValuePointer" VerticalAlignment="Center" HorizontalAlignment="Center" Stroke="{DynamicResource OWLOSSuccess}" Margin="55,12" Width="20" Height="20" Canvas.Left="10" Canvas.Top="10" StrokeThickness="1" />
-                <Ellipse x:Name="CenterValuePointer" VerticalAlignment="Center" HorizontalAlignment="Center" Stroke="{DynamicResource OWLOSSuccessAlpha3}" Margin="64,20" Width="3" Height="3" Canvas.Left="10" Canvas.Top="10" StrokeThickness="2" />
+                <Ellipse x:Name="ValuePointer" VerticalAlignment="Center" HorizontalAlignment="Center" Stroke="{DynamicResource OWLOSSuccess}" Margin="45,12" Width="20" Height="20" Canvas.Left="10" Canvas.Top="10" StrokeThickness="1" />
+                <Ellipse x:Name="CenterValuePointer" VerticalAlignment="Center" HorizontalAlignment="Center" Stroke="{DynamicResource OWLOSSuccessAlpha3}" Margin="53,20" Width="3" Height="3" Canvas.Left="10" Canvas.Top="10" StrokeThickness="2" />
 
                 <Ellipse x:Name="TopValuePointer" VerticalAlignment="Center" HorizontalAlignment="Center" Stroke="{DynamicResource OWLOSWarning}" Margin="55,12" Width="20" Height="20" Canvas.Left="10" Canvas.Top="10" StrokeThickness="1" />
                 <Ellipse x:Name="TopCenterValuePointer" VerticalAlignment="Center" HorizontalAlignment="Center" Stroke="{DynamicResource OWLOSWarningAlpha3}" Margin="64,20" Width="3" Height="3" Canvas.Left="10" Canvas.Top="10" StrokeThickness="2" />
@@ -74,11 +98,10 @@
                 <Ellipse x:Name="MinCenterValuePointer" VerticalAlignment="Center" HorizontalAlignment="Center" Stroke="{DynamicResource OWLOSInfoAlpha3}" Margin="64,20" Width="3" Height="3" Canvas.Left="10" Canvas.Top="10" StrokeThickness="2" />
 
                 <Line x:Name="LeftXCoordLine" X1="66" Y1="130" X2="66" Y2="367" Stroke="{DynamicResource OWLOSSecondary}" StrokeThickness="1"></Line>
-                
-                
-
+                               
                 <Line x:Name="TopLine" X1="66" Y1="290" X2="1070" Y2="290" Stroke="{DynamicResource OWLOSWarningAlpha2}" Margin="0,20"></Line>
                 <Line x:Name="MinLine" X1="66" Y1="350" X2="1070" Y2="350" Stroke="{DynamicResource OWLOSSecondary}" Margin="0,20"></Line>
+
 
             </Canvas>
 

@@ -370,16 +370,6 @@ namespace OWLOSAirQuality.Huds
 
         private void GraphPath_MouseMove(object sender, MouseEventArgs e)
         {
-            Point position = e.GetPosition(GraphPath);
-            int index = (int)(position.X / (GraphPath.ActualWidth / data.Length));
-            SelectedValueTextBlock.Text = "sel: " + data[index].ToString() + " " + DateTime.Now.AddMinutes(-(60-index)) + "   ";
-            ValuePointer.SetValue(Canvas.LeftProperty, (double)(int)(position.X / 60 * 60));
-            ValuePointer.SetValue(Canvas.TopProperty, (double)graphData[index]);
-            CenterValuePointer.SetValue(Canvas.LeftProperty, position.X);
-            CenterValuePointer.SetValue(Canvas.TopProperty, (double)graphData[index]);
-
-            selectLineControl.DrawRelationLine(App.Current.Resources["OWLOSSuccessAlpha3"] as SolidColorBrush, App.Current.Resources["OWLOSSuccess"] as SolidColorBrush);
-            selectLineControl.UpdatePositions();
         }
 
 
@@ -394,6 +384,30 @@ namespace OWLOSAirQuality.Huds
 
 
 
+        }
+
+        private void GraphGrid_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            Point position = e.GetPosition(GraphPath);
+            int index = (int)(position.X / (GraphPath.ActualWidth / data.Length));
+
+            if ((position.X > 0) && (position.Y > 80) && (position.Y < 380))
+            {
+
+                UnitOfMeasure.Text = position.X.ToString() + " " + position.Y.ToString() + " " + index.ToString();
+                if ((index >= 0) && (index < data.Length))
+                {
+
+                    SelectedValueTextBlock.Text = "sel: " + data[index].ToString() + " " + DateTime.Now.AddMinutes(-(60 - index)) + "   ";
+                    ValuePointer.SetValue(Canvas.LeftProperty, (double)(int)(position.X / 60 * 60));
+                    ValuePointer.SetValue(Canvas.TopProperty, (double)graphData[index]);
+                    CenterValuePointer.SetValue(Canvas.LeftProperty, position.X);
+                    CenterValuePointer.SetValue(Canvas.TopProperty, (double)graphData[index]);
+
+                    selectLineControl.DrawRelationLine(App.Current.Resources["OWLOSSuccessAlpha3"] as SolidColorBrush, App.Current.Resources["OWLOSSuccess"] as SolidColorBrush);
+                    selectLineControl.UpdatePositions();
+                }
+            }
         }
     }
 }
