@@ -44,7 +44,7 @@
         <Grid x:Name="GraphGrid" Margin="20,20" PreviewMouseMove="GraphGrid_PreviewMouseMove" Background="#01000000" >
 
             <Canvas VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                <Rectangle x:Name="TopDangerTrapRect" Canvas.Top="135" Canvas.Left="66" Width="1010" Height="40">
+                <Rectangle x:Name="TopDangerTrapRect" Canvas.Top="135" Canvas.Left="0" Width="1005" Height="40" Margin="66,20">
                     <Rectangle.Fill>
                         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                             <GradientStop Color="{DynamicResource OWLOSDangerColorAlpha2}" Offset="0"/>
@@ -52,9 +52,9 @@
                         </LinearGradientBrush>
                     </Rectangle.Fill>
                 </Rectangle>
-                <Line x:Name="TopDangerTrapLine" X1="66" Y1="175" X2="1100" Y2="175" Stroke="{DynamicResource OWLOSDangerAlpha4}" StrokeDashArray="6 10" StrokeThickness="1"></Line>
+                <Line x:Name="TopDangerTrapLine" X1="0" Y1="175" X2="1100" Y2="175" Stroke="{DynamicResource OWLOSDangerAlpha4}" StrokeDashArray="6 10" StrokeThickness="1" Margin="66,20"></Line>
 
-                <Rectangle x:Name="TopWarningTrapRect" Canvas.Top="175" Canvas.Left="66" Width="1010" Height="40">
+                <Rectangle x:Name="TopWarningTrapRect" Canvas.Top="175" Canvas.Left="0" Width="1005" Height="40" Margin="66,20">
                     <Rectangle.Fill>
                         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                             <GradientStop Color="{DynamicResource OWLOSWarningColorAlpha1}" Offset="0"/>
@@ -62,7 +62,7 @@
                         </LinearGradientBrush>
                     </Rectangle.Fill>
                 </Rectangle>
-                <Line x:Name="TopWarningTrapLine" X1="66" Y1="214" X2="1100" Y2="214" Stroke="{DynamicResource OWLOSWarningAlpha4}" StrokeDashArray="6 10" StrokeThickness="1"></Line>
+                <Line x:Name="TopWarningTrapLine" X1="0" Y1="214" X2="1100" Y2="214" Stroke="{DynamicResource OWLOSWarningAlpha4}" StrokeDashArray="6 10" StrokeThickness="1" Margin="66,20"></Line>
 
 
             </Canvas>
@@ -108,6 +108,9 @@
             <TextBlock x:Name="SelectedValueTextBlock" Text="select:" HorizontalAlignment="Right" VerticalAlignment="Top" TextAlignment="Left" Margin="25,0" Foreground="{DynamicResource OWLOSSuccess}"/>
             <TextBlock x:Name="TopValueTextBlock" Text="top:" HorizontalAlignment="Right" VerticalAlignment="Top" TextAlignment="Left" Margin="25,20" Foreground="{DynamicResource OWLOSWarning}"/>
             <TextBlock x:Name="MinValueTextBlock" Text="min:" HorizontalAlignment="Right" VerticalAlignment="Top" TextAlignment="Left" Margin="25,40" Foreground="{DynamicResource OWLOSInfo}"/>
+
+            <TextBlock x:Name="TopDangerTrapTextBlock" Text="danger: 1234" HorizontalAlignment="Right" VerticalAlignment="Top" TextAlignment="Left" Margin="10,280,0,0" Foreground="{DynamicResource OWLOSDangerAlpha3}"/>
+            <TextBlock x:Name="TopWarningTrapTextBlock" Text="danger: 1234" HorizontalAlignment="Right" VerticalAlignment="Top" TextAlignment="Left" Margin="10,280,0,0" Foreground="{DynamicResource OWLOSWarningAlpha3}"/>
 
 
         </Grid>

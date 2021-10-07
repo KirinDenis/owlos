@@ -99,7 +99,12 @@ namespace OWLOSAirQuality.Frames
             ValueGraph.UnitOfMeasure.Text = CurrentValueControl.UnitOfMeasure;
             ValueGraphCaption.Text = CurrentValueControl.Caption;
             ValueGraphDescription.Text = CurrentValueControl.Description;
-            
+
+            ValueGraph.HighDangerTrap = CurrentValueControl.HighDangerTrap;
+            ValueGraph.HighWarningTrap = CurrentValueControl.HighWarningTrap;
+
+            ValueGraph.LowDangerTrap = CurrentValueControl.LowDangerTrap;
+            ValueGraph.LowWarningTrap = CurrentValueControl.LowWarningTrap;
 
             OnLifeCycleTimer(null, null);
         }
