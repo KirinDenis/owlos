@@ -96,7 +96,7 @@ namespace OWLOSAirQuality.Frames
         {
             CurrentValueControl = (ValueControl)sender;
 
-            ValueGraph.UnitOfMeasure.Text = CurrentValueControl.UnitOfMeasure;
+            ValueGraph.UnitOfMeasure.Text = "unit of measure: " +  CurrentValueControl.UnitOfMeasure;
             ValueGraphCaption.Text = CurrentValueControl.Caption;
             ValueGraphDescription.Text = CurrentValueControl.Description;
 

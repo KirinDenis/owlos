@@ -72,6 +72,7 @@ namespace OWLOSThingsManager.EcosystemExplorer
         public double ellipseWidth = 10;
         public double ellipseHeight = 10;
         private readonly TranslateTransform transform = new TranslateTransform();
+        public Thickness? margin;
         public RelationLineControl(Grid parent, FrameworkElement aWorldObjectControl, FrameworkElement bWorldObjectControl, FrameworkElement frameworkElement, Panel panel, Point[] offsetA = null, Point[] offsetB = null)
         {
             Parent = parent;
@@ -119,6 +120,8 @@ namespace OWLOSThingsManager.EcosystemExplorer
             //Do same for end point A & B
             Point endPointA = new Point(target.Margin.Left + target.ActualWidth + 50, target.Margin.Top + 125);
             Point endPointB = new Point(endPointA.X - 100, endPointA.Y);
+
+
             return CreateCurveLine(new[] { startPointA, startPointB, endPointB, endPointA }, lineColor);
         }
         private Path CreateCurveLine(Point[] points, SolidColorBrush lineColor)
@@ -193,19 +196,34 @@ namespace OWLOSThingsManager.EcosystemExplorer
             Point newPointB = new Point(oldPointB.X + offsetX, oldPointB.Y + offsetY);
             points[1] = newPointB;
         }
-        public Ellipse DrawPointer(FrameworkElement target, FrameworkElement relativeTarget, double width, double height, SolidColorBrush color)
+        public Ellipse DrawPointer(FrameworkElement target, Thickness? margin, double width, double height, SolidColorBrush color)
         {         
             if (ellipse == null)
             {
-                ellipse = new Ellipse
+                if (margin == null)
                 {
-                    VerticalAlignment = VerticalAlignment.Top,
-                    HorizontalAlignment = HorizontalAlignment.Right,
-                    Fill = color,         
-                    Width = width,
-                    Height = height,
-                    Margin = new Thickness(target.Margin.Left - 200.0f, target.Margin.Top, target.Margin.Right + 200.0f, target.Margin.Bottom)
-                };
+                    ellipse = new Ellipse
+                    {
+                        VerticalAlignment = VerticalAlignment.Top,
+                        HorizontalAlignment = HorizontalAlignment.Right,
+                        Fill = color,
+                        Width = width,
+                        Height = height,
+                        Margin = new Thickness(target.Margin.Left - 200.0f, target.Margin.Top, target.Margin.Right + 200.0f, target.Margin.Bottom)
+                    };
+                }
+                else
+                {
+                    ellipse = new Ellipse
+                    {
+                        VerticalAlignment = VerticalAlignment.Top,
+                        HorizontalAlignment = HorizontalAlignment.Left,
+                        Fill = color,
+                        Width = width / 4.0f,
+                        Height = height / 4.0f,
+                        Margin = (Thickness)margin
+                    };
+                }
             }
             return ellipse;
         }
@@ -226,7 +244,7 @@ namespace OWLOSThingsManager.EcosystemExplorer
                 return false;
             }
 
-            ellipse = DrawPointer(aControl, Parent, ellipseWidth, ellipseHeight, ellipseColor);
+            ellipse = DrawPointer(aControl, margin, ellipseWidth, ellipseHeight, ellipseColor);
             Parent.Children.Add(ellipse);
             ellipse.UpdateLayout();
 

@@ -27,9 +27,9 @@
                     <Border BorderBrush="{DynamicResource OWLOSSecondaryAlpha1}" BorderThickness="0,0,1,2" />
                     <TextBlock Text="DHT22 Sensor" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" FontSize="25" Foreground="{DynamicResource OWLOSPrimary}" Grid.ColumnSpan="2"/>
                     <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <huds:ValueControl x:Name="DHT22tempValueControl" Width="172" Height="172" Caption="DHT22" UnitOfMeasure="Celsius" Description="Temperature" />
-                        <huds:ValueControl x:Name="DHT22humValueControl" Width="172" Height="172" Caption="DHT22" UnitOfMeasure="%" Description="Humidity" />
-                        <huds:ValueControl x:Name="DHT22heatValueControl" Width="172" Height="172" Caption="DHT22" UnitOfMeasure="" Description="Heat Index" />
+                        <huds:ValueControl x:Name="DHT22tempValueControl" Width="172" Height="172" Caption="DHT22" UnitOfMeasure="Celsius" Description="Temperature" HighWarningTrap="25" HighDangerTrap="28" LowWarningTrap="23" LowDangerTrap="20.0"/>
+                        <huds:ValueControl x:Name="DHT22humValueControl" Width="172" Height="172" Caption="DHT22" UnitOfMeasure="%" Description="Humidity" HighWarningTrap="55" HighDangerTrap="70" LowWarningTrap="45" LowDangerTrap="30" />
+                        <huds:ValueControl x:Name="DHT22heatValueControl" Width="172" Height="172" Caption="DHT22" UnitOfMeasure="" Description="Heat Index" HighWarningTrap="32" HighDangerTrap="52" LowWarningTrap="23" LowDangerTrap="18"/>
                     </WrapPanel>
                 </Grid>
 

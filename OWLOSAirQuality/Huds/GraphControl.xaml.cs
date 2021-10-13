@@ -97,7 +97,8 @@ namespace OWLOSAirQuality.Huds
         private RelationLineControl topLineControl;
         private RelationLineControl minLineControl;
 
-        private List<TextBlock> ValuesTextBoxes = new List<TextBlock>();
+        private readonly List<FrameworkElement> temporaryElements = new List<FrameworkElement>();
+        private readonly List<RelationLineControl> temporaryLineElements = new List<RelationLineControl>();
 
         //TODO: date boxes
 
@@ -105,40 +106,28 @@ namespace OWLOSAirQuality.Huds
         public float LowWarningTrap
         {
             get => _LowWarningTrap;
-            set
-            {
-                _LowWarningTrap = value;                
-            }
+            set => _LowWarningTrap = value;
         }
 
         protected float _HighWarningTrap = float.NaN;
         public float HighWarningTrap
         {
             get => _HighWarningTrap;
-            set
-            {
-                _HighWarningTrap = value;                
-            }
+            set => _HighWarningTrap = value;
         }
 
         protected float _LowDangerTrap = float.NaN;
         public float LowDangerTrap
         {
             get => _LowDangerTrap;
-            set
-            {
-                _LowDangerTrap = value;
-            }
+            set => _LowDangerTrap = value;
         }
 
         protected float _HighDangerTrap = float.NaN;
         public float HighDangerTrap
         {
             get => _HighDangerTrap;
-            set
-            {
-                _HighDangerTrap = value;                
-            }
+            set => _HighDangerTrap = value;
         }
 
         public GraphControl()
@@ -174,7 +163,7 @@ namespace OWLOSAirQuality.Huds
             {
                 graphData = graphDataInfo.processedDataToDraw;
 
-                TopValueTextBlock.Text = "top: " + data[graphDataInfo.maxLocalValueIndex].ToString() + " " + DateTime.Now.AddMinutes(-(60 - graphDataInfo.maxLocalValueIndex)) + "   ";
+                TopValueTextBlock.Text = "> " + data[graphDataInfo.maxLocalValueIndex].ToString() + " " + DateTime.Now.AddMinutes(-(60 - graphDataInfo.maxLocalValueIndex)) + "   ";
                 TopValuePointer.SetValue(Canvas.LeftProperty, (double)graphDataInfo.processedDataX[graphDataInfo.maxLocalValueIndex]);
                 TopValuePointer.SetValue(Canvas.TopProperty, (double)graphData[graphDataInfo.maxLocalValueIndex]);
                 TopCenterValuePointer.SetValue(Canvas.LeftProperty, (double)graphDataInfo.processedDataX[graphDataInfo.maxLocalValueIndex]);
@@ -183,7 +172,7 @@ namespace OWLOSAirQuality.Huds
                 topLineControl.DrawRelationLine(App.Current.Resources["OWLOSWarningAlpha3"] as SolidColorBrush, App.Current.Resources["OWLOSWarning"] as SolidColorBrush);
                 topLineControl.UpdatePositions();
 
-                MinValueTextBlock.Text = "min: " + data[graphDataInfo.minLocalValueIndex].ToString() + " " + DateTime.Now.AddMinutes(-(60 - graphDataInfo.minLocalValueIndex)) + "   ";
+                MinValueTextBlock.Text = "< " + data[graphDataInfo.minLocalValueIndex].ToString() + " " + DateTime.Now.AddMinutes(-(60 - graphDataInfo.minLocalValueIndex)) + "   ";
                 MinValuePointer.SetValue(Canvas.LeftProperty, (double)graphDataInfo.processedDataX[graphDataInfo.minLocalValueIndex]);
                 MinValuePointer.SetValue(Canvas.TopProperty, (double)graphData[graphDataInfo.minLocalValueIndex]);
                 MinCenterValuePointer.SetValue(Canvas.LeftProperty, (double)graphDataInfo.processedDataX[graphDataInfo.minLocalValueIndex]);
@@ -192,68 +181,125 @@ namespace OWLOSAirQuality.Huds
                 minLineControl.DrawRelationLine(App.Current.Resources["OWLOSInfoAlpha3"] as SolidColorBrush, App.Current.Resources["OWLOSInfo"] as SolidColorBrush);
                 minLineControl.UpdatePositions();
 
-                //Warning and Danger traps
-                //--- TOPDANGER
-                float graphTopMinHeightDate = (float)data[graphDataInfo.maxLocalValueIndex] - (float)data[graphDataInfo.minLocalValueIndex];
-                float graphTopMinHeightPixels = 0;
-                float graphTopMinStep = 0;
-                if (graphTopMinHeightDate != 0)
+                //High-Low Warning and Danger traps ----------------------------------------------------------------------------------------------------------------------------------------------------
+                //--- HIGHDANGER
+                float graphHighMinHeightDate = (float)data[graphDataInfo.maxLocalValueIndex] - (float)data[graphDataInfo.minLocalValueIndex];
+                float graphHighMinHeightPixels = 0;
+                float graphHighMinStep = 0;
+                if (graphHighMinHeightDate != 0)
                 {
-                    graphTopMinHeightPixels = (float)graphDataInfo.processedDataToDraw[graphDataInfo.minLocalValueIndex] - (float)graphDataInfo.processedDataToDraw[graphDataInfo.maxLocalValueIndex];
-                    graphTopMinStep = graphTopMinHeightPixels / graphTopMinHeightDate;
+                    graphHighMinHeightPixels = (float)graphDataInfo.processedDataToDraw[graphDataInfo.minLocalValueIndex] - (float)graphDataInfo.processedDataToDraw[graphDataInfo.maxLocalValueIndex];
+                    graphHighMinStep = graphHighMinHeightPixels / graphHighMinHeightDate;
                     if (data[graphDataInfo.maxLocalValueIndex] >= HighDangerTrap)
                     {
-                        double hightDangerRectHeight = ((float)data[graphDataInfo.maxLocalValueIndex] - HighDangerTrap) * graphTopMinStep; // + (double)graphDataInfo.processedDataToDraw[graphDataInfo.maxLocalValueIndex];
+                        double hightDangerRectHeight = ((float)data[graphDataInfo.maxLocalValueIndex] - HighDangerTrap) * graphHighMinStep; 
 
-                        if (hightDangerRectHeight > graphTopMinHeightPixels)
+                        if (hightDangerRectHeight > graphHighMinHeightPixels)
                         {
-                            hightDangerRectHeight = graphTopMinHeightPixels + 10;
+                            hightDangerRectHeight = graphHighMinHeightPixels + 10;
                         }
 
-                        TopDangerTrapRect.Visibility = TopDangerTrapLine.Visibility = TopDangerTrapTextBlock.Visibility = Visibility.Visible;
-                        Canvas.SetTop(TopDangerTrapRect, (double)graphDataInfo.processedDataToDraw[graphDataInfo.maxLocalValueIndex]);
-                        TopDangerTrapRect.Height = hightDangerRectHeight;
-                        
-                        TopDangerTrapLine.Y1 = TopDangerTrapLine.Y2 = (float)graphDataInfo.processedDataToDraw[graphDataInfo.maxLocalValueIndex] + hightDangerRectHeight;
+                        HighDangerTrapRect.Visibility = HighDangerTrapLine.Visibility = HighDangerTrapTextBlock.Visibility = Visibility.Visible;
+                        Canvas.SetTop(HighDangerTrapRect, (double)graphDataInfo.processedDataToDraw[graphDataInfo.maxLocalValueIndex]);
+                        HighDangerTrapRect.Height = hightDangerRectHeight;
 
-                        TopDangerTrapTextBlock.Margin = new Thickness(10, (float)graphDataInfo.processedDataToDraw[graphDataInfo.maxLocalValueIndex] + hightDangerRectHeight + 4, 0, 0);
-                        TopDangerTrapTextBlock.Text = "danger: " + HighDangerTrap.ToString();
+                        HighDangerTrapLine.Y1 = HighDangerTrapLine.Y2 = (float)graphDataInfo.processedDataToDraw[graphDataInfo.maxLocalValueIndex] + hightDangerRectHeight;
+
+                        HighDangerTrapTextBlock.Margin = new Thickness(10, (float)graphDataInfo.processedDataToDraw[graphDataInfo.maxLocalValueIndex] + hightDangerRectHeight + 4, 0, 0);
+                        HighDangerTrapTextBlock.Text = ">> " + HighDangerTrap.ToString();
                     }
                     else
                     {
-                        TopDangerTrapRect.Visibility = TopDangerTrapLine.Visibility = TopDangerTrapTextBlock.Visibility = Visibility.Hidden;
+                        HighDangerTrapRect.Visibility = HighDangerTrapLine.Visibility = HighDangerTrapTextBlock.Visibility = Visibility.Hidden;
                     }
                 }
-                //ENDOF TOPDANGER ---
-                //--- TOPWARNING                
-                if (graphTopMinHeightDate != 0)
+                //ENDOF HIGHDANGER ---
+                //--- HIGHWARNING                
+                if (graphHighMinHeightDate != 0)
                 {
                     if (data[graphDataInfo.maxLocalValueIndex] >= HighWarningTrap)
                     {
-                        double hightWarningRectHeight = ((float)data[graphDataInfo.maxLocalValueIndex] - HighWarningTrap) * graphTopMinStep; // + (double)graphDataInfo.processedDataToDraw[graphDataInfo.maxLocalValueIndex];
+                        double hightWarningRectHeight = ((float)data[graphDataInfo.maxLocalValueIndex] - HighWarningTrap) * graphHighMinStep; 
 
-                        if (hightWarningRectHeight > graphTopMinHeightPixels)
+                        if (hightWarningRectHeight > graphHighMinHeightPixels)
                         {
-                            hightWarningRectHeight = graphTopMinHeightPixels + 25;
+                            hightWarningRectHeight = graphHighMinHeightPixels + 25;
                         }
 
-                        TopWarningTrapRect.Visibility = TopWarningTrapLine.Visibility = TopWarningTrapTextBlock.Visibility = Visibility.Visible;
-                        Canvas.SetTop(TopWarningTrapRect, (double)graphDataInfo.processedDataToDraw[graphDataInfo.maxLocalValueIndex]);
-                        TopWarningTrapRect.Height = hightWarningRectHeight;
+                        HighWarningTrapRect.Visibility = HighWarningTrapLine.Visibility = HighWarningTrapTextBlock.Visibility = Visibility.Visible;
+                        Canvas.SetTop(HighWarningTrapRect, (double)graphDataInfo.processedDataToDraw[graphDataInfo.maxLocalValueIndex]);
+                        HighWarningTrapRect.Height = hightWarningRectHeight;
 
-                        TopWarningTrapLine.Y1 = TopWarningTrapLine.Y2 = (float)graphDataInfo.processedDataToDraw[graphDataInfo.maxLocalValueIndex] + hightWarningRectHeight;
+                        HighWarningTrapLine.Y1 = HighWarningTrapLine.Y2 = (float)graphDataInfo.processedDataToDraw[graphDataInfo.maxLocalValueIndex] + hightWarningRectHeight;
 
-                        TopWarningTrapTextBlock.Margin = new Thickness(10, (float)graphDataInfo.processedDataToDraw[graphDataInfo.maxLocalValueIndex] + hightWarningRectHeight + 4, 0, 0);
-                        TopWarningTrapTextBlock.Text = "warning: " + HighWarningTrap.ToString();
+                        HighWarningTrapTextBlock.Margin = new Thickness(10, (float)graphDataInfo.processedDataToDraw[graphDataInfo.maxLocalValueIndex] + hightWarningRectHeight + 4, 0, 0);
+                        HighWarningTrapTextBlock.Text = "> " + HighWarningTrap.ToString();
                     }
                     else
                     {
-                        TopWarningTrapRect.Visibility = TopWarningTrapLine.Visibility = TopWarningTrapTextBlock.Visibility = Visibility.Hidden;
+                        HighWarningTrapRect.Visibility = HighWarningTrapLine.Visibility = HighWarningTrapTextBlock.Visibility = Visibility.Hidden;
                     }
                 }
-                //ENDOF TOPWARNING ---
+                //ENDOF HIGHWARNING ---
+                //--- LOWDANGER
+                float graphLowMinHeightDate = (float)data[graphDataInfo.maxLocalValueIndex] - (float)data[graphDataInfo.minLocalValueIndex];
+                float graphLowMinHeightPixels = 0;
+                float graphLowMinStep = 0;
+                if (graphLowMinHeightDate != 0)
+                {
+                    graphLowMinHeightPixels = (float)graphDataInfo.processedDataToDraw[graphDataInfo.minLocalValueIndex] - (float)graphDataInfo.processedDataToDraw[graphDataInfo.maxLocalValueIndex];
+                    graphLowMinStep = graphLowMinHeightPixels / graphLowMinHeightDate;
+                    if (data[graphDataInfo.minLocalValueIndex] <= LowDangerTrap)
+                    {
+                        double hightDangerRectHeight = (LowDangerTrap - (float)data[graphDataInfo.minLocalValueIndex]) * graphLowMinStep;
 
+                        if (hightDangerRectHeight > graphLowMinHeightPixels)
+                        {
+                            hightDangerRectHeight = graphLowMinHeightPixels + 10;
+                        }
 
+                        LowDangerTrapRect.Visibility = LowDangerTrapLine.Visibility = LowDangerTrapTextBlock.Visibility = Visibility.Visible;
+                        Canvas.SetTop(LowDangerTrapRect, (double)graphDataInfo.processedDataToDraw[graphDataInfo.minLocalValueIndex] - hightDangerRectHeight);
+                        LowDangerTrapRect.Height = hightDangerRectHeight;
+
+                        LowDangerTrapLine.Y1 = LowDangerTrapLine.Y2 = (float)graphDataInfo.processedDataToDraw[graphDataInfo.minLocalValueIndex] - hightDangerRectHeight;
+
+                        LowDangerTrapTextBlock.Margin = new Thickness(10, (float)graphDataInfo.processedDataToDraw[graphDataInfo.minLocalValueIndex] - hightDangerRectHeight + 4, 0, 0);
+                        LowDangerTrapTextBlock.Text = "<< " + LowDangerTrap.ToString();
+                    }
+                    else
+                    {
+                        LowDangerTrapRect.Visibility = LowDangerTrapLine.Visibility = LowDangerTrapTextBlock.Visibility = Visibility.Hidden;
+                    }
+                }
+                //ENDOF LOWDANGER ---
+                //--- LOWWARNING                
+                if (graphLowMinHeightDate != 0)
+                {
+                    if (data[graphDataInfo.minLocalValueIndex] <= LowWarningTrap)
+                    {
+                        double hightWarningRectHeight = (LowWarningTrap - (float)data[graphDataInfo.minLocalValueIndex]) * graphLowMinStep;
+
+                        if (hightWarningRectHeight > graphLowMinHeightPixels)
+                        {
+                            hightWarningRectHeight = graphLowMinHeightPixels + 25;
+                        }
+
+                        LowWarningTrapRect.Visibility = LowWarningTrapLine.Visibility = LowWarningTrapTextBlock.Visibility = Visibility.Visible;
+                        Canvas.SetTop(LowWarningTrapRect, (double)graphDataInfo.processedDataToDraw[graphDataInfo.minLocalValueIndex] - hightWarningRectHeight);
+                        LowWarningTrapRect.Height = hightWarningRectHeight;
+
+                        LowWarningTrapLine.Y1 = LowWarningTrapLine.Y2 = (float)graphDataInfo.processedDataToDraw[graphDataInfo.minLocalValueIndex] - hightWarningRectHeight;
+
+                        LowWarningTrapTextBlock.Margin = new Thickness(10, (float)graphDataInfo.processedDataToDraw[graphDataInfo.minLocalValueIndex] - hightWarningRectHeight + 4, 0, 0);
+                        LowWarningTrapTextBlock.Text = "< " + LowWarningTrap.ToString();
+                    }
+                    else
+                    {
+                        LowWarningTrapRect.Visibility = LowWarningTrapLine.Visibility = LowWarningTrapTextBlock.Visibility = Visibility.Hidden;
+                    }
+                }
+                //ENDOF LOWWARNING ---
             }
 
             if (isNulls)
@@ -294,13 +340,22 @@ namespace OWLOSAirQuality.Huds
         {
             GraphDrawInfo graphDrawInfo = new GraphDrawInfo();
 
-            for(int i=0; i < ValuesTextBoxes.Count; i++)
+            for(int i=0; i < temporaryElements.Count; i++)
             {                
-                GraphGrid.Children.Remove(ValuesTextBoxes[i]);
-                ValuesTextBoxes[i] = null;
+                GraphGrid.Children.Remove(temporaryElements[i]);
+                temporaryElements[i] = null;
             }
 
-            ValuesTextBoxes.Clear();
+            temporaryElements.Clear();
+
+            for (int i = 0; i < temporaryLineElements.Count; i++)
+            {
+                temporaryLineElements[i].RemoveRelationLine();
+                temporaryLineElements[i] = null;
+            }
+
+            temporaryLineElements.Clear();
+
 
             graphDrawInfo.processedDataX = new float?[dataToDraw.Length];
             graphDrawInfo.processedDataToDraw = new float?[dataToDraw.Length];
@@ -433,14 +488,16 @@ namespace OWLOSAirQuality.Huds
 
             for (int i = 0; i < 11; i++)
             {
-                TextBlock textBlock = new TextBlock();
-                textBlock.HorizontalAlignment = HorizontalAlignment.Left;
-                textBlock.VerticalAlignment = VerticalAlignment.Top;
-                textBlock.Margin = new Thickness(6, textBlockTopPosition + (textBlockYStep * i) + 12, 0, 0);
-                textBlock.Foreground = App.Current.Resources["OWLOSSecondary"] as SolidColorBrush;
-                textBlock.Text = (topValue - (textBlockValueStepDown * i)).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+                TextBlock textBlock = new TextBlock
+                {
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Top,
+                    Margin = new Thickness(6, textBlockTopPosition + (textBlockYStep * i) + 12, 0, 0),
+                    Foreground = App.Current.Resources["OWLOSSecondary"] as SolidColorBrush,
+                    Text = (topValue - (textBlockValueStepDown * i)).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)
+                };
                 GraphGrid.Children.Add(textBlock);
-                ValuesTextBoxes.Add(textBlock);
+                temporaryElements.Add(textBlock);
             }
             //--- ENDOF LOCATETEXTBLOCKS
 
@@ -453,17 +510,49 @@ namespace OWLOSAirQuality.Huds
 
             DateTime dateTime = DateTime.Now.AddMinutes(-60);
             int minutesStep = 5;
+            int downStep = 0;
+            int rightStep = 0;
             for (int i = 0; i < 60; i+= minutesStep)
             {
-                TextBlock textBlock = new TextBlock();
-                textBlock.HorizontalAlignment = HorizontalAlignment.Left;
-                textBlock.VerticalAlignment = VerticalAlignment.Top;
-                textBlock.Margin = new Thickness(76 + i * stepLocal, realMinInPixels + 35, 0, 0);
-                textBlock.Foreground = App.Current.Resources["OWLOSSecondary"] as SolidColorBrush;
-                textBlock.RenderTransform = new RotateTransform(90.0f);
-                textBlock.Text = dateTime.ToString();
+                TextBlock textBlock = new TextBlock
+                {
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Top,
+                    Margin = new Thickness(60 + rightStep, realMinInPixels + downStep * 25 + 45, 0, 0),
+                    Foreground = App.Current.Resources["OWLOSInfoAlpha4"] as SolidColorBrush,
+                    //RenderTransform = new RotateTransform(90.0f),
+                    Text = dateTime.ToString()
+                };
                 GraphGrid.Children.Add(textBlock);
-                ValuesTextBoxes.Add(textBlock);
+                temporaryElements.Add(textBlock);
+
+                downStep++;
+                if (downStep > 2)
+                {
+                    downStep = 0;                    
+                }
+                rightStep = ((i + minutesStep) * stepLocal);
+
+
+                TextBlock timeTextBlock = new TextBlock
+                {
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Top,
+                    Margin = new Thickness(60 + i * stepLocal, realMinInPixels + 20, 0, 0),
+                    Foreground = App.Current.Resources["OWLOSSecondary"] as SolidColorBrush,                    
+                    Text = ""
+                };
+                GraphGrid.Children.Add(timeTextBlock);
+                temporaryElements.Add(timeTextBlock);
+
+                
+
+                RelationLineControl timeLineControl = new RelationLineControl(GraphGrid, timeTextBlock, textBlock, GraphGrid, GraphGrid);
+                timeLineControl.margin = new Thickness(76 + i * stepLocal, realMinInPixels + 20, 0, 0);
+                timeLineControl.DrawRelationLine(App.Current.Resources["OWLOSInfoAlpha3"] as SolidColorBrush, App.Current.Resources["OWLOSInfoAlpha3"] as SolidColorBrush);
+           //    timeLineControl.UpdatePositions();
+                temporaryLineElements.Add(timeLineControl);
+
 
                 dateTime = dateTime.AddMinutes(minutesStep);
             }
@@ -500,11 +589,11 @@ namespace OWLOSAirQuality.Huds
             if ((position.X > 0) && (position.Y > 80) && (position.Y < 380))
             {
 
-                UnitOfMeasure.Text = position.X.ToString() + " " + position.Y.ToString() + " " + index.ToString();
+                //UnitOfMeasure.Text = position.X.ToString() + " " + position.Y.ToString() + " " + index.ToString();
                 if ((index >= 0) && (index < data.Length))
                 {
 
-                    SelectedValueTextBlock.Text = "sel: " + data[index].ToString() + " " + DateTime.Now.AddMinutes(-(60 - index)) + "   ";
+                    SelectedValueTextBlock.Text = "- " + data[index].ToString() + " " + DateTime.Now.AddMinutes(-(60 - index)) + "   ";
                     ValuePointer.SetValue(Canvas.LeftProperty, (double)(int)(position.X / 60 * 60));
                     ValuePointer.SetValue(Canvas.TopProperty, (double)graphData[index]);
                     CenterValuePointer.SetValue(Canvas.LeftProperty, position.X);
