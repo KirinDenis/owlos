@@ -89,6 +89,25 @@ namespace OWLOSAirQuality.Frames
             CCS811resistenceValueControl.OnSelect += ValueControl_OnSelect;
             CCS811tempValueControl.OnSelect += ValueControl_OnSelect;
 
+            //Calendar 
+            for (int i=0; i < 24; i++)
+            {
+                MenuItemControl hourControl = new MenuItemControl();
+                hourControl.Name = "Hour" + i.ToString();
+                hourControl.Caption = i.ToString("D2") + ":00-" + (i + 1).ToString("D2") + ":00";
+                HoursPanel1.Children.Add(hourControl);
+            }
+
+            /*
+            for (int i = 12; i < 24; i++)
+            {
+                MenuItemControl hourControl = new MenuItemControl();
+                hourControl.Name = "Hour" + i.ToString();
+                hourControl.Caption = i.ToString() + ":00-" + (i + 1).ToString() + ":00";
+                HoursPanel2.Children.Add(hourControl);
+            }
+            */
+
             OnLifeCycleTimer(null, null);
         }
 

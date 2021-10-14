@@ -70,7 +70,22 @@
                         <TextBlock x:Name="ValueGraphCaption" Text="DHT22 Sensor" HorizontalAlignment="Left"  VerticalAlignment="Bottom" FontSize="25" Foreground="{DynamicResource OWLOSPrimary}" />
                         <TextBlock x:Name="ValueGraphDescription" Text="temperature" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="6,0,0,4" FontSize="16" Foreground="{DynamicResource OWLOSWarning}" />
                     </StackPanel>
+
                     <huds:GraphControl x:Name="ValueGraph" />
+
+                    <StackPanel Margin="0,10" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Center">
+                        <huds:MenuItemControl x:Name="ShowYearMenu" Caption="2021" Description="year"/>
+                        <huds:MenuItemControl x:Name="ShowMonthMenu" Caption="October" Description="month"/>
+                        <huds:MenuItemControl x:Name="ShowDayMenu" Caption="14" Description="day"/>
+                        <huds:MenuItemControl x:Name="ShowHourMenu" Caption="14:00" Description="time" Selected="True"/>
+                    </StackPanel>
+
+                    <WrapPanel Margin="0,41" Width="1132" x:Name="HoursPanel1" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Center">
+                    </WrapPanel>
+
+                    <WrapPanel Margin="0,66" x:Name="HoursPanel2" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Center">
+                    </WrapPanel>
+
                 </Grid>
 
                 <huds:CrossControl HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="-7" Grid.Column="0" Grid.Row="0"></huds:CrossControl>

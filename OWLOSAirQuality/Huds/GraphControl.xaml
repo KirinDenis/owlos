@@ -8,13 +8,6 @@
              Focusable="True" IsTabStop="True" Loaded="UserControl_Loaded">
     <Grid x:Name="MainGrid">
 
-        <StackPanel Margin="0,10" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Center">
-            <local:MenuItemControl x:Name="ShowYearMenu" Caption="Year" Description="show year"/>
-            <local:MenuItemControl x:Name="ShowMonthMenu" Caption="Month" Description="show month"/>
-            <local:MenuItemControl x:Name="ShowDayMenu" Caption="Day" Description="show day"/>
-            <local:MenuItemControl x:Name="ShowHourMenu" Caption="Hour" Description="show hour" Selected="True"/>
-        </StackPanel>
-
 
         <Canvas>
             <!--

@@ -16,19 +16,19 @@
         <Grid x:Name="BoxRectangle" Grid.ColumnSpan="3"  />
         
         <Canvas Grid.Column="0">
-            <Line Stroke="{DynamicResource OWLOSInfoAlpha2}" X1="-1" Y1="0" X2="0" Y2="25" StrokeThickness="2"/>
+            <Line Stroke="{DynamicResource OWLOSInfoAlpha2}" X1="-1" Y1="0" X2="0" Y2="16" StrokeThickness="2"/>
             <Line x:Name="SelSQ1" Stroke="{DynamicResource OWLOSInfo}" X1="-1" Y1="0" X2="0" Y2="25" StrokeThickness="2" Visibility="Hidden"/>
             <Line x:Name="SelSQ2" Stroke="{DynamicResource OWLOSInfo}" X1="0" Y1="1" X2="6" Y2="1" StrokeThickness="2" Visibility="Hidden"/>
             <Line x:Name="SelSQ3" Stroke="{DynamicResource OWLOSInfo}" X1="-1" Y1="25" X2="6" Y2="25" StrokeThickness="2" Visibility="Hidden"/>
         </Canvas>
 
         <StackPanel  Grid.Column="1">
-            <TextBlock x:Name="_Caption" Text="" Foreground="{DynamicResource OWLOSInfo}" Margin="10,0" VerticalAlignment="Top" HorizontalAlignment="Center"/>
+            <TextBlock x:Name="_Caption" Text="" Foreground="{DynamicResource OWLOSInfo}" Margin="4,0" VerticalAlignment="Top" HorizontalAlignment="Center"/>
             <TextBlock x:Name="_Description" Text="" Foreground="{DynamicResource OWLOSInfo}" FontSize="6" HorizontalAlignment="Center"/>
         </StackPanel>
 
         <Canvas Grid.Column="2">
-            <Line Stroke="{DynamicResource OWLOSInfoAlpha2}" X1="10" Y1="0" X2="10" Y2="26" StrokeThickness="2"/>
+            <Line Stroke="{DynamicResource OWLOSInfoAlpha2}" X1="10" Y1="0" X2="10" Y2="16" StrokeThickness="2"/>
             <Line x:Name="SelSQ4" Stroke="{DynamicResource OWLOSInfo}" X1="10" Y1="0" X2="10" Y2="26" StrokeThickness="2" Visibility="Hidden"/>
             <Line x:Name="SelSQ5" Stroke="{DynamicResource OWLOSInfo}" X1="10" Y1="1" X2="4" Y2="1" StrokeThickness="2" Visibility="Hidden"/>
             <Line x:Name="SelSQ6" Stroke="{DynamicResource OWLOSInfo}" X1="10" Y1="25" X2="4" Y2="25" StrokeThickness="2" Visibility="Hidden"/>
