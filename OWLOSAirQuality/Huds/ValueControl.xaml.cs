@@ -256,7 +256,6 @@ namespace OWLOSAirQuality.Huds
                             BoxRectangle.Stroke = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSDangerAlpha1"]).Color);
                             break;
                     }
-
                 }
             }
         }

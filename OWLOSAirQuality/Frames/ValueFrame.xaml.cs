@@ -57,13 +57,15 @@ namespace OWLOSAirQuality.Frames
         private bool timerBusy = false;
 
         private ValueControl CurrentValueControl;
+
+        private readonly int GraphRefreshInterval = 10000;
         public ValueFrame()
         {
             InitializeComponent();
             ecosystem = App.ecosystem;
             ecosystem.OnACDataReady += Ecosystem_OnACDataReady;
 
-            Timer lifeCycleTimer = new Timer(10000)
+            Timer lifeCycleTimer = new Timer(GraphRefreshInterval)
             {
                 AutoReset = true
             };
@@ -89,28 +91,11 @@ namespace OWLOSAirQuality.Frames
             CCS811resistenceValueControl.OnSelect += ValueControl_OnSelect;
             CCS811tempValueControl.OnSelect += ValueControl_OnSelect;
 
-            /*
-            //Calendar 
-            for (int i=0; i < 24; i++)
-            {
-                MenuItemControl hourControl = new MenuItemControl();
-                hourControl.Name = "Hour" + i.ToString();
-                hourControl.Caption = i.ToString("D2") + ":00-" + (i + 1).ToString("D2") + ":00";
-                HoursPanel1.Children.Add(hourControl);
-            }
-
-            
-            for (int i = 12; i < 24; i++)
-            {
-                MenuItemControl hourControl = new MenuItemControl();
-                hourControl.Name = "Hour" + i.ToString();
-                hourControl.Caption = i.ToString() + ":00-" + (i + 1).ToString() + ":00";
-                HoursPanel2.Children.Add(hourControl);
-            }
-            */
-
             ShowHourMenu.OnSelect += ShowHourMenu_OnSelect;
             ShowDayMenu.OnSelect += ShowHourMenu_OnSelect;
+
+            _BackgroundControl.QueryInterval = "x: " + ecosystem.quaryInterval / 1000 + " sec / g: " + GraphRefreshInterval / 1000 + " sec";
+            _BackgroundControl.Status = "[not connected] " + DateTime.Now;
 
             OnLifeCycleTimer(null, null);
         }
@@ -124,7 +109,7 @@ namespace OWLOSAirQuality.Frames
         {
             CurrentValueControl = (ValueControl)sender;
 
-            ValueGraph.UnitOfMeasure.Text = "unit of measure: " +  CurrentValueControl.UnitOfMeasure;
+            ValueGraph.UnitOfMeasure.Text = "unit of measure: " + CurrentValueControl.UnitOfMeasure;
             ValueGraphCaption.Text = CurrentValueControl.Caption;
             ValueGraphDescription.Text = CurrentValueControl.Description;
 
@@ -139,34 +124,61 @@ namespace OWLOSAirQuality.Frames
 
         private void Ecosystem_OnACDataReady(object sender, EventArgs e)
         {
-            if (!SensorsJoined)
+            base.Dispatcher.Invoke(() =>
             {
+
                 try
                 {
+                    _BackgroundControl.URL = ecosystem.thingHost;
                     ThingAirQuality acData = ecosystem.dailyAirQulity[OWLOSEcosystem.dailyAirQulitySize - 1];
                     if (acData != null)
                     {
-                        acData.OnDHT22tempChanged += DHT22tempValueControl.OnValueChanged;
-                        acData.OnDHT22humChanged += DHT22humValueControl.OnValueChanged;
-                        acData.OnDHT22heatChanged += DHT22heatValueControl.OnValueChanged;
+                        switch (acData.Status)
+                        {
+                            case ThingAirQualityStatus.Online:
+                                _BackgroundControl.Status = "[online] " + DateTime.Now;
+                                break;
+                            case ThingAirQualityStatus.OnlineWithError:
+                                _BackgroundControl.Status = "[online with error] " + DateTime.Now;
+                                break;
+                            case ThingAirQualityStatus.Offline:
+                                _BackgroundControl.Status = "[offline] " + DateTime.Now;
+                                break;
+                            default:
+                                _BackgroundControl.Status = "[error] " + DateTime.Now;
+                                break;
+                        }
+                        if (!SensorsJoined)
+                        {
+                            acData.OnDHT22tempChanged += DHT22tempValueControl.OnValueChanged;
+                            acData.OnDHT22humChanged += DHT22humValueControl.OnValueChanged;
+                            acData.OnDHT22heatChanged += DHT22heatValueControl.OnValueChanged;
 
-                        acData.OnBMP280pressureChanged += BMP280pressureValueControl.OnValueChanged;
-                        acData.OnBMP280altitudeChanged += BMP280altitudeValueControl.OnValueChanged;
-                        acData.OnBMP280temperatureChanged += BMP280temperatureValueControl.OnValueChanged;
+                            acData.OnBMP280pressureChanged += BMP280pressureValueControl.OnValueChanged;
+                            acData.OnBMP280altitudeChanged += BMP280altitudeValueControl.OnValueChanged;
+                            acData.OnBMP280temperatureChanged += BMP280temperatureValueControl.OnValueChanged;
 
-                        acData.OnADS1X15MQ135Changed += ADS1X15MQ135ValueControl.OnValueChanged;
-                        acData.OnADS1X15MQ7Changed += ADS1X15MQ7ValueControl.OnValueChanged;
-                        acData.OnADS1X15LightChanged += ADS1X15LightValueControl.OnValueChanged;
+                            acData.OnADS1X15MQ135Changed += ADS1X15MQ135ValueControl.OnValueChanged;
+                            acData.OnADS1X15MQ7Changed += ADS1X15MQ7ValueControl.OnValueChanged;
+                            acData.OnADS1X15LightChanged += ADS1X15LightValueControl.OnValueChanged;
 
-                        acData.OnCCS811CO2Changed += CCS811CO2ValueControl.OnValueChanged;
-                        acData.OnCCS811TVOCChanged += CCS811TVOCValueControl.OnValueChanged;
-                        acData.OnCCS811resistenceChanged += CCS811resistenceValueControl.OnValueChanged;
-                        acData.OnCCS811tempChanged += CCS811tempValueControl.OnValueChanged;
-                        SensorsJoined = true;
+                            acData.OnCCS811CO2Changed += CCS811CO2ValueControl.OnValueChanged;
+                            acData.OnCCS811TVOCChanged += CCS811TVOCValueControl.OnValueChanged;
+                            acData.OnCCS811resistenceChanged += CCS811resistenceValueControl.OnValueChanged;
+                            acData.OnCCS811tempChanged += CCS811tempValueControl.OnValueChanged;
+                            SensorsJoined = true;
+                        }
+                    }
+                    else
+                    {
+                        _BackgroundControl.Status = "[data is null] " + DateTime.Now;
                     }
                 }
-                catch { }
-            }
+                catch
+                {
+                    _BackgroundControl.Status = "[error] " + DateTime.Now;
+                }
+            });
         }
 
         private async void OnLifeCycleTimer(object source, ElapsedEventArgs e)
@@ -210,7 +222,7 @@ namespace OWLOSAirQuality.Frames
                     if (CurrentValueControl == BMP280pressureValueControl)
                     {
                         ValueGraph.Update(thingAirQualities.BMP280pressure, thingAirQualities.QueryTime, thingAirQualities.Statuses);
-                    }                    
+                    }
                     else
                     if (CurrentValueControl == BMP280altitudeValueControl)
                     {
@@ -265,6 +277,6 @@ namespace OWLOSAirQuality.Frames
             }
 
             timerBusy = false;
-         }
-     }
+        }
+    }
 }

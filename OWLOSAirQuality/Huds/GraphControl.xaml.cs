@@ -191,70 +191,86 @@ namespace OWLOSAirQuality.Huds
                 {
                     //High-Low Warning and Danger traps ----------------------------------------------------------------------------------------------------------------------------------------------------
                     //--- HIGHDANGER
-                    HighDangerTrapRect.Visibility = HighDangerTrapLine.Visibility = HighDangerTrapTextBlock.Visibility = Visibility.Hidden;
-                    float graphHighMinHeightDate = (float)graphData[graphDataInfo.maxLocalValueIndex] - (float)graphData[graphDataInfo.minLocalValueIndex];
+                    HighDangerTrapRect.Visibility = HighDangerTrapLine.Visibility = HighDangerTrapTextBlock.Visibility = Visibility.Hidden;                    
+                    float? graphHighMinHeightDate = data[graphDataInfo.maxLocalValueIndex] - data[graphDataInfo.minLocalValueIndex];
+                    if (graphHighMinHeightDate == null)
+                    {
+                        graphHighMinHeightDate = data[graphDataInfo.maxLocalValueIndex];
+                    }
                     float graphHighMinHeightPixels = 0;
                     float graphHighMinStep = 0;
-                    if (graphHighMinHeightDate != 0)
+                    if (graphHighMinHeightDate != null)
                     {
-                        graphHighMinHeightPixels = (float)graphDataInfo.processedDataToDraw[graphDataInfo.minLocalValueIndex] - (float)graphDataInfo.processedDataToDraw[graphDataInfo.maxLocalValueIndex];
-                        graphHighMinStep = graphHighMinHeightPixels / graphHighMinHeightDate;
-                        if (data[graphDataInfo.maxLocalValueIndex] >= HighDangerTrap)
+                        if (graphHighMinHeightDate != 0)
                         {
-                            double hightDangerRectHeight = ((float)graphData[graphDataInfo.maxLocalValueIndex] - HighDangerTrap) * graphHighMinStep;
-
-                            if (hightDangerRectHeight > graphHighMinHeightPixels)
+                            graphHighMinHeightPixels = (float)graphDataInfo.processedDataToDraw[graphDataInfo.minLocalValueIndex] - (float)graphDataInfo.processedDataToDraw[graphDataInfo.maxLocalValueIndex];
+                            graphHighMinStep = graphHighMinHeightPixels / (float)graphHighMinHeightDate;
+                            if (data[graphDataInfo.maxLocalValueIndex] >= HighDangerTrap)
                             {
-                                hightDangerRectHeight = graphHighMinHeightPixels + 10;
+                                double hightDangerRectHeight = ((float)data[graphDataInfo.maxLocalValueIndex] - HighDangerTrap) * graphHighMinStep;
+
+                                if (hightDangerRectHeight > graphHighMinHeightPixels)
+                                {
+                                    hightDangerRectHeight = graphHighMinHeightPixels + 10;
+                                }
+
+                                HighDangerTrapRect.Visibility = HighDangerTrapLine.Visibility = HighDangerTrapTextBlock.Visibility = Visibility.Visible;
+                                Canvas.SetTop(HighDangerTrapRect, (double)graphDataInfo.processedDataToDraw[graphDataInfo.maxLocalValueIndex]);
+                                HighDangerTrapRect.Height = hightDangerRectHeight;
+
+                                HighDangerTrapLine.Y1 = HighDangerTrapLine.Y2 = (float)graphDataInfo.processedDataToDraw[graphDataInfo.maxLocalValueIndex] + hightDangerRectHeight;
+
+                                HighDangerTrapTextBlock.Margin = new Thickness(10, (float)graphDataInfo.processedDataToDraw[graphDataInfo.maxLocalValueIndex] + hightDangerRectHeight + 4, 0, 0);
+                                HighDangerTrapTextBlock.Text = ">> " + HighDangerTrap.ToString();
                             }
-
-                            HighDangerTrapRect.Visibility = HighDangerTrapLine.Visibility = HighDangerTrapTextBlock.Visibility = Visibility.Visible;
-                            Canvas.SetTop(HighDangerTrapRect, (double)graphDataInfo.processedDataToDraw[graphDataInfo.maxLocalValueIndex]);
-                            HighDangerTrapRect.Height = hightDangerRectHeight;
-
-                            HighDangerTrapLine.Y1 = HighDangerTrapLine.Y2 = (float)graphDataInfo.processedDataToDraw[graphDataInfo.maxLocalValueIndex] + hightDangerRectHeight;
-
-                            HighDangerTrapTextBlock.Margin = new Thickness(10, (float)graphDataInfo.processedDataToDraw[graphDataInfo.maxLocalValueIndex] + hightDangerRectHeight + 4, 0, 0);
-                            HighDangerTrapTextBlock.Text = ">> " + HighDangerTrap.ToString();
                         }
                     }
                     //ENDOF HIGHDANGER ---
                     //--- HIGHWARNING                
+
                     HighWarningTrapRect.Visibility = HighWarningTrapLine.Visibility = HighWarningTrapTextBlock.Visibility = Visibility.Hidden;
-                    if (graphHighMinHeightDate != 0)
+                    if (graphHighMinHeightDate != null)
                     {
-                        if (data[graphDataInfo.maxLocalValueIndex] >= HighWarningTrap)
+
+                        if (graphHighMinHeightDate != 0)
                         {
-                            double hightWarningRectHeight = ((float)graphData[graphDataInfo.maxLocalValueIndex] - HighWarningTrap) * graphHighMinStep;
-
-                            if (hightWarningRectHeight > graphHighMinHeightPixels)
+                            if (data[graphDataInfo.maxLocalValueIndex] >= HighWarningTrap)
                             {
-                                hightWarningRectHeight = graphHighMinHeightPixels + 25;
+                                double hightWarningRectHeight = ((float)data[graphDataInfo.maxLocalValueIndex] - HighWarningTrap) * graphHighMinStep;
+
+                                if (hightWarningRectHeight > graphHighMinHeightPixels)
+                                {
+                                    hightWarningRectHeight = graphHighMinHeightPixels + 25;
+                                }
+
+                                HighWarningTrapRect.Visibility = HighWarningTrapLine.Visibility = HighWarningTrapTextBlock.Visibility = Visibility.Visible;
+                                Canvas.SetTop(HighWarningTrapRect, (double)graphDataInfo.processedDataToDraw[graphDataInfo.maxLocalValueIndex]);
+                                HighWarningTrapRect.Height = hightWarningRectHeight;
+
+                                HighWarningTrapLine.Y1 = HighWarningTrapLine.Y2 = (float)graphDataInfo.processedDataToDraw[graphDataInfo.maxLocalValueIndex] + hightWarningRectHeight;
+
+                                HighWarningTrapTextBlock.Margin = new Thickness(10, (float)graphDataInfo.processedDataToDraw[graphDataInfo.maxLocalValueIndex] + hightWarningRectHeight + 4, 0, 0);
+                                HighWarningTrapTextBlock.Text = "> " + HighWarningTrap.ToString();
                             }
-
-                            HighWarningTrapRect.Visibility = HighWarningTrapLine.Visibility = HighWarningTrapTextBlock.Visibility = Visibility.Visible;
-                            Canvas.SetTop(HighWarningTrapRect, (double)graphDataInfo.processedDataToDraw[graphDataInfo.maxLocalValueIndex]);
-                            HighWarningTrapRect.Height = hightWarningRectHeight;
-
-                            HighWarningTrapLine.Y1 = HighWarningTrapLine.Y2 = (float)graphDataInfo.processedDataToDraw[graphDataInfo.maxLocalValueIndex] + hightWarningRectHeight;
-
-                            HighWarningTrapTextBlock.Margin = new Thickness(10, (float)graphDataInfo.processedDataToDraw[graphDataInfo.maxLocalValueIndex] + hightWarningRectHeight + 4, 0, 0);
-                            HighWarningTrapTextBlock.Text = "> " + HighWarningTrap.ToString();
                         }
                     }
                     //ENDOF HIGHWARNING ---
                     //--- LOWDANGER
                     LowDangerTrapRect.Visibility = LowDangerTrapLine.Visibility = LowDangerTrapTextBlock.Visibility = Visibility.Hidden;
-                    float graphLowMinHeightDate = (float)graphData[graphDataInfo.maxLocalValueIndex] - (float)graphData[graphDataInfo.minLocalValueIndex];
+                    float? graphLowMinHeightDate = data[graphDataInfo.maxLocalValueIndex] - data[graphDataInfo.minLocalValueIndex];
+                    if (graphLowMinHeightDate == null)
+                    {
+                        graphLowMinHeightDate = data[graphDataInfo.maxLocalValueIndex];
+                    }
                     float graphLowMinHeightPixels = 0;
                     float graphLowMinStep = 0;
                     if (graphLowMinHeightDate != 0)
                     {
                         graphLowMinHeightPixels = (float)graphDataInfo.processedDataToDraw[graphDataInfo.minLocalValueIndex] - (float)graphDataInfo.processedDataToDraw[graphDataInfo.maxLocalValueIndex];
-                        graphLowMinStep = graphLowMinHeightPixels / graphLowMinHeightDate;
+                        graphLowMinStep = graphLowMinHeightPixels / (float)graphLowMinHeightDate;
                         if (data[graphDataInfo.minLocalValueIndex] <= LowDangerTrap)
                         {
-                            double hightDangerRectHeight = (LowDangerTrap - (float)graphData[graphDataInfo.minLocalValueIndex]) * graphLowMinStep;
+                            double hightDangerRectHeight = (LowDangerTrap - (float)data[graphDataInfo.minLocalValueIndex]) * graphLowMinStep;
 
                             if (hightDangerRectHeight > graphLowMinHeightPixels)
                             {
@@ -278,7 +294,7 @@ namespace OWLOSAirQuality.Huds
                     {
                         if (data[graphDataInfo.minLocalValueIndex] <= LowWarningTrap)
                         {
-                            double hightWarningRectHeight = (LowWarningTrap - (float)graphData[graphDataInfo.minLocalValueIndex]) * graphLowMinStep;
+                            double hightWarningRectHeight = (LowWarningTrap - (float)data[graphDataInfo.minLocalValueIndex]) * graphLowMinStep;
 
                             if (hightWarningRectHeight > graphLowMinHeightPixels)
                             {

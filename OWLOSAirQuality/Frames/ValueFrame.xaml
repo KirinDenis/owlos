@@ -9,7 +9,7 @@
         Title="Value Frame" Width="1920" Height="1080" Background="black">
     <Grid x:Name="MainGrid" Width="1920" Height="1080">
         <Grid x:Name="ValueHolderGrid" Grid.Column="2" Grid.Row="0">
-            <huds:FrameBackgroundControl x:Name="_BackgroundColor" TitleFrame="SENSORS VALUES" DescriptionFrame="Air Quality" QueryInterval="x10 sec"/>
+            <huds:FrameBackgroundControl x:Name="_BackgroundControl" TitleFrame="SENSORS VALUES" DescriptionFrame="Air Quality" QueryInterval="x10 sec"/>
             <Grid x:Name="ValuesGrid" Margin="60,121,60,146">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="33*"/>
