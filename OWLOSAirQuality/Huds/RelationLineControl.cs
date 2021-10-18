@@ -209,7 +209,7 @@ namespace OWLOSThingsManager.EcosystemExplorer
                         Fill = color,
                         Width = width,
                         Height = height,
-                        Margin = new Thickness(target.Margin.Left - 200.0f, target.Margin.Top, target.Margin.Right + 200.0f, target.Margin.Bottom)
+                        Margin = new Thickness(target.Margin.Left - 172.0f, target.Margin.Top, target.Margin.Right + 172.0f, target.Margin.Bottom)
                     };
                 }
                 else

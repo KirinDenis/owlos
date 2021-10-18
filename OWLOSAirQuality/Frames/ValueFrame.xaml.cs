@@ -89,6 +89,7 @@ namespace OWLOSAirQuality.Frames
             CCS811resistenceValueControl.OnSelect += ValueControl_OnSelect;
             CCS811tempValueControl.OnSelect += ValueControl_OnSelect;
 
+            /*
             //Calendar 
             for (int i=0; i < 24; i++)
             {
@@ -98,7 +99,7 @@ namespace OWLOSAirQuality.Frames
                 HoursPanel1.Children.Add(hourControl);
             }
 
-            /*
+            
             for (int i = 12; i < 24; i++)
             {
                 MenuItemControl hourControl = new MenuItemControl();
@@ -108,6 +109,14 @@ namespace OWLOSAirQuality.Frames
             }
             */
 
+            ShowHourMenu.OnSelect += ShowHourMenu_OnSelect;
+            ShowDayMenu.OnSelect += ShowHourMenu_OnSelect;
+
+            OnLifeCycleTimer(null, null);
+        }
+
+        private void ShowHourMenu_OnSelect(object sender, EventArgs e)
+        {
             OnLifeCycleTimer(null, null);
         }
 
@@ -176,7 +185,16 @@ namespace OWLOSAirQuality.Frames
 
             if (CurrentValueControl != null)
             {
-                ThingAirQualityHistoryData thingAirQualities = ecosystem.GetOneHourData(0);
+                ThingAirQualityHistoryData thingAirQualities;
+                if (ShowHourMenu.Selected)
+                {
+                    thingAirQualities = ecosystem.GetOneHourData(0);
+                }
+                else
+                {
+                    thingAirQualities = ecosystem.GetOneDayData(0);
+                }
+
                 base.Dispatcher.Invoke(() =>
                 {
                     if (CurrentValueControl == DHT22humValueControl)

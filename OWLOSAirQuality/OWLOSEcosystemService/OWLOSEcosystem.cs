@@ -190,29 +190,31 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
         /// <returns>ThingAirQualityHistoryData with history data arrays for each sensor (copy of dailyData)</returns>
         public ThingAirQualityHistoryData GetOneHourData(int hourOffset)
         {
-            ThingAirQualityHistoryData result = new ThingAirQualityHistoryData();
+            ThingAirQualityHistoryData result = new ThingAirQualityHistoryData
+            {
 
-            //public Guid UserId { get; set; } ?? waiting until not null?
-            //public int ThingId { get; set; }
+                //public Guid UserId { get; set; } ?? waiting until not null?
+                //public int ThingId { get; set; }
 
-            result.Statuses = new ThingAirQualityStatus[60];
-            result.QueryTime = new DateTime?[60];
-            result.ClientTime = new DateTime?[60];
-            result.TickCount = new long?[60];
-            result.DHT22 = new bool[60];
-            result.DHT22temp = new float?[60];
-            result.DHT22hum = new float?[60];
-            result.DHT22heat = new float?[60];
-            result.BMP280pressure = new float?[60];
-            result.BMP280altitude = new float?[60];
-            result.BMP280temperature = new float?[60];
-            result.ADS1X15MQ135 = new float?[60];
-            result.ADS1X15MQ7 = new float?[60];
-            result.ADS1X15Light = new float?[60];
-            result.CCS811CO2 = new float?[60];
-            result.CCS811TVOC = new float?[60];
-            result.CCS811resistence = new float?[60];
-            result.CCS811temperature = new float?[60];
+                Statuses = new ThingAirQualityStatus[60],
+                QueryTime = new DateTime?[60],
+                ClientTime = new DateTime?[60],
+                TickCount = new long?[60],
+                DHT22 = new bool[60],
+                DHT22temp = new float?[60],
+                DHT22hum = new float?[60],
+                DHT22heat = new float?[60],
+                BMP280pressure = new float?[60],
+                BMP280altitude = new float?[60],
+                BMP280temperature = new float?[60],
+                ADS1X15MQ135 = new float?[60],
+                ADS1X15MQ7 = new float?[60],
+                ADS1X15Light = new float?[60],
+                CCS811CO2 = new float?[60],
+                CCS811TVOC = new float?[60],
+                CCS811resistence = new float?[60],
+                CCS811temperature = new float?[60]
+            };
 
 
             int resultIndex = 0;
@@ -242,8 +244,67 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
             return result;
         }
 
-            //AIR QUALITY DATA ---
-            protected void JoinACData(int ACIndex, ThingAirQuality thingAirQuality)
+        /// <summary>
+        /// Get daily data
+        /// </summary>
+        /// <param name="dayOffset">day offset until current date</param>
+        /// <returns></returns>
+        public ThingAirQualityHistoryData GetOneDayData(int dayOffset)
+        {
+            ThingAirQualityHistoryData result = new ThingAirQualityHistoryData();
+
+            //every 10 minutes
+            int dailyDataSize = 6 * 24; 
+
+            result.Statuses = new ThingAirQualityStatus[dailyDataSize];
+            result.QueryTime = new DateTime?[dailyDataSize];
+            result.ClientTime = new DateTime?[dailyDataSize];
+            result.TickCount = new long?[dailyDataSize];
+            result.DHT22 = new bool[dailyDataSize];
+            result.DHT22temp = new float?[dailyDataSize];
+            result.DHT22hum = new float?[dailyDataSize];
+            result.DHT22heat = new float?[dailyDataSize];
+            result.BMP280pressure = new float?[dailyDataSize];
+            result.BMP280altitude = new float?[dailyDataSize];
+            result.BMP280temperature = new float?[dailyDataSize];
+            result.ADS1X15MQ135 = new float?[dailyDataSize];
+            result.ADS1X15MQ7 = new float?[dailyDataSize];
+            result.ADS1X15Light = new float?[dailyDataSize];
+            result.CCS811CO2 = new float?[dailyDataSize];
+            result.CCS811TVOC = new float?[dailyDataSize];
+            result.CCS811resistence = new float?[dailyDataSize];
+            result.CCS811temperature = new float?[dailyDataSize];
+
+
+            int resultIndex = 0;
+            for (int i = dailyAirQulitySize - (dayOffset + 1) * 60 * 24; i < dailyAirQulitySize - (dayOffset * 60 * 24); i+=10)
+            {
+                result.Statuses[resultIndex] = dailyAirQulity[i].Status;
+                result.QueryTime[resultIndex] = dailyAirQulity[i].QueryTime;
+                result.ClientTime[resultIndex] = dailyAirQulity[i].ClientTime;
+                result.TickCount[resultIndex] = dailyAirQulity[i].TickCount;
+                result.DHT22[resultIndex] = dailyAirQulity[i].DHT22;
+                result.DHT22temp[resultIndex] = dailyAirQulity[i].DHT22temp;
+                result.DHT22hum[resultIndex] = dailyAirQulity[i].DHT22hum;
+                result.DHT22heat[resultIndex] = dailyAirQulity[i].DHT22heat;
+                result.BMP280pressure[resultIndex] = dailyAirQulity[i].BMP280pressure;
+                result.BMP280altitude[resultIndex] = dailyAirQulity[i].BMP280altitude;
+                result.BMP280temperature[resultIndex] = dailyAirQulity[i].BMP280temperature;
+                result.ADS1X15MQ135[resultIndex] = dailyAirQulity[i].ADS1X15MQ135;
+                result.ADS1X15MQ7[resultIndex] = dailyAirQulity[i].ADS1X15MQ7;
+                result.ADS1X15Light[resultIndex] = dailyAirQulity[i].ADS1X15Light;
+                result.CCS811CO2[resultIndex] = dailyAirQulity[i].CCS811CO2;
+                result.CCS811TVOC[resultIndex] = dailyAirQulity[i].CCS811TVOC;
+                result.CCS811resistence[resultIndex] = dailyAirQulity[i].CCS811resistence;
+                result.CCS811temperature[resultIndex] = dailyAirQulity[i].CCS811temp;
+                resultIndex++;
+            }
+
+            return result;
+        }
+
+        //AIR QUALITY DATA ---
+        protected void JoinACData(int ACIndex, ThingAirQuality thingAirQuality)
         {
             if ((ACIndex < 0) || (ACIndex >= dailyAirQulitySize))
             {

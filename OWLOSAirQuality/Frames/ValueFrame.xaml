@@ -9,7 +9,7 @@
         Title="Value Frame" Width="1920" Height="1080" Background="black">
     <Grid x:Name="MainGrid" Width="1920" Height="1080">
         <Grid x:Name="ValueHolderGrid" Grid.Column="2" Grid.Row="0">
-            <huds:FrameBackgroundControl TitleFrame="SENSORS VALUES" DescriptionFrame="Air Quality" QueryInterval="x10 sec"/>
+            <huds:FrameBackgroundControl x:Name="_BackgroundColor" TitleFrame="SENSORS VALUES" DescriptionFrame="Air Quality" QueryInterval="x10 sec"/>
             <Grid x:Name="ValuesGrid" Margin="60,121,60,146">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="33*"/>
@@ -71,13 +71,11 @@
                         <TextBlock x:Name="ValueGraphDescription" Text="temperature" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="6,0,0,4" FontSize="16" Foreground="{DynamicResource OWLOSWarning}" />
                     </StackPanel>
 
-                    <huds:GraphControl x:Name="ValueGraph" />
+                    <huds:GraphControl x:Name="ValueGraph" Margin="0,-41"/>
 
                     <StackPanel Margin="0,10" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Center">
-                        <huds:MenuItemControl x:Name="ShowYearMenu" Caption="2021" Description="year"/>
-                        <huds:MenuItemControl x:Name="ShowMonthMenu" Caption="October" Description="month"/>
-                        <huds:MenuItemControl x:Name="ShowDayMenu" Caption="14" Description="day"/>
-                        <huds:MenuItemControl x:Name="ShowHourMenu" Caption="14:00" Description="time" Selected="True"/>
+                        <huds:MenuItemControl x:Name="ShowDayMenu" Caption="Day" Description="day"/>
+                        <huds:MenuItemControl x:Name="ShowHourMenu" Caption="Hour" Description="time" Selected="True"/>
                     </StackPanel>
 
                     <WrapPanel Margin="0,41" Width="1132" x:Name="HoursPanel1" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Center">
