@@ -41,7 +41,7 @@
         <TextBlock x:Name="_Caption" Text="" HorizontalAlignment="Left" Margin="40,15" VerticalAlignment="Top" FontSize="16" Foreground="{DynamicResource OWLOSInfo}"/>
 
 
-        <Grid x:Name="GraphGrid" Margin="20,25,20,-25" PreviewMouseMove="GraphGrid_PreviewMouseMove" Background="#01000000" >
+        <Grid x:Name="GraphGrid" Margin="20,0,20,-16" PreviewMouseMove="GraphGrid_PreviewMouseMove" Background="#01000000" >
 
             <Canvas VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
 
@@ -135,7 +135,7 @@
             <TextBlock x:Name="LowWarningTrapTextBlock" Text="danger: 4" HorizontalAlignment="Right" VerticalAlignment="Top" TextAlignment="Left" Margin="10,280,0,0" Foreground="{DynamicResource OWLOSWarningAlpha3}"/>
 
         </Grid>
-        <TextBlock x:Name="UnitOfMeasure" Text="Celsius" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="16,116,6,0" Foreground="{DynamicResource OWLOSInfo}"/>
+        <TextBlock x:Name="UnitOfMeasure" Text="Celsius" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="24,126,6,0" Foreground="{DynamicResource OWLOSPrimary}"/>
 
     </Grid>
 </UserControl>

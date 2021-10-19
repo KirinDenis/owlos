@@ -35,28 +35,28 @@
                 <TextBlock Text=" ::  " Foreground="{DynamicResource OWLOSLight}" FontSize="42"/>
                 <TextBlock x:Name="_DescriptionFrame" Text="" Foreground="{DynamicResource OWLOSInfo}" FontSize="42"/>
             </StackPanel>
-            <StackPanel Margin="16,10">
-                <TextBlock x:Name="_QueryInterval" Text="" Foreground="{DynamicResource OWLOSLight}" FontSize="10" Background="{DynamicResource OWLOSDanger}" HorizontalAlignment="Left"  />
-                <TextBlock x:Name="_Status" Text="" FontSize="10" Foreground="{DynamicResource OWLOSInfo}" HorizontalAlignment="Left"  />
+            <StackPanel Margin="25,6">
+                <TextBlock x:Name="_QueryInterval" Text="" Foreground="{DynamicResource OWLOSLight}" FontSize="12" Background="{DynamicResource OWLOSDanger}" HorizontalAlignment="Left"  />
+                <TextBlock x:Name="_Status" Text="" Margin="0,5" FontSize="10" Foreground="{DynamicResource OWLOSInfo}" HorizontalAlignment="Left"  />
                 <TextBlock x:Name="_URL" Text="" FontSize="10" Foreground="{DynamicResource OWLOSLight}" HorizontalAlignment="Center"  />
             </StackPanel>
         </StackPanel>
 
 
         <StackPanel Margin="57,51" Height="66" HorizontalAlignment="Right" VerticalAlignment="Top" Orientation="Horizontal">
-            <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Margin="66,16,66,0">
-                <TextBox x:Name="SearchTextBox" Text="search" Width="172"  Background="#45000000" Foreground="{DynamicResource OWLOSLight}" BorderBrush="{DynamicResource OWLOSSecondary}" HorizontalAlignment="Right" Visibility="Hidden" />
+            <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4,16,4,0">
+                <TextBox x:Name="SearchTextBox" Text="search" Width="172"  Background="#45000000" FontSize="14" Foreground="{DynamicResource OWLOSLight}" BorderBrush="{DynamicResource OWLOSSecondary}" HorizontalAlignment="Right"  />
             </StackPanel>
 
             <StackPanel  HorizontalAlignment="Right" VerticalAlignment="Top">
                 <StackPanel Margin="16,10,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
-                    <TextBlock Text="     " Foreground="{DynamicResource OWLOSInfo}" FontSize="16" Background="{DynamicResource OWLOSInfo}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="16,0,0,0"/>
-                    <TextBlock Text="     " Foreground="{DynamicResource OWLOSInfo}" FontSize="16" Background="{DynamicResource OWLOSInfo}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="16,0,16,0"/>
-                    <TextBlock Text="     " Foreground="{DynamicResource OWLOSInfo}" FontSize="16" Background="{DynamicResource OWLOSInfo}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="0,0"/>
+                    <TextBlock Text="  S  " Foreground="{DynamicResource OWLOSPrimary}" FontSize="16" Background="{DynamicResource OWLOSInfo}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="16,0,0,0"/>
+                    <TextBlock Text="  W  " Foreground="{DynamicResource OWLOSPrimary}" FontSize="16" Background="{DynamicResource OWLOSInfo}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="16,0,16,0"/>
+                    <TextBlock Text="  T  " Foreground="{DynamicResource OWLOSPrimary}" FontSize="16" Background="{DynamicResource OWLOSInfo}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="0,0"/>
                 </StackPanel>
 
                 <StackPanel Margin="0,0" Orientation="Horizontal" HorizontalAlignment="Right">
-                    <TextBlock x:Name="_Controls" Text="" FontSize="16" Foreground="{DynamicResource OWLOSSecondary}" HorizontalAlignment="Right" />
+                    <TextBlock x:Name="_Controls" Text="[win controls]" FontSize="12" Foreground="{DynamicResource OWLOSSecondary}" HorizontalAlignment="Right" />
                 </StackPanel>
 
             </StackPanel>

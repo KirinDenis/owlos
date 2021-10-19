@@ -94,7 +94,7 @@ namespace OWLOSAirQuality.Frames
             ShowHourMenu.OnSelect += ShowHourMenu_OnSelect;
             ShowDayMenu.OnSelect += ShowHourMenu_OnSelect;
 
-            _BackgroundControl.QueryInterval = "x: " + ecosystem.quaryInterval / 1000 + " sec / g: " + GraphRefreshInterval / 1000 + " sec";
+            _BackgroundControl.QueryInterval = " x: " + ecosystem.quaryInterval / 1000 + " sec / g: " + GraphRefreshInterval / 1000 + " sec ";
             _BackgroundControl.Status = "[not connected] " + DateTime.Now;
 
             OnLifeCycleTimer(null, null);
