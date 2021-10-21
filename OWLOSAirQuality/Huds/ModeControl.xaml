@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="OWLOSAirQuality.Huds.ModeControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:OWLOSAirQuality.Huds"
+             mc:Ignorable="d" 
+             Margin="6,6" Width="106" Focusable="True" IsTabStop="True" Background="{DynamicResource OWLOSInfoAlpha2}" >
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="10"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid x:Name="BoxRectangle" Grid.ColumnSpan="3"  />
+
+        <Canvas Grid.Column="0">
+            <Line x:Name="SelSQ1" Stroke="{DynamicResource OWLOSInfoAlpha1}" X1="1" Y1="0" X2="0" Y2="41" StrokeThickness="6" />
+            <Line x:Name="SelSQ2" Stroke="{DynamicResource OWLOSInfo}" X1="0" Y1="1" X2="6" Y2="1" StrokeThickness="2" />
+            <Line x:Name="SelSQ3" Stroke="{DynamicResource OWLOSInfo}" X1="-1" Y1="41" X2="6" Y2="41" StrokeThickness="2" />
+        </Canvas>
+
+        <StackPanel  Grid.Column="1">
+            <TextBlock x:Name="_TopDescription" Text="123123123" Foreground="{DynamicResource OWLOSInfo}" FontSize="10" HorizontalAlignment="Left" />
+            <TextBlock x:Name="_Caption" Text="2123123123" Foreground="{DynamicResource OWLOSInfo}" Margin="0,-2" FontSize="16" VerticalAlignment="Top" HorizontalAlignment="Center"/>
+            <TextBlock x:Name="_DownDescription" Text="123123123" Foreground="{DynamicResource OWLOSLight}" FontSize="8" HorizontalAlignment="Left" />
+        </StackPanel>
+
+        <Canvas Grid.Column="2">
+            <Line x:Name="SelSQ4" Stroke="{DynamicResource OWLOSPrimaryAlpha1}" X1="10" Y1="0" X2="10" Y2="42" StrokeThickness="6" />
+            <Line x:Name="SelSQ5" Stroke="{DynamicResource OWLOSInfo}" X1="10" Y1="1" X2="4" Y2="1" StrokeThickness="2" />
+            <Line x:Name="SelSQ6" Stroke="{DynamicResource OWLOSInfo}" X1="10" Y1="41" X2="4" Y2="41" StrokeThickness="2" />
+        </Canvas>
+
+
+    </Grid>
+</UserControl>

@@ -98,20 +98,20 @@
 
                 <Grid x:Name="DangersGrid" Grid.Column="0" Grid.Row="3" Grid.RowSpan="1">
                     <Border BorderBrush="{DynamicResource OWLOSSecondaryAlpha1}" BorderThickness="0,0,2,0" />
-                    <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,4,0,4">
-                        <huds:MenuItemControl Width="106" Caption="Temperature" Description="DHT22"/>
-                        <huds:MenuItemControl Width="106" Caption="Humidity" Description="DHT22"/>
-                        <huds:MenuItemControl Width="106" Caption="Heat Index" Description="DHT22"/>
-                        <huds:MenuItemControl Width="106" Caption="Pressure" Description="BMP280"/>
-                        <huds:MenuItemControl Width="106" Caption="Altitude" Description="BMP280"/>
-                        <huds:MenuItemControl Width="106" Caption="Temperature" Description="BMP280"/>
-                        <huds:MenuItemControl Width="106" Caption="MQ135" Description="ADS1X15"/>
-                        <huds:MenuItemControl Width="106" Caption="MQ7" Description="ADS1X15"/>
-                        <huds:MenuItemControl Width="106" Caption="Light" Description="ADS1X15"/>
-                        <huds:MenuItemControl Width="106" Caption="eCO2" Description="CCS811"/>
-                        <huds:MenuItemControl Width="106" Caption="TVOC" Description="CCS811"/>
-                        <huds:MenuItemControl Width="106" Caption="Resistance" Description="CCS811"/>
-                        <huds:MenuItemControl Width="106" Caption="Temperature" Description="CCS811"/>
+                    <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0">
+                        <huds:ModeControl Caption="Temperature" TopDescription="DHT22"/>
+                        <huds:ModeControl Width="106" Caption="Humidity" TopDescription="DHT22"/>
+                        <huds:ModeControl Width="106" Caption="Heat Index" TopDescription="DHT22"/>
+                        <huds:ModeControl Width="106" Caption="Pressure" TopDescription="BMP280"/>
+                        <huds:ModeControl Width="106" Caption="Altitude" TopDescription="BMP280"/>
+                        <huds:ModeControl Width="106" Caption="Temperature" TopDescription="BMP280"/>
+                        <huds:ModeControl Width="106" Caption="MQ135" TopDescription="ADS1X15"/>
+                        <huds:ModeControl Width="106" Caption="MQ7" TopDescription="ADS1X15"/>
+                        <huds:ModeControl Width="106" Caption="Light" TopDescription="ADS1X15"/>
+                        <huds:ModeControl Width="106" Caption="eCO2" TopDescription="CCS811"/>
+                        <huds:ModeControl Width="106" Caption="TVOC" TopDescription="CCS811"/>
+                        <huds:ModeControl Width="106" Caption="Resistance" TopDescription="CCS811"/>
+                        <huds:ModeControl Width="106" Caption="Temperature" TopDescription="CCS811"/>
                     </WrapPanel>
                 </Grid>
 
