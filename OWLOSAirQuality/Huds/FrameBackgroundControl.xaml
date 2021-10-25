@@ -11,9 +11,9 @@
             <Rectangle Fill="{DynamicResource OWLOSInfo}" Canvas.Left="41" Canvas.Top="41" Width="1838" Height="10" />
 
             <Rectangle Fill="{DynamicResource OWLOSSecondaryAlpha1}" Canvas.Left="41" Canvas.Top="51" Width="1838" Height="66" />
-            <Rectangle Fill="{DynamicResource OWLOSSecondaryAlpha1}" Canvas.Left="41" Canvas.Top="117" Width="16" Height="816" />
-            <Rectangle Fill="{DynamicResource OWLOSSecondaryAlpha1}" Canvas.Left="1863" Canvas.Top="117" Width="16" Height="816" />
-            <Rectangle Fill="{DynamicResource OWLOSSecondaryAlpha1}" Canvas.Left="41" Canvas.Top="933" Width="1838" Height="106" />
+            <Rectangle Fill="{DynamicResource OWLOSSecondaryAlpha1}" Canvas.Left="41" Canvas.Top="117" Width="16" Height="857" />
+            <Rectangle Fill="{DynamicResource OWLOSSecondaryAlpha1}" Canvas.Left="1863" Canvas.Top="117" Width="16" Height="857" />
+            <Rectangle Fill="{DynamicResource OWLOSSecondaryAlpha1}" Canvas.Left="41" Canvas.Top="974" Width="1838" Height="66" />
 
             <Rectangle Stroke="{DynamicResource OWLOSSecondaryAlpha1}" Canvas.Left="16" Canvas.Top="16" Width="1894" Height="1048" StrokeThickness="2"/>
 
@@ -80,7 +80,7 @@
             </StackPanel>
         </StackPanel>
 
-        <StackPanel Margin="57,25" Orientation="Horizontal" Height="106" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+        <StackPanel Margin="57,25" Orientation="Horizontal" Height="66" HorizontalAlignment="Right" VerticalAlignment="Bottom">
             <StackPanel>
                 <TextBlock Text="Air Quality" Foreground="{DynamicResource OWLOSInfo}" HorizontalAlignment="Right" Visibility="Hidden"/>
                 <TextBlock Text=" x 1 min. " Foreground="{DynamicResource OWLOSDanger}" FontSize="10" HorizontalAlignment="Right" Visibility="Hidden"/>
