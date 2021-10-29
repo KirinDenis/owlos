@@ -134,9 +134,7 @@ namespace OWLOSAirQuality
 
             //events     
             ecosystem = App.ecosystem;
-            
-           
-
+                       
             hudFrame = new HudFrame();
             hudFrame.MainGrid.Children.Remove(hudFrame.HudHolderGrid);
             hudFrame.Close();
@@ -152,6 +150,11 @@ namespace OWLOSAirQuality
             valueFrame.MainGrid.Children.Remove(valueFrame.ValueHolderGrid);
             valueFrame.Close();
             MainGrid.Children.Add(valueFrame.ValueHolderGrid);
+
+            GasFrame gasFrame = new GasFrame();
+            gasFrame.MainGrid.Children.Remove(gasFrame.ValueHolderGrid);
+            gasFrame.Close();
+            MainGrid.Children.Add(gasFrame.ValueHolderGrid);
 
             LogFrame logFrame = new LogFrame();
             logFrame.MainGrid.Children.Remove(logFrame.LogHolderGrid);
