@@ -99,19 +99,19 @@
                 <Grid x:Name="DangersGrid" Grid.Column="0" Grid.Row="3" Grid.RowSpan="1">
                     <Border BorderBrush="{DynamicResource OWLOSSecondaryAlpha1}" BorderThickness="0,0,2,0" />
                     <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-3,0,-4">
-                        <huds:ModeControl Caption="Temperature" TopDescription="DHT22"/>
-                        <huds:ModeControl Width="106" Caption="Humidity" TopDescription="DHT22"/>
-                        <huds:ModeControl Width="106" Caption="Heat Index" TopDescription="DHT22"/>
-                        <huds:ModeControl Width="106" Caption="Pressure" TopDescription="BMP280"/>
-                        <huds:ModeControl Width="106" Caption="Altitude" TopDescription="BMP280"/>
-                        <huds:ModeControl Width="106" Caption="Temperature" TopDescription="BMP280"/>
-                        <huds:ModeControl Width="106" Caption="MQ135" TopDescription="ADS1X15"/>
-                        <huds:ModeControl Width="106" Caption="MQ7" TopDescription="ADS1X15"/>
-                        <huds:ModeControl Width="106" Caption="Light" TopDescription="ADS1X15"/>
-                        <huds:ModeControl Width="106" Caption="eCO2" TopDescription="CCS811"/>
-                        <huds:ModeControl Width="106" Caption="TVOC" TopDescription="CCS811"/>
-                        <huds:ModeControl Width="106" Caption="Resistance" TopDescription="CCS811"/>
-                        <huds:ModeControl Width="106" Caption="Temperature" TopDescription="CCS811"/>
+                        <huds:ModeControl x:Name="DHT22TempModeControl" Caption="Temperature" TopDescription="DHT22" HighWarningTrap="25" HighDangerTrap="28" LowWarningTrap="23" LowDangerTrap="20.0"/>
+                        <huds:ModeControl x:Name="DHT22HumModeControl" Caption="Humidity" TopDescription="DHT22" HighWarningTrap="55" HighDangerTrap="70" LowWarningTrap="45" LowDangerTrap="30"/>
+                        <huds:ModeControl x:Name="DHT22HeatModeControl" Caption="Heat Index" TopDescription="DHT22" HighWarningTrap="32" HighDangerTrap="52" LowWarningTrap="23" LowDangerTrap="18"/>
+                        <huds:ModeControl x:Name="BMP280PressureModeControl" Caption="Pressure" TopDescription="BMP280"/>
+                        <huds:ModeControl x:Name="BMP280AltitudeModeControl" Caption="Altitude" TopDescription="BMP280"/>
+                        <huds:ModeControl x:Name="BMP280TempModeControl" Caption="Temperature" TopDescription="BMP280"/>
+                        <huds:ModeControl x:Name="ADS1X15MQ135ModeControl" Caption="MQ135" TopDescription="ADS1X15" HighWarningTrap="6000" HighDangerTrap="11000"/>
+                        <huds:ModeControl x:Name="ADS1X15MQ7ModeControl" Caption="MQ7" TopDescription="ADS1X15" HighWarningTrap="6000" HighDangerTrap="11000"/>
+                        <huds:ModeControl x:Name="ADS1X15LightModeControl" Caption="Light" TopDescription="ADS1X15" HighWarningTrap="6000" HighDangerTrap="11000"/>
+                        <huds:ModeControl x:Name="CCS811eCO2ModeControl" Caption="eCO2" TopDescription="CCS811" HighWarningTrap="1000" HighDangerTrap="2000"/>
+                        <huds:ModeControl x:Name="CCS811TVOCModeControl" Caption="TVOC" TopDescription="CCS811" HighWarningTrap="250" HighDangerTrap="500"/>
+                        <huds:ModeControl x:Name="CCS811ResistanceModeControl" Caption="Resistance" TopDescription="CCS811"/>
+                        <huds:ModeControl x:Name="CCS811TempModeControl" Caption="Temperature" TopDescription="CCS811"/>
                     </WrapPanel>
                 </Grid>
 

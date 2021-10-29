@@ -22,9 +22,9 @@
         </Canvas>
 
         <StackPanel  Grid.Column="1">
-            <TextBlock x:Name="_TopDescription" Text="123123123" Foreground="{DynamicResource OWLOSInfo}" FontSize="10" HorizontalAlignment="Left" />
-            <TextBlock x:Name="_Caption" Text="2123123123" Foreground="{DynamicResource OWLOSInfo}" Margin="0,-4,0,2" FontSize="16" VerticalAlignment="Top" HorizontalAlignment="Right"/>
-            <TextBlock x:Name="_DownDescription" Text="123123123" Foreground="{DynamicResource OWLOSLight}" FontSize="6" HorizontalAlignment="Left" />
+            <TextBlock x:Name="_TopDescription" Text="--" Foreground="{DynamicResource OWLOSInfo}" FontSize="10" HorizontalAlignment="Left" />
+            <TextBlock x:Name="_Caption" Text="--" Foreground="{DynamicResource OWLOSInfo}" Margin="0,-4,0,2" FontSize="16" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+            <TextBlock x:Name="_Value" Text="NaN" Foreground="{DynamicResource OWLOSLight}" FontSize="6" HorizontalAlignment="Left" />
         </StackPanel>
 
         <Canvas Grid.Column="2">

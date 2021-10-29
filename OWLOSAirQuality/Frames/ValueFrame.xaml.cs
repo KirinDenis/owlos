@@ -150,7 +150,7 @@ namespace OWLOSAirQuality.Frames
                         }
                         if (!SensorsJoined)
                         {
-                            acData.OnDHT22tempChanged += DHT22tempValueControl.OnValueChanged;
+                            acData.OnDHT22tempChanged += DHT22tempValueControl.OnValueChanged;                            
                             acData.OnDHT22humChanged += DHT22humValueControl.OnValueChanged;
                             acData.OnDHT22heatChanged += DHT22heatValueControl.OnValueChanged;
 
@@ -166,6 +166,26 @@ namespace OWLOSAirQuality.Frames
                             acData.OnCCS811TVOCChanged += CCS811TVOCValueControl.OnValueChanged;
                             acData.OnCCS811resistenceChanged += CCS811resistenceValueControl.OnValueChanged;
                             acData.OnCCS811tempChanged += CCS811tempValueControl.OnValueChanged;
+
+                            //Modes ---
+
+                            acData.OnDHT22tempChanged += DHT22TempModeControl.OnValueChanged;
+                            acData.OnDHT22humChanged += DHT22HumModeControl.OnValueChanged;
+                            acData.OnDHT22heatChanged += DHT22HeatModeControl.OnValueChanged;
+
+                            acData.OnBMP280pressureChanged += BMP280PressureModeControl.OnValueChanged;
+                            acData.OnBMP280altitudeChanged += BMP280AltitudeModeControl.OnValueChanged;
+                            acData.OnBMP280temperatureChanged += BMP280TempModeControl.OnValueChanged;
+
+                            acData.OnADS1X15MQ135Changed += ADS1X15MQ135ModeControl.OnValueChanged;
+                            acData.OnADS1X15MQ7Changed += ADS1X15MQ7ModeControl.OnValueChanged;
+                            acData.OnADS1X15LightChanged += ADS1X15LightModeControl.OnValueChanged;
+
+                            acData.OnCCS811CO2Changed += CCS811eCO2ModeControl.OnValueChanged;
+                            acData.OnCCS811TVOCChanged += CCS811TVOCModeControl.OnValueChanged;
+                            acData.OnCCS811resistenceChanged += CCS811ResistanceModeControl.OnValueChanged;
+                            acData.OnCCS811tempChanged += CCS811TempModeControl.OnValueChanged;
+
                             SensorsJoined = true;
                         }
                     }
