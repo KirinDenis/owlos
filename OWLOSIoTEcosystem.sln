@@ -246,8 +246,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OWLOSDTOs", "OWLOSDTOs", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OWLOSDTOs", "OWLOSDTOs\OWLOSDTOs.csproj", "{FEC591DC-82D8-4B96-B4A9-7ECF6838647D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OWLOSAirQuality_InnoSetup", "OWLOSAirQuality_InnoSetup", "{A224C438-50C2-4650-9238-3592C63C69AD}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

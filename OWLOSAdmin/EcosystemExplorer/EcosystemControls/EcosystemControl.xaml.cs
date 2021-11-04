@@ -1,21 +1,12 @@
-﻿using OWLOSThingsManager.Ecosystem;
-using OWLOSThingsManager.Ecosystem.OWLOS;
-using OWLOSThingsManager.EcosystemExplorer.EcosystemControls;
+﻿using OWLOSThingsManager.EcosystemExplorer.EcosystemControls;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace OWLOSThingsManager.EcosystemExplorer
 {
@@ -28,7 +19,7 @@ namespace OWLOSThingsManager.EcosystemExplorer
         //когда панель принадлежит отдельному окну
         public OWLOSWindow window
         {
-            get { return _window; }
+            get => _window;
             set
             {
                 _window = value;
@@ -48,9 +39,9 @@ namespace OWLOSThingsManager.EcosystemExplorer
 
         public Transform storedRenderTransform = null;
 
-        private IEcosystemChildControl childControl = null;
+        private readonly IEcosystemChildControl childControl = null;
 
-        private DependencyPropertyDescriptor renderTransform = DependencyPropertyDescriptor.FromProperty(RenderTransformProperty, typeof(UserControl));
+        private readonly DependencyPropertyDescriptor renderTransform = DependencyPropertyDescriptor.FromProperty(RenderTransformProperty, typeof(UserControl));
 
         private bool isInDrag = false;
 
@@ -62,7 +53,6 @@ namespace OWLOSThingsManager.EcosystemExplorer
         public TranslateTransform transform { get; } = new TranslateTransform();
 
         
-
         private static EcosystemControl CurrentFocused;
 
         private bool _isFocused;
@@ -70,7 +60,7 @@ namespace OWLOSThingsManager.EcosystemExplorer
         private bool _isVisible = false;
         public bool isVisible
         {
-            get { return _isVisible; }
+            get => _isVisible;
             set
             {
                 _isVisible = value;
@@ -85,7 +75,7 @@ namespace OWLOSThingsManager.EcosystemExplorer
             }
         }
 
-        private bool lockMove = false;
+        private readonly bool lockMove = false;
 
         private Point ResizePoint;
 
@@ -97,14 +87,14 @@ namespace OWLOSThingsManager.EcosystemExplorer
 
         public bool IsFocused
         {
-            get { return _isFocused; }
+            get => _isFocused;
             private set
             {
                 _isFocused = value;
                 if (_isFocused)
                 {
                     childControl?.OnParentGetFocus();
-                    Dispatcher.Invoke((Action)(() =>
+                    Dispatcher.Invoke(() =>
                     {
                         {
                             FrameworkElement frameworkElement = Mouse.DirectlyOver as FrameworkElement;
@@ -133,19 +123,19 @@ namespace OWLOSThingsManager.EcosystemExplorer
                             //   Unloaded += UserControl_Unloaded;
                         }
                     }
-                    ));
+                    );
                 }
                 else
                 {
                     childControl?.OnParentLostFocus();
-                    Dispatcher.Invoke((Action)(() =>
+                    Dispatcher.Invoke(() =>
                     {
                         //  if ((treeViewItem != null) && treeViewItem.IsSelected)
                         //  {
                         //      treeViewItem.IsSelected = false;
                         //  }
                     }
-                    ));
+                    );
                 }
 
                 if (CurrentFocused != null
@@ -182,22 +172,26 @@ namespace OWLOSThingsManager.EcosystemExplorer
         {
             isVisible = true;
             ColorAnimation animation;
-            animation = new ColorAnimation();
-            animation.To = (new BrushConverter().ConvertFromString("#FFFFFFFF") as SolidColorBrush).Color;
-            animation.Duration = new Duration(TimeSpan.FromSeconds(1));
-            this.OpacityMask = new BrushConverter().ConvertFromString("#00FFFFFF") as SolidColorBrush;
-            this.OpacityMask.BeginAnimation(SolidColorBrush.ColorProperty, animation);
+            animation = new ColorAnimation
+            {
+                To = (new BrushConverter().ConvertFromString("#FFFFFFFF") as SolidColorBrush).Color,
+                Duration = new Duration(TimeSpan.FromSeconds(1))
+            };
+            OpacityMask = new BrushConverter().ConvertFromString("#00FFFFFF") as SolidColorBrush;
+            OpacityMask.BeginAnimation(SolidColorBrush.ColorProperty, animation);
         }
 
         public void Hide()
         {
             isVisible = false;
             ColorAnimation animation;
-            animation = new ColorAnimation();
-            animation.To = (new BrushConverter().ConvertFromString("#00FFFFFF") as SolidColorBrush).Color;
-            animation.Duration = new Duration(TimeSpan.FromSeconds(1));
-            this.OpacityMask = new BrushConverter().ConvertFromString("#FFFFFFFF") as SolidColorBrush;
-            this.OpacityMask.BeginAnimation(SolidColorBrush.ColorProperty, animation);
+            animation = new ColorAnimation
+            {
+                To = (new BrushConverter().ConvertFromString("#00FFFFFF") as SolidColorBrush).Color,
+                Duration = new Duration(TimeSpan.FromSeconds(1))
+            };
+            OpacityMask = new BrushConverter().ConvertFromString("#FFFFFFFF") as SolidColorBrush;
+            OpacityMask.BeginAnimation(SolidColorBrush.ColorProperty, animation);
         }
 
 
@@ -206,7 +200,7 @@ namespace OWLOSThingsManager.EcosystemExplorer
             transform.X = x;
             transform.Y = y;
             renderTransform.AddValueChanged(this, EcosystemControlPositionChanged);
-            this.RenderTransform = transform;
+            RenderTransform = transform;
         }
         public void EcosystemControlPositionChanged(object sender, EventArgs e)
         {
@@ -242,7 +236,7 @@ namespace OWLOSThingsManager.EcosystemExplorer
                         {
                             transform.X += (currentPoint.X - anchorPoint.X);
                             transform.Y += (currentPoint.Y - anchorPoint.Y);
-                            this.RenderTransform = transform;
+                            RenderTransform = transform;
                         }
                     }
                     else
@@ -287,7 +281,7 @@ namespace OWLOSThingsManager.EcosystemExplorer
                         anchorPoint = e.GetPosition(Parent as Grid);
 
                         
-                        this.CaptureMouse();
+                        CaptureMouse();
                         
                         isInDrag = true;
                     }
@@ -306,7 +300,7 @@ namespace OWLOSThingsManager.EcosystemExplorer
             {
                 if (isInDrag)
                 {
-                    this.ReleaseMouseCapture();
+                    ReleaseMouseCapture();
                     isInDrag = false;
                 }
             }
@@ -339,9 +333,11 @@ namespace OWLOSThingsManager.EcosystemExplorer
         {
             if (window == null)
             {
-                window = new OWLOSWindow();
-                window.Width = this.ActualWidth;
-                window.Height = this.ActualHeight;
+                window = new OWLOSWindow
+                {
+                    Width = ActualWidth,
+                    Height = ActualHeight
+                };
                 storedRenderTransform = RenderTransform;
                 //сразу после этого Parent уходит в null
                 parentGrid = (Parent as Grid);

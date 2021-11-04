@@ -1,0 +1,59 @@
+﻿<Window x:Class="OWLOSAirQuality.SingleAirQualityMainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OWLOSAirQuality"
+        mc:Ignorable="d"
+        Background="#01000000"
+        Title="OWLOS Air Quality" Width="1185" Height="732" WindowStartupLocation="CenterScreen" AllowsTransparency="True" WindowStyle="None"
+        TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="41"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Background="{DynamicResource OWLOSDarkAlpha2}">
+        <Grid Margin="25,6">
+            <TextBlock Text="OWLOS Air Quality" Foreground="{DynamicResource OWLOSLight}" VerticalAlignment="Center"></TextBlock>
+
+                <StackPanel  HorizontalAlignment="Right" VerticalAlignment="Top">
+                    <StackPanel Margin="16,10,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <TextBlock x:Name="_Controls" Text="[win controls]" FontSize="12" Foreground="{DynamicResource OWLOSSecondary}" HorizontalAlignment="Right" />
+                        <TextBlock Text="  S  " Foreground="{DynamicResource OWLOSPrimary}" FontSize="10" Background="{DynamicResource OWLOSInfo}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="16,0,0,0"/>
+                        <TextBlock Text="  W  " Foreground="{DynamicResource OWLOSPrimary}" FontSize="10" Background="{DynamicResource OWLOSInfo}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="16,0,16,0"/>
+                        <TextBlock Text="  T  " Foreground="{DynamicResource OWLOSPrimary}" FontSize="10" Background="{DynamicResource OWLOSInfo}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="0,0"/>
+                    </StackPanel>
+
+                </StackPanel>
+
+            </Grid>
+        </Grid>
+        
+        
+        <Viewbox x:Name="viewbox" Grid.Row="1" PreviewMouseDown="viewbox_PreviewMouseDown">
+            <Viewbox.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform AngleX="0" AngleY="0"/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Viewbox.RenderTransform>
+
+            <Grid x:Name="MainGrid" Width="1920" Height="1080" Background="{DynamicResource OWLOSDarkAlpha2}" >
+
+            </Grid>
+        </Viewbox>
+
+        
+        <Canvas Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Cursor="SizeNWSE" PreviewMouseDown="Canvas_PreviewMouseDown" PreviewMouseMove="Canvas_PreviewMouseMove" Background="#01000000">
+            <Line x:Name="SelSQ1" Stroke="{DynamicResource OWLOSInfo}" X1="-16" Y1="-14" X2="0" Y2="-14" StrokeThickness="3" />
+            <Line x:Name="SelSQ2" Stroke="{DynamicResource OWLOSInfo}" X1="-2" Y1="-28" X2="-2" Y2="-14" StrokeThickness="3" />
+        </Canvas>
+
+        <TextBlock x:Name="positin" Text="131232" Grid.Row="0" HorizontalAlignment="Left" Foreground="#FFFBF3F3"></TextBlock>
+        
+    </Grid>
+</Window>

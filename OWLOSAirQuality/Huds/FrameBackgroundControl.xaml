@@ -48,18 +48,6 @@
                 <TextBox x:Name="SearchTextBox" Text="search" Width="172"  Background="#45000000" FontSize="14" Foreground="{DynamicResource OWLOSLight}" BorderBrush="{DynamicResource OWLOSSecondary}" HorizontalAlignment="Right"  />
             </StackPanel>
 
-            <StackPanel  HorizontalAlignment="Right" VerticalAlignment="Top">
-                <StackPanel Margin="16,10,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
-                    <TextBlock Text="  S  " Foreground="{DynamicResource OWLOSPrimary}" FontSize="16" Background="{DynamicResource OWLOSInfo}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="16,0,0,0"/>
-                    <TextBlock Text="  W  " Foreground="{DynamicResource OWLOSPrimary}" FontSize="16" Background="{DynamicResource OWLOSInfo}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="16,0,16,0"/>
-                    <TextBlock Text="  T  " Foreground="{DynamicResource OWLOSPrimary}" FontSize="16" Background="{DynamicResource OWLOSInfo}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="0,0"/>
-                </StackPanel>
-
-                <StackPanel Margin="0,0" Orientation="Horizontal" HorizontalAlignment="Right">
-                    <TextBlock x:Name="_Controls" Text="[win controls]" FontSize="12" Foreground="{DynamicResource OWLOSSecondary}" HorizontalAlignment="Right" />
-                </StackPanel>
-
-            </StackPanel>
 
         </StackPanel>
 

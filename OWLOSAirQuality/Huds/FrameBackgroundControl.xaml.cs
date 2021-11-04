@@ -120,22 +120,6 @@ namespace OWLOSAirQuality.Huds
             }
         }
 
-        public string Controls
-        {
-            get
-            {
-                return _Controls != null ? _Controls.Text : string.Empty;
-            }
-            set
-            {
-                if (_Controls != null)
-                {
-                    _Controls.Text = value;
-                }
-            }
-        }
-
-
         
 
 
