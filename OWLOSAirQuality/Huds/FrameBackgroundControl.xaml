@@ -17,15 +17,6 @@
 
             <Rectangle Stroke="{DynamicResource OWLOSSecondaryAlpha1}" Canvas.Left="16" Canvas.Top="16" Width="1894" Height="1048" StrokeThickness="2"/>
 
-            <Rectangle Stroke="{DynamicResource OWLOSSecondary}" Canvas.Left="0" Canvas.Top="0" Width="1920" Height="1080" StrokeThickness="2"/>
-
-            <Line Stroke="{DynamicResource OWLOSInfo}" X1="-10" Y1="0" X2="10" Y2="0" StrokeThickness="3"/>
-            <Line Stroke="{DynamicResource OWLOSInfo}" X1="0" Y1="-10" X2="0" Y2="10" StrokeThickness="5"/>
-
-            <Line Stroke="{DynamicResource OWLOSInfo}" X1="1910" Y1="0" X2="1930" Y2="0" StrokeThickness="3"/>
-            <Line Stroke="{DynamicResource OWLOSInfo}" X1="1920" Y1="-10" X2="1920" Y2="10" StrokeThickness="5"/>
-
-            <Line Stroke="{DynamicResource OWLOSInfo}" X1="57" Y1="117" X2="1863" Y2="117" StrokeThickness="1"/>
         </Canvas>
 
 
@@ -47,8 +38,6 @@
             <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4,16,4,0">
                 <TextBox x:Name="SearchTextBox" Text="search" Width="172"  Background="#45000000" FontSize="14" Foreground="{DynamicResource OWLOSLight}" BorderBrush="{DynamicResource OWLOSSecondary}" HorizontalAlignment="Right"  />
             </StackPanel>
-
-
         </StackPanel>
 
         <StackPanel Margin="57,25" Orientation="Horizontal" Height="106" HorizontalAlignment="Left" VerticalAlignment="Bottom">
@@ -80,12 +69,7 @@
                 <TextBlock Text="http://192.168.1.101:4005" FontSize="10" Foreground="{DynamicResource OWLOSLight}" HorizontalAlignment="Center"  Visibility="Hidden"/>
             </StackPanel>
             <StackPanel Margin="41,16" Orientation="Horizontal">
-
             </StackPanel>
         </StackPanel>
-
-
-
-
     </Grid>
 </UserControl>

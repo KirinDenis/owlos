@@ -8,31 +8,42 @@
         Background="#01000000"
         Title="OWLOS Air Quality" Width="1185" Height="732" WindowStartupLocation="CenterScreen" AllowsTransparency="True" WindowStyle="None"
         TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed">
-    <Grid>
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome     
+        CaptionHeight="1"  
+        CornerRadius ="0"
+        ResizeBorderThickness="10"         
+        GlassFrameThickness="0">
+        </WindowChrome>
+    </WindowChrome.WindowChrome>
+
+    <Grid x:Name="GeneralGrid" Background="{DynamicResource OWLOSDark}">
         <Grid.RowDefinitions>
             <RowDefinition Height="41"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" Background="{DynamicResource OWLOSDarkAlpha2}">
-        <Grid Margin="25,6">
-            <TextBlock Text="OWLOS Air Quality" Foreground="{DynamicResource OWLOSLight}" VerticalAlignment="Center"></TextBlock>
+        <Border Grid.RowSpan="2" BorderThickness="2,2,2,2" BorderBrush="{DynamicResource OWLOSSecondaryAlpha1}"/>
 
+        <Grid Grid.Row="0" Background="{DynamicResource OWLOSDarkAlpha1}" MouseDown="Grid_MouseDown" PreviewMouseDown="Grid_PreviewMouseDown">
+            <Border BorderBrush="{DynamicResource OWLOSPrimaryAlpha2}" BorderThickness="0,0,0,2" Margin="16,0,16,0"></Border>
+            <Grid Margin="16,6" >
+                <TextBlock Text="OWLOS Air Quality" Foreground="{DynamicResource OWLOSLight}" FontSize="16" VerticalAlignment="Center"></TextBlock>
                 <StackPanel  HorizontalAlignment="Right" VerticalAlignment="Top">
-                    <StackPanel Margin="16,10,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
-                        <TextBlock x:Name="_Controls" Text="[win controls]" FontSize="12" Foreground="{DynamicResource OWLOSSecondary}" HorizontalAlignment="Right" />
-                        <TextBlock Text="  S  " Foreground="{DynamicResource OWLOSPrimary}" FontSize="10" Background="{DynamicResource OWLOSInfo}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="16,0,0,0"/>
-                        <TextBlock Text="  W  " Foreground="{DynamicResource OWLOSPrimary}" FontSize="10" Background="{DynamicResource OWLOSInfo}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="16,0,16,0"/>
-                        <TextBlock Text="  T  " Foreground="{DynamicResource OWLOSPrimary}" FontSize="10" Background="{DynamicResource OWLOSInfo}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="0,0"/>
+                    <StackPanel Margin="16,0,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <TextBlock x:Name="Controls" Text="[win controls]" FontSize="12" Foreground="{DynamicResource OWLOSSecondary}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                        <TextBlock x:Name="TransparentTextBlock" Text="  T  " Foreground="{DynamicResource OWLOSDark}" FontSize="16" Background="{DynamicResource OWLOSInfoAlpha2}" HorizontalAlignment="Left" VerticalAlignment="Stretch"  Margin="4,0,0,0" MouseDown="TransparentTextBlock_MouseDown" MouseEnter="TransparentTextBlock_MouseEnter" MouseLeave="TransparentTextBlock_MouseLeave"/>
+                        <TextBlock x:Name="TopMostTextBlock" Text="  T/M  " Foreground="{DynamicResource OWLOSDark}" FontSize="16" Background="{DynamicResource OWLOSInfoAlpha2}" HorizontalAlignment="Left" VerticalAlignment="Stretch"  Margin="4,0,0,0" MouseEnter="TransparentTextBlock_MouseEnter" MouseLeave="TransparentTextBlock_MouseLeave" MouseDown="TopMostTextBlock_MouseDown"/>
+                        <TextBlock x:Name="HideTextBlock" Text="  H  " Foreground="{DynamicResource OWLOSDark}" FontSize="16" Background="{DynamicResource OWLOSWarningAlpha2}" HorizontalAlignment="Left" VerticalAlignment="Center"  Margin="4,0,0,0" MouseDown="HideTextBlock_MouseDown" MouseEnter="HideTextBlock_MouseEnter" MouseLeave="HideTextBlock_MouseLeave"/>
+                        <TextBlock x:Name="MNTextBlock" Text="  M/N  " Foreground="{DynamicResource OWLOSDark}" FontSize="16" Background="{DynamicResource OWLOSWarningAlpha2}" HorizontalAlignment="Left" VerticalAlignment="Center"  Margin="4,0,4,0" MouseDown="MNTextBlock_MouseDown" MouseEnter="HideTextBlock_MouseEnter" MouseLeave="HideTextBlock_MouseLeave"/>
+                        <TextBlock x:Name="CloseTextBlock" Text="  X  " Foreground="{DynamicResource OWLOSDark}" FontSize="16" Background="{DynamicResource OWLOSDangerAlpha2}" HorizontalAlignment="Left" VerticalAlignment="Center"  Margin="0,0" MouseDown="CloseTextBlock_MouseDown" MouseEnter="CloseTextBlock_MouseEnter" MouseLeave="CloseTextBlock_MouseLeave"/>
                     </StackPanel>
-
                 </StackPanel>
-
             </Grid>
         </Grid>
-        
-        
-        <Viewbox x:Name="viewbox" Grid.Row="1" PreviewMouseDown="viewbox_PreviewMouseDown">
+
+        <Viewbox x:Name="viewbox" Grid.Row="1" PreviewMouseDown="GeneralGrid_PreviewMouseDown">
             <Viewbox.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -42,18 +53,14 @@
                 </TransformGroup>
             </Viewbox.RenderTransform>
 
-            <Grid x:Name="MainGrid" Width="1920" Height="1080" Background="{DynamicResource OWLOSDarkAlpha2}" >
+            <Grid x:Name="MainGrid" Width="1920" Height="1080">
 
             </Grid>
         </Viewbox>
 
-        
-        <Canvas Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Cursor="SizeNWSE" PreviewMouseDown="Canvas_PreviewMouseDown" PreviewMouseMove="Canvas_PreviewMouseMove" Background="#01000000">
-            <Line x:Name="SelSQ1" Stroke="{DynamicResource OWLOSInfo}" X1="-16" Y1="-14" X2="0" Y2="-14" StrokeThickness="3" />
-            <Line x:Name="SelSQ2" Stroke="{DynamicResource OWLOSInfo}" X1="-2" Y1="-28" X2="-2" Y2="-14" StrokeThickness="3" />
+        <Canvas Grid.RowSpan="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" >
+            <Line x:Name="SelSQ1" Stroke="{DynamicResource OWLOSInfo}" X1="-14" Y1="-1" X2="0" Y2="-1" StrokeThickness="3" />
+            <Line x:Name="SelSQ2" Stroke="{DynamicResource OWLOSInfo}" X1="-1" Y1="-0" X2="-1" Y2="-14" StrokeThickness="3" />
         </Canvas>
-
-        <TextBlock x:Name="positin" Text="131232" Grid.Row="0" HorizontalAlignment="Left" Foreground="#FFFBF3F3"></TextBlock>
-        
     </Grid>
 </Window>
