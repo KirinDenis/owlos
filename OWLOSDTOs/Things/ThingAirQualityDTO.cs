@@ -116,12 +116,14 @@ namespace OWLOSEcosystemService.DTO.Things
                     OnDHT22heatChanged?.Invoke(this, new ValueEventArgs(DHT22heat));
                     OnBMP280pressureChanged?.Invoke(this, new ValueEventArgs(BMP280pressure));
                     OnBMP280altitudeChanged?.Invoke(this, new ValueEventArgs(BMP280altitude));
+                    OnBMP280temperatureChanged?.Invoke(this, new ValueEventArgs(BMP280temperature));
                     OnADS1X15MQ135Changed?.Invoke(this, new ValueEventArgs(ADS1X15MQ135));
                     OnADS1X15MQ7Changed?.Invoke(this, new ValueEventArgs(ADS1X15MQ7));
                     OnADS1X15LightChanged?.Invoke(this, new ValueEventArgs(ADS1X15Light));
                     OnCCS811CO2Changed?.Invoke(this, new ValueEventArgs(CCS811CO2));
                     OnCCS811TVOCChanged?.Invoke(this, new ValueEventArgs(CCS811TVOC));
                     OnCCS811resistenceChanged?.Invoke(this, new ValueEventArgs(CCS811resistence));
+                    OnCCS811tempChanged?.Invoke(this, new ValueEventArgs(CCS811temp));
                 }
             }
         }
