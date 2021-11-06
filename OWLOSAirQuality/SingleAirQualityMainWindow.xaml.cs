@@ -13,7 +13,7 @@ namespace OWLOSAirQuality
         public SingleAirQualityMainWindow()
         {
             InitializeComponent();
-
+            
             ValueFrame valueFrame = new ValueFrame();
             valueFrame.MainGrid.Children.Remove(valueFrame.ValueHolderGrid);
             valueFrame.Close();
