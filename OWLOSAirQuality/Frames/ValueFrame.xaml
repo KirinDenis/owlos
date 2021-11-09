@@ -46,7 +46,7 @@
                     </StackPanel>
 
                     <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,16,0,-16">
-                        <huds:ValueControl x:Name="BMP280pressureValueControl" Width="172" Height="172" Caption="BMP280" UnitOfMeasure="kPa" Description="Pressure" />
+                        <huds:PresureValueControl x:Name="BMP280pressureValueControl" Width="172" Height="172" Caption="BMP280" Description="Pressure" />
                         <huds:ValueControl x:Name="BMP280altitudeValueControl" Width="172" Height="172" Caption="BMP280" UnitOfMeasure="Meters" Description="Altitude" />
                         <huds:ValueControl x:Name="BMP280temperatureValueControl" Width="172" Height="172" Caption="BMP280" UnitOfMeasure="Celsius" Description="Temperature" />
                     </WrapPanel>

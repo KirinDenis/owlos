@@ -42,6 +42,7 @@ using OWLOSEcosystemService.DTO.Things;
 using System;
 using System.Timers;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace OWLOSAirQuality.Frames
 {
@@ -56,7 +57,7 @@ namespace OWLOSAirQuality.Frames
 
         private bool timerBusy = false;
 
-        private ValueControl CurrentValueControl;
+        private object CurrentValueControl;
 
         private readonly int GraphRefreshInterval = 10000;
         public ValueFrame()
@@ -107,18 +108,40 @@ namespace OWLOSAirQuality.Frames
 
         private void ValueControl_OnSelect(object sender, EventArgs e)
         {
-            CurrentValueControl = (ValueControl)sender;
 
-            ValueGraph.UnitOfMeasure.Text = "unit of measure: " + CurrentValueControl.UnitOfMeasure;
-            ValueGraphCaption.Text = CurrentValueControl.Caption;
-            ValueGraphDescription.Text = CurrentValueControl.Description;
+            if (sender.GetType() == typeof(ValueControl))
+            {
+                ValueControl currentValueControl = (ValueControl)sender;
 
-            ValueGraph.HighDangerTrap = CurrentValueControl.HighDangerTrap;
-            ValueGraph.HighWarningTrap = CurrentValueControl.HighWarningTrap;
+                ValueGraph.UnitOfMeasure.Text = "unit of measure: " + currentValueControl.UnitOfMeasure;
+                ValueGraphCaption.Text = currentValueControl.Caption;
+                ValueGraphDescription.Text = currentValueControl.Description;
 
-            ValueGraph.LowDangerTrap = CurrentValueControl.LowDangerTrap;
-            ValueGraph.LowWarningTrap = CurrentValueControl.LowWarningTrap;
+                ValueGraph.HighDangerTrap = currentValueControl.HighDangerTrap;
+                ValueGraph.HighWarningTrap = currentValueControl.HighWarningTrap;
 
+                ValueGraph.LowDangerTrap = currentValueControl.LowDangerTrap;
+                ValueGraph.LowWarningTrap = currentValueControl.LowWarningTrap;
+
+                CurrentValueControl = currentValueControl;
+            }
+            else
+            if (sender.GetType() == typeof(PresureValueControl))
+            {
+                PresureValueControl currentValueControl = (PresureValueControl)sender;
+
+                ValueGraph.UnitOfMeasure.Text = "unit of measure: Pa";
+                ValueGraphCaption.Text = currentValueControl.Caption;
+                ValueGraphDescription.Text = currentValueControl.Description;
+
+                ValueGraph.HighDangerTrap = currentValueControl.HighDangerTrap;
+                ValueGraph.HighWarningTrap = currentValueControl.HighWarningTrap;
+
+                ValueGraph.LowDangerTrap = currentValueControl.LowDangerTrap;
+                ValueGraph.LowWarningTrap = currentValueControl.LowWarningTrap;
+
+                CurrentValueControl = currentValueControl;
+            }
             OnLifeCycleTimer(null, null);
         }
 

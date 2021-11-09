@@ -19,16 +19,7 @@ LaunchProgram=Start OWLOS Air Quality after finishing installation
 
 [Files]
 Source: "..\DOTNETCore50Installer\bin\Release\DOTNETCore50Installer.dll"; DestDir: "{app}"; CopyMode: alwaysoverwrite;  Flags: ignoreversion;
-Source: "..\OWLOSAirQuality\bin\Release\net5.0-windows\OWLOSAirQuality.exe"; DestDir: "{app}"; CopyMode: alwaysoverwrite;  Flags: ignoreversion;
-Source: "..\OWLOSAirQuality\bin\Release\net5.0-windows\Newtonsoft.Json.dll"; DestDir: "{app}"; CopyMode: alwaysoverwrite;   Flags: ignoreversion;
-Source: "..\OWLOSAirQuality\bin\Release\net5.0-windows\OWLOSAirQuality.deps.json"; DestDir: "{app}"; CopyMode: alwaysoverwrite;   Flags: ignoreversion;
-Source: "..\OWLOSAirQuality\bin\Release\net5.0-windows\OWLOSAirQuality.dll"; DestDir: "{app}"; CopyMode: alwaysoverwrite;   Flags: ignoreversion;
-Source: "..\OWLOSAirQuality\bin\Release\net5.0-windows\OWLOSAirQuality.exe"; DestDir: "{app}"; CopyMode: alwaysoverwrite;   Flags: ignoreversion;
-Source: "..\OWLOSAirQuality\bin\Release\net5.0-windows\OWLOSAirQuality.pdb"; DestDir: "{app}"; CopyMode: alwaysoverwrite;   Flags: ignoreversion;
-Source: "..\OWLOSAirQuality\bin\Release\net5.0-windows\OWLOSAirQuality.runtimeconfig.dev.json"; DestDir: "{app}"; CopyMode: alwaysoverwrite;   Flags: ignoreversion;
-Source: "..\OWLOSAirQuality\bin\Release\net5.0-windows\OWLOSAirQuality.runtimeconfig.json"; DestDir: "{app}"; CopyMode: alwaysoverwrite;   Flags: ignoreversion;
-Source: "..\OWLOSAirQuality\bin\Release\net5.0-windows\OWLOSDTOs.dll"; DestDir: "{app}"; CopyMode: alwaysoverwrite;   Flags: ignoreversion;
-Source: "..\OWLOSAirQuality\bin\Release\net5.0-windows\OWLOSDTOs.pdb"; DestDir: "{app}"; CopyMode: alwaysoverwrite;   Flags: ignoreversion;
+Source: "..\OWLOSAirQuality\bin\Release\net5.0-windows\publish\*"; DestDir: "{app}"; CopyMode: alwaysoverwrite;  Flags: ignoreversion recursesubdirs;
 
 [Code]
 const

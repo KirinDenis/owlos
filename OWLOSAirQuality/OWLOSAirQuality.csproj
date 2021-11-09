@@ -86,4 +86,17 @@ DIY Open Source OS for building IoT ecosystems
     <Folder Include="OWLOS\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Huds\PresureValueControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Huds\PresureValueControl.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
 </Project>
