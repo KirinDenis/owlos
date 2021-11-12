@@ -12,6 +12,8 @@ namespace OWLOSAirQuality.Huds
         protected float? OriginalValue = float.NaN;
 
         protected ColorAnimation animation;
+
+        private Random random = new Random();
         public string Value
         {
             get => _Value != null ? _Value.Text : string.Empty;
@@ -28,7 +30,7 @@ namespace OWLOSAirQuality.Huds
                             animation = new ColorAnimation
                             {
                                 To = ((SolidColorBrush)App.Current.Resources["OWLOSInfoAlpha1"]).Color,
-                                Duration = new Duration(TimeSpan.FromSeconds(1.3)),
+                                Duration = new Duration(TimeSpan.FromSeconds(0.7 + random.NextDouble())),
                                 RepeatBehavior = RepeatBehavior.Forever
                             };
                             Background = new SolidColorBrush(((SolidColorBrush)Background).Color);                            
@@ -46,7 +48,7 @@ namespace OWLOSAirQuality.Huds
                                 if (OriginalValue <= LowDangerTrap)
                                 {
                                     animation.To = ((SolidColorBrush)App.Current.Resources["OWLOSDangerAlpha2"]).Color;
-                                    animation.Duration = new Duration(TimeSpan.FromSeconds(0.5));
+                                    animation.Duration = new Duration(TimeSpan.FromSeconds(0.2 + random.NextDouble()));
 
                                     Background = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSInfoAlpha1"]).Color);
                                     Background.BeginAnimation(SolidColorBrush.ColorProperty, animation);
@@ -59,7 +61,7 @@ namespace OWLOSAirQuality.Huds
                                 if ((OriginalValue <= LowWarningTrap) && (!setTrap))
                                 {
                                     animation.To = ((SolidColorBrush)App.Current.Resources["OWLOSWarningAlpha2"]).Color;
-                                    animation.Duration = new Duration(TimeSpan.FromSeconds(1.3));
+                                    animation.Duration = new Duration(TimeSpan.FromSeconds(0.7 + +random.NextDouble()));
 
                                     Background = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSInfoAlpha1"]).Color);
                                     Background.BeginAnimation(SolidColorBrush.ColorProperty, animation);
@@ -72,7 +74,7 @@ namespace OWLOSAirQuality.Huds
                                 if ((OriginalValue >= HighDangerTrap) && (!setTrap))
                                 {
                                     animation.To = ((SolidColorBrush)App.Current.Resources["OWLOSDangerAlpha2"]).Color;
-                                    animation.Duration = new Duration(TimeSpan.FromSeconds(0.5));
+                                    animation.Duration = new Duration(TimeSpan.FromSeconds(0.2 + random.NextDouble()));
 
                                     Background = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSInfoAlpha1"]).Color);
                                     Background.BeginAnimation(SolidColorBrush.ColorProperty, animation);
@@ -85,7 +87,7 @@ namespace OWLOSAirQuality.Huds
                                 if ((OriginalValue >= HighWarningTrap) && (!setTrap))
                                 {
                                     animation.To = ((SolidColorBrush)App.Current.Resources["OWLOSWarningAlpha2"]).Color;
-                                    animation.Duration = new Duration(TimeSpan.FromSeconds(1.3));
+                                    animation.Duration = new Duration(TimeSpan.FromSeconds(0.5 + random.NextDouble()));
 
                                     Background = new SolidColorBrush(((SolidColorBrush)App.Current.Resources["OWLOSInfoAlpha2"]).Color);
                                     Background.BeginAnimation(SolidColorBrush.ColorProperty, animation);

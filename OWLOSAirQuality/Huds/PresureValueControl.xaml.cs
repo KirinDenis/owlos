@@ -266,7 +266,7 @@ namespace OWLOSAirQuality.Huds
             {
 
                 _OriginalValue = _OriginalValue / 1000.0f; //to kPa
-                _mmHgValue.Text  = String.Format("{0:0.##}", _OriginalValue * 7.5006375541921f); //to mmHg https://stackoverflow.com/questions/6951335/using-string-format-to-show-decimal-up-to-2-places-or-simple-integer/6951366
+                _mmHgValue.Text  = string.Format("{0:0.##}", _OriginalValue * 7.5006375541921f); //to mmHg https://stackoverflow.com/questions/6951335/using-string-format-to-show-decimal-up-to-2-places-or-simple-integer/6951366
 
                 if ((OriginalValue == null) || (float.IsNaN((float)OriginalValue)))
                 {
@@ -307,12 +307,12 @@ namespace OWLOSAirQuality.Huds
                                 if (_OriginalValue >= OriginalValue)
                                 {
                                     OriginalValue = _OriginalValue;
-                                    Value = String.Format("{0:0.###}", OriginalValue);
+                                    Value = string.Format("{0:0.##}", OriginalValue);
                                     Status = NetworkStatus.Online;
                                     valueTimer.Stop();
                                     return;
                                 }
-                                _kPaValue.Text = ((float)OriginalValue).ToString();
+                                _kPaValue.Text = string.Format("{0:0.##}", OriginalValue);
                             });
                         }
                         catch { }

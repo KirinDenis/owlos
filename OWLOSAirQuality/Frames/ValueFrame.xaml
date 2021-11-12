@@ -32,7 +32,7 @@
                     </StackPanel>
 
                     <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,16,0,-16">
-                        <huds:ValueControl x:Name="DHT22tempValueControl" Width="172" Height="172" Caption="DHT22" UnitOfMeasure="Celsius" Description="Temperature" HighWarningTrap="25" HighDangerTrap="28" LowWarningTrap="23" LowDangerTrap="20.0"/>
+                        <huds:TemperatureValueControl x:Name="DHT22tempValueControl" Width="172" Height="172" Caption="DHT22" Description="Temperature" HighWarningTrap="25" HighDangerTrap="28" LowWarningTrap="23" LowDangerTrap="20.0"/>
                         <huds:ValueControl x:Name="DHT22humValueControl" Width="172" Height="172" Caption="DHT22" UnitOfMeasure="%" Description="Humidity" HighWarningTrap="55" HighDangerTrap="70" LowWarningTrap="45" LowDangerTrap="30" />
                         <huds:ValueControl x:Name="DHT22heatValueControl" Width="172" Height="172" Caption="DHT22" UnitOfMeasure="" Description="Heat Index" HighWarningTrap="32" HighDangerTrap="52" LowWarningTrap="23" LowDangerTrap="18"/>
                     </WrapPanel>
@@ -48,7 +48,7 @@
                     <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,16,0,-16">
                         <huds:PresureValueControl x:Name="BMP280pressureValueControl" Width="172" Height="172" Caption="BMP280" Description="Pressure" />
                         <huds:ValueControl x:Name="BMP280altitudeValueControl" Width="172" Height="172" Caption="BMP280" UnitOfMeasure="Meters" Description="Altitude" />
-                        <huds:ValueControl x:Name="BMP280temperatureValueControl" Width="172" Height="172" Caption="BMP280" UnitOfMeasure="Celsius" Description="Temperature" />
+                        <huds:TemperatureValueControl x:Name="BMP280temperatureValueControl" Width="172" Height="172" Caption="BMP280" Description="Temperature" />
                     </WrapPanel>
                 </Grid>
 
@@ -92,7 +92,7 @@
                     </StackPanel>
 
                     <WrapPanel HorizontalAlignment="Left" VerticalAlignment="Center" Margin="24,16,0,-16">
-                        <huds:ValueControl x:Name="CCS811tempValueControl" Width="172" Height="172" Caption="CCS811" UnitOfMeasure="Fahrenheit" Description="Temperature" />
+                        <huds:TemperatureValueControl x:Name="CCS811tempValueControl" Width="172" Height="172" Caption="CCS811" DefaultCelsius="False" CurentCelsius="False" Description="Temperature" />
                     </WrapPanel>
                 </Grid>
 

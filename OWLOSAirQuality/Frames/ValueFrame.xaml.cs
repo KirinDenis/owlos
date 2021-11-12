@@ -42,7 +42,6 @@ using OWLOSEcosystemService.DTO.Things;
 using System;
 using System.Timers;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace OWLOSAirQuality.Frames
 {
@@ -142,6 +141,32 @@ namespace OWLOSAirQuality.Frames
 
                 CurrentValueControl = currentValueControl;
             }
+            else
+            if (sender.GetType() == typeof(TemperatureValueControl))
+            {
+                TemperatureValueControl currentValueControl = (TemperatureValueControl)sender;
+
+                if (currentValueControl.DefaultCelsius)
+                {
+                    ValueGraph.UnitOfMeasure.Text = "unit of measure: Celsius";
+                }
+                else
+                {
+                    ValueGraph.UnitOfMeasure.Text = "unit of measure: Fahrenheit";
+                }
+                ValueGraphCaption.Text = currentValueControl.Caption;
+                ValueGraphDescription.Text = currentValueControl.Description;
+
+                ValueGraph.HighDangerTrap = currentValueControl.HighDangerTrap;
+                ValueGraph.HighWarningTrap = currentValueControl.HighWarningTrap;
+
+                ValueGraph.LowDangerTrap = currentValueControl.LowDangerTrap;
+                ValueGraph.LowWarningTrap = currentValueControl.LowWarningTrap;
+
+                CurrentValueControl = currentValueControl;
+            }
+
+
             OnLifeCycleTimer(null, null);
         }
 

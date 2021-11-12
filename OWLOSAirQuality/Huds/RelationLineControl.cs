@@ -103,11 +103,18 @@ namespace OWLOSThingsManager.EcosystemExplorer
         }
         public void Hide()
         {
-            curveLine.Visibility = Visibility.Hidden;
+            if (curveLine != null)
+            {
+                curveLine.Visibility = ellipse.Visibility = Visibility.Hidden;
+                
+            }
         }
         public void Show()
         {
-            curveLine.Visibility = Visibility.Visible;
+            if (curveLine != null)
+            {
+                curveLine.Visibility = ellipse.Visibility = Visibility.Visible;
+            }
         }
         public Path DrawCurveLine(FrameworkElement startElement, FrameworkElement relativeElement, FrameworkElement target, SolidColorBrush lineColor)
         {

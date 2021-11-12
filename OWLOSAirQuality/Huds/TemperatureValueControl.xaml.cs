@@ -50,7 +50,7 @@ namespace OWLOSAirQuality.Huds
     /// <summary>
     /// Interaction logic for ValueControl.xaml
     /// </summary>
-    public partial class ValueControl : UserControl
+    public partial class TemperatureValueControl : UserControl
     {
         public string Caption
         {
@@ -127,17 +127,6 @@ namespace OWLOSAirQuality.Huds
                 _Value.FontSize = 42;
                 _Value.Text = "--";
                 Status = NetworkStatus.Offline;
-            }
-        }
-        public string UnitOfMeasure
-        {
-            get => _UnitOfMeasure != null ? _UnitOfMeasure.Text : string.Empty;
-            set
-            {
-                if (_UnitOfMeasure != null)
-                {
-                    _UnitOfMeasure.Text = value;
-                }
             }
         }
 
@@ -218,6 +207,40 @@ namespace OWLOSAirQuality.Huds
             }
         }
 
+        private bool _DefaultCelsius = true;
+        public bool DefaultCelsius
+        {
+            get => _DefaultCelsius;
+
+            set
+            {
+                _DefaultCelsius = value;
+            }
+        }
+
+        private float? _StoredValue = float.NaN;
+
+        private bool _CurentCelsius = true;
+        public bool CurentCelsius
+        {
+            get => _CurentCelsius;
+
+            set
+            {
+                _CurentCelsius = value;
+                if (_CurentCelsius)
+                {
+                    CurrentUnitOfMesure.Text = "Celsius";
+                }
+                else
+                {
+                    CurrentUnitOfMesure.Text = "Fahrenheit";
+                }
+
+                SetValue(_StoredValue);
+            }
+        }
+
         protected NetworkStatus _Status = NetworkStatus.Offline;
         public NetworkStatus Status
         {
@@ -265,7 +288,7 @@ namespace OWLOSAirQuality.Huds
         public delegate void OnSelectEventHandler(object? sender, EventArgs e);
         public event OnSelectEventHandler OnSelect;
 
-        public ValueControl()
+        public TemperatureValueControl()
         {
             InitializeComponent();
             Status = NetworkStatus.Offline;
@@ -273,8 +296,21 @@ namespace OWLOSAirQuality.Huds
 
         protected void SetValue(float? _OriginalValue)
         {
+            _StoredValue = _OriginalValue;
+
             if ((_OriginalValue != null) && (!float.IsNaN((float)_OriginalValue)))
             {
+                
+
+                if (DefaultCelsius && !CurentCelsius)
+                {
+                    _OriginalValue = (_OriginalValue * (9.0f / 5.0f)) + 32.0f;
+                }
+                else
+                if (!DefaultCelsius && CurentCelsius)
+                {
+                    _OriginalValue = (_OriginalValue - 32.0f) * (5.0f / 9.0f);
+                }
 
                 if ((OriginalValue == null) || (float.IsNaN((float)OriginalValue)))
                 {
@@ -433,6 +469,11 @@ namespace OWLOSAirQuality.Huds
 
             }
             catch { }
+        }
+
+        private void CurrentUnitOfMesure_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            CurentCelsius = !CurentCelsius;
         }
     }
 }
