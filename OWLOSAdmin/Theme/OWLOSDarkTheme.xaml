@@ -100,6 +100,8 @@
     <SolidColorBrush x:Key = "OWLOSDarkAlpha2" Color ="#C0141515" />
     <SolidColorBrush x:Key = "OWLOSDarkAlpha3" Color ="#F0141515" />
 
+    <SolidColorBrush x:Key = "OWLOSTransparent" Color ="#01000000" />
+
     <!-- 
     <Color x:Key = "OWLOSPrimaryColor">#FF62add0</Color>
     <SolidColorBrush x:Key = "OWLOSPrimary" Color ="#FF62add0" />

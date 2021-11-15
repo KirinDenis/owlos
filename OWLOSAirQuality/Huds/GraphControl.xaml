@@ -105,7 +105,7 @@
                 </Path.Fill>
             </Path>
 
-            <Canvas VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <Canvas x:Name="GraphCanvas" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
 
                 <Ellipse x:Name="ValuePointer" VerticalAlignment="Center" HorizontalAlignment="Center" Stroke="{DynamicResource OWLOSSuccess}" Margin="45,12" Width="20" Height="20" Canvas.Left="10" Canvas.Top="10" StrokeThickness="1" />
                 <Ellipse x:Name="CenterValuePointer" VerticalAlignment="Center" HorizontalAlignment="Center" Stroke="{DynamicResource OWLOSSuccessAlpha3}" Margin="53,20" Width="3" Height="3" Canvas.Left="10" Canvas.Top="10" StrokeThickness="2" />
@@ -125,17 +125,17 @@
             </Canvas>
 
             <StackPanel x:Name="SelectedValuePanel" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,60" Orientation="Horizontal">
-                <TextBlock x:Name="_SelectedValueTextBlock" Text="" TextAlignment="Left"  Foreground="{DynamicResource OWLOSSuccess}" Margin="6,0" FontWeight="Bold" />
+                <TextBlock x:Name="_SelectedValueTextBlock" Text="" TextAlignment="Left"  Foreground="{DynamicResource OWLOSDark}" Background="{DynamicResource OWLOSSuccessAlpha4}" Margin="6,0" Padding="6,2" FontWeight="Bold" />
                 <TextBlock x:Name="_SelectedValueDateTextBlock" Text="" TextAlignment="Left"  Foreground="{DynamicResource OWLOSSuccessAlpha4}"/>
             </StackPanel>
 
             <StackPanel x:Name="TopValuePanel" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,80" Orientation="Horizontal">
-                <TextBlock x:Name="_TopValueTextBlock" Text="" TextAlignment="Left" Foreground="{DynamicResource OWLOSWarning}" Margin="6,0" FontWeight="Bold"/>
+                <TextBlock x:Name="_TopValueTextBlock" Text="" TextAlignment="Left" Foreground="{DynamicResource OWLOSDark}" Background="{DynamicResource OWLOSWarningAlpha4}" Margin="6,0" Padding="6,2" FontWeight="Bold"/>
                 <TextBlock x:Name="_TopValueDateTextBlock" Text="" TextAlignment="Left" Foreground="{DynamicResource OWLOSWarningAlpha4}"/>
             </StackPanel>
 
             <StackPanel x:Name="MinValuePanel" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,100" Orientation="Horizontal">
-                <TextBlock x:Name="_MinValueTextBlock" Text="" TextAlignment="Left" Foreground="{DynamicResource OWLOSInfo}" Margin="6,0" FontWeight="Bold"/>
+                <TextBlock x:Name="_MinValueTextBlock" Text="" TextAlignment="Left" Foreground="{DynamicResource OWLOSDark}" Background="{DynamicResource OWLOSInfoAlpha4}" Margin="6,0" Padding="6,2" FontWeight="Bold"/>
                 <TextBlock x:Name="_MinValueDateTextBlock" Text="" TextAlignment="Left" Foreground="{DynamicResource OWLOSInfoAlpha4}"/>
             </StackPanel>
 

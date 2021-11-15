@@ -598,13 +598,46 @@ namespace OWLOSAirQuality.Huds
             int rightStep = 0;
             for (int i = 0; i < graphDrawInfo.processedDataToDraw.Length; i += minutesStep)
             {
+
+                //< Line x: Name = "LeftXCoordLine" X1 = "66" Y1 = "155" X2 = "66" Y2 = "530" Stroke = "{DynamicResource OWLOSSecondary}" StrokeThickness = "1" ></ Line >
+                Line graphLine = new Line()
+                {
+                    X1 = 66 + rightStep,
+                    X2 = 66 + rightStep,
+                    Y1 = (double)graphDrawInfo.processedDataToDraw[i] + 20,
+                    Y2 = 530,
+                    Stroke = App.Current.Resources["OWLOSTransparent"] as SolidColorBrush,
+                    StrokeThickness = 1,
+                    StrokeDashArray = new DoubleCollection() { 6, 2 }
+                };
+                GraphGrid.Children.Add(graphLine);
+                temporaryElements.Add(graphLine);
+
+                TextBlock graphTextBlock = new TextBlock
+                {
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Top,
+                    Margin = new Thickness(66 + rightStep, (double)graphDrawInfo.processedDataToDraw[i] - 10, 0, 0),
+                    Foreground = App.Current.Resources["OWLOSTransparent"] as SolidColorBrush,
+                    Background = App.Current.Resources["OWLOSTransparent"] as SolidColorBrush,
+                    Text = dataToDraw[i].ToString(),
+                    Padding = new Thickness(6),
+                    Tag = graphLine
+                };
+
+                graphLine.Tag = graphTextBlock;
+
+                GraphGrid.Children.Add(graphTextBlock);
+                temporaryElements.Add(graphTextBlock);
+
                 TextBlock textBlock = new TextBlock
                 {
                     HorizontalAlignment = HorizontalAlignment.Left,
                     VerticalAlignment = VerticalAlignment.Top,
-                    Margin = new Thickness(60 + rightStep, realMinInPixels + downStep * 25 + 45, 0, 0),
+                    Margin = new Thickness(rightStep + 41, realMinInPixels + downStep * 25 + 45, 0, 0),
                     Foreground = App.Current.Resources["OWLOSInfoAlpha4"] as SolidColorBrush,
-                    Text = graphDrawInfo.queryTime[i].ToString()
+                    Text = graphDrawInfo.queryTime[i].ToString(),
+                    Tag = graphLine
                 };
 
                 textBlock.MouseEnter += TimeTextBlock_MouseEnter;
@@ -624,7 +657,7 @@ namespace OWLOSAirQuality.Huds
                 {
                     HorizontalAlignment = HorizontalAlignment.Left,
                     VerticalAlignment = VerticalAlignment.Top,
-                    Margin = new Thickness(60 + i * stepLocal, realMinInPixels + 20, 0, 0),
+                    Margin = new Thickness(i * stepLocal, realMinInPixels + 20, 0, 0),
                     Foreground = App.Current.Resources["OWLOSInfoAlpha4"] as SolidColorBrush,
                     Text = ""
                 };
@@ -633,7 +666,7 @@ namespace OWLOSAirQuality.Huds
 
                 RelationLineControl timeLineControl = new RelationLineControl(GraphGrid, timeTextBlock, textBlock, GraphGrid, GraphGrid)
                 {
-                    margin = new Thickness(76 + i * stepLocal, realMinInPixels + 20, 0, 0)
+                    margin = new Thickness(63 + i * stepLocal, realMinInPixels + 20, 0, 0)
                 };
 
                 if (graphDrawInfo.networkStatuses[i] == ThingAirQualityStatus.Online)
@@ -670,9 +703,32 @@ namespace OWLOSAirQuality.Huds
                 To = ((SolidColorBrush)App.Current.Resources["OWLOSLight"]).Color,
                 Duration = new Duration(TimeSpan.FromSeconds(0.3))
             };
-
             (sender as TextBlock).Foreground = new SolidColorBrush(((SolidColorBrush)(sender as TextBlock).Foreground).Color);
             (sender as TextBlock).Foreground.BeginAnimation(SolidColorBrush.ColorProperty, animation);
+
+            //graph show line 
+            Line graphLine = ((sender as TextBlock).Tag as Line);
+            TextBlock graphTextBlock = graphLine.Tag as TextBlock;
+
+            ColorAnimation lineAnimation;
+            lineAnimation = new ColorAnimation
+            {
+                To = ((SolidColorBrush)App.Current.Resources["OWLOSInfoAlpha4"]).Color,
+                Duration = new Duration(TimeSpan.FromSeconds(0.3))
+            };
+            graphTextBlock.Background =  graphLine.Stroke  = new SolidColorBrush(((SolidColorBrush)graphLine.Stroke).Color);
+            graphLine.Stroke.BeginAnimation(SolidColorBrush.ColorProperty, lineAnimation);
+            graphTextBlock.Background.BeginAnimation(SolidColorBrush.ColorProperty, lineAnimation);
+
+            ColorAnimation textBlockAnimation;
+            textBlockAnimation = new ColorAnimation
+            {
+                To = ((SolidColorBrush)App.Current.Resources["OWLOSDark"]).Color,
+                Duration = new Duration(TimeSpan.FromSeconds(0.3))
+            };
+            graphTextBlock.Foreground = new SolidColorBrush(((SolidColorBrush)graphTextBlock.Foreground).Color);            
+            graphTextBlock.Foreground.BeginAnimation(SolidColorBrush.ColorProperty, textBlockAnimation);
+
         }
 
         private void TimeTextBlock_MouseLeave(object sender, MouseEventArgs e)
@@ -686,6 +742,30 @@ namespace OWLOSAirQuality.Huds
 
             (sender as TextBlock).Foreground = new SolidColorBrush(((SolidColorBrush)(sender as TextBlock).Foreground).Color);
             (sender as TextBlock).Foreground.BeginAnimation(SolidColorBrush.ColorProperty, animation);
+
+            //hide show line 
+            Line graphLine = ((sender as TextBlock).Tag as Line);
+            TextBlock graphTextBlock = graphLine.Tag as TextBlock;
+
+            ColorAnimation lineAnimation;
+            lineAnimation = new ColorAnimation
+            {
+                To = ((SolidColorBrush)App.Current.Resources["OWLOSTransparent"]).Color,
+                Duration = new Duration(TimeSpan.FromSeconds(1.3))
+            };
+            graphTextBlock.Background = graphLine.Stroke = new SolidColorBrush(((SolidColorBrush)graphLine.Stroke).Color);
+            graphLine.Stroke.BeginAnimation(SolidColorBrush.ColorProperty, lineAnimation);
+            graphTextBlock.Background.BeginAnimation(SolidColorBrush.ColorProperty, lineAnimation);
+
+            ColorAnimation textBlockAnimation;
+            textBlockAnimation = new ColorAnimation
+            {
+                To = ((SolidColorBrush)App.Current.Resources["OWLOSTransparent"]).Color,
+                Duration = new Duration(TimeSpan.FromSeconds(0.3))
+            };
+            graphTextBlock.Foreground = new SolidColorBrush(((SolidColorBrush)graphTextBlock.Foreground).Color);
+            graphTextBlock.Foreground.BeginAnimation(SolidColorBrush.ColorProperty, textBlockAnimation);
+
         }
 
         private void GraphPath_MouseMove(object sender, MouseEventArgs e)

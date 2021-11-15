@@ -40,11 +40,18 @@ using OWLOSAirQuality.Huds;
 using OWLOSAirQuality.OWLOSEcosystemService;
 using OWLOSEcosystemService.DTO.Things;
 using System;
+using System.Collections.Generic;
 using System.Timers;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace OWLOSAirQuality.Frames
 {
+    public class SearchIndex
+    {
+        public string Index = string.Empty;
+        public UserControl RelatedValueControl;
+    }
     /// <summary>
     /// Interaction logic for ValueFrame.xaml
     /// </summary>
@@ -59,6 +66,8 @@ namespace OWLOSAirQuality.Frames
         private object CurrentValueControl;
 
         private readonly int GraphRefreshInterval = 10000;
+
+        private readonly List<SearchIndex> SearchIndices = new List<SearchIndex>();
         public ValueFrame()
         {
             InitializeComponent();
@@ -75,29 +84,152 @@ namespace OWLOSAirQuality.Frames
             CurrentValueControl = DHT22tempValueControl;
 
             DHT22tempValueControl.OnSelect += ValueControl_OnSelect;
+            SearchIndices.Add(new SearchIndex()
+            {
+                Index = "DHT22 Temperature Celsius Fahrenheit",
+                RelatedValueControl = DHT22tempValueControl
+            });
+
             DHT22humValueControl.OnSelect += ValueControl_OnSelect;
+            SearchIndices.Add(new SearchIndex()
+            {
+                Index = "DHT22 humidity",
+                RelatedValueControl = DHT22humValueControl
+            });
+
             DHT22heatValueControl.OnSelect += ValueControl_OnSelect;
+            SearchIndices.Add(new SearchIndex()
+            {
+                Index = "DHT22 heat index",
+                RelatedValueControl = DHT22heatValueControl
+            });
+
 
             BMP280pressureValueControl.OnSelect += ValueControl_OnSelect;
+            SearchIndices.Add(new SearchIndex()
+            {
+                Index = "BMP280 pressure mmHg kPa Pa",
+                RelatedValueControl = BMP280pressureValueControl
+            });
+
             BMP280altitudeValueControl.OnSelect += ValueControl_OnSelect;
+            SearchIndices.Add(new SearchIndex()
+            {
+                Index = "BMP280 altitude meters",
+                RelatedValueControl = BMP280altitudeValueControl
+            });
+
             BMP280temperatureValueControl.OnSelect += ValueControl_OnSelect;
+            SearchIndices.Add(new SearchIndex()
+            {
+                Index = "BMP280 Temperature Celsius Fahrenheit",
+                RelatedValueControl = BMP280temperatureValueControl
+            });
+
 
             ADS1X15MQ135ValueControl.OnSelect += ValueControl_OnSelect;
+            SearchIndices.Add(new SearchIndex()
+            {
+                Index = "ADS1X15 MQ135 CO2 CO Alcohol Smoke Dust",
+                RelatedValueControl = ADS1X15MQ135ValueControl
+            });
+
             ADS1X15MQ7ValueControl.OnSelect += ValueControl_OnSelect;
+            SearchIndices.Add(new SearchIndex()
+            {
+                Index = "ADS1X15 MQ7 CO",
+                RelatedValueControl = ADS1X15MQ7ValueControl
+            });
+
             ADS1X15LightValueControl.OnSelect += ValueControl_OnSelect;
+            SearchIndices.Add(new SearchIndex()
+            {
+                Index = "ADS1X15 Light",
+                RelatedValueControl = ADS1X15LightValueControl
+            });
+
 
             CCS811CO2ValueControl.OnSelect += ValueControl_OnSelect;
+            SearchIndices.Add(new SearchIndex()
+            {
+                Index = "CCS811 CO2 eCO2 Parts Per Million PPM",
+                RelatedValueControl = CCS811CO2ValueControl
+            });
+
             CCS811TVOCValueControl.OnSelect += ValueControl_OnSelect;
+            SearchIndices.Add(new SearchIndex()
+            {
+                Index = "CCS811 TVOC Parts Per Billion PPB",
+                RelatedValueControl = CCS811TVOCValueControl
+            });
+
             CCS811resistenceValueControl.OnSelect += ValueControl_OnSelect;
+            SearchIndices.Add(new SearchIndex()
+            {
+                Index = "CCS811 resistance",
+                RelatedValueControl = CCS811resistenceValueControl
+            });
+
             CCS811tempValueControl.OnSelect += ValueControl_OnSelect;
+            SearchIndices.Add(new SearchIndex()
+            {
+                Index = "CCS811 Temperature Celsius Fahrenheit",
+                RelatedValueControl = CCS811tempValueControl
+            });
+
 
             ShowHourMenu.OnSelect += ShowHourMenu_OnSelect;
             ShowDayMenu.OnSelect += ShowHourMenu_OnSelect;
 
             _BackgroundControl.QueryInterval = " x: " + ecosystem.quaryInterval / 1000 + " sec / g: " + GraphRefreshInterval / 1000 + " sec ";
             _BackgroundControl.Status = "[not connected] " + DateTime.Now;
+            _BackgroundControl.SearchTextBox.TextChanged += SearchTextBox_TextChanged;
+            _BackgroundControl.SearchTextBox.GotFocus += SearchTextBox_GotFocus;
+            _BackgroundControl.SearchTextBox.LostFocus += SearchTextBox_LostFocus;
+
+
 
             OnLifeCycleTimer(null, null);
+        }
+
+        private void SearchTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(_BackgroundControl.SearchTextBox.Text))
+            {
+                _BackgroundControl.SearchTextBox.Text = "search";
+            }
+        }
+
+        private void SearchTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            _BackgroundControl.SearchTextBox.Text = string.Empty;
+        }
+
+        private void SearchTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            string serchedText = (sender as TextBox).Text.ToLower();
+
+            foreach(SearchIndex searchIndex in SearchIndices)
+            {
+                if (searchIndex.Index.ToLower().IndexOf(serchedText) != -1)
+                {
+                    if (searchIndex.RelatedValueControl.GetType() == typeof(ValueControl))
+                    {
+                        (searchIndex.RelatedValueControl as ValueControl).Focused = true;
+                    }
+                    else
+                    if (searchIndex.RelatedValueControl.GetType() == typeof(PresureValueControl))
+                    {
+                        (searchIndex.RelatedValueControl as PresureValueControl).Focused = true;
+                    }
+                    else
+                    if (searchIndex.RelatedValueControl.GetType() == typeof(TemperatureValueControl))
+                    {
+                        (searchIndex.RelatedValueControl as TemperatureValueControl).Focused = true;
+                    }
+                    break;
+                }
+            }
         }
 
         private void ShowHourMenu_OnSelect(object sender, EventArgs e)

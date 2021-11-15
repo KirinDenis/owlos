@@ -76,7 +76,7 @@
                     </StackPanel>
 
                     <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,16,0,-16">
-                        <huds:ValueControl x:Name="CCS811CO2ValueControl" Width="172" Height="172" Caption="CCS811" UnitOfMeasure="Parts Per Million (PPM)" Description="eCO2" HighWarningTrap="1000" HighDangerTrap="2000"/>
+                        <huds:ValueControl x:Name="CCS811CO2ValueControl" Width="172" Height="172" Caption="CCS811" UnitOfMeasure="Parts Per Million [PPM]" Description="eCO2" HighWarningTrap="1000" HighDangerTrap="2000"/>
                         <huds:ValueControl x:Name="CCS811TVOCValueControl" Width="172" Height="172" Caption="CCS811" UnitOfMeasure="Parts Per Billion [PPB]" Description="TVOC" HighWarningTrap="250" HighDangerTrap="500"/>
                     <huds:ValueControl x:Name="CCS811resistenceValueControl" Width="172" Height="172" Caption="CCS811" UnitOfMeasure="" Description="Resistance" />
 
