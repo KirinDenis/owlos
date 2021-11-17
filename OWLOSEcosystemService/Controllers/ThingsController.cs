@@ -129,15 +129,25 @@ namespace OWLOSEcosystemService.Controllers
         /// <returns></returns>
         [Route("Things/GetThingsConnections")]
         [HttpGet]
-        public IActionResult GetThingsConnections()
+        public IActionResult GetThingsConnections(string token)
         {
+            /*
             Guid UserId = GetUserId();
 
             if (UserId != Guid.Empty)
             {
                 return Ok(_thingsService.GetThingsConnections(UserId));
             }
-            return Unauthorized("Wrong claims or not authorize, please SignIn");
+            */
+            ThingTokenDTO thingTokenDTO = DecodeToken(token);
+
+            if (thingTokenDTO == null)
+            {
+                return Forbid("Bad token");
+            }
+
+            return Ok(_thingsService.GetThingsConnections(thingTokenDTO.UserId));
+            
         }
 
         /// <summary>
