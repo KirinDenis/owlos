@@ -31,9 +31,13 @@ DIY Open Source OS for building IoT ecosystems
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIcon>owlos_logo_2.jpg</PackageIcon>
     <NeutralLanguage>en</NeutralLanguage>
-    <Authors>Mónica (rovt@ua.fm) Yan Sokolov (Dadras279@gmail.com) Serhii Demyanov (demianfog@gmail.com) Serhii Lehkii (sergey@light.kiev.ua) Konstantin Brul (konstabrul@gmail.com) Vitalii Glushchenko (cehoweek@gmail.com) Stanislav Kvashchuk (skat@ukr.net) Boris Pavlov (hiroyashy@gmail.com) Denys Melnychuk (meldenvar@gmail.com) Denis Kirin (deniskirinacs@gmail.com)</Authors>
+    <Authors>Serhii Demyanov (demianfog@gmail.com) Serhii Lehkii (sergey@light.kiev.ua) Vitalii Glushchenko (cehoweek@gmail.com) Stanislav Kvashchuk (skat@ukr.net) Denys Melnychuk (meldenvar@gmail.com) Denis Kirin (deniskirinacs@gmail.com)</Authors>
     <Company>OWLOS</Company>
     <Product>OWLOS Ecosystem Service</Product>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>D:\Users\Egor\source\repos\KirinDenis\owlos\OWLOSEcosystemService\OWLOSEcosystemService.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

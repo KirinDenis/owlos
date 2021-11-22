@@ -74,6 +74,7 @@ namespace OWLOSEcosystemService.Repository.Things
         public ThingConnectionPropertiesDTO GetThingConnection(Guid UserId, int ThingId)
         {
             ThingConnectionPropertiesDTO result = null;
+            
 
             using (ThingsDbContext db = new ThingsDbContext())
             {

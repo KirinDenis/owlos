@@ -38,6 +38,7 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 using MapsterMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using OWLOSEcosystemService.DTO.Things;
@@ -85,15 +86,21 @@ namespace OWLOSEcosystemService.Controllers
         /// <summary>
         /// Decode and check user token 
         /// </summary>
-        /// <param name="token">token to check</param>
+        /// <param name="userToken">user token to check</param>
+        /// <param name="thingId">thingId if exists</param>
         /// <returns>OK: ThingTokenDTO, Bad: AccessViolationException</returns>
-        private ThingTokenDTO DecodeToken(string token)
+        private ThingTokenDTO DecodeUserToken(string userToken, int? thingId = null)
         {
-            ThingTokenDTO thingTokenDTO = _thingsService.DecodeUserToken(token);
+            ThingTokenDTO thingTokenDTO = _thingsService.DecodeUserToken(userToken);
 
             if ((thingTokenDTO == null) || (thingTokenDTO.UserId == Guid.Empty))
             {
                 return null;
+            }
+
+            if ((thingTokenDTO.ThingId == -1) && (thingId != null))
+            {
+                thingTokenDTO.ThingId = (int)thingId;
             }
 
             return thingTokenDTO;
@@ -105,11 +112,19 @@ namespace OWLOSEcosystemService.Controllers
         /// <summary>
         /// Returns list of all things wrappers (DEBUG ONLY)
         /// </summary>
-        /// <returns>List of things</returns>        
+        /// <param name="userToken">user access token</param>
+        /// <returns>HTTP Result Ok and List of things</returns>        
         [Route("Things/GetAllThingsWrappers")]
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult Get(string userToken)
         {
+            ThingTokenDTO thingTokenDTO = DecodeUserToken(userToken, null);
+
+            if (thingTokenDTO == null)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden);
+            }
+
             List<ThingWrapperModel> result = _thingsService.GetThingsWrappers();
 
             if (result.Count != 0)
@@ -119,60 +134,60 @@ namespace OWLOSEcosystemService.Controllers
             else
             {
                 //TODO: Dictionary for messaging
-                return Forbid("Things core not ready or no one thing at ecosystem");
+                return StatusCode(StatusCodes.Status403Forbidden, "things core not ready or no one thing at ecosystem");
             }
         }
 
         /// <summary>
         /// Get user things connections 
         /// </summary>        
-        /// <returns></returns>
+        /// <param name="userToken">user access token</param>
+        /// <returns>HTTP Result Ok and user things connections data</returns>
         [Route("Things/GetThingsConnections")]
         [HttpGet]
-        public IActionResult GetThingsConnections(string token)
+        public IActionResult GetThingsConnections(string userToken)
         {
-            /*
-            Guid UserId = GetUserId();
-
-            if (UserId != Guid.Empty)
-            {
-                return Ok(_thingsService.GetThingsConnections(UserId));
-            }
-            */
-            ThingTokenDTO thingTokenDTO = DecodeToken(token);
+            ThingTokenDTO thingTokenDTO = DecodeUserToken(userToken, null);
 
             if (thingTokenDTO == null)
             {
-                return Forbid("Bad token");
+                return StatusCode(StatusCodes.Status403Forbidden);
             }
 
             return Ok(_thingsService.GetThingsConnections(thingTokenDTO.UserId));
-            
         }
 
         /// <summary>
-        /// Get user thing connection 
+        /// Get selected user thing connection 
         /// </summary>        
-        /// <returns></returns>
+        /// <param name="userToken">user access token</param>
+        /// <param name="thingId">user thing id</param>
+        /// <returns>HTTP Result Ok and user thing connection data</returns>
         [Route("Things/GetThingConnection")]
         [HttpGet]
-        public IActionResult GetThingConnection(int ThingId)
+        public IActionResult GetThingConnection(string userToken, int? thingId = null)
         {
-            Guid UserId = GetUserId();
+            ThingTokenDTO thingTokenDTO = DecodeUserToken(userToken, thingId);
 
-            if (UserId != Guid.Empty)
+            if (thingTokenDTO == null)
             {
-                ThingConnectionPropertiesDTO result = _thingsService.GetThingConnection(UserId, ThingId);
-                if (result != null)
-                {
-                    return Ok(result);
-                }
-                else
-                {
-                    return BadRequest(new ThingsResultModel());
-                }
+                return StatusCode(StatusCodes.Status403Forbidden);
             }
-            return Unauthorized("Wrong claims or not authorize, please SignIn");
+            else
+            if (thingTokenDTO.ThingId == -1)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, "missing thing id");
+            }
+
+            ThingConnectionPropertiesDTO result = _thingsService.GetThingConnection(thingTokenDTO.UserId, thingTokenDTO.ThingId);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ThingsResultModel());
+            }
         }
         #endregion
 
@@ -182,17 +197,23 @@ namespace OWLOSEcosystemService.Controllers
         /// <summary>
         /// Get user thing's last received air quality from thing (object model, with out repository)
         /// </summary>        
-        /// <param name="token">token of user thing</param>
-        /// <returns></returns>
+        /// <param name="userToken">user access token</param>
+        /// <param name="thingId">user thing id</param>
+        /// <returns>HTTP Result Ok air quality data</returns>
         [Route("Things/GetDirectLastThingAQ")]
         [HttpGet]
-        public IActionResult GetDirectLastThingAQ(string token)
+        public IActionResult GetDirectLastThingAQ(string userToken, int? thingId = null)
         {
-            ThingTokenDTO thingTokenDTO = DecodeToken(token);
+            ThingTokenDTO thingTokenDTO = DecodeUserToken(userToken, thingId);
 
             if (thingTokenDTO == null)
             {
-                return Forbid("Bad token");
+                return StatusCode(StatusCodes.Status403Forbidden);
+            }
+            else
+            if (thingTokenDTO.ThingId == -1)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, "missing thing id");
             }
 
             ThingAirQualityDTO result = _thingsService.GetDirectLastThingAQ(thingTokenDTO.UserId, thingTokenDTO.ThingId);
@@ -200,23 +221,29 @@ namespace OWLOSEcosystemService.Controllers
             {
                 return Ok(result);
             }
-            return BadRequest("Thing not found");
+            return StatusCode(StatusCodes.Status400BadRequest, "Thing not found");
         }
 
         /// <summary>
         /// Get user thing's last received air quality
         /// </summary>        
-        /// <param name="token">token of user thing</param>
-        /// <returns></returns>
+        /// <param name="userToken">user access token</param>
+        /// <param name="thingId">user thing id</param>
+        /// <returns>HTTP Result Ok air quality data</returns>
         [Route("Things/GetLastThingAQ")]
         [HttpGet]
-        public IActionResult GetLastThingAQ(string token)
+        public IActionResult GetLastThingAQ(string userToken, int? thingId = null)
         {
-            ThingTokenDTO thingTokenDTO = DecodeToken(token);
+            ThingTokenDTO thingTokenDTO = DecodeUserToken(userToken, thingId);
 
             if (thingTokenDTO == null)
             {
-                return Forbid("Bad token");
+                return StatusCode(StatusCodes.Status403Forbidden);
+            }
+            else
+            if (thingTokenDTO.ThingId == -1)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, "missing thing id");
             }
 
             ThingAirQualityDTO result = _thingsService.GetLastThingAQ(thingTokenDTO.UserId, thingTokenDTO.ThingId);
@@ -224,23 +251,29 @@ namespace OWLOSEcosystemService.Controllers
             {
                 return Ok(result);
             }
-            return BadRequest("Thing air quality data not found");
+            return StatusCode(StatusCodes.Status400BadRequest, "Thing air quality data not found");
         }
 
         /// <summary>
         /// Get user thing's last hour received air quality
         /// </summary>        
-        /// <param name="token">token of user thing</param>
-        /// <returns></returns>
+        /// <param name="userToken">user access token</param>
+        /// <param name="thingId">user thing id</param>
+        /// <returns>HTTP Result Ok air quality data</returns>
         [Route("Things/GetLastHourThingAQ")]
         [HttpGet]
-        public IActionResult GetLastHourThingAQ(string token)
+        public IActionResult GetLastHourThingAQ(string userToken, int? thingId = null)
         {
-            ThingTokenDTO thingTokenDTO = DecodeToken(token);
+            ThingTokenDTO thingTokenDTO = DecodeUserToken(userToken, thingId);
 
             if (thingTokenDTO == null)
             {
-                return Forbid("Bad token");
+                return StatusCode(StatusCodes.Status403Forbidden);
+            }
+            else
+            if (thingTokenDTO.ThingId == -1)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, "missing thing id");
             }
 
             List<ThingAirQualityDTO> result = _thingsService.GetLastHourThingAQ(thingTokenDTO.UserId, thingTokenDTO.ThingId);
@@ -248,23 +281,29 @@ namespace OWLOSEcosystemService.Controllers
             {
                 return Ok(result);
             }
-            return BadRequest("Thing air quality data not found");
+            return StatusCode(StatusCodes.Status400BadRequest, "Thing air quality data not found");
         }
 
         /// <summary>
         /// Get user thing's last day received air quality
         /// </summary>        
-        /// <param name="token">token of user thing</param>
-        /// <returns></returns>
+        /// <param name="userToken">user access token</param>
+        /// <param name="thingId">user thing id</param>
+        /// <returns>HTTP Result Ok air quality data</returns>
         [Route("Things/GetLastDayThingAQ")]
         [HttpGet]
-        public IActionResult GetLastDayThingAQ(string token)
+        public IActionResult GetLastDayThingAQ(string userToken, int? thingId = null)
         {
-            ThingTokenDTO thingTokenDTO = DecodeToken(token);
+            ThingTokenDTO thingTokenDTO = DecodeUserToken(userToken, thingId);
 
             if (thingTokenDTO == null)
             {
-                return Forbid("Bad token");
+                return StatusCode(StatusCodes.Status403Forbidden);
+            }
+            else
+            if (thingTokenDTO.ThingId == -1)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, "missing thing id");
             }
 
             List<ThingAirQualityDTO> result = _thingsService.GetLastDayThingAQ(thingTokenDTO.UserId, thingTokenDTO.ThingId);
@@ -272,35 +311,39 @@ namespace OWLOSEcosystemService.Controllers
             {
                 return Ok(result);
             }
-            return BadRequest("Thing air quality data not found");
+            return StatusCode(StatusCodes.Status400BadRequest, "Thing air quality data not found");
         }
 
         /// <summary>
         /// Get all drivers properties
         /// </summary>        
-        /// <returns></returns>
+        /// <param name="userToken">user access token</param>
+        /// <param name="thingId">user thing id</param>
+        /// <returns>HTTP Result Ok and all drivers properties</returns>
         [Route("Things/GetThingAllDriversProperties")]
         [HttpGet]
-        public IActionResult GetThingAllDriversProperties(int ThingId)
+        public IActionResult GetThingAllDriversProperties(string userToken, int? thingId = null)
         {
-            Guid UserId = GetUserId();
+            ThingTokenDTO thingTokenDTO = DecodeUserToken(userToken, thingId);
 
-            if (UserId != Guid.Empty)
+            if (thingTokenDTO == null)
             {
+                return StatusCode(StatusCodes.Status403Forbidden);
+            }
+            else
+            if (thingTokenDTO.ThingId == -1)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, "missing thing id");
+            }
 
-                List<ThingDriverPropertiesDTO> drivers = _thingsService.GetThingAllDriversProperties(UserId, ThingId);
-                if (drivers != null)
-                {
-                    return Ok(drivers);
-                }
-                else
-                {
-                    return BadRequest("Thing not found");
-                }
+            List<ThingDriverPropertiesDTO> drivers = _thingsService.GetThingAllDriversProperties(thingTokenDTO.UserId, thingTokenDTO.ThingId);
+            if (drivers != null)
+            {
+                return Ok(drivers);
             }
             else
             {
-                return Unauthorized("Wrong claims or not authorize, please SignIn");
+                return StatusCode(StatusCodes.Status400BadRequest, "Thing not found");
             }
         }
         #endregion
@@ -309,46 +352,55 @@ namespace OWLOSEcosystemService.Controllers
         /// <summary>
         /// Create a new thing connection 
         /// </summary>
+        /// <param name="userToken">user access token</param>
         /// <param name="ConnectionPropertiesModel">new connection properties</param>
-        /// <returns></returns>
+        /// <returns>HTTP Result Ok if added</returns>
         [Route("Things/NewThingConnection")]
         [HttpPost]
-        public IActionResult NewThingConnection(ThingConnectionPropertiesModel ConnectionPropertiesModel)
+        public IActionResult NewThingConnection(string userToken, ThingConnectionPropertiesModel ConnectionPropertiesModel)
         {
-            Guid UserId = GetUserId();
+            ThingTokenDTO thingTokenDTO = DecodeUserToken(userToken);
 
-            if (UserId != Guid.Empty)
+            if (thingTokenDTO == null)
             {
-                ThingConnectionPropertiesDTO ConnectionPropertiesDTO = _mapper.Map<ThingConnectionPropertiesDTO>(ConnectionPropertiesModel);
-
-                ConnectionPropertiesDTO.UserId = UserId;
-
-                ThingsResultModel resultModel = _thingsService.NewThingConnection(ConnectionPropertiesDTO);
-
-                if (!resultModel.Error)
-                {
-                    return Ok(resultModel.Result);
-                }
-                else
-                {
-                    return BadRequest(resultModel.Result);
-                }
+                return StatusCode(StatusCodes.Status403Forbidden);
             }
-            return Unauthorized("Wrong claims or not authorize, please SignIn");
+
+            ThingConnectionPropertiesDTO ConnectionPropertiesDTO = _mapper.Map<ThingConnectionPropertiesDTO>(ConnectionPropertiesModel);
+
+            ConnectionPropertiesDTO.UserId = thingTokenDTO.UserId;
+
+            ThingsResultModel resultModel = _thingsService.NewThingConnection(ConnectionPropertiesDTO);
+
+            if (!resultModel.Error)
+            {
+                return Ok(resultModel.Result);
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, resultModel.Result);
+            }
         }
 
         /// <summary>
         /// Get user token
         /// </summary>       
-        /// <returns></returns>
+        /// <returns>HTTP Result Ok and Guid token</returns>
         [Route("Things/GetUserToken")]
         [HttpGet]
-        public IActionResult GetUserToken(int thingId)
+        public ActionResult<Guid> GetUserToken()
         {
+            Guid userId = GetUserId();
+
+            if (userId == Guid.Empty)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden);
+            }
+
             ThingTokenDTO thingTokenDTO = new ThingTokenDTO()
             {
-                UserId = GetUserId(),
-                ThingId = thingId
+                UserId = userId,
+                ThingId = -1 // -1 means token for all user things
             };
 
             string token = _thingsService.GetUserToken(thingTokenDTO);
@@ -358,24 +410,36 @@ namespace OWLOSEcosystemService.Controllers
             }
             else
             {
-                return BadRequest();
+                return StatusCode(StatusCodes.Status400BadRequest);
             }
         }
-
 
         /// <summary>
         /// Get thing token
         /// </summary>       
-        /// <returns></returns>
+        /// <param name="userToken">user access token</param>
+        /// <param name="thingId">user thing id</param>
+        /// <returns>HTTP Result Ok and thing token string</returns>
         [Route("Things/GetThingToken")]
         [HttpGet]
-        public IActionResult GetThingToken(int thingId)
+        public ActionResult<string> GetThingToken(string userToken, int? thingId = null)
         {
-            ThingTokenDTO thingTokenDTO = new ThingTokenDTO()
+            ThingTokenDTO thingTokenDTO = DecodeUserToken(userToken);
+
+            if (thingTokenDTO == null)
             {
-                UserId = GetUserId(),
-                ThingId = thingId
-            };
+                return StatusCode(StatusCodes.Status403Forbidden);
+            }
+
+            if (thingId != null)
+            {
+                thingTokenDTO.ThingId = (int)thingId;
+            }
+
+            if (thingTokenDTO.ThingId == -1)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, "Thing id is missing");
+            }
 
             Guid token = _thingsService.GetThingToken(thingTokenDTO);
             if (token != Guid.Empty)
@@ -384,14 +448,14 @@ namespace OWLOSEcosystemService.Controllers
             }
             else
             {
-                return BadRequest();
+                return StatusCode(StatusCodes.Status400BadRequest);
             }
         }
 
         /// <summary>
         /// Receive Air Quality data from client Thing 
         /// </summary>       
-        /// <returns></returns>
+        /// <returns>Ok if received</returns>
         [Route("Things/AirQuality")]
         [HttpPost]
         public async Task<IActionResult> AirQuality()
@@ -413,48 +477,49 @@ namespace OWLOSEcosystemService.Controllers
                     }
                     else
                     {
-                        return BadRequest(result);
+                        return StatusCode(StatusCodes.Status400BadRequest, result);
                     }
                 }
-                return BadRequest("Air Quality data is empty or incorrect");
+                return StatusCode(StatusCodes.Status400BadRequest, "Air Quality data is empty or incorrect");
             }
             catch { }
 
-            return BadRequest("Air Quality data parsing problem");
+            return StatusCode(StatusCodes.Status400BadRequest, "Air Quality data parsing problem");
         }
-
         #endregion
 
         #region Put
         /// <summary>
         /// Update exists thing connection properties
         /// </summary>
+        /// <param name="userToken">user access token</param>
         /// <param name="ConnectionPropertiesModel">connection properties to update</param>
-        /// <returns></returns>
+        /// <returns>Ok if updated</returns>
         [Route("Things/UpdateThingConnection")]
         [HttpPut]
-        public IActionResult UpdateThingConnection(ThingConnectionPropertiesModel ConnectionPropertiesModel)
+        public IActionResult UpdateThingConnection(string userToken, ThingConnectionPropertiesModel ConnectionPropertiesModel)
         {
-            Guid UserId = GetUserId();
+            ThingTokenDTO thingTokenDTO = DecodeUserToken(userToken);
 
-            if (UserId != Guid.Empty)
+            if (thingTokenDTO == null)
             {
-                ThingConnectionPropertiesDTO ConnectionPropertiesDTO = _mapper.Map<ThingConnectionPropertiesDTO>(ConnectionPropertiesModel);
-
-                ConnectionPropertiesDTO.UserId = UserId;
-
-                ThingsResultModel resultModel = _thingsService.UpdateThingConnection(ConnectionPropertiesDTO);
-
-                if (!resultModel.Error)
-                {
-                    return Ok(resultModel.Result);
-                }
-                else
-                {
-                    return BadRequest(resultModel.Result);
-                }
+                return StatusCode(StatusCodes.Status403Forbidden);
             }
-            return Unauthorized("Wrong claims or not authorize, please SignIn");
+
+            ThingConnectionPropertiesDTO ConnectionPropertiesDTO = _mapper.Map<ThingConnectionPropertiesDTO>(ConnectionPropertiesModel);
+
+            ConnectionPropertiesDTO.UserId = thingTokenDTO.UserId;
+
+            ThingsResultModel resultModel = _thingsService.UpdateThingConnection(ConnectionPropertiesDTO);
+
+            if (!resultModel.Error)
+            {
+                return Ok(resultModel.Result);
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, resultModel.Result);
+            }
         }
         #endregion
 
@@ -462,30 +527,31 @@ namespace OWLOSEcosystemService.Controllers
         /// <summary>
         /// Delete exists thing connection properties
         /// </summary>        
-        /// <returns></returns>
+        /// <param name="userToken">user access token</param>
+        /// <param name="thingId">user thing id</param>
+        /// <returns>HTTP Code Ok if deleted</returns>
         [Route("Things/DeleteThingConnection")]
         [HttpDelete]
-        public IActionResult DeleteThingConnection(int ThingId)
+        public IActionResult DeleteThingConnection(string userToken, int? ThingId = null)
         {
-            Guid UserId = GetUserId();
+            ThingTokenDTO thingTokenDTO = DecodeUserToken(userToken, ThingId);
 
-            if (UserId != Guid.Empty)
+            if (thingTokenDTO == null)
             {
-
-                ThingsResultModel resultModel = _thingsService.DeleteThingConnection(UserId, ThingId);
-
-                if (!resultModel.Error)
-                {
-                    return Ok(resultModel.Result);
-                }
-                else
-                {
-                    return BadRequest(resultModel.Result);
-                }
+                return StatusCode(StatusCodes.Status403Forbidden);
             }
-            return Unauthorized("Wrong claims or not authorize, please SignIn");
+
+            ThingsResultModel resultModel = _thingsService.DeleteThingConnection(thingTokenDTO.UserId, thingTokenDTO.ThingId);
+
+            if (!resultModel.Error)
+            {
+                return Ok(resultModel.Result);
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, resultModel.Result);
+            }
         }
         #endregion
-
     }
 }
