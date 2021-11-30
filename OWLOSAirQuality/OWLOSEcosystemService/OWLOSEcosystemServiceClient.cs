@@ -60,17 +60,29 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
         }
     }
 
-    public class OWLOSEcosystem
+    public class ThingConnection
     {
-        private readonly OWLOSEcosystemClient ecosystemServiceClient;
+        public int id { get; set; }
+        public string Name { get; set; }        
+    }
+
+    public partial class OWLOSEcosystemServiceClient
+    {
+        
 
         //        public string thingHost = "https://192.168.1.100:5004/Things/";
 
         //        public string thingToken = "M3ZDcS9NSiswMmxUWCs4Nmo1dUdUNEhlMEpETURjOUtpaXlIU3ZBb3k2RVFBQUFBc3hsREhxQVZiQkZqbGgyc2wrdlBWVXh2c0hYNitSTFRNS05jVWZLeEFraVNHSVZtaHdSWkk0UU8yYzhDalJJQ1daeEJsWnFGZElNaGJ6QUcrTXVjandjZThWZWxTMTFxcmNpaEc3QlhkRUxXYW13ZjhwWHY2THRxOHBkRVpBL1g2dHRkVFdyOXU1ZTZzVUt1RkU5SG9nPT0=";
 
-        public string thingHost = "http://airquality.owlos.org/Things/";
+        //public string thingHost = "http://airquality.owlos.org/Things/";
 
-        public string thingToken = "WG8xNTc1T29ONTFDbkdUd1NUOU1xVWRqVHhzbGIwOVJFN2xibU5RNnJpMFFBQUFBY3I4SERwTlVKWENsMjF4a1lWZG9OSlJBTDl0aDAwTWUzMk9ub2JYN2YvQUZmMWdESVZ1akE4c3NTUHcwbHkxWVc3bWd0N1JXcVVWTEZYQzRPajYwdTBIdFBVVHBFb0VjeXhyeGZCZWNDRVhmWWpzSTZDamxsdjAzR0dWY0JFL3dRSHZkL2llWE4wcmE4eFJsVFlFdmtRPT0%3D";
+        //public string thingToken = "WG8xNTc1T29ONTFDbkdUd1NUOU1xVWRqVHhzbGIwOVJFN2xibU5RNnJpMFFBQUFBY3I4SERwTlVKWENsMjF4a1lWZG9OSlJBTDl0aDAwTWUzMk9ub2JYN2YvQUZmMWdESVZ1akE4c3NTUHcwbHkxWVc3bWd0N1JXcVVWTEZYQzRPajYwdTBIdFBVVHBFb0VjeXhyeGZCZWNDRVhmWWpzSTZDamxsdjAzR0dWY0JFL3dRSHZkL2llWE4wcmE4eFJsVFlFdmtRPT0%3D";
+
+        public string Name { get; set; }
+
+        public string URL { get; set; }
+
+        public string Token { get; set; }
 
 
         public int quaryInterval = 10000;
@@ -91,7 +103,7 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
         public event ACDataReadyEventHandler OnACDataReady;
 
 
-        public OWLOSEcosystem()
+        public OWLOSEcosystemServiceClient()
         {
             //initialize daily data 
             for (int i = 0; i < dailyAirQulitySize; i++)
@@ -101,9 +113,8 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
 
             OnACDataReady?.Invoke(this, new EventArgs());
 
-            ecosystemServiceClient = new OWLOSEcosystemClient();
-
-            ecosystemServiceClient.OnLogItem += EcosystemServiceClient_OnLogItem;
+           
+            OnLogItem += EcosystemServiceClient_OnLogItem;
 
 
             lifeCycleTimer = new Timer(quaryInterval)
@@ -126,15 +137,15 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
 
             lifeCycleBlocked = true;
 
-            Log(new OWLOSLogEventArgs("QUERY total [" + ecosystemServiceClient.totlaSend.ToString() + "]", ConsoleMessageCode.Info));
+            Log(new OWLOSLogEventArgs("QUERY total [" + totlaSend.ToString() + "]", ConsoleMessageCode.Info));
 
-            AirQualityClientResulDTO airQualityClientResulDTO = await ecosystemServiceClient.GetLastDayThingAQ(thingHost, thingToken);
+            AirQualityClientResulDTO airQualityClientResulDTO = await GetLastDayThingAQ(URL, Token);
             if ((string.IsNullOrEmpty(airQualityClientResulDTO.error)) && (airQualityClientResulDTO.result != null))
             {
                 List<ThingAirQuality> thingAirQuality = JsonConvert.DeserializeObject<List<ThingAirQuality>>(airQualityClientResulDTO.result as string);
                 StoreDailyAirQualityData(thingAirQuality);
 
-                Log(new OWLOSLogEventArgs("RECV total [" + ecosystemServiceClient.totlaRecv.ToString() + "]" , ConsoleMessageCode.Success));
+                Log(new OWLOSLogEventArgs("RECV total [" + totlaRecv.ToString() + "]" , ConsoleMessageCode.Success));
             }
             else
             {

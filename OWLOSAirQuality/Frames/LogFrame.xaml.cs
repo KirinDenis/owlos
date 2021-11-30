@@ -21,15 +21,15 @@ namespace OWLOSAirQuality.Frames
     /// </summary>
     public partial class LogFrame : Window
     {
-        private readonly OWLOSEcosystem ecosystem;
+        private readonly OWLOSEcosystemServiceClient EcosystemServiceClient;
         private readonly ConsoleControl logConsole;
-        public LogFrame()
+        public LogFrame(OWLOSEcosystemServiceClient EcosystemServiceClient)
         {
             InitializeComponent();
-            ecosystem = App.ecosystem;
+            this.EcosystemServiceClient = EcosystemServiceClient;
             logConsole = new ConsoleControl();
             LogGrid.Children.Add(logConsole);
-            ecosystem.OnLog += Ecosystem_OnLog;
+            EcosystemServiceClient.OnLog += Ecosystem_OnLog;
         }
 
         private void Ecosystem_OnLog(object sender, OWLOSLogEventArgs e)

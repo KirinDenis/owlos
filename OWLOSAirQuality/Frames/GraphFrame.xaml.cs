@@ -23,7 +23,7 @@ namespace OWLOSAirQuality.Frames
     /// </summary>
     public partial class GraphFrame : Window
     {
-        private readonly OWLOSEcosystem ecosystem;
+        private readonly OWLOSEcosystemServiceClient EcosystemServiceClient;
         private readonly ConsoleControl logConsole;
         private bool timerBusy = false;
 
@@ -49,11 +49,11 @@ namespace OWLOSAirQuality.Frames
 
         private GraphControl CCS811resistenceGraphControl = null;
 
-        public GraphFrame()
+        public GraphFrame(OWLOSEcosystemServiceClient EcosystemServiceClient)
         {
             InitializeComponent();
 
-            ecosystem = App.ecosystem;
+            this.EcosystemServiceClient = EcosystemServiceClient;
 
             Timer lifeCycleTimer = new Timer(10000)
             {
@@ -178,13 +178,13 @@ namespace OWLOSAirQuality.Frames
             }
             timerBusy = true;
 
-            if (ecosystem == null)
+            if (EcosystemServiceClient == null)
             {
                 timerBusy = false;
                 return;
             }
 
-            ThingAirQualityHistoryData thingAirQualities = ecosystem.GetOneHourData(0);
+            ThingAirQualityHistoryData thingAirQualities = EcosystemServiceClient.GetOneHourData(0);
 
             
 

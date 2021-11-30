@@ -17,7 +17,7 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
         public string error = "wrong client initialization";
     }
 
-    public class OWLOSEcosystemClient
+    public partial class OWLOSEcosystemServiceClient
     {
         public long totlaSend = 0;
         public long totlaRecv = 0;

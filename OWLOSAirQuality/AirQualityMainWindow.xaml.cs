@@ -53,7 +53,7 @@ namespace OWLOSAirQuality
     /// </summary>
     public partial class AirQualityMainWindow : Window
     {
-        private readonly OWLOSEcosystem ecosystem;        
+        private readonly OWLOSEcosystemServiceClient EcosystemServiceClient;
         private readonly bool timerBusy = false;
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace OWLOSAirQuality
         private bool Zoomed = false;
         private Thickness StoredZoomThickness;
 
-        public AirQualityMainWindow()
+        public AirQualityMainWindow(OWLOSEcosystemServiceClient EcosystemServiceClient)
         {
             InitializeComponent();
 
@@ -117,7 +117,7 @@ namespace OWLOSAirQuality
             };
             lifeCycleTimer.Elapsed += new ElapsedEventHandler(OnLifeCycleTimer);
             lifeCycleTimer.Start();
-            
+
 
             //controls
 
@@ -133,20 +133,21 @@ namespace OWLOSAirQuality
 
 
             //events     
-            ecosystem = App.ecosystem;
-                       
+            this.EcosystemServiceClient = EcosystemServiceClient;
+
+
             hudFrame = new HudFrame();
             hudFrame.MainGrid.Children.Remove(hudFrame.HudHolderGrid);
             hudFrame.Close();
             MainGrid.Children.Add(hudFrame.HudHolderGrid);
 
-            graphFrame = new GraphFrame();
+            graphFrame = new GraphFrame(EcosystemServiceClient);
             graphFrame.MainGrid.Children.Remove(graphFrame.GraphHoderGrid);
             graphFrame.Close();
             MainGrid.Children.Add(graphFrame.GraphHoderGrid);
 
 
-            ValueFrame valueFrame = new ValueFrame();
+            ValueFrame valueFrame = new ValueFrame(EcosystemServiceClient);
             valueFrame.MainGrid.Children.Remove(valueFrame.ValueHolderGrid);
             valueFrame.Close();
             MainGrid.Children.Add(valueFrame.ValueHolderGrid);
@@ -156,7 +157,7 @@ namespace OWLOSAirQuality
             gasFrame.Close();
             MainGrid.Children.Add(gasFrame.ValueHolderGrid);
 
-            LogFrame logFrame = new LogFrame();
+            LogFrame logFrame = new LogFrame(EcosystemServiceClient);
             logFrame.MainGrid.Children.Remove(logFrame.LogHolderGrid);
             logFrame.Close();
             MainGrid.Children.Add(logFrame.LogHolderGrid);
@@ -197,14 +198,14 @@ namespace OWLOSAirQuality
             MainGrid.Children.Add(valueFrame.ValueHolderGrid);
             */
 
-            logFrame = new LogFrame();
+            logFrame = new LogFrame(EcosystemServiceClient);
             logFrame.MainGrid.Children.Remove(logFrame.LogHolderGrid);
             logFrame.Close();
             logFrame.LogHolderGrid.SetValue(Grid.ColumnProperty, 1);
             logFrame.LogHolderGrid.SetValue(Grid.RowProperty, 2);
             MainGrid.Children.Add(logFrame.LogHolderGrid);
 
-            graphFrame = new GraphFrame();
+            graphFrame = new GraphFrame(EcosystemServiceClient);
             graphFrame.MainGrid.Children.Remove(graphFrame.GraphHoderGrid);
             graphFrame.Close();
             graphFrame.GraphHoderGrid.SetValue(Grid.ColumnProperty, 2);

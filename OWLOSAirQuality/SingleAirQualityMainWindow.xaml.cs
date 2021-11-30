@@ -37,6 +37,7 @@ OWLOS распространяется в надежде, что она буде
 --------------------------------------------------------------------------------------*/
 
 using OWLOSAirQuality.Frames;
+using OWLOSAirQuality.OWLOSEcosystemService;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -47,12 +48,16 @@ namespace OWLOSAirQuality
 {
     public partial class SingleAirQualityMainWindow : Window
     {
+        protected OWLOSEcosystemServiceClient EcosystemServiceClient;
+
         private Point ResizePosition;
-        public SingleAirQualityMainWindow()
+        public SingleAirQualityMainWindow(OWLOSEcosystemServiceClient EcosystemServiceClient)
         {
             InitializeComponent();
+
+            this.EcosystemServiceClient = EcosystemServiceClient;
             
-            ValueFrame valueFrame = new ValueFrame();
+            ValueFrame valueFrame = new ValueFrame(EcosystemServiceClient);
             valueFrame.MainGrid.Children.Remove(valueFrame.ValueHolderGrid);
             valueFrame.Close();
             MainGrid.Children.Add(valueFrame.ValueHolderGrid);

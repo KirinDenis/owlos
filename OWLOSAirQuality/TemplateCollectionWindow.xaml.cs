@@ -54,10 +54,7 @@ using Newtonsoft.Json;
 namespace OWLOSAirQuality
 {
     public partial class TemplateCollectionWindow : Window
-    {
-
-        private OWLOSEcosystemClient ecosystemServiceClient;
-
+    {        
         private double transportRadius = Gold.radius - Gold.radius2 + (Gold.radius2 - Gold.radius3) / 2;
 
         private readonly Path ThingShadowPath;
@@ -239,7 +236,7 @@ namespace OWLOSAirQuality
             icons1.state = 3;
             //icons1.Animate();
 
-            ecosystemServiceClient = new OWLOSEcosystemClient();
+            //ecosystemServiceClient = new OWLOSEcosystemServiceClientConnection();
 
            // ThingsManager thingsManager = new ThingsManager();
           //  thingsManager.OnNewThing += ThingsManager_OnNewThing;

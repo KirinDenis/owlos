@@ -57,7 +57,7 @@ namespace OWLOSAirQuality.Frames
     /// </summary>
     public partial class ValueFrame : Window
     {
-        private readonly OWLOSEcosystem ecosystem;
+        private readonly OWLOSEcosystemServiceClient EcosystemServiceClient;
 
         private bool SensorsJoined = false;
 
@@ -68,11 +68,12 @@ namespace OWLOSAirQuality.Frames
         private readonly int GraphRefreshInterval = 10000;
 
         private readonly List<SearchIndex> SearchIndices = new List<SearchIndex>();
-        public ValueFrame()
+        public ValueFrame(OWLOSEcosystemServiceClient EcosystemServiceClient)
         {
             InitializeComponent();
-            ecosystem = App.ecosystem;
-            ecosystem.OnACDataReady += Ecosystem_OnACDataReady;
+            
+            this.EcosystemServiceClient = EcosystemServiceClient;
+            EcosystemServiceClient.OnACDataReady += Ecosystem_OnACDataReady;
 
             Timer lifeCycleTimer = new Timer(GraphRefreshInterval)
             {
@@ -181,7 +182,7 @@ namespace OWLOSAirQuality.Frames
             ShowHourMenu.OnSelect += ShowHourMenu_OnSelect;
             ShowDayMenu.OnSelect += ShowHourMenu_OnSelect;
 
-            _BackgroundControl.QueryInterval = " x: " + ecosystem.quaryInterval / 1000 + " sec / g: " + GraphRefreshInterval / 1000 + " sec ";
+            _BackgroundControl.QueryInterval = " x: " + EcosystemServiceClient.quaryInterval / 1000 + " sec / g: " + GraphRefreshInterval / 1000 + " sec ";
             _BackgroundControl.Status = "[not connected] " + DateTime.Now;
             _BackgroundControl.SearchTextBox.TextChanged += SearchTextBox_TextChanged;
             _BackgroundControl.SearchTextBox.GotFocus += SearchTextBox_GotFocus;
@@ -309,8 +310,8 @@ namespace OWLOSAirQuality.Frames
 
                 try
                 {
-                    _BackgroundControl.URL = ecosystem.thingHost;
-                    ThingAirQuality acData = ecosystem.dailyAirQulity[OWLOSEcosystem.dailyAirQulitySize - 1];
+                    _BackgroundControl.URL = EcosystemServiceClient.URL;
+                    ThingAirQuality acData = EcosystemServiceClient.dailyAirQulity[OWLOSEcosystemServiceClient.dailyAirQulitySize - 1];
                     if (acData != null)
                     {
                         switch (acData.Status)
@@ -389,7 +390,7 @@ namespace OWLOSAirQuality.Frames
             }
             timerBusy = true;
 
-            if (ecosystem == null)
+            if (EcosystemServiceClient == null)
             {
                 timerBusy = false;
                 return;
@@ -400,11 +401,11 @@ namespace OWLOSAirQuality.Frames
                 ThingAirQualityHistoryData thingAirQualities;
                 if (ShowHourMenu.Selected)
                 {
-                    thingAirQualities = ecosystem.GetOneHourData(0);
+                    thingAirQualities = EcosystemServiceClient.GetOneHourData(0);
                 }
                 else
                 {
-                    thingAirQualities = ecosystem.GetOneDayData(0);
+                    thingAirQualities = EcosystemServiceClient.GetOneDayData(0);
                 }
 
                 base.Dispatcher.Invoke(() =>
