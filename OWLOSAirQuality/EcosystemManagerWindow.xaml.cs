@@ -120,6 +120,9 @@ namespace OWLOSAirQuality
             valueFrame.Close();
             ThingsManagerControl.MainGrid.Children.Add(valueFrame.ValueHolderGrid);
 
+
+
+
         }
 
         /*
@@ -625,12 +628,12 @@ namespace OWLOSAirQuality
                 point.Y = EcosystemExplorerGrid.ActualHeight - viewbox.ActualHeight - EcosystemExplorerGrid.ActualHeight / 2;
             }
 
-            if (point.X > 0)
+            if ((point.X > 0) || (double.IsNaN(point.X)))
             {
                 point.X = 0;
             }
 
-            if (point.Y > 0)
+            if ((point.Y > 0) || (double.IsNaN(point.Y)))
             {
                 point.Y = 0;
             }
@@ -707,6 +710,8 @@ namespace OWLOSAirQuality
         /// <param name="e"></param>
         private void EcosystemExplorerGrid_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
+
+            zoomFactor = currentZoom / 15.4f;
             //в зависемости от текущего масштаба вычисляем делту колеса мыши
             double tempZoom = (viewbox.ActualWidth + e.Delta * zoomFactor) / (cellSize / 100);
             double zoom = tempZoom * (cellSize / 100);
@@ -920,6 +925,11 @@ namespace OWLOSAirQuality
             EcosystemManagerWindow ecosystemExplorer = new EcosystemManagerWindow();
             ecosystemExplorer.Show();
 
+        }
+
+        private void Window_Loaded_1(object sender, RoutedEventArgs e)
+        {
+            EcosystemExplorerGrid_PreviewMouseWheel(null, new MouseWheelEventArgs(Mouse.PrimaryDevice, 10, 1));
         }
 
 

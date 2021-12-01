@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Background="#01000000"
         Title="OWLOS Air Quality Things connections" Width="1185" Height="732" WindowStartupLocation="CenterScreen" AllowsTransparency="True" WindowStyle="None"
-        TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed">
+        TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed" Loaded="Window_Loaded_1">
 
 
     <WindowChrome.WindowChrome>
@@ -28,7 +28,7 @@
 
         <Grid x:Name="contentGrid" Grid.Row="1" >
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0*"/>
+                <ColumnDefinition Width="250"/>
                 <ColumnDefinition Width="7*"/>
                 <ColumnDefinition Width="153*"/>
             </Grid.ColumnDefinitions>
@@ -88,13 +88,16 @@
                             </Grid.RowDefinitions>
 
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="25"/>
+                                <ColumnDefinition Width="35"/>
                                 <ColumnDefinition Width="100*"/>
                             </Grid.ColumnDefinitions>
 
 
 
                             <Image x:Name="ThingImage" Grid.Column="1" Grid.Row="1" Width="10000" Height="10000"/>
+
+
+                            <Grid x:Name="zeroNavigationGrid"  Grid.Row="0" Grid.Column="0" Background="{DynamicResource OWLOSInfoAlpha2}" Width="40" Height="30.3" VerticalAlignment="Bottom" Margin="0,-0.0,0,-0.175"></Grid>
 
                             <Grid x:Name="verticalNavigationGrid" Grid.Column="0" Grid.Row="1" Background="{DynamicResource OWLOSInfoAlpha2}" Width="37" HorizontalAlignment="Right" Visibility="Hidden" 
                               TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed"
@@ -139,26 +142,26 @@
                 </Grid>
 
 
-                <Grid Grid.Row="0" Height="30">
-                    <StackPanel Orientation="Horizontal" Margin="10,0,10,0">
-                        <TextBlock Name="EcosystemExplorerTextBlock" Text="OWLOS Ecosystem"  Margin="0,0,2,0" VerticalAlignment="Center" Foreground="{DynamicResource OWLOSInfo}"  />
-                        <StackPanel Orientation="Horizontal"  VerticalAlignment="Center">
-                            <TextBlock Text="zoom:" VerticalAlignment="Center" Margin="0,0,0,0" Foreground="{DynamicResource OWLOSInfo}" />
-                            <TextBox Name="zoomTextBox" Text="100" Background="{x:Null}" VerticalAlignment="Center" BorderBrush="{x:Null}" FontWeight="Bold" Foreground="{DynamicResource OWLOSLight}" SnapsToDevicePixels="True" />
-                            <TextBlock Text="%" VerticalAlignment="Center" Margin="0,0,5,0" Foreground="{DynamicResource OWLOSLight}" />
-                        </StackPanel>
-
-                        <huds:MenuItemControl x:Name="zoomToOneHImage" Caption="100%" Description="zoom to 100%"  Cursor="Hand" MouseDown="zoomToOneHImage_MouseDown" />
-                        <huds:MenuItemControl x:Name="zoomToFullImage" Caption="Full" Description="Zoom to full view" MouseDown="zoomToFullImage_MouseDown" Cursor="Hand" />
-                        <huds:MenuItemControl x:Name="autoScrollImage" Caption="Auto" Description="Auto scroll image" MouseDown="autoScrollImage_MouseDown" Cursor="Hand" />
-                        <huds:MenuItemControl x:Name="drawCellImage" Caption="Cell" Description="Show cell" MouseDown="drawCellImage_MouseDown" Cursor="Hand" />
-                        <huds:MenuItemControl x:Name="perspectiveViewImage" Caption="3D" Description="Perspective view" MouseDown="perspectiveViewImage_MouseDown" Cursor="Hand" />
-                        <huds:MenuItemControl x:Name="duplicateWindowImage" Caption="Duplicate" Description="Duplicate window" MouseDown="duplicateWindowImage_MouseDown" Cursor="Hand" />
-                                                
-                    </StackPanel>
-                </Grid>
 
             </Grid>
+            <Grid Grid.Row="0" Grid.ColumnSpan="3" Height="30">
+                <StackPanel Orientation="Horizontal" Margin="25,0,10,0">
+                    <StackPanel Orientation="Horizontal"  VerticalAlignment="Center">
+                        <TextBlock Text="zoom:" VerticalAlignment="Center" Margin="0,0,0,0" Foreground="{DynamicResource OWLOSInfo}" />
+                        <TextBox Name="zoomTextBox" Text="100" Background="{x:Null}" VerticalAlignment="Center" BorderBrush="{x:Null}" FontWeight="Bold" Foreground="{DynamicResource OWLOSLight}" SnapsToDevicePixels="True" />
+                        <TextBlock Text="%" VerticalAlignment="Center" Margin="0,0,5,0" Foreground="{DynamicResource OWLOSLight}" />
+                    </StackPanel>
+
+                    <huds:MenuItemControl x:Name="zoomToOneHImage" Caption="100%" Description="zoom to 100%"  Cursor="Hand" MouseDown="zoomToOneHImage_MouseDown" />
+                    <huds:MenuItemControl x:Name="zoomToFullImage" Caption="Full" Description="Zoom to full view" MouseDown="zoomToFullImage_MouseDown" Cursor="Hand" />
+                    <huds:MenuItemControl x:Name="autoScrollImage" Caption="Auto" Description="Auto scroll image" MouseDown="autoScrollImage_MouseDown" Cursor="Hand" />
+                    <huds:MenuItemControl x:Name="drawCellImage" Caption="Cell" Description="Show cell" MouseDown="drawCellImage_MouseDown" Cursor="Hand" />
+                    <huds:MenuItemControl x:Name="perspectiveViewImage" Caption="3D" Description="Perspective view" MouseDown="perspectiveViewImage_MouseDown" Cursor="Hand" />
+                    <huds:MenuItemControl x:Name="duplicateWindowImage" Caption="Duplicate" Description="Duplicate window" MouseDown="duplicateWindowImage_MouseDown" Cursor="Hand" />
+
+                </StackPanel>
+            </Grid>
+
             <!-- 
         <Canvas Background="{DynamicResource OWLOSDarkAlpha1}" Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" ZIndex="999999999">
         </Canvas>
