@@ -15,7 +15,7 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
             OWLOSEcosystemServiceClients.Add(new OWLOSEcosystemServiceClient()
             {
                 Name = "OWLOS ORG",
-                URL = "http://airquality.owlos.org",
+                URL = "http://airquality.owlos.org/Things/",
                 Token = "WG8xNTc1T29ONTFDbkdUd1NUOU1xVWRqVHhzbGIwOVJFN2xibU5RNnJpMFFBQUFBY3I4SERwTlVKWENsMjF4a1lWZG9OSlJBTDl0aDAwTWUzMk9ub2JYN2YvQUZmMWdESVZ1akE4c3NTUHcwbHkxWVc3bWd0N1JXcVVWTEZYQzRPajYwdTBIdFBVVHBFb0VjeXhyeGZCZWNDRVhmWWpzSTZDamxsdjAzR0dWY0JFL3dRSHZkL2llWE4wcmE4eFJsVFlFdmtRPT0%3D"
             });
 

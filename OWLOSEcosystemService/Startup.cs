@@ -32,7 +32,10 @@ namespace OWLOSEcosystemService
             services.AddDbContext<ThingsDbContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
             DbContextOptionsBuilder op = new DbContextOptionsBuilder();
-            op.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+            
+            op.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), op => op.EnableRetryOnFailure());
+
+
             new ThingsDbContext(op.Options);
 
             services.AddControllersWithViews();

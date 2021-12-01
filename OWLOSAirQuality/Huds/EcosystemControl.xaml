@@ -1,0 +1,37 @@
+﻿<UserControl x:Class="OWLOSThingsManager.EcosystemExplorer.EcosystemControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:OWLOSThingsManager.EcosystemExplorer"
+             mc:Ignorable="d" 
+             HorizontalAlignment="Left" VerticalAlignment="Top"
+             MinHeight="0" MinWidth="0" 
+             Height="700" Width="700"
+             d:DesignHeight="200" d:DesignWidth="200" 
+             Focusable="True" IsTabStop="True"              
+             PreviewMouseMove="EcosystemControlPreviewMouseMove" 
+             MouseDown="EcosystemControlMouseDown" 
+             MouseUp="EcosystemControlMouseUp" 
+             GotFocus="EcosystemControlGotFocus" 
+             LostFocus="EcosystemControlLostFocus" 
+             PreviewMouseDown="EcosystemControlPreviewMouseDown" 
+             ClipToBounds="True" 
+             SnapsToDevicePixels="True" Background="#02000000" >
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="SwitchWindowTransparentButton" Width="25" Content="T" Click="SwitchWindowTransparentButton_Click" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{DynamicResource OWLOSPrimary}"/>
+            <Button x:Name="SwitchWindowButton" Width="25" Content="W" Click="SwitchWindowButton_Click" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{DynamicResource OWLOSPrimary}"/>
+            <Button x:Name="CloseButton" Width="25" Content="X" Click="CloseButton_Click" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{DynamicResource OWLOSPrimary}"/>
+        </StackPanel>
+        <Grid Name="childHolderGrid" TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed" Grid.Row="1" >
+        </Grid>
+        <Border Grid.Row="1" BorderThickness="0,0,4,4"  BorderBrush="{DynamicResource OWLOSInfoAlpha3}"  HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="20" Height="20" ClipToBounds="True" SnapsToDevicePixels="True" Cursor="SizeNWSE" Background="#02FDFAFA"/>
+    </Grid>
+
+</UserControl>

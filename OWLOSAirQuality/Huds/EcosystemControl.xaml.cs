@@ -1,4 +1,6 @@
-﻿using System;
+﻿using OWLOSAirQuality;
+using OWLOSAirQuality.Frames;
+using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,10 +16,10 @@ namespace OWLOSThingsManager.EcosystemExplorer
     /// </summary>
     public partial class EcosystemControl : UserControl
     {
-        /*
-        private OWLOSWindow _window = null;
+        
+        private HudFrame _window = null;
         //когда панель принадлежит отдельному окну
-        public OWLOSWindow window
+        public HudFrame window
         {
             get => _window;
             set
@@ -34,7 +36,7 @@ namespace OWLOSThingsManager.EcosystemExplorer
             }
 
         }
-        */
+        
         //когда панель принадлежит окну экосистемы (сюда сохраняестя Parent для экосистемы)
         public Grid parentGrid = null;
 
@@ -332,10 +334,10 @@ namespace OWLOSThingsManager.EcosystemExplorer
 
         private void SwitchFromPanelToWindow()
         {
-            /*
+            
             if (window == null)
             {
-                window = new OWLOSWindow
+                window = new HudFrame
                 {
                     Width = ActualWidth,
                     Height = ActualHeight
@@ -353,7 +355,7 @@ namespace OWLOSThingsManager.EcosystemExplorer
                 Show();
                 window.Show();
             }
-            */
+            
         }
 
         private void SwitchFromWindowToPanel()

@@ -39,6 +39,7 @@ DIY Open Source OS for building IoT ecosystems
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\OWLOSAdmin\EcosystemExplorer\EcosystemControls\IEcosystemChildControl.cs" Link="Huds\IEcosystemChildControl.cs" />
     <Compile Include="..\OWLOSAdmin\EcosystemExplorer\Huds\Gold.cs" Link="Huds\Gold.cs" />
     <Compile Include="..\OWLOSAdmin\EcosystemExplorer\Huds\HudLibrary.cs" Link="Huds\HudLibrary.cs" />
     <Compile Include="..\OWLOSAdmin\EcosystemExplorer\Huds\PathText.cs" Link="Huds\PathText.cs" />
@@ -64,6 +65,7 @@ DIY Open Source OS for building IoT ecosystems
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
     <PackageReference Include="System.IO.Ports" Version="4.7.0" />
   </ItemGroup>
 
