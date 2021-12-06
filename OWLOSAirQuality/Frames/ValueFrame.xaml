@@ -8,141 +8,143 @@
         mc:Ignorable="d"
         Title="Value Frame" Width="1920" Height="1080" Background="black">
     <Grid x:Name="MainGrid" Width="1920" Height="1080">
-        <Grid x:Name="ValueHolderGrid" Grid.Column="2" Grid.Row="0">
-            <huds:FrameBackgroundControl x:Name="_BackgroundControl" TitleFrame="SENSORS VALUES" DescriptionFrame="Air Quality" QueryInterval="x10 sec"/>
-            <Grid x:Name="ValuesGrid" Margin="60,121,60,106">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="33*"/>
-                    <ColumnDefinition Width="33*"/>
-                    <ColumnDefinition Width="33*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="24*"/>
-                    <RowDefinition Height="24*"/>
-                    <RowDefinition Height="24*"/>
-                    <RowDefinition Height="16*"/>
-                </Grid.RowDefinitions>
+        <Viewbox x:Name="ValueHolderGrid" Grid.Column="2" Grid.Row="0">
+            <Grid Width="1920" Height="1080">
+                <huds:FrameBackgroundControl x:Name="_BackgroundControl" TitleFrame="SENSORS VALUES" DescriptionFrame="Air Quality" QueryInterval="x10 sec"/>
+                <Grid x:Name="ValuesGrid" Margin="60,121,60,106">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="33*"/>
+                        <ColumnDefinition Width="33*"/>
+                        <ColumnDefinition Width="33*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="24*"/>
+                        <RowDefinition Height="24*"/>
+                        <RowDefinition Height="24*"/>
+                        <RowDefinition Height="16*"/>
+                    </Grid.RowDefinitions>
 
 
-                <Grid x:Name="DHT22Grid">
-                    <Border BorderBrush="{DynamicResource OWLOSSecondaryAlpha1}" BorderThickness="0,0,1,2" />
-                    <StackPanel Orientation="Horizontal" Margin="6,6,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top">
-                        <TextBlock Text="DHT22 Sensor" HorizontalAlignment="Left"  VerticalAlignment="Bottom" FontSize="25" Foreground="{DynamicResource OWLOSPrimary}" />
-                        <TextBlock Text="| Temperature | Humidity | Heat Index |" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="6,0,0,4" FontSize="16" Foreground="{DynamicResource OWLOSWarning}" />
-                    </StackPanel>
+                    <Grid x:Name="DHT22Grid">
+                        <Border BorderBrush="{DynamicResource OWLOSSecondaryAlpha1}" BorderThickness="0,0,1,2" />
+                        <StackPanel Orientation="Horizontal" Margin="6,6,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top">
+                            <TextBlock Text="DHT22 Sensor" HorizontalAlignment="Left"  VerticalAlignment="Bottom" FontSize="25" Foreground="{DynamicResource OWLOSPrimary}" />
+                            <TextBlock Text="| Temperature | Humidity | Heat Index |" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="6,0,0,4" FontSize="16" Foreground="{DynamicResource OWLOSWarning}" />
+                        </StackPanel>
 
-                    <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,16,0,-16">
-                        <huds:TemperatureValueControl x:Name="DHT22tempValueControl" Width="172" Height="172" Caption="DHT22" Description="Temperature" HighWarningTrap="25" HighDangerTrap="28" LowWarningTrap="23" LowDangerTrap="20.0"/>
-                        <huds:ValueControl x:Name="DHT22humValueControl" Width="172" Height="172" Caption="DHT22" UnitOfMeasure="%" Description="Humidity" HighWarningTrap="55" HighDangerTrap="70" LowWarningTrap="45" LowDangerTrap="30" />
-                        <huds:ValueControl x:Name="DHT22heatValueControl" Width="172" Height="172" Caption="DHT22" UnitOfMeasure="" Description="Heat Index" HighWarningTrap="32" HighDangerTrap="52" LowWarningTrap="23" LowDangerTrap="18"/>
-                    </WrapPanel>
+                        <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,16,0,-16">
+                            <huds:TemperatureValueControl x:Name="DHT22tempValueControl" Width="172" Height="172" Caption="DHT22" Description="Temperature" HighWarningTrap="25" HighDangerTrap="28" LowWarningTrap="23" LowDangerTrap="20.0"/>
+                            <huds:ValueControl x:Name="DHT22humValueControl" Width="172" Height="172" Caption="DHT22" UnitOfMeasure="%" Description="Humidity" HighWarningTrap="55" HighDangerTrap="70" LowWarningTrap="45" LowDangerTrap="30" />
+                            <huds:ValueControl x:Name="DHT22heatValueControl" Width="172" Height="172" Caption="DHT22" UnitOfMeasure="" Description="Heat Index" HighWarningTrap="32" HighDangerTrap="52" LowWarningTrap="23" LowDangerTrap="18"/>
+                        </WrapPanel>
+                    </Grid>
+
+                    <Grid x:Name="BMP280Grid" Grid.Column="1" Grid.Row="0">
+                        <Border BorderBrush="{DynamicResource OWLOSSecondaryAlpha1}" BorderThickness="0,0,1,2" />
+                        <StackPanel Orientation="Horizontal" Margin="6,6,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top">
+                            <TextBlock Text="BMP280 Sensor" HorizontalAlignment="Left"  VerticalAlignment="Bottom" FontSize="25" Foreground="{DynamicResource OWLOSPrimary}" />
+                            <TextBlock Text="| Pressure | Altitude | Temperature |" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="6,0,0,4" FontSize="16" Foreground="{DynamicResource OWLOSWarning}" />
+                        </StackPanel>
+
+                        <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,16,0,-16">
+                            <huds:PresureValueControl x:Name="BMP280pressureValueControl" Width="172" Height="172" Caption="BMP280" Description="Pressure" />
+                            <huds:ValueControl x:Name="BMP280altitudeValueControl" Width="172" Height="172" Caption="BMP280" UnitOfMeasure="Meters" Description="Altitude" />
+                            <huds:TemperatureValueControl x:Name="BMP280temperatureValueControl" Width="172" Height="172" Caption="BMP280" Description="Temperature" />
+                        </WrapPanel>
+                    </Grid>
+
+                    <Grid x:Name="ADS1X15Grid" Grid.Column="2" Grid.Row="0">
+                        <Border BorderBrush="{DynamicResource OWLOSSecondaryAlpha1}" BorderThickness="0,0,0,2" />
+
+                        <StackPanel Orientation="Horizontal" Margin="6,6,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top">
+                            <TextBlock Text="ADS1X15 Sensor" HorizontalAlignment="Left"  VerticalAlignment="Bottom" FontSize="25" Foreground="{DynamicResource OWLOSPrimary}" />
+                            <TextBlock Text="| MQ135 | MQ7 | Light |" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="6,0,0,4" FontSize="16" Foreground="{DynamicResource OWLOSWarning}" />
+                        </StackPanel>
+
+                        <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,16,0,-16">
+                            <huds:ValueControl x:Name="ADS1X15MQ135ValueControl" Width="172" Height="172" Caption="ADS1X15" UnitOfMeasure="CO2|CO|Alcohol|Smoke|Dust" Description="MQ135" HighWarningTrap="6000" HighDangerTrap="11000" />
+                            <huds:ValueControl x:Name="ADS1X15MQ7ValueControl" Width="172" Height="172" Caption="ADS1X15" UnitOfMeasure="CO" Description="MQ7"  HighWarningTrap="6000" HighDangerTrap="11000"/>
+                            <huds:ValueControl x:Name="ADS1X15LightValueControl" Width="172" Height="172" Caption="ADS1X15" UnitOfMeasure="level" Description="Light" HighWarningTrap="6000" HighDangerTrap="11000"/>
+                        </WrapPanel>
+                    </Grid>
+
+                    <Grid x:Name="CCS811Grid" Grid.Column="0" Grid.Row="1" Grid.RowSpan="1">
+                        <Border BorderBrush="{DynamicResource OWLOSSecondaryAlpha1}" BorderThickness="0,0,2,0" />
+                        <Border BorderBrush="{DynamicResource OWLOSSecondaryAlpha1}" BorderThickness="0,0,0,2" />
+                        <StackPanel Orientation="Horizontal" Margin="6,6,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top">
+                            <TextBlock Text="CCS811 Sensor" HorizontalAlignment="Left"  VerticalAlignment="Bottom" FontSize="25" Foreground="{DynamicResource OWLOSPrimary}" />
+                            <TextBlock Text="| eCO2 | TVOC | Resistance | Temperature |" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="6,0,0,4" FontSize="16" Foreground="{DynamicResource OWLOSWarning}" />
+                        </StackPanel>
+
+                        <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,16,0,-16">
+                            <huds:ValueControl x:Name="CCS811CO2ValueControl" Width="172" Height="172" Caption="CCS811" UnitOfMeasure="Parts Per Million [PPM]" Description="eCO2" HighWarningTrap="1000" HighDangerTrap="2000"/>
+                            <huds:ValueControl x:Name="CCS811TVOCValueControl" Width="172" Height="172" Caption="CCS811" UnitOfMeasure="Parts Per Billion [PPB]" Description="TVOC" HighWarningTrap="250" HighDangerTrap="500"/>
+                            <huds:ValueControl x:Name="CCS811resistenceValueControl" Width="172" Height="172" Caption="CCS811" UnitOfMeasure="" Description="Resistance" />
+
+                        </WrapPanel>
+                    </Grid>
+
+                    <Grid x:Name="OthersGrid" Grid.Column="0" Grid.Row="2" Grid.RowSpan="1">
+                        <Border BorderBrush="{DynamicResource OWLOSSecondaryAlpha1}" BorderThickness="0,0,2,0" />
+                        <Border BorderBrush="{DynamicResource OWLOSSecondaryAlpha1}" BorderThickness="0,0,0,2" />
+                        <StackPanel Orientation="Horizontal" Margin="6,6,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top">
+                            <TextBlock Text="Other Sensor" HorizontalAlignment="Left"  VerticalAlignment="Bottom" FontSize="25" Foreground="{DynamicResource OWLOSPrimary}" />
+                            <TextBlock Text="| CCS811 Temperature |" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="6,0,0,4" FontSize="16" Foreground="{DynamicResource OWLOSWarning}" />
+                        </StackPanel>
+
+                        <WrapPanel HorizontalAlignment="Left" VerticalAlignment="Center" Margin="24,16,0,-16">
+                            <huds:TemperatureValueControl x:Name="CCS811tempValueControl" Width="172" Height="172" Caption="CCS811" DefaultCelsius="False" CurentCelsius="False" Description="Temperature" />
+                        </WrapPanel>
+                    </Grid>
+
+                    <Grid x:Name="DangersGrid" Grid.Column="0" Grid.Row="3" Grid.RowSpan="1">
+                        <Border BorderBrush="{DynamicResource OWLOSSecondaryAlpha1}" BorderThickness="0,0,2,0" />
+                        <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-3,0,-4">
+                            <huds:ModeControl x:Name="DHT22TempModeControl" Caption="Temperature" TopDescription="DHT22" HighWarningTrap="25" HighDangerTrap="28" LowWarningTrap="23" LowDangerTrap="20.0"/>
+                            <huds:ModeControl x:Name="DHT22HumModeControl" Caption="Humidity" TopDescription="DHT22" HighWarningTrap="55" HighDangerTrap="70" LowWarningTrap="45" LowDangerTrap="30"/>
+                            <huds:ModeControl x:Name="DHT22HeatModeControl" Caption="Heat Index" TopDescription="DHT22" HighWarningTrap="32" HighDangerTrap="52" LowWarningTrap="23" LowDangerTrap="18"/>
+                            <huds:ModeControl x:Name="BMP280PressureModeControl" Caption="Pressure" TopDescription="BMP280"/>
+                            <huds:ModeControl x:Name="BMP280AltitudeModeControl" Caption="Altitude" TopDescription="BMP280"/>
+                            <huds:ModeControl x:Name="BMP280TempModeControl" Caption="Temperature" TopDescription="BMP280"/>
+                            <huds:ModeControl x:Name="ADS1X15MQ135ModeControl" Caption="MQ135" TopDescription="ADS1X15" HighWarningTrap="6000" HighDangerTrap="11000"/>
+                            <huds:ModeControl x:Name="ADS1X15MQ7ModeControl" Caption="MQ7" TopDescription="ADS1X15" HighWarningTrap="6000" HighDangerTrap="11000"/>
+                            <huds:ModeControl x:Name="ADS1X15LightModeControl" Caption="Light" TopDescription="ADS1X15" HighWarningTrap="6000" HighDangerTrap="11000"/>
+                            <huds:ModeControl x:Name="CCS811eCO2ModeControl" Caption="eCO2" TopDescription="CCS811" HighWarningTrap="1000" HighDangerTrap="2000"/>
+                            <huds:ModeControl x:Name="CCS811TVOCModeControl" Caption="TVOC" TopDescription="CCS811" HighWarningTrap="250" HighDangerTrap="500"/>
+                            <huds:ModeControl x:Name="CCS811ResistanceModeControl" Caption="Resistance" TopDescription="CCS811"/>
+                            <huds:ModeControl x:Name="CCS811TempModeControl" Caption="Temperature" TopDescription="CCS811"/>
+                        </WrapPanel>
+                    </Grid>
+
+
+
+                    <Grid x:Name="ValueGraphGrid" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" Grid.RowSpan="3" >
+                        <StackPanel Orientation="Horizontal" Margin="6,6,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top">
+                            <TextBlock x:Name="ValueGraphCaption" Text="DHT22 Sensor" HorizontalAlignment="Left"  VerticalAlignment="Bottom" FontSize="25" Foreground="{DynamicResource OWLOSPrimary}" />
+                            <TextBlock x:Name="ValueGraphDescription" Text="temperature" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="6,0,0,4" FontSize="16" Foreground="{DynamicResource OWLOSWarning}" />
+                        </StackPanel>
+
+                        <huds:GraphControl x:Name="ValueGraph" Margin="0,-41"/>
+
+                        <StackPanel Margin="0,10" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Center">
+                            <huds:MenuItemControl x:Name="ShowDayMenu" Caption="Day" Description="day"/>
+                            <huds:MenuItemControl x:Name="ShowHourMenu" Caption="Hour" Description="time" Selected="True"/>
+                        </StackPanel>
+
+                        <WrapPanel Margin="0,41" Width="1132" x:Name="HoursPanel1" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Center">
+                        </WrapPanel>
+
+                        <WrapPanel Margin="0,66" x:Name="HoursPanel2" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Center">
+                        </WrapPanel>
+
+                    </Grid>
+
+                    <huds:CrossControl HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="-7" Grid.Column="0" Grid.Row="0"></huds:CrossControl>
+                    <huds:CrossControl HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="-7" Grid.Column="1" Grid.Row="0"></huds:CrossControl>
+                    <huds:CrossControl HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="-7" Grid.Column="0" Grid.Row="1"></huds:CrossControl>
+                    <huds:CrossControl HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="-7" Grid.Column="0" Grid.Row="2"></huds:CrossControl>
                 </Grid>
-
-                <Grid x:Name="BMP280Grid" Grid.Column="1" Grid.Row="0">
-                    <Border BorderBrush="{DynamicResource OWLOSSecondaryAlpha1}" BorderThickness="0,0,1,2" />
-                    <StackPanel Orientation="Horizontal" Margin="6,6,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top">
-                        <TextBlock Text="BMP280 Sensor" HorizontalAlignment="Left"  VerticalAlignment="Bottom" FontSize="25" Foreground="{DynamicResource OWLOSPrimary}" />
-                        <TextBlock Text="| Pressure | Altitude | Temperature |" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="6,0,0,4" FontSize="16" Foreground="{DynamicResource OWLOSWarning}" />
-                    </StackPanel>
-
-                    <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,16,0,-16">
-                        <huds:PresureValueControl x:Name="BMP280pressureValueControl" Width="172" Height="172" Caption="BMP280" Description="Pressure" />
-                        <huds:ValueControl x:Name="BMP280altitudeValueControl" Width="172" Height="172" Caption="BMP280" UnitOfMeasure="Meters" Description="Altitude" />
-                        <huds:TemperatureValueControl x:Name="BMP280temperatureValueControl" Width="172" Height="172" Caption="BMP280" Description="Temperature" />
-                    </WrapPanel>
-                </Grid>
-
-                <Grid x:Name="ADS1X15Grid" Grid.Column="2" Grid.Row="0">
-                    <Border BorderBrush="{DynamicResource OWLOSSecondaryAlpha1}" BorderThickness="0,0,0,2" />
-                    
-                    <StackPanel Orientation="Horizontal" Margin="6,6,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top">
-                        <TextBlock Text="ADS1X15 Sensor" HorizontalAlignment="Left"  VerticalAlignment="Bottom" FontSize="25" Foreground="{DynamicResource OWLOSPrimary}" />
-                        <TextBlock Text="| MQ135 | MQ7 | Light |" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="6,0,0,4" FontSize="16" Foreground="{DynamicResource OWLOSWarning}" />
-                    </StackPanel>
-
-                    <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,16,0,-16">
-                        <huds:ValueControl x:Name="ADS1X15MQ135ValueControl" Width="172" Height="172" Caption="ADS1X15" UnitOfMeasure="CO2|CO|Alcohol|Smoke|Dust" Description="MQ135" HighWarningTrap="6000" HighDangerTrap="11000" />
-                        <huds:ValueControl x:Name="ADS1X15MQ7ValueControl" Width="172" Height="172" Caption="ADS1X15" UnitOfMeasure="CO" Description="MQ7"  HighWarningTrap="6000" HighDangerTrap="11000"/>
-                        <huds:ValueControl x:Name="ADS1X15LightValueControl" Width="172" Height="172" Caption="ADS1X15" UnitOfMeasure="level" Description="Light" HighWarningTrap="6000" HighDangerTrap="11000"/>
-                    </WrapPanel>
-                </Grid>
-
-                <Grid x:Name="CCS811Grid" Grid.Column="0" Grid.Row="1" Grid.RowSpan="1">
-                    <Border BorderBrush="{DynamicResource OWLOSSecondaryAlpha1}" BorderThickness="0,0,2,0" />
-                    <Border BorderBrush="{DynamicResource OWLOSSecondaryAlpha1}" BorderThickness="0,0,0,2" />
-                    <StackPanel Orientation="Horizontal" Margin="6,6,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top">
-                        <TextBlock Text="CCS811 Sensor" HorizontalAlignment="Left"  VerticalAlignment="Bottom" FontSize="25" Foreground="{DynamicResource OWLOSPrimary}" />
-                        <TextBlock Text="| eCO2 | TVOC | Resistance | Temperature |" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="6,0,0,4" FontSize="16" Foreground="{DynamicResource OWLOSWarning}" />
-                    </StackPanel>
-
-                    <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,16,0,-16">
-                        <huds:ValueControl x:Name="CCS811CO2ValueControl" Width="172" Height="172" Caption="CCS811" UnitOfMeasure="Parts Per Million [PPM]" Description="eCO2" HighWarningTrap="1000" HighDangerTrap="2000"/>
-                        <huds:ValueControl x:Name="CCS811TVOCValueControl" Width="172" Height="172" Caption="CCS811" UnitOfMeasure="Parts Per Billion [PPB]" Description="TVOC" HighWarningTrap="250" HighDangerTrap="500"/>
-                    <huds:ValueControl x:Name="CCS811resistenceValueControl" Width="172" Height="172" Caption="CCS811" UnitOfMeasure="" Description="Resistance" />
-
-                </WrapPanel>
-                </Grid>
-
-                <Grid x:Name="OthersGrid" Grid.Column="0" Grid.Row="2" Grid.RowSpan="1">
-                    <Border BorderBrush="{DynamicResource OWLOSSecondaryAlpha1}" BorderThickness="0,0,2,0" />
-                    <Border BorderBrush="{DynamicResource OWLOSSecondaryAlpha1}" BorderThickness="0,0,0,2" />
-                    <StackPanel Orientation="Horizontal" Margin="6,6,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top">
-                        <TextBlock Text="Other Sensor" HorizontalAlignment="Left"  VerticalAlignment="Bottom" FontSize="25" Foreground="{DynamicResource OWLOSPrimary}" />
-                        <TextBlock Text="| CCS811 Temperature |" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="6,0,0,4" FontSize="16" Foreground="{DynamicResource OWLOSWarning}" />
-                    </StackPanel>
-
-                    <WrapPanel HorizontalAlignment="Left" VerticalAlignment="Center" Margin="24,16,0,-16">
-                        <huds:TemperatureValueControl x:Name="CCS811tempValueControl" Width="172" Height="172" Caption="CCS811" DefaultCelsius="False" CurentCelsius="False" Description="Temperature" />
-                    </WrapPanel>
-                </Grid>
-
-                <Grid x:Name="DangersGrid" Grid.Column="0" Grid.Row="3" Grid.RowSpan="1">
-                    <Border BorderBrush="{DynamicResource OWLOSSecondaryAlpha1}" BorderThickness="0,0,2,0" />
-                    <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-3,0,-4">
-                        <huds:ModeControl x:Name="DHT22TempModeControl" Caption="Temperature" TopDescription="DHT22" HighWarningTrap="25" HighDangerTrap="28" LowWarningTrap="23" LowDangerTrap="20.0"/>
-                        <huds:ModeControl x:Name="DHT22HumModeControl" Caption="Humidity" TopDescription="DHT22" HighWarningTrap="55" HighDangerTrap="70" LowWarningTrap="45" LowDangerTrap="30"/>
-                        <huds:ModeControl x:Name="DHT22HeatModeControl" Caption="Heat Index" TopDescription="DHT22" HighWarningTrap="32" HighDangerTrap="52" LowWarningTrap="23" LowDangerTrap="18"/>
-                        <huds:ModeControl x:Name="BMP280PressureModeControl" Caption="Pressure" TopDescription="BMP280"/>
-                        <huds:ModeControl x:Name="BMP280AltitudeModeControl" Caption="Altitude" TopDescription="BMP280"/>
-                        <huds:ModeControl x:Name="BMP280TempModeControl" Caption="Temperature" TopDescription="BMP280"/>
-                        <huds:ModeControl x:Name="ADS1X15MQ135ModeControl" Caption="MQ135" TopDescription="ADS1X15" HighWarningTrap="6000" HighDangerTrap="11000"/>
-                        <huds:ModeControl x:Name="ADS1X15MQ7ModeControl" Caption="MQ7" TopDescription="ADS1X15" HighWarningTrap="6000" HighDangerTrap="11000"/>
-                        <huds:ModeControl x:Name="ADS1X15LightModeControl" Caption="Light" TopDescription="ADS1X15" HighWarningTrap="6000" HighDangerTrap="11000"/>
-                        <huds:ModeControl x:Name="CCS811eCO2ModeControl" Caption="eCO2" TopDescription="CCS811" HighWarningTrap="1000" HighDangerTrap="2000"/>
-                        <huds:ModeControl x:Name="CCS811TVOCModeControl" Caption="TVOC" TopDescription="CCS811" HighWarningTrap="250" HighDangerTrap="500"/>
-                        <huds:ModeControl x:Name="CCS811ResistanceModeControl" Caption="Resistance" TopDescription="CCS811"/>
-                        <huds:ModeControl x:Name="CCS811TempModeControl" Caption="Temperature" TopDescription="CCS811"/>
-                    </WrapPanel>
-                </Grid>
-
-
-
-                <Grid x:Name="ValueGraphGrid" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" Grid.RowSpan="3" >
-                    <StackPanel Orientation="Horizontal" Margin="6,6,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top">
-                        <TextBlock x:Name="ValueGraphCaption" Text="DHT22 Sensor" HorizontalAlignment="Left"  VerticalAlignment="Bottom" FontSize="25" Foreground="{DynamicResource OWLOSPrimary}" />
-                        <TextBlock x:Name="ValueGraphDescription" Text="temperature" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="6,0,0,4" FontSize="16" Foreground="{DynamicResource OWLOSWarning}" />
-                    </StackPanel>
-
-                    <huds:GraphControl x:Name="ValueGraph" Margin="0,-41"/>
-
-                    <StackPanel Margin="0,10" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Center">
-                        <huds:MenuItemControl x:Name="ShowDayMenu" Caption="Day" Description="day"/>
-                        <huds:MenuItemControl x:Name="ShowHourMenu" Caption="Hour" Description="time" Selected="True"/>
-                    </StackPanel>
-
-                    <WrapPanel Margin="0,41" Width="1132" x:Name="HoursPanel1" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Center">
-                    </WrapPanel>
-
-                    <WrapPanel Margin="0,66" x:Name="HoursPanel2" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Center">
-                    </WrapPanel>
-
-                </Grid>
-
-                <huds:CrossControl HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="-7" Grid.Column="0" Grid.Row="0"></huds:CrossControl>
-                <huds:CrossControl HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="-7" Grid.Column="1" Grid.Row="0"></huds:CrossControl>
-                <huds:CrossControl HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="-7" Grid.Column="0" Grid.Row="1"></huds:CrossControl>
-                <huds:CrossControl HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="-7" Grid.Column="0" Grid.Row="2"></huds:CrossControl>
             </Grid>
-        </Grid>
+        </Viewbox>
     </Grid>
 </Window>

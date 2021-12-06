@@ -22,11 +22,14 @@ namespace OWLOSAirQuality.Huds
     public partial class EcosystemManagerChildControl : UserControl, IEcosystemChildControl
     {
         public EcosystemControl parentControl { get; set; }
-        public EcosystemManagerChildControl()
+        public EcosystemManagerChildControl(Point possiton = default(Point), Point size = default(Point))
         {
             InitializeComponent();
 
-            parentControl = new EcosystemControl(this);
+            parentControl = new EcosystemControl(this, possiton, size);
+
+            //Width = size.X;
+            //Height = size.Y;
         }
 
         public void OnParentDrag()

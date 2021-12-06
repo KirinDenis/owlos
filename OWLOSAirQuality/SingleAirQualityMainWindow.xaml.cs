@@ -63,6 +63,19 @@ namespace OWLOSAirQuality
             MainGrid.Children.Add(valueFrame.ValueHolderGrid);
         }
 
+        public SingleAirQualityMainWindow()
+        {
+            InitializeComponent();
+
+            this.EcosystemServiceClient = App.EcosystemManager.OWLOSEcosystemServiceClients[1];
+
+            //ValueFrame valueFrame = new ValueFrame(EcosystemServiceClient);
+            //valueFrame.MainGrid.Children.Remove(valueFrame.ValueHolderGrid);
+            //valueFrame.Close();
+            //MainGrid.Children.Add(valueFrame.ValueHolderGrid);
+        }
+
+
         private void CloseTextBlock_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             Close();

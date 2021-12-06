@@ -44,7 +44,7 @@ namespace OWLOSAirQuality.OWLOSEcosystemService
         public async Task<AirQualityClientResulDTO> GetLastDayThingAQ(string thingHost, string thingToken)
         {
             //ThingAirQualityDTO
-            return await Get(thingHost, "GetLastDayThingAQ", "?token=" + thingToken);
+            return await Get(thingHost, "GetLastDayThingAQ", "?userToken=" + thingToken + "&thingId=3");
         }
 
 

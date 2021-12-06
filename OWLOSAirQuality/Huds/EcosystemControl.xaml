@@ -24,13 +24,15 @@
             <RowDefinition Height="20"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        <Border BorderThickness="1,1,1,1" Grid.RowSpan="2"  BorderBrush="{DynamicResource OWLOSInfoAlpha3}"  ClipToBounds="True" SnapsToDevicePixels="True" Background="#10FDFAFA"/>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button x:Name="SwitchWindowTransparentButton" Width="25" Content="T" Click="SwitchWindowTransparentButton_Click" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{DynamicResource OWLOSPrimary}"/>
-            <Button x:Name="SwitchWindowButton" Width="25" Content="W" Click="SwitchWindowButton_Click" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{DynamicResource OWLOSPrimary}"/>
-            <Button x:Name="CloseButton" Width="25" Content="X" Click="CloseButton_Click" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{DynamicResource OWLOSPrimary}"/>
+            <TextBlock x:Name="SwitchWindowButton" Text="  S/W  " Foreground="{DynamicResource OWLOSDark}" FontSize="16" Background="{DynamicResource OWLOSWarningAlpha2}" HorizontalAlignment="Left" VerticalAlignment="Center"  Margin="4,0,4,0"  MouseEnter="HideTextBlock_MouseEnter" MouseLeave="HideTextBlock_MouseLeave" MouseDown="SwitchWindowButton_MouseDown"/>
+            <TextBlock x:Name="CloseButton" Text="  X  " Foreground="{DynamicResource OWLOSDark}" FontSize="16" Background="{DynamicResource OWLOSDangerAlpha2}" HorizontalAlignment="Left" VerticalAlignment="Center"  Margin="0,0"  MouseEnter="CloseTextBlock_MouseEnter" MouseLeave="CloseTextBlock_MouseLeave" MouseDown="CloseButton_MouseDown"/>
+
         </StackPanel>
-        <Grid Name="childHolderGrid" TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed" Grid.Row="1" >
+        <Grid Name="childHolderGrid" TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed" Grid.Row="1"   >
         </Grid>
+        
         <Border Grid.Row="1" BorderThickness="0,0,4,4"  BorderBrush="{DynamicResource OWLOSInfoAlpha3}"  HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="20" Height="20" ClipToBounds="True" SnapsToDevicePixels="True" Cursor="SizeNWSE" Background="#02FDFAFA"/>
     </Grid>
 

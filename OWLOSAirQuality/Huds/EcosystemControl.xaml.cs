@@ -16,10 +16,10 @@ namespace OWLOSThingsManager.EcosystemExplorer
     /// </summary>
     public partial class EcosystemControl : UserControl
     {
-        
-        private HudFrame _window = null;
+
+        private SingleAirQualityMainWindow _window = null;
         //когда панель принадлежит отдельному окну
-        public HudFrame window
+        public SingleAirQualityMainWindow window
         {
             get => _window;
             set
@@ -36,7 +36,7 @@ namespace OWLOSThingsManager.EcosystemExplorer
             }
 
         }
-        
+
         //когда панель принадлежит окну экосистемы (сюда сохраняестя Parent для экосистемы)
         public Grid parentGrid = null;
 
@@ -55,7 +55,7 @@ namespace OWLOSThingsManager.EcosystemExplorer
         public double resizeArea = 20.0f;
         public TranslateTransform transform { get; } = new TranslateTransform();
 
-        
+
         private static EcosystemControl CurrentFocused;
 
         private bool _isFocused;
@@ -156,7 +156,7 @@ namespace OWLOSThingsManager.EcosystemExplorer
             }
         }
 
-        public EcosystemControl(IEcosystemChildControl childControl)
+        public EcosystemControl(IEcosystemChildControl childControl, Point possition = default(Point), Point size = default(Point))
         {
             InitializeComponent();
 
@@ -166,7 +166,13 @@ namespace OWLOSThingsManager.EcosystemExplorer
                 childHolderGrid.Children.Add(childControl as UserControl);
             }
 
-            MoveTransform(5000, 5000);
+            MoveTransform(possition.X, possition.Y);
+
+            if (size != default(Point))
+            {
+                Width = size.X;
+                Height = size.Y;
+            }
 
             childControl?.OnParentLostFocus();
         }
@@ -283,9 +289,9 @@ namespace OWLOSThingsManager.EcosystemExplorer
                     {
                         anchorPoint = e.GetPosition(Parent as Grid);
 
-                        
+
                         CaptureMouse();
-                        
+
                         isInDrag = true;
                     }
                 }
@@ -326,7 +332,7 @@ namespace OWLOSThingsManager.EcosystemExplorer
                 ResizePoint = e.GetPosition(Parent as Grid);
                 EcosystemControlGotFocus(this, null);
 
-               // EcosystemControlMouseDown(this, e);
+                // EcosystemControlMouseDown(this, e);
 
 
             }
@@ -334,10 +340,10 @@ namespace OWLOSThingsManager.EcosystemExplorer
 
         private void SwitchFromPanelToWindow()
         {
-            
+
             if (window == null)
             {
-                window = new HudFrame
+                window = new SingleAirQualityMainWindow
                 {
                     Width = ActualWidth,
                     Height = ActualHeight
@@ -346,22 +352,27 @@ namespace OWLOSThingsManager.EcosystemExplorer
                 //сразу после этого Parent уходит в null
                 parentGrid = (Parent as Grid);
                 (Parent as Grid).Children.Remove(this);
-                window.MainGrid.Children.Add(this);
+                childHolderGrid.Children.Remove(childControl as UserControl);
+                //window.MainGrid.Children.Add(this);
+                window.MainGrid.Children.Add(childControl as UserControl);
+
+                window.CloseTextBlock.MouseDown += SwitchWindowButton_MouseDown;
+
                 RenderTransform = null;
                 HorizontalAlignment = HorizontalAlignment.Stretch;
                 VerticalAlignment = VerticalAlignment.Stretch;
 
-
                 Show();
                 window.Show();
             }
-            
+
         }
 
         private void SwitchFromWindowToPanel()
         {
-            window.MainGrid.Children.Remove(this);
+            window.MainGrid.Children.Remove(childControl as UserControl);
             parentGrid.Children.Add(this);
+            childHolderGrid.Children.Add(childControl as UserControl);
             RenderTransform = storedRenderTransform;
             HorizontalAlignment = HorizontalAlignment.Left;
             VerticalAlignment = VerticalAlignment.Top;
@@ -372,23 +383,7 @@ namespace OWLOSThingsManager.EcosystemExplorer
 
         }
 
-        private void SwitchWindowTransparentButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (window != null)
-            {
-                if (window.Background == null)
-                {
-                    window.Background = (SolidColorBrush)App.Current.Resources["OWLOSDark"];
-                }
-                else
-                {
-                    window.Background = null;
-                }
-            }
-        }
-
-
-        private void SwitchWindowButton_Click(object sender, RoutedEventArgs e)
+        private void SwitchWindowButton_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (window == null)
             {
@@ -398,9 +393,10 @@ namespace OWLOSThingsManager.EcosystemExplorer
             {
                 SwitchFromWindowToPanel();
             }
+
         }
 
-        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        private void CloseButton_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (window == null)
             {
@@ -412,5 +408,60 @@ namespace OWLOSThingsManager.EcosystemExplorer
                 Hide();
             }
         }
+
+        private void HideTextBlock_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            ColorAnimation animation;
+            animation = new ColorAnimation
+            {
+                To = ((SolidColorBrush)App.Current.Resources["OWLOSWarningAlpha3"]).Color,
+                Duration = new Duration(TimeSpan.FromSeconds(0.3))
+            };
+
+            (sender as TextBlock).Background = new SolidColorBrush(((SolidColorBrush)(sender as TextBlock).Background).Color);
+            (sender as TextBlock).Background.BeginAnimation(SolidColorBrush.ColorProperty, animation);
+
+        }
+
+        private void HideTextBlock_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            ColorAnimation animation;
+            animation = new ColorAnimation
+            {
+                To = ((SolidColorBrush)App.Current.Resources["OWLOSWarningAlpha2"]).Color,
+                Duration = new Duration(TimeSpan.FromSeconds(1.3))
+            };
+
+            (sender as TextBlock).Background = new SolidColorBrush(((SolidColorBrush)(sender as TextBlock).Background).Color);
+            (sender as TextBlock).Background.BeginAnimation(SolidColorBrush.ColorProperty, animation);
+        }
+
+        private void CloseTextBlock_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            ColorAnimation animation;
+            animation = new ColorAnimation
+            {
+                To = ((SolidColorBrush)App.Current.Resources["OWLOSDangerAlpha3"]).Color,
+                Duration = new Duration(TimeSpan.FromSeconds(0.3))
+            };
+
+            (sender as TextBlock).Background = new SolidColorBrush(((SolidColorBrush)(sender as TextBlock).Background).Color);
+            (sender as TextBlock).Background.BeginAnimation(SolidColorBrush.ColorProperty, animation);
+
+        }
+
+        private void CloseTextBlock_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            ColorAnimation animation;
+            animation = new ColorAnimation
+            {
+                To = ((SolidColorBrush)App.Current.Resources["OWLOSDangerAlpha2"]).Color,
+                Duration = new Duration(TimeSpan.FromSeconds(1.3))
+            };
+
+            (sender as TextBlock).Background = new SolidColorBrush(((SolidColorBrush)(sender as TextBlock).Background).Color);
+            (sender as TextBlock).Background.BeginAnimation(SolidColorBrush.ColorProperty, animation);
+        }
+
     }
-    }
+}

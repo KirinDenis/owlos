@@ -103,16 +103,37 @@ namespace OWLOSAirQuality
             //Рисуем сетку 
             Dispatcher.BeginInvoke((Action)DrawCell, DispatcherPriority.Send);
 
-            ThingsManagerControl = new EcosystemManagerChildControl();
-            ThingGrid.Children.Add(ThingsManagerControl.parentControl);
+            //station one loading
+            ThingsManagerControl = new EcosystemManagerChildControl(new Point()
+            {
+                X = 100,
+                Y = 100
+            }, 
+            new Point()
+            {
+                X=1920 / 2.0f,
+                Y= 1080 / 2.0f,
+            });
 
+            ThingGrid.Children.Add(ThingsManagerControl.parentControl);
+            
             ValueFrame valueFrame = new ValueFrame(EcosystemManager.OWLOSEcosystemServiceClients[0]);
             valueFrame.MainGrid.Children.Remove(valueFrame.ValueHolderGrid);
             valueFrame.Close();
             ThingsManagerControl.MainGrid.Children.Add(valueFrame.ValueHolderGrid);
 
-
-            ThingsManagerControl = new EcosystemManagerChildControl();
+            //station two loading 
+            ThingsManagerControl = new EcosystemManagerChildControl(new Point()
+            {
+                X = 150 + 1920 / 2.0f,
+                Y = 100
+            },
+            new Point()
+            {
+                X = 1920 / 2.0f,
+                Y = 1080 / 2.0f,
+            }
+            );
             ThingGrid.Children.Add(ThingsManagerControl.parentControl);
 
             valueFrame = new ValueFrame(EcosystemManager.OWLOSEcosystemServiceClients[1]);
