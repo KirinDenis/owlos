@@ -1,7 +1,14 @@
 ![OWLOS UX](https://github.com/KirinDenis/owlos/raw/master/OWLOSResource/images/owlosux.jpg)
 
 # OWLOS 
-### DIY Open Source OS for building IoT ecosystems
+
+###   [OWLOS Air Quality](https://github.com/KirinDenis/owlos)
+
+## DIY Open Source OS for building IoT ecosystems
+
+### The project of the future based on OWLOS to monitoring air quality issue. 
+### Please visit [OWLOS Air Quality](https://github.com/KirinDenis/OWLOSAirQuality)
+
 [ESP32, ESP8266]
 - built-in sensors, actuators, LCDs, DHTs, Steppers and other drivers
 - built-in script language interpreter 
