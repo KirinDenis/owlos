@@ -2,8 +2,6 @@
 
 # OWLOS 
 
-###   [OWLOS Air Quality](https://github.com/KirinDenis/owlos)
-
 ## DIY Open Source OS for building IoT ecosystems
 
 ### The project of the future based on OWLOS to monitoring air quality issue. 
