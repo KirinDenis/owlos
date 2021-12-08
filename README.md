@@ -5,7 +5,7 @@
 ## DIY Open Source OS for building IoT ecosystems
 
 ### The project of the future based on OWLOS to monitoring air quality issue. 
-### Please visit [OWLOS Air Quality](https://github.com/KirinDenis/OWLOSAirQuality)
+### Please visit [OWLOS Air Quality](https://github.com/KirinDenis/OWLOSAirQuality) :sunny:	:umbrella: :cloud:
 
 [ESP32, ESP8266]
 - built-in sensors, actuators, LCDs, DHTs, Steppers and other drivers
