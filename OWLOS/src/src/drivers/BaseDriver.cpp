@@ -1,12 +1,12 @@
 ﻿/* ----------------------------------------------------------------------------
-Ready IoT Solution - OWLOS
+OWLOS DIY Open Source OS for building IoT ecosystems
 Copyright 2019, 2020 by:
 - Konstantin Brul (konstabrul@gmail.com)
 - Vitalii Glushchenko (cehoweek@gmail.com)
 - Denys Melnychuk (meldenvar@gmail.com)
 - Denis Kirin (deniskirinacs@gmail.com)
 
-This file is part of Ready IoT Solution - OWLOS
+This file is part of OWLOS DIY Open Source OS for building IoT ecosystems
 
 OWLOS is free software : you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software
@@ -23,7 +23,7 @@ with OWLOS. If not, see < https://www.gnu.org/licenses/>.
 
 GitHub: https://github.com/KirinDenis/owlos
 
-(Этот файл — часть Ready IoT Solution - OWLOS.
+(Этот файл — часть OWLOS DIY Open Source OS for building IoT ecosystems.
 
 OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
 ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
@@ -76,12 +76,12 @@ void BaseDriver::del()
 	return;
 }
 
-//begin(..) is called after transport accessable when Unit knows its and drivers' IDs and Topics
+//begin(..) is called after transport accessible when Unit knows its and drivers' IDs and Topics
 bool BaseDriver::begin(const String _topic)
 {
 	topic = _topic + '/' + id;
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 	debugOut(id, "available with topic " + topic);
 #endif
 #endif
@@ -125,7 +125,7 @@ String BaseDriver::getAllProperties()
 		}
 		else
 		{
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 			debugOut("PIN", "NULL");
 #endif
 		}
@@ -303,7 +303,7 @@ String BaseDriver::onMessage(const String route, const String _payload, int8_t t
 String BaseDriver::onGetProperty(String _property, String _payload, int8_t transportMask)
 {
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 	debugOut(id, "|-> get property " + _property + " = " + _payload);
 #endif
 #endif
@@ -320,7 +320,7 @@ String BaseDriver::onGetProperty(String _property, String _payload, int8_t trans
 bool BaseDriver::onInsideChange(String _property, String _payload /*, int8_t transportMask*/)
 {
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 	debugOut(id, "|<- inside change " + _property + " = " + _payload);
 #endif
 #endif
@@ -335,7 +335,7 @@ bool BaseDriver::onInsideChange(String _property, String _payload /*, int8_t tra
 	/*
 	bool result = true;
 	  #ifdef
-	  DETAILED_DEBUG #ifdef DEBUG
+	  DETAILED_DEBUG #if defined (DEBUG) || defined (LOG_SCREEN_UX)
 debugOut(id, "|<- inside change " + _property + " = " +  _payload);
 #endif
 	  #endif
@@ -354,7 +354,7 @@ int BaseDriver::getAvailable()
 		available = filesReadInt(id + ".available");
 	}
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 	debugOut(id, "available=" + String(available));
 #endif
 #endif
@@ -371,7 +371,7 @@ bool BaseDriver::setAvailable(int _available)
 int BaseDriver::getType()
 {
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 	debugOut(id, "type=" + type);
 #endif
 #endif
@@ -392,7 +392,7 @@ float BaseDriver::getTrap()
 		trap = filesReadFloat(id + ".trap");
 	}
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 	debugOut(id, "trap=" + String(trap));
 #endif
 #endif
@@ -413,7 +413,7 @@ int BaseDriver::getQueryInterval()
 		queryInterval = filesReadInt(id + ".queryinterval");
 	}
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 	debugOut(id, "queryinterval=" + String(queryInterval));
 #endif
 #endif
@@ -434,7 +434,7 @@ int BaseDriver::getPublishInterval()
 		publishInterval = filesReadInt(id + ".publishinterval");
 	}
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 	debugOut(id, "publishinterval=" + String(publishInterval));
 #endif
 #endif

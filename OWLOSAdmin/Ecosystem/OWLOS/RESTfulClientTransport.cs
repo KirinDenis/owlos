@@ -1,11 +1,11 @@
 ﻿/* ----------------------------------------------------------------------------
-Ready IoT Solution - OWLOS
+OWLOS DIY Open Source OS for building IoT ecosystems
 Copyright 2019, 2020, 2021 by:
 - Vitalii Glushchenko (cehoweek@gmail.com)
 - Denys Melnychuk (meldenvar@gmail.com)
 - Denis Kirin (deniskirinacs@gmail.com)
 
-This file is part of Ready IoT Solution - OWLOS
+This file is part of OWLOS DIY Open Source OS for building IoT ecosystems
 
 OWLOS is free software : you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software
@@ -22,7 +22,7 @@ with OWLOS. If not, see < https://www.gnu.org/licenses/>.
 
 GitHub: https://github.com/KirinDenis/owlos
 
-(Этот файл — часть Ready IoT Solution - OWLOS.
+(Этот файл — часть OWLOS DIY Open Source OS for building IoT ecosystems.
 
 OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
 ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
@@ -177,9 +177,19 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
 
             try
             {
-                HttpClient client = new HttpClient();
+                HttpClientHandler handler = new HttpClientHandler();
+                HttpClient client = new HttpClient(handler);
                 
                 string queryString = _RESTfulClientConnectionDTO.host + APIName + args;
+
+                //Kastler SSL raise exception if port is 80
+                if (queryString.IndexOf(":80/") != -1)
+                {
+                    queryString = queryString.Replace("https://", "http://");
+                }
+
+                //precedent user host typing fixes
+                queryString = queryString.Replace("/:", ":");
 
                 totlaSend += queryString.Length;
                 AddToLog(new LogItem()
@@ -190,12 +200,13 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
                     size = queryString.Length,                    
                     text = queryString
                 });
-
-
-
+                
                 HttpResponseMessage response = await client.GetAsync(queryString);
 
-                response.EnsureSuccessStatusCode();
+                if (response.IsSuccessStatusCode)
+                {
+                    response.EnsureSuccessStatusCode();
+                }
                 result.result = await response.Content.ReadAsStringAsync();
 
                 totlaRecv += result.result.Length;
@@ -208,8 +219,6 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
                     size = result.result.Length,
                     text = result.result
                 });
-
-
                 result.error = string.Empty;
                 networkStatus = NetworkStatus.Online;
             }
@@ -226,12 +235,9 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
                     size = 0,
                     text = exception.Message
 
-                }); ;
-
+                }); 
             }
-
             return result;
         }
-
     }
 }

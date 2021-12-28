@@ -74,11 +74,13 @@ if your board based on ESP8266 -> [ESP8266 prepared assembly](https://github.com
 - Mónica (rovt@ua.fm)
 - Yan Sokolov (Dadras279@gmail.com)
 - Ddone Deedone (https://techadv.xyz/)
+- Serhii Demyanov (demianfog@gmail.com)
 - Serhii Lehkii (sergey@light.kiev.ua)
 - Konstantin Brul (konstabrul@gmail.com)
 - Vitalii Glushchenko (cehoweek@gmail.com)
 - Stanislav Kvashchuk (skat@ukr.net)
 - Vladimir Kovalevich (covalevich@gmail.com)
+- Boris Pavlov (hiroyashy@gmail.com)
 - Denys Melnychuk (meldenvar@gmail.com)
 - Denis Kirin (deniskirinacs@gmail.com)
 

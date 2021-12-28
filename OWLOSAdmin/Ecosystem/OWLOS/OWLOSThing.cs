@@ -1,12 +1,12 @@
 ﻿/* ----------------------------------------------------------------------------
-Ready IoT Solution - OWLOS
+OWLOS DIY Open Source OS for building IoT ecosystems
 Copyright 2019, 2020 by:
 - Konstantin Brul (konstabrul@gmail.com)
 - Vitalii Glushchenko (cehoweek@gmail.com)
 - Denys Melnychuk (meldenvar@gmail.com)
 - Denis Kirin (deniskirinacs@gmail.com)
 
-This file is part of Ready IoT Solution - OWLOS
+This file is part of OWLOS DIY Open Source OS for building IoT ecosystems
 
 OWLOS is free software : you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software
@@ -23,7 +23,7 @@ with OWLOS. If not, see < https://www.gnu.org/licenses/>.
 
 GitHub: https://github.com/KirinDenis/owlos
 
-(Этот файл — часть Ready IoT Solution - OWLOS.
+(Этот файл — часть OWLOS DIY Open Source OS for building IoT ecosystems.
 
 OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
 ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
@@ -62,10 +62,14 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
     {
         public string Name;
 
+        public int ThingId;
+
+        public Guid UserId;
+
         public DateTime LastConnected;
 
         public List<OWLOSConnection> connections = new List<OWLOSConnection>();
-        public List<APIQueryInterval> APIQueryIntervals { get; set; }
+        public List<APIQueryInterval> APIQueryIntervals { get; set; } = new List<APIQueryInterval>();
     }
 
     public class OWLOSThing : IOWLOSAbstractTransport
@@ -76,7 +80,7 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
         public List<OWLOSDriver> drivers { get; set; } = new List<OWLOSDriver>();
         public OWLOSFiles files { get; set; }
 
-        public delegate void DriverEventHandler(object? sender, OWLOSDriverWrapperEventArgs e);
+        public delegate void DriverEventHandler(object sender, OWLOSDriverWrapperEventArgs e);
 
         public event DriverEventHandler OnNewDriver;
 
@@ -86,8 +90,27 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
 
         private Timer lifeCycleTimer;
 
-        private readonly RESTfulClientTransport _RESTfulClientTransport;
-        private readonly UARTTransport _UARTTransport;
+        public readonly RESTfulClientTransport _RESTfulClientTransport;
+
+        public readonly UARTTransport _UARTTransport;
+
+        //AirQuality global network status and timings 
+
+        //Global thing network status 
+        public NetworkStatus networkStatus = NetworkStatus.Offline;
+        //Last session time (current time and offline when create
+        public DateTime? lastSessionTime = null;
+        //Thing tick count when last session 
+        public long? thingTickCount = null;
+
+        //FOR DEBUG
+        public object lastAirQulityRecievedData = null;
+
+        //Time last outside store data 
+        public DateTime lastDataStoreTime = DateTime.Now;
+
+        public delegate void DataStoreEventHandler(object sender);
+        public event DataStoreEventHandler OnDataStore;
 
         public OWLOSThing(OWLOSThingConfig config)
         {
@@ -155,6 +178,12 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
         }
         private async void OnLifeCycleTimer(object source, ElapsedEventArgs e)
         {
+            if((DateTime.Now - lastDataStoreTime).TotalSeconds > 5)
+            {
+                lastDataStoreTime = DateTime.Now;
+                DataStore();
+            }
+
             foreach (APIQueryInterval QueryInterval in config.APIQueryIntervals)
             {
                 if (!QueryInterval.Enable)
@@ -179,6 +208,13 @@ namespace OWLOSThingsManager.Ecosystem.OWLOS
                 }
             }
         }
+
+        protected virtual void DataStore()
+        {
+            OnDataStore?.Invoke(this);
+        }
+
+
         protected virtual void NewDriver(OWLOSDriverWrapperEventArgs e)
         {
             OnNewDriver?.Invoke(this, e);

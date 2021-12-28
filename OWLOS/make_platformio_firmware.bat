@@ -1,11 +1,11 @@
-REM Ready IoT Solution - OWLOS
+REM OWLOS DIY Open Source OS for building IoT ecosystems
 REM Copyright 2019, 2020 by:
 REM - Konstantin Brul (konstabrul@gmail.com)
 REM - Vitalii Glushchenko (cehoweek@gmail.com)
 REM - Denys Melnychuk (meldenvar@gmail.com)
 REM - Denis Kirin (deniskirinacs@gmail.com)
 
-REM This file is part of Ready IoT Solution - OWLOS
+REM This file is part of OWLOS DIY Open Source OS for building IoT ecosystems
 
 REM OWLOS is free software : you can redistribute it and/or modify it under the
 REM terms of the GNU General Public License as published by the Free Software

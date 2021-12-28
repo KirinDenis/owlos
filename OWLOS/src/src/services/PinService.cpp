@@ -1,12 +1,12 @@
 ﻿/* ----------------------------------------------------------------------------
-Ready IoT Solution - OWLOS
-Copyright 2019, 2020 by:
+OWLOS DIY Open Source OS for building IoT ecosystems
+Copyright 2019, 2020, 2021 by:
 - Konstantin Brul (konstabrul@gmail.com)
 - Vitalii Glushchenko (cehoweek@gmail.com)
 - Denys Melnychuk (meldenvar@gmail.com)
 - Denis Kirin (deniskirinacs@gmail.com)
 
-This file is part of Ready IoT Solution - OWLOS
+This file is part of OWLOS DIY Open Source OS for building IoT ecosystems
 
 OWLOS is free software : you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software
@@ -23,7 +23,7 @@ with OWLOS. If not, see < https://www.gnu.org/licenses/>.
 
 GitHub: https://github.com/KirinDenis/owlos
 
-(Этот файл — часть Ready IoT Solution - OWLOS.
+(Этот файл — часть OWLOS DIY Open Source OS for building IoT ecosystems.
 
 OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
 ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
@@ -328,11 +328,10 @@ String _checkDriverPin(String pinName, uint16_t pinType, String SDAPinName)
 	{
 		//проверяем сколько драйверов уже заняли этот пин и что это за драйвера
 		_count = getDriverPinsByGPIONumber(pin->GPIONumber, &_driverPins);
-
 		if (_count > 0) //если пин кем то занят
 		{
 			//Если пин занят и текущий пин драйвера это не I2C пин и не питание
-			if (((pinType & SDA_MASK) || (pinType & SCL_MASK) || (pinType & VCC5_MASK) || (pinType & VCC33_MASK) || (pinType & GND_MASK)) == 0)
+			if (((pinType & SDA_MASK) || (pinType & SCL_MASK) || (pinType & VCC5_MASK) || (pinType & VCC33_MASK) || (pinType & GND_MASK)) == 0)			
 			{
 				//формируем сообщение об ошибке
 				String result = "pin " + pinName + " busy by " + _driverPins[0].driverId + " as pin index " + String(_driverPins[0].driverPinIndex) + "\n";
@@ -349,8 +348,7 @@ String _checkDriverPin(String pinName, uint16_t pinType, String SDAPinName)
 		if (!pinTypeSupported(pin->pinTypes, pinType))
 		{
 			return "pin " + pinName + " not compatable with type " + decodePinTypes(pinType) + "\n"; //если нет - возвращаем ошибку
-		}
-		//Serial.println("check 8");
+		}		
 	}
 	//драйвер может использовать этот пин, возвращаем пустую строчку
 	return "";

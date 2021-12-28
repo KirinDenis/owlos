@@ -1,12 +1,12 @@
 ﻿/* ----------------------------------------------------------------------------
-Ready IoT Solution - OWLOS
+OWLOS DIY Open Source OS for building IoT ecosystems
 Copyright 2019, 2020 by:
 - Konstantin Brul (konstabrul@gmail.com)
 - Vitalii Glushchenko (cehoweek@gmail.com)
 - Denys Melnychuk (meldenvar@gmail.com)
 - Denis Kirin (deniskirinacs@gmail.com)
 
-This file is part of Ready IoT Solution - OWLOS
+This file is part of OWLOS DIY Open Source OS for building IoT ecosystems
 
 OWLOS is free software : you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software
@@ -23,7 +23,7 @@ with OWLOS. If not, see < https://www.gnu.org/licenses/>.
 
 GitHub: https://github.com/KirinDenis/owlos
 
-(Этот файл — часть Ready IoT Solution - OWLOS.
+(Этот файл — часть OWLOS DIY Open Source OS for building IoT ecosystems.
 
 OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
 ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
@@ -78,6 +78,11 @@ public:
 	float DHTgetHumidity();
 	float DHTgetHeatIndex(bool _celsius);
 
+	String getStoredTemperature();
+    String getStoredHumidity();
+    String getStoredHeatIndex();
+    String getStoredCelsius();
+
 	bool begin(String _Topic);
 	bool query();
 	String getAllProperties();
@@ -104,15 +109,18 @@ public:
 	String readTemperatureHistoryFile();
 	bool writeTemperatureHistoryFile(float _historydata);
 
+    bool celsius = true;
+	String temperature = "nan";
+	String humidity = "nan";
+	String heatIndex = "nan";
+
+
 private:
 	bool DHTSetuped = false;
 	bool DHTSetupResult = false;
 	DHT *dht = nullptr;
 	int dhttype = DHT22; //default DHT22
-	bool celsius = true;
-	String temperature = "nan";
-	String humidity = "nan";
-	String heatIndex = "nan";
+	
 	int temperatureHistoryCount = 0;
 	int humidityHistoryCount = 0;
 	int heatIndexHistoryCount = 0;

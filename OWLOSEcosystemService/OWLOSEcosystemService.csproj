@@ -1,0 +1,102 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <UserSecretsId>aspnet-OWLOSEcosystemService-83DC8282-4A4B-415A-A7DA-BE9AC8135BD6</UserSecretsId>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Version>1.2.0</Version>
+    <PackageProjectUrl>https://owlos.org</PackageProjectUrl>
+    <Description>OWLOS
+DIY Open Source OS for building IoT ecosystems
+
+[ESP32, ESP8266]
+
+    built-in sensors, actuators, LCDs, DHTs, Steppers and other drivers
+    built-in script language interpreter
+    built-in HTTP(S) RESTful server, RESTful client, MQTT client
+    WiFi access point/station modes
+    OTA supported
+    UART AT+ interface supported
+    flexible assembly configuration (config.h)
+    Web and desktop UX
+    doesn't require programming skills
+    doesn't require internet and additional servers
+    Open Source under GPL-3.0 License
+</Description>
+    <Copyright>Denis Kirin (deniskirinacs@gmail.com) Denys Melnychuk (meldenvar@gmail.com) Vitalii Glushchenko (cehoweek@gmail.com) Stanislav Kvashchuk (skat@ukr.net)</Copyright>
+    <RepositoryUrl>https://github.com/KirinDenis/owlos</RepositoryUrl>
+    <RepositoryType>GIT</RepositoryType>
+    <PackageTags>IoT OWLOS Ecosystem ESP32</PackageTags>
+    <PackageReleaseNotes>OWLOS Air Quality</PackageReleaseNotes>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageIcon>owlos_logo_2.jpg</PackageIcon>
+    <NeutralLanguage>en</NeutralLanguage>
+    <Authors>Serhii Demyanov (demianfog@gmail.com) Serhii Lehkii (sergey@light.kiev.ua) Vitalii Glushchenko (cehoweek@gmail.com) Stanislav Kvashchuk (skat@ukr.net) Denys Melnychuk (meldenvar@gmail.com) Denis Kirin (deniskirinacs@gmail.com)</Authors>
+    <Company>OWLOS</Company>
+    <Product>OWLOS Ecosystem Service</Product>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>D:\Users\Egor\source\repos\KirinDenis\owlos\OWLOSEcosystemService\OWLOSEcosystemService.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="OWLOSEcosystem\**" />
+    <Content Remove="OWLOSEcosystem\**" />
+    <EmbeddedResource Remove="OWLOSEcosystem\**" />
+    <None Remove="OWLOSEcosystem\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOSThingsManager.cs" Link="OWLOS\OWLOSThingsManager.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\IOWLOSTransport.cs" Link="OWLOS\IOWLOSTransport.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\OWLOSConnection.cs" Link="OWLOS\OWLOSConnection.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\OWLOSDriver.cs" Link="OWLOS\OWLOSDriver.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\OWLOSDriverProperty.cs" Link="OWLOS\OWLOSDriverProperty.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\OWLOSFeatures.cs" Link="OWLOS\OWLOSFeatures.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\OWLOSFile.cs" Link="OWLOS\OWLOSFile.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\OWLOSFiles.cs" Link="OWLOS\OWLOSFiles.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\OWLOSThing.cs" Link="OWLOS\OWLOSThing.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\OWLOSTransport.cs" Link="OWLOS\OWLOSTransport.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\OWLOSTransportOLD.cs" Link="OWLOS\OWLOSTransportOLD.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\RESTfulClientTransport.cs" Link="OWLOS\RESTfulClientTransport.cs" />
+    <Compile Include="..\OWLOSAdmin\Ecosystem\OWLOS\UARTTransport.cs" Link="OWLOS\UARTTransport.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Mapster" Version="7.2.0" />
+    <PackageReference Include="Mapster.DependencyInjection" Version="1.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.7">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="5.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.4" />
+    <PackageReference Include="System.IO.Ports" Version="4.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\ThingsDb\" />
+    <Folder Include="OWLOS\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\OWLOSResource\images\owlos_logo_2.jpg">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OWLOSDTOs\OWLOSDTOs.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,193 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>OWLOSEcosystemService</name>
+    </assembly>
+    <members>
+        <member name="M:OWLOSEcosystemService.Controllers.ThingsController.DecodeUserToken(System.String,System.Nullable{System.Int32})">
+            <summary>
+            Decode and check user token 
+            </summary>
+            <param name="userToken">user token to check</param>
+            <param name="thingId">thingId if exists</param>
+            <returns>OK: ThingTokenDTO, Bad: AccessViolationException</returns>
+        </member>
+        <member name="M:OWLOSEcosystemService.Controllers.ThingsController.Get(System.String)">
+            <summary>
+            Returns list of all things wrappers (DEBUG ONLY)
+            </summary>
+            <param name="userToken">user access token</param>
+            <returns>HTTP Result Ok and List of things</returns>        
+        </member>
+        <member name="M:OWLOSEcosystemService.Controllers.ThingsController.GetThingsConnections(System.String)">
+            <summary>
+            Get user things connections 
+            </summary>        
+            <param name="userToken">user access token</param>
+            <returns>HTTP Result Ok and user things connections data</returns>
+        </member>
+        <member name="M:OWLOSEcosystemService.Controllers.ThingsController.GetThingConnection(System.String,System.Nullable{System.Int32})">
+            <summary>
+            Get selected user thing connection 
+            </summary>        
+            <param name="userToken">user access token</param>
+            <param name="thingId">user thing id</param>
+            <returns>HTTP Result Ok and user thing connection data</returns>
+        </member>
+        <member name="M:OWLOSEcosystemService.Controllers.ThingsController.GetDirectLastThingAQ(System.String,System.Nullable{System.Int32})">
+            <summary>
+            Get user thing's last received air quality from thing (object model, with out repository)
+            </summary>        
+            <param name="userToken">user access token</param>
+            <param name="thingId">user thing id</param>
+            <returns>HTTP Result Ok air quality data</returns>
+        </member>
+        <member name="M:OWLOSEcosystemService.Controllers.ThingsController.GetLastThingAQ(System.String,System.Nullable{System.Int32})">
+            <summary>
+            Get user thing's last received air quality
+            </summary>        
+            <param name="userToken">user access token</param>
+            <param name="thingId">user thing id</param>
+            <returns>HTTP Result Ok air quality data</returns>
+        </member>
+        <member name="M:OWLOSEcosystemService.Controllers.ThingsController.GetLastHourThingAQ(System.String,System.Nullable{System.Int32})">
+            <summary>
+            Get user thing's last hour received air quality
+            </summary>        
+            <param name="userToken">user access token</param>
+            <param name="thingId">user thing id</param>
+            <returns>HTTP Result Ok air quality data</returns>
+        </member>
+        <member name="M:OWLOSEcosystemService.Controllers.ThingsController.GetLastDayThingAQ(System.String,System.Nullable{System.Int32})">
+            <summary>
+            Get user thing's last day received air quality
+            </summary>        
+            <param name="userToken">user access token</param>
+            <param name="thingId">user thing id</param>
+            <returns>HTTP Result Ok air quality data</returns>
+        </member>
+        <member name="M:OWLOSEcosystemService.Controllers.ThingsController.GetThingAllDriversProperties(System.String,System.Nullable{System.Int32})">
+            <summary>
+            Get all drivers properties
+            </summary>        
+            <param name="userToken">user access token</param>
+            <param name="thingId">user thing id</param>
+            <returns>HTTP Result Ok and all drivers properties</returns>
+        </member>
+        <member name="M:OWLOSEcosystemService.Controllers.ThingsController.NewThingConnection(System.String,OWLOSEcosystemService.Models.Things.ThingConnectionPropertiesModel)">
+            <summary>
+            Create a new thing connection 
+            </summary>
+            <param name="userToken">user access token</param>
+            <param name="ConnectionPropertiesModel">new connection properties</param>
+            <returns>HTTP Result Ok if added</returns>
+        </member>
+        <member name="M:OWLOSEcosystemService.Controllers.ThingsController.GetUserToken">
+            <summary>
+            Get user token
+            </summary>       
+            <returns>HTTP Result Ok and Guid token</returns>
+        </member>
+        <member name="M:OWLOSEcosystemService.Controllers.ThingsController.GetThingToken(System.String,System.Nullable{System.Int32})">
+            <summary>
+            Get thing token
+            </summary>       
+            <param name="userToken">user access token</param>
+            <param name="thingId">user thing id</param>
+            <returns>HTTP Result Ok and thing token string</returns>
+        </member>
+        <member name="M:OWLOSEcosystemService.Controllers.ThingsController.AirQuality">
+            <summary>
+            Receive Air Quality data from client Thing 
+            </summary>       
+            <returns>Ok if received</returns>
+        </member>
+        <member name="M:OWLOSEcosystemService.Controllers.ThingsController.UpdateThingConnection(System.String,OWLOSEcosystemService.Models.Things.ThingConnectionPropertiesModel)">
+            <summary>
+            Update exists thing connection properties
+            </summary>
+            <param name="userToken">user access token</param>
+            <param name="ConnectionPropertiesModel">connection properties to update</param>
+            <returns>Ok if updated</returns>
+        </member>
+        <member name="M:OWLOSEcosystemService.Controllers.ThingsController.DeleteThingConnection(System.String,System.Nullable{System.Int32})">
+            <summary>
+            Delete exists thing connection properties
+            </summary>        
+            <param name="userToken">user access token</param>
+            <param name="thingId">user thing id</param>
+            <returns>HTTP Code Ok if deleted</returns>
+        </member>
+        <member name="M:OWLOSEcosystemService.Services.Things.ThingsService.GetAllThingsConnections">
+            <summary>
+            Only for internal use, not defined at interface, get all connection with out authorized user
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:OWLOSEcosystemService.Services.Things.ThingsService.GetThingAllDriversProperties(System.Guid,System.Int32)">
+            <summary>
+            Get thing all drivers properties
+            </summary>
+            <param name="UserId"></param>
+            <param name="ThingId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:OWLOSEcosystemService.Services.Things.ThingsService.Start(System.Object)">
+            <summary>
+            OWLOS Things Manager threading entry point 
+            </summary>
+            <param name="thingsService">dynamic ThengService object pointer</param>
+        </member>
+        <member name="M:OWLOSEcosystemService.Services.Things.ThingsService.Thing_OnDataStore(System.Object)">
+            <summary>
+            Analise and store thing's air quality data to repository
+            </summary>
+            <param name="sender">OWLOSThing sender object with air quality data</param>
+        </member>
+        <member name="M:OWLOSEcosystemService.Services.Things.ThingsService.GetDirectLastThingAQ(System.Guid,System.Int32)">
+            <summary>
+            Get user thing's last received air quality from thing (object model, with out repository)
+            </summary>
+            <param name="UserId"></param>
+            <param name="ThingId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:OWLOSEcosystemService.Services.Things.ThingsService.AirQualityDataToThing(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:OWLOSEcosystemService.Services.Things.ThingsService.SetAirQualityModelToThing(System.Guid,System.Int32,OWLOSEcosystemService.DTO.Things.ThingAirQualityDTO)">
+            <summary>
+            Analise previously thing statuses and data and update thing object model properties
+            </summary>
+            <param name="UserId"></param>
+            <param name="thingId"></param>
+            <param name="airQualityDTO"></param>
+            <returns></returns>
+        </member>
+        <member name="F:OWLOSEcosystemService.Services.Things.ThingsService.keyLength">
+            <summary>
+            256 bits key length
+            </summary>
+        </member>
+        <member name="M:OWLOSEcosystemService.Services.Things.ThingsService.EncryptStringAES(System.String,System.String)">
+            <summary>
+            Encrypt the given string using AES.  The string can be decrypted using 
+            DecryptStringAES().  The sharedSecret parameters must match.
+            </summary>
+            <param name="plainText">The text to encrypt.</param>
+            <param name="sharedSecret">A password used to generate a key for encryption.</param>
+        </member>
+        <member name="M:OWLOSEcosystemService.Services.Things.ThingsService.DecryptStringAES(System.String,System.String)">
+            <summary>
+            Decrypt the given string.  Assumes the string was encrypted using 
+            EncryptStringAES(), using an identical sharedSecret.
+            </summary>
+            <param name="cipherText">The text to decrypt.</param>
+            <param name="sharedSecret">A password used to generate a key for decryption.</param>
+        </member>
+    </members>
+</doc>

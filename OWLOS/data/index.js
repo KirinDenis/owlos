@@ -1,12 +1,12 @@
 ﻿/* ----------------------------------------------------------------------------
-Ready IoT Solution - OWLOS
+OWLOS DIY Open Source OS for building IoT ecosystems
 Copyright 2019, 2020 by:
 - Konstantin Brul (konstabrul@gmail.com)
 - Vitalii Glushchenko (cehoweek@gmail.com)
 - Denys Melnychuk (meldenvar@gmail.com)
 - Denis Kirin (deniskirinacs@gmail.com)
 
-This file is part of Ready IoT Solution - OWLOS
+This file is part of OWLOS DIY Open Source OS for building IoT ecosystems
 
 OWLOS is free software : you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software
@@ -23,7 +23,7 @@ with OWLOS. If not, see < https://www.gnu.org/licenses/>.
 
 GitHub: https://github.com/KirinDenis/owlos
 
-(Этот файл — часть Ready IoT Solution - OWLOS.
+(Этот файл — часть OWLOS DIY Open Source OS for building IoT ecosystems.
 
 OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
 ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
@@ -69,10 +69,10 @@ function testHTTPS() {
     //httpGetAsyncWithReciever("https://192.168.1.5/", HTTPSResult, null);
 }
 
-function HTTPSResult (httpResult, thing) {
+function HTTPSResult(httpResult, thing) {
     //HTTPClient добавляет строку "%error" в начало Response если запрос не был завешен HTTPCode=200 или произошел TimeOut
     if (!httpResult.indexOf("%error") == 0) {
-        
+
 
     }
     else { //если HTTPClient вернул ошибку, сбрасываемый предыдущий результат
@@ -89,14 +89,6 @@ $(document).ready(function () {
 
     addToLogNL("OK loading scripts");
     addToLogNL("[START]", 1);
-
-
-    //!!connection test  ----------------
-    
-    //setInterval(testHTTPS, 2000);
-
-    //return; 
-    //-----------------
 
     //setup UX color theme 
     var style = window.getComputedStyle(document.body, null);
@@ -137,10 +129,11 @@ $(document).ready(function () {
 }
 );
 
+
 function onThingAnswer(httpResult) {
     if (!httpResult.indexOf("%error") == 0) {
         addToLogNL("get UI configuration...");
-        config.load(onLoadConfig);
+        config.load(onLoadConfig);        
     }
     else {
         status_online = NET_OFFLINE;
@@ -185,11 +178,13 @@ function masterThingDialogOKClick(masterThingDialog) {
     return true;
 }
 
+
+
 function onLoadConfig(result) {
     try {
         if (result) {
             sideBar = createSidebar();
-            
+
 
             settingsUI.onConfigLoad(configProperties);
             dashboardUI.onConfigLoad(configProperties);
@@ -204,14 +199,16 @@ function onLoadConfig(result) {
             scriptsService.onDelete = scriptsUI.onScriptDelete;
 
             drivers.addDriverLoadedListner(settingsUI.onDriverLoaded, settingsUI);
-            
+
             var boot = document.getElementById("boot");
             boot.parentElement.removeChild(boot);
             document.getElementById("consolePanel").appendChild(boot);
 
-            sidebarItemClick({currentTarget: sideBar.dashboardItem.href});
-            
+            sidebarItemClick({ currentTarget: sideBar.dashboardItem.href });
+
             speak("OWLOS is ready");
+
+        // addAirQualityWidgets();
         }
         else {
             status_online = NET_OFFLINE;

@@ -1,0 +1,91 @@
+﻿<Window x:Class="OWLOSAirQuality.AirQualityMainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:huds="clr-namespace:OWLOSAirQuality.Huds"
+        Title="OWLOS Air Quality" Width="1920" Height="1080" Background="{DynamicResource OWLOSSecondaryAlpha1}" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+
+    <!-- FontFamily="file:///D:\Users\Egor\source\repos\KirinDenis\owlos\OWLOSAdmin\Fonts\#omega flight" -->
+    <Grid >
+        <TextBlock x:Name="text" TextWrapping="WrapWithOverflow" />
+        <Viewbox>
+            <Grid x:Name="contentGrid" Width="1920" Height="1080" >
+
+
+
+                <Grid x:Name="explorerGrid"   RenderTransformOrigin="0.5,0.5" >
+                <Grid.RenderTransform>
+                    <TransformGroup>
+                        <SkewTransform/>
+                        <RotateTransform/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Grid.RenderTransform>
+                <Grid.LayoutTransform>
+                        <TransformGroup>
+                            <TranslateTransform/>
+                    </TransformGroup>
+                </Grid.LayoutTransform>
+
+
+
+                <Grid x:Name="EcosystemExplorerGrid" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.3,0" >
+                    <Grid.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform ScaleX="1" ScaleY="1"/>
+                            <SkewTransform/>
+                            <RotateTransform/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </Grid.RenderTransform>
+
+                        <Viewbox x:Name="viewbox"  Width="5760" Height="3240" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="0,0,0,0">
+                        <Viewbox.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform/>
+                                <SkewTransform AngleX="0" AngleY="0"/>
+                                <RotateTransform/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </Viewbox.RenderTransform>
+
+                            <Grid x:Name="MainGrid"  Width="5760" Height="3240">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1920"/>
+                                <ColumnDefinition Width="1920"/>
+                                <ColumnDefinition Width="1920"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1080"/>
+                                <RowDefinition Height="1080"/>
+                                    <RowDefinition Height="1080"/>
+                                </Grid.RowDefinitions>
+
+                            
+                        </Grid>
+                    </Viewbox>
+                </Grid>
+            </Grid>
+
+
+                <Grid x:Name="NavigationGrid" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+
+                    <WrapPanel x:Name="SelectFramePanel" Width="230" HorizontalAlignment="Left">
+                        <huds:SelectFrameControl x:Name="Frame_00" FrameName="Main"></huds:SelectFrameControl>
+                        <huds:SelectFrameControl x:Name="Frame_10" FrameName="Graphs"></huds:SelectFrameControl>
+                        <huds:SelectFrameControl x:Name="Frame_20" FrameName="Values"></huds:SelectFrameControl>
+                        <huds:SelectFrameControl x:Name="Frame_01" FrameName="Console"></huds:SelectFrameControl>
+                        <huds:SelectFrameControl x:Name="Frame_11" FrameName="Gas"></huds:SelectFrameControl>
+                        <huds:SelectFrameControl x:Name="Frame_21" FrameName="Total"></huds:SelectFrameControl>
+                        <huds:SelectFrameControl x:Name="ZoomFrame" FrameName="Zoom"></huds:SelectFrameControl>
+                    </WrapPanel>
+
+                    <WrapPanel x:Name="ControlFramePanel" Width="230" HorizontalAlignment="Left">
+                        
+                    </WrapPanel>
+                </Grid>
+            </Grid>
+        </Viewbox>
+    </Grid>
+    
+</Window>

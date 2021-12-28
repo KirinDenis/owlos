@@ -1,12 +1,12 @@
 /* ----------------------------------------------------------------------------
-Ready IoT Solution - OWLOS
+OWLOS DIY Open Source OS for building IoT ecosystems
 Copyright 2019, 2020 by:
 - Konstantin Brul (konstabrul@gmail.com)
 - Vitalii Glushchenko (cehoweek@gmail.com)
 - Denys Melnychuk (meldenvar@gmail.com)
 - Denis Kirin (deniskirinacs@gmail.com)
 
-This file is part of Ready IoT Solution - OWLOS
+This file is part of OWLOS DIY Open Source OS for building IoT ecosystems
 
 OWLOS is free software : you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software
@@ -23,7 +23,7 @@ with OWLOS. If not, see < https://www.gnu.org/licenses/>.
 
 GitHub: https://github.com/KirinDenis/owlos
 
-(Этот файл — часть Ready IoT Solution - OWLOS.
+(Этот файл — часть OWLOS DIY Open Source OS for building IoT ecosystems.
 
 OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
 ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
@@ -341,7 +341,7 @@ String thingGetWiFiAccessPointIP()
 {
 	if (thingGetWiFiAccessPointAvailable() == 1)
 	{
-		IPAddress real_wifiaccesspointip = WiFi.softAPIP();
+		IPAddress real_wifiaccesspointip = WiFi.softAPIP();		
 #ifdef DETAILED_DEBUG
 #ifdef DEBUG
 		debugOut(thingid, "Current Access Point IP: " + real_wifiaccesspointip.toString());
@@ -468,6 +468,13 @@ bool thingSetWiFiIP(String _wifiip)
 {
 	return false; //local (client) WiFi IP can't be changed manualy
 }
+//WiFiGateWayIP
+String thingGetWiFiGateWayIP()
+{
+	wifiip = WiFi.gatewayIP().toString();
+	return wifiip;
+}
+
 
 // WiFi parameters
 //WiFiMode
@@ -521,10 +528,12 @@ String thingGetAllWiFiModes()
 
 //GetWiFiRSSI
 int32_t thingGetWiFiRSSI()
-{
+{	
 	int32_t _wifirssi = WiFi.RSSI();
+#ifdef WIFI_RSSI_PUBLISH	
 	if (_wifirssi != wifirssi)
 		onInsideChange("wifirssi", String(_wifirssi));
+#endif		
 	return wifirssi = _wifirssi;
 }
 bool thingSetWiFiRSSI(int _wifirssi)

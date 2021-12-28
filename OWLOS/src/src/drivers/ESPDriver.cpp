@@ -1,12 +1,12 @@
 ﻿/* ----------------------------------------------------------------------------
-Ready IoT Solution - OWLOS
+OWLOS DIY Open Source OS for building IoT ecosystems
 Copyright 2019, 2020 by:
 - Konstantin Brul (konstabrul@gmail.com)
 - Vitalii Glushchenko (cehoweek@gmail.com)
 - Denys Melnychuk (meldenvar@gmail.com)
 - Denis Kirin (deniskirinacs@gmail.com)
 
-This file is part of Ready IoT Solution - OWLOS
+This file is part of OWLOS DIY Open Source OS for building IoT ecosystems
 
 OWLOS is free software : you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software
@@ -23,7 +23,7 @@ with OWLOS. If not, see < https://www.gnu.org/licenses/>.
 
 GitHub: https://github.com/KirinDenis/owlos
 
-(Этот файл — часть Ready IoT Solution - OWLOS.
+(Этот файл — часть OWLOS DIY Open Source OS for building IoT ecosystems.
 
 OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
 ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
@@ -100,6 +100,10 @@ bool thingInit()
 {
 	thingGetUnitId();
 	thingGetTopic();
+#if defined(DEBUG) || defined(LOG_SCREEN_UX)
+	debugOut("Thing", "id " + thingGetUnitId() , DEBUG_INFO);
+	debugOut("Thing", "topic " + thingGetTopic() , DEBUG_INFO);
+#endif
 	return true;
 }
 
@@ -125,6 +129,7 @@ String thingGetAllProperties()
 								 "id=esp//r\n"
 								 "type=" +
 		   String(ESP_DRIVER_TYPE) + "//r\n"
+#ifdef LONG_VERSION		   
 							 "espresetinfo=" +
 		   thingGetESPResetInfo() + "//r\n"
 								   "espreset=" +
@@ -178,7 +183,10 @@ String thingGetAllProperties()
 										   "espmagicflashchipspeed=" +
 		   String(espmagicflashchipspeed) + "//r\n"
 											"espmagicflashchipmode=" +
-		   String(espmagicflashchipmode) + "//r\n";
+		   String(espmagicflashchipmode) + "//r\n"
+#endif		   
+		   ;
+
 }
 
 void thingSubscribe()
@@ -189,7 +197,7 @@ void thingSubscribe()
 String onGetProperty(String _property, String _payload, int8_t transportMask)
 {
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 	debugOut(thingid, "|-> get property " + _property + " = " + _payload);
 #endif
 #endif
@@ -213,7 +221,7 @@ String thingOnMessage(const String &route, const String &_payload, int8_t transp
 	{
 		return result;
 	}
-
+#ifdef LONG_VERSION
 	if (matchRoute(route, topic, "/getthingid"))
 	{
 		return onGetProperty("id", thingGetUnitId(), transportMask);
@@ -466,6 +474,7 @@ String thingOnMessage(const String &route, const String &_payload, int8_t transp
 	else 
 		
 		return result;
+#endif
 	return "";
 }
 
@@ -474,7 +483,7 @@ bool lock = false;
 bool onInsideChange(String _property, String _value)
 {
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 	debugOut(thingid, "|<- inside change " + _property + " = " + _value);
 #endif
 #endif
@@ -488,7 +497,7 @@ bool onInsideChange(String _property, String _value)
 		result = transportPublish(topic + "/" + _property, _value);
 
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut(thingid, "|-> inside change ");
 #endif
 #endif
@@ -519,7 +528,7 @@ String _getStringPropertyValue(String _property, String _defaultvalue)
 	}
 	propertyFileReaded += _property + ";";
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 	debugOut(thingid, _property + "=" + result);
 #endif
 #endif
@@ -545,7 +554,7 @@ int _getIntPropertyValue(String _property, int _defaultvalue)
 	}
 	propertyFileReaded += _property + ";";
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 	debugOut(thingid, _property + "=" + String(result));
 #endif
 #endif
@@ -593,6 +602,7 @@ bool thingSetTopic(String _topic)
 	return onInsideChange("topic", String(topic));
 }
 
+#ifdef LONG_VERSION
 //GetFirmwareVersion
 String thingGetFirmwareVersion()
 {
@@ -1078,5 +1088,6 @@ bool thingSetESPMagicFlashChipMode(int _espmagicflashchipmode)
 {
 	return false;
 }
+#endif
 
 #endif

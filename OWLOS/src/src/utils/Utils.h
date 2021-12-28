@@ -1,12 +1,12 @@
 ﻿/* ----------------------------------------------------------------------------
-Ready IoT Solution - OWLOS
+OWLOS DIY Open Source OS for building IoT ecosystems
 Copyright 2019, 2020 by:
 - Konstantin Brul (konstabrul@gmail.com)
 - Vitalii Glushchenko (cehoweek@gmail.com)
 - Denys Melnychuk (meldenvar@gmail.com)
 - Denis Kirin (deniskirinacs@gmail.com)
 
-This file is part of Ready IoT Solution - OWLOS
+This file is part of OWLOS DIY Open Source OS for building IoT ecosystems
 
 OWLOS is free software : you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software
@@ -23,7 +23,7 @@ with OWLOS. If not, see < https://www.gnu.org/licenses/>.
 
 GitHub: https://github.com/KirinDenis/owlos
 
-(Этот файл — часть Ready IoT Solution - OWLOS.
+(Этот файл — часть OWLOS DIY Open Source OS for building IoT ecosystems.
 
 OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
 ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
@@ -46,8 +46,14 @@ OWLOS распространяется в надежде, что она буде
 //#define SERIAL_COLORIZED_OUTPUT
 //#define DEBUG
 #ifdef DEBUG
-	#define DETAILED_DEBUG
+//	#define DETAILED_DEBUG
 #endif
+
+    #define DEBUG_INFO      0x00
+    #define DEBUG_SUCCESS   0x01
+    #define DEBUG_WARNING   0x02
+    #define DEBUG_DANGER    0x04
+
 
 #define WRITE_DEBUG_LOG_FILES false
 #define DEBUG_LOG_FILES_SIZE 10240L
@@ -89,11 +95,16 @@ OWLOS распространяется в надежде, что она буде
 #define ESP_DRIVER_TYPE 13
 #define CONFIG_DRIVER_TYPE 14
 #define SAMPLE_DRIVER_TYPE 15
+#define BMP280_DRIVER_TYPE 16
+#define ADS1X15_DRIVER_TYPE 17
+#define CCS811_DRIVER_TYPE 18
 
 char *stringToChar(String src);
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 void debugOut(const String &tag, const String &text);
+void debugOut(const String &tag, const String &text, int code);
 #endif
+
 void writeDebugLogFile(String fileName, int fileSize, String tag, String text);
 bool matchRoute(const char *route, const char *topic, const char *path);
 bool matchRoute(const String &route, const String &topic, const char *path);

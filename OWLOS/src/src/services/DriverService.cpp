@@ -1,12 +1,12 @@
 ﻿/* ----------------------------------------------------------------------------
-Ready IoT Solution - OWLOS
-Copyright 2019, 2020 by:
+OWLOS DIY Open Source OS for building IoT ecosystems
+Copyright 2019, 2020, 2021 by:
 - Konstantin Brul (konstabrul@gmail.com)
 - Vitalii Glushchenko (cehoweek@gmail.com)
 - Denys Melnychuk (meldenvar@gmail.com)
 - Denis Kirin (deniskirinacs@gmail.com)
 
-This file is part of Ready IoT Solution - OWLOS
+This file is part of OWLOS DIY Open Source OS for building IoT ecosystems
 
 OWLOS is free software : you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software
@@ -23,7 +23,7 @@ with OWLOS. If not, see < https://www.gnu.org/licenses/>.
 
 GitHub: https://github.com/KirinDenis/owlos
 
-(Этот файл — часть Ready IoT Solution - OWLOS.
+(Этот файл — часть OWLOS DIY Open Source OS for building IoT ecosystems.
 
 OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
 ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
@@ -65,7 +65,7 @@ void driversInit(String _topic)
 	__topic = _topic;
 	initPins();
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 	debugOut("driverconfig", driversLoadFromConfig());
 #endif
 #else
@@ -170,6 +170,39 @@ String driversGetAccessable()
 	{
 		result += "pintype" + String(i) + "=" + LCDDriver::getPinType(i) + "\n";
 		result += "pintypedecoded" + String(i) + "=" + decodePinTypes(LCDDriver::getPinType(i)) + "\n";
+	}
+#endif
+
+#ifdef USE_BMP280_DRIVER
+	result += "name:BMP280Driver\n";
+	result += "type=" + String(BMP280_DRIVER_TYPE) + "\n";
+	result += "pinscount=" + String(BMP280Driver::getPinsCount()) + "\n";
+	for (int i = 0; i < BMP280Driver::getPinsCount(); i++)
+	{
+		result += "pintype" + String(i) + "=" + BMP280Driver::getPinType(i) + "\n";
+		result += "pintypedecoded" + String(i) + "=" + decodePinTypes(BMP280Driver::getPinType(i)) + "\n";
+	}
+#endif
+
+#ifdef USE_ADS1X15_DRIVER
+	result += "name:ADS1X15Driver\n";
+	result += "type=" + String(ADS1X15_DRIVER_TYPE) + "\n";
+	result += "pinscount=" + String(ADS1X15Driver::getPinsCount()) + "\n";
+	for (int i = 0; i < ADS1X15Driver::getPinsCount(); i++)
+	{
+		result += "pintype" + String(i) + "=" + ADS1X15Driver::getPinType(i) + "\n";
+		result += "pintypedecoded" + String(i) + "=" + decodePinTypes(ADS1X15Driver::getPinType(i)) + "\n";
+	}
+#endif
+
+#ifdef USE_CCS811_DRIVER
+	result += "name:CCS811Driver\n";
+	result += "type=" + String(CCS811_DRIVER_TYPE) + "\n";
+	result += "pinscount=" + String(CCS811Driver::getPinsCount()) + "\n";
+	for (int i = 0; i < CCS811Driver::getPinsCount(); i++)
+	{
+		result += "pintype" + String(i) + "=" + CCS811Driver::getPinType(i) + "\n";
+		result += "pintypedecoded" + String(i) + "=" + decodePinTypes(CCS811Driver::getPinType(i)) + "\n";
 	}
 #endif
 
@@ -347,7 +380,7 @@ bool driversSaveList()
 String driversLoadFromConfig()
 {
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 	debugOut("driverconfig", "load");
 #endif
 #endif
@@ -363,7 +396,7 @@ String driversLoadFromConfig()
 	String line;
 
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 	debugOut("driverconfig", "do parse");
 #endif
 #endif
@@ -373,7 +406,7 @@ String driversLoadFromConfig()
 
 		line = driverList.substring(0, linePos);
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut("driverconfig_load line_", line);
 #endif
 #endif
@@ -415,10 +448,10 @@ String driversLoadFromConfig()
 String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 {
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 	debugOut("driversadd_id", id);
 #endif
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 	debugOut("driversadd_pins", pins);
 #endif
 #endif
@@ -444,7 +477,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 		if (_pins[pinCount].length() == 0)
 			break;
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut("pin", _pins[pinCount]);
 #endif
 #endif
@@ -481,7 +514,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 	if (type == ACTUATOR_DRIVER_TYPE)
 	{
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut("pin", String(pinCount));
 #endif
 #endif
@@ -493,7 +526,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 		result = checkDriverPin(_pins[PIN0_INDEX], ActuatorDriver::getPinType(PIN0_INDEX)) + checkDriverPin(_pins[PIN1_INDEX], ActuatorDriver::getPinType(PIN1_INDEX));
 
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut("DCResult", result);
 #endif
 #endif
@@ -518,7 +551,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 		if ((type == SENSOR_DRIVER_TYPE) || (type == LIGHT_DRIVER_TYPE) || (type == SMOKE_DRIVER_TYPE) || (type == MOTION_DRIVER_TYPE))
 	{
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut("pin", String(pinCount));
 #endif
 #endif
@@ -530,7 +563,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 		result = checkDriverPin(_pins[PIN0_INDEX], SensorDriver::getPinType(PIN0_INDEX)) + checkDriverPin(_pins[PIN1_INDEX], SensorDriver::getPinType(PIN1_INDEX)) + checkDriverPin(_pins[PIN2_INDEX], SensorDriver::getPinType(PIN2_INDEX));
 
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut("DCResult", result);
 #endif
 #endif
@@ -554,7 +587,7 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 		if (type == LCD_DRIVER_TYPE)
 	{
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut("pin", String(pinCount));
 #endif
 #endif
@@ -580,12 +613,168 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 	}
 	else
 #endif
+#ifdef USE_BMP280_DRIVER
+		if (type == BMP280_DRIVER_TYPE)
+	{
+#ifdef DETAILED_DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
+		debugOut("pin", String(pinCount));
+#endif
+#endif
+		if (pinCount != BMP280Driver::getPinsCount())
+		{
+			return "BMP280Driver's pins quantity does not match, must be " + String(BMP280Driver::getPinsCount());
+		}
+		
+		result = 
+		checkDriverPin(_pins[SDA_INDEX], BMP280Driver::getPinType(SDA_INDEX)) + 
+		checkDriverPin(_pins[SCL_INDEX], BMP280Driver::getPinType(SCL_INDEX)) + 		
+		_checkDriverPin(_pins[I2CADDR_INDEX], BMP280Driver::getPinType(I2CADDR_INDEX), _pins[SDA_INDEX]) + 
+		checkDriverPin(_pins[I2C_VCC5_INDEX], BMP280Driver::getPinType(I2C_VCC5_INDEX)) + 				
+		checkDriverPin(_pins[I2C_GND_INDEX], BMP280Driver::getPinType(I2C_GND_INDEX));		
+
+
+		if (result.length() != 0)
+		{
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)			
+			debugOut("BMP280", String(result));
+#endif			
+			return result;
+		}
+		
+		result = setDriverPin(_pins[SDA_INDEX], 
+		id, SDA_INDEX, BMP280Driver::getPinType(SDA_INDEX)) + setDriverPin(_pins[SCL_INDEX], 
+		id, SCL_INDEX, BMP280Driver::getPinType(SCL_INDEX)) + _setDriverPin(_pins[I2CADDR_INDEX], 
+		id, I2CADDR_INDEX, BMP280Driver::getPinType(I2CADDR_INDEX), _pins[SDA_INDEX]) + setDriverPin(_pins[I2C_VCC5_INDEX], 
+		id, I2C_VCC5_INDEX, BMP280Driver::getPinType(I2C_VCC5_INDEX)) + setDriverPin(_pins[I2C_GND_INDEX], 
+		id, I2C_GND_INDEX, BMP280Driver::getPinType(I2C_GND_INDEX));
+
+		if (result.length() != 0)
+		{
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)			
+			debugOut("BMP280", result);
+#endif						
+			return result;
+		}
+		
+		BMP280Driver *bmp280Driver = new BMP280Driver;
+		bmp280Driver->id = id;
+		bmp280Driver->init();
+		driversList[freeIndex] = bmp280Driver;
+	}
+	else
+#endif
+
+#ifdef USE_ADS1X15_DRIVER
+		if (type == ADS1X15_DRIVER_TYPE)
+	{
+#ifdef DETAILED_DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
+		debugOut("pin", String(pinCount));
+#endif
+#endif
+		if (pinCount != ADS1X15Driver::getPinsCount())
+		{
+			return "ADS1X15Driver's pins quantity does not match, must be " + String(ADS1X15Driver::getPinsCount());
+		}
+		
+		result = 
+		checkDriverPin(_pins[SDA_INDEX], ADS1X15Driver::getPinType(SDA_INDEX)) + 
+		checkDriverPin(_pins[SCL_INDEX], ADS1X15Driver::getPinType(SCL_INDEX)) + 		
+		_checkDriverPin(_pins[I2CADDR_INDEX], ADS1X15Driver::getPinType(I2CADDR_INDEX), _pins[SDA_INDEX]) + 
+		checkDriverPin(_pins[I2C_VCC5_INDEX], ADS1X15Driver::getPinType(I2C_VCC5_INDEX)) + 				
+		checkDriverPin(_pins[I2C_GND_INDEX], ADS1X15Driver::getPinType(I2C_GND_INDEX));		
+
+
+		if (result.length() != 0)
+		{
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)			
+			debugOut("ADS1X15", String(result));
+#endif			
+			return result;
+		}
+		
+		result = setDriverPin(_pins[SDA_INDEX], 
+		id, SDA_INDEX, ADS1X15Driver::getPinType(SDA_INDEX)) + setDriverPin(_pins[SCL_INDEX], 
+		id, SCL_INDEX, ADS1X15Driver::getPinType(SCL_INDEX)) + _setDriverPin(_pins[I2CADDR_INDEX], 
+		id, I2CADDR_INDEX, BMP280Driver::getPinType(I2CADDR_INDEX), _pins[SDA_INDEX]) + setDriverPin(_pins[I2C_VCC5_INDEX], 
+		id, I2C_VCC5_INDEX, ADS1X15Driver::getPinType(I2C_VCC5_INDEX)) + setDriverPin(_pins[I2C_GND_INDEX], 
+		id, I2C_GND_INDEX, ADS1X15Driver::getPinType(I2C_GND_INDEX));
+
+		if (result.length() != 0)
+		{
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)			
+			debugOut("ADS1X15", result);
+#endif						
+			return result;
+		}
+		
+		ADS1X15Driver *ads1x15Driver = new ADS1X15Driver;
+		ads1x15Driver->id = id;
+		ads1x15Driver->init();
+		driversList[freeIndex] = ads1x15Driver;
+	}
+	else
+#endif
+
+#ifdef USE_CCS811_DRIVER
+		if (type == CCS811_DRIVER_TYPE)
+	{
+#ifdef DETAILED_DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
+		debugOut("pin", String(pinCount));
+#endif
+#endif
+		if (pinCount != CCS811Driver::getPinsCount())
+		{
+			return "CCS811Driver's pins quantity does not match, must be " + String(CCS811Driver::getPinsCount());
+		}
+		
+		result = 
+		checkDriverPin(_pins[SDA_INDEX], CCS811Driver::getPinType(SDA_INDEX)) + 
+		checkDriverPin(_pins[SCL_INDEX], CCS811Driver::getPinType(SCL_INDEX)) + 		
+		_checkDriverPin(_pins[I2CADDR_INDEX], CCS811Driver::getPinType(I2CADDR_INDEX), _pins[SDA_INDEX]) + 
+		checkDriverPin(_pins[I2C_VCC5_INDEX], CCS811Driver::getPinType(I2C_VCC5_INDEX)) + 				
+		checkDriverPin(_pins[I2C_GND_INDEX], CCS811Driver::getPinType(I2C_GND_INDEX));		
+
+
+		if (result.length() != 0)
+		{
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)			
+			debugOut("CCS811", String(result));
+#endif			
+			return result;
+		}
+		
+		result = setDriverPin(_pins[SDA_INDEX], 
+		id, SDA_INDEX, CCS811Driver::getPinType(SDA_INDEX)) + setDriverPin(_pins[SCL_INDEX], 
+		id, SCL_INDEX, CCS811Driver::getPinType(SCL_INDEX)) + _setDriverPin(_pins[I2CADDR_INDEX], 
+		id, I2CADDR_INDEX, BMP280Driver::getPinType(I2CADDR_INDEX), _pins[SDA_INDEX]) + setDriverPin(_pins[I2C_VCC5_INDEX], 
+		id, I2C_VCC5_INDEX, CCS811Driver::getPinType(I2C_VCC5_INDEX)) + setDriverPin(_pins[I2C_GND_INDEX], 
+		id, I2C_GND_INDEX, CCS811Driver::getPinType(I2C_GND_INDEX));
+
+		if (result.length() != 0)
+		{
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)			
+			debugOut("CCS811", result);
+#endif						
+			return result;
+		}
+		
+		CCS811Driver *ccs811Driver = new CCS811Driver;
+		ccs811Driver->id = id;
+		ccs811Driver->init();
+		driversList[freeIndex] = ccs811Driver;
+	}
+	else
+#endif
+
 
 #ifdef USE_DHT_DRIVER
 		if (type == DHT_DRIVER_TYPE)
 	{
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut("pin", String(pinCount));
 #endif
 #endif
@@ -594,7 +783,10 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 			return "DHTDriver's pins quantity does not match, must be " + String(DHTDriver::getPinsCount());
 		}
 
-		result = checkDriverPin(_pins[PIN0_INDEX], DHTDriver::getPinType(PIN0_INDEX)) + checkDriverPin(_pins[PIN1_INDEX], DHTDriver::getPinType(PIN1_INDEX)) + checkDriverPin(_pins[PIN2_INDEX], DHTDriver::getPinType(PIN2_INDEX));
+		result = 
+		checkDriverPin(_pins[PIN0_INDEX], DHTDriver::getPinType(PIN0_INDEX)) + 
+		checkDriverPin(_pins[PIN1_INDEX], DHTDriver::getPinType(PIN1_INDEX)) + 
+		checkDriverPin(_pins[PIN2_INDEX], DHTDriver::getPinType(PIN2_INDEX));
 
 		if (result.length() != 0)
 			return result;
@@ -618,11 +810,11 @@ String driversAdd(int type, String id, String pins) //String D1,D3,GND,....
 #ifdef USE_ESP_DRIVER
 	//if driver added at RUNTIME
 	driversList[freeIndex]->begin(thingGetTopic());
-#else 	
-    driversList[freeIndex]->begin("owlosthing");
+#else
+	driversList[freeIndex]->begin("owlosthing");
 #endif
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 	debugOut("driversadd", "OK");
 #endif
 #endif
@@ -657,7 +849,7 @@ String driversChangePin(String pinName, String driverId, int driverPinIndex)
 String driversDelete(String id)
 {
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 	debugOut("driversdelete", id);
 #endif
 #endif

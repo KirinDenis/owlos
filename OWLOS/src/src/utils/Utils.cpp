@@ -1,12 +1,12 @@
 ﻿/* ----------------------------------------------------------------------------
-Ready IoT Solution - OWLOS
+OWLOS DIY Open Source OS for building IoT ecosystems
 Copyright 2019, 2020 by:
 - Konstantin Brul (konstabrul@gmail.com)
 - Vitalii Glushchenko (cehoweek@gmail.com)
 - Denys Melnychuk (meldenvar@gmail.com)
 - Denis Kirin (deniskirinacs@gmail.com)
 
-This file is part of Ready IoT Solution - OWLOS
+This file is part of OWLOS DIY Open Source OS for building IoT ecosystems
 
 OWLOS is free software : you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software
@@ -23,7 +23,7 @@ with OWLOS. If not, see < https://www.gnu.org/licenses/>.
 
 GitHub: https://github.com/KirinDenis/owlos
 
-(Этот файл — часть Ready IoT Solution - OWLOS.
+(Этот файл — часть OWLOS DIY Open Source OS for building IoT ecosystems.
 
 OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
 ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
@@ -44,6 +44,11 @@ OWLOS распространяется в надежде, что она буде
 #include "../drivers/WifiDriver.h"
 #include "../drivers/NetworkDriver.h"
 
+#ifdef LOG_SCREEN_UX
+#include "../ux/Screens/LogScreen.h"
+#endif
+
+
 bool filesAtRecurse = false;
 
 char *stringToChar(String src)
@@ -53,9 +58,14 @@ char *stringToChar(String src)
 	return data;
 }
 
-#ifdef DEBUG
-void debugOut(const String &tag, const String &text)
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
+void debugOut(const String &tag, const String &text, int code)
 {
+#ifdef LOG_SCREEN_UX
+  logScreenAddText(tag, text, code);
+#endif
+
+#ifdef DEBUG
 #ifdef USE_ESP_DRIVER
 #ifdef SERIAL_COLORIZED_OUTPUT
 	String _text = text + " \033\033[1;32m [" + String(ESP.getFreeHeap()) + "]";
@@ -104,6 +114,12 @@ void debugOut(const String &tag, const String &text)
 		}
 		filesAtRecurse = false;
 	}
+#endif	
+}
+
+void debugOut(const String &tag, const String &text)
+{
+	debugOut(tag, text, DEBUG_INFO);
 }
 #endif
 
@@ -237,7 +253,7 @@ else
 
 		if (thingGetWiFiAccessPointAvailable()) 
 		{				
-		  features += "HTTPSecureServerAP=http://" + thingGetWiFiAccessPointIP() + ":443\n";
+		  features += "HTTPSecureServerAP=https://" + thingGetWiFiAccessPointIP() + ":443\n";
 		}
 		else 
 		{
@@ -268,7 +284,7 @@ else
 
 		if (thingGetWiFiAccessPointAvailable()) 
 		{				
-		  features += "HTTPServerAP=http://" + thingGetWiFiAccessPointIP() + ":" + String(thingGetHTTPServerPort()) + "\n";
+		  features += "HTTPServerAP=https://" + thingGetWiFiAccessPointIP() + ":" + String(thingGetHTTPServerPort()) + "\n";
 		}
 		else 
 		{
@@ -317,7 +333,7 @@ else
 		 else 
 		 {
 		  features += "MQTTBrokerConnected=no\n";		 	 
-		 }
+	 }
 		}
 		else 
 		{
