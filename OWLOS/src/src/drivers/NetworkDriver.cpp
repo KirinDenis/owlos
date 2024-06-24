@@ -1,12 +1,12 @@
 /* ----------------------------------------------------------------------------
-Ready IoT Solution - OWLOS
+OWLOS DIY Open Source OS for building IoT ecosystems
 Copyright 2019, 2020 by:
 - Konstantin Brul (konstabrul@gmail.com)
 - Vitalii Glushchenko (cehoweek@gmail.com)
 - Denys Melnychuk (meldenvar@gmail.com)
 - Denis Kirin (deniskirinacs@gmail.com)
 
-This file is part of Ready IoT Solution - OWLOS
+This file is part of OWLOS DIY Open Source OS for building IoT ecosystems
 
 OWLOS is free software : you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software
@@ -23,7 +23,7 @@ with OWLOS. If not, see < https://www.gnu.org/licenses/>.
 
 GitHub: https://github.com/KirinDenis/owlos
 
-(Этот файл — часть Ready IoT Solution - OWLOS.
+(Этот файл — часть OWLOS DIY Open Source OS for building IoT ecosystems.
 
 OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
 ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
@@ -49,6 +49,10 @@ OWLOS распространяется в надежде, что она буде
 #include "../services/UpdateService.h"
 #include "../services/TransportService.h"
 
+#ifdef USE_MQTT
+#include "../transports/MQTTClient.h"
+#endif
+
 extern String propertyFileReaded;
 extern String topic;
 extern String thingid;
@@ -68,8 +72,13 @@ extern String thingid;
 #endif
 
 #ifdef USE_HTTP_CLIENT
-#define DEFAULT_HTTP_CLIENT_PORT 8080
-#define DEFAULT_HTTP_CLIENT_URL ""
+#define DEFAULT_HTTP_CLIENT_AVAILABLE 1
+#define DEFAULT_HTTP_CLIENT_QUERY_INTERVAL 5000
+#define DEFAULT_HTTP_CLIENT_AIRQUALITYONLY 1
+#define DEFAULT_HTTP_CLIENT_TOKEN "elRuOGdSM1hGUEM1VXh3N1NKZlBFUitNaXAxVUhiNVF6VkNhUHFOYnZLMFFBQUFBN3ZJT3N6WGNFNEdjU29XYUlxazZsQjNuY0RhZnVLSFNSVXQ5QW4xYW9uTnBkeGU0ZkxUeUh2dnhvTFRCblQ1R0xneW9Lc2FIT0M4ekJRbGhZWnhrM1B3MWZwV1pla2ZSQjZ1UENBcytKZEtsREdxcU9WeDlHMGF1YVlqQjBjWVhydWhLVWlCTVIzWEhPMm9CSW04cVp3PT0="
+#define DEFAULT_HTTP_CLIENT_PORT 5000
+#define DEFAULT_HTTP_CLIENT_URL "https://192.168.1.100"
+#define DEFAULT_HTTP_CLIENT_USE_HTTPS 0
 #endif
 
 #ifdef USE_MQTT
@@ -108,8 +117,13 @@ int httpsserverport(DEFAULT_HTTPS_SERVER_PORT);
 #endif
 
 #ifdef USE_HTTP_CLIENT
+int httpclientavailable(DEFAULT_HTTP_CLIENT_AVAILABLE);
+int httpclientinterval(DEFAULT_HTTP_CLIENT_QUERY_INTERVAL);
+int httpclientaionly(DEFAULT_HTTP_CLIENT_AIRQUALITYONLY);
+String httpclienttoken(DEFAULT_HTTP_CLIENT_TOKEN);
 int httpclientport(DEFAULT_HTTP_CLIENT_PORT);
 String httpclienturl(DEFAULT_HTTP_CLIENT_URL);
+int httpclientcert(DEFAULT_HTTP_CLIENT_USE_HTTPS);
 #endif
 
 #ifdef USE_MQTT
@@ -164,8 +178,13 @@ String thingGetNetworkProperties()
 #endif						
 
 #ifdef USE_HTTP_CLIENT
-												"httpclientport=" + String(thingGetHTTPClientPort()) + "//i\n"
-												"httpclienturl=" +thingGetHTTPClientURL() + "//\n"
+			"httpclientavailable=" + String(thingGetHTTPClientAvailable()) + "//b\n"
+			"httpclientinterval=" + String(thingGetHTTPClientQueryInterval()) + "//i\n"
+			"httpclientaionly=" + String(thingGetHTTPClientAirQualityOnly()) + "//bs\n"
+			"httpclienttoken=" + thingGetHTTPClientToken() + "//s\n"
+			"httpclientport=" + String(thingGetHTTPClientPort()) + "//i\n"
+			"httpclienturl=" + thingGetHTTPClientURL() + "//\n"
+			"httpclientcert=" + String(thingGetHTTPClientUseHTTPS()) + "//b\n"
 #endif												
 
 #ifdef USE_MQTT
@@ -182,9 +201,7 @@ String thingGetNetworkProperties()
 								"mqttpassword=" +
 		   thingGetMQTTPassword() + "//p\n"
 								   "mqttclientconnected=" +
-		   String(thingGetMQTTClientConnected()) + "//bs\n"
-												  "mqttclientstate=" +
-		   String(thingGetMQTTClientState()) + "//i\n"
+		   String(thingGetMQTTClientConnected()) + "//bs\n"												 
 #endif
 
 #ifdef USE_OTA_SERVICE
@@ -294,7 +311,39 @@ String networkOnMessage(String route, String _payload, int8_t transportMask)
 #endif	
 	
 #ifdef USE_HTTP_CLIENT	
-	if (matchRoute(route, topic, "/gethttpclientport"))
+	if (matchRoute(route, topic, "/gethttpclientavailable"))
+	{
+		return onGetProperty("httpclientavailable", String(thingGetHTTPClientAvailable()), transportMask);
+	}
+	else if (matchRoute(route, topic, "/sethttpclientavailable"))
+	{		       
+		return String(thingSetHTTPClientAvailable(atoi(_payload.c_str())));
+	}
+	else if (matchRoute(route, topic, "/gethttpclientinterval"))
+	{
+		return onGetProperty("httpclientinterval", String(thingGetHTTPClientQueryInterval()), transportMask);
+	}
+	else if (matchRoute(route, topic, "/sethttpclientinterval"))
+	{
+		return String(thingSetHTTPClientQueryInterval(atoi(_payload.c_str())));
+	}
+	else if (matchRoute(route, topic, "/gethttpclientaionly"))
+	{
+		return onGetProperty("httpclientaionly", String(thingGetHTTPClientAirQualityOnly()), transportMask);
+	}
+	else if (matchRoute(route, topic, "/sethttpclientaionly"))
+	{
+		return String(thingSetHTTPClientAirQualityOnly(atoi(_payload.c_str())));
+	}
+	else if (matchRoute(route, topic, "/gethttpclienttoken"))
+	{
+		return onGetProperty("httpclienttoken", thingGetHTTPClientToken(), transportMask);
+	}
+	else if (matchRoute(route, topic, "/sethttpclienttoken"))
+	{
+		return String(thingSetHTTPClientToken(_payload));
+	}
+	else if (matchRoute(route, topic, "/gethttpclientport"))
 	{
 		return onGetProperty("httpclientport", String(thingGetHTTPClientPort()), transportMask);
 	}
@@ -309,6 +358,14 @@ String networkOnMessage(String route, String _payload, int8_t transportMask)
 	else if (matchRoute(route, topic, "/sethttpclienturl"))
 	{
 		return String(thingSetHTTPClientURL(_payload));
+	}
+	else if (matchRoute(route, topic, "/gethttpclientcert"))
+	{
+		return onGetProperty("httpclientcert", String(thingGetHTTPClientUseHTTPS()), transportMask);
+	}
+	else if (matchRoute(route, topic, "/sethttpclientcert"))
+	{
+		return String(thingSetHTTPClientUseHTTPS(atoi(_payload.c_str())));
 	}
 	else 
 #endif	
@@ -365,10 +422,6 @@ String networkOnMessage(String route, String _payload, int8_t transportMask)
 	else if (matchRoute(route, topic, "/getmqttclientconnected"))
 	{
 		return String(thingGetMQTTClientConnected());
-	}
-	else if (matchRoute(route, topic, "/getmqttclientstate"))
-	{
-		return String(thingGetMQTTClientState());
 	}
 	else 
 #endif	
@@ -581,6 +634,62 @@ bool thingSetHTTPSServerPort(int _httpsserverport)
 #endif
 
 #ifdef USE_HTTP_CLIENT
+//HTTPClientAvailable()
+int thingGetHTTPClientAvailable()
+{
+	if (propertyFileReaded.indexOf("httpclientavailable;") < 0)
+		return httpclientavailable = _getIntPropertyValue("httpclientavailable", DEFAULT_HTTP_CLIENT_AVAILABLE);
+	else
+		return httpclientavailable;
+}
+bool thingSetHTTPClientAvailable(int _httpclientavailable)
+{
+	httpclientavailable = _httpclientavailable;
+	return onInsideChange("httpclientavailable", String(httpclientavailable));
+}
+
+//HTTPClientQueryInterval()
+int thingGetHTTPClientQueryInterval()
+{
+	if (propertyFileReaded.indexOf("httpclientinterval;") < 0)
+		return httpclientinterval = _getIntPropertyValue("httpclientinterval", DEFAULT_HTTP_CLIENT_QUERY_INTERVAL);
+	else
+		return httpclientinterval;
+}
+bool thingSetHTTPClientQueryInterval(int _httpclientinterval)
+{
+	httpclientinterval = _httpclientinterval;
+	return onInsideChange("httpclientinterval", String(httpclientinterval));
+}
+
+//HTTPClientAirQualityOnly()
+int thingGetHTTPClientAirQualityOnly()
+{
+	if (propertyFileReaded.indexOf("httpclientaionly;") < 0)
+		return httpclientaionly = _getIntPropertyValue("httpclientaionly", DEFAULT_HTTP_CLIENT_AIRQUALITYONLY);
+	else
+		return httpclientaionly;
+}
+bool thingSetHTTPClientAirQualityOnly(int _httpclientaionly)
+{
+	httpclientaionly = _httpclientaionly;
+	return onInsideChange("httpclientaionly", String(httpclientaionly));
+}
+
+//HTTPClientToken()
+String thingGetHTTPClientToken()
+{
+	if (propertyFileReaded.indexOf("httpclienttoken;") < 0)
+		return httpclienttoken = _getStringPropertyValue("httpclienttoken", DEFAULT_HTTP_CLIENT_TOKEN);
+	else
+		return httpclienttoken;
+}
+bool thingSetHTTPClientToken(String _httpclienttoken)
+{
+	httpclienttoken = _httpclienttoken;
+	return onInsideChange("httpclienttoken", String(httpclienttoken));
+}
+
 //HTTPClientPort()
 int thingGetHTTPClientPort()
 {
@@ -608,6 +717,21 @@ bool thingSetHTTPClientURL(String _httpclienturl)
 	httpclienturl = _httpclienturl;
 	return onInsideChange("httpclienturl", String(httpclienturl));
 }
+
+//HTTPClientUseHTTPS()
+int thingGetHTTPClientUseHTTPS()
+{
+	if (propertyFileReaded.indexOf("httpclientcert;") < 0)
+		return httpclientcert = _getIntPropertyValue("httpclientcert", DEFAULT_HTTP_CLIENT_USE_HTTPS);
+	else
+		return httpclientcert;
+}
+bool thingSetHTTPClientUseHTTPS(int _httpclientcert)
+{
+	httpclientcert = _httpclientcert;
+	return onInsideChange("httpclientcert", String(httpclientcert));
+}
+
 #endif
 
 #ifdef USE_MQTT
@@ -712,16 +836,9 @@ bool thingSetMQTTPassword(String _mqttpassword)
 //MQTTClientConnected
 int thingGetMQTTClientConnected()
 {
-	//	return (int)(getMQTTClient()->connected());
-	return 1;
+	return MQTTGetConnected();	
 }
 
-//MQTTClientState
-int thingGetMQTTClientState()
-{
-	//	return getMQTTClient()->state();
-	return 1;
-}
 #endif
 
 #ifdef USE_OTA_SERVICE

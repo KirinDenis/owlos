@@ -1,12 +1,12 @@
 /* ----------------------------------------------------------------------------
-Ready IoT Solution - OWLOS
+OWLOS DIY Open Source OS for building IoT ecosystems
 Copyright 2019, 2020 by:
 - Konstantin Brul (konstabrul@gmail.com)
 - Vitalii Glushchenko (cehoweek@gmail.com)
 - Denys Melnychuk (meldenvar@gmail.com)
 - Denis Kirin (deniskirinacs@gmail.com)
 
-This file is part of Ready IoT Solution - OWLOS
+This file is part of OWLOS DIY Open Source OS for building IoT ecosystems
 
 OWLOS is free software : you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software
@@ -23,7 +23,7 @@ with OWLOS. If not, see < https://www.gnu.org/licenses/>.
 
 GitHub: https://github.com/KirinDenis/owlos
 
-(Этот файл — часть Ready IoT Solution - OWLOS.
+(Этот файл — часть OWLOS DIY Open Source OS for building IoT ecosystems.
 
 OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
 ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
@@ -50,6 +50,14 @@ OWLOS распространяется в надежде, что она буде
 #include "services/DriverService.h"
 #include "services/FileService.h"
 #include "services/ScriptService.h"
+#include "services/UXService.h"
+#include "services/AirQualityService.h"
+
+#ifdef LOG_SCREEN_UX
+#include "ux/Screens/LogScreen.h"
+#endif
+
+#include "ux/Controls/EditControl.h"
 
 /*-----------------------------------------------------------------------------
 OWLOS Kernel setup section 
@@ -63,7 +71,7 @@ bool kernelSetup()
 
 #if defined(ARDUINO_ESP8266_RELEASE_2_5_0) || defined(ARDUINO_ESP32_RELEASE_1_0_4) || defined(USE_ARDUINO_BOARDS)
 #ifdef DEBUG
-	debugOut("OWLOS kernel setup", "started...");
+	debugOut("OWLOS", "Kernel starting...");
 #endif //if Utils.h "Debug=true" start writing log to Serial
 
 #ifdef ARDUINO_ESP8266_RELEASE_2_5_0
@@ -72,6 +80,16 @@ bool kernelSetup()
 #endif
 
 	filesBegin(); //prepare Flash file systeme (see Tools/Flash size item - use 2M Flash Size, is ZERO size by default -> switch to 2M
+
+	UXServiceInit(); //Init Air Quality UX
+#ifdef LOG_SCREEN_UX
+	logScreenRefresh();
+#endif
+
+
+#if defined(DEBUG) || defined(LOG_SCREEN_UX)
+	debugOut("OWLOS", "Air Quality started", DEBUG_SUCCESS);
+#endif
 
 #ifdef USE_ESP_DRIVER
 	thingInit();
@@ -83,12 +101,12 @@ bool kernelSetup()
 #else
 	driversInit("owlosthing");
 #endif
+	AirQualityBegin(thingGetTopic());
 #endif
 
 #ifdef USE_SCRIPT
 	scriptsLoad();
 #endif
-
 
 	//Setup network stack - WiFi -> after MQTT -- if both available Transport accessable, if not Unit try reconnect forever (every 5 sec by default)
 	//Ther is not connected at begin(), see Main::Loop() transportReconnect() function using
@@ -123,7 +141,7 @@ bool kernelLoop()
 #if defined(ARDUINO_ESP8266_RELEASE_2_5_0) || defined(ARDUINO_ESP32_RELEASE_1_0_4)
 #ifdef ARDUINO_ESP32_RELEASE_1_0_4
 	filesLoop();
-#endif
+#endif    	
 	//check WiFi and MQTT stack are available
 	//first time Main::loop() calling the transport is not available
 #ifdef USE_ESP_DRIVER
@@ -142,7 +160,7 @@ bool kernelLoop()
 			driversBegin(thingGetTopic()); //initilize drivers network properties, each driver must publish() here TYPE and AVAILABLE status
 #endif
 			thingSubscribe(); //subscribe() all AVAILABLE drivers to here topics (see: driverID), the topic -> UnitTopic+ESPChipID/DriverId
-							 //driversSubscribe();
+							  //driversSubscribe();
 		}
 	}
 	else //if network (Transport) to be available
@@ -165,6 +183,8 @@ bool kernelLoop()
 	//give CPU time quantum to each driver. Like are sample -> temperature sensor can check physical sensor value
 #ifdef USE_DRIVERS
 	driversLoop(); //the driverLoop() more actual for sensors drivers, the actuator drivers wait until Sub()->OnMessage() happens, see Main::Callback(...) function
+	UXServiceLoop();
+	AirQualityLoop();
 #endif
 
 #ifdef USE_SCRIPT

@@ -51,7 +51,7 @@
 
 // Maximum length of the request line (GET /... HTTP/1.1)
 #ifndef HTTPS_REQUEST_MAX_REQUEST_LENGTH
-#define HTTPS_REQUEST_MAX_REQUEST_LENGTH       128
+#define HTTPS_REQUEST_MAX_REQUEST_LENGTH       1024
 #endif
 
 // Maximum length of a header line (including name and value)

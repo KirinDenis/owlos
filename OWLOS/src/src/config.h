@@ -1,12 +1,12 @@
 /* ----------------------------------------------------------------------------
-Ready IoT Solution - OWLOS
+OWLOS DIY Open Source OS for building IoT ecosystems
 Copyright 2019, 2020 by:
 - Konstantin Brul (konstabrul@gmail.com)
 - Vitalii Glushchenko (cehoweek@gmail.com)
 - Denys Melnychuk (meldenvar@gmail.com)
 - Denis Kirin (deniskirinacs@gmail.com)
 
-This file is part of Ready IoT Solution - OWLOS
+This file is part of OWLOS DIY Open Source OS for building IoT ecosystems
 
 OWLOS is free software : you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software
@@ -23,7 +23,7 @@ with OWLOS. If not, see < https://www.gnu.org/licenses/>.
 
 GitHub: https://github.com/KirinDenis/owlos
 
-(Этот файл — часть Ready IoT Solution - OWLOS.
+(Этот файл — часть OWLOS DIY Open Source OS for building IoT ecosystems.
 
 OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
 ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
@@ -43,10 +43,14 @@ OWLOS распространяется в надежде, что она буде
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#define FIRMWARE_VERSION_NUMVER "1.12"
-#define FIRMWARE_BUILD_NUMBER 114
-#define FIRMWARE_VERSION "OWLOS version 1.12 (RC)"
+#define FIRMWARE_VERSION_NUMVER "1.16"
+#define FIRMWARE_BUILD_NUMBER 124
+#define FIRMWARE_VERSION "OWLOS v.1.16 (RC)"
 
+#define LONG_VERSION
+
+//Air Quality defines 
+#define LOG_SCREEN_UX
 
 // ВАЖНО:
 // DONT_USE_FILES флаг запрещает ESP драйверу сохранять значения свойств в файловой системе. 
@@ -81,7 +85,7 @@ OWLOS распространяется в надежде, что она буде
                 //   ^^^ Разумеется в том случае есть #define USE_HTTP_SERVER включен
 
                 //Включает/Выключает (1/0) WiFi режим точки доступа (другие WiFi устройства могут подключатся к OWLOS если включено).
-                #define DEFAULT_WIFI_ACCESS_POINT_AVAILABLE 0               //файл /owlthing.wifiapavailable
+                #define DEFAULT_WIFI_ACCESS_POINT_AVAILABLE 1               //файл /owlthing.wifiapavailable
 
                 //Если WiFi режим точки доступа включен – название точки доступа (WiFi сети)
                 #define DEFAULT_WIFI_ACCESS_POINT_SSID "owlthing"            //файл /owlthing.wifiaccesspointssid
@@ -105,10 +109,10 @@ OWLOS распространяется в надежде, что она буде
                 //OWLOS будет делать попытки соединения постоянно, до перезагрузки. 
                 //Такой способ страхует от неправильного указания названия точки доступа - дело в том что процесс подключения
                 //занимает очень много ресурсов и делает устройство OWLOS медленным. 
-                #define DEFAULT_WIFI_STATION_SSID "" 
+                #define DEFAULT_WIFI_STATION_SSID "Palata#13" 
 
                 //Пароль подключаемой точки доступа. 
-                #define DEFAULT_WIFI_STATION_PASSWORD "" 
+                #define DEFAULT_WIFI_STATION_PASSWORD "qweasdzxc1234" 
 
                 //Название этого устройсва с OWLOS для формирования Topic (уникального пути к устройству в сети)
                 #define DEFAULT_ID "owlthing"
@@ -122,7 +126,7 @@ OWLOS распространяется в надежде, что она буде
                 //Включает в сборку OWLOS HTTP Server 
                 #define USE_HTTP_SERVER  
 
-                //#define USE_HTTP_CLIENT
+                #define USE_HTTP_CLIENT
 
                 //Включает поиск и установку обновлений OWLOS в сети Internet
                 //Новые версии готовых прошивок находятся здесь: https://github.com/KirinDenis/owlos/tree/master/OWLOS
@@ -133,9 +137,9 @@ OWLOS распространяется в надежде, что она буде
                 //Включает OTA (Over The Air) возможность загружать новые прошивки по локальной WiFi сети (без использования UART)
                 //#define USE_OTA_SERVICE
 
-                #ifdef ARDUINO_ESP32_RELEASE_1_0_4       
+                #ifdef ARDUINO_ESP32_RELEASE_1_0_4                      
                 //Включает в сборку MQTT клиент
-                #define USE_MQTT                
+                //#define USE_MQTT                
                 #endif                
             #endif
     #else
@@ -143,7 +147,7 @@ OWLOS распространяется в надежде, что она буде
     #endif
     
 
-#define USE_UART
+//#define USE_UART
 
 #include "utils/Utils.h"
 
@@ -151,16 +155,25 @@ OWLOS распространяется в надежде, что она буде
 #define USE_DRIVERS    
     #ifdef USE_DRIVERS
         //Универсальный драйвер исполнительных устройств (цифровых и аналоговых)(с подержкой ШИМ)    
-        #define USE_ACTUATOR_DRIVER
+        //#define USE_ACTUATOR_DRIVER
 
         //Универсальный драйвер сенсоров (датчиков)(цифровых и аналоговых)
-        #define USE_SENSOR_DRIVER
+        //#define USE_SENSOR_DRIVER
 
         //Драйвер цифровых серсоров температуры и влажности (Digital Humidity and Temperature) - DHT11, DTH22 и прочих
-       // #define USE_DHT_DRIVER
+        #define USE_DHT_DRIVER
+
+        //Драйвер сенсора BMP280
+        #define USE_BMP280_DRIVER
+
+        //Драйвер сенсора ADS1X15
+        #define USE_ADS1X15_DRIVER
+
+        //Драйвер сенсора CCS811
+        #define USE_CCS811_DRIVER
 
         //Драйвер I2C LCD дисплеев, поддерживает более одного дисплея на шине I2C
-        #define USE_LCD_DRIVER
+        //#define USE_LCD_DRIVER
 
         //Драйвер шаговых двигателей
         //#define USE_STEPPER_DRIVER
@@ -173,6 +186,5 @@ OWLOS распространяется в надежде, что она буде
     #endif
 #endif
 
-
 //Включить поддержку скриптов
-#define USE_SCRIPT
+//#define USE_SCRIPT

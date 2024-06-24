@@ -1,12 +1,12 @@
 ﻿/* ----------------------------------------------------------------------------
-Ready IoT Solution - OWLOS
+OWLOS DIY Open Source OS for building IoT ecosystems
 Copyright 2019, 2020 by:
 - Konstantin Brul (konstabrul@gmail.com)
 - Vitalii Glushchenko (cehoweek@gmail.com)
 - Denys Melnychuk (meldenvar@gmail.com)
 - Denis Kirin (deniskirinacs@gmail.com)
 
-This file is part of Ready IoT Solution - OWLOS
+This file is part of OWLOS DIY Open Source OS for building IoT ecosystems
 
 OWLOS is free software : you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software
@@ -23,7 +23,7 @@ with OWLOS. If not, see < https://www.gnu.org/licenses/>.
 
 GitHub: https://github.com/KirinDenis/owlos
 
-(Этот файл — часть Ready IoT Solution - OWLOS.
+(Этот файл — часть OWLOS DIY Open Source OS for building IoT ecosystems.
 
 OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
 ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
@@ -145,12 +145,13 @@ public:
     String readHistoryFile();
     bool writeHistoryFile(float _historydata);
 
-protected:
-    int parsePinNumber(String _topic, String getPinStr);
     //TRUE(1)
     //FALSE(0)
     //FALSE by default
     int available = 0;
+
+protected:
+    int parsePinNumber(String _topic, String getPinStr);
 
     //Current driver type code, see Utils.h for driver's types codes
     int type;
@@ -192,7 +193,7 @@ protected:
     unsigned long lastHistoryFileWriteMillis = 0;
 
     //Set count how often the query() method "core section" must be called  (NOTE: for stabale works queryInterval property MUST BE BIGGER THAN publishInterval property)
-    unsigned long queryInterval = ONESECOND;
+    unsigned long queryInterval = ONESECOND * 10;
 
     //Set count how often the publish() method "core section" must be called
     unsigned long publishInterval = ONESECOND * 600;

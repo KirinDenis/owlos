@@ -1,12 +1,12 @@
 /* ----------------------------------------------------------------------------
-Ready IoT Solution - OWLOS
+OWLOS DIY Open Source OS for building IoT ecosystems
 Copyright 2019, 2020 by:
 - Konstantin Brul (konstabrul@gmail.com)
 - Vitalii Glushchenko (cehoweek@gmail.com)
 - Denys Melnychuk (meldenvar@gmail.com)
 - Denis Kirin (deniskirinacs@gmail.com)
 
-This file is part of Ready IoT Solution - OWLOS
+This file is part of OWLOS DIY Open Source OS for building IoT ecosystems
 
 OWLOS is free software : you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software
@@ -23,7 +23,7 @@ with OWLOS. If not, see < https://www.gnu.org/licenses/>.
 
 GitHub: https://github.com/KirinDenis/owlos
 
-(Этот файл — часть Ready IoT Solution - OWLOS.
+(Этот файл — часть OWLOS DIY Open Source OS for building IoT ecosystems.
 
 OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
 ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
@@ -94,6 +94,9 @@ data будет “owlthing3415/led24/data”.
 AsyncMqttClient mqttClient;
 TimerHandle_t mqttReconnectTimer;
 TimerHandle_t wifiReconnectTimer;
+
+int MQTTSend = 0;
+int MQTTRecv = 0;
 
 void onMqttConnect(bool sessionPresent)
 {
@@ -185,6 +188,8 @@ void onMqttMessage(char *topic, char *payload, AsyncMqttClientMessageProperties 
     //cut payload buffer
     String _payload = String(payload).substring(index, len);
     String _topic = String(topic);
+
+    MQTTRecv += _payload.length() + _topic.length();
 #ifdef DETAILED_DEBUG
 #ifdef DEBUG
     debugOut("MQTT", "OnPublish received: " + _topic + " payload: " + _payload);
@@ -224,6 +229,7 @@ void MQTTPublish(String _topic, String _payload)
 #else
         mqttClient.publish(_topic.c_str(), 0, true, _payload.c_str());
 #endif
+     MQTTSend += _payload.length() + _topic.length();
     }
     //TODO: say about ignore publish to hight level
 }
@@ -298,5 +304,21 @@ bool MQTTBegin()
 #endif
     return true;
 }
+
+int MQTTGetConnected()
+{
+    return WiFi.isConnected() && mqttClient.connected();
+}
+
+int MQTTGetSend()
+{
+    return MQTTSend;
+}
+
+int MQTTGetRecv()
+{
+    return MQTTRecv;
+}
+
 
 #endif

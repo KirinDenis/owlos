@@ -1,0 +1,315 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OWLOS", "OWLOS", "{CEAB6A89-5A7E-4F78-8DC9-903F3DCA2ACE}"
+	ProjectSection(SolutionItems) = preProject
+		OWLOS\.gitignore = OWLOS\.gitignore
+		OWLOS\compile_arduinostudio_update.bat = OWLOS\compile_arduinostudio_update.bat
+		OWLOS\compile_UI_only.bat = OWLOS\compile_UI_only.bat
+		OWLOS\eagle.flash.2m.ld = OWLOS\eagle.flash.2m.ld
+		OWLOS\LICENSE = OWLOS\LICENSE
+		OWLOS\make_platformio_firmware.bat = OWLOS\make_platformio_firmware.bat
+		OWLOS\OWLOS.ino = OWLOS\OWLOS.ino
+		OWLOS\OWLOS.ino.d1.bin = OWLOS\OWLOS.ino.d1.bin
+		OWLOS\OWLOS.ino.d1_mini.bin = OWLOS\OWLOS.ino.d1_mini.bin
+		OWLOS\OWLOS.ino.esp32.bin = OWLOS\OWLOS.ino.esp32.bin
+		OWLOS\OWLOS.ino.esp32dev.bin = OWLOS\OWLOS.ino.esp32dev.bin
+		OWLOS\OWLOS.ino.nodemcu.bin = OWLOS\OWLOS.ino.nodemcu.bin
+		OWLOS\platformio.ini = OWLOS\platformio.ini
+		OWLOS\platformio_ArduinoUNO.ini = OWLOS\platformio_ArduinoUNO.ini
+		OWLOS\platformio_ESP32.ini = OWLOS\platformio_ESP32.ini
+		OWLOS\platformio_ESP32DEV.ini = OWLOS\platformio_ESP32DEV.ini
+		OWLOS\platformio_ESP8266.ini = OWLOS\platformio_ESP8266.ini
+		OWLOS\platformio_ESP8266_NodeMCU.ini = OWLOS\platformio_ESP8266_NodeMCU.ini
+		OWLOS\platformio_ESP8266_WeMosD1.ini = OWLOS\platformio_ESP8266_WeMosD1.ini
+		OWLOS\platformio_ESPnnnn.ini = OWLOS\platformio_ESPnnnn.ini
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OWLStarter", "OWLStarter", "{2B56B938-D996-4E6C-B185-5A36A9EA515B}"
+	ProjectSection(SolutionItems) = preProject
+		OWLStarter\OWLStarter.ino = OWLStarter\OWLStarter.ino
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "data", "data", "{0586AFF7-C5E7-4ED0-9719-B2D3750DF097}"
+	ProjectSection(SolutionItems) = preProject
+		OWLOS\data\7ZiptoGZIP.bat = OWLOS\data\7ZiptoGZIP.bat
+		OWLOS\data\actuatorwidget.js = OWLOS\data\actuatorwidget.js
+		OWLOS\data\basewidget.js = OWLOS\data\basewidget.js
+		OWLOS\data\bootcore.js = OWLOS\data\bootcore.js
+		OWLOS\data\bootstrap.min.css = OWLOS\data\bootstrap.min.css
+		OWLOS\data\bootstrap.min.js = OWLOS\data\bootstrap.min.js
+		OWLOS\data\buttonelement.js = OWLOS\data\buttonelement.js
+		OWLOS\data\configcore.js = OWLOS\data\configcore.js
+		OWLOS\data\dashboardui.js = OWLOS\data\dashboardui.js
+		OWLOS\data\dataTables.min.css = OWLOS\data\dataTables.min.css
+		OWLOS\data\dataTables.min.js = OWLOS\data\dataTables.min.js
+		OWLOS\data\dialogelement.js = OWLOS\data\dialogelement.js
+		OWLOS\data\dialoginputelement.js = OWLOS\data\dialoginputelement.js
+		OWLOS\data\dialoglabelelement.js = OWLOS\data\dialoglabelelement.js
+		OWLOS\data\dialogprogressbarelement.js = OWLOS\data\dialogprogressbarelement.js
+		OWLOS\data\dialogselectelement.js = OWLOS\data\dialogselectelement.js
+		OWLOS\data\drawcore.js = OWLOS\data\drawcore.js
+		OWLOS\data\driverscore.js = OWLOS\data\driverscore.js
+		OWLOS\data\driversui.js = OWLOS\data\driversui.js
+		OWLOS\data\filespanelui.js = OWLOS\data\filespanelui.js
+		OWLOS\data\graphwidget.js = OWLOS\data\graphwidget.js
+		OWLOS\data\headerpanelui.js = OWLOS\data\headerpanelui.js
+		OWLOS\data\index.html = OWLOS\data\index.html
+		OWLOS\data\index.js = OWLOS\data\index.js
+		OWLOS\data\indexie.html = OWLOS\data\indexie.html
+		OWLOS\data\indexpack.html = OWLOS\data\indexpack.html
+		OWLOS\data\jquery.dataTables.min.js = OWLOS\data\jquery.dataTables.min.js
+		OWLOS\data\jquery.min.js = OWLOS\data\jquery.min.js
+		OWLOS\data\languagescore.js = OWLOS\data\languagescore.js
+		OWLOS\data\lcdwidget.js = OWLOS\data\lcdwidget.js
+		OWLOS\data\lightwidget.js = OWLOS\data\lightwidget.js
+		OWLOS\data\motionwidget.js = OWLOS\data\motionwidget.js
+		OWLOS\data\pinscore.js = OWLOS\data\pinscore.js
+		OWLOS\data\popper.min.js = OWLOS\data\popper.min.js
+		OWLOS\data\radialwidget.js = OWLOS\data\radialwidget.js
+		OWLOS\data\README.md = OWLOS\data\README.md
+		OWLOS\data\restclientcore.js = OWLOS\data\restclientcore.js
+		OWLOS\data\scriptscore.js = OWLOS\data\scriptscore.js
+		OWLOS\data\scriptsui.js = OWLOS\data\scriptsui.js
+		OWLOS\data\settingsui.js = OWLOS\data\settingsui.js
+		OWLOS\data\sidebarelement.js = OWLOS\data\sidebarelement.js
+		OWLOS\data\smokewidget.js = OWLOS\data\smokewidget.js
+		OWLOS\data\speechcore.js = OWLOS\data\speechcore.js
+		OWLOS\data\stepperwidget.js = OWLOS\data\stepperwidget.js
+		OWLOS\data\tablewidget.js = OWLOS\data\tablewidget.js
+		OWLOS\data\temperaturewidget.js = OWLOS\data\temperaturewidget.js
+		OWLOS\data\ui.css = OWLOS\data\ui.css
+		OWLOS\data\updateinfo.html = OWLOS\data\updateinfo.html
+		OWLOS\data\valueeditorelement.js = OWLOS\data\valueeditorelement.js
+		OWLOS\data\valuewidget.js = OWLOS\data\valuewidget.js
+		OWLOS\data\widgetswrappers.js = OWLOS\data\widgetswrappers.js
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libraries", "libraries", "{00D2E15C-87C3-4EC5-A8DC-2213DEE378DD}"
+	ProjectSection(SolutionItems) = preProject
+		OWLOS\libraries\Adafruit_Sensor-master.zip = OWLOS\libraries\Adafruit_Sensor-master.zip
+		OWLOS\libraries\DHT-sensor-library-master.zip = OWLOS\libraries\DHT-sensor-library-master.zip
+		OWLOS\libraries\LiquidCrystal_I2C-master.zip = OWLOS\libraries\LiquidCrystal_I2C-master.zip
+		OWLOS\libraries\OneWire.zip = OWLOS\libraries\OneWire.zip
+		OWLOS\libraries\README.md = OWLOS\libraries\README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "openssl", "openssl", "{5025BA70-8AFB-434A-88E8-1CD27C36F30B}"
+	ProjectSection(SolutionItems) = preProject
+		OWLOS\openssl\opensslcommand.txt = OWLOS\openssl\opensslcommand.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6C1C1756-D7E4-4399-AF22-7D43AAE2F9E7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "poligon", "poligon", "{E41163AD-4A6A-4628-9CA9-558A5CA10032}"
+	ProjectSection(SolutionItems) = preProject
+		OWLOS\data\poligone\index.html = OWLOS\data\poligone\index.html
+		OWLOS\data\poligone\index.js = OWLOS\data\poligone\index.js
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "drivers", "drivers", "{E4AC87BE-1B74-436F-AC4C-D9D9342EA354}"
+	ProjectSection(SolutionItems) = preProject
+		OWLOS\src\src\drivers\ActuatorDriver.cpp = OWLOS\src\src\drivers\ActuatorDriver.cpp
+		OWLOS\src\src\drivers\ActuatorDriver.h = OWLOS\src\src\drivers\ActuatorDriver.h
+		OWLOS\src\src\drivers\BaseDriver.cpp = OWLOS\src\src\drivers\BaseDriver.cpp
+		OWLOS\src\src\drivers\BaseDriver.h = OWLOS\src\src\drivers\BaseDriver.h
+		OWLOS\src\src\drivers\DHTDriver.cpp = OWLOS\src\src\drivers\DHTDriver.cpp
+		OWLOS\src\src\drivers\DHTDriver.h = OWLOS\src\src\drivers\DHTDriver.h
+		OWLOS\src\src\drivers\ESPDriver.cpp = OWLOS\src\src\drivers\ESPDriver.cpp
+		OWLOS\src\src\drivers\ESPDriver.h = OWLOS\src\src\drivers\ESPDriver.h
+		OWLOS\src\src\drivers\LCDDriver.cpp = OWLOS\src\src\drivers\LCDDriver.cpp
+		OWLOS\src\src\drivers\LCDDriver.h = OWLOS\src\src\drivers\LCDDriver.h
+		OWLOS\src\src\drivers\NetworkDriver.cpp = OWLOS\src\src\drivers\NetworkDriver.cpp
+		OWLOS\src\src\drivers\NetworkDriver.h = OWLOS\src\src\drivers\NetworkDriver.h
+		OWLOS\src\src\drivers\SensorDriver.cpp = OWLOS\src\src\drivers\SensorDriver.cpp
+		OWLOS\src\src\drivers\SensorDriver.h = OWLOS\src\src\drivers\SensorDriver.h
+		OWLOS\src\src\drivers\StepperDriver.cpp = OWLOS\src\src\drivers\StepperDriver.cpp
+		OWLOS\src\src\drivers\StepperDriver.h = OWLOS\src\src\drivers\StepperDriver.h
+		OWLOS\src\src\drivers\ValveDriver.cpp = OWLOS\src\src\drivers\ValveDriver.cpp
+		OWLOS\src\src\drivers\ValveDriver.h = OWLOS\src\src\drivers\ValveDriver.h
+		OWLOS\src\src\drivers\WifiDriver.cpp = OWLOS\src\src\drivers\WifiDriver.cpp
+		OWLOS\src\src\drivers\WifiDriver.h = OWLOS\src\src\drivers\WifiDriver.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "services", "services", "{B8F9C798-24FF-4E00-B903-228234AAE229}"
+	ProjectSection(SolutionItems) = preProject
+		OWLOS\src\src\services\AirQualityService.cpp = OWLOS\src\src\services\AirQualityService.cpp
+		OWLOS\src\src\services\AirQualityService.h = OWLOS\src\src\services\AirQualityService.h
+		OWLOS\src\src\services\DriverService.cpp = OWLOS\src\src\services\DriverService.cpp
+		OWLOS\src\src\services\DriverService.h = OWLOS\src\src\services\DriverService.h
+		OWLOS\src\src\services\FileService.cpp = OWLOS\src\src\services\FileService.cpp
+		OWLOS\src\src\services\FileService.h = OWLOS\src\src\services\FileService.h
+		OWLOS\src\src\services\OTAService.cpp = OWLOS\src\src\services\OTAService.cpp
+		OWLOS\src\src\services\OTAService.h = OWLOS\src\src\services\OTAService.h
+		OWLOS\src\src\services\PinService.cpp = OWLOS\src\src\services\PinService.cpp
+		OWLOS\src\src\services\PinService.h = OWLOS\src\src\services\PinService.h
+		OWLOS\src\src\services\ScriptService.cpp = OWLOS\src\src\services\ScriptService.cpp
+		OWLOS\src\src\services\ScriptService.h = OWLOS\src\src\services\ScriptService.h
+		OWLOS\src\src\services\TransportService.h = OWLOS\src\src\services\TransportService.h
+		OWLOS\src\src\services\TransportServiceArduino.cpp = OWLOS\src\src\services\TransportServiceArduino.cpp
+		OWLOS\src\src\services\TransportServiceESP32.cpp = OWLOS\src\src\services\TransportServiceESP32.cpp
+		OWLOS\src\src\services\TransportServiceESP8266.cpp = OWLOS\src\src\services\TransportServiceESP8266.cpp
+		OWLOS\src\src\services\UpdateService.cpp = OWLOS\src\src\services\UpdateService.cpp
+		OWLOS\src\src\services\UpdateService.h = OWLOS\src\src\services\UpdateService.h
+		OWLOS\src\src\services\UXService.cpp = OWLOS\src\src\services\UXService.cpp
+		OWLOS\src\src\services\UXService.h = OWLOS\src\src\services\UXService.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "transports", "transports", "{6A416E69-AA4F-41A2-9C9E-6FD7D55E306A}"
+	ProjectSection(SolutionItems) = preProject
+		OWLOS\src\src\transports\cert.h = OWLOS\src\src\transports\cert.h
+		OWLOS\src\src\transports\HTTPServerThings.cpp = OWLOS\src\src\transports\HTTPServerThings.cpp
+		OWLOS\src\src\transports\HTTPServerThings.h = OWLOS\src\src\transports\HTTPServerThings.h
+		OWLOS\src\src\transports\HTTPSWebServer.h = OWLOS\src\src\transports\HTTPSWebServer.h
+		OWLOS\src\src\transports\HTTPSWebServerESP32.cpp = OWLOS\src\src\transports\HTTPSWebServerESP32.cpp
+		OWLOS\src\src\transports\HTTPSWebServerESP8266.cpp = OWLOS\src\src\transports\HTTPSWebServerESP8266.cpp
+		OWLOS\src\src\transports\HTTPWebClient.cpp = OWLOS\src\src\transports\HTTPWebClient.cpp
+		OWLOS\src\src\transports\HTTPWebClient.h = OWLOS\src\src\transports\HTTPWebClient.h
+		OWLOS\src\src\transports\MQTTClient.cpp = OWLOS\src\src\transports\MQTTClient.cpp
+		OWLOS\src\src\transports\MQTTClient.h = OWLOS\src\src\transports\MQTTClient.h
+		OWLOS\src\src\transports\private_key.h = OWLOS\src\src\transports\private_key.h
+		OWLOS\src\src\transports\UART.cpp = OWLOS\src\src\transports\UART.cpp
+		OWLOS\src\src\transports\UART.h = OWLOS\src\src\transports\UART.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "utils", "utils", "{9C6397B1-FCB3-4718-A913-F52E5BE372EE}"
+	ProjectSection(SolutionItems) = preProject
+		OWLOS\src\src\utils\Utils.cpp = OWLOS\src\src\utils\Utils.cpp
+		OWLOS\src\src\utils\Utils.h = OWLOS\src\src\utils\Utils.h
+		OWLOS\src\src\utils\WebProperties.cpp = OWLOS\src\src\utils\WebProperties.cpp
+		OWLOS\src\src\utils\WebProperties.h = OWLOS\src\src\utils\WebProperties.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OWLOSResources", "OWLOSResources", "{0DE788A3-BBF4-4E4D-81BB-58F1A2AEC80F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OWLOSAdmin", "OWLOSAdmin\OWLOSAdmin.csproj", "{035862CA-8F69-4BB8-816E-8A3F4D491679}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OWLOSEcosystem", "OWLOSEcosystem\OWLOSEcosystem.csproj", "{701F6366-B50B-4BE0-9E84-801BA31FAAEA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{379A52EF-78CA-4396-9008-55FBA4CF3BFB}"
+	ProjectSection(SolutionItems) = preProject
+		OWLOS\src\src\config.h = OWLOS\src\src\config.h
+		OWLOS\src\src\Kernel.cpp = OWLOS\src\src\Kernel.cpp
+		OWLOS\src\src\Kernel.h = OWLOS\src\src\Kernel.h
+		OWLOS\src\main.cpp = OWLOS\src\main.cpp
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OWLOSAdmin", "OWLOSAdmin", "{D9F00E20-1C24-467A-AAE5-E5B645A3194B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OWLOSEcosystem", "OWLOSEcosystem", "{6BD96FE7-3127-41E3-828B-93D4828BD9DA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OWLOSAirQuality", "OWLOSAirQuality\OWLOSAirQuality.csproj", "{54C74D64-182E-4C4C-9224-E0CE742278FE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OWLOSEcosystemService", "OWLOSEcosystemService", "{48C7ADF5-6E59-4C83-BC7C-ADD8F0BAF208}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OWLOSEcosystemService", "OWLOSEcosystemService\OWLOSEcosystemService.csproj", "{5E9F4817-4357-45C7-A609-FB0F7B27AF99}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ux", "ux", "{A02B92C5-8DF8-4F3F-A6B4-17F5EAF70204}"
+	ProjectSection(SolutionItems) = preProject
+		OWLOS\src\src\ux\colors.h = OWLOS\src\src\ux\colors.h
+		OWLOS\src\src\ux\UXColors.h = OWLOS\src\src\ux\UXColors.h
+		OWLOS\src\src\ux\UXCore.cpp = OWLOS\src\src\ux\UXCore.cpp
+		OWLOS\src\src\ux\UXCore.h = OWLOS\src\src\ux\UXCore.h
+		OWLOS\src\src\ux\UXUtils.cpp = OWLOS\src\src\ux\UXUtils.cpp
+		OWLOS\src\src\ux\UXUtils.h = OWLOS\src\src\ux\UXUtils.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Controls", "Controls", "{BB28239D-A486-40CA-9DC6-DC17D0B144F5}"
+	ProjectSection(SolutionItems) = preProject
+		OWLOS\src\src\ux\Controls\ButtonControl.cpp = OWLOS\src\src\ux\Controls\ButtonControl.cpp
+		OWLOS\src\src\ux\Controls\ButtonControl.h = OWLOS\src\src\ux\Controls\ButtonControl.h
+		OWLOS\src\src\ux\Controls\EditControl.cpp = OWLOS\src\src\ux\Controls\EditControl.cpp
+		OWLOS\src\src\ux\Controls\EditControl.h = OWLOS\src\src\ux\Controls\EditControl.h
+		OWLOS\src\src\ux\Controls\KeyButtonContro.cpp = OWLOS\src\src\ux\Controls\KeyButtonContro.cpp
+		OWLOS\src\src\ux\Controls\KeyButtonControl.h = OWLOS\src\src\ux\Controls\KeyButtonControl.h
+		OWLOS\src\src\ux\Controls\TextControl.cpp = OWLOS\src\src\ux\Controls\TextControl.cpp
+		OWLOS\src\src\ux\Controls\TextControl.h = OWLOS\src\src\ux\Controls\TextControl.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Screens", "Screens", "{46FCA71D-40F1-47C1-B55E-DDACA71AA8BD}"
+	ProjectSection(SolutionItems) = preProject
+		OWLOS\src\src\ux\Screens\HomeScreen.cpp = OWLOS\src\src\ux\Screens\HomeScreen.cpp
+		OWLOS\src\src\ux\Screens\HomeScreen.h = OWLOS\src\src\ux\Screens\HomeScreen.h
+		OWLOS\src\src\ux\Screens\LogScreen.cpp = OWLOS\src\src\ux\Screens\LogScreen.cpp
+		OWLOS\src\src\ux\Screens\LogScreen.h = OWLOS\src\src\ux\Screens\LogScreen.h
+		OWLOS\src\src\ux\Screens\SensorsScreen.cpp = OWLOS\src\src\ux\Screens\SensorsScreen.cpp
+		OWLOS\src\src\ux\Screens\SensorsScreen.h = OWLOS\src\src\ux\Screens\SensorsScreen.h
+		OWLOS\src\src\ux\Screens\TransportScreen.cpp = OWLOS\src\src\ux\Screens\TransportScreen.cpp
+		OWLOS\src\src\ux\Screens\TransportScreen.h = OWLOS\src\src\ux\Screens\TransportScreen.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OWLOSAirQulity", "OWLOSAirQulity", "{82F29433-C27C-4BDF-AA08-DB87ADD67699}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OWLOSDTOs", "OWLOSDTOs", "{B18C2123-B0E8-4B8E-BFCA-0D71463D6EF0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OWLOSDTOs", "OWLOSDTOs\OWLOSDTOs.csproj", "{FEC591DC-82D8-4B96-B4A9-7ECF6838647D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DOTNETCore5Install", "DOTNETCore50Installer\DOTNETCore5Install.csproj", "{DEB13AA3-7DBE-4344-8235-5CABAFE1D14F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OWLOSEcosystemServiceUnitTests", "OWLOSEcosystemServiceUnitTests\OWLOSEcosystemServiceUnitTests.csproj", "{DE05CAF4-C9A9-4844-8E8E-BE7F994A6021}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{035862CA-8F69-4BB8-816E-8A3F4D491679}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{035862CA-8F69-4BB8-816E-8A3F4D491679}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{035862CA-8F69-4BB8-816E-8A3F4D491679}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{035862CA-8F69-4BB8-816E-8A3F4D491679}.Release|Any CPU.Build.0 = Release|Any CPU
+		{701F6366-B50B-4BE0-9E84-801BA31FAAEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{701F6366-B50B-4BE0-9E84-801BA31FAAEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{701F6366-B50B-4BE0-9E84-801BA31FAAEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{701F6366-B50B-4BE0-9E84-801BA31FAAEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54C74D64-182E-4C4C-9224-E0CE742278FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54C74D64-182E-4C4C-9224-E0CE742278FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54C74D64-182E-4C4C-9224-E0CE742278FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54C74D64-182E-4C4C-9224-E0CE742278FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E9F4817-4357-45C7-A609-FB0F7B27AF99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E9F4817-4357-45C7-A609-FB0F7B27AF99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E9F4817-4357-45C7-A609-FB0F7B27AF99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E9F4817-4357-45C7-A609-FB0F7B27AF99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEC591DC-82D8-4B96-B4A9-7ECF6838647D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEC591DC-82D8-4B96-B4A9-7ECF6838647D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEC591DC-82D8-4B96-B4A9-7ECF6838647D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEC591DC-82D8-4B96-B4A9-7ECF6838647D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEB13AA3-7DBE-4344-8235-5CABAFE1D14F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEB13AA3-7DBE-4344-8235-5CABAFE1D14F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEB13AA3-7DBE-4344-8235-5CABAFE1D14F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEB13AA3-7DBE-4344-8235-5CABAFE1D14F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE05CAF4-C9A9-4844-8E8E-BE7F994A6021}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE05CAF4-C9A9-4844-8E8E-BE7F994A6021}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE05CAF4-C9A9-4844-8E8E-BE7F994A6021}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE05CAF4-C9A9-4844-8E8E-BE7F994A6021}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0586AFF7-C5E7-4ED0-9719-B2D3750DF097} = {CEAB6A89-5A7E-4F78-8DC9-903F3DCA2ACE}
+		{00D2E15C-87C3-4EC5-A8DC-2213DEE378DD} = {CEAB6A89-5A7E-4F78-8DC9-903F3DCA2ACE}
+		{5025BA70-8AFB-434A-88E8-1CD27C36F30B} = {CEAB6A89-5A7E-4F78-8DC9-903F3DCA2ACE}
+		{6C1C1756-D7E4-4399-AF22-7D43AAE2F9E7} = {CEAB6A89-5A7E-4F78-8DC9-903F3DCA2ACE}
+		{E41163AD-4A6A-4628-9CA9-558A5CA10032} = {0586AFF7-C5E7-4ED0-9719-B2D3750DF097}
+		{E4AC87BE-1B74-436F-AC4C-D9D9342EA354} = {379A52EF-78CA-4396-9008-55FBA4CF3BFB}
+		{B8F9C798-24FF-4E00-B903-228234AAE229} = {379A52EF-78CA-4396-9008-55FBA4CF3BFB}
+		{6A416E69-AA4F-41A2-9C9E-6FD7D55E306A} = {379A52EF-78CA-4396-9008-55FBA4CF3BFB}
+		{9C6397B1-FCB3-4718-A913-F52E5BE372EE} = {379A52EF-78CA-4396-9008-55FBA4CF3BFB}
+		{035862CA-8F69-4BB8-816E-8A3F4D491679} = {D9F00E20-1C24-467A-AAE5-E5B645A3194B}
+		{701F6366-B50B-4BE0-9E84-801BA31FAAEA} = {6BD96FE7-3127-41E3-828B-93D4828BD9DA}
+		{379A52EF-78CA-4396-9008-55FBA4CF3BFB} = {6C1C1756-D7E4-4399-AF22-7D43AAE2F9E7}
+		{54C74D64-182E-4C4C-9224-E0CE742278FE} = {82F29433-C27C-4BDF-AA08-DB87ADD67699}
+		{5E9F4817-4357-45C7-A609-FB0F7B27AF99} = {48C7ADF5-6E59-4C83-BC7C-ADD8F0BAF208}
+		{A02B92C5-8DF8-4F3F-A6B4-17F5EAF70204} = {379A52EF-78CA-4396-9008-55FBA4CF3BFB}
+		{BB28239D-A486-40CA-9DC6-DC17D0B144F5} = {A02B92C5-8DF8-4F3F-A6B4-17F5EAF70204}
+		{46FCA71D-40F1-47C1-B55E-DDACA71AA8BD} = {A02B92C5-8DF8-4F3F-A6B4-17F5EAF70204}
+		{FEC591DC-82D8-4B96-B4A9-7ECF6838647D} = {B18C2123-B0E8-4B8E-BFCA-0D71463D6EF0}
+		{DE05CAF4-C9A9-4844-8E8E-BE7F994A6021} = {48C7ADF5-6E59-4C83-BC7C-ADD8F0BAF208}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9A146DA9-5CF0-425C-A7F4-C00482E8A430}
+	EndGlobalSection
+EndGlobal

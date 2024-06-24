@@ -44,6 +44,8 @@ bool thingSetWiFiPassword(String _wifipassword);
 String thingGetWiFiIP();
 bool thingSetWiFiIP(String _wifiip);
 
+String thingGetWiFiGateWayIP();
+
 // WiFi parameters
 int32_t thingGetWiFiRSSI();
 bool thingSetWiFiRSSI(int _currentwifirssi);
