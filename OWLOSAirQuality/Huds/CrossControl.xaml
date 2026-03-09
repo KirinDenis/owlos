@@ -1,0 +1,13 @@
+﻿<UserControl x:Class="OWLOSAirQuality.Huds.CrossControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:OWLOSAirQuality.Huds"
+             mc:Ignorable="d" 
+             Height="16" Width="16">
+    <Grid>
+        <Border BorderBrush="{DynamicResource OWLOSSecondary}" BorderThickness="3,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Stretch" />
+        <Border BorderBrush="{DynamicResource OWLOSSecondary}" BorderThickness="0,3,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Center" />
+    </Grid>
+</UserControl>

@@ -1,12 +1,12 @@
 ﻿/* ----------------------------------------------------------------------------
-Ready IoT Solution - OWLOS
+OWLOS DIY Open Source OS for building IoT ecosystems
 Copyright 2019, 2020 by:
 - Konstantin Brul (konstabrul@gmail.com)
 - Vitalii Glushchenko (cehoweek@gmail.com)
 - Denys Melnychuk (meldenvar@gmail.com)
 - Denis Kirin (deniskirinacs@gmail.com)
 
-This file is part of Ready IoT Solution - OWLOS
+This file is part of OWLOS DIY Open Source OS for building IoT ecosystems
 
 OWLOS is free software : you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software
@@ -23,7 +23,7 @@ with OWLOS. If not, see < https://www.gnu.org/licenses/>.
 
 GitHub: https://github.com/KirinDenis/owlos
 
-(Этот файл — часть Ready IoT Solution - OWLOS.
+(Этот файл — часть OWLOS DIY Open Source OS for building IoT ecosystems.
 
 OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
 ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
@@ -45,12 +45,17 @@ OWLOS распространяется в надежде, что она буде
 
 #ifdef USE_ESP_DRIVER
 
+#include "../utils/Utils.h"
+
 #include "../drivers/ESPDriver.h"
 
 #include "../services/OTAService.h"
 #include "../services/DriverService.h"
 #include "../transports/HTTPSWebServer.h"
 
+#ifdef USE_HTTP_CLIENT
+#include "../transports/HTTPWebClient.h"
+#endif
 #ifdef USE_MQTT
 #include "../transports/MQTTClient.h"
 #endif
@@ -98,7 +103,7 @@ void WiFiSTReconnect()
 		if (WiFiSSID.length() == 0)
 		{
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 			debugOut(TransportID, "WiFi SSID not defined");
 #endif
 #endif
@@ -107,7 +112,7 @@ void WiFiSTReconnect()
 
 		{
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 			debugOut(TransportID, "try to connect to - " + WiFiSSID + ":" + WiFiPassword + " wait ");
 #endif
 #endif
@@ -120,14 +125,14 @@ void WiFiSTReconnect()
 				delay(100);
 				wait++;
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 				debugOut(TransportID, "Wait for WiFi [" + String(wait) + "] from [10]");
 #endif
 #endif
 				if (wait > 9)
 				{
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 					debugOut(TransportID, "Wait for WiFi TimeOut...break");
 #endif
 #endif
@@ -143,34 +148,34 @@ void WiFiEvent(WiFiEvent_t event)
 	switch (event)
 	{
 	case SYSTEM_EVENT_WIFI_READY:
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut(TransportID, "WiFi interface ready");
 #endif
 		break;
 	case SYSTEM_EVENT_SCAN_DONE:
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut(TransportID, "Completed scan for access points");
 #endif
 		break;
 	case SYSTEM_EVENT_STA_START:
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut(TransportID, "WiFi client started");
 #endif
 		break;
 	case SYSTEM_EVENT_STA_STOP:
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut(TransportID, "WiFi clients stopped");
 #endif
 		break;
 	case SYSTEM_EVENT_STA_CONNECTED:
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut(TransportID, "Connected to access point");
 #endif
 		xTimerStop(wifiSTReconnectTimer, 0);
 
 		break;
 	case SYSTEM_EVENT_STA_DISCONNECTED:
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut(TransportID, "Disconnected from WiFi access point");
 #endif
 		wifiResult = false;
@@ -180,7 +185,7 @@ void WiFiEvent(WiFiEvent_t event)
 		xTimerStart(wifiSTReconnectTimer, 0);
 		break;
 	case SYSTEM_EVENT_STA_AUTHMODE_CHANGE:
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut(TransportID, "Authentication mode of access point has changed");
 #endif
 		break;
@@ -188,7 +193,7 @@ void WiFiEvent(WiFiEvent_t event)
 		//TODO: setIP
 		wifiResult = true;
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut(TransportID, "WiFi connected as Client success, local IP: " + thingGetWiFiIP());
 #endif
 #endif
@@ -214,32 +219,32 @@ void WiFiEvent(WiFiEvent_t event)
 
 		break;
 	case SYSTEM_EVENT_STA_LOST_IP:
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut(TransportID, "Lost IP address and IP address is reset to 0");
 #endif
 		break;
 	case SYSTEM_EVENT_STA_WPS_ER_SUCCESS:
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut(TransportID, "WiFi Protected Setup (WPS): succeeded in enrollee mode");
 #endif
 		break;
 	case SYSTEM_EVENT_STA_WPS_ER_FAILED:
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut(TransportID, "WiFi Protected Setup (WPS): failed in enrollee mode");
 #endif
 		break;
 	case SYSTEM_EVENT_STA_WPS_ER_TIMEOUT:
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut(TransportID, "WiFi Protected Setup (WPS): timeout in enrollee mode");
 #endif
 		break;
 	case SYSTEM_EVENT_STA_WPS_ER_PIN:
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut(TransportID, "WiFi Protected Setup (WPS): pin code in enrollee mode");
 #endif
 		break;
 	case SYSTEM_EVENT_AP_START:
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut(TransportID, "WiFi access point started");
 #endif
 		wifiAPResult = true;
@@ -249,63 +254,63 @@ void WiFiEvent(WiFiEvent_t event)
 
 		break;
 	case SYSTEM_EVENT_AP_STOP:
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut(TransportID, "WiFi access point stopped");
 #endif
 		break;
 	case SYSTEM_EVENT_AP_STACONNECTED:
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut(TransportID, "Client connected");
 #endif
 		break;
 	case SYSTEM_EVENT_AP_STADISCONNECTED:
 		wifiAPResult = false;
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut(TransportID, "Client disconnected");
 #endif
 		break;
 	case SYSTEM_EVENT_AP_STAIPASSIGNED:
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut(TransportID, "Assigned IP address to client");
 #endif
 		break;
 	case SYSTEM_EVENT_AP_PROBEREQRECVED:
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut(TransportID, "Received probe request");
 #endif
 		break;
 	case SYSTEM_EVENT_GOT_IP6:
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut(TransportID, "IPv6 is preferred");
 #endif
 		break;
 	case SYSTEM_EVENT_ETH_START:
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut(TransportID, "Ethernet started");
 #endif
 		break;
 	case SYSTEM_EVENT_ETH_STOP:
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut(TransportID, "Ethernet stopped");
 #endif
 		break;
 	case SYSTEM_EVENT_ETH_CONNECTED:
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut(TransportID, "Ethernet connected");
 #endif
 		break;
 	case SYSTEM_EVENT_ETH_DISCONNECTED:
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut(TransportID, "Ethernet disconnected");
 #endif
 		break;
 	case SYSTEM_EVENT_ETH_GOT_IP:
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut(TransportID, "Obtained IP address");
 #endif
 		break;
 	default:
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut(TransportID, "Unknown WiFi event");
 #endif
 		break;
@@ -315,7 +320,7 @@ void WiFiEvent(WiFiEvent_t event)
 bool transportBegin()
 {
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 	debugOut(TransportID, "begin");
 #endif
 #endif
@@ -327,7 +332,7 @@ bool transportBegin()
 #endif
 
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 	debugOut(TransportID, "Prepare to select WiFi mode...");
 #endif
 #endif
@@ -344,7 +349,7 @@ bool transportBegin()
 		thingSetWiFiAccessPointIP(WiFi.softAPIP().toString());
 
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut(TransportID, "WiFi mode Access Point and Station (both)");
 #endif
 #endif
@@ -365,7 +370,7 @@ bool transportBegin()
 		thingSetWiFiAccessPointIP(WiFi.softAPIP().toString());
 
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut(TransportID, "WiFi mode Access Point");
 #endif
 #endif
@@ -375,7 +380,7 @@ bool transportBegin()
 		if (thingGetWiFiAvailable() == 1)
 	{
 #ifdef DETAILED_DEBUG
-#ifdef DEBUG
+#if defined (DEBUG) || defined (LOG_SCREEN_UX)
 		debugOut(TransportID, "WiFi mode Station");
 #endif
 #endif
@@ -420,6 +425,7 @@ void transportLoop()
 #ifdef USE_UART
 	UARTRecv();
 #endif
+
 }
 
 void transportSubscribe(String _topic)
@@ -446,6 +452,13 @@ bool transportPublish(String _topic, String _payload)
 #ifdef USE_UART
 	UARTSend(_topic, _payload);
 #endif
+
+#ifdef USE_HTTP_CLIENT
+ 	if ((thingGetWiFiAvailable() == 1) && (WiFi.isConnected()))
+ 	{
+  	   HTTPWebClientPublish(_topic, _payload);
+ 	}
+#endif  
 
 	return true;
 }

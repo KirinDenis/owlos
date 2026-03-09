@@ -1,0 +1,15 @@
+﻿<Window x:Class="OWLOSAirQuality.Frames.GraphFrame"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OWLOSAirQuality.Frames" xmlns:huds="clr-namespace:OWLOSAirQuality.Huds"
+        mc:Ignorable="d"
+        Title="GraphFrame" Width="1920" Height="1080">
+    <Grid x:Name="MainGrid" Width="1920" Height="1080">
+        <Grid x:Name="GraphHoderGrid" Grid.Column="1" Grid.Row="0">
+            <huds:FrameBackgroundControl TitleFrame="GRAPH" DescriptionFrame="Air Quality" QueryInterval="x10 sec"/>
+            <WrapPanel x:Name="GraphGrid" Margin="58,119" Width="1832" Height="998"></WrapPanel>
+       </Grid>
+    </Grid>
+</Window>

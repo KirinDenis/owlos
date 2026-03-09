@@ -1,11 +1,11 @@
 ﻿/* ----------------------------------------------------------------------------
-Ready IoT Solution - OWLOS
+OWLOS DIY Open Source OS for building IoT ecosystems
 Copyright 2019, 2020, 2021 by:
 - Vitalii Glushchenko (cehoweek@gmail.com)
 - Denys Melnychuk (meldenvar@gmail.com)
 - Denis Kirin (deniskirinacs@gmail.com)
 
-This file is part of Ready IoT Solution - OWLOS
+This file is part of OWLOS DIY Open Source OS for building IoT ecosystems
 
 OWLOS is free software : you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software
@@ -22,7 +22,7 @@ with OWLOS. If not, see < https://www.gnu.org/licenses/>.
 
 GitHub: https://github.com/KirinDenis/owlos
 
-(Этот файл — часть Ready IoT Solution - OWLOS.
+(Этот файл — часть OWLOS DIY Open Source OS for building IoT ecosystems.
 
 OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
 ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
@@ -49,6 +49,7 @@ using System.IO.Ports;
 
 namespace OWLOSThingsManager.Ecosystem
 {
+
     public class OWLOSThingWrapper
     {
         public ThingsManager CurrentThingsManager;
@@ -80,7 +81,7 @@ namespace OWLOSThingsManager.Ecosystem
 
         public List<OWLOSThingWrapper> OWLOSThingWrappers = new List<OWLOSThingWrapper>();
 
-        public delegate void NewThingEventHandler(object? sender, OWLOSThingWrapperEventArgs e);
+        public delegate void NewThingEventHandler(object sender, OWLOSThingWrapperEventArgs e);
         public event NewThingEventHandler OnNewThing;
 
         public ThingsManagerConfig config = new ThingsManagerConfig();
@@ -202,6 +203,20 @@ namespace OWLOSThingsManager.Ecosystem
             return ThingWrapper;
         }
 
+        public OWLOSThingWrapper CreateThingWrapper(OWLOSThingConfig _OWLOSThingConfig)
+        {
+            
+            OWLOSThingWrapper ThingWrapper = new OWLOSThingWrapper(this)
+            {
+                Thing = new OWLOSThing(_OWLOSThingConfig)
+            };
+            OWLOSThingWrappers.Add(ThingWrapper);
+            NewThing(new OWLOSThingWrapperEventArgs(ThingWrapper));
+
+            return ThingWrapper;
+        }
+
+
         public bool DeleteThingWrapper(OWLOSThingWrapper ThingWrapper)
         {
             foreach (OWLOSConnection connection in ThingWrapper.Thing.config.connections)
@@ -216,6 +231,21 @@ namespace OWLOSThingsManager.Ecosystem
 
             return true;
         }
+
+        public OWLOSThingWrapper GetThingWrapperById(int thingId)
+        {
+            foreach (OWLOSThingWrapper thingWrapper in OWLOSThingWrappers)
+            {
+                if (thingWrapper.Thing.config.ThingId == thingId)
+                {
+                    return thingWrapper;
+                }
+
+            }
+
+            return null;
+        }
+
 
         protected virtual void NewThing(OWLOSThingWrapperEventArgs e)
         {

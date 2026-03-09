@@ -1,0 +1,44 @@
+{
+  "ThingsConfig": [
+    {
+      "Name": "OWLOS Thing",
+      "LastConnected": "0001-01-01T00:00:00",
+      "connections": [
+        {
+          "Priority": 0,
+          "enable": true,
+          "name": "rest",
+          "connectionType": 0,
+          "connectionString": "{\"host\":\"http://192.168.1.101:80/\"}"
+        },
+        {
+          "Priority": 0,
+          "enable": true,
+          "name": "UART",
+          "connectionType": 2,
+          "connectionString": "{\"port\":\"COM7\",\"baudRate\":115200,\"parity\":0,\"stopBits\":1,\"dataBits\":8,\"handshake\":0,\"RTSEnable\":false}"
+        }
+      ],
+      "APIQueryIntervals": [
+        {
+          "Enable": true,
+          "APIType": 0,
+          "Interval": 1,
+          "LastCall": "0001-01-01T00:00:00"
+        },
+        {
+          "Enable": true,
+          "APIType": 1,
+          "Interval": 10,
+          "LastCall": "0001-01-01T00:00:00"
+        },
+        {
+          "Enable": true,
+          "APIType": 2,
+          "Interval": 20,
+          "LastCall": "0001-01-01T00:00:00"
+        }
+      ]
+    }
+  ]
+}

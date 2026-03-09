@@ -1,12 +1,12 @@
 ﻿/* ----------------------------------------------------------------------------
-Ready IoT Solution - OWLOS
+OWLOS DIY Open Source OS for building IoT ecosystems
 Copyright 2019, 2020 by:
 - Konstantin Brul (konstabrul@gmail.com)
 - Vitalii Glushchenko (cehoweek@gmail.com)
 - Denys Melnychuk (meldenvar@gmail.com)
 - Denis Kirin (deniskirinacs@gmail.com)
 
-This file is part of Ready IoT Solution - OWLOS
+This file is part of OWLOS DIY Open Source OS for building IoT ecosystems
 
 OWLOS is free software : you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software
@@ -23,7 +23,7 @@ with OWLOS. If not, see < https://www.gnu.org/licenses/>.
 
 GitHub: https://github.com/KirinDenis/owlos
 
-(Этот файл — часть Ready IoT Solution - OWLOS.
+(Этот файл — часть OWLOS DIY Open Source OS for building IoT ecosystems.
 
 OWLOS - свободная программа: вы можете перераспространять ее и/или изменять
 ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она
@@ -118,37 +118,21 @@ String getContentType(String fileName)
 	return F("text/plain");
 }
 
-static const char OWLOSLogo[] PROGMEM = "<font color='#62add0' size='2'><pre><code><span>\n"
-										"000000001                       100000000\n"
-										"0000000000000               0000000000000\n"
-										"000000000010000000     000000010000000000\n"
-										"00000  10001  1000000000001  10001  10000\n"
-										" 0000001   1001    101    0001   1000000\n"
-										" 00 000001     100     001     100000 00\n"
-										" 00  000 000       0001      000  00  00\n"
-										" 00  000  0000              0000  00  00\n"
-										" 00   00  00000           00000  00   00\n"
-										" 00&  00    00000       00000    00  100\n"
-										" 000     000  00000  00000  000     000\n"
-										" 000001  100000000000000000001  10000\n"
-										"    000001 0000000 0000000  000000\n"
-										"        00000000       00000000\n"
-										"          0000000   0000000\n"
-										"             00000000000\n"
-										"                 000\n"
-										"\n"
-										"</span></code></pre></font><br>";
-
 static const char OWLOSCopyLeft[] PROGMEM = "&#x1F30D;<a href='https://github.com/KirinDenis/owlos' target='_blank'>GitHub OWLOS</a><br>\n"
-											"&#x1F409;Copyright 2019, 2020 by:\n"
+											"&#x1F409;Copyright 2019, 2020, 2021 by:\n"
+											"	Monica (rovt@ua.fm)\n"
+											"	Yan Sokolov (Dadras279@gmail.com)\n"
+											"	Ddone Deedone (https://techadv.xyz/)\n"											
+											"	Serhii Demyanov (demianfog@gmail.com)\n"
 											"	Serhii Lehkii (sergey@light.kiev.ua)\n"
 											"	Konstantin Brul (konstabrul@gmail.com)\n"
 											"	Vitalii Glushchenko (cehoweek@gmail.com)\n"
 											"	Stanislav Kvashchuk (skat@ukr.net)\n"
 											"	Vladimir Kovalevich (covalevich@gmail.com)\n"
-											"	Denys Melnychuk (meldenvar@gmail.com)\n"
+											"	Boris Pavlov (hiroyashy@gmail.com)\n"
+											"	Denys Melnychuk (meldenvar@gmail.com)\n"											
 											"	Denis Kirin (deniskirinacs@gmail.com)\n<br>"
-											"&#x1F4E1;HTTPServer API endpoints:\n";
+											"&#x1F4E1;Firmware Features:\n";
 
 String GetNotFoundHTML()
 {
@@ -157,7 +141,7 @@ String GetNotFoundHTML()
 																	  "<style>a{color: #3b99c4;text-decoration: none;} a:hover {text-decoration: underline;} a:active {text-decoration: underline;}table td, table td * {vertical-align: top;}</style></header>"
 																	  "<body  bgcolor='#272B30'><font color='#272B30'><table><tr><td>") +
 		   OWLOSLogo + "</td><td><pre><code><span><font color='#89c2dc' size=4><br>&#x1F989;<b>" +
-		   FIRMWARE_VERSION + "</b>\n" + OWLOSCopyLeft + "</span></code></pre></font></td></tr></table></body>";
+		   FIRMWARE_VERSION + "</b>\n" + OWLOSCopyLeft + GetFeatures() + "</span></code></pre></font></td></tr></table></body>";
 }
 #endif
 #endif

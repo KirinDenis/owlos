@@ -1,0 +1,203 @@
+﻿<Window x:Class="OWLOSAirQuality.EcosystemManagerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OWLOSAirQuality" 
+        xmlns:huds="clr-namespace:OWLOSAirQuality.Huds"
+        mc:Ignorable="d"
+        Background="#01000000"
+        Title="OWLOS Air Quality Things connections" Width="1185" Height="732" WindowStartupLocation="CenterScreen" AllowsTransparency="True" WindowStyle="None"
+        TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed" Loaded="Window_Loaded_1">
+
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome     
+        CaptionHeight="1"  
+        CornerRadius ="0"
+        ResizeBorderThickness="10"         
+        GlassFrameThickness="0">
+        </WindowChrome>
+    </WindowChrome.WindowChrome>
+
+    <Grid x:Name="GeneralGrid" Background="{DynamicResource OWLOSDark}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="41"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid x:Name="contentGrid" Grid.Row="1" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="7*"/>
+                <ColumnDefinition Width="153*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="35"/>
+                <RowDefinition Height="100*"/>
+                <RowDefinition Height="20*"/>
+                <RowDefinition Height="25"/>
+            </Grid.RowDefinitions>
+
+            <Grid x:Name="explorerGrid"  Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,0,0,62" Grid.RowSpan="2" RenderTransformOrigin="0.5,0.5">
+                <Grid.RenderTransform>
+                    <TransformGroup>
+                        <SkewTransform/>
+                        <RotateTransform/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Grid.RenderTransform>
+                <Grid.LayoutTransform>
+                    <TransformGroup>
+
+
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Grid.LayoutTransform>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="583*"/>
+                </Grid.RowDefinitions>
+
+
+
+                <Grid x:Name="EcosystemExplorerGrid" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" PreviewMouseMove="EcosystemExplorerGrid_PreviewMouseMove" PreviewMouseDown="EcosystemExplorerGrid_PreviewMouseDown" PreviewMouseUp="EcosystemExplorerGrid_PreviewMouseUp" PreviewMouseWheel="EcosystemExplorerGrid_PreviewMouseWheel" RenderTransformOrigin="0.3,0" >
+                    <Grid.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform ScaleX="1.8" ScaleY="1.8"/>
+                            <SkewTransform/>
+                            <RotateTransform/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </Grid.RenderTransform>
+
+                    <Viewbox x:Name="viewbox"  Width="10025" Height="10025" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="0,0,-10000,-10000">
+                        <Viewbox.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform/>
+                                <SkewTransform AngleX="0" AngleY="0"/>
+                                <RotateTransform/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </Viewbox.RenderTransform>
+
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="35"/>
+                                <RowDefinition Height="100*"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="35"/>
+                                <ColumnDefinition Width="100*"/>
+                            </Grid.ColumnDefinitions>
+
+
+
+                            <Image x:Name="ThingImage" Grid.Column="1" Grid.Row="1" Width="10000" Height="10000"/>
+
+
+                            <Grid x:Name="zeroNavigationGrid"  Grid.Row="0" Grid.Column="0" Background="{DynamicResource OWLOSInfoAlpha2}" Width="40" Height="30.3" VerticalAlignment="Bottom" Margin="0,-0.0,0,-0.175"></Grid>
+
+                            <Grid x:Name="verticalNavigationGrid" Grid.Column="0" Grid.Row="1" Background="{DynamicResource OWLOSInfoAlpha2}" Width="37" HorizontalAlignment="Right" Visibility="Hidden" 
+                              TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed"
+                              RenderOptions.BitmapScalingMode="NearestNeighbor">
+                                <Border Width="2" HorizontalAlignment="Right">
+                                    <Border.Background>
+                                        <LinearGradientBrush EndPoint="1.5,1" MappingMode="RelativeToBoundingBox" StartPoint="1.5,0">
+                                            <GradientStop Color="{DynamicResource OWLOSDangerColor}" Offset="0"/>
+                                            <GradientStop Color="{DynamicResource OWLOSDangerColor}" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                </Border>
+
+                            </Grid>
+
+
+
+                            <Grid x:Name="horisontalNavigationGrid"  Grid.Row="0" Grid.Column="1" Background="{DynamicResource OWLOSInfoAlpha2}" Width="10000" Height="30" Visibility="Hidden" VerticalAlignment="Bottom" 
+                              TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed"
+                              RenderOptions.BitmapScalingMode="NearestNeighbor">
+                                <Border Height="3" VerticalAlignment="Bottom" Margin="0,-3,0,-3">
+                                    <Border.Background>
+                                        <LinearGradientBrush EndPoint="1.5,1" MappingMode="RelativeToBoundingBox" StartPoint="1.5,0">
+                                            <GradientStop Color="{DynamicResource OWLOSDangerColor}" Offset="0"/>
+                                            <GradientStop Color="{DynamicResource OWLOSDangerColor}" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                </Border>
+                            </Grid>
+
+                            <VirtualizingStackPanel x:Name="smallThingLines" Grid.Column="1" Grid.Row="1" Width="10000" Height="10000" RenderOptions.BitmapScalingMode="Fant" />
+                            <VirtualizingStackPanel x:Name="ThingLines" Grid.Column="1" Grid.Row="1" Width="10000" Height="10000" RenderOptions.BitmapScalingMode="Fant" />
+
+                            <Grid x:Name="ThingGrid" Grid.Column="1" Grid.Row="1" Width="10000" Height="10000" HorizontalAlignment="Left" VerticalAlignment="Top" PreviewMouseDown="ThingGrid_PreviewMouseDown" PreviewMouseLeftButtonDown="ThingGrid_PreviewMouseLeftButtonDown" RenderTransformOrigin="0.5,0.5" >
+
+                            </Grid>
+
+                        </Grid>
+                    </Viewbox>
+
+
+                </Grid>
+
+
+
+            </Grid>
+            <Grid Grid.Row="0" Grid.ColumnSpan="3" Height="30">
+                <StackPanel Orientation="Horizontal" Margin="25,0,10,0">
+                    <StackPanel Orientation="Horizontal"  VerticalAlignment="Center">
+                        <TextBlock Text="zoom:" VerticalAlignment="Center" Margin="0,0,0,0" Foreground="{DynamicResource OWLOSInfo}" />
+                        <TextBox Name="zoomTextBox" Text="100" Background="{x:Null}" VerticalAlignment="Center" BorderBrush="{x:Null}" FontWeight="Bold" Foreground="{DynamicResource OWLOSLight}" SnapsToDevicePixels="True" />
+                        <TextBlock Text="%" VerticalAlignment="Center" Margin="0,0,5,0" Foreground="{DynamicResource OWLOSLight}" />
+                    </StackPanel>
+
+                    <huds:MenuItemControl x:Name="zoomToOneHImage" Caption="100%" Description="zoom to 100%"  Cursor="Hand" MouseDown="zoomToOneHImage_MouseDown" />
+                    <huds:MenuItemControl x:Name="zoomToFullImage" Caption="Full" Description="Zoom to full view" MouseDown="zoomToFullImage_MouseDown" Cursor="Hand" />
+                    <huds:MenuItemControl x:Name="autoScrollImage" Caption="Auto" Description="Auto scroll image" MouseDown="autoScrollImage_MouseDown" Cursor="Hand" />
+                    <huds:MenuItemControl x:Name="drawCellImage" Caption="Cell" Description="Show cell" MouseDown="drawCellImage_MouseDown" Cursor="Hand" />
+                    <huds:MenuItemControl x:Name="perspectiveViewImage" Caption="3D" Description="Perspective view" MouseDown="perspectiveViewImage_MouseDown" Cursor="Hand" />
+                    <huds:MenuItemControl x:Name="duplicateWindowImage" Caption="Duplicate" Description="Duplicate window" MouseDown="duplicateWindowImage_MouseDown" Cursor="Hand" />
+
+                </StackPanel>
+            </Grid>
+
+            <!-- 
+        <Canvas Background="{DynamicResource OWLOSDarkAlpha1}" Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" ZIndex="999999999">
+        </Canvas>
+
+        <Canvas Background="{DynamicResource OWLOSDarkAlpha1}" Grid.Row="0" Grid.Column="1" ZIndex="999999999" Grid.ColumnSpan="2">
+        </Canvas>
+
+        <Canvas Background="{DynamicResource OWLOSDarkAlpha1}" Grid.Row="2" Grid.RowSpan="2" Grid.Column="1" ZIndex="999999999" Grid.ColumnSpan="2">
+        </Canvas>
+        -->
+        </Grid>
+        <Canvas Grid.RowSpan="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" >
+            <Line x:Name="SelSQ1" Stroke="{DynamicResource OWLOSInfo}" X1="-14" Y1="-1" X2="0" Y2="-1" StrokeThickness="3" />
+            <Line x:Name="SelSQ2" Stroke="{DynamicResource OWLOSInfo}" X1="-1" Y1="-0" X2="-1" Y2="-14" StrokeThickness="3" />
+        </Canvas>
+
+        <Border Grid.RowSpan="2" BorderThickness="2,2,2,2" BorderBrush="{DynamicResource OWLOSSecondaryAlpha1}"/>
+
+        <Grid Grid.Row="0" Background="{DynamicResource OWLOSDarkAlpha1}" MouseDown="Grid_MouseDown" PreviewMouseDown="Grid_PreviewMouseDown">
+            <Border BorderBrush="{DynamicResource OWLOSPrimaryAlpha2}" BorderThickness="0,0,0,2" Margin="16,0,16,0"></Border>
+            <Grid Margin="16,6" >
+                <TextBlock Text="OWLOS Air Quality" Foreground="{DynamicResource OWLOSLight}" FontSize="16" VerticalAlignment="Center"></TextBlock>
+                <StackPanel  HorizontalAlignment="Right" VerticalAlignment="Top">
+                    <StackPanel Margin="16,0,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <TextBlock x:Name="Controls" Text="[win controls]" FontSize="12" Foreground="{DynamicResource OWLOSSecondary}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                        <TextBlock x:Name="TransparentTextBlock" Text="  T  " Foreground="{DynamicResource OWLOSDark}" FontSize="16" Background="{DynamicResource OWLOSInfoAlpha2}" HorizontalAlignment="Left" VerticalAlignment="Stretch"  Margin="4,0,0,0" MouseDown="TransparentTextBlock_MouseDown" MouseEnter="TransparentTextBlock_MouseEnter" MouseLeave="TransparentTextBlock_MouseLeave"/>
+                        <TextBlock x:Name="TopMostTextBlock" Text="  T/M  " Foreground="{DynamicResource OWLOSDark}" FontSize="16" Background="{DynamicResource OWLOSInfoAlpha2}" HorizontalAlignment="Left" VerticalAlignment="Stretch"  Margin="4,0,0,0" MouseEnter="TransparentTextBlock_MouseEnter" MouseLeave="TransparentTextBlock_MouseLeave" MouseDown="TopMostTextBlock_MouseDown"/>
+                        <TextBlock x:Name="HideTextBlock" Text="  H  " Foreground="{DynamicResource OWLOSDark}" FontSize="16" Background="{DynamicResource OWLOSWarningAlpha2}" HorizontalAlignment="Left" VerticalAlignment="Center"  Margin="4,0,0,0" MouseDown="HideTextBlock_MouseDown" MouseEnter="HideTextBlock_MouseEnter" MouseLeave="HideTextBlock_MouseLeave"/>
+                        <TextBlock x:Name="MNTextBlock" Text="  M/N  " Foreground="{DynamicResource OWLOSDark}" FontSize="16" Background="{DynamicResource OWLOSWarningAlpha2}" HorizontalAlignment="Left" VerticalAlignment="Center"  Margin="4,0,4,0" MouseDown="MNTextBlock_MouseDown" MouseEnter="HideTextBlock_MouseEnter" MouseLeave="HideTextBlock_MouseLeave"/>
+                        <TextBlock x:Name="CloseTextBlock" Text="  X  " Foreground="{DynamicResource OWLOSDark}" FontSize="16" Background="{DynamicResource OWLOSDangerAlpha2}" HorizontalAlignment="Left" VerticalAlignment="Center"  Margin="0,0" MouseDown="CloseTextBlock_MouseDown" MouseEnter="CloseTextBlock_MouseEnter" MouseLeave="CloseTextBlock_MouseLeave"/>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </Grid>
+
+
+    </Grid>
+
+</Window>
