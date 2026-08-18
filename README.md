@@ -16,7 +16,9 @@ OWLOS is a DIY open source firmware platform for ESP32 and ESP8266 microcontroll
 
 The name "OWLOS" reflects the ecosystem nature of the project: multiple nodes can coexist and communicate via MQTT, each running the same firmware with its own configuration.
 
-> 🌎 **Related project:** [OWLOS Air Quality](https://github.com/KirinDenis/OWLOSAirQuality) — a complete IoT solution for air quality monitoring built on top of OWLOS.
+ 🌎 **Related project:** [OWLOS Air Quality](https://github.com/KirinDenis/OWLOSAirQuality) — a complete IoT solution for air quality monitoring built on top of OWLOS.
+
+ ### 💬 Community: [facebook.com/groups/OWLOS](https://www.facebook.com/groups/OWLOS)
 
 ---
 
